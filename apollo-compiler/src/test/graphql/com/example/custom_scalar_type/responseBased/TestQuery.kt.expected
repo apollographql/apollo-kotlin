@@ -6,13 +6,13 @@
 package com.example.custom_scalar_type
 
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.custom_scalar_type.adapter.TestQuery_ResponseAdapter
-import com.example.custom_scalar_type.responsefields.TestQuery_ResponseFields
+import com.example.custom_scalar_type.selections.TestQuerySelections
 import java.util.Date
 import kotlin.Any
 import kotlin.String
@@ -33,7 +33,7 @@ class TestQuery : Query<TestQuery.Data> {
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun fieldSets(): List<FieldSet> = TestQuery_ResponseFields.fields.first().fieldSets
+  override fun selections(): List<CompiledSelection> = TestQuerySelections.root
 
   data class Data(
     val hero: Hero?

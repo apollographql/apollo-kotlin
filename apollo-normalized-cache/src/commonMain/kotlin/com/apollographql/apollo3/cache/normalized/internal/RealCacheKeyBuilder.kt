@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
+import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils
@@ -10,9 +10,9 @@ import okio.IOException
 
 class RealCacheKeyBuilder : CacheKeyBuilder {
 
-  override fun build(field: MergedField, variables: Executable.Variables): String {
+  override fun build(field: CompiledField, variables: Executable.Variables): String {
     if (field.arguments.isEmpty()) {
-      return field.fieldName
+      return field.name
     }
     val resolvedArguments = resolveVariables(field.arguments, variables)
     return try {
@@ -20,7 +20,7 @@ class RealCacheKeyBuilder : CacheKeyBuilder {
       val jsonWriter = BufferedSinkJsonWriter(buffer)
       Utils.writeToJson(resolvedArguments, jsonWriter)
       jsonWriter.close()
-      "${field.fieldName}(${buffer.readUtf8()})"
+      "${field.name}(${buffer.readUtf8()})"
     } catch (e: IOException) {
       throw RuntimeException(e)
     }

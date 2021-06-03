@@ -13,9 +13,6 @@ private fun resolveNameClashes(usedNames: MutableSet<String>, modelName: String)
   return name
 }
 
-private class State {
-}
-
 private fun List<IrModelGroup>.flatten(flattenNamesInOrder: Boolean): List<IrModelGroup> {
   val usedNames = mutableSetOf<String>()
   val collectedIrModelGroups = mutableListOf<IrModelGroup>()

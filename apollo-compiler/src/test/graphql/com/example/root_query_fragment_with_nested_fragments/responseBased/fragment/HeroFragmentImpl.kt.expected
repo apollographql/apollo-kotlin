@@ -6,12 +6,12 @@
 package com.example.root_query_fragment_with_nested_fragments.fragment
 
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.example.root_query_fragment_with_nested_fragments.fragment.responsefields.HeroFragmentImpl_ResponseFields
+import com.example.root_query_fragment_with_nested_fragments.fragment.selections.heroFragmentSelections
 import kotlin.String
 import kotlin.collections.List
 
@@ -24,8 +24,7 @@ class HeroFragmentImpl : Fragment<HeroFragmentImpl.Data> {
     return HeroFragmentImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun fieldSets(): List<FieldSet> =
-      HeroFragmentImpl_ResponseFields.fields.first().fieldSets
+  override fun selections(): List<CompiledSelection> = heroFragmentSelections.root
 
   data class Data(
     /**

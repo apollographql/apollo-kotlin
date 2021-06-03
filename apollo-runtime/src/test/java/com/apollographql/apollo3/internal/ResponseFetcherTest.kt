@@ -1,8 +1,8 @@
 package com.apollographql.apollo3.internal
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy.FetchStrategy
@@ -36,7 +36,7 @@ class ResponseFetcherTest {
       return ""
     }
 
-    override fun fieldSets(): List<FieldSet> {
+    override fun selections(): List<CompiledSelection> {
       return emptyList()
     }
   }

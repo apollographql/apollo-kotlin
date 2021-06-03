@@ -3,7 +3,7 @@ package com.apollographql.apollo3.subscription
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.FieldSet
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 
@@ -27,7 +27,7 @@ class MockSubscription(
   override fun name(): String = name
 
   override fun id(): String = operationId
-  override fun fieldSets(): List<FieldSet> {
+  override fun selections(): List<CompiledSelection> {
     return emptyList()
   }
 }

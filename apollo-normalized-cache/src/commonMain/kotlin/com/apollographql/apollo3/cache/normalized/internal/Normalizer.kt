@@ -1,8 +1,12 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
+import com.apollographql.apollo3.api.CompiledCompoundType
+import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.CompiledFragment
+import com.apollographql.apollo3.api.CompiledListType
+import com.apollographql.apollo3.api.CompiledNotNullType
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.FieldSet
-import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.cache.normalized.CacheReference
 import com.apollographql.apollo3.cache.normalized.Record
 
@@ -10,21 +14,22 @@ import com.apollographql.apollo3.cache.normalized.Record
  * A [Normalizer] takes a [Map]<String, Any?> and turns them into a flat list of [Record]
  * The id of each [Record] is given by [cacheKeyForObject] or defaults to using the path
  */
-class Normalizer(val variables: Executable.Variables, val cacheKeyForObject: (MergedField, Map<String, Any?>) -> String?) {
+class Normalizer(val variables: Executable.Variables, val cacheKeyForObject: (CompiledField, Map<String, Any?>) -> String?) {
   private val records = mutableMapOf<String, Record>()
   private val cacheKeyBuilder = RealCacheKeyBuilder()
 
-  fun normalize(map: Map<String, Any?>, path: String?, rootKey: String, fieldSets: List<FieldSet>): Map<String, Record> {
+  fun normalize(map: Map<String, Any?>, path: String?, rootKey: String, selections: List<CompiledSelection>): Map<String, Record> {
 
-    records[rootKey] = Record(rootKey, map.toFields(path, fieldSets = fieldSets))
+    records[rootKey] = Record(rootKey, map.toFields(path, selections = selections))
 
     return records
   }
 
-  private fun Map<String, Any?>.normalize(path: String, field: MergedField): CacheReference {
-    val key = cacheKeyForObject(field, this) ?: path
+  private fun Map<String, Any?>.normalize(path: String, fields: List<CompiledField>): CacheReference {
+    val key = cacheKeyForObject(fields.first(), this) ?: path
 
-    val newRecord = Record(key, toFields(key, fieldSets = field.fieldSets))
+    val selections = fields.flatMap { it.selections }
+    val newRecord = Record(key, toFields(key, selections = selections))
 
     val existingRecord = records[key]
 
@@ -41,32 +46,61 @@ class Normalizer(val variables: Executable.Variables, val cacheKeyForObject: (Me
     return CacheReference(key)
   }
 
-  private fun Map<String, Any?>.toFields(path: String?, fieldSets: List<FieldSet>): Map<String, Any?> {
-    val fieldSet = fieldSets.firstOrNull { it.type == get("__typename") }
-        ?: fieldSets.firstOrNull { it.type == null }
+  private class CollectState {
+    val fields = mutableListOf<CompiledField>()
+  }
 
-    check(fieldSet != null) {
-      "No field set found at $path on typeCondition $this"
+  private fun List<CompiledSelection>.collect(typename: String?, state: CollectState) {
+    forEach {
+      when (it) {
+        is CompiledField -> {
+          state.fields.add(it)
+          it.selections.collect(typename, state)
+        }
+        is CompiledFragment -> {
+          if (typename in it.possibleTypes) {
+            it.selections.collect(typename, state)
+          }
+        }
+      }
     }
-    return fieldSet.mergedFields.mapNotNull {
-      if (it.shouldSkip(variableValues = variables.valueMap)) {
-        // The json doesn't know about skip/include so filter here
+  }
+
+  private fun List<CompiledSelection>.collect(typename: String?): List<CompiledField> {
+    val state = CollectState()
+    collect(typename, state)
+    return state.fields
+  }
+
+  /**
+   * Takes the map entries and replaces compound types values by CacheReferences
+   */
+  private fun Map<String, Any?>.toFields(path: String?, selections: List<CompiledSelection>): Map<String, Any?> {
+    val fields = selections.collect(get("__typename") as? String)
+
+    return entries.mapNotNull { entry ->
+      val mergedFields = fields.filter { it.responseName == entry.key }
+
+      val first = mergedFields.firstOrNull()
+
+      check(first != null && (first.type !is CompiledNotNullType || entry.value != null))
+
+      if (mergedFields.all { it.shouldSkip(variableValues = variables.valueMap) }) {
+        // GraphQL doesn't distinguish between null and absent so this is null but it might be absent
+        // If it is absent, we don't want to serialize it to the cache
         return@mapNotNull null
       }
 
-      val value = get(it.responseName)
+      val fieldKey = cacheKeyBuilder.build(first, variables)
 
-      check(it.type !is MergedField.Type.NotNull || value != null)
+      val unwrappedType = (first.type as? CompiledNotNullType)?.ofType ?: first.type
 
-      val fieldKey = cacheKeyBuilder.build(it, variables)
-
-      val unwrappedType = (it.type as? MergedField.Type.NotNull)?.ofType ?: it.type
-
+      val value = entry.value
       @Suppress("UNCHECKED_CAST")
       fieldKey to when {
         value == null -> null
-        unwrappedType is MergedField.Type.List -> (value as List<Any?>).normalize(path.append(fieldKey), it, unwrappedType)
-        unwrappedType is MergedField.Type.Named.Object -> (value as Map<String, Any?>).normalize(path.append(fieldKey), it)
+        unwrappedType is CompiledListType -> (value as List<Any?>).normalize(path.append(fieldKey), mergedFields, unwrappedType)
+        unwrappedType is CompiledCompoundType -> (value as Map<String, Any?>).normalize(path.append(fieldKey), mergedFields)
         else -> value // scalar or enum
       }
     }.toMap()
@@ -79,14 +113,14 @@ class Normalizer(val variables: Executable.Variables, val cacheKeyForObject: (Me
    * @param fieldType this is different from field.type as it will unwrap the NonNull and List types as it goes
    */
   @Suppress("UNCHECKED_CAST")
-  private fun List<Any?>.normalize(path: String, field: MergedField, fieldType: MergedField.Type.List): List<Any?> {
-    val unwrappedType = (fieldType.ofType as? MergedField.Type.NotNull)?.ofType ?: fieldType.ofType
+  private fun List<Any?>.normalize(path: String, fields: List<CompiledField>, fieldType: CompiledListType): List<Any?> {
+    val unwrappedType = (fieldType.ofType as? CompiledNotNullType)?.ofType ?: fieldType.ofType
 
     return mapIndexed { index, value ->
       when {
         value == null -> null
-        unwrappedType is MergedField.Type.List -> (value as List<Any?>).normalize(path.append(index.toString()), field, unwrappedType)
-        unwrappedType is MergedField.Type.Named.Object -> (value as Map<String, Any?>).normalize(path.append(index.toString()), field)
+        unwrappedType is CompiledListType -> (value as List<Any?>).normalize(path.append(index.toString()), fields, unwrappedType)
+        unwrappedType is CompiledCompoundType -> (value as Map<String, Any?>).normalize(path.append(index.toString()), fields)
         else -> value
       }
     }

@@ -1,7 +1,7 @@
 package com.apollographql.apollo3
 
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonEncodingException
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -46,7 +46,7 @@ class ApolloExceptionTest {
       return ""
     }
 
-    override fun fieldSets(): List<FieldSet> {
+    override fun selections(): List<CompiledSelection> {
       return emptyList()
     }
   }

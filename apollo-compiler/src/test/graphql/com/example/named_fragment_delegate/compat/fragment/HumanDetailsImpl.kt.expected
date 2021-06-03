@@ -6,12 +6,12 @@
 package com.example.named_fragment_delegate.fragment
 
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.example.named_fragment_delegate.fragment.responsefields.HumanDetailsImpl_ResponseFields
+import com.example.named_fragment_delegate.fragment.selections.HumanDetailsSelections
 import kotlin.collections.List
 
 class HumanDetailsImpl : Fragment<HumanDetails> {
@@ -23,6 +23,5 @@ class HumanDetailsImpl : Fragment<HumanDetails> {
     return HumanDetailsImpl_ResponseAdapter.HumanDetails.obj()
   }
 
-  override fun fieldSets(): List<FieldSet> =
-      HumanDetailsImpl_ResponseFields.fields.first().fieldSets
+  override fun selections(): List<CompiledSelection> = HumanDetailsSelections.root
 }
