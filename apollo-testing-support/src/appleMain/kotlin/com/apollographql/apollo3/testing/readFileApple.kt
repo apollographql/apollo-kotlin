@@ -26,7 +26,6 @@ actual fun readFile(path: String): String {
   val size = ftell(file)
   rewind(file)
 
-  println("size is $size")
   return memScoped {
     val tmp = allocArray<ByteVar>(size + 1)
     fread(tmp, sizeOf<ByteVar>().convert(), size.convert(), file)
