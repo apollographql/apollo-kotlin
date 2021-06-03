@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.internal.subscription
 
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Subscription
@@ -363,7 +364,7 @@ class SubscriptionManagerTest {
     override fun name(): String = "SomeSubscription"
 
     override fun id() = operationId
-    override fun fieldSets(): List<FieldSet> {
+    override fun selections(): List<CompiledSelection> {
       return emptyList()
     }
   }
