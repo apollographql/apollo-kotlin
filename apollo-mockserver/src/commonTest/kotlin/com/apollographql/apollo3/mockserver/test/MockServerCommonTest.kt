@@ -4,6 +4,7 @@ import com.apollographql.apollo3.mockserver.readRequest
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 class MockServerCommonTest {
   @Test
@@ -18,6 +19,7 @@ class MockServerCommonTest {
         .joinToString(separator = "\r\n", postfix = "\r\n\r\n")
 
     val recordedRequest = readRequest(Buffer().apply { writeUtf8(request) })
+    assertNotNull(recordedRequest)
     assertEquals("GET", recordedRequest.method)
     assertEquals("/", recordedRequest.path)
     assertEquals("HTTP/2", recordedRequest.version)
@@ -41,6 +43,7 @@ class MockServerCommonTest {
         .joinToString(separator = "\r\n", postfix = "")
 
     val recordedRequest = readRequest(Buffer().apply { writeUtf8(request) })
+    assertNotNull(recordedRequest)
     assertEquals("POST", recordedRequest.method)
     assertEquals("Hello world", recordedRequest.body.utf8())
   }
