@@ -329,7 +329,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         .useHttpGetMethodForPersistedQueries(useHttpGetMethodForPersistedQueries)
         .optimisticUpdates(optimisticUpdates)
         .writeToNormalizedCacheAsynchronously(writeToNormalizedCacheAsynchronously)
-        .batchPoller(batchPoller);
+        .batchPoller(batchPoller)
+        .canBeBatched(canBeBatched);
   }
 
   @SuppressWarnings("ResultOfMethodCallIgnored")
