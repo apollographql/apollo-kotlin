@@ -15,29 +15,31 @@ import com.example.named_fragment_without_implementation.fragment.selections.Dro
 import com.example.named_fragment_without_implementation.fragment.selections.HumanDetailsSelections
 import kotlin.collections.List
 
-private val hero: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Human"),
-        selections = HumanDetailsSelections
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Droid"),
-        selections = DroidDetailsSelections
+object TestQuerySelections {
+  private val hero: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Human"),
+          selections = HumanDetailsSelections.root
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Droid"),
+          selections = DroidDetailsSelections.root
+        )
       )
-    )
 
-val TestQuerySelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "hero",
-        type = CompiledCompoundType("unused"),
-        selections = hero
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "hero",
+          type = CompiledCompoundType("unused"),
+          selections = hero
+        )
       )
-    )
+}

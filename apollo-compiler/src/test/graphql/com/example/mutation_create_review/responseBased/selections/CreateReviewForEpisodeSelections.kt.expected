@@ -14,48 +14,50 @@ import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val listOfListOfObject: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
+internal object CreateReviewForEpisodeSelections {
+  private val listOfListOfObject: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        )
       )
-    )
 
-private val createReview: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "stars",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "commentary",
-        type = CompiledOtherType("unused")
-      ),
-      CompiledField(
-        name = "listOfListOfString",
-        type = CompiledOtherType("unused").notNull().list().notNull().list()
-      ),
-      CompiledField(
-        name = "listOfListOfEnum",
-        type = CompiledOtherType("unused").notNull().list().notNull().list()
-      ),
-      CompiledField(
-        name = "listOfListOfCustom",
-        type = CompiledOtherType("unused").notNull().list().notNull().list()
-      ),
-      CompiledField(
-        name = "listOfListOfObject",
-        type = CompiledCompoundType("unused").notNull().list().notNull().list(),
-        selections = listOfListOfObject
-      )
-    )
-
-val CreateReviewForEpisodeSelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "createReview",
-        type = CompiledCompoundType("unused"),
-        arguments = mapOf("episode" to Variable("ep"),
-          "review" to Variable("review")
+  private val createReview: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "stars",
+          type = CompiledOtherType("unused").notNull()
         ),
-        selections = createReview
+        CompiledField(
+          name = "commentary",
+          type = CompiledOtherType("unused")
+        ),
+        CompiledField(
+          name = "listOfListOfString",
+          type = CompiledOtherType("unused").notNull().list().notNull().list()
+        ),
+        CompiledField(
+          name = "listOfListOfEnum",
+          type = CompiledOtherType("unused").notNull().list().notNull().list()
+        ),
+        CompiledField(
+          name = "listOfListOfCustom",
+          type = CompiledOtherType("unused").notNull().list().notNull().list()
+        ),
+        CompiledField(
+          name = "listOfListOfObject",
+          type = CompiledCompoundType("unused").notNull().list().notNull().list(),
+          selections = listOfListOfObject
+        )
       )
-    )
+
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "createReview",
+          type = CompiledCompoundType("unused"),
+          arguments = mapOf("episode" to Variable("ep"),
+            "review" to Variable("review")
+          ),
+          selections = createReview
+        )
+      )
+}

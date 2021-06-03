@@ -7,13 +7,14 @@ import com.apollographql.apollo3.compiler.codegen.CgFile
 import com.apollographql.apollo3.compiler.codegen.CgFileBuilder
 import com.apollographql.apollo3.compiler.ir.IrNamedFragment
 import com.apollographql.apollo3.compiler.codegen.selections.CompiledSelectionsBuilder
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.MemberName
 
-class FragmentResponseFieldsBuilder(
+class FragmentSelectionsBuilder(
     val context: CgContext,
     val fragment: IrNamedFragment,
     val schema: Schema,
-    val allFragmentDefinitions: Map<String, GQLFragmentDefinition>
+    val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
 ) : CgFileBuilder {
   private val packageName = context.layout.fragmentResponseFieldsPackageName(fragment.filePath)
   private val simpleName = context.layout.fragmentSelectionsName(fragment.name)
@@ -21,7 +22,7 @@ class FragmentResponseFieldsBuilder(
   override fun prepare() {
     context.resolver.registerFragmentSelections(
         fragment.name,
-        MemberName(packageName, simpleName)
+        ClassName(packageName, simpleName)
     )
   }
 
@@ -29,11 +30,13 @@ class FragmentResponseFieldsBuilder(
     return CgFile(
         packageName = packageName,
         fileName = simpleName,
-        propertySpecs = CompiledSelectionsBuilder(
-            context = context,
-            allFragmentDefinitions = allFragmentDefinitions,
-            schema = schema
-        ).build(fragment.selections, simpleName, fragment.typeCondition)
+        typeSpecs = listOf(
+            CompiledSelectionsBuilder(
+                context = context,
+                allFragmentDefinitions = allFragmentDefinitions,
+                schema = schema
+            ).build(fragment.selections, simpleName, fragment.typeCondition)
+        )
     )
   }
 }

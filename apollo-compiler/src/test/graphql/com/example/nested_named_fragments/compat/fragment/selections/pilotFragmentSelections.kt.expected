@@ -13,25 +13,27 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val homeworld: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Planet"),
-        selections = planetFragmentSelections
+object pilotFragmentSelections {
+  private val homeworld: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Planet"),
+          selections = planetFragmentSelections.root
+        )
       )
-    )
 
-val pilotFragmentSelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused")
-      ),
-      CompiledField(
-        name = "homeworld",
-        type = CompiledCompoundType("unused"),
-        selections = homeworld
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused")
+        ),
+        CompiledField(
+          name = "homeworld",
+          type = CompiledCompoundType("unused"),
+          selections = homeworld
+        )
       )
-    )
+}

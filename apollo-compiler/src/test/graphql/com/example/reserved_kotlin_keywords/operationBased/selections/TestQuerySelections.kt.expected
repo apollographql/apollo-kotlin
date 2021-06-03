@@ -14,49 +14,51 @@ import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val yield_: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "id",
-        alias = "it",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
-      )
-    )
-
-private val onCharacter: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
-      )
-    )
-
-private val objects: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Droid", "Human"),
-        selections = onCharacter
-      )
-    )
-
-val TestQuerySelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "hero",
-        alias = "yield",
-        type = CompiledCompoundType("unused"),
-        selections = yield_
-      ),
-      CompiledField(
-        name = "search",
-        alias = "objects",
-        type = CompiledCompoundType("unused").list(),
-        arguments = mapOf("text" to "abc"
+object TestQuerySelections {
+  private val yield_: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "id",
+          alias = "it",
+          type = CompiledOtherType("unused").notNull()
         ),
-        selections = objects
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        )
       )
-    )
+
+  private val onCharacter: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        )
+      )
+
+  private val objects: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Droid", "Human"),
+          selections = onCharacter
+        )
+      )
+
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "hero",
+          alias = "yield",
+          type = CompiledCompoundType("unused"),
+          selections = yield_
+        ),
+        CompiledField(
+          name = "search",
+          alias = "objects",
+          type = CompiledCompoundType("unused").list(),
+          arguments = mapOf("text" to "abc"
+          ),
+          selections = objects
+        )
+      )
+}

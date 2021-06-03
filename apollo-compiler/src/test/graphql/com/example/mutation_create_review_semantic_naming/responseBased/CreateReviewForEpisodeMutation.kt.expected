@@ -38,7 +38,7 @@ data class CreateReviewForEpisodeMutation(
     return CreateReviewForEpisodeMutation_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = CreateReviewForEpisodeMutationSelections
+  override fun selections(): List<CompiledSelection> = CreateReviewForEpisodeMutationSelections.root
 
   data class Data(
     val createReview: CreateReview?

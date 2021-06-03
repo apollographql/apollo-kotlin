@@ -24,7 +24,7 @@ class AFragmentImpl : Fragment<AFragmentImpl.Data> {
     return AFragmentImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = aFragmentSelections
+  override fun selections(): List<CompiledSelection> = aFragmentSelections.root
 
   data class Data(
     override val node: Node?

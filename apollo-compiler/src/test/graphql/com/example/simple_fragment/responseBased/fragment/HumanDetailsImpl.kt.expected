@@ -27,7 +27,7 @@ internal class HumanDetailsImpl : Fragment<HumanDetailsImpl.Data> {
     return HumanDetailsImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = HumanDetailsSelections
+  override fun selections(): List<CompiledSelection> = HumanDetailsSelections.root
 
   data class Data(
     override val __typename: String,

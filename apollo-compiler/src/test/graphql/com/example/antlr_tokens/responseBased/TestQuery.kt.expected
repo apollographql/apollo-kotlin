@@ -34,7 +34,7 @@ data class TestQuery(
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestQuerySelections
+  override fun selections(): List<CompiledSelection> = TestQuerySelections.root
 
   data class Data(
     val typeWithGraphQLKeywords: TypeWithGraphQLKeywords?

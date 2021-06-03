@@ -12,13 +12,15 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-val HeroDetailsSelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Human"),
-        selections = HumanDetailsSelections
+internal object HeroDetailsSelections {
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Human"),
+          selections = HumanDetailsSelections.root
+        )
       )
-    )
+}

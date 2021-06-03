@@ -13,27 +13,29 @@ import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val hero: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "deprecated",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "deprecatedBool",
-        type = CompiledOtherType("unused").notNull()
-      )
-    )
-
-val TestQuerySelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "hero",
-        type = CompiledCompoundType("unused"),
-        arguments = mapOf("episode" to Variable("episode")
+object TestQuerySelections {
+  private val hero: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
         ),
-        selections = hero
+        CompiledField(
+          name = "deprecated",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "deprecatedBool",
+          type = CompiledOtherType("unused").notNull()
+        )
       )
-    )
+
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "hero",
+          type = CompiledCompoundType("unused"),
+          arguments = mapOf("episode" to Variable("episode")
+          ),
+          selections = hero
+        )
+      )
+}

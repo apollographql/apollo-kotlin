@@ -15,39 +15,41 @@ import com.apollographql.apollo3.api.notNull
 import com.example.nested_named_fragments.fragment.selections.starshipFragmentSelections
 import kotlin.collections.List
 
-private val node: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Starship"),
-        selections = starshipFragmentSelections
-      )
-    )
-
-private val edges: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "node",
-        type = CompiledCompoundType("unused"),
-        selections = node
-      )
-    )
-
-private val allStarships: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "edges",
-        type = CompiledCompoundType("unused").list(),
-        selections = edges
-      )
-    )
-
-val AllStarshipsSelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "allStarships",
-        type = CompiledCompoundType("unused"),
-        arguments = mapOf("first" to 7
+object AllStarshipsSelections {
+  private val node: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
         ),
-        selections = allStarships
+        CompiledFragment(
+          possibleTypes = listOf("Starship"),
+          selections = starshipFragmentSelections.root
+        )
       )
-    )
+
+  private val edges: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "node",
+          type = CompiledCompoundType("unused"),
+          selections = node
+        )
+      )
+
+  private val allStarships: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "edges",
+          type = CompiledCompoundType("unused").list(),
+          selections = edges
+        )
+      )
+
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "allStarships",
+          type = CompiledCompoundType("unused"),
+          arguments = mapOf("first" to 7
+          ),
+          selections = allStarships
+        )
+      )
+}

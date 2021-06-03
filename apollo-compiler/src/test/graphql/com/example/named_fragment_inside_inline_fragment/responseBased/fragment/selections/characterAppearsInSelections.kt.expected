@@ -12,9 +12,11 @@ import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-val characterAppearsInSelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "appearsIn",
-        type = CompiledOtherType("unused").list().notNull()
+object characterAppearsInSelections {
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "appearsIn",
+          type = CompiledOtherType("unused").list().notNull()
+        )
       )
-    )
+}

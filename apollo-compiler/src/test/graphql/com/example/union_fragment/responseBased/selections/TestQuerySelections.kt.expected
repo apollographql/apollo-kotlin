@@ -15,34 +15,36 @@ import com.apollographql.apollo3.api.notNull
 import com.example.union_fragment.fragment.selections.StarshipSelections
 import kotlin.collections.List
 
-private val onStarship: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "id",
-        type = CompiledOtherType("unused").notNull()
+object TestQuerySelections {
+  private val onStarship: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "id",
+          type = CompiledOtherType("unused").notNull()
+        )
       )
-    )
 
-private val search: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Starship"),
-        selections = onStarship
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Starship"),
-        selections = StarshipSelections
-      )
-    )
-
-val TestQuerySelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "search",
-        type = CompiledCompoundType("unused").list(),
-        arguments = mapOf("text" to "test"
+  private val search: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
         ),
-        selections = search
+        CompiledFragment(
+          possibleTypes = listOf("Starship"),
+          selections = onStarship
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Starship"),
+          selections = StarshipSelections.root
+        )
       )
-    )
+
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "search",
+          type = CompiledCompoundType("unused").list(),
+          arguments = mapOf("text" to "test"
+          ),
+          selections = search
+        )
+      )
+}

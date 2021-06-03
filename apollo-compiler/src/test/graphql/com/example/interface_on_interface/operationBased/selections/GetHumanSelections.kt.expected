@@ -13,48 +13,50 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val human: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "id",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "height",
-        type = CompiledOtherType("unused").notNull()
+object GetHumanSelections {
+  private val human: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "id",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "height",
+          type = CompiledOtherType("unused").notNull()
+        )
       )
-    )
 
-private val onHuman: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "height",
-        type = CompiledOtherType("unused").notNull()
+  private val onHuman: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "height",
+          type = CompiledOtherType("unused").notNull()
+        )
       )
-    )
 
-private val node: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Human"),
-        selections = onHuman
+  private val node: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Human"),
+          selections = onHuman
+        )
       )
-    )
 
-val GetHumanSelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "human",
-        type = CompiledCompoundType("unused").notNull(),
-        selections = human
-      ),
-      CompiledField(
-        name = "node",
-        type = CompiledCompoundType("unused").notNull(),
-        selections = node
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "human",
+          type = CompiledCompoundType("unused").notNull(),
+          selections = human
+        ),
+        CompiledField(
+          name = "node",
+          type = CompiledCompoundType("unused").notNull(),
+          selections = node
+        )
       )
-    )
+}

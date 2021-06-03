@@ -10,9 +10,11 @@ import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
 import kotlin.collections.List
 
-val planetFragmentSelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused")
+object planetFragmentSelections {
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused")
+        )
       )
-    )
+}

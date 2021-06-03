@@ -12,21 +12,23 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val hero: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "id",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
+object TestQuerySelections {
+  private val hero: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "id",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        )
       )
-    )
 
-val TestQuerySelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "hero",
-        type = CompiledCompoundType("unused"),
-        selections = hero
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "hero",
+          type = CompiledCompoundType("unused"),
+          selections = hero
+        )
       )
-    )
+}

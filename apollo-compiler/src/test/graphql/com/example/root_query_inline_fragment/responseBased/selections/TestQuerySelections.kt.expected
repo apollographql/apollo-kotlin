@@ -14,80 +14,82 @@ import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val onHuman: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "height",
-        type = CompiledOtherType("unused")
+object TestQuerySelections {
+  private val onHuman: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "height",
+          type = CompiledOtherType("unused")
+        )
       )
-    )
 
-private val hero: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "appearsIn",
-        type = CompiledOtherType("unused").list().notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Human"),
-        selections = onHuman
-      )
-    )
-
-private val onDroid: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "primaryFunction",
-        type = CompiledOtherType("unused")
-      )
-    )
-
-private val droid: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Droid"),
-        selections = onDroid
-      )
-    )
-
-private val onQuery: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "hero",
-        type = CompiledCompoundType("unused"),
-        selections = hero
-      ),
-      CompiledField(
-        name = "droid",
-        type = CompiledCompoundType("unused"),
-        arguments = mapOf("id" to 1
+  private val hero: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
         ),
-        selections = droid
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "appearsIn",
+          type = CompiledOtherType("unused").list().notNull()
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Human"),
+          selections = onHuman
+        )
       )
-    )
 
-val TestQuerySelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Query"),
-        selections = onQuery
+  private val onDroid: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "primaryFunction",
+          type = CompiledOtherType("unused")
+        )
       )
-    )
+
+  private val droid: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Droid"),
+          selections = onDroid
+        )
+      )
+
+  private val onQuery: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "hero",
+          type = CompiledCompoundType("unused"),
+          selections = hero
+        ),
+        CompiledField(
+          name = "droid",
+          type = CompiledCompoundType("unused"),
+          arguments = mapOf("id" to 1
+          ),
+          selections = droid
+        )
+      )
+
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Query"),
+          selections = onQuery
+        )
+      )
+}

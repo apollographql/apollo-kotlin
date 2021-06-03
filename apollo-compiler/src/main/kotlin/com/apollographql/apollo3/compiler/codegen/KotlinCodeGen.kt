@@ -10,7 +10,7 @@ import com.apollographql.apollo3.compiler.codegen.adapter.EnumResponseAdapterBui
 import com.apollographql.apollo3.compiler.codegen.file.FragmentBuilder
 import com.apollographql.apollo3.compiler.codegen.file.FragmentModelsBuilder
 import com.apollographql.apollo3.compiler.codegen.file.FragmentResponseAdapterBuilder
-import com.apollographql.apollo3.compiler.codegen.file.FragmentResponseFieldsBuilder
+import com.apollographql.apollo3.compiler.codegen.file.FragmentSelectionsBuilder
 import com.apollographql.apollo3.compiler.codegen.file.FragmentVariablesAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.file.InputObjectAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.file.InputObjectBuilder
@@ -105,7 +105,7 @@ class KotlinCodeGen(
         ignoredBuilders.add(builders.last())
       }
 
-      builders.add(FragmentResponseFieldsBuilder(context, fragment, ir.schema, ir.allFragmentDefinitions))
+      builders.add(FragmentSelectionsBuilder(context, fragment, ir.schema, ir.allFragmentDefinitions))
       if (fragmentsToSkip.contains(fragment.name)) {
         ignoredBuilders.add(builders.last())
       }
@@ -184,9 +184,6 @@ class KotlinCodeGen(
 
           it.typeSpecs.map { typeSpec -> typeSpec.internal(generateAsInternal) }.forEach { typeSpec ->
             builder.addType(typeSpec)
-          }
-          it.propertySpecs.forEach {
-            builder.addProperty(it)
           }
           builder
               .build()

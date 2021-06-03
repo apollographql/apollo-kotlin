@@ -15,25 +15,27 @@ import com.example.fragments_same_type_condition.fragment.selections.DroidDetail
 import com.example.fragments_same_type_condition.fragment.selections.DroidDetails2Selections
 import kotlin.collections.List
 
-private val hero: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Droid"),
-        selections = DroidDetails1Selections
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Droid"),
-        selections = DroidDetails2Selections
+object TestQuerySelections {
+  private val hero: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Droid"),
+          selections = DroidDetails1Selections.root
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Droid"),
+          selections = DroidDetails2Selections.root
+        )
       )
-    )
 
-val TestQuerySelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "hero",
-        type = CompiledCompoundType("unused"),
-        selections = hero
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "hero",
+          type = CompiledCompoundType("unused"),
+          selections = hero
+        )
       )
-    )
+}

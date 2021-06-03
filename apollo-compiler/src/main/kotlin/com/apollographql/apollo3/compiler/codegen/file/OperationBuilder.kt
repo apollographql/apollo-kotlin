@@ -186,7 +186,7 @@ class OperationBuilder(
 
   private fun fieldSetsFunSpec(): FunSpec {
     return selectionsFunSpec(
-        context.resolver.resolveOperationSelections(operation.name)
+        context, context.resolver.resolveOperationSelections(operation.name)
     )
   }
 }

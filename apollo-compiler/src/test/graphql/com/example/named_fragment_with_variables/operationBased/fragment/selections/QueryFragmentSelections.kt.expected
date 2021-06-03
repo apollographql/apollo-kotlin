@@ -15,37 +15,39 @@ import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val user: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("User"),
-        selections = UserFragmentSelections
-      )
-    )
-
-private val organization: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "id",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "user",
-        type = CompiledCompoundType("unused").notNull().list().notNull(),
-        arguments = mapOf("query" to Variable("query")
+object QueryFragmentSelections {
+  private val user: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
         ),
-        selections = user
+        CompiledFragment(
+          possibleTypes = listOf("User"),
+          selections = UserFragmentSelections.root
+        )
       )
-    )
 
-val QueryFragmentSelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "organization",
-        type = CompiledCompoundType("unused"),
-        arguments = mapOf("id" to Variable("organizationId")
+  private val organization: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "id",
+          type = CompiledOtherType("unused").notNull()
         ),
-        selections = organization
+        CompiledField(
+          name = "user",
+          type = CompiledCompoundType("unused").notNull().list().notNull(),
+          arguments = mapOf("query" to Variable("query")
+          ),
+          selections = user
+        )
       )
-    )
+
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "organization",
+          type = CompiledCompoundType("unused"),
+          arguments = mapOf("id" to Variable("organizationId")
+          ),
+          selections = organization
+        )
+      )
+}

@@ -151,11 +151,11 @@ class CgResolver {
     return operationsVariablesAdapter.get(name)
   }
 
-  private val operationSelections = mutableMapOf<String, MemberName>()
-  fun registerOperationSelections(name: String, memberName: MemberName) {
-    operationSelections.put(name, memberName)
+  private val operationSelections = mutableMapOf<String, ClassName>()
+  fun registerOperationSelections(name: String, className: ClassName) {
+    operationSelections.put(name, className)
   }
-  fun resolveOperationSelections(name: String): MemberName {
+  fun resolveOperationSelections(name: String): ClassName {
     return operationSelections.get(name) ?: error("Cannot resolve operation '$name' response fields")
   }
 
@@ -175,12 +175,12 @@ class CgResolver {
     return fragmentsVariablesAdapter.get(name)
   }
 
-  private val fragmentSelections = mutableMapOf<String, MemberName>()
-  fun registerFragmentSelections(name: String, memberName: MemberName) {
-    fragmentSelections.put(name, memberName)
+  private val fragmentSelections = mutableMapOf<String, ClassName>()
+  fun registerFragmentSelections(name: String, className: ClassName) {
+    fragmentSelections.put(name, className)
   }
 
-  fun resolveFragmentSelections(name: String): MemberName {
+  fun resolveFragmentSelections(name: String): ClassName {
     return fragmentSelections.get(name) ?: error("Cannot resolve fragment '$name' selections")
   }
 

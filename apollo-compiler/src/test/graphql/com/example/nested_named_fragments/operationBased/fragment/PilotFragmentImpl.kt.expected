@@ -23,5 +23,5 @@ class PilotFragmentImpl : Fragment<PilotFragment> {
     return PilotFragmentImpl_ResponseAdapter.PilotFragment.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = pilotFragmentSelections
+  override fun selections(): List<CompiledSelection> = pilotFragmentSelections.root
 }

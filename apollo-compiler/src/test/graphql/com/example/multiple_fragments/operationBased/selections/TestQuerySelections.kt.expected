@@ -14,21 +14,23 @@ import com.apollographql.apollo3.api.notNull
 import com.example.multiple_fragments.fragment.selections.aFragmentSelections
 import kotlin.collections.List
 
-private val a: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("A"),
-        selections = aFragmentSelections
+object TestQuerySelections {
+  private val a: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("A"),
+          selections = aFragmentSelections.root
+        )
       )
-    )
 
-val TestQuerySelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "a",
-        type = CompiledCompoundType("unused"),
-        selections = a
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "a",
+          type = CompiledCompoundType("unused"),
+          selections = a
+        )
       )
-    )
+}

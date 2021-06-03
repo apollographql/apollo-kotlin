@@ -13,31 +13,33 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val friendsConnection: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "totalCount",
-        type = CompiledOtherType("unused")
+object TestQuerySelections {
+  private val friendsConnection: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "totalCount",
+          type = CompiledOtherType("unused")
+        )
       )
-    )
 
-private val hero: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull(),
-        condition = listOf(CompiledCondition("includeName", false))
-      ),
-      CompiledField(
-        name = "friendsConnection",
-        type = CompiledCompoundType("unused").notNull(),
-        condition = listOf(CompiledCondition("skipFriends", true)),
-        selections = friendsConnection
+  private val hero: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull(),
+          condition = listOf(CompiledCondition("includeName", false))
+        ),
+        CompiledField(
+          name = "friendsConnection",
+          type = CompiledCompoundType("unused").notNull(),
+          condition = listOf(CompiledCondition("skipFriends", true)),
+          selections = friendsConnection
+        )
       )
-    )
 
-val TestQuerySelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "hero",
-        type = CompiledCompoundType("unused"),
-        selections = hero
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "hero",
+          type = CompiledCompoundType("unused"),
+          selections = hero
+        )
       )
-    )
+}

@@ -23,5 +23,5 @@ class Fragment1Impl : Fragment<Fragment1> {
     return Fragment1Impl_ResponseAdapter.Fragment1.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = fragment1Selections
+  override fun selections(): List<CompiledSelection> = fragment1Selections.root
 }

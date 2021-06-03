@@ -35,7 +35,7 @@ data class TestSubscription(
     return TestSubscription_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestSubscriptionSelections
+  override fun selections(): List<CompiledSelection> = TestSubscriptionSelections.root
 
   data class Data(
     /**

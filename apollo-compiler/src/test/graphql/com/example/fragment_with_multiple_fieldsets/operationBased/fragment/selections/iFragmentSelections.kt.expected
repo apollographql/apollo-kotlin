@@ -12,20 +12,22 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val onA: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "fieldA",
-        type = CompiledOtherType("unused")
+object iFragmentSelections {
+  private val onA: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "fieldA",
+          type = CompiledOtherType("unused")
+        )
       )
-    )
 
-val iFragmentSelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("A"),
-        selections = onA
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("A"),
+          selections = onA
+        )
       )
-    )
+}

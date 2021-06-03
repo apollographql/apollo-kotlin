@@ -13,39 +13,41 @@ import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val heroWithReview: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "height",
-        type = CompiledOtherType("unused"),
-        arguments = mapOf("unit" to "FOOT"
+object TestQuerySelections {
+  private val heroWithReview: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "height",
+          type = CompiledOtherType("unused"),
+          arguments = mapOf("unit" to "FOOT"
+          )
         )
       )
-    )
 
-val TestQuerySelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "heroWithReview",
-        type = CompiledCompoundType("unused"),
-        arguments = mapOf("episode" to Variable("episode"),
-          "review" to mapOf(
-            "stars" to Variable("stars"),
-            "favoriteColor" to mapOf(
-              "red" to 0,
-              "green" to Variable("greenValue"),
-              "blue" to 0,
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "heroWithReview",
+          type = CompiledCompoundType("unused"),
+          arguments = mapOf("episode" to Variable("episode"),
+            "review" to mapOf(
+              "stars" to Variable("stars"),
+              "favoriteColor" to mapOf(
+                "red" to 0,
+                "green" to Variable("greenValue"),
+                "blue" to 0,
+              ),
+              "booleanNonOptional" to false,
+              "listOfStringNonOptional" to emptyList<Nothing>(),
             ),
-            "booleanNonOptional" to false,
-            "listOfStringNonOptional" to emptyList<Nothing>(),
+            "listOfInts" to listOf(
+              Variable("stars"),
+              Variable("stars"),
+            )
           ),
-          "listOfInts" to listOf(
-            Variable("stars"),
-            Variable("stars"),
-          )
-        ),
-        selections = heroWithReview
+          selections = heroWithReview
+        )
       )
-    )
+}

@@ -7,7 +7,7 @@ import com.apollographql.apollo3.compiler.codegen.CgFile
 import com.apollographql.apollo3.compiler.codegen.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.selections.CompiledSelectionsBuilder
 import com.apollographql.apollo3.compiler.ir.IrOperation
-import com.squareup.kotlinpoet.MemberName
+import com.squareup.kotlinpoet.ClassName
 
 class OperationSelectionsBuilder(
     val context: CgContext,
@@ -21,7 +21,7 @@ class OperationSelectionsBuilder(
   override fun prepare() {
     context.resolver.registerOperationSelections(
         operation.name,
-        MemberName(packageName, simpleName)
+        ClassName(packageName, simpleName)
     )
   }
 
@@ -29,14 +29,16 @@ class OperationSelectionsBuilder(
     return CgFile(
         packageName = packageName,
         fileName = simpleName,
-        propertySpecs = CompiledSelectionsBuilder(
-            context = context,
-            allFragmentDefinitions = allFragmentDefinitions,
-            schema = schema
-        ).build(
-            selections = operation.selections,
-            rootName = simpleName,
-            parentType = operation.typeCondition
+        typeSpecs = listOf(
+            CompiledSelectionsBuilder(
+                context = context,
+                allFragmentDefinitions = allFragmentDefinitions,
+                schema = schema
+            ).build(
+                selections = operation.selections,
+                rootName = simpleName,
+                parentType = operation.typeCondition
+            )
         )
     )
   }

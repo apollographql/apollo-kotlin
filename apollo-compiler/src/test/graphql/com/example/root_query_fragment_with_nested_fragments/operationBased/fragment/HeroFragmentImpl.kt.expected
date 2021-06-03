@@ -23,5 +23,5 @@ class HeroFragmentImpl : Fragment<HeroFragment> {
     return HeroFragmentImpl_ResponseAdapter.HeroFragment.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = heroFragmentSelections
+  override fun selections(): List<CompiledSelection> = heroFragmentSelections.root
 }

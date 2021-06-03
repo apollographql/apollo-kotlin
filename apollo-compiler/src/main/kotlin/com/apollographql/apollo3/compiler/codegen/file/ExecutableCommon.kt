@@ -10,7 +10,9 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.adapter.obj
+import com.apollographql.apollo3.compiler.codegen.CgContext
 import com.apollographql.apollo3.compiler.codegen.helpers.patchKotlinNativeOptionalArrayProperties
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -55,11 +57,11 @@ fun adapterFunSpec(
       .build()
 }
 
-fun selectionsFunSpec(memberName: MemberName): FunSpec {
+fun selectionsFunSpec(context: CgContext, className: ClassName): FunSpec {
   return FunSpec.builder(selections)
       .addModifiers(KModifier.OVERRIDE)
       .returns(List::class.parameterizedBy(CompiledSelection::class))
-      .addCode("return %M\n", memberName)
+      .addCode("return %T.%L\n", className, context.layout.rootSelectionsPropertyName())
       .build()
 }
 

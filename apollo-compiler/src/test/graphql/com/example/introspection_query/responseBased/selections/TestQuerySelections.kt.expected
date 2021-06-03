@@ -13,51 +13,53 @@ import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val queryType: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused")
+object TestQuerySelections {
+  private val queryType: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused")
+        )
       )
-    )
 
-private val types: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused")
+  private val types: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused")
+        )
       )
-    )
 
-private val __schema: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "queryType",
-        type = CompiledCompoundType("unused").notNull(),
-        selections = queryType
-      ),
-      CompiledField(
-        name = "types",
-        type = CompiledCompoundType("unused").notNull().list().notNull(),
-        selections = types
-      )
-    )
-
-private val __type: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused")
-      )
-    )
-
-val TestQuerySelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__schema",
-        type = CompiledCompoundType("unused").notNull(),
-        selections = __schema
-      ),
-      CompiledField(
-        name = "__type",
-        type = CompiledCompoundType("unused").notNull(),
-        arguments = mapOf("name" to "Vehicle"
+  private val __schema: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "queryType",
+          type = CompiledCompoundType("unused").notNull(),
+          selections = queryType
         ),
-        selections = __type
+        CompiledField(
+          name = "types",
+          type = CompiledCompoundType("unused").notNull().list().notNull(),
+          selections = types
+        )
       )
-    )
+
+  private val __type: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused")
+        )
+      )
+
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__schema",
+          type = CompiledCompoundType("unused").notNull(),
+          selections = __schema
+        ),
+        CompiledField(
+          name = "__type",
+          type = CompiledCompoundType("unused").notNull(),
+          arguments = mapOf("name" to "Vehicle"
+          ),
+          selections = __type
+        )
+      )
+}

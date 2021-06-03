@@ -28,7 +28,7 @@ data class UserFragmentImpl(
     return UserFragmentImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = UserFragmentSelections
+  override fun selections(): List<CompiledSelection> = UserFragmentSelections.root
 
   data class Data(
     override val firstName: String,

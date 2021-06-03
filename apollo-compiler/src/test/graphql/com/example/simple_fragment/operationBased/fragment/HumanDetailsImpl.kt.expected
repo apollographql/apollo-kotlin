@@ -26,5 +26,5 @@ internal class HumanDetailsImpl : Fragment<HumanDetails> {
     return HumanDetailsImpl_ResponseAdapter.HumanDetails.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = HumanDetailsSelections
+  override fun selections(): List<CompiledSelection> = HumanDetailsSelections.root
 }

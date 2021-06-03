@@ -10,6 +10,7 @@ import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.TypeSet
 import com.apollographql.apollo3.compiler.singularize
+import com.squareup.kotlinpoet.KOperator
 
 /**
  * The central place where the names/packages of the different classes are decided and escape rules done.
@@ -95,6 +96,8 @@ class CgLayout(
   private fun capitalizedIdentifier(name: String): String {
     return name.capitalizeFirstLetter().escapeKotlinReservedWord()
   }
+
+  fun rootSelectionsPropertyName() = "root"
 
   companion object {
     fun upperCamelCaseIgnoringNonLetters(strings: Collection<String>): String {

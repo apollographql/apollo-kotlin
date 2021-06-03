@@ -25,7 +25,7 @@ class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
     return HeroDetailsImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = HeroDetailsSelections
+  override fun selections(): List<CompiledSelection> = HeroDetailsSelections.root
 
   data class Data(
     /**

@@ -13,101 +13,103 @@ import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val node: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
+object TestQuerySelections {
+  private val node: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        )
       )
-    )
 
-private val edges: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "node",
-        type = CompiledCompoundType("unused"),
-        selections = node
+  private val edges: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "node",
+          type = CompiledCompoundType("unused"),
+          selections = node
+        )
       )
-    )
 
-private val friendsConnection: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "totalCount",
-        type = CompiledOtherType("unused")
-      ),
-      CompiledField(
-        name = "edges",
-        type = CompiledCompoundType("unused").list(),
-        selections = edges
-      )
-    )
-
-private val r2: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "friendsConnection",
-        type = CompiledCompoundType("unused").notNull(),
-        selections = friendsConnection
-      )
-    )
-
-private val node1: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
-      )
-    )
-
-private val edges1: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "node",
-        type = CompiledCompoundType("unused"),
-        selections = node1
-      )
-    )
-
-private val friendsConnection1: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "totalCount",
-        type = CompiledOtherType("unused")
-      ),
-      CompiledField(
-        name = "edges",
-        type = CompiledCompoundType("unused").list(),
-        selections = edges1
-      )
-    )
-
-private val luke: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "id",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "friendsConnection",
-        type = CompiledCompoundType("unused").notNull(),
-        selections = friendsConnection1
-      )
-    )
-
-val TestQuerySelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "hero",
-        alias = "r2",
-        type = CompiledCompoundType("unused"),
-        selections = r2
-      ),
-      CompiledField(
-        name = "hero",
-        alias = "luke",
-        type = CompiledCompoundType("unused"),
-        arguments = mapOf("episode" to "EMPIRE"
+  private val friendsConnection: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "totalCount",
+          type = CompiledOtherType("unused")
         ),
-        selections = luke
+        CompiledField(
+          name = "edges",
+          type = CompiledCompoundType("unused").list(),
+          selections = edges
+        )
       )
-    )
+
+  private val r2: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "friendsConnection",
+          type = CompiledCompoundType("unused").notNull(),
+          selections = friendsConnection
+        )
+      )
+
+  private val node1: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        )
+      )
+
+  private val edges1: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "node",
+          type = CompiledCompoundType("unused"),
+          selections = node1
+        )
+      )
+
+  private val friendsConnection1: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "totalCount",
+          type = CompiledOtherType("unused")
+        ),
+        CompiledField(
+          name = "edges",
+          type = CompiledCompoundType("unused").list(),
+          selections = edges1
+        )
+      )
+
+  private val luke: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "id",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "friendsConnection",
+          type = CompiledCompoundType("unused").notNull(),
+          selections = friendsConnection1
+        )
+      )
+
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "hero",
+          alias = "r2",
+          type = CompiledCompoundType("unused"),
+          selections = r2
+        ),
+        CompiledField(
+          name = "hero",
+          alias = "luke",
+          type = CompiledCompoundType("unused"),
+          arguments = mapOf("episode" to "EMPIRE"
+          ),
+          selections = luke
+        )
+      )
+}

@@ -13,72 +13,74 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val hero: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Droid", "Human"),
-        selections = heroFragmentSelections
-      )
-    )
-
-private val droid: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Droid"),
-        selections = droidFragmentSelections
-      )
-    )
-
-private val onHuman: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "homePlanet",
-        type = CompiledOtherType("unused")
-      )
-    )
-
-private val human: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Human"),
-        selections = onHuman
-      )
-    )
-
-val QueryFragmentSelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "hero",
-        type = CompiledCompoundType("unused"),
-        selections = hero
-      ),
-      CompiledField(
-        name = "droid",
-        type = CompiledCompoundType("unused"),
-        arguments = mapOf("id" to 1
+object QueryFragmentSelections {
+  private val hero: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
         ),
-        selections = droid
-      ),
-      CompiledField(
-        name = "human",
-        type = CompiledCompoundType("unused"),
-        arguments = mapOf("id" to 1
-        ),
-        selections = human
+        CompiledFragment(
+          possibleTypes = listOf("Droid", "Human"),
+          selections = heroFragmentSelections.root
+        )
       )
-    )
+
+  private val droid: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Droid"),
+          selections = droidFragmentSelections.root
+        )
+      )
+
+  private val onHuman: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "homePlanet",
+          type = CompiledOtherType("unused")
+        )
+      )
+
+  private val human: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Human"),
+          selections = onHuman
+        )
+      )
+
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "hero",
+          type = CompiledCompoundType("unused"),
+          selections = hero
+        ),
+        CompiledField(
+          name = "droid",
+          type = CompiledCompoundType("unused"),
+          arguments = mapOf("id" to 1
+          ),
+          selections = droid
+        ),
+        CompiledField(
+          name = "human",
+          type = CompiledCompoundType("unused"),
+          arguments = mapOf("id" to 1
+          ),
+          selections = human
+        )
+      )
+}

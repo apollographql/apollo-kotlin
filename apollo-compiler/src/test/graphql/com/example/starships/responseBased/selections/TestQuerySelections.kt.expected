@@ -14,27 +14,29 @@ import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val starship: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "id",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "coordinates",
-        type = CompiledOtherType("unused").notNull().list().notNull().list()
-      )
-    )
-
-val TestQuerySelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "starship",
-        type = CompiledCompoundType("unused"),
-        arguments = mapOf("id" to Variable("id")
+object TestQuerySelections {
+  private val starship: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "id",
+          type = CompiledOtherType("unused").notNull()
         ),
-        selections = starship
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "coordinates",
+          type = CompiledOtherType("unused").notNull().list().notNull().list()
+        )
       )
-    )
+
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "starship",
+          type = CompiledCompoundType("unused"),
+          arguments = mapOf("id" to Variable("id")
+          ),
+          selections = starship
+        )
+      )
+}

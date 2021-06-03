@@ -13,69 +13,71 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val onB: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "fieldB1",
-        type = CompiledOtherType("unused")
+object TestQuerySelections {
+  private val onB: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "fieldB1",
+          type = CompiledOtherType("unused")
+        )
       )
-    )
 
-private val onA: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "fieldA1",
-        type = CompiledOtherType("unused")
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("ABC", "BC"),
-        selections = onB
+  private val onA: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "fieldA1",
+          type = CompiledOtherType("unused")
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("ABC", "BC"),
+          selections = onB
+        )
       )
-    )
 
-private val onA1: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "fieldA2",
-        type = CompiledOtherType("unused")
+  private val onA1: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "fieldA2",
+          type = CompiledOtherType("unused")
+        )
       )
-    )
 
-private val onB1: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "fieldB2",
-        type = CompiledOtherType("unused")
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("ABC", "AC"),
-        selections = onA1
+  private val onB1: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "fieldB2",
+          type = CompiledOtherType("unused")
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("ABC", "AC"),
+          selections = onA1
+        )
       )
-    )
 
-private val c: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("ABC", "AC"),
-        selections = onA
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("ABC", "BC"),
-        selections = onB1
+  private val c: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("ABC", "AC"),
+          selections = onA
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("ABC", "BC"),
+          selections = onB1
+        )
       )
-    )
 
-val TestQuerySelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "c",
-        type = CompiledCompoundType("unused"),
-        selections = c
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "c",
+          type = CompiledCompoundType("unused"),
+          selections = c
+        )
       )
-    )
+}

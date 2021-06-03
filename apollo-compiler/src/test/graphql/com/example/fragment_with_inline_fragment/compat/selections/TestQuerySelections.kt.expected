@@ -15,29 +15,31 @@ import com.apollographql.apollo3.api.notNull
 import com.example.fragment_with_inline_fragment.fragment.selections.HeroDetailsSelections
 import kotlin.collections.List
 
-private val hero: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Droid", "Human"),
-        selections = HeroDetailsSelections
-      ),
-      CompiledField(
-        name = "appearsIn",
-        type = CompiledOtherType("unused").list().notNull()
+object TestQuerySelections {
+  private val hero: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Droid", "Human"),
+          selections = HeroDetailsSelections.root
+        ),
+        CompiledField(
+          name = "appearsIn",
+          type = CompiledOtherType("unused").list().notNull()
+        )
       )
-    )
 
-val TestQuerySelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "hero",
-        type = CompiledCompoundType("unused"),
-        selections = hero
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "hero",
+          type = CompiledCompoundType("unused"),
+          selections = hero
+        )
       )
-    )
+}

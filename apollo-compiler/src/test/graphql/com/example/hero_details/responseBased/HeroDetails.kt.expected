@@ -33,7 +33,7 @@ class HeroDetails : Query<HeroDetails.Data> {
     return HeroDetails_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = HeroDetailsSelections
+  override fun selections(): List<CompiledSelection> = HeroDetailsSelections.root
 
   data class Data(
     val hero: Hero?

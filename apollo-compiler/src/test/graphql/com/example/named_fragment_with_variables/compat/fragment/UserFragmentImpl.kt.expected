@@ -27,5 +27,5 @@ data class UserFragmentImpl(
     return UserFragmentImpl_ResponseAdapter.UserFragment.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = UserFragmentSelections
+  override fun selections(): List<CompiledSelection> = UserFragmentSelections.root
 }

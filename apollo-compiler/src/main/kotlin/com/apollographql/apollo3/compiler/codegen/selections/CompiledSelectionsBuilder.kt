@@ -51,6 +51,7 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 
@@ -72,8 +73,10 @@ class CompiledSelectionsBuilder(
     return name
   }
 
-  fun build(selections: List<GQLSelection>, rootName: String, parentType: String): List<PropertySpec> {
-    return selections.walk(rootName, false, parentType)
+  fun build(selections: List<GQLSelection>, rootName: String, parentType: String): TypeSpec {
+    return TypeSpec.objectBuilder(rootName)
+        .addProperties(selections.walk(context.layout.rootSelectionsPropertyName(), false, parentType))
+        .build()
   }
 
   private fun List<GQLSelection>.walk(name: String, private: Boolean, parentType: String): List<PropertySpec> {
@@ -89,7 +92,6 @@ class CompiledSelectionsBuilder(
 
     val property = PropertySpec.builder(propertyName, List::class.parameterizedBy(CompiledSelection::class))
         .initializer(builder.build())
-        .addAnnotation(ClassName("kotlin.native", "SharedImmutable"))
         .applyIf(private) {
           addModifiers(KModifier.PRIVATE)
         }
@@ -109,7 +111,7 @@ class CompiledSelectionsBuilder(
   }
 
   private fun BooleanExpression<BVariable>.toCompiledConditionInitializer(): CodeBlock {
-    val conditions = when(this) {
+    val conditions = when (this) {
       is BooleanExpression.And -> operands.map { it.singleInitializer() }
       else -> listOf(singleInitializer())
     }
@@ -240,7 +242,7 @@ class CompiledSelectionsBuilder(
 
     val fragmentDefinition = allFragmentDefinitions[name]!!
     parameters.add(CodeBlock.of("possibleTypes·=·%L", possibleTypesCodeBlock(fragmentDefinition.typeCondition.name)))
-    parameters.add(CodeBlock.of("selections·=·%M", context.resolver.resolveFragmentSelections(name)))
+    parameters.add(CodeBlock.of("selections·=·%T.%L", context.resolver.resolveFragmentSelections(name), context.layout.rootSelectionsPropertyName()))
 
     val builder = CodeBlock.builder()
     builder.add("%T(\n", CompiledFragment::class.asTypeName())

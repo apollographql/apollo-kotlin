@@ -23,5 +23,5 @@ class QueryFragmentImpl : Fragment<QueryFragment> {
     return QueryFragmentImpl_ResponseAdapter.QueryFragment.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = QueryFragmentSelections
+  override fun selections(): List<CompiledSelection> = QueryFragmentSelections.root
 }

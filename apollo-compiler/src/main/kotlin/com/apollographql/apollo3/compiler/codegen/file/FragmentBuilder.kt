@@ -78,7 +78,7 @@ class FragmentBuilder(
 
   private fun IrNamedFragment.selectionsFunSpec(): FunSpec {
     return selectionsFunSpec(
-        context.resolver.resolveFragmentSelections(name)
+        context, context.resolver.resolveFragmentSelections(name)
     )
   }
 

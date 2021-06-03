@@ -15,36 +15,38 @@ import com.example.named_fragment_inside_inline_fragment.fragment.selections.cha
 import com.example.named_fragment_inside_inline_fragment.fragment.selections.characterNameSelections
 import kotlin.collections.List
 
-private val onCharacter: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Droid", "Human"),
-        selections = characterNameSelections
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Droid", "Human"),
-        selections = characterAppearsInSelections
+object GetHeroSelections {
+  private val onCharacter: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Droid", "Human"),
+          selections = characterNameSelections.root
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Droid", "Human"),
+          selections = characterAppearsInSelections.root
+        )
       )
-    )
 
-private val hero: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Droid", "Human"),
-        selections = onCharacter
+  private val hero: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Droid", "Human"),
+          selections = onCharacter
+        )
       )
-    )
 
-val GetHeroSelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "hero",
-        type = CompiledCompoundType("unused"),
-        selections = hero
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "hero",
+          type = CompiledCompoundType("unused"),
+          selections = hero
+        )
       )
-    )
+}

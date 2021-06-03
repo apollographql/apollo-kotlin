@@ -34,7 +34,7 @@ class AllStarships : Query<AllStarships.Data> {
     return AllStarships_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = AllStarshipsSelections
+  override fun selections(): List<CompiledSelection> = AllStarshipsSelections.root
 
   data class Data(
     val allStarships: AllStarships?

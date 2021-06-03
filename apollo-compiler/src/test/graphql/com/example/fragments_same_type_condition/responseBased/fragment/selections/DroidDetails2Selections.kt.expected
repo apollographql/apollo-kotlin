@@ -10,9 +10,11 @@ import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
 import kotlin.collections.List
 
-val DroidDetails2Selections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "primaryFunction",
-        type = CompiledOtherType("unused")
+object DroidDetails2Selections {
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "primaryFunction",
+          type = CompiledOtherType("unused")
+        )
       )
-    )
+}

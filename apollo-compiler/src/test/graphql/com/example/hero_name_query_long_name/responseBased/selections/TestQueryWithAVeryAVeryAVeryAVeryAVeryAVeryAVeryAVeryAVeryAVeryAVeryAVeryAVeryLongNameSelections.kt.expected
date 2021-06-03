@@ -13,23 +13,26 @@ import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val heroAVeryAVeryAVeryAVeryAVeryAVeryAV: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "name",
-        alias = "nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName",
-        type = CompiledOtherType("unused").notNull()
+object
+    TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongNameSelections
+    {
+  private val heroAVeryAVeryAVeryAVeryAVeryAVeryAV: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "name",
+          alias = "nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName",
+          type = CompiledOtherType("unused").notNull()
+        )
       )
-    )
 
-val TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongNameSelections:
-    List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "hero",
-        alias = "heroAVeryAVeryAVeryAVeryAVeryAVeryAV",
-        type = CompiledCompoundType("unused"),
-        arguments = mapOf("episode" to
-              Variable("episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")
-        ),
-        selections = heroAVeryAVeryAVeryAVeryAVeryAVeryAV
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "hero",
+          alias = "heroAVeryAVeryAVeryAVeryAVeryAVeryAV",
+          type = CompiledCompoundType("unused"),
+          arguments = mapOf("episode" to
+                Variable("episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")
+          ),
+          selections = heroAVeryAVeryAVeryAVeryAVeryAVeryAV
+        )
       )
-    )
+}

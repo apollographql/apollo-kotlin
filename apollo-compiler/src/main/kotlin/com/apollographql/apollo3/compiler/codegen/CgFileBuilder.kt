@@ -11,7 +11,6 @@ class CgFile(
     val packageName: String,
     val typeSpecs: List<TypeSpec> = emptyList(),
     val fileName: String,
-    val propertySpecs: List<PropertySpec> = emptyList()
 ) {
   constructor(packageName: String, typeSpec: TypeSpec) : this(packageName, listOf(typeSpec), typeSpec.name!!)
 }

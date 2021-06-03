@@ -24,7 +24,7 @@ class CharacterNameImpl : Fragment<CharacterNameImpl.Data> {
     return CharacterNameImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = characterNameSelections
+  override fun selections(): List<CompiledSelection> = characterNameSelections.root
 
   data class Data(
     /**

@@ -24,7 +24,7 @@ class CharacterAppearsInImpl : Fragment<CharacterAppearsInImpl.Data> {
     return CharacterAppearsInImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = characterAppearsInSelections
+  override fun selections(): List<CompiledSelection> = characterAppearsInSelections.root
 
   data class Data(
     /**

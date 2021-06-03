@@ -16,32 +16,34 @@ import com.example.fragment_spread_with_include_directive.fragment.selections.He
 import com.example.fragment_spread_with_include_directive.fragment.selections.HumanDetailsSelections
 import kotlin.collections.List
 
-private val hero: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "id",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        condition = listOf(CompiledCondition("withDetails", false),
-            CompiledCondition("skipHumanDetails", true)),
-        possibleTypes = listOf("Droid", "Human"),
-        selections = HeroDetailsSelections
-      ),
-      CompiledFragment(
-        condition = listOf(CompiledCondition("withDetails", false)),
-        possibleTypes = listOf("Human"),
-        selections = HumanDetailsSelections
+object TestQuerySelections {
+  private val hero: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "id",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledFragment(
+          condition = listOf(CompiledCondition("withDetails", false),
+              CompiledCondition("skipHumanDetails", true)),
+          possibleTypes = listOf("Droid", "Human"),
+          selections = HeroDetailsSelections.root
+        ),
+        CompiledFragment(
+          condition = listOf(CompiledCondition("withDetails", false)),
+          possibleTypes = listOf("Human"),
+          selections = HumanDetailsSelections.root
+        )
       )
-    )
 
-val TestQuerySelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "hero",
-        type = CompiledCompoundType("unused"),
-        selections = hero
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "hero",
+          type = CompiledCompoundType("unused"),
+          selections = hero
+        )
       )
-    )
+}

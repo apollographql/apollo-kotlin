@@ -13,41 +13,43 @@ import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val children: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
+object TestQuerySelections {
+  private val children: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        )
       )
-    )
 
-private val parent: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
+  private val parent: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        )
       )
-    )
 
-private val tree: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "children",
-        type = CompiledCompoundType("unused").notNull().list().notNull(),
-        selections = children
-      ),
-      CompiledField(
-        name = "parent",
-        type = CompiledCompoundType("unused"),
-        selections = parent
+  private val tree: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "children",
+          type = CompiledCompoundType("unused").notNull().list().notNull(),
+          selections = children
+        ),
+        CompiledField(
+          name = "parent",
+          type = CompiledCompoundType("unused"),
+          selections = parent
+        )
       )
-    )
 
-val TestQuerySelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "tree",
-        type = CompiledCompoundType("unused"),
-        selections = tree
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "tree",
+          type = CompiledCompoundType("unused"),
+          selections = tree
+        )
       )
-    )
+}

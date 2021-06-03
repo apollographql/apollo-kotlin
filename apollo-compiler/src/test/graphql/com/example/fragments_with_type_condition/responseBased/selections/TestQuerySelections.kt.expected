@@ -15,47 +15,49 @@ import com.example.fragments_with_type_condition.fragment.selections.DroidDetail
 import com.example.fragments_with_type_condition.fragment.selections.HumanDetailsSelections
 import kotlin.collections.List
 
-private val r2: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Human"),
-        selections = HumanDetailsSelections
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Droid"),
-        selections = DroidDetailsSelections
+object TestQuerySelections {
+  private val r2: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Human"),
+          selections = HumanDetailsSelections.root
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Droid"),
+          selections = DroidDetailsSelections.root
+        )
       )
-    )
 
-private val luke: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Human"),
-        selections = HumanDetailsSelections
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Droid"),
-        selections = DroidDetailsSelections
+  private val luke: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Human"),
+          selections = HumanDetailsSelections.root
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Droid"),
+          selections = DroidDetailsSelections.root
+        )
       )
-    )
 
-val TestQuerySelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "hero",
-        alias = "r2",
-        type = CompiledCompoundType("unused"),
-        selections = r2
-      ),
-      CompiledField(
-        name = "hero",
-        alias = "luke",
-        type = CompiledCompoundType("unused"),
-        selections = luke
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "hero",
+          alias = "r2",
+          type = CompiledCompoundType("unused"),
+          selections = r2
+        ),
+        CompiledField(
+          name = "hero",
+          alias = "luke",
+          type = CompiledCompoundType("unused"),
+          selections = luke
+        )
       )
-    )
+}

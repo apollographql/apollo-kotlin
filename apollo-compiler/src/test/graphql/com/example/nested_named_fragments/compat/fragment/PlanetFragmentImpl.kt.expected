@@ -23,5 +23,5 @@ class PlanetFragmentImpl : Fragment<PlanetFragment> {
     return PlanetFragmentImpl_ResponseAdapter.PlanetFragment.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = planetFragmentSelections
+  override fun selections(): List<CompiledSelection> = planetFragmentSelections.root
 }

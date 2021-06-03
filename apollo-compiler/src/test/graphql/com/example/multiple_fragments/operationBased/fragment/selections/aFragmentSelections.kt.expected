@@ -13,25 +13,27 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val node: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("ANode"),
-        selections = fragment1Selections
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("ANode"),
-        selections = fragment2Selections
+object aFragmentSelections {
+  private val node: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("ANode"),
+          selections = fragment1Selections.root
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("ANode"),
+          selections = fragment2Selections.root
+        )
       )
-    )
 
-val aFragmentSelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "node",
-        type = CompiledCompoundType("unused"),
-        selections = node
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "node",
+          type = CompiledCompoundType("unused"),
+          selections = node
+        )
       )
-    )
+}

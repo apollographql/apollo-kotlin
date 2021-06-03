@@ -25,7 +25,7 @@ class HumanDetailsImpl : Fragment<HumanDetailsImpl.Data> {
     return HumanDetailsImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = HumanDetailsSelections
+  override fun selections(): List<CompiledSelection> = HumanDetailsSelections.root
 
   interface Data : HumanDetails, Fragment.Data {
     override val __typename: String

@@ -39,7 +39,7 @@ data class GetUser(
     return GetUser_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = GetUserSelections
+  override fun selections(): List<CompiledSelection> = GetUserSelections.root
 
   data class Data(
     val __typename: String,

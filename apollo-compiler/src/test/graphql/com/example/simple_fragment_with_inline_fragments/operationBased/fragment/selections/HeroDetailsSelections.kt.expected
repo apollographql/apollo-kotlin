@@ -14,47 +14,49 @@ import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val onHuman: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "height",
-        type = CompiledOtherType("unused")
+object HeroDetailsSelections {
+  private val onHuman: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "height",
+          type = CompiledOtherType("unused")
+        )
       )
-    )
 
-private val onDroid: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "primaryFunction",
-        type = CompiledOtherType("unused")
+  private val onDroid: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "primaryFunction",
+          type = CompiledOtherType("unused")
+        )
       )
-    )
 
-private val friends: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Human"),
-        selections = onHuman
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Droid"),
-        selections = onDroid
+  private val friends: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Human"),
+          selections = onHuman
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Droid"),
+          selections = onDroid
+        )
       )
-    )
 
-val HeroDetailsSelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "friends",
-        type = CompiledCompoundType("unused").list(),
-        selections = friends
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "friends",
+          type = CompiledCompoundType("unused").list(),
+          selections = friends
+        )
       )
-    )
+}

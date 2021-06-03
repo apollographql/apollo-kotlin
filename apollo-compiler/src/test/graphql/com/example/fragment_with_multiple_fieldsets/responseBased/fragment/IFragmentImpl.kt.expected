@@ -24,7 +24,7 @@ class IFragmentImpl : Fragment<IFragmentImpl.Data> {
     return IFragmentImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = iFragmentSelections
+  override fun selections(): List<CompiledSelection> = iFragmentSelections.root
 
   interface Data : IFragment, Fragment.Data {
     override val __typename: String

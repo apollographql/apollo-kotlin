@@ -14,64 +14,66 @@ import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val onDroid: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Droid"),
-        selections = DroidDetailsSelections
+object HeroDetailsSelections {
+  private val onDroid: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Droid"),
+          selections = DroidDetailsSelections.root
+        )
       )
-    )
 
-private val node: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
+  private val node: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        )
       )
-    )
 
-private val edges: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "node",
-        type = CompiledCompoundType("unused"),
-        selections = node
+  private val edges: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "node",
+          type = CompiledCompoundType("unused"),
+          selections = node
+        )
       )
-    )
 
-private val friendsConnection: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "totalCount",
-        type = CompiledOtherType("unused")
-      ),
-      CompiledField(
-        name = "edges",
-        type = CompiledCompoundType("unused").list(),
-        selections = edges
+  private val friendsConnection: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "totalCount",
+          type = CompiledOtherType("unused")
+        ),
+        CompiledField(
+          name = "edges",
+          type = CompiledCompoundType("unused").list(),
+          selections = edges
+        )
       )
-    )
 
-val HeroDetailsSelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Human"),
-        selections = HumanDetailsSelections
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Droid"),
-        selections = onDroid
-      ),
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "friendsConnection",
-        type = CompiledCompoundType("unused").notNull(),
-        selections = friendsConnection
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Human"),
+          selections = HumanDetailsSelections.root
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Droid"),
+          selections = onDroid
+        ),
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "friendsConnection",
+          type = CompiledCompoundType("unused").notNull(),
+          selections = friendsConnection
+        )
       )
-    )
+}

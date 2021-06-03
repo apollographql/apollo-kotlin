@@ -24,7 +24,7 @@ class BFragmentImpl : Fragment<BFragmentImpl.Data> {
     return BFragmentImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = bFragmentSelections
+  override fun selections(): List<CompiledSelection> = bFragmentSelections.root
 
   data class Data(
     override val fieldB1: String?

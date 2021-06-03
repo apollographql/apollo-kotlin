@@ -13,23 +13,25 @@ import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val commentAdded: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "id",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "content",
-        type = CompiledOtherType("unused").notNull()
-      )
-    )
-
-val TestSubscriptionSelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "commentAdded",
-        type = CompiledCompoundType("unused"),
-        arguments = mapOf("repoFullName" to Variable("repo")
+object TestSubscriptionSelections {
+  private val commentAdded: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "id",
+          type = CompiledOtherType("unused").notNull()
         ),
-        selections = commentAdded
+        CompiledField(
+          name = "content",
+          type = CompiledOtherType("unused").notNull()
+        )
       )
-    )
+
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "commentAdded",
+          type = CompiledCompoundType("unused"),
+          arguments = mapOf("repoFullName" to Variable("repo")
+          ),
+          selections = commentAdded
+        )
+      )
+}

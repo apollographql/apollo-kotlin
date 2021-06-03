@@ -31,7 +31,7 @@ data class QueryFragmentImpl(
     return QueryFragmentImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = QueryFragmentSelections
+  override fun selections(): List<CompiledSelection> = QueryFragmentSelections.root
 
   data class Data(
     override val organization: Organization?

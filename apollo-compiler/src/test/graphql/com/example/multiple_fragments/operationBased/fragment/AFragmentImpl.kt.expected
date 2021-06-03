@@ -23,5 +23,5 @@ class AFragmentImpl : Fragment<AFragment> {
     return AFragmentImpl_ResponseAdapter.AFragment.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = aFragmentSelections
+  override fun selections(): List<CompiledSelection> = aFragmentSelections.root
 }

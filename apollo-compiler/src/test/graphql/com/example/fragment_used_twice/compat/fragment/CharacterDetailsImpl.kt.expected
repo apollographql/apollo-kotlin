@@ -23,5 +23,5 @@ class CharacterDetailsImpl : Fragment<CharacterDetails> {
     return CharacterDetailsImpl_ResponseAdapter.CharacterDetails.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = CharacterDetailsSelections
+  override fun selections(): List<CompiledSelection> = CharacterDetailsSelections.root
 }

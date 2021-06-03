@@ -13,25 +13,27 @@ import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val friends: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
+object DroidDetailsSelections {
+  private val friends: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        )
       )
-    )
 
-val DroidDetailsSelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "primaryFunction",
-        type = CompiledOtherType("unused")
-      ),
-      CompiledField(
-        name = "friends",
-        type = CompiledCompoundType("unused").list(),
-        selections = friends
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "primaryFunction",
+          type = CompiledOtherType("unused")
+        ),
+        CompiledField(
+          name = "friends",
+          type = CompiledCompoundType("unused").list(),
+          selections = friends
+        )
       )
-    )
+}

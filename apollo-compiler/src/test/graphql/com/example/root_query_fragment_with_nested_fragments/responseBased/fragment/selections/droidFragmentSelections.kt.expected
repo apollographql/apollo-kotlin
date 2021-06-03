@@ -11,13 +11,15 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-val droidFragmentSelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "primaryFunction",
-        type = CompiledOtherType("unused")
+object droidFragmentSelections {
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "primaryFunction",
+          type = CompiledOtherType("unused")
+        )
       )
-    )
+}

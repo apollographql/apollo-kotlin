@@ -13,24 +13,26 @@ import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val createReview: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "stars",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "commentary",
-        type = CompiledOtherType("unused")
-      )
-    )
-
-val TestQuerySelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "createReview",
-        type = CompiledCompoundType("unused"),
-        arguments = mapOf("episode" to Variable("ep"),
-          "review" to Variable("review")
+object TestQuerySelections {
+  private val createReview: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "stars",
+          type = CompiledOtherType("unused").notNull()
         ),
-        selections = createReview
+        CompiledField(
+          name = "commentary",
+          type = CompiledOtherType("unused")
+        )
       )
-    )
+
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "createReview",
+          type = CompiledCompoundType("unused"),
+          arguments = mapOf("episode" to Variable("ep"),
+            "review" to Variable("review")
+          ),
+          selections = createReview
+        )
+      )
+}

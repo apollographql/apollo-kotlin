@@ -14,45 +14,47 @@ import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val node: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("Person"),
-        selections = pilotFragmentSelections
+object starshipFragmentSelections {
+  private val node: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("Person"),
+          selections = pilotFragmentSelections.root
+        )
       )
-    )
 
-private val edges: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "node",
-        type = CompiledCompoundType("unused"),
-        selections = node
+  private val edges: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "node",
+          type = CompiledCompoundType("unused"),
+          selections = node
+        )
       )
-    )
 
-private val pilotConnection: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "edges",
-        type = CompiledCompoundType("unused").list(),
-        selections = edges
+  private val pilotConnection: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "edges",
+          type = CompiledCompoundType("unused").list(),
+          selections = edges
+        )
       )
-    )
 
-val starshipFragmentSelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "id",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused")
-      ),
-      CompiledField(
-        name = "pilotConnection",
-        type = CompiledCompoundType("unused"),
-        selections = pilotConnection
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "id",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused")
+        ),
+        CompiledField(
+          name = "pilotConnection",
+          type = CompiledCompoundType("unused"),
+          selections = pilotConnection
+        )
       )
-    )
+}

@@ -24,7 +24,7 @@ class StarshipImpl : Fragment<StarshipImpl.Data> {
     return StarshipImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = StarshipSelections
+  override fun selections(): List<CompiledSelection> = StarshipSelections.root
 
   data class Data(
     /**

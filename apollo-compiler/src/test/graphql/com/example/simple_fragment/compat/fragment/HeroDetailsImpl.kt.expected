@@ -27,5 +27,5 @@ internal class HeroDetailsImpl : Fragment<HeroDetails> {
     return HeroDetailsImpl_ResponseAdapter.HeroDetails.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = HeroDetailsSelections
+  override fun selections(): List<CompiledSelection> = HeroDetailsSelections.root
 }

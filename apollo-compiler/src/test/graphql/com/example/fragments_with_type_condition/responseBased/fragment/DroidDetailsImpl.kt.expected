@@ -24,7 +24,7 @@ class DroidDetailsImpl : Fragment<DroidDetailsImpl.Data> {
     return DroidDetailsImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = DroidDetailsSelections
+  override fun selections(): List<CompiledSelection> = DroidDetailsSelections.root
 
   data class Data(
     /**

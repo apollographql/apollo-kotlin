@@ -34,7 +34,7 @@ class TestOperation : Query<TestOperation.Data> {
     return TestOperation_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestOperationSelections
+  override fun selections(): List<CompiledSelection> = TestOperationSelections.root
 
   data class Data(
     val random: Random

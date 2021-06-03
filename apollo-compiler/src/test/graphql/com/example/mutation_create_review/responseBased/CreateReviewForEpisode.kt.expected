@@ -39,7 +39,7 @@ internal data class CreateReviewForEpisode(
     return CreateReviewForEpisode_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = CreateReviewForEpisodeSelections
+  override fun selections(): List<CompiledSelection> = CreateReviewForEpisodeSelections.root
 
   data class Data(
     val createReview: CreateReview?

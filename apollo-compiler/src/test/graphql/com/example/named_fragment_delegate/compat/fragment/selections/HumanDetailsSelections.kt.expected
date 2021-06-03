@@ -13,41 +13,43 @@ import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val node: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
+object HumanDetailsSelections {
+  private val node: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        )
       )
-    )
 
-private val edges: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "node",
-        type = CompiledCompoundType("unused"),
-        selections = node
+  private val edges: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "node",
+          type = CompiledCompoundType("unused"),
+          selections = node
+        )
       )
-    )
 
-private val friendsConnection: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "edges",
-        type = CompiledCompoundType("unused").list(),
-        selections = edges
+  private val friendsConnection: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "edges",
+          type = CompiledCompoundType("unused").list(),
+          selections = edges
+        )
       )
-    )
 
-val HumanDetailsSelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "name",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "profileLink",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "friendsConnection",
-        type = CompiledCompoundType("unused").notNull(),
-        selections = friendsConnection
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "name",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "profileLink",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "friendsConnection",
+          type = CompiledCompoundType("unused").notNull(),
+          selections = friendsConnection
+        )
       )
-    )
+}

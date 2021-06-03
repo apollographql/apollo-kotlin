@@ -13,32 +13,34 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-private val onBar: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "bar",
-        type = CompiledOtherType("unused").notNull()
+object TestQuerySelections {
+  private val onBar: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "bar",
+          type = CompiledOtherType("unused").notNull()
+        )
       )
-    )
 
-private val foo: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "__typename",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledField(
-        name = "foo",
-        type = CompiledOtherType("unused").notNull()
-      ),
-      CompiledFragment(
-        possibleTypes = listOf("BarObject", "FooBar"),
-        selections = onBar
+  private val foo: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "__typename",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledField(
+          name = "foo",
+          type = CompiledOtherType("unused").notNull()
+        ),
+        CompiledFragment(
+          possibleTypes = listOf("BarObject", "FooBar"),
+          selections = onBar
+        )
       )
-    )
 
-val TestQuerySelections: List<CompiledSelection> = listOf(
-      CompiledField(
-        name = "foo",
-        type = CompiledCompoundType("unused"),
-        selections = foo
+  val root: List<CompiledSelection> = listOf(
+        CompiledField(
+          name = "foo",
+          type = CompiledCompoundType("unused"),
+          selections = foo
+        )
       )
-    )
+}
