@@ -10,7 +10,11 @@ import com.apollographql.apollo3.api.exception.ApolloParseException
  */
 interface HttpEngine {
 
-  suspend fun execute(request: HttpRequest): HttpResponse
+  /**
+   * @param block a function that will transform the response. Implementations can decide to run this in the IO thread
+   * to keep the main thread free
+   */
+  suspend fun <R> execute(request: HttpRequest, block: (HttpResponse) -> R): R
 }
 
 expect class DefaultHttpEngine(

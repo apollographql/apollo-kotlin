@@ -45,11 +45,11 @@ class ApolloHttpNetworkTransport(
 
     val httpRequest = httpRequestComposer.compose(request)
     return flow {
-      val response = engine.execute(httpRequest)
+      val response = engine.execute(httpRequest) {
+        it.parse(request, responseAdapterCache)
+      }
 
-      val parsedResponse = response.parse(request, responseAdapterCache)
-
-      emit(parsedResponse)
+      emit(response)
     }
   }
 
