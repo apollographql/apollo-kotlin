@@ -12,7 +12,7 @@ import platform.darwin.dispatch_get_main_queue
 import kotlin.native.concurrent.freeze
 
 class MainContinuation<R>(continuation: CancellableContinuation<R>) {
-  private val continuationPtr: COpaquePointer = StableRef.create(continuation).asCPointer()
+  private val continuationRef = StableRef.create(continuation)
 
   fun resume(result: Result<R>) {
     if (NSThread.isMainThread()) {
@@ -29,8 +29,7 @@ class MainContinuation<R>(continuation: CancellableContinuation<R>) {
     }
   }
 
-  private fun <R> resumeInternal(result: Result<R>) {
-    val continuationRef = continuationPtr.asStableRef<CancellableContinuation<R>>()
+  private fun resumeInternal(result: Result<R>) {
     val continuation = continuationRef.get()
     continuationRef.dispose()
 
