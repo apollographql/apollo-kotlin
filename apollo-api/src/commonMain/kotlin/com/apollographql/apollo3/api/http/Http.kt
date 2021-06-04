@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.api.http
 
+import okio.Buffer
 import okio.BufferedSink
 import okio.BufferedSource
 import okio.ByteString
@@ -25,12 +26,16 @@ class HttpRequest(
 class HttpResponse(
     val statusCode: Int,
     val headers: Map<String, String>,
-    /**
-     * The actual body
-     * It must always be closed if not null
-     */
-    val body: BufferedSource?,
-)
+    private val source: BufferedSource?,
+    private val byteString: ByteString? = null,
+) {
+  /**
+   * The actual body
+   * It must always be closed if not null
+   */
+  val body
+    get() = source ?: byteString?.let { Buffer().write(it) }
+}
 
 fun HttpBody(
     contentType: String,

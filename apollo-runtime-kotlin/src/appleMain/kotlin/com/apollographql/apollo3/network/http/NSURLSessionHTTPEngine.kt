@@ -14,7 +14,6 @@ import platform.Foundation.NSData
 import platform.Foundation.NSError
 import platform.Foundation.NSHTTPURLResponse
 import platform.Foundation.NSMutableURLRequest
-import platform.Foundation.NSThread
 import platform.Foundation.NSURL
 import platform.Foundation.NSURLRequest
 import platform.Foundation.NSURLRequestReloadIgnoringCacheData
@@ -58,22 +57,21 @@ actual class DefaultHttpEngine(
   }
 
   @Suppress("UNCHECKED_CAST")
-  override suspend fun <R> execute(request: HttpRequest, block: (HttpResponse) -> R) = suspendAndResumeOnMain<R> { mainContinuation, invokeOnCancellation ->
-    assert(NSThread.isMainThread())
-
+  override suspend fun execute(
+      request: HttpRequest,
+  ) = suspendAndResumeOnMain<HttpResponse> { mainContinuation, invokeOnCancellation ->
     request.freeze()
 
     val delegate = { httpData: NSData?, nsUrlResponse: NSURLResponse?, error: NSError? ->
       initRuntimeIfNeeded()
 
-      mainContinuation.resumeWith(
-          parse(
-              data = httpData,
-              httpResponse = nsUrlResponse as? NSHTTPURLResponse,
-              error = error,
-              block = block
-          )
+      val result: Result<HttpResponse> = toHttpResponse(
+          data = httpData,
+          httpResponse = nsUrlResponse as? NSHTTPURLResponse,
+          error = error,
       )
+
+      mainContinuation.resumeWith(result)
     }
 
     val nsMutableURLRequest = NSMutableURLRequest.requestWithURL(
@@ -113,12 +111,11 @@ actual class DefaultHttpEngine(
 }
 
 @OptIn(ExperimentalUnsignedTypes::class)
-private fun <R> parse(
+private fun toHttpResponse(
     data: NSData?,
     httpResponse: NSHTTPURLResponse?,
     error: NSError?,
-    block: (HttpResponse) -> R,
-): Result<R> {
+): Result<HttpResponse> {
 
   if (error != null) {
     return Result.failure(
@@ -156,22 +153,13 @@ private fun <R> parse(
     )
   }
 
-  /**
-   * block can fail so wrap everything
-   */
-  val result = runCatching {
-    block(
-        HttpResponse(
-            statusCode = statusCode,
-            headers = httpHeaders,
-            body = Buffer().write(data.toByteString()))
-    )
-  }
-
-  return if (result.isFailure) {
-    Result.failure(wrapThrowableIfNeeded(result.exceptionOrNull()!!))
-  } else {
-    result
-  }
+  return Result.success(
+      HttpResponse(
+          statusCode = statusCode,
+          headers = httpHeaders,
+          source = null,
+          byteString = data.toByteString()
+      )
+  )
 }
 

@@ -32,7 +32,7 @@ actual class DefaultHttpEngine(
           .build(),
   )
 
-  override suspend fun <R> execute(request: HttpRequest, block: (HttpResponse) -> R): R = suspendCancellableCoroutine { continuation ->
+  override suspend fun execute(request: HttpRequest): HttpResponse = suspendCancellableCoroutine { continuation ->
     val httpRequest = Request.Builder()
         .url(request.url)
         .headers(Headers.of(request.headers))
@@ -78,22 +78,13 @@ actual class DefaultHttpEngine(
 
     val response = networkResult.getOrThrow()
 
-    val parseResult = kotlin.runCatching {
-      val httpResponse = HttpResponse(
-          statusCode = response.code(),
-          headers = response.headers().toMap(),
-          body = response.body()!!.source()
-      )
-      block(httpResponse)
-    }
+    val httpResponse = HttpResponse(
+        statusCode = response.code(),
+        headers = response.headers().toMap(),
+        source = response.body()!!.source()
+    )
 
-
-    if (parseResult.isFailure) {
-      continuation.resumeWithException(wrapThrowableIfNeeded(parseResult.exceptionOrNull()!!))
-      return@suspendCancellableCoroutine
-    }
-
-    continuation.resume(parseResult.getOrThrow())
+    continuation.resumeWith(Result.success(httpResponse))
   }
 
   private fun Headers.toMap(): Map<String, String> {

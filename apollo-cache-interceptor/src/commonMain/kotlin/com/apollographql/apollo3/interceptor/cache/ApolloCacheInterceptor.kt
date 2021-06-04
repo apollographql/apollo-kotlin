@@ -9,11 +9,10 @@ import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.exception.ApolloCompositeException
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.Platform
 import com.apollographql.apollo3.cache.normalized.internal.dependentKeys
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.interceptor.ApolloRequestInterceptor
-import com.apollographql.apollo3.mpp.currentThreadId
+import com.apollographql.apollo3.mpp.ensureNeverFrozen
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -134,7 +133,7 @@ class ApolloCacheInterceptor(private val store: ApolloStore) : ApolloRequestInte
 
     when (fetchPolicy) {
       FetchPolicy.CacheFirst -> {
-        Platform.ensureNeverFrozen(store)
+        ensureNeverFrozen(store)
         val cacheResult = kotlin.runCatching {
           readFromCache(request, responseAdapterCache)
         }
