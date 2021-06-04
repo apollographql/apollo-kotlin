@@ -248,7 +248,14 @@ class OptimisticCacheTest {
         )
     )
 
-    // optimistic updates
+    /**
+     * optimistic updates
+     *
+     * There is a small race here. The changedKeys event from the optimistic updates might
+     * be received after the network response has been written and therefore the refetch
+     * will see the new data right ahead.
+     * This typically happens if everything is handled from the same thread.
+     */
     watcherData = channel.receive()
     assertEquals(watcherData?.reviews?.size, 3)
     assertEquals(watcherData?.reviews?.get(0)?.id, "empireReview1")
