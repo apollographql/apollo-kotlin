@@ -18,6 +18,7 @@ import platform.posix.errno
 import platform.posix.pipe
 import platform.posix.poll
 import platform.posix.pollfd
+import platform.posix.usleep
 import platform.posix.write
 import kotlin.experimental.and
 import kotlin.native.concurrent.AtomicInt
@@ -116,6 +117,9 @@ class Socket(private val socketFd: Int) {
 
         debug("Write response: ${mockResponse.statusCode}")
 
+        if (mockResponse.delayMs > 0) {
+          usleep((mockResponse.delayMs * 1000).convert())
+        }
         writeResponse(sink, mockResponse, request.version)
 
         debug("Response Written")
