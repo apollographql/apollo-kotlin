@@ -4,13 +4,11 @@ import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 
 interface HttpInterceptorChain {
-  suspend fun proceed(request: HttpRequest): HttpResponse
-
-  fun canProceed(): Boolean
+  suspend fun <R> proceed(request: HttpRequest, block: (HttpResponse) -> R): R
 }
 
 interface HttpRequestInterceptor {
-  suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse
+  suspend fun <R> intercept(request: HttpRequest, block: (HttpResponse) -> R, chain: HttpInterceptorChain): R
 }
 
 internal class RealInterceptorChain(
@@ -18,16 +16,15 @@ internal class RealInterceptorChain(
     private val index: Int,
 ) : HttpInterceptorChain {
 
-  override suspend fun proceed(request: HttpRequest): HttpResponse {
+  override suspend fun <R> proceed(request: HttpRequest, block: (HttpResponse) -> R): R {
     check(index < interceptors.size)
     return interceptors[index].intercept(
         request,
+        block,
         RealInterceptorChain(
             interceptors = interceptors,
             index = index + 1,
         )
     )
   }
-
-  override fun canProceed(): Boolean = index < interceptors.size
 }
