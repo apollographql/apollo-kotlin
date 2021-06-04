@@ -40,8 +40,10 @@ kotlin {
 If using the x.y.z-native-mt branch of coroutines, gradle will replace the -native-mt version with the non-mt version as outlined [here](https://kotlinlang.org/docs/mobile/concurrency-and-coroutines.html#multithreaded-coroutines). To prevent this happening use the following:
 
 ```
-implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:x.y.z-native-mt"){
-    isForce = true
+implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core"){
+    version {
+      strictly("x.y.z-native-mt")
+    }
 }
 ```
 
