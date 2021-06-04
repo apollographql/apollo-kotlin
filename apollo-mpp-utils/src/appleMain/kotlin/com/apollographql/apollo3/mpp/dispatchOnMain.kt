@@ -3,15 +3,17 @@ package com.apollographql.apollo3.mpp
 import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.StableRef
 import kotlinx.cinterop.asStableRef
+import kotlinx.coroutines.CancellableContinuation
+import kotlinx.coroutines.CompletionHandler
 import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.Foundation.NSThread
 import platform.darwin.dispatch_async
 import platform.darwin.dispatch_get_main_queue
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
 import kotlin.native.concurrent.freeze
 
-internal class MainContinuation<R>(private val continuationPtr: COpaquePointer) {
+class MainContinuation<R>(continuation: CancellableContinuation<R>) {
+  private val continuationPtr: COpaquePointer = StableRef.create(continuation).asCPointer()
+
   fun resume(result: Result<R>) {
     if (NSThread.isMainThread()) {
       resumeInternal(result)
@@ -28,20 +30,17 @@ internal class MainContinuation<R>(private val continuationPtr: COpaquePointer) 
   }
 
   private fun <R> resumeInternal(result: Result<R>) {
-    val continuationRef = continuationPtr.asStableRef<Continuation<Result<R>>>()
+    val continuationRef = continuationPtr.asStableRef<CancellableContinuation<R>>()
     val continuation = continuationRef.get()
     continuationRef.dispose()
 
-    continuation.resume(result)
+    continuation.resumeWith(result)
   }
 }
 
-internal suspend fun <R> suspendAndResumeOnMain(block: (MainContinuation<R>) -> Unit): R {
-  val result = suspendCancellableCoroutine<Result<R>> { continuation ->
-    val continuationPtr = StableRef.create(continuation).asCPointer()
-
-    block(MainContinuation(continuationPtr))
+typealias InvokeOnCancellation = (CompletionHandler) -> Unit
+suspend fun <R> suspendAndResumeOnMain(block: (MainContinuation<R>, InvokeOnCancellation) -> Unit): R {
+  return suspendCancellableCoroutine { continuation ->
+    block(MainContinuation(continuation)) { continuation.invokeOnCancellation(it) }
   }
-
-  return result.getOrThrow()
 }

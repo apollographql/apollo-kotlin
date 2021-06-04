@@ -49,7 +49,7 @@ class SingleThreadWorker<S : Any>(private val producer: () -> S, private val fin
     queue.dispose()
   }
 
-  suspend fun <R> execute(block: (S) -> R) = suspendAndResumeOnMain<R> { mainContinuation ->
+  suspend fun <R> execute(block: (S) -> R) = suspendAndResumeOnMain<R> { mainContinuation, _ ->
     block.freeze()
     val callback = Callback<S> { s ->
       val result: Result<R> = kotlin.runCatching {
