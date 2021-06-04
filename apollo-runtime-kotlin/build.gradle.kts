@@ -9,6 +9,7 @@ kotlin {
     val commonMain by getting {
       dependencies {
         api(project(":apollo-api"))
+        api(project(":apollo-mpp-utils"))
         api(groovy.util.Eval.x(project, "x.dep.okio"))
         api(groovy.util.Eval.x(project, "x.dep.uuid"))
         api(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))

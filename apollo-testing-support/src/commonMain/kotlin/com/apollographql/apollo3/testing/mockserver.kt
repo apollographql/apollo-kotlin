@@ -10,17 +10,19 @@ import okio.ByteString.Companion.encodeUtf8
 fun <D : Operation.Data> MockServer.enqueue(
     operation: Operation<D>,
     data: D,
-    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+    delayMs: Long = 0
 ) {
   val json = operation.composeResponseBody(data, customScalarAdapters = customScalarAdapters)
-  enqueue(json)
+  enqueue(json, delayMs)
 }
 
-fun MockServer.enqueue(string: String) {
+fun MockServer.enqueue(string: String, delayMs: Long = 0) {
   val byteString = string.encodeUtf8()
   enqueue(MockResponse(
       statusCode = 200,
       headers = mapOf("Content-Length" to byteString.size.toString()),
-      body = byteString
+      body = byteString,
+      delayMs = delayMs
   ))
 }

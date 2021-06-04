@@ -13,6 +13,7 @@ import com.apollographql.apollo3.cache.normalized.Platform
 import com.apollographql.apollo3.cache.normalized.internal.dependentKeys
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.interceptor.ApolloRequestInterceptor
+import com.apollographql.apollo3.mpp.currentThreadId
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow

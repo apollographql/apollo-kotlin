@@ -3,6 +3,7 @@ package com.apollographql.apollo3.mockserver
 import okhttp3.Headers
 import okhttp3.mockwebserver.MockWebServer
 import okio.Buffer
+import java.util.concurrent.TimeUnit
 
 actual class MockServer {
   private val mockWebServer = MockWebServer()
@@ -16,6 +17,7 @@ actual class MockServer {
                 addHeader(it.key, it.value)
               }
             }.setBody(Buffer().apply { write(mockResponse.body) })
+            .setHeadersDelay(mockResponse.delayMs, TimeUnit.MILLISECONDS)
     )
   }
 
