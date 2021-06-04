@@ -66,7 +66,7 @@ actual class DefaultHttpEngine(
     val delegate = { httpData: NSData?, nsUrlResponse: NSURLResponse?, error: NSError? ->
       initRuntimeIfNeeded()
 
-      mainContinuation.resume(
+      mainContinuation.resumeWith(
           parse(
               data = httpData,
               httpResponse = nsUrlResponse as? NSHTTPURLResponse,

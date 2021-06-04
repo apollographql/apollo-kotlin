@@ -27,10 +27,10 @@ class SingleThreadWorker<S : Any>(private val producer: () -> S, private val fin
 
       val ref = arg!!.asStableRef<SingleThreadWorker<S>>()
 
-      val guard = ref.get()
+      val self = ref.get()
       ref.dispose()
 
-      guard.runThread()
+      self.runThread()
 
       null
     }, stableRef.asCPointer())
@@ -56,7 +56,7 @@ class SingleThreadWorker<S : Any>(private val producer: () -> S, private val fin
         block(s)
       }
 
-      mainContinuation.resume(result)
+      mainContinuation.resumeWith(result)
     }
 
     enqueue(callback)
