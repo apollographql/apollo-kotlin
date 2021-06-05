@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.http.HttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.parseResponseBody
 import com.apollographql.apollo3.api.exception.ApolloHttpException
+import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.network.NetworkTransport
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.flow
 class ApolloHttpNetworkTransport(
     private val httpRequestComposer: HttpRequestComposer,
     private val engine: HttpEngine,
+    private val interceptors: List<HttpRequestInterceptor> = emptyList(),
 ) : NetworkTransport {
 
   /**
@@ -36,7 +38,10 @@ class ApolloHttpNetworkTransport(
       headers: Map<String, String> = emptyMap(),
       connectTimeoutMillis: Long = 60_000,
       readTimeoutMillis: Long = 60_000,
-  ) : this(DefaultHttpRequestComposer(serverUrl, headers), DefaultHttpEngine(connectTimeoutMillis, readTimeoutMillis))
+      interceptors: List<HttpRequestInterceptor> = emptyList(),
+  ) : this(DefaultHttpRequestComposer(serverUrl, headers), DefaultHttpEngine(connectTimeoutMillis, readTimeoutMillis), interceptors)
+
+  private val engineInterceptor = EngineInterceptor()
 
   override fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
@@ -45,11 +50,20 @@ class ApolloHttpNetworkTransport(
 
     val httpRequest = httpRequestComposer.compose(request)
     return flow {
-      val response = engine.execute(httpRequest) {
+      val response = RealInterceptorChain(
+          interceptors = interceptors + engineInterceptor,
+          index = 0
+      ).proceed(httpRequest) {
         it.parse(request, responseAdapterCache)
       }
 
       emit(response)
+    }
+  }
+
+  inner class EngineInterceptor: HttpRequestInterceptor {
+    override suspend fun <R> intercept(request: HttpRequest, block: (HttpResponse) -> R, chain: HttpInterceptorChain): R {
+      return engine.execute(request, block)
     }
   }
 

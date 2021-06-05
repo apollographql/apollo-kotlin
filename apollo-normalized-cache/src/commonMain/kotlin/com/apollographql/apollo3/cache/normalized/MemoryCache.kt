@@ -3,7 +3,7 @@ package com.apollographql.apollo3.cache.normalized
 import com.apollographql.apollo3.cache.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.internal.LruCache
-import com.apollographql.apollo3.cache.normalized.Platform
+import com.apollographql.apollo3.mpp.currentTimeMillis
 import okio.internal.commonAsUtf8ToByteArray
 import kotlin.reflect.KClass
 
@@ -108,7 +108,7 @@ class MemoryCache(
       val record: Record,
       val expireAfterMillis: Long
   ) {
-    val cachedAtMillis: Long = Platform.currentTimeMillis()
+    val cachedAtMillis: Long = currentTimeMillis()
 
     val sizeInBytes: Int = record.sizeInBytes + 8
 
@@ -117,7 +117,7 @@ class MemoryCache(
         return if (expireAfterMillis < 0) {
           false
         } else {
-          Platform.currentTimeMillis() - cachedAtMillis >= expireAfterMillis
+          currentTimeMillis() - cachedAtMillis >= expireAfterMillis
         }
       }
   }

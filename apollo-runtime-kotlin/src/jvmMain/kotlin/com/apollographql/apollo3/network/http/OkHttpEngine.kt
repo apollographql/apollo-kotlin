@@ -20,11 +20,11 @@ import kotlin.coroutines.resumeWithException
 
 actual class DefaultHttpEngine(
     private val httpCallFactory: Call.Factory,
-): HttpEngine {
+) : HttpEngine {
 
   actual constructor(
       connectTimeoutMillis: Long,
-      readTimeoutMillis: Long
+      readTimeoutMillis: Long,
   ) : this(
       httpCallFactory = OkHttpClient.Builder()
           .connectTimeout(connectTimeoutMillis, TimeUnit.MILLISECONDS)
@@ -32,68 +32,68 @@ actual class DefaultHttpEngine(
           .build(),
   )
 
-  override suspend fun <R> execute(request: HttpRequest, block: (HttpResponse) -> R): R {
-    return suspendCancellableCoroutine { continuation ->
-      val httpRequest = Request.Builder()
-          .url(request.url)
-          .headers(Headers.of(request.headers))
-          .apply {
-            if (request.method == HttpMethod.Get) {
-              get()
-            } else {
-              val body = request.body
-              check(body != null) {
-                "HTTP POST requires a request body"
-              }
-              post(object: RequestBody() {
-                override fun contentType() = MediaType.parse(body.contentType)
-
-                override fun contentLength() = body.contentLength
-
-                override fun writeTo(sink: BufferedSink) {
-                  body.writeTo(sink)
-                }
-              })
+  override suspend fun <R> execute(request: HttpRequest, block: (HttpResponse) -> R): R = suspendCancellableCoroutine { continuation ->
+    val httpRequest = Request.Builder()
+        .url(request.url)
+        .headers(Headers.of(request.headers))
+        .apply {
+          if (request.method == HttpMethod.Get) {
+            get()
+          } else {
+            val body = request.body
+            check(body != null) {
+              "HTTP POST requires a request body"
             }
-          }
-          .build()
+            post(object : RequestBody() {
+              override fun contentType() = MediaType.parse(body.contentType)
 
-      httpCallFactory.newCall(httpRequest)
-          .also { call ->
-            continuation.invokeOnCancellation {
-              call.cancel()
-            }
-          }
-          .enqueue(
-              object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                  if (continuation.isCancelled) return
-                  continuation.resumeWithException(
-                      ApolloNetworkException(
-                          message = "Failed to execute GraphQL http network request",
-                          cause = e
-                      )
-                  )
-                }
+              override fun contentLength() = body.contentLength
 
-                override fun onResponse(call: Call, response: okhttp3.Response) {
-                  if (continuation.isCancelled) return
-                  runCatching {
-                    val httpResponse = HttpResponse(
-                        statusCode = response.code(),
-                        headers = response.headers().toMap(),
-                        body = response.body()!!.source()
-                    )
-                    block(httpResponse)
-                  }
-                      .onSuccess { continuation.resume(it) }
-                      .onFailure { e ->
-                        continuation.resumeWithException(wrapThrowableIfNeeded(e))
-                      }
-                }
+              override fun writeTo(sink: BufferedSink) {
+                body.writeTo(sink)
               }
-          )
+            })
+          }
+        }
+        .build()
+
+    val call = httpCallFactory.newCall(httpRequest)
+    continuation.invokeOnCancellation {
+      call.cancel()
     }
+
+    val networkResult = kotlin.runCatching {
+      call.execute()
+    }
+
+    if (networkResult.isFailure) {
+      continuation.resumeWithException(
+          ApolloNetworkException(
+              message = "Failed to execute GraphQL http network request",
+              cause = networkResult.exceptionOrNull()!!
+          )
+      )
+      return@suspendCancellableCoroutine
+    }
+
+    val response = networkResult.getOrThrow()
+
+    val parseResult = kotlin.runCatching {
+      val httpResponse = HttpResponse(
+          statusCode = response.code(),
+          headers = response.headers().toMap(),
+          body = response.body()!!.source()
+      )
+      block(httpResponse)
+    }
+
+
+    if (parseResult.isFailure) {
+      continuation.resumeWithException(wrapThrowableIfNeeded(parseResult.exceptionOrNull()!!))
+      return@suspendCancellableCoroutine
+    }
+
+    continuation.resume(parseResult.getOrThrow())
   }
 
   private fun Headers.toMap(): Map<String, String> {

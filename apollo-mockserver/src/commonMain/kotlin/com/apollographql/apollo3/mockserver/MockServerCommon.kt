@@ -93,7 +93,8 @@ fun writeResponse(sink: BufferedSink, mockResponse: MockResponse, version: Strin
 class MockResponse(
     val statusCode: Int = 200,
     val body: ByteString = ByteString.EMPTY,
-    val headers: Map<String, String> = emptyMap()
+    val headers: Map<String, String> = emptyMap(),
+    val delayMs: Long = 0,
 ) {
   constructor(
       statusCode: Int = 200,

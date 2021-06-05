@@ -227,7 +227,13 @@ class OptimisticCacheTest {
     assertEquals(watcherData?.reviews?.get(2)?.stars, 5)
     assertEquals(watcherData?.reviews?.get(2)?.commentary, "Amazing")
 
-    mockServer.enqueue(readResource("UpdateReviewResponse.json"))
+    /**
+     * There is a small potential for a race condition here. The changedKeys event from the optimistic updates might
+     * be received after the network response has been written and therefore the refetch will see the new data right ahead.
+     *
+     * To limit the occurence of this happening, we introduce a small delay in the network response here.
+     */
+    mockServer.enqueue(readResource("UpdateReviewResponse.json"), 100)
     val updateReviewMutation = UpdateReviewMutation(
         "empireReview2",
         ReviewInput(
@@ -248,7 +254,9 @@ class OptimisticCacheTest {
         )
     )
 
-    // optimistic updates
+    /**
+     * optimistic updates
+     */
     watcherData = channel.receive()
     assertEquals(watcherData?.reviews?.size, 3)
     assertEquals(watcherData?.reviews?.get(0)?.id, "empireReview1")

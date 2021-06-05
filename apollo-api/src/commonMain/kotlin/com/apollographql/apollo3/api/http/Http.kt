@@ -12,6 +12,10 @@ enum class HttpMethod {
 interface HttpBody {
   val contentType: String
   val contentLength: Long
+
+  /**
+   * This can be called several times
+   */
   fun writeTo(bufferedSink: BufferedSink)
 }
 

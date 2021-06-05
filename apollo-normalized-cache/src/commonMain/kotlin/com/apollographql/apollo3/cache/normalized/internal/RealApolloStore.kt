@@ -28,9 +28,10 @@ class RealApolloStore(
 ) : ApolloStore() {
   private val changedKeysEvents = MutableSharedFlow<Set<String>>(
       // XXX: this is a potential code smell
-      // I'm not sure what will happen if we ever reach that capacity
-      // We need to buffer because the publish code is possibly reentrant so we can't just wait for all consumers to have received
-      // the events or we will deadlock
+      // If multiple watchers start notifying each other and potentially themselves, the buffer of changedKeysEvent will grow forever.
+      // I think as long as the refetchPolicy is [FetchPolicy.CacheOnly] everything should be fine as there is no reentrant emission.
+      // If the refetechPolicy is something else, we should certainly try to detect it in the cache interceptor
+      // See ReentrantChannelTest for more details.
       extraBufferCapacity = 10,
       onBufferOverflow = BufferOverflow.DROP_OLDEST
   )

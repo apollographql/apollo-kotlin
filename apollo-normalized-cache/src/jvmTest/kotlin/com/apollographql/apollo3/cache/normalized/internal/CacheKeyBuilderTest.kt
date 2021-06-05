@@ -8,7 +8,6 @@ import com.google.common.truth.Truth
 import org.junit.Ignore
 import org.junit.Test
 
-@Ignore("Will be fixed in the next PR")
 class CacheKeyBuilderTest {
   private val cacheKeyBuilder: CacheKeyBuilder = RealCacheKeyBuilder()
 

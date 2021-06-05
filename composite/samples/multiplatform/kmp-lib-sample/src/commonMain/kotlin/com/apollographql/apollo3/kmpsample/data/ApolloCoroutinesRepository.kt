@@ -19,14 +19,15 @@ import com.apollographql.apollo3.network.http.ApolloHttpNetworkTransport
  * An implementation of a [GitHubDataSource] that shows how we can use coroutines to make our apollo requests.
  */
 class ApolloCoroutinesRepository {
-  private val apolloClient = ApolloClient(ApolloHttpNetworkTransport(
-      serverUrl = "https://api.github.com/graphql",
-      headers = mapOf(
-          "Accept" to "application/json",
-          "Content-Type" to "application/json",
-          "Authorization" to "bearer $GITHUB_KEY"
+  private val apolloClient = ApolloClient(
+      networkTransport = ApolloHttpNetworkTransport(
+          serverUrl = "https://api.github.com/graphql",
+          headers = mapOf(
+              "Accept" to "application/json",
+              "Content-Type" to "application/json",
+              "Authorization" to "bearer $GITHUB_KEY"
+          )
       )
-  )
   )
 
   suspend fun fetchRepositories(): List<RepositoryFragment> {
