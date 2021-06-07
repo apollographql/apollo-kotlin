@@ -18,7 +18,6 @@ class GraphQLWsTest {
     val apolloClient = ApolloClient(
         networkTransport = ApolloWebSocketNetworkTransport(
             serverUrl = "http://localhost:9090/graphql",
-            coroutineScope = CoroutineScope(MainLoopDispatcher),
             protocol = GraphQLWsProtocol()
         )
     )

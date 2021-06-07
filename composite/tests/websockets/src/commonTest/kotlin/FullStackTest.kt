@@ -14,7 +14,6 @@ class FullStackTest {
   fun simple() {
     val apolloClient = ApolloClient(
         networkTransport = ApolloWebSocketNetworkTransport(
-            coroutineScope = CoroutineScope(MainLoopDispatcher),
             serverUrl = "https://apollo-fullstack-tutorial.herokuapp.com/graphql"
         )
     )

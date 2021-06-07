@@ -90,4 +90,6 @@ class ApolloHttpNetworkTransport(
         )
     )
   }
+
+  override fun dispose() {}
 }

@@ -12,6 +12,7 @@ import com.apollographql.apollo3.network.http.HttpRequestParameters
 import com.apollographql.apollo3.testing.MockQuery
 import com.apollographql.apollo3.testing.TestTokenProvider
 import com.apollographql.apollo3.testing.runBlocking
+import com.apollographql.apollo3.testing.runWithMainLoop
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okio.ByteString.Companion.encodeUtf8
@@ -50,6 +51,10 @@ class OauthInterceptorTest {
         }
       }
     }
+
+    override fun dispose() {
+      TODO("Not yet implemented")
+    }
   }
 
   private fun apolloClient(currentAccessToken: String, newAccessToken: String): ApolloClient {
@@ -66,7 +71,7 @@ class OauthInterceptorTest {
 
   @Test
   fun `valid access token succeeds`() {
-    val response = runBlocking {
+    val response = runWithMainLoop {
       apolloClient(AuthenticatedNetworkTransport.VALID_ACCESS_TOKEN1,
           AuthenticatedNetworkTransport.VALID_ACCESS_TOKEN2)
           .query(ApolloRequest(MockQuery()))
@@ -78,7 +83,7 @@ class OauthInterceptorTest {
 
   @Test
   fun `invalid access token fails`() {
-    val result = runBlocking {
+    val result = runWithMainLoop {
       kotlin.runCatching {
         apolloClient(AuthenticatedNetworkTransport.INVALID_ACCESS_TOKEN,
             AuthenticatedNetworkTransport.INVALID_ACCESS_TOKEN)
@@ -91,7 +96,7 @@ class OauthInterceptorTest {
 
   @Test
   fun `refresh access token succeeds`() {
-    val response = runBlocking {
+    val response = runWithMainLoop {
       apolloClient(AuthenticatedNetworkTransport.INVALID_ACCESS_TOKEN,
           AuthenticatedNetworkTransport.VALID_ACCESS_TOKEN2)
           .query(ApolloRequest(MockQuery()))

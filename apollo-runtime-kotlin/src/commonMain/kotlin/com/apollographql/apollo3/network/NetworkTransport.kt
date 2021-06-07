@@ -10,4 +10,6 @@ interface NetworkTransport {
   fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
   ): Flow<ApolloResponse<D>>
+
+  fun dispose()
 }

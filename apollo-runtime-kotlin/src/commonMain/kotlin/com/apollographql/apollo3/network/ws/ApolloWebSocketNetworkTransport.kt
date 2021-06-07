@@ -11,9 +11,9 @@ import com.apollographql.apollo3.api.internal.ResponseBodyParser
 import com.apollographql.apollo3.api.internal.json.buildJsonByteString
 import com.apollographql.apollo3.api.internal.json.buildJsonString
 import com.apollographql.apollo3.api.toJson
+import com.apollographql.apollo3.internal.WebSocketDispatcher
 import com.apollographql.apollo3.network.NetworkTransport
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.Channel
@@ -37,7 +37,6 @@ import kotlinx.coroutines.withTimeout
 class ApolloWebSocketNetworkTransport(
     private val webSocketEngine: WebSocketEngine,
     private val serverUrl: String,
-    private val coroutineScope: CoroutineScope = GlobalScope,
     private val connectionAcknowledgeTimeoutMs: Long = 10_000,
     private val idleTimeoutMillis: Long = 60_000,
     private val protocol: WsProtocol = SubscriptionWsProtocol(),
@@ -45,14 +44,12 @@ class ApolloWebSocketNetworkTransport(
 
   constructor(
       serverUrl: String,
-      coroutineScope: CoroutineScope = GlobalScope,
       connectionAcknowledgeTimeoutMs: Long = 10_000,
       idleTimeoutMillis: Long = 60_000,
       protocol: WsProtocol = SubscriptionWsProtocol(),
   ) : this(
       DefaultWebSocketEngine(),
       serverUrl,
-      coroutineScope,
       connectionAcknowledgeTimeoutMs,
       idleTimeoutMillis,
       protocol
@@ -78,13 +75,16 @@ class ApolloWebSocketNetworkTransport(
 
   val subscriptionCount = mutableEvents.subscriptionCount
 
+  private val webSocketDispatcher = WebSocketDispatcher()
+  private val coroutineScope = CoroutineScope(webSocketDispatcher.coroutineDispatcher)
+
   init {
     /**
      * When receiving, we can always convert as required.
      * When sending, some servers might be sensitive to the type of frame so
      * this is configurable
      */
-    sendMessage = when(protocol.frameType) {
+    sendMessage = when (protocol.frameType) {
       WsFrameType.Binary -> { message ->
         send(message.toByteString())
       }
@@ -195,9 +195,7 @@ class ApolloWebSocketNetworkTransport(
         while (true) {
           val payload = webSocketConnection.receive()
 
-          val message = protocol.parseMessage(payload.utf8())
-
-          when (message) {
+          when (val message = protocol.parseMessage(payload.utf8())) {
             is WsMessage.ConnectionAck -> return@withTimeout null
             is WsMessage.ConnectionError -> throw ApolloNetworkException("Server error when connecting to $serverUrl: ${NullableAnyAdapter.toJson(message.payload)}")
             else -> Unit // unknown message?
@@ -235,6 +233,9 @@ class ApolloWebSocketNetworkTransport(
     }.onCompletion {
       commands.send(StopOperation(request))
     }
+  }
+  override fun dispose() {
+    webSocketDispatcher.dispose()
   }
 }
 
