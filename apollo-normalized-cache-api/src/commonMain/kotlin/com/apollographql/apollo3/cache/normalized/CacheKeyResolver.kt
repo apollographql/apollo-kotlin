@@ -26,9 +26,9 @@ abstract class CacheKeyResolver {
 
     @JvmField
     val DEFAULT: CacheKeyResolver = object : CacheKeyResolver() {
-      override fun fromFieldRecordSet(field: CompiledField, variables: Executable.Variables, recordSet: Map<String, Any?>) = null
+      override fun fromFieldRecordSet(field: CompiledField, variables: Executable.Variables, recordSet: Map<String, Any?>): CacheKey? = null
 
-      override fun fromFieldArguments(field: CompiledField, variables: Executable.Variables) = null
+      override fun fromFieldArguments(field: CompiledField, variables: Executable.Variables): CacheKey? = null
     }
 
     @JvmStatic
