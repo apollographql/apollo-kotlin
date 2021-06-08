@@ -210,7 +210,7 @@ To do this, specify a `CacheKeyResolver` when configuring your `NormalizedCacheF
 val resolver: CacheKeyResolver = object : CacheKeyResolver() {
   override fun fromFieldRecordSet(field: CompiledField, recordSet: Map<String, Any>): CacheKey {
     // Retrieve the id from the object itself
-    return CacheKey.from(recordSet["id"] as String)
+    return CacheKey(recordSet["id"] as String)
   }
 
   override fun fromFieldArguments(field: CompiledField, variables: Operation.Variables): CacheKey {
@@ -218,7 +218,7 @@ val resolver: CacheKeyResolver = object : CacheKeyResolver() {
     // In the example, this allows to know that `author(id: "author1")` will retrieve `author1`
     // That sounds straightforward but without this, the cache would have no way of finding the id before executing the request on the
     // network which is what we want to avoid
-    return CacheKey.from(field.resolveArgument("id", variables) as String)
+    return CacheKey(field.resolveArgument("id", variables) as String)
   }
 }
 
@@ -233,7 +233,7 @@ CacheKeyResolver resolver = new CacheKeyResolver() {
    @NotNull @Override
    public CacheKey fromFieldRecordSet(@NotNull ResponseField field, @NotNull Map<String, Object> recordSet) {
      // Retrieve the id from the object itself
-     return CacheKey.from(((String) recordSet.get("id"));
+     return CacheKey(((String) recordSet.get("id"));
    }
 
    @NotNull @Override
@@ -242,7 +242,7 @@ CacheKeyResolver resolver = new CacheKeyResolver() {
      // In the example, this allows to know that `author(id: "author1")` will retrive `author1`
      // That sounds straightforward but without this, the cache would have no way of finding the id before executing the request on the
      // network which is what we want to avoid
-     return CacheKey.from(((String) field.resolveArgument("id", variables));
+     return CacheKey(((String) field.resolveArgument("id", variables));
    }
 };
 

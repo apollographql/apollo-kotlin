@@ -4,7 +4,7 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.parseResponseBody
 import com.apollographql.apollo3.cache.CacheHeaders
-import com.apollographql.apollo3.cache.normalized.CacheKey.Companion.from
+import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheReference
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
@@ -70,7 +70,7 @@ class NormalizerTest {
     normalizedCache.merge(listOf(newRecord), CacheHeaders.NONE)
     val finalRecord = normalizedCache.loadRecord(record.key, CacheHeaders.NONE)
     assertTrue(finalRecord!!.containsKey("field2"))
-    normalizedCache.remove(from(record.key), false)
+    normalizedCache.remove(CacheKey(record.key), false)
   }
 
   @Test

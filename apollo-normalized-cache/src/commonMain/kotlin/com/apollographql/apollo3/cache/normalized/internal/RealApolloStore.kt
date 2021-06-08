@@ -190,10 +190,6 @@ class RealApolloStore(
       cacheHeaders: CacheHeaders,
       publish: Boolean,
   ): Set<String> {
-    require(cacheKey != CacheKey.NO_KEY) {
-      "ApolloGraphQL: writing a fragment requires a valid cache key"
-    }
-
     // Capture a local reference so as not to freeze "this"
     val cacheKeyResolver = cacheKeyResolver
 

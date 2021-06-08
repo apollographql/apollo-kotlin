@@ -51,12 +51,12 @@ class CachedSubscriptionTest {
     val store = ApolloStore(
         MemoryCacheFactory(Int.MAX_VALUE),
         object : CacheKeyResolver() {
-          override fun fromFieldRecordSet(field: CompiledField, variables: Executable.Variables, recordSet: Map<String, Any?>): CacheKey {
-            return CacheKey.from(field.responseName)
+          override fun fromFieldRecordSet(field: CompiledField, variables: Executable.Variables, recordSet: Map<String, Any?>): CacheKey? {
+            return CacheKey(field.responseName)
           }
 
-          override fun fromFieldArguments(field: CompiledField, variables: Executable.Variables): CacheKey {
-            return CacheKey.NO_KEY
+          override fun fromFieldArguments(field: CompiledField, variables: Executable.Variables): CacheKey? {
+            return null
           }
         }
     )

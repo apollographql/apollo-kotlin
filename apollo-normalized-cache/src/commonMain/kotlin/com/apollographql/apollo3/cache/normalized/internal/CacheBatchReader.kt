@@ -15,9 +15,7 @@ import com.apollographql.apollo3.cache.normalized.ReadOnlyNormalizedCache
 import com.apollographql.apollo3.api.exception.CacheMissException
 
 /**
- * Reads [rootFieldSets] starting at [rootKey] from [cache]
- *
- * This is a resolver that solves the "N+1" problem by batching all SQL queries at a given depth
+ * A resolver that solves the "N+1" problem by batching all SQL queries at a given depth
  * It respects skip/include directives
  *
  * Returns the data in [toMap]
@@ -108,7 +106,7 @@ class CacheBatchReader(
           val type = it.type
           val value = if (type.isCompound()) {
             val cacheKey = cacheKeyResolver.fromFieldArguments(it, variables)
-            if (cacheKey != CacheKey.NO_KEY ) {
+            if (cacheKey != null ) {
               // user provided a lookup
               CacheReference(cacheKey.key)
             } else {
