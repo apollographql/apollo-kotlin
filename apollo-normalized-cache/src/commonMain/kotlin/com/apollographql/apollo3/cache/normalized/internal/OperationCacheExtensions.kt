@@ -58,24 +58,11 @@ private fun <D> normalizeInternal(
   }.normalize(writer.root() as Map<String, Any?>, null, rootKey, selections)
 }
 
-enum class ReadMode {
-  /**
-   * Depth-first traversal. Resolve CacheReferences as they are encountered
-   */
-  SEQUENTIAL,
-
-  /**
-   * Breadth-first traversal. Batches CacheReferences at a certain depth and resolve them all at once. This is useful for SQLite
-   */
-  BATCH,
-}
-
 fun <D : Operation.Data> Operation<D>.readDataFromCache(
     customScalarAdapters: CustomScalarAdapters,
     cache: ReadOnlyNormalizedCache,
     cacheKeyResolver: CacheKeyResolver,
     cacheHeaders: CacheHeaders,
-    mode: ReadMode = ReadMode.BATCH,
 ) = readInternal(
     cache = cache,
     cacheKeyResolver = cacheKeyResolver,
@@ -83,7 +70,6 @@ fun <D : Operation.Data> Operation<D>.readDataFromCache(
     variables = variables(customScalarAdapters),
     adapter = adapter(),
     customScalarAdapters = customScalarAdapters,
-    mode = mode,
     cacheKey = CacheKeyResolver.rootKey(),
     selections = selections()
 )
@@ -94,7 +80,6 @@ fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
     cache: ReadOnlyNormalizedCache,
     cacheKeyResolver: CacheKeyResolver,
     cacheHeaders: CacheHeaders,
-    mode: ReadMode = ReadMode.SEQUENTIAL,
 ) = readInternal(
     cacheKey = cacheKey,
     cache = cache,
@@ -103,7 +88,6 @@ fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
     variables = variables(customScalarAdapters),
     adapter = adapter(),
     customScalarAdapters = customScalarAdapters,
-    mode = mode,
     selections = selections()
 )
 
@@ -116,7 +100,6 @@ private fun <D> readInternal(
     variables: Executable.Variables,
     adapter: Adapter<D>,
     customScalarAdapters: CustomScalarAdapters,
-    mode: ReadMode = ReadMode.SEQUENTIAL,
     selections: List<CompiledSelection>,
 ): D? {
   val map = CacheBatchReader(

@@ -128,7 +128,6 @@ class RealApolloStore(
       operation: Operation<D>,
       customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
-      mode: ReadMode,
   ): D? {
     // Capture a local reference so as not to freeze "this"
     val cacheKeyResolver = cacheKeyResolver
@@ -140,7 +139,6 @@ class RealApolloStore(
           cache = cache,
           cacheKeyResolver = cacheKeyResolver,
           cacheHeaders = cacheHeaders,
-          mode = mode,
       )
     }
   }

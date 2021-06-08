@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
-import com.apollographql.apollo3.cache.normalized.CacheReference
+import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.Record
 import okio.internal.commonAsUtf8ToByteArray
 import kotlin.jvm.JvmStatic
@@ -12,7 +12,7 @@ object RecordWeigher {
   private const val SIZE_OF_ARRAY_OVERHEAD = 16
   private const val SIZE_OF_MAP_OVERHEAD = 16
   private const val SIZE_OF_RECORD_OVERHEAD = 16
-  private const val SIZE_OF_CACHE_REFERENCE_OVERHEAD = 16
+  private const val SIZE_OF_CACHE_KEY_OVERHEAD = 16
   private const val SIZE_OF_NULL = 4
 
   @JvmStatic
@@ -39,8 +39,8 @@ object RecordWeigher {
       is List<*> -> {
         SIZE_OF_ARRAY_OVERHEAD + field.sumBy { weighField(it) }
       }
-      is CacheReference -> {
-        SIZE_OF_CACHE_REFERENCE_OVERHEAD + field.key.commonAsUtf8ToByteArray().size
+      is CacheKey -> {
+        SIZE_OF_CACHE_KEY_OVERHEAD + field.key.commonAsUtf8ToByteArray().size
       }
       /**
        * Custom scalars with a json object representation are stored directly in the record

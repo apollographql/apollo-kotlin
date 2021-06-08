@@ -41,7 +41,6 @@ internal class NoOpApolloStore : ApolloStore() {
       operation: Operation<D>,
       customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
-      mode: ReadMode,
   ): D? {
     // This will be seen as a cache MISS and the request will go to the network.
     return null

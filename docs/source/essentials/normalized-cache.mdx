@@ -255,7 +255,7 @@ ApolloClient apolloClient = ApolloClient.builder()
 
 </MultiCodeBlock>
 
-For this resolver to work, every object in your graph needs to have a globally unique ID. If some of them don't have one, you can fall back to using the path as cache key by returning `CacheKey.NO_KEY`.
+For this resolver to work, every object in your graph needs to have a globally unique ID. If some of them don't have one, you can fall back to using the path as cache key by returning `null`.
 
 ## Using the cache with your queries
 

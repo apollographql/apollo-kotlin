@@ -10,8 +10,8 @@ class RecordWeigherTest {
     val expectedDouble = 1.23
     val expectedStringValue = "StringValue"
     val expectedBooleanValue = true
-    val expectedCacheReference = CacheReference("foo")
-    val expectedCacheReferenceList = listOf(CacheReference("bar"), CacheReference("baz"))
+    val expectedCacheKey = CacheKey("foo")
+    val expectedCacheKeyList = listOf(CacheKey("bar"), CacheKey("baz"))
     val expectedScalarList = listOf("scalarOne", "scalarTwo")
     val record = Record(
         key = "root",
@@ -19,9 +19,9 @@ class RecordWeigherTest {
             "double" to expectedDouble,
             "string" to expectedStringValue,
             "boolean" to expectedBooleanValue,
-            "cacheReference" to expectedCacheReference,
+            "cacheReference" to expectedCacheKey,
             "scalarList" to expectedScalarList,
-            "referenceList" to expectedCacheReferenceList,
+            "referenceList" to expectedCacheKeyList,
         )
     )
     assertTrue(record.sizeInBytes <= 218)

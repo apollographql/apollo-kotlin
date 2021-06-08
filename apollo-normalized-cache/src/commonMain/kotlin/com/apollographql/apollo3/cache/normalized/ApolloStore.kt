@@ -6,7 +6,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore.RecordChangeSubscriber
 import com.apollographql.apollo3.cache.normalized.internal.NoOpApolloStore
-import com.apollographql.apollo3.cache.normalized.internal.ReadMode
 import com.apollographql.apollo3.cache.normalized.internal.RealApolloStore
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.SharedFlow
@@ -45,7 +44,6 @@ abstract class ApolloStore {
       operation: Operation<D>,
       customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders = CacheHeaders.NONE,
-      mode: ReadMode = ReadMode.BATCH,
   ): D?
 
   /**

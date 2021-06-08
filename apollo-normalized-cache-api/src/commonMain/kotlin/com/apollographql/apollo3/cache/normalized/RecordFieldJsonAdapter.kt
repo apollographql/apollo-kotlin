@@ -9,7 +9,7 @@ import okio.Buffer
 import okio.ByteString.Companion.encodeUtf8
 
 /**
- * An adapter used to serialize and deserialize Record fields. Record object types will be serialized to [CacheReference].
+ * An adapter used to serialize and deserialize Record fields. Record object types will be serialized to [CacheKey].
  */
 object RecordFieldJsonAdapter {
 
@@ -25,17 +25,17 @@ object RecordFieldJsonAdapter {
     return buffer.readUtf8()
   }
 
-  private fun Any?.deserializeCacheReferences(): Any? {
+  private fun Any?.deserializeCacheKeys(): Any? {
     return when (this) {
-      is String -> if (CacheReference.canDeserialize(this)) {
-        CacheReference.deserialize(this)
+      is String -> if (CacheKey.canDeserialize(this)) {
+        CacheKey.deserialize(this)
       } else {
         this
       }
       is Map<*, *> -> mapValues {
-        it.value.deserializeCacheReferences()
+        it.value.deserializeCacheKeys()
       }
-      is List<*> -> map { it.deserializeCacheReferences() }
+      is List<*> -> map { it.deserializeCacheKeys() }
       else -> this
     }
   }
@@ -45,7 +45,7 @@ object RecordFieldJsonAdapter {
     val buffer = Buffer().write(jsonFieldSource.encodeUtf8())
     return BufferedSourceJsonReader(buffer)
         .readRecursively()
-        ?.deserializeCacheReferences() as Map<String, Any?>?
+        ?.deserializeCacheKeys() as Map<String, Any?>?
   }
 
   @Suppress("UNCHECKED_CAST")
@@ -56,7 +56,7 @@ object RecordFieldJsonAdapter {
       is Boolean -> this.value(value)
       is Int -> this.value(value)
       is Double -> this.value(value)
-      is CacheReference -> this.value(value.serialize())
+      is CacheKey -> this.value(value.serialize())
       is List<*> -> {
         this.beginArray()
         value.forEach { writeJsonValue(it) }

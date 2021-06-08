@@ -7,12 +7,11 @@ import com.apollographql.apollo3.api.CompiledNotNullType
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CompiledType
 import com.apollographql.apollo3.api.Executable
+import com.apollographql.apollo3.api.exception.CacheMissException
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
-import com.apollographql.apollo3.cache.normalized.CacheReference
 import com.apollographql.apollo3.cache.normalized.ReadOnlyNormalizedCache
-import com.apollographql.apollo3.api.exception.CacheMissException
 
 /**
  * A resolver that solves the "N+1" problem by batching all SQL queries at a given depth
@@ -108,7 +107,7 @@ class CacheBatchReader(
             val cacheKey = cacheKeyResolver.fromFieldArguments(it, variables)
             if (cacheKey != null ) {
               // user provided a lookup
-              CacheReference(cacheKey.key)
+              CacheKey(cacheKey.key)
             } else {
               // no key provided
               val fieldName = cacheKeyBuilder.build(it, variables)
@@ -125,7 +124,7 @@ class CacheBatchReader(
             record[fieldName]
           }
 
-          value.registerCacheReferences(it.selections)
+          value.registerCacheKeys(it.selections)
 
           it.responseName to value
         }.toMap()
@@ -141,35 +140,35 @@ class CacheBatchReader(
     }
 
     @Suppress("UNCHECKED_CAST")
-    return data[rootKey].resolveCacheReferences() as Map<String, Any?>
+    return data[rootKey].resolveCacheKeys() as Map<String, Any?>
   }
 
-  private fun Any?.registerCacheReferences(selections: List<CompiledSelection>) {
+  private fun Any?.registerCacheKeys(selections: List<CompiledSelection>) {
     when (this) {
-      is CacheReference -> {
+      is CacheKey -> {
         pendingReferences.add(PendingReference(key, selections))
       }
       is List<*> -> {
         forEach {
-          it.registerCacheReferences(selections)
+          it.registerCacheKeys(selections)
         }
       }
     }
   }
 
-  private fun Any?.resolveCacheReferences(): Any? {
+  private fun Any?.resolveCacheKeys(): Any? {
     return when (this) {
-      is CacheReference -> {
-        data[key].resolveCacheReferences()
+      is CacheKey -> {
+        data[key].resolveCacheKeys()
       }
       is List<*> -> {
         map {
-          it.resolveCacheReferences()
+          it.resolveCacheKeys()
         }
       }
       is Map<*, *> -> {
-        // This will traverse Map custom scalars but this is ok as it shouldn't contain any CacheReference
-        mapValues { it.value.resolveCacheReferences() }
+        // This will traverse Map custom scalars but this is ok as it shouldn't contain any CacheKey
+        mapValues { it.value.resolveCacheKeys() }
       }
       else -> this
     }

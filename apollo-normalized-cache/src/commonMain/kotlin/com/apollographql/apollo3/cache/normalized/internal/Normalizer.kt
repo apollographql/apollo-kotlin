@@ -7,7 +7,7 @@ import com.apollographql.apollo3.api.CompiledListType
 import com.apollographql.apollo3.api.CompiledNotNullType
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.cache.normalized.CacheReference
+import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.Record
 
 /**
@@ -25,7 +25,7 @@ class Normalizer(val variables: Executable.Variables, val cacheKeyForObject: (Co
     return records
   }
 
-  private fun Map<String, Any?>.normalize(path: String, fields: List<CompiledField>): CacheReference {
+  private fun Map<String, Any?>.normalize(path: String, fields: List<CompiledField>): CacheKey {
     val key = cacheKeyForObject(fields.first(), this) ?: path
 
     val selections = fields.flatMap { it.selections }
@@ -43,7 +43,7 @@ class Normalizer(val variables: Executable.Variables, val cacheKeyForObject: (Co
     }
     records[key] = mergedRecord
 
-    return CacheReference(key)
+    return CacheKey(key)
   }
 
   private class CollectState {
@@ -73,7 +73,7 @@ class Normalizer(val variables: Executable.Variables, val cacheKeyForObject: (Co
   }
 
   /**
-   * Takes the map entries and replaces compound types values by CacheReferences
+   * Takes the map entries and replaces compound types values by CacheKey
    */
   private fun Map<String, Any?>.toFields(path: String?, selections: List<CompiledSelection>): Map<String, Any?> {
     val fields = selections.collect(get("__typename") as? String)

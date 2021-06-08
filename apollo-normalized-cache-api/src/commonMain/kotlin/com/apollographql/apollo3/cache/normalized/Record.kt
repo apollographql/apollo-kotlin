@@ -5,7 +5,7 @@ import com.benasher44.uuid.Uuid
 
 /**
  * A normalized entry that corresponds to a response object. Object fields are stored if they are a GraphQL Scalars. If
- * a field is a GraphQL Object a [CacheReference] will be stored instead.
+ * a field is a GraphQL Object a [CacheKey] will be stored instead.
  */
 class Record (
     val key: String,
@@ -16,7 +16,7 @@ class Record (
      * - Boolean
      * - String
      * - Double
-     * - CacheReference
+     * - CacheKey
      * - List
      * - Map (for custom scalars)
      * - null
@@ -62,12 +62,12 @@ class Record (
   /**
    * Returns the list of referenced cache fields
    */
-  fun referencedFields(): List<CacheReference> {
-    val result = mutableListOf<CacheReference>()
+  fun referencedFields(): List<CacheKey> {
+    val result = mutableListOf<CacheKey>()
     val stack = fields.values.toMutableList()
     while (stack.isNotEmpty()) {
       when (val value = stack.removeAt(stack.size - 1)) {
-        is CacheReference -> result.add(value)
+        is CacheKey -> result.add(value)
         is Map<*, *> -> stack.addAll(value.values)
         is List<*> -> stack.addAll(value)
       }
