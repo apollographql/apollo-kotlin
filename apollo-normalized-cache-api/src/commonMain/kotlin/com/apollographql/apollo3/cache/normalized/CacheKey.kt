@@ -17,7 +17,10 @@ class CacheKey(val key: String) {
   }
 
   companion object {
-    private val SERIALIZATION_REGEX_PATTERN = Regex("ApolloCacheReference\\{(.*)}")
+    // IntelliJ complains about the invalid escape but looks like JS still needs it.
+    // See https://youtrack.jetbrains.com/issue/KT-47189
+    @Suppress("RegExpRedundantEscape")
+    private val SERIALIZATION_REGEX_PATTERN = Regex("ApolloCacheReference\\{(.*)\\}")
     private const val SERIALIZATION_TEMPLATE = "ApolloCacheReference"
 
     @JvmStatic
