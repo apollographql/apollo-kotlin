@@ -1,8 +1,10 @@
 package com.apollographql.apollo3.interceptor.cache
 
+import com.apollographql.apollo3.ClientScope
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
@@ -19,8 +21,20 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.launch
 
-class ApolloCacheInterceptor(private val store: ApolloStore) : ApolloRequestInterceptor {
+class ApolloCacheInterceptor(
+    private val store: ApolloStore,
+    private val writeToCacheAsynchronously: Boolean = false,
+) : ApolloRequestInterceptor {
+  private suspend fun maybeAsync(executionContext: ExecutionContext, block: suspend () -> Unit) {
+    val coroutineScope = executionContext[ClientScope]?.coroutineScope
+    if (writeToCacheAsynchronously && coroutineScope != null) {
+      coroutineScope.launch { block() }
+    } else {
+      block()
+    }
+  }
 
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     val defaultFetchPolicy = if (request.operation is Query) FetchPolicy.CacheFirst else FetchPolicy.NetworkOnly
@@ -31,12 +45,14 @@ class ApolloCacheInterceptor(private val store: ApolloStore) : ApolloRequestInte
 
     if (request.operation is Subscription) {
       return proceed(request, chain).onEach { response ->
-        val cacheKeys = if (!response.isFromCache && response.data != null) {
-          store.writeOperation(request.operation, response.data!!, responseAdapterCache, CacheHeaders.NONE, publish = false)
-        } else {
-          emptySet()
+        maybeAsync(request.executionContext) {
+          val cacheKeys = if (!response.isFromCache && response.data != null) {
+            store.writeOperation(request.operation, response.data!!, responseAdapterCache, CacheHeaders.NONE, publish = false)
+          } else {
+            emptySet()
+          }
+          store.publish(cacheKeys)
         }
-        store.publish(cacheKeys)
       }
     }
 
@@ -113,12 +129,14 @@ class ApolloCacheInterceptor(private val store: ApolloStore) : ApolloRequestInte
       } else {
         emptySet()
       }
-      val cacheKeys = if (!response.isFromCache && response.data != null) {
-        store.writeOperation(request.operation, response.data!!, responseAdapterCache, CacheHeaders.NONE, publish = false)
-      } else {
-        emptySet()
+      maybeAsync(request.executionContext) {
+        val cacheKeys = if (!response.isFromCache && response.data != null) {
+          store.writeOperation(request.operation, response.data!!, responseAdapterCache, CacheHeaders.NONE, publish = false)
+        } else {
+          emptySet()
+        }
+        store.publish(optimisticKeys + cacheKeys)
       }
-      store.publish(optimisticKeys + cacheKeys)
     }
 
     return result.getOrThrow()
