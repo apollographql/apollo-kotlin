@@ -12,18 +12,18 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey
-import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
+import com.apollographql.apollo3.cache.normalized.CacheResolver
 import com.apollographql.apollo3.cache.normalized.ReadOnlyNormalizedCache
 
 fun <D : Operation.Data> Operation<D>.normalize(
     data: D,
     customScalarAdapters: CustomScalarAdapters,
-    cacheKeyResolver: CacheKeyResolver,
+    cacheResolver: CacheResolver,
 ) = normalizeInternal(
     data,
     customScalarAdapters,
-    cacheKeyResolver,
-    CacheKeyResolver.rootKey().key,
+    cacheResolver,
+    CacheResolver.rootKey().key,
     adapter(),
     variables(customScalarAdapters),
     selections())
@@ -31,12 +31,12 @@ fun <D : Operation.Data> Operation<D>.normalize(
 fun <D : Fragment.Data> Fragment<D>.normalize(
     data: D,
     customScalarAdapters: CustomScalarAdapters,
-    cacheKeyResolver: CacheKeyResolver,
+    cacheResolver: CacheResolver,
     rootKey: String,
 ) = normalizeInternal(
     data,
     customScalarAdapters,
-    cacheKeyResolver,
+    cacheResolver,
     rootKey,
     adapter(),
     variables(customScalarAdapters),
@@ -45,7 +45,7 @@ fun <D : Fragment.Data> Fragment<D>.normalize(
 private fun <D> normalizeInternal(
     data: D,
     customScalarAdapters: CustomScalarAdapters,
-    cacheKeyResolver: CacheKeyResolver,
+    cacheResolver: CacheResolver,
     rootKey: String,
     adapter: Adapter<D>,
     variables: Executable.Variables,
@@ -54,23 +54,23 @@ private fun <D> normalizeInternal(
   val writer = MapJsonWriter()
   adapter.toJson(writer, customScalarAdapters, data)
   return Normalizer(variables) { compiledField, fields ->
-    cacheKeyResolver.fromFieldRecordSet(compiledField, variables, fields)?.key
+    cacheResolver.cacheKeyForObject(compiledField, variables, fields)?.key
   }.normalize(writer.root() as Map<String, Any?>, null, rootKey, selections)
 }
 
 fun <D : Operation.Data> Operation<D>.readDataFromCache(
     customScalarAdapters: CustomScalarAdapters,
     cache: ReadOnlyNormalizedCache,
-    cacheKeyResolver: CacheKeyResolver,
+    cacheResolver: CacheResolver,
     cacheHeaders: CacheHeaders,
 ) = readInternal(
     cache = cache,
-    cacheKeyResolver = cacheKeyResolver,
+    cacheResolver = cacheResolver,
     cacheHeaders = cacheHeaders,
     variables = variables(customScalarAdapters),
     adapter = adapter(),
     customScalarAdapters = customScalarAdapters,
-    cacheKey = CacheKeyResolver.rootKey(),
+    cacheKey = CacheResolver.rootKey(),
     selections = selections()
 )
 
@@ -78,12 +78,12 @@ fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
     cacheKey: CacheKey,
     customScalarAdapters: CustomScalarAdapters,
     cache: ReadOnlyNormalizedCache,
-    cacheKeyResolver: CacheKeyResolver,
+    cacheResolver: CacheResolver,
     cacheHeaders: CacheHeaders,
 ) = readInternal(
     cacheKey = cacheKey,
     cache = cache,
-    cacheKeyResolver = cacheKeyResolver,
+    cacheResolver = cacheResolver,
     cacheHeaders = cacheHeaders,
     variables = variables(customScalarAdapters),
     adapter = adapter(),
@@ -95,7 +95,7 @@ fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
 private fun <D> readInternal(
     cacheKey: CacheKey,
     cache: ReadOnlyNormalizedCache,
-    cacheKeyResolver: CacheKeyResolver,
+    cacheResolver: CacheResolver,
     cacheHeaders: CacheHeaders,
     variables: Executable.Variables,
     adapter: Adapter<D>,
@@ -105,7 +105,7 @@ private fun <D> readInternal(
   val map = CacheBatchReader(
       cache = cache,
       cacheHeaders = cacheHeaders,
-      cacheKeyResolver = cacheKeyResolver,
+      cacheResolver = cacheResolver,
       variables = variables,
       rootKey = cacheKey.key,
       rootSelections = selections

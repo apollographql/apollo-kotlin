@@ -4,7 +4,7 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
+import com.apollographql.apollo3.cache.normalized.CacheResolver
 import com.apollographql.apollo3.subscription.OperationClientMessage
 import com.apollographql.apollo3.subscription.OperationServerMessage
 import com.apollographql.apollo3.subscription.SubscriptionConnectionParams
@@ -34,7 +34,7 @@ class SubscriptionManagerTest {
         SubscriptionConnectionParamsProvider.Const(SubscriptionConnectionParams()),
         MockExecutor(),
         connectionHeartbeatTimeoutMs,
-        CacheKeyResolver.DEFAULT,
+        CacheResolver.DEFAULT,
         false)
     subscriptionManager.addOnStateChangeListener(onStateChangeListener)
   }

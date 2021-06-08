@@ -3,7 +3,6 @@ package com.apollographql.apollo3
 import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.Utils.readFileToString
-import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.cache.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.CacheHeaders.Companion.builder
@@ -68,7 +67,7 @@ class CacheHeadersTest {
       }
     }
     val apolloClient = ApolloClient.builder()
-        .normalizedCache(cacheFactory, IdFieldCacheKeyResolver())
+        .normalizedCache(cacheFactory, CacheResolver.ID)
         .serverUrl(server.url("/"))
         .okHttpClient(OkHttpClient.Builder().dispatcher(Dispatcher(immediateExecutorService())).build())
         .dispatcher(immediateExecutor())
@@ -123,7 +122,7 @@ class CacheHeadersTest {
     }
     val cacheHeaders = builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "true").build()
     val apolloClient = ApolloClient.builder()
-        .normalizedCache(cacheFactory, IdFieldCacheKeyResolver())
+        .normalizedCache(cacheFactory, CacheResolver.ID)
         .serverUrl(server.url("/"))
         .okHttpClient(OkHttpClient.Builder().dispatcher(Dispatcher(immediateExecutorService())).build())
         .dispatcher(immediateExecutor())

@@ -5,6 +5,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.parseResponseBody
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey
+import com.apollographql.apollo3.cache.normalized.CacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.Record
@@ -21,7 +22,6 @@ import com.apollographql.apollo3.integration.normalizer.HeroTypeDependentAliased
 import com.apollographql.apollo3.integration.normalizer.SameHeroTwiceQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import readResource
-import com.apollographql.apollo3.testing.IdFieldCacheKeyResolver
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -245,7 +245,7 @@ class NormalizerTest {
   companion object {
     internal fun <D : Operation.Data> records(operation: Operation<D>, name: String): Map<String, Record> {
       val response = operation.parseResponseBody(readResource(name))
-      return operation.normalize(data = response.data!!, CustomScalarAdapters.Empty, IdFieldCacheKeyResolver)
+      return operation.normalize(data = response.data!!, CustomScalarAdapters.Empty, CacheResolver.ID)
     }
 
     private const val TEST_FIELD_KEY_JEDI = "hero({\"episode\":\"JEDI\"})"

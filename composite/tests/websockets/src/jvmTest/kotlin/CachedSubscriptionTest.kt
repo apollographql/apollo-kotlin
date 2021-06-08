@@ -4,7 +4,7 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKey
-import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
+import com.apollographql.apollo3.cache.normalized.CacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.interceptor.cache.watch
 import com.apollographql.apollo3.interceptor.cache.withStore
@@ -49,13 +49,9 @@ class CachedSubscriptionTest {
   fun subscriptionsCanUpdateTheCache() {
     val store = ApolloStore(
         MemoryCacheFactory(Int.MAX_VALUE),
-        object : CacheKeyResolver() {
-          override fun fromFieldRecordSet(field: CompiledField, variables: Executable.Variables, recordSet: Map<String, Any?>): CacheKey? {
+        object : CacheResolver() {
+          override fun cacheKeyForObject(field: CompiledField, variables: Executable.Variables, map: Map<String, Any?>): CacheKey {
             return CacheKey(field.responseName)
-          }
-
-          override fun fromFieldArguments(field: CompiledField, variables: Executable.Variables): CacheKey? {
-            return null
           }
         }
     )

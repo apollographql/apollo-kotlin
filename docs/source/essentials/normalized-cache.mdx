@@ -207,13 +207,13 @@ To do this, specify a `CacheKeyResolver` when configuring your `NormalizedCacheF
 <MultiCodeBlock>
 
 ```kotlin:title=Kotlin
-val resolver: CacheKeyResolver = object : CacheKeyResolver() {
-  override fun fromFieldRecordSet(field: CompiledField, recordSet: Map<String, Any>): CacheKey {
+val resolver: CacheKeyResolver = object : CacheResolver() {
+  override fun cacheKeyForObject(field: CompiledField, map: Map<String, Any>): CacheKey {
     // Retrieve the id from the object itself
     return CacheKey(recordSet["id"] as String)
   }
 
-  override fun fromFieldArguments(field: CompiledField, variables: Operation.Variables): CacheKey {
+  override fun resolveField(field: CompiledField, variables: Operation.Variables): CacheKey {
     // Retrieve the id from the field arguments.
     // In the example, this allows to know that `author(id: "author1")` will retrieve `author1`
     // That sounds straightforward but without this, the cache would have no way of finding the id before executing the request on the
@@ -229,15 +229,15 @@ val apolloClient = ApolloClient.builder()
 ```
 
 ```java:title=Java
-CacheKeyResolver resolver = new CacheKeyResolver() {
+CacheKeyResolver resolver = new CacheResolver() {
    @NotNull @Override
-   public CacheKey fromFieldRecordSet(@NotNull ResponseField field, @NotNull Map<String, Object> recordSet) {
+   public CacheKey cacheKeyForObject(@NotNull ResponseField field, @NotNull Map<String, Object> recordSet) {
      // Retrieve the id from the object itself
      return CacheKey(((String) recordSet.get("id"));
    }
 
    @NotNull @Override
-   public CacheKey fromFieldArguments(@NotNull ResponseField field, @NotNull Operation.Variables variables) {
+   public CacheKey resolveField(@NotNull ResponseField field, @NotNull Operation.Variables variables) {
      // Retrieve the id from the field arguments.
      // In the example, this allows to know that `author(id: "author1")` will retrive `author1`
      // That sounds straightforward but without this, the cache would have no way of finding the id before executing the request on the

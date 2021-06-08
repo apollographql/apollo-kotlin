@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo3.cache.http.ApolloHttpCache
 import com.apollographql.apollo3.cache.http.DiskLruHttpCacheStore
 import com.apollographql.apollo3.cache.normalized.CacheKey
-import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
+import com.apollographql.apollo3.cache.normalized.CacheResolver
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo3.kotlinsample.data.ApolloCallbackService
 import com.apollographql.apollo3.kotlinsample.data.ApolloCoroutinesService
@@ -45,17 +45,13 @@ class KotlinSampleApp : Application() {
         .build()
 
     val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory(this, "github_cache")
-    val cacheKeyResolver = object : CacheKeyResolver() {
-      override fun fromFieldRecordSet(field: CompiledField, variables: Executable.Variables, recordSet: Map<String, Any?>): CacheKey? {
-        return if (recordSet["__typename"] == "Repository") {
-          CacheKey(recordSet["id"] as String)
+    val cacheResolver = object : CacheResolver() {
+      override fun cacheKeyForObject(field: CompiledField, variables: Executable.Variables, map: Map<String, Any?>): CacheKey? {
+        return if (map["__typename"] == "Repository") {
+          CacheKey(map["id"] as String)
         } else {
           null
         }
-      }
-
-      override fun fromFieldArguments(field: CompiledField, variables: Executable.Variables): CacheKey? {
-        return null
       }
     }
 
@@ -65,7 +61,7 @@ class KotlinSampleApp : Application() {
 
     ApolloClient.builder()
         .serverUrl(baseUrl)
-        .normalizedCache(sqlNormalizedCacheFactory, cacheKeyResolver)
+        .normalizedCache(sqlNormalizedCacheFactory, cacheResolver)
         .httpCache(ApolloHttpCache(cacheStore, logger))
         .defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST)
         .okHttpClient(okHttpClient)

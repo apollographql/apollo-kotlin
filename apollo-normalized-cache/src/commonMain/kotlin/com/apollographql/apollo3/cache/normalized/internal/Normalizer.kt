@@ -16,7 +16,6 @@ import com.apollographql.apollo3.cache.normalized.Record
  */
 class Normalizer(val variables: Executable.Variables, val cacheKeyForObject: (CompiledField, Map<String, Any?>) -> String?) {
   private val records = mutableMapOf<String, Record>()
-  private val cacheKeyBuilder = RealCacheKeyBuilder()
 
   fun normalize(map: Map<String, Any?>, path: String?, rootKey: String, selections: List<CompiledSelection>): Map<String, Record> {
 
@@ -91,7 +90,7 @@ class Normalizer(val variables: Executable.Variables, val cacheKeyForObject: (Co
         return@mapNotNull null
       }
 
-      val fieldKey = cacheKeyBuilder.build(first, variables)
+      val fieldKey = first.nameWithArguments(variables)
 
       val unwrappedType = (first.type as? CompiledNotNullType)?.ofType ?: first.type
 

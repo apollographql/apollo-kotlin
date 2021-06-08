@@ -17,7 +17,7 @@ import com.apollographql.apollo3.api.internal.Optional.Companion.fromNullable
 import com.apollographql.apollo3.api.internal.Optional.Companion.of
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
+import com.apollographql.apollo3.cache.normalized.CacheResolver
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.internal.RealApolloStore
@@ -264,7 +264,7 @@ class ApolloClient internal constructor(
     var httpCache: HttpCache? = null
     var apolloStore: ApolloStore = ApolloStore.emptyApolloStore
     var cacheFactory = absent<NormalizedCacheFactory>()
-    var cacheKeyResolver = absent<CacheKeyResolver>()
+    var cacheKeyResolver = absent<CacheResolver>()
     var defaultHttpCachePolicy = HttpCachePolicy.NETWORK_ONLY
     var defaultResponseFetcher = ApolloResponseFetchers.CACHE_FIRST
     var defaultCacheHeaders = CacheHeaders.NONE
@@ -364,14 +364,14 @@ class ApolloClient internal constructor(
      * Set the configuration to be used for normalized cache.
      *
      * @param normalizedCacheFactory the [NormalizedCacheFactory] used to construct a [NormalizedCache].
-     * @param keyResolver the [CacheKeyResolver] to use to normalize records
+     * @param keyResolver the [CacheResolver] to use to normalize records
      * @return The [Builder] object to be used for chaining method calls
      */
     /**
      * Set the configuration to be used for normalized cache.
      *
      * @param normalizedCacheFactory the [NormalizedCacheFactory] used to construct a [NormalizedCache].
-     * @param keyResolver the [CacheKeyResolver] to use to normalize records
+     * @param keyResolver the [CacheResolver] to use to normalize records
      * @return The [Builder] object to be used for chaining method calls
      */
     /**
@@ -382,9 +382,9 @@ class ApolloClient internal constructor(
      */
     @JvmOverloads
     fun normalizedCache(normalizedCacheFactory: NormalizedCacheFactory,
-                        keyResolver: CacheKeyResolver = CacheKeyResolver.DEFAULT): Builder {
+                        cacheResolver: CacheResolver = CacheResolver.DEFAULT): Builder {
       cacheFactory = fromNullable(normalizedCacheFactory)
-      cacheKeyResolver = fromNullable((keyResolver))
+      cacheKeyResolver = fromNullable((cacheResolver))
       return this
     }
 
@@ -635,7 +635,7 @@ class ApolloClient internal constructor(
             subscriptionConnectionParams,
             dispatcher,
             subscriptionHeartbeatTimeout,
-            cacheKeyResolver.or(CacheKeyResolver.DEFAULT),
+            cacheKeyResolver.or(CacheResolver.DEFAULT),
             enableAutoPersistedSubscriptions)
       }
       return ApolloClient(serverUrl,
