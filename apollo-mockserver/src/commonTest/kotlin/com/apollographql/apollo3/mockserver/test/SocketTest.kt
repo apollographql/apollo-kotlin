@@ -24,7 +24,7 @@ class SocketTest {
     mockServer.enqueue(MockResponse(body = builder.toString().encodeUtf8()))
     val str = builder.toString()
     val engine = DefaultHttpEngine()
-    val response = engine.execute(HttpRequest(mockServer.url(), emptyMap(), HttpMethod.Get, null))
+    val response = engine.execute(HttpRequest(HttpMethod.Get, mockServer.url(), emptyMap(), null))
 
     assertEquals(response.body!!.readUtf8(), str)
   }

@@ -141,24 +141,19 @@ private fun buildHttpResponse(
 
   /**
    * data can be empty if there is no body.
-   * In that case, trying to create a ByteString later on fails
-   * So fail early instead
+   * In that case, trying to create a ByteString fails
    */
-  if (data == null || data.length.toInt() == 0) {
-    return Result.failure(
-        ApolloHttpException(
-            statusCode = httpResponse.statusCode.toInt(),
-            headers = httpHeaders,
-            message = "Failed to parse GraphQL http network response: EOF"
-        )
-    )
+  val bodyString = if (data == null || data.length.toInt() == 0) {
+    null
+  } else {
+    data.toByteString()
   }
 
   return Result.success(
       HttpResponse(
           statusCode = statusCode,
           headers = httpHeaders,
-          bodyString = data.toByteString(),
+          bodyString = bodyString,
           bodySource = null
       )
   )
