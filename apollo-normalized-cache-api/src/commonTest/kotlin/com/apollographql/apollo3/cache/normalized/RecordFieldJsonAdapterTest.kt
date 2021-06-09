@@ -12,8 +12,8 @@ class RecordFieldJsonAdapterTest {
     val expectedDouble = "1.23"
     val expectedStringValue = "StringValue"
     val expectedBooleanValue = true
-    val expectedCacheReference = CacheReference("foo")
-    val expectedCacheReferenceList = listOf(CacheReference("bar"), CacheReference("baz"))
+    val expectedCacheKey = CacheKey("foo")
+    val expectedCacheKeyList = listOf(CacheKey("bar"), CacheKey("baz"))
     val expectedScalarList = listOf("scalarOne", "scalarTwo")
     val expectedListOfScalarList = listOf(listOf("scalarOne", "scalarTwo"))
     val expectedMapKey = "foo"
@@ -25,9 +25,9 @@ class RecordFieldJsonAdapterTest {
             "double" to expectedDouble,
             "string" to expectedStringValue,
             "boolean" to expectedBooleanValue,
-            "cacheReference" to expectedCacheReference,
+            "cacheReference" to expectedCacheKey,
             "scalarList" to expectedScalarList,
-            "referenceList" to expectedCacheReferenceList,
+            "referenceList" to expectedCacheKeyList,
             "nullValue" to null,
             "listOfScalarList" to expectedListOfScalarList,
             "map" to expectedMap
@@ -40,9 +40,9 @@ class RecordFieldJsonAdapterTest {
     assertEquals(actual = deserializedMap["double"], expected = expectedDouble)
     assertEquals(actual = deserializedMap["string"], expected = expectedStringValue)
     assertEquals(actual = deserializedMap["boolean"], expected = expectedBooleanValue)
-    assertEquals(actual = deserializedMap["cacheReference"], expected = expectedCacheReference)
+    assertEquals(actual = deserializedMap["cacheReference"], expected = expectedCacheKey)
     assertEquals(actual = deserializedMap["scalarList"], expected = expectedScalarList)
-    assertEquals(actual = deserializedMap["referenceList"], expected = expectedCacheReferenceList)
+    assertEquals(actual = deserializedMap["referenceList"], expected = expectedCacheKeyList)
     assertTrue { deserializedMap.containsKey("nullValue") }
     assertNull(deserializedMap["nullValue"])
     assertEquals(actual = (deserializedMap["listOfScalarList"] as List<*>).size, expected = 1)

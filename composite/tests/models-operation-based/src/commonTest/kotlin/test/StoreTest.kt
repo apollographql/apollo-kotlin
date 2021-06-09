@@ -44,7 +44,7 @@ class StoreTest {
 
     val heroWithFriendsFragment = store.readFragment(
         HeroWithFriendsFragmentImpl(),
-        CacheKey.from("2001"),
+        CacheKey("2001"),
     )!!
     assertEquals(heroWithFriendsFragment.id, "2001")
     assertEquals(heroWithFriendsFragment.name, "R2-D2")
@@ -58,7 +58,7 @@ class StoreTest {
 
     var fragment = store.readFragment(
         HumanWithIdFragmentImpl(),
-        CacheKey.from("1000"),
+        CacheKey("1000"),
     )!!
 
     assertEquals(fragment.id, "1000")
@@ -66,14 +66,14 @@ class StoreTest {
 
     fragment = store.readFragment(
         HumanWithIdFragmentImpl(),
-        CacheKey.from("1002"),
+        CacheKey("1002"),
     )!!
     assertEquals(fragment.id, "1002")
     assertEquals(fragment.name, "Han Solo")
 
     fragment = store.readFragment(
         HumanWithIdFragmentImpl(),
-        CacheKey.from("1003"),
+        CacheKey("1003"),
     )!!
     assertEquals(fragment.id, "1003")
     assertEquals(fragment.name, "Leia Organa")
@@ -100,7 +100,7 @@ class StoreTest {
 
     store.writeFragment(
         HeroWithFriendsFragmentImpl(),
-        CacheKey.from("2001"),
+        CacheKey("2001"),
         HeroWithFriendsFragment(
             id = "2001",
             name = "R222-D222",
@@ -125,7 +125,7 @@ class StoreTest {
 
     store.writeFragment(
         HumanWithIdFragmentImpl(),
-        CacheKey.from("1002"),
+        CacheKey("1002"),
         HumanWithIdFragment(
             id = "1002",
             name = "Beast"

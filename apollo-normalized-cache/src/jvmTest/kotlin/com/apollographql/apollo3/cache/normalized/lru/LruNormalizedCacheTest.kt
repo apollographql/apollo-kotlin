@@ -3,12 +3,9 @@ package com.apollographql.apollo3.cache.normalized.lru
 import com.apollographql.apollo3.cache.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.CacheHeaders.Companion.builder
+import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.Record
-import com.apollographql.apollo3.cache.normalized.RecordFieldJsonAdapter
-import com.apollographql.apollo3.cache.normalized.CacheKey
-import com.apollographql.apollo3.cache.normalized.CacheReference
-
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.util.concurrent.TimeUnit
@@ -338,7 +335,7 @@ class LruNormalizedCacheTest {
     val record2 = Record(
         key = "id_2",
         fields = mapOf(
-            "a" to CacheReference("id_1"),
+            "a" to CacheKey("id_1"),
         ),
     )
 
@@ -359,7 +356,7 @@ class LruNormalizedCacheTest {
     val record2 = Record(
         key = "id_2",
         fields = mapOf(
-            "a" to CacheReference("id_1"),
+            "a" to CacheKey("id_1"),
         ),
     )
 

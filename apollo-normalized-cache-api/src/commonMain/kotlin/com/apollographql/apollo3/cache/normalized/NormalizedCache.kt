@@ -79,18 +79,14 @@ abstract class NormalizedCache: ReadOnlyNormalizedCache {
                 .append(key2)
                 .append("\" : ")
             when (value2) {
-              is CacheReference -> {
-                append("CacheRecordRef(")
-                    .append(value2)
-                    .append(")")
+              is CacheKey -> {
+                append(value2)
               }
               is List<*> -> {
                 append("[")
                 for (item in value2) {
                   append("\n      ")
-                      .append(if (item is CacheReference) "CacheRecordRef(" else "")
                       .append(item)
-                      .append(if (item is CacheReference) ")" else "")
                 }
                 append("\n    ]")
               }

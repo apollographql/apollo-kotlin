@@ -47,7 +47,7 @@ class StoreTest {
     assertFriendIsCached("1002", "Han Solo")
 
     // remove the root query object
-    var removed = store.remove(CacheKey.from("2001"))
+    var removed = store.remove(CacheKey("2001"))
     assertEquals(true, removed)
 
     // Trying to get the full response should fail
@@ -58,7 +58,7 @@ class StoreTest {
     assertFriendIsCached("1002", "Han Solo")
 
     // remove a single object from the list
-    removed = store.remove(CacheKey.from("1002"))
+    removed = store.remove(CacheKey("1002"))
     assertEquals(true, removed)
 
     // Trying to get the full response should fail
@@ -80,7 +80,7 @@ class StoreTest {
     assertFriendIsCached("1003", "Leia Organa")
 
     // Now remove multiple keys
-    val removed = store.remove(listOf(CacheKey.from("1002"), CacheKey.from("1000")))
+    val removed = store.remove(listOf(CacheKey("1002"), CacheKey("1000")))
 
     assertEquals(2, removed)
 
@@ -102,7 +102,7 @@ class StoreTest {
     assertFriendIsCached("1003", "Leia Organa")
 
     // test remove root query object
-    val removed = store.remove(CacheKey.from("2001"), true)
+    val removed = store.remove(CacheKey("2001"), true)
     assertEquals(true, removed)
 
     // Nothing should be cached anymore

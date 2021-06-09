@@ -46,16 +46,16 @@ class KotlinSampleApp : Application() {
 
     val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory(this, "github_cache")
     val cacheKeyResolver = object : CacheKeyResolver() {
-      override fun fromFieldRecordSet(field: CompiledField, variables: Executable.Variables, recordSet: Map<String, Any?>): CacheKey {
+      override fun fromFieldRecordSet(field: CompiledField, variables: Executable.Variables, recordSet: Map<String, Any?>): CacheKey? {
         return if (recordSet["__typename"] == "Repository") {
           CacheKey(recordSet["id"] as String)
         } else {
-          CacheKey.NO_KEY
+          null
         }
       }
 
-      override fun fromFieldArguments(field: CompiledField, variables: Executable.Variables): CacheKey {
-        return CacheKey.NO_KEY
+      override fun fromFieldArguments(field: CompiledField, variables: Executable.Variables): CacheKey? {
+        return null
       }
     }
 

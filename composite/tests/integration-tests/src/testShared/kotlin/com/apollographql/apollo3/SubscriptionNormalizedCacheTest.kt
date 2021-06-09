@@ -117,11 +117,11 @@ class SubscriptionNormalizedCacheTest {
         "100" : {
           "id" : 100
           "content" : Network comment content
-          "postedBy" : CacheRecordRef(100.postedBy)
+          "postedBy" : CacheKey(100.postedBy)
         }
       
         "QUERY_ROOT" : {
-          "commentAdded({"repoFullName":"repo"})" : CacheRecordRef(100)
+          "commentAdded({"repoFullName":"repo"})" : CacheKey(100)
         }
       }
       
@@ -170,11 +170,11 @@ class SubscriptionNormalizedCacheTest {
         "100" : {
           "id" : 100
           "content" : Network comment content
-          "postedBy" : CacheRecordRef(100.postedBy)
+          "postedBy" : CacheKey(100.postedBy)
         }
       
         "QUERY_ROOT" : {
-          "commentAdded({"repoFullName":"repo"})" : CacheRecordRef(100)
+          "commentAdded({"repoFullName":"repo"})" : CacheKey(100)
         }
       }
       

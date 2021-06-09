@@ -242,7 +242,7 @@ class MemoryCacheTest {
     val record2 = Record(
         key = "id_2",
         fields = mapOf(
-            "a" to CacheReference("id_1"),
+            "a" to CacheKey("id_1"),
         )
     )
 
@@ -268,7 +268,7 @@ class MemoryCacheTest {
     val record2 = Record(
         key = "id_2",
         fields = mapOf(
-            "a" to CacheReference("id_1"),
+            "a" to CacheKey("id_1"),
         )
     )
 

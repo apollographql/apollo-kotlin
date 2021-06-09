@@ -7,7 +7,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.cache.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.internal.ReadMode
 import com.apollographql.apollo3.cache.normalized.internal.RealApolloStore
 import com.apollographql.apollo3.api.exception.ApolloException
 import com.apollographql.apollo3.api.exception.ApolloGenericException
@@ -90,7 +89,6 @@ class ApolloCacheInterceptor<D : Operation.Data>(
           operation = request.operation,
           cacheHeaders = request.cacheHeaders,
           customScalarAdapters = customScalarAdapters,
-          mode = ReadMode.BATCH
       )
     }
     if (data != null) {

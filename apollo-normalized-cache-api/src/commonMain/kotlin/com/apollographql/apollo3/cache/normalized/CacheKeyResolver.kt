@@ -14,21 +14,21 @@ abstract class CacheKeyResolver {
       field: CompiledField,
       variables: Executable.Variables,
       recordSet: Map<String, @JvmSuppressWildcards Any?>
-  ): CacheKey
+  ): CacheKey?
 
   abstract fun fromFieldArguments(
       field: CompiledField,
       variables: Executable.Variables
-  ): CacheKey
+  ): CacheKey?
 
   companion object {
     private val ROOT_CACHE_KEY = CacheKey("QUERY_ROOT")
 
     @JvmField
     val DEFAULT: CacheKeyResolver = object : CacheKeyResolver() {
-      override fun fromFieldRecordSet(field: CompiledField, variables: Executable.Variables, recordSet: Map<String, Any?>) = CacheKey.NO_KEY
+      override fun fromFieldRecordSet(field: CompiledField, variables: Executable.Variables, recordSet: Map<String, Any?>): CacheKey? = null
 
-      override fun fromFieldArguments(field: CompiledField, variables: Executable.Variables) = CacheKey.NO_KEY
+      override fun fromFieldArguments(field: CompiledField, variables: Executable.Variables): CacheKey? = null
     }
 
     @JvmStatic

@@ -14,7 +14,6 @@ import com.apollographql.apollo3.cache.normalized.MemoryCache
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.Record
 import com.apollographql.apollo3.cache.normalized.internal.ApolloStore
-import com.apollographql.apollo3.cache.normalized.internal.ReadMode
 import com.apollographql.apollo3.cache.normalized.internal.normalize
 import com.apollographql.apollo3.cache.normalized.internal.readDataFromCache
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
@@ -58,37 +57,12 @@ class Benchmark {
   }
 
   @Test
-  fun apolloReadCacheSql() = benchmarkRule.measureRepeated {
-    runBlocking {
-      sqlStore.readOperation(
-          operation = operation,
-          responseAdapterCache = ResponseAdapterCache.DEFAULT,
-          cacheHeaders = CacheHeaders.NONE,
-          mode = ReadMode.SEQUENTIAL
-      )
-    }
-  }
-
-  @Test
   fun apolloBatchCacheSql() = benchmarkRule.measureRepeated {
     runBlocking {
       sqlStore.readOperation(
           operation = operation,
           responseAdapterCache = ResponseAdapterCache.DEFAULT,
           cacheHeaders = CacheHeaders.NONE,
-          mode = ReadMode.BATCH
-      )
-    }
-  }
-
-  @Test
-  fun apolloReadCacheMemory() = benchmarkRule.measureRepeated {
-    runBlocking {
-      memoryStore.readOperation(
-          operation = operation,
-          responseAdapterCache = ResponseAdapterCache.DEFAULT,
-          cacheHeaders = CacheHeaders.NONE,
-          mode = ReadMode.SEQUENTIAL
       )
     }
   }
@@ -100,7 +74,6 @@ class Benchmark {
           operation = operation,
           responseAdapterCache = ResponseAdapterCache.DEFAULT,
           cacheHeaders = CacheHeaders.NONE,
-          mode = ReadMode.BATCH
       )
     }
   }

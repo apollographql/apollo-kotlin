@@ -3,7 +3,6 @@ package com.apollographql.apollo3.interceptor
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.internal.Optional
 import com.apollographql.apollo3.cache.CacheHeaders
-import com.apollographql.apollo3.cache.normalized.internal.ReadMode
 import com.apollographql.apollo3.api.exception.ApolloException
 import com.apollographql.apollo3.request.RequestHeaders
 import okhttp3.Response
