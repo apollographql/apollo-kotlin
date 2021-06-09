@@ -13,9 +13,11 @@ class GCDWorker(qos: UInt = QOS_CLASS_BACKGROUND) {
 
   suspend fun <R> execute(block: () -> R) = suspendAndResumeOnMain<R> { mainContinuation, _ ->
     block.freeze()
-
-    dispatch_async(queue) {
+    val callback = {
+      initRuntimeIfNeeded()
       mainContinuation.resumeWith(runCatching(block))
     }
+
+    dispatch_async(queue, callback.freeze())
   }
 }

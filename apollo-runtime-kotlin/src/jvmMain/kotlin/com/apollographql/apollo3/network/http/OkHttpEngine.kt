@@ -6,14 +6,12 @@ import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
-import okhttp3.Callback
 import okhttp3.Headers
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import okio.BufferedSink
-import java.io.IOException
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -32,7 +30,7 @@ actual class DefaultHttpEngine(
           .build(),
   )
 
-  override suspend fun <R> execute(request: HttpRequest, block: (HttpResponse) -> R): R = suspendCancellableCoroutine { continuation ->
+  override suspend fun execute(request: HttpRequest): HttpResponse = suspendCancellableCoroutine { continuation ->
     val httpRequest = Request.Builder()
         .url(request.url)
         .headers(Headers.of(request.headers))
@@ -78,22 +76,15 @@ actual class DefaultHttpEngine(
 
     val response = networkResult.getOrThrow()
 
-    val parseResult = kotlin.runCatching {
-      val httpResponse = HttpResponse(
-          statusCode = response.code(),
-          headers = response.headers().toMap(),
-          body = response.body()!!.source()
-      )
-      block(httpResponse)
-    }
-
-
-    if (parseResult.isFailure) {
-      continuation.resumeWithException(wrapThrowableIfNeeded(parseResult.exceptionOrNull()!!))
-      return@suspendCancellableCoroutine
-    }
-
-    continuation.resume(parseResult.getOrThrow())
+    val result = Result.success(
+        HttpResponse(
+            statusCode = response.code(),
+            headers = response.headers().toMap(),
+            bodySource = response.body()!!.source(),
+            bodyString = null
+        )
+    )
+    continuation.resume(result.getOrThrow())
   }
 
   private fun Headers.toMap(): Map<String, String> {

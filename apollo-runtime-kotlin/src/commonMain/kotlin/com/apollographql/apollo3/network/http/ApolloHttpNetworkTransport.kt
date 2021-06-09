@@ -10,6 +10,7 @@ import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.parseResponseBody
 import com.apollographql.apollo3.api.exception.ApolloHttpException
 import com.apollographql.apollo3.api.http.HttpRequest
+import com.apollographql.apollo3.internal.NonMainWorker
 import com.apollographql.apollo3.network.NetworkTransport
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -19,6 +20,7 @@ class ApolloHttpNetworkTransport(
     private val engine: HttpEngine,
     private val interceptors: List<HttpRequestInterceptor> = emptyList(),
 ) : NetworkTransport {
+  val worker = NonMainWorker()
 
   /**
    *
@@ -50,20 +52,26 @@ class ApolloHttpNetworkTransport(
 
     val httpRequest = httpRequestComposer.compose(request)
     return flow {
-      val response = RealInterceptorChain(
+      val httpResponse = RealInterceptorChain(
           interceptors = interceptors + engineInterceptor,
           index = 0
-      ).proceed(httpRequest) {
-        it.parse(request, responseAdapterCache)
+      ).proceed(httpRequest)
+
+      val response = worker.doWork {
+        try {
+          httpResponse.parse(request, responseAdapterCache)
+        } catch (e: Exception) {
+          throw wrapThrowableIfNeeded(e)
+        }
       }
 
       emit(response)
     }
   }
 
-  inner class EngineInterceptor: HttpRequestInterceptor {
-    override suspend fun <R> intercept(request: HttpRequest, block: (HttpResponse) -> R, chain: HttpInterceptorChain): R {
-      return engine.execute(request, block)
+  inner class EngineInterceptor : HttpRequestInterceptor {
+    override suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse {
+      return engine.execute(request)
     }
   }
 

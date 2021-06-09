@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.http.HttpResponse
 import okio.Buffer
 
 class ApolloHttpLoggingInterceptor : HttpRequestInterceptor {
-  override suspend fun <R> intercept(request: HttpRequest, block: (HttpResponse) -> R, chain: HttpInterceptorChain): R {
+  override suspend fun intercept(request: HttpRequest,  chain: HttpInterceptorChain): HttpResponse {
     println("${request.method.name} ${request.url}")
 
     request.headers.forEach {
@@ -19,26 +19,24 @@ class ApolloHttpLoggingInterceptor : HttpRequestInterceptor {
 
     println("")
 
-    return chain.proceed(request) { httpResponse ->
-      println("HTTP: ${httpResponse.statusCode}")
+    val httpResponse = chain.proceed(request)
+    println("HTTP: ${httpResponse.statusCode}")
 
-      httpResponse.headers.forEach {
-        println("${it.key}: ${it.value}")
-      }
-      println("[end of headers]")
-
-      val body = httpResponse.body?.readByteString()
-      if (body != null) {
-        println(body.utf8())
-      }
-
-      block(
-          HttpResponse(
-              statusCode = httpResponse.statusCode,
-              headers = httpResponse.headers,
-              body = body?.let { Buffer().write(it) }
-          )
-      )
+    httpResponse.headers.forEach {
+      println("${it.key}: ${it.value}")
     }
+    println("[end of headers]")
+
+    val body = httpResponse.body?.readByteString()
+    if (body != null) {
+      println(body.utf8())
+    }
+
+    return HttpResponse(
+        statusCode = httpResponse.statusCode,
+        headers = httpResponse.headers,
+        bodyString = body,
+        bodySource = null
+    )
   }
 }

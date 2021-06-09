@@ -58,7 +58,7 @@ actual class DefaultHttpEngine(
   }
 
   @Suppress("UNCHECKED_CAST")
-  override suspend fun <R> execute(request: HttpRequest, block: (HttpResponse) -> R) = suspendAndResumeOnMain<R> { mainContinuation, invokeOnCancellation ->
+  override suspend fun execute(request: HttpRequest) = suspendAndResumeOnMain<HttpResponse> { mainContinuation, invokeOnCancellation ->
     assert(NSThread.isMainThread())
 
     request.freeze()
@@ -67,11 +67,10 @@ actual class DefaultHttpEngine(
       initRuntimeIfNeeded()
 
       mainContinuation.resumeWith(
-          parse(
+          buildHttpResponse(
               data = httpData,
               httpResponse = nsUrlResponse as? NSHTTPURLResponse,
               error = error,
-              block = block
           )
       )
     }
@@ -113,12 +112,11 @@ actual class DefaultHttpEngine(
 }
 
 @OptIn(ExperimentalUnsignedTypes::class)
-private fun <R> parse(
+private fun buildHttpResponse(
     data: NSData?,
     httpResponse: NSHTTPURLResponse?,
     error: NSError?,
-    block: (HttpResponse) -> R,
-): Result<R> {
+): Result<HttpResponse> {
 
   if (error != null) {
     return Result.failure(
@@ -156,22 +154,13 @@ private fun <R> parse(
     )
   }
 
-  /**
-   * block can fail so wrap everything
-   */
-  val result = runCatching {
-    block(
-        HttpResponse(
-            statusCode = statusCode,
-            headers = httpHeaders,
-            body = Buffer().write(data.toByteString()))
-    )
-  }
-
-  return if (result.isFailure) {
-    Result.failure(wrapThrowableIfNeeded(result.exceptionOrNull()!!))
-  } else {
-    result
-  }
+  return Result.success(
+      HttpResponse(
+          statusCode = statusCode,
+          headers = httpHeaders,
+          bodyString = data.toByteString(),
+          bodySource = null
+      )
+  )
 }
 

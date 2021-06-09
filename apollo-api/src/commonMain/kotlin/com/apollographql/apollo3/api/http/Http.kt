@@ -2,6 +2,7 @@ package com.apollographql.apollo3.api.http
 
 import okio.BufferedSink
 import okio.BufferedSource
+import okio.Buffer
 import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
 
@@ -30,11 +31,17 @@ class HttpResponse(
     val statusCode: Int,
     val headers: Map<String, String>,
     /**
-     * The actual body
-     * It must always be closed if not null
+     * A streamable body.
      */
-    val body: BufferedSource?,
-)
+    private val bodySource: BufferedSource?,
+    /**
+     * An immutable body for the native case where this class is frozen
+     */
+    private val bodyString: ByteString?,
+) {
+  val body: BufferedSource?
+    get() = bodySource ?: bodyString?.let { Buffer().write(it) }
+}
 
 fun HttpBody(
     contentType: String,
