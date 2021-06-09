@@ -132,9 +132,9 @@ class ApolloServerInterceptor(
         .withExecutionContext(
             HttpRequestComposerParams(
                 method = HttpMethod.Post,
-                autoPersistQueries = autoPersistQueries,
+                sendApqExtensions = autoPersistQueries,
                 sendDocument = writeQueryDocument,
-                extraHeaders = emptyMap()
+                headers = emptyMap()
             )
         )
     ).body!!

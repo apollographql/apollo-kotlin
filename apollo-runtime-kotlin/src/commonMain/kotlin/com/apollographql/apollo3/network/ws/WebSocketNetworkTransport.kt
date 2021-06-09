@@ -30,11 +30,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 
 
-/**
- * Apollo GraphQL WS protocol implementation:
- * https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md
- */
-class ApolloWebSocketNetworkTransport(
+class WebSocketNetworkTransport(
     private val webSocketEngine: WebSocketEngine,
     private val serverUrl: String,
     private val connectionAcknowledgeTimeoutMs: Long = 10_000,

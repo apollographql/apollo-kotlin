@@ -10,12 +10,12 @@ import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.network.NetworkTransport
 import kotlinx.coroutines.flow.Flow
 
-class NetworkRequestInterceptor(
+class NetworkInterceptor(
     private val networkTransport: NetworkTransport,
     private val subscriptionNetworkTransport: NetworkTransport,
-) : ApolloRequestInterceptor {
+) : GraphQLInterceptor {
 
-  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: GraphQLInterceptorChain): Flow<ApolloResponse<D>> {
     return when (request.operation) {
       is Query<*> -> networkTransport.execute(request = request)
       is Mutation<*> -> networkTransport.execute(request = request)

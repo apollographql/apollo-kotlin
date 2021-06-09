@@ -21,11 +21,25 @@ interface HttpBody {
 }
 
 class HttpRequest(
+    val method: HttpMethod,
     val url: String,
     val headers: Map<String, String>,
-    val method: HttpMethod,
     val body: HttpBody?,
-)
+) {
+  fun copy(
+      method: HttpMethod = this.method,
+      url: String = this.url,
+      headers: Map<String, String> = this.headers,
+      body: HttpBody? = this.body,
+  ): HttpRequest {
+    return HttpRequest(
+        method = method,
+        url = url,
+        headers = headers,
+        body = body
+    )
+  }
+}
 
 class HttpResponse(
     val statusCode: Int,
@@ -62,3 +76,11 @@ fun HttpBody(
     string: String,
 ): HttpBody = HttpBody(contentType, string.encodeUtf8())
 
+fun HttpRequest.withHeader(name: String, value: String): HttpRequest {
+  return HttpRequest(
+      method = method,
+      url = url,
+      headers = headers + (name to value),
+      body = body
+  )
+}

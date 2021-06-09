@@ -4,7 +4,7 @@ import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import okio.Buffer
 
-class ApolloHttpLoggingInterceptor : HttpRequestInterceptor {
+class LoggingInterceptor : HttpInterceptor {
   override suspend fun intercept(request: HttpRequest,  chain: HttpInterceptorChain): HttpResponse {
     println("${request.method.name} ${request.url}")
 

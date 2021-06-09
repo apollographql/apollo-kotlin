@@ -12,8 +12,8 @@ import com.apollographql.apollo3.api.exception.ApolloCompositeException
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.internal.dependentKeys
-import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
-import com.apollographql.apollo3.interceptor.ApolloRequestInterceptor
+import com.apollographql.apollo3.interceptor.GraphQLInterceptorChain
+import com.apollographql.apollo3.interceptor.GraphQLInterceptor
 import com.apollographql.apollo3.mpp.ensureNeverFrozen
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 class ApolloCacheInterceptor(
     private val store: ApolloStore,
     private val writeToCacheAsynchronously: Boolean = false,
-) : ApolloRequestInterceptor {
+) : GraphQLInterceptor {
   private suspend fun maybeAsync(executionContext: ExecutionContext, block: suspend () -> Unit) {
     val coroutineScope = executionContext[ClientScope]?.coroutineScope
     if (writeToCacheAsynchronously && coroutineScope != null) {
@@ -36,7 +36,7 @@ class ApolloCacheInterceptor(
     }
   }
 
-  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: GraphQLInterceptorChain): Flow<ApolloResponse<D>> {
     val defaultFetchPolicy = if (request.operation is Query) FetchPolicy.CacheFirst else FetchPolicy.NetworkOnly
     val fetchPolicy = request.executionContext[FetchPolicyContext]?.fetchPolicy ?: defaultFetchPolicy
     val refetchPolicy = request.executionContext[RefetchPolicyContext]?.refetchPolicy
@@ -101,7 +101,7 @@ class ApolloCacheInterceptor(
 
   private suspend fun <D : Operation.Data> fetchOne(
       request: ApolloRequest<D>,
-      chain: ApolloInterceptorChain,
+      chain: GraphQLInterceptorChain,
       fetchPolicy: FetchPolicy,
       optimisticUpdates: D?,
   ): ApolloResponse<D> {
@@ -144,7 +144,7 @@ class ApolloCacheInterceptor(
 
   private suspend fun <D : Operation.Data> fetchOneMightThrow(
       request: ApolloRequest<D>,
-      chain: ApolloInterceptorChain,
+      chain: GraphQLInterceptorChain,
       fetchPolicy: FetchPolicy,
   ): ApolloResponse<D> {
     val responseAdapterCache = request.executionContext[CustomScalarAdapters]!!
@@ -208,7 +208,7 @@ class ApolloCacheInterceptor(
     }
   }
 
-  private fun <D : Operation.Data> proceed(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+  private fun <D : Operation.Data> proceed(request: ApolloRequest<D>, chain: GraphQLInterceptorChain): Flow<ApolloResponse<D>> {
     return chain.proceed(request).map {
       it.setFromCache(false)
     }

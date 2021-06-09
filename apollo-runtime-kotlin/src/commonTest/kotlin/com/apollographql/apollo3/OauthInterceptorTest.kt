@@ -6,12 +6,11 @@ import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.parseResponseBody
 import com.apollographql.apollo3.api.exception.ApolloHttpException
-import com.apollographql.apollo3.interceptor.BearerTokenInterceptor
+import com.apollographql.apollo3.network.http.BearerTokenInterceptor
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.http.HttpRequestParameters
 import com.apollographql.apollo3.testing.MockQuery
 import com.apollographql.apollo3.testing.TestTokenProvider
-import com.apollographql.apollo3.testing.runBlocking
 import com.apollographql.apollo3.testing.runWithMainLoop
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

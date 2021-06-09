@@ -3,8 +3,8 @@ package test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.network.http.ApolloHttpNetworkTransport
-import com.apollographql.apollo3.network.http.ApolloHttpLoggingInterceptor
+import com.apollographql.apollo3.network.http.HttpNetworkTransport
+import com.apollographql.apollo3.network.http.LoggingInterceptor
 import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.testing.runWithMainLoop
 import readResource
@@ -15,9 +15,9 @@ class HttpInterceptorTest {
   fun testLoggingInterceptor() {
     val mockServer = MockServer()
     val client = ApolloClient(
-        networkTransport = ApolloHttpNetworkTransport(
+        networkTransport = HttpNetworkTransport(
             serverUrl = mockServer.url(),
-            interceptors = listOf(ApolloHttpLoggingInterceptor())
+            interceptors = listOf(LoggingInterceptor())
         )
     )
 

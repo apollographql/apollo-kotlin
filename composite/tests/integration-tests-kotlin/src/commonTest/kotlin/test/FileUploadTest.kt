@@ -1,19 +1,19 @@
 package test
 
+import checkTestFixture
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.UploadAdapter
-import checkTestFixture
-import com.apollographql.apollo3.testing.enqueue
-import com.apollographql.apollo3.mockserver.MockRecordedRequest
-import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.integration.upload.MultipleUploadMutation
 import com.apollographql.apollo3.integration.upload.NestedUploadMutation
 import com.apollographql.apollo3.integration.upload.SingleUploadMutation
 import com.apollographql.apollo3.integration.upload.SingleUploadTwiceMutation
 import com.apollographql.apollo3.integration.upload.type.NestedObject
+import com.apollographql.apollo3.mockserver.MockRecordedRequest
+import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.testing.runWithMainLoop
 import okio.Buffer
 import kotlin.test.BeforeTest

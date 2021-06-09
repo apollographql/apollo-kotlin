@@ -15,12 +15,12 @@ import com.apollographql.apollo3.network.NetworkTransport
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class ApolloHttpNetworkTransport(
+class HttpNetworkTransport(
     private val httpRequestComposer: HttpRequestComposer,
     private val engine: HttpEngine,
-    private val interceptors: List<HttpRequestInterceptor> = emptyList(),
+    private val interceptors: List<HttpInterceptor> = emptyList(),
 ) : NetworkTransport {
-  val worker = NonMainWorker()
+  private val worker = NonMainWorker()
 
   /**
    *
@@ -40,7 +40,7 @@ class ApolloHttpNetworkTransport(
       headers: Map<String, String> = emptyMap(),
       connectTimeoutMillis: Long = 60_000,
       readTimeoutMillis: Long = 60_000,
-      interceptors: List<HttpRequestInterceptor> = emptyList(),
+      interceptors: List<HttpInterceptor> = emptyList(),
   ) : this(DefaultHttpRequestComposer(serverUrl, headers), DefaultHttpEngine(connectTimeoutMillis, readTimeoutMillis), interceptors)
 
   private val engineInterceptor = EngineInterceptor()
@@ -69,7 +69,7 @@ class ApolloHttpNetworkTransport(
     }
   }
 
-  inner class EngineInterceptor : HttpRequestInterceptor {
+  inner class EngineInterceptor : HttpInterceptor {
     override suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse {
       return engine.execute(request)
     }

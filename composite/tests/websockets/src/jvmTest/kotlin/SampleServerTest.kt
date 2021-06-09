@@ -1,6 +1,6 @@
 import com.apollographql.apollo.sample.server.DefaultApplication
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.network.ws.ApolloWebSocketNetworkTransport
+import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.drop
@@ -39,7 +39,7 @@ class SampleServerTest {
   @Test
   fun simple() {
     val apolloClient = ApolloClient(
-        networkTransport = ApolloWebSocketNetworkTransport(
+        networkTransport = WebSocketNetworkTransport(
             serverUrl = "http://localhost:8080/subscriptions"
         )
     )
@@ -55,7 +55,7 @@ class SampleServerTest {
   @Test
   fun interleavedSubscriptions() {
     val apolloClient = ApolloClient(
-        networkTransport = ApolloWebSocketNetworkTransport(
+        networkTransport = WebSocketNetworkTransport(
             serverUrl = "http://localhost:8080/subscriptions"
         )
     )
@@ -79,7 +79,7 @@ class SampleServerTest {
 
   @Test
   fun idleTimeout() {
-    val transport = ApolloWebSocketNetworkTransport(
+    val transport = WebSocketNetworkTransport(
         serverUrl = "http://localhost:8080/subscriptions",
         idleTimeoutMillis = 1000
     )
@@ -126,7 +126,7 @@ class SampleServerTest {
 
   @Test
   fun serverTermination() {
-    val transport = ApolloWebSocketNetworkTransport(
+    val transport = WebSocketNetworkTransport(
         serverUrl = "http://localhost:8080/subscriptions",
         idleTimeoutMillis = 1000
     )

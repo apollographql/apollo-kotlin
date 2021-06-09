@@ -7,12 +7,12 @@ interface HttpInterceptorChain {
   suspend fun proceed(request: HttpRequest): HttpResponse
 }
 
-interface HttpRequestInterceptor {
+interface HttpInterceptor {
   suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse
 }
 
 internal class RealInterceptorChain(
-    private val interceptors: List<HttpRequestInterceptor>,
+    private val interceptors: List<HttpInterceptor>,
     private val index: Int,
 ) : HttpInterceptorChain {
 

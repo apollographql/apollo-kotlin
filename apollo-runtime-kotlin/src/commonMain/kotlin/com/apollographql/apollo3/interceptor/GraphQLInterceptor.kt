@@ -5,21 +5,21 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ApolloResponse
 import kotlinx.coroutines.flow.Flow
 
-interface ApolloInterceptorChain {
+interface GraphQLInterceptorChain {
   fun <D : Operation.Data> proceed(request: ApolloRequest<D>): Flow<ApolloResponse<D>>
 
   fun canProceed(): Boolean
 
 }
 
-interface ApolloRequestInterceptor {
-  fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>>
+interface GraphQLInterceptor {
+  fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: GraphQLInterceptorChain): Flow<ApolloResponse<D>>
 }
 
 internal class RealInterceptorChain(
-    private val interceptors: List<ApolloRequestInterceptor>,
+    private val interceptors: List<GraphQLInterceptor>,
     private val index: Int,
-) : ApolloInterceptorChain {
+) : GraphQLInterceptorChain {
 
   override fun <D : Operation.Data> proceed(request: ApolloRequest<D>): Flow<ApolloResponse<D>> {
     check(index < interceptors.size)

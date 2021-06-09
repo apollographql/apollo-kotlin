@@ -11,14 +11,14 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequestComposerParams
-import com.apollographql.apollo3.interceptor.ApolloRequestInterceptor
+import com.apollographql.apollo3.interceptor.GraphQLInterceptor
 import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
-import com.apollographql.apollo3.interceptor.NetworkRequestInterceptor
+import com.apollographql.apollo3.interceptor.NetworkInterceptor
 import com.apollographql.apollo3.interceptor.RealInterceptorChain
 import com.apollographql.apollo3.internal.defaultDispatcher
 import com.apollographql.apollo3.network.NetworkTransport
-import com.apollographql.apollo3.network.http.ApolloHttpNetworkTransport
-import com.apollographql.apollo3.network.ws.ApolloWebSocketNetworkTransport
+import com.apollographql.apollo3.network.http.HttpNetworkTransport
+import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -36,7 +36,7 @@ class ApolloClient constructor(
     private val networkTransport: NetworkTransport,
     private val subscriptionNetworkTransport: NetworkTransport = networkTransport,
     private val customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-    private val interceptors: List<ApolloRequestInterceptor> = emptyList(),
+    private val interceptors: List<GraphQLInterceptor> = emptyList(),
     private val executionContext: ExecutionContext = ExecutionContext.Empty,
     private val requestedDispatcher: CoroutineDispatcher? = null,
 ) {
@@ -75,7 +75,7 @@ class ApolloClient constructor(
     val executionContext = customScalarAdapters + this@ApolloClient.executionContext + this.executionContext
 
     val request = withExecutionContext(executionContext)
-    val interceptors = interceptors + NetworkRequestInterceptor(
+    val interceptors = interceptors + NetworkInterceptor(
         networkTransport = networkTransport,
         subscriptionNetworkTransport = subscriptionNetworkTransport,
     )
@@ -99,37 +99,40 @@ class ApolloClient constructor(
   }
 
   fun <T> withCustomScalarAdapter(graphqlName: String, customScalarAdapter: Adapter<T>): ApolloClient {
-    return ApolloClient(
-        networkTransport = networkTransport,
-        subscriptionNetworkTransport = subscriptionNetworkTransport,
-        interceptors = interceptors,
-        executionContext = executionContext,
-        requestedDispatcher = requestedDispatcher,
+    return copy(
         customScalarAdapters = CustomScalarAdapters(
             customScalarAdapters.customScalarAdapters + mapOf(graphqlName to customScalarAdapter)
         )
     )
   }
 
-  fun withInterceptor(interceptor: ApolloRequestInterceptor): ApolloClient {
-    return ApolloClient(
-        networkTransport = networkTransport,
-        subscriptionNetworkTransport = subscriptionNetworkTransport,
-        customScalarAdapters = customScalarAdapters,
-        executionContext = executionContext,
-        requestedDispatcher = requestedDispatcher,
+  fun withInterceptor(interceptor: GraphQLInterceptor): ApolloClient {
+    return copy(
         interceptors = interceptors + interceptor
     )
   }
 
   fun withExecutionContext(executionContext: ExecutionContext): ApolloClient {
+    return copy(
+        executionContext = this.executionContext + executionContext
+    )
+  }
+
+  fun copy(
+      networkTransport: NetworkTransport = this.networkTransport,
+      subscriptionNetworkTransport: NetworkTransport = this.subscriptionNetworkTransport,
+      customScalarAdapters: CustomScalarAdapters = this.customScalarAdapters,
+      interceptors: List<GraphQLInterceptor> = this.interceptors,
+      executionContext: ExecutionContext = this.executionContext,
+      requestedDispatcher: CoroutineDispatcher? = this.requestedDispatcher,
+      ): ApolloClient {
     return ApolloClient(
         networkTransport = networkTransport,
         subscriptionNetworkTransport = subscriptionNetworkTransport,
         customScalarAdapters = customScalarAdapters,
         interceptors = interceptors,
+        executionContext = executionContext,
         requestedDispatcher = requestedDispatcher,
-        executionContext = this.executionContext + executionContext
     )
   }
 }
@@ -137,12 +140,12 @@ class ApolloClient constructor(
 fun ApolloClient(
     serverUrl: String,
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-    interceptors: List<ApolloRequestInterceptor> = emptyList(),
+    interceptors: List<GraphQLInterceptor> = emptyList(),
     executionContext: ExecutionContext = ExecutionContext.Empty,
     requestedDispatcher: CoroutineDispatcher? = null,
 ) = ApolloClient(
-    networkTransport = ApolloHttpNetworkTransport(serverUrl = serverUrl),
-    subscriptionNetworkTransport = ApolloWebSocketNetworkTransport(serverUrl = serverUrl),
+    networkTransport = HttpNetworkTransport(serverUrl = serverUrl),
+    subscriptionNetworkTransport = WebSocketNetworkTransport(serverUrl = serverUrl),
     customScalarAdapters = customScalarAdapters,
     interceptors = interceptors,
     executionContext = executionContext,
@@ -155,9 +158,9 @@ fun ApolloClient.withAutoPersistedQueries(): ApolloClient {
       .withExecutionContext(
           HttpRequestComposerParams(
               HttpMethod.Post,
-              autoPersistQueries = true,
+              sendApqExtensions = true,
               sendDocument = false,
-              extraHeaders = emptyMap()
+              headers = emptyMap()
           )
       )
 }
