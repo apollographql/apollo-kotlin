@@ -13,9 +13,9 @@ import kotlinx.coroutines.flow.Flow
 class NetworkInterceptor(
     private val networkTransport: NetworkTransport,
     private val subscriptionNetworkTransport: NetworkTransport,
-) : GraphQLInterceptor {
+) : ApolloInterceptor {
 
-  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: GraphQLInterceptorChain): Flow<ApolloResponse<D>> {
+  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return when (request.operation) {
       is Query<*> -> networkTransport.execute(request = request)
       is Mutation<*> -> networkTransport.execute(request = request)

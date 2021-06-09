@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequestComposerParams
-import com.apollographql.apollo3.interceptor.GraphQLInterceptor
+import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.interceptor.NetworkInterceptor
 import com.apollographql.apollo3.interceptor.RealInterceptorChain
@@ -36,7 +36,7 @@ class ApolloClient constructor(
     private val networkTransport: NetworkTransport,
     private val subscriptionNetworkTransport: NetworkTransport = networkTransport,
     private val customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-    private val interceptors: List<GraphQLInterceptor> = emptyList(),
+    private val interceptors: List<ApolloInterceptor> = emptyList(),
     private val executionContext: ExecutionContext = ExecutionContext.Empty,
     private val requestedDispatcher: CoroutineDispatcher? = null,
 ) {
@@ -106,7 +106,7 @@ class ApolloClient constructor(
     )
   }
 
-  fun withInterceptor(interceptor: GraphQLInterceptor): ApolloClient {
+  fun withInterceptor(interceptor: ApolloInterceptor): ApolloClient {
     return copy(
         interceptors = interceptors + interceptor
     )
@@ -122,7 +122,7 @@ class ApolloClient constructor(
       networkTransport: NetworkTransport = this.networkTransport,
       subscriptionNetworkTransport: NetworkTransport = this.subscriptionNetworkTransport,
       customScalarAdapters: CustomScalarAdapters = this.customScalarAdapters,
-      interceptors: List<GraphQLInterceptor> = this.interceptors,
+      interceptors: List<ApolloInterceptor> = this.interceptors,
       executionContext: ExecutionContext = this.executionContext,
       requestedDispatcher: CoroutineDispatcher? = this.requestedDispatcher,
       ): ApolloClient {
@@ -140,7 +140,7 @@ class ApolloClient constructor(
 fun ApolloClient(
     serverUrl: String,
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-    interceptors: List<GraphQLInterceptor> = emptyList(),
+    interceptors: List<ApolloInterceptor> = emptyList(),
     executionContext: ExecutionContext = ExecutionContext.Empty,
     requestedDispatcher: CoroutineDispatcher? = null,
 ) = ApolloClient(
