@@ -14,6 +14,8 @@ class SourceLocation(
     return "($line:$position)"
   }
 
+  fun pretty(): String = "$filePath: ($line, ${position + 1})"
+
   companion object {
     val UNKNOWN = SourceLocation(-1, -1, null)
   }

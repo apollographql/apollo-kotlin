@@ -100,16 +100,16 @@ class ServiceTests {
   }
 
   @Test
-  fun `rootPackageName works as expected`() {
+  fun `packageName works as expected`() {
     withSimpleProject("""
       apollo {
-        rootPackageName = "com.starwars"
+        packageName = "com.starwars"
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("service/com/starwars/com/example/DroidDetailsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("service/com/starwars/com/example/type/Types.kt").isFile)
-      assertTrue(dir.generatedChild("service/com/starwars/com/example/fragment/SpeciesInformation.kt").isFile)
+      assertTrue(dir.generatedChild("service/com/starwars/DroidDetailsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("service/com/starwars/type/Types.kt").isFile)
+      assertTrue(dir.generatedChild("service/com/starwars/fragment/SpeciesInformation.kt").isFile)
     }
   }
 
@@ -120,6 +120,7 @@ class ServiceTests {
       apollo {
         service("starwars") {
           schemaFile.set(file("${schema.absolutePath}"))
+          packageName.set("com.example")
         }
       }
     """.trimIndent()) { dir ->
@@ -133,6 +134,7 @@ class ServiceTests {
     withSimpleProject("""
       apollo {
         schemaFile = file("../schema.json")
+        packageName.set("com.example")
       }
     """.trimIndent()) { dir ->
       val dest = File(dir, "../schema.json")

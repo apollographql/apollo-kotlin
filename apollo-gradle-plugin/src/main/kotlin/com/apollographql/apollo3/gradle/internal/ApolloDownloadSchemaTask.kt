@@ -75,7 +75,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
 
     val schema = schema.orNull?.let { File(it) } // commandline is resolved relative to cwd
     check(schema != null) {
-      "ApolloGraphQL: please specify where to download the schema with --schema"
+      "ApolloGraphQL: no schema property"
     }
     val headers = header.toMap()
 

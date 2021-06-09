@@ -63,6 +63,7 @@ configure<BaseExtension> {
 configure<ApolloExtension> {
   createAllAndroidVariantServices(".", "example") {
     schemaFile.set(file("src/main/graphql/com/example/schema.sdl"))
+    packageName.set("com.example")
   }
 }
 

@@ -150,11 +150,11 @@ You will need to define 2 services:
 apollo {
   service("github") {
     sourceFolder.set("com/github")
-    rootPackageName.set("com.github")
+    packageName.set("com.github")
   }
   service("starwars") {
     sourceFolder.set("com/starwars")
-    rootPackageName.set("com.starwars")
+    packageName.set("com.starwars")
   }
 }
 ```
@@ -173,7 +173,7 @@ sourceSets {
 // With:
 // highlight-start
 apollo {
-  addGraphqlDirectory("/path/to/your/graphql/queries/dir")
+  srcDir("/path/to/your/graphql/queries/dir")
 }  
 // highlight-end
 ```
@@ -192,7 +192,7 @@ apollo {
 apollo {
   schemaFile.set(file("/path/to/your/schema.json"))
   graphqlSourceDirectorySet.exclude("**/*.gql")
-  rootPackageName.set("com.example")
+  packageName.set("com.example")
 }
 ```
 

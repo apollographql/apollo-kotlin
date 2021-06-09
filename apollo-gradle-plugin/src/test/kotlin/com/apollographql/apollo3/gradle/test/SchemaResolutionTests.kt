@@ -5,6 +5,7 @@ import com.apollographql.apollo3.gradle.util.TestUtils
 import com.apollographql.apollo3.gradle.util.TestUtils.executeTask
 import com.apollographql.apollo3.gradle.util.TestUtils.withProject
 import com.apollographql.apollo3.gradle.util.generatedChild
+import com.google.common.truth.Truth.assertThat
 import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
@@ -97,10 +98,7 @@ class SchemaResolutionTests {
         executeTask("generateApolloSources", projectDir)
         fail("expected to fail")
       } catch (e: UnexpectedBuildFailure) {
-        MatcherAssert.assertThat(
-            e.message,
-            CoreMatchers.containsString("Multiple schemas found")
-        )
+        assertThat(e.message).contains("is defined multiple time")
       }
     }
   }

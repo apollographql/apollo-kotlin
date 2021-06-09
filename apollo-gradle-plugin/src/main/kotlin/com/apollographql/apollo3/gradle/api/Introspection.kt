@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.gradle.api
 
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 
@@ -22,4 +23,11 @@ interface Introspection {
    * empty by default
    */
   val headers: MapProperty<String, String>
+
+  /**
+   * The file where to download the schema.
+   *
+   * Uses the schema from the service by default
+   */
+  val schemaFile: RegularFileProperty
 }

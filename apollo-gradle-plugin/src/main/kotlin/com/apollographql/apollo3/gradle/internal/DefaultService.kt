@@ -5,20 +5,15 @@ import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.gradle.api.Introspection
 import com.apollographql.apollo3.gradle.api.Registry
 import com.apollographql.apollo3.gradle.api.Service
-import com.apollographql.apollo3.gradle.internal.DefaultApolloExtension.Companion.MIN_GRADLE_VERSION
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
-import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.FileCollection
-import org.gradle.api.file.RegularFile
-import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.provider.Provider
 import org.gradle.api.provider.SetProperty
 import org.gradle.util.GradleVersion
 import javax.inject.Inject
@@ -46,9 +41,7 @@ abstract class DefaultService @Inject constructor(val objects: ObjectFactory, ov
 
   abstract override val include: ListProperty<String>
 
-  abstract override val schemaFile: RegularFileProperty
-
-  abstract override val extraSchemaFiles: ConfigurableFileCollection
+  abstract override val schemaFiles: ConfigurableFileCollection
 
   abstract override val debugDir: DirectoryProperty
 
@@ -64,11 +57,13 @@ abstract class DefaultService @Inject constructor(val objects: ObjectFactory, ov
 
   abstract override val useSemanticNaming: Property<Boolean>
 
-  abstract override val rootPackageName: Property<String>
+  abstract override val packageName: Property<String>
 
   abstract override val generateAsInternal: Property<Boolean>
 
   abstract override val generateKotlinModels: Property<Boolean>
+
+  abstract override val useFilePathAsOperationPackageName: Property<Boolean>
 
   abstract override val generateApolloMetadata: Property<Boolean>
 
@@ -82,7 +77,7 @@ abstract class DefaultService @Inject constructor(val objects: ObjectFactory, ov
 
   val graphqlSourceDirectorySet = objects.sourceDirectorySet("graphql", "graphql")
 
-  override fun addGraphqlDirectory(directory: Any) {
+  override fun srcDir(directory: Any) {
     graphqlSourceDirectorySet.srcDir(directory)
   }
 
@@ -137,37 +132,4 @@ abstract class DefaultService @Inject constructor(val objects: ObjectFactory, ov
     this.outputDirAction = action
   }
 
-  fun resolvedSchemaProvider(project: Project): Provider<RegularFile> {
-    return schemaFile.orElse(
-        project.layout.file(
-            project.provider {
-              val candidates = graphqlSourceDirectorySet.srcDirs.flatMap { srcDir ->
-                srcDir.walkTopDown().filter {
-                  it.nameWithoutExtension == "schema" && it.extension in listOf("json", "sdl", "graphqls")
-                }.toList()
-              }
-
-              check(candidates.size <= 1) {
-                """
-Multiple schemas found:
-${candidates.joinToString(separator = "\n")}
-Multiple schemas are not supported. You can either define multiple services or specify the schema you want to use explicitely with `schemaFile`
-        """.trimIndent()
-              }
-
-              candidates.firstOrNull()
-            }
-        )
-    )
-  }
-
-  fun resolvedExtraSchemaFiles(project: Project): FileCollection {
-    if (!extraSchemaFiles.isEmpty) {
-      return extraSchemaFiles
-    }
-
-    return project.files(graphqlSourceDirectorySet.srcDirs.flatMap { srcDir ->
-      srcDir.walkTopDown().filter { it.extension in listOf("sdl", "graphqls") && it.nameWithoutExtension != "schema"}.toList()
-    })
-  }
 }

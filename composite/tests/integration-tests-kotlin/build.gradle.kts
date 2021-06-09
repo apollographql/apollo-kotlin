@@ -57,9 +57,8 @@ configure<com.apollographql.apollo3.gradle.api.ApolloExtension> {
             }
           }
 
-          schemaFile.set(file("../integration-tests/src/main/graphql/com/apollographql/apollo3/integration/${it.name}/schema.graphqls"))
-          addGraphqlDirectory(file("../integration-tests/src/main/graphql/com/apollographql/apollo3/integration/${it.name}/"))
-          rootPackageName.set("com.apollographql.apollo3.integration.${it.name}")
+          srcDir(file("../integration-tests/src/main/graphql/com/apollographql/apollo3/integration/${it.name}/"))
+          packageName.set("com.apollographql.apollo3.integration.${it.name}")
 
           codegenModels.set("operationBased")
           withOutputDir {

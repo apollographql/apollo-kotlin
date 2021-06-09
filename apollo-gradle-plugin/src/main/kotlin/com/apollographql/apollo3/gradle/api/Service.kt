@@ -44,23 +44,25 @@ interface Service {
    *
    * By default, the plugin will use "src/main/graphql/" for Android/JVM projects and "src/commonMain/graphql" for multiplatform projects.
    *
-   * Use [addGraphqlDirectory] if your files are outside of "src/main/graphql" or to have them in multiple folders.
+   * Use [srcDir] if your files are outside of "src/main/graphql" or to have them in multiple folders.
    *
    */
-  fun addGraphqlDirectory(directory: Any)
+  fun srcDir(directory: Any)
 
   /**
-   * The schema file as either a ".json" introspection schema or a ".sdl|.graphqls" SDL schema. You might come across schemas named "schema.graphql",
-   * these are SDL schemas most of the time that need to be renamed to "schema.graphqls" to be recognized properly.
-   *
-   * By default, the plugin looks for a "schema.[json|sdl|graphqls]" file in sourceDirectory
+   * A shorthand property that will be used if [schemaFiles] is empty
    */
   val schemaFile: RegularFileProperty
 
   /**
-   * A list of extra schema files where you can add extensions/custom directives. By default it will look for all '*.[sdl|graphqls]' not named "schema"
+   * The schema files as either a ".json" introspection schema or a ".sdl|.graphqls" SDL schema. You might come across schemas named "schema.graphql",
+   * these are SDL schemas most of the time that need to be renamed to "schema.graphqls" to be recognized properly.
+   *
+   * The compiler accepts multiple schema files in order to add extensions to specify key fields and other schema extensions.
+   *
+   * By default, the plugin collects all "schema.[json|sdl|graphqls]" file in the source roots
    */
-  val extraSchemaFiles: ConfigurableFileCollection
+  val schemaFiles: ConfigurableFileCollection
 
   /**
    * Warn if using a deprecated field
@@ -148,13 +150,11 @@ interface Service {
   val useSemanticNaming: Property<Boolean>
 
   /**
-   * The package name of the models is computed from their folder hierarchy like for java sources.
+   * The package name of the models.
    *
-   * If you want, you can prepend a custom package name here to namespace your models.
-   *
-   * Default value: the empty string
+   * Default value: the path relative to the source roots of the schema file
    */
-  val rootPackageName: Property<String>
+  val packageName: Property<String>
 
   /**
    * Whether to generate Kotlin models with `internal` visibility modifier.
@@ -202,6 +202,11 @@ interface Service {
   /**
    *
    */
+  val useFilePathAsOperationPackageName: Property<Boolean>
+
+  /**
+   *
+   */
   val codegenModels: Property<String>
   val flattenModels: Property<Boolean>
 
@@ -211,7 +216,7 @@ interface Service {
   fun introspection(configure: Action<in Introspection>)
 
   /**
-   * Configures [Registry] to download a SDL schema
+   * Configures [Registry] to download a SDL schema from a studio registry
    */
   fun registry(configure: Action<in Registry>)
 

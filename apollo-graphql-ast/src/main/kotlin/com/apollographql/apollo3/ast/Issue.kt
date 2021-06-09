@@ -17,7 +17,7 @@ sealed class Issue(
   /**
    * A validation error
    */
-  class ValidationError(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.ERROR)
+  class ValidationError(message: String, sourceLocation: SourceLocation, val code: ValidationErrorCode = ValidationErrorCode.Other) : Issue(message, sourceLocation, Severity.ERROR)
 
   /**
    * A deprecated field/enum is used
@@ -59,4 +59,9 @@ fun List<Issue>.checkNoErrors() {
         error.sourceLocation
     )
   }
+}
+
+enum class ValidationErrorCode {
+  SchemaDuplicateTypeName,
+  Other
 }

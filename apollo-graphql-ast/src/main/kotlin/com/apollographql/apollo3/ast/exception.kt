@@ -16,9 +16,7 @@ open class SourceAwareException(
       // Idea understands a certain format and makes logs clickable
       // It's not 100% clear where this is specified but it at least works with
       // 2020.3
-      return sourceLocation.run {
-        "e: $filePath: ($line, ${position + 1}): $description"
-      }
+      return "e: ${sourceLocation.pretty()}: $description"
     }
 
     private fun preview(error: String, sourceLocation: SourceLocation): String {

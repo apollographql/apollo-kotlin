@@ -29,12 +29,18 @@ import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.parseAsGQLValue
 import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.ast.withBuiltinDefinitions
 import com.apollographql.apollo3.ast.withoutBuiltinDefinitions
 
-private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionSchema) {
+private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionSchema, filePath: String?) {
+  private val sourceLocation = SourceLocation(
+      filePath = filePath,
+      line = -1,
+      position = -1
+  )
 
   fun toGQLDocument(): GQLDocument {
     return with(introspectionSchema.__schema) {
@@ -56,6 +62,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
 
   private fun IntrospectionSchema.Schema.Type.Object.toGQLObjectTypeDefinition(): GQLObjectTypeDefinition {
     return GQLObjectTypeDefinition(
+        sourceLocation = sourceLocation,
         description = description,
         name = name,
         directives = emptyList(),
@@ -76,6 +83,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
 
   private fun IntrospectionSchema.Schema.Type.Enum.toGQLEnumTypeDefinition(): GQLEnumTypeDefinition {
     return GQLEnumTypeDefinition(
+        sourceLocation = sourceLocation,
         description = description,
         name = name,
         enumValues = enumValues.map { it.toGQLEnumValueDefinition() },
@@ -85,6 +93,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
 
   private fun IntrospectionSchema.Schema.Type.Enum.Value.toGQLEnumValueDefinition(): GQLEnumValueDefinition {
     return GQLEnumValueDefinition(
+        sourceLocation = sourceLocation,
         description = description,
         name = name,
         directives = makeDirectives(deprecationReason)
@@ -93,6 +102,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
 
   private fun IntrospectionSchema.Schema.Type.Interface.toGQLInterfaceTypeDefinition(): GQLInterfaceTypeDefinition {
     return GQLInterfaceTypeDefinition(
+        sourceLocation = sourceLocation,
         name = name,
         description = description,
         fields = fields?.map { it.toGQLFieldDefinition() } ?: throw ConversionException("interface '$name' did not define any field"),
@@ -103,6 +113,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
 
   private fun IntrospectionSchema.Schema.Field.toGQLFieldDefinition(): GQLFieldDefinition {
     return GQLFieldDefinition(
+        sourceLocation = sourceLocation,
         name = name,
         description = description,
         arguments = this.args.map { it.toGQLInputValueDefinition() },
@@ -113,6 +124,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
 
   private fun IntrospectionSchema.Schema.Field.Argument.toGQLInputValueDefinition(): GQLInputValueDefinition {
     return GQLInputValueDefinition(
+        sourceLocation = sourceLocation,
         name = name,
         description = description,
         directives = makeDirectives(deprecationReason),
@@ -166,6 +178,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
 
   private fun IntrospectionSchema.Schema.Type.Union.toGQLUnionTypeDefinition(): GQLUnionTypeDefinition {
     return GQLUnionTypeDefinition(
+        sourceLocation = sourceLocation,
         name = name,
         description = "",
         memberTypes = possibleTypes?.map { it.toGQLNamedType() } ?: throw ConversionException("Union '$name' must have members"),
@@ -195,6 +208,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     val rootOperationTypeDefinitions = mutableListOf<GQLOperationTypeDefinition>()
     rootOperationTypeDefinitions.add(
         GQLOperationTypeDefinition(
+            sourceLocation = sourceLocation,
             operationType = "query",
             namedType = queryType.name
         )
@@ -202,6 +216,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     if (mutationType != null) {
       rootOperationTypeDefinitions.add(
           GQLOperationTypeDefinition(
+              sourceLocation = sourceLocation,
               operationType = "mutation",
               namedType = mutationType.name
           )
@@ -210,6 +225,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     if (subscriptionType != null) {
       rootOperationTypeDefinitions.add(
           GQLOperationTypeDefinition(
+              sourceLocation = sourceLocation,
               operationType = "subscription",
               namedType = subscriptionType.name
           )
@@ -217,6 +233,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     }
 
     return GQLSchemaDefinition(
+        sourceLocation = sourceLocation,
         description = "",
         directives = emptyList(),
         rootOperationTypeDefinitions = rootOperationTypeDefinitions
@@ -225,6 +242,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
 
   private fun IntrospectionSchema.Schema.Type.InputObject.toGQLInputObjectTypeDefinition(): GQLInputObjectTypeDefinition {
     return GQLInputObjectTypeDefinition(
+        sourceLocation = sourceLocation,
         description = description,
         name = name,
         inputFields = inputFields.map { it.toGQLInputValueDefinition() },
@@ -234,6 +252,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
 
   private fun IntrospectionSchema.Schema.InputField.toGQLInputValueDefinition(): GQLInputValueDefinition {
     return GQLInputValueDefinition(
+        sourceLocation = sourceLocation,
         description = description,
         name = name,
         directives = makeDirectives(deprecationReason),
@@ -244,6 +263,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
 
   private fun IntrospectionSchema.Schema.Type.Scalar.toGQLScalarTypeDefinition(): GQLScalarTypeDefinition {
     return GQLScalarTypeDefinition(
+        sourceLocation = sourceLocation,
         description = description,
         name = name,
         directives = emptyList()
@@ -258,7 +278,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
  *
  * See https://spec.graphql.org/draft/#sel-GAHXJHABuCB_Dn6F
  */
-fun IntrospectionSchema.toGQLDocument(): GQLDocument = GQLDocumentBuilder(this)
+fun IntrospectionSchema.toGQLDocument(filePath: String? = null): GQLDocument = GQLDocumentBuilder(this, filePath)
     .toGQLDocument()
     /**
      * Introspection already contains builtin types like Int, Boolean, __Schema, etc...
