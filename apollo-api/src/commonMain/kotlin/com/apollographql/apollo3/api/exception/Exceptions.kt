@@ -64,7 +64,6 @@ class MissingValueException : ApolloException(message = "The optional doesn't ha
  */
 class ApolloGenericException(message: String? = null, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
 
-class ApolloBearerTokenException(message: String, cause: Throwable? = null, val token: String): ApolloException(message = message, cause = cause)
 
 @Deprecated("This is only used in the JVM runtime and is schedule for removal")
 class ApolloCanceledException(message: String? = null, cause: Throwable? = null) : ApolloException(message = message, cause = cause)

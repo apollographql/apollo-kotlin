@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
+import com.apollographql.apollo3.api.http.DefaultHttpRequestComposerParams
 import com.apollographql.apollo3.api.http.HttpRequestComposerParams
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.internal.ResponseBodyParser
@@ -77,14 +78,7 @@ fun <D : Operation.Data> Operation<D>.composeRequestBody(
   val request = composer.compose(
       ApolloRequest(operation = this)
           .withExecutionContext(customScalarAdapters)
-          .withExecutionContext(
-              HttpRequestComposerParams(
-                  method = HttpMethod.Post,
-                  autoPersistQueries = false,
-                  sendDocument = true,
-                  extraHeaders = emptyMap()
-              )
-          )
+          .withExecutionContext(DefaultHttpRequestComposerParams)
   )
 
   request.body!!.writeTo(sink)

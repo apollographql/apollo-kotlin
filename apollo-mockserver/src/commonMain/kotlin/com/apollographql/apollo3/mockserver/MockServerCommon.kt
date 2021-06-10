@@ -6,20 +6,6 @@ import okio.BufferedSource
 import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
 
-fun parseRequestLine(line: String): Triple<String, String, String> {
-  val regex = Regex("([A-Z-a-z]*) ([^ ]*) (.*)")
-  val match = regex.matchEntire(line)
-  check (match != null) {
-    "Cannot match request line: $line"
-  }
-
-  val method = match.groupValues[1].uppercase()
-  check (method in listOf("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH")) {
-    "Unkown method $method"
-  }
-
-  return Triple(method, match.groupValues[2], match.groupValues[3])
-}
 
 fun parseHeader(line: String): Pair<String, String> {
   val index = line.indexOfFirst { it == ':' }
@@ -29,6 +15,46 @@ fun parseHeader(line: String): Pair<String, String> {
 
   return line.substring(0, index).trim() to line.substring(index + 1, line.length).trim()
 }
+
+
+class MockRecordedRequest(
+    val method: String,
+    val path: String,
+    val version: String,
+    val headers: Map<String, String> = emptyMap(),
+    val body: ByteString = ByteString.EMPTY,
+)
+
+fun writeResponse(sink: BufferedSink, mockResponse: MockResponse, version: String) {
+  sink.writeUtf8("${version} ${mockResponse.statusCode}\r\n")
+  val contentLengthHeader = mapOf("Content-Length" to mockResponse.body.size.toString())
+
+  (contentLengthHeader + mockResponse.headers).forEach {
+    sink.writeUtf8("${it.key}: ${it.value}\r\n")
+  }
+  sink.writeUtf8("\r\n")
+  sink.flush()
+
+  if (mockResponse.body.size > 0) {
+    sink.write(mockResponse.body)
+  }
+  sink.flush()
+}
+
+class MockResponse(
+    val statusCode: Int = 200,
+    val body: ByteString = ByteString.EMPTY,
+    val headers: Map<String, String> = emptyMap(),
+    val delayMs: Long = 0,
+) {
+  constructor(
+      statusCode: Int = 200,
+      body: String,
+      headers: Map<String, String> = emptyMap()
+  ) : this(statusCode, body.encodeUtf8(), headers)
+}
+
+
 
 fun readRequest(source: BufferedSource): MockRecordedRequest? {
   var line = source.readUtf8Line()
@@ -74,39 +100,17 @@ fun readRequest(source: BufferedSource): MockRecordedRequest? {
   )
 }
 
-fun writeResponse(sink: BufferedSink, mockResponse: MockResponse, version: String) {
-  sink.writeUtf8("${version} ${mockResponse.statusCode}\r\n")
-  val contentLengthHeader = mapOf("Content-Length" to mockResponse.body.size.toString())
-
-  (contentLengthHeader + mockResponse.headers).forEach {
-    sink.writeUtf8("${it.key}: ${it.value}\r\n")
+fun parseRequestLine(line: String): Triple<String, String, String> {
+  val regex = Regex("([A-Z-a-z]*) ([^ ]*) (.*)")
+  val match = regex.matchEntire(line)
+  check (match != null) {
+    "Cannot match request line: $line"
   }
-  sink.writeUtf8("\r\n")
-  sink.flush()
 
-  if (mockResponse.body.size > 0) {
-    sink.write(mockResponse.body)
+  val method = match.groupValues[1].uppercase()
+  check (method in listOf("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH")) {
+    "Unkown method $method"
   }
-  sink.flush()
-}
 
-class MockResponse(
-    val statusCode: Int = 200,
-    val body: ByteString = ByteString.EMPTY,
-    val headers: Map<String, String> = emptyMap(),
-    val delayMs: Long = 0,
-) {
-  constructor(
-      statusCode: Int = 200,
-      body: String,
-      headers: Map<String, String> = emptyMap()
-  ) : this(statusCode, body.encodeUtf8(), headers)
+  return Triple(method, match.groupValues[2], match.groupValues[3])
 }
-
-class MockRecordedRequest(
-    val method: String,
-    val path: String,
-    val version: String,
-    val headers: Map<String, String> = emptyMap(),
-    val body: ByteString = ByteString.EMPTY,
-)

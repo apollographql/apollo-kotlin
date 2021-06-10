@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.single
 
-class AutoPersistedQueryInterceptor: ApolloRequestInterceptor {
+class AutoPersistedQueryInterceptor: ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return flow {
       val params = request.executionContext[HttpRequestComposerParams] ?: error("no DefaultHttpRequestComposerParams found")

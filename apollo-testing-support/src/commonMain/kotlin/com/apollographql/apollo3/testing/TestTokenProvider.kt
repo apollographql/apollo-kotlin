@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.testing
 
-import com.apollographql.apollo3.interceptor.TokenProvider
+import com.apollographql.apollo3.network.http.TokenProvider
 
 class TestTokenProvider(currentAccessToken: String,
                         val newAccessToken: String) : TokenProvider {

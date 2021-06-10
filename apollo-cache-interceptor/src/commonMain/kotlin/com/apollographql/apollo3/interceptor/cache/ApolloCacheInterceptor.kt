@@ -13,7 +13,7 @@ import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.internal.dependentKeys
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
-import com.apollographql.apollo3.interceptor.ApolloRequestInterceptor
+import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.mpp.ensureNeverFrozen
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 class ApolloCacheInterceptor(
     private val store: ApolloStore,
     private val writeToCacheAsynchronously: Boolean = false,
-) : ApolloRequestInterceptor {
+) : ApolloInterceptor {
   private suspend fun maybeAsync(executionContext: ExecutionContext, block: suspend () -> Unit) {
     val coroutineScope = executionContext[ClientScope]?.coroutineScope
     if (writeToCacheAsynchronously && coroutineScope != null) {

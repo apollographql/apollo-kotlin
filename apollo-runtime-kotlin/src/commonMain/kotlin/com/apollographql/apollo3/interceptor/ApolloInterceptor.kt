@@ -12,12 +12,12 @@ interface ApolloInterceptorChain {
 
 }
 
-interface ApolloRequestInterceptor {
+interface ApolloInterceptor {
   fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>>
 }
 
 internal class RealInterceptorChain(
-    private val interceptors: List<ApolloRequestInterceptor>,
+    private val interceptors: List<ApolloInterceptor>,
     private val index: Int,
 ) : ApolloInterceptorChain {
 

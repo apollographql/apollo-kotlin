@@ -23,45 +23,47 @@ import okio.ByteString
  * - FileUpload by intercepting the Upload custom scalars and sending them as multipart if needed
  * - Automatic Persisted Queries
  * - Adding the default Apollo headers
+ *
+ * @param headers
  */
-class DefaultHttpRequestComposer(private val serverUrl: String, private val defaultHeaders: Map<String, String> = emptyMap()) : HttpRequestComposer {
+class DefaultHttpRequestComposer(
+    private val serverUrl: String,
+    private val headers: Map<String, String> = emptyMap(),
+) : HttpRequestComposer {
 
   override fun <D : Operation.Data> compose(apolloRequest: ApolloRequest<D>): HttpRequest {
-    val params = apolloRequest.executionContext[HttpRequestComposerParams]
+    val params = apolloRequest.executionContext[HttpRequestComposerParams] ?: DefaultHttpRequestComposerParams
     val operation = apolloRequest.operation
-    val method = params?.method ?: HttpMethod.Post
-    val autoPersistQueries = params?.autoPersistQueries ?: false
-    val sendDocument = params?.sendDocument ?: true
     val customScalarAdapters = apolloRequest.executionContext[CustomScalarAdapters] ?: error("Cannot find a ResponseAdapterCache")
 
-    val headers = mutableMapOf(
+    val requestHeaders = mutableMapOf(
         HEADER_APOLLO_OPERATION_ID to operation.id(),
         HEADER_APOLLO_OPERATION_NAME to operation.name()
     )
 
-    defaultHeaders.forEach {
-      headers.put(it.key, it.value)
+    headers.forEach {
+      requestHeaders[it.key] = it.value
     }
-    params?.extraHeaders?.entries?.forEach {
-      headers.put(it.key, it.value)
+    params.headers.entries.forEach {
+      requestHeaders[it.key] = it.value
     }
 
-    return when (method) {
+    return when (params.method) {
       HttpMethod.Get -> {
         HttpRequest(
             method = HttpMethod.Get,
-            url = buildGetUrl(serverUrl, operation, customScalarAdapters, autoPersistQueries, sendDocument),
-            headers = headers,
+            url = buildGetUrl(serverUrl, operation, customScalarAdapters, params.sendApqExtensions, params.sendDocument),
+            headers = requestHeaders,
             body = null
         )
       }
       HttpMethod.Post -> {
-        val query = if (sendDocument) operation.document() else null
+        val query = if (params.sendDocument) operation.document() else null
         HttpRequest(
             method = HttpMethod.Post,
             url = serverUrl,
-            headers = headers,
-            body = buildPostBody(operation, customScalarAdapters, autoPersistQueries, query),
+            headers = requestHeaders,
+            body = buildPostBody(operation, customScalarAdapters, params.sendApqExtensions, query),
         )
       }
     }
@@ -277,14 +279,14 @@ class DefaultHttpRequestComposer(private val serverUrl: String, private val defa
       composePostParams(this, operation, customScalarAdapters, autoPersistQueries, query)
     }
 
-    
+
     @Suppress("UNCHECKED_CAST")
     fun <D : Operation.Data> composePayload(
-        apolloRequest: ApolloRequest<D>
+        apolloRequest: ApolloRequest<D>,
     ): Map<String, Any?> {
       val params = apolloRequest.executionContext[HttpRequestComposerParams]
       val operation = apolloRequest.operation
-      val autoPersistQueries = params?.autoPersistQueries ?: false
+      val autoPersistQueries = params?.sendApqExtensions ?: false
       val sendDocument = params?.sendDocument ?: true
       val customScalarAdapters = apolloRequest.executionContext[CustomScalarAdapters] ?: error("Cannot find a ResponseAdapterCache")
 
@@ -296,11 +298,40 @@ class DefaultHttpRequestComposer(private val serverUrl: String, private val defa
   }
 }
 
-data class HttpRequestComposerParams(
+class HttpRequestComposerParams(
     val method: HttpMethod,
-    val autoPersistQueries: Boolean,
+    val sendApqExtensions: Boolean,
     val sendDocument: Boolean,
-    val extraHeaders: Map<String, String>,
+    val headers: Map<String, String>,
 ) : ClientContext(Key) {
+  fun copy(
+      method: HttpMethod = this.method,
+      sendApqExtensions: Boolean = this.sendApqExtensions,
+      sendDocument: Boolean = this.sendDocument,
+      headers: Map<String, String> = this.headers,
+  ): HttpRequestComposerParams {
+    return HttpRequestComposerParams(
+        method = method,
+        sendApqExtensions = sendApqExtensions,
+        sendDocument = sendDocument,
+        headers = headers
+    )
+  }
+
   companion object Key : ExecutionContext.Key<HttpRequestComposerParams>
+}
+
+val DefaultHttpRequestComposerParams = HttpRequestComposerParams(
+    method = HttpMethod.Post,
+    sendApqExtensions = false,
+    sendDocument = true,
+    headers = emptyMap()
+)
+
+fun HttpRequestComposerParams?.withHeader(name: String, value: String): HttpRequestComposerParams {
+  val params = this ?: DefaultHttpRequestComposerParams
+
+  return params.copy(
+      headers = params.headers + (name to value)
+  )
 }

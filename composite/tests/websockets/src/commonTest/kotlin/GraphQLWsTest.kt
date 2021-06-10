@@ -1,10 +1,8 @@
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.network.ws.ApolloWebSocketNetworkTransport
+import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import com.apollographql.apollo3.network.ws.GraphQLWsProtocol
-import com.apollographql.apollo3.testing.MainLoopDispatcher
 import com.apollographql.apollo3.testing.runWithMainLoop
 import graphql.ws.HelloQuery
-import kotlinx.coroutines.CoroutineScope
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -16,7 +14,7 @@ class GraphQLWsTest {
   // See https://github.com/martinbonnin/graphql-ws-server
   fun test() {
     val apolloClient = ApolloClient(
-        networkTransport = ApolloWebSocketNetworkTransport(
+        networkTransport = WebSocketNetworkTransport(
             serverUrl = "http://localhost:9090/graphql",
             protocol = GraphQLWsProtocol()
         )

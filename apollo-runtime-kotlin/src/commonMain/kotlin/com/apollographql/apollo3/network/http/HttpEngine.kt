@@ -11,10 +11,8 @@ import com.apollographql.apollo3.api.exception.ApolloParseException
 interface HttpEngine {
 
   /**
-   * @param block a function that will transform the response. Implementations can decide to run this in the IO thread
-   * to keep the main thread free
    */
-  suspend fun <R> execute(request: HttpRequest, block: (HttpResponse) -> R): R
+  suspend fun execute(request: HttpRequest): HttpResponse
 }
 
 expect class DefaultHttpEngine(
@@ -32,7 +30,7 @@ expect class DefaultHttpEngine(
      * - on Android, it is used to set  [OkHttpClient.readTimeout]
      */
     readTimeoutMillis: Long = 60_000,
-): HttpEngine
+) : HttpEngine
 
 fun wrapThrowableIfNeeded(throwable: Throwable): ApolloException {
   return if (throwable is ApolloException) {
