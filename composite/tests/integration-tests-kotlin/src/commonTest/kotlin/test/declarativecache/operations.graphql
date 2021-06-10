@@ -1,0 +1,34 @@
+query GetPromoBook {
+    book {
+        title
+    }
+}
+query GetBook($isbn: String!) {
+  book(isbn: $isbn) {
+    title
+  }
+}
+query GetPromoAuthor {
+    author {
+        firstName
+        lastName
+    }
+}
+query GetAuthor($firstName: String!, $lastName: String!) {
+    author(firstName: $firstName, lastName: $lastName) {
+        firstName
+        lastName
+    }
+}
+query GetPromoLibrary {
+    library {
+        id
+        address
+    }
+}
+query GetLibrary($id: ID!) {
+    library {
+        id
+        address
+    }
+}

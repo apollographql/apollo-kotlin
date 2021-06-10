@@ -1,0 +1,10 @@
+extend type Author @key(fields: "firstName lastName")
+
+extend type Book @key(fields: "isbn")
+
+extend type Query {
+  book(isbn: String! @keyArg): Book
+}
+
+extend schema @defaultKey(fields: "id")
+

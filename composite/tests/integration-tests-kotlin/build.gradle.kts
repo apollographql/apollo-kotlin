@@ -73,5 +73,13 @@ configure<com.apollographql.apollo3.gradle.api.ApolloExtension> {
           }
         }
       }
+  file("src/commonTest/kotlin/test").listFiles()!!
+      .filter { it.isDirectory }
+      .forEach {
+        service(it.name) {
+          srcDir(it)
+          packageName.set(it.name)
+        }
+      }
 }
 
