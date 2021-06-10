@@ -77,7 +77,7 @@ class StreamResponseReaderJvmCustomTypesTest {
   }
 
   companion object {
-    private fun responseReader(recordSet: Map<String, Any>): StreamResponseReader {
+    private fun responseReader(map: Map<String, Any>): StreamResponseReader {
       val customScalarAdapters: MutableMap<ScalarType, CustomScalarAdapter<*>> = HashMap()
       customScalarAdapters[DATE_CUSTOM_TYPE] = object : CustomScalarAdapter<Any?> {
         override fun decode(jsonElement: JsonElement): Any {

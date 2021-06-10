@@ -180,5 +180,5 @@ abstract class ApolloStore {
 
 fun ApolloStore(
     normalizedCacheFactory: NormalizedCacheFactory,
-    cacheKeyResolver: CacheKeyResolver = CacheKeyResolver.DEFAULT,
-): ApolloStore = RealApolloStore(normalizedCacheFactory, cacheKeyResolver)
+    cacheResolver: CacheResolver = CacheResolver.DEFAULT,
+): ApolloStore = RealApolloStore(normalizedCacheFactory, cacheResolver)

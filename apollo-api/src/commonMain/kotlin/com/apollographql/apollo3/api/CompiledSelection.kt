@@ -1,7 +1,21 @@
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
+import com.apollographql.apollo3.api.internal.json.Utils
+import okio.Buffer
+
 sealed class CompiledSelection
 
+/**
+ * @param arguments can be
+ * - String, Int, Double, Boolean
+ * - null
+ * - Map<String, Any?>
+ * - List<Any?>
+ * - [Variable]
+ *
+ * Note: for now, enums are mapped to Strings
+ */
 class CompiledField(
     val name: String,
     val alias: String? = null,
@@ -14,20 +28,56 @@ class CompiledField(
     get() = alias ?: name
 
   /**
-   * Resolves field argument value by [name]. If argument represents a references to the variable, it will be resolved from
-   * provided operation [variables] values.
+   * Resolves field argument value by [name]. If the argument contains variables, resolve them
    */
   @Suppress("UNCHECKED_CAST")
   fun resolveArgument(
       name: String,
-      variables: Executable.Variables
+      variables: Executable.Variables,
   ): Any? {
-    val variableValues = variables.valueMap
-    val argumentValue = arguments[name]
-    return if (argumentValue is Variable) {
-      variableValues[argumentValue.name]
-    } else {
-      argumentValue
+    return resolveVariables(arguments[name], variables)
+  }
+
+  fun nameWithArguments(variables: Executable.Variables): String {
+    if (arguments.isEmpty()) {
+      return name
+    }
+    val resolvedArguments = resolveVariables(arguments, variables)
+    return try {
+      val buffer = Buffer()
+      val jsonWriter = BufferedSinkJsonWriter(buffer)
+      Utils.writeToJson(resolvedArguments, jsonWriter)
+      jsonWriter.close()
+      "${name}(${buffer.readUtf8()})"
+    } catch (e: Exception) {
+      throw RuntimeException(e)
+    }
+  }
+
+  /**
+   * Resolve all variables
+   */
+  @Suppress("UNCHECKED_CAST")
+  private fun resolveVariables(value: Any?, variables: Executable.Variables): Any? {
+    return when (value) {
+      null -> null
+      is Variable -> {
+        variables.valueMap[value.name]
+      }
+      is Map<*, *> -> {
+        value as Map<String, Any?>
+        value.mapValues {
+          resolveVariables(it.value, variables)
+        }.toList()
+            .sortedBy { it.first }
+            .toMap()
+      }
+      is List<*> -> {
+        value.map {
+          resolveVariables(it, variables)
+        }
+      }
+      else -> value
     }
   }
 }

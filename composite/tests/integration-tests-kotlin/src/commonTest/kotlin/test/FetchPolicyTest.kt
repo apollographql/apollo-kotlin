@@ -3,7 +3,7 @@ package test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
+import com.apollographql.apollo3.cache.normalized.CacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.api.exception.ApolloCompositeException
 import com.apollographql.apollo3.testing.enqueue
@@ -31,7 +31,7 @@ class FetchPolicyTest {
 
   @BeforeTest
   fun setUp() {
-    store = ApolloStore(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), CacheKeyResolver.DEFAULT)
+    store = ApolloStore(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), CacheResolver.DEFAULT)
     mockServer = MockServer()
     apolloClient = ApolloClient(mockServer.url()).withStore(store)
   }
@@ -45,7 +45,8 @@ class FetchPolicyTest {
     // Cache first is also the default, no need to set the fetchPolicy
     runWithMainLoop {
       // First query should hit the network and save in cache
-      var response = apolloClient.query(query)
+      val request = ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkFirst)
+      var response = apolloClient.query(request)
 
       assertNotNull(response.data)
       assertFalse(response.isFromCache)

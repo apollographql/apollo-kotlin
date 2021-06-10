@@ -10,8 +10,9 @@ import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.exception.CacheMissException
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey
-import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
+import com.apollographql.apollo3.cache.normalized.CacheResolver
 import com.apollographql.apollo3.cache.normalized.ReadOnlyNormalizedCache
+import com.apollographql.apollo3.cache.normalized.Record
 
 /**
  * A resolver that solves the "N+1" problem by batching all SQL queries at a given depth
@@ -23,12 +24,10 @@ class CacheBatchReader(
     private val cache: ReadOnlyNormalizedCache,
     private val rootKey: String,
     private val variables: Executable.Variables,
-    private val cacheKeyResolver: CacheKeyResolver,
+    private val cacheResolver: CacheResolver,
     private val cacheHeaders: CacheHeaders,
     private val rootSelections: List<CompiledSelection>
 ) {
-  private val cacheKeyBuilder = RealCacheKeyBuilder()
-
   class PendingReference(
       val key: String,
       val selections: List<CompiledSelection>
@@ -93,7 +92,14 @@ class CacheBatchReader(
       val copy = pendingReferences.toList()
       pendingReferences.clear()
       copy.forEach { pendingReference ->
-        val record = records[pendingReference.key] ?: throw CacheMissException(pendingReference.key)
+        var record = records[pendingReference.key]
+        if (record == null) {
+          if (pendingReference.key == CacheResolver.rootKey().key) {
+            record = Record(pendingReference.key, emptyMap())
+          } else {
+            throw CacheMissException(pendingReference.key)
+          }
+        }
 
         val collectedFields = pendingReference.selections.collectAndMergeSameDirectives(record["__typename"] as? String)
 
@@ -102,27 +108,7 @@ class CacheBatchReader(
             return@mapNotNull null
           }
 
-          val type = it.type
-          val value = if (type.isCompound()) {
-            val cacheKey = cacheKeyResolver.fromFieldArguments(it, variables)
-            if (cacheKey != null ) {
-              // user provided a lookup
-              CacheKey(cacheKey.key)
-            } else {
-              // no key provided
-              val fieldName = cacheKeyBuilder.build(it, variables)
-              if (!record.containsKey(fieldName)) {
-                throw CacheMissException(record.key, fieldName)
-              }
-              record[fieldName]
-            }
-          } else {
-            val fieldName = cacheKeyBuilder.build(it, variables)
-            if (!record.containsKey(fieldName)) {
-              throw CacheMissException(record.key, fieldName)
-            }
-            record[fieldName]
-          }
+          val value = cacheResolver.resolveField(it, variables, record, record.key)
 
           value.registerCacheKeys(it.selections)
 

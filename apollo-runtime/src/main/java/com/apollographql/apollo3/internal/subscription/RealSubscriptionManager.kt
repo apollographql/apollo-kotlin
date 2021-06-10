@@ -4,7 +4,7 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.internal.ResponseBodyParser
-import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
+import com.apollographql.apollo3.cache.normalized.CacheResolver
 import com.apollographql.apollo3.api.exception.ApolloNetworkException
 import com.apollographql.apollo3.subscription.OnSubscriptionManagerStateChangeListener
 import com.apollographql.apollo3.subscription.OperationClientMessage
@@ -24,7 +24,7 @@ class RealSubscriptionManager(private val customScalarAdapters: CustomScalarAdap
                               private val connectionParams: SubscriptionConnectionParamsProvider,
                               private val dispatcher: Executor,
                               private val connectionHeartbeatTimeoutMs: Long,
-                              private val cacheKeyResolver: CacheKeyResolver,
+                              private val cacheResolver: CacheResolver,
                               private val autoPersistSubscription: Boolean
 ) : SubscriptionManager {
   @JvmField

@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.variablesJson
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.coroutines.await
 import com.apollographql.apollo3.api.exception.ApolloException
+import com.apollographql.apollo3.cache.normalized.CacheResolver
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo3.http.OkHttpExecutionContext
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
@@ -57,7 +58,7 @@ class IntegrationTest {
         .serverUrl(server.url("/"))
         .okHttpClient(OkHttpClient.Builder().dispatcher(Dispatcher(immediateExecutorService())).build())
         .addCustomScalarAdapter(Types.Date, dateCustomScalarAdapter)
-        .normalizedCache(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), IdFieldCacheKeyResolver())
+        .normalizedCache(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), CacheResolver.ID)
         .defaultResponseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
         .dispatcher(immediateExecutor())
         .build()

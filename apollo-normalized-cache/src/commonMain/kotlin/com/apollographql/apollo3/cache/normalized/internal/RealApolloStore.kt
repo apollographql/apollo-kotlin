@@ -8,7 +8,7 @@ import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKey
-import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
+import com.apollographql.apollo3.cache.normalized.CacheResolver
 import com.apollographql.apollo3.cache.normalized.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.Record
 import com.benasher44.uuid.Uuid
@@ -23,7 +23,7 @@ import kotlin.reflect.KClass
 
 class RealApolloStore(
     normalizedCacheFactory: NormalizedCacheFactory,
-    private val cacheKeyResolver: CacheKeyResolver,
+    private val cacheResolver: CacheResolver,
     val logger: ApolloLogger = ApolloLogger(null),
 ) : ApolloStore() {
   private val changedKeysEvents = MutableSharedFlow<Set<String>>(
@@ -120,7 +120,7 @@ class RealApolloStore(
     return operation.normalize(
         data,
         customScalarAdapters,
-        cacheKeyResolver
+        cacheResolver
     )
   }
 
@@ -130,14 +130,14 @@ class RealApolloStore(
       cacheHeaders: CacheHeaders,
   ): D? {
     // Capture a local reference so as not to freeze "this"
-    val cacheKeyResolver = cacheKeyResolver
+    val cacheKeyResolver = cacheResolver
 
 
     return cacheHolder.access { cache ->
       operation.readDataFromCache(
           customScalarAdapters = customScalarAdapters,
           cache = cache,
-          cacheKeyResolver = cacheKeyResolver,
+          cacheResolver = cacheKeyResolver,
           cacheHeaders = cacheHeaders,
       )
     }
@@ -150,13 +150,13 @@ class RealApolloStore(
       cacheHeaders: CacheHeaders,
   ): D? {
     // Capture a local reference so as not to freeze "this"
-    val cacheKeyResolver = cacheKeyResolver
+    val cacheKeyResolver = cacheResolver
 
     return cacheHolder.access { cache ->
       fragment.readDataFromCache(
           customScalarAdapters = customScalarAdapters,
           cache = cache,
-          cacheKeyResolver = cacheKeyResolver,
+          cacheResolver = cacheKeyResolver,
           cacheHeaders = cacheHeaders,
           cacheKey = cacheKey
       )
@@ -189,13 +189,13 @@ class RealApolloStore(
       publish: Boolean,
   ): Set<String> {
     // Capture a local reference so as not to freeze "this"
-    val cacheKeyResolver = cacheKeyResolver
+    val cacheKeyResolver = cacheResolver
 
     val changedKeys =  cacheHolder.access { cache ->
       val records = fragment.normalize(
           data = fragmentData,
           customScalarAdapters = customScalarAdapters,
-          cacheKeyResolver = cacheKeyResolver,
+          cacheResolver = cacheKeyResolver,
           rootKey = cacheKey.key
       ).values
 
@@ -218,13 +218,13 @@ class RealApolloStore(
   ): Pair<Set<Record>, Set<String>> {
 
     // Capture a local reference so as not to freeze "this"
-    val cacheKeyResolver = cacheKeyResolver
+    val cacheKeyResolver = cacheResolver
 
     val (records, changedKeys) = cacheHolder.access { cache ->
       val records = operation.normalize(
           data = operationData,
           customScalarAdapters = customScalarAdapters,
-          cacheKeyResolver = cacheKeyResolver
+          cacheResolver = cacheKeyResolver
       )
 
       records to cache.merge(records.values.toList(), cacheHeaders)
@@ -245,13 +245,13 @@ class RealApolloStore(
   ): Set<String> {
 
     // Capture a local reference so as not to freeze "this"
-    val cacheKeyResolver = cacheKeyResolver
+    val cacheKeyResolver = cacheResolver
 
     val changedKeys = cacheHolder.access { cache ->
       val records = operation.normalize(
           data = operationData,
           customScalarAdapters = customScalarAdapters,
-          cacheKeyResolver = cacheKeyResolver
+          cacheResolver = cacheKeyResolver
       ).values.map { record ->
         Record(
             key = record.key,
