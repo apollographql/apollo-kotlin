@@ -5,15 +5,16 @@ import java.util.Locale
 /**
  * @param fragmentDefinitions: all the fragments in the current compilation unit. This is required to check the type conditions as well as fields merging
  */
-internal class ExecutableValidationScope(private val schema: Schema, private val fragmentDefinitions: Map<String, GQLFragmentDefinition>) {
-  private val typeDefinitions = schema.typeDefinitions
+internal class ExecutableValidationScope(private val schema: Schema, private val fragmentDefinitions: Map<String, GQLFragmentDefinition>): ValidationScope, VariableReferencesScope {
+  override val typeDefinitions = schema.typeDefinitions
+  override val directives = schema.directiveDefinitions
 
-  private val issues = mutableListOf<Issue>()
+  override val issues = mutableListOf<Issue>()
 
   /**
    * As the tree is walked, variable references will be put here
    */
-  private val variableReferences = mutableListOf<VariableReference>()
+  override val variableReferences = mutableListOf<VariableReference>()
 
   fun validate(document: GQLDocument): List<Issue> {
     document.validateExecutable()
@@ -97,7 +98,9 @@ internal class ExecutableValidationScope(private val schema: Schema, private val
     if (fieldDefinition.isDeprecated()) {
       issues.add(Issue.DeprecatedUsage(message = "Use of deprecated field `$name`", sourceLocation = sourceLocation))
     }
-    arguments?.validate(fieldDefinition.arguments, "field `${fieldDefinition.name}`")
+    arguments?.let {
+      validateArguments(it, fieldDefinition.arguments, "field `${fieldDefinition.name}`")
+    }
 
     val leafTypeDefinition = typeDefinitions[fieldDefinition.type.leafType().name]
 
@@ -160,7 +163,9 @@ internal class ExecutableValidationScope(private val schema: Schema, private val
       return
     }
 
-    arguments?.validate(directiveDefinition.arguments, "directive '${directiveDefinition.name}'")
+    arguments?.let {
+      validateArguments(it, directiveDefinition.arguments, "directive '${directiveDefinition.name}'")
+    }
 
     if (name == "nonnull") {
       if (directiveLocation == GQLDirectiveLocation.FIELD && (arguments?.arguments?.size ?: 0) > 0) {

@@ -1,12 +1,15 @@
 package com.apollographql.apollo3.ast
 
 
-internal class SchemaValidationScope(private val document: GQLDocument) {
+internal class SchemaValidationScope(document: GQLDocument) : ValidationScope, VariableReferencesScope {
   val definitions = document.definitions
-  private val issues = mutableListOf<Issue>()
+  override val issues = mutableListOf<Issue>()
 
-  val typeDefinitions = getTypeDefinitions(document.definitions)
-  val directives = getDirectives(document.definitions)
+  override val typeDefinitions = getTypeDefinitions(document.definitions)
+  override val directives = getDirectives(document.definitions)
+
+  // That's unused but required to call the directive validation code
+  override val variableReferences = mutableListOf<VariableReference>()
 
   fun validate(): List<Issue> {
     validateNotExecutable()
@@ -19,7 +22,7 @@ internal class SchemaValidationScope(private val document: GQLDocument) {
     return issues
   }
 
-  fun validateInterfaces() {
+  private fun validateInterfaces() {
     definitions.filterIsInstance<GQLInterfaceTypeDefinition>().forEach {
       if (it.fields.isEmpty()) {
         issues.add(Issue.ValidationError("Interfaces must specify one or more fields", it.sourceLocation))
@@ -41,11 +44,7 @@ internal class SchemaValidationScope(private val document: GQLDocument) {
       }
 
       o.directives.forEach { directive ->
-        val directiveDefinition = directives[directive.name]
-        if (directiveDefinition == null) {
-          issues.add(Issue.ValidationError("Object '${o.name}' cannot implement non-interface '$implementsInterface'", o.sourceLocation))
-        }
-        directive.validate(directiveDefinition)
+        validateDirective(directive, GQLDirectiveLocation.OBJECT)
       }
     }
   }
@@ -81,7 +80,7 @@ internal class SchemaValidationScope(private val document: GQLDocument) {
   }
 
   companion object {
-    fun getTypeDefinitions(definitions: List<GQLDefinition>): Map<String, GQLTypeDefinition> {
+    fun ValidationScope.getTypeDefinitions(definitions: List<GQLDefinition>): Map<String, GQLTypeDefinition> {
       val grouped = definitions.filterIsInstance<GQLTypeDefinition>()
           .groupBy { it.name }
 
@@ -89,10 +88,13 @@ internal class SchemaValidationScope(private val document: GQLDocument) {
         val first = it.first()
         val occurences = it.map { it.sourceLocation.pretty() }.joinToString("\n")
         if (it.size > 1) {
-          Issue.ValidationError(
-              "type '${first.name}' is defined multiple times:\n$occurences",
-              first.sourceLocation,
-              ValidationDetails.DuplicateTypeName
+          issues.add(
+              Issue.ValidationError(
+                  "type '${first.name}' is defined multiple times:\n$occurences",
+                  first.sourceLocation,
+                  Issue.Severity.ERROR,
+                  ValidationDetails.DuplicateTypeName
+              )
           )
         }
       }
