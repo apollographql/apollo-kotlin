@@ -1,126 +1,156 @@
 package com.apollographql.apollo3.ast
 
-internal class TypeExtensionsMergeScope {
-  private val issues = mutableListOf<Issue>()
 
-  fun mergeDocumentTypeExtensions(definitions: List<GQLDefinition>): List<GQLDefinition> {
-    val (extensions, otherDefinitions) = definitions.partition { it is GQLTypeSystemExtension }
+internal fun IssuesScope.mergeExtensions(definitions: List<GQLDefinition>): List<GQLDefinition> {
+  val (extensions, otherDefinitions) = definitions.partition { it is GQLTypeSystemExtension }
 
-    return extensions.fold(otherDefinitions) { acc, extension ->
-      when (extension) {
-        is GQLSchemaExtension -> acc.mergeSchemaExtension(schemaExtension = extension)
-        is GQLScalarTypeExtension -> acc.merge<GQLScalarTypeDefinition, GQLScalarTypeExtension>(extension) { it.merge(extension) }
-        is GQLInterfaceTypeExtension -> acc.merge<GQLInterfaceTypeDefinition, GQLInterfaceTypeExtension>(extension) { it.merge(extension) }
-        is GQLObjectTypeExtension -> acc.merge<GQLObjectTypeDefinition, GQLObjectTypeExtension>(extension) { it.merge(extension) }
-        is GQLInputObjectTypeExtension -> acc.merge<GQLInputObjectTypeDefinition, GQLInputObjectTypeExtension>(extension) { it.merge(extension) }
-        is GQLEnumTypeExtension -> acc.merge<GQLEnumTypeDefinition, GQLEnumTypeExtension>(extension) { it.merge(extension) }
-        is GQLUnionTypeExtension -> acc.merge<GQLUnionTypeDefinition, GQLUnionTypeExtension>(extension) { it.merge(extension) }
-        else -> throw UnrecognizedAntlrRule("Unrecognized type system extension", extension.sourceLocation)
-      }
-    }
-  }
-
-  private fun GQLUnionTypeDefinition.merge(extension: GQLUnionTypeExtension): GQLUnionTypeDefinition {
-    return copy(
-        directives = directives.mergeUniquesOrThrow(extension.directives),
-        memberTypes = memberTypes.mergeUniquesOrThrow(extension.memberTypes)
-    )
-  }
-
-  private fun GQLEnumTypeDefinition.merge(extension: GQLEnumTypeExtension): GQLEnumTypeDefinition {
-    return copy(
-        directives = directives.mergeUniquesOrThrow(extension.directives),
-        enumValues = enumValues.mergeUniquesOrThrow(extension.enumValues),
-    )
-  }
-
-  private fun GQLInputObjectTypeDefinition.merge(extension: GQLInputObjectTypeExtension): GQLInputObjectTypeDefinition {
-    return copy(
-        directives = directives.mergeUniquesOrThrow(extension.directives),
-        inputFields = inputFields.mergeUniquesOrThrow(extension.inputFields)
-    )
-  }
-
-  private fun GQLObjectTypeDefinition.merge(extension: GQLObjectTypeExtension): GQLObjectTypeDefinition {
-    return copy(
-        directives = directives.mergeUniquesOrThrow(extension.directives),
-        fields = fields.mergeUniquesOrThrow(extension.fields),
-    )
-  }
-
-  private fun GQLInterfaceTypeDefinition.merge(extension: GQLInterfaceTypeExtension): GQLInterfaceTypeDefinition {
-    return copy(
-        fields = fields.mergeUniquesOrThrow(extension.fields)
-    )
-  }
-
-  private fun List<GQLDefinition>.mergeSchemaExtension(schemaExtension: GQLSchemaExtension): List<GQLDefinition> {
-    var found = false
-    val definitions = mutableListOf<GQLDefinition>()
-    forEach {
-      if (it is GQLSchemaDefinition) {
-        definitions.add(it.merge(schemaExtension))
-        found = true
-      } else {
-        definitions.add(it)
-      }
-    }
-    if (!found) {
-      issues.add(Issue.ValidationError("Cannot apply schema extension on non existing schema definition", schemaExtension.sourceLocation))
-    }
-    return definitions
-  }
-
-  private fun GQLScalarTypeDefinition.merge(scalarTypeExtension: GQLScalarTypeExtension): GQLScalarTypeDefinition {
-    return copy(
-        directives = directives.mergeUniquesOrThrow(scalarTypeExtension.directives)
-    )
-  }
-
-  private inline fun <reified T, E> List<GQLDefinition>.merge(
-      extension: E,
-      merge: (T) -> T,
-  ): List<GQLDefinition> where T : GQLDefinition, T : GQLNamed, E : GQLNamed, E : GQLNode {
-    var found = false
-    val definitions = mutableListOf<GQLDefinition>()
-    forEach {
-      if (it is T && it.name == extension.name) {
-        if (found) {
-          issues.add(Issue.ValidationError("Multiple '${extension.name}' types found while merging extensions. This is a bug, check validation code", extension.sourceLocation))
-        }
-        definitions.add(merge(it))
-        found = true
-      } else {
-        definitions.add(it)
-      }
-    }
-    if (!found) {
-      issues.add(Issue.ValidationError("Cannot find type `${extension.name}` to apply extension", extension.sourceLocation))
-    }
-    return definitions
-  }
-
-  private fun GQLSchemaDefinition.merge(extension: GQLSchemaExtension): GQLSchemaDefinition {
-    return copy(
-        directives = directives.mergeUniquesOrThrow(extension.directives),
-        rootOperationTypeDefinitions = rootOperationTypeDefinitions.mergeUniquesOrThrow(extension.operationTypesDefinition) { it.operationType }
-    )
-  }
-
-  private inline fun <reified T> List<T>.mergeUniquesOrThrow(others: List<T>): List<T> where T : GQLNamed, T : GQLNode {
-    return (this + others).apply {
-      groupBy { it.name }.entries.firstOrNull { it.value.size > 1 }?.let {
-        issues.add(Issue.ValidationError("Cannot merge already existing node ${T::class.java.simpleName} `${it.key}`", it.value.first().sourceLocation))
-      }
-    }
-  }
-
-
-  private inline fun <reified T : GQLNode> List<T>.mergeUniquesOrThrow(others: List<T>, name: (T) -> String): List<T> {
-    return (this + others).apply {
-      groupBy { name(it) }.entries.firstOrNull { it.value.size > 1 }?.let {
-        issues.add(Issue.ValidationError("Cannot merge already existing node ${T::class.java.simpleName} `${it.key}`", it.value.first().sourceLocation))
-      }
+  return extensions.fold(otherDefinitions) { acc, extension ->
+    when (extension) {
+      is GQLSchemaExtension -> mergeSchemaExtension(acc, schemaExtension = extension)
+      is GQLScalarTypeExtension -> merge<GQLScalarTypeDefinition, GQLScalarTypeExtension>(acc, extension) { merge(it, extension) }
+      is GQLInterfaceTypeExtension -> merge<GQLInterfaceTypeDefinition, GQLInterfaceTypeExtension>(acc, extension) { merge(it, extension) }
+      is GQLObjectTypeExtension -> merge<GQLObjectTypeDefinition, GQLObjectTypeExtension>(acc, extension) { merge(it, extension) }
+      is GQLInputObjectTypeExtension -> merge<GQLInputObjectTypeDefinition, GQLInputObjectTypeExtension>(acc, extension) { merge(it, extension) }
+      is GQLEnumTypeExtension -> merge<GQLEnumTypeDefinition, GQLEnumTypeExtension>(acc, extension) { merge(it, extension) }
+      is GQLUnionTypeExtension -> merge<GQLUnionTypeDefinition, GQLUnionTypeExtension>(acc, extension) { merge(it, extension) }
+      else -> throw UnrecognizedAntlrRule("Unrecognized type system extension", extension.sourceLocation)
     }
   }
 }
+
+private fun IssuesScope.merge(
+    unionTypeDefinition: GQLUnionTypeDefinition,
+    extension: GQLUnionTypeExtension,
+): GQLUnionTypeDefinition = with(unionTypeDefinition) {
+  return copy(
+      directives = mergeUniquesOrThrow(directives, extension.directives),
+      memberTypes = mergeUniquesOrThrow(memberTypes, extension.memberTypes)
+  )
+}
+
+private fun IssuesScope.merge(
+    enumTypeDefinition: GQLEnumTypeDefinition,
+    extension: GQLEnumTypeExtension,
+): GQLEnumTypeDefinition = with(enumTypeDefinition) {
+  return copy(
+      directives = mergeUniquesOrThrow(directives, extension.directives),
+      enumValues = mergeUniquesOrThrow(enumValues, extension.enumValues),
+  )
+}
+
+private fun IssuesScope.merge(
+    inputObjectTypeDefinition: GQLInputObjectTypeDefinition,
+    extension: GQLInputObjectTypeExtension,
+): GQLInputObjectTypeDefinition = with(inputObjectTypeDefinition) {
+  return copy(
+      directives = mergeUniquesOrThrow(directives, extension.directives),
+      inputFields = mergeUniquesOrThrow(inputFields, extension.inputFields)
+  )
+}
+
+private fun IssuesScope.merge(
+    objectTypeDefinition: GQLObjectTypeDefinition,
+    extension: GQLObjectTypeExtension,
+): GQLObjectTypeDefinition = with(objectTypeDefinition) {
+  return copy(
+      directives = mergeUniquesOrThrow(directives, extension.directives),
+      fields = mergeUniquesOrThrow(fields, extension.fields),
+  )
+}
+
+private fun IssuesScope.merge(
+    interfaceTypeDefinition: GQLInterfaceTypeDefinition,
+    extension: GQLInterfaceTypeExtension,
+): GQLInterfaceTypeDefinition = with(interfaceTypeDefinition) {
+  return copy(
+      fields = mergeUniquesOrThrow(fields, extension.fields)
+  )
+}
+
+private fun IssuesScope.mergeSchemaExtension(
+    definitions: List<GQLDefinition>,
+    schemaExtension: GQLSchemaExtension,
+): List<GQLDefinition> = with(definitions) {
+  var found = false
+  val newDefinitions = mutableListOf<GQLDefinition>()
+  forEach {
+    if (it is GQLSchemaDefinition) {
+      newDefinitions.add(merge(it, schemaExtension))
+      found = true
+    } else {
+      newDefinitions.add(it)
+    }
+  }
+  if (!found) {
+    issues.add(Issue.ValidationError("Cannot apply schema extension on non existing schema definition", schemaExtension.sourceLocation))
+  }
+  return newDefinitions
+}
+
+private fun IssuesScope.merge(
+    scalarTypeDefinition: GQLScalarTypeDefinition,
+    scalarTypeExtension: GQLScalarTypeExtension,
+): GQLScalarTypeDefinition = with(scalarTypeDefinition) {
+  return copy(
+      directives = mergeUniquesOrThrow(directives, scalarTypeExtension.directives)
+  )
+}
+
+private inline fun <reified T, E> IssuesScope.merge(
+    definitions: List<GQLDefinition>,
+    extension: E,
+    merge: (T) -> T,
+): List<GQLDefinition> where T : GQLDefinition, T : GQLNamed, E : GQLNamed, E : GQLNode = with(definitions) {
+  var found = false
+  val newDefinitions = mutableListOf<GQLDefinition>()
+  forEach {
+    if (it is T && it.name == extension.name) {
+      if (found) {
+        issues.add(Issue.ValidationError("Multiple '${extension.name}' types found while merging extensions. This is a bug, check validation code", extension.sourceLocation))
+      }
+      newDefinitions.add(merge(it))
+      found = true
+    } else {
+      newDefinitions.add(it)
+    }
+  }
+  if (!found) {
+    issues.add(Issue.ValidationError("Cannot find type `${extension.name}` to apply extension", extension.sourceLocation))
+  }
+  return newDefinitions
+}
+
+private fun IssuesScope.merge(
+    schemaDefinition: GQLSchemaDefinition,
+    extension: GQLSchemaExtension,
+): GQLSchemaDefinition = with(schemaDefinition) {
+  return copy(
+      directives = mergeUniquesOrThrow(directives, extension.directives),
+      rootOperationTypeDefinitions = mergeUniquesOrThrow(rootOperationTypeDefinitions, extension.operationTypesDefinition) { it.operationType }
+  )
+}
+
+private inline fun <reified T> IssuesScope.mergeUniquesOrThrow(
+    list: List<T>,
+    others: List<T>,
+): List<T> where T : GQLNamed, T : GQLNode = with(list) {
+  return (this + others).apply {
+    groupBy { it.name }.entries.firstOrNull { it.value.size > 1 }?.let {
+      issues.add(Issue.ValidationError("Cannot merge already existing node ${T::class.java.simpleName} `${it.key}`", it.value.first().sourceLocation))
+    }
+  }
+}
+
+
+private inline fun <reified T : GQLNode> IssuesScope.mergeUniquesOrThrow(
+    list: List<T>,
+    others: List<T>,
+    name: (T) -> String,
+): List<T> = with(list) {
+  return (this + others).apply {
+    groupBy { name(it) }.entries.firstOrNull { it.value.size > 1 }?.let {
+      issues.add(Issue.ValidationError("Cannot merge already existing node ${T::class.java.simpleName} `${it.key}`", it.value.first().sourceLocation))
+    }
+  }
+}
+

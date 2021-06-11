@@ -7,7 +7,7 @@ import java.util.Locale
  */
 internal class ExecutableValidationScope(private val schema: Schema, private val fragmentDefinitions: Map<String, GQLFragmentDefinition>): ValidationScope, VariableReferencesScope {
   override val typeDefinitions = schema.typeDefinitions
-  override val directives = schema.directiveDefinitions
+  override val directiveDefinitions = schema.directiveDefinitions
 
   override val issues = mutableListOf<Issue>()
 
@@ -133,50 +133,7 @@ internal class ExecutableValidationScope(private val schema: Schema, private val
     }
 
     directives.forEach {
-      it.validate(GQLDirectiveLocation.FIELD)
-    }
-  }
-
-
-  private fun GQLDirective.validate(directiveLocation: GQLDirectiveLocation) {
-    val directiveDefinition = schema.directiveDefinitions[name]
-
-    if (directiveDefinition == null) {
-      registerIssue(
-              message = "Unknown directive '$name'",
-              sourceLocation = sourceLocation,
-              details = ValidationDetails.UnknownDirective,
-              severity = Issue.Severity.WARNING
-          )
-
-      return
-    }
-
-    if (directiveLocation !in directiveDefinition.locations) {
-      registerIssue(
-              message = "Directive '$name' cannot be applied on '$directiveLocation'",
-              sourceLocation = sourceLocation
-          )
-      return
-    }
-
-    arguments?.let {
-      validateArguments(it, directiveDefinition.arguments, "directive '${directiveDefinition.name}'")
-    }
-
-    if (name == "nonnull") {
-      if (directiveLocation == GQLDirectiveLocation.FIELD && (arguments?.arguments?.size ?: 0) > 0) {
-        registerIssue(
-                message = "'$name' cannot have arguments when applied on a field",
-                sourceLocation = sourceLocation
-            )
-
-      } else if (directiveLocation == GQLDirectiveLocation.OBJECT && (arguments?.arguments?.size ?: 0) == 0) {
-        registerIssue(
-                message = "'$name' must contain a list of fields",
-                sourceLocation = sourceLocation
-        )
-      }
+      validateDirective(it, this)
     }
   }
 
@@ -202,7 +159,7 @@ internal class ExecutableValidationScope(private val schema: Schema, private val
     selectionSet.validate(inlineFragmentTypeDefinition)
 
     directives.forEach {
-      it.validate(GQLDirectiveLocation.INLINE_FRAGMENT)
+      validateDirective(it, this)
     }
   }
 
@@ -236,7 +193,7 @@ internal class ExecutableValidationScope(private val schema: Schema, private val
     fragmentDefinition.selectionSet.validate(fragmentTypeDefinition)
 
     directives.forEach {
-      it.validate(GQLDirectiveLocation.FRAGMENT_SPREAD)
+      validateDirective(it, this)
     }
   }
 

@@ -222,8 +222,6 @@ class GraphQLCompiler {
             filePath = null
         )
 
-        schemaDocument.validateAsSchema().checkNoErrors()
-
         val schema = schemaDocument.toSchema()
 
         return IncomingOptions(
@@ -248,7 +246,6 @@ class GraphQLCompiler {
       }
     }
   }
-
 
   data class ModuleOptions(
       /**

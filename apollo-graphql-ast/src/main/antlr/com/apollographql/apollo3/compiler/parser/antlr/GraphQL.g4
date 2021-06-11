@@ -198,6 +198,10 @@ selectionSet
   : '{' (selection)* '}'
   ;
 
+selections
+  : (selection)*
+  ;
+
 description
   : stringValue
   ;

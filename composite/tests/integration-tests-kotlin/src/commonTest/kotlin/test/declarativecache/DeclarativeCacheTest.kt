@@ -18,7 +18,7 @@ class DeclarativeCacheTest {
 
   @BeforeTest
   fun setUp() {
-    store = ApolloStore(MemoryCacheFactory(), DeclarativecacheCacheResolver)
+    store = ApolloStore(MemoryCacheFactory(), CacheResolver.ID)
     mockServer = MockServer()
     apolloClient = ApolloClient(mockServer.url()).withStore(store)
   }
@@ -26,6 +26,6 @@ class DeclarativeCacheTest {
 
   @Test
   fun AtKeyIsWorking() {
-    mockServer.enqueue()
+    //mockServer.enqueue()
   }
 }

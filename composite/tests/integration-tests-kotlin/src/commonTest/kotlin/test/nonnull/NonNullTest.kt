@@ -1,9 +1,9 @@
 package test.nonnull
 
 import com.apollographql.apollo3.api.parseData
-import com.apollographql.apollo3.integration.nonnull.NonNullField1Query
-import com.apollographql.apollo3.integration.nonnull.NonNullField2Query
-import com.apollographql.apollo3.integration.nonnull.NullableField1Query
+import nonnull.NonNullField1Query
+import nonnull.NonNullField2Query
+import nonnull.NullableField1Query
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse

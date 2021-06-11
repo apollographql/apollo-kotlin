@@ -6,7 +6,7 @@ import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.ParseResult
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.validateAsOperations
-import com.apollographql.apollo3.ast.validateAsSchema
+import com.apollographql.apollo3.ast.validateAsSchemaAndMerge
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -36,7 +36,7 @@ class ValidationTest(name: String, private val graphQLFile: File) {
 
       when (parseResult) {
         is ParseResult.Error -> parseResult.issues
-        is ParseResult.Success -> parseResult.value.validateAsSchema()
+        is ParseResult.Success -> parseResult.value.validateAsSchemaAndMerge()
       }
     }
     issues.serialize()

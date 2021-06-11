@@ -11,6 +11,8 @@ fun GraphQLParser.DocumentContext.toGQLDocument(filePath: String? = null) = Antl
 
 fun GraphQLParser.ValueContext.toGQLValue(filePath: String? = null) = AntlrToGQLScope(filePath).parseValueContext(this)
 
+fun GraphQLParser.SelectionContext.toGQLSelection(filePath: String? = null) = AntlrToGQLScope(filePath).parseSelection(this)
+
 private class AntlrToGQLScope(val filePath: String?) {
   private fun sourceLocation(token: Token) = SourceLocation(
       line = token.line,
@@ -27,6 +29,10 @@ private class AntlrToGQLScope(val filePath: String?) {
 
   fun parseValueContext(valueContext: GraphQLParser.ValueContext): GQLValue {
     return valueContext.parse()
+  }
+
+  fun parseSelection(selectionContext: GraphQLParser.SelectionContext): GQLSelection {
+    return selectionContext.parse()
   }
 
   private fun astBuilderException(message: String, token: Token): Nothing {

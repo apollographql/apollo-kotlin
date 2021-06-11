@@ -4,19 +4,15 @@ package com.apollographql.apollo3.ast
  * A wrapper around a schema GQLDocument that:
  * - always contain builtin types contrary to introspection that will not contain directives and SDL that will not contain
  * any builtin definitions
+ * - always have a schema definition
  * - has type extensions merged
- * - allows for easier retrieval of type by name
+ * - has some helper functions to retrieve a type by name and/or possible types
+ *
+ * @param definitions a list of validated and merged definitions
  */
 class Schema(
-    document: GQLDocument,
+    private val definitions: List<GQLDefinition>,
 ) {
-  /**
-   * Add the builtin definitions before merging the type extensions.
-   * That leaves the possibility to extend the builtin types. Not sure how useful that is
-   * but that shouldn't harm
-   */
-  private val definitions = TypeExtensionsMergeScope().mergeDocumentTypeExtensions(document.definitions + builtinDefinitions())
-
   val typeDefinitions: Map<String, GQLTypeDefinition> = definitions
       .filterIsInstance<GQLTypeDefinition>()
       .associateBy { it.name }
@@ -25,48 +21,27 @@ class Schema(
       .filterIsInstance<GQLDirectiveDefinition>()
       .associateBy { it.name }
 
-  val queryTypeDefinition: GQLTypeDefinition = document
-      .rootOperationTypeDefinition("query") ?: throw SchemaValidationException("No query root type found")
+  val queryTypeDefinition: GQLTypeDefinition = rootOperationTypeDefinition("query") ?: throw SchemaValidationException("No query root type found")
 
-  val mutationTypeDefinition: GQLTypeDefinition? = document.rootOperationTypeDefinition("mutation")
+  val mutationTypeDefinition: GQLTypeDefinition? = rootOperationTypeDefinition("mutation")
 
-  val subscriptionTypeDefinition: GQLTypeDefinition? = document.rootOperationTypeDefinition("subscription")
+  val subscriptionTypeDefinition: GQLTypeDefinition? = rootOperationTypeDefinition("subscription")
 
   fun toGQLDocument(): GQLDocument = GQLDocument(
-      definitions = typeDefinitions.values.toList() + directiveDefinitions.values.toList() + GQLSchemaDefinition(
-          description = null,
-          directives = emptyList(),
-          rootOperationTypeDefinitions = rootOperationTypeDefinition()
-      ),
+      definitions = definitions,
       filePath = null
   ).withoutBuiltinDefinitions()
 
-  private fun rootOperationTypeDefinition(): List<GQLOperationTypeDefinition> {
-    val list = mutableListOf<GQLOperationTypeDefinition>()
-    list.add(
-        GQLOperationTypeDefinition(
-            operationType = "query",
-            namedType = queryTypeDefinition.name
-        )
-    )
-    if (mutationTypeDefinition != null) {
-      list.add(
-          GQLOperationTypeDefinition(
-              operationType = "mutation",
-              namedType = mutationTypeDefinition.name
-          )
-      )
-    }
-    if (subscriptionTypeDefinition != null) {
-      list.add(
-          GQLOperationTypeDefinition(
-              operationType = "subscription",
-              namedType = subscriptionTypeDefinition.name
-          )
-      )
-    }
-
-    return list
+  private fun rootOperationTypeDefinition(operationType: String): GQLTypeDefinition? {
+    return definitions.filterIsInstance<GQLSchemaDefinition>().single()
+        .rootOperationTypeDefinitions
+        .singleOrNull {
+          it.operationType == operationType
+        }
+        ?.namedType
+        ?.let { namedType ->
+          definitions.filterIsInstance<GQLObjectTypeDefinition>().single { it.name == namedType }
+        }
   }
 
   fun typeDefinition(name: String): GQLTypeDefinition {

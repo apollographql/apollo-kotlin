@@ -3,15 +3,28 @@ package com.apollographql.apollo3.ast
 /**
  * For a [GQLValue] used in input position, validate that it can be coerced to [expectedType] and coerce it at the same time.
  *
- * Additionally, it will collect any variables used in this [GQLValue]
- *
- * This can happen in a lot of places. Places that
+ * This should only be used in places where variables are available. For an example:
  * - variable defaultValue (executable)
  * - field argument value (executable)
- * - field argument defaultValue (schema)
- * - input field defaultValue (schema)
  */
-fun GQLValue.validateAndCoerce(expectedType: GQLType, typeDefinitions: Map<String, GQLTypeDefinition>): InputValueValidationResult {
-  return InputValueValidationScope(typeDefinitions).validateAndCoerce(this, expectedType)
+fun GQLValue.coerceInExecutableContextOrThrow(expectedType: GQLType, schema: Schema): GQLValue {
+  val scope = ExecutableValidationScope2(schema)
+  val coercedValue = scope.validateAndCoerceValue(this, expectedType)
+  scope.issues.checkNoErrors()
+  return coercedValue
 }
 
+/**
+ * For a [GQLValue] used in input position, validate that it can be coerced to [expectedType] and coerce it at the same time.
+ *
+ * This should only be used in places where no variables are available. For an example:
+ * - field argument defaultValue (schema)
+ * - input field defaultValue (schema)
+ * - directive argument values
+ */
+fun GQLValue.coerceInSchemaContextOrThrow(expectedType: GQLType, schema: Schema): GQLValue {
+  val scope = DefaultValidationScope(schema)
+  val coercedValue = scope.validateAndCoerceValue(this, expectedType)
+  scope.issues.checkNoErrors()
+  return coercedValue
+}

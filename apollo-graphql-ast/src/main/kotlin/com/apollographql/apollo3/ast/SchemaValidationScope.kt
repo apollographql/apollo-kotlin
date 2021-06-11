@@ -1,70 +1,22 @@
 package com.apollographql.apollo3.ast
 
-
+/**
+ */
 internal class SchemaValidationScope(document: GQLDocument) : ValidationScope {
-  val definitions = document.definitions
   override val issues = mutableListOf<Issue>()
 
+  val allDefinitions = document.definitions
   override val typeDefinitions = getTypeDefinitions(document.definitions)
-  override val directives = getDirectives(document.definitions)
+  override val directiveDefinitions = getDirectives(document.definitions)
 
   val schemaDefinition = getSchema(document.definitions)
 
-  fun validate(): List<Issue> {
-    validateNotExecutable()
-    validateNoIntrospectionNames()
-
-    validateInterfaces()
-    validateObjects()
-
-    return issues
-  }
-
-  private fun validateInterfaces() {
-    definitions.filterIsInstance<GQLInterfaceTypeDefinition>().forEach {
-      if (it.fields.isEmpty()) {
-        registerIssue("Interfaces must specify one or more fields", it.sourceLocation)
-      }
-    }
-  }
-
-  private fun validateObjects() {
-    definitions.filterIsInstance<GQLObjectTypeDefinition>().forEach { o ->
-      if (o.fields.isEmpty()) {
-        registerIssue("Object must specify one or more fields", o.sourceLocation)
-      }
-
-      o.implementsInterfaces.forEach { implementsInterface ->
-        val iface = definitions.firstOrNull { (it as? GQLInterfaceTypeDefinition)?.name == implementsInterface }
-        if (iface == null) {
-          registerIssue("Object '${o.name}' cannot implement non-interface '$implementsInterface'", o.sourceLocation)
-        }
-      }
-
-      o.directives.forEach { directive ->
-        validateDirective(directive, GQLDirectiveLocation.OBJECT)
-      }
-    }
-  }
-
-  private fun validateNoIntrospectionNames() {
-    // 3.3 All types and directives defined within a schema must not have a name which begins with "__"
-    definitions.forEach { definition ->
-      if (definition !is GQLNamed) {
-        return@forEach
-      }
-      if (definition.name.startsWith("__")) {
-        registerIssue("names starting with '__' are reserved for introspection", definition.sourceLocation)
-      }
-    }
-  }
-
-  /**
-   * This is not in the specification per-se but in our use case, that will help catch some cases when users mistake
-   * graphql operations for schemas
-   */
-  private fun validateNotExecutable() {
-    definitions.firstOrNull { it is GQLOperationDefinition || it is GQLFragmentDefinition }
+  init {
+    /**
+     * This is not in the specification per-se but in our use case, that will help catch some cases when users mistake
+     * graphql operations for schemas
+     */
+    document.definitions.firstOrNull { it is GQLOperationDefinition || it is GQLFragmentDefinition }
         ?.let {
           registerIssue("Found an executable definition. Schemas should not contain operations or fragments.", it.sourceLocation)
         }
@@ -128,3 +80,105 @@ internal class SchemaValidationScope(document: GQLDocument) : ValidationScope {
     }
   }
 }
+
+internal fun SchemaValidationScope.validateDocumentAndMergeExtensions(): List<GQLDefinition> {
+  validateNoIntrospectionNames()
+  validateRootOperationTypes()
+
+  validateInterfaces()
+  validateObjects()
+
+  val schemaDefinition = schemaDefinition ?: syntheticSchemaDefinition()
+
+  /**
+   * Add the builtin definitions before merging the type extensions.
+   * That leaves the possibility to extend the builtin types. Not sure how useful that is
+   * but that shouldn't harm
+   */
+  return mergeExtensions(listOf(schemaDefinition) + builtinDefinitions() + allDefinitions.filter { it !is GQLSchemaDefinition } )
+}
+
+internal fun SchemaValidationScope.validateRootOperationTypes() {
+  schemaDefinition?.rootOperationTypeDefinitions?.forEach {
+    val typeDefinition = typeDefinitions[it.namedType]
+    if (typeDefinition == null) {
+      registerIssue(
+          "Schema defines `${it.namedType}` as root for `${it.namedType}` but `${it.namedType}` is not defined",
+          sourceLocation = it.sourceLocation
+      )
+    }
+  }
+}
+
+internal fun ValidationScope.syntheticSchemaDefinition(): GQLSchemaDefinition {
+  val operationTypeDefinitions = listOf("query", "mutation", "subscription").mapNotNull {
+    // 3.3.1
+    // If there is no schema definition, look for an object type named after the operationType
+    // i.e. Query, Mutation, ...
+
+    // We're capitalizing manually instead of calling capitalize in case we have weird localization issues
+    // For 3 string, that's ok
+    val typeName = when (it) {
+      "query" -> "Query"
+      "mutation" -> "Mutation"
+      "subscription" -> "Subscription"
+      else -> error("")
+    }
+
+    val typeDefinition = typeDefinitions[typeName]
+    if (typeDefinition == null) {
+      if (it == "query") {
+        registerIssue("No schema definition and not 'Query' type found", sourceLocation = SourceLocation.UNKNOWN)
+      }
+      return@mapNotNull null
+    }
+
+    GQLOperationTypeDefinition(
+        operationType = it,
+        namedType = typeName
+    )
+  }
+
+  return GQLSchemaDefinition(
+      description = null,
+      directives = emptyList(),
+      rootOperationTypeDefinitions = operationTypeDefinitions
+  )
+}
+
+private fun ValidationScope.validateInterfaces() {
+  typeDefinitions.values.filterIsInstance<GQLInterfaceTypeDefinition>().forEach {
+    if (it.fields.isEmpty()) {
+      registerIssue("Interfaces must specify one or more fields", it.sourceLocation)
+    }
+  }
+}
+
+private fun ValidationScope.validateObjects() {
+  typeDefinitions.values.filterIsInstance<GQLObjectTypeDefinition>().forEach { o ->
+    if (o.fields.isEmpty()) {
+      registerIssue("Object must specify one or more fields", o.sourceLocation)
+    }
+
+    o.implementsInterfaces.forEach { implementsInterface ->
+      val iface = typeDefinitions[implementsInterface] as? GQLInterfaceTypeDefinition
+      if (iface == null) {
+        registerIssue("Object '${o.name}' cannot implement non-interface '$implementsInterface'", o.sourceLocation)
+      }
+    }
+
+    o.directives.forEach { directive ->
+      validateDirective(directive, o)
+    }
+  }
+}
+
+private fun ValidationScope.validateNoIntrospectionNames() {
+  // 3.3 All types and directives defined within a schema must not have a name which begins with "__"
+  (typeDefinitions.values + directiveDefinitions.values).forEach { definition ->
+    if (definition.name.startsWith("__")) {
+      registerIssue("names starting with '__' are reserved for introspection", definition.sourceLocation)
+    }
+  }
+}
+

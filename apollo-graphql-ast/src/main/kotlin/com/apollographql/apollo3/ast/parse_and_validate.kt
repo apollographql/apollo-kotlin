@@ -11,15 +11,13 @@ import java.io.File
  *
  * Throws if the input is not a valid schema.
  *
- * For more fine grained control, see [parseAsGQLDocument] and [validateAsSchema]
+ * For more fine grained control, see [parseAsGQLDocument] and [validateAsSchemaAndMerge]
  */
 fun BufferedSource.toSchema(filePath: String? = null): Schema {
   val document = parseAsGQLDocument(filePath)
       .getOrThrow()
 
-  document.validateAsSchema().checkNoErrors()
-
-  return Schema(document)
+  return document.toSchema()
 }
 
 /**
@@ -37,7 +35,7 @@ fun String.toSchema() = byteInputStream().source().buffer().toSchema()
  *
  * throws if the input is not a valid executable document
  *
- * For more fine grained control, look at [parseAsGQLDocument] and [validateAsSchema]
+ * For more fine grained control, look at [parseAsGQLDocument] and [validateAsSchemaAndMerge]
  *
  * @param schema a [Schema] used to validate the operations and fragments
  * @param filePath an optional path that will be displayed in errors for better troubleshooting
