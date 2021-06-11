@@ -11,10 +11,10 @@ internal interface ValidationScope {
 }
 
 
-internal fun <S> S.validateDirective(
+internal fun ValidationScope.validateDirective(
     directive: GQLDirective,
     directiveLocation: GQLDirectiveLocation,
-) where S: ValidationScope, S: VariableReferencesScope {
+) {
   val directiveDefinition = directives[directive.name]
 
   if (directiveDefinition == null) {
@@ -66,11 +66,11 @@ internal fun <S> S.validateDirective(
 }
 
 
-private fun <S> S.validateArgument(
+private fun ValidationScope.validateArgument(
     argument: GQLArgument,
     inputValueDefinitions: List<GQLInputValueDefinition>,
     debug: String,
-) where S : ValidationScope, S : VariableReferencesScope = with(argument) {
+) = with(argument) {
   val schemaArgument = inputValueDefinitions.firstOrNull { it.name == name }
   if (schemaArgument == null) {
     issues.add(Issue.ValidationError(message = "Unknown argument `$name` on $debug", sourceLocation = sourceLocation))
@@ -83,8 +83,11 @@ private fun <S> S.validateArgument(
   validateAndCoerceValue(argument.value, schemaArgument.type)
 }
 
-internal fun <S> S.validateArguments(arguments: GQLArguments, inputValueDefinitions: List<GQLInputValueDefinition>, debug: String)
-    where S : ValidationScope, S : VariableReferencesScope {
+internal fun ValidationScope.validateArguments(
+    arguments: GQLArguments,
+    inputValueDefinitions: List<GQLInputValueDefinition>,
+    debug: String,
+) {
   // 5.4.2 Argument Uniqueness
   arguments.arguments.groupBy { it.name }.filter { it.value.size > 1 }.toList().firstOrNull()?.let {
     issues.add(Issue.ValidationError(message = "Argument `${it.first}` is defined multiple times", sourceLocation = it.second.first().sourceLocation))
@@ -109,8 +112,7 @@ internal fun <S> S.validateArguments(arguments: GQLArguments, inputValueDefiniti
   }
 }
 
-internal fun <S> S.validateVariable(operation: GQLOperationDefinition?, value: GQLVariableValue, expectedType: GQLType)
-    where S : ValidationScope, S : VariableReferencesScope {
+internal fun ValidationScope.validateVariable(operation: GQLOperationDefinition?, value: GQLVariableValue, expectedType: GQLType) {
   if (operation == null) {
     // if operation is null, it means we're currently validating a fragment outside the context of an operation
     return

@@ -1,16 +1,13 @@
 package com.apollographql.apollo3.ast
 
 
-internal class SchemaValidationScope(document: GQLDocument) : ValidationScope, VariableReferencesScope {
+internal class SchemaValidationScope(document: GQLDocument) : ValidationScope {
   val definitions = document.definitions
   override val issues = mutableListOf<Issue>()
 
   override val typeDefinitions = getTypeDefinitions(document.definitions)
   override val directives = getDirectives(document.definitions)
-
-  // That's unused but required to call the directive validation code
-  override val variableReferences = mutableListOf<VariableReference>()
-
+  
   fun validate(): List<Issue> {
     validateNotExecutable()
     validateUniqueSchemaDefinition()

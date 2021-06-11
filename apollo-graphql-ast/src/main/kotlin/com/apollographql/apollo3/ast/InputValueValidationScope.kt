@@ -1,9 +1,18 @@
 package com.apollographql.apollo3.ast
 
-fun <S> S.validateAndCoerceValue(value: GQLValue, expectedType: GQLType): GQLValue
-    where S : ValidationScope, S : VariableReferencesScope {
+internal fun ValidationScope.validateAndCoerceValue(value: GQLValue, expectedType: GQLType): GQLValue {
   if (value is GQLVariableValue) {
-    variableReferences.add(VariableReference(value, expectedType))
+    if (this !is VariableReferencesScope) {
+      issues.add(
+          Issue.ValidationError(
+              "Variable '${value.name}' used in non-variable context",
+              value.sourceLocation,
+              Issue.Severity.ERROR,
+          )
+      )
+    } else {
+      variableReferences.add(VariableReference(value, expectedType))
+    }
     return value
   } else if (value is GQLNullValue) {
     if (expectedType is GQLNonNullType) {
@@ -52,13 +61,11 @@ fun <S> S.validateAndCoerceValue(value: GQLValue, expectedType: GQLType): GQLVal
   }
 }
 
-private fun <S> S.registerIssue(value: GQLValue, expectedType: GQLType)
-    where S : ValidationScope {
+private fun ValidationScope.registerIssue(value: GQLValue, expectedType: GQLType) {
   issues.add(Issue.ValidationError(message = "Value `${value.toUtf8()}` cannot be used in position expecting `${expectedType.pretty()}`", sourceLocation = value.sourceLocation))
 }
 
-private fun <S> S.validateAndCoerceInputObject(value: GQLValue, expectedTypeDefinition: GQLInputObjectTypeDefinition): GQLValue
-    where S : ValidationScope, S : VariableReferencesScope {
+private fun ValidationScope.validateAndCoerceInputObject(value: GQLValue, expectedTypeDefinition: GQLInputObjectTypeDefinition): GQLValue {
   val expectedType = GQLNamedType(name = expectedTypeDefinition.name)
   if (value !is GQLObjectValue) {
     registerIssue(value, expectedType)
@@ -89,8 +96,7 @@ private fun <S> S.validateAndCoerceInputObject(value: GQLValue, expectedTypeDefi
   })
 }
 
-private fun <S> S.validateAndCoerceEnum(value: GQLValue, enumTypeDefinition: GQLEnumTypeDefinition): GQLValue
-    where S : ValidationScope {
+private fun ValidationScope.validateAndCoerceEnum(value: GQLValue, enumTypeDefinition: GQLEnumTypeDefinition): GQLValue {
   val expectedType = GQLNamedType(name = enumTypeDefinition.name)
   if (value !is GQLEnumValue) {
     registerIssue(value, expectedType)
@@ -112,8 +118,7 @@ private fun <S> S.validateAndCoerceEnum(value: GQLValue, enumTypeDefinition: GQL
   return value
 }
 
-private fun <S> S.validateAndCoerceScalar(value: GQLValue, expectedType: GQLNamedType): GQLValue
-    where S : ValidationScope {
+private fun ValidationScope.validateAndCoerceScalar(value: GQLValue, expectedType: GQLNamedType): GQLValue {
   return when (expectedType.name) {
     "Int" -> {
       if (value !is GQLIntValue) {
