@@ -8,7 +8,7 @@ interface IssuesScope {
   val issues: MutableList<Issue>
 }
 
-internal interface ValidationScope : IssuesScope{
+internal interface ValidationScope : IssuesScope {
   override val issues: MutableList<Issue>
   val typeDefinitions: Map<String, GQLTypeDefinition>
   val directiveDefinitions: Map<String, GQLDirectiveDefinition>
@@ -19,11 +19,13 @@ internal interface ValidationScope : IssuesScope{
       severity: Issue.Severity = Issue.Severity.ERROR,
       details: ValidationDetails = ValidationDetails.Other,
   ) {
-    registerIssue(
-        message,
-        sourceLocation,
-        severity,
-        details
+    issues.add(
+        Issue.ValidationError(
+            message,
+            sourceLocation,
+            severity,
+            details
+        )
     )
   }
 }
@@ -32,7 +34,7 @@ internal class DefaultValidationScope(
     override val typeDefinitions: Map<String, GQLTypeDefinition>,
     override val directiveDefinitions: Map<String, GQLDirectiveDefinition>,
 ) : ValidationScope {
-  constructor(schema: Schema): this(schema.typeDefinitions, schema.directiveDefinitions)
+  constructor(schema: Schema) : this(schema.typeDefinitions, schema.directiveDefinitions)
 
   override val issues = mutableListOf<Issue>()
 }
@@ -41,14 +43,15 @@ internal class ExecutableValidationScope2(
     override val typeDefinitions: Map<String, GQLTypeDefinition>,
     override val directiveDefinitions: Map<String, GQLDirectiveDefinition>,
     override val issues: MutableList<Issue> = mutableListOf(),
-    override val variableReferences: MutableList<VariableReference> = mutableListOf()
+    override val variableReferences: MutableList<VariableReference> = mutableListOf(),
 ) : ValidationScope, VariableReferencesScope {
-  constructor(validationScope: ValidationScope): this(
+  constructor(validationScope: ValidationScope) : this(
       validationScope.typeDefinitions,
       validationScope.directiveDefinitions,
       validationScope.issues
   )
-  constructor(schema: Schema): this(
+
+  constructor(schema: Schema) : this(
       schema.typeDefinitions,
       schema.directiveDefinitions,
   )

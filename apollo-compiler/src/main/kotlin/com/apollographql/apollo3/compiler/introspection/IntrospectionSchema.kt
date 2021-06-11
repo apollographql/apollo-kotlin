@@ -185,3 +185,16 @@ private fun JsonReader.locateSchemaRootNode(): JsonReader {
 
   return schemaJsonReader ?: throw IllegalArgumentException("Failed to locate schema root node `__schema`")
 }
+
+fun IntrospectionSchema.normalize(): IntrospectionSchema {
+  return copy(
+      __schema = __schema.normalize()
+  )
+}
+
+fun IntrospectionSchema.Schema.normalize(): IntrospectionSchema.Schema {
+  return copy(
+      types = types.sortedBy { it.name }
+  )
+}
+
