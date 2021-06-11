@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.ast
 
-class InputValueValidationScope(val schema: Schema) {
+class InputValueValidationScope(val typeDefinitions: Map<String, GQLTypeDefinition>) {
   private val issues = mutableListOf<Issue>()
   private val variableReferences = mutableListOf<VariableReference>()
 
@@ -141,7 +141,7 @@ class InputValueValidationScope(val schema: Schema) {
         )
       }
       is GQLNamedType -> {
-        when (val expectedTypeDefinition = schema.typeDefinition(expectedType.name)) {
+        when (val expectedTypeDefinition = typeDefinitions[expectedType.name]) {
           is GQLInputObjectTypeDefinition -> {
             return validateAndCoerceInputObject(value, expectedTypeDefinition)
           }

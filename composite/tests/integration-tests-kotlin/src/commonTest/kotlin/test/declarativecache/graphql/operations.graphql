@@ -1,5 +1,6 @@
 query GetPromoBook {
     book {
+        # ISBN should be added automatically here
         title
     }
 }

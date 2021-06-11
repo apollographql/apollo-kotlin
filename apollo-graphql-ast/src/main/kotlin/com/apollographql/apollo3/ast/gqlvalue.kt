@@ -11,7 +11,7 @@ package com.apollographql.apollo3.ast
  * - field argument defaultValue (schema)
  * - input field defaultValue (schema)
  */
-fun GQLValue.validateAndCoerce(expectedType: GQLType, schema: Schema): InputValueValidationResult {
-  return InputValueValidationScope(schema).validateAndCoerce(this, expectedType)
+fun GQLValue.validateAndCoerce(expectedType: GQLType, typeDefinitions: Map<String, GQLTypeDefinition>): InputValueValidationResult {
+  return InputValueValidationScope(typeDefinitions).validateAndCoerce(this, expectedType)
 }
 

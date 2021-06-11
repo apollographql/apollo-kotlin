@@ -1,2 +1,26 @@
-directive @optional on FIELD | VARIABLE_DEFINITION
-directive @nonnull(fields: [String!]! = []) on OBJECT | FIELD
+# Marks a field or variable as optional
+# When used on a variable definition, the corresponding variable will be optional. By default Apollo Android generates all variables as
+# non-optional because if the variable was added in the first place, it's usually to pass a value but setting this directive allows
+# to mark them optional again
+# See also @variables
+directive @optional(if: Boolean = true) on FIELD | VARIABLE_DEFINITION
+
+# Marks a field as non-null. The corresponding Kotlin property will be made non-nullable even if the GraphQL type is nullable.
+# When used on an object definition in a schema document, `fields` must be non-empty and contain a selection set of fields that should be non-null
+# When used on a field from an executable document, `fields` must always be empty
+#
+# Setting the directive at the schema level is usually easier as there is little reason that a field would be non-null in one place
+# and null in the other
+directive @nonnull(fields: String! = "") on OBJECT | FIELD
+
+# Marks fields as key fields. Key fields are used to compute the cache key of an object
+# `fields` should contain a selection set
+directive @key(fields: String!) on OBJECT
+
+directive @resolveField(name: String!, withKeyArgs: [String!]!) on OBJECT
+
+directive @defaultKeyFields(fields: String!) on SCHEMA
+
+# Whether to make all variables optional at the schema level
+# This is false by default. This can overriden with @optional
+directive @variables(optional: Boolean = false) on SCHEMA

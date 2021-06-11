@@ -1,4 +1,4 @@
-package test
+package test.nonnull
 
 import com.apollographql.apollo3.api.parseData
 import com.apollographql.apollo3.integration.nonnull.NonNullField1Query

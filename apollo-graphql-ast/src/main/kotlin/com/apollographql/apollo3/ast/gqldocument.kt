@@ -8,7 +8,7 @@ import okio.source
  *
  * The current validation is very simple and will only catch very simple errors
  */
-fun GQLDocument.validateAsSchema() = SchemaValidationScope().validate(this)
+fun GQLDocument.validateAsSchema() = SchemaValidationScope(this).validate()
 
 /**
  * Validates the given document as an executable document.

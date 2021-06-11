@@ -20,7 +20,6 @@ internal class TypeExtensionsMergeScope {
     }
   }
 
-
   private fun GQLUnionTypeDefinition.merge(extension: GQLUnionTypeExtension): GQLUnionTypeDefinition {
     return copy(
         directives = directives.mergeUniquesOrThrow(extension.directives),

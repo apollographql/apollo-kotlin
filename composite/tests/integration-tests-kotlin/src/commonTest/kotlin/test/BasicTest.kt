@@ -43,7 +43,7 @@ class BasicTest {
 
   @BeforeTest
   fun setUp() {
-    store = ApolloStore(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), CacheResolver.ID)
+    store = ApolloStore(MemoryCacheFactory(), CacheResolver.ID)
     mockServer = MockServer()
     apolloClient = ApolloClient(mockServer.url()).withStore(store)
   }
