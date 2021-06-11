@@ -3,12 +3,9 @@ package com.apollographql.apollo3.ast
 internal fun ValidationScope.validateAndCoerceValue(value: GQLValue, expectedType: GQLType): GQLValue {
   if (value is GQLVariableValue) {
     if (this !is VariableReferencesScope) {
-      issues.add(
-          Issue.ValidationError(
-              "Variable '${value.name}' used in non-variable context",
-              value.sourceLocation,
-              Issue.Severity.ERROR,
-          )
+      registerIssue(
+          "Variable '${value.name}' used in non-variable context",
+          value.sourceLocation,
       )
     } else {
       variableReferences.add(VariableReference(value, expectedType))
@@ -53,7 +50,7 @@ internal fun ValidationScope.validateAndCoerceValue(value: GQLValue, expectedTyp
           return validateAndCoerceEnum(value, expectedTypeDefinition)
         }
         else -> {
-          issues.add(Issue.ValidationError("Value cannot be of non-input type ${expectedType.pretty()}", value.sourceLocation))
+          registerIssue("Value cannot be of non-input type ${expectedType.pretty()}", value.sourceLocation)
           return value
         }
       }
@@ -62,7 +59,7 @@ internal fun ValidationScope.validateAndCoerceValue(value: GQLValue, expectedTyp
 }
 
 private fun ValidationScope.registerIssue(value: GQLValue, expectedType: GQLType) {
-  issues.add(Issue.ValidationError(message = "Value `${value.toUtf8()}` cannot be used in position expecting `${expectedType.pretty()}`", sourceLocation = value.sourceLocation))
+  registerIssue(message = "Value `${value.toUtf8()}` cannot be used in position expecting `${expectedType.pretty()}`", sourceLocation = value.sourceLocation)
 }
 
 private fun ValidationScope.validateAndCoerceInputObject(value: GQLValue, expectedTypeDefinition: GQLInputObjectTypeDefinition): GQLValue {
@@ -78,7 +75,7 @@ private fun ValidationScope.validateAndCoerceInputObject(value: GQLValue, expect
         && inputValueDefinition.defaultValue == null
         && value.fields.firstOrNull { it.name == inputValueDefinition.name } == null
     ) {
-      issues.add(Issue.ValidationError(message = "No value passed for required inputField ${inputValueDefinition.name}", sourceLocation = value.sourceLocation))
+      registerIssue(message = "No value passed for required inputField ${inputValueDefinition.name}", sourceLocation = value.sourceLocation)
     }
   }
 
@@ -86,7 +83,7 @@ private fun ValidationScope.validateAndCoerceInputObject(value: GQLValue, expect
     val inputField = expectedTypeDefinition.inputFields.firstOrNull { it.name == field.name }
     if (inputField == null) {
       // 3.10 Input values coercion: extra values are errors
-      issues.add(Issue.ValidationError(message = "Field ${field.name} is not defined by ${expectedType.pretty()}", sourceLocation = field.sourceLocation))
+      registerIssue(message = "Field ${field.name} is not defined by ${expectedType.pretty()}", sourceLocation = field.sourceLocation)
       return@mapNotNull null
     }
     GQLObjectField(
@@ -105,10 +102,10 @@ private fun ValidationScope.validateAndCoerceEnum(value: GQLValue, enumTypeDefin
 
   val enumValue = enumTypeDefinition.enumValues.firstOrNull { it.name == value.value }
   if (enumValue == null) {
-    issues.add(Issue.ValidationError(
+    registerIssue(
         message = "Cannot find enum value `${value.value}` of type `${enumTypeDefinition.name}`",
         sourceLocation = value.sourceLocation
-    ))
+    )
   } else if (enumValue.isDeprecated()) {
     issues.add(Issue.DeprecatedUsage(
         message = "Use of deprecated enum value `${value.value}` of type `${enumTypeDefinition.name}`",

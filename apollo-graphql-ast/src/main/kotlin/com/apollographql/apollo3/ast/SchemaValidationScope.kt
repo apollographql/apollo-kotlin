@@ -7,10 +7,11 @@ internal class SchemaValidationScope(document: GQLDocument) : ValidationScope {
 
   override val typeDefinitions = getTypeDefinitions(document.definitions)
   override val directives = getDirectives(document.definitions)
-  
+
+  val schemaDefinition = getSchema(document.definitions)
+
   fun validate(): List<Issue> {
     validateNotExecutable()
-    validateUniqueSchemaDefinition()
     validateNoIntrospectionNames()
 
     validateInterfaces()
@@ -22,7 +23,7 @@ internal class SchemaValidationScope(document: GQLDocument) : ValidationScope {
   private fun validateInterfaces() {
     definitions.filterIsInstance<GQLInterfaceTypeDefinition>().forEach {
       if (it.fields.isEmpty()) {
-        issues.add(Issue.ValidationError("Interfaces must specify one or more fields", it.sourceLocation))
+        registerIssue("Interfaces must specify one or more fields", it.sourceLocation)
       }
     }
   }
@@ -30,26 +31,19 @@ internal class SchemaValidationScope(document: GQLDocument) : ValidationScope {
   private fun validateObjects() {
     definitions.filterIsInstance<GQLObjectTypeDefinition>().forEach { o ->
       if (o.fields.isEmpty()) {
-        issues.add(Issue.ValidationError("Object must specify one or more fields", o.sourceLocation))
+        registerIssue("Object must specify one or more fields", o.sourceLocation)
       }
 
       o.implementsInterfaces.forEach { implementsInterface ->
         val iface = definitions.firstOrNull { (it as? GQLInterfaceTypeDefinition)?.name == implementsInterface }
         if (iface == null) {
-          issues.add(Issue.ValidationError("Object '${o.name}' cannot implement non-interface '$implementsInterface'", o.sourceLocation))
+          registerIssue("Object '${o.name}' cannot implement non-interface '$implementsInterface'", o.sourceLocation)
         }
       }
 
       o.directives.forEach { directive ->
         validateDirective(directive, GQLDirectiveLocation.OBJECT)
       }
-    }
-  }
-
-  private fun validateUniqueSchemaDefinition() {
-    val schemaDefinitions = definitions.filterIsInstance<GQLSchemaDefinition>()
-    if (schemaDefinitions.count() > 1) {
-      issues.add(Issue.ValidationError("multiple schema definitions found", schemaDefinitions.last().sourceLocation))
     }
   }
 
@@ -60,7 +54,7 @@ internal class SchemaValidationScope(document: GQLDocument) : ValidationScope {
         return@forEach
       }
       if (definition.name.startsWith("__")) {
-        issues.add(Issue.ValidationError("names starting with '__' are reserved for introspection", definition.sourceLocation))
+        registerIssue("names starting with '__' are reserved for introspection", definition.sourceLocation)
       }
     }
   }
@@ -72,12 +66,12 @@ internal class SchemaValidationScope(document: GQLDocument) : ValidationScope {
   private fun validateNotExecutable() {
     definitions.firstOrNull { it is GQLOperationDefinition || it is GQLFragmentDefinition }
         ?.let {
-          issues.add(Issue.ValidationError("Found an executable definition. Schemas should not contain operations or fragments.", it.sourceLocation))
+          registerIssue("Found an executable definition. Schemas should not contain operations or fragments.", it.sourceLocation)
         }
   }
 
   companion object {
-    fun ValidationScope.getTypeDefinitions(definitions: List<GQLDefinition>): Map<String, GQLTypeDefinition> {
+    private fun ValidationScope.getTypeDefinitions(definitions: List<GQLDefinition>): Map<String, GQLTypeDefinition> {
       val grouped = definitions.filterIsInstance<GQLTypeDefinition>()
           .groupBy { it.name }
 
@@ -101,7 +95,7 @@ internal class SchemaValidationScope(document: GQLDocument) : ValidationScope {
       }
     }
 
-    fun getDirectives(definitions: List<GQLDefinition>): Map<String, GQLDirectiveDefinition> {
+    private fun ValidationScope.getDirectives(definitions: List<GQLDefinition>): Map<String, GQLDirectiveDefinition> {
       val grouped = definitions.filterIsInstance<GQLDirectiveDefinition>()
           .groupBy { it.name }
 
@@ -109,9 +103,9 @@ internal class SchemaValidationScope(document: GQLDocument) : ValidationScope {
         val first = it.first()
         val occurences = it.map { it.sourceLocation.pretty() }.joinToString("\n")
         if (it.size > 1) {
-          Issue.ValidationError(
-              "directive '${first.name}' is defined multiple times:\n$occurences",
-              first.sourceLocation,
+          registerIssue(
+              message = "directive '${first.name}' is defined multiple times:\n$occurences",
+              sourceLocation = first.sourceLocation,
           )
         }
       }
@@ -119,6 +113,18 @@ internal class SchemaValidationScope(document: GQLDocument) : ValidationScope {
       return grouped.mapValues {
         it.value.first()
       }
+    }
+
+
+    private fun ValidationScope.getSchema(definitions: List<GQLDefinition>): GQLSchemaDefinition? {
+      val schemaDefinitions = definitions.filterIsInstance<GQLSchemaDefinition>()
+      if (schemaDefinitions.count() > 1) {
+        registerIssue(
+            message = "multiple schema definitions found",
+            schemaDefinitions.last().sourceLocation,
+        )
+      }
+      return schemaDefinitions.singleOrNull()
     }
   }
 }
