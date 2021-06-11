@@ -2,7 +2,6 @@ package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.ApolloMetadata
 import com.apollographql.apollo3.compiler.ApolloMetadata.Companion.merge
-import com.apollographql.apollo3.compiler.DefaultPackageNameProvider
 import com.apollographql.apollo3.compiler.GraphQLCompiler
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultAlwaysGenerateTypesMatching
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultCodegenModels
@@ -16,6 +15,7 @@ import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultUseSe
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultWarnOnDeprecatedUsages
 import com.apollographql.apollo3.compiler.MODELS_COMPAT
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
+import com.apollographql.apollo3.compiler.PackageNameProvider
 import com.apollographql.apollo3.compiler.Roots
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
@@ -28,7 +28,6 @@ import org.gradle.api.provider.Property
 import org.gradle.api.provider.SetProperty
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
@@ -37,6 +36,7 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
+import java.io.File
 import javax.inject.Inject
 
 @CacheableTask
@@ -54,16 +54,11 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   abstract val graphqlFiles: ConfigurableFileCollection
 
   /**
-   * It's ok to have schemaFile = null if there is some metadata
+   * It's ok to have schemaFiles empty if there is some metadata
    */
-  @get:InputFile
-  @get:Optional
-  @get:PathSensitive(PathSensitivity.RELATIVE)
-  abstract val schemaFile: RegularFileProperty
-
   @get:InputFiles
   @get:PathSensitive(PathSensitivity.RELATIVE)
-  abstract val extraSchemaFiles: ConfigurableFileCollection
+  abstract val schemaFiles: ConfigurableFileCollection
 
   @get:InputFiles
   @get:PathSensitive(PathSensitivity.RELATIVE)
@@ -78,7 +73,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Input
   @get:Optional
-  abstract val rootPackageName: Property<String>
+  abstract val packageName: Property<String>
 
   @get: Internal
   lateinit var operationOutputGenerator: OperationOutputGenerator
@@ -97,6 +92,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Input
   @get:Optional
   abstract val generateKotlinModels: Property<Boolean>
+
+  @get:Input
+  @get:Optional
+  abstract val useFilePathAsOperationPackageName: Property<Boolean>
 
   @get:Input
   @get:Optional
@@ -147,18 +146,14 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @TaskAction
   fun taskAction() {
-    val rootPackageName = rootPackageName.getOrElse("")
-
+    val roots = Roots(objectFactory.fileCollection().from(rootFolders).files.toList())
+    val schemaFiles = schemaFiles.files
+    val packageName = packageName.orNull ?: defaultPackageName(roots, schemaFiles)
     val metadata = metadataFiles.files.toList().map { ApolloMetadata.readFrom(it) }.merge()
 
-    val roots = Roots(objectFactory.fileCollection().from(rootFolders).files.toList())
-
     val incomingOptions = if (metadata != null) {
-      check(!schemaFile.isPresent) {
-        "Specifying 'schemaFile' has no effect as an upstream module already provided a schema"
-      }
-      check(extraSchemaFiles.isEmpty) {
-        "Specifying 'extraSchemaFiles' has no effect as an upstream module already provided a schema"
+      check(schemaFiles.isEmpty()) {
+        "Specifying 'schemaFiles' has no effect as an upstream module already provided a schema"
       }
       check(!customScalarsMapping.isPresent) {
         "Specifying 'customScalarsMapping' has no effect as an upstream module already provided a customScalarsMapping"
@@ -173,24 +168,27 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
     } else {
       val codegenModels = codegenModels.getOrElse(defaultCodegenModels)
       val defaultFlattenModels = flattenModels.getOrElse(codegenModels == MODELS_COMPAT)
-      GraphQLCompiler.IncomingOptions.from(
-          roots = roots,
-          schemaFile = schemaFile.asFile.orNull ?: error("no schemaFile found"),
-          extraSchemaFiles = extraSchemaFiles.files,
+
+      check(schemaFiles.isNotEmpty()) {
+        "No schema file found in:\n${rootFolders.get().joinToString("\n")}"
+      }
+      GraphQLCompiler.IncomingOptions.fromOptions(
+          schemaFiles = schemaFiles,
           customScalarsMapping = customScalarsMapping.getOrElse(emptyMap()),
           codegenModels = codegenModels,
           flattenModels = flattenModels.getOrElse(defaultFlattenModels),
-          rootPackageName = rootPackageName
+          schemaPackageName = packageName!!
       )
     }
 
-    val packageNameProvider = DefaultPackageNameProvider(
-        incomingOptions.schemaPackageName,
-        rootPackageName,
-        roots
-    )
+    val packageNameProvider = if (useFilePathAsOperationPackageName.getOrElse(false)) {
+      PackageNameProvider.FilePathAware(roots)
+    } else {
+      // If there's no package name specified in this module, fallback to the metadata one
+      PackageNameProvider.Flat(packageName ?: incomingOptions.schemaPackageName)
+    }
 
-    val logger = object :GraphQLCompiler.Logger {
+    val logger = object : GraphQLCompiler.Logger {
       override fun warning(message: String) {
         logger.lifecycle(message)
       }
@@ -221,5 +219,27 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         incomingOptions = incomingOptions,
         moduleOptions = moduleOptions,
     )
+  }
+
+  companion object {
+    fun defaultPackageName(roots: Roots, schemaFiles: Set<File>): String? {
+      val candidates = schemaFiles.map {
+        runCatching {
+          roots.filePackageName(it.absolutePath)
+        }.recover { "" }
+            .getOrThrow()
+      }.distinct()
+
+      if (candidates.isEmpty()) {
+        // There are no user defined schemas in this module.
+        // This happens when the module has incoming metadata
+        return null
+      }
+      check(candidates.size == 1) {
+        "Cannot find a fallback package name as schemas are found in multiple directories:\n${candidates.joinToString("\n")}\n\n" +
+            "Specify packageName explicitely"
+      }
+      return candidates.single()
+    }
   }
 }

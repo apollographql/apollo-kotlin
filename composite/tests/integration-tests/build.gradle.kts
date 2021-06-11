@@ -79,8 +79,8 @@ fun configureApollo(models: String, sourceSetName: String) {
               }
             }
 
-            addGraphqlDirectory(file("src/main/graphql/com/apollographql/apollo3/integration/${it.name}"))
-            rootPackageName.set("com.apollographql.apollo3.integration.${it.name}")
+            srcDir(file("src/main/graphql/com/apollographql/apollo3/integration/${it.name}"))
+            packageName.set("com.apollographql.apollo3.integration.${it.name}")
 
             codegenModels.set(models)
 

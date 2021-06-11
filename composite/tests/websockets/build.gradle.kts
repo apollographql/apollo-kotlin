@@ -33,8 +33,8 @@ apollo {
     it.isDirectory
   }?.forEach {
     service(it.name) {
-      addGraphqlDirectory(it)
-      rootPackageName.set(it.name.replace("-", "."))
+      srcDir(it)
+      packageName.set(it.name.replace("-", "."))
     }
   }
 }

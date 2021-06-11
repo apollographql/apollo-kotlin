@@ -28,20 +28,17 @@ class MetadataTest {
   private fun compile(
       operationFiles: Set<File>,
       outputDir: File,
-      rootFolders: List<File>,
       schemaFile: File?,
       metadataFiles: List<File> = emptyList(),
       alwaysGenerateTypesMatching: Set<String> = emptySet(),
       metadataOutputFile: File,
   ) {
     val incomingOptions = if (schemaFile != null) {
-      GraphQLCompiler.IncomingOptions.from(
-          roots = Roots(rootFolders),
-          schemaFile = schemaFile,
-          extraSchemaFiles = emptySet(),
+      GraphQLCompiler.IncomingOptions.fromOptions(
+          schemaFiles = setOf(schemaFile),
           customScalarsMapping = defaultCustomScalarsMapping,
           codegenModels = defaultCodegenModels,
-          rootPackageName = "",
+          schemaPackageName = "",
           flattenModels = false
       )
     } else {
@@ -70,7 +67,6 @@ class MetadataTest {
     rootSchemaFile.writeText(schema)
 
     compile(
-        rootFolders = emptyList(),
         operationFiles = emptySet(),
         schemaFile = rootSchemaFile,
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
@@ -83,7 +79,6 @@ class MetadataTest {
     leafGraphqlDir.mkdirs()
     File(leafGraphqlDir, "queries.graphql").writeText(SchemaGenerator.generateMutation())
     compile(
-        rootFolders = leafFolders,
         operationFiles = leafFolders.graphqlFiles(),
         schemaFile = null,
         metadataFiles = listOf(rootMetadataFile),
@@ -155,7 +150,6 @@ class MetadataTest {
   private fun fragmentTest(dirName: String) {
     val folder = File("src/test/metadata/$dirName/")
     compile(
-        rootFolders = listOf(folder),
         operationFiles = setOf(File(folder, "root.graphql")),
         schemaFile = File("src/test/metadata/schema.sdl"),
         alwaysGenerateTypesMatching = emptySet(),
@@ -164,7 +158,6 @@ class MetadataTest {
     )
 
     compile(
-        rootFolders = listOf(folder),
         operationFiles = setOf(File(folder, "leaf.graphql")),
         schemaFile = null,
         metadataFiles = listOf(rootMetadataFile),

@@ -30,7 +30,7 @@ class KotlinCodeGen(
     private val generateAsInternal: Boolean = false,
     private val useSemanticNaming: Boolean,
     private val packageNameProvider: PackageNameProvider,
-    private val typePackageName: String,
+    private val schemaPackageName: String,
     private val operationOutput: OperationOutput,
     private val generateFilterNotNull: Boolean,
     private val generateFragmentImplementations: Boolean,
@@ -46,7 +46,7 @@ class KotlinCodeGen(
     val layout = CgLayout(
         useSemanticNaming = useSemanticNaming,
         packageNameProvider = packageNameProvider,
-        typePackageName = typePackageName
+        schemaPackageName = schemaPackageName
     )
 
     val context = CgContext(

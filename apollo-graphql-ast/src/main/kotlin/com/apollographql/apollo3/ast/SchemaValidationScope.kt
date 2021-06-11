@@ -51,27 +51,27 @@ internal class SchemaValidationScope {
   }
 
   private fun GQLDocument.validateTypeNames() {
-    val typeDefinitions = mutableMapOf<String, GQLTypeDefinition>()
-    val conflicts = mutableListOf<GQLTypeDefinition>()
-    definitions.filterIsInstance<GQLTypeDefinition>().forEach {
-      val name = it.name
+    val typeDefinitions = definitions.filterIsInstance<GQLTypeDefinition>()
 
-      if (!typeDefinitions.containsKey(name)) {
-        typeDefinitions[name] = it
-      } else {
-        conflicts.add(it)
-      }
-    }
+    typeDefinitions.groupBy {
+      it.name
+    }.values.filter { it.size > 1 }.forEach {
+      val first = it.first()
 
-    // 3.3 All types within a GraphQL schema must have unique names
-    if (conflicts.size > 0) {
-      val conflict = conflicts.first()
-      issues.add(Issue.ValidationError("type '${conflict.name}' is defined multiple times", conflict.sourceLocation))
+      val occurences = it.map { it.sourceLocation.pretty() }.joinToString("\n")
+      // 3.3 All types within a GraphQL schema must have unique names
+      issues.add(
+          Issue.ValidationError(
+              "type '${first.name}' is defined multiple times:\n$occurences",
+              first.sourceLocation,
+              ValidationErrorCode.SchemaDuplicateTypeName
+          )
+      )
     }
 
     // 3.3 All types and directives defined within a schema must not have a name which begins with "__"
-    typeDefinitions.forEach { name, definition ->
-      if (name.startsWith("__")) {
+    typeDefinitions.forEach { definition ->
+      if (definition.name.startsWith("__")) {
         issues.add(Issue.ValidationError("names starting with '__' are reserved for introspection", definition.sourceLocation))
       }
     }

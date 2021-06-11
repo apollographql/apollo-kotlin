@@ -24,8 +24,8 @@ kotlin {
 }
 
 apollo {
-  addGraphqlDirectory(file("../models-fixtures/graphql"))
-  rootPackageName.set("codegen.models")
+  srcDir(file("../models-fixtures/graphql"))
+  packageName.set("codegen.models")
   generateFragmentImplementations.set(true)
   codegenModels.set("operationBased")
 }

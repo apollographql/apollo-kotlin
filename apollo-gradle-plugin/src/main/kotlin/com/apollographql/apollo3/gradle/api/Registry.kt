@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.gradle.api
 
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
 
 /**
@@ -24,4 +25,11 @@ interface Registry {
    * The variant you want to download the schema from
    */
   val graphVariant: Property<String>
+
+  /**
+   * The file where to download the schema.
+   *
+   * Uses the schema from the service by default
+   */
+  val schemaFile: RegularFileProperty
 }

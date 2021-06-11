@@ -111,7 +111,7 @@ class GraphQLCompiler {
         operationOutput = operationOutput,
         useSemanticNaming = moduleOptions.useSemanticNaming,
         packageNameProvider = moduleOptions.packageNameProvider,
-        typePackageName = "${incomingOptions.schemaPackageName}.type",
+        schemaPackageName = incomingOptions.schemaPackageName,
         generateFilterNotNull = moduleOptions.generateFilterNotNull,
         generateFragmentImplementations = moduleOptions.generateFragmentImplementations,
         generateQueryDocument = moduleOptions.generateQueryDocument,
@@ -138,7 +138,7 @@ class GraphQLCompiler {
       val outgoingMetadataFragments = fragments.map {
         MetadataFragment(
             name = it.name,
-            packageName = moduleOptions.packageNameProvider.fragmentPackageName(it.sourceLocation.filePath!!),
+            packageName = "${incomingOptions.schemaPackageName}.fragment",
             definition = it
         )
       }
@@ -206,34 +206,29 @@ class GraphQLCompiler {
         )
       }
 
-      fun from(
-          roots: Roots,
-          schemaFile: File,
-          extraSchemaFiles: Set<File>,
+      fun fromOptions(
+          schemaFiles: Set<File>,
           customScalarsMapping: Map<String, String>,
           codegenModels: String,
-          rootPackageName: String,
+          schemaPackageName: String,
           flattenModels: Boolean,
       ): IncomingOptions {
-        val relativeSchemaPackageName = try {
-          roots.filePackageName(schemaFile.absolutePath)
-        } catch (e: Exception) {
-          ""
+        val schemaDefinitions = schemaFiles.flatMap {
+          it.toGQLDocument().definitions
         }
 
-        val document = schemaFile.toGQLDocument()
-        val extraDefinitions = extraSchemaFiles.flatMap {
-          it.parseAsGQLDocument().getOrThrow().definitions
-        }
-
-        val schema = GQLDocument(
-            definitions = document.definitions + extraDefinitions + apolloDefinitions(),
+        val schemaDocument = GQLDocument(
+            definitions = schemaDefinitions + apolloDefinitions(),
             filePath = null
-        ).toSchema()
+        )
+
+        schemaDocument.validateAsSchema().checkNoErrors()
+
+        val schema = schemaDocument.toSchema()
 
         return IncomingOptions(
             schema = schema,
-            schemaPackageName = "$rootPackageName.$relativeSchemaPackageName".removePrefix(".").removeSuffix("."),
+            schemaPackageName = schemaPackageName,
             customScalarsMapping = customScalarsMapping,
             codegenModels = codegenModels,
             flattenModels = flattenModels,
@@ -246,7 +241,7 @@ class GraphQLCompiler {
 
       private fun File.toGQLDocument(): GQLDocument {
         return if (extension == "json") {
-           toIntrospectionSchema().toGQLDocument()
+           toIntrospectionSchema().toGQLDocument(filePath = path)
         } else {
            parseAsGQLDocument().getOrThrow()
         }

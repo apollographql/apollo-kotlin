@@ -5,7 +5,6 @@ internal class TypeExtensionsMergeScope {
 
   fun mergeDocumentTypeExtensions(definitions: List<GQLDefinition>): List<GQLDefinition> {
     val (extensions, otherDefinitions) = definitions.partition { it is GQLTypeSystemExtension }
-    extensions as List<GQLTypeSystemExtension>
 
     return extensions.fold(otherDefinitions) { acc, extension ->
       when (extension) {

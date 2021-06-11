@@ -30,7 +30,7 @@ class MultiServicesTests {
   }
 
   @Test
-  fun `multiple schema files without using service is not supported`() {
+  fun `multiple schema files in different folders throw an error`() {
     withMultipleServicesProject("") { dir ->
       try {
         TestUtils.executeTask("generateApolloSources", dir)
@@ -38,7 +38,7 @@ class MultiServicesTests {
       } catch (e: UnexpectedBuildFailure) {
         MatcherAssert.assertThat(
             e.message,
-            containsString("Multiple schemas found")
+            containsString("schemas are found in multiple directories")
         )
       }
     }
@@ -49,10 +49,10 @@ class MultiServicesTests {
     val apolloConfiguration = """
       apollo {
         service("starwars") {
-          addGraphqlDirectory("src/main/graphql/starwars")
+          srcDir("src/main/graphql/starwars")
         }
         service("githunt") {
-          addGraphqlDirectory("src/main/graphql/githunt")
+          srcDir("src/main/graphql/githunt")
         }
       }
     """.trimIndent()

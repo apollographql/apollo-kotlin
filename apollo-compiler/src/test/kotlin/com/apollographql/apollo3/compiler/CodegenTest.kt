@@ -232,13 +232,11 @@ class CodegenTest(private val folder: File, private val codegenModels: String, p
       val graphqlFiles = setOf(File(folder, "TestOperation.graphql"))
       val operationOutputGenerator = OperationOutputGenerator.Default(operationIdGenerator)
 
-      val incomingOptions = GraphQLCompiler.IncomingOptions.from(
-          roots = Roots(listOf(folder)),
-          schemaFile = schemaFile,
-          extraSchemaFiles = emptySet(),
+      val incomingOptions = GraphQLCompiler.IncomingOptions.fromOptions(
+          schemaFiles = setOf(schemaFile),
           customScalarsMapping = customScalarsMapping,
           codegenModels = codegenModels,
-          rootPackageName = "com.example.${folder.name}",
+          schemaPackageName = "com.example.${folder.name}",
           flattenModels = codegenModels == MODELS_COMPAT
       )
 

@@ -21,9 +21,11 @@ import com.squareup.kotlinpoet.KOperator
 
 class CgLayout(
     private val packageNameProvider: PackageNameProvider,
-    private val typePackageName: String,
+    schemaPackageName: String,
     private val useSemanticNaming: Boolean,
 ) {
+  private val typePackageName = "$schemaPackageName.type"
+  private val fragmentPackageName = "$schemaPackageName.fragment"
 
   // ------------------------ FileNames ---------------------------------
 
@@ -38,9 +40,7 @@ class CgLayout(
   fun operationAdapterPackageName(filePath: String) = "${packageNameProvider.operationPackageName(filePath)}.adapter".stripDots()
   fun operationResponseFieldsPackageName(filePath: String) = "${packageNameProvider.operationPackageName(filePath)}.selections".stripDots()
 
-  fun fragmentPackageName(filePath: String?): String {
-    return packageNameProvider.fragmentPackageName(filePath)
-  }
+  fun fragmentPackageName(filePath: String?) = fragmentPackageName
 
   fun fragmentAdapterPackageName(filePath: String?) = "${fragmentPackageName(filePath)}.adapter".stripDots()
   fun fragmentResponseFieldsPackageName(filePath: String?) = "${fragmentPackageName(filePath)}.selections".stripDots()
