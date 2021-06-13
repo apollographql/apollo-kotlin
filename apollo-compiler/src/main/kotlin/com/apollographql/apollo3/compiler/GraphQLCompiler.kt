@@ -63,15 +63,19 @@ class GraphQLCompiler {
       }
     }
 
+    val incomingFragments = incomingOptions.metadataFragments.map { it.definition }
+    var allFragmentDefinitions = (definitions.filterIsInstance<GQLFragmentDefinition>() + incomingFragments).associateBy { it.name }
+    val scope = TraverseScope(schema = incomingOptions.schema, allFragmentDefinitions)
     val fragments = definitions.filterIsInstance<GQLFragmentDefinition>().map {
-      it.withTypenameWhenNeeded(incomingOptions.schema)
+      scope.addRequiredFields(it, it.typeCondition.name)
     }
 
     val operations = definitions.filterIsInstance<GQLOperationDefinition>().map {
-      it.withTypenameWhenNeeded(incomingOptions.schema)
+      scope.addRequiredFields(it, it.rootTypeDefinition(incomingOptions.schema)!!.name)
     }
 
-    val allFragmentDefinitions = (fragments + incomingOptions.metadataFragments.map { it.definition }).associateBy { it.name }
+    // Update the fragments with the possibly updated fragments
+    allFragmentDefinitions = (fragments + incomingFragments).associateBy { it.name }
 
     val ir = IrBuilder(
         schema = incomingOptions.schema,

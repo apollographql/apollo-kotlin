@@ -1,42 +1,54 @@
 package com.apollographql.apollo3.ast
 
-fun GQLOperationDefinition.withTypenameWhenNeeded(schema: Schema): GQLOperationDefinition {
-  return copy(
-      selectionSet = selectionSet.withTypenameWhenNeeded(schema)
-  )
-}
-
-fun GQLFragmentDefinition.withTypenameWhenNeeded(schema: Schema): GQLFragmentDefinition {
-  return copy(
-      selectionSet = selectionSet.withTypenameWhenNeeded(schema)
-  )
-}
-
-private val typeNameField = GQLField(
-    name = "__typename",
-    arguments = null,
-    selectionSet = null,
-    sourceLocation = SourceLocation.UNKNOWN,
-    directives = emptyList(),
-    alias = null
+class TraverseScope(
+    val schema: Schema,
+    val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
 )
 
-private fun GQLSelectionSet.withTypenameWhenNeeded(schema: Schema): GQLSelectionSet {
-  var newSelections = selections.map {
+fun TraverseScope.addRequiredFields(operation: GQLOperationDefinition, parentType: String): GQLOperationDefinition {
+  return operation.copy(
+      selectionSet = addRequiredFields(operation.selectionSet, parentType)
+  )
+}
+
+fun TraverseScope.addRequiredFields(fragmentDefinition: GQLFragmentDefinition, parentType: String): GQLFragmentDefinition {
+  return fragmentDefinition.copy(
+      selectionSet = addRequiredFields(fragmentDefinition.selectionSet, parentType)
+  )
+}
+
+private fun TraverseScope.addRequiredFields(selectionSet: GQLSelectionSet, parentType: String, isTopLevel: Boolean = false): GQLSelectionSet {
+  var newSelections = selectionSet.selections.map {
     when (it) {
       is GQLInlineFragment -> {
         it.copy(
-            selectionSet = it.selectionSet.withTypenameWhenNeeded(schema)
+            selectionSet = addRequiredFields(it.selectionSet, it.typeCondition.name)
         )
       }
       is GQLFragmentSpread -> it
-      is GQLField -> it.copy(
-          selectionSet = it.selectionSet?.withTypenameWhenNeeded(schema)
-      )
+      is GQLField -> {
+        val typeDefinition = it.definitionFromScope(schema, parentType)!!
+        val newSelectionSet = it.selectionSet?.let {
+          addRequiredFields(it, typeDefinition.type.leafType().name, true)
+        }
+        it.copy(
+            selectionSet = newSelectionSet
+        )
+      }
     }
   }
 
-  val hasFragment = selections.any { it is GQLFragmentSpread || it is GQLInlineFragment }
+  val hasFragment = selectionSet.selections.any { it is GQLFragmentSpread || it is GQLInlineFragment }
+
+  val requiredFields = mutableSetOf<String>()
+  if (hasFragment) {
+    requiredFields.add("__typename")
+  }
+
+  /**
+   * We should also
+   */
+  requiredFields += schema.keyFields(parentType)
 
   newSelections = if (hasFragment) {
     // remove the __typename if it exists
@@ -46,7 +58,19 @@ private fun GQLSelectionSet.withTypenameWhenNeeded(schema: Schema): GQLSelection
     newSelections
   }
 
-  return copy(
+  return selectionSet.copy(
       selections = newSelections
+  )
+}
+
+
+private fun buildField(name: String): GQLField {
+  return GQLField(
+      name = name,
+      arguments = null,
+      selectionSet = null,
+      sourceLocation = SourceLocation.UNKNOWN,
+      directives = emptyList(),
+      alias = null
   )
 }

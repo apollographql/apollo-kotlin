@@ -1,6 +1,7 @@
 type Query {
     promoAuthor: Author
     promoBook: Book
+    otherBook: Book
     promoLibrary: Library
     author(firstName: String!, lastName: String!): Author
     book(isbn: String!): Book

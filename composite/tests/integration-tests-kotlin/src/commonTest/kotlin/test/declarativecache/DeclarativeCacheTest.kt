@@ -1,31 +1,38 @@
 package test.declarativecache
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.composeRequestBody
+import com.apollographql.apollo3.api.composeResponseBody
+import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.interceptor.cache.withStore
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.testing.enqueue
+import com.apollographql.apollo3.testing.runWithMainLoop
+import declarativecache.GetPromoBookQuery
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 
 class DeclarativeCacheTest {
-  private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
   private lateinit var store: ApolloStore
-
-
 
   @BeforeTest
   fun setUp() {
     store = ApolloStore(MemoryCacheFactory(), CacheResolver.ID)
-    mockServer = MockServer()
-    apolloClient = ApolloClient(mockServer.url()).withStore(store)
+    apolloClient = ApolloClient("https://com.example/unused").withStore(store)
   }
 
 
   @Test
-  fun AtKeyIsWorking() {
-    //mockServer.enqueue()
+  fun AtKeyIsWorking() = runWithMainLoop{
+    val operation = GetPromoBookQuery()
+    val data = GetPromoBookQuery.Data(book = GetPromoBookQuery.Data.Book(title = "Test"))
+
+    store.writeOperation(operation, data)
+
+//    store.
   }
 }
