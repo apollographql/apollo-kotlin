@@ -53,7 +53,7 @@ class Benchmark {
     }
 
     val data = operation.fromResponse(bufferedSource, customScalarAdapters).data!!
-    val records = operation.normalize(data, ResponseAdapterCache.DEFAULT, CacheKeyResolver.DEFAULT)
+    val records = operation.normalize(data, ResponseAdapterCache.DEFAULT, CacheResolver())
   }
 
   @Test

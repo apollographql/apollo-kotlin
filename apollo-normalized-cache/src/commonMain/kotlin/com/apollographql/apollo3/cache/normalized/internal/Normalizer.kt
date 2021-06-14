@@ -1,12 +1,14 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
-import com.apollographql.apollo3.api.CompiledCompoundType
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledListType
+import com.apollographql.apollo3.api.CompiledNamedType
 import com.apollographql.apollo3.api.CompiledNotNullType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledType
 import com.apollographql.apollo3.api.Executable
+import com.apollographql.apollo3.api.isCompound
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.Record
 
@@ -99,11 +101,13 @@ class Normalizer(val variables: Executable.Variables, val cacheKeyForObject: (Co
       fieldKey to when {
         value == null -> null
         unwrappedType is CompiledListType -> (value as List<Any?>).normalize(path.append(fieldKey), mergedFields, unwrappedType)
-        unwrappedType is CompiledCompoundType -> (value as Map<String, Any?>).normalize(path.append(fieldKey), mergedFields)
+        unwrappedType.isNamedAndCompound() -> (value as Map<String, Any?>).normalize(path.append(fieldKey), mergedFields)
         else -> value // scalar or enum
       }
     }.toMap()
   }
+
+  private fun CompiledType.isNamedAndCompound() = this is CompiledNamedType && this.isCompound()
 
   // The receiver can be null for the root query to save some space in the cache by not storing QUERY_ROOT all over the place
   private fun String?.append(next: String): String = if (this == null) next else "$this.$next"
@@ -119,7 +123,7 @@ class Normalizer(val variables: Executable.Variables, val cacheKeyForObject: (Co
       when {
         value == null -> null
         unwrappedType is CompiledListType -> (value as List<Any?>).normalize(path.append(index.toString()), fields, unwrappedType)
-        unwrappedType is CompiledCompoundType -> (value as Map<String, Any?>).normalize(path.append(index.toString()), fields)
+        unwrappedType.isNamedAndCompound() -> (value as Map<String, Any?>).normalize(path.append(index.toString()), fields)
         else -> value
       }
     }

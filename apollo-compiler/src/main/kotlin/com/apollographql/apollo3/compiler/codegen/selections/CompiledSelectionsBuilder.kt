@@ -2,21 +2,27 @@ package com.apollographql.apollo3.compiler.codegen.selections
 
 import com.apollographql.apollo3.api.BVariable
 import com.apollographql.apollo3.api.BooleanExpression
-import com.apollographql.apollo3.api.CompiledCompoundType
+import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledCondition
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.Variable
+import com.apollographql.apollo3.api.CompiledVariable
+import com.apollographql.apollo3.api.CustomScalarType
+import com.apollographql.apollo3.api.EnumType
+import com.apollographql.apollo3.api.InterfaceType
+import com.apollographql.apollo3.api.ObjectType
+import com.apollographql.apollo3.api.UnionType
 import com.apollographql.apollo3.ast.GQLArgument
 import com.apollographql.apollo3.ast.GQLBooleanValue
+import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLEnumValue
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFloatValue
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLFragmentSpread
 import com.apollographql.apollo3.ast.GQLInlineFragment
+import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLIntValue
 import com.apollographql.apollo3.ast.GQLInterfaceTypeDefinition
 import com.apollographql.apollo3.ast.GQLListType
@@ -26,9 +32,11 @@ import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLNullValue
 import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLObjectValue
+import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.GQLStringValue
 import com.apollographql.apollo3.ast.GQLType
+import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo3.ast.GQLVariableValue
@@ -141,11 +149,11 @@ class CompiledSelectionsBuilder(
       parameters.add(CodeBlock.of("alias·=·%S", alias))
     }
 
-    val typeDefinition = definitionFromScope(schema, parentType)!!
+    val fieldDefinition = definitionFromScope(schema, parentType)!!
     parameters.add(
         CodeBlock.of(
             "type·=·%L",
-            typeDefinition.type.codeBlock()
+            fieldDefinition.type.codeBlock()
         )
     )
     if (expression != BooleanExpression.True) {
@@ -160,7 +168,7 @@ class CompiledSelectionsBuilder(
       parameters.add(
           CodeBlock.of(
               "arguments·=·%L",
-              arguments!!.arguments.codeBlock()
+              arguments!!.arguments.codeBlock(name, parentType)
           )
       )
     }
@@ -168,7 +176,7 @@ class CompiledSelectionsBuilder(
     var nestededPropertySpecs: List<PropertySpec> = emptyList()
     val selections = selectionSet?.selections ?: emptyList()
     if (selections.isNotEmpty()) {
-      nestededPropertySpecs = selections.walk(alias ?: name, private, typeDefinition.type.leafType().name)
+      nestededPropertySpecs = selections.walk(alias ?: name, private, fieldDefinition.type.leafType().name)
       parameters.add(CodeBlock.of("selections·=·%L", nestededPropertySpecs.last().name))
     }
 
@@ -266,16 +274,7 @@ class CompiledSelectionsBuilder(
         CodeBlock.of("%L.%M()", type.codeBlock(), listFun)
       }
       is GQLNamedType -> {
-        val typeDefinition = schema.typeDefinition(name)
-
-        when (typeDefinition) {
-          is GQLUnionTypeDefinition,
-          is GQLInterfaceTypeDefinition,
-          is GQLObjectTypeDefinition,
-          -> CodeBlock.of("%T(%S)", CompiledCompoundType::class, "unused")
-          else
-          -> CodeBlock.of("%T(%S)", CompiledOtherType::class, "unused")
-        }
+        CodeBlock.of("%M", context.resolver.resolveCompiledType(name))
       }
     }
   }
@@ -323,27 +322,58 @@ class CompiledSelectionsBuilder(
       is GQLFloatValue -> CodeBlock.of("%L", value)
       is GQLBooleanValue -> CodeBlock.of("%L", value)
       is GQLStringValue -> CodeBlock.of("%S", value)
-      is GQLVariableValue -> CodeBlock.of("%T(%S)", Variable::class, name)
+      is GQLVariableValue -> CodeBlock.of("%T(%S)", CompiledVariable::class, name)
       is GQLNullValue -> CodeBlock.of("null")
     }
   }
 
-  private fun List<GQLArgument>.codeBlock(): CodeBlock {
+  private fun List<GQLArgument>.codeBlock(fieldName: String, parentType: String): CodeBlock {
     if (isEmpty()) {
-      return CodeBlock.of("emptyMap()")
+      return CodeBlock.of("emptyList()")
     }
 
+    val typeDefinition = schema.typeDefinition(parentType)
+    val keyArgs = typeDefinition.keyArgs(fieldName)
+
     val builder = CodeBlock.builder()
-    builder.add("mapOf(")
+    builder.add("listOf(\n")
     builder.indent()
-    builder.add(
-        map {
-          CodeBlock.of("%S to %L", it.name, it.value.codeBlock())
-        }.joinToCode(separator = ",\n", suffix = "\n")
-    )
+    val arguments = sortedBy { it.name }.map {
+      val argumentBuilder = CodeBlock.builder()
+      argumentBuilder.add(
+          "%T(%S,·%L",
+          CompiledArgument::class,
+          it.name,
+          it.value.codeBlock()
+      )
+
+      if (keyArgs.contains(it.name)) {
+        argumentBuilder.add(",·true")
+      }
+      argumentBuilder.add(")")
+      argumentBuilder.build()
+    }
+    builder.add("%L", arguments.joinToCode(",\n"))
+    builder.add("\n")
     builder.unindent()
     builder.add(")")
     return builder.build()
+  }
+
+  private fun GQLTypeDefinition.keyArgs(fieldName: String): Set<String> {
+    val directives = when (this) {
+      is GQLObjectTypeDefinition -> directives
+      is GQLInterfaceTypeDefinition -> directives
+      else -> emptyList()
+    }
+
+    return directives.filter { it.name == "resolveField" }.filter {
+      (it.arguments?.arguments?.single { it.name == "name" }?.value as GQLStringValue).value == fieldName
+    }.flatMap {
+      (it.arguments?.arguments?.single { it.name == "withKeyArgs" }?.value as? GQLListValue)?.values ?: emptyList()
+    }.map {
+      (it as GQLStringValue).value
+    }.toSet()
   }
 }
 

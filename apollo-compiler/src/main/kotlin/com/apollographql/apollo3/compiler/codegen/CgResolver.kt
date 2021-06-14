@@ -2,6 +2,7 @@ package com.apollographql.apollo3.compiler.codegen
 
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.BooleanAdapter
+import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.DoubleAdapter
 import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.Optional
@@ -98,7 +99,7 @@ class CgResolver {
         CodeBlock.of(
             "$customScalarAdapters.responseAdapterFor<%T>(%M)",
             customScalars.get(type.name) ?: "Cannot find custom scalar '$type'",
-            customScalarConsts.get(type.name)
+            compiledType.get(type.name)
         )
       }
       is IrModelType -> {
@@ -192,14 +193,24 @@ class CgResolver {
     customScalars.put(name, kotlinName?.let { ClassName.bestGuess(it) })
   }
 
-  private var customScalarConsts = mutableMapOf<String, MemberName>()
-  fun registerCustomScalarConst(
+  private var compiledType = mutableMapOf<String, MemberName>()
+  fun registerCompiledType(
       name: String,
       memberName: MemberName,
   ) {
-    customScalarConsts.put(name, memberName)
+    compiledType.put(name, memberName)
   }
 
+  fun resolveCompiledType(name: String): MemberName {
+    when (name) {
+      "String" -> return MemberName("com.apollographql.apollo3.api", "CompiledStringType")
+      "Int" -> return MemberName("com.apollographql.apollo3.api", "CompiledIntType")
+      "Float" -> return MemberName("com.apollographql.apollo3.api", "CompiledFloatType")
+      "Boolean" -> return MemberName("com.apollographql.apollo3.api", "CompiledBooleanType")
+      "ID" -> return MemberName("com.apollographql.apollo3.api", "CompiledIDType")
+    }
+    return compiledType[name] ?: error("cannot resolve compiled type '$name'")
+  }
   private var enums = mutableMapOf<String, ClassName>()
   fun registerEnum(
       name: String,

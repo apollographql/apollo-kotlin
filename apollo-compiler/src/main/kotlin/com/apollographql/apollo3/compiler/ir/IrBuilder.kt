@@ -157,6 +157,7 @@ internal class IrBuilder(
     return IrObject(
         name = name,
         implements = implementsInterfaces,
+        keyFields = schema.keyFields(name),
         description = description,
         deprecationReason = directives.findDeprecationReason()
     )
@@ -166,6 +167,7 @@ internal class IrBuilder(
     return IrInterface(
         name = name,
         implements = implementsInterfaces,
+        keyFields = schema.keyFields(name),
         description = description,
         deprecationReason = directives.findDeprecationReason()
     )

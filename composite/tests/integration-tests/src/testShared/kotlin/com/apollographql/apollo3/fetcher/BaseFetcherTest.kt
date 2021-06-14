@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.api.exception.ApolloException
 import com.apollographql.apollo3.cache.normalized.CacheResolver
+import com.apollographql.apollo3.cache.normalized.IdCacheResolver
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
@@ -35,7 +36,7 @@ open class BaseFetcherTest {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-        .normalizedCache(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), CacheResolver.ID)
+        .normalizedCache(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), IdCacheResolver())
         .dispatcher(immediateExecutor())
         .build()
   }

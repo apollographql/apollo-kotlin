@@ -31,7 +31,7 @@ class FetchPolicyTest {
 
   @BeforeTest
   fun setUp() {
-    store = ApolloStore(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), CacheResolver.DEFAULT)
+    store = ApolloStore(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), CacheResolver())
     mockServer = MockServer()
     apolloClient = ApolloClient(mockServer.url()).withStore(store)
   }

@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheResolver
+import com.apollographql.apollo3.cache.normalized.IdCacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
@@ -43,7 +44,7 @@ class BasicTest {
 
   @BeforeTest
   fun setUp() {
-    store = ApolloStore(MemoryCacheFactory(), CacheResolver.ID)
+    store = ApolloStore(MemoryCacheFactory(), IdCacheResolver())
     mockServer = MockServer()
     apolloClient = ApolloClient(mockServer.url()).withStore(store)
   }

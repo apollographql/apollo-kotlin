@@ -1,12 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.file
 
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CustomScalar
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.Interface
-import com.apollographql.apollo3.api.Object
-import com.apollographql.apollo3.api.SchemaType
-import com.apollographql.apollo3.api.Union
 import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.cache.normalized.CacheResolver
@@ -16,24 +11,14 @@ import com.apollographql.apollo3.compiler.codegen.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.Identifier.cacheKeyForObject
 import com.apollographql.apollo3.compiler.codegen.Identifier.field
 import com.apollographql.apollo3.compiler.codegen.Identifier.variables
-import com.apollographql.apollo3.compiler.codegen.helpers.maybeAddDeprecation
-import com.apollographql.apollo3.compiler.codegen.helpers.maybeAddDescription
-import com.apollographql.apollo3.compiler.ir.IrCustomScalar
-import com.apollographql.apollo3.compiler.ir.IrInterface
-import com.apollographql.apollo3.compiler.ir.IrObject
-import com.apollographql.apollo3.compiler.ir.IrUnion
-import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
-import java.lang.reflect.Modifier
 
 class CacheResolverBuilder(
     private val context: CgContext,

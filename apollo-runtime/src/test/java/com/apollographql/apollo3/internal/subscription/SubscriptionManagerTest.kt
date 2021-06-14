@@ -34,7 +34,7 @@ class SubscriptionManagerTest {
         SubscriptionConnectionParamsProvider.Const(SubscriptionConnectionParams()),
         MockExecutor(),
         connectionHeartbeatTimeoutMs,
-        CacheResolver.DEFAULT,
+        CacheResolver(),
         false)
     subscriptionManager.addOnStateChangeListener(onStateChangeListener)
   }

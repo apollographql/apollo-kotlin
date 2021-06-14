@@ -62,19 +62,12 @@ class KotlinCodeGen(
         ir.customScalars,
         ir.objects,
         ir.interfaces,
-        ir.unions
-    )
-
-    val cacheResolverBuilder = CacheResolverBuilder(
-        context,
-        ir.schema
+        ir.unions,
+        ir.enums
     )
 
     if (generateSchema) {
       builders.add(typesBuilder)
-      if (!cacheResolverBuilder.isEmpty()) {
-        builders.add(cacheResolverBuilder)
-      }
     }
 
     ir.inputObjects.forEach {

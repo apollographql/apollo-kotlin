@@ -23,7 +23,7 @@ fun <D : Operation.Data> Operation<D>.normalize(
     data,
     customScalarAdapters,
     cacheResolver,
-    CacheResolver.rootKey().key,
+    CacheKey.rootKey().key,
     adapter(),
     variables(customScalarAdapters),
     selections())
@@ -70,7 +70,7 @@ fun <D : Operation.Data> Operation<D>.readDataFromCache(
     variables = variables(customScalarAdapters),
     adapter = adapter(),
     customScalarAdapters = customScalarAdapters,
-    cacheKey = CacheResolver.rootKey(),
+    cacheKey = CacheKey.rootKey(),
     selections = selections()
 )
 

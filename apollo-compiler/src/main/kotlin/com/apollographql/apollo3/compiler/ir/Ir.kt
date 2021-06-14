@@ -193,6 +193,7 @@ data class IrInputObject(
 data class IrObject(
     val name: String,
     val implements: List<String>,
+    val keyFields: Set<String>,
     val description: String?,
     val deprecationReason: String?,
 )
@@ -200,6 +201,7 @@ data class IrObject(
 data class IrInterface(
     val name: String,
     val implements: List<String>,
+    val keyFields: Set<String>,
     val description: String?,
     val deprecationReason: String?,
 )

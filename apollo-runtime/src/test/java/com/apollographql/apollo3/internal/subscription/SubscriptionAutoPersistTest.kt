@@ -35,7 +35,7 @@ class SubscriptionAutoPersistTest {
         SubscriptionConnectionParamsProvider.Const(SubscriptionConnectionParams()),
         MockExecutor(),
         -1,
-        CacheResolver.DEFAULT,
+        CacheResolver(),
         true)
     Truth.assertThat(subscriptionTransportFactory!!.subscriptionTransport).isNotNull()
     Truth.assertThat(subscriptionManager!!.state).isEqualTo(SubscriptionManagerState.DISCONNECTED)
