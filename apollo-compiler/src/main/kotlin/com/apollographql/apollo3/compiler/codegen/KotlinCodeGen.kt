@@ -7,7 +7,6 @@ import com.apollographql.apollo3.compiler.operationoutput.findOperationId
 import com.apollographql.apollo3.compiler.codegen.file.TypesBuilder
 import com.apollographql.apollo3.compiler.codegen.file.EnumBuilder
 import com.apollographql.apollo3.compiler.codegen.adapter.EnumResponseAdapterBuilder
-import com.apollographql.apollo3.compiler.codegen.file.CacheResolverBuilder
 import com.apollographql.apollo3.compiler.codegen.file.FragmentBuilder
 import com.apollographql.apollo3.compiler.codegen.file.FragmentModelsBuilder
 import com.apollographql.apollo3.compiler.codegen.file.FragmentResponseAdapterBuilder
