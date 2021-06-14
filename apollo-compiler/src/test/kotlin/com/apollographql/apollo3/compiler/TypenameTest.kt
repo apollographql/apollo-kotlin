@@ -27,8 +27,8 @@ class TypenameTest(val name: String, private val graphQLFile: File) {
     val documentWithTypename = GQLDocument(
         definitions = definitions.map {
           when (it) {
-            is GQLOperationDefinition -> it.addRequiredFields(schema)
-            is GQLFragmentDefinition -> it.addRequiredFields(schema)
+            is GQLOperationDefinition -> addRequiredFields(it, schema)
+            is GQLFragmentDefinition -> addRequiredFields(it, schema)
             else -> it
           }
         },

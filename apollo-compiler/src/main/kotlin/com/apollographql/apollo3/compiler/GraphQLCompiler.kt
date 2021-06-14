@@ -71,17 +71,23 @@ class GraphQLCompiler {
      */
     val incomingFragments = incomingOptions.metadataFragments.map { it.definition }
     var allFragmentDefinitions = (definitions.filterIsInstance<GQLFragmentDefinition>() + incomingFragments).associateBy { it.name }
-    val scope = AddFieldsScope(schema = incomingOptions.schema, allFragmentDefinitions)
     val fragments = definitions.filterIsInstance<GQLFragmentDefinition>().map {
-      scope.addRequiredFields(it, it.typeCondition.name)
+      addRequiredFields(it, incomingOptions.schema)
     }
 
     val operations = definitions.filterIsInstance<GQLOperationDefinition>().map {
-      scope.addRequiredFields(it, it.rootTypeDefinition(incomingOptions.schema)!!.name)
+      addRequiredFields(it, incomingOptions.schema)
     }
 
     // Update the fragments with the possibly updated fragments
     allFragmentDefinitions = (fragments + incomingFragments).associateBy { it.name }
+
+    operations.forEach {
+      checkKeyFields(it, incomingOptions.schema, allFragmentDefinitions)
+    }
+    fragments.forEach {
+      checkKeyFields(it, incomingOptions.schema, allFragmentDefinitions)
+    }
 
     /**
      * Build the IR

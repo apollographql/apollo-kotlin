@@ -1,19 +1,21 @@
 package com.apollographql.apollo3.ast
 
-class AddFieldsScope(
+private class AddFieldsScope(
     val schema: Schema,
-    val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
 )
 
-fun AddFieldsScope.addRequiredFields(operation: GQLOperationDefinition, parentType: String): GQLOperationDefinition {
+fun addRequiredFields(operation: GQLOperationDefinition, schema: Schema): GQLOperationDefinition {
+  val scope = AddFieldsScope(schema)
+  val parentType = operation.rootTypeDefinition(schema)!!.name
   return operation.copy(
-      selectionSet = addRequiredFields(operation.selectionSet, parentType, emptySet())
+      selectionSet = scope.addRequiredFields(operation.selectionSet, parentType, emptySet())
   )
 }
 
-fun AddFieldsScope.addRequiredFields(fragmentDefinition: GQLFragmentDefinition, parentType: String): GQLFragmentDefinition {
+fun addRequiredFields(fragmentDefinition: GQLFragmentDefinition, schema: Schema): GQLFragmentDefinition {
+  val scope = AddFieldsScope(schema)
   return fragmentDefinition.copy(
-      selectionSet = addRequiredFields(fragmentDefinition.selectionSet, parentType, emptySet())
+      selectionSet = scope.addRequiredFields(fragmentDefinition.selectionSet, fragmentDefinition.typeCondition.name, emptySet())
   )
 }
 
@@ -23,15 +25,15 @@ private fun AddFieldsScope.addRequiredFields(
     parentFields: Set<String>,
 ): GQLSelectionSet {
   val hasFragment = selectionSet.selections.any { it is GQLFragmentSpread || it is GQLInlineFragment }
-  val requiredFields = schema.keyFields(parentType) + if (hasFragment) setOf("__typename") else emptySet()
+  val requiredFieldNames = schema.keyFields(parentType) + if (hasFragment) setOf("__typename") else emptySet()
 
-  val newParentFields = parentFields + selectionSet.selections.filterIsInstance<GQLField>().map { it.name }.toSet()
+  val fieldNames = parentFields + selectionSet.selections.filterIsInstance<GQLField>().map { it.name }.toSet()
 
   var newSelections = selectionSet.selections.map {
     when (it) {
       is GQLInlineFragment -> {
         it.copy(
-            selectionSet = addRequiredFields(it.selectionSet, it.typeCondition.name, newParentFields + requiredFields)
+            selectionSet = addRequiredFields(it.selectionSet, it.typeCondition.name, fieldNames + requiredFieldNames)
         )
       }
       is GQLFragmentSpread -> it
@@ -47,10 +49,18 @@ private fun AddFieldsScope.addRequiredFields(
     }
   }
 
-  val typesToAdd = requiredFields - newParentFields
+  val fieldNamesToAdd = requiredFieldNames - fieldNames
 
-  newSelections = newSelections + typesToAdd.map { buildField(it) }
-
+  newSelections.filterIsInstance<GQLField>().forEach {
+    /**
+     * Verify that the fields we add won't overwrite an existing alias
+     * This is not 100% correct as this validation should be made more globally
+     */
+    check(!fieldNamesToAdd.contains(it.alias)) {
+      "Field ${it.alias}: ${it.name} in $parentType conflicts with key fields"
+    }
+  }
+  newSelections = newSelections + fieldNamesToAdd.map { buildField(it) }
 
   newSelections = if (hasFragment) {
     // remove the __typename if it exists

@@ -7,6 +7,10 @@ import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.interceptor.cache.withStore
 import com.apollographql.apollo3.testing.runWithMainLoop
 import declarativecache.GetPromoBookQuery
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.plus
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 
