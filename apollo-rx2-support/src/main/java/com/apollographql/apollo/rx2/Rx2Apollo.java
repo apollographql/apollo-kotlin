@@ -12,16 +12,11 @@ import com.apollographql.apollo.internal.util.Cancelable;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
-import io.reactivex.CompletableOnSubscribe;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
-import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Single;
-import io.reactivex.SingleEmitter;
-import io.reactivex.SingleOnSubscribe;
 import io.reactivex.annotations.CheckReturnValue;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.exceptions.Exceptions;
@@ -51,26 +46,23 @@ public class Rx2Apollo {
   @CheckReturnValue
   public static <T> Observable<Response<T>> from(@NotNull final ApolloQueryWatcher<T> watcher) {
     checkNotNull(watcher, "watcher == null");
-    return Observable.create(new ObservableOnSubscribe<Response<T>>() {
-      @Override public void subscribe(final ObservableEmitter<Response<T>> emitter) throws Exception {
-        ApolloQueryWatcher<T> clone = watcher.clone();
-        cancelOnObservableDisposed(emitter, clone);
-
-        clone.enqueueAndWatch(new ApolloCall.Callback<T>() {
-          @Override public void onResponse(@NotNull Response<T> response) {
-            if (!emitter.isDisposed()) {
-              emitter.onNext(response);
-            }
+    return Observable.create(emitter -> {
+      ApolloQueryWatcher<T> clone = watcher.clone();
+      cancelOnObservableDisposed(emitter, clone);
+      clone.enqueueAndWatch(new ApolloCall.Callback<T>() {
+        @Override public void onResponse(@NotNull Response<T> response) {
+          if (!emitter.isDisposed()) {
+            emitter.onNext(response);
           }
+        }
 
-          @Override public void onFailure(@NotNull ApolloException e) {
-            Exceptions.throwIfFatal(e);
-            if (!emitter.isDisposed()) {
-              emitter.onError(e);
-            }
+        @Override public void onFailure(@NotNull ApolloException e) {
+          Exceptions.throwIfFatal(e);
+          if (!emitter.isDisposed()) {
+            emitter.onError(e);
           }
-        });
-      }
+        }
+      });
     });
   }
 
@@ -87,33 +79,29 @@ public class Rx2Apollo {
   @CheckReturnValue
   public static <T> Observable<Response<T>> from(@NotNull final ApolloCall<T> call) {
     checkNotNull(call, "call == null");
-
-    return Observable.create(new ObservableOnSubscribe<Response<T>>() {
-      @Override public void subscribe(final ObservableEmitter<Response<T>> emitter) throws Exception {
-        ApolloCall<T> clone = call.clone();
-        cancelOnObservableDisposed(emitter, clone);
-
-        clone.enqueue(new ApolloCall.Callback<T>() {
-          @Override public void onResponse(@NotNull Response<T> response) {
-            if (!emitter.isDisposed()) {
-              emitter.onNext(response);
-            }
+    return Observable.create(emitter -> {
+      ApolloCall<T> clone = call.toBuilder().build();
+      cancelOnObservableDisposed(emitter, clone);
+      clone.enqueue(new ApolloCall.Callback<T>() {
+        @Override public void onResponse(@NotNull Response<T> response) {
+          if (!emitter.isDisposed()) {
+            emitter.onNext(response);
           }
+        }
 
-          @Override public void onFailure(@NotNull ApolloException e) {
-            Exceptions.throwIfFatal(e);
-            if (!emitter.isDisposed()) {
-              emitter.onError(e);
-            }
+        @Override public void onFailure(@NotNull ApolloException e) {
+          Exceptions.throwIfFatal(e);
+          if (!emitter.isDisposed()) {
+            emitter.onError(e);
           }
+        }
 
-          @Override public void onStatusEvent(@NotNull ApolloCall.StatusEvent event) {
-            if (event == ApolloCall.StatusEvent.COMPLETED && !emitter.isDisposed()) {
-              emitter.onComplete();
-            }
+        @Override public void onStatusEvent(@NotNull ApolloCall.StatusEvent event) {
+          if (event == ApolloCall.StatusEvent.COMPLETED && !emitter.isDisposed()) {
+            emitter.onComplete();
           }
-        });
-      }
+        }
+      });
     });
   }
 
@@ -128,26 +116,23 @@ public class Rx2Apollo {
   @CheckReturnValue
   public static Completable from(@NotNull final ApolloPrefetch prefetch) {
     checkNotNull(prefetch, "prefetch == null");
-
-    return Completable.create(new CompletableOnSubscribe() {
-      @Override public void subscribe(final CompletableEmitter emitter) {
-        ApolloPrefetch clone = prefetch.clone();
-        cancelOnCompletableDisposed(emitter, clone);
-        clone.enqueue(new ApolloPrefetch.Callback() {
-          @Override public void onSuccess() {
-            if (!emitter.isDisposed()) {
-              emitter.onComplete();
-            }
+    return Completable.create(emitter -> {
+      ApolloPrefetch clone = prefetch.clone();
+      cancelOnCompletableDisposed(emitter, clone);
+      clone.enqueue(new ApolloPrefetch.Callback() {
+        @Override public void onSuccess() {
+          if (!emitter.isDisposed()) {
+            emitter.onComplete();
           }
+        }
 
-          @Override public void onFailure(@NotNull ApolloException e) {
-            Exceptions.throwIfFatal(e);
-            if (!emitter.isDisposed()) {
-              emitter.onError(e);
-            }
+        @Override public void onFailure(@NotNull ApolloException e) {
+          Exceptions.throwIfFatal(e);
+          if (!emitter.isDisposed()) {
+            emitter.onError(e);
           }
-        });
-      }
+        }
+      });
     });
   }
 
@@ -163,41 +148,40 @@ public class Rx2Apollo {
       @NotNull BackpressureStrategy backpressureStrategy) {
     checkNotNull(call, "originalCall == null");
     checkNotNull(backpressureStrategy, "backpressureStrategy == null");
-    return Flowable.create(new FlowableOnSubscribe<Response<T>>() {
-      @Override public void subscribe(final FlowableEmitter<Response<T>> emitter) throws Exception {
-        ApolloSubscriptionCall<T> clone = call.clone();
-        cancelOnFlowableDisposed(emitter, clone);
-        clone.execute(
-            new ApolloSubscriptionCall.Callback<T>() {
-              @Override public void onResponse(@NotNull Response<T> response) {
-                if (!emitter.isCancelled()) {
-                  emitter.onNext(response);
-                }
-              }
-
-              @Override public void onFailure(@NotNull ApolloException e) {
-                Exceptions.throwIfFatal(e);
-                if (!emitter.isCancelled()) {
-                  emitter.onError(e);
-                }
-              }
-
-              @Override public void onCompleted() {
-                if (!emitter.isCancelled()) {
-                  emitter.onComplete();
-                }
-              }
-
-              @Override public void onTerminated() {
-                onFailure(new ApolloSubscriptionTerminatedException("Subscription server unexpectedly terminated "
-                    + "connection"));
-              }
-
-              @Override public void onConnected() {
+    return Flowable.create(emitter -> {
+      ApolloSubscriptionCall<T> clone = call.clone();
+      cancelOnFlowableDisposed(emitter, clone);
+      clone.execute(
+          new ApolloSubscriptionCall.Callback<T>() {
+            @Override public void onResponse(@NotNull Response<T> response) {
+              if (!emitter.isCancelled()) {
+                emitter.onNext(response);
               }
             }
-        );
-      }
+
+            @Override public void onFailure(@NotNull ApolloException e) {
+              Exceptions.throwIfFatal(e);
+              if (!emitter.isCancelled()) {
+                emitter.onError(e);
+              }
+            }
+
+            @Override public void onCompleted() {
+              if (!emitter.isCancelled()) {
+                emitter.onComplete();
+              }
+            }
+
+            @Override public void onTerminated() {
+              onFailure(new ApolloSubscriptionTerminatedException("Subscription server unexpectedly terminated "
+                  + "connection"));
+            }
+
+            @Override public void onConnected() {
+              //Do nothing when GraphQL subscription server connection is opened
+            }
+          }
+      );
     }, backpressureStrategy);
   }
 
@@ -212,26 +196,21 @@ public class Rx2Apollo {
   @CheckReturnValue
   public static <T> Single<T> from(@NotNull final ApolloStoreOperation<T> operation) {
     checkNotNull(operation, "operation == null");
-    return Single.create(new SingleOnSubscribe<T>() {
+    return Single.create(emitter -> operation.enqueue(new ApolloStoreOperation.Callback<T>() {
       @Override
-      public void subscribe(final SingleEmitter<T> emitter) {
-        operation.enqueue(new ApolloStoreOperation.Callback<T>() {
-          @Override
-          public void onSuccess(T result) {
-            if (!emitter.isDisposed()) {
-              emitter.onSuccess(result);
-            }
-          }
-
-          @Override
-          public void onFailure(Throwable t) {
-            if (!emitter.isDisposed()) {
-              emitter.onError(t);
-            }
-          }
-        });
+      public void onSuccess(T result) {
+        if (!emitter.isDisposed()) {
+          emitter.onSuccess(result);
+        }
       }
-    });
+
+      @Override
+      public void onFailure(@NotNull Throwable t) {
+        if (!emitter.isDisposed()) {
+          emitter.onError(t);
+        }
+      }
+    }));
   }
 
   private static void cancelOnCompletableDisposed(CompletableEmitter emitter, final Cancelable cancelable) {
