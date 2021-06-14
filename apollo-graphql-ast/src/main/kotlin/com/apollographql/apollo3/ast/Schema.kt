@@ -21,7 +21,8 @@ class Schema(
       .filterIsInstance<GQLDirectiveDefinition>()
       .associateBy { it.name }
 
-  val queryTypeDefinition: GQLTypeDefinition = rootOperationTypeDefinition("query") ?: throw SchemaValidationException("No query root type found")
+  val queryTypeDefinition: GQLTypeDefinition = rootOperationTypeDefinition("query")
+      ?: throw SchemaValidationException("No query root type found")
 
   val mutationTypeDefinition: GQLTypeDefinition? = rootOperationTypeDefinition("mutation")
 
@@ -71,5 +72,101 @@ class Schema(
 
   fun possibleTypes(name: String): Set<String> {
     return possibleTypes(typeDefinition(name))
+  }
+
+
+  fun implementedTypes(name: String): Set<String> {
+    val typeDefinition = typeDefinition(name)
+    return when (typeDefinition) {
+      is GQLObjectTypeDefinition -> typeDefinition.implementsInterfaces.flatMap { implementedTypes(it) }.toSet() + name
+      is GQLInterfaceTypeDefinition -> typeDefinition.implementsInterfaces.flatMap { implementedTypes(it) }.toSet() + name
+      is GQLUnionTypeDefinition,
+      is GQLScalarTypeDefinition,
+      is GQLEnumTypeDefinition,
+      -> setOf(name)
+      else -> error("Cannot determine implementedTypes of $name")
+    }
+  }
+
+  fun keyFields(name: String): Set<String> {
+    val keyFieldsNoFallback = keyFieldsNoFallback(name)
+    if (keyFieldsNoFallback != null) {
+      return keyFieldsNoFallback
+    }
+
+    val schemaDefinition =  definitions.filterIsInstance<GQLSchemaDefinition>().single()
+    val schemaKeyFields = schemaDefinition.directives.toKeyFields("defaultKeyFields")
+    if (schemaKeyFields == null) {
+      return emptySet()
+    }
+
+    val typeDefinition = typeDefinition(name)
+    val fields = when(typeDefinition) {
+      is GQLObjectTypeDefinition -> typeDefinition.fields
+      is GQLInterfaceTypeDefinition -> typeDefinition.fields
+      else -> return emptySet()
+    }
+
+    return fields.mapNotNull {
+      if (schemaKeyFields.contains(it.name)) {
+        val fieldTypeDefinition = typeDefinition(it.type.leafType().name)
+        check(fieldTypeDefinition is GQLScalarTypeDefinition || fieldTypeDefinition is GQLEnumTypeDefinition) {
+          "Compound keyFields are not supported for field '${it.name}' of type '${it.type.leafType().name}'"
+        }
+        it.name
+      } else {
+        null
+      }
+    }.toSet()
+  }
+
+  private fun keyFieldsNoFallback(name: String): Set<String>? {
+    val typeDefinition = typeDefinition(name)
+    return when (typeDefinition) {
+      is GQLObjectTypeDefinition -> {
+        val kf = typeDefinition.directives.toKeyFields()
+        if (kf != null) {
+          kf
+        } else {
+          val kfs = typeDefinition.implementsInterfaces.map { it to keyFieldsNoFallback(it) }.filter { it.second != null }
+          if (kfs.isNotEmpty()) {
+            check(kfs.size == 1) {
+              val candidates = kfs.map { "${it.first}: ${it.second}" }.joinToString("\n")
+              "Object '$name' inherits different keys from different interfaces:\n$candidates\nSpecify @key explicitely"
+            }
+          }
+          kfs.singleOrNull()?.second
+        }
+      }
+      is GQLInterfaceTypeDefinition -> {
+        val kf = typeDefinition.directives.toKeyFields()
+        if (kf != null) {
+          kf
+        } else {
+          val kfs = typeDefinition.implementsInterfaces.map { it to keyFieldsNoFallback(it) }.filter { it.second != null }
+          if (kfs.isNotEmpty()) {
+            check(kfs.size == 1) {
+              val candidates = kfs.map { "${it.first}: ${it.second}" }.joinToString("\n")
+              "Interface '$name' inherits different keys from different interfaces:\n$candidates\nSpecify @key explicitely"
+            }
+          }
+          kfs.singleOrNull()?.second
+        }
+      }
+      is GQLUnionTypeDefinition -> typeDefinition.directives.toKeyFields()
+      else -> error("Type '$name' cannot have key fields")
+    }
+  }
+
+  private fun List<GQLDirective>.toKeyFields(directiveName: String = "key"): Set<String>? {
+    val directives = filter { it.name == directiveName }
+    if (directives.isEmpty()) {
+      return null
+    }
+    return directives.flatMap {
+      (it.arguments!!.arguments.first().value as GQLStringValue).value.parseAsSelections().getOrThrow().map {
+        (it as GQLField).name
+      }
+    }.toSet()
   }
 }

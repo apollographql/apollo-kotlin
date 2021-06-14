@@ -52,7 +52,7 @@ class CodegenTest(private val folder: File, private val codegenModels: String, p
 
     val codegenDuration = measureTime {
       GraphQLCompiler().write(
-          operationFiles = options.operationFiles,
+          executableFiles = options.operationFiles,
           outputDir = options.outputDir,
           incomingOptions = options.incomingOptions,
           moduleOptions = options.moduleOptions

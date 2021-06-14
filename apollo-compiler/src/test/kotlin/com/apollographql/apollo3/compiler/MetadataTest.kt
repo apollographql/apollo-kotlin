@@ -53,7 +53,7 @@ class MetadataTest {
     )
 
     GraphQLCompiler().write(
-        operationFiles = operationFiles,
+        executableFiles = operationFiles,
         outputDir = outputDir,
         incomingOptions = incomingOptions,
         moduleOptions = moduleOptions,
