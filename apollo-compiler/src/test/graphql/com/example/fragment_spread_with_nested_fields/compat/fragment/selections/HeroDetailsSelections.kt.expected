@@ -5,26 +5,29 @@
 //
 package com.example.fragment_spread_with_nested_fields.fragment.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledOtherType
+import com.apollographql.apollo3.api.CompiledIntType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
+import com.example.fragment_spread_with_nested_fields.type.Types.Character
+import com.example.fragment_spread_with_nested_fields.type.Types.FriendsConnection
+import com.example.fragment_spread_with_nested_fields.type.Types.FriendsEdge
 import kotlin.collections.List
 
 object HeroDetailsSelections {
   private val node: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         )
       )
 
   private val edges: List<CompiledSelection> = listOf(
         CompiledField(
           name = "node",
-          type = CompiledCompoundType("unused"),
+          type = Character,
           selections = node
         )
       )
@@ -32,11 +35,11 @@ object HeroDetailsSelections {
   private val friendsConnection: List<CompiledSelection> = listOf(
         CompiledField(
           name = "totalCount",
-          type = CompiledOtherType("unused")
+          type = CompiledIntType
         ),
         CompiledField(
           name = "edges",
-          type = CompiledCompoundType("unused").list(),
+          type = FriendsEdge.list(),
           selections = edges
         )
       )
@@ -44,11 +47,11 @@ object HeroDetailsSelections {
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "friendsConnection",
-          type = CompiledCompoundType("unused").notNull(),
+          type = FriendsConnection.notNull(),
           selections = friendsConnection
         )
       )

@@ -6,7 +6,7 @@
 package com.example.named_fragment_without_implementation.fragment.selections
 
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledOtherType
+import com.apollographql.apollo3.api.CompiledFloatType
 import com.apollographql.apollo3.api.CompiledSelection
 import kotlin.collections.List
 
@@ -14,7 +14,7 @@ object HumanDetailsSelections {
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "height",
-          type = CompiledOtherType("unused")
+          type = CompiledFloatType
         )
       )
 }

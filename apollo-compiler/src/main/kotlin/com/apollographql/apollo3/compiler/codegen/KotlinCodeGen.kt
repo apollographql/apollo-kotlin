@@ -63,11 +63,12 @@ class KotlinCodeGen(
         ir.objects,
         ir.interfaces,
         ir.unions,
-        ir.enums
+        ir.allEnums
     )
 
-    if (generateSchema) {
-      builders.add(typesBuilder)
+    builders.add(typesBuilder)
+    if (!generateSchema) {
+      ignoredBuilders.add(typesBuilder)
     }
 
     ir.inputObjects.forEach {

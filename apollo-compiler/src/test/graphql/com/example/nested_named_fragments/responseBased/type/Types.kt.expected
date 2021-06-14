@@ -5,9 +5,10 @@
 //
 package com.example.nested_named_fragments.type
 
-import com.apollographql.apollo3.api.Interface
-import com.apollographql.apollo3.api.Object
-import com.apollographql.apollo3.api.SchemaType
+import com.apollographql.apollo3.api.CompiledNamedType
+import com.apollographql.apollo3.api.CompiledType
+import com.apollographql.apollo3.api.InterfaceType
+import com.apollographql.apollo3.api.ObjectType
 import com.apollographql.apollo3.api.possibleTypes
 import kotlin.collections.List
 
@@ -19,267 +20,267 @@ object Types {
   /**
    * An object with an ID
    */
-  val Node: Interface = Interface("Node")
+  val Node: InterfaceType = InterfaceType(name = "Node")
 
   /**
    * A single film.
    */
-  val Film: Object = Object("Film", Node)
+  val Film: ObjectType = ObjectType(name = "Film", implements = listOf(Node))
 
   /**
    * A connection to a list of items.
    */
-  val FilmCharactersConnection: Object = Object("FilmCharactersConnection")
+  val FilmCharactersConnection: ObjectType = ObjectType(name = "FilmCharactersConnection")
 
   /**
    * An edge in a connection.
    */
-  val FilmCharactersEdge: Object = Object("FilmCharactersEdge")
+  val FilmCharactersEdge: ObjectType = ObjectType(name = "FilmCharactersEdge")
 
   /**
    * A connection to a list of items.
    */
-  val FilmPlanetsConnection: Object = Object("FilmPlanetsConnection")
+  val FilmPlanetsConnection: ObjectType = ObjectType(name = "FilmPlanetsConnection")
 
   /**
    * An edge in a connection.
    */
-  val FilmPlanetsEdge: Object = Object("FilmPlanetsEdge")
+  val FilmPlanetsEdge: ObjectType = ObjectType(name = "FilmPlanetsEdge")
 
   /**
    * A connection to a list of items.
    */
-  val FilmsConnection: Object = Object("FilmsConnection")
+  val FilmsConnection: ObjectType = ObjectType(name = "FilmsConnection")
 
   /**
    * An edge in a connection.
    */
-  val FilmsEdge: Object = Object("FilmsEdge")
+  val FilmsEdge: ObjectType = ObjectType(name = "FilmsEdge")
 
   /**
    * A connection to a list of items.
    */
-  val FilmSpeciesConnection: Object = Object("FilmSpeciesConnection")
+  val FilmSpeciesConnection: ObjectType = ObjectType(name = "FilmSpeciesConnection")
 
   /**
    * An edge in a connection.
    */
-  val FilmSpeciesEdge: Object = Object("FilmSpeciesEdge")
+  val FilmSpeciesEdge: ObjectType = ObjectType(name = "FilmSpeciesEdge")
 
   /**
    * A connection to a list of items.
    */
-  val FilmStarshipsConnection: Object = Object("FilmStarshipsConnection")
+  val FilmStarshipsConnection: ObjectType = ObjectType(name = "FilmStarshipsConnection")
 
   /**
    * An edge in a connection.
    */
-  val FilmStarshipsEdge: Object = Object("FilmStarshipsEdge")
+  val FilmStarshipsEdge: ObjectType = ObjectType(name = "FilmStarshipsEdge")
 
   /**
    * A connection to a list of items.
    */
-  val FilmVehiclesConnection: Object = Object("FilmVehiclesConnection")
+  val FilmVehiclesConnection: ObjectType = ObjectType(name = "FilmVehiclesConnection")
 
   /**
    * An edge in a connection.
    */
-  val FilmVehiclesEdge: Object = Object("FilmVehiclesEdge")
+  val FilmVehiclesEdge: ObjectType = ObjectType(name = "FilmVehiclesEdge")
 
   /**
    * Information about pagination in a connection.
    */
-  val PageInfo: Object = Object("PageInfo")
+  val PageInfo: ObjectType = ObjectType(name = "PageInfo")
 
   /**
    * A connection to a list of items.
    */
-  val PeopleConnection: Object = Object("PeopleConnection")
+  val PeopleConnection: ObjectType = ObjectType(name = "PeopleConnection")
 
   /**
    * An edge in a connection.
    */
-  val PeopleEdge: Object = Object("PeopleEdge")
+  val PeopleEdge: ObjectType = ObjectType(name = "PeopleEdge")
 
   /**
    * An individual person or character within the Star Wars universe.
    */
-  val Person: Object = Object("Person", Node)
+  val Person: ObjectType = ObjectType(name = "Person", implements = listOf(Node))
 
   /**
    * A connection to a list of items.
    */
-  val PersonFilmsConnection: Object = Object("PersonFilmsConnection")
+  val PersonFilmsConnection: ObjectType = ObjectType(name = "PersonFilmsConnection")
 
   /**
    * An edge in a connection.
    */
-  val PersonFilmsEdge: Object = Object("PersonFilmsEdge")
+  val PersonFilmsEdge: ObjectType = ObjectType(name = "PersonFilmsEdge")
 
   /**
    * A connection to a list of items.
    */
-  val PersonStarshipsConnection: Object = Object("PersonStarshipsConnection")
+  val PersonStarshipsConnection: ObjectType = ObjectType(name = "PersonStarshipsConnection")
 
   /**
    * An edge in a connection.
    */
-  val PersonStarshipsEdge: Object = Object("PersonStarshipsEdge")
+  val PersonStarshipsEdge: ObjectType = ObjectType(name = "PersonStarshipsEdge")
 
   /**
    * A connection to a list of items.
    */
-  val PersonVehiclesConnection: Object = Object("PersonVehiclesConnection")
+  val PersonVehiclesConnection: ObjectType = ObjectType(name = "PersonVehiclesConnection")
 
   /**
    * An edge in a connection.
    */
-  val PersonVehiclesEdge: Object = Object("PersonVehiclesEdge")
+  val PersonVehiclesEdge: ObjectType = ObjectType(name = "PersonVehiclesEdge")
 
   /**
    * A large mass, planet or planetoid in the Star Wars Universe, at the time of
    * 0 ABY.
    */
-  val Planet: Object = Object("Planet", Node)
+  val Planet: ObjectType = ObjectType(name = "Planet", implements = listOf(Node))
 
   /**
    * A connection to a list of items.
    */
-  val PlanetFilmsConnection: Object = Object("PlanetFilmsConnection")
+  val PlanetFilmsConnection: ObjectType = ObjectType(name = "PlanetFilmsConnection")
 
   /**
    * An edge in a connection.
    */
-  val PlanetFilmsEdge: Object = Object("PlanetFilmsEdge")
+  val PlanetFilmsEdge: ObjectType = ObjectType(name = "PlanetFilmsEdge")
 
   /**
    * A connection to a list of items.
    */
-  val PlanetResidentsConnection: Object = Object("PlanetResidentsConnection")
+  val PlanetResidentsConnection: ObjectType = ObjectType(name = "PlanetResidentsConnection")
 
   /**
    * An edge in a connection.
    */
-  val PlanetResidentsEdge: Object = Object("PlanetResidentsEdge")
+  val PlanetResidentsEdge: ObjectType = ObjectType(name = "PlanetResidentsEdge")
 
   /**
    * A connection to a list of items.
    */
-  val PlanetsConnection: Object = Object("PlanetsConnection")
+  val PlanetsConnection: ObjectType = ObjectType(name = "PlanetsConnection")
 
   /**
    * An edge in a connection.
    */
-  val PlanetsEdge: Object = Object("PlanetsEdge")
+  val PlanetsEdge: ObjectType = ObjectType(name = "PlanetsEdge")
 
-  val Root: Object = Object("Root")
+  val Root: ObjectType = ObjectType(name = "Root")
 
   /**
    * A type of person or character within the Star Wars Universe.
    */
-  val Species: Object = Object("Species", Node)
+  val Species: ObjectType = ObjectType(name = "Species", implements = listOf(Node))
 
   /**
    * A connection to a list of items.
    */
-  val SpeciesConnection: Object = Object("SpeciesConnection")
+  val SpeciesConnection: ObjectType = ObjectType(name = "SpeciesConnection")
 
   /**
    * An edge in a connection.
    */
-  val SpeciesEdge: Object = Object("SpeciesEdge")
+  val SpeciesEdge: ObjectType = ObjectType(name = "SpeciesEdge")
 
   /**
    * A connection to a list of items.
    */
-  val SpeciesFilmsConnection: Object = Object("SpeciesFilmsConnection")
+  val SpeciesFilmsConnection: ObjectType = ObjectType(name = "SpeciesFilmsConnection")
 
   /**
    * An edge in a connection.
    */
-  val SpeciesFilmsEdge: Object = Object("SpeciesFilmsEdge")
+  val SpeciesFilmsEdge: ObjectType = ObjectType(name = "SpeciesFilmsEdge")
 
   /**
    * A connection to a list of items.
    */
-  val SpeciesPeopleConnection: Object = Object("SpeciesPeopleConnection")
+  val SpeciesPeopleConnection: ObjectType = ObjectType(name = "SpeciesPeopleConnection")
 
   /**
    * An edge in a connection.
    */
-  val SpeciesPeopleEdge: Object = Object("SpeciesPeopleEdge")
+  val SpeciesPeopleEdge: ObjectType = ObjectType(name = "SpeciesPeopleEdge")
 
   /**
    * A single transport craft that has hyperdrive capability.
    */
-  val Starship: Object = Object("Starship", Node)
+  val Starship: ObjectType = ObjectType(name = "Starship", implements = listOf(Node))
 
   /**
    * A connection to a list of items.
    */
-  val StarshipFilmsConnection: Object = Object("StarshipFilmsConnection")
+  val StarshipFilmsConnection: ObjectType = ObjectType(name = "StarshipFilmsConnection")
 
   /**
    * An edge in a connection.
    */
-  val StarshipFilmsEdge: Object = Object("StarshipFilmsEdge")
+  val StarshipFilmsEdge: ObjectType = ObjectType(name = "StarshipFilmsEdge")
 
   /**
    * A connection to a list of items.
    */
-  val StarshipPilotsConnection: Object = Object("StarshipPilotsConnection")
+  val StarshipPilotsConnection: ObjectType = ObjectType(name = "StarshipPilotsConnection")
 
   /**
    * An edge in a connection.
    */
-  val StarshipPilotsEdge: Object = Object("StarshipPilotsEdge")
+  val StarshipPilotsEdge: ObjectType = ObjectType(name = "StarshipPilotsEdge")
 
   /**
    * A connection to a list of items.
    */
-  val StarshipsConnection: Object = Object("StarshipsConnection")
+  val StarshipsConnection: ObjectType = ObjectType(name = "StarshipsConnection")
 
   /**
    * An edge in a connection.
    */
-  val StarshipsEdge: Object = Object("StarshipsEdge")
+  val StarshipsEdge: ObjectType = ObjectType(name = "StarshipsEdge")
 
   /**
    * A single transport craft that does not have hyperdrive capability
    */
-  val Vehicle: Object = Object("Vehicle", Node)
+  val Vehicle: ObjectType = ObjectType(name = "Vehicle", implements = listOf(Node))
 
   /**
    * A connection to a list of items.
    */
-  val VehicleFilmsConnection: Object = Object("VehicleFilmsConnection")
+  val VehicleFilmsConnection: ObjectType = ObjectType(name = "VehicleFilmsConnection")
 
   /**
    * An edge in a connection.
    */
-  val VehicleFilmsEdge: Object = Object("VehicleFilmsEdge")
+  val VehicleFilmsEdge: ObjectType = ObjectType(name = "VehicleFilmsEdge")
 
   /**
    * A connection to a list of items.
    */
-  val VehiclePilotsConnection: Object = Object("VehiclePilotsConnection")
+  val VehiclePilotsConnection: ObjectType = ObjectType(name = "VehiclePilotsConnection")
 
   /**
    * An edge in a connection.
    */
-  val VehiclePilotsEdge: Object = Object("VehiclePilotsEdge")
+  val VehiclePilotsEdge: ObjectType = ObjectType(name = "VehiclePilotsEdge")
 
   /**
    * A connection to a list of items.
    */
-  val VehiclesConnection: Object = Object("VehiclesConnection")
+  val VehiclesConnection: ObjectType = ObjectType(name = "VehiclesConnection")
 
   /**
    * An edge in a connection.
    */
-  val VehiclesEdge: Object = Object("VehiclesEdge")
+  val VehiclesEdge: ObjectType = ObjectType(name = "VehiclesEdge")
 
-  val all: List<SchemaType> = listOf(
+  val all: List<CompiledType> = listOf(
         Node, Film, FilmCharactersConnection, FilmCharactersEdge, FilmPlanetsConnection,
             FilmPlanetsEdge, FilmsConnection, FilmsEdge, FilmSpeciesConnection, FilmSpeciesEdge,
             FilmStarshipsConnection, FilmStarshipsEdge, FilmVehiclesConnection, FilmVehiclesEdge,
@@ -294,5 +295,5 @@ object Types {
             VehiclePilotsConnection, VehiclePilotsEdge, VehiclesConnection, VehiclesEdge)
 
 
-  fun possibleTypes(type: SchemaType): List<Object> = possibleTypes(all, type)
+  fun possibleTypes(type: CompiledNamedType): List<ObjectType> = possibleTypes(all, type)
 }

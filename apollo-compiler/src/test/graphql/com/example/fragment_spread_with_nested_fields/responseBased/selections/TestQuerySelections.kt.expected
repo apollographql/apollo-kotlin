@@ -5,20 +5,20 @@
 //
 package com.example.fragment_spread_with_nested_fields.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
 import com.example.fragment_spread_with_nested_fields.fragment.selections.HeroDetailsSelections
+import com.example.fragment_spread_with_nested_fields.type.Types.Character
 import kotlin.collections.List
 
 object TestQuerySelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("Droid", "Human"),
@@ -29,7 +29,7 @@ object TestQuerySelections {
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "hero",
-          type = CompiledCompoundType("unused"),
+          type = Character,
           selections = hero
         )
       )

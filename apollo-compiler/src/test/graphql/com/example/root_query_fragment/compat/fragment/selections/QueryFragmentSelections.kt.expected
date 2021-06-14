@@ -5,29 +5,29 @@
 //
 package com.example.root_query_fragment.fragment.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
+import com.example.root_query_fragment.type.Types.Character
 import kotlin.collections.List
 
 object QueryFragmentSelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         )
       )
 
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "hero",
-          type = CompiledCompoundType("unused"),
+          type = Character,
           selections = hero
         )
       )

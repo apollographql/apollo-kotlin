@@ -5,22 +5,26 @@
 //
 package com.example.nested_conditional_inline.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
+import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.CompiledFloatType
 import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.Variable
+import com.apollographql.apollo3.api.CompiledStringType
+import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
+import com.example.nested_conditional_inline.type.Types
+import com.example.nested_conditional_inline.type.Types.Character
 import kotlin.collections.List
 
 object TestQuerySelections {
   private val onHuman1: List<CompiledSelection> = listOf(
         CompiledField(
           name = "height",
-          type = CompiledOtherType("unused"),
-          arguments = mapOf("unit" to "FOOT"
+          type = CompiledFloatType,
+          arguments = listOf(
+            CompiledArgument("unit", "FOOT")
           )
         )
       )
@@ -28,11 +32,11 @@ object TestQuerySelections {
   private val friends: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("Human"),
@@ -43,7 +47,7 @@ object TestQuerySelections {
   private val onHuman: List<CompiledSelection> = listOf(
         CompiledField(
           name = "friends",
-          type = CompiledCompoundType("unused").list(),
+          type = Character.list(),
           selections = friends
         )
       )
@@ -51,8 +55,9 @@ object TestQuerySelections {
   private val onHuman2: List<CompiledSelection> = listOf(
         CompiledField(
           name = "height",
-          type = CompiledOtherType("unused"),
-          arguments = mapOf("unit" to "METER"
+          type = CompiledFloatType,
+          arguments = listOf(
+            CompiledArgument("unit", "METER")
           )
         )
       )
@@ -60,11 +65,11 @@ object TestQuerySelections {
   private val friends1: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("Human"),
@@ -75,7 +80,7 @@ object TestQuerySelections {
   private val onDroid: List<CompiledSelection> = listOf(
         CompiledField(
           name = "friends",
-          type = CompiledCompoundType("unused").list(),
+          type = Character.list(),
           selections = friends1
         )
       )
@@ -83,11 +88,11 @@ object TestQuerySelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("Human"),
@@ -102,8 +107,9 @@ object TestQuerySelections {
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "hero",
-          type = CompiledCompoundType("unused"),
-          arguments = mapOf("episode" to Variable("episode")
+          type = Character,
+          arguments = listOf(
+            CompiledArgument("episode", CompiledVariable("episode"))
           ),
           selections = hero
         )

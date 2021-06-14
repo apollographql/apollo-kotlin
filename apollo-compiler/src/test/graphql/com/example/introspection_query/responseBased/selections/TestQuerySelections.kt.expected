@@ -5,10 +5,11 @@
 //
 package com.example.introspection_query.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
+import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
+import com.apollographql.apollo3.api.ObjectType
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
@@ -17,26 +18,26 @@ object TestQuerySelections {
   private val queryType: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused")
+          type = CompiledStringType
         )
       )
 
   private val types: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused")
+          type = CompiledStringType
         )
       )
 
   private val __schema: List<CompiledSelection> = listOf(
         CompiledField(
           name = "queryType",
-          type = CompiledCompoundType("unused").notNull(),
+          type = ObjectType("__Type").notNull(),
           selections = queryType
         ),
         CompiledField(
           name = "types",
-          type = CompiledCompoundType("unused").notNull().list().notNull(),
+          type = ObjectType("__Type").notNull().list().notNull(),
           selections = types
         )
       )
@@ -44,20 +45,21 @@ object TestQuerySelections {
   private val __type: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused")
+          type = CompiledStringType
         )
       )
 
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__schema",
-          type = CompiledCompoundType("unused").notNull(),
+          type = ObjectType("__Schema").notNull(),
           selections = __schema
         ),
         CompiledField(
           name = "__type",
-          type = CompiledCompoundType("unused").notNull(),
-          arguments = mapOf("name" to "Vehicle"
+          type = ObjectType("__Type").notNull(),
+          arguments = listOf(
+            CompiledArgument("name", "Vehicle")
           ),
           selections = __type
         )

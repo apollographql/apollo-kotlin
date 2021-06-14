@@ -5,19 +5,22 @@
 //
 package com.example.root_query_fragment_with_nested_fragments.fragment.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
+import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
+import com.example.root_query_fragment_with_nested_fragments.type.Types.Character
+import com.example.root_query_fragment_with_nested_fragments.type.Types.Droid
+import com.example.root_query_fragment_with_nested_fragments.type.Types.Human
 import kotlin.collections.List
 
 object QueryFragmentSelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("Droid", "Human"),
@@ -28,7 +31,7 @@ object QueryFragmentSelections {
   private val droid: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("Droid"),
@@ -39,18 +42,18 @@ object QueryFragmentSelections {
   private val onHuman: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "homePlanet",
-          type = CompiledOtherType("unused")
+          type = CompiledStringType
         )
       )
 
   private val human: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("Human"),
@@ -61,24 +64,26 @@ object QueryFragmentSelections {
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "hero",
-          type = CompiledCompoundType("unused"),
+          type = Character,
           selections = hero
         ),
         CompiledField(
           name = "droid",
-          type = CompiledCompoundType("unused"),
-          arguments = mapOf("id" to 1
+          type = Droid,
+          arguments = listOf(
+            CompiledArgument("id", 1)
           ),
           selections = droid
         ),
         CompiledField(
           name = "human",
-          type = CompiledCompoundType("unused"),
-          arguments = mapOf("id" to 1
+          type = Human,
+          arguments = listOf(
+            CompiledArgument("id", 1)
           ),
           selections = human
         )

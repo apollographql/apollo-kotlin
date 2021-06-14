@@ -5,31 +5,33 @@
 //
 package com.example.field_with_include_directive.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
 import com.apollographql.apollo3.api.CompiledCondition
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledOtherType
+import com.apollographql.apollo3.api.CompiledIntType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
+import com.example.field_with_include_directive.type.Types.Character
+import com.example.field_with_include_directive.type.Types.FriendsConnection
 import kotlin.collections.List
 
 object TestQuerySelections {
   private val friendsConnection: List<CompiledSelection> = listOf(
         CompiledField(
           name = "totalCount",
-          type = CompiledOtherType("unused")
+          type = CompiledIntType
         )
       )
 
   private val hero: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused").notNull(),
+          type = CompiledStringType.notNull(),
           condition = listOf(CompiledCondition("includeName", false))
         ),
         CompiledField(
           name = "friendsConnection",
-          type = CompiledCompoundType("unused").notNull(),
+          type = FriendsConnection.notNull(),
           condition = listOf(CompiledCondition("skipFriends", true)),
           selections = friendsConnection
         )
@@ -38,7 +40,7 @@ object TestQuerySelections {
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "hero",
-          type = CompiledCompoundType("unused"),
+          type = Character,
           selections = hero
         )
       )

@@ -5,13 +5,16 @@
 //
 package com.example.reserved_kotlin_keywords.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
+import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledOtherType
+import com.apollographql.apollo3.api.CompiledIDType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
+import com.example.reserved_kotlin_keywords.type.Types.Character
+import com.example.reserved_kotlin_keywords.type.Types.SearchResult
 import kotlin.collections.List
 
 object TestQuerySelections {
@@ -19,25 +22,25 @@ object TestQuerySelections {
         CompiledField(
           name = "id",
           alias = "it",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledIDType.notNull()
         ),
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         )
       )
 
   private val onCharacter: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         )
       )
 
   private val objects: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("Droid", "Human"),
@@ -49,14 +52,15 @@ object TestQuerySelections {
         CompiledField(
           name = "hero",
           alias = "yield",
-          type = CompiledCompoundType("unused"),
+          type = Character,
           selections = yield_
         ),
         CompiledField(
           name = "search",
           alias = "objects",
-          type = CompiledCompoundType("unused").list(),
-          arguments = mapOf("text" to "abc"
+          type = SearchResult.list(),
+          arguments = listOf(
+            CompiledArgument("text", "abc")
           ),
           selections = objects
         )

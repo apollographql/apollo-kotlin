@@ -6,15 +6,15 @@
 package com.example.named_fragment_without_implementation.fragment.selections
 
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import kotlin.collections.List
 
 object DroidDetailsSelections {
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "primaryFunction",
-          type = CompiledOtherType("unused")
+          type = CompiledStringType
         )
       )
 }

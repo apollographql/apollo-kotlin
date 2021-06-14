@@ -138,11 +138,17 @@ internal class IrBuilder(
         .filter { !it.isBuiltIn() }
         .map { it.toIr() }
 
+    val allEnums = schema.typeDefinitions.values
+        .filterIsInstance<GQLEnumTypeDefinition>()
+        .filter { !it.isBuiltIn() }
+        .map { it.toIr() }
+
     return Ir(
         operations = operations,
         fragments = fragments,
         inputObjects = inputObjects,
         enums = enums,
+        allEnums = allEnums,
         customScalars = customScalars,
         objects = objects,
         interfaces = interfaces,

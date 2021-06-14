@@ -8,21 +8,17 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CompiledVariable
-import com.apollographql.apollo3.api.CustomScalarType
-import com.apollographql.apollo3.api.EnumType
 import com.apollographql.apollo3.api.InterfaceType
 import com.apollographql.apollo3.api.ObjectType
 import com.apollographql.apollo3.api.UnionType
 import com.apollographql.apollo3.ast.GQLArgument
 import com.apollographql.apollo3.ast.GQLBooleanValue
-import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLEnumValue
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFloatValue
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLFragmentSpread
 import com.apollographql.apollo3.ast.GQLInlineFragment
-import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLIntValue
 import com.apollographql.apollo3.ast.GQLInterfaceTypeDefinition
 import com.apollographql.apollo3.ast.GQLListType
@@ -32,7 +28,6 @@ import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLNullValue
 import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLObjectValue
-import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.GQLStringValue
 import com.apollographql.apollo3.ast.GQLType
@@ -274,7 +269,20 @@ class CompiledSelectionsBuilder(
         CodeBlock.of("%L.%M()", type.codeBlock(), listFun)
       }
       is GQLNamedType -> {
-        CodeBlock.of("%M", context.resolver.resolveCompiledType(name))
+        val memberType = context.resolver.resolveCompiledType(name)
+        if (memberType != null) {
+          CodeBlock.of("%M", memberType)
+        } else {
+          // Fallback case for the builtin types
+          val typeDefinition = schema.typeDefinition(name)
+
+          when (typeDefinition) {
+            is GQLUnionTypeDefinition -> error("Unknown union $name")
+            is GQLInterfaceTypeDefinition -> CodeBlock.of("%T(%S)", InterfaceType::class, name)
+            is GQLObjectTypeDefinition -> CodeBlock.of("%T(%S)", ObjectType::class, name)
+            else -> error("Unknown type $name")
+          }
+        }
       }
     }
   }

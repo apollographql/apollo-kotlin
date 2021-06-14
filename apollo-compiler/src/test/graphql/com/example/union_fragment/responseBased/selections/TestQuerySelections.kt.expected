@@ -5,28 +5,30 @@
 //
 package com.example.union_fragment.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
+import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledOtherType
+import com.apollographql.apollo3.api.CompiledIDType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.union_fragment.fragment.selections.StarshipSelections
+import com.example.union_fragment.type.Types.SearchResult
 import kotlin.collections.List
 
 object TestQuerySelections {
   private val onStarship: List<CompiledSelection> = listOf(
         CompiledField(
           name = "id",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledIDType.notNull()
         )
       )
 
   private val search: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("Starship"),
@@ -41,8 +43,9 @@ object TestQuerySelections {
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "search",
-          type = CompiledCompoundType("unused").list(),
-          arguments = mapOf("text" to "test"
+          type = SearchResult.list(),
+          arguments = listOf(
+            CompiledArgument("text", "test")
           ),
           selections = search
         )

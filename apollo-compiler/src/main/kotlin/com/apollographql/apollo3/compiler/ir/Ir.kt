@@ -27,6 +27,7 @@ data class Ir(
     val fragments: List<IrNamedFragment>,
     val inputObjects: List<IrInputObject>,
     val enums: List<IrEnum>,
+    val allEnums: List<IrEnum>,
     val customScalars: List<IrCustomScalar>,
     val objects: List<IrObject>,
     val unions: List<IrUnion>,

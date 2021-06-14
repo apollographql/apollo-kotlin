@@ -5,7 +5,6 @@
 //
 package com.example.input_object_type.type
 
-import com.apollographql.apollo3.api.InputObject
 import com.apollographql.apollo3.api.Optional
 import java.util.Date
 import kotlin.Boolean
@@ -105,4 +104,4 @@ data class ReviewInput(
    * for test purpose only
    */
   val CapitalizedInt: Optional<Int?> = Optional.Absent
-) : InputObject
+)

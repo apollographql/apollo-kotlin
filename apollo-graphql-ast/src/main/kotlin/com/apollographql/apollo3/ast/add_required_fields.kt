@@ -27,7 +27,7 @@ private fun AddFieldsScope.addRequiredFields(
   val hasFragment = selectionSet.selections.any { it is GQLFragmentSpread || it is GQLInlineFragment }
   val requiredFieldNames = schema.keyFields(parentType).toMutableSet()
 
-  if (requiredFieldNames.isNotEmpty() || hasFragment) {
+  if (requiredFieldNames.isNotEmpty()) {
     requiredFieldNames.add("__typename")
   }
 
@@ -53,7 +53,11 @@ private fun AddFieldsScope.addRequiredFields(
     }
   }
 
-  val fieldNamesToAdd = requiredFieldNames - fieldNames
+  val fieldNamesToAdd = (requiredFieldNames - fieldNames).toMutableList()
+  if (hasFragment) {
+    fieldNamesToAdd.add("__typename")
+  }
+
 
   newSelections.filterIsInstance<GQLField>().forEach {
     /**
@@ -69,10 +73,8 @@ private fun AddFieldsScope.addRequiredFields(
   newSelections = if (hasFragment) {
     // remove the __typename if it exists
     // and add it again at the top so we're guaranteed to have it at the beginning of json parsing
-    newSelections.partition { (it as? GQLField)?.name == "__typename" }
-        .let {
-          listOf(it.first.first()) + it.second
-        }
+    val typeNameField = newSelections.firstOrNull { (it as? GQLField)?.name == "__typename" }
+    listOfNotNull(typeNameField) + newSelections.filter { (it as? GQLField)?.name != "__typename" }
   } else {
     newSelections
   }

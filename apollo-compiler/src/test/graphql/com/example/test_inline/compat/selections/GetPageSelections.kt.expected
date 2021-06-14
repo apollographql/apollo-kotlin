@@ -5,34 +5,36 @@
 //
 package com.example.test_inline.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
+import com.example.test_inline.type.Types
+import com.example.test_inline.type.Types.Collection
+import com.example.test_inline.type.Types.Item
 import kotlin.collections.List
 
 object GetPageSelections {
   private val items: List<CompiledSelection> = listOf(
         CompiledField(
           name = "title",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         )
       )
 
   private val onParticularItem: List<CompiledSelection> = listOf(
         CompiledField(
           name = "image",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         )
       )
 
   private val items1: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("ParticularItem"),
@@ -43,7 +45,7 @@ object GetPageSelections {
   private val onParticularCollection: List<CompiledSelection> = listOf(
         CompiledField(
           name = "items",
-          type = CompiledCompoundType("unused").notNull().list().notNull(),
+          type = Item.notNull().list().notNull(),
           selections = items1
         )
       )
@@ -51,11 +53,11 @@ object GetPageSelections {
   private val collection: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "items",
-          type = CompiledCompoundType("unused").notNull().list().notNull(),
+          type = Item.notNull().list().notNull(),
           selections = items
         ),
         CompiledFragment(
@@ -67,7 +69,7 @@ object GetPageSelections {
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "collection",
-          type = CompiledCompoundType("unused").notNull(),
+          type = Collection.notNull(),
           selections = collection
         )
       )

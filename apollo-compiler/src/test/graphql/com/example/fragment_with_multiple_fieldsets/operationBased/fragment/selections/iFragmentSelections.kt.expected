@@ -7,8 +7,8 @@ package com.example.fragment_with_multiple_fieldsets.fragment.selections
 
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
@@ -16,14 +16,14 @@ object iFragmentSelections {
   private val onA: List<CompiledSelection> = listOf(
         CompiledField(
           name = "fieldA",
-          type = CompiledOtherType("unused")
+          type = CompiledStringType
         )
       )
 
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("A"),

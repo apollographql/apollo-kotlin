@@ -5,9 +5,10 @@
 //
 package com.example.test_inline.type
 
-import com.apollographql.apollo3.api.Interface
-import com.apollographql.apollo3.api.Object
-import com.apollographql.apollo3.api.SchemaType
+import com.apollographql.apollo3.api.CompiledNamedType
+import com.apollographql.apollo3.api.CompiledType
+import com.apollographql.apollo3.api.InterfaceType
+import com.apollographql.apollo3.api.ObjectType
 import com.apollographql.apollo3.api.possibleTypes
 import kotlin.collections.List
 
@@ -16,21 +17,22 @@ import kotlin.collections.List
  * schema. Input objects are left out because they are generated separately
  */
 object Types {
-  val Collection: Interface = Interface("Collection")
+  val Collection: InterfaceType = InterfaceType(name = "Collection")
 
-  val Item: Interface = Interface("Item")
+  val Item: InterfaceType = InterfaceType(name = "Item")
 
-  val Query: Object = Object("Query")
+  val Query: ObjectType = ObjectType(name = "Query")
 
-  val ParticularCollection: Object = Object("ParticularCollection", Collection)
+  val ParticularCollection: ObjectType = ObjectType(name = "ParticularCollection", implements =
+      listOf(Collection))
 
-  val ParticularItem: Object = Object("ParticularItem", Item)
+  val ParticularItem: ObjectType = ObjectType(name = "ParticularItem", implements = listOf(Item))
 
-  val GenericItem: Object = Object("GenericItem", Item)
+  val GenericItem: ObjectType = ObjectType(name = "GenericItem", implements = listOf(Item))
 
-  val all: List<SchemaType> = listOf(
+  val all: List<CompiledType> = listOf(
         Collection, Item, Query, ParticularCollection, ParticularItem, GenericItem)
 
 
-  fun possibleTypes(type: SchemaType): List<Object> = possibleTypes(all, type)
+  fun possibleTypes(type: CompiledNamedType): List<ObjectType> = possibleTypes(all, type)
 }

@@ -5,9 +5,10 @@
 //
 package com.example.interface_on_interface.type
 
-import com.apollographql.apollo3.api.Interface
-import com.apollographql.apollo3.api.Object
-import com.apollographql.apollo3.api.SchemaType
+import com.apollographql.apollo3.api.CompiledNamedType
+import com.apollographql.apollo3.api.CompiledType
+import com.apollographql.apollo3.api.InterfaceType
+import com.apollographql.apollo3.api.ObjectType
 import com.apollographql.apollo3.api.possibleTypes
 import kotlin.collections.List
 
@@ -16,17 +17,17 @@ import kotlin.collections.List
  * schema. Input objects are left out because they are generated separately
  */
 object Types {
-  val Node: Interface = Interface("Node")
+  val Node: InterfaceType = InterfaceType(name = "Node")
 
-  val Character: Interface = Interface("Character", Node)
+  val Character: InterfaceType = InterfaceType(name = "Character", implements = listOf(Node))
 
-  val Query: Object = Object("Query")
+  val Query: ObjectType = ObjectType(name = "Query")
 
-  val Human: Object = Object("Human", Character)
+  val Human: ObjectType = ObjectType(name = "Human", implements = listOf(Character))
 
-  val all: List<SchemaType> = listOf(
+  val all: List<CompiledType> = listOf(
         Node, Character, Query, Human)
 
 
-  fun possibleTypes(type: SchemaType): List<Object> = possibleTypes(all, type)
+  fun possibleTypes(type: CompiledNamedType): List<ObjectType> = possibleTypes(all, type)
 }

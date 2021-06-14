@@ -5,8 +5,9 @@
 //
 package com.example.named_fragment_with_variables.type
 
-import com.apollographql.apollo3.api.Object
-import com.apollographql.apollo3.api.SchemaType
+import com.apollographql.apollo3.api.CompiledNamedType
+import com.apollographql.apollo3.api.CompiledType
+import com.apollographql.apollo3.api.ObjectType
 import com.apollographql.apollo3.api.possibleTypes
 import kotlin.collections.List
 
@@ -15,15 +16,15 @@ import kotlin.collections.List
  * schema. Input objects are left out because they are generated separately
  */
 object Types {
-  val Query: Object = Object("Query")
+  val Query: ObjectType = ObjectType(name = "Query")
 
-  val Organization: Object = Object("Organization")
+  val Organization: ObjectType = ObjectType(name = "Organization")
 
-  val User: Object = Object("User")
+  val User: ObjectType = ObjectType(name = "User")
 
-  val all: List<SchemaType> = listOf(
+  val all: List<CompiledType> = listOf(
         Query, Organization, User)
 
 
-  fun possibleTypes(type: SchemaType): List<Object> = possibleTypes(all, type)
+  fun possibleTypes(type: CompiledNamedType): List<ObjectType> = possibleTypes(all, type)
 }

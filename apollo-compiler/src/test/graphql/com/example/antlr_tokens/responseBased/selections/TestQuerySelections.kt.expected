@@ -5,33 +5,36 @@
 //
 package com.example.antlr_tokens.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
+import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.Variable
+import com.apollographql.apollo3.api.CompiledStringType
+import com.apollographql.apollo3.api.CompiledVariable
+import com.example.antlr_tokens.type.Types.TypeWithGraphQLKeywords
 import kotlin.collections.List
 
 object TestQuerySelections {
   private val typeWithGraphQLKeywords: List<CompiledSelection> = listOf(
         CompiledField(
           name = "on",
-          type = CompiledOtherType("unused")
+          type = CompiledStringType
         ),
         CompiledField(
           name = "null",
-          type = CompiledOtherType("unused"),
-          arguments = mapOf("fragment" to Variable("operation")
+          type = CompiledStringType,
+          arguments = listOf(
+            CompiledArgument("fragment", CompiledVariable("operation"))
           )
         ),
         CompiledField(
           name = "null",
           alias = "alias",
-          type = CompiledOtherType("unused"),
-          arguments = mapOf("fragment" to """
+          type = CompiledStringType,
+          arguments = listOf(
+            CompiledArgument("fragment", """
             |A string
             |with a new line
-            """.trimMargin()
+            """.trimMargin())
           )
         )
       )
@@ -39,7 +42,7 @@ object TestQuerySelections {
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "typeWithGraphQLKeywords",
-          type = CompiledCompoundType("unused"),
+          type = TypeWithGraphQLKeywords,
           selections = typeWithGraphQLKeywords
         )
       )

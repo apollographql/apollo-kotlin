@@ -201,7 +201,7 @@ class CgResolver {
     compiledType.put(name, memberName)
   }
 
-  fun resolveCompiledType(name: String): MemberName {
+  fun resolveCompiledType(name: String): MemberName? {
     when (name) {
       "String" -> return MemberName("com.apollographql.apollo3.api", "CompiledStringType")
       "Int" -> return MemberName("com.apollographql.apollo3.api", "CompiledIntType")
@@ -209,7 +209,7 @@ class CgResolver {
       "Boolean" -> return MemberName("com.apollographql.apollo3.api", "CompiledBooleanType")
       "ID" -> return MemberName("com.apollographql.apollo3.api", "CompiledIDType")
     }
-    return compiledType[name] ?: error("cannot resolve compiled type '$name'")
+    return compiledType[name]
   }
   private var enums = mutableMapOf<String, ClassName>()
   fun registerEnum(
