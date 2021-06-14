@@ -1,5 +1,5 @@
 query GetPromoBook {
-    book {
+    promoBook {
         # ISBN should be added automatically here
         title
     }
@@ -9,6 +9,20 @@ query GetOtherBook {
     otherBook {
         isbn
         title
+    }
+}
+
+query GetPromoLibrary {
+    promoLibrary {
+        # id should be added automatically here
+        address
+    }
+}
+
+query GetOtherLibrary {
+    otherLibrary {
+        id
+        address
     }
 }
 
@@ -29,15 +43,4 @@ query GetAuthor($firstName: String!, $lastName: String!) {
         lastName
     }
 }
-query GetPromoLibrary {
-    library {
-        id
-        address
-    }
-}
-query GetLibrary($id: ID!) {
-    library {
-        id
-        address
-    }
-}
+

@@ -25,7 +25,11 @@ private fun AddFieldsScope.addRequiredFields(
     parentFields: Set<String>,
 ): GQLSelectionSet {
   val hasFragment = selectionSet.selections.any { it is GQLFragmentSpread || it is GQLInlineFragment }
-  val requiredFieldNames = schema.keyFields(parentType) + if (hasFragment) setOf("__typename") else emptySet()
+  val requiredFieldNames = schema.keyFields(parentType).toMutableSet()
+
+  if (requiredFieldNames.isNotEmpty() || hasFragment) {
+    requiredFieldNames.add("__typename")
+  }
 
   val fieldNames = parentFields + selectionSet.selections.filterIsInstance<GQLField>().map { it.name }.toSet()
 

@@ -90,6 +90,7 @@ class CgLayout(
   internal fun variableName(name: String) = regularIdentifier(name)
   internal fun propertyName(name: String) = regularIdentifier(name)
   internal fun typesName() = "Types"
+  internal fun cacheResolverName() = "ApolloCacheResolver"
 
   // ------------------------ Helpers ---------------------------------
   private fun regularIdentifier(name: String) = name.escapeKotlinReservedWord()

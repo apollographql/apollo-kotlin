@@ -11,18 +11,18 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        implementation("com.apollographql.apollo3:apollo-runtime-kotlin")
-      }
-    }
-
-    val commonTest by getting {
-      dependencies {
         implementation("com.apollographql.apollo3:apollo-api")
         implementation("com.apollographql.apollo3:apollo-normalized-cache")
         implementation("com.apollographql.apollo3:apollo-cache-interceptor")
         implementation("com.apollographql.apollo3:apollo-testing-support")
         implementation("com.apollographql.apollo3:apollo-mockserver")
         implementation("com.apollographql.apollo3:apollo-adapters")
+        implementation("com.apollographql.apollo3:apollo-runtime-kotlin")
+      }
+    }
+
+    val commonTest by getting {
+      dependencies {
 
         implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
         implementation(groovy.util.Eval.x(project, "x.dep.kotlinxserializationjson"))

@@ -7,6 +7,7 @@ import com.apollographql.apollo3.compiler.operationoutput.findOperationId
 import com.apollographql.apollo3.compiler.codegen.file.TypesBuilder
 import com.apollographql.apollo3.compiler.codegen.file.EnumBuilder
 import com.apollographql.apollo3.compiler.codegen.adapter.EnumResponseAdapterBuilder
+import com.apollographql.apollo3.compiler.codegen.file.CacheResolverBuilder
 import com.apollographql.apollo3.compiler.codegen.file.FragmentBuilder
 import com.apollographql.apollo3.compiler.codegen.file.FragmentModelsBuilder
 import com.apollographql.apollo3.compiler.codegen.file.FragmentResponseAdapterBuilder
@@ -56,7 +57,7 @@ class KotlinCodeGen(
     val builders = mutableListOf<CgFileBuilder>()
     val ignoredBuilders = mutableListOf<CgFileBuilder>()
 
-    val customScalarsBuilder = TypesBuilder(
+    val typesBuilder = TypesBuilder(
         context,
         ir.customScalars,
         ir.objects,
@@ -64,8 +65,16 @@ class KotlinCodeGen(
         ir.unions
     )
 
+    val cacheResolverBuilder = CacheResolverBuilder(
+        context,
+        ir.schema
+    )
+
     if (generateSchema) {
-      builders.add(customScalarsBuilder)
+      builders.add(typesBuilder)
+      if (!cacheResolverBuilder.isEmpty()) {
+        builders.add(cacheResolverBuilder)
+      }
     }
 
     ir.inputObjects.forEach {

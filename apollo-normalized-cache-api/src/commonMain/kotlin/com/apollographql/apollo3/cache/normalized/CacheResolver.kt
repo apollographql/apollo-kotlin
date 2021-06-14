@@ -9,10 +9,21 @@ import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSuppressWildcards
 
 open class CacheResolver {
+  protected fun cacheKey(map: Map<String, Any?>, vararg names: String): CacheKey {
+    return CacheKey(
+        buildString {
+          append(map["__typename"])
+          names.forEach {
+            append(map[it])
+          }
+        }
+    )
+  }
+
   open fun cacheKeyForObject(
       field: CompiledField,
       variables: Executable.Variables,
-      map: Map<String, @JvmSuppressWildcards Any?>
+      map: Map<String, @JvmSuppressWildcards Any?>,
   ): CacheKey? {
     return null
   }
@@ -37,7 +48,7 @@ open class CacheResolver {
     @JvmField
     val DEFAULT = CacheResolver()
 
-    val ID = object :CacheResolver() {
+    val ID = object : CacheResolver() {
       override fun cacheKeyForObject(field: CompiledField, variables: Executable.Variables, map: Map<String, Any?>): CacheKey? {
         return map["id"]?.toString()?.let { CacheKey(it) }
       }
