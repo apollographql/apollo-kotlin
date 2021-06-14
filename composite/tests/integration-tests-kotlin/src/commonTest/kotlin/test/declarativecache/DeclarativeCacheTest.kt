@@ -1,37 +1,40 @@
 package test.declarativecache
 
-import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo3.interceptor.cache.withStore
 import com.apollographql.apollo3.testing.runWithMainLoop
+import declarativecache.GetOtherBookQuery
 import declarativecache.GetPromoBookQuery
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.plus
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class DeclarativeCacheTest {
-  private lateinit var apolloClient: ApolloClient
   private lateinit var store: ApolloStore
 
   @BeforeTest
   fun setUp() {
-    store = ApolloStore(MemoryCacheFactory(), CacheResolver.ID)
-    apolloClient = ApolloClient("https://com.example/unused").withStore(store)
+    store = ApolloStore(MemoryCacheFactory(), CacheResolver.DEFAULT)
   }
 
 
   @Test
-  fun AtKeyIsWorking() = runWithMainLoop{
-    val operation = GetPromoBookQuery()
-    val data = GetPromoBookQuery.Data(book = GetPromoBookQuery.Data.Book(title = "Test", isbn = "42"))
+  fun atKeyIsWorking() = runWithMainLoop {
+    val promoOperation = GetPromoBookQuery()
+    val promoData = GetPromoBookQuery.Data(book = GetPromoBookQuery.Data.Book(title = "Promo", isbn = "42"))
 
-    store.writeOperation(operation, data)
+    store.writeOperation(promoOperation, promoData)
 
-//    store.
+    val otherOperation = GetOtherBookQuery()
+    val otherData = GetOtherBookQuery.Data(otherBook = GetOtherBookQuery.Data.OtherBook(title = "Other", isbn = "42"))
+
+    store.writeOperation(otherOperation, otherData)
+
+    val data = store.readOperation(promoOperation, CustomScalarAdapters.Empty)
+
+    assertEquals("Promo", data?.book?.title)
+  //    store.
   }
 }

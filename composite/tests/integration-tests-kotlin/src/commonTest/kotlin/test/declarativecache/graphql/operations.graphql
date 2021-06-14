@@ -4,6 +4,14 @@ query GetPromoBook {
         title
     }
 }
+
+query GetOtherBook {
+    otherBook {
+        isbn
+        title
+    }
+}
+
 query GetBook($isbn: String!) {
   book(isbn: $isbn) {
     title
