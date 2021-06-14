@@ -10,6 +10,9 @@ import declarativecache.GetOtherBookQuery
 import declarativecache.GetOtherLibraryQuery
 import declarativecache.GetPromoBookQuery
 import declarativecache.GetPromoLibraryQuery
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

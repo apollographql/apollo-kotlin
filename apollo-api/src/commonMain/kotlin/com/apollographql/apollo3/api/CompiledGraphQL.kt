@@ -4,6 +4,7 @@ import com.apollographql.apollo3.api.CompiledArgument.Companion.resolveVariables
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils
 import okio.Buffer
+import kotlin.native.concurrent.SharedImmutable
 
 sealed class CompiledSelection
 
@@ -165,10 +166,15 @@ fun CompiledType.leafType(): CompiledNamedType {
   }
 }
 
+@SharedImmutable
 val CompiledStringType = ScalarType("String")
+@SharedImmutable
 val CompiledIntType = ScalarType("Int")
+@SharedImmutable
 val CompiledFloatType = ScalarType("Float")
+@SharedImmutable
 val CompiledBooleanType = ScalarType("Boolean")
+@SharedImmutable
 val CompiledIDType = ScalarType("ID")
 
 fun CompiledNamedType.isCompound(): Boolean {
