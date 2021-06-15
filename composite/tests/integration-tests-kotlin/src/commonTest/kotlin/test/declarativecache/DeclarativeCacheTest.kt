@@ -23,11 +23,11 @@ class DeclarativeCacheTest {
     val store = ApolloStore(MemoryCacheFactory(), CacheResolver())
 
     val promoOperation = GetPromoBookQuery()
-    val promoData = GetPromoBookQuery.Data(promoBook = GetPromoBookQuery.Data.PromoBook(__typename =  "Book", title = "Promo", isbn = "42"))
+    val promoData = GetPromoBookQuery.Data(promoBook = GetPromoBookQuery.PromoBook(__typename =  "Book", title = "Promo", isbn = "42"))
     store.writeOperation(promoOperation, promoData)
 
     val otherOperation = GetOtherBookQuery()
-    val otherData = GetOtherBookQuery.Data(otherBook = GetOtherBookQuery.Data.OtherBook(__typename =  "Book", title = "Other", isbn = "42"))
+    val otherData = GetOtherBookQuery.Data(otherBook = GetOtherBookQuery.OtherBook(__typename =  "Book", title = "Other", isbn = "42"))
     store.writeOperation(otherOperation, otherData)
 
     val data = store.readOperation(promoOperation, CustomScalarAdapters.Empty)
@@ -40,11 +40,11 @@ class DeclarativeCacheTest {
     val store = ApolloStore(MemoryCacheFactory(), CacheResolver())
 
     val promoOperation = GetPromoLibraryQuery()
-    val promoData = GetPromoLibraryQuery.Data(promoLibrary = GetPromoLibraryQuery.Data.PromoLibrary(__typename =  "Library", id = "3", address = "PromoAddress"))
+    val promoData = GetPromoLibraryQuery.Data(promoLibrary = GetPromoLibraryQuery.PromoLibrary(__typename =  "Library", id = "3", address = "PromoAddress"))
     store.writeOperation(promoOperation, promoData)
 
     val otherOperation = GetOtherLibraryQuery()
-    val otherData = GetOtherLibraryQuery.Data(otherLibrary = GetOtherLibraryQuery.Data.OtherLibrary(__typename =  "Library", id = "3", address = "OtherAddress"))
+    val otherData = GetOtherLibraryQuery.Data(otherLibrary = GetOtherLibraryQuery.OtherLibrary(__typename =  "Library", id = "3", address = "OtherAddress"))
     store.writeOperation(otherOperation, otherData)
 
     val data = store.readOperation(promoOperation, CustomScalarAdapters.Empty)
@@ -57,7 +57,7 @@ class DeclarativeCacheTest {
     val store = ApolloStore(MemoryCacheFactory(), CacheResolver())
 
     val promoOperation = GetPromoBookQuery()
-    val promoData = GetPromoBookQuery.Data(promoBook = GetPromoBookQuery.Data.PromoBook(__typename =  "Book", title = "Promo", isbn = "42"))
+    val promoData = GetPromoBookQuery.Data(promoBook = GetPromoBookQuery.PromoBook(__typename =  "Book", title = "Promo", isbn = "42"))
     store.writeOperation(promoOperation, promoData)
 
     val operation = GetBookQuery(isbn = "42")

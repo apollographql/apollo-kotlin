@@ -61,6 +61,7 @@ configure<com.apollographql.apollo3.gradle.api.ApolloExtension> {
           packageName.set("com.apollographql.apollo3.integration.${it.name}")
 
           codegenModels.set("operationBased")
+          flattenModels.set(false)
           withOutputDir {
             val kotlinMultiplatformExtension = project.kotlinMultiplatformExtension!!
 

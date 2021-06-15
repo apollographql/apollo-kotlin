@@ -97,6 +97,8 @@ abstract class DefaultApolloExtension(
             && defaultService.failOnWarnings.isPresent.not()
             && defaultService.generateApolloMetadata.isPresent.not()
             && defaultService.generateAsInternal.isPresent.not()
+            && defaultService.codegenModels.isPresent.not()
+            && defaultService.generateFragmentImplementations.isPresent.not()
         ) {
           """
             Configuring the default service is ignored if you specify other services, remove your configuration from the root of the apollo {} block:

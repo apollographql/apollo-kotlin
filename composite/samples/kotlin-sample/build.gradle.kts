@@ -49,3 +49,7 @@ dependencies {
     implementation(groovy.util.Eval.x(project, "x.dep.rx.android"))
     implementation(groovy.util.Eval.x(project, "x.dep.rx.java"))
 }
+
+apollo {
+    codegenModels.set("responseBased")
+}
