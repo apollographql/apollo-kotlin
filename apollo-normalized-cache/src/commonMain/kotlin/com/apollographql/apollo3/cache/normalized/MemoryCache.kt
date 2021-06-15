@@ -60,7 +60,8 @@ class MemoryCache(
       }
     }
 
-    return cacheEntry != null || nextCache?.remove(cacheKey, cascade) ?: false
+    val chainRemoved = nextCache?.remove(cacheKey, cascade) ?: false
+    return cacheEntry != null || chainRemoved
   }
 
   override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {

@@ -41,8 +41,6 @@ abstract class NormalizedCache: ReadOnlyNormalizedCache {
 
   /**
    * Clears all records from the cache.
-   *
-   * Clients should call ApolloClient#clearNormalizedCache() for a thread-safe access to this method.
    */
   abstract fun clearAll()
 
@@ -54,6 +52,14 @@ abstract class NormalizedCache: ReadOnlyNormalizedCache {
    * @return `true` if record with such key was successfully removed, `false` otherwise
    */
   abstract fun remove(cacheKey: CacheKey, cascade: Boolean): Boolean
+
+  /**
+   * Remove cached record by pattern
+   *
+   * @param pattern a  of record to be removed
+   * @return `true` if record with such key was successfully removed, `false` otherwise
+   */
+  abstract fun remove(pattern: String): Int
 
   fun chain(cache: NormalizedCache) = apply {
     var leafCache = this

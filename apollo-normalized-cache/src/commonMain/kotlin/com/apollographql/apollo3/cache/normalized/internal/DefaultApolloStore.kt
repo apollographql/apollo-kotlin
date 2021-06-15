@@ -1,10 +1,9 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
 import com.apollographql.apollo3.api.ApolloInternal
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKey
@@ -24,7 +23,6 @@ import kotlin.reflect.KClass
 class DefaultApolloStore(
     normalizedCacheFactory: NormalizedCacheFactory,
     private val cacheResolver: CacheResolver,
-    val logger: ApolloLogger = ApolloLogger(null),
 ) : ApolloStore() {
   private val changedKeysEvents = MutableSharedFlow<Set<String>>(
       // XXX: this is a potential code smell
