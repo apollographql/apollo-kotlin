@@ -54,14 +54,15 @@ abstract class NormalizedCache : ReadOnlyNormalizedCache {
   abstract fun remove(cacheKey: CacheKey, cascade: Boolean): Boolean
 
   /**
-   * Remove records whose key match a patter from this cache and all chained caches
+   * Remove records whose key matches a given pattern from this cache and all chained caches
    *
    * @param pattern a pattern to filter the cache keys. 'pattern' is interpreted as in the LIKE operator of Sqlite.
    * - '%' matches any sequence of zero or more characters
    * - '_' matches any single character
    * - The matching is case-insensitive
    * - '\' is used as escape
-   * See https://sqlite.org/lang_expr.html
+   * See https://sqlite.org/lang_expr.html for more details
+   *
    * @return the number of records deleted accross all caches
    */
   abstract fun remove(pattern: String): Int
