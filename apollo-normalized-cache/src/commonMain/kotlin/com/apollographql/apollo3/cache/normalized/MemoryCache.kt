@@ -17,7 +17,7 @@ import kotlin.reflect.KClass
  * (there is no any sort of GC that runs in the background).
  */
 class MemoryCache(
-    private val maxSizeBytes: Int,
+    private val maxSizeBytes: Int = Int.MAX_VALUE,
     private val expireAfterMillis: Long = -1,
 ) : NormalizedCache() {
   private val lruCache = LruCache<String, CacheEntry>(maxSize = maxSizeBytes) { key, cacheEntry ->
@@ -60,7 +60,23 @@ class MemoryCache(
       }
     }
 
-    return cacheEntry != null || nextCache?.remove(cacheKey, cascade) ?: false
+    val chainRemoved = nextCache?.remove(cacheKey, cascade) ?: false
+    return cacheEntry != null || chainRemoved
+  }
+
+  override fun remove(pattern: String): Int {
+    val regex = patternToRegex(pattern)
+    var total = 0
+    val keys = HashSet(lruCache.keys()) // local copy to avoid concurrent modification
+    keys.forEach {
+      if (regex.matches(it)){
+        lruCache.remove(it)
+        total++
+      }
+    }
+
+    val chainRemoved = nextCache?.remove(pattern) ?: 0
+    return total + chainRemoved
   }
 
   override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {

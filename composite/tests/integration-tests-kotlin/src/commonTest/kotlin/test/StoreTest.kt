@@ -91,7 +91,6 @@ class StoreTest {
     assertFriendIsCached("1003", "Leia Organa")
   }
 
-
   @Test
   @Throws(Exception::class)
   fun cascadeRemove() = runWithMainLoop {
@@ -108,6 +107,20 @@ class StoreTest {
 
     // Nothing should be cached anymore
     assertRootNotCached()
+    assertFriendIsNotCached("1000")
+    assertFriendIsNotCached("1002")
+    assertFriendIsNotCached("1003")
+  }
+
+  @Test
+  @Throws(Exception::class)
+  fun directAccess() = runWithMainLoop {
+    // put everything in the cache
+    storeAllFriends()
+
+    store.accessCache {
+      it.remove("10%")
+    }
     assertFriendIsNotCached("1000")
     assertFriendIsNotCached("1002")
     assertFriendIsNotCached("1003")

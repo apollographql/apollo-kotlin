@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
+import com.apollographql.apollo3.cache.normalized.NormalizedCache
+
 
 internal typealias Weigher<Key, Value> = (Key, Value?) -> Int
 
@@ -47,6 +49,8 @@ internal class LruCache<Key, Value>(
   fun remove(key: Key): Value? {
     return removeUnsafe(key)
   }
+
+  fun keys() = cache.keys
 
   private fun removeUnsafe(key: Key): Value? {
     val nodeToRemove = cache.remove(key)

@@ -4,7 +4,7 @@ import com.apollographql.apollo3.cache.normalized.Record
 import com.apollographql.apollo3.cache.normalized.RecordFieldJsonAdapter
 import com.apollographql.apollo3.cache.normalized.sql.CacheQueries
 
-internal object RecordsetDataSource {
+internal object CacheQueriesHelpers {
 
   fun CacheQueries.selectRecord(key: String): Record? {
     return recordForKey(key)
@@ -84,6 +84,15 @@ internal object RecordsetDataSource {
       }
     }
     return updatedRecordKeys
+  }
+
+  fun CacheQueries.remove(pattern: String): Int {
+    var result = 0L
+    transaction {
+      deleteRecordsWithKeyMatching(pattern, "\\")
+      result = changes().executeAsOne()
+    }
+    return result.toInt()
   }
 
   fun CacheQueries.deleteRecord(key: String, cascade: Boolean): Boolean {

@@ -625,7 +625,7 @@ class ApolloClient internal constructor(
       val cacheFactory = cacheFactory
       val cacheKeyResolver = cacheKeyResolver
       if (cacheFactory.isPresent && cacheKeyResolver.isPresent) {
-        apolloStore = DefaultApolloStore(cacheFactory.get(), cacheKeyResolver.get(), apolloLogger)
+        apolloStore = DefaultApolloStore(cacheFactory.get(), cacheKeyResolver.get())
       }
       var subscriptionManager = subscriptionManager
       val subscriptionTransportFactory = subscriptionTransportFactory

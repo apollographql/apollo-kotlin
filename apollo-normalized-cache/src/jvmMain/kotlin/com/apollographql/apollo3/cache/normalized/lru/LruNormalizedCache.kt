@@ -69,6 +69,10 @@ class LruNormalizedCache internal constructor(evictionPolicy: EvictionPolicy) : 
     return result
   }
 
+  override fun remove(pattern: String): Int {
+    TODO("Not yet implemented")
+  }
+
   override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
       return emptySet()

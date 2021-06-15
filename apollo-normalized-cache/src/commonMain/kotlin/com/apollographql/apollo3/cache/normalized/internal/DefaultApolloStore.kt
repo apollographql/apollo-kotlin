@@ -1,14 +1,14 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
 import com.apollographql.apollo3.api.ApolloInternal
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheResolver
+import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.Record
 import com.benasher44.uuid.Uuid
@@ -24,7 +24,6 @@ import kotlin.reflect.KClass
 class DefaultApolloStore(
     normalizedCacheFactory: NormalizedCacheFactory,
     private val cacheResolver: CacheResolver,
-    val logger: ApolloLogger = ApolloLogger(null),
 ) : ApolloStore() {
   private val changedKeysEvents = MutableSharedFlow<Set<String>>(
       // XXX: this is a potential code smell
@@ -161,6 +160,10 @@ class DefaultApolloStore(
           cacheKey = cacheKey
       )
     }
+  }
+
+  override suspend fun <R> accessCache(block: (NormalizedCache) -> R): R {
+    return cacheHolder.access(block)
   }
 
   @OptIn(ApolloInternal::class)
