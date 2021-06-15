@@ -24,7 +24,7 @@ import kotlin.reflect.KClass
 class DefaultApolloStore(
     normalizedCacheFactory: NormalizedCacheFactory,
     private val cacheResolver: CacheResolver,
-) : ApolloStore() {
+) : ApolloStore {
   private val changedKeysEvents = MutableSharedFlow<Set<String>>(
       // XXX: this is a potential code smell
       // If multiple watchers start notifying each other and potentially themselves, the buffer of changedKeysEvent will grow forever.

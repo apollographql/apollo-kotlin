@@ -17,8 +17,8 @@ import kotlin.reflect.KClass
  *
  * Most clients should have no need to directly interface with an [ApolloStore].
  */
-abstract class ApolloStore {
-  abstract val changedKeys: SharedFlow<Set<String>>
+interface ApolloStore {
+  val changedKeys: SharedFlow<Set<String>>
 
   /**
    * Listens to changed record keys dispatched via [.publish].
@@ -30,8 +30,8 @@ abstract class ApolloStore {
     fun onCacheRecordsChanged(changedRecordKeys: Set<String>)
   }
 
-  abstract fun subscribe(subscriber: RecordChangeSubscriber)
-  abstract fun unsubscribe(subscriber: RecordChangeSubscriber)
+  fun subscribe(subscriber: RecordChangeSubscriber)
+  fun unsubscribe(subscriber: RecordChangeSubscriber)
 
   /**
    * Read GraphQL operation from store.
@@ -40,7 +40,7 @@ abstract class ApolloStore {
    * @param operation to be read
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with cached data for specified operation
    */
-  abstract suspend fun <D : Operation.Data> readOperation(
+  suspend fun <D : Operation.Data> readOperation(
       operation: Operation<D>,
       customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders = CacheHeaders.NONE,
@@ -54,7 +54,7 @@ abstract class ApolloStore {
    * @param <F>         type of fragment to be read
    * @return the fragment's data or null if it's a cache miss
    */
-  abstract suspend fun <D : Fragment.Data> readFragment(
+  suspend fun <D : Fragment.Data> readFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
@@ -71,7 +71,7 @@ abstract class ApolloStore {
    * @param publish       whether or not to publish the changed keys to listeners
    * @return the changed keys
    */
-  abstract suspend fun <D : Operation.Data> writeOperation(
+  suspend fun <D : Operation.Data> writeOperation(
       operation: Operation<D>,
       operationData: D,
       customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
@@ -90,7 +90,7 @@ abstract class ApolloStore {
    * @param publish whether or not to publish the changed keys to listeners
    * @return the changed keys
    */
-  abstract suspend fun <D : Fragment.Data> writeFragment(
+  suspend fun <D : Fragment.Data> writeFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       fragmentData: D,
@@ -107,7 +107,7 @@ abstract class ApolloStore {
    * @param mutationId    mutation unique identifier
    * @return the changed keys
    */
-  abstract suspend fun <D : Operation.Data> writeOptimisticUpdates(
+  suspend fun <D : Operation.Data> writeOptimisticUpdates(
       operation: Operation<D>,
       operationData: D,
       mutationId: Uuid,
@@ -121,9 +121,9 @@ abstract class ApolloStore {
    * @param mutationId mutation unique identifier
    * @return the changed keys
    */
-  abstract suspend fun rollbackOptimisticUpdates(
+  suspend fun rollbackOptimisticUpdates(
       mutationId: Uuid,
-      publish: Boolean = true
+      publish: Boolean = true,
   ): Set<String>
 
   /**
@@ -132,7 +132,7 @@ abstract class ApolloStore {
    *
    * @return `true` if all records were successfully removed, `false` otherwise
    */
-  abstract fun clearAll(): Boolean
+  fun clearAll(): Boolean
 
   /**
    * Remove cache record by the key
@@ -142,7 +142,7 @@ abstract class ApolloStore {
    * @param cascade defines if remove operation is propagated to the referenced entities
    * @return `true` if the record was successfully removed, `false` otherwise
    */
-  abstract suspend fun remove(cacheKey: CacheKey, cascade: Boolean = true): Boolean
+  suspend fun remove(cacheKey: CacheKey, cascade: Boolean = true): Boolean
 
   /**
    * Remove a list of cache records
@@ -152,18 +152,18 @@ abstract class ApolloStore {
    * @param cacheKeys keys of records to be removed
    * @return the number of records that have been removed
    */
-  abstract suspend fun remove(cacheKeys: List<CacheKey>, cascade: Boolean = true): Int
+  suspend fun remove(cacheKeys: List<CacheKey>, cascade: Boolean = true): Int
 
-  abstract fun <D : Operation.Data> normalize(
+  fun <D : Operation.Data> normalize(
       operation: Operation<D>,
       data: D,
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: CustomScalarAdapters,
   ): Map<String, Record>
 
   /**
    * @param keys A set of keys of [Record] which have changed.
    */
-  abstract suspend fun publish(keys: Set<String>)
+  suspend fun publish(keys: Set<String>)
 
   /**
    * Direct access to the cache.
@@ -171,14 +171,14 @@ abstract class ApolloStore {
    * @param block a function that can access the cache. The function and its captured variables will
    * be called from a background thread and freezed
    */
-  abstract suspend fun <R> accessCache(block: (NormalizedCache) -> R): R
+  suspend fun <R> accessCache(block: (NormalizedCache) -> R): R
 
-  abstract suspend fun dump(): Map<KClass<*>, Map<String, Record>>
+  suspend fun dump(): Map<KClass<*>, Map<String, Record>>
 
   /**
    * releases resources associated with this store.
    */
-  abstract fun dispose()
+  fun dispose()
 
   companion object {
     val emptyApolloStore: ApolloStore = NoOpApolloStore()

@@ -16,7 +16,7 @@ import kotlin.reflect.KClass
 /**
  * An alternative to RealApolloStore for when a no-operation cache is needed.
  */
-internal class NoOpApolloStore : ApolloStore() {
+internal class NoOpApolloStore : ApolloStore {
   override val changedKeys: SharedFlow<Set<String>>
     get() = throw NotImplementedError()
   private val cache = MemoryCache()
