@@ -47,6 +47,10 @@ class CacheHeadersTest {
         return false
       }
 
+      override fun remove(pattern: String): Int {
+        return 0
+      }
+
       override fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
         hasHeader.set(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE))
         return emptyList()
@@ -99,6 +103,10 @@ class CacheHeadersTest {
 
       override fun remove(cacheKey: CacheKey, cascade: Boolean): Boolean {
         return false
+      }
+
+      override fun remove(pattern: String): Int {
+        return 0
       }
 
       override fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
