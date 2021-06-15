@@ -37,7 +37,7 @@ class MetadataTest {
       GraphQLCompiler.IncomingOptions.fromOptions(
           schemaFiles = setOf(schemaFile),
           customScalarsMapping = defaultCustomScalarsMapping,
-          codegenModels = defaultCodegenModels,
+          codegenModels = MODELS_RESPONSE_BASED,
           schemaPackageName = "",
           flattenModels = false
       )

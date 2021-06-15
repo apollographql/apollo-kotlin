@@ -9,8 +9,6 @@ import com.google.common.truth.Truth
 import org.junit.Test
 
 class CacheKeyBuilderTest {
-  private val cacheKeyBuilder: CacheKeyBuilder = RealCacheKeyBuilder()
-
   internal enum class Episode {
     JEDI
   }
@@ -20,7 +18,7 @@ class CacheKeyBuilderTest {
     val field = createCompiledField("hero", "hero")
     val variables = Executable.Variables(emptyMap())
 
-    Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero")
+    Truth.assertThat(field.nameWithArguments(variables)).isEqualTo("hero")
   }
 
   @Test
@@ -28,7 +26,7 @@ class CacheKeyBuilderTest {
     val field = createCompiledField("r2", "hero")
     val variables = Executable.Variables(emptyMap())
 
-    Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero")
+    Truth.assertThat(field.nameWithArguments(variables)).isEqualTo("hero")
   }
 
   @Test
@@ -40,7 +38,7 @@ class CacheKeyBuilderTest {
     val field = createCompiledField("hero", "hero", arguments)
     val variables = Executable.Variables(emptyMap())
 
-    Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\"})")
+    Truth.assertThat(field.nameWithArguments(variables)).isEqualTo("hero({\"episode\":\"JEDI\"})")
   }
 
   @Test
@@ -52,7 +50,7 @@ class CacheKeyBuilderTest {
     val field = createCompiledField("r2", "hero", arguments)
     val variables = Executable.Variables(emptyMap())
 
-    Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\"})")
+    Truth.assertThat(field.nameWithArguments(variables)).isEqualTo("hero({\"episode\":\"JEDI\"})")
   }
 
   @Test
@@ -65,7 +63,7 @@ class CacheKeyBuilderTest {
         "episode" to Episode.JEDI
     ))
 
-    Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\"})")
+    Truth.assertThat(field.nameWithArguments(variables)).isEqualTo("hero({\"episode\":\"JEDI\"})")
   }
 
   @Test
@@ -78,7 +76,7 @@ class CacheKeyBuilderTest {
         "episode" to null
     ))
 
-    Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":null})")
+    Truth.assertThat(field.nameWithArguments(variables)).isEqualTo("hero({\"episode\":null})")
   }
 
   @Test
@@ -90,7 +88,7 @@ class CacheKeyBuilderTest {
     val field = createCompiledField("hero", "hero", arguments)
     val variables = Executable.Variables(emptyMap())
 
-    Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"color\":\"blue\",\"episode\":\"JEDI\"})")
+    Truth.assertThat(field.nameWithArguments(variables)).isEqualTo("hero({\"color\":\"blue\",\"episode\":\"JEDI\"})")
   }
 
   @Test
@@ -107,7 +105,7 @@ class CacheKeyBuilderTest {
         CompiledArgument("episode", "JEDI")
     )
     val fieldTwo = createCompiledField("hero", "hero", fieldTwoArguments)
-    Truth.assertThat(cacheKeyBuilder.build(fieldTwo, variables)).isEqualTo(cacheKeyBuilder.build(field, variables))
+    Truth.assertThat(fieldTwo.nameWithArguments(variables)).isEqualTo(field.nameWithArguments(variables))
   }
 
   @Test
@@ -124,7 +122,7 @@ class CacheKeyBuilderTest {
     val field = createCompiledField("hero", "hero", arguments)
     val variables = Executable.Variables(emptyMap())
 
-    Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":2,\"foo\":1}})")
+    Truth.assertThat(field.nameWithArguments(variables)).isEqualTo("hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":2,\"foo\":1}})")
   }
 
   @Test
@@ -136,7 +134,7 @@ class CacheKeyBuilderTest {
     )
 
     val variables = Executable.Variables(emptyMap())
-    Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\"})")
+    Truth.assertThat(field.nameWithArguments(variables)).isEqualTo("hero({\"episode\":\"JEDI\"})")
   }
 
   @Test
@@ -153,7 +151,7 @@ class CacheKeyBuilderTest {
     val field = createCompiledField("hero", "hero", arguments)
     val variables = Executable.Variables(mapOf("stars" to 1))
 
-    Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":\"2\",\"foo\":1}})")
+    Truth.assertThat(field.nameWithArguments(variables)).isEqualTo("hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":\"2\",\"foo\":1}})")
   }
 
   @Test
@@ -198,7 +196,7 @@ class CacheKeyBuilderTest {
 
     val variables = Executable.Variables(mapOf("testInput" to testInput))
 
-    Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo(
+    Truth.assertThat(field.nameWithArguments(variables)).isEqualTo(
         "hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":\"2\",\"foo\":{\"string\":\"string\",\"int\":1,\"double\":3.0,\"boolean\":true,\"custom\":\"JEDI\",\"object\":{\"string\":\"string\",\"int\":1},\"list\":[\"string\",1,3.0,true,\"JEDI\",{\"string\":\"string\",\"int\":1},[\"string\",1]]}}})")
   }
 
@@ -230,7 +228,7 @@ class CacheKeyBuilderTest {
 
     val variables = Executable.Variables(mapOf("testInput" to testInput))
 
-    Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":null,\"nested\":{\"bar\":null,\"foo\":{\"string\":null,\"int\":null,\"long\":null,\"double\":null,\"number\":null,\"boolean\":null,\"custom\":null,\"object\":null,\"listNull\":null,\"listWithNulls\":[null,null,null,null,null,null,null,null,null],\"null\":null}}})")
+    Truth.assertThat(field.nameWithArguments(variables)).isEqualTo("hero({\"episode\":null,\"nested\":{\"bar\":null,\"foo\":{\"string\":null,\"int\":null,\"long\":null,\"double\":null,\"number\":null,\"boolean\":null,\"custom\":null,\"object\":null,\"listNull\":null,\"listWithNulls\":[null,null,null,null,null,null,null,null,null],\"null\":null}}})")
   }
 
   private fun createCompiledField(responseName: String, fieldName: String, arguments: List<CompiledArgument> = emptyList()): CompiledField {
@@ -258,6 +256,6 @@ class CacheKeyBuilderTest {
     val variables0 = Executable.Variables(mapOf("stars" to listOf(0)))
     val variables1 = Executable.Variables(mapOf("stars" to listOf(1)))
 
-    Truth.assertThat(cacheKeyBuilder.build(field, variables0)).isNotEqualTo(cacheKeyBuilder.build(field, variables1))
+    Truth.assertThat(field.nameWithArguments(variables0)).isNotEqualTo(field.nameWithArguments(variables1))
   }
 }

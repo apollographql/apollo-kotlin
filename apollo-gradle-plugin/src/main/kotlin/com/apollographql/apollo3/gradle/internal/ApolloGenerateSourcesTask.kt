@@ -14,6 +14,7 @@ import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultGener
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultUseSemanticNaming
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultWarnOnDeprecatedUsages
 import com.apollographql.apollo3.compiler.MODELS_COMPAT
+import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.PackageNameProvider
 import com.apollographql.apollo3.compiler.Roots
@@ -167,7 +168,8 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       GraphQLCompiler.IncomingOptions.fromMetadata(metadata)
     } else {
       val codegenModels = codegenModels.getOrElse(defaultCodegenModels)
-      val defaultFlattenModels = flattenModels.getOrElse(codegenModels == MODELS_COMPAT)
+      // Response-based models generate a lot of models and therefore a lot of name clashes if flattened
+      val defaultFlattenModels = flattenModels.getOrElse(codegenModels != MODELS_RESPONSE_BASED)
 
       check(schemaFiles.isNotEmpty()) {
         "No schema file found in:\n${rootFolders.get().joinToString("\n")}"

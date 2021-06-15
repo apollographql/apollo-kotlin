@@ -79,6 +79,7 @@ if (iosTarget != null) {
 }
 
 apollo {
-  service("kmpsample")
-  generateFragmentImplementations.set(true)
+  service("kmpsample") {
+    codegenModels.set("responseBased")
+  }
 }

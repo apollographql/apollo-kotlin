@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
-class RealApolloStore(
+class DefaultApolloStore(
     normalizedCacheFactory: NormalizedCacheFactory,
     private val cacheResolver: CacheResolver,
     val logger: ApolloLogger = ApolloLogger(null),

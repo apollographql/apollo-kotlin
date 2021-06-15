@@ -28,4 +28,5 @@ apollo {
   packageName.set("codegen.models")
   generateFragmentImplementations.set(true)
   codegenModels.set("operationBased")
+  flattenModels.set(false)
 }

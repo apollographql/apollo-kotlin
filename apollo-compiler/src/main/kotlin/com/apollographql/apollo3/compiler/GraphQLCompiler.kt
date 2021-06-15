@@ -353,7 +353,7 @@ class GraphQLCompiler {
     const val defaultGenerateResponseFields = true
     const val defaultGenerateQueryDocument = true
     private const val defaultModuleName = "apollographql"
-    const val defaultCodegenModels = MODELS_RESPONSE_BASED
+    const val defaultCodegenModels = MODELS_COMPAT
     private val defaultMetadataOutputFile = null
 
     val DefaultModuleOptions = ModuleOptions(

@@ -345,7 +345,7 @@ class ServiceTests {
       assertThat(dir.generatedChild("service/com/example/type/Types.kt").readText(), containsString("internal object Types"))
 
       assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
-      assertThat(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").readText(), containsString("internal interface"))
+      assertThat(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").readText(), containsString("internal data class"))
     }
   }
 
