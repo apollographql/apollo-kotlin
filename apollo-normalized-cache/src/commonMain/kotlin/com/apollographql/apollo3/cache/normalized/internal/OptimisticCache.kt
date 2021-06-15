@@ -55,6 +55,20 @@ class OptimisticCache : NormalizedCache() {
     return result
   }
 
+  override fun remove(pattern: String): Int {
+    val regex = patternToRegex(pattern)
+    var total = 0
+    lruCache.keys().forEach {
+      if (regex.matches(it)){
+        lruCache.remove(it)
+        total++
+      }
+    }
+
+    val chainRemoved = nextCache?.remove(pattern) ?: 0
+    return total + chainRemoved
+  }
+
   fun mergeOptimisticUpdates(recordSet: Collection<Record>): Set<String> {
     return recordSet.flatMap {
       mergeOptimisticUpdate(it)

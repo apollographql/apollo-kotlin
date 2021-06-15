@@ -6,14 +6,14 @@ import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.Record
-import com.apollographql.apollo3.cache.normalized.RecordFieldJsonAdapter
-import com.apollographql.apollo3.cache.normalized.sql.internal.RecordsetDataSource.deleteAllRecords
-import com.apollographql.apollo3.cache.normalized.sql.internal.RecordsetDataSource.deleteRecord
-import com.apollographql.apollo3.cache.normalized.sql.internal.RecordsetDataSource.selectAllRecords
-import com.apollographql.apollo3.cache.normalized.sql.internal.RecordsetDataSource.selectRecord
-import com.apollographql.apollo3.cache.normalized.sql.internal.RecordsetDataSource.selectRecords
-import com.apollographql.apollo3.cache.normalized.sql.internal.RecordsetDataSource.updateRecord
-import com.apollographql.apollo3.cache.normalized.sql.internal.RecordsetDataSource.updateRecords
+import com.apollographql.apollo3.cache.normalized.sql.internal.CacheQueriesHelpers.deleteAllRecords
+import com.apollographql.apollo3.cache.normalized.sql.internal.CacheQueriesHelpers.deleteRecord
+import com.apollographql.apollo3.cache.normalized.sql.internal.CacheQueriesHelpers.remove
+import com.apollographql.apollo3.cache.normalized.sql.internal.CacheQueriesHelpers.selectAllRecords
+import com.apollographql.apollo3.cache.normalized.sql.internal.CacheQueriesHelpers.selectRecord
+import com.apollographql.apollo3.cache.normalized.sql.internal.CacheQueriesHelpers.selectRecords
+import com.apollographql.apollo3.cache.normalized.sql.internal.CacheQueriesHelpers.updateRecord
+import com.apollographql.apollo3.cache.normalized.sql.internal.CacheQueriesHelpers.updateRecords
 import kotlin.reflect.KClass
 
 class SqlNormalizedCache internal constructor(
@@ -57,6 +57,13 @@ class SqlNormalizedCache internal constructor(
         key = cacheKey.key,
         cascade = cascade,
     )
+  }
+
+  override fun remove(pattern: String): Int {
+    val selfRemoved = cacheQueries.remove(pattern)
+    val chainRemoved = nextCache?.remove(pattern) ?: 0
+
+    return selfRemoved + chainRemoved
   }
 
   override fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {

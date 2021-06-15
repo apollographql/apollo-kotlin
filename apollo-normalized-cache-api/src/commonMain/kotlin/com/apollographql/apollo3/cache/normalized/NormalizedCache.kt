@@ -18,7 +18,7 @@ import kotlin.reflect.KClass
  *
  * A [NormalizedCache] can choose to store records in any manner.
  */
-abstract class NormalizedCache: ReadOnlyNormalizedCache {
+abstract class NormalizedCache : ReadOnlyNormalizedCache {
   var nextCache: NormalizedCache? = null
     private set
 
@@ -45,19 +45,24 @@ abstract class NormalizedCache: ReadOnlyNormalizedCache {
   abstract fun clearAll()
 
   /**
-   * Remove cached record by the key
+   * Remove a record and potentially its referenced records from this cache and all chained caches
    *
    * @param cacheKey of record to be removed
-   * @param cascade defines if remove operation is propagated to the referenced entities
-   * @return `true` if record with such key was successfully removed, `false` otherwise
+   * @param cascade remove referenced records if true
+   * @return `true` if a record with such key was successfully removed, `false` otherwise
    */
   abstract fun remove(cacheKey: CacheKey, cascade: Boolean): Boolean
 
   /**
-   * Remove cached record by pattern
+   * Remove records whose key match a patter from this cache and all chained caches
    *
-   * @param pattern a  of record to be removed
-   * @return `true` if record with such key was successfully removed, `false` otherwise
+   * @param pattern a pattern to filter the cache keys. 'pattern' is interpreted as in the LIKE operator of Sqlite.
+   * - '%' matches any sequence of zero or more characters
+   * - '_' matches any single character
+   * - The matching is case-insensitive
+   * - '\' is used as escape
+   * See https://sqlite.org/lang_expr.html
+   * @return the number of records deleted accross all caches
    */
   abstract fun remove(pattern: String): Int
 
@@ -104,5 +109,42 @@ abstract class NormalizedCache: ReadOnlyNormalizedCache {
         append("}\n")
       }
     }
+
+    /**
+     * A tentative to approximate the Sqlite LIKE operator with Regexes
+     */
+    fun patternToRegex(pattern: String): Regex {
+      val regex = buildString {
+        var pendingEscape = false
+        for (i in pattern.indices) {
+          val cur = pattern[i]
+          when {
+            pendingEscape -> {
+              when {
+                cur == '\\' -> append("\\\\") // an escaped backslash is also an escape backslash in a regex
+                cur == '%' -> append("%")
+                cur == '_' -> append("_")
+                else -> error("Invalid escape in pattern: $pattern")
+              }
+            }
+            cur == '\\' -> pendingEscape = true
+            cur == '%' -> append(".*")
+            cur == '_' -> append(".")
+            else -> {
+              if (specialChars.contains(cur)) {
+                // this needs to be escaped in the regex
+                append("\\")
+              }
+              append(cur)
+            }
+          }
+        }
+      }
+
+      return Regex(regex)
+    }
+
+    private val specialChars = "()^$.*?+{}"
   }
 }
+

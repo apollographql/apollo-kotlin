@@ -8,6 +8,7 @@ import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheResolver
+import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.Record
 import com.benasher44.uuid.Uuid
@@ -159,6 +160,10 @@ class DefaultApolloStore(
           cacheKey = cacheKey
       )
     }
+  }
+
+  override suspend fun <R> accessCache(block: (NormalizedCache) -> R): R {
+    return cacheHolder.access(block)
   }
 
   @OptIn(ApolloInternal::class)

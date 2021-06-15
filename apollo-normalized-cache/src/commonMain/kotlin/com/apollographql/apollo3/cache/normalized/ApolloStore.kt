@@ -126,7 +126,6 @@ abstract class ApolloStore {
       publish: Boolean = true
   ): Set<String>
 
-
   /**
    * Clear all records from this [ApolloStore].
    * This is a synchronous operation that might block if the underlying cache is doing IO
@@ -165,6 +164,14 @@ abstract class ApolloStore {
    * @param keys A set of keys of [Record] which have changed.
    */
   abstract suspend fun publish(keys: Set<String>)
+
+  /**
+   * Direct access to the cache.
+   *
+   * @param block a function that can access the cache. The function and its captured variables will
+   * be called from a background thread and freezed
+   */
+  abstract suspend fun <R> accessCache(block: (NormalizedCache) -> R): R
 
   abstract suspend fun dump(): Map<KClass<*>, Map<String, Record>>
 

@@ -6,6 +6,8 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKey
+import com.apollographql.apollo3.cache.normalized.MemoryCache
+import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.Record
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.SharedFlow
@@ -17,10 +19,14 @@ import kotlin.reflect.KClass
 internal class NoOpApolloStore : ApolloStore() {
   override val changedKeys: SharedFlow<Set<String>>
     get() = throw NotImplementedError()
-
+  private val cache = MemoryCache()
   override fun subscribe(subscriber: RecordChangeSubscriber) {}
   override fun unsubscribe(subscriber: RecordChangeSubscriber) {}
   override suspend fun publish(keys: Set<String>) {}
+  override suspend fun <R> accessCache(block: (NormalizedCache) -> R): R {
+    return block(cache)
+  }
+
   override fun clearAll(): Boolean {
     return false
   }

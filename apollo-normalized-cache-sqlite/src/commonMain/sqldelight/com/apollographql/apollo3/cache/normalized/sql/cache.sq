@@ -24,6 +24,9 @@ DELETE FROM records WHERE key=?;
 deleteRecords:
 DELETE FROM records WHERE key IN ?;
 
+deleteRecordsWithKeyMatching:
+DELETE FROM records WHERE key LIKE ? ESCAPE ?;
+
 -- use only for debug
 selectRecords:
 SELECT * FROM records;

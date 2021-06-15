@@ -185,6 +185,27 @@ class SqlNormalizedCacheTest {
     assertEquals(expected = true, actual = record.fields["newFieldKey"])
   }
 
+  @Test
+  fun testPatternRemove() {
+    createRecord("specialKey1")
+    createRecord("specialKey2")
+    createRecord("regularKey1")
+
+    cache.remove("specialKey%")
+    assertNull(cache.loadRecord("specialKey1", CacheHeaders.NONE))
+    assertNull(cache.loadRecord("specialKey1", CacheHeaders.NONE))
+    assertNotNull(cache.loadRecord("regularKey1", CacheHeaders.NONE))
+  }
+
+  @Test
+  fun testPatternRemoveWithEscape() {
+    createRecord("%1")
+
+    cache.remove("\\%%")
+    assertNull(cache.loadRecord("%1", CacheHeaders.NONE))
+  }
+
+
   private fun createRecord(key: String) {
     cache.merge(
         record = Record(
