@@ -40,9 +40,14 @@ interface Service {
   val exclude: ListProperty<String>
 
   /**
+   * A shorthand property that will be used if [srcDir] is notCalled
+   */
+  val sourceFolder: Property<String>
+
+  /**
    * Adds the given directory as a GraphQL source root
    *
-   * By default, the plugin will use "src/main/graphql/" for Android/JVM projects and "src/commonMain/graphql" for multiplatform projects.
+   * By default, the plugin will use "src/main/graphql/$sourceFolder" for Android/JVM projects and "src/commonMain/graphql/$sourceFolder" for multiplatform projects.
    *
    * Use [srcDir] if your files are outside of "src/main/graphql" or to have them in multiple folders.
    *

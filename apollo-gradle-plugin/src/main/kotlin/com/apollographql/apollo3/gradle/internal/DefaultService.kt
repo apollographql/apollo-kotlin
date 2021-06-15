@@ -41,6 +41,8 @@ abstract class DefaultService @Inject constructor(val objects: ObjectFactory, ov
 
   abstract override val include: ListProperty<String>
 
+  abstract override val sourceFolder: Property<String>
+
   abstract override val schemaFiles: ConfigurableFileCollection
 
   abstract override val debugDir: DirectoryProperty

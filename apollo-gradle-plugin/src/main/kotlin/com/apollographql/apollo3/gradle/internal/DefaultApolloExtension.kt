@@ -337,7 +337,8 @@ abstract class DefaultApolloExtension(
 
 
       if (service.graphqlSourceDirectorySet.isReallyEmpty) {
-        val dir = File(project.projectDir, "src/${mainSourceSet(project)}/graphql")
+        val sourceFolder = service.sourceFolder.getOrElse("")
+        val dir = File(project.projectDir, "src/${mainSourceSet(project)}/graphql/$sourceFolder")
 
         service.graphqlSourceDirectorySet.srcDir(dir)
       }
