@@ -7,7 +7,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.cache.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.internal.RealApolloStore
+import com.apollographql.apollo3.cache.normalized.internal.DefaultApolloStore
 import com.apollographql.apollo3.api.exception.ApolloException
 import com.apollographql.apollo3.api.exception.ApolloGenericException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
@@ -117,7 +117,7 @@ class ApolloCacheInterceptor<D : Operation.Data>(
     }
 
     val data = networkResponse.parsedResponse.get()!!.data
-    return if (data != null && apolloStore is RealApolloStore) {
+    return if (data != null && apolloStore is DefaultApolloStore) {
       val (records, changedKeys) = runBlocking {
         apolloStore.writeOperationWithRecords(
             request.operation as Operation<Operation.Data>,

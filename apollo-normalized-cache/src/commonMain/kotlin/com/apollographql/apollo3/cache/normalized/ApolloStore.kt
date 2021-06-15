@@ -6,7 +6,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore.RecordChangeSubscriber
 import com.apollographql.apollo3.cache.normalized.internal.NoOpApolloStore
-import com.apollographql.apollo3.cache.normalized.internal.RealApolloStore
+import com.apollographql.apollo3.cache.normalized.internal.DefaultApolloStore
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.SharedFlow
 import kotlin.reflect.KClass
@@ -181,4 +181,4 @@ abstract class ApolloStore {
 fun ApolloStore(
     normalizedCacheFactory: NormalizedCacheFactory,
     cacheResolver: CacheResolver = CacheResolver(),
-): ApolloStore = RealApolloStore(normalizedCacheFactory, cacheResolver)
+): ApolloStore = DefaultApolloStore(normalizedCacheFactory, cacheResolver)

@@ -20,7 +20,7 @@ import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheResolver
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.NormalizedCacheFactory
-import com.apollographql.apollo3.cache.normalized.internal.RealApolloStore
+import com.apollographql.apollo3.cache.normalized.internal.DefaultApolloStore
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo3.fetcher.ResponseFetcher
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
@@ -625,7 +625,7 @@ class ApolloClient internal constructor(
       val cacheFactory = cacheFactory
       val cacheKeyResolver = cacheKeyResolver
       if (cacheFactory.isPresent && cacheKeyResolver.isPresent) {
-        apolloStore = RealApolloStore(cacheFactory.get(), cacheKeyResolver.get(), apolloLogger)
+        apolloStore = DefaultApolloStore(cacheFactory.get(), cacheKeyResolver.get(), apolloLogger)
       }
       var subscriptionManager = subscriptionManager
       val subscriptionTransportFactory = subscriptionTransportFactory
