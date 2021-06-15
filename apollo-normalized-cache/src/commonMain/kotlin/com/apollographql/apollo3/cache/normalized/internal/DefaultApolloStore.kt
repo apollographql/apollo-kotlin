@@ -45,10 +45,10 @@ class DefaultApolloStore(
    * For backward compatibility only
    */
   private var subscribers = Guard("subscribers") {
-    mutableListOf<Pair<RecordChangeSubscriber, Job>>()
+    mutableListOf<Pair<ApolloStore.RecordChangeSubscriber, Job>>()
   }
 
-  override fun subscribe(subscriber: RecordChangeSubscriber) {
+  override fun subscribe(subscriber: ApolloStore.RecordChangeSubscriber) {
     val job = GlobalScope.launch {
       changedKeys.collect {
         subscriber.onCacheRecordsChanged(it)
@@ -59,7 +59,7 @@ class DefaultApolloStore(
     }
   }
 
-  override fun unsubscribe(subscriber: RecordChangeSubscriber) {
+  override fun unsubscribe(subscriber: ApolloStore.RecordChangeSubscriber) {
     val job = subscribers.blockingAccess {
       val index = it.indexOfFirst { it.first == subscriber }
       if (index >= 0) {
