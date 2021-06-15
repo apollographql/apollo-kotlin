@@ -142,7 +142,7 @@ abstract class NormalizedCache : ReadOnlyNormalizedCache {
         }
       }
 
-      return Regex(regex)
+      return Regex(regex, option = RegexOption.IGNORE_CASE)
     }
 
     private val specialChars = "()^$.*?+{}"
