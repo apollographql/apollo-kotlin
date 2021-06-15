@@ -105,7 +105,7 @@ class CacheKeyBuilderTest {
         CompiledArgument("episode", "JEDI")
     )
     val fieldTwo = createCompiledField("hero", "hero", fieldTwoArguments)
-    Truth.assertThat(cacheKeyBuilder.build(fieldTwo, variables)).isEqualTo(field.nameWithArguments(variables))
+    Truth.assertThat(fieldTwo.nameWithArguments(variables)).isEqualTo(field.nameWithArguments(variables))
   }
 
   @Test
@@ -256,6 +256,6 @@ class CacheKeyBuilderTest {
     val variables0 = Executable.Variables(mapOf("stars" to listOf(0)))
     val variables1 = Executable.Variables(mapOf("stars" to listOf(1)))
 
-    Truth.assertThat(cacheKeyBuilder.build(field, variables0)).isNotEqualTo(cacheKeyBuilder.build(field, variables1))
+    Truth.assertThat(field.nameWithArguments(variables0)).isNotEqualTo(field.nameWithArguments(variables1))
   }
 }
