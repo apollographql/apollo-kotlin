@@ -5,35 +5,38 @@
 //
 package com.example.deprecation.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
+import com.apollographql.apollo3.api.CompiledArgument
+import com.apollographql.apollo3.api.CompiledBooleanType
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.Variable
+import com.apollographql.apollo3.api.CompiledStringType
+import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.notNull
+import com.example.deprecation.type.Types.Character
 import kotlin.collections.List
 
 object TestQuerySelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "deprecated",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "deprecatedBool",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledBooleanType.notNull()
         )
       )
 
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "hero",
-          type = CompiledCompoundType("unused"),
-          arguments = mapOf("episode" to Variable("episode")
+          type = Character,
+          arguments = listOf(
+            CompiledArgument("episode", CompiledVariable("episode"))
           ),
           selections = hero
         )

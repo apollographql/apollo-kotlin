@@ -5,46 +5,50 @@
 //
 package com.example.arguments_hardcoded.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
+import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledOtherType
+import com.apollographql.apollo3.api.CompiledIntType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
+import com.example.arguments_hardcoded.type.Types.Review
 import kotlin.collections.List
 
 object TestQuerySelections {
   private val reviews: List<CompiledSelection> = listOf(
         CompiledField(
           name = "stars",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledIntType.notNull()
         ),
         CompiledField(
           name = "commentary",
-          type = CompiledOtherType("unused")
+          type = CompiledStringType
         )
       )
 
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "reviews",
-          type = CompiledCompoundType("unused").list(),
-          arguments = mapOf("episode" to "JEDI",
-            "starsInt" to 10,
-            "starsFloat" to 9.9
+          type = Review.list(),
+          arguments = listOf(
+            CompiledArgument("episode", "JEDI"),
+            CompiledArgument("starsFloat", 9.9),
+            CompiledArgument("starsInt", 10)
           ),
           selections = reviews
         ),
         CompiledField(
           name = "testNullableArguments",
-          type = CompiledOtherType("unused").notNull(),
-          arguments = mapOf("int" to null,
-            "string" to null,
-            "float" to null,
-            "review" to null,
-            "episode" to null,
-            "boolean" to null,
-            "list" to null
+          type = CompiledIntType.notNull(),
+          arguments = listOf(
+            CompiledArgument("boolean", null),
+            CompiledArgument("episode", null),
+            CompiledArgument("float", null),
+            CompiledArgument("int", null),
+            CompiledArgument("list", null),
+            CompiledArgument("review", null),
+            CompiledArgument("string", null)
           )
         )
       )

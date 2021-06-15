@@ -5,34 +5,35 @@
 //
 package com.example.hero_name.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
+import com.example.hero_name.type.Types.Character
+import com.example.hero_name.type.Types.Date
 import kotlin.collections.List
 
 object TestQuerySelections {
   private val onDroid: List<CompiledSelection> = listOf(
         CompiledField(
           name = "primaryFunction",
-          type = CompiledOtherType("unused")
+          type = CompiledStringType
         )
       )
 
   private val hero: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "birthDate",
-          type = CompiledOtherType("unused").notNull()
+          type = Date.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("Droid"),
@@ -43,7 +44,7 @@ object TestQuerySelections {
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "hero",
-          type = CompiledCompoundType("unused"),
+          type = Character,
           selections = hero
         )
       )

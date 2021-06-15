@@ -27,6 +27,7 @@ data class Ir(
     val fragments: List<IrNamedFragment>,
     val inputObjects: List<IrInputObject>,
     val enums: List<IrEnum>,
+    val allEnums: List<IrEnum>,
     val customScalars: List<IrCustomScalar>,
     val objects: List<IrObject>,
     val unions: List<IrUnion>,
@@ -193,6 +194,7 @@ data class IrInputObject(
 data class IrObject(
     val name: String,
     val implements: List<String>,
+    val keyFields: Set<String>,
     val description: String?,
     val deprecationReason: String?,
 )
@@ -200,6 +202,7 @@ data class IrObject(
 data class IrInterface(
     val name: String,
     val implements: List<String>,
+    val keyFields: Set<String>,
     val description: String?,
     val deprecationReason: String?,
 )

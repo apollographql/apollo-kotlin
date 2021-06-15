@@ -10,6 +10,7 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.api.exception.ApolloException
 import com.apollographql.apollo3.cache.normalized.CacheResolver
+import com.apollographql.apollo3.cache.normalized.IdCacheResolver
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo3.integration.normalizer.CreateReviewMutation
 import com.apollographql.apollo3.integration.normalizer.ReviewsByEpisodeQuery
@@ -43,7 +44,7 @@ class QueryRefetchTest {
         .serverUrl(server.url("/"))
         .dispatcher(immediateExecutor())
         .okHttpClient(okHttpClient)
-        .normalizedCache(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), CacheResolver.ID)
+        .normalizedCache(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), IdCacheResolver())
         .build()
   }
 

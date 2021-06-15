@@ -5,7 +5,6 @@
 //
 package com.example.named_fragment_with_variables.type
 
-import com.apollographql.apollo3.api.InputObject
 import com.apollographql.apollo3.api.Optional
 import kotlin.Boolean
 import kotlin.String
@@ -13,4 +12,4 @@ import kotlin.String
 data class UserQuery(
   val name: String,
   val isAdmin: Optional<Boolean?> = Optional.Absent
-) : InputObject
+)

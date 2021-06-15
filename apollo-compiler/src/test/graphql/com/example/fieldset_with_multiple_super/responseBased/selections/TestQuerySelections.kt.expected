@@ -5,30 +5,30 @@
 //
 package com.example.fieldset_with_multiple_super.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
+import com.example.fieldset_with_multiple_super.type.Types.C
 import kotlin.collections.List
 
 object TestQuerySelections {
   private val onB: List<CompiledSelection> = listOf(
         CompiledField(
           name = "fieldB1",
-          type = CompiledOtherType("unused")
+          type = CompiledStringType
         )
       )
 
   private val onA: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "fieldA1",
-          type = CompiledOtherType("unused")
+          type = CompiledStringType
         ),
         CompiledFragment(
           possibleTypes = listOf("ABC", "BC"),
@@ -39,18 +39,18 @@ object TestQuerySelections {
   private val onA1: List<CompiledSelection> = listOf(
         CompiledField(
           name = "fieldA2",
-          type = CompiledOtherType("unused")
+          type = CompiledStringType
         )
       )
 
   private val onB1: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "fieldB2",
-          type = CompiledOtherType("unused")
+          type = CompiledStringType
         ),
         CompiledFragment(
           possibleTypes = listOf("ABC", "AC"),
@@ -61,7 +61,7 @@ object TestQuerySelections {
   private val c: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("ABC", "AC"),
@@ -76,7 +76,7 @@ object TestQuerySelections {
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "c",
-          type = CompiledCompoundType("unused"),
+          type = C,
           selections = c
         )
       )

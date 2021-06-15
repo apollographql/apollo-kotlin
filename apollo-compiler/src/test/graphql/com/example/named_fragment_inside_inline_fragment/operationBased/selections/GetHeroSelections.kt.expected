@@ -5,21 +5,21 @@
 //
 package com.example.named_fragment_inside_inline_fragment.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
 import com.example.named_fragment_inside_inline_fragment.fragment.selections.characterAppearsInSelections
 import com.example.named_fragment_inside_inline_fragment.fragment.selections.characterNameSelections
+import com.example.named_fragment_inside_inline_fragment.type.Types.Character
 import kotlin.collections.List
 
 object GetHeroSelections {
   private val onCharacter: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("Droid", "Human"),
@@ -34,7 +34,7 @@ object GetHeroSelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("Droid", "Human"),
@@ -45,7 +45,7 @@ object GetHeroSelections {
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "hero",
-          type = CompiledCompoundType("unused"),
+          type = Character,
           selections = hero
         )
       )

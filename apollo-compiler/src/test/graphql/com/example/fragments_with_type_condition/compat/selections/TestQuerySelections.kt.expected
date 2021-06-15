@@ -5,21 +5,22 @@
 //
 package com.example.fragments_with_type_condition.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
 import com.example.fragments_with_type_condition.fragment.selections.DroidDetailsSelections
 import com.example.fragments_with_type_condition.fragment.selections.HumanDetailsSelections
+import com.example.fragments_with_type_condition.type.Types
+import com.example.fragments_with_type_condition.type.Types.Character
 import kotlin.collections.List
 
 object TestQuerySelections {
   private val r2: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("Human"),
@@ -34,7 +35,7 @@ object TestQuerySelections {
   private val luke: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("Human"),
@@ -50,13 +51,13 @@ object TestQuerySelections {
         CompiledField(
           name = "hero",
           alias = "r2",
-          type = CompiledCompoundType("unused"),
+          type = Character,
           selections = r2
         ),
         CompiledField(
           name = "hero",
           alias = "luke",
-          type = CompiledCompoundType("unused"),
+          type = Character,
           selections = luke
         )
       )

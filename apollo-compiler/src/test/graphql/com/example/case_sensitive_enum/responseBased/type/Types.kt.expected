@@ -5,8 +5,10 @@
 //
 package com.example.case_sensitive_enum.type
 
-import com.apollographql.apollo3.api.Object
-import com.apollographql.apollo3.api.SchemaType
+import com.apollographql.apollo3.api.CompiledNamedType
+import com.apollographql.apollo3.api.CompiledType
+import com.apollographql.apollo3.api.EnumType
+import com.apollographql.apollo3.api.ObjectType
 import com.apollographql.apollo3.api.possibleTypes
 import kotlin.collections.List
 
@@ -15,11 +17,13 @@ import kotlin.collections.List
  * schema. Input objects are left out because they are generated separately
  */
 object Types {
-  val Query: Object = Object("Query")
+  val Enum: EnumType = EnumType("Enum")
 
-  val all: List<SchemaType> = listOf(
-        Query)
+  val Query: ObjectType = ObjectType(name = "Query")
+
+  val all: List<CompiledType> = listOf(
+        Enum, Query)
 
 
-  fun possibleTypes(type: SchemaType): List<Object> = possibleTypes(all, type)
+  fun possibleTypes(type: CompiledNamedType): List<ObjectType> = possibleTypes(all, type)
 }

@@ -5,30 +5,30 @@
 //
 package com.example.inline_fragment_type_coercion.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
+import com.example.inline_fragment_type_coercion.type.Types.Foo
 import kotlin.collections.List
 
 object TestQuerySelections {
   private val onBar: List<CompiledSelection> = listOf(
         CompiledField(
           name = "bar",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         )
       )
 
   private val foo: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "foo",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("BarObject", "FooBar"),
@@ -39,7 +39,7 @@ object TestQuerySelections {
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "foo",
-          type = CompiledCompoundType("unused"),
+          type = Foo,
           selections = foo
         )
       )

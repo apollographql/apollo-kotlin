@@ -5,11 +5,13 @@
 //
 package com.example.inline_fragment_intersection.type
 
-import com.apollographql.apollo3.api.CustomScalar
-import com.apollographql.apollo3.api.Interface
-import com.apollographql.apollo3.api.Object
-import com.apollographql.apollo3.api.SchemaType
-import com.apollographql.apollo3.api.Union
+import com.apollographql.apollo3.api.CompiledNamedType
+import com.apollographql.apollo3.api.CompiledType
+import com.apollographql.apollo3.api.CustomScalarType
+import com.apollographql.apollo3.api.EnumType
+import com.apollographql.apollo3.api.InterfaceType
+import com.apollographql.apollo3.api.ObjectType
+import com.apollographql.apollo3.api.UnionType
 import com.apollographql.apollo3.api.possibleTypes
 import kotlin.collections.List
 
@@ -18,50 +20,57 @@ import kotlin.collections.List
  * schema. Input objects are left out because they are generated separately
  */
 object Types {
-  val Long: CustomScalar = CustomScalar("Long", "kotlin.Any")
+  val Long: CustomScalarType = CustomScalarType("Long", "kotlin.Any")
 
-  val Character: Interface = Interface("Character")
+  val Sport: EnumType = EnumType("Sport")
 
-  val Thing: Interface = Interface("Thing")
+  val Episode: EnumType = EnumType("Episode")
 
-  val Being: Interface = Interface("Being")
+  val Race: EnumType = EnumType("Race")
 
-  val Alien: Interface = Interface("Alien")
+  val Character: InterfaceType = InterfaceType(name = "Character")
 
-  val AbstractWookie: Interface = Interface("AbstractWookie")
+  val Thing: InterfaceType = InterfaceType(name = "Thing")
 
-  val Droid: Object = Object("Droid", Character, Thing)
+  val Being: InterfaceType = InterfaceType(name = "Being")
 
-  val Human: Object = Object("Human", Character, Being)
+  val Alien: InterfaceType = InterfaceType(name = "Alien")
 
-  val Wookie: Object = Object("Wookie", Character, Being, Alien, AbstractWookie)
+  val AbstractWookie: InterfaceType = InterfaceType(name = "AbstractWookie")
 
-  val Ship: Object = Object("Ship", Thing)
+  val Droid: ObjectType = ObjectType(name = "Droid", implements = listOf(Character, Thing))
 
-  val TypeWithAllSortsOfFields: Object = Object("TypeWithAllSortsOfFields")
+  val Human: ObjectType = ObjectType(name = "Human", implements = listOf(Being, Character))
 
-  val MerlinQuery: Object = Object("MerlinQuery")
+  val Wookie: ObjectType = ObjectType(name = "Wookie", implements = listOf(AbstractWookie, Alien,
+      Being, Character))
 
-  val MerlinHomesPdpResponse: Object = Object("MerlinHomesPdpResponse")
+  val Ship: ObjectType = ObjectType(name = "Ship", implements = listOf(Thing))
 
-  val MerlinPdpListingDetailForNativeResponse: Object =
-      Object("MerlinPdpListingDetailForNativeResponse")
+  val TypeWithAllSortsOfFields: ObjectType = ObjectType(name = "TypeWithAllSortsOfFields")
 
-  val MerlinPdpListingDescriptionNestedWithinListing: Object =
-      Object("MerlinPdpListingDescriptionNestedWithinListing")
+  val MerlinQuery: ObjectType = ObjectType(name = "MerlinQuery")
 
-  val Query: Object = Object("Query")
+  val MerlinHomesPdpResponse: ObjectType = ObjectType(name = "MerlinHomesPdpResponse")
 
-  val Mutation: Object = Object("Mutation")
+  val MerlinPdpListingDetailForNativeResponse: ObjectType = ObjectType(name =
+      "MerlinPdpListingDetailForNativeResponse")
 
-  val Anything: Union = Union("Anything", Human, Wookie, Droid, Ship)
+  val MerlinPdpListingDescriptionNestedWithinListing: ObjectType = ObjectType(name =
+      "MerlinPdpListingDescriptionNestedWithinListing")
 
-  val all: List<SchemaType> = listOf(
-        Long, Character, Thing, Being, Alien, AbstractWookie, Droid, Human, Wookie, Ship,
-            TypeWithAllSortsOfFields, MerlinQuery, MerlinHomesPdpResponse,
+  val Query: ObjectType = ObjectType(name = "Query")
+
+  val Mutation: ObjectType = ObjectType(name = "Mutation")
+
+  val Anything: UnionType = UnionType("Anything", Human, Wookie, Droid, Ship)
+
+  val all: List<CompiledType> = listOf(
+        Long, Sport, Episode, Race, Character, Thing, Being, Alien, AbstractWookie, Droid, Human,
+            Wookie, Ship, TypeWithAllSortsOfFields, MerlinQuery, MerlinHomesPdpResponse,
             MerlinPdpListingDetailForNativeResponse, MerlinPdpListingDescriptionNestedWithinListing,
             Query, Mutation, Anything)
 
 
-  fun possibleTypes(type: SchemaType): List<Object> = possibleTypes(all, type)
+  fun possibleTypes(type: CompiledNamedType): List<ObjectType> = possibleTypes(all, type)
 }

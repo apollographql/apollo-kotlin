@@ -46,7 +46,8 @@ import com.apollographql.apollo3.ast.responseName
 import com.apollographql.apollo3.ast.rootTypeDefinition
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.transform
-import com.apollographql.apollo3.ast.validateAndCoerce
+import com.apollographql.apollo3.ast.coerceInExecutableContextOrThrow
+import com.apollographql.apollo3.ast.coerceInSchemaContextOrThrow
 import com.apollographql.apollo3.compiler.MODELS_COMPAT
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
@@ -137,11 +138,17 @@ internal class IrBuilder(
         .filter { !it.isBuiltIn() }
         .map { it.toIr() }
 
+    val allEnums = schema.typeDefinitions.values
+        .filterIsInstance<GQLEnumTypeDefinition>()
+        .filter { !it.isBuiltIn() }
+        .map { it.toIr() }
+
     return Ir(
         operations = operations,
         fragments = fragments,
         inputObjects = inputObjects,
         enums = enums,
+        allEnums = allEnums,
         customScalars = customScalars,
         objects = objects,
         interfaces = interfaces,
@@ -156,6 +163,7 @@ internal class IrBuilder(
     return IrObject(
         name = name,
         implements = implementsInterfaces,
+        keyFields = schema.keyFields(name),
         description = description,
         deprecationReason = directives.findDeprecationReason()
     )
@@ -165,6 +173,7 @@ internal class IrBuilder(
     return IrInterface(
         name = name,
         implements = implementsInterfaces,
+        keyFields = schema.keyFields(name),
         description = description,
         deprecationReason = directives.findDeprecationReason()
     )
@@ -201,7 +210,7 @@ internal class IrBuilder(
    * This is not named `toIr` as [GQLInputValueDefinition] also maps to variables and arguments
    */
   private fun GQLInputValueDefinition.toIrInputField(): IrInputField {
-    val coercedDefaultValue = defaultValue?.validateAndCoerce(type, schema)?.getOrThrow()
+    val coercedDefaultValue = defaultValue?.coerceInExecutableContextOrThrow(type, schema)
 
     var irType = type.toIr()
     if (type !is GQLNonNullType || coercedDefaultValue != null) {
@@ -335,7 +344,7 @@ internal class IrBuilder(
   }
 
   private fun GQLVariableDefinition.toIr(): IrVariable {
-    val coercedDefaultValue = defaultValue?.validateAndCoerce(type, schema)?.getOrThrow()
+    val coercedDefaultValue = defaultValue?.coerceInSchemaContextOrThrow(type, schema)
 
     var irType = type.toIr()
     // By default the GraphQL spec treats nullable types as optional variables but most of the times

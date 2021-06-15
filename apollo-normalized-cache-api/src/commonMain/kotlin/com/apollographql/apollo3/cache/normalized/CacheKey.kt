@@ -36,5 +36,13 @@ class CacheKey(val key: String) {
     fun canDeserialize(value: String): Boolean {
       return SERIALIZATION_REGEX_PATTERN.matches(value)
     }
+
+    private val ROOT_CACHE_KEY = CacheKey("QUERY_ROOT")
+
+    @JvmStatic
+    @Suppress("UNUSED_PARAMETER")
+    fun rootKey(): CacheKey {
+      return ROOT_CACHE_KEY
+    }
   }
 }

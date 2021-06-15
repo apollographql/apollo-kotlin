@@ -5,7 +5,6 @@
 //
 package com.example.input_object_type.type
 
-import com.apollographql.apollo3.api.InputObject
 import com.apollographql.apollo3.api.Optional
 import kotlin.Double
 import kotlin.Int
@@ -34,4 +33,4 @@ data class ColorInput(
    * Circle ref to review input
    */
   val reviewRefInput: Optional<ReviewRefInput?> = Optional.Absent
-) : InputObject
+)

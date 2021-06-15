@@ -17,20 +17,17 @@ sealed class Issue(
   /**
    * A validation error
    */
-  class ValidationError(message: String, sourceLocation: SourceLocation, val code: ValidationErrorCode = ValidationErrorCode.Other) : Issue(message, sourceLocation, Severity.ERROR)
+  class ValidationError(
+      message: String,
+      sourceLocation: SourceLocation,
+      severity: Severity = Severity.ERROR,
+      val details: ValidationDetails = ValidationDetails.Other
+  ) : Issue(message, sourceLocation, severity)
 
   /**
    * A deprecated field/enum is used
    */
   class DeprecatedUsage(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.WARNING)
-
-  /**
-   * An unknown directive was found.
-   *
-   * In a perfect world everyone uses SDL schemas and we can validate directives but in this world, a lot of users rely
-   * on introspection schemas that do not contain directives. If this happens, we pass them through without validation.
-   */
-  class UnknownDirective(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.WARNING)
 
   /**
    * A variable is unused
@@ -61,7 +58,18 @@ fun List<Issue>.checkNoErrors() {
   }
 }
 
-enum class ValidationErrorCode {
-  SchemaDuplicateTypeName,
+enum class ValidationDetails {
+  /**
+   * An unknown directive was found.
+   *
+   * In a perfect world everyone uses SDL schemas and we can validate directives but in this world, a lot of users rely
+   * on introspection schemas that do not contain directives. If this happens, we pass them through without validation.
+   */
+  UnknownDirective,
+
+  /**
+   * Two type definitions have the same name
+   */
+  DuplicateTypeName,
   Other
 }

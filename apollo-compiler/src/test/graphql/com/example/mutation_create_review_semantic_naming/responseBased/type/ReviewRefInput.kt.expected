@@ -5,7 +5,6 @@
 //
 package com.example.mutation_create_review_semantic_naming.type
 
-import com.apollographql.apollo3.api.InputObject
 import com.apollographql.apollo3.api.Optional
 
 /**
@@ -13,4 +12,4 @@ import com.apollographql.apollo3.api.Optional
  */
 data class ReviewRefInput(
   val reviewInput: Optional<ReviewInput?> = Optional.Absent
-) : InputObject
+)

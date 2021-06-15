@@ -5,32 +5,35 @@
 //
 package com.example.hero_with_review.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
+import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledOtherType
+import com.apollographql.apollo3.api.CompiledIntType
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.Variable
+import com.apollographql.apollo3.api.CompiledStringType
+import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.notNull
+import com.example.hero_with_review.type.Types.Review
 import kotlin.collections.List
 
 object TestQuerySelections {
   private val createReview: List<CompiledSelection> = listOf(
         CompiledField(
           name = "stars",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledIntType.notNull()
         ),
         CompiledField(
           name = "commentary",
-          type = CompiledOtherType("unused")
+          type = CompiledStringType
         )
       )
 
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "createReview",
-          type = CompiledCompoundType("unused"),
-          arguments = mapOf("episode" to Variable("ep"),
-            "review" to mapOf(
+          type = Review,
+          arguments = listOf(
+            CompiledArgument("episode", CompiledVariable("ep")),
+            CompiledArgument("review", mapOf(
               "stars" to 5,
               "listOfEnums" to listOf(
                 "JEDI",
@@ -46,7 +49,7 @@ object TestQuerySelections {
                 "red" to 1,
                 "blue" to 1,
               ),
-            )
+            ))
           ),
           selections = createReview
         )

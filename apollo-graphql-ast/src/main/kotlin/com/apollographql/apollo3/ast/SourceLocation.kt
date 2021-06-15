@@ -14,6 +14,7 @@ class SourceLocation(
     return "($line:$position)"
   }
 
+  // antlr is 0-indexed but IntelliJ is 1-indexed. Add 1 so that clicking the link will land on the correct location
   fun pretty(): String = "$filePath: ($line, ${position + 1})"
 
   companion object {

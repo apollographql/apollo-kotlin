@@ -1,11 +1,14 @@
 package com.apollographql.apollo3.gradle.test
 
+import com.apollographql.apollo3.compiler.introspection.normalize
+import com.apollographql.apollo3.compiler.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.gradle.util.TestUtils
 import com.google.common.truth.Truth
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert
 import org.junit.Test
 import java.io.File
+import org.assertj.core.api.Assertions.assertThat as assertjThat
 
 class ConvertSchemaTests {
   @Test
@@ -21,7 +24,15 @@ class ConvertSchemaTests {
           to.absolutePath
       )
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":convertApolloSchema")!!.outcome)
-      Truth.assertThat(to.readText()).isEqualTo(File(dir, "schemas/schema.json").readText())
+
+      /**
+       * The conversion might change the order of the types
+       */
+      val schema1 = to.toIntrospectionSchema().normalize()
+      val schema2 = File(dir, "schemas/schema.json").toIntrospectionSchema().normalize()
+      assertjThat(schema1)
+          .usingRecursiveComparison()
+          .isEqualTo(schema2)
     }
   }
 

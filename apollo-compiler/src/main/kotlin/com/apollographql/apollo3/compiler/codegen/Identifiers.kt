@@ -18,6 +18,10 @@ internal object Identifier {
   const val name = "name"
   const val document = "document"
 
+  const val cacheKeyForObject = "cacheKeyForObject"
+  const val field = "field"
+  const val variables = "variables"
+
   const val OPERATION_DOCUMENT = "OPERATION_DOCUMENT"
   const val OPERATION_NAME = "OPERATION_NAME"
   const val OPERATION_ID = "OPERATION_ID"

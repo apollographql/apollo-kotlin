@@ -6,7 +6,7 @@ import com.apollographql.apollo3.ast.GQLOperationDefinition
 import com.apollographql.apollo3.ast.toExecutableGQLDefinitions
 import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.ast.toUtf8
-import com.apollographql.apollo3.ast.withTypenameWhenNeeded
+import com.apollographql.apollo3.ast.addRequiredFields
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,8 +27,8 @@ class TypenameTest(val name: String, private val graphQLFile: File) {
     val documentWithTypename = GQLDocument(
         definitions = definitions.map {
           when (it) {
-            is GQLOperationDefinition -> it.withTypenameWhenNeeded(schema)
-            is GQLFragmentDefinition -> it.withTypenameWhenNeeded(schema)
+            is GQLOperationDefinition -> addRequiredFields(it, schema)
+            is GQLFragmentDefinition -> addRequiredFields(it, schema)
             else -> it
           }
         },

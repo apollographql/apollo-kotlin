@@ -67,7 +67,7 @@ class CacheHeadersTest {
       }
     }
     val apolloClient = ApolloClient.builder()
-        .normalizedCache(cacheFactory, CacheResolver.ID)
+        .normalizedCache(cacheFactory, IdCacheResolver())
         .serverUrl(server.url("/"))
         .okHttpClient(OkHttpClient.Builder().dispatcher(Dispatcher(immediateExecutorService())).build())
         .dispatcher(immediateExecutor())
@@ -122,7 +122,7 @@ class CacheHeadersTest {
     }
     val cacheHeaders = builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "true").build()
     val apolloClient = ApolloClient.builder()
-        .normalizedCache(cacheFactory, CacheResolver.ID)
+        .normalizedCache(cacheFactory, IdCacheResolver())
         .serverUrl(server.url("/"))
         .okHttpClient(OkHttpClient.Builder().dispatcher(Dispatcher(immediateExecutorService())).build())
         .dispatcher(immediateExecutor())

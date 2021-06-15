@@ -5,46 +5,50 @@
 //
 package com.example.custom_scalar_type.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
+import com.example.custom_scalar_type.type.Types
+import com.example.custom_scalar_type.type.Types.Character
+import com.example.custom_scalar_type.type.Types.Date
+import com.example.custom_scalar_type.type.Types.URL
+import com.example.custom_scalar_type.type.Types.UnsupportedType
 import kotlin.collections.List
 
 object TestQuerySelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "birthDate",
-          type = CompiledOtherType("unused").notNull()
+          type = Date.notNull()
         ),
         CompiledField(
           name = "appearanceDates",
-          type = CompiledOtherType("unused").notNull().list().notNull()
+          type = Date.notNull().list().notNull()
         ),
         CompiledField(
           name = "fieldWithUnsupportedType",
-          type = CompiledOtherType("unused").notNull()
+          type = UnsupportedType.notNull()
         ),
         CompiledField(
           name = "profileLink",
-          type = CompiledOtherType("unused").notNull()
+          type = URL.notNull()
         ),
         CompiledField(
           name = "links",
-          type = CompiledOtherType("unused").notNull().list().notNull()
+          type = URL.notNull().list().notNull()
         )
       )
 
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "hero",
-          type = CompiledCompoundType("unused"),
+          type = Character,
           selections = hero
         )
       )

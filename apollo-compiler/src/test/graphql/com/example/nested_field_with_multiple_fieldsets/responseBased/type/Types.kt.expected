@@ -5,9 +5,10 @@
 //
 package com.example.nested_field_with_multiple_fieldsets.type
 
-import com.apollographql.apollo3.api.Interface
-import com.apollographql.apollo3.api.Object
-import com.apollographql.apollo3.api.SchemaType
+import com.apollographql.apollo3.api.CompiledNamedType
+import com.apollographql.apollo3.api.CompiledType
+import com.apollographql.apollo3.api.InterfaceType
+import com.apollographql.apollo3.api.ObjectType
 import com.apollographql.apollo3.api.possibleTypes
 import kotlin.collections.List
 
@@ -16,19 +17,19 @@ import kotlin.collections.List
  * schema. Input objects are left out because they are generated separately
  */
 object Types {
-  val Iface1: Interface = Interface("Iface1")
+  val Iface1: InterfaceType = InterfaceType(name = "Iface1")
 
-  val Iface2: Interface = Interface("Iface2")
+  val Iface2: InterfaceType = InterfaceType(name = "Iface2")
 
-  val Query: Object = Object("Query")
+  val Query: ObjectType = ObjectType(name = "Query")
 
-  val Impl1: Object = Object("Impl1", Iface1)
+  val Impl1: ObjectType = ObjectType(name = "Impl1", implements = listOf(Iface1))
 
-  val Impl2: Object = Object("Impl2", Iface2)
+  val Impl2: ObjectType = ObjectType(name = "Impl2", implements = listOf(Iface2))
 
-  val all: List<SchemaType> = listOf(
+  val all: List<CompiledType> = listOf(
         Iface1, Iface2, Query, Impl1, Impl2)
 
 
-  fun possibleTypes(type: SchemaType): List<Object> = possibleTypes(all, type)
+  fun possibleTypes(type: CompiledNamedType): List<ObjectType> = possibleTypes(all, type)
 }

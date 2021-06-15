@@ -6,15 +6,15 @@
 package com.example.fragment_spread_with_include_directive.fragment.selections
 
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import kotlin.collections.List
 
 object HumanDetailsSelections {
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "homePlanet",
-          type = CompiledOtherType("unused")
+          type = CompiledStringType
         )
       )
 }

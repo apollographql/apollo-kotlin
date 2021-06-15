@@ -1,7 +1,7 @@
 package com.apollographql.apollo3
 
 import com.apollographql.apollo3.ApolloClient.Builder
-import com.apollographql.apollo3.api.CustomScalar
+import com.apollographql.apollo3.api.CustomScalarType
 import com.apollographql.apollo3.api.Logger
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
@@ -382,7 +382,8 @@ class ApolloClient internal constructor(
      */
     @JvmOverloads
     fun normalizedCache(normalizedCacheFactory: NormalizedCacheFactory,
-                        cacheResolver: CacheResolver = CacheResolver.DEFAULT): Builder {
+                        cacheResolver: CacheResolver = CacheResolver()
+    ): Builder {
       cacheFactory = fromNullable(normalizedCacheFactory)
       cacheKeyResolver = fromNullable((cacheResolver))
       return this
@@ -396,7 +397,7 @@ class ApolloClient internal constructor(
      * @param <T> the value type
      * @return The [Builder] object to be used for chaining method calls
     </T> */
-    fun <T> addCustomScalarAdapter(customScalar: CustomScalar,
+    fun <T> addCustomScalarAdapter(customScalar: CustomScalarType,
                                    customScalarAdapter: Adapter<T>): Builder {
       customScalarAdapters[customScalar.name] = customScalarAdapter
       return this
@@ -635,7 +636,7 @@ class ApolloClient internal constructor(
             subscriptionConnectionParams,
             dispatcher,
             subscriptionHeartbeatTimeout,
-            cacheKeyResolver.or(CacheResolver.DEFAULT),
+            cacheKeyResolver.or(CacheResolver()),
             enableAutoPersistedSubscriptions)
       }
       return ApolloClient(serverUrl,

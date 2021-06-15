@@ -6,17 +6,17 @@
 package com.example.named_fragment_inside_inline_fragment.fragment.selections
 
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
+import com.example.named_fragment_inside_inline_fragment.type.Types.Episode
 import kotlin.collections.List
 
 object characterAppearsInSelections {
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "appearsIn",
-          type = CompiledOtherType("unused").list().notNull()
+          type = Episode.list().notNull()
         )
       )
 }

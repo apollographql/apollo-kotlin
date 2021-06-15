@@ -6,15 +6,15 @@
 package com.example.nested_named_fragments.fragment.selections
 
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import kotlin.collections.List
 
 object planetFragmentSelections {
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused")
+          type = CompiledStringType
         )
       )
 }

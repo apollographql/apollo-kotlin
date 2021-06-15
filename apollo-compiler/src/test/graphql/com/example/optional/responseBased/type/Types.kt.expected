@@ -5,11 +5,13 @@
 //
 package com.example.optional.type
 
-import com.apollographql.apollo3.api.CustomScalar
-import com.apollographql.apollo3.api.Interface
-import com.apollographql.apollo3.api.Object
-import com.apollographql.apollo3.api.SchemaType
-import com.apollographql.apollo3.api.Union
+import com.apollographql.apollo3.api.CompiledNamedType
+import com.apollographql.apollo3.api.CompiledType
+import com.apollographql.apollo3.api.CustomScalarType
+import com.apollographql.apollo3.api.EnumType
+import com.apollographql.apollo3.api.InterfaceType
+import com.apollographql.apollo3.api.ObjectType
+import com.apollographql.apollo3.api.UnionType
 import com.apollographql.apollo3.api.possibleTypes
 import kotlin.collections.List
 
@@ -21,101 +23,116 @@ object Types {
   /**
    * The `Date` scalar type represents date format.
    */
-  val Date: CustomScalar = CustomScalar("Date", "kotlin.Any")
+  val Date: CustomScalarType = CustomScalarType("Date", "kotlin.Any")
 
   /**
    * UnsupportedType for testing
    */
-  val UnsupportedType: CustomScalar = CustomScalar("UnsupportedType", "kotlin.Any")
+  val UnsupportedType: CustomScalarType = CustomScalarType("UnsupportedType", "kotlin.Any")
 
   /**
    * URL for testing
    */
-  val URL: CustomScalar = CustomScalar("URL", "kotlin.Any")
+  val URL: CustomScalarType = CustomScalarType("URL", "kotlin.Any")
+
+  /**
+   * The episodes in the Star Wars trilogy
+   */
+  val Episode: EnumType = EnumType("Episode")
+
+  /**
+   * Lower case enum type name
+   */
+  val Hero_type: EnumType = EnumType("hero_type")
+
+  /**
+   * Units of height
+   */
+  val LengthUnit: EnumType = EnumType("LengthUnit")
 
   /**
    * For testing fragment type coercion
    */
-  val Bar: Interface = Interface("Bar")
+  val Bar: InterfaceType = InterfaceType(name = "Bar")
 
   /**
    * A character from the Star Wars universe
    */
-  val Character: Interface = Interface("Character")
+  val Character: InterfaceType = InterfaceType(name = "Character")
 
   /**
    * For testing fragment type coercion
    */
-  val Foo: Interface = Interface("Foo")
+  val Foo: InterfaceType = InterfaceType(name = "Foo")
 
-  val BarObject: Object = Object("BarObject", Bar)
+  val BarObject: ObjectType = ObjectType(name = "BarObject", implements = listOf(Bar))
 
   /**
    * An autonomous mechanical character in the Star Wars universe
    */
-  val Droid: Object = Object("Droid", Character)
+  val Droid: ObjectType = ObjectType(name = "Droid", implements = listOf(Character))
 
   /**
    * For testing fragment type coercion
    */
-  val FooBar: Object = Object("FooBar", Foo, Bar)
+  val FooBar: ObjectType = ObjectType(name = "FooBar", implements = listOf(Bar, Foo))
 
   /**
    * For testing fragment type coercion
    */
-  val FooObject: Object = Object("FooObject", Foo)
+  val FooObject: ObjectType = ObjectType(name = "FooObject", implements = listOf(Foo))
 
   /**
    * A connection object for a character's friends
    */
-  val FriendsConnection: Object = Object("FriendsConnection")
+  val FriendsConnection: ObjectType = ObjectType(name = "FriendsConnection")
 
   /**
    * An edge object for a character's friends
    */
-  val FriendsEdge: Object = Object("FriendsEdge")
+  val FriendsEdge: ObjectType = ObjectType(name = "FriendsEdge")
 
   /**
    * A humanoid creature from the Star Wars universe
    */
-  val Human: Object = Object("Human", Character)
+  val Human: ObjectType = ObjectType(name = "Human", implements = listOf(Character))
 
   /**
    * The mutation type, represents all updates we can make to our data
    */
-  val Mutation: Object = Object("Mutation")
+  val Mutation: ObjectType = ObjectType(name = "Mutation")
 
   /**
    * Information for paginating this connection
    */
-  val PageInfo: Object = Object("PageInfo")
+  val PageInfo: ObjectType = ObjectType(name = "PageInfo")
 
   /**
    * The query type, represents all of the entry points into our object graph
    */
-  val Query: Object = Object("Query")
+  val Query: ObjectType = ObjectType(name = "Query")
 
   /**
    * Represents a review for a movie
    */
-  val Review: Object = Object("Review")
+  val Review: ObjectType = ObjectType(name = "Review")
 
-  val Starship: Object = Object("Starship")
+  val Starship: ObjectType = ObjectType(name = "Starship")
 
   /**
    * To test recursive structures
    */
-  val Tree: Object = Object("Tree")
+  val Tree: ObjectType = ObjectType(name = "Tree")
 
-  val TypeWithGraphQLKeywords: Object = Object("TypeWithGraphQLKeywords")
+  val TypeWithGraphQLKeywords: ObjectType = ObjectType(name = "TypeWithGraphQLKeywords")
 
-  val SearchResult: Union = Union("SearchResult", Human, Droid, Starship)
+  val SearchResult: UnionType = UnionType("SearchResult", Human, Droid, Starship)
 
-  val all: List<SchemaType> = listOf(
-        Date, UnsupportedType, URL, Bar, Character, Foo, BarObject, Droid, FooBar, FooObject,
-            FriendsConnection, FriendsEdge, Human, Mutation, PageInfo, Query, Review, Starship,
-            Tree, TypeWithGraphQLKeywords, SearchResult)
+  val all: List<CompiledType> = listOf(
+        Date, UnsupportedType, URL, Episode, Hero_type, LengthUnit, Bar, Character, Foo, BarObject,
+            Droid, FooBar, FooObject, FriendsConnection, FriendsEdge, Human, Mutation, PageInfo,
+            Query, Review, Starship, Tree, TypeWithGraphQLKeywords, SearchResult)
 
 
-  fun possibleTypes(type: SchemaType): List<Object> = possibleTypes(all, type)
+  fun possibleTypes(type: CompiledNamedType): List<ObjectType> = possibleTypes(all, type)
 }

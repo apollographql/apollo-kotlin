@@ -5,26 +5,32 @@
 //
 package com.example.two_heroes_with_friends.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
+import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledOtherType
+import com.apollographql.apollo3.api.CompiledIDType
+import com.apollographql.apollo3.api.CompiledIntType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
+import com.example.two_heroes_with_friends.type.Types
+import com.example.two_heroes_with_friends.type.Types.Character
+import com.example.two_heroes_with_friends.type.Types.FriendsConnection
+import com.example.two_heroes_with_friends.type.Types.FriendsEdge
 import kotlin.collections.List
 
 object TestQuerySelections {
   private val node: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         )
       )
 
   private val edges: List<CompiledSelection> = listOf(
         CompiledField(
           name = "node",
-          type = CompiledCompoundType("unused"),
+          type = Character,
           selections = node
         )
       )
@@ -32,11 +38,11 @@ object TestQuerySelections {
   private val friendsConnection: List<CompiledSelection> = listOf(
         CompiledField(
           name = "totalCount",
-          type = CompiledOtherType("unused")
+          type = CompiledIntType
         ),
         CompiledField(
           name = "edges",
-          type = CompiledCompoundType("unused").list(),
+          type = FriendsEdge.list(),
           selections = edges
         )
       )
@@ -44,11 +50,11 @@ object TestQuerySelections {
   private val r2: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "friendsConnection",
-          type = CompiledCompoundType("unused").notNull(),
+          type = FriendsConnection.notNull(),
           selections = friendsConnection
         )
       )
@@ -56,14 +62,14 @@ object TestQuerySelections {
   private val node1: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         )
       )
 
   private val edges1: List<CompiledSelection> = listOf(
         CompiledField(
           name = "node",
-          type = CompiledCompoundType("unused"),
+          type = Character,
           selections = node1
         )
       )
@@ -71,11 +77,11 @@ object TestQuerySelections {
   private val friendsConnection1: List<CompiledSelection> = listOf(
         CompiledField(
           name = "totalCount",
-          type = CompiledOtherType("unused")
+          type = CompiledIntType
         ),
         CompiledField(
           name = "edges",
-          type = CompiledCompoundType("unused").list(),
+          type = FriendsEdge.list(),
           selections = edges1
         )
       )
@@ -83,15 +89,15 @@ object TestQuerySelections {
   private val luke: List<CompiledSelection> = listOf(
         CompiledField(
           name = "id",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledIDType.notNull()
         ),
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "friendsConnection",
-          type = CompiledCompoundType("unused").notNull(),
+          type = FriendsConnection.notNull(),
           selections = friendsConnection1
         )
       )
@@ -100,14 +106,15 @@ object TestQuerySelections {
         CompiledField(
           name = "hero",
           alias = "r2",
-          type = CompiledCompoundType("unused"),
+          type = Character,
           selections = r2
         ),
         CompiledField(
           name = "hero",
           alias = "luke",
-          type = CompiledCompoundType("unused"),
-          arguments = mapOf("episode" to "EMPIRE"
+          type = Character,
+          arguments = listOf(
+            CompiledArgument("episode", "EMPIRE")
           ),
           selections = luke
         )

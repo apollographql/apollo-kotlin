@@ -56,16 +56,18 @@ class KotlinCodeGen(
     val builders = mutableListOf<CgFileBuilder>()
     val ignoredBuilders = mutableListOf<CgFileBuilder>()
 
-    val customScalarsBuilder = TypesBuilder(
+    val typesBuilder = TypesBuilder(
         context,
         ir.customScalars,
         ir.objects,
         ir.interfaces,
-        ir.unions
+        ir.unions,
+        ir.allEnums
     )
 
-    if (generateSchema) {
-      builders.add(customScalarsBuilder)
+    builders.add(typesBuilder)
+    if (!generateSchema) {
+      ignoredBuilders.add(typesBuilder)
     }
 
     ir.inputObjects.forEach {

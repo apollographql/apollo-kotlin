@@ -19,8 +19,11 @@ fun GQLTypeDefinition.isFieldNonNull(fieldName: String): Boolean {
     return false
   }
 
-  return (directive.arguments!!.arguments.first().value as GQLListValue)
-      .values
-      .map { (it as GQLStringValue).value }
+  val stringValue = (directive.arguments!!.arguments.first().value as GQLStringValue).value
+
+  val selections = stringValue.parseAsSelections().getOrNull() ?: error("'$stringValue' is not a valid selectionSet")
+
+  return selections.filterIsInstance<GQLField>()
+      .map { it.name }
       .contains(fieldName)
 }

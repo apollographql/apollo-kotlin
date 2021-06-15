@@ -5,31 +5,36 @@
 //
 package com.example.inline_fragment_intersection.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
+import com.apollographql.apollo3.api.CompiledBooleanType
 import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.CompiledFloatType
 import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
+import com.example.inline_fragment_intersection.type.Types
+import com.example.inline_fragment_intersection.type.Types.Anything
+import com.example.inline_fragment_intersection.type.Types.Being
+import com.example.inline_fragment_intersection.type.Types.Race
 import kotlin.collections.List
 
 object TestOperationSelections {
   private val onWookie: List<CompiledSelection> = listOf(
         CompiledField(
           name = "lifeExpectancy",
-          type = CompiledOtherType("unused")
+          type = CompiledFloatType
         )
       )
 
   private val friends: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("Wookie"),
@@ -40,18 +45,18 @@ object TestOperationSelections {
   private val onWookie1: List<CompiledSelection> = listOf(
         CompiledField(
           name = "race",
-          type = CompiledOtherType("unused").notNull()
+          type = Race.notNull()
         )
       )
 
   private val friends1: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "isFamous",
-          type = CompiledOtherType("unused")
+          type = CompiledBooleanType
         ),
         CompiledFragment(
           possibleTypes = listOf("Wookie"),
@@ -62,11 +67,11 @@ object TestOperationSelections {
   private val onHuman: List<CompiledSelection> = listOf(
         CompiledField(
           name = "profilePictureUrl",
-          type = CompiledOtherType("unused")
+          type = CompiledStringType
         ),
         CompiledField(
           name = "friends",
-          type = CompiledCompoundType("unused").notNull().list().notNull(),
+          type = Being.notNull().list().notNull(),
           selections = friends1
         )
       )
@@ -74,15 +79,15 @@ object TestOperationSelections {
   private val onBeing: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "friends",
-          type = CompiledCompoundType("unused").notNull().list().notNull(),
+          type = Being.notNull().list().notNull(),
           selections = friends
         ),
         CompiledFragment(
@@ -94,18 +99,18 @@ object TestOperationSelections {
   private val friends2: List<CompiledSelection> = listOf(
         CompiledField(
           name = "lifeExpectancy",
-          type = CompiledOtherType("unused")
+          type = CompiledFloatType
         )
       )
 
   private val onWookie2: List<CompiledSelection> = listOf(
         CompiledField(
           name = "race",
-          type = CompiledOtherType("unused").notNull()
+          type = Race.notNull()
         ),
         CompiledField(
           name = "friends",
-          type = CompiledCompoundType("unused").notNull().list().notNull(),
+          type = Being.notNull().list().notNull(),
           selections = friends2
         )
       )
@@ -113,14 +118,14 @@ object TestOperationSelections {
   private val onWookie3: List<CompiledSelection> = listOf(
         CompiledField(
           name = "lifeExpectancy",
-          type = CompiledOtherType("unused")
+          type = CompiledFloatType
         )
       )
 
   private val friends3: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("Wookie"),
@@ -131,7 +136,7 @@ object TestOperationSelections {
   private val onBeing1: List<CompiledSelection> = listOf(
         CompiledField(
           name = "friends",
-          type = CompiledCompoundType("unused").notNull().list().notNull(),
+          type = Being.notNull().list().notNull(),
           selections = friends3
         )
       )
@@ -139,7 +144,7 @@ object TestOperationSelections {
   private val random: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("Human", "Wookie"),
@@ -158,7 +163,7 @@ object TestOperationSelections {
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "random",
-          type = CompiledCompoundType("unused").notNull(),
+          type = Anything.notNull(),
           selections = random
         )
       )

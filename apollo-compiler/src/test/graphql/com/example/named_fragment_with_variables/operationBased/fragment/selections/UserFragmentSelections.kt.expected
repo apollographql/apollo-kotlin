@@ -5,10 +5,11 @@
 //
 package com.example.named_fragment_with_variables.fragment.selections
 
+import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.Variable
+import com.apollographql.apollo3.api.CompiledStringType
+import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
@@ -16,16 +17,17 @@ object UserFragmentSelections {
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "firstName",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "lastName",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "avatar",
-          type = CompiledOtherType("unused").notNull(),
-          arguments = mapOf("size" to Variable("size")
+          type = CompiledStringType.notNull(),
+          arguments = listOf(
+            CompiledArgument("size", CompiledVariable("size"))
           )
         )
       )

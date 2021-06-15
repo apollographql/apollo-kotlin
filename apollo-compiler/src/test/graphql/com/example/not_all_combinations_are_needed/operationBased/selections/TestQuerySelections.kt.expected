@@ -5,20 +5,20 @@
 //
 package com.example.not_all_combinations_are_needed.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
 import com.example.not_all_combinations_are_needed.fragment.selections.bFragmentSelections
+import com.example.not_all_combinations_are_needed.type.Types.C
 import kotlin.collections.List
 
 object TestQuerySelections {
   private val onB: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("ABC", "SomeBC"),
@@ -29,11 +29,11 @@ object TestQuerySelections {
   private val onA: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "fieldA1",
-          type = CompiledOtherType("unused")
+          type = CompiledStringType
         ),
         CompiledFragment(
           possibleTypes = listOf("ABC", "SomeBC"),
@@ -44,7 +44,7 @@ object TestQuerySelections {
   private val root1: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("ABC"),
@@ -55,7 +55,7 @@ object TestQuerySelections {
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "root",
-          type = CompiledCompoundType("unused"),
+          type = C,
           selections = root1
         )
       )

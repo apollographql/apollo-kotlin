@@ -1,11 +1,8 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
-import com.apollographql.apollo3.api.CompiledCompoundType
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledNotNullType
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledType
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.exception.CacheMissException
 import com.apollographql.apollo3.cache.CacheHeaders
@@ -36,12 +33,6 @@ class CacheBatchReader(
   private val data = mutableMapOf<String, Map<String, Any?>>()
 
   private val pendingReferences = mutableListOf<PendingReference>()
-
-  private fun CompiledType.isCompound(): Boolean = when (this) {
-    is CompiledNotNullType -> ofType.isCompound()
-    is CompiledCompoundType -> true
-    else -> false
-  }
 
   private class CollectState {
     val fields = mutableListOf<CompiledField>()
@@ -94,7 +85,7 @@ class CacheBatchReader(
       copy.forEach { pendingReference ->
         var record = records[pendingReference.key]
         if (record == null) {
-          if (pendingReference.key == CacheResolver.rootKey().key) {
+          if (pendingReference.key == CacheKey.rootKey().key) {
             record = Record(pendingReference.key, emptyMap())
           } else {
             throw CacheMissException(pendingReference.key)

@@ -124,6 +124,27 @@ fun File.parseAsGQLValue() = source().buffer().parseAsGQLValue(absolutePath)
 fun String.parseAsGQLValue() = byteInputStream().source().buffer().parseAsGQLValue()
 
 /**
+ * Parses a GraphQL value to a [GQLValue], validating the grammar but not the contents of the value.
+ */
+fun BufferedSource.parseAsSelections(filePath: String? = null): ParseResult<List<GQLSelection>> = use {
+  return antlrParse(it, filePath) { parser ->
+    parser.selections()
+  }.map { selectionsContext ->
+    selectionsContext.selection().map { it.toGQLSelection() }
+  }
+}
+
+/**
+ * See [parseAsGQLValue]
+ */
+fun File.parseAsSelections() = source().buffer().parseAsSelections(absolutePath)
+
+/**
+ * See [parseAsGQLValue]
+ */
+fun String.parseAsSelections() = byteInputStream().source().buffer().parseAsSelections()
+
+/**
  * Plain parsing, without validation or adding the builtin types
  */
 private fun <T : ParserRuleContext> antlrParse(

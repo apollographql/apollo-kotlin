@@ -5,41 +5,44 @@
 //
 package com.example.interface_on_interface.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
 import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.CompiledFloatType
 import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledOtherType
+import com.apollographql.apollo3.api.CompiledIDType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
+import com.example.interface_on_interface.type.Types.Human
+import com.example.interface_on_interface.type.Types.Node
 import kotlin.collections.List
 
 object GetHumanSelections {
   private val human: List<CompiledSelection> = listOf(
         CompiledField(
           name = "id",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledIDType.notNull()
         ),
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "height",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledFloatType.notNull()
         )
       )
 
   private val onHuman: List<CompiledSelection> = listOf(
         CompiledField(
           name = "height",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledFloatType.notNull()
         )
       )
 
   private val node: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("Human"),
@@ -50,12 +53,12 @@ object GetHumanSelections {
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "human",
-          type = CompiledCompoundType("unused").notNull(),
+          type = Human.notNull(),
           selections = human
         ),
         CompiledField(
           name = "node",
-          type = CompiledCompoundType("unused").notNull(),
+          type = Node.notNull(),
           selections = node
         )
       )

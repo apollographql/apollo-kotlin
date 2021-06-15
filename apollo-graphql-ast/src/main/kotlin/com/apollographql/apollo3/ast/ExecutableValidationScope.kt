@@ -5,15 +5,16 @@ import java.util.Locale
 /**
  * @param fragmentDefinitions: all the fragments in the current compilation unit. This is required to check the type conditions as well as fields merging
  */
-internal class ExecutableValidationScope(private val schema: Schema, private val fragmentDefinitions: Map<String, GQLFragmentDefinition>) {
-  private val typeDefinitions = schema.typeDefinitions
+internal class ExecutableValidationScope(private val schema: Schema, private val fragmentDefinitions: Map<String, GQLFragmentDefinition>): ValidationScope, VariableReferencesScope {
+  override val typeDefinitions = schema.typeDefinitions
+  override val directiveDefinitions = schema.directiveDefinitions
 
-  private val issues = mutableListOf<Issue>()
+  override val issues = mutableListOf<Issue>()
 
   /**
    * As the tree is walked, variable references will be put here
    */
-  private val variableReferences = mutableListOf<VariableReference>()
+  override val variableReferences = mutableListOf<VariableReference>()
 
   fun validate(document: GQLDocument): List<Issue> {
     document.validateExecutable()
@@ -71,10 +72,10 @@ internal class ExecutableValidationScope(private val schema: Schema, private val
   private fun GQLField.validate(typeDefinitionInScope: GQLTypeDefinition) {
     val fieldDefinition = definitionFromScope(schema, typeDefinitionInScope)
     if (fieldDefinition == null) {
-      issues.add(Issue.ValidationError(
+      registerIssue(
           message = "Can't query `$name` on type `${typeDefinitionInScope.name}`",
           sourceLocation = sourceLocation
-      ))
+      )
       return
     }
 
@@ -97,85 +98,42 @@ internal class ExecutableValidationScope(private val schema: Schema, private val
     if (fieldDefinition.isDeprecated()) {
       issues.add(Issue.DeprecatedUsage(message = "Use of deprecated field `$name`", sourceLocation = sourceLocation))
     }
-    arguments?.validate(fieldDefinition.arguments, "field `${fieldDefinition.name}`")
+    arguments?.let {
+      validateArguments(it, fieldDefinition.arguments, "field `${fieldDefinition.name}`")
+    }
 
     val leafTypeDefinition = typeDefinitions[fieldDefinition.type.leafType().name]
 
     if (leafTypeDefinition == null) {
-      issues.add(Issue.ValidationError(
+      registerIssue(
           message = "Unknown type `${fieldDefinition.type.leafType().name}`",
           sourceLocation = sourceLocation
-      ))
+      )
       return
     }
 
     if (leafTypeDefinition !is GQLScalarTypeDefinition
         && leafTypeDefinition !is GQLEnumTypeDefinition) {
       if (selectionSet == null) {
-        issues.add(Issue.ValidationError(
+        registerIssue(
             message = "Field `$name` of type `${fieldDefinition.type.pretty()}` must have a selection of sub-fields",
             sourceLocation = sourceLocation
-        ))
+        )
         return
       }
       selectionSet.validate(leafTypeDefinition)
     } else {
       if (selectionSet != null) {
-        issues.add(Issue.ValidationError(
+        registerIssue(
             message = "Field `$name` of type `${fieldDefinition.type.pretty()}` must not have a selection of sub-fields",
             sourceLocation = sourceLocation
-        ))
+        )
         return
       }
     }
 
     directives.forEach {
-      it.validate(GQLDirectiveLocation.FIELD)
-    }
-  }
-
-
-  private fun GQLDirective.validate(directiveLocation: GQLDirectiveLocation) {
-    val directiveDefinition = schema.directiveDefinitions[name]
-
-    if (directiveDefinition == null) {
-      issues.add(
-          Issue.UnknownDirective(
-              message = "Unknown directive '$name'",
-              sourceLocation = sourceLocation
-          )
-      )
-      return
-    }
-
-    if (directiveLocation !in directiveDefinition.locations) {
-      issues.add(
-          Issue.ValidationError(
-              message = "Directive '$name' cannot be applied on '$directiveLocation'",
-              sourceLocation = sourceLocation
-          )
-      )
-      return
-    }
-
-    arguments?.validate(directiveDefinition.arguments, "directive '${directiveDefinition.name}'")
-
-    if (name == "nonnull") {
-      if (directiveLocation == GQLDirectiveLocation.FIELD && (arguments?.arguments?.size ?: 0) > 0) {
-        issues.add(
-            Issue.ValidationError(
-                message = "'$name' cannot have arguments when applied on a field",
-                sourceLocation = sourceLocation
-            )
-        )
-      } else if (directiveLocation == GQLDirectiveLocation.OBJECT && (arguments?.arguments?.size ?: 0) == 0) {
-        issues.add(
-            Issue.ValidationError(
-                message = "'$name' must contain a list of fields",
-                sourceLocation = sourceLocation
-            )
-        )
-      }
+      validateDirective(it, this)
     }
   }
 
@@ -183,68 +141,66 @@ internal class ExecutableValidationScope(private val schema: Schema, private val
   private fun GQLInlineFragment.validate(typeDefinitionInScope: GQLTypeDefinition) {
     val inlineFragmentTypeDefinition = typeDefinitions[typeCondition.name]
     if (inlineFragmentTypeDefinition == null) {
-      issues.add(Issue.ValidationError(
+      registerIssue(
           message = "Cannot find type `${typeCondition.name}` for inline fragment",
           sourceLocation = typeCondition.sourceLocation
-      ))
+      )
       return
     }
 
     if (!inlineFragmentTypeDefinition.sharesPossibleTypesWith(other = typeDefinitionInScope, schema = schema)) {
-      issues.add(Issue.ValidationError(
+      registerIssue(
           message = "Inline fragment cannot be spread here as result can never be of type `${typeCondition.name}`",
           sourceLocation = typeCondition.sourceLocation
-      ))
+      )
       return
     }
 
     selectionSet.validate(inlineFragmentTypeDefinition)
 
     directives.forEach {
-      it.validate(GQLDirectiveLocation.INLINE_FRAGMENT)
+      validateDirective(it, this)
     }
   }
 
   private fun GQLFragmentSpread.validate(typeDefinitionInScope: GQLTypeDefinition) {
     val fragmentDefinition = fragmentDefinitions[name]
     if (fragmentDefinition == null) {
-      issues.add(Issue.ValidationError(
+      registerIssue(
           message = "Cannot find fragment `$name`",
           sourceLocation = sourceLocation
-      ))
+      )
       return
     }
 
     val fragmentTypeDefinition = typeDefinitions[fragmentDefinition.typeCondition.name]
     if (fragmentTypeDefinition == null) {
-      issues.add(
-          Issue.ValidationError(
+      registerIssue(
               message = "Cannot find type `${fragmentDefinition.typeCondition.name}` for fragment $name",
               sourceLocation = fragmentDefinition.typeCondition.sourceLocation
-          )
       )
       return
     }
 
     if (!fragmentTypeDefinition.sharesPossibleTypesWith(other = typeDefinitionInScope, schema = schema)) {
-      issues.add(Issue.ValidationError(
+      registerIssue(
           message = "Fragment `$name` cannot be spread here as result can never be of type `${typeDefinitionInScope.name}`",
           sourceLocation = sourceLocation
-      ))
+      )
       return
     }
 
     fragmentDefinition.selectionSet.validate(fragmentTypeDefinition)
 
     directives.forEach {
-      it.validate(GQLDirectiveLocation.FRAGMENT_SPREAD)
+      validateDirective(it, this)
     }
   }
 
   private fun GQLDocument.validateExecutable() {
     definitions.firstOrNull { it !is GQLOperationDefinition && it !is GQLFragmentDefinition }
         ?.let {
-          issues.add(Issue.ValidationError(message = "Found an non-executable definition.", sourceLocation = it.sourceLocation))
+          registerIssue(message = "Found an non-executable definition.", sourceLocation = it.sourceLocation)
           return
         }
   }
@@ -264,10 +220,10 @@ internal class ExecutableValidationScope(private val schema: Schema, private val
   private fun GQLFragmentDefinition.validate() {
     val fragmentRootTypeDefinition = typeDefinitions[typeCondition.name]
     if (fragmentRootTypeDefinition == null) {
-      issues.add(Issue.ValidationError(
+      registerIssue(
           message = "Cannot find type `${typeCondition.name}` for fragment `$name`",
           sourceLocation = typeCondition.sourceLocation
-      ))
+      )
       return
     }
 
@@ -288,10 +244,10 @@ internal class ExecutableValidationScope(private val schema: Schema, private val
     val rootTypeDefinition = rootTypeDefinition(schema)
 
     if (rootTypeDefinition == null) {
-      issues.add(Issue.ValidationError(
+      registerIssue(
           message = "Cannot find a root type for operation type `$operationType`",
           sourceLocation = sourceLocation
-      ))
+      )
       return
     }
 
@@ -316,10 +272,10 @@ internal class ExecutableValidationScope(private val schema: Schema, private val
   private fun GQLSelectionSet.validate(typeDefinitionInScope: GQLTypeDefinition) {
     if (selections.isEmpty()) {
       // This will never happen from parsing documents but is kept for reference and to catch bad manual document modifications
-      issues.add(Issue.ValidationError(
+      registerIssue(
           message = "Selection of type `${typeDefinitionInScope.name}` must have a selection of sub-fields",
           sourceLocation = sourceLocation
-      ))
+      )
       return
     }
 
@@ -422,15 +378,15 @@ internal class ExecutableValidationScope(private val schema: Schema, private val
   }
 
   private fun addFieldMergingIssue(fieldA: GQLField, fieldB: GQLField, message: String) {
-    issues.add(Issue.ValidationError(
+    registerIssue(
         message = "`${fieldA.responseName()}` cannot be merged with `${fieldB.responseName()}`: $message",
         sourceLocation = fieldA.sourceLocation
-    ))
+    )
     // Also add the symmetrical error
-    issues.add(Issue.ValidationError(
+    registerIssue(
         message = "`${fieldB.responseName()}` cannot be merged with `${fieldA.responseName()}`: $message",
         sourceLocation = fieldB.sourceLocation
-    ))
+    )
   }
 
   private fun areValuesEqual(valueA: GQLValue, valueB: GQLValue): Boolean {
@@ -591,67 +547,5 @@ internal class ExecutableValidationScope(private val schema: Schema, private val
     return fragmentDefinition
         .selectionSet
         .collectFields(fragmentDefinition.typeCondition.name)
-  }
-
-  private fun GQLArgument.validate(inputValueDefinitions: List<GQLInputValueDefinition>, debug: String) {
-    val schemaArgument = inputValueDefinitions.firstOrNull { it.name == name }
-    if (schemaArgument == null) {
-      issues.add(Issue.ValidationError(message = "Unknown argument `$name` on $debug", sourceLocation = sourceLocation))
-      return
-    }
-
-    // 5.6.2 Input Object Field Names
-    // Note that this does not modify the document, it calls coerce because it's easier
-    // to validate at the same time but the coerced result is not used here
-    val coercionResult = value.validateAndCoerce(schemaArgument.type, schema)
-    variableReferences.addAll(coercionResult.variableReferences)
-    issues.addAll(coercionResult.issues)
-  }
-
-  private fun GQLArguments.validate(inputValueDefinitions: List<GQLInputValueDefinition>, debug: String) {
-    // 5.4.2 Argument Uniqueness
-    arguments.groupBy { it.name }.filter { it.value.size > 1 }.toList().firstOrNull()?.let {
-      issues.add(Issue.ValidationError(message = "Argument `${it.first}` is defined multiple times", sourceLocation = it.second.first().sourceLocation))
-      return
-    }
-
-    // 5.4.2.1 Required arguments
-    inputValueDefinitions.forEach { inputValueDefinition ->
-      if (inputValueDefinition.type is GQLNonNullType && inputValueDefinition.defaultValue == null) {
-        val argumentValue = arguments.firstOrNull { it.name == inputValueDefinition.name }?.value
-        if (argumentValue is GQLNullValue) {
-          // This will be caught later when validating individual arguments
-          // issues.add(Issue.ValidationError(message = "Cannot pass `null` for a required argument", sourceLocation = argumentValue.sourceLocation))
-        } else if (argumentValue == null) {
-          issues.add(Issue.ValidationError(message = "No value passed for required argument ${inputValueDefinition.name}", sourceLocation = sourceLocation))
-        }
-      }
-    }
-
-    arguments.forEach {
-      it.validate(inputValueDefinitions, debug)
-    }
-  }
-
-  private fun validateVariable(operation: GQLOperationDefinition?, value: GQLVariableValue, expectedType: GQLType) {
-    if (operation == null) {
-      // if operation is null, it means we're currently validating a fragment outside the context of an operation
-      return
-    }
-
-    val variableDefinition = operation.variableDefinitions.firstOrNull { it.name == value.name }
-    if (variableDefinition == null) {
-      issues.add(Issue.ValidationError(
-          message = "Variable `${value.name}` is not defined by operation `${operation.name}`",
-          sourceLocation = value.sourceLocation
-      ))
-      return
-    }
-    if (!variableDefinition.type.canInputValueBeAssignedTo(target = expectedType)) {
-      issues.add(Issue.ValidationError(
-          message = "Variable `${value.name}` of type `${variableDefinition.type.pretty()}` used in position expecting type `${expectedType.pretty()}`",
-          sourceLocation = value.sourceLocation
-      ))
-    }
   }
 }

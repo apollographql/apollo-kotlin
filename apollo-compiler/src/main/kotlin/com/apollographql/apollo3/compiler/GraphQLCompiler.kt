@@ -17,7 +17,7 @@ class GraphQLCompiler {
   }
 
   fun write(
-      operationFiles: Set<File>,
+      executableFiles: Set<File>,
       outputDir: File,
       debugDir: File? = null,
       incomingOptions: IncomingOptions,
@@ -30,9 +30,12 @@ class GraphQLCompiler {
     debugDir?.deleteRecursively()
     debugDir?.mkdirs()
 
+    /**
+     * Step 1: parse the documents
+     */
     val definitions = mutableListOf<GQLDefinition>()
     val parseIssues = mutableListOf<Issue>()
-    operationFiles.map { file ->
+    executableFiles.map { file ->
       when(val parseResult = file.parseAsGQLDocument()) {
         is ParseResult.Success -> definitions.addAll(parseResult.value.definitions)
         is ParseResult.Error -> parseIssues.addAll(parseResult.issues)
@@ -42,6 +45,9 @@ class GraphQLCompiler {
     // Parsing issues are fatal
     parseIssues.checkNoErrors()
 
+    /**
+     * Step 2, GraphQL validation
+     */
     val validationIssues = GQLDocument(
         definitions = definitions + incomingOptions.metadataFragments.map { it.definition },
         filePath = null
@@ -49,30 +55,43 @@ class GraphQLCompiler {
 
     validationIssues.checkNoErrors()
 
-    if (moduleOptions.warnOnDeprecatedUsages) {
-      val warnings = validationIssues.filter { it.severity == Issue.Severity.WARNING }
-      warnings.forEach {
-        // antlr is 0-indexed but IntelliJ is 1-indexed. Add 1 so that clicking the link will land on the correct location
-        val column = it.sourceLocation.position + 1
-        // Using this format, IntelliJ will parse the warning and display it in the 'run' panel
-        // XXX: uniformize with error handling above
-        moduleOptions.logger.warning("w: ${it.sourceLocation.filePath}:${it.sourceLocation.line}:${column}: ApolloGraphQL: ${it.message}")
-      }
-      if (moduleOptions.failOnWarnings && warnings.isNotEmpty()) {
-        throw IllegalStateException("ApolloGraphQL: Warnings found and 'failOnWarnings' is true, aborting.")
-      }
+    val warnings = validationIssues.filter {
+      it.severity == Issue.Severity.WARNING && (it !is Issue.DeprecatedUsage || moduleOptions.warnOnDeprecatedUsages)
+    }
+    warnings.forEach {
+      // Using this format, IntelliJ will parse the warning and display it in the 'run' panel
+      moduleOptions.logger.warning("w: ${it.sourceLocation.pretty()}: ApolloGraphQL: ${it.message}")
+    }
+    if (moduleOptions.failOnWarnings && warnings.isNotEmpty()) {
+      throw IllegalStateException("ApolloGraphQL: Warnings found and 'failOnWarnings' is true, aborting.")
     }
 
+    /**
+     * Step 3, Modify the AST to add typename and key fields
+     */
+    val incomingFragments = incomingOptions.metadataFragments.map { it.definition }
+    var allFragmentDefinitions = (definitions.filterIsInstance<GQLFragmentDefinition>() + incomingFragments).associateBy { it.name }
     val fragments = definitions.filterIsInstance<GQLFragmentDefinition>().map {
-      it.withTypenameWhenNeeded(incomingOptions.schema)
+      addRequiredFields(it, incomingOptions.schema)
     }
 
     val operations = definitions.filterIsInstance<GQLOperationDefinition>().map {
-      it.withTypenameWhenNeeded(incomingOptions.schema)
+      addRequiredFields(it, incomingOptions.schema)
     }
 
-    val allFragmentDefinitions = (fragments + incomingOptions.metadataFragments.map { it.definition }).associateBy { it.name }
+    // Update the fragments with the possibly updated fragments
+    allFragmentDefinitions = (fragments + incomingFragments).associateBy { it.name }
 
+    operations.forEach {
+      checkKeyFields(it, incomingOptions.schema, allFragmentDefinitions)
+    }
+    fragments.forEach {
+      checkKeyFields(it, incomingOptions.schema, allFragmentDefinitions)
+    }
+
+    /**
+     * Build the IR
+     */
     val ir = IrBuilder(
         schema = incomingOptions.schema,
         operationDefinitions = operations,
@@ -105,6 +124,9 @@ class GraphQLCompiler {
       moduleOptions.operationOutputFile.writeText(operationOutput.toJson("  "))
     }
 
+    /**
+     * Write the generated models
+     */
     KotlinCodeGen(
         ir = ir,
         generateAsInternal = moduleOptions.generateAsInternal,
@@ -222,8 +244,6 @@ class GraphQLCompiler {
             filePath = null
         )
 
-        schemaDocument.validateAsSchema().checkNoErrors()
-
         val schema = schemaDocument.toSchema()
 
         return IncomingOptions(
@@ -248,7 +268,6 @@ class GraphQLCompiler {
       }
     }
   }
-
 
   data class ModuleOptions(
       /**

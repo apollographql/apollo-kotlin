@@ -5,20 +5,20 @@
 //
 package com.example.fragment_with_multiple_fieldsets.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
 import com.example.fragment_with_multiple_fieldsets.fragment.selections.iFragmentSelections
+import com.example.fragment_with_multiple_fieldsets.type.Types.I
 import kotlin.collections.List
 
 object TestQuerySelections {
   private val i: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("A", "B"),
@@ -29,7 +29,7 @@ object TestQuerySelections {
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "i",
-          type = CompiledCompoundType("unused"),
+          type = I,
           selections = i
         )
       )

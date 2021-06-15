@@ -49,10 +49,8 @@ class CgLayout(
 
   // ------------------------ Names ---------------------------------
 
-  internal fun customScalarName(name: String) = capitalizedIdentifier(name)
-  internal fun objectName(name: String) = capitalizedIdentifier(name)
-  internal fun interfaceName(name: String) = capitalizedIdentifier(name)
-  internal fun unionName(name: String) = capitalizedIdentifier(name)
+  internal fun compiledTypeName(name: String) = capitalizedIdentifier(name)
+
   internal fun enumName(name: String) = regularIdentifier(name)
 
   // We used to write upper case enum values but the server can define different values with different cases
@@ -90,6 +88,7 @@ class CgLayout(
   internal fun variableName(name: String) = regularIdentifier(name)
   internal fun propertyName(name: String) = regularIdentifier(name)
   internal fun typesName() = "Types"
+  internal fun cacheResolverName() = "ApolloCacheResolver"
 
   // ------------------------ Helpers ---------------------------------
   private fun regularIdentifier(name: String) = name.escapeKotlinReservedWord()

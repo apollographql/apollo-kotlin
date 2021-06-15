@@ -5,9 +5,10 @@
 //
 package com.example.multiple_fragments.type
 
-import com.apollographql.apollo3.api.Interface
-import com.apollographql.apollo3.api.Object
-import com.apollographql.apollo3.api.SchemaType
+import com.apollographql.apollo3.api.CompiledNamedType
+import com.apollographql.apollo3.api.CompiledType
+import com.apollographql.apollo3.api.InterfaceType
+import com.apollographql.apollo3.api.ObjectType
 import com.apollographql.apollo3.api.possibleTypes
 import kotlin.collections.List
 
@@ -16,19 +17,19 @@ import kotlin.collections.List
  * schema. Input objects are left out because they are generated separately
  */
 object Types {
-  val Node: Interface = Interface("Node")
+  val Node: InterfaceType = InterfaceType(name = "Node")
 
-  val Query: Object = Object("Query")
+  val Query: ObjectType = ObjectType(name = "Query")
 
-  val A: Object = Object("A")
+  val A: ObjectType = ObjectType(name = "A")
 
-  val ANode: Object = Object("ANode", Node)
+  val ANode: ObjectType = ObjectType(name = "ANode", implements = listOf(Node))
 
-  val BNode: Object = Object("BNode", Node)
+  val BNode: ObjectType = ObjectType(name = "BNode", implements = listOf(Node))
 
-  val all: List<SchemaType> = listOf(
+  val all: List<CompiledType> = listOf(
         Node, Query, A, ANode, BNode)
 
 
-  fun possibleTypes(type: SchemaType): List<Object> = possibleTypes(all, type)
+  fun possibleTypes(type: CompiledNamedType): List<ObjectType> = possibleTypes(all, type)
 }

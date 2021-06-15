@@ -5,31 +5,35 @@
 //
 package com.example.inline_fragments_with_friends.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
 import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.CompiledFloatType
 import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledOtherType
+import com.apollographql.apollo3.api.CompiledIDType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
+import com.example.inline_fragments_with_friends.type.Types
+import com.example.inline_fragments_with_friends.type.Types.Character
+import com.example.inline_fragments_with_friends.type.Types.Episode
 import kotlin.collections.List
 
 object TestQuerySelections {
   private val friends: List<CompiledSelection> = listOf(
         CompiledField(
           name = "appearsIn",
-          type = CompiledOtherType("unused").list().notNull()
+          type = Episode.list().notNull()
         )
       )
 
   private val onHuman: List<CompiledSelection> = listOf(
         CompiledField(
           name = "height",
-          type = CompiledOtherType("unused")
+          type = CompiledFloatType
         ),
         CompiledField(
           name = "friends",
-          type = CompiledCompoundType("unused").list(),
+          type = Character.list(),
           selections = friends
         )
       )
@@ -37,18 +41,18 @@ object TestQuerySelections {
   private val friends1: List<CompiledSelection> = listOf(
         CompiledField(
           name = "id",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledIDType.notNull()
         )
       )
 
   private val onDroid: List<CompiledSelection> = listOf(
         CompiledField(
           name = "primaryFunction",
-          type = CompiledOtherType("unused")
+          type = CompiledStringType
         ),
         CompiledField(
           name = "friends",
-          type = CompiledCompoundType("unused").list(),
+          type = Character.list(),
           selections = friends1
         )
       )
@@ -56,11 +60,11 @@ object TestQuerySelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("Human"),
@@ -75,7 +79,7 @@ object TestQuerySelections {
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "hero",
-          type = CompiledCompoundType("unused"),
+          type = Character,
           selections = hero
         )
       )

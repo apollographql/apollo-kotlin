@@ -5,29 +5,32 @@
 //
 package com.example.two_heroes_unique.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
+import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledOtherType
+import com.apollographql.apollo3.api.CompiledIDType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
+import com.example.two_heroes_unique.type.Types
+import com.example.two_heroes_unique.type.Types.Character
 import kotlin.collections.List
 
 object TestQuerySelections {
   private val r2: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         )
       )
 
   private val luke: List<CompiledSelection> = listOf(
         CompiledField(
           name = "id",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledIDType.notNull()
         ),
         CompiledField(
           name = "name",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         )
       )
 
@@ -35,14 +38,15 @@ object TestQuerySelections {
         CompiledField(
           name = "hero",
           alias = "r2",
-          type = CompiledCompoundType("unused"),
+          type = Character,
           selections = r2
         ),
         CompiledField(
           name = "hero",
           alias = "luke",
-          type = CompiledCompoundType("unused"),
-          arguments = mapOf("episode" to "EMPIRE"
+          type = Character,
+          arguments = listOf(
+            CompiledArgument("episode", "EMPIRE")
           ),
           selections = luke
         )

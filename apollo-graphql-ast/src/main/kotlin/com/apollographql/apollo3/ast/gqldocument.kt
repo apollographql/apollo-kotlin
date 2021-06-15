@@ -4,11 +4,18 @@ import okio.buffer
 import okio.source
 
 /**
- * Validates the given document as a schema. The document should not contain any builtin types
+ * - Validate the given document as a schema.
+ * - Add a schema definition if there is none
+ * - Merge type extensions
  *
- * The current validation is very simple and will only catch very simple errors
+ * @receiver the input document to validate and merge. It should not contain any builtin types
+ * The current validation is very simple and will only catch simple errors
  */
-fun GQLDocument.validateAsSchema() = SchemaValidationScope().validate(this)
+fun GQLDocument.validateAsSchema(): List<Issue> {
+  val scope = SchemaValidationScope(this)
+  scope.validateDocumentAndMergeExtensions()
+  return scope.issues
+}
 
 /**
  * Validates the given document as an executable document.
@@ -46,7 +53,10 @@ fun GQLDocument.withApolloDefinitions(): GQLDocument {
 }
 
 fun GQLDocument.toSchema(): Schema {
-  return Schema(this)
+  val scope = SchemaValidationScope(this)
+  val mergedDefinitions = scope.validateDocumentAndMergeExtensions()
+  scope.issues.checkNoErrors()
+  return Schema(mergedDefinitions)
 }
 
 /**
@@ -145,32 +155,4 @@ private fun List<GQLOperationDefinition>.checkDuplicateOperations(): List<Issue>
     }
   }
   return issues
-}
-
-internal fun GQLDocument.rootOperationTypeDefinition(operationType: String): GQLObjectTypeDefinition? {
-  val schemaDefinition = definitions.filterIsInstance<GQLSchemaDefinition>()
-      .firstOrNull()
-  if (schemaDefinition == null) {
-    // 3.3.1
-    // If there is no schema definition, look for an object type named after the operationType
-    // i.e. Query, Mutation, ...
-    val typeName = when (operationType) {
-      "query" -> "Query"
-      "mutation" -> "Mutation"
-      "subscription" -> "Subscription"
-      else -> error("Unknown operationType $operationType")
-    }
-    return definitions.filterIsInstance<GQLObjectTypeDefinition>().firstOrNull { it.name == typeName }
-  }
-  return schemaDefinition.rootOperationTypeDefinitions.firstOrNull {
-    it.operationType == operationType
-  }?.namedType
-      ?.let { namedType ->
-        definitions.filterIsInstance<GQLObjectTypeDefinition>()
-            .firstOrNull { it.name == namedType }
-            ?: throw SchemaValidationException(
-                error = "Schema defines `$namedType` as root for `$operationType` but `$namedType` is not defined",
-                sourceLocation = sourceLocation
-            )
-      }
 }

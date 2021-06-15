@@ -1,0 +1,1 @@
+extend type Query @nonnull(fields: "field2")

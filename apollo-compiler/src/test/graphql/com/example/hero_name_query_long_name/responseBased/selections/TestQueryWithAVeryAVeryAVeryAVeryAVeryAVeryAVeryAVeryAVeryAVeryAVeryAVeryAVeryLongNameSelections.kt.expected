@@ -5,12 +5,13 @@
 //
 package com.example.hero_name_query_long_name.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
+import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.Variable
+import com.apollographql.apollo3.api.CompiledStringType
+import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.notNull
+import com.example.hero_name_query_long_name.type.Types.Character
 import kotlin.collections.List
 
 object
@@ -20,7 +21,7 @@ object
         CompiledField(
           name = "name",
           alias = "nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         )
       )
 
@@ -28,9 +29,9 @@ object
         CompiledField(
           name = "hero",
           alias = "heroAVeryAVeryAVeryAVeryAVeryAVeryAV",
-          type = CompiledCompoundType("unused"),
-          arguments = mapOf("episode" to
-                Variable("episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")
+          type = Character,
+          arguments = listOf(
+            CompiledArgument("episode", CompiledVariable("episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName"))
           ),
           selections = heroAVeryAVeryAVeryAVeryAVeryAVeryAV
         )

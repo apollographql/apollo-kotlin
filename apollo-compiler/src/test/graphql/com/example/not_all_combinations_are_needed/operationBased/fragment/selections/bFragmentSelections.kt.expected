@@ -6,15 +6,15 @@
 package com.example.not_all_combinations_are_needed.fragment.selections
 
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import kotlin.collections.List
 
 object bFragmentSelections {
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "fieldB1",
-          type = CompiledOtherType("unused")
+          type = CompiledStringType
         )
       )
 }

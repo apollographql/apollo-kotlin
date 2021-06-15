@@ -5,33 +5,35 @@
 //
 package com.example.nested_field_with_multiple_fieldsets.selections
 
-import com.apollographql.apollo3.api.CompiledCompoundType
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
+import com.example.nested_field_with_multiple_fieldsets.type.Types
+import com.example.nested_field_with_multiple_fieldsets.type.Types.Iface1
+import com.example.nested_field_with_multiple_fieldsets.type.Types.Iface2
 import kotlin.collections.List
 
 object TestQuerySelections {
   private val onIface2: List<CompiledSelection> = listOf(
         CompiledField(
           name = "scalar1",
-          type = CompiledOtherType("unused")
+          type = CompiledStringType
         )
       )
 
   private val onImpl2: List<CompiledSelection> = listOf(
         CompiledField(
           name = "scalar2",
-          type = CompiledOtherType("unused")
+          type = CompiledStringType
         )
       )
 
   private val iface2: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("Impl2"),
@@ -46,7 +48,7 @@ object TestQuerySelections {
   private val onIface1: List<CompiledSelection> = listOf(
         CompiledField(
           name = "iface2",
-          type = CompiledCompoundType("unused"),
+          type = Iface2,
           selections = iface2
         )
       )
@@ -54,21 +56,21 @@ object TestQuerySelections {
   private val onIface21: List<CompiledSelection> = listOf(
         CompiledField(
           name = "scalar3",
-          type = CompiledOtherType("unused")
+          type = CompiledStringType
         )
       )
 
   private val onImpl21: List<CompiledSelection> = listOf(
         CompiledField(
           name = "scalar4",
-          type = CompiledOtherType("unused")
+          type = CompiledStringType
         )
       )
 
   private val iface21: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("Impl2"),
@@ -83,7 +85,7 @@ object TestQuerySelections {
   private val onImpl1: List<CompiledSelection> = listOf(
         CompiledField(
           name = "iface2",
-          type = CompiledCompoundType("unused"),
+          type = Iface2,
           selections = iface21
         )
       )
@@ -91,7 +93,7 @@ object TestQuerySelections {
   private val iface1: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
-          type = CompiledOtherType("unused").notNull()
+          type = CompiledStringType.notNull()
         ),
         CompiledFragment(
           possibleTypes = listOf("Impl1"),
@@ -106,7 +108,7 @@ object TestQuerySelections {
   val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "iface1",
-          type = CompiledCompoundType("unused"),
+          type = Iface1,
           selections = iface1
         )
       )

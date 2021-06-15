@@ -7,7 +7,7 @@ package com.apollographql.apollo3.api
  */
 class CustomScalarAdapters(val customScalarAdapters: Map<String, Adapter<*>>): ClientContext(Key) {
 
-  fun <T : Any> responseAdapterFor(customScalar: CustomScalar): Adapter<T> {
+  fun <T : Any> responseAdapterFor(customScalar: CustomScalarType): Adapter<T> {
     return when {
       customScalarAdapters[customScalar.name] != null -> {
         customScalarAdapters[customScalar.name] as Adapter<T>
