@@ -16,12 +16,12 @@ import kotlin.reflect.KClass
 /**
  * An alternative to RealApolloStore for when a no-operation cache is needed.
  */
-internal class NoOpApolloStore : ApolloStore() {
+internal class NoOpApolloStore : ApolloStore {
   override val changedKeys: SharedFlow<Set<String>>
     get() = throw NotImplementedError()
   private val cache = MemoryCache()
-  override fun subscribe(subscriber: RecordChangeSubscriber) {}
-  override fun unsubscribe(subscriber: RecordChangeSubscriber) {}
+  override fun subscribe(subscriber: ApolloStore.RecordChangeSubscriber) {}
+  override fun unsubscribe(subscriber: ApolloStore.RecordChangeSubscriber) {}
   override suspend fun publish(keys: Set<String>) {}
   override suspend fun <R> accessCache(block: (NormalizedCache) -> R): R {
     return block(cache)
