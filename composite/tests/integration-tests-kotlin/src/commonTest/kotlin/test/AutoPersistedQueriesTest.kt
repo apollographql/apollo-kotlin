@@ -2,11 +2,11 @@ package test
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
-import readResource
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.testing.enqueue
+import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runWithMainLoop
 import com.apollographql.apollo3.withAutoPersistedQueries
+import readResource
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertFalse
