@@ -1,4 +1,6 @@
-package com.apollographql.apollo3.ast
+package com.apollographql.apollo3.ast.transformation
+
+import com.apollographql.apollo3.ast.*
 
 private class AddFieldsScope(
     val schema: Schema,

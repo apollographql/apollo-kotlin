@@ -12,7 +12,7 @@ open class SourceAwareException(
 )) {
 
   companion object {
-    fun formatForIdea(sourceLocation: SourceLocation, description: String): String {
+    private fun formatForIdea(sourceLocation: SourceLocation, description: String): String {
       // Idea understands a certain format and makes logs clickable
       // It's not 100% clear where this is specified but it at least works with
       // 2020.3

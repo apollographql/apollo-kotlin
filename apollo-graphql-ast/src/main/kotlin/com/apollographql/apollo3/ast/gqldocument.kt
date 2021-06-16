@@ -3,35 +3,6 @@ package com.apollographql.apollo3.ast
 import okio.buffer
 import okio.source
 
-/**
- * - Validate the given document as a schema.
- * - Add a schema definition if there is none
- * - Merge type extensions
- *
- * @receiver the input document to validate and merge. It should not contain any builtin types
- * The current validation is very simple and will only catch simple errors
- */
-fun GQLDocument.validateAsSchema(): List<Issue> {
-  val scope = SchemaValidationScope(this)
-  scope.validateDocumentAndMergeExtensions()
-  return scope.issues
-}
-
-/**
- * Validates the given document as an executable document.
- */
-fun GQLDocument.validateAsOperations(schema: Schema): List<Issue> {
-  val fragments = definitions.filterIsInstance<GQLFragmentDefinition>().associateBy { it.name }
-
-  val validationIssues = ExecutableValidationScope(schema, fragments).validate(this)
-
-  val duplicateFragmentIssues = definitions.filterIsInstance<GQLFragmentDefinition>().checkDuplicateFragments()
-  val duplicateOperationIssues = definitions.filterIsInstance<GQLOperationDefinition>().checkDuplicateOperations()
-
-  return validationIssues + duplicateFragmentIssues + duplicateOperationIssues
-}
-
-
 fun GQLDocument.withBuiltinDefinitions(): GQLDocument {
   return withDefinitions(builtinDefinitions())
 }
@@ -50,13 +21,6 @@ fun GQLDocument.withoutBuiltinDirectives(): GQLDocument {
 
 fun GQLDocument.withApolloDefinitions(): GQLDocument {
   return withDefinitions(apolloDefinitions())
-}
-
-fun GQLDocument.toSchema(): Schema {
-  val scope = SchemaValidationScope(this)
-  val mergedDefinitions = scope.validateDocumentAndMergeExtensions()
-  scope.issues.checkNoErrors()
-  return Schema(mergedDefinitions)
 }
 
 /**
@@ -116,43 +80,4 @@ private fun GQLDocument.withDefinitions(definitions: List<GQLDefinition>): GQLDo
   return copy(
       definitions = mergedDefinitions
   )
-}
-
-private fun List<GQLFragmentDefinition>.checkDuplicateFragments(): List<Issue> {
-  val filtered = mutableMapOf<String, GQLFragmentDefinition>()
-  val issues = mutableListOf<Issue>()
-
-  forEach {
-    val existing = filtered.putIfAbsent(it.name, it)
-    if (existing != null) {
-      issues.add(Issue.ValidationError(
-          message = "Fragment ${it.name} is already defined",
-          sourceLocation = it.sourceLocation,
-      ))
-    }
-  }
-  return issues
-}
-
-private fun List<GQLOperationDefinition>.checkDuplicateOperations(): List<Issue> {
-  val filtered = mutableMapOf<String, GQLOperationDefinition>()
-  val issues = mutableListOf<Issue>()
-
-  forEach {
-    if (it.name == null) {
-      issues.add(Issue.ValidationError(
-          message = "Apollo does not support anonymous operations",
-          sourceLocation = it.sourceLocation,
-      ))
-      return@forEach
-    }
-    val existing = filtered.putIfAbsent(it.name, it)
-    if (existing != null) {
-      issues.add(Issue.ValidationError(
-          message = "Operation ${it.name} is already defined",
-          sourceLocation = it.sourceLocation,
-      ))
-    }
-  }
-  return issues
 }

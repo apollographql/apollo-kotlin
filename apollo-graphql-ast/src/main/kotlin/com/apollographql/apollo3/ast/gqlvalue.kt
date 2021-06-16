@@ -1,5 +1,9 @@
 package com.apollographql.apollo3.ast
 
+import com.apollographql.apollo3.ast.internal.DefaultValidationScope
+import com.apollographql.apollo3.ast.internal.ExecutableValidationScope2
+import com.apollographql.apollo3.ast.internal.validateAndCoerceValue
+
 /**
  * For a [GQLValue] used in input position, validate that it can be coerced to [expectedType] and coerce it at the same time.
  *

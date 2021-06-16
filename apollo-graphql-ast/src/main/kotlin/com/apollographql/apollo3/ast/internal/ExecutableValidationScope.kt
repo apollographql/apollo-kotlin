@@ -1,11 +1,50 @@
-package com.apollographql.apollo3.ast
+package com.apollographql.apollo3.ast.internal
 
+import com.apollographql.apollo3.ast.GQLArgument
+import com.apollographql.apollo3.ast.GQLBooleanValue
+import com.apollographql.apollo3.ast.GQLDocument
+import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
+import com.apollographql.apollo3.ast.GQLEnumValue
+import com.apollographql.apollo3.ast.GQLField
+import com.apollographql.apollo3.ast.GQLFloatValue
+import com.apollographql.apollo3.ast.GQLFragmentDefinition
+import com.apollographql.apollo3.ast.GQLFragmentSpread
+import com.apollographql.apollo3.ast.GQLInlineFragment
+import com.apollographql.apollo3.ast.GQLIntValue
+import com.apollographql.apollo3.ast.GQLListType
+import com.apollographql.apollo3.ast.GQLListValue
+import com.apollographql.apollo3.ast.GQLNamedType
+import com.apollographql.apollo3.ast.GQLNonNullType
+import com.apollographql.apollo3.ast.GQLNullValue
+import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
+import com.apollographql.apollo3.ast.GQLObjectValue
+import com.apollographql.apollo3.ast.GQLOperationDefinition
+import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
+import com.apollographql.apollo3.ast.GQLSelectionSet
+import com.apollographql.apollo3.ast.GQLStringValue
+import com.apollographql.apollo3.ast.GQLType
+import com.apollographql.apollo3.ast.GQLTypeDefinition
+import com.apollographql.apollo3.ast.GQLValue
+import com.apollographql.apollo3.ast.GQLVariableValue
+import com.apollographql.apollo3.ast.Issue
+import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.ast.VariableReference
+import com.apollographql.apollo3.ast.definitionFromScope
+import com.apollographql.apollo3.ast.findDeprecationReason
+import com.apollographql.apollo3.ast.leafType
+import com.apollographql.apollo3.ast.pretty
+import com.apollographql.apollo3.ast.responseName
+import com.apollographql.apollo3.ast.rootTypeDefinition
+import com.apollographql.apollo3.ast.sharesPossibleTypesWith
 import java.util.Locale
 
 /**
  * @param fragmentDefinitions: all the fragments in the current compilation unit. This is required to check the type conditions as well as fields merging
  */
-internal class ExecutableValidationScope(private val schema: Schema, private val fragmentDefinitions: Map<String, GQLFragmentDefinition>): ValidationScope, VariableReferencesScope {
+internal class ExecutableValidationScope(
+    private val schema: Schema,
+    private val fragmentDefinitions: Map<String, GQLFragmentDefinition>,
+) : ValidationScope, VariableReferencesScope {
   override val typeDefinitions = schema.typeDefinitions
   override val directiveDefinitions = schema.directiveDefinitions
 
@@ -18,8 +57,18 @@ internal class ExecutableValidationScope(private val schema: Schema, private val
 
   fun validate(document: GQLDocument): List<Issue> {
     document.validateExecutable()
-    document.validateFragments()
-    document.validateOperations()
+
+    val fragments = document.definitions.filterIsInstance<GQLFragmentDefinition>()
+    fragments.checkDuplicateFragments()
+    fragments.forEach {
+      it.validate()
+    }
+
+    val operations = document.definitions.filterIsInstance<GQLOperationDefinition>()
+    operations.checkDuplicateOperations()
+    operations.forEach {
+      it.validate()
+    }
 
     return issues
   }
@@ -95,7 +144,7 @@ internal class ExecutableValidationScope(private val schema: Schema, private val
       )
     }
 
-    if (fieldDefinition.isDeprecated()) {
+    if (fieldDefinition.directives.findDeprecationReason() != null) {
       issues.add(Issue.DeprecatedUsage(message = "Use of deprecated field `$name`", sourceLocation = sourceLocation))
     }
     arguments?.let {
@@ -176,8 +225,8 @@ internal class ExecutableValidationScope(private val schema: Schema, private val
     val fragmentTypeDefinition = typeDefinitions[fragmentDefinition.typeCondition.name]
     if (fragmentTypeDefinition == null) {
       registerIssue(
-              message = "Cannot find type `${fragmentDefinition.typeCondition.name}` for fragment $name",
-              sourceLocation = fragmentDefinition.typeCondition.sourceLocation
+          message = "Cannot find type `${fragmentDefinition.typeCondition.name}` for fragment $name",
+          sourceLocation = fragmentDefinition.typeCondition.sourceLocation
       )
       return
     }
@@ -203,18 +252,6 @@ internal class ExecutableValidationScope(private val schema: Schema, private val
           registerIssue(message = "Found an non-executable definition.", sourceLocation = it.sourceLocation)
           return
         }
-  }
-
-  private fun GQLDocument.validateOperations() {
-    definitions.filterIsInstance<GQLOperationDefinition>().forEach {
-      it.validate()
-    }
-  }
-
-  private fun GQLDocument.validateFragments() {
-    definitions.filterIsInstance<GQLFragmentDefinition>().forEach {
-      it.validate()
-    }
   }
 
   private fun GQLFragmentDefinition.validate() {
@@ -547,5 +584,43 @@ internal class ExecutableValidationScope(private val schema: Schema, private val
     return fragmentDefinition
         .selectionSet
         .collectFields(fragmentDefinition.typeCondition.name)
+  }
+
+
+  private fun List<GQLFragmentDefinition>.checkDuplicateFragments(): List<Issue> {
+    val filtered = mutableMapOf<String, GQLFragmentDefinition>()
+    forEach {
+      val existing = filtered.putIfAbsent(it.name, it)
+      if (existing != null) {
+        issues.add(Issue.ValidationError(
+            message = "Fragment ${it.name} is already defined",
+            sourceLocation = it.sourceLocation,
+        ))
+      }
+    }
+    return issues
+  }
+
+  private fun List<GQLOperationDefinition>.checkDuplicateOperations(): List<Issue> {
+    val filtered = mutableMapOf<String, GQLOperationDefinition>()
+    val issues = mutableListOf<Issue>()
+
+    forEach {
+      if (it.name == null) {
+        issues.add(Issue.ValidationError(
+            message = "Apollo does not support anonymous operations",
+            sourceLocation = it.sourceLocation,
+        ))
+        return@forEach
+      }
+      val existing = filtered.putIfAbsent(it.name, it)
+      if (existing != null) {
+        issues.add(Issue.ValidationError(
+            message = "Operation ${it.name} is already defined",
+            sourceLocation = it.sourceLocation,
+        ))
+      }
+    }
+    return issues
   }
 }

@@ -1,4 +1,28 @@
-package com.apollographql.apollo3.ast
+package com.apollographql.apollo3.ast.internal
+
+import com.apollographql.apollo3.ast.GQLBooleanValue
+import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
+import com.apollographql.apollo3.ast.GQLEnumValue
+import com.apollographql.apollo3.ast.GQLFloatValue
+import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
+import com.apollographql.apollo3.ast.GQLIntValue
+import com.apollographql.apollo3.ast.GQLListType
+import com.apollographql.apollo3.ast.GQLListValue
+import com.apollographql.apollo3.ast.GQLNamedType
+import com.apollographql.apollo3.ast.GQLNonNullType
+import com.apollographql.apollo3.ast.GQLNullValue
+import com.apollographql.apollo3.ast.GQLObjectField
+import com.apollographql.apollo3.ast.GQLObjectValue
+import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
+import com.apollographql.apollo3.ast.GQLStringValue
+import com.apollographql.apollo3.ast.GQLType
+import com.apollographql.apollo3.ast.GQLValue
+import com.apollographql.apollo3.ast.GQLVariableValue
+import com.apollographql.apollo3.ast.Issue
+import com.apollographql.apollo3.ast.VariableReference
+import com.apollographql.apollo3.ast.isDeprecated
+import com.apollographql.apollo3.ast.pretty
+import com.apollographql.apollo3.ast.toUtf8
 
 internal fun ValidationScope.validateAndCoerceValue(value: GQLValue, expectedType: GQLType): GQLValue {
   if (value is GQLVariableValue) {

@@ -1,17 +1,18 @@
-package com.apollographql.apollo3.ast
-/**
- * Functions that wrap the antlr types to our own [GQLNode] values
- */
+package com.apollographql.apollo3.ast.internal
 
 import com.apollographql.apollo3.compiler.parser.antlr.GraphQLParser
 import org.antlr.v4.runtime.Token
 
+import com.apollographql.apollo3.ast.*
 
-fun GraphQLParser.DocumentContext.toGQLDocument(filePath: String? = null) = AntlrToGQLScope(filePath).parseDocumentContext(this)
+/**
+ * Functions that wrap the antlr types to our own [GQLNode] values
+ */
+internal fun GraphQLParser.DocumentContext.toGQLDocument(filePath: String? = null) = AntlrToGQLScope(filePath).parseDocumentContext(this)
 
-fun GraphQLParser.ValueContext.toGQLValue(filePath: String? = null) = AntlrToGQLScope(filePath).parseValueContext(this)
+internal fun GraphQLParser.ValueContext.toGQLValue(filePath: String? = null) = AntlrToGQLScope(filePath).parseValueContext(this)
 
-fun GraphQLParser.SelectionContext.toGQLSelection(filePath: String? = null) = AntlrToGQLScope(filePath).parseSelection(this)
+internal fun GraphQLParser.SelectionContext.toGQLSelection(filePath: String? = null) = AntlrToGQLScope(filePath).parseSelection(this)
 
 private class AntlrToGQLScope(val filePath: String?) {
   private fun sourceLocation(token: Token) = SourceLocation(

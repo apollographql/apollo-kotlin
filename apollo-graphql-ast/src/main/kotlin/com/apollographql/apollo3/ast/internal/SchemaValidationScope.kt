@@ -1,4 +1,6 @@
-package com.apollographql.apollo3.ast
+package com.apollographql.apollo3.ast.internal
+
+import com.apollographql.apollo3.ast.*
 
 /**
  */

@@ -1,4 +1,42 @@
-package com.apollographql.apollo3.ast
+package com.apollographql.apollo3.ast.internal
+
+import com.apollographql.apollo3.ast.GQLArgument
+import com.apollographql.apollo3.ast.GQLArguments
+import com.apollographql.apollo3.ast.GQLDirective
+import com.apollographql.apollo3.ast.GQLDirectiveDefinition
+import com.apollographql.apollo3.ast.GQLDirectiveLocation
+import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
+import com.apollographql.apollo3.ast.GQLEnumValueDefinition
+import com.apollographql.apollo3.ast.GQLField
+import com.apollographql.apollo3.ast.GQLFieldDefinition
+import com.apollographql.apollo3.ast.GQLFragmentDefinition
+import com.apollographql.apollo3.ast.GQLFragmentSpread
+import com.apollographql.apollo3.ast.GQLInlineFragment
+import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
+import com.apollographql.apollo3.ast.GQLInputValueDefinition
+import com.apollographql.apollo3.ast.GQLInterfaceTypeDefinition
+import com.apollographql.apollo3.ast.GQLNode
+import com.apollographql.apollo3.ast.GQLNonNullType
+import com.apollographql.apollo3.ast.GQLNullValue
+import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
+import com.apollographql.apollo3.ast.GQLOperationDefinition
+import com.apollographql.apollo3.ast.GQLOperationTypeDefinition
+import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
+import com.apollographql.apollo3.ast.GQLSchemaDefinition
+import com.apollographql.apollo3.ast.GQLStringValue
+import com.apollographql.apollo3.ast.GQLType
+import com.apollographql.apollo3.ast.GQLTypeDefinition
+import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
+import com.apollographql.apollo3.ast.GQLVariableDefinition
+import com.apollographql.apollo3.ast.GQLVariableValue
+import com.apollographql.apollo3.ast.Issue
+import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.ast.SourceLocation
+import com.apollographql.apollo3.ast.ValidationDetails
+import com.apollographql.apollo3.ast.VariableReference
+import com.apollographql.apollo3.ast.canInputValueBeAssignedTo
+import com.apollographql.apollo3.ast.parseAsGQLSelections
+import com.apollographql.apollo3.ast.pretty
 
 internal interface VariableReferencesScope {
   val variableReferences: MutableList<VariableReference>
@@ -140,7 +178,7 @@ internal fun ValidationScope.extraValidateNonNullDirective(directive: GQLDirecti
     )
     val stringValue = (directive.arguments!!.arguments.first().value as GQLStringValue).value
 
-    val selections = stringValue.parseAsSelections().getOrNull() ?: error("'$stringValue' is not a valid selectionSet")
+    val selections = stringValue.parseAsGQLSelections().getOrNull() ?: error("'$stringValue' is not a valid selectionSet")
 
     val badSelection = selections.firstOrNull { it !is GQLField }
     check(badSelection == null) {
