@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.fetcher
 
-import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.exception.ApolloException
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode

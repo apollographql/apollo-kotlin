@@ -6,7 +6,6 @@ import com.apollographql.apollo3.api.composeResponseBody
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.parseResponseBody
 import okio.Buffer
-import okio.BufferedSource
 import readJson
 import kotlin.test.Test
 import kotlin.test.assertEquals

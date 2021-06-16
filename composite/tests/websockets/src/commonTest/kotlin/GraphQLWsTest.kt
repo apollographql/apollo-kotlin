@@ -1,6 +1,6 @@
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import com.apollographql.apollo3.network.ws.GraphQLWsProtocol
+import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import com.apollographql.apollo3.testing.runWithMainLoop
 import graphql.ws.HelloQuery
 import kotlin.test.Ignore

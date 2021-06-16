@@ -1,7 +1,7 @@
 package com.apollographql.apollo3
 
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.coroutines.await
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers.CACHE_ONLY
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers.NETWORK_ONLY
@@ -13,8 +13,6 @@ import okhttp3.mockwebserver.MockWebServer
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
-import java.io.InputStreamReader
-import java.nio.charset.Charset
 import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executor

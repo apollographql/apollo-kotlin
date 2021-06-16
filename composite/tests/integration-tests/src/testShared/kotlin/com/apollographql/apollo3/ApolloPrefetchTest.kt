@@ -8,10 +8,10 @@ import com.apollographql.apollo3.Utils.mockResponse
 import com.apollographql.apollo3.Utils.readFileToString
 import com.apollographql.apollo3.api.cache.http.HttpCache
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
+import com.apollographql.apollo3.api.exception.ApolloException
 import com.apollographql.apollo3.cache.http.ApolloHttpCache
 import com.apollographql.apollo3.cache.http.DiskLruHttpCacheStore
 import com.apollographql.apollo3.cache.http.internal.FileSystem
-import com.apollographql.apollo3.api.exception.ApolloException
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo3.rx2.Rx2Apollo
 import com.google.common.truth.Truth

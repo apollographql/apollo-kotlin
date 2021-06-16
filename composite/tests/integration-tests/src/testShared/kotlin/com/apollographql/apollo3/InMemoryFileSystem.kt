@@ -16,14 +16,18 @@
 package com.apollographql.apollo3
 
 import com.apollographql.apollo3.cache.http.internal.FileSystem
-import okio.*
+import okio.Buffer
+import okio.ForwardingSink
+import okio.ForwardingSource
+import okio.Sink
+import okio.Source
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
-import java.util.*
+import java.util.IdentityHashMap
 
 /**
  * A simple file system where all files are held in memory. Not safe for concurrent use.

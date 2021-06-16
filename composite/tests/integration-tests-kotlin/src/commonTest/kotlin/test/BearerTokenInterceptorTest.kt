@@ -5,10 +5,10 @@ import com.apollographql.apollo3.api.exception.ApolloHttpException
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.network.http.BearerTokenInterceptor
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.testing.TestTokenProvider
-import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.testing.runWithMainLoop
 import readResource
 import kotlin.test.BeforeTest

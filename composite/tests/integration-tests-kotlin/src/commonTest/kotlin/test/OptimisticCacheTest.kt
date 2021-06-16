@@ -4,11 +4,8 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.CacheResolver
 import com.apollographql.apollo3.cache.normalized.IdCacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo3.testing.enqueue
-import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
 import com.apollographql.apollo3.integration.normalizer.HeroNameWithIdQuery
@@ -17,19 +14,21 @@ import com.apollographql.apollo3.integration.normalizer.UpdateReviewMutation
 import com.apollographql.apollo3.integration.normalizer.type.ColorInput
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.integration.normalizer.type.ReviewInput
-import readResource
-import com.apollographql.apollo3.testing.receiveOrTimeout
 import com.apollographql.apollo3.interceptor.cache.FetchPolicy
 import com.apollographql.apollo3.interceptor.cache.watch
 import com.apollographql.apollo3.interceptor.cache.withFetchPolicy
 import com.apollographql.apollo3.interceptor.cache.withOptimiticUpdates
 import com.apollographql.apollo3.interceptor.cache.withRefetchPolicy
 import com.apollographql.apollo3.interceptor.cache.withStore
+import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.testing.receiveOrTimeout
 import com.apollographql.apollo3.testing.runWithMainLoop
 import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import readResource
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import assertEquals2 as assertEquals
