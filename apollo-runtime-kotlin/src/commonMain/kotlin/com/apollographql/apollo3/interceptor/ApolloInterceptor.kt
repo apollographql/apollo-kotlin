@@ -7,9 +7,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface ApolloInterceptorChain {
   fun <D : Operation.Data> proceed(request: ApolloRequest<D>): Flow<ApolloResponse<D>>
-
-  fun canProceed(): Boolean
-
 }
 
 interface ApolloInterceptor {
@@ -31,6 +28,4 @@ internal class RealInterceptorChain(
         )
     )
   }
-
-  override fun canProceed(): Boolean = index < interceptors.size
 }

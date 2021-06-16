@@ -70,28 +70,6 @@ class ApolloClient constructor(
     return subscriptionRequest.execute()
   }
 
-  @OptIn(ExperimentalCoroutinesApi::class)
-  private fun <D : Operation.Data> ApolloRequest<D>.execute(): Flow<ApolloResponse<D>> {
-    val executionContext = customScalarAdapters + this@ApolloClient.executionContext + this.executionContext
-
-    val request = withExecutionContext(executionContext)
-    val interceptors = interceptors + NetworkInterceptor(
-        networkTransport = networkTransport,
-        subscriptionNetworkTransport = subscriptionNetworkTransport,
-    )
-
-    return flow {
-      emit(
-          RealInterceptorChain(
-              interceptors,
-              0,
-          )
-      )
-    }.flatMapLatest { interceptorChain ->
-      interceptorChain.proceed(request)
-    }.flowOn(dispatcher)
-  }
-
   fun dispose() {
     clientScope.coroutineScope.cancel()
     networkTransport.dispose()
@@ -134,6 +112,28 @@ class ApolloClient constructor(
         executionContext = executionContext,
         requestedDispatcher = requestedDispatcher,
     )
+  }
+
+  @OptIn(ExperimentalCoroutinesApi::class)
+  private fun <D : Operation.Data> ApolloRequest<D>.execute(): Flow<ApolloResponse<D>> {
+    val executionContext = customScalarAdapters + this@ApolloClient.executionContext + this.executionContext
+
+    val request = withExecutionContext(executionContext)
+    val interceptors = interceptors + NetworkInterceptor(
+        networkTransport = networkTransport,
+        subscriptionNetworkTransport = subscriptionNetworkTransport,
+    )
+
+    return flow {
+      emit(
+          RealInterceptorChain(
+              interceptors,
+              0,
+          )
+      )
+    }.flatMapLatest { interceptorChain ->
+      interceptorChain.proceed(request)
+    }.flowOn(dispatcher)
   }
 }
 
