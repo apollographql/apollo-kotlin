@@ -34,7 +34,7 @@ kotlin {
     commonMain {
       dependencies {
         implementation("com.apollographql.apollo3:apollo-api")
-        implementation("com.apollographql.apollo3:apollo-runtime-kotlin")
+        implementation("com.apollographql.apollo3:apollo-runtime")
         implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
       }
     }
