@@ -6,10 +6,9 @@ import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.Utils.readFileToString
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.api.exception.ApolloException
-import com.apollographql.apollo3.cache.normalized.CacheResolver
 import com.apollographql.apollo3.cache.normalized.IdCacheResolver
+import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
@@ -18,7 +17,6 @@ import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
 import java.io.IOException
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 open class BaseFetcherTest {

@@ -10,12 +10,11 @@ import codegen.models.type.Episode
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKey
-import com.apollographql.apollo3.cache.normalized.CacheResolver
 import com.apollographql.apollo3.cache.normalized.IdCacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.interceptor.cache.withStore
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.testing.enqueue
+import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runWithMainLoop
 import readJson
 import kotlin.test.BeforeTest

@@ -3,7 +3,6 @@ package test
 import com.apollographql.apollo3.adapters.LocalDateAdapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.composeResponseBody
 import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.use
@@ -17,9 +16,9 @@ import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.GetJsonScalarQuery
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
-import readResource
 import kotlinx.datetime.LocalDate
 import okio.Buffer
+import readResource
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse

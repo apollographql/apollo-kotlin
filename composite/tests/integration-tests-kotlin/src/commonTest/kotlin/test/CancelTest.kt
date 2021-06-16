@@ -3,12 +3,12 @@ package test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
-import readTestFixture
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runWithMainLoop
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import readTestFixture
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 

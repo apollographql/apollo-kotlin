@@ -3,7 +3,6 @@ package com.apollographql.apollo3
 import com.apollographql.apollo3.Utils.enqueueAndAssertResponse
 import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
-import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.google.common.truth.Truth

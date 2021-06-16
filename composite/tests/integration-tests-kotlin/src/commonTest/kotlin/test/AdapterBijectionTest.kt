@@ -1,8 +1,8 @@
 package test
 
 import com.apollographql.apollo3.adapters.LocalDateAdapter
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.integration.httpcache.type.Types
