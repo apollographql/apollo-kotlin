@@ -2,7 +2,7 @@ package test
 
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.parseResponseBody
+import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.IdCacheResolver
@@ -244,7 +244,7 @@ class NormalizerTest {
 
   companion object {
     internal fun <D : Operation.Data> records(operation: Operation<D>, name: String): Map<String, Record> {
-      val response = operation.parseResponseBody(readResource(name))
+      val response = operation.parseJsonResponse(readResource(name))
       return operation.normalize(data = response.data!!, CustomScalarAdapters.Empty, IdCacheResolver())
     }
 

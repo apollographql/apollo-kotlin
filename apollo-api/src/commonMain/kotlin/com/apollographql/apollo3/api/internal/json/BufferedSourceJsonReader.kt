@@ -16,8 +16,8 @@
 package com.apollographql.apollo3.api.internal.json
 
 import com.apollographql.apollo3.api.Throws
-import com.apollographql.apollo3.api.json.JsonDataException
-import com.apollographql.apollo3.api.json.JsonEncodingException
+import com.apollographql.apollo3.api.exception.JsonDataException
+import com.apollographql.apollo3.api.exception.JsonEncodingException
 import com.apollographql.apollo3.api.json.JsonReader
 import okio.Buffer
 import okio.BufferedSource

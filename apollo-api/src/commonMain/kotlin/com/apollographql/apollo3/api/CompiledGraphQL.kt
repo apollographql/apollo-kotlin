@@ -6,8 +6,12 @@ import com.apollographql.apollo3.api.internal.json.Utils
 import okio.Buffer
 import kotlin.native.concurrent.SharedImmutable
 
+
 sealed class CompiledSelection
 
+/**
+ * A compiled field from a GraphQL operation
+ */
 class CompiledField(
     val name: String,
     val alias: String? = null,
@@ -20,9 +24,8 @@ class CompiledField(
     get() = alias ?: name
 
   /**
-   * Resolves field argument value by [name]. If the argument contains variables, resolve them
+   * Resolves field argument value by [name]. If the argument contains variables, replace them with their actual value
    */
-  @Suppress("UNCHECKED_CAST")
   fun resolveArgument(
       name: String,
       variables: Executable.Variables,
@@ -30,6 +33,11 @@ class CompiledField(
     return resolveVariables(arguments.firstOrNull { it.name == name }?.value, variables)
   }
 
+  /**
+   * Returns a String containing the name of this field as well as encoded arguments. For an example:
+   * `hero({"episode": "Jedi"})`
+   * This is mostly used internally to compute records
+   */
   fun nameWithArguments(variables: Executable.Variables): String {
     if (arguments.isEmpty()) {
       return name
@@ -48,6 +56,9 @@ class CompiledField(
   }
 }
 
+/**
+ * A compiled inline fragment or fragment spread
+ */
 class CompiledFragment(
     val possibleTypes: List<String>,
     val condition: List<CompiledCondition> = emptyList(),

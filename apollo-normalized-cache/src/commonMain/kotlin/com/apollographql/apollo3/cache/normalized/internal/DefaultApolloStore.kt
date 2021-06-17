@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
-import com.apollographql.apollo3.api.ApolloInternal
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
@@ -166,7 +165,6 @@ class DefaultApolloStore(
     return cacheHolder.access(block)
   }
 
-  @OptIn(ApolloInternal::class)
   override suspend fun <D : Operation.Data> writeOperation(
       operation: Operation<D>,
       operationData: D,

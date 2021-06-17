@@ -18,13 +18,17 @@ import okio.BufferedSink
 import okio.ByteString
 
 /**
- * The default HttpRequestComposer that handles
+ * An [HttpRequestComposer] that handles:
  * - GET or POST requests
  * - FileUpload by intercepting the Upload custom scalars and sending them as multipart if needed
  * - Automatic Persisted Queries
  * - Adding the default Apollo headers
  *
- * @param headers
+ * @param headers: headers to add on top of Apollo headers. The headers are added in the order below. In case an header
+ * is defined multiple times, the last one is used:
+ * 1. Apollo headers
+ * 2. [headers]
+ * 3. request headers from [HttpRequestComposerParams]
  */
 class DefaultHttpRequestComposer(
     private val serverUrl: String,
@@ -328,10 +332,18 @@ val DefaultHttpRequestComposerParams = HttpRequestComposerParams(
     headers = emptyMap()
 )
 
-fun HttpRequestComposerParams?.withHeader(name: String, value: String): HttpRequestComposerParams {
+fun HttpRequestComposerParams?.withHttpHeader(name: String, value: String): HttpRequestComposerParams {
   val params = this ?: DefaultHttpRequestComposerParams
 
   return params.copy(
       headers = params.headers + (name to value)
+  )
+}
+
+fun HttpRequestComposerParams?.withHttpMethod(method: HttpMethod): HttpRequestComposerParams {
+  val params = this ?: DefaultHttpRequestComposerParams
+
+  return params.copy(
+      method = method
   )
 }

@@ -5,7 +5,7 @@ import codegen.models.AllPlanetsQuery.Data.AllPlanets.Planet.Companion.planetFra
 import codegen.models.AllPlanetsQuery.Data.AllPlanets.Planet.FilmConnection.Film.Companion.filmFragment
 import codegen.models.fragment.PlanetFragment
 import com.apollographql.apollo3.api.composeResponseBody
-import com.apollographql.apollo3.api.parseResponseBody
+import com.apollographql.apollo3.api.parseJsonResponse
 import readJson
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -16,7 +16,7 @@ class ParseResponseBodyTest {
    */
   @Test
   fun allPlanetQuery() {
-    val data = AllPlanetsQuery().parseResponseBody(readJson("AllPlanets.json")).data
+    val data = AllPlanetsQuery().parseJsonResponse(readJson("AllPlanets.json")).data
 
     assertEquals(data!!.allPlanets?.planets?.size, 60)
     val planets = data.allPlanets?.planets?.mapNotNull {
@@ -45,7 +45,7 @@ class ParseResponseBodyTest {
   fun operationJsonWriter() {
     val expected = readJson("OperationJsonWriter.json")
     val query = AllPlanetsQuery()
-    val data = query.parseResponseBody(expected).data
+    val data = query.parseJsonResponse(expected).data
     val actual = query.composeResponseBody(data!!, indent = "  ")
     assertEquals(actual, expected)
   }

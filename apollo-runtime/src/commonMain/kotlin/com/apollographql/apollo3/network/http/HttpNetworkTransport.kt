@@ -4,11 +4,13 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.exception.ApolloException
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpResponse
-import com.apollographql.apollo3.api.parseResponseBody
+import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.api.exception.ApolloHttpException
+import com.apollographql.apollo3.api.exception.ApolloParseException
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.internal.NonMainWorker
 import com.apollographql.apollo3.network.NetworkTransport
@@ -69,6 +71,18 @@ class HttpNetworkTransport(
     }
   }
 
+  private fun wrapThrowableIfNeeded(throwable: Throwable): ApolloException {
+    return if (throwable is ApolloException) {
+      throwable
+    } else {
+      // This happens for null pointer exceptions on missing fields
+      ApolloParseException(
+          message = "Failed to parse GraphQL http network response",
+          cause = throwable
+      )
+    }
+  }
+
   inner class EngineInterceptor : HttpInterceptor {
     override suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse {
       return engine.execute(request)
@@ -87,7 +101,7 @@ class HttpNetworkTransport(
       )
     }
 
-    return request.operation.parseResponseBody(
+    return request.operation.parseJsonResponse(
         source = body!!,
         customScalarAdapters = customScalarAdapters
     ).copy(

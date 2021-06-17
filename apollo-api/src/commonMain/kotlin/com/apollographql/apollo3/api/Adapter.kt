@@ -10,7 +10,7 @@ import okio.BufferedSink
 import okio.BufferedSource
 
 /**
- * An [Adapter] is responsible for adapting GraphQL types in their Json representation to Kotlin types.
+ * An [Adapter] is responsible for adapting Kotlin-generated GraphQL types to/from their Json representation.
  *
  * It is used to
  * - deserialize network responses
@@ -29,6 +29,9 @@ import okio.BufferedSource
 interface Adapter<T> {
   /**
    * Deserializes the given Json to the expected Kotlin type.
+   *
+   * implementations may throw [com.apollographql.apollo3.api.exception.JsonEncodingException] or [com.apollographql.apollo3.api.exception.JsonDataException]
+   * on unexpected incoming data
    *
    * @param [customScalarAdapters] configured instance of GraphQL operation response adapters cache. A global empty instance will be used by default.
    *

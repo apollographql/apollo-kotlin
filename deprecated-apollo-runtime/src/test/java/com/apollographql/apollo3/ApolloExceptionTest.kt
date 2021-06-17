@@ -3,7 +3,7 @@ package com.apollographql.apollo3
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.json.JsonEncodingException
+import com.apollographql.apollo3.api.exception.JsonEncodingException
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.exception.ApolloHttpException
 import com.apollographql.apollo3.api.exception.ApolloNetworkException

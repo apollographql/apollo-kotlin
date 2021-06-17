@@ -21,14 +21,26 @@ class ApolloHttpException(
 ) : ApolloException(message = message, cause = cause)
 
 /**
- * The request body could not be generated to be sent to the server
+ * Thrown when the data being parsed is not encoded as valid JSON.
  */
-class ApolloSerializationException(message: String? = null, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
+class JsonEncodingException(message: String) : ApolloException(message)
 
 /**
- * The response could not be parsed either because:
- * - the return json is not valid
- * - or it doesn't contain
+ * Thrown when the data in a JSON document doesn't match the data expected by the caller.
+ *
+ * For example, suppose the application expects a boolean but the JSON document contains a string. When the call to
+ * [JsonReader.nextBoolean] is made, a `JsonDataException` is thrown.
+ *
+ * Exceptions of this type should be fixed by either changing the application code to accept the unexpected JSON, or by changing the JSON
+ * to conform to the application's expectations.
+ *
+ * This exception may also be triggered if a document's nesting exceeds 31 levels. This depth is sufficient for all practical applications,
+ * but shallow enough to avoid uglier failures like [StackOverflowError].
+ */
+class JsonDataException(message: String) : ApolloException(message)
+
+/**
+ * The response could not be parsed either because of another issue than [JsonDataException] or [JsonEncodingException]
  */
 class ApolloParseException(message: String? = null, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
 
@@ -62,10 +74,11 @@ class MissingValueException : ApolloException(message = "The optional doesn't ha
 /**
  * Something went wrong but it's not sure exactly what
  */
+@Deprecated("This is only used in the JVM runtime and is scheduled for removal")
 class ApolloGenericException(message: String? = null, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
 
 
-@Deprecated("This is only used in the JVM runtime and is schedule for removal")
+@Deprecated("This is only used in the JVM runtime and is scheduled for removal")
 class ApolloCanceledException(message: String? = null, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
 
 
