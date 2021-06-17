@@ -26,7 +26,7 @@ kotlin {
         implementation(project(":apollo-testing-support")) {
           because("runWithMainLoop")
         }
-        implementation(project(":apollo-runtime-kotlin")) {
+        implementation(project(":apollo-runtime")) {
           because("We need HttpEngine for SocketTest")
         }
       }

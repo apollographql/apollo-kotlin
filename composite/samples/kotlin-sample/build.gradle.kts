@@ -35,11 +35,11 @@ tasks.withType<KotlinCompile> {
 }
 
 dependencies {
-    implementation("com.apollographql.apollo3:apollo-rx2-support")
-    implementation("com.apollographql.apollo3:apollo-coroutines-support")
-    implementation("com.apollographql.apollo3:apollo-runtime")
+    implementation("com.apollographql.apollo3:deprecated-apollo-rx2-support")
+    implementation("com.apollographql.apollo3:deprecated-apollo-coroutines-support")
+    implementation("com.apollographql.apollo3:deprecated-apollo-runtime")
     implementation("com.apollographql.apollo3:apollo-http-cache")
-    implementation("com.apollographql.apollo3:apollo-android-support")
+    implementation("com.apollographql.apollo3:deprecated-apollo-android-support")
     implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite")
     implementation(groovy.util.Eval.x(project, "x.dep.okHttp.logging"))
     implementation(groovy.util.Eval.x(project, "x.dep.androidx.appcompat"))

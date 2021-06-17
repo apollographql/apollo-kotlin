@@ -17,7 +17,7 @@ kotlin {
         implementation("com.apollographql.apollo3:apollo-testing-support")
         implementation("com.apollographql.apollo3:apollo-mockserver")
         implementation("com.apollographql.apollo3:apollo-adapters")
-        implementation("com.apollographql.apollo3:apollo-runtime-kotlin")
+        implementation("com.apollographql.apollo3:apollo-runtime")
       }
     }
 

@@ -11,10 +11,10 @@ plugins {
 dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
 
-  implementation("com.apollographql.apollo3:apollo-runtime")
-  implementation("com.apollographql.apollo3:apollo-rx2-support")
-  implementation("com.apollographql.apollo3:apollo-rx3-support")
-  implementation("com.apollographql.apollo3:apollo-coroutines-support")
+  implementation("com.apollographql.apollo3:deprecated-apollo-runtime")
+  implementation("com.apollographql.apollo3:deprecated-apollo-rx2-support")
+  implementation("com.apollographql.apollo3:deprecated-apollo-rx3-support")
+  implementation("com.apollographql.apollo3:deprecated-apollo-coroutines-support")
   implementation("com.apollographql.apollo3:apollo-http-cache")
   implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite")
   implementation("com.apollographql.apollo3:apollo-compiler")

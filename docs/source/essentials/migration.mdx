@@ -63,7 +63,7 @@ recommended adding the following dependency explicitly: `implementation("com.apo
 
 ```kotlin:title=build.gradle
 // Replace:
-implementation("com.apollographql.apollo3:apollo-android-support:x.y.z")
+implementation("com.apollographql.apollo3:deprecated-apollo-android-support:x.y.z")
 
 // With:
 implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite:x.y.z") // highlight-line
@@ -342,5 +342,5 @@ The artifact is also renamed to make its intention more obvious. Documentation f
   androidTestImplementation("com.apollographql.apollo3:apollo-espresso-support:x.y.z")
 
   // With:
-  androidTestImplementation("com.apollographql.apollo3:apollo-idling-resource:x.y.z") // highlight-line
+  androidTestImplementation("com.apollographql.apollo3:deprecated-apollo-idling-resource:x.y.z") // highlight-line
 ```

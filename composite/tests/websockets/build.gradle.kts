@@ -9,7 +9,7 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        implementation("com.apollographql.apollo3:apollo-runtime-kotlin")
+        implementation("com.apollographql.apollo3:apollo-runtime")
       }
     }
 

@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-  api(project(":apollo-runtime"))
+  api(project(":deprecated-apollo-runtime"))
   api(project(":apollo-api"))
   api(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
 

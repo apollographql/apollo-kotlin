@@ -16,11 +16,11 @@ android {
 
 dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.androidx.espressoIdlingResource"))
-  implementation(project(":apollo-runtime"))
+  implementation(project(":deprecated-apollo-runtime"))
 
   testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer"))
-  testImplementation(project(":apollo-rx2-support"))
+  testImplementation(project(":deprecated-apollo-rx2-support"))
 }
 

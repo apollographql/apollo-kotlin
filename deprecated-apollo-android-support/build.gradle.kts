@@ -13,6 +13,6 @@ android {
 }
 
 dependencies {
-  implementation(project(":apollo-runtime"))
+  implementation(project(":deprecated-apollo-runtime"))
 }
 
