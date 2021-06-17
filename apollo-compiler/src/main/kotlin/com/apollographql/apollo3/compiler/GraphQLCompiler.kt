@@ -6,6 +6,7 @@ import com.apollographql.apollo3.compiler.introspection.toGQLDocument
 import com.apollographql.apollo3.compiler.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo3.ast.*
+import com.apollographql.apollo3.ast.transformation.addRequiredFields
 import com.apollographql.apollo3.compiler.ir.IrBuilder
 import com.apollographql.apollo3.compiler.ir.dumpTo
 import java.io.File
@@ -51,7 +52,7 @@ class GraphQLCompiler {
     val validationIssues = GQLDocument(
         definitions = definitions + incomingOptions.metadataFragments.map { it.definition },
         filePath = null
-    ).validateAsOperations(incomingOptions.schema)
+    ).validateAsExecutable(incomingOptions.schema)
 
     validationIssues.checkNoErrors()
 

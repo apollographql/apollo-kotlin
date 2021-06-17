@@ -32,14 +32,3 @@ expect class DefaultHttpEngine(
     readTimeoutMillis: Long = 60_000,
 ) : HttpEngine
 
-fun wrapThrowableIfNeeded(throwable: Throwable): ApolloException {
-  return if (throwable is ApolloException) {
-    throwable
-  } else {
-    // Most likely a Json error, we should make them ApolloException
-    ApolloParseException(
-        message = "Failed to parse GraphQL http network response",
-        cause = throwable
-    )
-  }
-}

@@ -3,6 +3,20 @@ package com.apollographql.apollo3.api
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 
+
+/**
+ * An [Adapter] that converts to/from [BigDecimal]
+ */
+object BigDecimalAdapter: Adapter<BigDecimal> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): BigDecimal {
+    return BigDecimal(reader.nextString()!!)
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: BigDecimal) {
+    writer.value(value.toString())
+  }
+}
+
 /**
  * A multiplatform BigDecimal
  *
@@ -26,14 +40,3 @@ expect class BigDecimal {
 }
 
 expect fun BigDecimal.toNumber(): Number
-
-object BigDecimalAdapter: Adapter<BigDecimal> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): BigDecimal {
-    return BigDecimal(reader.nextString()!!)
-  }
-
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: BigDecimal) {
-    writer.value(value.toString())
-  }
-
-}

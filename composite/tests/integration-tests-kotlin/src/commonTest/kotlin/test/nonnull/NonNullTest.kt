@@ -1,6 +1,6 @@
 package test.nonnull
 
-import com.apollographql.apollo3.api.parseData
+import com.apollographql.apollo3.api.parseJsonData
 import nonnull.NonNullField1Query
 import nonnull.NonNullField2Query
 import nonnull.NullableField1Query
@@ -25,7 +25,7 @@ class NonNullTest {
   @Test
   fun failsWithAnnotationInQuery() {
     try {
-      NonNullField1Query().parseData(field1Response)
+      NonNullField1Query().parseJsonData(field1Response)
       fail("An exception was expected")
     } catch (e: Exception) {
       check(e.message?.contains("but was NULL at path field1") == true)
@@ -35,7 +35,7 @@ class NonNullTest {
   @Test
   fun failsWithAnnotationInSchema() {
     try {
-      NonNullField2Query().parseData(field2Response)
+      NonNullField2Query().parseJsonData(field2Response)
       fail("An exception was expected")
     } catch (e: Exception) {
       check(e.message?.contains("but was NULL at path field2") == true)
@@ -44,7 +44,7 @@ class NonNullTest {
 
   @Test
   fun succeedsWithoutAnnotationInQuery() {
-    val data = NullableField1Query().parseData(field1Response)
+    val data = NullableField1Query().parseJsonData(field1Response)
     assertEquals(null, data.field1)
   }
 

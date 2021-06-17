@@ -6,7 +6,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.use
-import com.apollographql.apollo3.api.parseResponseBody
+import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.integration.httpcache.AllFilmsQuery
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
@@ -32,7 +32,7 @@ class ParseResponseBodyTest {
   @Test
   @Throws(Exception::class)
   fun `errors are properly read`() {
-    val response = AllPlanetsQuery().parseResponseBody(readResource("ResponseError.json"))
+    val response = AllPlanetsQuery().parseJsonResponse(readResource("ResponseError.json"))
     assertTrue(response.hasErrors())
     val errors = response.errors
     assertEquals(errors?.get(0)?.message, "Cannot query field \"names\" on type \"Species\".")
@@ -44,7 +44,7 @@ class ParseResponseBodyTest {
   @Test
   @Throws(Exception::class)
   fun `error with no message, no location and custom attributes`() {
-    val response = AllPlanetsQuery().parseResponseBody(readResource("ResponseErrorWithNullsAndCustomAttributes.json"))
+    val response = AllPlanetsQuery().parseJsonResponse(readResource("ResponseErrorWithNullsAndCustomAttributes.json"))
     assertTrue(response.hasErrors())
     assertEquals(response.errors?.size, 1)
     assertEquals(response.errors!![0].message, "")
@@ -57,7 +57,7 @@ class ParseResponseBodyTest {
   @Test
   @Throws(Exception::class)
   fun `error with message, location and custom attributes`() {
-    val response = AllPlanetsQuery().parseResponseBody(readResource("ResponseErrorWithCustomAttributes.json"))
+    val response = AllPlanetsQuery().parseJsonResponse(readResource("ResponseErrorWithCustomAttributes.json"))
     assertTrue(response.hasErrors())
     assertEquals(response.errors!![0].customAttributes.size, 4)
     assertEquals(response.errors!![0].customAttributes["code"], 500)
@@ -69,7 +69,7 @@ class ParseResponseBodyTest {
   @Test
   @Throws(Exception::class)
   fun errorResponse_with_data() {
-    val response = EpisodeHeroNameQuery(Episode.JEDI).parseResponseBody(readResource("ResponseErrorWithData.json"))
+    val response = EpisodeHeroNameQuery(Episode.JEDI).parseJsonResponse(readResource("ResponseErrorWithData.json"))
     val data = response.data
     val errors = response.errors
     assertTrue(data != null)
@@ -93,7 +93,7 @@ class ParseResponseBodyTest {
   @Throws(Exception::class)
   fun allFilmsWithDate() {
 
-    val response = AllFilmsQuery().parseResponseBody(
+    val response = AllFilmsQuery().parseJsonResponse(
         readResource("HttpCacheTestAllFilms.json"),
         CustomScalarAdapters(mapOf(Types.Date.name to LocalDateAdapter))
     )
@@ -108,7 +108,7 @@ class ParseResponseBodyTest {
   @Test
   @Throws(Exception::class)
   fun dataNull() {
-    val response = HeroNameQuery().parseResponseBody(readResource("ResponseDataNull.json"))
+    val response = HeroNameQuery().parseJsonResponse(readResource("ResponseDataNull.json"))
     assertTrue(response.data == null)
     assertFalse(response.hasErrors())
   }
@@ -117,7 +117,7 @@ class ParseResponseBodyTest {
   @Throws(Exception::class)
   fun fieldMissing() {
     try {
-      HeroNameQuery().parseResponseBody(readResource("ResponseDataMissing.json"))
+      HeroNameQuery().parseJsonResponse(readResource("ResponseDataMissing.json"))
       error("an error was expected")
     } catch (e: NullPointerException) {
     }
@@ -126,7 +126,7 @@ class ParseResponseBodyTest {
   @Test
   @Throws(Exception::class)
   fun operationResponseParser() {
-    val data = HeroNameQuery().parseResponseBody(readResource("HeroNameResponse.json")).data
+    val data = HeroNameQuery().parseJsonResponse(readResource("HeroNameResponse.json")).data
     assertEquals(data!!.hero?.name, "R2-D2")
   }
 
@@ -134,7 +134,7 @@ class ParseResponseBodyTest {
   @Throws(Exception::class)
   fun parseSuccessOperationRawResponse() {
     val query = AllPlanetsQuery()
-    val response = query.parseResponseBody(readResource("AllPlanetsNullableField.json"))
+    val response = query.parseJsonResponse(readResource("AllPlanetsNullableField.json"))
     assertEquals(response.operation, query)
     assertFalse(response.hasErrors())
     assertTrue(response.data != null)
@@ -144,7 +144,7 @@ class ParseResponseBodyTest {
   @Test
   @Throws(Exception::class)
   fun parseErrorOperationRawResponse() {
-    val response = EpisodeHeroNameQuery(Episode.EMPIRE).parseResponseBody(
+    val response = EpisodeHeroNameQuery(Episode.EMPIRE).parseJsonResponse(
         readResource("/ResponseErrorWithData.json"),
         CustomScalarAdapters.Empty
     )
@@ -164,7 +164,7 @@ class ParseResponseBodyTest {
   @Throws(Exception::class)
   fun `extensions are read from response`() {
     val query = HeroNameQuery()
-    val extensions = query.parseResponseBody(readResource("HeroNameResponse.json")).extensions
+    val extensions = query.parseJsonResponse(readResource("HeroNameResponse.json")).extensions
     assertEquals(
         extensions,
         mapOf(

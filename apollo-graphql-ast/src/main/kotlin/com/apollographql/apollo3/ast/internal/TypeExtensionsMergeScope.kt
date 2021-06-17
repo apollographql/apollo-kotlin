@@ -1,4 +1,25 @@
-package com.apollographql.apollo3.ast
+package com.apollographql.apollo3.ast.internal
+
+import com.apollographql.apollo3.ast.GQLDefinition
+import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
+import com.apollographql.apollo3.ast.GQLEnumTypeExtension
+import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
+import com.apollographql.apollo3.ast.GQLInputObjectTypeExtension
+import com.apollographql.apollo3.ast.GQLInterfaceTypeDefinition
+import com.apollographql.apollo3.ast.GQLInterfaceTypeExtension
+import com.apollographql.apollo3.ast.GQLNamed
+import com.apollographql.apollo3.ast.GQLNode
+import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
+import com.apollographql.apollo3.ast.GQLObjectTypeExtension
+import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
+import com.apollographql.apollo3.ast.GQLScalarTypeExtension
+import com.apollographql.apollo3.ast.GQLSchemaDefinition
+import com.apollographql.apollo3.ast.GQLSchemaExtension
+import com.apollographql.apollo3.ast.GQLTypeSystemExtension
+import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
+import com.apollographql.apollo3.ast.GQLUnionTypeExtension
+import com.apollographql.apollo3.ast.Issue
+import com.apollographql.apollo3.ast.UnrecognizedAntlrRule
 
 
 internal fun IssuesScope.mergeExtensions(definitions: List<GQLDefinition>): List<GQLDefinition> {

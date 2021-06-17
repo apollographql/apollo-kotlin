@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.interceptor.cache
+package com.apollographql.apollo3.interceptor.cache.internal
 
 import com.apollographql.apollo3.ClientScope
 import com.apollographql.apollo3.api.ApolloRequest
@@ -14,6 +14,8 @@ import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.internal.dependentKeys
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
+import com.apollographql.apollo3.interceptor.cache.FetchPolicy
+import com.apollographql.apollo3.interceptor.cache.isFromCache
 import com.apollographql.apollo3.mpp.ensureNeverFrozen
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -23,7 +25,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 
-class ApolloCacheInterceptor(
+internal class ApolloCacheInterceptor(
     private val store: ApolloStore,
     private val writeToCacheAsynchronously: Boolean = false,
 ) : ApolloInterceptor {

@@ -6,7 +6,7 @@ import com.apollographql.apollo3.ast.GQLOperationDefinition
 import com.apollographql.apollo3.ast.toExecutableGQLDefinitions
 import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.ast.toUtf8
-import com.apollographql.apollo3.ast.addRequiredFields
+import com.apollographql.apollo3.ast.transformation.addRequiredFields
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith

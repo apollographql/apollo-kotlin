@@ -2,7 +2,7 @@ package com.apollographql.apollo3.performance
 
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.parseResponseBody
+import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.integration.performance.GetFloatsQuery
 import com.apollographql.apollo3.integration.performance.GetIntsQuery
 import okio.Buffer
@@ -51,7 +51,7 @@ class NumberParsingTest {
     val time = measureTime {
       val operation = GetIntsQuery()
       repeat(10000) {
-        operation.parseResponseBody(json)
+        operation.parseJsonResponse(json)
       }
     }
     println("parseInts: $time")
@@ -73,7 +73,7 @@ class NumberParsingTest {
     val time = measureTime {
       val operation = GetFloatsQuery()
       repeat(4000) {
-        operation.parseResponseBody(json)
+        operation.parseJsonResponse(json)
       }
     }
     Runtime.getRuntime().gc()

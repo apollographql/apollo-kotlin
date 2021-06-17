@@ -20,6 +20,9 @@ interface HttpBody {
   fun writeTo(bufferedSink: BufferedSink)
 }
 
+/**
+ * a HTTP request to be sent
+ */
 class HttpRequest(
     val method: HttpMethod,
     val url: String,
@@ -41,6 +44,11 @@ class HttpRequest(
   }
 }
 
+/**
+ * an HTTP Response.
+ *
+ * The [body] of a [HttpResponse] must always be closed if non null
+ */
 class HttpResponse(
     val statusCode: Int,
     val headers: Map<String, String>,
@@ -49,10 +57,12 @@ class HttpResponse(
      */
     private val bodySource: BufferedSource?,
     /**
-     * An immutable body for the native case where this class is frozen
+     * An immutable body that can be freezed when used from Kotlin native.
+     * Prefer [bodySource] on the JVM so that the response can be streamed.
      */
     private val bodyString: ByteString?,
 ) {
+
   val body: BufferedSource?
     get() = bodySource ?: bodyString?.let { Buffer().write(it) }
 }
@@ -71,11 +81,17 @@ fun HttpBody(
   }
 }
 
+/**
+ * Creates a new [HttpBody] from a [String]
+ */
 fun HttpBody(
     contentType: String,
     string: String,
 ): HttpBody = HttpBody(contentType, string.encodeUtf8())
 
+/**
+ * adds a header to a given [HttpRequest]
+ */
 fun HttpRequest.withHeader(name: String, value: String): HttpRequest {
   return HttpRequest(
       method = method,

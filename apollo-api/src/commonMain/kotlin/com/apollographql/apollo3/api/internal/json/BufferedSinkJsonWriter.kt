@@ -17,7 +17,7 @@ package com.apollographql.apollo3.api.internal.json
 
 import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.Throws
-import com.apollographql.apollo3.api.json.JsonDataException
+import com.apollographql.apollo3.api.exception.JsonDataException
 import com.apollographql.apollo3.api.json.JsonWriter
 import okio.BufferedSink
 import okio.IOException

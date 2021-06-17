@@ -164,7 +164,7 @@ class Schema(
       return null
     }
     return directives.flatMap {
-      (it.arguments!!.arguments.first().value as GQLStringValue).value.parseAsSelections().getOrThrow().map {
+      (it.arguments!!.arguments.first().value as GQLStringValue).value.parseAsGQLSelections().getOrThrow().map {
         (it as GQLField).name
       }
     }.toSet()

@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.cache.http.HttpCache
 import com.apollographql.apollo3.api.internal.ApolloLogger
-import com.apollographql.apollo3.api.parseResponseBody
+import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.api.exception.ApolloException
 import com.apollographql.apollo3.api.exception.ApolloHttpException
 import com.apollographql.apollo3.api.exception.ApolloParseException
@@ -71,7 +71,7 @@ class ApolloParseInterceptor(private val httpCache: HttpCache?,
     return if (httpResponse.isSuccessful) {
       try {
         val httpExecutionContext = OkHttpExecutionContext(httpResponse)
-        var parsedResponse = operation.parseResponseBody(httpResponse.body()!!.source(), customScalarAdapters)
+        var parsedResponse = operation.parseJsonResponse(httpResponse.body()!!.source(), customScalarAdapters)
 
         parsedResponse = parsedResponse.copy(
             executionContext = parsedResponse.executionContext.plus(httpExecutionContext) + CacheInfo(httpResponse.cacheResponse() != null)

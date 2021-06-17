@@ -15,7 +15,7 @@ import okio.ByteString.Companion.encodeUtf8
  *   "Upload" to "com.apollographql.apollo3.api.Upload"
  * ))
  *
- * If you have a JVM File at hand, see also [FileUpload]
+ * If you have a JVM File at hand, see also [com.apollographql.apollo3.api.FileUpload]
  */
 interface Upload {
   val contentType: String

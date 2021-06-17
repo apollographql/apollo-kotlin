@@ -12,10 +12,8 @@ package com.apollographql.apollo3.ast
  * The structure of the different nodes matches closely the one of the GraphQL specification
  * (https://spec.graphql.org/June2018/#sec-Appendix-Grammar-Summary.Document)
  *
- * See [parseAsGQLDocument].
- *
  * Compared to the Antlr [com.apollographql.apollo3.compiler.parser.antlr.GraphQLParser.DocumentContext], a GQLDocument
- * is a lot simpler and allows for easy modifying a document (using .clone()) and outputing them to a [okio.BufferedSink].
+ * is a lot simpler and allows for easy modifying a document (using [GQLNode.transform]()) and outputing them to a [okio.BufferedSink].
  *
  * Whitespace tokens are not mapped to GQLNodes so some formatting will be lost during modification
  */
@@ -37,14 +35,38 @@ interface GQLNode {
    */
   fun write(writer: SDLWriter)
 
+  /**
+   * Internal-only. Copies this code using the given children
+   *
+   * To transform an AST, use [GQLNode.transform] instead
+   */
   fun copyWithNewChildren(container: NodeContainer): GQLNode
 }
 
+fun GQLNode.transform(block: (GQLNode) -> GQLNode?): GQLNode? {
 
+  val newChildren = children.mapNotNull {
+    it.transform(block)
+  }
+
+  return block(this)?.run {
+    val container = NodeContainer(newChildren)
+    copyWithNewChildren(container).also {
+      container.assert()
+    }
+  }
+}
+
+/**
+ * A [GQLNode] that has a name
+ */
 interface GQLNamed {
   val name: String
 }
 
+/**
+ * A [GQLNode] that has a description
+ */
 interface GQLDescribed {
   val description: String?
 }
@@ -59,7 +81,7 @@ sealed class GQLSelection : GQLNode
  * The top level node in a GraphQL document. This can be a schema document or an executable document
  * (or something else if need be)
  *
- * See [parseAsGQLDocument].
+ * See [parseAsGQLDocument] for how to obtain a [GQLDocument].
  */
 data class GQLDocument(
     val definitions: List<GQLDefinition>,
@@ -1271,19 +1293,6 @@ enum class GQLDirectiveLocation {
   INPUT_FIELD_DEFINITION,
 }
 
-fun GQLNode.transform(block: (GQLNode) -> GQLNode?): GQLNode? {
-
-  val newChildren = children.mapNotNull {
-    it.transform(block)
-  }
-
-  return block(this)?.run {
-    val container = NodeContainer(newChildren)
-    copyWithNewChildren(container).also {
-      container.assert()
-    }
-  }
-}
 
 @Suppress("UNCHECKED_CAST")
 class NodeContainer(nodes: List<GQLNode>) {

@@ -2,9 +2,9 @@ package test
 
 import codegen.models.AllPlanetsQuery
 import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.composeResponseBody
+import com.apollographql.apollo3.api.composeJsonResponse
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
-import com.apollographql.apollo3.api.parseResponseBody
+import com.apollographql.apollo3.api.parseJsonResponse
 import okio.Buffer
 import readJson
 import kotlin.test.Test
@@ -16,7 +16,7 @@ class ParseResponseBodyTest {
    */
   @Test
   fun allPlanetQuery() {
-    val data = AllPlanetsQuery().parseResponseBody(readJson("AllPlanets.json")).data
+    val data = AllPlanetsQuery().parseJsonResponse(readJson("AllPlanets.json")).data
 
     assertEquals(data!!.allPlanets?.planets?.size, 60)
     val planets = data.allPlanets?.planets?.mapNotNull {
@@ -45,8 +45,8 @@ class ParseResponseBodyTest {
   fun operationJsonWriter() {
     val expected = readJson("OperationJsonWriter.json")
     val query = AllPlanetsQuery()
-    val data = query.parseResponseBody(expected).data
-    val actual = query.composeResponseBody(data!!, indent = "  ")
+    val data = query.parseJsonResponse(expected).data
+    val actual = query.composeJsonResponse(data!!, indent = "  ")
 
     /**
      * operationBased models do not respect the order of fields

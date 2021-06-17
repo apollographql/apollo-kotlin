@@ -13,7 +13,7 @@ import com.apollographql.apollo3.ast.GQLFragmentSpread
 import com.apollographql.apollo3.ast.GQLInlineFragment
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.mergeTrivialInlineFragments
+import com.apollographql.apollo3.ast.transformation.mergeTrivialInlineFragments
 
 internal class OperationBasedModelGroupBuilder(
     private val schema: Schema,

@@ -5,7 +5,7 @@ import com.benasher44.uuid.Uuid
 /**
  * Represents a GraphQL response. GraphQL responses can be be partial responses so it is valid to have both data != null and errors
  */
-data class ApolloResponse<out D : Operation.Data>(
+class ApolloResponse<out D : Operation.Data>(
     val requestUuid: Uuid,
 
     /**
@@ -37,4 +37,22 @@ data class ApolloResponse<out D : Operation.Data>(
     val executionContext: ExecutionContext = ExecutionContext.Empty
 ) {
   fun hasErrors(): Boolean = !errors.isNullOrEmpty()
+
+    fun copy(
+        requestUuid: Uuid = this.requestUuid,
+        operation: Operation<*> = this.operation,
+        data: Any? = this.data,
+        errors: List<Error>? = this.errors,
+        extensions: Map<String, Any?> = this.extensions,
+        executionContext: ExecutionContext = this.executionContext
+    ): ApolloResponse<D> {
+        return ApolloResponse(
+            requestUuid,
+            operation,
+            data as D?,
+            errors,
+            extensions,
+            executionContext
+        )
+    }
 }
