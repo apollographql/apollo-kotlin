@@ -1,16 +1,18 @@
 package com.apollographql.apollo3.interceptor.cache
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.RequestContext
-import com.apollographql.apollo3.api.ResponseContext
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.api.exception.ApolloCompositeException
+import com.apollographql.apollo3.interceptor.cache.internal.ApolloCacheInterceptor
+import com.apollographql.apollo3.interceptor.cache.internal.CacheOutput
+import com.apollographql.apollo3.interceptor.cache.internal.FetchPolicyContext
+import com.apollographql.apollo3.interceptor.cache.internal.OptimisticUpdates
+import com.apollographql.apollo3.interceptor.cache.internal.RefetchPolicyContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -38,31 +40,6 @@ enum class FetchPolicy {
   NetworkOnly,
 }
 
-internal data class FetchPolicyContext(
-    val fetchPolicy: FetchPolicy?,
-): RequestContext(Key) {
-  companion object Key : ExecutionContext.Key<FetchPolicyContext>
-}
-internal data class RefetchPolicyContext(
-    val refetchPolicy: FetchPolicy?,
-): RequestContext(Key) {
-  companion object Key : ExecutionContext.Key<RefetchPolicyContext>
-}
-
-internal data class OptimisticUpdates<D>(
-    val data: D
-) : RequestContext(OptimisticUpdates) {
-  companion object Key : ExecutionContext.Key<OptimisticUpdates<*>>
-}
-
-internal data class CacheOutput(
-    val isFromCache: Boolean
-) : ResponseContext(CacheOutput) {
-  companion object Key : ExecutionContext.Key<CacheOutput>
-}
-
-val <D : Operation.Data> ApolloResponse<D>.isFromCache
-  get() = executionContext[CacheOutput]?.isFromCache ?: false
 
 fun ApolloClient.withStore(store: ApolloStore): ApolloClient {
   return withInterceptor(ApolloCacheInterceptor(store))
@@ -77,6 +54,7 @@ fun <D: Query.Data> ApolloRequest<D>.withRefetchPolicy(refetchPolicy: FetchPolic
 fun <D: Mutation.Data> ApolloRequest<D>.withOptimiticUpdates(data: D): ApolloRequest<D> {
   return withExecutionContext(OptimisticUpdates(data = data))
 }
+
 
 fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
   return flow {
@@ -112,3 +90,8 @@ fun <D : Query.Data> ApolloClient.watch(queryRequest: ApolloRequest<D>): Flow<Ap
   val refetchPolicyContext = queryRequest.executionContext[RefetchPolicyContext] ?: RefetchPolicyContext(FetchPolicy.CacheOnly)
   return queryAsFlow(queryRequest.withExecutionContext(refetchPolicyContext))
 }
+
+val <D : Operation.Data> ApolloResponse<D>.isFromCache
+  get() = executionContext[CacheOutput]?.isFromCache ?: false
+
+
