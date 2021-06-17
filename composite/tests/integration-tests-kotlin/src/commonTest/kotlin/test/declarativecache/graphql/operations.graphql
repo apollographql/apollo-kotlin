@@ -31,6 +31,13 @@ query GetBook($isbn: String!) {
     title
   }
 }
+
+query GetBooks($isbns: [String!]!) {
+    books(isbns: $isbns) {
+        title
+    }
+}
+
 query GetPromoAuthor {
     author {
         firstName

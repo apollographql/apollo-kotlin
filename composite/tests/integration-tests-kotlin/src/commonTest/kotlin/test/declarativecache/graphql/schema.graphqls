@@ -9,6 +9,7 @@ type Query {
 
     author(firstName: String!, lastName: String!): Author
     book(isbn: String!): Book
+    books(isbns: [String!]!): [Book!]!
 }
 
 type Library {
