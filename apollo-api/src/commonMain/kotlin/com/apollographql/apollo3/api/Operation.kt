@@ -2,8 +2,6 @@ package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposerParams
-import com.apollographql.apollo3.api.http.HttpRequestComposerParams
-import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.internal.ResponseBodyParser
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.writeObject
@@ -47,29 +45,157 @@ interface Operation<D : Operation.Data> : Executable<D> {
   interface Data : Executable.Data
 }
 
-fun <D : Operation.Data> Operation<D>.parseResponseBody(
+/**
+ * Reads a GraphQL Json response like below to a [ApolloResponse]
+ * ```
+ * {
+ *  "data": ...
+ *  "errors": ...
+ *  "extensions": ...
+ * }
+ * ```
+ */
+fun <D : Operation.Data> Operation<D>.parseJsonResponse(
     source: BufferedSource,
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
 ): ApolloResponse<D> {
   return ResponseBodyParser.parse(source, this, customScalarAdapters)
 }
 
-fun <D : Operation.Data> Operation<D>.parseResponseBody(
+/**
+ * See [parseJsonResponse]
+ */
+fun <D : Operation.Data> Operation<D>.parseJsonResponse(
     byteString: ByteString,
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
 ): ApolloResponse<D> {
-  return parseResponseBody(Buffer().write(byteString), customScalarAdapters)
+  return parseJsonResponse(Buffer().write(byteString), customScalarAdapters)
 }
 
-fun <D : Operation.Data> Operation<D>.parseResponseBody(
+/**
+ * See [parseJsonResponse]
+ */
+fun <D : Operation.Data> Operation<D>.parseJsonResponse(
     string: String,
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
 ): ApolloResponse<D> {
-  return parseResponseBody(Buffer().writeUtf8(string), customScalarAdapters)
+  return parseJsonResponse(Buffer().writeUtf8(string), customScalarAdapters)
+}
+
+/**
+ * Reads only the "data" part of a GraphQL Json response
+ */
+fun <D : Operation.Data> Operation<D>.parseJsonData(
+    source: BufferedSource,
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+): D {
+  return adapter().fromJson(source, customScalarAdapters)
+}
+
+/**
+ * see [parseJsonResponse]
+ */
+fun <D : Operation.Data> Operation<D>.parseJsonData(
+    byteString: ByteString,
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+): D {
+  return adapter().fromJson(Buffer().write(byteString), customScalarAdapters)
+}
+
+/**
+ * see [parseJsonResponse]
+ */
+fun <D : Operation.Data> Operation<D>.parseJsonData(
+    string: String,
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+): D {
+  return adapter().fromJson(string, customScalarAdapters)
 }
 
 
-fun <D : Operation.Data> Operation<D>.composeRequestBody(
+/**
+ * writes a successful GraphQL Json response containing "data" to the given sink.
+ *
+ * Use this for testing/mocking a valid GraphQL response
+ */
+fun <D : Operation.Data> Operation<D>.composeJsonResponse(
+    sink: BufferedSink,
+    data: D,
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+    indent: String = "",
+) {
+  val writer = BufferedSinkJsonWriter(sink)
+  writer.indent = indent
+  writer.writeObject {
+    name("data")
+    adapter().toJson(this, customScalarAdapters, data)
+  }
+}
+
+/**
+ * see [composeJsonResponse]
+ */
+fun <D : Operation.Data> Operation<D>.composeJsonResponse(
+    data: D,
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+    indent: String = "",
+): String {
+  val buffer = Buffer()
+
+  composeJsonResponse(
+      sink = buffer,
+      data = data,
+      customScalarAdapters = customScalarAdapters,
+      indent = indent
+  )
+
+  return buffer.readUtf8()
+}
+
+/**
+ * writes operation data to the given sink
+ *
+ * Use this for testing/mocking a valid GraphQL response
+ */
+fun <D : Operation.Data> Operation<D>.composeJsonData(
+    sink: BufferedSink,
+    data: D,
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+    indent: String = "",
+) {
+  val writer = BufferedSinkJsonWriter(sink)
+  writer.indent = indent
+  adapter().toJson(writer, customScalarAdapters, data)
+}
+
+/**
+ * See [composeJsonData]
+ */
+fun <D : Operation.Data> Operation<D>.composeJsonData(
+    data: D,
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+    indent: String = "",
+): String {
+  val buffer = Buffer()
+  composeJsonData(
+      sink = buffer,
+      data = data,
+      customScalarAdapters = customScalarAdapters,
+      indent = indent
+  )
+  return buffer.readUtf8()
+}
+
+
+/**
+ * writes the body of a GraphQL json request like below:
+ * {
+ *  "query": ...
+ *  "variables": ...
+ *  "extensions": ...
+ * }
+ */
+fun <D : Operation.Data> Operation<D>.composeJsonRequest(
     sink: BufferedSink,
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
 ) {
@@ -84,83 +210,14 @@ fun <D : Operation.Data> Operation<D>.composeRequestBody(
   request.body!!.writeTo(sink)
 }
 
-fun <D : Operation.Data> Operation<D>.composeRequestBody(
+/**
+ * see [composeJsonRequest]
+ */
+fun <D : Operation.Data> Operation<D>.composeJsonRequest(
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
 ): String {
   return Buffer().apply {
-    composeRequestBody(this, customScalarAdapters)
+    composeJsonRequest(this, customScalarAdapters)
   }.readUtf8()
 }
 
-fun <D : Operation.Data> Operation<D>.composeResponseBody(
-    sink: BufferedSink,
-    data: D,
-    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-    indent: String = "",
-) {
-  val writer = BufferedSinkJsonWriter(sink)
-  writer.indent = indent
-  writer.writeObject {
-    name("data")
-    adapter().toJson(this, customScalarAdapters, data)
-  }
-}
-
-fun <D : Operation.Data> Operation<D>.composeResponseBody(
-    data: D,
-    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-    indent: String = "",
-): String {
-  val buffer = Buffer()
-
-  composeResponseBody(
-      sink = buffer,
-      data = data,
-      customScalarAdapters = customScalarAdapters,
-      indent = indent
-  )
-
-  return buffer.readUtf8()
-}
-
-fun <D : Operation.Data> Operation<D>.composeData(
-    sink: BufferedSink,
-    data: D,
-    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-) {
-  adapter().toJson(BufferedSinkJsonWriter(sink), customScalarAdapters, data)
-}
-
-fun <D : Operation.Data> Operation<D>.composeData(
-    data: D,
-    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-): String {
-  val buffer = Buffer()
-  composeData(
-      sink = buffer,
-      data = data,
-      customScalarAdapters = customScalarAdapters
-  )
-  return buffer.readUtf8()
-}
-
-fun <D : Operation.Data> Operation<D>.parseData(
-    source: BufferedSource,
-    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-): D {
-  return adapter().fromJson(source, customScalarAdapters)
-}
-
-fun <D : Operation.Data> Operation<D>.parseData(
-    byteString: ByteString,
-    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-): D {
-  return adapter().fromJson(Buffer().write(byteString), customScalarAdapters)
-}
-
-fun <D : Operation.Data> Operation<D>.parseData(
-    string: String,
-    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-): D {
-  return adapter().fromJson(string, customScalarAdapters)
-}

@@ -37,4 +37,22 @@ class ApolloResponse<out D : Operation.Data>(
     val executionContext: ExecutionContext = ExecutionContext.Empty
 ) {
   fun hasErrors(): Boolean = !errors.isNullOrEmpty()
+
+    fun copy(
+        requestUuid: Uuid = this.requestUuid,
+        operation: Operation<*> = this.operation,
+        data: Any? = this.data,
+        errors: List<Error>? = this.errors,
+        extensions: Map<String, Any?> = this.extensions,
+        executionContext: ExecutionContext = this.executionContext
+    ): ApolloResponse<D> {
+        return ApolloResponse(
+            requestUuid,
+            operation,
+            data as D?,
+            errors,
+            extensions,
+            executionContext
+        )
+    }
 }
