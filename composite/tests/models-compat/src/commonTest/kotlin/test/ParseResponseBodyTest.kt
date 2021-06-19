@@ -52,10 +52,10 @@ class ParseResponseBodyTest {
      * operationBased models do not respect the order of fields
      * when fragments are involved so just check for Map equivalence
      */
-    val expectedMap = AnyAdapter.fromResponse(
+    val expectedMap = AnyAdapter.fromJson(
         BufferedSourceJsonReader(Buffer().writeUtf8(expected))
     )
-    val actualMap = AnyAdapter.fromResponse(
+    val actualMap = AnyAdapter.fromJson(
         BufferedSourceJsonReader(Buffer().writeUtf8(actual))
     )
     assertEquals(expectedMap, actualMap)

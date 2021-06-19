@@ -7,6 +7,7 @@ import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.exception.ApolloCompositeException
+import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.interceptor.cache.internal.ApolloCacheInterceptor
 import com.apollographql.apollo3.interceptor.cache.internal.CacheContext
@@ -41,7 +42,6 @@ enum class FetchPolicy {
 
 const val CACHE_FLAG_DO_NOT_STORE = 1
 const val CACHE_FLAG_STORE_PARTIAL_RESPONSE = 2
-const val CACHE_FLAG_EVICT_AFTER_READ = 4
 
 fun ApolloClient.withStore(store: ApolloStore): ApolloClient {
   return withInterceptor(ApolloCacheInterceptor(store))
@@ -58,6 +58,10 @@ fun <D: Query.Data> ApolloRequest<D>.withRefetchPolicy(refetchPolicy: FetchPolic
 fun <D: Operation.Data> ApolloRequest<D>.withCacheFlags(flags: Int): ApolloRequest<D> {
   val context = executionContext[CacheContext] ?: DefaultCacheContext(operation)
   return withExecutionContext(context.copy(flags = flags))
+}
+fun <D: Operation.Data> ApolloRequest<D>.withCacheHeaders(cacheHeaders: CacheHeaders): ApolloRequest<D> {
+  val context = executionContext[CacheContext] ?: DefaultCacheContext(operation)
+  return withExecutionContext(context.copy(cacheHeaders = cacheHeaders))
 }
 fun <D: Mutation.Data> ApolloRequest<D>.withOptimiticUpdates(data: D): ApolloRequest<D> {
   val context = executionContext[CacheContext] ?: DefaultCacheContext(operation)

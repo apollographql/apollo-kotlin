@@ -5,26 +5,30 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.RequestContext
 import com.apollographql.apollo3.api.ResponseContext
+import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.interceptor.cache.FetchPolicy
 
 internal class CacheContext(
     val fetchPolicy: FetchPolicy,
     val refetchPolicy: FetchPolicy? = null,
     val optimisticData: Any? = null,
-    val flags: Int = 0
+    val flags: Int = 0,
+    val cacheHeaders: CacheHeaders = CacheHeaders.NONE
 ): RequestContext(Key) {
 
   fun copy(
       fetchPolicy: FetchPolicy = this.fetchPolicy,
       refetchPolicy: FetchPolicy? = this.refetchPolicy,
       optimisticData: Any? = this.optimisticData,
-      flags: Int = this.flags
+      flags: Int = this.flags,
+      cacheHeaders: CacheHeaders = this.cacheHeaders
   ): CacheContext {
     return CacheContext(
         fetchPolicy,
         refetchPolicy,
         optimisticData,
-        flags
+        flags,
+        cacheHeaders
     )
   }
   companion object Key : ExecutionContext.Key<CacheContext>

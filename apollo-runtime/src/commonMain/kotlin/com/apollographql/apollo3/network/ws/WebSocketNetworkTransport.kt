@@ -171,11 +171,11 @@ class WebSocketNetworkTransport(
   }
 
   private fun Map<String, Any?>.toByteString() = buildJsonByteString {
-    AnyAdapter.toResponse(this, this@toByteString)
+    AnyAdapter.toJson(this, this@toByteString)
   }
 
   private fun Map<String, Any?>.toUtf8() = buildJsonString {
-    AnyAdapter.toResponse(this, this@toUtf8)
+    AnyAdapter.toJson(this, this@toUtf8)
   }
 
   private suspend fun createConnection(): WebSocketConnection {
