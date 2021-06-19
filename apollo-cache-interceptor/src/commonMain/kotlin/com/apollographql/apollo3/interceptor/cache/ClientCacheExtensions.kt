@@ -53,7 +53,7 @@ fun <D: Query.Data> ApolloRequest<D>.withFetchPolicy(fetchPolicy: FetchPolicy): 
 }
 fun <D: Query.Data> ApolloRequest<D>.withRefetchPolicy(refetchPolicy: FetchPolicy): ApolloRequest<D> {
   val context = executionContext[CacheContext] ?: DefaultCacheContext(operation)
-  return withExecutionContext(context.copy(fetchPolicy = refetchPolicy))
+  return withExecutionContext(context.copy(refetchPolicy = refetchPolicy))
 }
 fun <D: Operation.Data> ApolloRequest<D>.withCacheFlags(flags: Int): ApolloRequest<D> {
   val context = executionContext[CacheContext] ?: DefaultCacheContext(operation)
