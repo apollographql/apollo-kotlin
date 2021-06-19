@@ -131,7 +131,7 @@ class FetchPolicyTest {
 
       request = request.withFetchPolicy(FetchPolicy.CacheOnly)
 
-      // Second query should only hit the network
+      // Second query should only hit the cache
       response = apolloClient.query(request)
 
       // And make sure we don't read the network
