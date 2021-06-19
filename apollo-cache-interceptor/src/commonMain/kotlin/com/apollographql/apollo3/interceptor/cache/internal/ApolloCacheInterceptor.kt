@@ -39,10 +39,10 @@ internal class ApolloCacheInterceptor(
   }
 
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-    val defaultFetchPolicy = if (request.operation is Query) FetchPolicy.CacheFirst else FetchPolicy.NetworkOnly
-    val fetchPolicy = request.executionContext[FetchPolicyContext]?.fetchPolicy ?: defaultFetchPolicy
-    val refetchPolicy = request.executionContext[RefetchPolicyContext]?.refetchPolicy
-    val optimisticUpdates = request.executionContext[OptimisticUpdates]?.data
+    val cacheContext = request.executionContext[CacheContext] ?: DefaultCacheContext(request.operation)
+    val fetchPolicy = cacheContext.fetchPolicy
+    val refetchPolicy = cacheContext.refetchPolicy
+    val optimisticUpdates = cacheContext.optimisticData
     val responseAdapterCache = request.executionContext[CustomScalarAdapters]!!
 
     if (request.operation is Subscription) {
