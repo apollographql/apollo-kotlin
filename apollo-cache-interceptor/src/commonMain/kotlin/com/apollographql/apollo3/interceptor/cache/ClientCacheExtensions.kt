@@ -55,7 +55,12 @@ fun <D: Mutation.Data> ApolloRequest<D>.withOptimiticUpdates(data: D): ApolloReq
   return withExecutionContext(OptimisticUpdates(data = data))
 }
 
-
+/**
+ * Gets the result from the cache first and always fetch from the network. Use this to get an early
+ * cached result while also updating the network values.
+ *
+ * Any [FetchPolicy] on [queryRequest] will be ignored
+ */
 fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
   return flow {
     val cacheResult = kotlin.runCatching {
@@ -80,6 +85,10 @@ fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(queryRequest: ApolloReque
       )
     }
   }
+}
+
+fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(query: Query<D>): Flow<ApolloResponse<D>> {
+  return queryCacheAndNetwork(ApolloRequest(query))
 }
 
 fun <D : Query.Data> ApolloClient.watch(query: Query<D>): Flow<ApolloResponse<D>> {

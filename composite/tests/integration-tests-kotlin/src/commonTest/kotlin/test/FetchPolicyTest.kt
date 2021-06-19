@@ -12,6 +12,7 @@ import com.apollographql.apollo3.interceptor.cache.isFromCache
 import com.apollographql.apollo3.interceptor.cache.queryCacheAndNetwork
 import com.apollographql.apollo3.interceptor.cache.withFetchPolicy
 import com.apollographql.apollo3.interceptor.cache.withStore
+import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.enqueue
@@ -20,6 +21,8 @@ import kotlinx.coroutines.flow.toList
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -169,23 +172,37 @@ class FetchPolicyTest {
       val query = HeroNameQuery()
       val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
 
-      val request = ApolloRequest(query).withFetchPolicy(FetchPolicy.CacheFirst)
+      // Initial state: everything fails
+      // Cache Error + Network Error => Error
+      mockServer.enqueue(MockResponse(statusCode = 500))
+      assertFailsWith(ApolloCompositeException::class) {
+        apolloClient.queryCacheAndNetwork(query).toList()
+      }
 
-      // cache the response
+      // Make the network return something
+      // Cache Error + Nework Success => 1 response
       mockServer.enqueue(query, data)
-      val response = apolloClient
-          .query(request)
+      var responses =  apolloClient.queryCacheAndNetwork(query).toList()
 
-      assertNotNull(response.data)
-      assertFalse(response.isFromCache)
+      assertEquals(1, responses.size)
+      assertNotNull(responses[0].data)
+      assertFalse(responses[0].isFromCache)
+      assertEquals("R2-D2", responses[0].data?.hero?.name)
 
-      // Now make the request cache and network
+      // Now cache is populated but make the network fail again
+      // Cache Success + Network Error => 1 response
+      mockServer.enqueue(MockResponse(statusCode = 500))
+      responses = apolloClient.queryCacheAndNetwork(query).toList()
+
+      assertEquals(1, responses.size)
+      assertNotNull(responses[0].data)
+      assertTrue(responses[0].isFromCache)
+      assertEquals("R2-D2", responses[0].data?.hero?.name)
+
+      // Cache Success + Network Success => 1 response
       mockServer.enqueue(query, data)
-      val responses = apolloClient
-          .queryCacheAndNetwork(request)
-          .toList()
+      responses = apolloClient.queryCacheAndNetwork(query).toList()
 
-      // We should have 2 responses
       assertEquals(2, responses.size)
       assertNotNull(responses[0].data)
       assertTrue(responses[0].isFromCache)
