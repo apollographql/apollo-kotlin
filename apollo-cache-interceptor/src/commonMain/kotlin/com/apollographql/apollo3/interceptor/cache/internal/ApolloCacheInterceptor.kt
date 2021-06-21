@@ -14,6 +14,8 @@ import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.internal.dependentKeys
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
+import com.apollographql.apollo3.interceptor.cache.CACHE_FLAG_DO_NOT_STORE
+import com.apollographql.apollo3.interceptor.cache.CACHE_FLAG_STORE_PARTIAL_RESPONSE
 import com.apollographql.apollo3.interceptor.cache.FetchPolicy
 import com.apollographql.apollo3.interceptor.cache.isFromCache
 import com.apollographql.apollo3.mpp.ensureNeverFrozen
@@ -38,30 +40,47 @@ internal class ApolloCacheInterceptor(
     }
   }
 
+  private suspend fun <D : Operation.Data> maybeWriteToCache(
+      request: ApolloRequest<D>,
+      response: ApolloResponse<D>,
+      customScalarAdapters: CustomScalarAdapters,
+      cacheContext: CacheContext,
+      extraKeys: Set<String> = emptySet()
+  ) {
+    if (cacheContext.flags.and(CACHE_FLAG_DO_NOT_STORE) != 0) {
+      return
+    }
+    if (response.hasErrors() && cacheContext.flags.and(CACHE_FLAG_STORE_PARTIAL_RESPONSE) == 0) {
+      return
+    }
+
+    maybeAsync(request.executionContext) {
+      val cacheKeys = if (!response.isFromCache && response.data != null) {
+        store.writeOperation(request.operation, response.data!!, customScalarAdapters, cacheContext.cacheHeaders, publish = false)
+      } else {
+        emptySet()
+      }
+      store.publish(cacheKeys + extraKeys)
+    }
+  }
+
+
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-    val defaultFetchPolicy = if (request.operation is Query) FetchPolicy.CacheFirst else FetchPolicy.NetworkOnly
-    val fetchPolicy = request.executionContext[FetchPolicyContext]?.fetchPolicy ?: defaultFetchPolicy
-    val refetchPolicy = request.executionContext[RefetchPolicyContext]?.refetchPolicy
-    val optimisticUpdates = request.executionContext[OptimisticUpdates]?.data
-    val responseAdapterCache = request.executionContext[CustomScalarAdapters]!!
+    val cacheContext = request.executionContext[CacheContext] ?: DefaultCacheContext(request.operation)
+    val fetchPolicy = cacheContext.fetchPolicy
+    val refetchPolicy = cacheContext.refetchPolicy
+    val customScalarAdapters = request.executionContext[CustomScalarAdapters]!!
 
     if (request.operation is Subscription) {
       return proceed(request, chain).onEach { response ->
-        maybeAsync(request.executionContext) {
-          val cacheKeys = if (!response.isFromCache && response.data != null) {
-            store.writeOperation(request.operation, response.data!!, responseAdapterCache, CacheHeaders.NONE, publish = false)
-          } else {
-            emptySet()
-          }
-          store.publish(cacheKeys)
-        }
+        maybeWriteToCache(request, response, customScalarAdapters, cacheContext)
       }
     }
 
     return flow {
       var result = kotlin.runCatching {
         @Suppress("UNCHECKED_CAST")
-        fetchOne(request, chain, fetchPolicy, optimisticUpdates as D?)
+        fetchOne(request, chain, fetchPolicy, customScalarAdapters, cacheContext)
       }
       val response = result.getOrNull()
 
@@ -77,7 +96,7 @@ internal class ApolloCacheInterceptor(
       }
 
       var watchedKeys = if (response != null && !response.hasErrors() && response.data != null) {
-        store.normalize(request.operation, response.data!!, responseAdapterCache).values.dependentKeys()
+        store.normalize(request.operation, response.data!!, customScalarAdapters).values.dependentKeys()
       } else {
         null
       }
@@ -85,7 +104,7 @@ internal class ApolloCacheInterceptor(
       store.changedKeys.collect { changedKeys ->
         if (watchedKeys == null || changedKeys.intersect(watchedKeys!!).isNotEmpty()) {
           result = kotlin.runCatching {
-            fetchOne(request, chain, refetchPolicy, null)
+            fetchOne(request, chain, refetchPolicy, customScalarAdapters, cacheContext)
           }
 
           val newResponse = result.getOrNull()
@@ -93,7 +112,7 @@ internal class ApolloCacheInterceptor(
             emit(newResponse)
 
             if (!newResponse.hasErrors() && newResponse.data != null) {
-              watchedKeys = store.normalize(request.operation, newResponse.data!!, responseAdapterCache).values.dependentKeys()
+              watchedKeys = store.normalize(request.operation, newResponse.data!!, customScalarAdapters).values.dependentKeys()
             }
           }
         }
@@ -105,40 +124,33 @@ internal class ApolloCacheInterceptor(
       request: ApolloRequest<D>,
       chain: ApolloInterceptorChain,
       fetchPolicy: FetchPolicy,
-      optimisticUpdates: D?,
+      customScalarAdapters: CustomScalarAdapters,
+      cacheContext: CacheContext,
   ): ApolloResponse<D> {
-    val responseAdapterCache = request.executionContext[CustomScalarAdapters]!!
 
-    if (optimisticUpdates != null) {
+    if (cacheContext.optimisticData != null) {
       store.writeOptimisticUpdates(
           operation = request.operation,
-          operationData = optimisticUpdates,
+          operationData = cacheContext.optimisticData as D,
           mutationId = request.requestUuid,
-          customScalarAdapters = responseAdapterCache,
+          customScalarAdapters = customScalarAdapters,
           publish = true
       )
     }
 
     val result = kotlin.runCatching {
-      fetchOneMightThrow(request, chain, fetchPolicy)
+      fetchOneMightThrow(request, chain, fetchPolicy, customScalarAdapters, cacheContext)
     }
 
     if (result.isSuccess) {
       val response = result.getOrThrow()
 
-      val optimisticKeys = if (optimisticUpdates != null) {
+      val optimisticKeys = if (cacheContext.optimisticData != null) {
         store.rollbackOptimisticUpdates(request.requestUuid, publish = false)
       } else {
         emptySet()
       }
-      maybeAsync(request.executionContext) {
-        val cacheKeys = if (!response.isFromCache && response.data != null) {
-          store.writeOperation(request.operation, response.data!!, responseAdapterCache, CacheHeaders.NONE, publish = false)
-        } else {
-          emptySet()
-        }
-        store.publish(optimisticKeys + cacheKeys)
-      }
+      maybeWriteToCache(request, response, customScalarAdapters, cacheContext, optimisticKeys)
     }
 
     return result.getOrThrow()
@@ -148,14 +160,14 @@ internal class ApolloCacheInterceptor(
       request: ApolloRequest<D>,
       chain: ApolloInterceptorChain,
       fetchPolicy: FetchPolicy,
+      customScalarAdapters: CustomScalarAdapters,
+      cacheContext: CacheContext,
   ): ApolloResponse<D> {
-    val responseAdapterCache = request.executionContext[CustomScalarAdapters]!!
-
     when (fetchPolicy) {
       FetchPolicy.CacheFirst -> {
         ensureNeverFrozen(store)
         val cacheResult = kotlin.runCatching {
-          readFromCache(request, responseAdapterCache)
+          readFromCache(request, customScalarAdapters, cacheContext)
         }
 
         val cacheResponse = cacheResult.getOrNull()
@@ -188,7 +200,7 @@ internal class ApolloCacheInterceptor(
         }
 
         val cacheResult = kotlin.runCatching {
-          readFromCache(request, responseAdapterCache)
+          readFromCache(request, customScalarAdapters, cacheContext)
         }
 
         val cacheResponse = cacheResult.getOrNull()
@@ -202,7 +214,7 @@ internal class ApolloCacheInterceptor(
         )
       }
       FetchPolicy.CacheOnly -> {
-        return readFromCache(request, responseAdapterCache)
+        return readFromCache(request, customScalarAdapters, cacheContext)
       }
       FetchPolicy.NetworkOnly -> {
         return proceed(request, chain).single()
@@ -223,12 +235,14 @@ internal class ApolloCacheInterceptor(
   private suspend fun <D : Operation.Data> readFromCache(
       request: ApolloRequest<D>,
       customScalarAdapters: CustomScalarAdapters,
+      cacheContext: CacheContext
   ): ApolloResponse<D> {
     val operation = request.operation
 
     val data = store.readOperation(
-        operation,
-        customScalarAdapters
+        operation = operation,
+        customScalarAdapters = customScalarAdapters,
+        cacheHeaders = cacheContext.cacheHeaders
     )
 
     return ApolloResponse(

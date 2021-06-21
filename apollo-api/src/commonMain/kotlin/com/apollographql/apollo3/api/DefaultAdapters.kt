@@ -115,20 +115,20 @@ object BooleanAdapter : Adapter<Boolean> {
 }
 
 object AnyAdapter : Adapter<Any> {
-  fun fromResponse(reader: JsonReader): Any {
+  fun fromJson(reader: JsonReader): Any {
     return reader.readRecursively()!!
   }
 
-  fun toResponse(writer: JsonWriter, value: Any) {
+  fun toJson(writer: JsonWriter, value: Any) {
     Utils.writeToJson(value, writer)
   }
 
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Any {
-    return fromResponse(reader)
+    return fromJson(reader)
   }
 
   override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Any) {
-    toResponse(writer, value)
+    toJson(writer, value)
   }
 }
 
@@ -171,7 +171,7 @@ class ObjectAdapter<T>(
       /**
        * And write to the original writer
        */
-      AnyAdapter.toResponse(writer, mapWriter.root()!!)
+      AnyAdapter.toJson(writer, mapWriter.root()!!)
     } else {
       writer.beginObject()
       wrappedAdapter.toJson(writer, customScalarAdapters, value)

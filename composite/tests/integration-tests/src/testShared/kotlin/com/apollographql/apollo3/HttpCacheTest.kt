@@ -338,17 +338,17 @@ class HttpCacheTest {
   @Throws(Exception::class)
   fun cacheUpdate() {
     enqueueResponse("/HttpCacheTestAllPlanets.json")
-    Rx2Apollo.from(apolloClient
-        .query(AllPlanetsQuery()))
-        .test()
+    Rx2Apollo.from(apolloClient.query(AllPlanetsQuery())).test()
     Truth.assertThat(server.requestCount).isEqualTo(1)
+
     checkCachedResponse("/HttpCacheTestAllPlanets.json")
+
     enqueueResponse("/HttpCacheTestAllPlanets2.json")
-    Rx2Apollo.from(apolloClient
-        .query(AllPlanetsQuery()))
-        .test()
+    Rx2Apollo.from(apolloClient.query(AllPlanetsQuery())).test()
     Truth.assertThat(server.requestCount).isEqualTo(2)
+
     checkCachedResponse("/HttpCacheTestAllPlanets2.json")
+
     Truth.assertThat(lastHttResponse!!.networkResponse()).isNotNull()
     Truth.assertThat(lastHttResponse!!.cacheResponse()).isNull()
     enqueueResponse("/HttpCacheTestAllPlanets2.json")

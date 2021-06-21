@@ -38,7 +38,7 @@ class DefaultHttpRequestComposer(
   override fun <D : Operation.Data> compose(apolloRequest: ApolloRequest<D>): HttpRequest {
     val params = apolloRequest.executionContext[HttpRequestComposerParams] ?: DefaultHttpRequestComposerParams
     val operation = apolloRequest.operation
-    val customScalarAdapters = apolloRequest.executionContext[CustomScalarAdapters] ?: error("Cannot find a ResponseAdapterCache")
+    val customScalarAdapters = apolloRequest.executionContext[CustomScalarAdapters] ?: CustomScalarAdapters.Empty
 
     val requestHeaders = mutableMapOf(
         HEADER_APOLLO_OPERATION_ID to operation.id(),

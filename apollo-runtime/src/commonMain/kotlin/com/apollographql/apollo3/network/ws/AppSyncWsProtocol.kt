@@ -51,7 +51,7 @@ class AppSyncWsProtocol(
 
   @Suppress("UNCHECKED_CAST")
   override fun parseMessage(string: String): WsMessage {
-    val map = AnyAdapter.fromResponse(BufferedSourceJsonReader(Buffer().writeUtf8(string))) as Map<String, Any?>
+    val map = AnyAdapter.fromJson(BufferedSourceJsonReader(Buffer().writeUtf8(string))) as Map<String, Any?>
 
     return when (map["type"]) {
       "connection_ack" -> WsMessage.ConnectionAck

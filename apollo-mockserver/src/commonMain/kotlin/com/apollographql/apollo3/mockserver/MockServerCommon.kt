@@ -16,15 +16,13 @@ fun parseHeader(line: String): Pair<String, String> {
   return line.substring(0, index).trim() to line.substring(index + 1, line.length).trim()
 }
 
-
 class MockRecordedRequest(
     val method: String,
     val path: String,
     val version: String,
     val headers: Map<String, String> = emptyMap(),
-    val body: ByteString = ByteString.EMPTY,
+    val body: ByteString = ByteString.EMPTY
 )
-
 fun writeResponse(sink: BufferedSink, mockResponse: MockResponse, version: String) {
   sink.writeUtf8("${version} ${mockResponse.statusCode}\r\n")
   val contentLengthHeader = mapOf("Content-Length" to mockResponse.body.size.toString())
@@ -53,8 +51,6 @@ class MockResponse(
       headers: Map<String, String> = emptyMap()
   ) : this(statusCode, body.encodeUtf8(), headers)
 }
-
-
 
 fun readRequest(source: BufferedSource): MockRecordedRequest? {
   var line = source.readUtf8Line()

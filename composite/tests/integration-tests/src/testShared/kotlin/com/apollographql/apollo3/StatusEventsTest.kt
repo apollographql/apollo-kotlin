@@ -64,13 +64,6 @@ class IntegrationTest {
         .build()
   }
 
-  @Test
-  fun `request POST body contains operation, query and variables`() {
-    server.enqueue(mockResponse("HttpCacheTestAllPlanets.json"))
-    assertResponse(apolloClient.query(AllPlanetsQuery())) {}
-    val body = server.takeRequest().body.readString(Charsets.UTF_8)
-    checkTestFixture(body, "IntegrationTest/allPlanets.json")
-  }
 
   @Test
   @Throws(Exception::class)
@@ -87,40 +80,7 @@ class IntegrationTest {
     assertThat(statusEvents).isEqualTo(listOf(ApolloCall.StatusEvent.SCHEDULED, ApolloCall.StatusEvent.FETCH_CACHE, ApolloCall.StatusEvent.FETCH_NETWORK, ApolloCall.StatusEvent.COMPLETED))
   }
 
-  @Test
-  @Throws(Exception::class)
-  fun operationResponseContainsHttpExecutionContext() {
-    val httpResponse = mockResponse("HttpCacheTestAllPlanets.json")
-        .setHeader("Header1", "Header1#value")
-        .setHeader("Header2", "Header2#value")
-    server.enqueue(httpResponse)
-    assertResponse(
-        apolloClient.query(AllPlanetsQuery())
-    ) { response ->
-      assertThat(response.executionContext[OkHttpExecutionContext]).isNotNull()
-      assertThat(response.executionContext[OkHttpExecutionContext]!!.response).isNotNull()
-      assertThat(response.executionContext[OkHttpExecutionContext]!!.response.headers().toString())
-          .isEqualTo(
-              """
-              Transfer-encoding: chunked
-              Header1: Header1#value
-              Header2: Header2#value
-              
-              """.trimIndent()
-          )
-      assertThat(response.executionContext[OkHttpExecutionContext]!!.response.body()).isNull()
-    }
-  }
 
-  @Test
-  @Throws(Exception::class)
-  fun writeOperationRawRequest() {
-    val query = EpisodeHeroNameQuery(Episode.EMPIRE)
-
-    assertThat(query.name()).isEqualTo("EpisodeHeroName")
-    assertThat(query.document()).isEqualTo("query EpisodeHeroName(\$episode: Episode) { hero(episode: \$episode) { name } }")
-    assertThat(query.variablesJson(CustomScalarAdapters.Empty)).isEqualTo("{\"episode\":\"EMPIRE\"}")
-  }
 
   @Throws(IOException::class)
   private fun mockResponse(fileName: String): MockResponse {
