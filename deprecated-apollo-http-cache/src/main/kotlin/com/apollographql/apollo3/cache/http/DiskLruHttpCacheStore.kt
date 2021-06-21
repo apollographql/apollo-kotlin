@@ -11,21 +11,23 @@ import java.io.File
 import java.io.IOException
 import java.util.concurrent.locks.ReadWriteLock
 import java.util.concurrent.locks.ReentrantReadWriteLock
+import kotlin.concurrent.read
+import kotlin.concurrent.write
 
 class DiskLruHttpCacheStore(private val fileSystem: FileSystem, private val directory: File, private val maxSize: Long) : HttpCacheStore {
-  private var cache: DiskLruCache
-  private val cacheLock: ReadWriteLock = ReentrantReadWriteLock()
+  private var cache = createDiskLruCache()
+  private val cacheLock = ReentrantReadWriteLock()
 
-  constructor(directory: File, maxSize: Long) : this(FileSystem.Companion.SYSTEM, directory, maxSize) {}
+  constructor(directory: File, maxSize: Long) : this(FileSystem.SYSTEM, directory, maxSize) {}
+
+  private fun createDiskLruCache(): DiskLruCache {
+    return DiskLruCache.create(fileSystem, directory, VERSION, ENTRY_COUNT, maxSize)
+  }
 
   @Throws(IOException::class)
   override fun cacheRecord(cacheKey: String): HttpCacheRecord? {
-    val snapshot: DiskLruCache.Snapshot?
-    cacheLock.readLock().lock()
-    snapshot = try {
+    val snapshot = cacheLock.read {
       cache[cacheKey]
-    } finally {
-      cacheLock.readLock().unlock()
     }
     return if (snapshot == null) {
       null
@@ -46,13 +48,10 @@ class DiskLruHttpCacheStore(private val fileSystem: FileSystem, private val dire
 
   @Throws(IOException::class)
   override fun cacheRecordEditor(cacheKey: String): HttpCacheRecordEditor? {
-    val editor: DiskLruCache.Editor?
-    cacheLock.readLock().lock()
-    editor = try {
+    val editor = cacheLock.read {
       cache.edit(cacheKey)
-    } finally {
-      cacheLock.readLock().unlock()
     }
+
     return if (editor == null) {
       null
     } else object : HttpCacheRecordEditor {
@@ -78,27 +77,18 @@ class DiskLruHttpCacheStore(private val fileSystem: FileSystem, private val dire
 
   @Throws(IOException::class)
   override fun delete() {
-    cacheLock.writeLock().lock()
-    cache = try {
+    cache = cacheLock.write {
       cache.delete()
       createDiskLruCache()
-    } finally {
-      cacheLock.writeLock().unlock()
     }
   }
 
   @Throws(IOException::class)
   override fun remove(cacheKey: String) {
-    cacheLock.readLock().lock()
-    try {
+    // is `read` ok here?
+    cacheLock.read {
       cache.remove(cacheKey)
-    } finally {
-      cacheLock.readLock().unlock()
     }
-  }
-
-  private fun createDiskLruCache(): DiskLruCache {
-    return DiskLruCache.Companion.create(fileSystem, directory, VERSION, ENTRY_COUNT, maxSize)
   }
 
   companion object {
@@ -106,9 +96,5 @@ class DiskLruHttpCacheStore(private val fileSystem: FileSystem, private val dire
     private const val ENTRY_HEADERS = 0
     private const val ENTRY_BODY = 1
     private const val ENTRY_COUNT = 2
-  }
-
-  init {
-    cache = createDiskLruCache()
   }
 }

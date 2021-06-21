@@ -47,6 +47,8 @@ class HttpRequest(
 /**
  * an HTTP Response.
  *
+ * Specifying both [bodySource] and [bodySource] is invalid
+ *
  * The [body] of a [HttpResponse] must always be closed if non null
  */
 class HttpResponse(
@@ -98,5 +100,29 @@ fun HttpRequest.withHeader(name: String, value: String): HttpRequest {
       url = url,
       headers = headers + (name to value),
       body = body
+  )
+}
+
+/**
+ * adds multiple headers to a given [HttpRequest]
+ */
+fun HttpRequest.withHeaders(headers: Map<String, String>): HttpRequest {
+  return HttpRequest(
+      method = method,
+      url = url,
+      headers = this.headers + headers,
+      body = body
+  )
+}
+
+/**
+ * adds multiple headers to a given [HttpResponse]
+ */
+fun HttpResponse.withHeaders(headers: Map<String, String>): HttpResponse {
+  return HttpResponse(
+      statusCode = statusCode,
+      headers = this.headers + headers,
+      bodySource = body,
+      bodyString = null
   )
 }

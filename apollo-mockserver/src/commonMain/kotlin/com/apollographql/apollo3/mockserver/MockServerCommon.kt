@@ -6,7 +6,6 @@ import okio.BufferedSource
 import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
 
-
 fun parseHeader(line: String): Pair<String, String> {
   val index = line.indexOfFirst { it == ':' }
   check (index >= 0) {
@@ -23,6 +22,7 @@ class MockRecordedRequest(
     val headers: Map<String, String> = emptyMap(),
     val body: ByteString = ByteString.EMPTY
 )
+
 fun writeResponse(sink: BufferedSink, mockResponse: MockResponse, version: String) {
   sink.writeUtf8("${version} ${mockResponse.statusCode}\r\n")
   val contentLengthHeader = mapOf("Content-Length" to mockResponse.body.size.toString())

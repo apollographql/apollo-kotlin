@@ -2,16 +2,15 @@ plugins {
   kotlin("jvm")
 }
 
-metalava {
-  hiddenPackages += setOf("com.apollographql.apollo3.cache.http.internal")
-}
-
 dependencies {
   api(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
   api(project(":apollo-api"))
-  api(project(":apollo-http-cache-api"))
+  api(project(":apollo-runtime"))
+  implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
+  implementation(groovy.util.Eval.x(project, "x.dep.kotlinxdatetime"))
 
-  testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
+  testImplementation(project(":apollo-mockserver"))
+  testImplementation(kotlin("test-junit"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
 }
 

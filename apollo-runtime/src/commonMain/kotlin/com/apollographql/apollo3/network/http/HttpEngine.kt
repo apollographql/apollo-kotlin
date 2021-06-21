@@ -11,6 +11,7 @@ import com.apollographql.apollo3.exception.ApolloParseException
 interface HttpEngine {
 
   /**
+   * Executes the given HttpRequest, might throw
    */
   suspend fun execute(request: HttpRequest): HttpResponse
 }
