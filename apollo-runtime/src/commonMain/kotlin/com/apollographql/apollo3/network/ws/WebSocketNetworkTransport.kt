@@ -6,7 +6,7 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableAnyAdapter
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.exception.ApolloNetworkException
+import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.api.internal.ResponseBodyParser
 import com.apollographql.apollo3.api.internal.json.buildJsonByteString
 import com.apollographql.apollo3.api.internal.json.buildJsonString

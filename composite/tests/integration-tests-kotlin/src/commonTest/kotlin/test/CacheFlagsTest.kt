@@ -3,7 +3,7 @@ package test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.exception.CacheMissException
+import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.cache.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.CacheHeaders

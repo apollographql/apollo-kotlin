@@ -2,7 +2,7 @@ package test
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.exception.ApolloCompositeException
+import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory

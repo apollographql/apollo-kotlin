@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.internal.ResponseBodyParser
 import com.apollographql.apollo3.cache.normalized.CacheResolver
-import com.apollographql.apollo3.api.exception.ApolloNetworkException
+import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.subscription.OnSubscriptionManagerStateChangeListener
 import com.apollographql.apollo3.subscription.OperationClientMessage
 import com.apollographql.apollo3.subscription.OperationServerMessage

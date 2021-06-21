@@ -1,6 +1,6 @@
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.interceptor.cache.FetchPolicy

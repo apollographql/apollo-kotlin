@@ -4,13 +4,13 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.parseJsonResponse
-import com.apollographql.apollo3.api.exception.ApolloHttpException
-import com.apollographql.apollo3.api.exception.ApolloParseException
+import com.apollographql.apollo3.exception.ApolloHttpException
+import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.internal.NonMainWorker
 import com.apollographql.apollo3.network.NetworkTransport

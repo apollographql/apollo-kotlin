@@ -4,7 +4,7 @@ import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
-import com.apollographql.apollo3.api.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.kotlinsample.GithubRepositoriesQuery
 import com.apollographql.apollo3.kotlinsample.GithubRepositoryCommitsQuery
 import com.apollographql.apollo3.kotlinsample.GithubRepositoryDetailQuery

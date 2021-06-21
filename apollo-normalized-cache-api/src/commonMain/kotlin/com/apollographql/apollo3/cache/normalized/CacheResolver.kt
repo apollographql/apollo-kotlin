@@ -6,7 +6,7 @@ import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.InterfaceType
 import com.apollographql.apollo3.api.ObjectType
 import com.apollographql.apollo3.api.UnionType
-import com.apollographql.apollo3.api.exception.CacheMissException
+import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.api.isCompound
 import com.apollographql.apollo3.api.keyFields
 import com.apollographql.apollo3.api.leafType
