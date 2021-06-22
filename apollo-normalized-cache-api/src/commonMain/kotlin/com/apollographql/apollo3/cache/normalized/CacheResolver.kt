@@ -2,9 +2,13 @@ package com.apollographql.apollo3.cache.normalized
 
 import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.CompiledListType
+import com.apollographql.apollo3.api.CompiledNamedType
+import com.apollographql.apollo3.api.CompiledNotNullType
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.InterfaceType
 import com.apollographql.apollo3.api.ObjectType
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.UnionType
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.api.isCompound
@@ -17,24 +21,23 @@ import kotlin.jvm.JvmSuppressWildcards
 open class CacheResolver {
 
   open fun cacheKeyForObject(
-      field: CompiledField,
+      type: CompiledNamedType,
       variables: Executable.Variables,
       map: Map<String, @JvmSuppressWildcards Any?>,
   ): CacheKey? {
-    val keyFields = field.type.leafType().keyFields()
+    val keyFields = type.keyFields()
 
     if (keyFields.isNotEmpty()) {
-      return buildCacheKey(field, keyFields.map { map[it].toString() })
+      return buildCacheKey(type.name, keyFields.map { map[it].toString() })
     }
 
     return null
   }
 
-  protected fun buildCacheKey(field: CompiledField, values: List<String>): CacheKey {
-    val typeName = field.type.leafType().name
+  protected fun buildCacheKey(typename: String, values: List<String>): CacheKey {
     return CacheKey(
         buildString {
-          append(typeName)
+          append(typename)
           append(":")
           values.forEach {
             append(it)
@@ -54,7 +57,7 @@ open class CacheResolver {
     }
 
     if (keyArgsValues.isNotEmpty()) {
-      return buildCacheKey(field, keyArgsValues)
+      return buildCacheKey(field.type.leafType().name, keyArgsValues)
     }
 
     val name = field.nameWithArguments(variables)
@@ -67,7 +70,7 @@ open class CacheResolver {
 }
 
 class IdCacheResolver: CacheResolver() {
-  override fun cacheKeyForObject(field: CompiledField, variables: Executable.Variables, map: Map<String, Any?>): CacheKey? {
+  override fun cacheKeyForObject(type: CompiledNamedType, variables: Executable.Variables, map: Map<String, Any?>): CacheKey? {
     return map["id"]?.toString()?.let { CacheKey(it) }
   }
 

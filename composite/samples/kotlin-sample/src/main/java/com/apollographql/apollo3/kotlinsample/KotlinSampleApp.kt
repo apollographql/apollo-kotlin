@@ -6,7 +6,7 @@ import com.apollographql.apollo3.ApolloAndroidLogger
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.CompiledNamedType
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo3.cache.http.ApolloHttpCache
 import com.apollographql.apollo3.cache.http.DiskLruHttpCacheStore
@@ -46,7 +46,7 @@ class KotlinSampleApp : Application() {
 
     val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory(this, "github_cache")
     val cacheResolver = object : CacheResolver() {
-      override fun cacheKeyForObject(field: CompiledField, variables: Executable.Variables, map: Map<String, Any?>): CacheKey? {
+      override fun cacheKeyForObject(type: CompiledNamedType, variables: Executable.Variables, map: Map<String, Any?>): CacheKey? {
         return if (map["__typename"] == "Repository") {
           CacheKey(map["id"] as String)
         } else {

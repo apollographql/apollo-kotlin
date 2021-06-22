@@ -24,8 +24,8 @@ import com.apollographql.apollo3.integration.normalizer.type.Episode
 import readResource
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import assertEquals2 as assertEquals
 
 /**
  * Tests for the normalization without an instance of [ApolloClient]

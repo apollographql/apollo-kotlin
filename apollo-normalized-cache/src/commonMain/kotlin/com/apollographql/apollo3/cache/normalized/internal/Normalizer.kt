@@ -14,23 +14,64 @@ import com.apollographql.apollo3.cache.normalized.Record
 
 /**
  * A [Normalizer] takes a [Map]<String, Any?> and turns them into a flat list of [Record]
- * The id of each [Record] is given by [cacheKeyForObject] or defaults to using the path
+ * The key of each [Record] is given by [cacheKeyForObject] or defaults to using the path
  */
-class Normalizer(val variables: Executable.Variables, val cacheKeyForObject: (CompiledField, Map<String, Any?>) -> String?) {
+class Normalizer(
+    val variables: Executable.Variables,
+    val rootKey: String,
+    val cacheKeyForObject: (CompiledNamedType, Map<String, Any?>) -> String?
+) {
   private val records = mutableMapOf<String, Record>()
 
-  fun normalize(map: Map<String, Any?>, path: String?, rootKey: String, selections: List<CompiledSelection>): Map<String, Record> {
+  fun normalize(map: Map<String, Any?>, selections: List<CompiledSelection>): Map<String, Record> {
 
-    records[rootKey] = Record(rootKey, map.toFields(path, selections = selections))
+    buildRecord(map, null, null, selections)
 
     return records
   }
 
-  private fun Map<String, Any?>.normalize(path: String, fields: List<CompiledField>): CacheKey {
-    val key = cacheKeyForObject(fields.first(), this) ?: path
+  /**
+   * @param obj the json node representing the object
+   * @param path the path to this object from the root. Might be different from the json path
+   * @param selections the selections queried on this object
+   */
+  private fun buildRecord(obj: Map<String, Any?>, path: String?, type: CompiledNamedType?, selections: List<CompiledSelection> ): CacheKey {
+    val key = if (type == null) {
+      rootKey
+    } else {
+      cacheKeyForObject(type, obj) ?: path!!
+    }
 
-    val selections = fields.flatMap { it.selections }
-    val newRecord = Record(key, toFields(key, selections = selections))
+    val allFields = collectFields(selections, obj["__typename"] as? String)
+
+    val record = Record(
+        key = key,
+        fields = obj.entries.mapNotNull { entry ->
+          val mergedFields = allFields.filter { it.responseName == entry.key }
+          val first = mergedFields.first()
+          val fieldKey = first.nameWithArguments(variables)
+
+          if (mergedFields.all { it.shouldSkip(variableValues = variables.valueMap) }) {
+            // GraphQL doesn't distinguish between null and absent so this is null but it might be absent
+            // If it is absent, we don't want to serialize it to the cache
+            return@mapNotNull null
+          }
+
+          val base = if (key == rootKey) {
+            // If we're at the root level, skip `QUERY_ROOT` altogether to save a few bytes
+            null
+          } else {
+            key
+          }
+
+          fieldKey to replaceObjects(
+              entry.value,
+              first.type,
+              base.append(fieldKey),
+              mergedFields.flatMap { it.selections }
+          )
+        }.toMap()
+    )
 
     val existingRecord = records[key]
 
@@ -38,94 +79,79 @@ class Normalizer(val variables: Executable.Variables, val cacheKeyForObject: (Co
       /**
        * A query might contain the same object twice, we don't want to lose some fields when that happens
        */
-      existingRecord.mergeWith(newRecord).first
+      existingRecord.mergeWith(record).first
     } else {
-      newRecord
+      record
     }
     records[key] = mergedRecord
 
     return CacheKey(key)
   }
 
+
+  private fun replaceObjects(value: Any?, type_: CompiledType, path: String, selections: List<CompiledSelection>): Any? {
+    /**
+     * Remove the NotNull decoration if needed
+     */
+    val type = if (type_ is CompiledNotNullType) {
+      check(value != null)
+      type_.ofType
+    } else {
+      if (value == null) {
+        return null
+      }
+      type_
+    }
+
+    return when {
+      type is CompiledListType -> {
+        check(value is List<*>)
+        value.mapIndexed { index, item ->
+          replaceObjects(item, type.ofType, path.append(index.toString()), selections)
+        }
+      }
+      // Check for [isCompound] as we don't want to build a record for json scalars
+      type is CompiledNamedType && type.isCompound() -> {
+        check(value is Map<*, *>)
+        buildRecord(value as Map<String, Any?>, path, type, selections)
+      }
+      else -> {
+        // scalar
+        value
+      }
+    }
+  }
+
   private class CollectState {
     val fields = mutableListOf<CompiledField>()
   }
 
-  private fun List<CompiledSelection>.collect(typename: String?, state: CollectState) {
-    forEach {
+  private fun collectFields(selections: List<CompiledSelection>, typename: String?, state: CollectState) {
+    selections.forEach {
       when (it) {
         is CompiledField -> {
           state.fields.add(it)
-          it.selections.collect(typename, state)
         }
         is CompiledFragment -> {
           if (typename in it.possibleTypes) {
-            it.selections.collect(typename, state)
+            collectFields(it.selections, typename, state)
           }
         }
       }
     }
   }
 
-  private fun List<CompiledSelection>.collect(typename: String?): List<CompiledField> {
+  /**
+   * @param typename the typename of the object. It might be null if the `__typename` field wasn't queried. If
+   * that's the case, we will collect less fields we should and records will miss some values leading to more
+   * cache miss
+   */
+  private fun collectFields(selections: List<CompiledSelection>, typename: String?): List<CompiledField> {
     val state = CollectState()
-    collect(typename, state)
+    collectFields(selections, typename, state)
     return state.fields
   }
 
-  /**
-   * Takes the map entries and replaces compound types values by CacheKey
-   */
-  private fun Map<String, Any?>.toFields(path: String?, selections: List<CompiledSelection>): Map<String, Any?> {
-    val fields = selections.collect(get("__typename") as? String)
-
-    return entries.mapNotNull { entry ->
-      val mergedFields = fields.filter { it.responseName == entry.key }
-
-      val first = mergedFields.firstOrNull()
-
-      check(first != null && (first.type !is CompiledNotNullType || entry.value != null))
-
-      if (mergedFields.all { it.shouldSkip(variableValues = variables.valueMap) }) {
-        // GraphQL doesn't distinguish between null and absent so this is null but it might be absent
-        // If it is absent, we don't want to serialize it to the cache
-        return@mapNotNull null
-      }
-
-      val fieldKey = first.nameWithArguments(variables)
-
-      val unwrappedType = (first.type as? CompiledNotNullType)?.ofType ?: first.type
-
-      val value = entry.value
-      @Suppress("UNCHECKED_CAST")
-      fieldKey to when {
-        value == null -> null
-        unwrappedType is CompiledListType -> (value as List<Any?>).normalize(path.append(fieldKey), mergedFields, unwrappedType)
-        unwrappedType.isNamedAndCompound() -> (value as Map<String, Any?>).normalize(path.append(fieldKey), mergedFields)
-        else -> value // scalar or enum
-      }
-    }.toMap()
-  }
-
-  private fun CompiledType.isNamedAndCompound() = this is CompiledNamedType && this.isCompound()
-
   // The receiver can be null for the root query to save some space in the cache by not storing QUERY_ROOT all over the place
   private fun String?.append(next: String): String = if (this == null) next else "$this.$next"
-
-  /**
-   * @param fieldType this is different from field.type as it will unwrap the NonNull and List types as it goes
-   */
-  @Suppress("UNCHECKED_CAST")
-  private fun List<Any?>.normalize(path: String, fields: List<CompiledField>, fieldType: CompiledListType): List<Any?> {
-    val unwrappedType = (fieldType.ofType as? CompiledNotNullType)?.ofType ?: fieldType.ofType
-
-    return mapIndexed { index, value ->
-      when {
-        value == null -> null
-        unwrappedType is CompiledListType -> (value as List<Any?>).normalize(path.append(index.toString()), fields, unwrappedType)
-        unwrappedType.isNamedAndCompound() -> (value as Map<String, Any?>).normalize(path.append(index.toString()), fields)
-        else -> value
-      }
-    }
-  }
 }
