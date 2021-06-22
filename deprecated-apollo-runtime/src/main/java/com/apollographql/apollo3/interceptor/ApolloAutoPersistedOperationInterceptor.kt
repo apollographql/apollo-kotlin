@@ -8,7 +8,7 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.api.internal.Function
 import com.apollographql.apollo3.api.internal.Optional
-import com.apollographql.apollo3.api.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor.CallBack
 import com.apollographql.apollo3.interceptor.ApolloInterceptor.FetchSourceType
 import com.apollographql.apollo3.interceptor.ApolloInterceptor.InterceptorRequest

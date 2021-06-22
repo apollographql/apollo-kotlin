@@ -2,8 +2,8 @@ package com.apollographql.apollo3.network.http
 
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
-import com.apollographql.apollo3.api.exception.ApolloException
-import com.apollographql.apollo3.api.exception.ApolloParseException
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloParseException
 
 /**
  * A wrapper around platform specific engines

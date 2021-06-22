@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.network.ws
 
-import com.apollographql.apollo3.api.exception.ApolloNetworkException
+import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.network.toNSData
 import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.StableRef

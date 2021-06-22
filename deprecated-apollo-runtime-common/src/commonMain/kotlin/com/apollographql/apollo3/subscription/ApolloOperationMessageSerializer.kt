@@ -2,7 +2,7 @@ package com.apollographql.apollo3.subscription
 
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
-import com.apollographql.apollo3.api.exception.JsonEncodingException
+import com.apollographql.apollo3.exception.JsonEncodingException
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils

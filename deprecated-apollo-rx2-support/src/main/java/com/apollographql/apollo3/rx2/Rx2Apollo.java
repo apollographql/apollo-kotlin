@@ -6,7 +6,7 @@ import com.apollographql.apollo3.ApolloQueryWatcher;
 import com.apollographql.apollo3.ApolloSubscriptionCall;
 import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.api.ApolloResponse;
-import com.apollographql.apollo3.api.exception.ApolloException;
+import com.apollographql.apollo3.exception.ApolloException;
 import com.apollographql.apollo3.internal.subscription.ApolloSubscriptionTerminatedException;
 import com.apollographql.apollo3.internal.util.Cancelable;
 import io.reactivex.BackpressureStrategy;

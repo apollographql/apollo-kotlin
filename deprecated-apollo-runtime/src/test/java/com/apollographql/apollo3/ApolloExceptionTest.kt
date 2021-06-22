@@ -3,11 +3,11 @@ package com.apollographql.apollo3
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.exception.JsonEncodingException
+import com.apollographql.apollo3.exception.JsonEncodingException
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.exception.ApolloHttpException
-import com.apollographql.apollo3.api.exception.ApolloNetworkException
-import com.apollographql.apollo3.api.exception.ApolloParseException
+import com.apollographql.apollo3.exception.ApolloHttpException
+import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.rx2.Rx2Apollo
 import com.google.common.truth.Truth.assertThat
 import okhttp3.OkHttpClient

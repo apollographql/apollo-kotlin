@@ -4,11 +4,11 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.Record
-import com.apollographql.apollo3.api.exception.ApolloCanceledException
-import com.apollographql.apollo3.api.exception.ApolloException
-import com.apollographql.apollo3.api.exception.ApolloHttpException
-import com.apollographql.apollo3.api.exception.ApolloNetworkException
-import com.apollographql.apollo3.api.exception.ApolloParseException
+import com.apollographql.apollo3.exception.ApolloCanceledException
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloHttpException
+import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.fetcher.ResponseFetcher
 import com.apollographql.apollo3.internal.util.Cancelable
 
