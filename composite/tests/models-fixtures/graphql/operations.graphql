@@ -28,6 +28,20 @@ query HeroAndFriendsNamesWithIDs($episode: Episode) {
     }
 }
 
+query HeroAndFriendsWithTypename {
+    hero {
+        __typename
+        id
+        name
+        friends {
+            __typename
+            id
+            name
+        }
+    }
+}
+
+
 
 query AllPlanets {
     allPlanets(first: 300) {
