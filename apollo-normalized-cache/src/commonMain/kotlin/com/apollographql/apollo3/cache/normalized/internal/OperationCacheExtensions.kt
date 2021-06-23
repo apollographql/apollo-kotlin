@@ -53,9 +53,9 @@ private fun <D> normalizeInternal(
 ): Map<String, Record> {
   val writer = MapJsonWriter()
   adapter.toJson(writer, customScalarAdapters, data)
-  return Normalizer(variables) { compiledField, fields ->
-    cacheResolver.cacheKeyForObject(compiledField, variables, fields)?.key
-  }.normalize(writer.root() as Map<String, Any?>, null, rootKey, selections)
+  return Normalizer(variables, rootKey) { type, fields ->
+    cacheResolver.cacheKeyForObject(type, variables, fields)?.key
+  }.normalize(writer.root() as Map<String, Any?>, selections)
 }
 
 fun <D : Operation.Data> Operation<D>.readDataFromCache(

@@ -1,6 +1,7 @@
 import com.apollographql.apollo.sample.server.DefaultApplication
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.CompiledNamedType
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKey
@@ -49,11 +50,6 @@ class CachedSubscriptionTest {
   fun subscriptionsCanUpdateTheCache() {
     val store = ApolloStore(
         MemoryCacheFactory(Int.MAX_VALUE),
-        object : CacheResolver() {
-          override fun cacheKeyForObject(field: CompiledField, variables: Executable.Variables, map: Map<String, Any?>): CacheKey {
-            return CacheKey(field.responseName)
-          }
-        }
     )
 
     val apolloClient = ApolloClient(

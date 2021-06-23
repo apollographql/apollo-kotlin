@@ -3,6 +3,7 @@ package test.declarativecache
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Executable
+import com.apollographql.apollo3.api.leafType
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheResolver
@@ -74,7 +75,7 @@ class DeclarativeCacheTest {
         if (field.name == "books") {
           val isbns = field.resolveArgument("isbns", variables) as? List<String>
           if (isbns != null) {
-            return isbns.map { buildCacheKey(field, listOf(it))}
+            return isbns.map { buildCacheKey(field.type.leafType().name, listOf(it))}
           }
         }
 

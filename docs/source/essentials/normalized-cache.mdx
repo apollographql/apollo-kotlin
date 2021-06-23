@@ -208,7 +208,7 @@ To do this, specify a `CacheKeyResolver` when configuring your `NormalizedCacheF
 
 ```kotlin:title=Kotlin
 val resolver: CacheKeyResolver = object : CacheResolver() {
-  override fun cacheKeyForObject(field: CompiledField, map: Map<String, Any>): CacheKey {
+  override fun cacheKeyForObject(type: CompiledNamedType, map: Map<String, Any>): CacheKey {
     // Retrieve the id from the object itself
     return CacheKey(recordSet["id"] as String)
   }
@@ -231,7 +231,7 @@ val apolloClient = ApolloClient.builder()
 ```java:title=Java
 CacheKeyResolver resolver = new CacheResolver() {
    @NotNull @Override
-   public CacheKey cacheKeyForObject(@NotNull ResponseField field, @NotNull Map<String, Object> recordSet) {
+   public CacheKey cacheKeyForObject(@NotNull CompiledNamedType type, @NotNull Map<String, Object> recordSet) {
      // Retrieve the id from the object itself
      return CacheKey(((String) recordSet.get("id"));
    }
