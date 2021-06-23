@@ -3,6 +3,8 @@ package test
 import codegen.models.HeroAndFriendsNamesWithIDsQuery
 import codegen.models.HeroAndFriendsWithFragmentsQuery
 import codegen.models.HeroAndFriendsWithFragmentsQuery.Data.Hero.Companion.heroWithFriendsFragment
+import codegen.models.HeroAndFriendsWithTypenameQuery
+import codegen.models.fragment.HeroWithFriendsFragment.Friend.Companion.asHuman
 import codegen.models.fragment.HeroWithFriendsFragment.Friend.Companion.humanWithIdFragment
 import codegen.models.fragment.HeroWithFriendsFragmentImpl
 import codegen.models.fragment.HeroWithFriendsFragmentImpl.Data.Friend.Companion.humanWithIdFragment
@@ -36,12 +38,9 @@ class StoreTest {
   }
 
   @Test
-  // This test currently fails because we don't store the typename in HeroAndFriendsNamesWithIDsQuery
-  // So we can't query it from HeroWithFriendsFragment
-  @Ignore
   fun readFragmentFromStore() = runWithMainLoop {
-    mockServer.enqueue(readJson("HeroAndFriendsNamesWithIDsQuery.json"))
-    apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE))
+    mockServer.enqueue(readJson("HeroAndFriendsWithTypename.json"))
+    apolloClient.query(HeroAndFriendsWithTypenameQuery())
 
     val heroWithFriendsFragment = store.readFragment(
         HeroWithFriendsFragmentImpl(),
@@ -50,12 +49,12 @@ class StoreTest {
     assertEquals(heroWithFriendsFragment.id, "2001")
     assertEquals(heroWithFriendsFragment.name, "R2-D2")
     assertEquals(heroWithFriendsFragment.friends?.size, 3)
-    assertEquals(heroWithFriendsFragment.friends?.get(0)?.humanWithIdFragment()?.id, "1000")
-    assertEquals(heroWithFriendsFragment.friends?.get(0)?.humanWithIdFragment()?.name, "Luke Skywalker")
-    assertEquals(heroWithFriendsFragment.friends?.get(1)?.humanWithIdFragment()?.id, "1002")
-    assertEquals(heroWithFriendsFragment.friends?.get(1)?.humanWithIdFragment()?.name, "Han Solo")
-    assertEquals(heroWithFriendsFragment.friends?.get(2)?.humanWithIdFragment()?.id, "1003")
-    assertEquals(heroWithFriendsFragment.friends?.get(2)?.humanWithIdFragment()?.name, "Leia Organa")
+    assertEquals(heroWithFriendsFragment.friends?.get(0)?.asHuman()?.id, "1000")
+    assertEquals(heroWithFriendsFragment.friends?.get(0)?.asHuman()?.name, "Luke Skywalker")
+    assertEquals(heroWithFriendsFragment.friends?.get(1)?.asHuman()?.id, "1002")
+    assertEquals(heroWithFriendsFragment.friends?.get(1)?.asHuman()?.name, "Han Solo")
+    assertEquals(heroWithFriendsFragment.friends?.get(2)?.asHuman()?.id, "1003")
+    assertEquals(heroWithFriendsFragment.friends?.get(2)?.asHuman()?.name, "Leia Organa")
 
     var fragment = store.readFragment(
         HumanWithIdFragmentImpl(),

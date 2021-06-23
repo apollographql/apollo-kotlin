@@ -1,12 +1,11 @@
 package test
 
-import codegen.models.HeroAndFriendsNamesWithIDsQuery
 import codegen.models.HeroAndFriendsWithFragmentsQuery
+import codegen.models.HeroAndFriendsWithTypenameQuery
 import codegen.models.fragment.HeroWithFriendsFragment
 import codegen.models.fragment.HeroWithFriendsFragmentImpl
 import codegen.models.fragment.HumanWithIdFragment
 import codegen.models.fragment.HumanWithIdFragmentImpl
-import codegen.models.type.Episode
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKey
@@ -18,7 +17,6 @@ import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runWithMainLoop
 import readJson
 import kotlin.test.BeforeTest
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -35,12 +33,9 @@ class StoreTest {
   }
 
   @Test
-  // This test currently fails because we don't store the typename in HeroAndFriendsNamesWithIDsQuery
-  // So we can't query it from HeroWithFriendsFragment
-  @Ignore
   fun readFragmentFromStore() = runWithMainLoop {
-    mockServer.enqueue(readJson("HeroAndFriendsNamesWithIDsQuery.json"))
-    apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE))
+    mockServer.enqueue(readJson("HeroAndFriendsWithTypename.json"))
+    apolloClient.query(HeroAndFriendsWithTypenameQuery())
 
     val heroWithFriendsFragment = store.readFragment(
         HeroWithFriendsFragmentImpl(),

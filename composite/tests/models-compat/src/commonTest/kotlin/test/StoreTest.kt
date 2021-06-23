@@ -2,6 +2,7 @@ package test
 
 import codegen.models.HeroAndFriendsNamesWithIDsQuery
 import codegen.models.HeroAndFriendsWithFragmentsQuery
+import codegen.models.HeroAndFriendsWithTypenameQuery
 import codegen.models.fragment.HeroWithFriendsFragment
 import codegen.models.fragment.HeroWithFriendsFragmentImpl
 import codegen.models.fragment.HumanWithIdFragment
@@ -35,12 +36,9 @@ class StoreTest {
   }
 
   @Test
-  // This test currently fails because we don't store the typename in HeroAndFriendsNamesWithIDsQuery
-  // So we can't query it from HeroWithFriendsFragment
-  @Ignore
   fun readFragmentFromStore() = runWithMainLoop {
-    mockServer.enqueue(readJson("HeroAndFriendsNamesWithIDsQuery.json"))
-    apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE))
+    mockServer.enqueue(readJson("HeroAndFriendsWithTypename.json"))
+    apolloClient.query(HeroAndFriendsWithTypenameQuery())
 
     val heroWithFriendsFragment = store.readFragment(
         HeroWithFriendsFragmentImpl(),
