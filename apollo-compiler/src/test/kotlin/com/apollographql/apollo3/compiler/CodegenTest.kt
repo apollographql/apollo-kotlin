@@ -285,11 +285,11 @@ class CodegenTest(private val folder: File, private val codegenModels: String, p
                     arrayOf(file, MODELS_COMPAT, true)
                 )
 
-                if (file.name !in listOf("inline_fragment_with_include_directive", "fragment_spread_with_include_directive")) {
+                if (file.name in listOf("inline_fragment_with_include_directive", "fragment_spread_with_include_directive")) {
                   // These do not suport responseBased models
                   list
                 } else {
-                  list + arrayOf(file, MODELS_RESPONSE_BASED, true)
+                  list + listOf(arrayOf(file, MODELS_RESPONSE_BASED, true))
                 }
               }
               else -> {
