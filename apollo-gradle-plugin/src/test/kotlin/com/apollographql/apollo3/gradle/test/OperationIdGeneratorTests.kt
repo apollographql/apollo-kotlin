@@ -5,6 +5,7 @@ import com.apollographql.apollo3.gradle.util.TestUtils.withSimpleProject
 import com.apollographql.apollo3.gradle.util.TestUtils.withTestProject
 import com.apollographql.apollo3.gradle.util.generatedChild
 import com.apollographql.apollo3.gradle.util.replaceInText
+import junit.framework.Assert.assertTrue
 import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.CoreMatchers
 import org.junit.Assert
@@ -44,13 +45,11 @@ class OperationIdGeneratorTests {
   }
 
   @Test
-  // filePath is not passed at the moment
-  @Ignore
   fun `operationIdGenerator is working`() {
     val apolloConfiguration = """
       class MyIdGenerator implements OperationIdGenerator {
-          String apply(String queryString, String queryFilepath) {
-              return queryFilepath;
+          String apply(String operationDocument, String operationName) {
+              return operationName;
           }
           String version = "MyIdGenerator-v1"
       }
@@ -70,7 +69,7 @@ class OperationIdGeneratorTests {
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
 
       val queryJavaFile = dir.generatedChild("service/com/example/DroidDetailsQuery.kt")
-      Assert.assertThat(queryJavaFile.readText(), CoreMatchers.containsString("com/example/DroidDetails.graphql"))
+      assertTrue(queryJavaFile.readText().contains("DroidDetailsQuery"))
     }
   }
 
