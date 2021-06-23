@@ -7,6 +7,9 @@ interface OperationIdGenerator {
   /**
    * computes an id for the given operation
    *
+   * @param operationDocument the string representing this operation, including potential fragments,
+   * as it is sent to the server
+   * @param operationName the operation name
    * @return a string uniquely identifying this operation
    */
   fun apply(
