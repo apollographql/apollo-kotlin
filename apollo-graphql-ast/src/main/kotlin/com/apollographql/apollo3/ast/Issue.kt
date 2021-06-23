@@ -15,7 +15,7 @@ sealed class Issue(
   class ParsingError(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.ERROR)
 
   /**
-   * A validation error
+   * A GraphqQL validation error as per the spec
    */
   class ValidationError(
       message: String,
@@ -33,6 +33,11 @@ sealed class Issue(
    * A variable is unused
    */
   class UnusedVariable(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.WARNING)
+
+  /**
+   * A fragment has an @include or @skip directive. While this is valid GraphQL, the responseBased codegen does not support that
+   */
+  class ConditionalFragment(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.ERROR)
 
   /**
    * Upper case fields are not supported as Kotlin doesn't allow a property name with the same name as a nested class.

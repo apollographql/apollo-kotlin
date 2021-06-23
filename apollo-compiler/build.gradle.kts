@@ -22,7 +22,9 @@ dependencies {
 
   testImplementation(groovy.util.Eval.x(project, "x.dep.kotlinCompileTesting"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
+  testImplementation(kotlin("test-junit"))
 }
 
 abstract class GeneratePluginVersion : DefaultTask() {

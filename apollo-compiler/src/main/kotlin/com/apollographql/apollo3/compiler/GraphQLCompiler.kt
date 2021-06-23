@@ -56,6 +56,10 @@ class GraphQLCompiler {
 
     validationIssues.checkNoErrors()
 
+    if (incomingOptions.codegenModels == MODELS_RESPONSE_BASED) {
+      findConditionalFragments(definitions).checkNoErrors()
+    }
+
     val warnings = validationIssues.filter {
       it.severity == Issue.Severity.WARNING && (it !is Issue.DeprecatedUsage || moduleOptions.warnOnDeprecatedUsages)
     }
