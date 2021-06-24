@@ -1,0 +1,6 @@
+query GetField($withDetails: Boolean!) {
+  field1
+  ... on Query @include(if: $withDetails){
+    field2
+  }
+}

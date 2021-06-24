@@ -17,7 +17,7 @@ fun List<GQLSelection>.mergeTrivialInlineFragments(schema: Schema, rawTypename: 
       }
       is GQLFragmentSpread -> listOf(it)
       is GQLInlineFragment -> {
-        if (it.typeCondition.name == rawTypename) {
+        if (it.typeCondition.name == rawTypename && it.directives.isEmpty()) {
           it.selectionSet.selections.mergeTrivialInlineFragments(schema, rawTypename)
         } else {
           listOf(
