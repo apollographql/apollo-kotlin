@@ -64,27 +64,27 @@ class TestQuery : Query<TestQuery.Data> {
   )
 
   data class AsHuman(
+    val __typename: String,
+    /**
+     * The name of the character
+     */
+    val name: String,
     /**
      * The home planet of the human, or null if unknown
      */
-    val homePlanet: String?,
-    val __typename: String,
-    /**
-     * The name of the character
-     */
-    val name: String
+    val homePlanet: String?
   )
 
   data class AsDroid(
-    /**
-     * This droid's primary function
-     */
-    val primaryFunction: String?,
     val __typename: String,
     /**
      * The name of the character
      */
-    val name: String
+    val name: String,
+    /**
+     * This droid's primary function
+     */
+    val primaryFunction: String?
   )
 
   companion object {

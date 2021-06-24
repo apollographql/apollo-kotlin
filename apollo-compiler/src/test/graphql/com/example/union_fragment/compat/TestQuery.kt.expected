@@ -60,11 +60,11 @@ class TestQuery : Query<TestQuery.Data> {
   }
 
   data class AsStarship(
+    val __typename: String,
     /**
      * The ID of the starship
      */
-    val id: String,
-    val __typename: String
+    val id: String
   )
 
   companion object {

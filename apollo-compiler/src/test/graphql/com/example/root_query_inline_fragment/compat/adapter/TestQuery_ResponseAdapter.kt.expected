@@ -127,31 +127,31 @@ object TestQuery_ResponseAdapter {
   }
 
   object AsHuman : Adapter<TestQuery.AsHuman> {
-    val RESPONSE_NAMES: List<String> = listOf("height", "__typename", "name", "appearsIn")
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "appearsIn", "height")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.AsHuman {
-      var height: Double? = null
       var __typename: String? = null
       var name: String? = null
       var appearsIn: List<Episode?>? = null
+      var height: Double? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
-          1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          3 -> appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
               customScalarAdapters)
+          3 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.AsHuman(
-        height = height,
         __typename = __typename!!,
         name = name!!,
-        appearsIn = appearsIn!!
+        appearsIn = appearsIn!!,
+        height = height
       )
     }
 
@@ -160,9 +160,6 @@ object TestQuery_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: TestQuery.AsHuman
     ) {
-      writer.name("height")
-      NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
-
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -172,6 +169,9 @@ object TestQuery_ResponseAdapter {
       writer.name("appearsIn")
       Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,
           value.appearsIn)
+
+      writer.name("height")
+      NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
     }
   }
 

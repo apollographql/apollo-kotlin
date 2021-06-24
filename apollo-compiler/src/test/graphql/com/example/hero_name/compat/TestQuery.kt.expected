@@ -55,10 +55,6 @@ class TestQuery : Query<TestQuery.Data> {
   )
 
   data class AsDroid(
-    /**
-     * This droid's primary function
-     */
-    val primaryFunction: String?,
     val __typename: String,
     /**
      * The name of the character
@@ -67,7 +63,11 @@ class TestQuery : Query<TestQuery.Data> {
     /**
      * The date character was born.
      */
-    val birthDate: Any
+    val birthDate: Any,
+    /**
+     * This droid's primary function
+     */
+    val primaryFunction: String?
   )
 
   companion object {

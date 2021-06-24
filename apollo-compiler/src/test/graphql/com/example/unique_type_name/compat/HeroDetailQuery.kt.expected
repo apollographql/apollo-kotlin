@@ -66,24 +66,28 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
   )
 
   data class AsHuman(
-    /**
-     * Height in the preferred unit, default is meters
-     */
-    val height: Double?,
-    /**
-     * This human's friends, or an empty list if they have none
-     */
-    val friends: List<Friend2?>?,
     val __typename: String,
     /**
      * The name of the character
      */
-    val name: String
+    val name: String,
+    /**
+     * The friends of the character, or an empty list if they have none
+     */
+    val friends: List<Friend2?>?,
+    /**
+     * Height in the preferred unit, default is meters
+     */
+    val height: Double?
   ) {
     fun friendsFilterNotNull(): List<Friend2>? = friends?.filterNotNull()
   }
 
   data class Friend2(
+    /**
+     * The name of the character
+     */
+    val name: String,
     /**
      * The movies this character appears in
      */
@@ -91,11 +95,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
     /**
      * The friends of the character, or an empty list if they have none
      */
-    val friends: List<Friend1?>?,
-    /**
-     * The name of the character
-     */
-    val name: String
+    val friends: List<Friend1?>?
   ) {
     fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
 

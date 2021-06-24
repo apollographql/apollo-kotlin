@@ -148,27 +148,27 @@ object TestQuery_ResponseAdapter {
   }
 
   object AsB : Adapter<TestQuery.AsB> {
-    val RESPONSE_NAMES: List<String> = listOf("fieldB1", "__typename", "fieldA1")
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldA1", "fieldB1")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.AsB {
-      var fieldB1: String? = null
       var __typename: String? = null
       var fieldA1: String? = null
+      var fieldB1: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> fieldB1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> fieldA1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> fieldA1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> fieldB1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.AsB(
-        fieldB1 = fieldB1,
         __typename = __typename!!,
-        fieldA1 = fieldA1
+        fieldA1 = fieldA1,
+        fieldB1 = fieldB1
       )
     }
 
@@ -177,14 +177,14 @@ object TestQuery_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: TestQuery.AsB
     ) {
-      writer.name("fieldB1")
-      NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldB1)
-
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       writer.name("fieldA1")
       NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldA1)
+
+      writer.name("fieldB1")
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldB1)
     }
   }
 }

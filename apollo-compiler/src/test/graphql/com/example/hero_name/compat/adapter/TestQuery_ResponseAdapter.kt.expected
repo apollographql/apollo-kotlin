@@ -110,30 +110,30 @@ object TestQuery_ResponseAdapter {
   }
 
   object AsDroid : Adapter<TestQuery.AsDroid> {
-    val RESPONSE_NAMES: List<String> = listOf("primaryFunction", "__typename", "name", "birthDate")
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "birthDate", "primaryFunction")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.AsDroid {
-      var primaryFunction: String? = null
       var __typename: String? = null
       var name: String? = null
       var birthDate: Any? = null
+      var primaryFunction: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          3 -> birthDate = AnyAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> birthDate = AnyAdapter.fromJson(reader, customScalarAdapters)
+          3 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.AsDroid(
-        primaryFunction = primaryFunction,
         __typename = __typename!!,
         name = name!!,
-        birthDate = birthDate!!
+        birthDate = birthDate!!,
+        primaryFunction = primaryFunction
       )
     }
 
@@ -142,9 +142,6 @@ object TestQuery_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: TestQuery.AsDroid
     ) {
-      writer.name("primaryFunction")
-      NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
-
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -153,6 +150,9 @@ object TestQuery_ResponseAdapter {
 
       writer.name("birthDate")
       AnyAdapter.toJson(writer, customScalarAdapters, value.birthDate)
+
+      writer.name("primaryFunction")
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
     }
   }
 }

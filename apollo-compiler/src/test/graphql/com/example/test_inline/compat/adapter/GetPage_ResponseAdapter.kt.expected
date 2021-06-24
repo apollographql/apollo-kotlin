@@ -130,24 +130,24 @@ object GetPage_ResponseAdapter {
   }
 
   object AsParticularCollection : Adapter<GetPage.AsParticularCollection> {
-    val RESPONSE_NAMES: List<String> = listOf("items", "__typename")
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "items")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetPage.AsParticularCollection {
-      var items: List<GetPage.Item1>? = null
       var __typename: String? = null
+      var items: List<GetPage.Item1>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> items = Item1.obj(true).list().fromJson(reader, customScalarAdapters)
-          1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> items = Item1.obj(true).list().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return GetPage.AsParticularCollection(
-        items = items!!,
-        __typename = __typename!!
+        __typename = __typename!!,
+        items = items!!
       )
     }
 
@@ -156,26 +156,26 @@ object GetPage_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: GetPage.AsParticularCollection
     ) {
-      writer.name("items")
-      Item1.obj(true).list().toJson(writer, customScalarAdapters, value.items)
-
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+      writer.name("items")
+      Item1.obj(true).list().toJson(writer, customScalarAdapters, value.items)
     }
   }
 
   object Item1 : Adapter<GetPage.Item1> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "title")
+    val RESPONSE_NAMES: List<String> = listOf("title", "__typename")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetPage.Item1 {
-      var __typename: String? = null
       var title: String? = null
+      var __typename: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> title = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> title = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -192,8 +192,8 @@ object GetPage_ResponseAdapter {
       }
 
       return GetPage.Item1(
-        __typename = __typename,
         title = title!!,
+        __typename = __typename,
         asParticularItem = asParticularItem
       )
     }
@@ -203,11 +203,11 @@ object GetPage_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: GetPage.Item1
     ) {
-      writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
       writer.name("title")
       StringAdapter.toJson(writer, customScalarAdapters, value.title)
+
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       if (value.asParticularItem != null) {
         com.example.test_inline.adapter.GetPage_ResponseAdapter.AsParticularItem.toJson(writer,
@@ -217,27 +217,27 @@ object GetPage_ResponseAdapter {
   }
 
   object AsParticularItem : Adapter<GetPage.AsParticularItem> {
-    val RESPONSE_NAMES: List<String> = listOf("image", "__typename", "title")
+    val RESPONSE_NAMES: List<String> = listOf("title", "__typename", "image")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetPage.AsParticularItem {
-      var image: String? = null
-      var __typename: String? = null
       var title: String? = null
+      var __typename: String? = null
+      var image: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> image = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> title = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> title = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> image = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return GetPage.AsParticularItem(
-        image = image!!,
+        title = title!!,
         __typename = __typename!!,
-        title = title!!
+        image = image!!
       )
     }
 
@@ -246,14 +246,14 @@ object GetPage_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: GetPage.AsParticularItem
     ) {
-      writer.name("image")
-      StringAdapter.toJson(writer, customScalarAdapters, value.image)
+      writer.name("title")
+      StringAdapter.toJson(writer, customScalarAdapters, value.title)
 
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-      writer.name("title")
-      StringAdapter.toJson(writer, customScalarAdapters, value.title)
+      writer.name("image")
+      StringAdapter.toJson(writer, customScalarAdapters, value.image)
     }
   }
 }

@@ -50,17 +50,17 @@ data class TestQuery(
       /**
        * Synthetic field for inline fragment on Human
        */
-      val onHumanIfWithDetailsAndNotSkipHumanDetails: OnHumanIfWithDetailsAndNotSkipHumanDetails?,
+      val onHuman: OnHuman?,
       /**
        * Synthetic field for inline fragment on Droid
        */
-      val onDroidIfWithDetails: OnDroidIfWithDetails?,
+      val onDroid: OnDroid?,
       /**
        * Synthetic field for inline fragment on Character
        */
-      val onCharacterIfWithDetails: OnCharacterIfWithDetails?
+      val onCharacter: OnCharacter?
     ) {
-      data class OnHumanIfWithDetailsAndNotSkipHumanDetails(
+      data class OnHuman(
         /**
          * What this human calls themselves
          */
@@ -71,7 +71,7 @@ data class TestQuery(
         val homePlanet: String?
       )
 
-      data class OnDroidIfWithDetails(
+      data class OnDroid(
         /**
          * What others call this droid
          */
@@ -82,7 +82,7 @@ data class TestQuery(
         val primaryFunction: String?
       )
 
-      data class OnCharacterIfWithDetails(
+      data class OnCharacter(
         /**
          * The name of the character
          */
