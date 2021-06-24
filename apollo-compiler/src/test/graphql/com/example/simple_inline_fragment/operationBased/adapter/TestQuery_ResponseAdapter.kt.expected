@@ -50,7 +50,7 @@ object TestQuery_ResponseAdapter {
       Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
     }
 
-    object Hero : Adapter<TestQuery.Data.Hero> {
+    private object Hero : Adapter<TestQuery.Data.Hero> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -121,7 +121,7 @@ object TestQuery_ResponseAdapter {
         }
       }
 
-      object OnCharacter : Adapter<TestQuery.Data.Hero.OnCharacter> {
+      private object OnCharacter : Adapter<TestQuery.Data.Hero.OnCharacter> {
         val RESPONSE_NAMES: List<String> = listOf("__typename", "id")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -172,7 +172,7 @@ object TestQuery_ResponseAdapter {
           }
         }
 
-        object OnCharacter : Adapter<TestQuery.Data.Hero.OnCharacter.OnCharacter> {
+        private object OnCharacter : Adapter<TestQuery.Data.Hero.OnCharacter.OnCharacter> {
           val RESPONSE_NAMES: List<String> = listOf("name")
 
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -202,7 +202,7 @@ object TestQuery_ResponseAdapter {
         }
       }
 
-      object OnHuman : Adapter<TestQuery.Data.Hero.OnHuman> {
+      private object OnHuman : Adapter<TestQuery.Data.Hero.OnHuman> {
         val RESPONSE_NAMES: List<String> = listOf("height")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -231,7 +231,7 @@ object TestQuery_ResponseAdapter {
         }
       }
 
-      object OnDroid : Adapter<TestQuery.Data.Hero.OnDroid> {
+      private object OnDroid : Adapter<TestQuery.Data.Hero.OnDroid> {
         val RESPONSE_NAMES: List<String> = listOf("primaryFunction")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

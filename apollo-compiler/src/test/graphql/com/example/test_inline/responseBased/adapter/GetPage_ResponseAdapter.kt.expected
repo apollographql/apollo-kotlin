@@ -45,7 +45,7 @@ object GetPage_ResponseAdapter {
       Collection.obj().toJson(writer, customScalarAdapters, value.collection)
     }
 
-    object Collection : Adapter<GetPage.Data.Collection> {
+    private object Collection : Adapter<GetPage.Data.Collection> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -115,7 +115,7 @@ object GetPage_ResponseAdapter {
         Item.obj().list().toJson(writer, customScalarAdapters, value.items)
       }
 
-      object Item : Adapter<GetPage.Data.ParticularCollectionCollection.Item> {
+      private object Item : Adapter<GetPage.Data.ParticularCollectionCollection.Item> {
         val RESPONSE_NAMES: List<String> = listOf("__typename")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -268,7 +268,7 @@ object GetPage_ResponseAdapter {
         Item.obj().list().toJson(writer, customScalarAdapters, value.items)
       }
 
-      object Item : Adapter<GetPage.Data.OtherCollection.Item> {
+      private object Item : Adapter<GetPage.Data.OtherCollection.Item> {
         val RESPONSE_NAMES: List<String> = listOf("title")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

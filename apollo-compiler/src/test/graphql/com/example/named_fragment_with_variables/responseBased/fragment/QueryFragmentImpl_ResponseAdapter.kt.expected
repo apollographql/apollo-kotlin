@@ -45,7 +45,7 @@ object QueryFragmentImpl_ResponseAdapter {
       Organization.obj().nullable().toJson(writer, customScalarAdapters, value.organization)
     }
 
-    object Organization : Adapter<QueryFragmentImpl.Data.Organization> {
+    private object Organization : Adapter<QueryFragmentImpl.Data.Organization> {
       val RESPONSE_NAMES: List<String> = listOf("id", "user")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -79,7 +79,7 @@ object QueryFragmentImpl_ResponseAdapter {
         User.obj().list().toJson(writer, customScalarAdapters, value.user)
       }
 
-      object User : Adapter<QueryFragmentImpl.Data.Organization.User> {
+      private object User : Adapter<QueryFragmentImpl.Data.Organization.User> {
         val RESPONSE_NAMES: List<String> = listOf("__typename", "firstName", "lastName", "avatar")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

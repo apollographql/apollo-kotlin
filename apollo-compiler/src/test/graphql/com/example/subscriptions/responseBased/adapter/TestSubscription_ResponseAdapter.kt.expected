@@ -47,7 +47,7 @@ object TestSubscription_ResponseAdapter {
       CommentAdded.obj().nullable().toJson(writer, customScalarAdapters, value.commentAdded)
     }
 
-    object CommentAdded : Adapter<TestSubscription.Data.CommentAdded> {
+    private object CommentAdded : Adapter<TestSubscription.Data.CommentAdded> {
       val RESPONSE_NAMES: List<String> = listOf("id", "content")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

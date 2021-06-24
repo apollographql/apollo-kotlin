@@ -276,7 +276,8 @@ object HeroDetailQuery_ResponseAdapter {
           customScalarAdapters, value.fragments)
     }
 
-    object Fragments : Adapter<com.example.unique_type_name.HeroDetailQuery.Friend1.Fragments> {
+    private object Fragments :
+        Adapter<com.example.unique_type_name.HeroDetailQuery.Friend1.Fragments> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

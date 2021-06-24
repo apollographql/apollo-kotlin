@@ -105,7 +105,7 @@ object TestQuery_ResponseAdapter {
           customScalarAdapters, value.fragments)
     }
 
-    object Fragments : Adapter<TestQuery.Search.Fragments> {
+    private object Fragments : Adapter<TestQuery.Search.Fragments> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

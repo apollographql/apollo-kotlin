@@ -48,7 +48,7 @@ object TestQuery_ResponseAdapter {
       Search.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.search)
     }
 
-    object Search : Adapter<TestQuery.Data.Search> {
+    private object Search : Adapter<TestQuery.Data.Search> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

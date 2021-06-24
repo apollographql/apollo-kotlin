@@ -47,7 +47,7 @@ object TestQuery_ResponseAdapter {
       Hero.obj().nullable().toJson(writer, customScalarAdapters, value.hero)
     }
 
-    object Hero : Adapter<TestQuery.Data.Hero> {
+    private object Hero : Adapter<TestQuery.Data.Hero> {
       val RESPONSE_NAMES: List<String> = listOf("name", "friendsConnection")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -83,7 +83,7 @@ object TestQuery_ResponseAdapter {
             value.friendsConnection)
       }
 
-      object FriendsConnection : Adapter<TestQuery.Data.Hero.FriendsConnection> {
+      private object FriendsConnection : Adapter<TestQuery.Data.Hero.FriendsConnection> {
         val RESPONSE_NAMES: List<String> = listOf("totalCount")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

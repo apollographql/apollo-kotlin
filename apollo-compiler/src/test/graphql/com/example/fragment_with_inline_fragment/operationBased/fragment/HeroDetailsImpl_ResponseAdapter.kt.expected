@@ -91,7 +91,7 @@ object HeroDetailsImpl_ResponseAdapter {
       }
     }
 
-    object FriendsConnection :
+    private object FriendsConnection :
         Adapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection> {
       val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
 
@@ -127,7 +127,7 @@ object HeroDetailsImpl_ResponseAdapter {
         Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
       }
 
-      object Edge :
+      private object Edge :
           Adapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection.Edge>
           {
         val RESPONSE_NAMES: List<String> = listOf("node")
@@ -157,7 +157,7 @@ object HeroDetailsImpl_ResponseAdapter {
           Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
         }
 
-        object Node :
+        private object Node :
             Adapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection.Edge.Node>
             {
           val RESPONSE_NAMES: List<String> = listOf("name")
@@ -190,8 +190,8 @@ object HeroDetailsImpl_ResponseAdapter {
       }
     }
 
-    object OnDroid : Adapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid>
-        {
+    private object OnDroid :
+        Adapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

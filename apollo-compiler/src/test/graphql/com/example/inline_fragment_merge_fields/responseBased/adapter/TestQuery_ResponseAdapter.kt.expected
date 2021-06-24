@@ -48,7 +48,7 @@ object TestQuery_ResponseAdapter {
       Hero.obj().nullable().toJson(writer, customScalarAdapters, value.hero)
     }
 
-    object Hero : Adapter<TestQuery.Data.Hero> {
+    private object Hero : Adapter<TestQuery.Data.Hero> {
       val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friendsConnection",
           "profileLink")
 
@@ -95,7 +95,7 @@ object TestQuery_ResponseAdapter {
         AnyAdapter.toJson(writer, customScalarAdapters, value.profileLink)
       }
 
-      object FriendsConnection : Adapter<TestQuery.Data.Hero.FriendsConnection> {
+      private object FriendsConnection : Adapter<TestQuery.Data.Hero.FriendsConnection> {
         val RESPONSE_NAMES: List<String> = listOf("edges")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -124,7 +124,7 @@ object TestQuery_ResponseAdapter {
           Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
         }
 
-        object Edge : Adapter<TestQuery.Data.Hero.FriendsConnection.Edge> {
+        private object Edge : Adapter<TestQuery.Data.Hero.FriendsConnection.Edge> {
           val RESPONSE_NAMES: List<String> = listOf("node")
 
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -152,7 +152,7 @@ object TestQuery_ResponseAdapter {
             Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
           }
 
-          object Node : Adapter<TestQuery.Data.Hero.FriendsConnection.Edge.Node> {
+          private object Node : Adapter<TestQuery.Data.Hero.FriendsConnection.Edge.Node> {
             val RESPONSE_NAMES: List<String> = listOf("name")
 
             override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

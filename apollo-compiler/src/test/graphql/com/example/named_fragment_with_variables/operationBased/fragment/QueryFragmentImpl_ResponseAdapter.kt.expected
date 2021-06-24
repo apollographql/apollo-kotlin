@@ -47,7 +47,7 @@ object QueryFragmentImpl_ResponseAdapter {
       Organization.obj().nullable().toJson(writer, customScalarAdapters, value.organization)
     }
 
-    object Organization :
+    private object Organization :
         Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization> {
       val RESPONSE_NAMES: List<String> = listOf("id", "user")
 
@@ -82,7 +82,7 @@ object QueryFragmentImpl_ResponseAdapter {
         User.obj(true).list().toJson(writer, customScalarAdapters, value.user)
       }
 
-      object User :
+      private object User :
           Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User>
           {
         val RESPONSE_NAMES: List<String> = listOf("__typename")

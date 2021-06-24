@@ -55,7 +55,7 @@ object TestQuery_ResponseAdapter {
       IntAdapter.toJson(writer, customScalarAdapters, value.testNullableArguments)
     }
 
-    object Review : Adapter<TestQuery.Data.Review> {
+    private object Review : Adapter<TestQuery.Data.Review> {
       val RESPONSE_NAMES: List<String> = listOf("stars", "commentary")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

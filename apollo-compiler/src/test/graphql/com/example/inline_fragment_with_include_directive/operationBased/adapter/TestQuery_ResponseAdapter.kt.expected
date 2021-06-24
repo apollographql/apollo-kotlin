@@ -51,7 +51,7 @@ object TestQuery_ResponseAdapter {
       Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
     }
 
-    object Hero : Adapter<TestQuery.Data.Hero> {
+    private object Hero : Adapter<TestQuery.Data.Hero> {
       val RESPONSE_NAMES: List<String> = listOf("__typename", "id")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -128,7 +128,7 @@ object TestQuery_ResponseAdapter {
         }
       }
 
-      object OnHumanIfWithDetailsAndNotSkipHumanDetails :
+      private object OnHumanIfWithDetailsAndNotSkipHumanDetails :
           Adapter<TestQuery.Data.Hero.OnHumanIfWithDetailsAndNotSkipHumanDetails> {
         val RESPONSE_NAMES: List<String> = listOf("name", "homePlanet")
 
@@ -164,7 +164,7 @@ object TestQuery_ResponseAdapter {
         }
       }
 
-      object OnDroidIfWithDetails : Adapter<TestQuery.Data.Hero.OnDroidIfWithDetails> {
+      private object OnDroidIfWithDetails : Adapter<TestQuery.Data.Hero.OnDroidIfWithDetails> {
         val RESPONSE_NAMES: List<String> = listOf("name", "primaryFunction")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -199,7 +199,8 @@ object TestQuery_ResponseAdapter {
         }
       }
 
-      object OnCharacterIfWithDetails : Adapter<TestQuery.Data.Hero.OnCharacterIfWithDetails> {
+      private object OnCharacterIfWithDetails :
+          Adapter<TestQuery.Data.Hero.OnCharacterIfWithDetails> {
         val RESPONSE_NAMES: List<String> = listOf("name")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

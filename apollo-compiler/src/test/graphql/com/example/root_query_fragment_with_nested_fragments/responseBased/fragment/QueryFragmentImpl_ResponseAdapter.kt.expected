@@ -63,7 +63,7 @@ object QueryFragmentImpl_ResponseAdapter {
       Human.obj().nullable().toJson(writer, customScalarAdapters, value.human)
     }
 
-    object Hero : Adapter<QueryFragmentImpl.Data.Hero> {
+    private object Hero : Adapter<QueryFragmentImpl.Data.Hero> {
       val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -98,7 +98,7 @@ object QueryFragmentImpl_ResponseAdapter {
       }
     }
 
-    object Droid : Adapter<QueryFragmentImpl.Data.Droid> {
+    private object Droid : Adapter<QueryFragmentImpl.Data.Droid> {
       val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "primaryFunction")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -139,7 +139,7 @@ object QueryFragmentImpl_ResponseAdapter {
       }
     }
 
-    object Human : Adapter<QueryFragmentImpl.Data.Human> {
+    private object Human : Adapter<QueryFragmentImpl.Data.Human> {
       val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "homePlanet")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

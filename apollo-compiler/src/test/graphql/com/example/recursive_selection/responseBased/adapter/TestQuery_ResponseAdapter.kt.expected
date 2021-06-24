@@ -46,7 +46,7 @@ object TestQuery_ResponseAdapter {
       Tree.obj().nullable().toJson(writer, customScalarAdapters, value.tree)
     }
 
-    object Tree : Adapter<TestQuery.Data.Tree> {
+    private object Tree : Adapter<TestQuery.Data.Tree> {
       val RESPONSE_NAMES: List<String> = listOf("name", "children", "parent")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -86,7 +86,7 @@ object TestQuery_ResponseAdapter {
         Parent.obj().nullable().toJson(writer, customScalarAdapters, value.parent)
       }
 
-      object Child : Adapter<TestQuery.Data.Tree.Child> {
+      private object Child : Adapter<TestQuery.Data.Tree.Child> {
         val RESPONSE_NAMES: List<String> = listOf("name")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -115,7 +115,7 @@ object TestQuery_ResponseAdapter {
         }
       }
 
-      object Parent : Adapter<TestQuery.Data.Tree.Parent> {
+      private object Parent : Adapter<TestQuery.Data.Tree.Parent> {
         val RESPONSE_NAMES: List<String> = listOf("name")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

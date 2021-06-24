@@ -59,7 +59,7 @@ object HumanDetailsImpl_ResponseAdapter {
       FriendsConnection.obj().toJson(writer, customScalarAdapters, value.friendsConnection)
     }
 
-    object FriendsConnection :
+    private object FriendsConnection :
         Adapter<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection> {
       val RESPONSE_NAMES: List<String> = listOf("edges")
 
@@ -89,7 +89,7 @@ object HumanDetailsImpl_ResponseAdapter {
         Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
       }
 
-      object Edge :
+      private object Edge :
           Adapter<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge>
           {
         val RESPONSE_NAMES: List<String> = listOf("node")
@@ -119,7 +119,7 @@ object HumanDetailsImpl_ResponseAdapter {
           Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
         }
 
-        object Node :
+        private object Node :
             Adapter<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge.Node>
             {
           val RESPONSE_NAMES: List<String> = listOf("name")

@@ -45,7 +45,7 @@ object AFragmentImpl_ResponseAdapter {
       Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
     }
 
-    object Node : Adapter<AFragmentImpl.Data.Node> {
+    private object Node : Adapter<AFragmentImpl.Data.Node> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

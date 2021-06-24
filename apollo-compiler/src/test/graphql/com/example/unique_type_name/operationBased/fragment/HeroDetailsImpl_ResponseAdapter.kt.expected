@@ -53,7 +53,7 @@ object HeroDetailsImpl_ResponseAdapter {
       FriendsConnection.obj().toJson(writer, customScalarAdapters, value.friendsConnection)
     }
 
-    object FriendsConnection :
+    private object FriendsConnection :
         Adapter<com.example.unique_type_name.fragment.HeroDetails.FriendsConnection> {
       val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
 
@@ -89,7 +89,7 @@ object HeroDetailsImpl_ResponseAdapter {
         Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
       }
 
-      object Edge :
+      private object Edge :
           Adapter<com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge> {
         val RESPONSE_NAMES: List<String> = listOf("node")
 
@@ -118,7 +118,7 @@ object HeroDetailsImpl_ResponseAdapter {
           Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
         }
 
-        object Node :
+        private object Node :
             Adapter<com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge.Node> {
           val RESPONSE_NAMES: List<String> = listOf("name")
 

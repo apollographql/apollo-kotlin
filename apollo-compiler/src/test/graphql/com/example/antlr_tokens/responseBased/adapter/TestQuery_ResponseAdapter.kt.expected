@@ -47,7 +47,7 @@ object TestQuery_ResponseAdapter {
           value.typeWithGraphQLKeywords)
     }
 
-    object TypeWithGraphQLKeywords : Adapter<TestQuery.Data.TypeWithGraphQLKeywords> {
+    private object TypeWithGraphQLKeywords : Adapter<TestQuery.Data.TypeWithGraphQLKeywords> {
       val RESPONSE_NAMES: List<String> = listOf("on", "null", "alias")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

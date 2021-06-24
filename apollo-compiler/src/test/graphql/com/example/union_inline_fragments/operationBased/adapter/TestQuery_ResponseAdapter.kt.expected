@@ -53,7 +53,7 @@ object TestQuery_ResponseAdapter {
           value.search)
     }
 
-    object Search : Adapter<TestQuery.Data.Search> {
+    private object Search : Adapter<TestQuery.Data.Search> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -111,7 +111,7 @@ object TestQuery_ResponseAdapter {
         }
       }
 
-      object OnCharacter : Adapter<TestQuery.Data.Search.OnCharacter> {
+      private object OnCharacter : Adapter<TestQuery.Data.Search.OnCharacter> {
         val RESPONSE_NAMES: List<String> = listOf("id", "name", "friends")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -153,7 +153,7 @@ object TestQuery_ResponseAdapter {
               value.friends)
         }
 
-        object Friend : Adapter<TestQuery.Data.Search.OnCharacter.Friend> {
+        private object Friend : Adapter<TestQuery.Data.Search.OnCharacter.Friend> {
           val RESPONSE_NAMES: List<String> = listOf("__typename")
 
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -224,7 +224,8 @@ object TestQuery_ResponseAdapter {
             }
           }
 
-          object OnCharacter : Adapter<TestQuery.Data.Search.OnCharacter.Friend.OnCharacter> {
+          private object OnCharacter : Adapter<TestQuery.Data.Search.OnCharacter.Friend.OnCharacter>
+              {
             val RESPONSE_NAMES: List<String> = listOf("name")
 
             override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -253,7 +254,7 @@ object TestQuery_ResponseAdapter {
             }
           }
 
-          object OnHuman : Adapter<TestQuery.Data.Search.OnCharacter.Friend.OnHuman> {
+          private object OnHuman : Adapter<TestQuery.Data.Search.OnCharacter.Friend.OnHuman> {
             val RESPONSE_NAMES: List<String> = listOf("homePlanet", "friends")
 
             override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -289,7 +290,8 @@ object TestQuery_ResponseAdapter {
                   value.friends)
             }
 
-            object Friend : Adapter<TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend> {
+            private object Friend : Adapter<TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend>
+                {
               val RESPONSE_NAMES: List<String> = listOf("__typename")
 
               override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -334,7 +336,7 @@ object TestQuery_ResponseAdapter {
                 }
               }
 
-              object OnCharacter :
+              private object OnCharacter :
                   Adapter<TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend.OnCharacter> {
                 val RESPONSE_NAMES: List<String> = listOf("firstAppearsIn")
 
@@ -368,7 +370,7 @@ object TestQuery_ResponseAdapter {
             }
           }
 
-          object OnDroid : Adapter<TestQuery.Data.Search.OnCharacter.Friend.OnDroid> {
+          private object OnDroid : Adapter<TestQuery.Data.Search.OnCharacter.Friend.OnDroid> {
             val RESPONSE_NAMES: List<String> = listOf("primaryFunction", "friends")
 
             override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -405,7 +407,8 @@ object TestQuery_ResponseAdapter {
                   value.friends)
             }
 
-            object Friend : Adapter<TestQuery.Data.Search.OnCharacter.Friend.OnDroid.Friend> {
+            private object Friend : Adapter<TestQuery.Data.Search.OnCharacter.Friend.OnDroid.Friend>
+                {
               val RESPONSE_NAMES: List<String> = listOf("id")
 
               override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -437,7 +440,7 @@ object TestQuery_ResponseAdapter {
         }
       }
 
-      object OnStarship : Adapter<TestQuery.Data.Search.OnStarship> {
+      private object OnStarship : Adapter<TestQuery.Data.Search.OnStarship> {
         val RESPONSE_NAMES: List<String> = listOf("name")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

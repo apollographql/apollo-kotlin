@@ -64,7 +64,7 @@ object TestQuery_ResponseAdapter {
       Human.obj().nullable().toJson(writer, customScalarAdapters, value.human)
     }
 
-    object Hero : Adapter<TestQuery.Data.Hero> {
+    private object Hero : Adapter<TestQuery.Data.Hero> {
       val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -99,7 +99,7 @@ object TestQuery_ResponseAdapter {
       }
     }
 
-    object Droid : Adapter<TestQuery.Data.Droid> {
+    private object Droid : Adapter<TestQuery.Data.Droid> {
       val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "primaryFunction")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -140,7 +140,7 @@ object TestQuery_ResponseAdapter {
       }
     }
 
-    object Human : Adapter<TestQuery.Data.Human> {
+    private object Human : Adapter<TestQuery.Data.Human> {
       val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "homePlanet")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

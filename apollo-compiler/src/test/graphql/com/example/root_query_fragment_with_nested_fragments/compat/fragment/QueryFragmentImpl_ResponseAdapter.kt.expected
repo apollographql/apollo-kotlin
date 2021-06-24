@@ -108,7 +108,7 @@ object QueryFragmentImpl_ResponseAdapter {
           customScalarAdapters, value.fragments)
     }
 
-    object Fragments :
+    private object Fragments :
         Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero.Fragments>
         {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
@@ -194,7 +194,7 @@ object QueryFragmentImpl_ResponseAdapter {
           customScalarAdapters, value.fragments)
     }
 
-    object Fragments :
+    private object Fragments :
         Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid.Fragments>
         {
       val RESPONSE_NAMES: List<String> = listOf("__typename")

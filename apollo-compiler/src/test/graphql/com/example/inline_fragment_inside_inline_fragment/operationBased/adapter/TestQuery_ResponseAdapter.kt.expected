@@ -51,7 +51,7 @@ object TestQuery_ResponseAdapter {
           value.search)
     }
 
-    object Search : Adapter<TestQuery.Data.Search> {
+    private object Search : Adapter<TestQuery.Data.Search> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -96,7 +96,7 @@ object TestQuery_ResponseAdapter {
         }
       }
 
-      object OnCharacter : Adapter<TestQuery.Data.Search.OnCharacter> {
+      private object OnCharacter : Adapter<TestQuery.Data.Search.OnCharacter> {
         val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -160,7 +160,7 @@ object TestQuery_ResponseAdapter {
           }
         }
 
-        object OnHuman : Adapter<TestQuery.Data.Search.OnCharacter.OnHuman> {
+        private object OnHuman : Adapter<TestQuery.Data.Search.OnCharacter.OnHuman> {
           val RESPONSE_NAMES: List<String> = listOf("homePlanet")
 
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -189,7 +189,7 @@ object TestQuery_ResponseAdapter {
           }
         }
 
-        object OnDroid : Adapter<TestQuery.Data.Search.OnCharacter.OnDroid> {
+        private object OnDroid : Adapter<TestQuery.Data.Search.OnCharacter.OnDroid> {
           val RESPONSE_NAMES: List<String> = listOf("primaryFunction")
 
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

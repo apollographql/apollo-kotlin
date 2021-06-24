@@ -4,6 +4,7 @@ import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.CgContext
 import com.apollographql.apollo3.compiler.ir.IrModel
@@ -18,6 +19,7 @@ class MonomorphicFieldResponseAdapterBuilder(
     val context: CgContext,
     val model: IrModel,
     val path: List<String>,
+    val public: Boolean,
 ) : ResponseAdapterBuilder {
 
   private val adapterName = model.modelName
@@ -29,7 +31,8 @@ class MonomorphicFieldResponseAdapterBuilder(
     ResponseAdapterBuilder.create(
         context,
         it,
-        path + adapterName
+        path + adapterName,
+        false
     )
   }
 
@@ -52,6 +55,9 @@ class MonomorphicFieldResponseAdapterBuilder(
                 context.resolver.resolveModel(model.id)
             )
         )
+        .applyIf(!public) {
+          addModifiers(KModifier.PRIVATE)
+        }
         .addProperty(responseNamesPropertySpec(model))
         .addFunction(readFromResponseFunSpec())
         .addFunction(writeToResponseFunSpec())

@@ -59,7 +59,7 @@ object HeroDetailsImpl_ResponseAdapter {
           value.friends)
     }
 
-    object Friend :
+    private object Friend :
         Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend> {
       val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
@@ -124,7 +124,7 @@ object HeroDetailsImpl_ResponseAdapter {
         }
       }
 
-      object OnHuman :
+      private object OnHuman :
           Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnHuman>
           {
         val RESPONSE_NAMES: List<String> = listOf("height")
@@ -155,7 +155,7 @@ object HeroDetailsImpl_ResponseAdapter {
         }
       }
 
-      object OnDroid :
+      private object OnDroid :
           Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnDroid>
           {
         val RESPONSE_NAMES: List<String> = listOf("primaryFunction")

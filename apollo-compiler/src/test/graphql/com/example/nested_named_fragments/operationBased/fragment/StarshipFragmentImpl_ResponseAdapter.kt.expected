@@ -61,7 +61,7 @@ object StarshipFragmentImpl_ResponseAdapter {
       PilotConnection.obj().nullable().toJson(writer, customScalarAdapters, value.pilotConnection)
     }
 
-    object PilotConnection :
+    private object PilotConnection :
         Adapter<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection> {
       val RESPONSE_NAMES: List<String> = listOf("edges")
 
@@ -91,7 +91,7 @@ object StarshipFragmentImpl_ResponseAdapter {
         Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
       }
 
-      object Edge :
+      private object Edge :
           Adapter<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge>
           {
         val RESPONSE_NAMES: List<String> = listOf("node")
@@ -121,7 +121,7 @@ object StarshipFragmentImpl_ResponseAdapter {
           Node.obj(true).nullable().toJson(writer, customScalarAdapters, value.node)
         }
 
-        object Node :
+        private object Node :
             Adapter<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge.Node>
             {
           val RESPONSE_NAMES: List<String> = listOf("__typename")

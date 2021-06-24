@@ -124,7 +124,7 @@ object QueryFragmentImpl_ResponseAdapter {
           customScalarAdapters, value.fragments)
     }
 
-    object Fragments :
+    private object Fragments :
         Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User.Fragments> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
