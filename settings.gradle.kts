@@ -6,6 +6,7 @@ rootProject.projectDir
     .listFiles()
     .filter { it.isDirectory }
     .filter { it.name.startsWith("apollo-") || it.name.startsWith("deprecated-")}
+    .filter { File(it, "build.gradle.kts").exists() }
     .forEach {
       if (System.getProperty("idea.sync.active") != null
           && it.name in listOf("deprecated-apollo-android-support", "deprecated-apollo-idling-resource")) {
