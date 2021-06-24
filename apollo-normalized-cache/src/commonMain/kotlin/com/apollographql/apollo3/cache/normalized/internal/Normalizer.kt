@@ -8,7 +8,7 @@ import com.apollographql.apollo3.api.CompiledNotNullType
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CompiledType
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.isCompound
+import com.apollographql.apollo3.api.isComposite
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.Record
 
@@ -111,7 +111,7 @@ class Normalizer(
         }
       }
       // Check for [isCompound] as we don't want to build a record for json scalars
-      type is CompiledNamedType && type.isCompound() -> {
+      type is CompiledNamedType && type.isComposite() -> {
         check(value is Map<*, *>)
         buildRecord(value as Map<String, Any?>, path, type, selections)
       }

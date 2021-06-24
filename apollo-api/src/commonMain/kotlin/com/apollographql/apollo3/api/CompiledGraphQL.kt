@@ -188,7 +188,7 @@ val CompiledBooleanType = ScalarType("Boolean")
 @SharedImmutable
 val CompiledIDType = ScalarType("ID")
 
-fun CompiledNamedType.isCompound(): Boolean {
+fun CompiledNamedType.isComposite(): Boolean {
   return when (this) {
     is UnionType,
     is InterfaceType,
