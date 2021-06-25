@@ -37,26 +37,26 @@ data class HeroDetails(
   )
 
   data class AsHuman(
+    val __typename: String,
+    /**
+     * The name of the character
+     */
+    val name: String,
     /**
      * Height in the preferred unit, default is meters
      */
-    val height: Double?,
-    val __typename: String,
-    /**
-     * The name of the character
-     */
-    val name: String
+    val height: Double?
   )
 
   data class AsDroid(
-    /**
-     * This droid's primary function
-     */
-    val primaryFunction: String?,
     val __typename: String,
     /**
      * The name of the character
      */
-    val name: String
+    val name: String,
+    /**
+     * This droid's primary function
+     */
+    val primaryFunction: String?
   )
 }

@@ -101,27 +101,27 @@ object TestQuery_ResponseAdapter {
   }
 
   object AsBar : Adapter<TestQuery.AsBar> {
-    val RESPONSE_NAMES: List<String> = listOf("bar", "__typename", "foo")
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "foo", "bar")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.AsBar {
-      var bar: String? = null
       var __typename: String? = null
       var foo: String? = null
+      var bar: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> bar = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> foo = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> foo = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> bar = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.AsBar(
-        bar = bar!!,
         __typename = __typename!!,
-        foo = foo!!
+        foo = foo!!,
+        bar = bar!!
       )
     }
 
@@ -130,14 +130,14 @@ object TestQuery_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: TestQuery.AsBar
     ) {
-      writer.name("bar")
-      StringAdapter.toJson(writer, customScalarAdapters, value.bar)
-
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       writer.name("foo")
       StringAdapter.toJson(writer, customScalarAdapters, value.foo)
+
+      writer.name("bar")
+      StringAdapter.toJson(writer, customScalarAdapters, value.bar)
     }
   }
 }

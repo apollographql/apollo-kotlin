@@ -2,20 +2,11 @@ package com.apollographql.apollo3.cache.normalized
 
 import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledListType
 import com.apollographql.apollo3.api.CompiledNamedType
-import com.apollographql.apollo3.api.CompiledNotNullType
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.InterfaceType
-import com.apollographql.apollo3.api.ObjectType
-import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.api.UnionType
 import com.apollographql.apollo3.exception.CacheMissException
-import com.apollographql.apollo3.api.isCompound
 import com.apollographql.apollo3.api.keyFields
 import com.apollographql.apollo3.api.leafType
-import kotlin.jvm.JvmField
-import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSuppressWildcards
 
 open class CacheResolver {

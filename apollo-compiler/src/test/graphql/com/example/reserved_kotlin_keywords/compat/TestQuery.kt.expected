@@ -60,11 +60,11 @@ class TestQuery : Query<TestQuery.Data> {
   )
 
   data class AsCharacter(
+    val __typename: String,
     /**
      * The name of the character
      */
-    val name: String,
-    val __typename: String
+    val name: String
   )
 
   companion object {

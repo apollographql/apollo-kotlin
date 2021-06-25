@@ -50,9 +50,9 @@ class TestQuery : Query<TestQuery.Data> {
   )
 
   data class AsBar(
-    val bar: String,
     val __typename: String,
-    val foo: String
+    val foo: String,
+    val bar: String
   )
 
   companion object {

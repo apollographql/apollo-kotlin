@@ -225,27 +225,27 @@ object TestOperation_ResponseAdapter {
   }
 
   object AsWookie : Adapter<TestOperation.AsWookie> {
-    val RESPONSE_NAMES: List<String> = listOf("lifeExpectancy", "__typename", "name")
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "lifeExpectancy")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.AsWookie {
-      var lifeExpectancy: Double? = null
       var __typename: String? = null
       var name: String? = null
+      var lifeExpectancy: Double? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
-          1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestOperation.AsWookie(
-        lifeExpectancy = lifeExpectancy,
         __typename = __typename!!,
-        name = name!!
+        name = name!!,
+        lifeExpectancy = lifeExpectancy
       )
     }
 
@@ -254,42 +254,42 @@ object TestOperation_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: TestOperation.AsWookie
     ) {
-      writer.name("lifeExpectancy")
-      NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lifeExpectancy)
-
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
+
+      writer.name("lifeExpectancy")
+      NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lifeExpectancy)
     }
   }
 
   object AsHuman : Adapter<TestOperation.AsHuman> {
-    val RESPONSE_NAMES: List<String> = listOf("profilePictureUrl", "friends", "__typename", "name")
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friends", "profilePictureUrl")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.AsHuman {
-      var profilePictureUrl: String? = null
-      var friends: List<TestOperation.Friend1>? = null
       var __typename: String? = null
       var name: String? = null
+      var friends: List<TestOperation.Friend1>? = null
+      var profilePictureUrl: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> profilePictureUrl = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> friends = Friend1.obj(true).list().fromJson(reader, customScalarAdapters)
-          2 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          3 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> friends = Friend1.obj(true).list().fromJson(reader, customScalarAdapters)
+          3 -> profilePictureUrl = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestOperation.AsHuman(
-        profilePictureUrl = profilePictureUrl,
-        friends = friends!!,
         __typename = __typename!!,
-        name = name!!
+        name = name!!,
+        friends = friends!!,
+        profilePictureUrl = profilePictureUrl
       )
     }
 
@@ -298,34 +298,34 @@ object TestOperation_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: TestOperation.AsHuman
     ) {
-      writer.name("profilePictureUrl")
-      NullableStringAdapter.toJson(writer, customScalarAdapters, value.profilePictureUrl)
-
-      writer.name("friends")
-      Friend1.obj(true).list().toJson(writer, customScalarAdapters, value.friends)
-
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
+
+      writer.name("friends")
+      Friend1.obj(true).list().toJson(writer, customScalarAdapters, value.friends)
+
+      writer.name("profilePictureUrl")
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.profilePictureUrl)
     }
   }
 
   object Friend1 : Adapter<TestOperation.Friend1> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "isFamous", "name")
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "isFamous")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.Friend1 {
       var __typename: String? = null
-      var isFamous: Boolean? = null
       var name: String? = null
+      var isFamous: Boolean? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> isFamous = NullableBooleanAdapter.fromJson(reader, customScalarAdapters)
-          2 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> isFamous = NullableBooleanAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -343,8 +343,8 @@ object TestOperation_ResponseAdapter {
 
       return TestOperation.Friend1(
         __typename = __typename,
-        isFamous = isFamous,
         name = name!!,
+        isFamous = isFamous,
         asWookie = asWookie
       )
     }
@@ -357,11 +357,11 @@ object TestOperation_ResponseAdapter {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-      writer.name("isFamous")
-      NullableBooleanAdapter.toJson(writer, customScalarAdapters, value.isFamous)
-
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
+
+      writer.name("isFamous")
+      NullableBooleanAdapter.toJson(writer, customScalarAdapters, value.isFamous)
 
       if (value.asWookie != null) {
         com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.AsWookie1.toJson(writer,
@@ -371,34 +371,34 @@ object TestOperation_ResponseAdapter {
   }
 
   object AsWookie1 : Adapter<TestOperation.AsWookie1> {
-    val RESPONSE_NAMES: List<String> = listOf("race", "lifeExpectancy", "__typename", "isFamous",
-        "name")
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "isFamous", "lifeExpectancy",
+        "race")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.AsWookie1 {
-      var race: Race? = null
-      var lifeExpectancy: Double? = null
       var __typename: String? = null
-      var isFamous: Boolean? = null
       var name: String? = null
+      var isFamous: Boolean? = null
+      var lifeExpectancy: Double? = null
+      var race: Race? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> race = Race_ResponseAdapter.fromJson(reader, customScalarAdapters)
-          1 -> lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
-          2 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          3 -> isFamous = NullableBooleanAdapter.fromJson(reader, customScalarAdapters)
-          4 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> isFamous = NullableBooleanAdapter.fromJson(reader, customScalarAdapters)
+          3 -> lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+          4 -> race = Race_ResponseAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestOperation.AsWookie1(
-        race = race!!,
-        lifeExpectancy = lifeExpectancy,
         __typename = __typename!!,
+        name = name!!,
         isFamous = isFamous,
-        name = name!!
+        lifeExpectancy = lifeExpectancy,
+        race = race!!
       )
     }
 
@@ -407,45 +407,45 @@ object TestOperation_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: TestOperation.AsWookie1
     ) {
-      writer.name("race")
-      Race_ResponseAdapter.toJson(writer, customScalarAdapters, value.race)
-
-      writer.name("lifeExpectancy")
-      NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lifeExpectancy)
-
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+      writer.name("name")
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
       writer.name("isFamous")
       NullableBooleanAdapter.toJson(writer, customScalarAdapters, value.isFamous)
 
-      writer.name("name")
-      StringAdapter.toJson(writer, customScalarAdapters, value.name)
+      writer.name("lifeExpectancy")
+      NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lifeExpectancy)
+
+      writer.name("race")
+      Race_ResponseAdapter.toJson(writer, customScalarAdapters, value.race)
     }
   }
 
   object AsWookie2 : Adapter<TestOperation.AsWookie2> {
-    val RESPONSE_NAMES: List<String> = listOf("race", "friends", "__typename")
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "race", "friends")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.AsWookie2 {
+      var __typename: String? = null
       var race: Race? = null
       var friends: List<TestOperation.Friend2>? = null
-      var __typename: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> race = Race_ResponseAdapter.fromJson(reader, customScalarAdapters)
-          1 -> friends = Friend2.obj().list().fromJson(reader, customScalarAdapters)
-          2 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> race = Race_ResponseAdapter.fromJson(reader, customScalarAdapters)
+          2 -> friends = Friend2.obj().list().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestOperation.AsWookie2(
+        __typename = __typename!!,
         race = race!!,
-        friends = friends!!,
-        __typename = __typename!!
+        friends = friends!!
       )
     }
 
@@ -454,14 +454,14 @@ object TestOperation_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: TestOperation.AsWookie2
     ) {
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
       writer.name("race")
       Race_ResponseAdapter.toJson(writer, customScalarAdapters, value.race)
 
       writer.name("friends")
       Friend2.obj().list().toJson(writer, customScalarAdapters, value.friends)
-
-      writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
     }
   }
 

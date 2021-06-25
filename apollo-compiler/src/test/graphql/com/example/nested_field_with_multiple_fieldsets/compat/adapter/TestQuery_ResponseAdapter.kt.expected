@@ -154,27 +154,27 @@ object TestQuery_ResponseAdapter {
   }
 
   object AsImpl2 : Adapter<TestQuery.AsImpl2> {
-    val RESPONSE_NAMES: List<String> = listOf("scalar2", "__typename", "scalar1")
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "scalar1", "scalar2")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.AsImpl2 {
-      var scalar2: String? = null
       var __typename: String? = null
       var scalar1: String? = null
+      var scalar2: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> scalar2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> scalar2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.AsImpl2(
-        scalar2 = scalar2,
         __typename = __typename!!,
-        scalar1 = scalar1
+        scalar1 = scalar1,
+        scalar2 = scalar2
       )
     }
 
@@ -183,36 +183,36 @@ object TestQuery_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: TestQuery.AsImpl2
     ) {
-      writer.name("scalar2")
-      NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar2)
-
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       writer.name("scalar1")
       NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar1)
+
+      writer.name("scalar2")
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar2)
     }
   }
 
   object AsImpl1 : Adapter<TestQuery.AsImpl1> {
-    val RESPONSE_NAMES: List<String> = listOf("iface2", "__typename")
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "iface2")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.AsImpl1 {
-      var iface2: TestQuery.Iface21? = null
       var __typename: String? = null
+      var iface2: TestQuery.Iface21? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> iface2 = Iface21.obj(true).nullable().fromJson(reader, customScalarAdapters)
-          1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> iface2 = Iface21.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.AsImpl1(
-        iface2 = iface2,
-        __typename = __typename!!
+        __typename = __typename!!,
+        iface2 = iface2
       )
     }
 
@@ -221,28 +221,28 @@ object TestQuery_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: TestQuery.AsImpl1
     ) {
-      writer.name("iface2")
-      Iface21.obj(true).nullable().toJson(writer, customScalarAdapters, value.iface2)
-
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+      writer.name("iface2")
+      Iface21.obj(true).nullable().toJson(writer, customScalarAdapters, value.iface2)
     }
   }
 
   object Iface21 : Adapter<TestQuery.Iface21> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "scalar3", "scalar1")
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "scalar1", "scalar3")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Iface21 {
       var __typename: String? = null
-      var scalar3: String? = null
       var scalar1: String? = null
+      var scalar3: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> scalar3 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> scalar3 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -260,8 +260,8 @@ object TestQuery_ResponseAdapter {
 
       return TestQuery.Iface21(
         __typename = __typename,
-        scalar3 = scalar3,
         scalar1 = scalar1,
+        scalar3 = scalar3,
         asImpl2 = asImpl2
       )
     }
@@ -274,11 +274,11 @@ object TestQuery_ResponseAdapter {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-      writer.name("scalar3")
-      NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar3)
-
       writer.name("scalar1")
       NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar1)
+
+      writer.name("scalar3")
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar3)
 
       if (value.asImpl2 != null) {
         com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.AsImpl21.toJson(writer,
@@ -288,34 +288,34 @@ object TestQuery_ResponseAdapter {
   }
 
   object AsImpl21 : Adapter<TestQuery.AsImpl21> {
-    val RESPONSE_NAMES: List<String> = listOf("scalar4", "scalar2", "__typename", "scalar3",
-        "scalar1")
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "scalar1", "scalar3", "scalar2",
+        "scalar4")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.AsImpl21 {
-      var scalar4: String? = null
-      var scalar2: String? = null
       var __typename: String? = null
-      var scalar3: String? = null
       var scalar1: String? = null
+      var scalar3: String? = null
+      var scalar2: String? = null
+      var scalar4: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> scalar4 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> scalar2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          3 -> scalar3 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          4 -> scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> scalar3 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          3 -> scalar2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          4 -> scalar4 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.AsImpl21(
-        scalar4 = scalar4,
-        scalar2 = scalar2,
         __typename = __typename!!,
+        scalar1 = scalar1,
         scalar3 = scalar3,
-        scalar1 = scalar1
+        scalar2 = scalar2,
+        scalar4 = scalar4
       )
     }
 
@@ -324,20 +324,20 @@ object TestQuery_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: TestQuery.AsImpl21
     ) {
-      writer.name("scalar4")
-      NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar4)
-
-      writer.name("scalar2")
-      NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar2)
-
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+      writer.name("scalar1")
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar1)
 
       writer.name("scalar3")
       NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar3)
 
-      writer.name("scalar1")
-      NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar1)
+      writer.name("scalar2")
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar2)
+
+      writer.name("scalar4")
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar4)
     }
   }
 }

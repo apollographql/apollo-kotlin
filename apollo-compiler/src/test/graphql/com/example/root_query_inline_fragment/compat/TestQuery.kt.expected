@@ -60,10 +60,6 @@ class TestQuery : Query<TestQuery.Data> {
   }
 
   data class AsHuman(
-    /**
-     * Height in the preferred unit, default is meters
-     */
-    val height: Double?,
     val __typename: String,
     /**
      * The name of the character
@@ -72,7 +68,11 @@ class TestQuery : Query<TestQuery.Data> {
     /**
      * The movies this character appears in
      */
-    val appearsIn: List<Episode?>
+    val appearsIn: List<Episode?>,
+    /**
+     * Height in the preferred unit, default is meters
+     */
+    val height: Double?
   ) {
     fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
   }

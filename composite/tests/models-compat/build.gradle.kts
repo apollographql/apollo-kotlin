@@ -24,8 +24,19 @@ kotlin {
 }
 
 apollo {
-  srcDir(file("../models-fixtures/graphql"))
-  packageName.set("codegen.models")
-  generateFragmentImplementations.set(true)
-  codegenModels.set("compat")
+  service("service") {
+    srcDir(file("../models-fixtures/graphql"))
+    packageName.set("codegen.models")
+    generateFragmentImplementations.set(true)
+    codegenModels.set("compat")
+  }
+
+  file("src/commonTest/kotlin/test").listFiles()!!
+      .filter { it.isDirectory }
+      .forEach {
+        service(it.name) {
+          srcDir(it)
+          packageName.set(it.name)
+        }
+      }
 }

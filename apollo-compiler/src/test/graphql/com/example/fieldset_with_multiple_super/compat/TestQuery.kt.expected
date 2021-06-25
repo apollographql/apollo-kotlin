@@ -59,9 +59,9 @@ class TestQuery : Query<TestQuery.Data> {
   )
 
   data class AsB(
-    val fieldB1: String?,
     val __typename: String,
-    val fieldA1: String?
+    val fieldA1: String?,
+    val fieldB1: String?
   )
 
   data class AsB1(
@@ -74,9 +74,9 @@ class TestQuery : Query<TestQuery.Data> {
   )
 
   data class AsA1(
-    val fieldA2: String?,
     val __typename: String,
-    val fieldB2: String?
+    val fieldB2: String?,
+    val fieldA2: String?
   )
 
   companion object {

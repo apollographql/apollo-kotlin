@@ -120,31 +120,31 @@ object TestQuery_ResponseAdapter {
   }
 
   object AsHuman : Adapter<TestQuery.AsHuman> {
-    val RESPONSE_NAMES: List<String> = listOf("height", "friends", "__typename", "name")
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "height", "friends")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.AsHuman {
-      var height: Double? = null
-      var friends: List<TestQuery.Friend?>? = null
       var __typename: String? = null
       var name: String? = null
+      var height: Double? = null
+      var friends: List<TestQuery.Friend?>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
-          1 -> friends = Friend.obj().nullable().list().nullable().fromJson(reader,
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+          3 -> friends = Friend.obj().nullable().list().nullable().fromJson(reader,
               customScalarAdapters)
-          2 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          3 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.AsHuman(
-        height = height,
-        friends = friends,
         __typename = __typename!!,
-        name = name!!
+        name = name!!,
+        height = height,
+        friends = friends
       )
     }
 
@@ -153,17 +153,17 @@ object TestQuery_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: TestQuery.AsHuman
     ) {
-      writer.name("height")
-      NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
-
-      writer.name("friends")
-      Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
-
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
+
+      writer.name("height")
+      NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
+
+      writer.name("friends")
+      Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
     }
   }
 
@@ -199,31 +199,31 @@ object TestQuery_ResponseAdapter {
   }
 
   object AsDroid : Adapter<TestQuery.AsDroid> {
-    val RESPONSE_NAMES: List<String> = listOf("primaryFunction", "friends", "__typename", "name")
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "primaryFunction", "friends")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.AsDroid {
-      var primaryFunction: String? = null
-      var friends: List<TestQuery.Friend1?>? = null
       var __typename: String? = null
       var name: String? = null
+      var primaryFunction: String? = null
+      var friends: List<TestQuery.Friend1?>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> friends = Friend1.obj().nullable().list().nullable().fromJson(reader,
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          3 -> friends = Friend1.obj().nullable().list().nullable().fromJson(reader,
               customScalarAdapters)
-          2 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          3 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.AsDroid(
-        primaryFunction = primaryFunction,
-        friends = friends,
         __typename = __typename!!,
-        name = name!!
+        name = name!!,
+        primaryFunction = primaryFunction,
+        friends = friends
       )
     }
 
@@ -232,17 +232,17 @@ object TestQuery_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: TestQuery.AsDroid
     ) {
-      writer.name("primaryFunction")
-      NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
-
-      writer.name("friends")
-      Friend1.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
-
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
+
+      writer.name("primaryFunction")
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
+
+      writer.name("friends")
+      Friend1.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
     }
   }
 
