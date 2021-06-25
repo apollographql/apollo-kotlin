@@ -54,8 +54,8 @@ class GetHuman : Query<GetHuman.Data> {
   )
 
   data class AsHuman(
-    val height: Double,
-    val __typename: String
+    val __typename: String,
+    val height: Double
   )
 
   companion object {

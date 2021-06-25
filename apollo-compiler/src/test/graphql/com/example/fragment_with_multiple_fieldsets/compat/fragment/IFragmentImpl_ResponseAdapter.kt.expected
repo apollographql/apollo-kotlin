@@ -64,24 +64,24 @@ object IFragmentImpl_ResponseAdapter {
   }
 
   object AsA : Adapter<com.example.fragment_with_multiple_fieldsets.fragment.IFragment.AsA> {
-    val RESPONSE_NAMES: List<String> = listOf("fieldA", "__typename")
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldA")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.fragment_with_multiple_fieldsets.fragment.IFragment.AsA {
-      var fieldA: String? = null
       var __typename: String? = null
+      var fieldA: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> fieldA = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> fieldA = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.fragment_with_multiple_fieldsets.fragment.IFragment.AsA(
-        fieldA = fieldA,
-        __typename = __typename!!
+        __typename = __typename!!,
+        fieldA = fieldA
       )
     }
 
@@ -90,11 +90,11 @@ object IFragmentImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: com.example.fragment_with_multiple_fieldsets.fragment.IFragment.AsA
     ) {
-      writer.name("fieldA")
-      NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldA)
-
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+      writer.name("fieldA")
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldA)
     }
   }
 }

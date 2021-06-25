@@ -128,27 +128,27 @@ object HeroDetailsImpl_ResponseAdapter {
 
   object AsHuman :
       Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsHuman> {
-    val RESPONSE_NAMES: List<String> = listOf("height", "__typename", "name")
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "height")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsHuman {
-      var height: Double? = null
       var __typename: String? = null
       var name: String? = null
+      var height: Double? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
-          1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsHuman(
-        height = height,
         __typename = __typename!!,
-        name = name!!
+        name = name!!,
+        height = height
       )
     }
 
@@ -157,40 +157,40 @@ object HeroDetailsImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsHuman
     ) {
-      writer.name("height")
-      NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
-
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
+
+      writer.name("height")
+      NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
     }
   }
 
   object AsDroid :
       Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsDroid> {
-    val RESPONSE_NAMES: List<String> = listOf("primaryFunction", "__typename", "name")
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "primaryFunction")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsDroid {
-      var primaryFunction: String? = null
       var __typename: String? = null
       var name: String? = null
+      var primaryFunction: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsDroid(
-        primaryFunction = primaryFunction,
         __typename = __typename!!,
-        name = name!!
+        name = name!!,
+        primaryFunction = primaryFunction
       )
     }
 
@@ -199,14 +199,14 @@ object HeroDetailsImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsDroid
     ) {
-      writer.name("primaryFunction")
-      NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
-
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
+
+      writer.name("primaryFunction")
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
     }
   }
 }

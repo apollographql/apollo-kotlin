@@ -49,20 +49,25 @@ data class TestQuery(
      */
     val id: String,
     /**
-     * The name of the character
-     */
-    val name: String,
-    /**
      * Synthetic field for inline fragment on Human
      */
-    val asHumanIfWithDetailsAndNotSkipHumanDetails: AsHumanIfWithDetailsAndNotSkipHumanDetails?,
+    val asHuman: AsHuman?,
     /**
      * Synthetic field for inline fragment on Droid
      */
-    val asDroidIfWithDetails: AsDroidIfWithDetails?
+    val asDroid: AsDroid?,
+    /**
+     * Synthetic field for inline fragment on Character
+     */
+    val asCharacter: AsCharacter?
   )
 
-  data class AsHumanIfWithDetailsAndNotSkipHumanDetails(
+  data class AsHuman(
+    val __typename: String,
+    /**
+     * The ID of the character
+     */
+    val id: String,
     /**
      * What this human calls themselves
      */
@@ -70,15 +75,15 @@ data class TestQuery(
     /**
      * The home planet of the human, or null if unknown
      */
-    val homePlanet: String?,
+    val homePlanet: String?
+  )
+
+  data class AsDroid(
     val __typename: String,
     /**
      * The ID of the character
      */
-    val id: String
-  )
-
-  data class AsDroidIfWithDetails(
+    val id: String,
     /**
      * What others call this droid
      */
@@ -86,12 +91,19 @@ data class TestQuery(
     /**
      * This droid's primary function
      */
-    val primaryFunction: String?,
+    val primaryFunction: String?
+  )
+
+  data class AsCharacter(
     val __typename: String,
     /**
      * The ID of the character
      */
-    val id: String
+    val id: String,
+    /**
+     * The name of the character
+     */
+    val name: String
   )
 
   companion object {

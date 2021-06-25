@@ -190,37 +190,50 @@ internal class OperationBasedModelGroupBuilder(
      */
     val inlineFragmentsFields = selections.map { it.selection }.filterIsInstance<GQLInlineFragment>()
         .groupBy {
-          InlineFragmentKey(it.typeCondition.name, it.directives.toBooleanExpression())
-        }.entries.map { entry ->
-          val inlineFragmentsWithSameKey = entry.value
-          val typeCondition = entry.key.typeCondition
-          val prefix = if (collectAllInlineFragmentFields) "as" else "on"
+          it.typeCondition.name
+        }.entries.flatMap {
+          val typeCondition = it.key
 
-          val childInfo = IrFieldInfo(
-              responseName = "$prefix${entry.key.toName()}",
-              description = "Synthetic field for inline fragment on $typeCondition",
-              deprecationReason = null,
-              type = IrModelType(IrUnknownModelId)
-          )
+          // If there is only one fragment, no need to disambiguate it
+          val nameNeedsCondition = it.value.size > 1
 
-          val possibleTypes = schema.possibleTypes(typeCondition)
-          val childCondition = entry.key.condition.and(BooleanExpression.Element(BPossibleTypes(possibleTypes))).simplify()
+          it.value.groupBy { it.directives.toBooleanExpression() }
+              .entries.map { entry ->
+                val prefix = if (collectAllInlineFragmentFields) "as" else "on"
 
-          val childSelections = inlineFragmentsWithSameKey.flatMap {
-            it.selectionSet.selections.map { SelectionWithParent(it, typeCondition) }
-          }.toMutableList()
-          if (collectAllInlineFragmentFields) {
-            childSelections.addAll(selections.filter { it.selection is GQLField})
-          }
+                val name = if (nameNeedsCondition) {
+                  InlineFragmentKey(typeCondition, entry.key).toName()
+                } else {
+                  InlineFragmentKey(typeCondition, BooleanExpression.True).toName()
+                }
 
-          buildField(
-              root = root,
-              path = selfPath,
-              info = childInfo,
-              selections = childSelections,
-              condition = childCondition,
-              isSynthetic = true
-          )
+                val childInfo = IrFieldInfo(
+                    responseName = "$prefix$name",
+                    description = "Synthetic field for inline fragment on $typeCondition",
+                    deprecationReason = null,
+                    type = IrModelType(IrUnknownModelId)
+                )
+
+                val possibleTypes = schema.possibleTypes(typeCondition)
+                val childCondition = entry.key.and(BooleanExpression.Element(BPossibleTypes(possibleTypes))).simplify()
+
+                var childSelections = entry.value.flatMap {
+                  it.selectionSet.selections.map { SelectionWithParent(it, typeCondition) }
+                }
+
+                if (collectAllInlineFragmentFields) {
+                  childSelections = selections.filter { it.selection is GQLField} + childSelections
+                }
+
+                buildField(
+                    root = root,
+                    path = selfPath,
+                    info = childInfo,
+                    selections = childSelections,
+                    condition = childCondition,
+                    isSynthetic = true
+                )
+              }
         }
 
     /**

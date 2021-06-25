@@ -30,7 +30,7 @@ This is the shape of the actual json as returned by the server. A given query ca
 A leaf type
 
 
-### Compound type
+### Composite type
 
 A type that contains sub fields. It is an interface, object or union type
 

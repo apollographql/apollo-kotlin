@@ -56,6 +56,11 @@ class TestQuery : Query<TestQuery.Data> {
   )
 
   data class AsHuman(
+    val __typename: String,
+    /**
+     * The name of the character
+     */
+    val name: String,
     /**
      * Height in the preferred unit, default is meters
      */
@@ -63,12 +68,7 @@ class TestQuery : Query<TestQuery.Data> {
     /**
      * This human's friends, or an empty list if they have none
      */
-    val friends: List<Friend?>?,
-    val __typename: String,
-    /**
-     * The name of the character
-     */
-    val name: String
+    val friends: List<Friend?>?
   ) {
     fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
   }
@@ -83,6 +83,11 @@ class TestQuery : Query<TestQuery.Data> {
   }
 
   data class AsDroid(
+    val __typename: String,
+    /**
+     * The name of the character
+     */
+    val name: String,
     /**
      * This droid's primary function
      */
@@ -90,12 +95,7 @@ class TestQuery : Query<TestQuery.Data> {
     /**
      * This droid's friends, or an empty list if they have none
      */
-    val friends: List<Friend1?>?,
-    val __typename: String,
-    /**
-     * The name of the character
-     */
-    val name: String
+    val friends: List<Friend1?>?
   ) {
     fun friendsFilterNotNull(): List<Friend1>? = friends?.filterNotNull()
   }

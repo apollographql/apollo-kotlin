@@ -16,7 +16,7 @@ data class IFragment(
   val asA: AsA?
 ) : Fragment.Data {
   data class AsA(
-    val fieldA: String?,
-    val __typename: String
+    val __typename: String,
+    val fieldA: String?
   )
 }

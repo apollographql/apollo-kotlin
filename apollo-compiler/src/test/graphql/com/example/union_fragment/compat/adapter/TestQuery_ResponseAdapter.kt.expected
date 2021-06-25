@@ -149,24 +149,24 @@ object TestQuery_ResponseAdapter {
   }
 
   object AsStarship : Adapter<TestQuery.AsStarship> {
-    val RESPONSE_NAMES: List<String> = listOf("id", "__typename")
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "id")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.AsStarship {
-      var id: String? = null
       var __typename: String? = null
+      var id: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.AsStarship(
-        id = id!!,
-        __typename = __typename!!
+        __typename = __typename!!,
+        id = id!!
       )
     }
 
@@ -175,11 +175,11 @@ object TestQuery_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: TestQuery.AsStarship
     ) {
-      writer.name("id")
-      StringAdapter.toJson(writer, customScalarAdapters, value.id)
-
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+      writer.name("id")
+      StringAdapter.toJson(writer, customScalarAdapters, value.id)
     }
   }
 }

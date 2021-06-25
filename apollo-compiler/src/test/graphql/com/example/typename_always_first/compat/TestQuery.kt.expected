@@ -52,19 +52,19 @@ class TestQuery : Query<TestQuery.Data> {
   )
 
   data class AsHuman(
+    val __typename: String,
     /**
      * Height in the preferred unit, default is meters
      */
-    val height: Double?,
-    val __typename: String
+    val height: Double?
   )
 
   data class AsDroid(
+    val __typename: String,
     /**
      * What others call this droid
      */
     val name: String,
-    val __typename: String,
     /**
      * This droid's primary function
      */

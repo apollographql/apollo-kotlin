@@ -59,15 +59,15 @@ data class TestQuery(
   )
 
   data class AsHuman1(
-    /**
-     * This human's friends, or an empty list if they have none
-     */
-    val friends: List<Friend?>?,
     val __typename: String,
     /**
      * The name of the character
      */
-    val name: String
+    val name: String,
+    /**
+     * This human's friends, or an empty list if they have none
+     */
+    val friends: List<Friend?>?
   ) {
     fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
   }
@@ -85,27 +85,27 @@ data class TestQuery(
   )
 
   data class AsHuman(
+    val __typename: String,
+    /**
+     * The name of the character
+     */
+    val name: String,
     /**
      * Height in the preferred unit, default is meters
      */
-    val height: Double?,
-    val __typename: String,
-    /**
-     * The name of the character
-     */
-    val name: String
+    val height: Double?
   )
 
   data class AsDroid(
-    /**
-     * This droid's friends, or an empty list if they have none
-     */
-    val friends: List<Friend1?>?,
     val __typename: String,
     /**
      * The name of the character
      */
-    val name: String
+    val name: String,
+    /**
+     * This droid's friends, or an empty list if they have none
+     */
+    val friends: List<Friend1?>?
   ) {
     fun friendsFilterNotNull(): List<Friend1>? = friends?.filterNotNull()
   }
@@ -123,15 +123,15 @@ data class TestQuery(
   )
 
   data class AsHuman2(
-    /**
-     * Height in the preferred unit, default is meters
-     */
-    val height: Double?,
     val __typename: String,
     /**
      * The name of the character
      */
-    val name: String
+    val name: String,
+    /**
+     * Height in the preferred unit, default is meters
+     */
+    val height: Double?
   )
 
   companion object {

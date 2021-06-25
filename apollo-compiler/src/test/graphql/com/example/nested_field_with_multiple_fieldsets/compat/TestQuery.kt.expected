@@ -56,20 +56,20 @@ class TestQuery : Query<TestQuery.Data> {
   )
 
   data class AsImpl2(
-    val scalar2: String?,
     val __typename: String,
-    val scalar1: String?
+    val scalar1: String?,
+    val scalar2: String?
   )
 
   data class AsImpl1(
-    val iface2: Iface21?,
-    val __typename: String
+    val __typename: String,
+    val iface2: Iface21?
   )
 
   data class Iface21(
     val __typename: String,
-    val scalar3: String?,
     val scalar1: String?,
+    val scalar3: String?,
     /**
      * Synthetic field for inline fragment on Impl2
      */
@@ -77,11 +77,11 @@ class TestQuery : Query<TestQuery.Data> {
   )
 
   data class AsImpl21(
-    val scalar4: String?,
-    val scalar2: String?,
     val __typename: String,
+    val scalar1: String?,
     val scalar3: String?,
-    val scalar1: String?
+    val scalar2: String?,
+    val scalar4: String?
   )
 
   companion object {
