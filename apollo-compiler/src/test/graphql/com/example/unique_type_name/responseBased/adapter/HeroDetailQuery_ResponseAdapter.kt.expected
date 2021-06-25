@@ -53,7 +53,7 @@ object HeroDetailQuery_ResponseAdapter {
       HeroDetailQuery.obj().nullable().toJson(writer, customScalarAdapters, value.heroDetailQuery)
     }
 
-    object HeroDetailQuery :
+    private object HeroDetailQuery :
         Adapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
@@ -138,7 +138,7 @@ object HeroDetailQuery_ResponseAdapter {
         NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
       }
 
-      object Friend :
+      private object Friend :
           Adapter<com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend> {
         val RESPONSE_NAMES: List<String> = listOf("name", "appearsIn", "friends")
 
@@ -183,7 +183,7 @@ object HeroDetailQuery_ResponseAdapter {
               value.friends)
         }
 
-        object Friend :
+        private object Friend :
             Adapter<com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend.Friend>
             {
           val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friendsConnection")
@@ -226,7 +226,7 @@ object HeroDetailQuery_ResponseAdapter {
             FriendsConnection.obj().toJson(writer, customScalarAdapters, value.friendsConnection)
           }
 
-          object FriendsConnection :
+          private object FriendsConnection :
               Adapter<com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend.Friend.FriendsConnection>
               {
             val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
@@ -264,7 +264,7 @@ object HeroDetailQuery_ResponseAdapter {
                   value.edges)
             }
 
-            object Edge :
+            private object Edge :
                 Adapter<com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend.Friend.FriendsConnection.Edge>
                 {
               val RESPONSE_NAMES: List<String> = listOf("node")
@@ -294,7 +294,7 @@ object HeroDetailQuery_ResponseAdapter {
                 Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
               }
 
-              object Node :
+              private object Node :
                   Adapter<com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend.Friend.FriendsConnection.Edge.Node>
                   {
                 val RESPONSE_NAMES: List<String> = listOf("name")
@@ -376,7 +376,7 @@ object HeroDetailQuery_ResponseAdapter {
             value.friends)
       }
 
-      object Friend :
+      private object Friend :
           Adapter<com.example.unique_type_name.HeroDetailQuery.Data.OtherHeroDetailQuery.Friend> {
         val RESPONSE_NAMES: List<String> = listOf("name")
 

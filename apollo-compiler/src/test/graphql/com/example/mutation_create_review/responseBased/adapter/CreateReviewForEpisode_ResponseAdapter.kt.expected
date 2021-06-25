@@ -52,7 +52,7 @@ internal object CreateReviewForEpisode_ResponseAdapter {
       CreateReview.obj().nullable().toJson(writer, customScalarAdapters, value.createReview)
     }
 
-    object CreateReview : Adapter<CreateReviewForEpisode.Data.CreateReview> {
+    private object CreateReview : Adapter<CreateReviewForEpisode.Data.CreateReview> {
       val RESPONSE_NAMES: List<String> = listOf("stars", "commentary", "listOfListOfString",
           "listOfListOfEnum", "listOfListOfCustom", "listOfListOfObject")
 
@@ -119,7 +119,7 @@ internal object CreateReviewForEpisode_ResponseAdapter {
             value.listOfListOfObject)
       }
 
-      object ListOfListOfObject :
+      private object ListOfListOfObject :
           Adapter<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject> {
         val RESPONSE_NAMES: List<String> = listOf("name")
 

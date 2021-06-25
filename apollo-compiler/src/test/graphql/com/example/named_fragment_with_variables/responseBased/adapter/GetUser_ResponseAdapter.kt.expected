@@ -52,7 +52,7 @@ object GetUser_ResponseAdapter {
       Organization.obj().nullable().toJson(writer, customScalarAdapters, value.organization)
     }
 
-    object Organization : Adapter<GetUser.Data.Organization> {
+    private object Organization : Adapter<GetUser.Data.Organization> {
       val RESPONSE_NAMES: List<String> = listOf("id", "user")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -86,7 +86,7 @@ object GetUser_ResponseAdapter {
         User.obj().list().toJson(writer, customScalarAdapters, value.user)
       }
 
-      object User : Adapter<GetUser.Data.Organization.User> {
+      private object User : Adapter<GetUser.Data.Organization.User> {
         val RESPONSE_NAMES: List<String> = listOf("__typename", "firstName", "lastName", "avatar")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

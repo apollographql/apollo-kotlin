@@ -90,7 +90,7 @@ object GetHero_ResponseAdapter {
           customScalarAdapters, value.fragments)
     }
 
-    object Fragments : Adapter<GetHero.Hero.Fragments> {
+    private object Fragments : Adapter<GetHero.Hero.Fragments> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

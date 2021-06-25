@@ -94,7 +94,7 @@ object PilotFragmentImpl_ResponseAdapter {
           customScalarAdapters, value.fragments)
     }
 
-    object Fragments :
+    private object Fragments :
         Adapter<com.example.nested_named_fragments.fragment.PilotFragment.Homeworld.Fragments> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 

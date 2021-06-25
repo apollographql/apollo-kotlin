@@ -52,7 +52,7 @@ object TestOperation_ResponseAdapter {
       Random.obj().toJson(writer, customScalarAdapters, value.random)
     }
 
-    object Random : Adapter<TestOperation.Data.Random> {
+    private object Random : Adapter<TestOperation.Data.Random> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -139,7 +139,7 @@ object TestOperation_ResponseAdapter {
         NullableStringAdapter.toJson(writer, customScalarAdapters, value.profilePictureUrl)
       }
 
-      object Friend : Adapter<TestOperation.Data.BeingHumanRandom.Friend> {
+      private object Friend : Adapter<TestOperation.Data.BeingHumanRandom.Friend> {
         val RESPONSE_NAMES: List<String> = listOf("__typename")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -323,7 +323,7 @@ object TestOperation_ResponseAdapter {
         Race_ResponseAdapter.toJson(writer, customScalarAdapters, value.race)
       }
 
-      object Friend : Adapter<TestOperation.Data.BeingWookieRandom.Friend> {
+      private object Friend : Adapter<TestOperation.Data.BeingWookieRandom.Friend> {
         val RESPONSE_NAMES: List<String> = listOf("__typename")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

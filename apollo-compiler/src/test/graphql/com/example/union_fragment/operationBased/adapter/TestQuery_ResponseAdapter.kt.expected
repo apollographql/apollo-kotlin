@@ -51,7 +51,7 @@ object TestQuery_ResponseAdapter {
           value.search)
     }
 
-    object Search : Adapter<TestQuery.Data.Search> {
+    private object Search : Adapter<TestQuery.Data.Search> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -109,7 +109,7 @@ object TestQuery_ResponseAdapter {
         }
       }
 
-      object OnStarship : Adapter<TestQuery.Data.Search.OnStarship> {
+      private object OnStarship : Adapter<TestQuery.Data.Search.OnStarship> {
         val RESPONSE_NAMES: List<String> = listOf("id")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

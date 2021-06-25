@@ -21,7 +21,8 @@ class OperationResponseAdapterBuilder(
     ResponseAdapterBuilder.create(
         context = context,
         modelGroup = it,
-        path = listOf(packageName, simpleName)
+        path = listOf(packageName, simpleName),
+        true
     )
   }
 

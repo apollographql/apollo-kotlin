@@ -86,7 +86,7 @@ object HeroDetailsImpl_ResponseAdapter {
           customScalarAdapters, value.fragments)
     }
 
-    object Fragments :
+    private object Fragments :
         Adapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails.Fragments> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
@@ -277,7 +277,7 @@ object HeroDetailsImpl_ResponseAdapter {
           customScalarAdapters, value.fragments)
     }
 
-    object Fragments :
+    private object Fragments :
         Adapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails.AsDroid.Fragments> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 

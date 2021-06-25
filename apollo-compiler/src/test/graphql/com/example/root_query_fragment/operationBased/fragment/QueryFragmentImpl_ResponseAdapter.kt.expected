@@ -50,7 +50,7 @@ object QueryFragmentImpl_ResponseAdapter {
       Hero.obj().nullable().toJson(writer, customScalarAdapters, value.hero)
     }
 
-    object Hero : Adapter<com.example.root_query_fragment.fragment.QueryFragment.Hero> {
+    private object Hero : Adapter<com.example.root_query_fragment.fragment.QueryFragment.Hero> {
       val RESPONSE_NAMES: List<String> = listOf("name")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

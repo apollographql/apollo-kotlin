@@ -10,6 +10,9 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 
+/**
+ * For responseBased codegen, generates an adapter for an implementation
+ */
 class ImplementationAdapterBuilder(
     val context: CgContext,
     val model: IrModel,
@@ -24,7 +27,8 @@ class ImplementationAdapterBuilder(
     ResponseAdapterBuilder.create(
         context,
         it,
-        path + adapterName
+        path + adapterName,
+        false
     )
   }
 

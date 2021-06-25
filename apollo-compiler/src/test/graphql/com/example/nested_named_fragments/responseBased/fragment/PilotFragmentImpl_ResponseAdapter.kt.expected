@@ -51,7 +51,7 @@ object PilotFragmentImpl_ResponseAdapter {
       Homeworld.obj().nullable().toJson(writer, customScalarAdapters, value.homeworld)
     }
 
-    object Homeworld : Adapter<PilotFragmentImpl.Data.Homeworld> {
+    private object Homeworld : Adapter<PilotFragmentImpl.Data.Homeworld> {
       val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

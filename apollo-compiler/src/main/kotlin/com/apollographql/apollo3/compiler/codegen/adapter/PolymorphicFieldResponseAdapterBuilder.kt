@@ -4,6 +4,7 @@ import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
@@ -27,6 +28,7 @@ class PolymorphicFieldResponseAdapterBuilder(
     val context: CgContext,
     val modelGroup: IrModelGroup,
     val path: List<String>,
+    val public: Boolean,
 ) : ResponseAdapterBuilder {
   private val baseModel = modelGroup.models.first {
     it.id == modelGroup.baseModelId
@@ -70,6 +72,9 @@ class PolymorphicFieldResponseAdapterBuilder(
         .addSuperinterface(
             Adapter::class.asTypeName().parameterizedBy(adaptedClassName)
         )
+        .applyIf(!public) {
+          addModifiers(KModifier.PRIVATE)
+        }
         .addProperty(responseNamesPropertySpec())
         .addFunction(readFromResponseFunSpec())
         .addFunction(writeToResponseFunSpec())

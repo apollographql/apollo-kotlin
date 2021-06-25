@@ -48,7 +48,7 @@ object TestQuery_ResponseAdapter {
       Iface1.obj(true).nullable().toJson(writer, customScalarAdapters, value.iface1)
     }
 
-    object Iface1 : Adapter<TestQuery.Data.Iface1> {
+    private object Iface1 : Adapter<TestQuery.Data.Iface1> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -106,7 +106,7 @@ object TestQuery_ResponseAdapter {
         }
       }
 
-      object OnIface1 : Adapter<TestQuery.Data.Iface1.OnIface1> {
+      private object OnIface1 : Adapter<TestQuery.Data.Iface1.OnIface1> {
         val RESPONSE_NAMES: List<String> = listOf("iface2")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -134,7 +134,7 @@ object TestQuery_ResponseAdapter {
           Iface2.obj(true).nullable().toJson(writer, customScalarAdapters, value.iface2)
         }
 
-        object Iface2 : Adapter<TestQuery.Data.Iface1.OnIface1.Iface2> {
+        private object Iface2 : Adapter<TestQuery.Data.Iface1.OnIface1.Iface2> {
           val RESPONSE_NAMES: List<String> = listOf("__typename")
 
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -192,7 +192,7 @@ object TestQuery_ResponseAdapter {
             }
           }
 
-          object OnIface2 : Adapter<TestQuery.Data.Iface1.OnIface1.Iface2.OnIface2> {
+          private object OnIface2 : Adapter<TestQuery.Data.Iface1.OnIface1.Iface2.OnIface2> {
             val RESPONSE_NAMES: List<String> = listOf("scalar1")
 
             override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -221,7 +221,7 @@ object TestQuery_ResponseAdapter {
             }
           }
 
-          object OnImpl2 : Adapter<TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2> {
+          private object OnImpl2 : Adapter<TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2> {
             val RESPONSE_NAMES: List<String> = listOf("scalar2")
 
             override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -252,7 +252,7 @@ object TestQuery_ResponseAdapter {
         }
       }
 
-      object OnImpl1 : Adapter<TestQuery.Data.Iface1.OnImpl1> {
+      private object OnImpl1 : Adapter<TestQuery.Data.Iface1.OnImpl1> {
         val RESPONSE_NAMES: List<String> = listOf("iface2")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -280,7 +280,7 @@ object TestQuery_ResponseAdapter {
           Iface2.obj(true).nullable().toJson(writer, customScalarAdapters, value.iface2)
         }
 
-        object Iface2 : Adapter<TestQuery.Data.Iface1.OnImpl1.Iface2> {
+        private object Iface2 : Adapter<TestQuery.Data.Iface1.OnImpl1.Iface2> {
           val RESPONSE_NAMES: List<String> = listOf("__typename")
 
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -338,7 +338,7 @@ object TestQuery_ResponseAdapter {
             }
           }
 
-          object OnIface2 : Adapter<TestQuery.Data.Iface1.OnImpl1.Iface2.OnIface2> {
+          private object OnIface2 : Adapter<TestQuery.Data.Iface1.OnImpl1.Iface2.OnIface2> {
             val RESPONSE_NAMES: List<String> = listOf("scalar3")
 
             override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -367,7 +367,7 @@ object TestQuery_ResponseAdapter {
             }
           }
 
-          object OnImpl2 : Adapter<TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2> {
+          private object OnImpl2 : Adapter<TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2> {
             val RESPONSE_NAMES: List<String> = listOf("scalar4")
 
             override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

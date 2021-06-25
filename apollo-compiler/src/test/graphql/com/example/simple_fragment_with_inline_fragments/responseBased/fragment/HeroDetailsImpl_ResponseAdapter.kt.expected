@@ -55,7 +55,7 @@ object HeroDetailsImpl_ResponseAdapter {
       Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
     }
 
-    object Friend : Adapter<HeroDetailsImpl.Data.Friend> {
+    private object Friend : Adapter<HeroDetailsImpl.Data.Friend> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

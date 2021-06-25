@@ -51,7 +51,7 @@ object TestQuery_ResponseAdapter {
       Luke.obj().nullable().toJson(writer, customScalarAdapters, value.luke)
     }
 
-    object R2 : Adapter<TestQuery.Data.R2> {
+    private object R2 : Adapter<TestQuery.Data.R2> {
       val RESPONSE_NAMES: List<String> = listOf("name")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -80,7 +80,7 @@ object TestQuery_ResponseAdapter {
       }
     }
 
-    object Luke : Adapter<TestQuery.Data.Luke> {
+    private object Luke : Adapter<TestQuery.Data.Luke> {
       val RESPONSE_NAMES: List<String> = listOf("id", "name")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

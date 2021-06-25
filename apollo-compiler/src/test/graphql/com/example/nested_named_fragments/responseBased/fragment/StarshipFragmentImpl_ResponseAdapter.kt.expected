@@ -59,7 +59,7 @@ object StarshipFragmentImpl_ResponseAdapter {
       PilotConnection.obj().nullable().toJson(writer, customScalarAdapters, value.pilotConnection)
     }
 
-    object PilotConnection : Adapter<StarshipFragmentImpl.Data.PilotConnection> {
+    private object PilotConnection : Adapter<StarshipFragmentImpl.Data.PilotConnection> {
       val RESPONSE_NAMES: List<String> = listOf("edges")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -88,7 +88,7 @@ object StarshipFragmentImpl_ResponseAdapter {
         Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
       }
 
-      object Edge : Adapter<StarshipFragmentImpl.Data.PilotConnection.Edge> {
+      private object Edge : Adapter<StarshipFragmentImpl.Data.PilotConnection.Edge> {
         val RESPONSE_NAMES: List<String> = listOf("node")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -116,7 +116,7 @@ object StarshipFragmentImpl_ResponseAdapter {
           Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
         }
 
-        object Node : Adapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node> {
+        private object Node : Adapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node> {
           val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "homeworld")
 
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -156,8 +156,8 @@ object StarshipFragmentImpl_ResponseAdapter {
             Homeworld.obj().nullable().toJson(writer, customScalarAdapters, value.homeworld)
           }
 
-          object Homeworld : Adapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node.Homeworld>
-              {
+          private object Homeworld :
+              Adapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node.Homeworld> {
             val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
             override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

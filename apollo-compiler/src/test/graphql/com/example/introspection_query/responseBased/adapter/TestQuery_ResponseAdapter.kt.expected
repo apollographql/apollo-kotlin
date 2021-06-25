@@ -51,7 +51,7 @@ object TestQuery_ResponseAdapter {
       __Type.obj().toJson(writer, customScalarAdapters, value.__type)
     }
 
-    object __Schema : Adapter<TestQuery.Data.__Schema> {
+    private object __Schema : Adapter<TestQuery.Data.__Schema> {
       val RESPONSE_NAMES: List<String> = listOf("queryType", "types")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -85,7 +85,7 @@ object TestQuery_ResponseAdapter {
         Type.obj().list().toJson(writer, customScalarAdapters, value.types)
       }
 
-      object QueryType : Adapter<TestQuery.Data.__Schema.QueryType> {
+      private object QueryType : Adapter<TestQuery.Data.__Schema.QueryType> {
         val RESPONSE_NAMES: List<String> = listOf("name")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -114,7 +114,7 @@ object TestQuery_ResponseAdapter {
         }
       }
 
-      object Type : Adapter<TestQuery.Data.__Schema.Type> {
+      private object Type : Adapter<TestQuery.Data.__Schema.Type> {
         val RESPONSE_NAMES: List<String> = listOf("name")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -144,7 +144,7 @@ object TestQuery_ResponseAdapter {
       }
     }
 
-    object __Type : Adapter<TestQuery.Data.__Type> {
+    private object __Type : Adapter<TestQuery.Data.__Type> {
       val RESPONSE_NAMES: List<String> = listOf("name")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

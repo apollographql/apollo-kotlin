@@ -47,7 +47,7 @@ object CreateReviewForEpisodeMutation_ResponseAdapter {
       CreateReview.obj().nullable().toJson(writer, customScalarAdapters, value.createReview)
     }
 
-    object CreateReview : Adapter<CreateReviewForEpisodeMutation.Data.CreateReview> {
+    private object CreateReview : Adapter<CreateReviewForEpisodeMutation.Data.CreateReview> {
       val RESPONSE_NAMES: List<String> = listOf("stars", "commentary")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

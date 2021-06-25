@@ -62,7 +62,8 @@ object IFragmentImpl_ResponseAdapter {
       }
     }
 
-    object OnA : Adapter<com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA> {
+    private object OnA :
+        Adapter<com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA> {
       val RESPONSE_NAMES: List<String> = listOf("fieldA")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

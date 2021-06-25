@@ -48,7 +48,7 @@ object GetHero_ResponseAdapter {
       Hero.obj().nullable().toJson(writer, customScalarAdapters, value.hero)
     }
 
-    object Hero : Adapter<GetHero.Data.Hero> {
+    private object Hero : Adapter<GetHero.Data.Hero> {
       val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "appearsIn")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

@@ -50,7 +50,7 @@ object TestQuery_ResponseAdapter {
       Search.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.search)
     }
 
-    object Search : Adapter<TestQuery.Data.Search> {
+    private object Search : Adapter<TestQuery.Data.Search> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -138,7 +138,7 @@ object TestQuery_ResponseAdapter {
             value.friends)
       }
 
-      object Friend : Adapter<TestQuery.Data.CharacterSearch.Friend> {
+      private object Friend : Adapter<TestQuery.Data.CharacterSearch.Friend> {
         val RESPONSE_NAMES: List<String> = listOf("__typename")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -226,7 +226,7 @@ object TestQuery_ResponseAdapter {
               value.friends)
         }
 
-        object Friend : Adapter<TestQuery.Data.CharacterSearch.HumanFriend.Friend> {
+        private object Friend : Adapter<TestQuery.Data.CharacterSearch.HumanFriend.Friend> {
           val RESPONSE_NAMES: List<String> = listOf("__typename", "firstAppearsIn")
 
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -314,7 +314,7 @@ object TestQuery_ResponseAdapter {
               value.friends)
         }
 
-        object Friend : Adapter<TestQuery.Data.CharacterSearch.DroidFriend.Friend> {
+        private object Friend : Adapter<TestQuery.Data.CharacterSearch.DroidFriend.Friend> {
           val RESPONSE_NAMES: List<String> = listOf("id")
 
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

@@ -48,7 +48,7 @@ object TestQuery_ResponseAdapter {
       C.obj(true).nullable().toJson(writer, customScalarAdapters, value.c)
     }
 
-    object C : Adapter<TestQuery.Data.C> {
+    private object C : Adapter<TestQuery.Data.C> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -106,7 +106,7 @@ object TestQuery_ResponseAdapter {
         }
       }
 
-      object OnA : Adapter<TestQuery.Data.C.OnA> {
+      private object OnA : Adapter<TestQuery.Data.C.OnA> {
         val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldA1")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -157,7 +157,7 @@ object TestQuery_ResponseAdapter {
           }
         }
 
-        object OnB : Adapter<TestQuery.Data.C.OnA.OnB> {
+        private object OnB : Adapter<TestQuery.Data.C.OnA.OnB> {
           val RESPONSE_NAMES: List<String> = listOf("fieldB1")
 
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -187,7 +187,7 @@ object TestQuery_ResponseAdapter {
         }
       }
 
-      object OnB : Adapter<TestQuery.Data.C.OnB> {
+      private object OnB : Adapter<TestQuery.Data.C.OnB> {
         val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldB2")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -238,7 +238,7 @@ object TestQuery_ResponseAdapter {
           }
         }
 
-        object OnA : Adapter<TestQuery.Data.C.OnB.OnA> {
+        private object OnA : Adapter<TestQuery.Data.C.OnB.OnA> {
           val RESPONSE_NAMES: List<String> = listOf("fieldA2")
 
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

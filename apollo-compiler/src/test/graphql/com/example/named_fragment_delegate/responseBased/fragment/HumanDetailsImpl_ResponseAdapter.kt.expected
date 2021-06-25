@@ -59,7 +59,7 @@ object HumanDetailsImpl_ResponseAdapter {
       FriendsConnection.obj().toJson(writer, customScalarAdapters, value.friendsConnection)
     }
 
-    object FriendsConnection : Adapter<HumanDetailsImpl.Data.FriendsConnection> {
+    private object FriendsConnection : Adapter<HumanDetailsImpl.Data.FriendsConnection> {
       val RESPONSE_NAMES: List<String> = listOf("edges")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -88,7 +88,7 @@ object HumanDetailsImpl_ResponseAdapter {
         Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
       }
 
-      object Edge : Adapter<HumanDetailsImpl.Data.FriendsConnection.Edge> {
+      private object Edge : Adapter<HumanDetailsImpl.Data.FriendsConnection.Edge> {
         val RESPONSE_NAMES: List<String> = listOf("node")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -116,7 +116,7 @@ object HumanDetailsImpl_ResponseAdapter {
           Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
         }
 
-        object Node : Adapter<HumanDetailsImpl.Data.FriendsConnection.Edge.Node> {
+        private object Node : Adapter<HumanDetailsImpl.Data.FriendsConnection.Edge.Node> {
           val RESPONSE_NAMES: List<String> = listOf("name")
 
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

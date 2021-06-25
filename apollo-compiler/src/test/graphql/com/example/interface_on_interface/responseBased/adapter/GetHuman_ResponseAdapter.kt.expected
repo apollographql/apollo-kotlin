@@ -52,7 +52,7 @@ object GetHuman_ResponseAdapter {
       Node.obj().toJson(writer, customScalarAdapters, value.node)
     }
 
-    object Human : Adapter<GetHuman.Data.Human> {
+    private object Human : Adapter<GetHuman.Data.Human> {
       val RESPONSE_NAMES: List<String> = listOf("id", "name", "height")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -93,7 +93,7 @@ object GetHuman_ResponseAdapter {
       }
     }
 
-    object Node : Adapter<GetHuman.Data.Node> {
+    private object Node : Adapter<GetHuman.Data.Node> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

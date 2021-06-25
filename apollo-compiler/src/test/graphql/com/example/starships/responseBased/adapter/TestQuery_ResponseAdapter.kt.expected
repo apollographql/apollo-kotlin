@@ -48,7 +48,7 @@ object TestQuery_ResponseAdapter {
       Starship.obj().nullable().toJson(writer, customScalarAdapters, value.starship)
     }
 
-    object Starship : Adapter<TestQuery.Data.Starship> {
+    private object Starship : Adapter<TestQuery.Data.Starship> {
       val RESPONSE_NAMES: List<String> = listOf("id", "name", "coordinates")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

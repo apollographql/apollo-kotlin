@@ -59,7 +59,8 @@ object DroidDetailsImpl_ResponseAdapter {
       Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
     }
 
-    object Friend : Adapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend> {
+    private object Friend :
+        Adapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend> {
       val RESPONSE_NAMES: List<String> = listOf("name")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

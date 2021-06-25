@@ -49,7 +49,7 @@ object TestQuery_ResponseAdapter {
       Root.obj(true).nullable().toJson(writer, customScalarAdapters, value.root)
     }
 
-    object Root : Adapter<TestQuery.Data.Root> {
+    private object Root : Adapter<TestQuery.Data.Root> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -94,7 +94,7 @@ object TestQuery_ResponseAdapter {
         }
       }
 
-      object OnA : Adapter<TestQuery.Data.Root.OnA> {
+      private object OnA : Adapter<TestQuery.Data.Root.OnA> {
         val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldA1")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
@@ -145,7 +145,7 @@ object TestQuery_ResponseAdapter {
           }
         }
 
-        object OnB : Adapter<TestQuery.Data.Root.OnA.OnB> {
+        private object OnB : Adapter<TestQuery.Data.Root.OnA.OnB> {
           val RESPONSE_NAMES: List<String> = listOf("__typename")
 
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):

@@ -46,7 +46,7 @@ object TestQuery_ResponseAdapter {
       NonOptionalHero.obj().toJson(writer, customScalarAdapters, value.nonOptionalHero)
     }
 
-    object NonOptionalHero : Adapter<TestQuery.Data.NonOptionalHero> {
+    private object NonOptionalHero : Adapter<TestQuery.Data.NonOptionalHero> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
