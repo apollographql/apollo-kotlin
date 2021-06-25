@@ -44,6 +44,7 @@ module.exports = {
           ],
           'Languages & Extensions': [
             'advanced/coroutines',
+            'advanced/mutiny'
             'advanced/rxjava2',
             'advanced/rxjava3',
             'advanced/reactor'
