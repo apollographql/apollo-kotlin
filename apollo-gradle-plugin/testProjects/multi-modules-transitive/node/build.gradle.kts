@@ -11,5 +11,6 @@ dependencies {
 }
 
 apollo {
+  filePathAwarePackageNameGenerator()
   generateApolloMetadata.set(true)
 }

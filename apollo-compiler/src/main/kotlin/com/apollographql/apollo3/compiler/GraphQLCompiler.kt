@@ -137,7 +137,7 @@ class GraphQLCompiler {
         generateAsInternal = moduleOptions.generateAsInternal,
         operationOutput = operationOutput,
         useSemanticNaming = moduleOptions.useSemanticNaming,
-        packageNameProvider = moduleOptions.packageNameProvider,
+        packageNameGenerator = moduleOptions.packageNameGenerator,
         schemaPackageName = incomingOptions.schemaPackageName,
         generateFilterNotNull = moduleOptions.generateFilterNotNull,
         generateFragmentImplementations = moduleOptions.generateFragmentImplementations,
@@ -237,13 +237,26 @@ class GraphQLCompiler {
           schemaFiles: Set<File>,
           customScalarsMapping: Map<String, String>,
           codegenModels: String,
-          schemaPackageName: String,
+          packageNameGenerator: PackageNameGenerator,
           flattenModels: Boolean,
       ): IncomingOptions {
-        val schemaDefinitions = schemaFiles.flatMap {
-          it.toGQLDocument().definitions
+        val schemaDocuments = schemaFiles.map {
+          it.toGQLDocument()
         }
 
+        // Locate the mainSchemaDocument. It's the one that contains the operation roots
+        val mainSchemaDocuments = schemaDocuments.filter {
+          it.definitions.filterIsInstance<GQLSchemaDefinition>().isNotEmpty()
+              || it.definitions.filterIsInstance<GQLTypeDefinition>().any { it.name == "Query" }
+        }
+
+        check (mainSchemaDocuments.size == 1) {
+          "Multiple schemas found:\n${mainSchemaDocuments.map { it.filePath }.joinToString("\n")}\n" +
+              "Use different services for different schemas"
+        }
+        val mainSchemaDocument = mainSchemaDocuments.single()
+
+        val schemaDefinitions = schemaDocuments.flatMap { it.definitions }
         val schemaDocument = GQLDocument(
             definitions = schemaDefinitions + apolloDefinitions(),
             filePath = null
@@ -253,7 +266,7 @@ class GraphQLCompiler {
 
         return IncomingOptions(
             schema = schema,
-            schemaPackageName = schemaPackageName,
+            schemaPackageName = packageNameGenerator.packageName(mainSchemaDocument.filePath!!),
             customScalarsMapping = customScalarsMapping,
             codegenModels = codegenModels,
             flattenModels = flattenModels,
@@ -286,7 +299,7 @@ class GraphQLCompiler {
        */
       val metadataOutputFile: File?,
 
-      val packageNameProvider: PackageNameProvider,
+      val packageNameGenerator: PackageNameGenerator,
 
       //========== operation-output ============
 
@@ -342,7 +355,7 @@ class GraphQLCompiler {
     }
 
     val defaultMetadataFragments = emptyList<MetadataFragment>()
-    private val defaultPackageNameProvider = PackageNameProvider.Flat("com.apollographql.generated")
+    private val defaultPackageNameGenerator = PackageNameGenerator.Flat("com.apollographql.generated")
     val defaultAlwaysGenerateTypesMatching = emptySet<String>()
     private val defaultOperationOutputFile = null
     private val defaultOperationOutputGenerator = OperationOutputGenerator.Default(OperationIdGenerator.Sha256)
@@ -374,7 +387,7 @@ class GraphQLCompiler {
         generateFragmentImplementations = defaultGenerateFragmentImplementations,
         generateResponseFields = defaultGenerateResponseFields,
         generateQueryDocument = defaultGenerateQueryDocument,
-        packageNameProvider = defaultPackageNameProvider,
+        packageNameGenerator = defaultPackageNameGenerator,
         metadataOutputFile = defaultMetadataOutputFile,
         moduleName = defaultModuleName
 

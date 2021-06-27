@@ -55,7 +55,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
               is IntrospectionSchema.Schema.Type.Scalar -> it.toGQLScalarTypeDefinition()
             }
           } + schemaDefinition(),
-          filePath = null
+          filePath = sourceLocation.filePath
       )
     }
   }

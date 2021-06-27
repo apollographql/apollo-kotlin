@@ -38,7 +38,7 @@ class MultiServicesTests {
       } catch (e: UnexpectedBuildFailure) {
         MatcherAssert.assertThat(
             e.message,
-            containsString("schemas are found in multiple directories")
+            containsString("Multiple schemas found")
         )
       }
     }
@@ -49,9 +49,11 @@ class MultiServicesTests {
     val apolloConfiguration = """
       apollo {
         service("starwars") {
+          packageName.set("starwars")
           srcDir("src/main/graphql/starwars")
         }
         service("githunt") {
+          packageName.set("githunt")
           srcDir("src/main/graphql/githunt")
         }
       }
@@ -59,11 +61,11 @@ class MultiServicesTests {
     withMultipleServicesProject(apolloConfiguration) { dir ->
       TestUtils.executeTask("build", dir)
 
-      assertTrue(dir.generatedChild("starwars/example/DroidDetailsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("starwars/example/FilmsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("starwars/example/fragment/SpeciesInformation.kt").isFile)
-      assertTrue(dir.generatedChild("githunt/FeedQuery.kt").isFile)
-      assertTrue(dir.generatedChild("githunt/fragment/RepositoryFragment.kt").isFile)
+      assertTrue(dir.generatedChild("starwars/starwars/DroidDetailsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("starwars/starwars/FilmsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("starwars/starwars/fragment/SpeciesInformation.kt").isFile)
+      assertTrue(dir.generatedChild("githunt/githunt/FeedQuery.kt").isFile)
+      assertTrue(dir.generatedChild("githunt/githunt/fragment/RepositoryFragment.kt").isFile)
     }
   }
 }

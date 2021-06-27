@@ -55,6 +55,7 @@ class OperationIdGeneratorTests {
       }
       
       apollo {
+        filePathAwarePackageNameGenerator()
         operationIdGenerator = new MyIdGenerator()
       }
     """.trimIndent()

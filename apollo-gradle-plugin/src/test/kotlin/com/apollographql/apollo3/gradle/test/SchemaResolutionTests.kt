@@ -98,7 +98,7 @@ class SchemaResolutionTests {
         executeTask("generateApolloSources", projectDir)
         fail("expected to fail")
       } catch (e: UnexpectedBuildFailure) {
-        assertThat(e.message).contains("is defined multiple time")
+        assertThat(e.message).contains("Multiple schemas found")
       }
     }
   }

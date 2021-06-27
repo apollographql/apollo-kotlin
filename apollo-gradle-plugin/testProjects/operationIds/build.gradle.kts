@@ -39,5 +39,6 @@ configure<ApolloExtension> {
     override val version = "OperationOutputGenerator-v1"
   }
 
+  filePathAwarePackageNameGenerator()
   operationOutputGenerator.set(customOperationOutputGenerator)
 }

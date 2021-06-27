@@ -20,3 +20,6 @@ application {
   mainClass.set("LeafKt")
 }
 
+apollo {
+  filePathAwarePackageNameGenerator()
+}

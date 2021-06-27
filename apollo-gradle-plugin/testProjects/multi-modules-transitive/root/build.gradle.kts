@@ -12,6 +12,7 @@ dependencies {
 }
 
 apollo {
+  filePathAwarePackageNameGenerator()
   generateApolloMetadata.set(true)
   customScalarsMapping.set(mapOf("Date" to "java.util.Date"))
 }

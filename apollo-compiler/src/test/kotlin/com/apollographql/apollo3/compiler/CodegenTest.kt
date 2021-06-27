@@ -247,7 +247,7 @@ class CodegenTest(private val folder: File, private val codegenModels: String, p
           generateFilterNotNull = true,
           generateFragmentImplementations = generateFragmentImplementations,
           moduleName = folder.name,
-          packageNameProvider = PackageNameProvider.Flat("com.example.${folder.name}")
+          packageNameGenerator = PackageNameGenerator.Flat("com.example.${folder.name}")
       )
 
       return Options(

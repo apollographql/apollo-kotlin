@@ -2,6 +2,7 @@ package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
+import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.gradle.api.AndroidProject
 import com.apollographql.apollo3.gradle.api.ApolloAttributes
@@ -154,7 +155,7 @@ abstract class DefaultApolloExtension(
   override fun service(name: String, action: Action<Service>) {
     registerDefaultService = false
 
-    val service = project.objects.newInstance(DefaultService::class.java, project.objects, name)
+    val service = project.objects.newInstance(DefaultService::class.java, project, name)
     action.execute(service)
 
     registerService(service)
@@ -389,8 +390,14 @@ abstract class DefaultApolloExtension(
       if (service.generateKotlinModels.orNull == false) {
         println("ApolloGraphQL: setting `generateKotlinModels.set(false)` has no effect. Follow https://github.com/apollographql/apollo-android/issues/2616 for Java codegen")
       }
-      task.useFilePathAsOperationPackageName.set(service.useFilePathAsOperationPackageName)
-      task.packageName.set(service.packageName)
+
+      check(!(service.packageName.isPresent && service.packageNameGenerator.isPresent)) {
+        println("ApolloGraphQL: it is an error to specify both 'packageName' and 'packageNameGenerator'")
+      }
+      val packageNameGenerator = service.packageNameGenerator.getOrElse(
+          PackageNameGenerator.Flat(service.packageName.getOrElse(""))
+      )
+      task.packageNameGenerator = packageNameGenerator
       task.generateAsInternal.set(service.generateAsInternal)
       task.generateFilterNotNull.set(project.isKotlinMultiplatform)
       task.alwaysGenerateTypesMatching.set(service.alwaysGenerateTypesMatching)
@@ -450,7 +457,7 @@ abstract class DefaultApolloExtension(
     AndroidProject.onEachVariant(project = project, withTestVariants = true) { variant ->
       val name = "${variant.name}${nameSuffix.capitalizeFirstLetter()}"
 
-      val service = project.objects.newInstance(DefaultService::class.java, project.objects, name)
+      val service = project.objects.newInstance(DefaultService::class.java, project, name)
       action.execute(service)
 
       if (service.graphqlSourceDirectorySet.isReallyEmpty) {
@@ -478,7 +485,7 @@ abstract class DefaultApolloExtension(
     KotlinJvmProject.onEachSourceSet(project) { kotlinSourceSet ->
       val name = "${kotlinSourceSet.name}${nameSuffix.capitalizeFirstLetter()}"
 
-      val service = project.objects.newInstance(DefaultService::class.java, project.objects, name)
+      val service = project.objects.newInstance(DefaultService::class.java, project, name)
       action.execute(service)
 
       if (service.graphqlSourceDirectorySet.isReallyEmpty) {

@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen
 
-import com.apollographql.apollo3.compiler.PackageNameProvider
+import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.VERSION
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
@@ -29,7 +29,7 @@ class KotlinCodeGen(
     private val ir: Ir,
     private val generateAsInternal: Boolean = false,
     private val useSemanticNaming: Boolean,
-    private val packageNameProvider: PackageNameProvider,
+    private val packageNameGenerator: PackageNameGenerator,
     private val schemaPackageName: String,
     private val operationOutput: OperationOutput,
     private val generateFilterNotNull: Boolean,
@@ -45,7 +45,7 @@ class KotlinCodeGen(
   fun write(outputDir: File) {
     val layout = CgLayout(
         useSemanticNaming = useSemanticNaming,
-        packageNameProvider = packageNameProvider,
+        packageNameGenerator = packageNameGenerator,
         schemaPackageName = schemaPackageName
     )
 

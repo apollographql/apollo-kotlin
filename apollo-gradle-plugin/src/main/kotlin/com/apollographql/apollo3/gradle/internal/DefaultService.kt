@@ -2,6 +2,8 @@ package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
+import com.apollographql.apollo3.compiler.PackageNameGenerator
+import com.apollographql.apollo3.compiler.Roots
 import com.apollographql.apollo3.gradle.api.Introspection
 import com.apollographql.apollo3.gradle.api.Registry
 import com.apollographql.apollo3.gradle.api.Service
@@ -10,17 +12,20 @@ import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.FileCollection
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 import org.gradle.api.provider.SetProperty
 import org.gradle.util.GradleVersion
 import javax.inject.Inject
 
-abstract class DefaultService @Inject constructor(val objects: ObjectFactory, override val name: String)
+abstract class DefaultService @Inject constructor(val project: Project, override val name: String)
   : Service {
 
+  val objects = project.objects
   init {
     if (GradleVersion.current().compareTo(GradleVersion.version("6.2")) >= 0) {
       // This allows users to call customScalarsMapping.put("Date", "java.util.Date")
@@ -43,6 +48,7 @@ abstract class DefaultService @Inject constructor(val objects: ObjectFactory, ov
 
   abstract override val sourceFolder: Property<String>
 
+  abstract override val schemaFile: RegularFileProperty
   abstract override val schemaFiles: ConfigurableFileCollection
 
   abstract override val debugDir: DirectoryProperty
@@ -57,15 +63,14 @@ abstract class DefaultService @Inject constructor(val objects: ObjectFactory, ov
 
   abstract override val operationOutputGenerator: Property<OperationOutputGenerator>
 
-  abstract override val useSemanticNaming: Property<Boolean>
-
   abstract override val packageName: Property<String>
+  abstract override val packageNameGenerator: Property<PackageNameGenerator>
+
+  abstract override val useSemanticNaming: Property<Boolean>
 
   abstract override val generateAsInternal: Property<Boolean>
 
   abstract override val generateKotlinModels: Property<Boolean>
-
-  abstract override val useFilePathAsOperationPackageName: Property<Boolean>
 
   abstract override val generateApolloMetadata: Property<Boolean>
 
@@ -134,4 +139,15 @@ abstract class DefaultService @Inject constructor(val objects: ObjectFactory, ov
     this.outputDirAction = action
   }
 
+  override fun filePathAwarePackageNameGenerator(rootPackageName: String?) {
+    packageNameGenerator.set(
+      project.provider {
+        PackageNameGenerator.FilePathAware(
+            roots = Roots(graphqlSourceDirectorySet.srcDirs),
+            rootPackageName = rootPackageName ?: ""
+        )
+      }
+    )
+    packageNameGenerator.disallowChanges()
+  }
 }

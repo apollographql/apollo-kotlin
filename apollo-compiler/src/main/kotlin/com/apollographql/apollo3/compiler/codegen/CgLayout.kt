@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen
 
-import com.apollographql.apollo3.compiler.PackageNameProvider
+import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo3.compiler.ir.IrFieldInfo
@@ -10,7 +10,6 @@ import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.TypeSet
 import com.apollographql.apollo3.compiler.singularize
-import com.squareup.kotlinpoet.KOperator
 
 /**
  * The central place where the names/packages of the different classes are decided and escape rules done.
@@ -20,7 +19,7 @@ import com.squareup.kotlinpoet.KOperator
  */
 
 class CgLayout(
-    private val packageNameProvider: PackageNameProvider,
+    private val packageNameGenerator: PackageNameGenerator,
     schemaPackageName: String,
     private val useSemanticNaming: Boolean,
 ) {
@@ -36,9 +35,9 @@ class CgLayout(
   fun typePackageName() = typePackageName
   fun typeAdapterPackageName() = "$typePackageName.adapter".stripDots()
 
-  fun operationPackageName(filePath: String) = packageNameProvider.operationPackageName(filePath)
-  fun operationAdapterPackageName(filePath: String) = "${packageNameProvider.operationPackageName(filePath)}.adapter".stripDots()
-  fun operationResponseFieldsPackageName(filePath: String) = "${packageNameProvider.operationPackageName(filePath)}.selections".stripDots()
+  fun operationPackageName(filePath: String) = packageNameGenerator.packageName(filePath)
+  fun operationAdapterPackageName(filePath: String) = "${operationPackageName(filePath)}.adapter".stripDots()
+  fun operationResponseFieldsPackageName(filePath: String) = "${operationPackageName(filePath)}.selections".stripDots()
 
   fun fragmentPackageName(filePath: String?) = fragmentPackageName
 
