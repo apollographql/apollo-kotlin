@@ -135,7 +135,7 @@ class Schema(
   }
 
   /**
-   * Returns the key Fields
+   * Returns the key Fields or null if there's no directive
    */
   private fun List<GQLDirective>.toKeyFields(): Set<String>? {
     val directives = filter { it.name == TYPE_POLICY }

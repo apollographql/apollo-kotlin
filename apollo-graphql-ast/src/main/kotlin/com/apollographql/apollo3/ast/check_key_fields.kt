@@ -26,16 +26,18 @@ private fun CheckKeyFieldsScope.checkField(
 
 private fun CheckKeyFieldsScope.checkFieldSet(path: String, selections: List<GQLSelection>, parentType: String, possibleType: String) {
   val implementedTypes = schema.implementedTypes(possibleType)
+
   val mergedFields = collectFields(selections, parentType, implementedTypes).groupBy {
     it.field.name
   }.values
 
-  val fieldNames = mergedFields.map { it.first().field }
-      .filter { it.alias == null }
-      .map { it.name }.toSet()
-  val keyFieldNames = schema.keyFields(possibleType)
+  if (implementedTypes.contains(parentType)) {
+    // only check types that are actually possible
+    val fieldNames = mergedFields.map { it.first().field }
+        .filter { it.alias == null }
+        .map { it.name }.toSet()
+    val keyFieldNames = schema.keyFields(possibleType)
 
-  if (fieldNames.isNotEmpty()) { // only check types that are actually possible
     val missingFieldNames = keyFieldNames.subtract(fieldNames)
     check(missingFieldNames.isEmpty()) {
       "Key Field(s) '$missingFieldNames' are not queried on $possibleType at $path"
