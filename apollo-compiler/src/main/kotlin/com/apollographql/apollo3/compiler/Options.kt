@@ -2,18 +2,6 @@ package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.toSchema
-import com.apollographql.apollo3.compiler.Options.Companion.defaultCodegenModels
-import com.apollographql.apollo3.compiler.Options.Companion.defaultFailOnWarnings
-import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateAsInternal
-import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateFilterNotNull
-import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateFragmentImplementations
-import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateQueryDocument
-import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateResponseFields
-import com.apollographql.apollo3.compiler.Options.Companion.defaultLogger
-import com.apollographql.apollo3.compiler.Options.Companion.defaultModuleName
-import com.apollographql.apollo3.compiler.Options.Companion.defaultOperationOutputGenerator
-import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSemanticNaming
-import com.apollographql.apollo3.compiler.Options.Companion.defaultWarnOnDeprecatedUsages
 import com.apollographql.apollo3.compiler.introspection.toGQLDocument
 import java.io.File
 
@@ -23,17 +11,35 @@ const val MODELS_OPERATION_BASED = "operationBased"
 const val MODELS_COMPAT = "compat"
 
 class Options(
+    /**
+     * The files containing the operations and fragments
+     */
     val executableFiles: Set<File>,
+    /**
+     * The schema as obtained by [toGQLDocument].[toSchema]
+     *
+     * In order to pass a single schema file, see the secondary constructors
+     */
     val schema: Schema,
-
+    /**
+     * The output directory where to write the generated models
+     */
     val outputDir: File,
+    /**
+     * A debug directory to dump some intermediate artifacts.
+     */
     val debugDir: File? = null,
+    /**
+     * A file where to store the metadata associated with this compilation.
+     * Metadata are used in multimodule scenarios to share the output of a module with other modules
+     */
     val metadataOutputFile: File?,
     /**
      * the file where to write the operationOutput or null if no operationOutput is required
+     * OperationOutput represents the modified operations as they are sent to the server. This is useful for whitelisting/
+     * persisted queries
      */
     val operationOutputFile: File?,
-
     /**
      * The package name used as a base for input objects, fragments, enums and types
      */
@@ -42,17 +48,27 @@ class Options(
      * The package name used for operations
      */
     val packageNameGenerator: PackageNameGenerator,
-
+    /**
+     * A set of input objects to skip because they were already generated upstream
+     */
     val inputObjectsToSkip: Set<String>,
+    /**
+     * A set of enums to skip because they were already generated upstream
+     */
     val enumsToSkip: Set<String>,
+    /**
+     * The fragments from upstream
+     */
     val metadataFragments: List<MetadataFragment>,
+    /**
+     * Whether to generate the Types
+     */
     val generateTypes: Boolean,
     /**
      * Additional enum/input types to generate.
      * For input types, this will recursively add all input fields types/enums.
      */
     val alwaysGenerateTypesMatching: Set<String>,
-
     /**
      * the OperationOutputGenerator used to generate operation Ids
      */
@@ -96,74 +112,46 @@ class Options(
     val moduleName: String,
 ) {
 
-
-  companion object {
-    const val defaultSchemaPackageName = ""
-    val defaultPackageNameGenerator = PackageNameGenerator.Flat("")
-    val defaultAlwaysGenerateTypesMatching = emptySet<String>()
-    val defaultOperationOutputFile = null
-    val defaultOperationOutputGenerator = OperationOutputGenerator.Default(OperationIdGenerator.Sha256)
-    val defaultCustomScalarsMapping = emptyMap<String, String>()
-    const val defaultUseSemanticNaming = true
-    const val defaultWarnOnDeprecatedUsages = true
-    const val defaultFailOnWarnings = false
-    val defaultLogger = GraphQLCompiler.NoOpLogger
-    const val defaultGenerateAsInternal = false
-    const val defaultGenerateFilterNotNull = false
-    const val defaultGenerateFragmentsAsInterfaces = false
-    const val defaultGenerateFragmentImplementations = false
-    const val defaultGenerateResponseFields = true
-    const val defaultGenerateQueryDocument = true
-    const val defaultModuleName = "apollographql"
-    const val defaultCodegenModels = MODELS_COMPAT
-    val defaultMetadataOutputFile = null
-  }
-}
-
-/**
- * A shorthand version that takes a File as input for the schema as well as a simple packageName and
- * has default values for quick configuration
- */
-fun Options(
-    executableFiles: Set<File>,
-    schemaFile: File,
-    outputDir: File,
-    debugDir: File? = null,
-    metadataOutputFile: File? = null,
-    operationOutputFile: File? = null,
-    packageName: String = "",
-    inputObjectsToSkip: Set<String> = emptySet(),
-    enumsToSkip: Set<String> = emptySet(),
-    metadataFragments: List<MetadataFragment> = emptyList(),
-    generateTypes: Boolean = true,
-    alwaysGenerateTypesMatching: Set<String> = emptySet(),
-    operationOutputGenerator: OperationOutputGenerator = defaultOperationOutputGenerator,
-    customScalarsMapping: Map<String, String> = emptyMap(),
-    codegenModels: String = defaultCodegenModels,
-    flattenModels: Boolean = codegenModels != MODELS_RESPONSE_BASED,
-    useSemanticNaming: Boolean = defaultUseSemanticNaming,
-    warnOnDeprecatedUsages: Boolean = defaultWarnOnDeprecatedUsages,
-    failOnWarnings: Boolean = defaultFailOnWarnings,
-    logger: GraphQLCompiler.Logger = defaultLogger,
-    generateAsInternal: Boolean = defaultGenerateAsInternal,
-    generateFilterNotNull: Boolean = defaultGenerateFilterNotNull,
-    generateFragmentImplementations: Boolean = defaultGenerateFragmentImplementations,
-    generateResponseFields: Boolean = defaultGenerateResponseFields,
-    generateQueryDocument: Boolean = defaultGenerateQueryDocument,
-    moduleName: String = defaultModuleName,
-): Options {
-  val schema = schemaFile.toGQLDocument().toSchema()
-  val packageNameGenerator = PackageNameGenerator.Flat(packageName)
-
-  return Options(
+  /**
+   * A shorthand version that takes a File as input for the schema as well as a simple packageName and
+   * has default values for quick configuration
+   */
+  constructor(
+      executableFiles: Set<File>,
+      schemaFile: File,
+      outputDir: File,
+      debugDir: File? = null,
+      metadataOutputFile: File? = null,
+      operationOutputFile: File? = null,
+      packageName: String = "",
+      inputObjectsToSkip: Set<String> = emptySet(),
+      enumsToSkip: Set<String> = emptySet(),
+      metadataFragments: List<MetadataFragment> = emptyList(),
+      generateTypes: Boolean = true,
+      alwaysGenerateTypesMatching: Set<String> = emptySet(),
+      operationOutputGenerator: OperationOutputGenerator = defaultOperationOutputGenerator,
+      customScalarsMapping: Map<String, String> = emptyMap(),
+      codegenModels: String = defaultCodegenModels,
+      flattenModels: Boolean = codegenModels != MODELS_RESPONSE_BASED,
+      useSemanticNaming: Boolean = defaultUseSemanticNaming,
+      warnOnDeprecatedUsages: Boolean = defaultWarnOnDeprecatedUsages,
+      failOnWarnings: Boolean = defaultFailOnWarnings,
+      logger: GraphQLCompiler.Logger = defaultLogger,
+      generateAsInternal: Boolean = defaultGenerateAsInternal,
+      generateFilterNotNull: Boolean = defaultGenerateFilterNotNull,
+      generateFragmentImplementations: Boolean = defaultGenerateFragmentImplementations,
+      generateResponseFields: Boolean = defaultGenerateResponseFields,
+      generateQueryDocument: Boolean = defaultGenerateQueryDocument,
+      moduleName: String = defaultModuleName,
+  ) : this(
       executableFiles = executableFiles,
-      schema = schema,
+      schema = schemaFile.toGQLDocument().toSchema(),
       outputDir = outputDir,
       debugDir = debugDir,
       metadataOutputFile = metadataOutputFile,
       operationOutputFile = operationOutputFile,
       schemaPackageName = packageName,
-      packageNameGenerator = packageNameGenerator,
+      packageNameGenerator = PackageNameGenerator.Flat(packageName),
       inputObjectsToSkip = inputObjectsToSkip,
       enumsToSkip = enumsToSkip,
       metadataFragments = metadataFragments,
@@ -184,35 +172,32 @@ fun Options(
       generateQueryDocument = generateQueryDocument,
       moduleName = moduleName,
   )
-}
 
-/**
- * A shorthand version that takes incomingOptions as input
- */
-fun Options(
-    executableFiles: Set<File>,
-    outputDir: File,
-    incomingOptions: IncomingOptions,
-    packageNameGenerator: PackageNameGenerator,
-    debugDir: File? = null,
-    metadataOutputFile: File? = null,
-    operationOutputFile: File? = null,
-    alwaysGenerateTypesMatching: Set<String> = emptySet(),
-    operationOutputGenerator: OperationOutputGenerator = defaultOperationOutputGenerator,
-    customScalarsMapping: Map<String, String> = emptyMap(),
-    useSemanticNaming: Boolean = defaultUseSemanticNaming,
-    warnOnDeprecatedUsages: Boolean = defaultWarnOnDeprecatedUsages,
-    failOnWarnings: Boolean = defaultFailOnWarnings,
-    logger: GraphQLCompiler.Logger = defaultLogger,
-    generateAsInternal: Boolean = defaultGenerateAsInternal,
-    generateFilterNotNull: Boolean = defaultGenerateFilterNotNull,
-    generateFragmentImplementations: Boolean = defaultGenerateFragmentImplementations,
-    generateResponseFields: Boolean = defaultGenerateResponseFields,
-    generateQueryDocument: Boolean = defaultGenerateQueryDocument,
-    moduleName: String = defaultModuleName,
-): Options {
 
-  return Options(
+  /**
+   * A shorthand version that takes incomingOptions as input
+   */
+  constructor(
+      executableFiles: Set<File>,
+      outputDir: File,
+      incomingOptions: IncomingOptions,
+      packageNameGenerator: PackageNameGenerator,
+      debugDir: File? = null,
+      metadataOutputFile: File? = null,
+      operationOutputFile: File? = null,
+      alwaysGenerateTypesMatching: Set<String> = emptySet(),
+      operationOutputGenerator: OperationOutputGenerator = defaultOperationOutputGenerator,
+      useSemanticNaming: Boolean = defaultUseSemanticNaming,
+      warnOnDeprecatedUsages: Boolean = defaultWarnOnDeprecatedUsages,
+      failOnWarnings: Boolean = defaultFailOnWarnings,
+      logger: GraphQLCompiler.Logger = defaultLogger,
+      generateAsInternal: Boolean = defaultGenerateAsInternal,
+      generateFilterNotNull: Boolean = defaultGenerateFilterNotNull,
+      generateFragmentImplementations: Boolean = defaultGenerateFragmentImplementations,
+      generateResponseFields: Boolean = defaultGenerateResponseFields,
+      generateQueryDocument: Boolean = defaultGenerateQueryDocument,
+      moduleName: String = defaultModuleName,
+  ) : this(
       executableFiles = executableFiles,
       outputDir = outputDir,
       debugDir = debugDir,
@@ -241,4 +226,23 @@ fun Options(
       flattenModels = incomingOptions.flattenModels,
       customScalarsMapping = incomingOptions.customScalarsMapping
   )
+
+  companion object {
+    val defaultAlwaysGenerateTypesMatching = emptySet<String>()
+    val defaultOperationOutputGenerator = OperationOutputGenerator.Default(OperationIdGenerator.Sha256)
+    val defaultCustomScalarsMapping = emptyMap<String, String>()
+    val defaultLogger = GraphQLCompiler.NoOpLogger
+    const val defaultUseSemanticNaming = true
+    const val defaultWarnOnDeprecatedUsages = true
+    const val defaultFailOnWarnings = false
+    const val defaultGenerateAsInternal = false
+    const val defaultGenerateFilterNotNull = false
+    const val defaultGenerateFragmentsAsInterfaces = false
+    const val defaultGenerateFragmentImplementations = false
+    const val defaultGenerateResponseFields = true
+    const val defaultGenerateQueryDocument = true
+    const val defaultModuleName = "apollographql"
+    const val defaultCodegenModels = MODELS_COMPAT
+  }
 }
+
