@@ -30,10 +30,12 @@ import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.SourceLocation
+import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.parseAsGQLValue
 import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.ast.withBuiltinDefinitions
 import com.apollographql.apollo3.ast.withoutBuiltinDefinitions
+import java.io.File
 
 private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionSchema, filePath: String?) {
   private val sourceLocation = SourceLocation(
@@ -55,7 +57,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
               is IntrospectionSchema.Schema.Type.Scalar -> it.toGQLScalarTypeDefinition()
             }
           } + schemaDefinition(),
-          filePath = null
+          filePath = sourceLocation.filePath
       )
     }
   }
@@ -291,3 +293,11 @@ fun IntrospectionSchema.toGQLDocument(filePath: String? = null): GQLDocument = G
  * In the process, the builtin definitions are removed and added again.
  */
 fun IntrospectionSchema.toSchema(): Schema = toGQLDocument().toSchema()
+
+fun File.toGQLDocument(): GQLDocument {
+  return if (extension == "json") {
+    toIntrospectionSchema().toGQLDocument(filePath = path)
+  } else {
+    parseAsGQLDocument().getOrThrow()
+  }
+}

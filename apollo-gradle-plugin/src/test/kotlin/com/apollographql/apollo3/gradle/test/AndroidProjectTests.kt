@@ -24,9 +24,9 @@ class AndroidProjectTests {
       assertEquals(TaskOutcome.SUCCESS, result.task(":build")!!.outcome)
 
       // Java classes generated successfully
-      assertTrue(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("service/com/example/FilmsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
+      assertTrue(dir.generatedChild("service/DroidDetailsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("service/FilmsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("service/fragment/SpeciesInformation.kt").isFile)
     }
   }
 
@@ -41,9 +41,9 @@ class AndroidProjectTests {
       assertEquals(TaskOutcome.SUCCESS, result.task(":build")!!.outcome)
 
       // Java classes generated successfully
-      assertTrue(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("service/com/example/FilmsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
+      assertTrue(dir.generatedChild("service/DroidDetailsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("service/FilmsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("service/fragment/SpeciesInformation.kt").isFile)
       assertTrue(File(dir, "build/outputs/apk/debug/testProject-debug.apk").isFile)
     }
   }

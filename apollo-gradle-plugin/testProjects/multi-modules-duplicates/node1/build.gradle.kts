@@ -12,3 +12,6 @@ dependencies {
   apolloMetadata(project(":root"))
 }
 
+apollo {
+  filePathAwarePackageNameGenerator()
+}

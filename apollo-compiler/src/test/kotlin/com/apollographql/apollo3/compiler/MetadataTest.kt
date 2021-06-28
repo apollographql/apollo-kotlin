@@ -1,9 +1,8 @@
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.compiler.ApolloMetadata.Companion.merge
-import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultCodegenModels
-import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultCustomScalarsMapping
 import com.apollographql.apollo3.ast.SourceAwareException
+import com.apollographql.apollo3.compiler.Options.Companion.defaultCustomScalarsMapping
 import com.google.common.truth.Truth
 import org.junit.Assert.fail
 import org.junit.Before
@@ -34,29 +33,28 @@ class MetadataTest {
       metadataOutputFile: File,
   ) {
     val incomingOptions = if (schemaFile != null) {
-      GraphQLCompiler.IncomingOptions.fromOptions(
+      IncomingOptions.fromOptions(
           schemaFiles = setOf(schemaFile),
           customScalarsMapping = defaultCustomScalarsMapping,
           codegenModels = MODELS_RESPONSE_BASED,
-          schemaPackageName = "",
+          packageNameGenerator = PackageNameGenerator.Flat(""),
           flattenModels = false
       )
     } else {
       val metadata = metadataFiles.map { ApolloMetadata.readFrom(it) }.merge()
       check(metadata != null)
-      GraphQLCompiler.IncomingOptions.fromMetadata(metadata = metadata)
+      IncomingOptions.fromMetadata(metadata = metadata)
     }
 
-    val moduleOptions = GraphQLCompiler.DefaultModuleOptions.copy(
-        alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
-        metadataOutputFile = metadataOutputFile
-    )
-
-    GraphQLCompiler().write(
-        executableFiles = operationFiles,
-        outputDir = outputDir,
-        incomingOptions = incomingOptions,
-        moduleOptions = moduleOptions,
+    GraphQLCompiler.write(
+        Options(
+            executableFiles = operationFiles,
+            outputDir = outputDir,
+            alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
+            metadataOutputFile = metadataOutputFile,
+            packageNameGenerator = PackageNameGenerator.Flat(""),
+            incomingOptions = incomingOptions,
+        )
     )
   }
 

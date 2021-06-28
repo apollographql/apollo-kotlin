@@ -2,6 +2,7 @@ package com.apollographql.apollo3.gradle.api
 
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
+import com.apollographql.apollo3.compiler.PackageNameGenerator
 import org.gradle.api.Action
 import org.gradle.api.Task
 import org.gradle.api.file.ConfigurableFileCollection
@@ -155,11 +156,44 @@ interface Service {
   val useSemanticNaming: Property<Boolean>
 
   /**
-   * The package name of the models.
+   * The package name of the models. The compiler will generate classes in
    *
-   * Default value: the path relative to the source roots of the schema file
+   * - $packageName/SomeQuery.kt
+   * - $packageName/fragment/SomeFragment.kt
+   * - $packageName/type/Types.kt
+   * - $packageName/type/SomeInputObject.kt
+   * - $packageName/type/SomeEnum.kt
+   *
+   * Default value: the path relative to the source roots of the main schema file
    */
   val packageName: Property<String>
+
+  /**
+   * Use [packageNameGenerator] to customize how to generate package names from file paths.
+   *
+   * See [PackageNameGenerator] for more details
+   */
+  val packageNameGenerator: Property<PackageNameGenerator>
+
+  /**
+   * A helper method to configure a [PackageNameGenerator] that will use the file path
+   * relative to the source roots to generate the packageNames
+   *
+   * @param rootPackageName: a root package name to prepend to the package names
+   *
+   * Example, with the below configuration:
+   *
+   * ```
+   * srcDir("src/main/graphql")
+   * filePathAwarePackageNameGenerator("com.example")
+   * ```
+   *
+   * an operation defined in `src/main/graphql/query/feature1` will use `com.example.query.feature1`
+   * as package name
+   * an input object defined in `src/main/graphql/schema/schema.graphqls` will use `com.example.schema.type`
+   * as package name
+   */
+  fun filePathAwarePackageNameGenerator(rootPackageName: String? = null)
 
   /**
    * Whether to generate Kotlin models with `internal` visibility modifier.
@@ -192,22 +226,19 @@ interface Service {
   val alwaysGenerateTypesMatching: SetProperty<String>
 
   /**
-   * Whether or not generate default implementation classes for GraphQL fragments.
+   * Whether to generate default implementation classes for GraphQL fragments.
    * Default value is `false`, means only interfaces are been generated.
    *
-   * Most the the times, fragment implementations are not needed because you can easily access fragments interfaces and read all data from your queries. They are needed if you want to be able to build fragments outside of an operation. For an exemple to programmatically build a fragment that is reused in another part of your code or to read and write fragments to the cache.
+   * Most of the time, fragment implementations are not needed because you can easily access fragments interfaces and read all data from your queries. They are needed if you want to be able to build fragments outside of an operation. For an exemple to programmatically build a fragment that is reused in another part of your code or to read and write fragments to the cache.
    */
   val generateFragmentImplementations: Property<Boolean>
 
   /**
-   *
+   * Unused property for the moment. Left to save users to edit one line. Will be used again when there is
+   * Java codegen
    */
   val generateKotlinModels: Property<Boolean>
 
-  /**
-   *
-   */
-  val useFilePathAsOperationPackageName: Property<Boolean>
 
   /**
    *

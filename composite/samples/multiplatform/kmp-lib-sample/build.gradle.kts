@@ -80,6 +80,7 @@ if (iosTarget != null) {
 
 apollo {
   service("kmpsample") {
+    filePathAwarePackageNameGenerator()
     codegenModels.set("responseBased")
   }
 }

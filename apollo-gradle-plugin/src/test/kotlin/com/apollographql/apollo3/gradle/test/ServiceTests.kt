@@ -25,6 +25,7 @@ class ServiceTests {
   fun `customScalarsMapping is working`() {
     withSimpleProject("""
       apollo {
+        filePathAwarePackageNameGenerator()
         customScalarsMapping = ["DateTime": "java.util.Date"]
       }
     """.trimIndent()) { dir ->
@@ -37,6 +38,7 @@ class ServiceTests {
   fun `registering an unknown custom scalar fails`() {
     withSimpleProject("""
       apollo {
+        filePathAwarePackageNameGenerator()
         customScalarsMapping = ["UnknownScalar": "java.util.Date"]
       }
     """.trimIndent()) { dir ->
@@ -54,6 +56,7 @@ class ServiceTests {
   fun `customScalarsMapping put is working`() {
     withSimpleProject("""
       apollo {
+        filePathAwarePackageNameGenerator()
         customScalarsMapping.put("DateTime", "java.util.Date")
       }
     """.trimIndent()) { dir ->
@@ -67,8 +70,10 @@ class ServiceTests {
     withSimpleProject("""
       apollo {
         service("other") {
+          filePathAwarePackageNameGenerator()
         }
         service("api") {
+          filePathAwarePackageNameGenerator()
           customScalarsMapping = ["DateTime": "java.util.Date"]
         }
       }
@@ -81,6 +86,9 @@ class ServiceTests {
   @Test
   fun `useSemanticNaming defaults to true`() {
     withSimpleProject("""
+      apollo {
+        filePathAwarePackageNameGenerator()
+      }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
       TestUtils.assertFileContains(dir, "service/com/example/DroidDetailsQuery.kt", "class DroidDetailsQuery ")
@@ -91,6 +99,7 @@ class ServiceTests {
   fun `useSemanticNaming can be turned off correctly`() {
     withSimpleProject("""
       apollo {
+        filePathAwarePackageNameGenerator()
         useSemanticNaming = false
       }
     """.trimIndent()) { dir ->
@@ -152,6 +161,7 @@ class ServiceTests {
     withSimpleProject("""
       apollo {
         service("starwars") {
+          filePathAwarePackageNameGenerator()
           exclude = ["**/*.gql"]
         }
       }
@@ -241,6 +251,7 @@ class ServiceTests {
   fun `operationOutput uses same id as the query`() {
     withSimpleProject("""
       apollo {
+        filePathAwarePackageNameGenerator()
         withOperationOutput {
         }
       }
@@ -287,7 +298,7 @@ class ServiceTests {
 
       TestUtils.executeTask("generateApolloSources", dir)
 
-      assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
+      assertTrue(dir.generatedChild("service/fragment/SpeciesInformation.kt").isFile)
     }
   }
 
@@ -305,7 +316,7 @@ class ServiceTests {
 
       TestUtils.executeTask("generateApolloSources", dir)
 
-      assertTrue(dir.generatedChild("service/example/fragment/SpeciesInformation.kt").isFile)
+      assertTrue(dir.generatedChild("service/fragment/SpeciesInformation.kt").isFile)
     }
   }
 
@@ -314,7 +325,7 @@ class ServiceTests {
     withTestProject("testSourceSet") { dir ->
       TestUtils.executeTask("build", dir)
 
-      assertTrue(dir.generatedChild("service/com/example/GreetingQuery.kt").isFile)
+      assertTrue(dir.generatedChild("service/GreetingQuery.kt").isFile)
       assertTrue(File(dir, "build/libs/testProject.jar").isFile)
     }
   }
@@ -323,6 +334,7 @@ class ServiceTests {
   fun `when generateAsInternal set to true - generated models are internal`() {
     val apolloConfiguration = """
       apollo {
+        filePathAwarePackageNameGenerator()
         generateAsInternal = true
       }
     """.trimIndent()
@@ -365,7 +377,7 @@ class ServiceTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformationImpl.kt").isFile)
+      assertTrue(dir.generatedChild("service/fragment/SpeciesInformationImpl.kt").isFile)
     }
   }
 }
