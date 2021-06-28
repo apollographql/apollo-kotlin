@@ -11,11 +11,11 @@ def versions = [
     javaPoet              : '1.9.0',
     jetbrainsAnnotations  : '13.0',
     junit                 : '4.13.2',
-    kotlin                : '1.5.10',
+    kotlin                : '1.5.20',
     kotlinCoroutines      : '1.5.0',
     kotlinPoet            : '1.6.0',
     moshi                 : '1.11.0',
-    moshix                : '0.11.0',
+    moshix                : '0.11.2',
     okHttp4               : '4.9.0',
     okHttp                : '3.12.11', // Keep this to keep supporting older Android devices
     okio                  : '2.10.0',
