@@ -29,14 +29,6 @@ class CodegenTest(private val folder: File, private val codegenModels: String, p
       val compileDuration: Duration,
   )
 
-  private class Options(
-      val operationFiles: Set<File>,
-      val outputDir: File,
-
-      val incomingOptions: GraphQLCompiler.IncomingOptions,
-      val moduleOptions: GraphQLCompiler.ModuleOptions,
-  )
-
 
   @Test
   fun generateExpectedClasses() {
@@ -51,12 +43,7 @@ class CodegenTest(private val folder: File, private val codegenModels: String, p
     options.outputDir.deleteRecursively()
 
     val codegenDuration = measureTime {
-      GraphQLCompiler().write(
-          executableFiles = options.operationFiles,
-          outputDir = options.outputDir,
-          incomingOptions = options.incomingOptions,
-          moduleOptions = options.moduleOptions
-      )
+      GraphQLCompiler.write(options)
     }
 
     val expectedRoot = folder.parentFile.parentFile.parentFile
@@ -118,7 +105,7 @@ class CodegenTest(private val folder: File, private val codegenModels: String, p
 
     measurements.add(
         Measurement(
-            name = options.moduleOptions.moduleName,
+            name = options.moduleName,
             codegenModels = codegenModels,
             linesOfCode = totalLineOfCode,
             codegenDuration = codegenDuration,
@@ -232,29 +219,20 @@ class CodegenTest(private val folder: File, private val codegenModels: String, p
       val graphqlFiles = setOf(File(folder, "TestOperation.graphql"))
       val operationOutputGenerator = OperationOutputGenerator.Default(operationIdGenerator)
 
-      val incomingOptions = GraphQLCompiler.IncomingOptions.fromOptions(
-          schemaFiles = setOf(schemaFile),
-          customScalarsMapping = customScalarsMapping,
-          codegenModels = codegenModels,
-          schemaPackageName = "com.example.${folder.name}",
-          flattenModels = codegenModels == MODELS_COMPAT
-      )
-
-      val moduleOptions = GraphQLCompiler.DefaultModuleOptions.copy(
+      return Options(
+          executableFiles = graphqlFiles,
+          outputDir = File("build/generated/test/${folder.name}"),
           operationOutputGenerator = operationOutputGenerator,
           useSemanticNaming = useSemanticNaming,
           generateAsInternal = generateAsInternal,
           generateFilterNotNull = true,
           generateFragmentImplementations = generateFragmentImplementations,
           moduleName = folder.name,
-          packageNameGenerator = PackageNameGenerator.Flat("com.example.${folder.name}")
-      )
-
-      return Options(
-          operationFiles = graphqlFiles,
-          outputDir = File("build/generated/test/${folder.name}"),
-          incomingOptions = incomingOptions,
-          moduleOptions = moduleOptions
+          schemaFile = schemaFile,
+          customScalarsMapping = customScalarsMapping,
+          codegenModels = codegenModels,
+          packageName = "com.example.${folder.name}",
+          flattenModels = codegenModels == MODELS_COMPAT
       )
     }
 

@@ -51,5 +51,6 @@ dependencies {
 }
 
 apollo {
+    filePathAwarePackageNameGenerator()
     codegenModels.set("responseBased")
 }

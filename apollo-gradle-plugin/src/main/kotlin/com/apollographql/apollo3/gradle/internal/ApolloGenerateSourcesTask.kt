@@ -3,18 +3,20 @@ package com.apollographql.apollo3.gradle.internal
 import com.apollographql.apollo3.compiler.ApolloMetadata
 import com.apollographql.apollo3.compiler.ApolloMetadata.Companion.merge
 import com.apollographql.apollo3.compiler.GraphQLCompiler
-import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultAlwaysGenerateTypesMatching
-import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultCodegenModels
-import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultFailOnWarnings
-import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultGenerateAsInternal
-import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultGenerateFilterNotNull
-import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultGenerateFragmentImplementations
-import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultGenerateQueryDocument
-import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultGenerateResponseFields
-import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultUseSemanticNaming
-import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultWarnOnDeprecatedUsages
+import com.apollographql.apollo3.compiler.IncomingOptions
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
+import com.apollographql.apollo3.compiler.Options
+import com.apollographql.apollo3.compiler.Options.Companion.defaultAlwaysGenerateTypesMatching
+import com.apollographql.apollo3.compiler.Options.Companion.defaultCodegenModels
+import com.apollographql.apollo3.compiler.Options.Companion.defaultFailOnWarnings
+import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateAsInternal
+import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateFilterNotNull
+import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateFragmentImplementations
+import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateQueryDocument
+import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateResponseFields
+import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSemanticNaming
+import com.apollographql.apollo3.compiler.Options.Companion.defaultWarnOnDeprecatedUsages
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.Roots
 import org.gradle.api.DefaultTask
@@ -36,7 +38,6 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
-import java.io.File
 import javax.inject.Inject
 
 @CacheableTask
@@ -159,7 +160,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       check(!flattenModels.isPresent) {
         "Specifying 'flattenModels' has no effect as an upstream module already provided a flattenModels"
       }
-      GraphQLCompiler.IncomingOptions.fromMetadata(metadata)
+      IncomingOptions.fromMetadata(metadata)
     } else {
       val codegenModels = codegenModels.getOrElse(defaultCodegenModels)
       // Response-based models generate a lot of models and therefore a lot of name clashes if flattened
@@ -168,7 +169,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       check(schemaFiles.isNotEmpty()) {
         "No schema file found in:\n${rootFolders.get().joinToString("\n")}"
       }
-      GraphQLCompiler.IncomingOptions.fromOptions(
+      IncomingOptions.fromOptions(
           schemaFiles = schemaFiles,
           customScalarsMapping = customScalarsMapping.getOrElse(emptyMap()),
           codegenModels = codegenModels,
@@ -183,7 +184,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       }
     }
 
-    val moduleOptions = GraphQLCompiler.ModuleOptions(
+    val options = Options(
+        executableFiles = graphqlFiles.files,
+        outputDir = outputDir.asFile.get(),
+        debugDir = debugDir.asFile.orNull,
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching.getOrElse(defaultAlwaysGenerateTypesMatching),
         operationOutputFile = operationOutputFile.asFile.orNull,
         operationOutputGenerator = operationOutputGenerator,
@@ -198,15 +202,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         generateResponseFields = generateResponseFields.getOrElse(defaultGenerateResponseFields),
         logger = logger,
         metadataOutputFile = metadataOutputFile.asFile.orNull,
-        moduleName = projectName.get()
+        moduleName = projectName.get(),
+        incomingOptions = incomingOptions
     )
 
-    GraphQLCompiler().write(
-        executableFiles = graphqlFiles.files,
-        outputDir = outputDir.asFile.get(),
-        debugDir = debugDir.asFile.orNull,
-        incomingOptions = incomingOptions,
-        moduleOptions = moduleOptions,
-    )
+    GraphQLCompiler.write(options)
   }
 }
