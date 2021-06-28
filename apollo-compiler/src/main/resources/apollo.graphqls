@@ -13,14 +13,16 @@ directive @optional(if: Boolean = true) on FIELD | VARIABLE_DEFINITION
 # and null in the other
 directive @nonnull(fields: String! = "") on OBJECT | FIELD
 
-# Marks fields as key fields. Key fields are used to compute the cache key of an object
-# `fields` should contain a selection set
-directive @key(fields: String!) on OBJECT
-
-directive @resolveField(name: String!, withKeyArgs: [String!]!) on OBJECT
-
-directive @defaultKeyFields(fields: String!) on SCHEMA
-
 # Whether to make all variables optional at the schema level
 # This is false by default. This can overriden with @optional
 directive @variables(optional: Boolean = false) on SCHEMA
+
+# Marks fields as key fields. Key fields are used to compute the cache key of an object
+# `keyFields` should contain a selection set. Composite fields are not supported yet.
+directive @client__typePolicy(keyFields: String!) on OBJECT
+
+# Indicates how to compute a key from a field arguments.
+directive @client__fieldPolicy(forField: String!, keyArgs: String!) on OBJECT
+
+
+

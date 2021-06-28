@@ -1,8 +1,12 @@
-extend type Author @key(fields: "firstName lastName")
+extend type Author @client__typePolicy(keyFields: "firstName lastName")
 
-extend type Book @key(fields: "isbn")
+extend type Book @client__typePolicy(keyFields: "isbn")
 
-extend type Query @resolveField(name: "book", withKeyArgs: ["isbn"])
+extend type Query @client__fieldPolicy(forField: "book", keyArgs: ["isbn"])
 
-extend schema @defaultKeyFields(fields: "id")
+interface Node @client__typePolicy(keyFields: "id") {
+  id: ID!
+}
+
+extend type Library implements Node
 

@@ -67,6 +67,7 @@ private class AntlrToGQLScope(val filePath: String?) {
     return GQLInterfaceTypeExtension(
         sourceLocation = sourceLocation(start),
         name = name().text,
+        implementsInterfaces = implementsInterfaces().parse(),
         fields = fieldsDefinition().parse()
     )
   }
@@ -93,6 +94,7 @@ private class AntlrToGQLScope(val filePath: String?) {
         sourceLocation = sourceLocation(start),
         name = name().text,
         directives = directives().parse(),
+        implementsInterfaces = implementsInterfaces().parse(),
         fields = fieldsDefinition().parse()
     )
   }
