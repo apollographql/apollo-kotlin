@@ -1,0 +1,98 @@
+package com.apollographql.apollo3.cache.normalized
+
+import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.CompiledListType
+import com.apollographql.apollo3.api.Executable
+import com.apollographql.apollo3.api.ObjectType
+import com.apollographql.apollo3.cache.normalized.CacheKeyResolverTest.Fixtures.TEST_LIST_FIELD
+import com.apollographql.apollo3.cache.normalized.CacheKeyResolverTest.Fixtures.TEST_SIMPLE_FIELD
+import com.apollographql.apollo3.exception.CacheMissException
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+
+
+class CacheKeyResolverTest {
+
+  lateinit var subject: CacheKeyResolver
+  lateinit var onCacheKeyForField: (field: CompiledField, variables: Executable.Variables) -> CacheKey?
+  lateinit var onListOfCacheKeysForField: (field: CompiledField, variables: Executable.Variables) -> List<CacheKey?>?
+
+  @BeforeTest
+  fun setup() {
+    subject = FakeCacheKeyResolver()
+    onCacheKeyForField = { _, _ ->
+      TODO("Unexpected call to cacheKeyForField")
+    }
+    onListOfCacheKeysForField = { _, _, ->
+      TODO("Unexpected call to listOfCacheKeysForField")
+    }
+  }
+
+  @Test
+  fun `cacheKeyForField called for named composite field`() {
+    val expectedKey = CacheKey("test")
+    val fields = mutableListOf<CompiledField>()
+
+    onCacheKeyForField = { field: CompiledField, _: Executable.Variables ->
+      fields += field
+      expectedKey
+    }
+
+    val returned = subject.resolveField(TEST_SIMPLE_FIELD, Executable.Variables(emptyMap()), emptyMap(), "")
+
+    assertEquals(returned, expectedKey)
+    assertEquals(fields[0], TEST_SIMPLE_FIELD)
+  }
+
+  @Test
+  fun `listOfCacheKeysForField called for list field`() {
+    val expectedKeys = listOf(CacheKey("test"))
+    val fields = mutableListOf<CompiledField>()
+
+    onListOfCacheKeysForField = { field: CompiledField, _: Executable.Variables ->
+      fields += field
+      expectedKeys
+    }
+
+    val returned = subject.resolveField(TEST_LIST_FIELD, Executable.Variables(emptyMap()), emptyMap(), "")
+
+    assertEquals(returned, expectedKeys)
+    assertEquals(fields[0], TEST_LIST_FIELD)
+  }
+
+  @Test
+  fun `super called for null return values`() {
+    onCacheKeyForField = { _, _ -> null }
+    onListOfCacheKeysForField = { _, _ -> null }
+
+    // The best way to ensure that super was called is to check for a cache miss exception from CacheResolver()
+    assertFailsWith<CacheMissException> {
+      subject.resolveField(TEST_SIMPLE_FIELD, Executable.Variables(emptyMap()), emptyMap(), "")
+    }
+    assertFailsWith<CacheMissException> {
+      subject.resolveField(TEST_LIST_FIELD, Executable.Variables(emptyMap()), emptyMap(), "")
+    }
+  }
+
+  inner class FakeCacheKeyResolver : CacheKeyResolver() {
+
+    override fun cacheKeyForField(field: CompiledField, variables: Executable.Variables): CacheKey? {
+      return onCacheKeyForField(field, variables)
+    }
+
+    override fun listOfCacheKeysForField(field: CompiledField, variables: Executable.Variables): List<CacheKey?>? {
+      return onListOfCacheKeysForField(field, variables)
+    }
+  }
+
+  object Fixtures {
+
+    private val TEST_TYPE = ObjectType(name = "Test", keyFields = listOf("id"))
+
+    val TEST_SIMPLE_FIELD = CompiledField(name = "test", type = TEST_TYPE)
+
+    val TEST_LIST_FIELD = CompiledField(name = "testList", type = CompiledListType(ofType = TEST_TYPE))
+  }
+}
