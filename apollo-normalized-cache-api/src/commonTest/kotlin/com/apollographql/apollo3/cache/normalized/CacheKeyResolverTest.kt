@@ -32,7 +32,7 @@ class CacheKeyResolverTest {
   }
 
   @Test
-  fun `cacheKeyForField called for named composite field`() {
+  fun verify_cacheKeyForField_called_for_named_composite_field() {
     val expectedKey = CacheKey("test")
     val fields = mutableListOf<CompiledField>()
 
@@ -48,7 +48,7 @@ class CacheKeyResolverTest {
   }
 
   @Test
-  fun `listOfCacheKeysForField called for list field`() {
+  fun listOfCacheKeysForField_called_for_list_field() {
     val expectedKeys = listOf(CacheKey("test"))
     val fields = mutableListOf<CompiledField>()
 
@@ -64,7 +64,7 @@ class CacheKeyResolverTest {
   }
 
   @Test
-  fun `super called for null return values`() {
+  fun super_called_for_null_return_values() {
     onCacheKeyForField = { _, _ -> null }
     onListOfCacheKeysForField = { _, _ -> null }
 
