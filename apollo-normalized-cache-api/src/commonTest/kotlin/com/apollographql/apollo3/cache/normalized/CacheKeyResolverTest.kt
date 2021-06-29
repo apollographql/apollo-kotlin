@@ -11,6 +11,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.fail
 
 
 class CacheKeyResolverTest {
@@ -23,10 +24,10 @@ class CacheKeyResolverTest {
   fun setup() {
     subject = FakeCacheKeyResolver()
     onCacheKeyForField = { _, _ ->
-      TODO("Unexpected call to cacheKeyForField")
+      fail("Unexpected call to cacheKeyForField")
     }
     onListOfCacheKeysForField = { _, _, ->
-      TODO("Unexpected call to listOfCacheKeysForField")
+      fail("Unexpected call to listOfCacheKeysForField")
     }
   }
 
