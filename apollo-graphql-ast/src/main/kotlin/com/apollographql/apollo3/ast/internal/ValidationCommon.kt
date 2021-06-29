@@ -31,6 +31,7 @@ import com.apollographql.apollo3.ast.GQLVariableDefinition
 import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
 import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.ValidationDetails
 import com.apollographql.apollo3.ast.VariableReference
@@ -159,10 +160,13 @@ internal fun ValidationScope.validateDirective(
   if (directive.name == "nonnull") {
     extraValidateNonNullDirective(directive, directiveContext)
   }
+  if (directive.name == Schema.FIELD_POLICY) {
+    extraValidateTypePolicyDirective(directive)
+  }
 }
 
 /**
- * Extra Apollo-specific validations
+ * Extra Apollo-specific validation for @nonnull
  */
 internal fun ValidationScope.extraValidateNonNullDirective(directive: GQLDirective, directiveContext: GQLNode) {
   if (directiveContext is GQLField && (directive.arguments?.arguments?.size ?: 0) > 0) {
@@ -193,7 +197,19 @@ internal fun ValidationScope.extraValidateNonNullDirective(directive: GQLDirecti
       "Fields '${unknownFields.joinToString()}' are not defined in ${directiveContext.name}"
     }
   }
+}
 
+/**
+ * Extra Apollo-specific validation for @client__typePolicy
+ */
+internal fun ValidationScope.extraValidateTypePolicyDirective(directive: GQLDirective) {
+  (directive.arguments!!.arguments.first().value as GQLStringValue).value.parseAsGQLSelections().getOrThrow().forEach {
+    if (it !is GQLField) {
+      registerIssue("Fragments are not supported in @$TYPE_POLICY directives", it.sourceLocation)
+    } else if (it.selectionSet != null){
+      registerIssue("Composite fields are not supported in @$TYPE_POLICY directives", it.sourceLocation)
+    }
+  }
 }
 
 

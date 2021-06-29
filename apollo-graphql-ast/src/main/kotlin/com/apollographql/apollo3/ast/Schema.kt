@@ -88,39 +88,15 @@ class Schema(
     }
   }
 
+  /**
+   * Returns the key fields for the given type
+   *
+   * If this type has one or multiple @[TYPE_POLICY] annotation(s), they are used, else it recurses in implemented interfaces until it
+   * finds some.
+   *
+   * Returns the emptySet if this type has no key fields.
+   */
   fun keyFields(name: String): Set<String> {
-    val keyFieldsNoFallback = keyFieldsNoFallback(name)
-    if (keyFieldsNoFallback != null) {
-      return keyFieldsNoFallback
-    }
-
-    val schemaDefinition =  definitions.filterIsInstance<GQLSchemaDefinition>().single()
-    val schemaKeyFields = schemaDefinition.directives.toKeyFields("defaultKeyFields")
-    if (schemaKeyFields == null) {
-      return emptySet()
-    }
-
-    val typeDefinition = typeDefinition(name)
-    val fields = when(typeDefinition) {
-      is GQLObjectTypeDefinition -> typeDefinition.fields
-      is GQLInterfaceTypeDefinition -> typeDefinition.fields
-      else -> return emptySet()
-    }
-
-    return fields.mapNotNull {
-      if (schemaKeyFields.contains(it.name)) {
-        val fieldTypeDefinition = typeDefinition(it.type.leafType().name)
-        check(fieldTypeDefinition is GQLScalarTypeDefinition || fieldTypeDefinition is GQLEnumTypeDefinition) {
-          "Compound keyFields are not supported for field '${it.name}' of type '${it.type.leafType().name}'"
-        }
-        it.name
-      } else {
-        null
-      }
-    }.toSet()
-  }
-
-  private fun keyFieldsNoFallback(name: String): Set<String>? {
     val typeDefinition = typeDefinition(name)
     return when (typeDefinition) {
       is GQLObjectTypeDefinition -> {
@@ -128,14 +104,14 @@ class Schema(
         if (kf != null) {
           kf
         } else {
-          val kfs = typeDefinition.implementsInterfaces.map { it to keyFieldsNoFallback(it) }.filter { it.second != null }
+          val kfs = typeDefinition.implementsInterfaces.map { it to keyFields(it) }.filter { it.second.isNotEmpty() }
           if (kfs.isNotEmpty()) {
             check(kfs.size == 1) {
               val candidates = kfs.map { "${it.first}: ${it.second}" }.joinToString("\n")
-              "Object '$name' inherits different keys from different interfaces:\n$candidates\nSpecify @key explicitely"
+              "Object '$name' inherits different keys from different interfaces:\n$candidates\nSpecify @$TYPE_POLICY explicitely"
             }
           }
-          kfs.singleOrNull()?.second
+          kfs.singleOrNull()?.second ?: emptySet()
         }
       }
       is GQLInterfaceTypeDefinition -> {
@@ -143,30 +119,41 @@ class Schema(
         if (kf != null) {
           kf
         } else {
-          val kfs = typeDefinition.implementsInterfaces.map { it to keyFieldsNoFallback(it) }.filter { it.second != null }
+          val kfs = typeDefinition.implementsInterfaces.map { it to keyFields(it) }.filter { it.second.isNotEmpty() }
           if (kfs.isNotEmpty()) {
             check(kfs.size == 1) {
               val candidates = kfs.map { "${it.first}: ${it.second}" }.joinToString("\n")
-              "Interface '$name' inherits different keys from different interfaces:\n$candidates\nSpecify @key explicitely"
+              "Interface '$name' inherits different keys from different interfaces:\n$candidates\nSpecify @$TYPE_POLICY explicitely"
             }
           }
-          kfs.singleOrNull()?.second
+          kfs.singleOrNull()?.second ?: emptySet()
         }
       }
-      is GQLUnionTypeDefinition -> typeDefinition.directives.toKeyFields()
+      is GQLUnionTypeDefinition -> typeDefinition.directives.toKeyFields() ?: emptySet()
       else -> error("Type '$name' cannot have key fields")
     }
   }
 
-  private fun List<GQLDirective>.toKeyFields(directiveName: String = "key"): Set<String>? {
-    val directives = filter { it.name == directiveName }
+  /**
+   * Returns the key Fields or null if there's no directive
+   */
+  private fun List<GQLDirective>.toKeyFields(): Set<String>? {
+    val directives = filter { it.name == TYPE_POLICY }
     if (directives.isEmpty()) {
       return null
     }
     return directives.flatMap {
       (it.arguments!!.arguments.first().value as GQLStringValue).value.parseAsGQLSelections().getOrThrow().map {
+        // No need to check here, this should be done during validation
         (it as GQLField).name
       }
     }.toSet()
+  }
+
+  companion object {
+    const val TYPE_POLICY = "client__typePolicy"
+    const val FIELD_POLICY = "client__fieldPolicy"
+    const val FIELD_POLICY_FOR_FIELD = "forField"
+    const val FIELD_POLICY_KEY_ARGS = "keyArgs"
   }
 }

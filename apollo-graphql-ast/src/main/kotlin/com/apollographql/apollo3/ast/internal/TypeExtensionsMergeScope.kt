@@ -19,6 +19,7 @@ import com.apollographql.apollo3.ast.GQLTypeSystemExtension
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.GQLUnionTypeExtension
 import com.apollographql.apollo3.ast.Issue
+import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.UnrecognizedAntlrRule
 
 
@@ -76,6 +77,7 @@ private fun IssuesScope.merge(
   return copy(
       directives = mergeUniquesOrThrow(directives, extension.directives),
       fields = mergeUniquesOrThrow(fields, extension.fields),
+      implementsInterfaces = mergeUniqueInterfacesOrThrow(implementsInterfaces, extension.implementsInterfaces, extension.sourceLocation)
   )
 }
 
@@ -84,7 +86,8 @@ private fun IssuesScope.merge(
     extension: GQLInterfaceTypeExtension,
 ): GQLInterfaceTypeDefinition = with(interfaceTypeDefinition) {
   return copy(
-      fields = mergeUniquesOrThrow(fields, extension.fields)
+      fields = mergeUniquesOrThrow(fields, extension.fields),
+      implementsInterfaces = mergeUniqueInterfacesOrThrow(implementsInterfaces, extension.implementsInterfaces, extension.sourceLocation)
   )
 }
 
@@ -158,6 +161,18 @@ private inline fun <reified T> IssuesScope.mergeUniquesOrThrow(
   return (this + others).apply {
     groupBy { it.name }.entries.firstOrNull { it.value.size > 1 }?.let {
       issues.add(Issue.ValidationError("Cannot merge already existing node ${T::class.java.simpleName} `${it.key}`", it.value.first().sourceLocation))
+    }
+  }
+}
+
+private fun IssuesScope.mergeUniqueInterfacesOrThrow(
+    list: List<String>,
+    others: List<String>,
+    sourceLocation: SourceLocation,
+): List<String> = with(list) {
+  return (this + others).apply {
+    groupBy { it }.entries.firstOrNull { it.value.size > 1 }?.let {
+      issues.add(Issue.ValidationError("Cannot merge interface ${it.value.first()} as it's already defined", sourceLocation))
     }
   }
 }

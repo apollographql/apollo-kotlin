@@ -5,7 +5,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.leafType
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.testing.runWithMainLoop
@@ -21,17 +20,20 @@ import kotlin.test.assertEquals
 class DeclarativeCacheTest {
 
   @Test
-  fun atKeyIsWorking() = runWithMainLoop {
+  fun typePolicyIsWorking() = runWithMainLoop {
     val store = ApolloStore(MemoryCacheFactory(), CacheResolver())
 
+    // Write a book at the "promo" path
     val promoOperation = GetPromoBookQuery()
     val promoData = GetPromoBookQuery.Data(promoBook = GetPromoBookQuery.PromoBook(__typename =  "Book", title = "Promo", isbn = "42"))
     store.writeOperation(promoOperation, promoData)
 
+    // Overwrite the book title through the "other" path
     val otherOperation = GetOtherBookQuery()
     val otherData = GetOtherBookQuery.Data(otherBook = GetOtherBookQuery.OtherBook(__typename =  "Book", title = "Other", isbn = "42"))
     store.writeOperation(otherOperation, otherData)
 
+    // Get the "promo" book again, the title must be updated
     val data = store.readOperation(promoOperation, CustomScalarAdapters.Empty)
 
     assertEquals("Other", data?.promoBook?.title)
@@ -41,21 +43,24 @@ class DeclarativeCacheTest {
   fun fallbackIdIsWorking() = runWithMainLoop {
     val store = ApolloStore(MemoryCacheFactory(), CacheResolver())
 
+    // Write a library at the "promo" path
     val promoOperation = GetPromoLibraryQuery()
     val promoData = GetPromoLibraryQuery.Data(promoLibrary = GetPromoLibraryQuery.PromoLibrary(__typename =  "Library", id = "3", address = "PromoAddress"))
     store.writeOperation(promoOperation, promoData)
 
+    // Overwrite the library address through the "other" path
     val otherOperation = GetOtherLibraryQuery()
     val otherData = GetOtherLibraryQuery.Data(otherLibrary = GetOtherLibraryQuery.OtherLibrary(__typename =  "Library", id = "3", address = "OtherAddress"))
     store.writeOperation(otherOperation, otherData)
 
+    // Get the "promo" library again, the address must be updated
     val data = store.readOperation(promoOperation, CustomScalarAdapters.Empty)
 
     assertEquals("OtherAddress", data?.promoLibrary?.address)
   }
 
   @Test
-  fun resolveFieldIsWorking() = runWithMainLoop {
+  fun fieldPolicyIsWorking() = runWithMainLoop {
     val store = ApolloStore(MemoryCacheFactory(), CacheResolver())
 
     val promoOperation = GetPromoBookQuery()
@@ -69,7 +74,7 @@ class DeclarativeCacheTest {
   }
 
   @Test
-  fun canResolveList() = runWithMainLoop {
+  fun canResolveListProgrammatically() = runWithMainLoop {
     val cacheResolver = object : CacheResolver() {
       override fun resolveField(field: CompiledField, variables: Executable.Variables, parent: Map<String, Any?>, parentKey: String): Any? {
         if (field.name == "books") {

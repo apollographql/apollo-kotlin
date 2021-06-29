@@ -153,8 +153,8 @@ objectTypeExtensionDefinition
   ;
 
 interfaceTypeExtensionDefinition
-  : EXTEND INTERFACE name directives? fieldsDefinition
-  | EXTEND INTERFACE name directives
+  : EXTEND INTERFACE implementsInterfaces? name directives? fieldsDefinition
+  | EXTEND INTERFACE implementsInterfaces? name directives
   ;
 
 unionTypeExtensionDefinition

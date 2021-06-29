@@ -375,10 +375,10 @@ class CompiledSelectionsBuilder(
       else -> emptyList()
     }
 
-    return directives.filter { it.name == "resolveField" }.filter {
-      (it.arguments?.arguments?.single { it.name == "name" }?.value as GQLStringValue).value == fieldName
+    return directives.filter { it.name == Schema.FIELD_POLICY }.filter {
+      (it.arguments?.arguments?.single { it.name == Schema.FIELD_POLICY_FOR_FIELD }?.value as GQLStringValue).value == fieldName
     }.flatMap {
-      (it.arguments?.arguments?.single { it.name == "withKeyArgs" }?.value as? GQLListValue)?.values ?: emptyList()
+      (it.arguments?.arguments?.single { it.name == Schema.FIELD_POLICY_KEY_ARGS }?.value as? GQLListValue)?.values ?: emptyList()
     }.map {
       (it as GQLStringValue).value
     }.toSet()

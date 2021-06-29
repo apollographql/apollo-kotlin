@@ -545,6 +545,7 @@ data class GQLEnumTypeExtension(
 data class GQLObjectTypeExtension(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val name: String,
+    val implementsInterfaces: List<String>,
     val directives: List<GQLDirective>,
     val fields: List<GQLFieldDefinition>,
 ) : GQLDefinition, GQLTypeExtension {
@@ -606,6 +607,7 @@ data class GQLScalarTypeExtension(
 data class GQLInterfaceTypeExtension(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val name: String,
+    val implementsInterfaces: List<String>,
     val fields: List<GQLFieldDefinition>,
 ) : GQLDefinition, GQLTypeExtension, GQLNamed {
 
