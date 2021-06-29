@@ -52,6 +52,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   abstract override val schemaFiles: ConfigurableFileCollection
 
   abstract override val debugDir: DirectoryProperty
+  abstract override val outputDir: DirectoryProperty
 
   abstract override val warnOnDeprecatedUsages: Property<Boolean>
 
