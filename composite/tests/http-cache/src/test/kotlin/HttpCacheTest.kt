@@ -14,6 +14,7 @@ import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
+import rxjava.GetRandom2Query
 import rxjava.GetRandomQuery
 import java.io.File
 import kotlin.test.Test
@@ -29,6 +30,14 @@ class HttpCacheTest {
     {
       "data": {
         "random": 42
+      }
+    }
+  """.trimIndent()
+
+  private val response2 = """
+    {
+      "data": {
+        "random2": 42
       }
     }
   """.trimIndent()
@@ -115,6 +124,22 @@ class HttpCacheTest {
             .withHttpFetchPolicy(HttpFetchPolicy.CacheOnly)
         )
       }
+    }
+  }
+
+  @Test
+  fun DifferentQueriesDoNotOverlap() {
+    mockServer.enqueue(response)
+    mockServer.enqueue(response2)
+
+    runBlocking {
+      val response = apolloClient.query(GetRandomQuery())
+      assertEquals(42, response.data?.random)
+      assertEquals(false, response.isFromHttpCache)
+
+      val response2 = apolloClient.query(GetRandom2Query())
+      assertEquals(42, response2.data?.random2)
+      assertEquals(false, response2.isFromHttpCache)
     }
   }
 }
