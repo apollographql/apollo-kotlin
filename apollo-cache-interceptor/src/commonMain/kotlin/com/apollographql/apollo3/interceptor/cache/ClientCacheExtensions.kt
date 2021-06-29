@@ -43,8 +43,8 @@ enum class FetchPolicy {
 const val CACHE_FLAG_DO_NOT_STORE = 1
 const val CACHE_FLAG_STORE_PARTIAL_RESPONSE = 2
 
-fun ApolloClient.withStore(store: ApolloStore): ApolloClient {
-  return withInterceptor(ApolloCacheInterceptor(store))
+fun ApolloClient.withStore(store: ApolloStore, writeToCacheAsynchronously: Boolean = false): ApolloClient {
+  return withInterceptor(ApolloCacheInterceptor(store, writeToCacheAsynchronously))
 }
 
 fun <D: Query.Data> ApolloRequest<D>.withFetchPolicy(fetchPolicy: FetchPolicy): ApolloRequest<D> {
