@@ -17,7 +17,7 @@ import com.apollographql.apollo3.integration.normalizer.type.ReviewInput
 import com.apollographql.apollo3.interceptor.cache.FetchPolicy
 import com.apollographql.apollo3.interceptor.cache.watch
 import com.apollographql.apollo3.interceptor.cache.withFetchPolicy
-import com.apollographql.apollo3.interceptor.cache.withOptimiticUpdates
+import com.apollographql.apollo3.interceptor.cache.withOptimisticUpdates
 import com.apollographql.apollo3.interceptor.cache.withRefetchPolicy
 import com.apollographql.apollo3.interceptor.cache.withStore
 import com.apollographql.apollo3.mockserver.MockServer
@@ -243,7 +243,7 @@ class OptimisticCacheTest {
         )
     )
     apolloClient.mutate(
-        ApolloRequest(updateReviewMutation).withOptimiticUpdates(
+        ApolloRequest(updateReviewMutation).withOptimisticUpdates(
             UpdateReviewMutation.Data(
                 UpdateReviewMutation.Data.UpdateReview(
                     "empireReview2",

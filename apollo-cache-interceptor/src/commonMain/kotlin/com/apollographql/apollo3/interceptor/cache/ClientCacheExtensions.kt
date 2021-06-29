@@ -63,7 +63,7 @@ fun <D: Operation.Data> ApolloRequest<D>.withCacheHeaders(cacheHeaders: CacheHea
   val context = executionContext[CacheContext] ?: DefaultCacheContext(operation)
   return withExecutionContext(context.copy(cacheHeaders = cacheHeaders))
 }
-fun <D: Mutation.Data> ApolloRequest<D>.withOptimiticUpdates(data: D): ApolloRequest<D> {
+fun <D: Mutation.Data> ApolloRequest<D>.withOptimisticUpdates(data: D): ApolloRequest<D> {
   val context = executionContext[CacheContext] ?: DefaultCacheContext(operation)
   return withExecutionContext(context.copy(optimisticData = data))
 }
