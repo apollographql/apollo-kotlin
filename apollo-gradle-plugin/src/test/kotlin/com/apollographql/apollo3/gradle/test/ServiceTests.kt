@@ -53,6 +53,18 @@ class ServiceTests {
 
 
   @Test
+  fun canConfigureOutputDir() {
+    withSimpleProject("""
+      apollo {
+        outputDir.set(file("build/apollo"))
+      }
+    """.trimIndent()) { dir ->
+      TestUtils.executeTask("generateApolloSources", dir)
+      assertTrue(File(dir, "build/apollo/type/Types.kt").exists())
+    }
+  }
+
+  @Test
   fun `customScalarsMapping put is working`() {
     withSimpleProject("""
       apollo {

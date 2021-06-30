@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 
 internal class ApolloCacheInterceptor(
     private val store: ApolloStore,
-    private val writeToCacheAsynchronously: Boolean = false,
+    private val writeToCacheAsynchronously: Boolean,
 ) : ApolloInterceptor {
   private suspend fun maybeAsync(executionContext: ExecutionContext, block: suspend () -> Unit) {
     val coroutineScope = executionContext[ClientScope]?.coroutineScope

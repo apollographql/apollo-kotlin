@@ -9,7 +9,7 @@ import com.apollographql.apollo3.exception.MissingValueException
  * serialized (even if it's null) and the case where it's absent and shouldn't be serialized.
  */
 sealed class Optional<out V> {
-  fun getOrNull() = (this as Present).value
+  fun getOrNull() = (this as? Present)?.value
   fun getOrThrow() = getOrNull() ?: throw MissingValueException()
 
   class Present<V>(val value: V) : Optional<V>()
