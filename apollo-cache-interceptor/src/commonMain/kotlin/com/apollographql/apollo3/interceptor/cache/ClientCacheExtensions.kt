@@ -10,9 +10,9 @@ import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.interceptor.cache.internal.ApolloCacheInterceptor
-import com.apollographql.apollo3.interceptor.cache.internal.CacheContext
+import com.apollographql.apollo3.interceptor.cache.internal.CacheInput
 import com.apollographql.apollo3.interceptor.cache.internal.CacheOutput
-import com.apollographql.apollo3.interceptor.cache.internal.DefaultCacheContext
+import com.apollographql.apollo3.interceptor.cache.internal.DefaultCacheInput
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -48,23 +48,23 @@ fun ApolloClient.withStore(store: ApolloStore, writeToCacheAsynchronously: Boole
 }
 
 fun <D: Query.Data> ApolloRequest<D>.withFetchPolicy(fetchPolicy: FetchPolicy): ApolloRequest<D> {
-  val context = executionContext[CacheContext] ?: DefaultCacheContext(operation)
+  val context = executionContext[CacheInput] ?: DefaultCacheInput(operation)
   return withExecutionContext(context.copy(fetchPolicy = fetchPolicy))
 }
 fun <D: Query.Data> ApolloRequest<D>.withRefetchPolicy(refetchPolicy: FetchPolicy): ApolloRequest<D> {
-  val context = executionContext[CacheContext] ?: DefaultCacheContext(operation)
+  val context = executionContext[CacheInput] ?: DefaultCacheInput(operation)
   return withExecutionContext(context.copy(refetchPolicy = refetchPolicy))
 }
 fun <D: Operation.Data> ApolloRequest<D>.withCacheFlags(flags: Int): ApolloRequest<D> {
-  val context = executionContext[CacheContext] ?: DefaultCacheContext(operation)
+  val context = executionContext[CacheInput] ?: DefaultCacheInput(operation)
   return withExecutionContext(context.copy(flags = flags))
 }
 fun <D: Operation.Data> ApolloRequest<D>.withCacheHeaders(cacheHeaders: CacheHeaders): ApolloRequest<D> {
-  val context = executionContext[CacheContext] ?: DefaultCacheContext(operation)
+  val context = executionContext[CacheInput] ?: DefaultCacheInput(operation)
   return withExecutionContext(context.copy(cacheHeaders = cacheHeaders))
 }
 fun <D: Mutation.Data> ApolloRequest<D>.withOptimisticUpdates(data: D): ApolloRequest<D> {
-  val context = executionContext[CacheContext] ?: DefaultCacheContext(operation)
+  val context = executionContext[CacheInput] ?: DefaultCacheInput(operation)
   return withExecutionContext(context.copy(optimisticData = data))
 }
 
@@ -74,7 +74,7 @@ fun <D: Operation.Data> ApolloRequest<D>.withCacheContext(
     data: D? = null,
     flags: Int = 0
 ): ApolloRequest<D> {
-  return withExecutionContext(CacheContext(fetchPolicy, refetchPolicy, data, flags))
+  return withExecutionContext(CacheInput(fetchPolicy, refetchPolicy, data, flags))
 }
 
 
@@ -119,9 +119,9 @@ fun <D : Query.Data> ApolloClient.watch(query: Query<D>): Flow<ApolloResponse<D>
 }
 
 fun <D : Query.Data> ApolloClient.watch(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
-  var context = queryRequest.executionContext[CacheContext]
+  var context = queryRequest.executionContext[CacheInput]
   if (context == null) {
-    context = CacheContext(FetchPolicy.CacheFirst, FetchPolicy.CacheOnly)
+    context = CacheInput(FetchPolicy.CacheFirst, FetchPolicy.CacheOnly)
   } else if (context.refetchPolicy == null) {
     context = context.copy(refetchPolicy = FetchPolicy.CacheOnly)
   }

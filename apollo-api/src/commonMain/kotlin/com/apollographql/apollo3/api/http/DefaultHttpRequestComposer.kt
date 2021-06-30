@@ -283,7 +283,6 @@ class DefaultHttpRequestComposer(
       composePostParams(this, operation, customScalarAdapters, autoPersistQueries, query)
     }
 
-
     @Suppress("UNCHECKED_CAST")
     fun <D : Operation.Data> composePayload(
         apolloRequest: ApolloRequest<D>,

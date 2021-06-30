@@ -15,7 +15,7 @@ dependencies {
   implementation("com.apollographql.apollo3:deprecated-apollo-rx2-support")
   implementation("com.apollographql.apollo3:deprecated-apollo-rx3-support")
   implementation("com.apollographql.apollo3:deprecated-apollo-coroutines-support")
-  implementation("com.apollographql.apollo3:apollo-http-cache")
+  implementation("com.apollographql.apollo3:deprecated-apollo-http-cache")
   implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite")
   implementation("com.apollographql.apollo3:apollo-compiler")
 

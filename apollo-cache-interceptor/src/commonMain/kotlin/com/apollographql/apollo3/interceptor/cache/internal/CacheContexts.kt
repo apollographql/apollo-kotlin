@@ -8,7 +8,7 @@ import com.apollographql.apollo3.api.ResponseContext
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.interceptor.cache.FetchPolicy
 
-internal class CacheContext(
+internal class CacheInput(
     val fetchPolicy: FetchPolicy,
     val refetchPolicy: FetchPolicy? = null,
     val optimisticData: Any? = null,
@@ -22,8 +22,8 @@ internal class CacheContext(
       optimisticData: Any? = this.optimisticData,
       flags: Int = this.flags,
       cacheHeaders: CacheHeaders = this.cacheHeaders
-  ): CacheContext {
-    return CacheContext(
+  ): CacheInput {
+    return CacheInput(
         fetchPolicy,
         refetchPolicy,
         optimisticData,
@@ -31,11 +31,11 @@ internal class CacheContext(
         cacheHeaders
     )
   }
-  companion object Key : ExecutionContext.Key<CacheContext>
+  companion object Key : ExecutionContext.Key<CacheInput>
 }
 
-internal fun <D: Operation.Data> DefaultCacheContext(operation: Operation<D>): CacheContext {
-  return CacheContext(defaultFetchPolicy(operation))
+internal fun <D: Operation.Data> DefaultCacheInput(operation: Operation<D>): CacheInput {
+  return CacheInput(defaultFetchPolicy(operation))
 }
 
 fun <D: Operation.Data> defaultFetchPolicy( operation: Operation<D>) = if (operation is Query) {

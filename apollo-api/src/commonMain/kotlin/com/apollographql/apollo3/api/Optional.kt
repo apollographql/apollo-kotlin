@@ -15,4 +15,3 @@ sealed class Optional<out V> {
   class Present<V>(val value: V) : Optional<V>()
   object Absent : Optional<Nothing>()
 }
-

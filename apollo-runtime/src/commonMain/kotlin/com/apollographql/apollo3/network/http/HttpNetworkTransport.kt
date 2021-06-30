@@ -50,9 +50,17 @@ class HttpNetworkTransport(
   override fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
   ): Flow<ApolloResponse<D>> {
-    val responseAdapterCache = request.executionContext[CustomScalarAdapters]!!
-
+    val customScalarAdapters = request.executionContext[CustomScalarAdapters]!!
     val httpRequest = httpRequestComposer.compose(request)
+
+    return execute(request, httpRequest, customScalarAdapters)
+  }
+
+  fun <D : Operation.Data> execute(
+      request: ApolloRequest<D>,
+      httpRequest: HttpRequest,
+      customScalarAdapters: CustomScalarAdapters
+  ): Flow<ApolloResponse<D>> {
     return flow {
       val httpResponse = RealInterceptorChain(
           interceptors = interceptors + engineInterceptor,
@@ -61,7 +69,7 @@ class HttpNetworkTransport(
 
       val response = worker.doWork {
         try {
-          httpResponse.parse(request, responseAdapterCache)
+          httpResponse.parse(request, customScalarAdapters)
         } catch (e: Exception) {
           throw wrapThrowableIfNeeded(e)
         }

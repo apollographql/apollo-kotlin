@@ -54,7 +54,7 @@ internal class HttpCacheInterceptor(cache: ApolloHttpCache?, logger: ApolloLogge
     val networkResponse = Utils.withServedDateHeader(chain.proceed(request))
     return if (Utils.isPrefetchResponse(request)) {
       prefetch(networkResponse, cacheKey)
-    } else if (networkResponse!!.isSuccessful) {
+    } else if (networkResponse.isSuccessful) {
       logger.d("Network success, skip http cache for request: %s, with cache key: %s", request, cacheKey!!)
       cache.cacheProxy(networkResponse, cacheKey)
     } else {
@@ -108,7 +108,7 @@ internal class HttpCacheInterceptor(cache: ApolloHttpCache?, logger: ApolloLogge
     val networkResponse = Utils.withServedDateHeader(chain.proceed(request))
     if (Utils.isPrefetchResponse(request)) {
       return prefetch(networkResponse, cacheKey)
-    } else if (networkResponse!!.isSuccessful) {
+    } else if (networkResponse.isSuccessful) {
       return cache.cacheProxy(networkResponse, cacheKey!!)
     }
     return networkResponse

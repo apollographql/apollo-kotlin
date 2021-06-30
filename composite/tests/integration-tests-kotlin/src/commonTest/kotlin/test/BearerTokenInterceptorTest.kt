@@ -10,7 +10,11 @@ import com.apollographql.apollo3.network.http.BearerTokenInterceptor
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.testing.TestTokenProvider
 import com.apollographql.apollo3.testing.runWithMainLoop
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import readResource
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -61,6 +61,11 @@ class CacheMissException(val key: String, val fieldName: String? = null) : Apoll
 }
 
 /**
+ * A HTTP cache miss happened
+ */
+class HttpCacheMissException(message: String, cause: Exception? = null) : ApolloException(message = message, cause = cause)
+
+/**
  * Multiple exceptions happened, for an exemple with a [CacheFirst] fetch policy
  */
 class ApolloCompositeException(first: Throwable?, second: Throwable?) : ApolloException(message = "multiple exceptions happened", second) {
