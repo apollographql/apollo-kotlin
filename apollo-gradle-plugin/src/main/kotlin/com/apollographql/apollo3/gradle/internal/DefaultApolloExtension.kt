@@ -296,7 +296,7 @@ abstract class DefaultApolloExtension(
   /**
    * The default wiring.
    */
-  val mainWireAction = Action<Service.OutputDirWire> { wire ->
+  private val mainWireAction = Action<Service.OutputDirWire> { wire ->
     when {
       project.kotlinMultiplatformExtension != null -> KotlinMultiplatformProject.registerGeneratedDirectoryToCommonMainSourceSet(project, wire)
       project.androidExtension != null -> AndroidProject.registerGeneratedDirectoryToAllVariants(project, wire)
@@ -365,7 +365,7 @@ abstract class DefaultApolloExtension(
       task.failOnWarnings.set(service.failOnWarnings)
       task.customScalarsMapping.set(service.customScalarsMapping)
       task.outputDir.apply {
-        set(BuildDirLayout.sources(project, service))
+        set(service.outputDir.orElse(BuildDirLayout.sources(project, service)).get())
         disallowChanges()
       }
       task.debugDir.apply {
@@ -460,6 +460,9 @@ abstract class DefaultApolloExtension(
       val service = project.objects.newInstance(DefaultService::class.java, project, name)
       action.execute(service)
 
+      check(!service.sourceFolder.isPresent) {
+        "ApolloGraphQL: service.sourceFolder is not used when calling createAllAndroidVariantServices. Use the parameter instead"
+      }
       if (service.graphqlSourceDirectorySet.isReallyEmpty) {
         check(!File(sourceFolder).isRooted && !sourceFolder.startsWith("../..")) {
           """
@@ -487,6 +490,10 @@ abstract class DefaultApolloExtension(
 
       val service = project.objects.newInstance(DefaultService::class.java, project, name)
       action.execute(service)
+
+      check(!service.sourceFolder.isPresent) {
+        "ApolloGraphQL: service.sourceFolder is not used when calling createAllKotlinJvmSourceSetServices. Use the parameter instead"
+      }
 
       if (service.graphqlSourceDirectorySet.isReallyEmpty) {
         check(!File(sourceFolder).isRooted && !sourceFolder.startsWith("../..")) {

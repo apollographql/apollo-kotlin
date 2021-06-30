@@ -41,14 +41,15 @@ interface Service {
   val exclude: ListProperty<String>
 
   /**
-   * A shorthand property that will be used if [srcDir] is notCalled
+   * Where to look for GraphQL sources.
+   * The plugin will look in "src/main/graphql/$sourceFolder" for Android/JVM projects and "src/commonMain/graphql/$sourceFolder" for multiplatform projects.
+   *
+   * For more control, see also [srcDir]
    */
   val sourceFolder: Property<String>
 
   /**
    * Adds the given directory as a GraphQL source root
-   *
-   * By default, the plugin will use "src/main/graphql/$sourceFolder" for Android/JVM projects and "src/commonMain/graphql/$sourceFolder" for multiplatform projects.
    *
    * Use [srcDir] if your files are outside of "src/main/graphql" or to have them in multiple folders.
    *
@@ -164,7 +165,7 @@ interface Service {
    * - $packageName/type/SomeInputObject.kt
    * - $packageName/type/SomeEnum.kt
    *
-   * Default value: the path relative to the source roots of the main schema file
+   * Default value: ""
    */
   val packageName: Property<String>
 
@@ -203,7 +204,7 @@ interface Service {
   val generateAsInternal: Property<Boolean>
 
   /**
-   * Whether or not to generate Apollo metadata. Apollo metadata is used for multi-module support. Set this to true if you want other
+   * Whether to generate Apollo metadata. Apollo metadata is used for multi-module support. Set this to true if you want other
    * modules to be able to re-use fragments and types from this module.
    *
    * This is currently experimental and this API might change in the future.
@@ -229,7 +230,9 @@ interface Service {
    * Whether to generate default implementation classes for GraphQL fragments.
    * Default value is `false`, means only interfaces are been generated.
    *
-   * Most of the time, fragment implementations are not needed because you can easily access fragments interfaces and read all data from your queries. They are needed if you want to be able to build fragments outside of an operation. For an exemple to programmatically build a fragment that is reused in another part of your code or to read and write fragments to the cache.
+   * Most of the time, fragment implementations are not needed because you can easily access fragments interfaces and read all
+   * data from your queries. They are needed if you want to be able to build fragments outside of an operation. For an exemple
+   * to programmatically build a fragment that is reused in another part of your code or to read and write fragments to the cache.
    */
   val generateFragmentImplementations: Property<Boolean>
 
@@ -239,12 +242,29 @@ interface Service {
    */
   val generateKotlinModels: Property<Boolean>
 
-
   /**
+   * What codegen to use. One of "operationBased", "responseBased" or "compat"
    *
+   * Default value: "compat"
    */
   val codegenModels: Property<String>
+
+  /**
+   * Whether to flatten the models. File paths are limited on MacOSX to 256 chars and flattening can help keeping the path length manageable
+   * The drawback is that some classes may nameclash in which case they will be suffixed with a number
+   */
   val flattenModels: Property<Boolean>
+
+  /**
+   * The directory where the generated models will be written. It's called [outputDir] but this an "input" parameter for the compiler
+   * If you want a [DirectoryProperty] that carries the task dependency, use [withOutputDir]
+   */
+  val outputDir: DirectoryProperty
+
+  /**
+   * A debug directory where the compiler will output intermediary results
+   */
+  val debugDir: DirectoryProperty
 
   /**
    * Configures [Introspection] to download an introspection Json schema
@@ -278,7 +298,9 @@ interface Service {
   )
 
   /**
-   * overrides the way the task is wired. Use this if you want to wire the generated sources to another task than the default destination:
+   * overrides the way the task is wired. Use this if you want to wire the generated sources to another task than the default destination.
+   *
+   * By default, the generated sources are wired to:
    * - main sourceSet for Kotlin projects
    * - commonMain sourceSet for Kotlin multiplatform projects
    * - all variants for Android projects
@@ -295,6 +317,4 @@ interface Service {
        */
       val outputDir: Provider<Directory>,
   )
-
-  val debugDir: DirectoryProperty
 }
