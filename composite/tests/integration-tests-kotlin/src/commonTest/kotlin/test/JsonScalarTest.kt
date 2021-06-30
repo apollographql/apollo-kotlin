@@ -31,7 +31,7 @@ class JsonScalarTest {
     mockServer = MockServer()
     apolloClient = ApolloClient(mockServer.url())
         .withStore(store)
-        .withCustomScalarAdapter(Types.Json.name, AnyAdapter)
+        .withCustomScalarAdapter(Types.Json, AnyAdapter)
   }
 
   // see https://github.com/apollographql/apollo-android/issues/2854

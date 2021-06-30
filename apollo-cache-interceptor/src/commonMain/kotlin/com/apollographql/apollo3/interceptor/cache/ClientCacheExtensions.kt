@@ -43,8 +43,8 @@ enum class FetchPolicy {
 const val CACHE_FLAG_DO_NOT_STORE = 1
 const val CACHE_FLAG_STORE_PARTIAL_RESPONSE = 2
 
-fun ApolloClient.withStore(store: ApolloStore): ApolloClient {
-  return withInterceptor(ApolloCacheInterceptor(store))
+fun ApolloClient.withStore(store: ApolloStore, writeToCacheAsynchronously: Boolean = false): ApolloClient {
+  return withInterceptor(ApolloCacheInterceptor(store, writeToCacheAsynchronously))
 }
 
 fun <D: Query.Data> ApolloRequest<D>.withFetchPolicy(fetchPolicy: FetchPolicy): ApolloRequest<D> {
@@ -63,7 +63,7 @@ fun <D: Operation.Data> ApolloRequest<D>.withCacheHeaders(cacheHeaders: CacheHea
   val context = executionContext[CacheContext] ?: DefaultCacheContext(operation)
   return withExecutionContext(context.copy(cacheHeaders = cacheHeaders))
 }
-fun <D: Mutation.Data> ApolloRequest<D>.withOptimiticUpdates(data: D): ApolloRequest<D> {
+fun <D: Mutation.Data> ApolloRequest<D>.withOptimisticUpdates(data: D): ApolloRequest<D> {
   val context = executionContext[CacheContext] ?: DefaultCacheContext(operation)
   return withExecutionContext(context.copy(optimisticData = data))
 }
