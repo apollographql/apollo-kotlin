@@ -10,22 +10,13 @@ Apollo Android supports [Automatic Persisted Queries](https://www.apollographql.
 Your server needs to supports it (apollo-server supports it out of the box).
 Enable the feature in apollo-android like so:
 
-```java
-ApolloClient.builder()
-  /* ... */
-  .enableAutoPersistedQueries(true)
-  /* ... */
-  .build()
+```kotlin
+val apolloClient = ApolloClient("https://...").withAutoPersistedQueries()
 ```
 
 You can optionally configure apollo-android to send GET HTTP verbs for queries, to benefit from caching if your server uses a CDN:
-```java
-ApolloClient.builder()
-  /* ... */
-  .enableAutoPersistedQueries(true)
-  .useHttpGetMethodForQueries(true)
-  /* ... */
-  .build()
+```kotlin
+val apolloClient = ApolloClient("https://...").withAutoPersistedQueries(method = HttpMethod.Get)
 ```
 
 
@@ -35,7 +26,7 @@ If your backend uses custom persisted queries, Apollo Android can generate an Op
 
 ```
 apollo {
-  generateOperationOutput = true
+  generateOperationOutput.set(true)
 }
 ```
 

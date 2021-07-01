@@ -328,13 +328,15 @@ query GetHero($id: String @optional) {
 }
 ```
 
+**Note**: this only applies to variables. Input fields in input objects are still unsing `Optional` because omitting input fields happens often there.
+
 ## CacheKeyResolver
 
 The [CacheKeyResolver] API has been updated to work with declarative cache.
 
 * `fromFieldRecordSet` is renamed to `cacheKeyForObject`
 * `fromFieldArguments` is renamed to `cacheKeyForField`
-* `CacheKey.NONE` is replaced by `null`
+* The `CacheKey` return value is made nullable and `CacheKey.NONE` is replaced by `null`
 
 ```kotlin
 // Replace

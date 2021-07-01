@@ -49,3 +49,11 @@ apply plugin: "com.apollographql.apollo3"
 </MultiCodeBlock>
 
 The plugin is hosted both on the Gradle plugin portal and Maven Central.
+
+By default the plugin generates models in the root package name. You can configure this in the `apollo {}` block:
+
+```kotlin
+apollo {
+  packageName.set("com.example")
+}
+```

@@ -1,0 +1,87 @@
+---
+title: Using the client without apollo-runtime
+---
+
+import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
+
+`apollo-runtime` and `ApolloClient` provides support for doing the network requests and interacting with the cache but you can use the generated models and parsers without the runtime and use your network layer of choice for the HTTP calls.
+
+For this, remove the `com.apollographql.apollo3:apollo-runtime`dependency and replace it with:
+
+```kotlin:title=build.gradle
+implementation("com.apollographql.apollo3:apollo-api:x.y.z")
+```
+
+## Composing an HTTP request body
+
+To compose an HTTP POST request body to be sent to your server, use `composeJsonRequest`:
+
+<MultiCodeBlock>
+
+```kotlin
+val jsonRequest = query.composeJsonRequest()
+val mediaType = MediaType.parse("application/json");
+/**
+ * jsonRequest contains data to be sent to the server
+ * {
+ *  "query": ...
+ *  "variables": ...
+ *  "extensions": ...
+ * }
+ */
+val requestBody = RequestBody.create(mediaType, jsonRequest);
+```
+
+</MultiCodeBlock>
+
+
+## Composing an HTTP response body
+
+To compose a complete response that you can use during tests for an example, use `composeJsonResponse` with a programmatically built `data`:
+
+```kotlin
+/**
+ * responseSource will contain a json with data and possibly errors:
+ * {
+ *  "data": ...
+ *  "errors": ...
+ *  "extensions": ...
+ * }
+ **/
+val data = SomeQuery.Data(...)
+val jsonResponse = operation.composeJsonResponse(data)
+
+mockServer.enqueue(jsonResponse)
+```
+
+## Parsing an HTTP response body
+
+To parse a network response into the type safe models, use `parseJsonResponse`:
+
+```kotlin
+/**
+ * responseSource should contain a json with data and possibly errors:
+ * {
+ *  "data": ...
+ *  "errors": ...
+ *  "extensions": ...
+ * }
+ **/
+val response = operation.parseJsonResponse(responseSource)
+
+println(response.data)
+```
+
+## Converting a Query.Data model to/from JSON
+
+Symmetrically to the `composeJsonResponse` and `parseJsonResponse`, there is `composeJsonData` and `parseJsonData` to convert to/from data without errors or extensions:
+
+
+```kotlin
+var data = SomeQuery.Data(...)
+val jsonString = operation.composeJsonData(data);
+
+// parse back to models, it will match the initial data
+data = operation.parseJsonData(jsonString)
+```
+
