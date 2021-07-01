@@ -10,7 +10,7 @@ Apollo Android 3.0 is a rewrite of most of the internals of Apollo Android in Ko
 * Kotlin-first, coroutine-based APIs.
 * A unified runtime for both JVM and multiplatform.
 
-While the concepts stay the same, a lot of APIs have changed to work better in Kotlin.
+While the concepts stay the same, a lot of APIs have changed to work better in Kotlin. This page presents the important changes and how to migrate from Apollo Android 2.x to Apollo Android 3.x
 
 ## `com.apollographql.apollo3` is the new package name, group id and plugin id
 
@@ -63,6 +63,7 @@ Most of the times, these changes can be a made using "search and replace".
 ## Gradle configuration
 
 **generateKotlinModels**
+
 Apollo Android now generates Kotlin models by default. You can safely remove this:
 
 ```
@@ -96,7 +97,7 @@ The generated classes will be:
 - com.example.type.Types // types is a slimmed down version of the schema
 ```
 
-You can fallback to the 2.x behaviour with:
+If you need different package names for different operation folders, you can fallback to the 2.x behaviour with:
 
 ```kotlin
 apollo {
@@ -104,7 +105,14 @@ apollo {
 }
 ```
 
-For more control, you can also define your own `PackageNameGenerator`
+For even more control, you can also define your own `PackageNameGenerator`:
+
+```kotlin
+apollo {
+  packageNameGenerator.set(customPackageNameGenerator)
+}
+```
+
 
 **Compilation units are removed**
 
@@ -112,7 +120,7 @@ Apollo Android 2.x creates multiple `CompilationUnit`s for different Android var
 
 Apollo Android 3.x doesn't have `CompilationUnit`s any more. Each `Service` is exactly one compilation. For Android projects, the generated classes will be added to all the variants so that they are generated only once.
 
-You can create multiple services for each Android variants with:
+If you need different operations for different variants, you can create multiple services for each Android variants with:
 
 ```
 apollo {
@@ -127,15 +135,14 @@ apollo {
 
 If you used `graphqlSourceDirectorySet` to explicitely specify the location of GraphQL files, you can now use `srcDir`:
 
-```
+
+```kotlin
 apollo {
   // Replace
   graphqlSourceDirectorySet.srcDirs += "shared/graphql"
 
-// highlight-start
   // With
   srcDir("shared/graphql")
-// highlight-end
 }
 ```
 
@@ -147,7 +154,7 @@ Apollo Android 3.x leverages Kotlin default parameter and exposes the constructo
 
 For an example, for `ApolloClient`:
 
-```
+```kotlin
 // Replace
 val apolloClient = ApolloClient.builder()
     .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com")
@@ -180,20 +187,18 @@ Apollo Android 3.x exposes more concise coroutines APIs that handle cancellation
 ```kotlin
 // Replace
 apolloClient.query(query).await()
-
 // With
 apolloClient.query(query)
 
 // Replace
 apolloClient.subscribe(subscription).toFlow()
-
 // With
 apolloClient.subscribe(subscription)
 ```
 
 ## Normalized cache
 
-Apollo Android 2.x runtime has builtin the normalized cache APIs and it is possible to call cache methods even if no cache implementation was in the classpath.
+Apollo Android 2.x runtime has a depency on the normalized cache APIs and it is possible to call cache methods even if no cache implementation was in the classpath.
 
 Apollo Android 3.x runtime is more modular and doesn't know anything about normalized cache by default. To add normalized cache support, include `apollo-normalizes-cache` in the classpath:
 
@@ -208,7 +213,9 @@ dependencies {
 
 ```kotlin
 // Replace
-val cacheFactory = LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(10 * 1024 * 1024).build())
+val cacheFactory = LruNormalizedCacheFactory(
+                     EvictionPolicy.builder().maxSizeBytes(10 * 1024 * 1024).build()
+                   )
 
 val apolloClient = ApolloClient.builder()
   .serverUrl("https://...")
@@ -238,7 +245,7 @@ val response = apolloClient.query(request)
 
 ## HTTP cache
 
-Similarly to the normalized cache, the HTTP cache is configurable through extension functions.
+Similarly, the HTTP cache is configurable through extension functions:
 
 ```kotlin
 // Replace
@@ -274,7 +281,7 @@ Apollo Android distinguishes between null and absent values.
 
 Apollo Android 2.x uses `Input` to represent optional (maybe nullable) values.
 
-Apollo Android 3.x uses `Optional` instead so that it can be used in other places than input types. For an example, fields could be made optional with an [`@optional`](https://github.com/apollographql/apollo-android/blob/5c1ff82ccaded93ae7126cedc6d7835e63fed75a/apollo-compiler/src/main/resources/apollo.graphqls#L6) directive. `Optional` is a sealed class so `when` statements don't need an `else` branche.
+Apollo Android 3.x uses `Optional` instead so that it can be used in other places than input types. For an example, fields could be made optional with an [`@optional`](https://github.com/apollographql/apollo-android/blob/5c1ff82ccaded93ae7126cedc6d7835e63fed75a/apollo-compiler/src/main/resources/apollo.graphqls#L6) directive. `Optional` is a sealed class so `when` statements don't need an `else` branch.
 
 
 ```kotlin
@@ -332,7 +339,7 @@ query GetHero($id: String @optional) {
 
 ## CacheKeyResolver
 
-The [CacheKeyResolver] API has been updated to work with declarative cache.
+The `CacheKeyResolver` API has been updated to work with declarative cache.
 
 * `fromFieldRecordSet` is renamed to `cacheKeyForObject`
 * `fromFieldArguments` is renamed to `cacheKeyForField`
@@ -344,7 +351,6 @@ val resolver: CacheKeyResolver = object : CacheKeyResolver() {
   override fun fromFieldRecordSet(field: ResponseField, recordSet: Map<String, Any>): CacheKey {
     return CacheKey.from(recordSet["id"] as String)
   }
-
   override fun fromFieldArguments(field: ResponseField, variables: Operation.Variables): CacheKey {
     return CacheKey.from(field.resolveArgument("id", variables) as String)
   }
@@ -354,7 +360,6 @@ val resolver: CacheKeyResolver = object : CacheKeyResolver() {
 val cacheKeyResolver = object : CacheKeyResolver() {
   override fun cacheKeyForObject(type: CompiledNamedType, obj: Map<String, Any?>): CacheKey? {
     return (obj["id"] as? String)?.let { CacheKey(it) }
-
   }
   override fun cacheKeyForField(field: CompiledField, variables: Executable.Variables): CacheKey? {
     return (field.resolveArgument("id", variables) as? String)?.let { CacheKey(it) }
