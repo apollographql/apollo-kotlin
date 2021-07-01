@@ -31,7 +31,7 @@ db.json
 
 # Docs
 node_modules/
-docs/public/*
+/docs/public
 /docs/.cache
 !docs/public/_redirects
 .deploy*/
