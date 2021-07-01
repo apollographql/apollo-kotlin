@@ -35,8 +35,6 @@ query HeroQuery($id: String!) {
 Here, `query` is the operation type and `HeroQuery` is the operation name.
 Apollo-android will generate a `HeroQuery` class that you can construct (with variables) and pass to `ApolloClient#query(query)`:
 
-<MultiCodeBlock>
-
 ```kotlin
 val response = apolloClient.query(feedQuery)
 ```
@@ -86,8 +84,6 @@ query HeroAndFriendsNames {
 
 Apollo Android generates a typesafe model looking like this (details are omitted to focus on the class structure):
 
-<MultiCodeBlock>
-
 ```kotlin
 class HeroAndFriendsNamesQuery {
   data class Data(val hero: Hero)
@@ -95,8 +91,6 @@ class HeroAndFriendsNamesQuery {
   data class Friend(val id: String, val name: String)
 }
 ```
-
-</MultiCodeBlock>
 
 Because the above query doesn't fetch `appearsIn`, this property is not part of the returned result type and cannot be accessed here. Similarly, `id` is only accessible in `Friend` and not `Hero`.
 

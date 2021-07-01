@@ -34,7 +34,7 @@ For building, it requires:
 
 ## Getting started
 
-[Get started](https://www.apollographql.com/docs/android/get-started) shows how to add Apollo Android to a Kotlin project.
+[Get started](get-started) shows how to add Apollo Android to a Kotlin project.
 
 ## Related platforms
 
