@@ -1,10 +1,10 @@
-extend type Author @client__typePolicy(keyFields: "firstName lastName")
+extend type Author @typePolicy(keyFields: "firstName lastName")
 
-extend type Book @client__typePolicy(keyFields: "isbn")
+extend type Book @typePolicy(keyFields: "isbn")
 
-extend type Query @client__fieldPolicy(forField: "book", keyArgs: ["isbn"])
+extend type Query @fieldPolicy(forField: "book", keyArgs: ["isbn"])
 
-interface Node @client__typePolicy(keyFields: "id") {
+interface Node @typePolicy(keyFields: "id") {
   id: ID!
 }
 

@@ -151,8 +151,8 @@ class Schema(
   }
 
   companion object {
-    const val TYPE_POLICY = "client__typePolicy"
-    const val FIELD_POLICY = "client__fieldPolicy"
+    const val TYPE_POLICY = "typePolicy"
+    const val FIELD_POLICY = "fieldPolicy"
     const val FIELD_POLICY_FOR_FIELD = "forField"
     const val FIELD_POLICY_KEY_ARGS = "keyArgs"
   }
