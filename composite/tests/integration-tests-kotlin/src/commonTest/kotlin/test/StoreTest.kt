@@ -11,10 +11,10 @@ import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.integration.normalizer.CharacterNameByIdQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
-import com.apollographql.apollo3.interceptor.cache.FetchPolicy
-import com.apollographql.apollo3.interceptor.cache.isFromCache
-import com.apollographql.apollo3.interceptor.cache.withFetchPolicy
-import com.apollographql.apollo3.interceptor.cache.withStore
+import com.apollographql.apollo3.cache.normalized.FetchPolicy
+import com.apollographql.apollo3.cache.normalized.isFromCache
+import com.apollographql.apollo3.cache.normalized.withFetchPolicy
+import com.apollographql.apollo3.cache.normalized.withStore
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runWithMainLoop

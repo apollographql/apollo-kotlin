@@ -16,7 +16,7 @@ kotlin {
     val commonTest by getting {
       dependencies {
         implementation("com.apollographql.apollo3:apollo-testing-support")
-        implementation("com.apollographql.apollo3:apollo-cache-interceptor")
+        implementation("com.apollographql.apollo3:apollo-normalized-cache")
       }
     }
 

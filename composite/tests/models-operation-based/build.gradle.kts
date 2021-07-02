@@ -10,7 +10,7 @@ kotlin {
     val commonMain by getting {
       dependencies {
         implementation("com.apollographql.apollo3:apollo-runtime")
-        implementation("com.apollographql.apollo3:apollo-cache-interceptor")
+        implementation("com.apollographql.apollo3:apollo-normalized-cache")
         implementation("com.apollographql.apollo3:apollo-adapters")
       }
     }
