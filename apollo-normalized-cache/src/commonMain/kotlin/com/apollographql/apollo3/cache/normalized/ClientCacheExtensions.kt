@@ -67,14 +67,7 @@ fun ApolloClient.withNormalizedCache(
 
 fun ApolloClient.withStore(store: ApolloStore, writeToCacheAsynchronously: Boolean = false): ApolloClient {
   return withInterceptor(ApolloCacheInterceptor(store, writeToCacheAsynchronously))
-      .withExecutionContext(StoreExecutionContext(store))
 }
-
-/**
- * Returns the store used with this [ApolloClient] if any
- */
-val ApolloClient.store: ApolloStore
-  get() = executionContext[StoreExecutionContext]?.store ?: error("This ApolloClient doesn't have a store")
 
 fun <D: Query.Data> ApolloRequest<D>.withFetchPolicy(fetchPolicy: FetchPolicy): ApolloRequest<D> {
   val context = executionContext[CacheInput] ?: DefaultCacheInput(operation)

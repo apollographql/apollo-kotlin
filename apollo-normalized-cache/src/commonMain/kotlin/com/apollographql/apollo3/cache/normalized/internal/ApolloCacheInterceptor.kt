@@ -28,6 +28,10 @@ internal class ApolloCacheInterceptor(
     private val store: ApolloStore,
     private val writeToCacheAsynchronously: Boolean,
 ) : ApolloInterceptor {
+  init {
+    // The store has a MutableSharedFlow that doesn't like being frozen
+    ensureNeverFrozen(store)
+  }
   private suspend fun maybeAsync(executionContext: ExecutionContext, block: suspend () -> Unit) {
     val coroutineScope = executionContext[ClientScope]?.coroutineScope
     if (writeToCacheAsynchronously && coroutineScope != null) {
@@ -162,7 +166,6 @@ internal class ApolloCacheInterceptor(
   ): ApolloResponse<D> {
     when (fetchPolicy) {
       FetchPolicy.CacheFirst -> {
-        ensureNeverFrozen(store)
         val cacheResult = kotlin.runCatching {
           readFromCache(request, customScalarAdapters, cacheInput)
         }
