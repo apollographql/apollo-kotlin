@@ -40,6 +40,7 @@ dependencies {
     implementation("com.apollographql.apollo3:deprecated-apollo-runtime")
     implementation("com.apollographql.apollo3:deprecated-apollo-http-cache")
     implementation("com.apollographql.apollo3:deprecated-apollo-android-support")
+    implementation("com.apollographql.apollo3:apollo-normalized-cache")
     implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite")
     implementation(groovy.util.Eval.x(project, "x.dep.okHttp.logging"))
     implementation(groovy.util.Eval.x(project, "x.dep.androidx.appcompat"))
