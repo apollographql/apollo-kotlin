@@ -1,10 +1,9 @@
-package com.apollographql.apollo3.adapters
+package com.apollographql.apollo3.adapter
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
-import java.util.Date
 
 /**
  * An [Adapter] that converts a Json number to/from a Java [Long]

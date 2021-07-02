@@ -1,6 +1,6 @@
 package test
 
-import com.apollographql.apollo3.adapters.LocalDateAdapter
+import com.apollographql.apollo3.adapter.LocalDateAdapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.fromJson
