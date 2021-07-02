@@ -13,7 +13,7 @@ fun Project.configureMppDefaults(withJs: Boolean = true) {
     jvm()
 
     if (withJs) {
-      js {
+      js(BOTH) {
         useCommonJs()
         browser()
         nodejs()

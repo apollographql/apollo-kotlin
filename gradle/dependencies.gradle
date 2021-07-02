@@ -18,7 +18,7 @@ def versions = [
     moshix                : '0.11.2',
     okHttp4               : '4.9.0',
     okHttp                : '3.12.11', // Keep this to keep supporting older Android devices
-    okio                  : '2.10.0',
+    okio                  : '3.0.0-alpha.6',
     rxjava                : '2.2.20',
     rxjava3               : '3.0.7',
     rxandroid             : '2.0.1',
