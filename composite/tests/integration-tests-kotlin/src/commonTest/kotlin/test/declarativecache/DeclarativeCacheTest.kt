@@ -76,7 +76,7 @@ class DeclarativeCacheTest {
   @Test
   fun canResolveListProgrammatically() = runWithMainLoop {
     val cacheResolver = object : CacheResolver() {
-      override fun resolveField(field: CompiledField, variables: Executable.Variables, parent: Map<String, Any?>, parentKey: String): Any? {
+      override fun resolveField(field: CompiledField, variables: Executable.Variables, parent: Map<String, Any?>, parentId: String): Any? {
         if (field.name == "books") {
           val isbns = field.resolveArgument("isbns", variables) as? List<String>
           if (isbns != null) {
@@ -84,7 +84,7 @@ class DeclarativeCacheTest {
           }
         }
 
-        return super.resolveField(field, variables, parent, parentKey)
+        return super.resolveField(field, variables, parent, parentId)
       }
     }
     val store = ApolloStore(MemoryCacheFactory(), cacheResolver)

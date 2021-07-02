@@ -16,10 +16,10 @@ class CacheResolverTest {
   @Test
   fun cacheResolverCanResolveQuery() {
     val resolver = object : CacheResolver() {
-      override fun resolveField(field: CompiledField, variables: Executable.Variables, parent: Map<String, Any?>, parentKey: String): Any? {
+      override fun resolveField(field: CompiledField, variables: Executable.Variables, parent: Map<String, Any?>, parentId: String): Any? {
         return when (field.name) {
           "hero" -> mapOf("name" to "Luke")
-          else -> super.resolveField(field, variables, parent, parentKey)
+          else -> super.resolveField(field, variables, parent, parentId)
         }
       }
     }

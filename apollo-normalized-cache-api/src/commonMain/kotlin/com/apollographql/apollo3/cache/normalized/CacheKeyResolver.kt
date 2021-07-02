@@ -29,9 +29,9 @@ abstract class CacheKeyResolver : CacheResolver() {
    * If an individual [CacheKey] is null, the resulting object will be null in the response.
    * If the returned list of [CacheKey]s is null, the resolver will use the default handling and use any previously cached value.
    */
-  abstract fun listOfCacheKeysForField(field: CompiledField, variables: Executable.Variables): List<CacheKey?>?
+  open fun listOfCacheKeysForField(field: CompiledField, variables: Executable.Variables): List<CacheKey?>? = null
 
-  final override fun resolveField(field: CompiledField, variables: Executable.Variables, parent: Map<String, Any?>, parentKey: String): Any? {
+  final override fun resolveField(field: CompiledField, variables: Executable.Variables, parent: Map<String, Any?>, parentId: String): Any? {
     var type = field.type
     if (type is CompiledNotNullType) {
       type = type.ofType
@@ -56,6 +56,6 @@ abstract class CacheKeyResolver : CacheResolver() {
       }
     }
 
-    return super.resolveField(field, variables, parent, parentKey)
+    return super.resolveField(field, variables, parent, parentId)
   }
 }
