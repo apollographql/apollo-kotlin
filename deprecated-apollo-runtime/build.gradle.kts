@@ -9,7 +9,7 @@ metalava {
 dependencies {
   api(project(":apollo-api"))
   api(project(":deprecated-apollo-http-cache-api"))
-  api(project(":apollo-normalized-cache"))
+  api(project(":apollo-normalized-cache-common"))
   api(project(":deprecated-apollo-runtime-common"))
   api(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
   implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))

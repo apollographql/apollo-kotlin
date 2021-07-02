@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.adapters
+package com.apollographql.apollo3.adapter
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters

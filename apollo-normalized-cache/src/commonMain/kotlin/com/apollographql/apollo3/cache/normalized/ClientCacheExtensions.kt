@@ -1,18 +1,20 @@
-package com.apollographql.apollo3.interceptor.cache
+package com.apollographql.apollo3.cache.normalized
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.ClientContext
+import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.cache.CacheHeaders
-import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.interceptor.cache.internal.ApolloCacheInterceptor
-import com.apollographql.apollo3.interceptor.cache.internal.CacheInput
-import com.apollographql.apollo3.interceptor.cache.internal.CacheOutput
-import com.apollographql.apollo3.interceptor.cache.internal.DefaultCacheInput
+import com.apollographql.apollo3.cache.normalized.internal.ApolloCacheInterceptor
+import com.apollographql.apollo3.cache.normalized.internal.CacheInput
+import com.apollographql.apollo3.cache.normalized.internal.CacheOutput
+import com.apollographql.apollo3.cache.normalized.internal.DefaultCacheInput
+import com.apollographql.apollo3.cache.normalized.internal.StoreExecutionContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -42,6 +44,26 @@ enum class FetchPolicy {
 
 const val CACHE_FLAG_DO_NOT_STORE = 1
 const val CACHE_FLAG_STORE_PARTIAL_RESPONSE = 2
+
+/**
+ * Configures an [ApolloClient] with a normalized cache.
+ *
+ * @param normalizedCacheFactory a factory that creates a [NormalizedCache]. It will only be called once.
+ * The reason this is a factory is to enforce creating the cache from a non-main thread. For native the thread
+ * where the cache is created will also be isolated so that the cache can be mutated.
+ *
+ * @param cacheResolver a [CacheResolver] to customize normalization
+ *
+ * @param writeToCacheAsynchronously set to true to write to the cache after the response has been emitted.
+ * This allows to display results faster
+ */
+fun ApolloClient.withNormalizedCache(
+    normalizedCacheFactory: NormalizedCacheFactory,
+    cacheResolver: CacheResolver = CacheResolver(),
+    writeToCacheAsynchronously: Boolean = false
+): ApolloClient {
+  return withStore(ApolloStore(normalizedCacheFactory, cacheResolver), writeToCacheAsynchronously)
+}
 
 fun ApolloClient.withStore(store: ApolloStore, writeToCacheAsynchronously: Boolean = false): ApolloClient {
   return withInterceptor(ApolloCacheInterceptor(store, writeToCacheAsynchronously))

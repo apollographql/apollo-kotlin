@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.interceptor.cache.internal
+package com.apollographql.apollo3.cache.normalized.internal
 
 import com.apollographql.apollo3.ClientScope
 import com.apollographql.apollo3.api.ApolloRequest
@@ -9,13 +9,12 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.internal.dependentKeys
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
-import com.apollographql.apollo3.interceptor.cache.CACHE_FLAG_DO_NOT_STORE
-import com.apollographql.apollo3.interceptor.cache.CACHE_FLAG_STORE_PARTIAL_RESPONSE
-import com.apollographql.apollo3.interceptor.cache.FetchPolicy
-import com.apollographql.apollo3.interceptor.cache.isFromCache
+import com.apollographql.apollo3.cache.normalized.CACHE_FLAG_DO_NOT_STORE
+import com.apollographql.apollo3.cache.normalized.CACHE_FLAG_STORE_PARTIAL_RESPONSE
+import com.apollographql.apollo3.cache.normalized.FetchPolicy
+import com.apollographql.apollo3.cache.normalized.isFromCache
 import com.apollographql.apollo3.mpp.ensureNeverFrozen
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -29,6 +28,10 @@ internal class ApolloCacheInterceptor(
     private val store: ApolloStore,
     private val writeToCacheAsynchronously: Boolean,
 ) : ApolloInterceptor {
+  init {
+    // The store has a MutableSharedFlow that doesn't like being frozen
+    ensureNeverFrozen(store)
+  }
   private suspend fun maybeAsync(executionContext: ExecutionContext, block: suspend () -> Unit) {
     val coroutineScope = executionContext[ClientScope]?.coroutineScope
     if (writeToCacheAsynchronously && coroutineScope != null) {
@@ -163,7 +166,6 @@ internal class ApolloCacheInterceptor(
   ): ApolloResponse<D> {
     when (fetchPolicy) {
       FetchPolicy.CacheFirst -> {
-        ensureNeverFrozen(store)
         val cacheResult = kotlin.runCatching {
           readFromCache(request, customScalarAdapters, cacheInput)
         }

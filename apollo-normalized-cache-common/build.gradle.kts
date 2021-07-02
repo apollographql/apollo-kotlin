@@ -1,23 +1,24 @@
 plugins {
+  `java-library`
   kotlin("multiplatform")
 }
 
-configureMppDefaults(withJs = false)
+configureMppDefaults()
 
 kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
         api(project(":apollo-api"))
-        api(project(":apollo-runtime"))
-        api(project(":apollo-normalized-cache"))
+        api(project(":apollo-mpp-utils"))
+        api(project(":apollo-normalized-cache-api"))
         api(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
       }
     }
 
-    val commonTest by getting {
+    val jvmMain by getting {
       dependencies {
-        implementation(project(":apollo-testing-support"))
+        implementation(groovy.util.Eval.x(project, "x.dep.cache"))
       }
     }
 
@@ -28,4 +29,3 @@ kotlin {
     }
   }
 }
-

@@ -20,6 +20,9 @@ actual class DefaultHttpEngine(
     private val httpCallFactory: Call.Factory,
 ) : HttpEngine {
 
+  // an overload that takes an OkHttpClient for easier discovery
+  constructor(okHttpClient: OkHttpClient) : this(okHttpClient as Call.Factory)
+
   actual constructor(
       connectTimeoutMillis: Long,
       readTimeoutMillis: Long,

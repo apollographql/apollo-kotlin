@@ -1,12 +1,14 @@
-package com.apollographql.apollo3.interceptor.cache.internal
+package com.apollographql.apollo3.cache.normalized.internal
 
+import com.apollographql.apollo3.api.ClientContext
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.RequestContext
 import com.apollographql.apollo3.api.ResponseContext
 import com.apollographql.apollo3.cache.CacheHeaders
-import com.apollographql.apollo3.interceptor.cache.FetchPolicy
+import com.apollographql.apollo3.cache.normalized.ApolloStore
+import com.apollographql.apollo3.cache.normalized.FetchPolicy
 
 internal class CacheInput(
     val fetchPolicy: FetchPolicy,
@@ -48,4 +50,8 @@ internal class CacheOutput(
     val isFromCache: Boolean
 ) : ResponseContext(CacheOutput) {
   companion object Key : ExecutionContext.Key<CacheOutput>
+}
+
+internal class StoreExecutionContext(val store: ApolloStore): ClientContext(Key) {
+  companion object Key: ExecutionContext.Key<StoreExecutionContext>
 }

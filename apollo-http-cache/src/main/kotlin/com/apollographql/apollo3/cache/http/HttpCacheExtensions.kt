@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.cache.http
 
+import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
@@ -10,7 +11,10 @@ import com.apollographql.apollo3.api.RequestContext
 import com.apollographql.apollo3.api.ResponseContext
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposerParams
 import com.apollographql.apollo3.api.http.HttpRequestComposerParams
+import com.apollographql.apollo3.cache.http.internal.FileSystem
+import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.network.http.HttpResponseInfo
+import java.io.File
 
 
 enum class HttpFetchPolicy {
@@ -35,6 +39,25 @@ enum class HttpFetchPolicy {
    * Only try network
    */
   NetworkOnly,
+}
+
+fun ApolloClient.withHttpCache(
+    directory: File,
+    maxSize: Long,
+): ApolloClient {
+  val networkTransport = networkTransport
+  check(networkTransport is HttpNetworkTransport) {
+    "withHttpCache requires a HttpNetworkTransport"
+  }
+  return copy(
+      networkTransport = networkTransport.swapEngine(
+        newEngine = CachingHttpEngine(
+            directory = directory,
+            maxSize = maxSize,
+            delegate = networkTransport.engine
+        )
+      )
+  )
 }
 
 fun <D: Query.Data> ApolloRequest<D>.withHttpFetchPolicy(httpFetchPolicy: HttpFetchPolicy): ApolloRequest<D> {

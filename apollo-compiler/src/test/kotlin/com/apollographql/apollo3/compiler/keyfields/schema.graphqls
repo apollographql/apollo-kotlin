@@ -2,11 +2,11 @@ type Query {
   node: Node
 }
 
-interface Node @client__typePolicy(keyFields: "id"){
+interface Node @typePolicy(keyFields: "id"){
   id: String!
 }
 
-type Book implements Node @client__typePolicy(keyFields: "isbn") {
+type Book implements Node @typePolicy(keyFields: "isbn") {
   id: String!
   isbn: String!
 }

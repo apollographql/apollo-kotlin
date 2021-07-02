@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.flow
 
 class HttpNetworkTransport(
     private val httpRequestComposer: HttpRequestComposer,
-    private val engine: HttpEngine,
+    val engine: HttpEngine,
     private val interceptors: List<HttpInterceptor> = emptyList(),
 ) : NetworkTransport {
   private val worker = NonMainWorker()
@@ -122,4 +122,14 @@ class HttpNetworkTransport(
   }
 
   override fun dispose() {}
+
+  fun swapEngine(
+      newEngine: HttpEngine,
+      ): HttpNetworkTransport {
+    return HttpNetworkTransport(
+        httpRequestComposer = httpRequestComposer,
+        engine = newEngine,
+        interceptors = interceptors
+    )
+  }
 }

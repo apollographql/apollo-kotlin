@@ -13,7 +13,6 @@ kotlin {
       dependencies {
         implementation("com.apollographql.apollo3:apollo-api")
         implementation("com.apollographql.apollo3:apollo-normalized-cache")
-        implementation("com.apollographql.apollo3:apollo-cache-interceptor")
         implementation("com.apollographql.apollo3:apollo-testing-support")
         implementation("com.apollographql.apollo3:apollo-mockserver")
         implementation("com.apollographql.apollo3:apollo-adapters")

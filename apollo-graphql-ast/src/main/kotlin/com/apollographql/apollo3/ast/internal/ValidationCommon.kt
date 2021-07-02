@@ -200,7 +200,7 @@ internal fun ValidationScope.extraValidateNonNullDirective(directive: GQLDirecti
 }
 
 /**
- * Extra Apollo-specific validation for @client__typePolicy
+ * Extra Apollo-specific validation for @typePolicy
  */
 internal fun ValidationScope.extraValidateTypePolicyDirective(directive: GQLDirective) {
   (directive.arguments!!.arguments.first().value as GQLStringValue).value.parseAsGQLSelections().getOrThrow().forEach {

@@ -4,7 +4,7 @@ import codegen.models.HeroAndFriendsWithFragmentsQuery
 import codegen.models.fragment.HeroWithFriendsFragment
 import codegen.models.fragment.HumanWithIdFragment
 import codegen.models.type.Types
-import com.apollographql.apollo3.adapters.LocalDateAdapter
+import com.apollographql.apollo3.adapter.LocalDateAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.fromJson
