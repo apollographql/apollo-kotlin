@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.exception.ApolloException
 import com.benasher44.uuid.Uuid
 
 /**
@@ -9,7 +10,7 @@ class ApolloResponse<out D : Operation.Data>(
     val requestUuid: Uuid,
 
     /**
-     * GraphQL operation this response represents of
+     * The GraphQL operation this response represents
      */
     val operation: Operation<*>,
 
@@ -36,6 +37,19 @@ class ApolloResponse<out D : Operation.Data>(
      */
     val executionContext: ExecutionContext = ExecutionContext.Empty
 ) {
+
+  /**
+   * A shorthand property to get a non-nullable if handling partial data is not important
+   */
+  val dataOrThrow: D
+    get() {
+      return if (hasErrors()) {
+        throw ApolloException("The response has errors")
+      } else {
+        data ?: throw  ApolloException("The server did not return any data")
+      }
+    }
+
   fun hasErrors(): Boolean = !errors.isNullOrEmpty()
 
     fun copy(
