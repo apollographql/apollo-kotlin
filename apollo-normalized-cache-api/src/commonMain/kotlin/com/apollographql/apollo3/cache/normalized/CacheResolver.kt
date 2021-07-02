@@ -13,7 +13,6 @@ open class CacheResolver {
 
   open fun cacheKeyForObject(
       type: CompiledNamedType,
-      variables: Executable.Variables,
       map: Map<String, @JvmSuppressWildcards Any?>,
   ): CacheKey? {
     val keyFields = type.keyFields()
@@ -61,7 +60,7 @@ open class CacheResolver {
 }
 
 class IdCacheResolver: CacheResolver() {
-  override fun cacheKeyForObject(type: CompiledNamedType, variables: Executable.Variables, map: Map<String, Any?>): CacheKey? {
+  override fun cacheKeyForObject(type: CompiledNamedType, map: Map<String, Any?>): CacheKey? {
     return map["id"]?.toString()?.let { CacheKey(it) }
   }
 

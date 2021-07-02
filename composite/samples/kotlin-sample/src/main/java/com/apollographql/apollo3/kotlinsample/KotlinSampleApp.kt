@@ -46,7 +46,7 @@ class KotlinSampleApp : Application() {
 
     val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory(this, "github_cache")
     val cacheResolver = object : CacheResolver() {
-      override fun cacheKeyForObject(type: CompiledNamedType, variables: Executable.Variables, map: Map<String, Any?>): CacheKey? {
+      override fun cacheKeyForObject(type: CompiledNamedType, map: Map<String, Any?>): CacheKey? {
         return if (map["__typename"] == "Repository") {
           CacheKey(map["id"] as String)
         } else {
