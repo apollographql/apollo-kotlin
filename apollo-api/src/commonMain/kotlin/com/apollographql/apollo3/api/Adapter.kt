@@ -130,4 +130,3 @@ fun <T, M : Map<String, Any?>> Adapter<T>.fromMap(
 ): T {
   return fromJson(MapJsonReader(map), customScalarAdapters)
 }
-

@@ -1,9 +1,8 @@
-
 ---
 title: Inline Fragments
 ---
 
-Apollo Android supports [GraphQL inline fragments](https://graphql.org/learn/queries/#inline-fragments). They are not to be confused with regular fragments that are used to reused fields. Inline fragments are used to access polymorphic types:
+Apollo Android supports [GraphQL inline fragments](https://graphql.org/learn/queries/#inline-fragments). They are not to be confused with named fragments that are used to reused fields. Inline fragments are used to access polymorphic types:
 
 ```graphql:title=Hero.graphql
 query HeroForEpisode($ep: Episode!) {

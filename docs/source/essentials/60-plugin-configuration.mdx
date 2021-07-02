@@ -1,0 +1,106 @@
+---
+title: Gradle plugin configuration
+---
+
+Apollo Android comes with logical defaults that will work for the majority of use cases. If you're getting started, see the [getting started guide](./get-started/) for an overview of the base configuration.
+
+This page describes more advanced use cases.
+
+## Using multiple schemas
+
+Apollo Android supports using multiple endpoints and multiple schemas. For this, create multiple services:
+
+```kotlin
+apollo {
+  service("starwars") {
+    srcDir("src/main/graphql/starwars")
+    packageName = "com.starwars"
+  }
+  service("githunt") {
+    srcDir("src/main/graphql/githunt")
+    packageName = "com.githunt"
+  }
+}
+```
+
+## Specifying the schema location
+
+Specify the schema location using the `schemaFile` property:
+
+```kotlin
+apollo {
+  schemaFile.set(file("shared/graphql/schema.graphqls"))
+}
+```
+
+## Extending the schema
+
+Apollo Android supports client directives like @nonnull, @optional, @typePolicy, etc. These directives allow to extend the schema with client-specific information.
+
+By default, Apollo Android will look for `schema.[graphqls|json|sdl]` files and merge all of them. If that doesn't work, you can also use the `schemaFiles` property:
+
+```kotlin
+apollo {
+  schemaFiles.set(setOf(file("shared/graphql/schema.graphqls"), file("shared/graphql/extra.graphqls")))
+}
+```
+
+## Wiring the generated sources
+
+By default, Apollo Android adds the generated sources:
+* to the `main` sourceSet for JVM projects
+* to `commonMain` for multiplatform projects
+* to all non-test variants for Android projects
+
+You can customize this with `withOutputDir`. For an exemple, to wire a service to all the test source set of a Kotlin JVM project:
+
+```
+apollo {
+  withOutputDir {
+    val kotlinProjectExtension = project.extensions.get("kotlin") as KotlinProjectExtension
+    // Because outputDir is a Gradle Property, it will carry the task dependency to the codegen task
+    kotlinProjectExtension.sourceSets.getByName("test").kotlin.srcDir(outputDir)
+  }
+}
+```
+
+## Downloading a schema
+
+By default the Gradle plugin registers a `downloadApolloSchema` task that you can use from the command line:
+
+```
+# --schema is interpreted relative to the current working directory. This example
+# assumes the root project directory and an Android app in `app`
+./gradlew downloadApolloSchema \
+  --endpoint="https://your.domain/graphql/endpoint" \
+  --schema="app/src/main/graphql/com/example/schema.graphqls"
+```
+
+If you're doing this often or want to automate the process from CI, configure an `introspection {}` block:
+
+```kotlin
+apollo {
+  service("starwars") {
+    introspection {
+      endpointUrl = "https://your.domain/graphql/endpoint"
+      // The path is interpreted relative to the current project here, no need to prepend 'app'
+      schemaFile.set(file("src/main/graphql/com/example/schema.graphqls"))
+    }
+  }
+}
+```
+
+If you have a [Studio](https://www.apollographql.com/docs/studio/) registry, use the `registry` block instead:
+
+```kotlin
+apollo {
+  service("starwars") {
+    registry {
+      key = System.getenv("APOLLO_KEY")
+      graph = System.geten("APOLLO_GRAPH")
+      // The path is interpreted relative to the current project here, no need to prepend 'app'
+      schemaFile.set(file("src/main/graphql/com/example/schema.graphqls"))
+    }
+  }
+}
+```

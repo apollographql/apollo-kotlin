@@ -262,6 +262,19 @@ interface Service {
   val outputDir: DirectoryProperty
 
   /**
+   * Whether to generate the operationOutput.json
+   *
+   * Defaults value: false
+   */
+  val generateOperationOutput: Property<Boolean>
+
+  /**
+   * The file where the operation output will be written. It's called [operationOutputFile] but this an "input" parameter for the compiler
+   * If you want a [RegularFileProperty] that carries the task dependency, use [withOperationOutput]
+   */
+  val operationOutputFile: RegularFileProperty
+
+  /**
    * A debug directory where the compiler will output intermediary results
    */
   val debugDir: DirectoryProperty

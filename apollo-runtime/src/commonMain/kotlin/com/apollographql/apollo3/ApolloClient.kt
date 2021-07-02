@@ -188,11 +188,11 @@ fun ApolloClient(
 )
 
 
-fun ApolloClient.withAutoPersistedQueries(): ApolloClient {
+fun ApolloClient.withAutoPersistedQueries(method: HttpMethod = HttpMethod.Post): ApolloClient {
   return withInterceptor(AutoPersistedQueryInterceptor())
       .withExecutionContext(
           HttpRequestComposerParams(
-              HttpMethod.Post,
+              method,
               sendApqExtensions = true,
               sendDocument = false,
               headers = emptyMap()

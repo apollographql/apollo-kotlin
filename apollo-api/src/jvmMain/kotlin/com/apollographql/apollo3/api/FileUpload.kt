@@ -5,7 +5,8 @@ import okio.buffer
 import okio.source
 import java.io.File
 
-class FileUpload(override val contentType: String, val file: File): Upload {
+fun Upload.Companion.fromFile(file: File, contentType: String) = object : Upload {
+  override val contentType = contentType
   override val contentLength = file.length()
   override val fileName = file.name
 

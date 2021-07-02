@@ -372,9 +372,9 @@ abstract class DefaultApolloExtension(
         set(service.debugDir)
         disallowChanges()
       }
-      if (service.operationOutputAction != null) {
+      if (service.generateOperationOutput.getOrElse(false)) {
         task.operationOutputFile.apply {
-          set(BuildDirLayout.operationOutput(project, service))
+          set(service.operationOutputFile.orElse(BuildDirLayout.operationOutput(project, service)))
           disallowChanges()
         }
       }

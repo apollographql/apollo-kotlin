@@ -54,6 +54,9 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   abstract override val debugDir: DirectoryProperty
   abstract override val outputDir: DirectoryProperty
 
+  abstract override val generateOperationOutput: Property<Boolean>
+  abstract override val operationOutputFile: RegularFileProperty
+
   abstract override val warnOnDeprecatedUsages: Property<Boolean>
 
   abstract override val failOnWarnings: Property<Boolean>
@@ -132,6 +135,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
 
   override fun withOperationOutput(action: Action<in Service.OperationOutputWire>) {
     this.operationOutputAction = action
+    generateOperationOutput.set(true)
   }
 
   var outputDirAction: Action<in Service.OutputDirWire>? = null

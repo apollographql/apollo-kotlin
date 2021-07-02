@@ -1,0 +1,374 @@
+---
+title: Migrating to 3.0
+description: Migrate to Apollo Android 3.0
+---
+
+import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
+
+Apollo Android 3.0 is a rewrite of most of the internals of Apollo Android in Kotlin with, amongst other things:
+
+* Kotlin-first, coroutine-based APIs.
+* A unified runtime for both JVM and multiplatform.
+
+While the concepts stay the same, a lot of APIs have changed to work better in Kotlin. This page presents the important changes and how to migrate from Apollo Android 2.x to Apollo Android 3.x
+
+## `com.apollographql.apollo3` is the new package name, group id and plugin id
+
+In order to avoid conflicting classes in the classpath and dependencies conflicts, and according to the [interoperability policy for major version updates](https://jakewharton.com/java-interoperability-policy-for-major-version-updates/), Apollo Android 3.0 uses a new maven group id and package name: `com.apollographql.apollo3`
+
+**Group id:**
+
+The maven group id used to identify the [artifacts](https://repo1.maven.org/maven2/com/apollographql/apollo3/) is now `com.apollographql.apollo3`
+
+```kotlin
+// Replace:
+implementation("com.apollographql.apollo:apollo-runtime:$version")
+implementation("com.apollographql.apollo:apollo-api:$version")
+
+// With:
+implementation("com.apollographql.apollo3:apollo-runtime:$version")
+implementation("com.apollographql.apollo3:apollo-api:$version")
+```
+
+**Package name:**
+
+All the classes are now in the `com.apollographql.apollo3` package.
+
+```kotlin
+// Replace:
+import com.apollographql.apollo.ApolloClient
+
+// With:
+import com.apollographql.apollo3.ApolloClient
+```
+
+**Gradle plugin id:**
+
+The gradle plugin id is now `com.apollographql.apollo3`.
+
+```kotlin
+// Replace:
+plugins {
+  id("com.apollographql.apollo").version("$version")
+}
+
+// With:
+plugins {
+  id("com.apollographql.apollo3").version("$version")
+}
+```
+
+Most of the times, these changes can be a made using "search and replace".
+
+## Gradle configuration
+
+**generateKotlinModels**
+
+Apollo Android now generates Kotlin models by default. You can safely remove this:
+
+```
+apollo {
+  // remove this
+  generateKotlinModels.set(true)
+}
+```
+
+At the time of writing, Java codegen is not working yet but will be added later. Follow https://github.com/apollographql/apollo-android/issues/2616 for updates.
+
+**Target package name**
+
+Apollo Android 2.x uses the file path of GraphQL operation and schema files as well as `packageName` and `rootPackageName` options to compute the target package name. While this is very flexible, it's not easy to anticipate the final package name that is going to be used.
+
+Apollo Android 3.x uses a flat package name by default using the `packageName` option:
+
+```kotlin
+apollo {
+  packageName.set("com.example")
+}
+```
+
+The generated classes will be:
+
+```
+- com.example.SomeQuery
+- com.example.fragment.SomeFragment
+- com.example.type.SomeInputObject
+- com.example.type.SomeEnum
+- com.example.type.Types // types is a slimmed down version of the schema
+```
+
+If you need different package names for different operation folders, you can fallback to the 2.x behaviour with:
+
+```kotlin
+apollo {
+  filePathAwarePackageNameGenerator("$rootPackageName")
+}
+```
+
+For even more control, you can also define your own `PackageNameGenerator`:
+
+```kotlin
+apollo {
+  packageNameGenerator.set(customPackageNameGenerator)
+}
+```
+
+
+**Compilation units are removed**
+
+Apollo Android 2.x creates multiple `CompilationUnit`s for different Android variants or different Kotlin source sets. This runs the GraphQL compiler multiple times. For an example on Android, it will generate the models at least twice, once for the debug build and once fot the release build. Most of the times the graphql files are the same and this increases the build time for no reason.
+
+Apollo Android 3.x doesn't have `CompilationUnit`s any more. Each `Service` is exactly one compilation. For Android projects, the generated classes will be added to all the variants so that they are generated only once.
+
+If you need different operations for different variants, you can create multiple services for each Android variants with:
+
+```
+apollo {
+  createAllAndroidVariantServices(
+    sourceFolder = "starwars", // will look into src/main/graphql/starwars, src/debug/graphql/starwars, etc
+    nameSuffix = "starwars", // will create tasks named generateDebugStarwarsApolloSources, generateReleaseStarwarsApolloSources, etc..
+  ) {
+    // configure your service here
+  }
+}
+```
+
+If you used `graphqlSourceDirectorySet` to explicitely specify the location of GraphQL files, you can now use `srcDir`:
+
+
+```kotlin
+apollo {
+  // Replace
+  graphqlSourceDirectorySet.srcDirs += "shared/graphql"
+
+  // With
+  srcDir("shared/graphql")
+}
+```
+
+## Constructors
+
+Apollo Android 2.x uses the `Builder` pattern in different places to create new instances.
+
+Apollo Android 3.x leverages Kotlin default parameter and exposes the constructors directly as well as top-level functions.
+
+For an example, for `ApolloClient`:
+
+```kotlin
+// Replace
+val apolloClient = ApolloClient.builder()
+    .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com")
+    .build()
+
+// With
+val apolloClient = ApolloClient(serverUrl = "https://apollo-fullstack-tutorial.herokuapp.com")
+```
+
+To customize the `OkHttpClient`:
+
+```
+// Replace
+val apolloClient = ApolloClient.builder()
+    .okHttpClient(okHttpClient)
+    .build()
+
+// With
+val apolloClient = ApolloClient(
+  networkTransport = DefaultHttpNetworkTransport(callFactory = okHttpClient)
+)
+```
+
+## Coroutines APIs
+
+Apollo Android 2.x has callback APIs which can become verbose and require explicitely handling cancellation.
+
+Apollo Android 3.x exposes more concise coroutines APIs that handle cancellation automatically through the coroutine scope.
+
+```kotlin
+// Replace
+apolloClient.query(query).await()
+// With
+apolloClient.query(query)
+
+// Replace
+apolloClient.subscribe(subscription).toFlow()
+// With
+apolloClient.subscribe(subscription)
+```
+
+## Normalized cache
+
+Apollo Android 2.x runtime has a depency on the normalized cache APIs and it is possible to call cache methods even if no cache implementation was in the classpath.
+
+Apollo Android 3.x runtime is more modular and doesn't know anything about normalized cache by default. To add normalized cache support, include `apollo-normalizes-cache` in the classpath:
+
+```kotlin
+dependencies {
+  // Keep for base functionality and memory cache
+  implementation("com.apollographql.apollo:apollo-normalized-cache")
+  // Keep for Sqlite cache
+  implementation("com.apollographql.apollo:apollo-normalized-cache-sqlite")
+}
+```
+
+```kotlin
+// Replace
+val cacheFactory = LruNormalizedCacheFactory(
+                     EvictionPolicy.builder().maxSizeBytes(10 * 1024 * 1024).build()
+                   )
+
+val apolloClient = ApolloClient.builder()
+  .serverUrl("https://...")
+  .normalizedCache(cacheFactory)
+  .build())
+
+// With
+val cacheFactory = MemoryCacheFactory(maxSizeBytes = 10 * 1024 * 1024)
+val apolloClient = ApolloClient("https://...")
+                      .withNormalizedCache(cacheFactory)
+```
+
+Configuring the fetch policy is now made on an `ApolloRequest` instance:
+
+```kotlin
+// Replace
+val response = apolloClient.query(query)
+                      .toBuilder()
+                      .responseFetcher(ApolloResponseFetchers.CACHE_FIRST)
+                      .build()
+                      .await()
+
+// With
+val request = ApolloRequest(query).withFetchPolicy(CacheFirst)
+val response = apolloClient.query(request)
+```
+
+## HTTP cache
+
+Similarly, the HTTP cache is configurable through extension functions:
+
+```kotlin
+// Replace
+val cacheStore = DiskLruHttpCacheStore()
+val apolloClient = ApolloClient.builder()
+    .serverUrl("/")
+    .httpCache(ApolloHttpCache(cacheStore))
+    .build()
+
+// With
+val apolloClient = ApolloClient("https://...")
+                      .withHttpCache(File(cacheDir, "apolloCache"), 1024 * 1024)
+```
+
+Configuring the HTTP fetch policy is now made on an `ApolloRequest` instance:
+
+```kotlin
+// Replace
+val response = apolloClient.query(query)
+                      .toBuilder()
+                      .httpCachePolicy(HttpCachePolicy.CACHE_FIRST)
+                      .build()
+                      .await()
+
+// With
+val request = ApolloRequest(query).withHttpFetchPolicy(CacheFirst)
+val response = apolloClient.query(request)
+```
+
+## Optional
+
+Apollo Android distinguishes between null and absent values.
+
+Apollo Android 2.x uses `Input` to represent optional (maybe nullable) values.
+
+Apollo Android 3.x uses `Optional` instead so that it can be used in other places than input types. For an example, fields could be made optional with an [`@optional`](https://github.com/apollographql/apollo-android/blob/5c1ff82ccaded93ae7126cedc6d7835e63fed75a/apollo-compiler/src/main/resources/apollo.graphqls#L6) directive. `Optional` is a sealed class so `when` statements don't need an `else` branch.
+
+
+```kotlin
+// Replace
+Input.fromNullable(value)
+// With
+Optional.Present(value)
+
+// Replace
+Input.absent()
+// With
+Optional.Absent
+
+// Replace
+Input.optional(value)
+// With
+Optional.PresentIfNotNull(value)
+```
+
+## Non-optional variables by default
+
+Apollo Android 3.x represents operation variables without a default value as non-optional Kotlin constructor parameters by default.
+
+Given the below query:
+
+```graphql
+query GetHero($id: String) {
+  hero(id: $id)
+}
+```
+
+Apollo Android generates:
+
+```kotlin
+// 2.x
+class GetHero(val id: Input<String?> = Input.absent())
+
+// 3.x
+class GetHero(val id: String?)
+```
+
+By default the [GraphQL spec](https://spec.graphql.org/draft/#sec-Coercing-Variable-Values) treats variables of nullable type as optional. It is valid to omit them at runtime. In practice though, this is rarely used and makes the operations declaration verbose.
+
+Apollo Android 3.x removes the `Optional` wrapper so that it's easier to construct a query having nullable variables.
+
+If omitting a variable is desired, it's possible to opt-in the `Optional` wrapper with the `@optional` directive:
+
+```
+query GetHero($id: String @optional) {
+  hero(id: $id)
+}
+```
+
+**Note**: this only applies to variables. Input fields in input objects are still unsing `Optional` because omitting input fields happens often there.
+
+## CacheKeyResolver
+
+The `CacheKeyResolver` API has been updated to work with declarative cache.
+
+* `fromFieldRecordSet` is renamed to `cacheKeyForObject`
+* `fromFieldArguments` is renamed to `cacheKeyForField`
+* The `CacheKey` return value is made nullable and `CacheKey.NONE` is replaced by `null`
+
+```kotlin
+// Replace
+val resolver: CacheKeyResolver = object : CacheKeyResolver() {
+  override fun fromFieldRecordSet(field: ResponseField, recordSet: Map<String, Any>): CacheKey {
+    return CacheKey.from(recordSet["id"] as String)
+  }
+  override fun fromFieldArguments(field: ResponseField, variables: Operation.Variables): CacheKey {
+    return CacheKey.from(field.resolveArgument("id", variables) as String)
+  }
+}
+
+// With
+val cacheKeyResolver = object : CacheKeyResolver() {
+  override fun cacheKeyForObject(type: CompiledNamedType, obj: Map<String, Any?>): CacheKey? {
+    return (obj["id"] as? String)?.let { CacheKey(it) }
+  }
+  override fun cacheKeyForField(field: CompiledField, variables: Executable.Variables): CacheKey? {
+    return (field.resolveArgument("id", variables) as? String)?.let { CacheKey(it) }
+  }
+}
+```
+
+## Enums
+
+Apollo Android 2.x generates GraphQL enums as Kotlin enums by default with an option to generate them as sealed classes to get access to the raw name of the enum.
+
+Apollo Android 3.x drops the Kotlin enums to always generate sealed classes. In addition, Apollo Android 3.x uses the same case for enum names as their GraphQL definition instead of making them uppercase always. This allows to have different enums with different case, which is valid in GraphQL.
