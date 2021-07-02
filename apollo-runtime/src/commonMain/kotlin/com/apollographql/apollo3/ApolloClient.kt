@@ -38,7 +38,7 @@ class ApolloClient constructor(
     private val subscriptionNetworkTransport: NetworkTransport = networkTransport,
     private val customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
     private val interceptors: List<ApolloInterceptor> = emptyList(),
-    private val executionContext: ExecutionContext = ExecutionContext.Empty,
+    val executionContext: ExecutionContext = ExecutionContext.Empty,
     private val requestedDispatcher: CoroutineDispatcher? = null,
 ) {
 

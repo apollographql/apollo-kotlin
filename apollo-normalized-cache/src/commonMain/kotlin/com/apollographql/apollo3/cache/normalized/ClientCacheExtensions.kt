@@ -3,6 +3,8 @@ package com.apollographql.apollo3.cache.normalized
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.ClientContext
+import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
@@ -42,9 +44,25 @@ enum class FetchPolicy {
 const val CACHE_FLAG_DO_NOT_STORE = 1
 const val CACHE_FLAG_STORE_PARTIAL_RESPONSE = 2
 
+internal class StoreExecutionContext(val store: ApolloStore): ClientContext(Key) {
+  companion object Key: ExecutionContext.Key<StoreExecutionContext>
+}
 fun ApolloClient.withStore(store: ApolloStore, writeToCacheAsynchronously: Boolean = false): ApolloClient {
   return withInterceptor(ApolloCacheInterceptor(store, writeToCacheAsynchronously))
+      .withExecutionContext(StoreExecutionContext(store))
 }
+
+fun ApolloClient.withNormalizedCache(
+    normalizedCacheFactory: NormalizedCacheFactory,
+    cacheResolver: CacheResolver,
+    writeToCacheAsynchronously: Boolean = false
+): ApolloClient {
+  return withStore(ApolloStore(normalizedCacheFactory, cacheResolver), writeToCacheAsynchronously)
+}
+
+val ApolloClient.store: ApolloStore
+  get() = executionContext[StoreExecutionContext]?.store ?: error("This ApolloClient doesn't have a store")
+
 
 fun <D: Query.Data> ApolloRequest<D>.withFetchPolicy(fetchPolicy: FetchPolicy): ApolloRequest<D> {
   val context = executionContext[CacheInput] ?: DefaultCacheInput(operation)
