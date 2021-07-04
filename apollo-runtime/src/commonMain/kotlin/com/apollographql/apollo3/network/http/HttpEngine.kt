@@ -14,6 +14,8 @@ interface HttpEngine {
    * Executes the given HttpRequest, might throw
    */
   suspend fun execute(request: HttpRequest): HttpResponse
+
+  fun dispose()
 }
 
 expect class DefaultHttpEngine(

@@ -1,0 +1,12 @@
+query GetLaunch {
+  launch(id: "83") {
+    id
+  }
+}
+
+query GetLaunch2 {
+  launch(id: "84") {
+    id
+  }
+}
+

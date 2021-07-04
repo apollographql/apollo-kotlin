@@ -35,6 +35,9 @@ typealias InvokeOnCancellation = (CompletionHandler) -> Unit
  * A continuation that will always dispatch on the main thread
  */
 class MainContinuation<R>(continuation: CancellableContinuation<R>) {
+  init {
+    ensureNeverFrozen(continuation)
+  }
   private val continuationRef = StableRef.create(continuation)
 
   fun resumeWith(result: Result<R>) {

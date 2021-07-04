@@ -1,6 +1,5 @@
-package com.apollographql.apollo3.cache.normalized.internal
+package com.apollographql.apollo3.mpp
 
-import com.apollographql.apollo3.mpp.SingleThreadWorker
 import kotlinx.coroutines.runBlocking
 
 actual class Guard<R: Any> actual constructor(name: String, private val producer: () -> R) {

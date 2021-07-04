@@ -11,11 +11,12 @@ import com.apollographql.apollo3.api.internal.ResponseBodyParser
 import com.apollographql.apollo3.api.internal.json.buildJsonByteString
 import com.apollographql.apollo3.api.internal.json.buildJsonString
 import com.apollographql.apollo3.api.toJson
-import com.apollographql.apollo3.internal.WebSocketDispatcher
+import com.apollographql.apollo3.internal.BackgroundDispatcher
 import com.apollographql.apollo3.network.NetworkTransport
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -71,8 +72,8 @@ class WebSocketNetworkTransport(
 
   val subscriptionCount = mutableEvents.subscriptionCount
 
-  private val webSocketDispatcher = WebSocketDispatcher()
-  private val coroutineScope = CoroutineScope(webSocketDispatcher.coroutineDispatcher)
+  private val backgroundDispatcher = BackgroundDispatcher()
+  private val coroutineScope = CoroutineScope(backgroundDispatcher.coroutineDispatcher)
 
   init {
     /**
@@ -231,7 +232,8 @@ class WebSocketNetworkTransport(
     }
   }
   override fun dispose() {
-    webSocketDispatcher.dispose()
+    coroutineScope.cancel()
+    backgroundDispatcher.dispose()
   }
 }
 

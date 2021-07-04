@@ -90,6 +90,9 @@ actual class DefaultHttpEngine(
     continuation.resume(result.getOrThrow())
   }
 
+  override fun dispose() {
+  }
+
   private fun Headers.toMap(): Map<String, String> {
     return names().map {
       it to get(it)!!
