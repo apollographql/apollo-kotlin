@@ -9,7 +9,7 @@ object AppSync {
 
   /**
    * Helper method that builds the final URL. It will append the authorization and payload arguments as query parameters.
-   * This method can be use for both the HTTP URL as well as the WebSocket URL
+   * This method can be used for both the HTTP URL as well as the WebSocket URL
    *
    * Example:
    * ```
