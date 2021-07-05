@@ -2,6 +2,8 @@ package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.ApolloRequest
+import com.apollographql.apollo3.api.NullableAnyAdapter
+import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
@@ -13,7 +15,7 @@ import okio.Buffer
  */
 class AppSyncWsProtocol(
     private val authorization: Map<String, Any?>,
-    override val frameType: WsFrameType = WsFrameType.Binary
+    override val frameType: WsFrameType = WsFrameType.Text
 ): WsProtocol {
   override val name: String
     get() = "graphql-ws"
@@ -32,12 +34,15 @@ class AppSyncWsProtocol(
   }
 
   override fun <D : Operation.Data> operationStart(request: ApolloRequest<D>): Map<String, Any?> {
+    val data = NullableAnyAdapter.toJson(DefaultHttpRequestComposer.composePayload(request))
     return mapOf(
         "type" to "start",
         "id" to request.requestUuid.toString(),
         "payload" to mapOf(
-            "data" to DefaultHttpRequestComposer.composePayload(request),
-            "extensions" to authorization
+            "data" to data,
+            "extensions" to mapOf(
+                "authorization" to authorization
+            )
         )
     )
   }
