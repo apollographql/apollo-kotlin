@@ -177,7 +177,7 @@ class DefaultHttpRequestComposer(
     /**
      * A very simplified method to append query parameters
      */
-    private fun String.appendQueryParameters(parameters: Map<String, String>): String = buildString {
+    fun String.appendQueryParameters(parameters: Map<String, String>): String = buildString {
       append(this@appendQueryParameters)
       var hasQuestionMark = this@appendQueryParameters.contains("?")
 
