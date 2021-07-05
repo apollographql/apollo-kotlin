@@ -10,5 +10,4 @@ import com.benasher44.uuid.Uuid
 class ApolloResponse<D : Operation.Data>(
   val requestUuid: Uuid,
   val response: Response<D>,
-  val executionContext: ExecutionContext
 )

@@ -94,10 +94,10 @@ class ApolloHttpNetworkTransportTest {
     }
 
     assertEquals("{\"data\":{\"name\":\"MockQuery\"}}", response.response.data?.rawResponse)
-    assertNotNull(response.executionContext[HttpExecutionContext.Response])
-    assertEquals(200, response.executionContext[HttpExecutionContext.Response]?.statusCode)
-    assertEquals("header1Value", response.executionContext[HttpExecutionContext.Response]?.headers?.get("header1"))
-    assertEquals("header2Value", response.executionContext[HttpExecutionContext.Response]?.headers?.get("header2"))
+    assertNotNull(response.response.executionContext[HttpExecutionContext.Response])
+    assertEquals(200, response.response.executionContext[HttpExecutionContext.Response]?.statusCode)
+    assertEquals("header1Value", response.response.executionContext[HttpExecutionContext.Response]?.headers?.get("header1"))
+    assertEquals("header2Value", response.response.executionContext[HttpExecutionContext.Response]?.headers?.get("header2"))
   }
 
   @Test
