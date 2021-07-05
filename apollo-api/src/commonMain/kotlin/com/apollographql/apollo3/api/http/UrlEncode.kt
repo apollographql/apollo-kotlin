@@ -15,11 +15,11 @@ internal fun String.urlEncode(
     when {
       it in RESERVED_CHARS -> append(it.percentEncode())
       spaceToPlus && it == ' ' -> append('+')
-      else -> append(it.percentEncode())
+      else -> append(it)
     }
   }
 }
 
 private fun Char.percentEncode(): String {
-  return "%${toInt().toString(16)}"
+  return "%${toInt().toString(16)}".uppercase()
 }
