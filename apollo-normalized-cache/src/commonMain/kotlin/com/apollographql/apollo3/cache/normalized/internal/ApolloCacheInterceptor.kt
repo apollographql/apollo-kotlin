@@ -34,7 +34,7 @@ internal class ApolloCacheInterceptor(
   }
   private suspend fun maybeAsync(executionContext: ExecutionContext, block: suspend () -> Unit) {
     val coroutineScope = executionContext[ClientScope]?.coroutineScope
-    if ((executionContext[CacheInput].writeToCacheAsynchronously ?: writeToCacheAsynchronously) && coroutineScope != null) {
+    if ((executionContext[CacheInput]?.writeToCacheAsynchronously ?: writeToCacheAsynchronously) && coroutineScope != null) {
       coroutineScope.launch { block() }
     } else {
       block()
