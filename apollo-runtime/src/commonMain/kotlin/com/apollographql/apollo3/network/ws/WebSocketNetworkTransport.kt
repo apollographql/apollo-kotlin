@@ -31,9 +31,18 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 
 
+/**
+ * A [NetworkTransport] that works with WebSockets. Usually it is used with subscriptions but some [WsProtocol]s like [GraphQLWsProtocol]
+ * also support queries and mutations.
+ *
+ * @param serverUrl the url to use to establish the WebSocket connection. It can start with 'https://' or 'wss://' (respectively 'http://'
+ * or 'ws://' for unsecure versions), both are handled the same way by the underlying code.
+ * @param webSocketEngine a [WebSocketEngine] that can handle the WebSocket
+ *
+ */
 class WebSocketNetworkTransport(
-    private val webSocketEngine: WebSocketEngine,
     private val serverUrl: String,
+    private val webSocketEngine: WebSocketEngine = DefaultWebSocketEngine(),
     private val connectionAcknowledgeTimeoutMs: Long = 10_000,
     private val idleTimeoutMillis: Long = 60_000,
     private val protocol: WsProtocol = SubscriptionWsProtocol(),
@@ -45,8 +54,8 @@ class WebSocketNetworkTransport(
       idleTimeoutMillis: Long = 60_000,
       protocol: WsProtocol = SubscriptionWsProtocol(),
   ) : this(
-      DefaultWebSocketEngine(),
       serverUrl,
+      DefaultWebSocketEngine(),
       connectionAcknowledgeTimeoutMs,
       idleTimeoutMillis,
       protocol
@@ -155,7 +164,7 @@ class WebSocketNetworkTransport(
     while (true) {
       val bytes = webSocketConnection.receive()
 
-      val wsMessage = protocol.parseMessage(bytes.utf8())
+      val wsMessage = protocol.parseMessage(bytes.utf8(), webSocketConnection)
       val event = when (wsMessage) {
         is WsMessage.OperationData -> OperationData(wsMessage.id, wsMessage.payload)
         is WsMessage.OperationError -> OperationError(wsMessage.id, ApolloNetworkException("Cannot execute operation: ${wsMessage.payload}"))
@@ -192,7 +201,7 @@ class WebSocketNetworkTransport(
         while (true) {
           val payload = webSocketConnection.receive()
 
-          when (val message = protocol.parseMessage(payload.utf8())) {
+          when (val message = protocol.parseMessage(payload.utf8(), webSocketConnection)) {
             is WsMessage.ConnectionAck -> return@withTimeout null
             is WsMessage.ConnectionError -> throw ApolloNetworkException("Server error when connecting to $serverUrl: ${NullableAnyAdapter.toJson(message.payload)}")
             else -> Unit // unknown message?
