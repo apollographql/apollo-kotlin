@@ -11,7 +11,6 @@ import com.apollographql.apollo3.cache.normalized.withStore
 import com.apollographql.apollo3.cache.normalized.withWriteToCacheAsynchronously
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
-import com.apollographql.apollo3.internal.WebSocketDispatcher
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runBlocking
