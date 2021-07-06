@@ -30,9 +30,18 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 
 
+/**
+ * A [NetworkTransport] that works with WebSockets. Usually it is used with subscriptions but some [WsProtocol]s like [GraphQLWsProtocol]
+ * also support queries and mutations.
+ *
+ * @param serverUrl the url to use to establish the WebSocket connection. It can start with 'https://' or 'wss://' (respectively 'http://'
+ * or 'ws://' for unsecure versions), both are handled the same way by the underlying code.
+ * @param webSocketEngine a [WebSocketEngine] that can handle the WebSocket
+ *
+ */
 class WebSocketNetworkTransport(
-    private val webSocketEngine: WebSocketEngine,
     private val serverUrl: String,
+    private val webSocketEngine: WebSocketEngine = DefaultWebSocketEngine(),
     private val connectionAcknowledgeTimeoutMs: Long = 10_000,
     private val idleTimeoutMillis: Long = 60_000,
     private val protocol: WsProtocol = SubscriptionWsProtocol(),
@@ -44,8 +53,8 @@ class WebSocketNetworkTransport(
       idleTimeoutMillis: Long = 60_000,
       protocol: WsProtocol = SubscriptionWsProtocol(),
   ) : this(
-      DefaultWebSocketEngine(),
       serverUrl,
+      DefaultWebSocketEngine(),
       connectionAcknowledgeTimeoutMs,
       idleTimeoutMillis,
       protocol

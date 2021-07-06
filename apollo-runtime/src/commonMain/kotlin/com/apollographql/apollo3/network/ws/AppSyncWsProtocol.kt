@@ -20,7 +20,7 @@ class AppSyncWsProtocol(
   override val name: String
     get() = "graphql-ws"
 
-  override fun connectionInit(): Map<String, Any?> {
+  override suspend fun connectionInit(): Map<String, Any?> {
     val map = mutableMapOf<String, Any?>(
         "type" to "connection_init",
     )
