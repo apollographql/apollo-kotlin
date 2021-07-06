@@ -163,7 +163,7 @@ class WebSocketNetworkTransport(
     while (true) {
       val bytes = webSocketConnection.receive()
 
-      val wsMessage = protocol.parseMessage(bytes.utf8())
+      val wsMessage = protocol.parseMessage(bytes.utf8(), webSocketConnection)
       val event = when (wsMessage) {
         is WsMessage.OperationData -> OperationData(wsMessage.id, wsMessage.payload)
         is WsMessage.OperationError -> OperationError(wsMessage.id, ApolloNetworkException("Cannot execute operation: ${wsMessage.payload}"))
@@ -200,7 +200,7 @@ class WebSocketNetworkTransport(
         while (true) {
           val payload = webSocketConnection.receive()
 
-          when (val message = protocol.parseMessage(payload.utf8())) {
+          when (val message = protocol.parseMessage(payload.utf8(), webSocketConnection)) {
             is WsMessage.ConnectionAck -> return@withTimeout null
             is WsMessage.ConnectionError -> throw ApolloNetworkException("Server error when connecting to $serverUrl: ${NullableAnyAdapter.toJson(message.payload)}")
             else -> Unit // unknown message?
