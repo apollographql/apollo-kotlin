@@ -25,6 +25,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -166,7 +167,7 @@ class ApolloClient constructor(
               0,
           )
       )
-    }.flatMapLatest { interceptorChain ->
+    }.flatMapConcat { interceptorChain ->
       interceptorChain.proceed(request)
     }.flowOn(dispatcher)
   }
