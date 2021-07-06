@@ -121,7 +121,7 @@ class BatchingHttpEngine(
       allLengths.sum()
     }
 
-    val allBodies = pending.mapNotNull { it.request.body }
+    val allBodies = pending.map { it.request.body ?: error("empty body while batching queries") }
 
     val body = object : HttpBody {
       override val contentType = "application/json"

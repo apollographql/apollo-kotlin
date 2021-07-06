@@ -55,7 +55,7 @@ class QueryBatchingTest {
         networkTransport = HttpNetworkTransport(
             httpRequestComposer = DefaultHttpRequestComposer(mockServer.url()),
             engine = BatchingHttpEngine(
-                batchIntervalMillis = 100
+                batchIntervalMillis = 300
             ),
         )
     )
@@ -66,6 +66,7 @@ class QueryBatchingTest {
       }
       val result2 = async {
         // Make sure GetLaunch2Query gets executed after GetLaunchQuery as there is no guarantee otherwise
+        // 300ms batchIntervalMillis and 50ms delay here should be enough. Increase values if some tests become flaky
         delay(50)
         apolloClient.query(GetLaunch2Query())
       }
@@ -127,7 +128,7 @@ class QueryBatchingTest {
         networkTransport = HttpNetworkTransport(
             httpRequestComposer = DefaultHttpRequestComposer(mockServer.url()),
             engine = BatchingHttpEngine(
-                batchIntervalMillis = 100
+                batchIntervalMillis = 300
             ),
         )
     )
