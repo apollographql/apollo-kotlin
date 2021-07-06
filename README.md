@@ -21,7 +21,7 @@ This library is designed primarily with Android in mind, but you can use it in a
 * Normalized cache
 * File uploads
 * Custom scalar types
-* Support for RxJava2, RxJava3, Coroutines and Reactor
+* Reactive bindings for: RxJava2, RxJava3, Coroutines, Reactor and Mutiny
 
 ## Getting started
 
@@ -67,6 +67,8 @@ dependencies {
   implementation("com.apollographql.apollo:apollo-normalized-cache-sqlite:x.y.z")
   // optional: for coroutines support
   implementation("com.apollographql.apollo:apollo-coroutines-support:x.y.z")
+  // optional: for Mutiny support
+  implementation("com.apollographql.apollo:apollo-mutiny-support:x.y.z")
   // optional: for Reactor support
   implementation("com.apollographql.apollo:apollo-reactor-support:x.y.z")
   // optional: for RxJava3 support

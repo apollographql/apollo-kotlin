@@ -16,6 +16,7 @@ def versions = [
     kotlinPoet            : '1.6.0',
     mockito               : '1.9.5',
     moshi                 : '1.12.0',
+    mutiny               : '0.18.0',
     okHttp4               : '4.9.0',
     okHttp                : '3.12.11', // Keep this to keep supporting older Android devices
     okio                  : '2.9.0',
@@ -74,6 +75,7 @@ ext.dep = [
         kotlinCodegen: "com.squareup.moshi:moshi-kotlin-codegen:$versions.moshi",
         moshi        : "com.squareup.moshi:moshi:$versions.moshi",
     ],
+    mutiny                : "io.smallrye.reactive:mutiny:$versions.mutiny",
     okHttp                : [
         mockWebServer: "com.squareup.okhttp3:mockwebserver:$versions.okHttp",
         mockWebServer4: "com.squareup.okhttp3:mockwebserver:$versions.okHttp4",
