@@ -346,3 +346,11 @@ fun HttpRequestComposerParams?.withHttpMethod(method: HttpMethod): HttpRequestCo
       method = method
   )
 }
+
+fun HttpRequestComposerParams?.canBeAutoPersisted(canBeAutoPersisted: Boolean): HttpRequestComposerParams {
+  val params = this ?: DefaultHttpRequestComposerParams
+
+  return params.copy(
+      sendApqExtensions = canBeAutoPersisted,
+  )
+}

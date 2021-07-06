@@ -9,7 +9,7 @@ actual fun defaultDispatcher(requested: CoroutineDispatcher?): CoroutineDispatch
   return requested ?: Dispatchers.IO
 }
 
-actual class WebSocketDispatcher actual constructor() {
+actual class BackgroundDispatcher actual constructor() {
   private var disposed = false
   private val _dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
 
@@ -19,6 +19,16 @@ actual class WebSocketDispatcher actual constructor() {
   actual fun dispose() {
     if(!disposed) {
       _dispatcher.close()
+    }
+  }
+}
+
+actual class DefaultMutex : Mutex {
+  val lock = Object()
+
+  override fun <T> lock(block: () -> T): T {
+    return synchronized(lock) {
+      block()
     }
   }
 }

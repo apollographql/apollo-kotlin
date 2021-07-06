@@ -1,6 +1,4 @@
-package com.apollographql.apollo3.cache.normalized.internal
-
-import com.apollographql.apollo3.cache.normalized.ReadOnlyNormalizedCache
+package com.apollographql.apollo3.mpp
 
 expect class Guard<R: Any>(name: String, producer: () -> R) {
   suspend fun <T> access(block: (R) -> T): T

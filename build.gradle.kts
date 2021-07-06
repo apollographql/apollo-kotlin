@@ -54,6 +54,8 @@ subprojects {
     systemProperty("updateTestFixtures", System.getProperty("updateTestFixtures"))
     systemProperty("testFilter", System.getProperty("testFilter"))
     systemProperty("codegenModels", System.getProperty("codegenModels"))
+  }
+  tasks.withType<AbstractTestTask> {
     testLogging {
       exceptionFormat = TestExceptionFormat.FULL
     }

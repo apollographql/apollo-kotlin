@@ -12,18 +12,20 @@ import okio.Buffer
  * A [WsProtocol] for https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md
  */
 class SubscriptionWsProtocol(
-    private val connectionPayload: Map<String, Any?>? = null,
+    private val connectionPayload: suspend () -> Map<String, Any?>? = {null},
     override val frameType: WsFrameType = WsFrameType.Binary
 ): WsProtocol {
   override val name: String
     get() = "graphql-ws"
 
-  override fun connectionInit(): Map<String, Any?> {
+  override suspend fun connectionInit(): Map<String, Any?> {
     val map = mutableMapOf<String, Any?>(
         "type" to "connection_init",
     )
-    if (connectionPayload != null) {
-      map.put("payload", connectionPayload)
+
+    val payload = connectionPayload()
+    if (payload != null) {
+      map.put("payload", payload)
     }
     return map
   }
@@ -50,8 +52,8 @@ class SubscriptionWsProtocol(
   }
 
   @Suppress("UNCHECKED_CAST")
-  override fun parseMessage(string: String): WsMessage {
-    val map = AnyAdapter.fromJson(BufferedSourceJsonReader(Buffer().writeUtf8(string))) as Map<String, Any?>
+  override fun parseMessage(message: String, webSocketConnection: WebSocketConnection): WsMessage {
+    val map = AnyAdapter.fromJson(BufferedSourceJsonReader(Buffer().writeUtf8(message))) as Map<String, Any?>
 
     return when (map["type"]) {
       "connection_ack" -> WsMessage.ConnectionAck
