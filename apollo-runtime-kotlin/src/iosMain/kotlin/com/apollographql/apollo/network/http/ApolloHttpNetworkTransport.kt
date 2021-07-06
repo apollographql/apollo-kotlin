@@ -222,15 +222,16 @@ actual class ApolloHttpNetworkTransport(
       val response = request.operation.parse(
           source = Buffer().write(data.toByteString()).apply { flush() },
           scalarTypeAdapters = request.scalarTypeAdapters
+      ).copy(
+          executionContext = request.executionContext + HttpExecutionContext.Response(
+              statusCode = httpResponse.statusCode.toInt(),
+              headers = httpHeaders
+          )
       )
       Result.Success(
           ApolloResponse<D>(
               requestUuid = request.requestUuid,
               response = response,
-              executionContext = request.executionContext + HttpExecutionContext.Response(
-                  statusCode = httpResponse.statusCode.toInt(),
-                  headers = httpHeaders
-              )
           )
       )
     } catch (e: Exception) {

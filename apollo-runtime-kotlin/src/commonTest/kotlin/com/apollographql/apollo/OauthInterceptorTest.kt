@@ -41,7 +41,6 @@ class OauthInterceptorTest {
                 ApolloResponse(
                     requestUuid = request.requestUuid,
                     response = request.operation.parse("{\"data\":{\"name\":\"MockQuery\"}}".encodeUtf8()),
-                    executionContext = ExecutionContext.Empty
                 )
             )
           }

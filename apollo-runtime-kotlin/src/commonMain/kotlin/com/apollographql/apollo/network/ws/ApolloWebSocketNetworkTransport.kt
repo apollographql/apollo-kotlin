@@ -119,7 +119,6 @@ class ApolloWebSocketNetworkTransport(
           ApolloResponse(
               requestUuid = request.requestUuid,
               response = response,
-              executionContext = ExecutionContext.Empty
           )
         } else null
       }
