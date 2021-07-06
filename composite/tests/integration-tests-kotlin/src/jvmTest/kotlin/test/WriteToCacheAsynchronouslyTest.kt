@@ -7,18 +7,20 @@ import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.IdCacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
-import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.cache.normalized.withStore
 import com.apollographql.apollo3.cache.normalized.withWriteToCacheAsynchronously
+import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
+import com.apollographql.apollo3.integration.normalizer.type.Episode
+import com.apollographql.apollo3.internal.WebSocketDispatcher
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runBlocking
+import com.apollographql.apollo3.testing.runWithMainLoop
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asCoroutineDispatcher
-import readResource
 import java.util.concurrent.Executors
+import readResource
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNotNull
@@ -41,19 +43,14 @@ class WriteToCacheAsynchronouslyTest {
     ).withStore(store)
   }
 
-  /**
-   * Write the updates programmatically, make sure they are seen,
-   * roll them back, make sure we're back to the initial state
-   */
   @Test
-  fun writeToCacheAsynchronously() = runBlocking(context = dispatcher) {
+  fun writeToCacheAsynchronously() = runWithMainLoop(dispatcher) {
     val query = HeroAndFriendsNamesQuery(Episode.JEDI)
 
     mockServer.enqueue(readResource("HeroAndFriendsNameResponse.json"))
     apolloClient.query(
         ApolloRequest(query)
             .withWriteToCacheAsynchronously(true)
-            .withExecutionContext(ClientScope(CoroutineScope(dispatcher)))
     )
 
     val record = store.accessCache { it.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE) }
