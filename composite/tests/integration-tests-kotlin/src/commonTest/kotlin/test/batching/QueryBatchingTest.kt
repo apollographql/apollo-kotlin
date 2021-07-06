@@ -22,7 +22,7 @@ import kotlin.test.assertFails
 
 class QueryBatchingTest {
   @Test
-  //@Ignore // because it uses a real-life server that might be down
+  @Ignore // because it uses a real-life server that might be down
   fun testAgainstARealServer() {
     val apolloClient = ApolloClient(
         networkTransport = HttpNetworkTransport(
