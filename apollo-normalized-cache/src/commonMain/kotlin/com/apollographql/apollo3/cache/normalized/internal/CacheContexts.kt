@@ -15,7 +15,8 @@ internal class CacheInput(
     val refetchPolicy: FetchPolicy? = null,
     val optimisticData: Any? = null,
     val flags: Int = 0,
-    val cacheHeaders: CacheHeaders = CacheHeaders.NONE
+    val cacheHeaders: CacheHeaders = CacheHeaders.NONE,
+    val writeToCacheAsynchronously: Boolean? = null
 ): RequestContext(Key) {
 
   fun copy(
@@ -23,14 +24,16 @@ internal class CacheInput(
       refetchPolicy: FetchPolicy? = this.refetchPolicy,
       optimisticData: Any? = this.optimisticData,
       flags: Int = this.flags,
-      cacheHeaders: CacheHeaders = this.cacheHeaders
+      cacheHeaders: CacheHeaders = this.cacheHeaders,
+      writeToCacheAsynchronously: Boolean? = this.writeToCacheAsynchronously
   ): CacheInput {
     return CacheInput(
         fetchPolicy,
         refetchPolicy,
         optimisticData,
         flags,
-        cacheHeaders
+        cacheHeaders,
+        writeToCacheAsynchronously
     )
   }
   companion object Key : ExecutionContext.Key<CacheInput>
