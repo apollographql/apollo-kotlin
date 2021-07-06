@@ -1,0 +1,7 @@
+type Query {
+  launch(id: ID!): Launch
+}
+
+type Launch {
+  id: ID!
+}

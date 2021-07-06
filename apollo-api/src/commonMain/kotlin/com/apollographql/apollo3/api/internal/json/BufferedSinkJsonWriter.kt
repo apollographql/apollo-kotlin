@@ -198,6 +198,18 @@ class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter {
   }
 
   /**
+   * Writes the given value as raw json without escaping. It is the caller responsibility to make sure
+   * [value] is a valid json string
+   */
+  fun jsonValue(value: String): JsonWriter {
+    writeDeferredName()
+    beforeValue()
+    sink.writeUtf8(value)
+    pathIndices[stackSize - 1]++
+    return this
+  }
+
+  /**
    * Ensures all buffered data is written to the underlying [okio.Sink]
    * and flushes that writer.
    */

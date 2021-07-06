@@ -79,53 +79,58 @@ class HttpNetworkTransport(
     }
   }
 
-  private fun wrapThrowableIfNeeded(throwable: Throwable): ApolloException {
-    return if (throwable is ApolloException) {
-      throwable
-    } else {
-      // This happens for null pointer exceptions on missing fields
-      ApolloParseException(
-          message = "Failed to parse GraphQL http network response",
-          cause = throwable
-      )
-    }
-  }
-
   inner class EngineInterceptor : HttpInterceptor {
     override suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse {
       return engine.execute(request)
     }
   }
 
-  private fun <D : Operation.Data> HttpResponse.parse(
-      request: ApolloRequest<D>,
-      customScalarAdapters: CustomScalarAdapters,
-  ): ApolloResponse<D> {
-    if (statusCode !in 200..299) {
-      throw ApolloHttpException(
-          statusCode = statusCode,
-          headers = headers,
-          message = "Http request failed with status code `${statusCode} (${body?.readUtf8()})`"
-      )
+  companion object {
+    private fun wrapThrowableIfNeeded(throwable: Throwable): ApolloException {
+      return if (throwable is ApolloException) {
+        throwable
+      } else {
+        // This happens for null pointer exceptions on missing fields
+        ApolloParseException(
+            message = "Failed to parse GraphQL http network response",
+            cause = throwable
+        )
+      }
     }
 
-    return request.operation.parseJsonResponse(
-        source = body!!,
-        customScalarAdapters = customScalarAdapters
-    ).copy(
-        requestUuid = request.requestUuid,
-        executionContext = request.executionContext + HttpResponseInfo(
+    private fun <D : Operation.Data> HttpResponse.parse(
+        request: ApolloRequest<D>,
+        customScalarAdapters: CustomScalarAdapters,
+    ): ApolloResponse<D> {
+      if (statusCode !in 200..299) {
+        throw ApolloHttpException(
             statusCode = statusCode,
-            headers = headers
+            headers = headers,
+            message = "Http request failed with status code `${statusCode} (${body?.readUtf8()})`"
         )
-    )
+      }
+
+      return request.operation.parseJsonResponse(
+          source = body!!,
+          customScalarAdapters = customScalarAdapters
+      ).copy(
+          requestUuid = request.requestUuid,
+          executionContext = request.executionContext + HttpResponseInfo(
+              statusCode = statusCode,
+              headers = headers
+          )
+      )
+    }
   }
 
-  override fun dispose() {}
+  override fun dispose() {
+    engine.dispose()
+  }
 
   fun swapEngine(
       newEngine: HttpEngine,
       ): HttpNetworkTransport {
+    engine.dispose()
     return HttpNetworkTransport(
         httpRequestComposer = httpRequestComposer,
         engine = newEngine,

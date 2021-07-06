@@ -22,7 +22,7 @@ actual class MockServer {
   }
 
   actual fun takeRequest(): MockRecordedRequest {
-    return mockWebServer.takeRequest().let {
+    return mockWebServer.takeRequest(10, TimeUnit.MILLISECONDS).let {
       MockRecordedRequest(
           method = it.method,
           path = it.path,

@@ -109,6 +109,9 @@ actual class DefaultHttpEngine(
     delegate.freeze()
     task.resume()
   }
+
+  override fun dispose() {
+  }
 }
 
 @OptIn(ExperimentalUnsignedTypes::class)

@@ -82,4 +82,3 @@ configure<com.apollographql.apollo3.gradle.api.ApolloExtension> {
         }
       }
 }
-

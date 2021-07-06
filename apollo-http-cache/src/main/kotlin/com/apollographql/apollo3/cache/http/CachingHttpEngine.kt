@@ -64,6 +64,9 @@ class CachingHttpEngine(
     }
   }
 
+  override fun dispose() {
+  }
+
   private suspend fun networkMightThrow(request: HttpRequest, cacheKey: String): HttpResponse {
     val response = delegate.execute(request)
 
