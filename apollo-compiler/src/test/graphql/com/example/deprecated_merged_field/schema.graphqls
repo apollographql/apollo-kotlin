@@ -1,0 +1,13 @@
+type Cat {
+    name: String!
+}
+
+type Dog {
+    name: String! @deprecated
+}
+
+union Animal = Cat | Dog
+
+type Query {
+    cat: Cat
+}

@@ -65,7 +65,8 @@ class TestQuery : Query<TestQuery.Data> {
     data class HumanHero(
       override val __typename: String,
       /**
-       * The name of the character
+       * Merged field with multiple descriptions. See parentTypes: 'Character, Human' for more
+       * information
        */
       override val name: String,
       /**

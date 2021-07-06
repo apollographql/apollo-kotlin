@@ -63,7 +63,8 @@ interface HumanHeroDetails : HeroDetails, HumanDetails {
   override val __typename: String
 
   /**
-   * What this human calls themselves
+   * Merged field with multiple descriptions. See parentTypes: 'Human, Character' for more
+   * information
    */
   override val name: String
 
@@ -103,7 +104,8 @@ interface DroidHeroDetails : HeroDetails, DroidDetails {
   override val __typename: String
 
   /**
-   * What others call this droid
+   * Merged field with multiple descriptions. See parentTypes: 'Droid, Character' for more
+   * information
    */
   override val name: String
 
