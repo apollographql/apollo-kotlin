@@ -33,7 +33,7 @@ import okio.BufferedSink
 /**
  * An [HttpEngine] that wraps another one and batches HTTP queries to execute mutiple
  * at once. This reduces the number of HTTP roundtrips at the price of increased latency as
- * since every request in the batch is now as slow as the slowest one.
+ * every request in the batch is now as slow as the slowest one.
  * Some servers might have a per-HTTP-call cache making it faster to resolve 1 big array
  * of n queries compared to resolving the n queries separately.
  *
@@ -43,7 +43,7 @@ import okio.BufferedSink
  * [BatchingHttpEngine] buffers the whole response so it might additionally introduce some
  * client-side latency as it cannot amortize parsing/building the models during network I/O.
  *
- * [BatchingHttpEngine] only works with Post requests. Trying to batch a Get request is undefined.
+ * [BatchingHttpEngine] only works with Post requests. Trying to batch a Get requests is undefined.
  *
  * @param batchIntervalMillis the interval between two batches
  * @param maxBatchSize always send the batch when this threshold is reached
@@ -59,8 +59,16 @@ class BatchingHttpEngine(
   private val scope = CoroutineScope(dispatcher.coroutineDispatcher)
   private val mutex = DefaultMutex()
 
+  private val job: Job
+
   init {
     ensureNeverFrozen(this)
+    job = scope.launch {
+      while (true) {
+        delay(batchIntervalMillis)
+        executePendingRequests()
+      }
+    }
   }
 
   class PendingRequest(
@@ -69,7 +77,6 @@ class BatchingHttpEngine(
     val deferred = CompletableDeferred<HttpResponse>()
   }
 
-  private var job: Job? = null
   private val pendingRequests = mutableListOf<PendingRequest>()
 
   override suspend fun execute(request: HttpRequest): HttpResponse {
@@ -82,24 +89,13 @@ class BatchingHttpEngine(
 
     val pendingRequest = PendingRequest(request)
 
-    mutex.lock {
+    val sendNow = mutex.lock {
       // if there was an error, the previous job was already canceled, ignore that error
-      kotlin.runCatching {
-        job?.cancel()
-      }
-      job = null
       pendingRequests.add(pendingRequest)
-      val waitMillis = if (pendingRequests.size >= maxBatchSize) {
-        0
-      } else {
-        batchIntervalMillis
-      }
-      job = scope.launch {
-        if (waitMillis > 0) {
-          delay(waitMillis)
-        }
-        executePendingRequests()
-      }
+      pendingRequests.size >= maxBatchSize
+    }
+    if (sendNow) {
+      executePendingRequests()
     }
 
     return pendingRequest.deferred.await()
