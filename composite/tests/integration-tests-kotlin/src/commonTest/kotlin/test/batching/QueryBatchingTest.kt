@@ -11,17 +11,14 @@ import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.network.http.BatchingHttpEngine
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
-import com.apollographql.apollo3.network.http.LoggingInterceptor
 import com.apollographql.apollo3.network.http.canBeBatched
 import com.apollographql.apollo3.testing.runWithMainLoop
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import okio.Buffer
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
-import kotlin.test.assertTrue
 
 class QueryBatchingTest {
   @Test
