@@ -41,6 +41,27 @@ class WriteToCacheAsynchronouslyTest {
     ).withStore(store)
   }
 
+  /**
+   * Write to cache asynchronously, make sure records are not in cache when we receive the response
+   */
+  @Test
+  fun writeToCacheAsynchronously() = runBlocking(context = dispatcher) {
+    val query = HeroAndFriendsNamesQuery(Episode.JEDI)
+
+    mockServer.enqueue(readResource("HeroAndFriendsNameResponse.json"))
+    apolloClient.query(
+        ApolloRequest(query)
+            .withWriteToCacheAsynchronously(true)
+            .withExecutionContext(ClientScope(CoroutineScope(dispatcher)))
+    )
+
+    val record = store.accessCache { it.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE) }
+    assertNull(record)
+  }
+
+  /**
+   * Write to cache synchronously, make sure records are in cache when we receive the response
+   */
   @Test
   fun writeToCacheSynchronously(): Unit = runBlocking(context = dispatcher) {
     val query = HeroAndFriendsNamesQuery(Episode.JEDI)
