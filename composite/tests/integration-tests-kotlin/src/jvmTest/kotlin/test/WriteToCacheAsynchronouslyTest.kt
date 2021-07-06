@@ -41,25 +41,6 @@ class WriteToCacheAsynchronouslyTest {
     ).withStore(store)
   }
 
-  /**
-   * Write the updates programmatically, make sure they are seen,
-   * roll them back, make sure we're back to the initial state
-   */
-  @Test
-  fun writeToCacheAsynchronously() = runBlocking(context = dispatcher) {
-    val query = HeroAndFriendsNamesQuery(Episode.JEDI)
-
-    mockServer.enqueue(readResource("HeroAndFriendsNameResponse.json"))
-    apolloClient.query(
-        ApolloRequest(query)
-            .withWriteToCacheAsynchronously(true)
-            .withExecutionContext(ClientScope(CoroutineScope(dispatcher)))
-    )
-
-    val record = store.accessCache { it.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE) }
-    assertNull(record)
-  }
-
   @Test
   fun writeToCacheSynchronously(): Unit = runBlocking(context = dispatcher) {
     val query = HeroAndFriendsNamesQuery(Episode.JEDI)
