@@ -27,7 +27,8 @@ interface CharacterHumanDetails : HumanDetails, CharacterDetails {
   override val __typename: String
 
   /**
-   * What this human calls themselves
+   * Merged field with multiple descriptions. See parentTypes: 'Human, Character' for more
+   * information
    */
   override val name: String
 

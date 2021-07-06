@@ -80,7 +80,8 @@ class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
   data class HumanData(
     override val __typename: String,
     /**
-     * What this human calls themselves
+     * Merged field with multiple descriptions. See parentTypes: 'Human, Character' for more
+     * information
      */
     override val name: String,
     /**
@@ -119,7 +120,8 @@ class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
   data class DroidData(
     override val __typename: String,
     /**
-     * What others call this droid
+     * Merged field with multiple descriptions. See parentTypes: 'Droid, Character' for more
+     * information
      */
     override val name: String,
     /**
