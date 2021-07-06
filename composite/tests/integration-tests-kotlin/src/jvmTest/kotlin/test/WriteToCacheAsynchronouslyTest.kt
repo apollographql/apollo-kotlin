@@ -43,6 +43,9 @@ class WriteToCacheAsynchronouslyTest {
     ).withStore(store)
   }
 
+  /**
+   * Write to cache asynchronously, make sure records are not in cache when we receive the response
+   */
   @Test
   fun writeToCacheAsynchronously() = runWithMainLoop(dispatcher) {
     val query = HeroAndFriendsNamesQuery(Episode.JEDI)
@@ -57,6 +60,9 @@ class WriteToCacheAsynchronouslyTest {
     assertNull(record)
   }
 
+  /**
+   * Write to cache synchronously, make sure records are in cache when we receive the response
+   */
   @Test
   fun writeToCacheSynchronously(): Unit = runBlocking(context = dispatcher) {
     val query = HeroAndFriendsNamesQuery(Episode.JEDI)
