@@ -17,6 +17,7 @@ import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.interceptor.NetworkInterceptor
 import com.apollographql.apollo3.interceptor.RealInterceptorChain
 import com.apollographql.apollo3.internal.defaultDispatcher
+import com.apollographql.apollo3.mpp.ensureNeverFrozen
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
@@ -25,7 +26,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.single
@@ -151,9 +152,10 @@ class ApolloClient constructor(
 
   @OptIn(ExperimentalCoroutinesApi::class)
   private fun <D : Operation.Data> ApolloRequest<D>.execute(): Flow<ApolloResponse<D>> {
-    val executionContext = customScalarAdapters + this@ApolloClient.executionContext + this.executionContext
+    val executionContext = clientScope + customScalarAdapters + this@ApolloClient.executionContext + this.executionContext
 
     val request = withExecutionContext(executionContext)
+    ensureNeverFrozen(request)
     val interceptors = interceptors + NetworkInterceptor(
         networkTransport = networkTransport,
         subscriptionNetworkTransport = subscriptionNetworkTransport,
@@ -166,7 +168,7 @@ class ApolloClient constructor(
               0,
           )
       )
-    }.flatMapLatest { interceptorChain ->
+    }.flatMapConcat { interceptorChain ->
       interceptorChain.proceed(request)
     }.flowOn(dispatcher)
   }

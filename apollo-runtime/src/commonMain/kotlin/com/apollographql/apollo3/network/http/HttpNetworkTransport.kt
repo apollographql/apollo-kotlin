@@ -14,6 +14,7 @@ import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.internal.NonMainWorker
 import com.apollographql.apollo3.network.NetworkTransport
+import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -59,7 +60,7 @@ class HttpNetworkTransport(
   fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
       httpRequest: HttpRequest,
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: CustomScalarAdapters,
   ): Flow<ApolloResponse<D>> {
     return flow {
       val httpResponse = RealInterceptorChain(
@@ -67,15 +68,36 @@ class HttpNetworkTransport(
           index = 0
       ).proceed(httpRequest)
 
+      if (httpResponse.statusCode !in 200..299) {
+        throw ApolloHttpException(
+            statusCode = httpResponse.statusCode,
+            headers = httpResponse.headers,
+            message = "Http request failed with status code `${httpResponse.statusCode} (${httpResponse.body?.readUtf8()})`"
+        )
+      }
+
+      // do not capture request
+      val operation = request.operation
       val response = worker.doWork {
         try {
-          httpResponse.parse(request, customScalarAdapters)
+          operation.parseJsonResponse(
+              source = httpResponse.body!!,
+              customScalarAdapters = customScalarAdapters
+          )
         } catch (e: Exception) {
           throw wrapThrowableIfNeeded(e)
         }
       }
 
-      emit(response)
+      emit(
+          response.copy(
+              requestUuid = request.requestUuid,
+              executionContext = request.executionContext + HttpResponseInfo(
+                  statusCode = httpResponse.statusCode,
+                  headers = httpResponse.headers
+              )
+          )
+      )
     }
   }
 
@@ -131,6 +153,7 @@ class HttpNetworkTransport(
       newEngine: HttpEngine,
       ): HttpNetworkTransport {
     engine.dispose()
+
     return HttpNetworkTransport(
         httpRequestComposer = httpRequestComposer,
         engine = newEngine,

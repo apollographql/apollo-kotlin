@@ -16,7 +16,7 @@ import platform.darwin.dispatch_time
 import kotlin.coroutines.CoroutineContext
 
 actual fun defaultDispatcher(requested: CoroutineDispatcher?): CoroutineDispatcher {
-  check(requested == null) {
+  check(requested == null || requested is DefaultDispatcher) {
     "Changing the dispatcher is not supported on Apple targets"
   }
   check(NSThread.isMainThread) {
