@@ -1,21 +1,21 @@
 import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
-Get the latest version of Apollo Android from [the Releases page](https://github.com/apollographql/apollo-android/releases).
+First, obtain the latest version number of Apollo Android from [the Releases page](https://github.com/apollographql/apollo-android/releases).
 
-In your app Gradle file, apply the `com.apollographql.apollo3` plugin.
+Then in your app's Gradle file, apply the `com.apollographql.apollo3` plugin using one of the following methods (replace `x.y.z` with the desired version number):
 
-Using the [plugins DSL](https://docs.gradle.org/current/userguide/plugins.html#sec:plugins_block):
+**Using the [plugins DSL](https://docs.gradle.org/current/userguide/plugins.html#sec:plugins_block)**
 
 <MultiCodeBlock>
 
-```kotlin
+```kotlin:title=build.gradle
 plugins {
   // ...
   id("com.apollographql.apollo3").version("x.y.z")
 }
 ```
 
-```groovy
+```groovy:title=build.gradle
 plugins {
   // ...
   id("com.apollographql.apollo3").version("x.y.z")
@@ -24,11 +24,11 @@ plugins {
 
 </MultiCodeBlock>
 
-Or using the [legacy syntax](https://docs.gradle.org/current/userguide/plugins.html#sec:old_plugin_application):
+**Using the [legacy syntax](https://docs.gradle.org/current/userguide/plugins.html#sec:old_plugin_application)**
 
 <MultiCodeBlock>
 
-```kotlin
+```kotlin:title=build.gradle
 buildscript {
   // ...
   classpath("com.apollographql.apollo3:apollo-gradle-plugin:x.y.z")
@@ -37,7 +37,7 @@ buildscript {
 apply(plugin = "com.apollographql.apollo3")
 ```
 
-```groovy
+```groovy:title=build.gradle
 buildscript {
   // ...
   classpath("com.apollographql.apollo3:apollo-gradle-plugin:x.y.z")
@@ -48,11 +48,11 @@ apply plugin: "com.apollographql.apollo3"
 
 </MultiCodeBlock>
 
-The plugin is hosted both on the Gradle plugin portal and Maven Central.
+The plugin is hosted on both the Gradle plugin portal and Maven Central.
 
-By default the plugin generates models in the root package name. You can configure this in the `apollo {}` block:
+By default, the plugin generates models in the root package name. You can configure this in the `apollo {}` block:
 
-```kotlin
+```kotlin:title=build.gradle
 apollo {
   packageName.set("com.example")
 }

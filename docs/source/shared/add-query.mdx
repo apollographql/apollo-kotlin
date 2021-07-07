@@ -1,5 +1,5 @@
 
-Put your query in a `.graphql` file, next to the schema: `app/src/main/graphql/com/example/LaunchDetails.graphql`
+Put your first GraphQL query in a `.graphql` file, in the same directory as your downloaded schema: `app/src/main/graphql/com/example/LaunchDetails.graphql`
 
 ```graphql:title=src/main/graphql/com/example/LaunchDetails.graphql
 query LaunchDetails($id:ID!) {
@@ -14,8 +14,8 @@ query LaunchDetails($id:ID!) {
 }
 ```
 
-Build your project, this will generate the models. Either hit the green triangle in Android Studio or type:
+Now build your project, which will generate the models. Either click the green triangle in Android Studio or run the following:
 
-```
+```bash:title=(shell)
 ./gradlew build
 ```

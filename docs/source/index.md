@@ -1,13 +1,13 @@
 ---
 title: Introduction
-description: A strongly-typed, caching GraphQL client for Android and Kotlin multiplatform, written in Kotlin
+description: A strongly-typed, caching GraphQL client for the JVM
 ---
 
-[Apollo Android](https://github.com/apollographql/apollo-android) is a strongly-typed, caching GraphQL client for Android and Kotlin multiplatform apps written in Kotlin. Apollo Android works well with Android, but you can use it in any Java/Kotlin app.
+[Apollo Android](https://github.com/apollographql/apollo-android) is a strongly-typed, caching GraphQL client for Android and Kotlin multiplatform apps, written in Kotlin. Despite its name, **you can use Apollo Android in any Java/Kotlin app.**
 
-It allows you to execute queries and mutations against a GraphQL server and returns results as query-specific Kotlin types. This means you don't have to deal with parsing JSON, or passing around Maps and making clients cast values to the right type manually. You also don't have to write model types yourself, because these are generated from the GraphQL definitions your UI uses.
+Apollo Android executes queries and mutations against a GraphQL server and returns results as query-specific Kotlin types. This means you don't have to deal with parsing JSON, or passing around `Map`s and making clients cast values to the right type manually. You also don't have to write model types yourself, because these are generated from the GraphQL definitions your UI uses.
 
-As the generated types are query-specific, you're only able to access data you actually specify as part of a query. If you don't ask for a field in a particular query, you won't be able to access the corresponding property on the returned data structure.
+Because generated types are query-specific, you can only access data that you actually specify as part of a query. If you don't ask for a particular field in a query, you can't access the corresponding property on the returned data structure.
 
 ## Features
 
