@@ -18,7 +18,7 @@ Hello! This article walks you through adding Apollo Android to your project.
 
 ## Add runtime dependencies
 
-```kotlin:title=build.gradle
+```kotlin:title=build.gradle[.kts]
 dependencies {
   // The core runtime dependencies
   implementation("com.apollographql.apollo3:apollo-runtime:$version")
@@ -27,7 +27,7 @@ dependencies {
 
 Or for a multiplatform project:
 
-```kotlin:title=build.gradle
+```kotlin:title=build.gradle[.kts]
 kotlin {
   sourceSets {
     val commonMain by getting {

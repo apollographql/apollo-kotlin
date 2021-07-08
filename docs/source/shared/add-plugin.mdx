@@ -8,7 +8,7 @@ Then in your app's Gradle file, apply the `com.apollographql.apollo3` plugin usi
 
 <MultiCodeBlock>
 
-```kotlin:title=build.gradle
+```kotlin:title=build.gradle.kts
 plugins {
   // ...
   id("com.apollographql.apollo3").version("x.y.z")
@@ -28,7 +28,7 @@ plugins {
 
 <MultiCodeBlock>
 
-```kotlin:title=build.gradle
+```kotlin:title=build.gradle.kts
 buildscript {
   // ...
   classpath("com.apollographql.apollo3:apollo-gradle-plugin:x.y.z")
@@ -52,7 +52,7 @@ The plugin is hosted on both the Gradle plugin portal and Maven Central.
 
 By default, the plugin generates models in the root package name. You can configure this in the `apollo {}` block:
 
-```kotlin:title=build.gradle
+```kotlin:title=build.gradle[.kts]
 apollo {
   packageName.set("com.example")
 }
