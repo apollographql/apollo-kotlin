@@ -25,7 +25,7 @@ data class QueryFragment(
       /**
        * Synthetic field for 'heroFragment'
        */
-      val heroFragment: HeroFragment?
+      val heroFragment: HeroFragment
     )
   }
 
@@ -40,7 +40,7 @@ data class QueryFragment(
       /**
        * Synthetic field for 'droidFragment'
        */
-      val droidFragment: DroidFragment?
+      val droidFragment: DroidFragment
     )
   }
 

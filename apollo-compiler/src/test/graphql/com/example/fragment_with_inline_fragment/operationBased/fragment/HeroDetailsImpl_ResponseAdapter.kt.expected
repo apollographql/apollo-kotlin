@@ -210,11 +210,8 @@ object HeroDetailsImpl_ResponseAdapter {
         }
 
         reader.rewind()
-        var droidDetails: DroidDetails? = null
-        if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
-          droidDetails = com.example.fragment_with_inline_fragment.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
-              customScalarAdapters)
-        }
+        val droidDetails = com.example.fragment_with_inline_fragment.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
+            customScalarAdapters)
 
         return com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid(
           __typename = __typename,
@@ -230,10 +227,8 @@ object HeroDetailsImpl_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        if (value.droidDetails != null) {
-          com.example.fragment_with_inline_fragment.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,
-              customScalarAdapters, value.droidDetails)
-        }
+        com.example.fragment_with_inline_fragment.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,
+            customScalarAdapters, value.droidDetails)
       }
     }
   }

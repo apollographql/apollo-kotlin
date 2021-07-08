@@ -49,7 +49,7 @@ class TestQuery : Query<TestQuery.Data> {
       /**
        * Synthetic field for 'iFragment'
        */
-      val iFragment: IFragment?
+      val iFragment: IFragment
     )
   }
 

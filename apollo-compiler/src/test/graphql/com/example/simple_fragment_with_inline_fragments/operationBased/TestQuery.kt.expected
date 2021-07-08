@@ -42,7 +42,7 @@ class TestQuery : Query<TestQuery.Data> {
       /**
        * Synthetic field for 'HeroDetails'
        */
-      val heroDetails: HeroDetails?
+      val heroDetails: HeroDetails
     )
   }
 

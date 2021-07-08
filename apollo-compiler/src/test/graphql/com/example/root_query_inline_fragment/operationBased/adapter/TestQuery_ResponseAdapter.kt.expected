@@ -44,11 +44,8 @@ object TestQuery_ResponseAdapter {
       }
 
       reader.rewind()
-      var onQuery: TestQuery.Data.OnQuery? = null
-      if (possibleTypes("Query").evaluate(emptySet(), __typename)) {
-        onQuery = com.example.root_query_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.OnQuery.fromJson(reader,
-            customScalarAdapters)
-      }
+      val onQuery = com.example.root_query_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.OnQuery.fromJson(reader,
+          customScalarAdapters)
 
       return TestQuery.Data(
         __typename = __typename,
@@ -64,10 +61,8 @@ object TestQuery_ResponseAdapter {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-      if (value.onQuery != null) {
-        com.example.root_query_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.OnQuery.toJson(writer,
-            customScalarAdapters, value.onQuery)
-      }
+      com.example.root_query_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.OnQuery.toJson(writer,
+          customScalarAdapters, value.onQuery)
     }
 
     private object OnQuery : Adapter<TestQuery.Data.OnQuery> {
@@ -218,11 +213,8 @@ object TestQuery_ResponseAdapter {
           }
 
           reader.rewind()
-          var onDroid: TestQuery.Data.OnQuery.Droid.OnDroid? = null
-          if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
-            onDroid = com.example.root_query_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.OnQuery.Droid.OnDroid.fromJson(reader,
-                customScalarAdapters)
-          }
+          val onDroid = com.example.root_query_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.OnQuery.Droid.OnDroid.fromJson(reader,
+              customScalarAdapters)
 
           return TestQuery.Data.OnQuery.Droid(
             __typename = __typename,
@@ -238,10 +230,8 @@ object TestQuery_ResponseAdapter {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-          if (value.onDroid != null) {
-            com.example.root_query_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.OnQuery.Droid.OnDroid.toJson(writer,
-                customScalarAdapters, value.onDroid)
-          }
+          com.example.root_query_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.OnQuery.Droid.OnDroid.toJson(writer,
+              customScalarAdapters, value.onDroid)
         }
 
         private object OnDroid : Adapter<TestQuery.Data.OnQuery.Droid.OnDroid> {

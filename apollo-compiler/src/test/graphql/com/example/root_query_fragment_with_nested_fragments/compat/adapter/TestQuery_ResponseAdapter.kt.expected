@@ -8,12 +8,9 @@ package com.example.root_query_fragment_with_nested_fragments.adapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
-import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.possibleTypes
 import com.example.root_query_fragment_with_nested_fragments.TestQuery
-import com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment
 import kotlin.String
 import kotlin.collections.List
 
@@ -77,11 +74,8 @@ object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        var queryFragment: QueryFragment? = null
-        if (possibleTypes("Query").evaluate(emptySet(), __typename)) {
-          queryFragment = com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.fromJson(reader,
-              customScalarAdapters)
-        }
+        val queryFragment = com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.fromJson(reader,
+            customScalarAdapters)
 
         return TestQuery.Data.Fragments(
           queryFragment = queryFragment
@@ -93,10 +87,8 @@ object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         value: TestQuery.Data.Fragments
       ) {
-        if (value.queryFragment != null) {
-          com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.toJson(writer,
-              customScalarAdapters, value.queryFragment)
-        }
+        com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.toJson(writer,
+            customScalarAdapters, value.queryFragment)
       }
     }
   }

@@ -50,11 +50,11 @@ class GetHero : Query<GetHero.Data> {
       /**
        * Synthetic field for 'characterName'
        */
-      val characterName: CharacterName?,
+      val characterName: CharacterName,
       /**
        * Synthetic field for 'characterAppearsIn'
        */
-      val characterAppearsIn: CharacterAppearsIn?
+      val characterAppearsIn: CharacterAppearsIn
     )
   }
 

@@ -37,7 +37,7 @@ data class StarshipFragment(
         /**
          * Synthetic field for 'pilotFragment'
          */
-        val pilotFragment: PilotFragment?
+        val pilotFragment: PilotFragment
       )
     }
   }

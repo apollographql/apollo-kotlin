@@ -41,7 +41,7 @@ class TestQuery : Query<TestQuery.Data> {
       /**
        * Synthetic field for inline fragment on Iface1
        */
-      val onIface1: OnIface1?,
+      val onIface1: OnIface1,
       /**
        * Synthetic field for inline fragment on Impl1
        */
@@ -55,7 +55,7 @@ class TestQuery : Query<TestQuery.Data> {
           /**
            * Synthetic field for inline fragment on Iface2
            */
-          val onIface2: OnIface2?,
+          val onIface2: OnIface2,
           /**
            * Synthetic field for inline fragment on Impl2
            */
@@ -79,7 +79,7 @@ class TestQuery : Query<TestQuery.Data> {
           /**
            * Synthetic field for inline fragment on Iface2
            */
-          val onIface2: OnIface2?,
+          val onIface2: OnIface2,
           /**
            * Synthetic field for inline fragment on Impl2
            */

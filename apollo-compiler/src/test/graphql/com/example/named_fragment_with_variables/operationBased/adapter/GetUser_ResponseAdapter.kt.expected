@@ -8,12 +8,9 @@ package com.example.named_fragment_with_variables.adapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
-import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.possibleTypes
 import com.example.named_fragment_with_variables.GetUser
-import com.example.named_fragment_with_variables.fragment.QueryFragment
 import kotlin.String
 import kotlin.collections.List
 
@@ -37,11 +34,8 @@ object GetUser_ResponseAdapter {
       }
 
       reader.rewind()
-      var queryFragment: QueryFragment? = null
-      if (possibleTypes("Query").evaluate(emptySet(), __typename)) {
-        queryFragment = com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.fromJson(reader,
-            customScalarAdapters)
-      }
+      val queryFragment = com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.fromJson(reader,
+          customScalarAdapters)
 
       return GetUser.Data(
         __typename = __typename,
@@ -57,10 +51,8 @@ object GetUser_ResponseAdapter {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-      if (value.queryFragment != null) {
-        com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.toJson(writer,
-            customScalarAdapters, value.queryFragment)
-      }
+      com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.toJson(writer,
+          customScalarAdapters, value.queryFragment)
     }
   }
 }

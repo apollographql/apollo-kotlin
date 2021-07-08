@@ -19,7 +19,7 @@ data class QueryFragment(
     /**
      * Synthetic field for 'heroFragment'
      */
-    val heroFragment: HeroFragment?
+    val heroFragment: HeroFragment
   )
 
   data class Droid(
@@ -27,7 +27,7 @@ data class QueryFragment(
     /**
      * Synthetic field for 'droidFragment'
      */
-    val droidFragment: DroidFragment?
+    val droidFragment: DroidFragment
   )
 
   data class Human(
@@ -35,7 +35,7 @@ data class QueryFragment(
     /**
      * Synthetic field for inline fragment on Human
      */
-    val onHuman: OnHuman?
+    val onHuman: OnHuman
   ) {
     data class OnHuman(
       /**

@@ -23,6 +23,6 @@ data class PilotFragment(
     /**
      * Synthetic field for 'planetFragment'
      */
-    val planetFragment: PlanetFragment?
+    val planetFragment: PlanetFragment
   )
 }

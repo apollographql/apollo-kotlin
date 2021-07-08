@@ -28,7 +28,7 @@ data class QueryFragment(
       /**
        * Synthetic field for 'UserFragment'
        */
-      val userFragment: UserFragment?
+      val userFragment: UserFragment
     )
   }
 }
