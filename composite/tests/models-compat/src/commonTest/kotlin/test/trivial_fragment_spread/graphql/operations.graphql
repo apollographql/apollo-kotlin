@@ -1,0 +1,9 @@
+query GetAnimal {
+  animal {
+    ...animalFragment
+  }
+}
+
+fragment animalFragment on Animal {
+  name
+}

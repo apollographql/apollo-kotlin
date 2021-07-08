@@ -15,7 +15,6 @@ import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
 import com.example.simple_fragment.TestQuery
-import com.example.simple_fragment.fragment.HeroDetails
 import com.example.simple_fragment.fragment.HumanDetails
 import kotlin.String
 import kotlin.collections.List
@@ -68,11 +67,8 @@ internal object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        var heroDetails: HeroDetails? = null
-        if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-          heroDetails = com.example.simple_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
-              customScalarAdapters)
-        }
+        val heroDetails = com.example.simple_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
+            customScalarAdapters)
 
         reader.rewind()
         var humanDetails: HumanDetails? = null
@@ -96,10 +92,8 @@ internal object TestQuery_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        if (value.heroDetails != null) {
-          com.example.simple_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer,
-              customScalarAdapters, value.heroDetails)
-        }
+        com.example.simple_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer,
+            customScalarAdapters, value.heroDetails)
 
         if (value.humanDetails != null) {
           com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer,

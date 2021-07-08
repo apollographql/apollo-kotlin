@@ -52,7 +52,7 @@ data class GetUser(
       /**
        * Synthetic field for 'QueryFragment'
        */
-      val queryFragment: QueryFragment?
+      val queryFragment: QueryFragment
     )
   }
 

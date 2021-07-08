@@ -8,14 +8,11 @@ package com.example.multiple_fragments.adapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
-import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.possibleTypes
 import com.example.multiple_fragments.TestQuery
-import com.example.multiple_fragments.fragment.AFragment
 import kotlin.String
 import kotlin.collections.List
 
@@ -108,11 +105,8 @@ object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        var aFragment: AFragment? = null
-        if (possibleTypes("A").evaluate(emptySet(), __typename)) {
-          aFragment = com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.fromJson(reader,
-              customScalarAdapters)
-        }
+        val aFragment = com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.fromJson(reader,
+            customScalarAdapters)
 
         return TestQuery.A.Fragments(
           aFragment = aFragment
@@ -124,10 +118,8 @@ object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         value: TestQuery.A.Fragments
       ) {
-        if (value.aFragment != null) {
-          com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.toJson(writer,
-              customScalarAdapters, value.aFragment)
-        }
+        com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.toJson(writer,
+            customScalarAdapters, value.aFragment)
       }
     }
   }

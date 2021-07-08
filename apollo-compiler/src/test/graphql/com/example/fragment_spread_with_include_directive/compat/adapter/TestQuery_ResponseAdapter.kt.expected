@@ -119,7 +119,7 @@ object TestQuery_ResponseAdapter {
 
         reader.rewind()
         var heroDetails: HeroDetails? = null
-        if (and(possibleTypes("Droid","Human"),and(variable("withDetails"),not(variable("skipHumanDetails")))).evaluate(emptySet(), __typename)) {
+        if (and(variable("withDetails"),not(variable("skipHumanDetails"))).evaluate(emptySet(), __typename)) {
           heroDetails = com.example.fragment_spread_with_include_directive.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
               customScalarAdapters)
         }

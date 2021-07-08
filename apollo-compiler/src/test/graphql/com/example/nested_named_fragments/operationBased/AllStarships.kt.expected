@@ -56,7 +56,7 @@ class AllStarships : Query<AllStarships.Data> {
           /**
            * Synthetic field for 'starshipFragment'
            */
-          val starshipFragment: StarshipFragment?
+          val starshipFragment: StarshipFragment
         )
       }
     }

@@ -57,7 +57,7 @@ class TestQuery : Query<TestQuery.Data> {
           /**
            * Synthetic field for 'bFragment'
            */
-          val bFragment: BFragment?
+          val bFragment: BFragment
         )
       }
     }

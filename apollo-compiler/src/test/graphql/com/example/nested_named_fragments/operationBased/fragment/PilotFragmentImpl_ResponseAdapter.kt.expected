@@ -9,12 +9,10 @@ import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
-import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.possibleTypes
 import kotlin.String
 import kotlin.collections.List
 
@@ -73,11 +71,8 @@ object PilotFragmentImpl_ResponseAdapter {
         }
 
         reader.rewind()
-        var planetFragment: PlanetFragment? = null
-        if (possibleTypes("Planet").evaluate(emptySet(), __typename)) {
-          planetFragment = com.example.nested_named_fragments.fragment.PlanetFragmentImpl_ResponseAdapter.PlanetFragment.fromJson(reader,
-              customScalarAdapters)
-        }
+        val planetFragment = com.example.nested_named_fragments.fragment.PlanetFragmentImpl_ResponseAdapter.PlanetFragment.fromJson(reader,
+            customScalarAdapters)
 
         return com.example.nested_named_fragments.fragment.PilotFragment.Homeworld(
           __typename = __typename,
@@ -93,10 +88,8 @@ object PilotFragmentImpl_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        if (value.planetFragment != null) {
-          com.example.nested_named_fragments.fragment.PlanetFragmentImpl_ResponseAdapter.PlanetFragment.toJson(writer,
-              customScalarAdapters, value.planetFragment)
-        }
+        com.example.nested_named_fragments.fragment.PlanetFragmentImpl_ResponseAdapter.PlanetFragment.toJson(writer,
+            customScalarAdapters, value.planetFragment)
       }
     }
   }

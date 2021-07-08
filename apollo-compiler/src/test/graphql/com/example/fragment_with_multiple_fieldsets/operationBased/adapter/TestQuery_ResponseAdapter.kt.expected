@@ -8,14 +8,11 @@ package com.example.fragment_with_multiple_fieldsets.adapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
-import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.possibleTypes
 import com.example.fragment_with_multiple_fieldsets.TestQuery
-import com.example.fragment_with_multiple_fieldsets.fragment.IFragment
 import kotlin.String
 import kotlin.collections.List
 
@@ -67,11 +64,8 @@ object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        var iFragment: IFragment? = null
-        if (possibleTypes("A","B").evaluate(emptySet(), __typename)) {
-          iFragment = com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.fromJson(reader,
-              customScalarAdapters)
-        }
+        val iFragment = com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.fromJson(reader,
+            customScalarAdapters)
 
         return TestQuery.Data.I(
           __typename = __typename,
@@ -87,10 +81,8 @@ object TestQuery_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        if (value.iFragment != null) {
-          com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.toJson(writer,
-              customScalarAdapters, value.iFragment)
-        }
+        com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.toJson(writer,
+            customScalarAdapters, value.iFragment)
       }
     }
   }

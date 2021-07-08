@@ -111,7 +111,14 @@ internal class OperationBasedModelGroupBuilder(
   private class SelectionWithParent(val selection: GQLSelection, val parent: String)
 
   /**
+   * @param root the [IrModelRoot] used to identify the resulting model
    * @param path the path up to but not including this field
+   * @param info information about this field
+   * @param selections the sub-selections of this fields. If [collectAllInlineFragmentFields] is true, might contain parent fields that
+   * might not all be on the same parent type. Hence [SelectionWithParent]
+   * @param condition the condition for this field. Might be a mix of include directives and type conditions
+   * @param isSynthetic whether this is a synthetic field. This is used to determine whether this field requires buffering
+   *
    */
   private fun buildField(
       root: IrModelRoot,
@@ -188,16 +195,23 @@ internal class OperationBasedModelGroupBuilder(
      * (for an example both firstName = null and lastName = null)
      *
      */
-    val inlineFragmentsFields = selections.map { it.selection }.filterIsInstance<GQLInlineFragment>()
+    val inlineFragmentsFields = selections.filter { it.selection is GQLInlineFragment }
         .groupBy {
-          it.typeCondition.name
+          (it.selection as GQLInlineFragment).typeCondition.name
         }.entries.flatMap {
           val typeCondition = it.key
 
           // If there is only one fragment, no need to disambiguate it
           val nameNeedsCondition = it.value.size > 1
+          val inlineFragmentsWithSameTypeCondition = it.value.map { it.selection as GQLInlineFragment }
 
-          it.value.groupBy { it.directives.toBooleanExpression() }
+          /**
+           * Because fragments are not merged regardless of [collectAllInlineFragmentFields], all inline fragments
+           * should have the same parentType here
+           */
+          val parentTypeCondition = it.value.first().parent
+
+          inlineFragmentsWithSameTypeCondition.groupBy { it.directives.toBooleanExpression() }
               .entries.map { entry ->
                 val prefix = if (collectAllInlineFragmentFields) "as" else "on"
 
@@ -207,15 +221,24 @@ internal class OperationBasedModelGroupBuilder(
                   InlineFragmentKey(typeCondition, BooleanExpression.True).toName()
                 }
 
+                val possibleTypes = schema.possibleTypes(typeCondition)
+                var childCondition: BooleanExpression<BTerm> = if (typeCondition == parentTypeCondition) {
+                  BooleanExpression.True
+                } else {
+                  BooleanExpression.Element(BPossibleTypes(possibleTypes))
+                }
+                childCondition = entry.key.and(childCondition).simplify()
+
+                var type: IrType = IrModelType(IrUnknownModelId)
+                if (childCondition == BooleanExpression.True) {
+                  type = IrNonNullType(type)
+                }
                 val childInfo = IrFieldInfo(
                     responseName = "$prefix$name",
                     description = "Synthetic field for inline fragment on $typeCondition",
                     deprecationReason = null,
-                    type = IrModelType(IrUnknownModelId)
+                    type = type
                 )
-
-                val possibleTypes = schema.possibleTypes(typeCondition)
-                val childCondition = entry.key.and(BooleanExpression.Element(BPossibleTypes(possibleTypes))).simplify()
 
                 var childSelections = entry.value.flatMap {
                   it.selectionSet.selections.map { SelectionWithParent(it, typeCondition) }
@@ -237,32 +260,53 @@ internal class OperationBasedModelGroupBuilder(
         }
 
     /**
-     * Merge fragment spreads
+     * Merge fragment spreads, regardless of the type condition
      *
-     * Since they all have the same shape, it's ok
+     * Since they all have the same shape, it's ok, contrary to inline fragments above
      */
-    val fragmentSpreadFields = selections.map { it.selection }.filterIsInstance<GQLFragmentSpread>()
+    val fragmentSpreadFields = selections.filter { it.selection is GQLFragmentSpread }
         .groupBy {
-          it.name
-        }.values.map { fragmentSpreadsWithSameName ->
+          (it.selection as GQLFragmentSpread).name
+        }.values.map { values ->
+          val fragmentSpreadsWithSameName = values.map { it.selection as GQLFragmentSpread }
           val first = fragmentSpreadsWithSameName.first()
 
           val fragmentDefinition = allFragmentDefinitions[first.name]!!
           val typeCondition = fragmentDefinition.typeCondition.name
 
+          /**
+           * Because fragments are not merged regardless of [collectAllInlineFragmentFields], all inline fragments
+           * should have the same parentType here
+           */
+          val parentTypeCondition = values.first().parent
+
           val possibleTypes = schema.possibleTypes(typeCondition)
-          val childCondition = BooleanExpression.Or(fragmentSpreadsWithSameName.map { it.directives.toBooleanExpression() }.toSet())
+          var childCondition: BooleanExpression<BTerm> = if (typeCondition != parentTypeCondition) {
+            BooleanExpression.Element(BPossibleTypes(possibleTypes))
+          } else {
+            BooleanExpression.True
+          }
+
+          /**
+           * That's more involved than the inline fragment case because fragment spreads have different @include/@skip directives get merged together
+           */
+          childCondition = BooleanExpression.Or(fragmentSpreadsWithSameName.map { it.directives.toBooleanExpression() }.toSet())
               .simplify()
-              .and(BooleanExpression.Element(BPossibleTypes(possibleTypes)))
+              .and(childCondition)
               .simplify()
 
           val fragmentModelId = IrModelId(IrModelRoot(IrRootKind.FragmentData, first.name), "." + first.name)
+
+          var type: IrType = IrModelType(fragmentModelId)
+          if (childCondition == BooleanExpression.True) {
+            type = IrNonNullType(type)
+          }
 
           val childInfo = IrFieldInfo(
               responseName = first.name.decapitalize().escapeKotlinReservedWord(),
               description = "Synthetic field for '${first.name}'",
               deprecationReason = null,
-              type = IrModelType(fragmentModelId)
+              type = type
           )
 
           val p = if (insertFragmentSyntheticField) {

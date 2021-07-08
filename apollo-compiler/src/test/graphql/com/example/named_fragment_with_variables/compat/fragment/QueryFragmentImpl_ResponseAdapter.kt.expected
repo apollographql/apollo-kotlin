@@ -8,13 +8,11 @@ package com.example.named_fragment_with_variables.fragment
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
-import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.possibleTypes
 import kotlin.String
 import kotlin.collections.List
 
@@ -144,11 +142,8 @@ object QueryFragmentImpl_ResponseAdapter {
         }
 
         reader.rewind()
-        var userFragment: UserFragment? = null
-        if (possibleTypes("User").evaluate(emptySet(), __typename)) {
-          userFragment = com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.fromJson(reader,
-              customScalarAdapters)
-        }
+        val userFragment = com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.fromJson(reader,
+            customScalarAdapters)
 
         return com.example.named_fragment_with_variables.fragment.QueryFragment.User.Fragments(
           userFragment = userFragment
@@ -160,10 +155,8 @@ object QueryFragmentImpl_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         value: com.example.named_fragment_with_variables.fragment.QueryFragment.User.Fragments
       ) {
-        if (value.userFragment != null) {
-          com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.toJson(writer,
-              customScalarAdapters, value.userFragment)
-        }
+        com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.toJson(writer,
+            customScalarAdapters, value.userFragment)
       }
     }
   }

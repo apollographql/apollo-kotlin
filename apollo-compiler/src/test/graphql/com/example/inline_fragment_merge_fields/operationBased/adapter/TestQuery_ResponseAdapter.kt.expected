@@ -9,13 +9,11 @@ import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
-import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.possibleTypes
 import com.example.inline_fragment_merge_fields.TestQuery
 import kotlin.Any
 import kotlin.String
@@ -73,11 +71,8 @@ object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        var onCharacter: TestQuery.Data.Hero.OnCharacter? = null
-        if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-          onCharacter = com.example.inline_fragment_merge_fields.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.fromJson(reader,
-              customScalarAdapters)
-        }
+        val onCharacter = com.example.inline_fragment_merge_fields.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.fromJson(reader,
+            customScalarAdapters)
 
         return TestQuery.Data.Hero(
           __typename = __typename,
@@ -101,10 +96,8 @@ object TestQuery_ResponseAdapter {
         writer.name("friendsConnection")
         FriendsConnection.obj().toJson(writer, customScalarAdapters, value.friendsConnection)
 
-        if (value.onCharacter != null) {
-          com.example.inline_fragment_merge_fields.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.toJson(writer,
-              customScalarAdapters, value.onCharacter)
-        }
+        com.example.inline_fragment_merge_fields.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.toJson(writer,
+            customScalarAdapters, value.onCharacter)
       }
 
       private object FriendsConnection : Adapter<TestQuery.Data.Hero.FriendsConnection> {

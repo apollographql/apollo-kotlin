@@ -8,15 +8,11 @@ package com.example.named_fragment_inside_inline_fragment.adapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
-import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.possibleTypes
 import com.example.named_fragment_inside_inline_fragment.GetHero
-import com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn
-import com.example.named_fragment_inside_inline_fragment.fragment.CharacterName
 import kotlin.String
 import kotlin.collections.List
 
@@ -109,18 +105,12 @@ object GetHero_ResponseAdapter {
         }
 
         reader.rewind()
-        var characterName: CharacterName? = null
-        if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-          characterName = com.example.named_fragment_inside_inline_fragment.fragment.CharacterNameImpl_ResponseAdapter.CharacterName.fromJson(reader,
-              customScalarAdapters)
-        }
+        val characterName = com.example.named_fragment_inside_inline_fragment.fragment.CharacterNameImpl_ResponseAdapter.CharacterName.fromJson(reader,
+            customScalarAdapters)
 
         reader.rewind()
-        var characterAppearsIn: CharacterAppearsIn? = null
-        if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-          characterAppearsIn = com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsInImpl_ResponseAdapter.CharacterAppearsIn.fromJson(reader,
-              customScalarAdapters)
-        }
+        val characterAppearsIn = com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsInImpl_ResponseAdapter.CharacterAppearsIn.fromJson(reader,
+            customScalarAdapters)
 
         return GetHero.Hero.Fragments(
           characterName = characterName,
@@ -133,15 +123,11 @@ object GetHero_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         value: GetHero.Hero.Fragments
       ) {
-        if (value.characterName != null) {
-          com.example.named_fragment_inside_inline_fragment.fragment.CharacterNameImpl_ResponseAdapter.CharacterName.toJson(writer,
-              customScalarAdapters, value.characterName)
-        }
+        com.example.named_fragment_inside_inline_fragment.fragment.CharacterNameImpl_ResponseAdapter.CharacterName.toJson(writer,
+            customScalarAdapters, value.characterName)
 
-        if (value.characterAppearsIn != null) {
-          com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsInImpl_ResponseAdapter.CharacterAppearsIn.toJson(writer,
-              customScalarAdapters, value.characterAppearsIn)
-        }
+        com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsInImpl_ResponseAdapter.CharacterAppearsIn.toJson(writer,
+            customScalarAdapters, value.characterAppearsIn)
       }
     }
   }
