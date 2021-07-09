@@ -1,5 +1,6 @@
 ---
-title: Get started
+title: Get started with Apollo Android
+sidebar_title: Get started
 ---
 
 import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
@@ -9,13 +10,15 @@ import AddPlugin from "./shared/add-plugin.mdx"
 import DownloadSchema from "./shared/download-schema.mdx"
 import AddQuery from "./shared/add-query.mdx"
 
+Hello! This article walks you through adding Apollo Android to your project.
+
 ## Add the Gradle plugin
 
 <AddPlugin />
 
-## Add the runtime dependencies
+## Add runtime dependencies
 
-```kotlin
+```kotlin:title=build.gradle[.kts]
 dependencies {
   // The core runtime dependencies
   implementation("com.apollographql.apollo3:apollo-runtime:$version")
@@ -24,7 +27,7 @@ dependencies {
 
 Or for a multiplatform project:
 
-```kotlin
+```kotlin:title=build.gradle[.kts]
 kotlin {
   sourceSets {
     val commonMain by getting {
@@ -46,18 +49,18 @@ kotlin {
 
 ## Execute your query
 
-Create an `ApolloClient`:
+In your application code, create an instance of `ApolloClient`, providing your GraphQL server's URL where indicated:
 
 ```kotlin
-// First, create an `ApolloClient`
 // Replace the serverUrl with your GraphQL endpoint
 val apolloClient = ApolloClient(serverUrl = "https://your.domain/graphql")
 ```
 
-Apollo Android uses coroutines to handle concurrency. If you're using Java, see [RxJava2](usage/rxjava2) for an alternative way to execute your queries.
+Now you can execute your defined query with `ApolloClient` like so:
 
-```
-// Replace `runBlocking {}` by `viewModelScope.launch {}` or any other coroutine scope builder
+```kotlin
+// Replace `runBlocking {}` with `viewModelScope.launch {}`
+// or any other coroutine scope builder
 runBlocking {
   val response = try {
     apolloClient.query(LaunchDetailsQuery(id = "83"))
@@ -78,8 +81,10 @@ runBlocking {
 }
 ```
 
+> Apollo Android uses coroutines to handle concurrency. If you're using Java, see [RxJava2](usage/rxjava2) for an alternative way to execute your queries.
+
 ## What's next
 
-* Execute your first [mutation](https://www.apollographql.com/docs/android/usage/mutations/)
-* Handle [custom scalar types](https://www.apollographql.com/docs/android/usage/custom-scalar-types/)
-* Factor common patterns using [fragments](https://www.apollographql.com/docs/android/usage/fragments/)
+* Execute your first [mutation](./essentials/10-mutations/)
+* Handle [custom scalar types](./essentials/30-custom-scalars/)
+* Factor common patterns using [fragments](./essentials/40-inline-fragments)
