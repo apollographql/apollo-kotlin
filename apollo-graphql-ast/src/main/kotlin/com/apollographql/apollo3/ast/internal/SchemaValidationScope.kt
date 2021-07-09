@@ -7,11 +7,16 @@ import com.apollographql.apollo3.ast.*
 internal class SchemaValidationScope(document: GQLDocument) : ValidationScope {
   override val issues = mutableListOf<Issue>()
 
-  val allDefinitions = document.definitions
-  override val typeDefinitions = getTypeDefinitions(document.definitions)
-  override val directiveDefinitions = getDirectives(document.definitions)
+  val documentDefinitions = document.definitions
+  /**
+   * The builtin definitions are required to validate directives amongst other
+   * things so add them early in the validation proccess.
+   */
+  val allDefinitions = document.definitions + builtinDefinitions()
+  override val typeDefinitions = getTypeDefinitions(allDefinitions)
+  override val directiveDefinitions = getDirectives(allDefinitions)
 
-  val schemaDefinition = getSchema(document.definitions)
+  val schemaDefinition = getSchema(allDefinitions)
 
   init {
     /**
@@ -92,12 +97,7 @@ internal fun SchemaValidationScope.validateDocumentAndMergeExtensions(): List<GQ
 
   val schemaDefinition = schemaDefinition ?: syntheticSchemaDefinition()
 
-  /**
-   * Add the builtin definitions before merging the type extensions.
-   * That leaves the possibility to extend the builtin types. Not sure how useful that is
-   * but that shouldn't harm
-   */
-  return mergeExtensions(listOf(schemaDefinition) + builtinDefinitions() + allDefinitions.filter { it !is GQLSchemaDefinition } )
+  return mergeExtensions(listOf(schemaDefinition) + allDefinitions.filter { it !is GQLSchemaDefinition } )
 }
 
 internal fun SchemaValidationScope.validateRootOperationTypes() {
@@ -175,9 +175,10 @@ private fun ValidationScope.validateObjects() {
   }
 }
 
-private fun ValidationScope.validateNoIntrospectionNames() {
+private fun SchemaValidationScope.validateNoIntrospectionNames() {
   // 3.3 All types and directives defined within a schema must not have a name which begins with "__"
-  (typeDefinitions.values + directiveDefinitions.values).forEach { definition ->
+  documentDefinitions.filterIsInstance<GQLNamed>().forEach { definition ->
+    definition as GQLDefinition
     if (definition.name.startsWith("__")) {
       registerIssue("names starting with '__' are reserved for introspection", definition.sourceLocation)
     }

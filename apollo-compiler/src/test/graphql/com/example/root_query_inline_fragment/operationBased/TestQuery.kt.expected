@@ -40,7 +40,7 @@ class TestQuery : Query<TestQuery.Data> {
     /**
      * Synthetic field for inline fragment on Query
      */
-    val onQuery: OnQuery?
+    val onQuery: OnQuery
   ) : Query.Data {
     data class OnQuery(
       val __typename: String,
@@ -77,7 +77,7 @@ class TestQuery : Query<TestQuery.Data> {
         /**
          * Synthetic field for inline fragment on Droid
          */
-        val onDroid: OnDroid?
+        val onDroid: OnDroid
       ) {
         data class OnDroid(
           /**

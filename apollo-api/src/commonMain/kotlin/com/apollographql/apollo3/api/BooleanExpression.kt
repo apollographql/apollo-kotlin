@@ -110,7 +110,18 @@ fun BooleanExpression<BTerm>.evaluate(variables: Set<String>, typename: String):
   }
 }
 
+/**
+ * A generic term in a [BooleanExpression]
+ */
 sealed class BTerm
+
+/**
+ * A term that comes from @include/@skip directives and that needs to be matched against operation variables
+ */
 data class BVariable(val name: String) : BTerm()
+
+/**
+ * A term that comes from a fragment type condition and that needs to be matched against __typename
+ */
 data class BPossibleTypes(val possibleTypes: Set<String>) : BTerm()
 

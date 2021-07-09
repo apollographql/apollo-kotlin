@@ -50,7 +50,7 @@ class TestQuery : Query<TestQuery.Data> {
       /**
        * Synthetic field for inline fragment on Character
        */
-      val onCharacter: OnCharacter?
+      val onCharacter: OnCharacter
     ) {
       data class FriendsConnection(
         /**

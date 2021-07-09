@@ -172,11 +172,8 @@ object TestQuery_ResponseAdapter {
             }
 
             reader.rewind()
-            var onCharacter: TestQuery.Data.Search.OnCharacter.Friend.OnCharacter? = null
-            if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-              onCharacter = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnCharacter.fromJson(reader,
-                  customScalarAdapters)
-            }
+            val onCharacter = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnCharacter.fromJson(reader,
+                customScalarAdapters)
 
             reader.rewind()
             var onHuman: TestQuery.Data.Search.OnCharacter.Friend.OnHuman? = null
@@ -208,10 +205,8 @@ object TestQuery_ResponseAdapter {
             writer.name("__typename")
             StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-            if (value.onCharacter != null) {
-              com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnCharacter.toJson(writer,
-                  customScalarAdapters, value.onCharacter)
-            }
+            com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnCharacter.toJson(writer,
+                customScalarAdapters, value.onCharacter)
 
             if (value.onHuman != null) {
               com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnHuman.toJson(writer,
@@ -310,11 +305,8 @@ object TestQuery_ResponseAdapter {
                 }
 
                 reader.rewind()
-                var onCharacter: TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend.OnCharacter? = null
-                if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-                  onCharacter = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnHuman.Friend.OnCharacter.fromJson(reader,
-                      customScalarAdapters)
-                }
+                val onCharacter = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnHuman.Friend.OnCharacter.fromJson(reader,
+                    customScalarAdapters)
 
                 return TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend(
                   __typename = __typename,
@@ -330,10 +322,8 @@ object TestQuery_ResponseAdapter {
                 writer.name("__typename")
                 StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-                if (value.onCharacter != null) {
-                  com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnHuman.Friend.OnCharacter.toJson(writer,
-                      customScalarAdapters, value.onCharacter)
-                }
+                com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnHuman.Friend.OnCharacter.toJson(writer,
+                    customScalarAdapters, value.onCharacter)
               }
 
               private object OnCharacter :

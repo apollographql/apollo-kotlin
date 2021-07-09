@@ -3,7 +3,7 @@ plugins {
   kotlin("multiplatform")
 }
 
-configureMppDefaults()
+configureMppDefaults(withJs = false)
 
 kotlin {
   sourceSets {
@@ -11,7 +11,8 @@ kotlin {
       dependencies {
         api(project(":apollo-api"))
         api(project(":apollo-mpp-utils"))
-        api(project(":apollo-normalized-cache-api"))
+        api(project(":apollo-runtime"))
+        api(project(":apollo-normalized-cache-common"))
         api(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
       }
     }

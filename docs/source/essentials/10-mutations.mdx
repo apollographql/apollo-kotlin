@@ -1,0 +1,99 @@
+---
+title: Mutations
+---
+
+import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
+
+Queries are useful to fetch data from a server, but client-server communication may also require sending data to the server. This is where Mutations become handy.
+Just like REST, any request might end up causing some side-effects on the server, but by convention it's suggested that one doesn't use GET requests to modify data. GraphQL is similar - technically any query could be implemented to cause a data write.
+However, it's useful to establish a convention that any operations that cause writes should be sent explicitly via a *mutation*.
+
+Apollo Android handles GraphQL mutations. Mutations are similar to queries in syntax, the only difference being that you use the keyword `mutation` instead of `query` to indicate that the root fields on this query are going to be performing writes to the backend.
+
+```
+mutation UpvotePost($postId: Int!) {
+  upvotePost(postId: $postId) {
+    votes
+  }
+}
+```
+
+GraphQL mutations represent two things in one query string:
+
+1. The mutation field name with arguments, `upvotePost`, which represents the actual operation to be done on the server
+2. The fields you want back from the result of the mutation to update the client: `{ votes }`
+
+The above mutation will upvote a post on the server. The result might be:
+
+```
+{
+  "data": {
+    "upvotePost": {
+      "id": "123",
+      "votes": 5
+    }
+  }
+}
+```
+
+Similar to queries, mutations are represented by instances of generated classes, conforming to the `Mutation` interface. Constructor arguments are used to define mutation variables. You pass a mutation object to `ApolloClient#mutate(mutation)` to send the mutation to the server, execute it, and receive typed results:
+
+<MultiCodeBlock>
+
+```kotlin
+val upvotePostMutation = UpvotePostMutation(votes = 3)
+
+val response = try {
+  apolloClient.mutate(upvotePostMutation)
+} catch(e: ApolloException) {
+  // handle error
+}
+```
+
+</MultiCodeBlock>
+
+## Using fragments in mutation results
+
+In many cases, you'll want to use mutation results to update your UI. Fragments can be a great way of sharing result handling between queries and mutations:
+
+```graphql
+mutation UpvotePost($postId: Int!) {
+  upvotePost(postId: $postId) {
+    ...PostDetails
+  }
+}
+```
+
+## Passing input objects
+
+The GraphQL type system includes [input objects](http://graphql.org/learn/schema/#input-types) as a way to pass complex values to fields. Input objects are often defined as mutation variables, because they give you a compact way to pass in objects to be created:
+
+```graphql
+mutation CreateReviewForEpisode($episode: Episode!, $review: ReviewInput!) {
+  createReview(episode: $episode, review: $review) {
+    stars
+    commentary
+  }
+}
+```
+
+<MultiCodeBlock>
+
+```kotlin
+val reviewInput = ReviewInput(stars = 5, commentary = "This is a great movie!")
+
+try {
+  val response = apolloClient.mutate(CreateReviewForEpisodeMutation(episode = Episode.NEWHOPE, review = reviewInput))
+} catch(e: ApolloException) {
+  // handle exception
+}
+```
+
+</MultiCodeBlock>
+
+## Designing mutation results
+
+In GraphQL, mutations can return any type, and that type can be queried just like a regular GraphQL query. So the question is - what type should a particular mutation return?
+
+In most cases, the data available from a mutation result should be the server developer's best guess of the data a client would need to understand what happened on the server. For example, a mutation that creates a new comment on a blog post might return the comment itself. A mutation that reorders an array might need to return the whole array.
+

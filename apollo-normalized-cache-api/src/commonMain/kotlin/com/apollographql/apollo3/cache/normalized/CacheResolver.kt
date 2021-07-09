@@ -11,37 +11,40 @@ import kotlin.jvm.JvmSuppressWildcards
 
 open class CacheResolver {
 
+  /**
+   * Returns a cache key for the given object
+   *
+   * @param type the type of the object
+   * @param obj the object
+   */
   open fun cacheKeyForObject(
       type: CompiledNamedType,
-      variables: Executable.Variables,
-      map: Map<String, @JvmSuppressWildcards Any?>,
+      obj: Map<String, @JvmSuppressWildcards Any?>,
   ): CacheKey? {
     val keyFields = type.keyFields()
 
     if (keyFields.isNotEmpty()) {
-      return buildCacheKey(type.name, keyFields.map { map[it].toString() })
+      return buildCacheKey(type.name, keyFields.map { obj[it].toString() })
     }
 
     return null
   }
 
-  protected fun buildCacheKey(typename: String, values: List<String>): CacheKey {
-    return CacheKey(
-        buildString {
-          append(typename)
-          append(":")
-          values.forEach {
-            append(it)
-          }
-        }
-    )
-  }
-
+  /**
+   * Resolves a field from the cache. This API is similar to a backend side resolver in that it allows resolving fields to arbitrary
+   * values.
+   *
+   * @param field the field to resolve
+   * @param variables the variables of the current operation
+   * @param parent the parent object as a map. It can contain the same values as [Record]. Especially, nested objects will be represented
+   * by [CacheKey]
+   * @param parentId the id of the parent. Mainly used for debugging
+   */
   open fun resolveField(
       field: CompiledField,
       variables: Executable.Variables,
       parent: Map<String, @JvmSuppressWildcards Any?>,
-      parentKey: String,
+      parentId: String,
   ): Any? {
     val keyArgsValues = field.arguments.filter { it.isKey }.map {
       CompiledArgument.resolveVariables(it.value, variables).toString()
@@ -53,19 +56,34 @@ open class CacheResolver {
 
     val name = field.nameWithArguments(variables)
     if (!parent.containsKey(name)) {
-      throw CacheMissException(parentKey, name)
+      throw CacheMissException(parentId, name)
     }
 
     return parent[name]
   }
+
+  /**
+   * Helper function to build a cache key from a list of strings
+   */
+  protected fun buildCacheKey(typename: String, values: List<String>): CacheKey {
+    return CacheKey(
+        buildString {
+          append(typename)
+          append(":")
+          values.forEach {
+            append(it)
+          }
+        }
+    )
+  }
 }
 
 class IdCacheResolver: CacheResolver() {
-  override fun cacheKeyForObject(type: CompiledNamedType, variables: Executable.Variables, map: Map<String, Any?>): CacheKey? {
-    return map["id"]?.toString()?.let { CacheKey(it) }
+  override fun cacheKeyForObject(type: CompiledNamedType, obj: Map<String, Any?>): CacheKey? {
+    return obj["id"]?.toString()?.let { CacheKey(it) }
   }
 
-  override fun resolveField(field: CompiledField, variables: Executable.Variables, parent: Map<String, Any?>, parentKey: String): Any? {
+  override fun resolveField(field: CompiledField, variables: Executable.Variables, parent: Map<String, Any?>, parentId: String): Any? {
     val id = field.resolveArgument("id", variables)?.toString()
     if (id != null) {
        return CacheKey(id)
@@ -73,7 +91,7 @@ class IdCacheResolver: CacheResolver() {
 
     val name = field.nameWithArguments(variables)
     if (!parent.containsKey(name)) {
-      throw CacheMissException(parentKey, name)
+      throw CacheMissException(parentId, name)
     }
 
     return parent[name]

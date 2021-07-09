@@ -20,6 +20,9 @@ actual class DefaultHttpEngine(
     private val httpCallFactory: Call.Factory,
 ) : HttpEngine {
 
+  // an overload that takes an OkHttpClient for easier discovery
+  constructor(okHttpClient: OkHttpClient) : this(okHttpClient as Call.Factory)
+
   actual constructor(
       connectTimeoutMillis: Long,
       readTimeoutMillis: Long,
@@ -85,6 +88,9 @@ actual class DefaultHttpEngine(
         )
     )
     continuation.resume(result.getOrThrow())
+  }
+
+  override fun dispose() {
   }
 
   private fun Headers.toMap(): Map<String, String> {

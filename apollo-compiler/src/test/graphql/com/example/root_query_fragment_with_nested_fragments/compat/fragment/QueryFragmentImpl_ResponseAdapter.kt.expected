@@ -9,12 +9,10 @@ import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
-import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.possibleTypes
 import kotlin.String
 import kotlin.collections.List
 
@@ -129,11 +127,8 @@ object QueryFragmentImpl_ResponseAdapter {
         }
 
         reader.rewind()
-        var heroFragment: HeroFragment? = null
-        if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-          heroFragment = com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.fromJson(reader,
-              customScalarAdapters)
-        }
+        val heroFragment = com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.fromJson(reader,
+            customScalarAdapters)
 
         return com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero.Fragments(
           heroFragment = heroFragment
@@ -145,10 +140,8 @@ object QueryFragmentImpl_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         value: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero.Fragments
       ) {
-        if (value.heroFragment != null) {
-          com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.toJson(writer,
-              customScalarAdapters, value.heroFragment)
-        }
+        com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.toJson(writer,
+            customScalarAdapters, value.heroFragment)
       }
     }
   }
@@ -215,11 +208,8 @@ object QueryFragmentImpl_ResponseAdapter {
         }
 
         reader.rewind()
-        var droidFragment: DroidFragment? = null
-        if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
-          droidFragment = com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.fromJson(reader,
-              customScalarAdapters)
-        }
+        val droidFragment = com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.fromJson(reader,
+            customScalarAdapters)
 
         return com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid.Fragments(
           droidFragment = droidFragment
@@ -231,10 +221,8 @@ object QueryFragmentImpl_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         value: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid.Fragments
       ) {
-        if (value.droidFragment != null) {
-          com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.toJson(writer,
-              customScalarAdapters, value.droidFragment)
-        }
+        com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.toJson(writer,
+            customScalarAdapters, value.droidFragment)
       }
     }
   }

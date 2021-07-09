@@ -87,7 +87,7 @@ object TestQuery_ResponseAdapter {
 
         reader.rewind()
         var onCharacter: TestQuery.Data.Hero.OnCharacter? = null
-        if (and(possibleTypes("Droid","Human"),variable("withDetails")).evaluate(emptySet(), __typename)) {
+        if (variable("withDetails").evaluate(emptySet(), __typename)) {
           onCharacter = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.fromJson(reader,
               customScalarAdapters)
         }

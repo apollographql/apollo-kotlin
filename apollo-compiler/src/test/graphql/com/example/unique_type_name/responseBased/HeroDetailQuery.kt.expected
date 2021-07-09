@@ -72,7 +72,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
        */
       override val name: String,
       /**
-       * The friends of the character, or an empty list if they have none
+       * Merged field with multiple descriptions. See parentTypes: 'Character, Human' for more
+       * information
        */
       override val friends: List<Friend?>?,
       /**

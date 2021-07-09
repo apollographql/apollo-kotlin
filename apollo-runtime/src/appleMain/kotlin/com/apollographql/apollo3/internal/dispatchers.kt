@@ -16,7 +16,7 @@ import platform.darwin.dispatch_time
 import kotlin.coroutines.CoroutineContext
 
 actual fun defaultDispatcher(requested: CoroutineDispatcher?): CoroutineDispatcher {
-  check(requested == null) {
+  check(requested == null || requested is DefaultDispatcher) {
     "Changing the dispatcher is not supported on Apple targets"
   }
   check(NSThread.isMainThread) {
@@ -27,7 +27,7 @@ actual fun defaultDispatcher(requested: CoroutineDispatcher?): CoroutineDispatch
 }
 
 
-actual class WebSocketDispatcher actual constructor() {
+actual class BackgroundDispatcher actual constructor() {
   init {
     check(NSThread.isMainThread) {
       "WebSocketDispatcher must be called from the main thread"
@@ -75,4 +75,11 @@ private object DefaultDispatcher: CoroutineDispatcher(), Delay {
 
     return handle
   }
+}
+
+actual class DefaultMutex actual constructor(): Mutex {
+  override fun <T> lock(block: () -> T): T {
+    return block()
+  }
+
 }

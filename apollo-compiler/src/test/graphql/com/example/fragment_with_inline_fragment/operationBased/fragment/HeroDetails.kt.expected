@@ -59,6 +59,6 @@ data class HeroDetails(
     /**
      * Synthetic field for 'DroidDetails'
      */
-    val droidDetails: DroidDetails?
+    val droidDetails: DroidDetails
   )
 }

@@ -8,14 +8,11 @@ package com.example.fragment_spread_with_nested_fields.adapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
-import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.possibleTypes
 import com.example.fragment_spread_with_nested_fields.TestQuery
-import com.example.fragment_spread_with_nested_fields.fragment.HeroDetails
 import kotlin.String
 import kotlin.collections.List
 
@@ -67,11 +64,8 @@ object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        var heroDetails: HeroDetails? = null
-        if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-          heroDetails = com.example.fragment_spread_with_nested_fields.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
-              customScalarAdapters)
-        }
+        val heroDetails = com.example.fragment_spread_with_nested_fields.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
+            customScalarAdapters)
 
         return TestQuery.Data.Hero(
           __typename = __typename,
@@ -87,10 +81,8 @@ object TestQuery_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        if (value.heroDetails != null) {
-          com.example.fragment_spread_with_nested_fields.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer,
-              customScalarAdapters, value.heroDetails)
-        }
+        com.example.fragment_spread_with_nested_fields.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer,
+            customScalarAdapters, value.heroDetails)
       }
     }
   }

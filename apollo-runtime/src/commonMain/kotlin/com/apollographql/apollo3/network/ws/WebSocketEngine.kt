@@ -1,8 +1,10 @@
 package com.apollographql.apollo3.network.ws
 
-import kotlinx.coroutines.channels.ReceiveChannel
 import okio.ByteString
 
+/**
+ * The low-level WebSocket API. Implement this interface to customize how WebSockets are handled
+ */
 interface WebSocketEngine {
   /**
    * Should not throw

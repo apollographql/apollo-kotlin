@@ -34,6 +34,11 @@ subprojects {
         languageSettings.useExperimentalAnnotation("kotlin.RequiresOptIn")
       }
     }
+    tasks.withType<AbstractTestTask> {
+      testLogging {
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+      }
+    }
   }
 }
 

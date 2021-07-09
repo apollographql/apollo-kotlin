@@ -1,0 +1,123 @@
+---
+title: Custom scalar types
+---
+
+import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
+
+Apollo supports [custom scalar types](https://www.apollographql.com/docs/apollo-server/schema/scalars-enums/) for scalar types that are not builtin in the GraphQL type system such as Long, Date, BigDecimalAdapter or GeoPoint
+
+You first need to define the mapping in your `build.gradle` file. This maps from the GraphQL type to the class to use in code.
+
+<MultiCodeBlock>
+
+```groovy
+apollo {
+  customScalarsMapping = [
+    "GeoPoint" : "com.example.GeoPoint"
+  ]
+}
+```
+
+```kotlin
+apollo {
+  customScalarsMapping.set(mapOf(
+    "GeoPoint" to "com.example.GeoPoint"
+  ))
+}
+```
+
+</MultiCodeBlock>
+
+## Define your adapter
+
+Writing an adapter is very similar to writing a Json adapter.
+
+```kotlin
+class GeoPoint(val latitude: Double, val longitude: Double)
+
+val geoPointAdapter = object : Adapter<GeoPoint> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GeoPoint {
+    var latitude: Double? = null
+    var longitude: Double? = null
+    reader.beginObject()
+    while(reader.hasNext()) {
+      when (reader.nextName()) {
+        "latitude" -> latitude = reader.nextDouble()
+        "longitude" -> longitude = reader.nextDouble()
+      }
+    }
+    reader.endObject()
+
+    // fromJson can throw on unexpected data and the exception will be wrapped in a
+    // ApolloParseException
+    return GeoPoint(latitude!!, longitude!!)
+  }
+
+  // If you do not expect your scalar to be used as input, you can leave this method as TODO()
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: GeoPoint) {
+    writer.beginObject()
+    writer.name("latitude").value(value.latitude)
+    writer.name("longitude").value(value.longitude)
+    writer.endObject()
+  }
+}
+```
+
+If you prefer working with `Maps`, Apollo Android comes with `AnyAdapter` that supports adapting Strings, Int, Double, Boolean, Lists and Maps. You can use it in an intermediate step:
+
+```kotlin
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GeoPoint {
+    val map = AnyAdapter.fromJson(reader) as Map<String, Double>
+    return GeoPoint(map["latitude"] as Double, map["longitude"] as Double)
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: GeoPoint) {
+    val map = mapOf(
+        "latitude" to value.latitude,
+        "longitude" to value.longitude
+    )
+    AnyAdapter.toJson(writer, map)
+  }
+}
+```
+
+This solution is more concise albeit slightly less performant.
+
+## Registering your adapter
+
+Use `ApolloClient.withCustomScalarAdapter` to register a custom scalar Adapter. It takes a typesafe generated class from `Types` as input. ()If you can't find `Types`, build your project to trigger codegen.)
+
+```kotlin
+val apolloClient = ApolloClient("https://").withCustomScalarAdapter(Types.GeoPoint, geoPointAdapter)
+```
+
+## Apollo Adapters
+
+Apollo comes with builtin adapters for common scalar types in the `com.apollographql.apollo3:apollo-adapters` artifact. It provides:
+
+* com.apollographql.apollo3.adapter.InstantAdapter for `kotlinx.datetime.Instant` ISO8601 dates
+* com.apollographql.apollo3.adapter.LocalDateAdapter for `kotlinx.datetime.LocalDate` ISO8601 dates
+* com.apollographql.apollo3.adapter.DateAdapter for `java.util.Date` ISO8601 dates
+* com.apollographql.apollo3.adapter.LongAdapter for `java.lang.Long`
+* com.apollographql.apollo3.adapter.BigDecimalAdapter for a MPP `com.apollographql.apollo3.BigDecimal` class holding big decimal values
+
+For an example, to use `DateAdapter`, configure your Gradle scripts:
+
+```koltin
+dependencies {
+  implementation("com.apollographql.apollo3:apollo-adapters:$version")
+}
+
+apollo {
+  customScalarsMapping.set(mapOf(
+    "Date" to "com.apollographql.apollo3.adapter.DateAdapter"
+  ))
+}
+```
+
+And add it to your `ApolloClient`:
+
+```kotlin
+val apolloClient = ApolloClient("https://").withCustomScalarAdapter(Types.Date, DateAdapter())
+```
+

@@ -8,6 +8,7 @@ import kotlinx.coroutines.DisposableHandle
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import platform.CoreFoundation.CFRunLoopGetCurrent
 import platform.CoreFoundation.CFRunLoopRun
@@ -25,14 +26,16 @@ import kotlin.coroutines.CoroutineContext
  * but for now that allows us to run integration tests against a mocked server
  */
 actual fun <T> runWithMainLoop(context: CoroutineContext, block: suspend CoroutineScope.() -> T): T {
-  var value: T? = null
-  GlobalScope.launch(MainLoopDispatcher) {
-    value = block()
+  var result: Result<T>? = null
+  GlobalScope.launch (MainLoopDispatcher) {
+    result = kotlin.runCatching {
+      block()
+    }
     CFRunLoopStop(CFRunLoopGetCurrent())
   }
   CFRunLoopRun()
 
-  return value!!
+  return result!!.getOrThrow()
 }
 
 actual fun <T> runBlocking(context: CoroutineContext, block: suspend CoroutineScope.() -> T) = kotlinx.coroutines.runBlocking { block() }

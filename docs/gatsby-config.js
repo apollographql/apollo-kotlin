@@ -8,53 +8,38 @@ module.exports = {
       options: {
         ...themeOptions,
         root: __dirname,
-        subtitle: 'Client (Android)',
-        description: 'A guide to using Apollo with Android',
+        subtitle: 'Client (Kotlin/Android)',
+        description: 'A guide to using Apollo with Kotlin and Android',
         githubRepo: 'apollographql/apollo-android',
         sidebarCategories: {
           null: [
             'index',
-            'essentials/get-started-kotlin',
-            'essentials/get-started-java',
-            'essentials/get-started-multiplatform',
+            'get-started'
           ],
-          'Tutorial': [
-            'tutorial/00-introduction',
-            'tutorial/01-configure-project',
-            'tutorial/02-add-the-graphql-schema',
-            'tutorial/03-write-your-first-query',
-            'tutorial/04-execute-the-query',
-            'tutorial/05-connect-queries-to-your-ui',
-            'tutorial/06-add-more-info',
-            'tutorial/07-paginate-results',
-            'tutorial/08-add-a-details-view',
-            'tutorial/09-write-your-first-mutation',
-            'tutorial/10-authenticate-your-queries',
-            'tutorial/11-subscriptions',
+          'Essentials': [
+            'essentials/00-queries',
+            'essentials/01-errors',
+            'essentials/10-mutations',
+            'essentials/20-subscriptions',
+            'essentials/30-custom-scalars',
+            'essentials/40-inline-fragments',
+            'essentials/50-named-fragments',
+            'essentials/60-plugin-configuration',
           ],
-          'Fetching data': [
-            'essentials/queries',
-            'essentials/mutations',
-            'essentials/normalized-cache',
-            'essentials/http-cache',
-            'advanced/persisted-queries',
-            'essentials/using-aliases',
+          Advanced: [
+            'advanced/client-awareness',
+            'advanced/interceptors-http',
             'advanced/multi-modules',
-            'advanced/client-awareness'
-          ],
-          'Languages & Extensions': [
-            'advanced/coroutines',
-            'advanced/rxjava2',
-            'advanced/rxjava3'
-          ],
-          Reference: [
-            'essentials/plugin-configuration',
-            'advanced/ui-tests',
-            'essentials/custom-scalar-types',
             'advanced/no-runtime',
-            'essentials/fragments',
-            'essentials/inline-fragments',
-            'essentials/migration',
+            'advanced/nonnull',
+            'advanced/persisted-queries',
+            'advanced/upload',
+            'advanced/using-aliases',
+          ],
+          'Migration guides': [
+            'migration/1.3',
+            'migration/2.0',
+            'migration/3.0',
           ],
         }
       }

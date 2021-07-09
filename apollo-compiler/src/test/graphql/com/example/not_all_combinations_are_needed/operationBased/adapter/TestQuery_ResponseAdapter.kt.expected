@@ -16,7 +16,6 @@ import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
 import com.example.not_all_combinations_are_needed.TestQuery
-import com.example.not_all_combinations_are_needed.fragment.BFragment
 import kotlin.String
 import kotlin.collections.List
 
@@ -164,11 +163,8 @@ object TestQuery_ResponseAdapter {
             }
 
             reader.rewind()
-            var bFragment: BFragment? = null
-            if (possibleTypes("ABC","SomeBC").evaluate(emptySet(), __typename)) {
-              bFragment = com.example.not_all_combinations_are_needed.fragment.BFragmentImpl_ResponseAdapter.BFragment.fromJson(reader,
-                  customScalarAdapters)
-            }
+            val bFragment = com.example.not_all_combinations_are_needed.fragment.BFragmentImpl_ResponseAdapter.BFragment.fromJson(reader,
+                customScalarAdapters)
 
             return TestQuery.Data.Root.OnA.OnB(
               __typename = __typename,
@@ -184,10 +180,8 @@ object TestQuery_ResponseAdapter {
             writer.name("__typename")
             StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-            if (value.bFragment != null) {
-              com.example.not_all_combinations_are_needed.fragment.BFragmentImpl_ResponseAdapter.BFragment.toJson(writer,
-                  customScalarAdapters, value.bFragment)
-            }
+            com.example.not_all_combinations_are_needed.fragment.BFragmentImpl_ResponseAdapter.BFragment.toJson(writer,
+                customScalarAdapters, value.bFragment)
           }
         }
       }

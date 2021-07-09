@@ -67,11 +67,8 @@ object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        var onIface1: TestQuery.Data.Iface1.OnIface1? = null
-        if (possibleTypes("Impl1").evaluate(emptySet(), __typename)) {
-          onIface1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.fromJson(reader,
-              customScalarAdapters)
-        }
+        val onIface1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.fromJson(reader,
+            customScalarAdapters)
 
         reader.rewind()
         var onImpl1: TestQuery.Data.Iface1.OnImpl1? = null
@@ -95,10 +92,8 @@ object TestQuery_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        if (value.onIface1 != null) {
-          com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.toJson(writer,
-              customScalarAdapters, value.onIface1)
-        }
+        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.toJson(writer,
+            customScalarAdapters, value.onIface1)
 
         if (value.onImpl1 != null) {
           com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.toJson(writer,
@@ -153,11 +148,8 @@ object TestQuery_ResponseAdapter {
             }
 
             reader.rewind()
-            var onIface2: TestQuery.Data.Iface1.OnIface1.Iface2.OnIface2? = null
-            if (possibleTypes("Impl2").evaluate(emptySet(), __typename)) {
-              onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnIface2.fromJson(reader,
-                  customScalarAdapters)
-            }
+            val onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnIface2.fromJson(reader,
+                customScalarAdapters)
 
             reader.rewind()
             var onImpl2: TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2? = null
@@ -181,10 +173,8 @@ object TestQuery_ResponseAdapter {
             writer.name("__typename")
             StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-            if (value.onIface2 != null) {
-              com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnIface2.toJson(writer,
-                  customScalarAdapters, value.onIface2)
-            }
+            com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnIface2.toJson(writer,
+                customScalarAdapters, value.onIface2)
 
             if (value.onImpl2 != null) {
               com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnImpl2.toJson(writer,
@@ -299,11 +289,8 @@ object TestQuery_ResponseAdapter {
             }
 
             reader.rewind()
-            var onIface2: TestQuery.Data.Iface1.OnImpl1.Iface2.OnIface2? = null
-            if (possibleTypes("Impl2").evaluate(emptySet(), __typename)) {
-              onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnIface2.fromJson(reader,
-                  customScalarAdapters)
-            }
+            val onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnIface2.fromJson(reader,
+                customScalarAdapters)
 
             reader.rewind()
             var onImpl2: TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2? = null
@@ -327,10 +314,8 @@ object TestQuery_ResponseAdapter {
             writer.name("__typename")
             StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-            if (value.onIface2 != null) {
-              com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnIface2.toJson(writer,
-                  customScalarAdapters, value.onIface2)
-            }
+            com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnIface2.toJson(writer,
+                customScalarAdapters, value.onIface2)
 
             if (value.onImpl2 != null) {
               com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnImpl2.toJson(writer,

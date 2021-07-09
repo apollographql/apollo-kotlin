@@ -72,7 +72,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
      */
     val name: String,
     /**
-     * The friends of the character, or an empty list if they have none
+     * Merged field with multiple descriptions. See parentTypes: 'Character, Human' for more
+     * information
      */
     val friends: List<Friend2?>?,
     /**
@@ -113,7 +114,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
       /**
        * Synthetic field for 'HeroDetails'
        */
-      val heroDetails: HeroDetails?
+      val heroDetails: HeroDetails
     )
   }
 

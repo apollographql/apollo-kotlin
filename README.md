@@ -100,7 +100,7 @@ Apollo Android runs on the following platforms:
 For building, it requires:
 
 * Gradle 5.6
-* Kotlin 1.4
+* Kotlin 1.4+
  
 ## Contributing
 

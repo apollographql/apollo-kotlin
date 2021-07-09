@@ -8,15 +8,12 @@ package com.example.fragment_with_inline_fragment.adapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
-import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.possibleTypes
 import com.example.fragment_with_inline_fragment.TestQuery
-import com.example.fragment_with_inline_fragment.fragment.HeroDetails
 import com.example.fragment_with_inline_fragment.type.Episode
 import com.example.fragment_with_inline_fragment.type.adapter.Episode_ResponseAdapter
 import kotlin.String
@@ -125,11 +122,8 @@ object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        var heroDetails: HeroDetails? = null
-        if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-          heroDetails = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
-              customScalarAdapters)
-        }
+        val heroDetails = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
+            customScalarAdapters)
 
         return TestQuery.Hero.Fragments(
           heroDetails = heroDetails
@@ -141,10 +135,8 @@ object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         value: TestQuery.Hero.Fragments
       ) {
-        if (value.heroDetails != null) {
-          com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer,
-              customScalarAdapters, value.heroDetails)
-        }
+        com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer,
+            customScalarAdapters, value.heroDetails)
       }
     }
   }

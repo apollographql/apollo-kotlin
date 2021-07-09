@@ -1,27 +1,23 @@
 package test
 
-import codegen.models.HeroAndFriendsNamesWithIDsQuery
 import codegen.models.HeroAndFriendsWithFragmentsQuery
 import codegen.models.HeroAndFriendsWithFragmentsQuery.Data.Hero.Companion.heroWithFriendsFragment
 import codegen.models.HeroAndFriendsWithTypenameQuery
 import codegen.models.fragment.HeroWithFriendsFragment.Friend.Companion.asHuman
 import codegen.models.fragment.HeroWithFriendsFragment.Friend.Companion.humanWithIdFragment
 import codegen.models.fragment.HeroWithFriendsFragmentImpl
-import codegen.models.fragment.HeroWithFriendsFragmentImpl.Data.Friend.Companion.humanWithIdFragment
 import codegen.models.fragment.HumanWithIdFragmentImpl
-import codegen.models.type.Episode
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.IdCacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo3.interceptor.cache.withStore
+import com.apollographql.apollo3.cache.normalized.withStore
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runWithMainLoop
 import readJson
 import kotlin.test.BeforeTest
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

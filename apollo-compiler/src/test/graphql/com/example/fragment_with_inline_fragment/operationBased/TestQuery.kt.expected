@@ -51,7 +51,7 @@ class TestQuery : Query<TestQuery.Data> {
       /**
        * Synthetic field for 'HeroDetails'
        */
-      val heroDetails: HeroDetails?
+      val heroDetails: HeroDetails
     ) {
       fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
     }

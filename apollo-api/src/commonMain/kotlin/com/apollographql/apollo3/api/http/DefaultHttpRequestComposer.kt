@@ -177,7 +177,7 @@ class DefaultHttpRequestComposer(
     /**
      * A very simplified method to append query parameters
      */
-    private fun String.appendQueryParameters(parameters: Map<String, String>): String = buildString {
+    fun String.appendQueryParameters(parameters: Map<String, String>): String = buildString {
       append(this@appendQueryParameters)
       var hasQuestionMark = this@appendQueryParameters.contains("?")
 
@@ -344,5 +344,13 @@ fun HttpRequestComposerParams?.withHttpMethod(method: HttpMethod): HttpRequestCo
 
   return params.copy(
       method = method
+  )
+}
+
+fun HttpRequestComposerParams?.canBeAutoPersisted(canBeAutoPersisted: Boolean): HttpRequestComposerParams {
+  val params = this ?: DefaultHttpRequestComposerParams
+
+  return params.copy(
+      sendApqExtensions = canBeAutoPersisted,
   )
 }

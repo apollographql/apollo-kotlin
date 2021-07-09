@@ -422,6 +422,7 @@ internal class IrBuilder(
        */
       val condition: BooleanExpression<BVariable>,
       val selections: List<GQLSelection>,
+      val parentType: String,
   ) {
     val responseName = alias ?: name
   }
@@ -447,6 +448,7 @@ internal class IrBuilder(
           deprecationReason = fieldDefinition.directives.findDeprecationReason(),
           forceNonNull = forceNonNull,
           forceOptional = gqlField.directives.findOptional(),
+          parentType = fieldWithParent.parentType
       )
     }.groupBy {
       it.responseName
@@ -457,12 +459,6 @@ internal class IrBuilder(
        */
       check(fieldsWithSameResponseName.map { it.alias }.distinct().size == 1)
       check(fieldsWithSameResponseName.map { it.name }.distinct().size == 1)
-      /**
-       * The same field can have different descriptions in two different objects in which case
-       * we should certainly use the interface description
-       */
-      // check(fieldsWithSameResponseName.map { it.description }.distinct().size == 1)
-      check(fieldsWithSameResponseName.map { it.deprecationReason }.distinct().size == 1)
       // GQLTypes might differ because of their source location. Use pretty()
       // to canonicalize them
       check(fieldsWithSameResponseName.map { it.type }.distinctBy { it.pretty() }.size == 1)
@@ -482,10 +478,33 @@ internal class IrBuilder(
       } else if (forceOptional) {
         irType = irType.makeNullable()
       }
+
+      /**
+       * Depending on the parent object/interface in which the field is queried, the field definition might have different descriptions/deprecationReasons
+       */
+      val description = fieldsWithSameResponseName.associateBy { it.description }.values.let { descriptionCandidates ->
+        if (descriptionCandidates.size == 1) {
+          descriptionCandidates.single().description
+        } else {
+          val parents = descriptionCandidates.map { it.parentType }
+          "Merged field with multiple descriptions. See parentTypes: '${parents.joinToString(", ")}' for more information"
+        }
+      }
+
+      val deprecationReason = fieldsWithSameResponseName.associateBy { it.deprecationReason }.values.let { deprecationCandidates ->
+        if (deprecationCandidates.size == 1) {
+          deprecationCandidates.single().deprecationReason
+        } else {
+          val parents = deprecationCandidates.filter { it.deprecationReason != null }.map { it.parentType }
+          "Deprecated in: '${parents.joinToString(", ")}'"
+        }
+      }
+
+
       val info = IrFieldInfo(
           responseName = first.alias ?: first.name,
-          description = first.description,
-          deprecationReason = first.deprecationReason,
+          description = description,
+          deprecationReason = deprecationReason,
           type = irType,
       )
 

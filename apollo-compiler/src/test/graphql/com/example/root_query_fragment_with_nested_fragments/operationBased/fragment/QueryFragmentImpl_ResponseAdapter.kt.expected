@@ -9,12 +9,10 @@ import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
-import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.possibleTypes
 import kotlin.String
 import kotlin.collections.List
 
@@ -86,11 +84,8 @@ object QueryFragmentImpl_ResponseAdapter {
         }
 
         reader.rewind()
-        var heroFragment: HeroFragment? = null
-        if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-          heroFragment = com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.fromJson(reader,
-              customScalarAdapters)
-        }
+        val heroFragment = com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.fromJson(reader,
+            customScalarAdapters)
 
         return com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero(
           __typename = __typename,
@@ -106,10 +101,8 @@ object QueryFragmentImpl_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        if (value.heroFragment != null) {
-          com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.toJson(writer,
-              customScalarAdapters, value.heroFragment)
-        }
+        com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.toJson(writer,
+            customScalarAdapters, value.heroFragment)
       }
     }
 
@@ -134,11 +127,8 @@ object QueryFragmentImpl_ResponseAdapter {
         }
 
         reader.rewind()
-        var droidFragment: DroidFragment? = null
-        if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
-          droidFragment = com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.fromJson(reader,
-              customScalarAdapters)
-        }
+        val droidFragment = com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.fromJson(reader,
+            customScalarAdapters)
 
         return com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid(
           __typename = __typename,
@@ -154,10 +144,8 @@ object QueryFragmentImpl_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        if (value.droidFragment != null) {
-          com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.toJson(writer,
-              customScalarAdapters, value.droidFragment)
-        }
+        com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.toJson(writer,
+            customScalarAdapters, value.droidFragment)
       }
     }
 
@@ -182,11 +170,8 @@ object QueryFragmentImpl_ResponseAdapter {
         }
 
         reader.rewind()
-        var onHuman: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human.OnHuman? = null
-        if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
-          onHuman = com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.Human.OnHuman.fromJson(reader,
-              customScalarAdapters)
-        }
+        val onHuman = com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.Human.OnHuman.fromJson(reader,
+            customScalarAdapters)
 
         return com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human(
           __typename = __typename,
@@ -202,10 +187,8 @@ object QueryFragmentImpl_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        if (value.onHuman != null) {
-          com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.Human.OnHuman.toJson(writer,
-              customScalarAdapters, value.onHuman)
-        }
+        com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.Human.OnHuman.toJson(writer,
+            customScalarAdapters, value.onHuman)
       }
 
       private object OnHuman :
