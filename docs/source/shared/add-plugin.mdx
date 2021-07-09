@@ -2,7 +2,7 @@ import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
 First, obtain the latest version number of Apollo Android from [the Releases page](https://github.com/apollographql/apollo-android/releases).
 
-Then in your app's Gradle file, apply the `com.apollographql.apollo3` plugin using one of the following methods (replace `x.y.z` with the desired version number):
+Then in your app's Gradle file, apply the `com.apollographql.apollo3` plugin using one of the following methods (replace `VERSION_NUMBER` with the desired version number, such as `3.0.0`):
 
 **Using the [plugins DSL](https://docs.gradle.org/current/userguide/plugins.html#sec:plugins_block)**
 
@@ -11,14 +11,14 @@ Then in your app's Gradle file, apply the `com.apollographql.apollo3` plugin usi
 ```kotlin:title=build.gradle.kts
 plugins {
   // ...
-  id("com.apollographql.apollo3").version("x.y.z")
+  id("com.apollographql.apollo3").version("VERSION_NUMBER")
 }
 ```
 
 ```groovy:title=build.gradle
 plugins {
   // ...
-  id("com.apollographql.apollo3").version("x.y.z")
+  id("com.apollographql.apollo3").version("VERSION_NUMBER")
 }
 ```
 
@@ -31,7 +31,7 @@ plugins {
 ```kotlin:title=build.gradle.kts
 buildscript {
   // ...
-  classpath("com.apollographql.apollo3:apollo-gradle-plugin:x.y.z")
+  classpath("com.apollographql.apollo3:apollo-gradle-plugin:VERSION_NUMBER")
 }
 
 apply(plugin = "com.apollographql.apollo3")
@@ -40,7 +40,7 @@ apply(plugin = "com.apollographql.apollo3")
 ```groovy:title=build.gradle
 buildscript {
   // ...
-  classpath("com.apollographql.apollo3:apollo-gradle-plugin:x.y.z")
+  classpath("com.apollographql.apollo3:apollo-gradle-plugin:VERSION_NUMBER")
 }
 
 apply plugin: "com.apollographql.apollo3"

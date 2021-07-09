@@ -59,7 +59,7 @@ val apolloClient = ApolloClient(serverUrl = "https://your.domain/graphql")
 Now you can execute your defined query with `ApolloClient` like so:
 
 ```kotlin
-// You can replace `runBlocking {}` with `viewModelScope.launch {}`
+// Replace `runBlocking {}` with `viewModelScope.launch {}`
 // or any other coroutine scope builder
 runBlocking {
   val response = try {

@@ -1,6 +1,7 @@
 ---
-title: Introduction
-description: A strongly-typed, caching GraphQL client for Android and Kotlin multiplatform
+title: Introduction to Apollo Android
+description: A strongly-typed, caching GraphQL client for Java and Kotlin multiplatform
+sidebar_title: Introduction
 ---
 
 [Apollo Android](https://github.com/apollographql/apollo-android) is a strongly-typed, caching GraphQL client for Android and Kotlin multiplatform apps, written in Kotlin. Despite its name, **you can use Apollo Android in any Java/Kotlin app.**

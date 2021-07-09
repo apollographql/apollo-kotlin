@@ -8,7 +8,7 @@ module.exports = {
       options: {
         ...themeOptions,
         root: __dirname,
-        subtitle: 'Client (Kotlin/Android)',
+        subtitle: 'Client (Kotlin / Android)',
         description: 'A guide to using Apollo with Kotlin and Android',
         githubRepo: 'apollographql/apollo-android',
         sidebarCategories: {
