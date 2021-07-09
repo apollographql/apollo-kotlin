@@ -1,24 +1,43 @@
 ---
-title: Migrating to 3.0
-description: Migrate to Apollo Android 3.0
+title: Migrating to Apollo Android 3.0
+description: From 2.x
+sidebar_title: "v3.0"
 ---
 
 import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
-Apollo Android 3.0 is a rewrite of most of the internals of Apollo Android in Kotlin with, amongst other things:
+Apollo Android 3.0 rewrites most of Apollo Android's internals in Kotlin. Among other improvements, it features:
 
-* Kotlin-first, coroutine-based APIs.
-* A unified runtime for both JVM and multiplatform.
+* Kotlin-first, coroutine-based APIs
+* A unified runtime for both JVM and multiplatform
 
-While the concepts stay the same, a lot of APIs have changed to work better in Kotlin. This page presents the important changes and how to migrate from Apollo Android 2.x to Apollo Android 3.x
+Although most of the library's concepts are the same, many APIs have changed to work better in Kotlin.
 
-## `com.apollographql.apollo3` is the new package name, group id and plugin id
+This page describes the most important changes, along with how to migrate an existing project from Apollo Android 2.x to Apollo Android 3.x.
 
-In order to avoid conflicting classes in the classpath and dependencies conflicts, and according to the [interoperability policy for major version updates](https://jakewharton.com/java-interoperability-policy-for-major-version-updates/), Apollo Android 3.0 uses a new maven group id and package name: `com.apollographql.apollo3`
+## New package name, group id, and plugin id
 
-**Group id:**
+Apollo Android 3.0 uses a new identifier for its package name, maven group id, and Gradle plugin id: **`com.apollographql.apollo3`**.
 
-The maven group id used to identify the [artifacts](https://repo1.maven.org/maven2/com/apollographql/apollo3/) is now `com.apollographql.apollo3`
+This change helps avoid dependency conflicts and conflicting classes in the classpath, as encouraged in [Java Interoperability Policy for Major Version Updates](https://jakewharton.com/java-interoperability-policy-for-major-version-updates/).
+
+> You can probably update this identifier throughout your project by performing a find-and-replace on the 2.x identifier, `com.apollographql.apollo`.
+
+#### Package name
+
+All Apollo Android 3.0 classes are imported from the `com.apollographql.apollo3` package:
+
+```kotlin
+// Replace:
+import com.apollographql.apollo.ApolloClient
+
+// With:
+import com.apollographql.apollo3.ApolloClient
+```
+
+#### Group id
+
+The maven group id used to identify Apollo Android 3.0 [artifacts](https://repo1.maven.org/maven2/com/apollographql/apollo3/) is `com.apollographql.apollo3`:
 
 ```kotlin
 // Replace:
@@ -30,21 +49,9 @@ implementation("com.apollographql.apollo3:apollo-runtime:$version")
 implementation("com.apollographql.apollo3:apollo-api:$version")
 ```
 
-**Package name:**
+#### Gradle plugin id
 
-All the classes are now in the `com.apollographql.apollo3` package.
-
-```kotlin
-// Replace:
-import com.apollographql.apollo.ApolloClient
-
-// With:
-import com.apollographql.apollo3.ApolloClient
-```
-
-**Gradle plugin id:**
-
-The gradle plugin id is now `com.apollographql.apollo3`.
+The Apollo Android 3.0 Gradle plugin id is `com.apollographql.apollo3`:
 
 ```kotlin
 // Replace:
@@ -58,26 +65,24 @@ plugins {
 }
 ```
 
-Most of the times, these changes can be a made using "search and replace".
-
 ## Gradle configuration
 
-**generateKotlinModels**
+### `generateKotlinModels`
 
-Apollo Android now generates Kotlin models by default. You can safely remove this:
+Apollo Android 3.0 generates Kotlin models by default. You can safely remove this behavior:
 
-```
+```kotlin
 apollo {
   // remove this
   generateKotlinModels.set(true)
 }
 ```
 
-At the time of writing, Java codegen is not working yet but will be added later. Follow https://github.com/apollographql/apollo-android/issues/2616 for updates.
+> At the time of writing, Java codegen is not working but will be added later. For updates, see [this GitHub issue](https://github.com/apollographql/apollo-android/issues/2616).
 
-**Target package name**
+### Target package name
 
-Apollo Android 2.x uses the file path of GraphQL operation and schema files as well as `packageName` and `rootPackageName` options to compute the target package name. While this is very flexible, it's not easy to anticipate the final package name that is going to be used.
+Apollo Android 2.x computes its target package name based on a combination of uses the file path of GraphQL operation and schema files as well as `packageName` and `rootPackageName` options to compute the target package name. While this is very flexible, it's not easy to anticipate the final package name that is going to be used.
 
 Apollo Android 3.x uses a flat package name by default using the `packageName` option:
 
@@ -114,26 +119,26 @@ apollo {
 ```
 
 
-**Compilation units are removed**
+### Removed compilation units
 
-Apollo Android 2.x creates multiple `CompilationUnit`s for different Android variants or different Kotlin source sets. This runs the GraphQL compiler multiple times. For an example on Android, it will generate the models at least twice, once for the debug build and once fot the release build. Most of the times the graphql files are the same and this increases the build time for no reason.
+Apollo Android 2.x creates multiple `CompilationUnit`s for different Android variants or different Kotlin source sets. This runs the GraphQL compiler multiple times. For example, on Android, the library generates the models at least twice (once for the debug build and once for the release build). Most of the time, the generated GraphQL files are identical and this needlessly increases the build time.
 
-Apollo Android 3.x doesn't have `CompilationUnit`s any more. Each `Service` is exactly one compilation. For Android projects, the generated classes will be added to all the variants so that they are generated only once.
+Apollo Android 3.x removes `CompilationUnit`s. Instead, each `Service` is exactly one compilation. For Android projects, classes are generated once and then added to all variants.
 
-If you need different operations for different variants, you can create multiple services for each Android variants with:
+If you need different operations for different variants, you can create multiple services for each Android variant like so:
 
-```
+```kotlin
 apollo {
   createAllAndroidVariantServices(
     sourceFolder = "starwars", // will look into src/main/graphql/starwars, src/debug/graphql/starwars, etc
-    nameSuffix = "starwars", // will create tasks named generateDebugStarwarsApolloSources, generateReleaseStarwarsApolloSources, etc..
+    nameSuffix = "starwars", // will create tasks named generateDebugStarwarsApolloSources, generateReleaseStarwarsApolloSources, etc.
   ) {
     // configure your service here
   }
 }
 ```
 
-If you used `graphqlSourceDirectorySet` to explicitely specify the location of GraphQL files, you can now use `srcDir`:
+If you previously used `graphqlSourceDirectorySet` to explicitely specify the location of GraphQL files, you can now use `srcDir`:
 
 
 ```kotlin
@@ -148,11 +153,11 @@ apollo {
 
 ## Constructors
 
-Apollo Android 2.x uses the `Builder` pattern in different places to create new instances.
+Apollo Android 2.x uses the `Builder` pattern in various places to create new instances.
 
-Apollo Android 3.x leverages Kotlin default parameter and exposes the constructors directly as well as top-level functions.
+Apollo Android 3.x instead uses Kotlin default arguments and exposes the constructors directly as top-level functions.
 
-For an example, for `ApolloClient`:
+For example, for `ApolloClient`:
 
 ```kotlin
 // Replace
@@ -166,7 +171,7 @@ val apolloClient = ApolloClient(serverUrl = "https://apollo-fullstack-tutorial.h
 
 To customize the `OkHttpClient`:
 
-```
+```kotlin
 // Replace
 val apolloClient = ApolloClient.builder()
     .okHttpClient(okHttpClient)
@@ -180,7 +185,7 @@ val apolloClient = ApolloClient(
 
 ## Coroutines APIs
 
-Apollo Android 2.x has callback APIs which can become verbose and require explicitely handling cancellation.
+Apollo Android 2.x has callback APIs that can become verbose and require explicitely handling cancellation.
 
 Apollo Android 3.x exposes more concise coroutines APIs that handle cancellation automatically through the coroutine scope.
 
@@ -198,7 +203,7 @@ apolloClient.subscribe(subscription)
 
 ## Normalized cache
 
-Apollo Android 2.x runtime has a depency on the normalized cache APIs and it is possible to call cache methods even if no cache implementation was in the classpath.
+The Apollo Android 2.x runtime has a depency on the normalized cache APIs, and it's possible to call cache methods even if no cache implementation is in the classpath.
 
 Apollo Android 3.x runtime is more modular and doesn't know anything about normalized cache by default. To add normalized cache support, include `apollo-normalized-cache` in the classpath:
 

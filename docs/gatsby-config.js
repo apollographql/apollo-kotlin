@@ -37,9 +37,9 @@ module.exports = {
             'advanced/using-aliases',
           ],
           'Migration guides': [
-            'migration/1.3',
-            'migration/2.0',
             'migration/3.0',
+            'migration/2.0',
+            'migration/1.3',
           ],
         }
       }
