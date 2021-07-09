@@ -1,7 +1,7 @@
 ---
 title: Migrating to Apollo Android 3.0
 description: From 2.x
-sidebar_title: "v3.0"
+sidebar_title: "Migrating to v3"
 ---
 
 import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
@@ -15,13 +15,13 @@ Although most of the library's concepts are the same, many APIs have changed to 
 
 This page describes the most important changes, along with how to migrate an existing project from Apollo Android 2.x to Apollo Android 3.x.
 
-## New package name, group id, and plugin id
+## Package name / group id / plugin id
 
 Apollo Android 3.0 uses a new identifier for its package name, maven group id, and Gradle plugin id: **`com.apollographql.apollo3`**.
 
 This change helps avoid dependency conflicts and conflicting classes in the classpath, as encouraged in [Java Interoperability Policy for Major Version Updates](https://jakewharton.com/java-interoperability-policy-for-major-version-updates/).
 
-> You can probably update this identifier throughout your project by performing a find-and-replace on the 2.x identifier, `com.apollographql.apollo`.
+> In most cases, you can update identifier throughout your project by performing a find-and-replace on the 2.x identifier, `com.apollographql.apollo`.
 
 #### Package name
 
@@ -78,7 +78,7 @@ apollo {
 }
 ```
 
-> At the time of writing, Java codegen is not working but will be added later. For updates, see [this GitHub issue](https://github.com/apollographql/apollo-android/issues/2616).
+> At the time of writing, Java codegen is not working but will be added in a future update. For details, see [this GitHub issue](https://github.com/apollographql/apollo-android/issues/2616).
 
 ### Target package name
 
@@ -121,11 +121,11 @@ apollo {
 
 ### Removed compilation units
 
-Apollo Android 2.x creates multiple `CompilationUnit`s for different Android variants or different Kotlin source sets. This runs the GraphQL compiler multiple times. For example, on Android, the library generates the models at least twice (once for the debug build and once for the release build). Most of the time, the generated GraphQL files are identical and this needlessly increases the build time.
+Apollo Android 2.x creates multiple `CompilationUnit`s for different Android variants or different Kotlin source sets. This runs the GraphQL compiler multiple times. For example, Android compilation generates GraphQL classes at least twice (once for the debug build and once for the release build). In most cases, the generated classes are identical and this needlessly increases build time.
 
-Apollo Android 3.x removes `CompilationUnit`s. Instead, each `Service` is exactly one compilation. For Android projects, classes are generated once and then added to all variants.
+Apollo Android 3.x removes `CompilationUnit`s. Instead, each `Service` is exactly one compilation. For Android projects, GraphQL classes are generated once and then added to all variants.
 
-If you need different operations for different variants, you can create multiple services for each Android variant like so:
+If you need different GraphQL operations for different variants, you can create multiple services for each Android variant like so:
 
 ```kotlin
 apollo {
@@ -155,7 +155,7 @@ apollo {
 
 Apollo Android 2.x uses the `Builder` pattern in various places to create new instances.
 
-Apollo Android 3.x instead uses Kotlin default arguments and exposes the constructors directly as top-level functions.
+Apollo Android 3.x instead uses Kotlin default arguments and exposes constructors as top-level functions.
 
 For example, for `ApolloClient`:
 
@@ -201,11 +201,13 @@ apolloClient.subscribe(subscription).toFlow()
 apolloClient.subscribe(subscription)
 ```
 
-## Normalized cache
+## Caching
 
-The Apollo Android 2.x runtime has a depency on the normalized cache APIs, and it's possible to call cache methods even if no cache implementation is in the classpath.
+### Normalized cache
 
-Apollo Android 3.x runtime is more modular and doesn't know anything about normalized cache by default. To add normalized cache support, include `apollo-normalized-cache` in the classpath:
+The Apollo Android 2.x runtime has a dependency on the normalized cache APIs, and it's possible to call cache methods even if no cache implementation is in the classpath.
+
+The Apollo Android 3.x runtime is more modular and doesn't know anything about normalized cache by default. To add normalized cache support, include `apollo-normalized-cache` in the classpath:
 
 ```kotlin
 dependencies {
@@ -248,7 +250,7 @@ val request = ApolloRequest(query).withFetchPolicy(CacheFirst)
 val response = apolloClient.query(request)
 ```
 
-## HTTP cache
+### HTTP cache
 
 Similarly, the HTTP cache is configurable through extension functions:
 
@@ -280,75 +282,13 @@ val request = ApolloRequest(query).withHttpFetchPolicy(CacheFirst)
 val response = apolloClient.query(request)
 ```
 
-## Optional
-
-Apollo Android distinguishes between null and absent values.
-
-Apollo Android 2.x uses `Input` to represent optional (maybe nullable) values.
-
-Apollo Android 3.x uses `Optional` instead so that it can be used in other places than input types. For an example, fields could be made optional with an [`@optional`](https://github.com/apollographql/apollo-android/blob/5c1ff82ccaded93ae7126cedc6d7835e63fed75a/apollo-compiler/src/main/resources/apollo.graphqls#L6) directive. `Optional` is a sealed class so `when` statements don't need an `else` branch.
-
-
-```kotlin
-// Replace
-Input.fromNullable(value)
-// With
-Optional.Present(value)
-
-// Replace
-Input.absent()
-// With
-Optional.Absent
-
-// Replace
-Input.optional(value)
-// With
-Optional.presentIfNotNull(value)
-```
-
-## Non-optional variables by default
-
-Apollo Android 3.x represents operation variables without a default value as non-optional Kotlin constructor parameters by default.
-
-Given the below query:
-
-```graphql
-query GetHero($id: String) {
-  hero(id: $id)
-}
-```
-
-Apollo Android generates:
-
-```kotlin
-// 2.x
-class GetHero(val id: Input<String?> = Input.absent())
-
-// 3.x
-class GetHero(val id: String?)
-```
-
-By default the [GraphQL spec](https://spec.graphql.org/draft/#sec-Coercing-Variable-Values) treats variables of nullable type as optional. It is valid to omit them at runtime. In practice though, this is rarely used and makes the operations declaration verbose.
-
-Apollo Android 3.x removes the `Optional` wrapper so that it's easier to construct a query having nullable variables.
-
-If omitting a variable is desired, it's possible to opt-in the `Optional` wrapper with the `@optional` directive:
-
-```
-query GetHero($id: String @optional) {
-  hero(id: $id)
-}
-```
-
-**Note**: this only applies to variables. Input fields in input objects are still unsing `Optional` because omitting input fields happens often there.
-
-## CacheKeyResolver
+### `CacheKeyResolver`
 
 The `CacheKeyResolver` API has been updated to work with declarative cache.
 
-* `fromFieldRecordSet` is renamed to `cacheKeyForObject`
-* `fromFieldArguments` is renamed to `cacheKeyForField`
-* The `CacheKey` return value is made nullable and `CacheKey.NONE` is replaced by `null`
+* `fromFieldRecordSet` is renamed to `cacheKeyForObject`.
+* `fromFieldArguments` is renamed to `cacheKeyForField`.
+* The `CacheKey` return value is now nullable, and `CacheKey.NONE` is replaced with `null`.
 
 ```kotlin
 // Replace
@@ -372,8 +312,74 @@ val cacheKeyResolver = object : CacheKeyResolver() {
 }
 ```
 
+## Optional values
+
+### The `Optional` class
+
+Apollo Android distinguishes between `null` values and absent values.
+
+Apollo Android 2.x uses `Input` to represent optional (maybe nullable) values for input types.
+
+Apollo Android 3.x uses `Optional` instead so that it can be used in places besides input types. For example, fields can be made optional with an [`@optional`](https://github.com/apollographql/apollo-android/blob/5c1ff82ccaded93ae7126cedc6d7835e63fed75a/apollo-compiler/src/main/resources/apollo.graphqls#L6) directive.
+
+`Optional` is a sealed class, so `when` statements don't need an `else` branch.
+
+
+```kotlin
+// Replace
+Input.fromNullable(value)
+// With
+Optional.Present(value)
+
+// Replace
+Input.absent()
+// With
+Optional.Absent
+
+// Replace
+Input.optional(value)
+// With
+Optional.presentIfNotNull(value)
+```
+
+### Non-optional variables by default
+
+By default, Apollo Android 3.x represents operation variables that _don't_ have a default value as non-optional Kotlin constructor parameters.
+
+Given the following query:
+
+```graphql
+query GetHero($id: String) {
+  hero(id: $id)
+}
+```
+
+Apollo Android generates:
+
+```kotlin
+// 2.x
+class GetHero(val id: Input<String?> = Input.absent())
+
+// 3.x
+class GetHero(val id: String?)
+```
+
+By default, the [GraphQL spec](https://spec.graphql.org/draft/#sec-Coercing-Variable-Values) treats nullable variables as optional, so it's valid to omit them at runtime. In practice, however, this is rarely used and makes the operation's declaration verbose.
+
+Apollo Android 3.x removes the `Optional` wrapper so that it's more straightforward to construct a query with nullable variables.
+
+> **Note**: This new behavior applies _only_ to variables. Fields of input objects still use `Optional`, because it's common to omit particular input fields.
+
+If you want to be able to omit a variable, you can opt in to the `Optional` wrapper with the `@optional` directive:
+
+```graphql
+query GetHero($id: String @optional) {
+  hero(id: $id)
+}
+```
+
 ## Enums
 
-Apollo Android 2.x generates GraphQL enums as Kotlin enums by default with an option to generate them as sealed classes to get access to the raw name of the enum.
+By default, Apollo Android 2.x generates GraphQL enums as Kotlin enums, with an option to generate them as sealed classes to access the raw name of the enum.
 
-Apollo Android 3.x drops the Kotlin enums to always generate sealed classes. In addition, Apollo Android 3.x uses the same case for enum names as their GraphQL definition instead of making them uppercase always. This allows to have different enums with different case, which is valid in GraphQL.
+Apollo Android 3.x drops Kotlin enums and always generates sealed classes. In addition, Apollo Android 3.x uses the same case for enum names as their GraphQL definition, instead of converting them to uppercase. This enables you to define different enums with different cases, which is valid in GraphQL.

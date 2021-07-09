@@ -14,7 +14,8 @@ module.exports = {
         sidebarCategories: {
           null: [
             'index',
-            'get-started'
+            'get-started',
+            'migration/3.0',
           ],
           'Essentials': [
             'essentials/00-queries',
@@ -35,11 +36,6 @@ module.exports = {
             'advanced/persisted-queries',
             'advanced/upload',
             'advanced/using-aliases',
-          ],
-          'Migration guides': [
-            'migration/3.0',
-            'migration/2.0',
-            'migration/1.3',
           ],
         }
       }
