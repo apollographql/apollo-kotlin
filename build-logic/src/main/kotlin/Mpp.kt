@@ -71,6 +71,11 @@ fun Project.configureMppTestsDefaults() {
      * configure targets
      */
     jvm()
+    js(IR) {
+      useCommonJs()
+      browser()
+      nodejs()
+    }
     macosX64("apple")
 
     addTestDependencies(false)
