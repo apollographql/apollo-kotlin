@@ -147,7 +147,7 @@ class BasicTest {
 
 
   @Test
-  fun `requesting the same field twice with an alias`() = basicTest(
+  fun requestingTheSameFieldTwiceWithAnAlias() = basicTest(
       "SameHeroTwiceResponse.json",
       SameHeroTwiceQuery()
   ) {

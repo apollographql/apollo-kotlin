@@ -7,4 +7,8 @@ actual class DefaultHttpEngine actual constructor(connectTimeoutMillis: Long, re
   override suspend fun execute(request: HttpRequest): HttpResponse {
     TODO()
   }
+
+  override fun dispose() {
+    TODO()
+  }
 }

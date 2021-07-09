@@ -27,7 +27,7 @@ class HTTPHeadersTest {
   }
 
   @Test
-  fun `Make sure headers are set`() {
+  fun makeSureHeadersAreSet() {
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
 

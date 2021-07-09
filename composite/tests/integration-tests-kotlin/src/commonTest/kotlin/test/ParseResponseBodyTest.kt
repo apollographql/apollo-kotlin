@@ -31,7 +31,7 @@ class ParseResponseBodyTest {
 
   @Test
   @Throws(Exception::class)
-  fun `errors are properly read`() {
+  fun errorsAreProperlyRead() {
     val response = AllPlanetsQuery().parseJsonResponse(readResource("ResponseError.json"))
     assertTrue(response.hasErrors())
     val errors = response.errors
@@ -43,7 +43,7 @@ class ParseResponseBodyTest {
 
   @Test
   @Throws(Exception::class)
-  fun `error with no message, no location and custom attributes`() {
+  fun errorWithNoMessageNoLocationAndCustomAttributes() {
     val response = AllPlanetsQuery().parseJsonResponse(readResource("ResponseErrorWithNullsAndCustomAttributes.json"))
     assertTrue(response.hasErrors())
     assertEquals(response.errors?.size, 1)
@@ -56,7 +56,7 @@ class ParseResponseBodyTest {
 
   @Test
   @Throws(Exception::class)
-  fun `error with message, location and custom attributes`() {
+  fun errorWithMessageLocationAndCustomAttributes() {
     val response = AllPlanetsQuery().parseJsonResponse(readResource("ResponseErrorWithCustomAttributes.json"))
     assertTrue(response.hasErrors())
     assertEquals(response.errors!![0].customAttributes.size, 4)
@@ -162,7 +162,7 @@ class ParseResponseBodyTest {
 
   @Test
   @Throws(Exception::class)
-  fun `extensions are read from response`() {
+  fun extensionsAreReadFromResponse() {
     val query = HeroNameQuery()
     val extensions = query.parseJsonResponse(readResource("HeroNameResponse.json")).extensions
     assertEquals(
@@ -182,7 +182,7 @@ class ParseResponseBodyTest {
   }
 
   @Test
-  fun `not registering an adapter, neither at runtime or in the gradle plugin defaults to Any`() {
+  fun notRegisteringAnAdapterNeitherAtRuntimeOrInTheGradlePluginDefaultsToAny() {
     val data = GetJsonScalarQuery.Data(
         json = mapOf("1" to "2", "3" to listOf("a", "b"))
     )
@@ -193,7 +193,7 @@ class ParseResponseBodyTest {
 
 
   @Test
-  fun `forgetting to add a runtime adapter for a scalar registered in the plugin fails`() {
+  fun forgettingToAddARuntimeAdapterForAScalarRegisteredInThePluginFails() {
     val data = CharacterWithBirthDateQuery.Data(
         character = CharacterWithBirthDateQuery.Data.Character(
             birthDate = LocalDate(1970, 1, 1),

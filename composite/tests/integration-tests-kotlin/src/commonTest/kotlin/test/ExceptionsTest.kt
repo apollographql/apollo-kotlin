@@ -28,7 +28,7 @@ class ExceptionsTest {
   }
 
   @Test
-  fun `when query and malformed network response, assert Exception`() = runWithMainLoop {
+  fun whenQueryAndMalformedNetworkResponseAssertException() = runWithMainLoop {
     mockServer.enqueue("malformed")
 
     val result = kotlin.runCatching {
@@ -39,7 +39,7 @@ class ExceptionsTest {
   }
 
   @Test
-  fun `when http error, assert execute fails`() = runWithMainLoop {
+  fun whenHttpErrorAssertExecuteFails() = runWithMainLoop {
     mockServer.enqueue(MockResponse(statusCode = 404))
 
     val result = kotlin.runCatching {
@@ -52,7 +52,7 @@ class ExceptionsTest {
   }
 
   @Test
-  fun `when network error, assert ApolloNetworkException`() = runWithMainLoop {
+  fun whenNetworkErrorAssertApolloNetworkException() = runWithMainLoop {
     mockServer.stop()
 
     val result = kotlin.runCatching {
@@ -64,7 +64,7 @@ class ExceptionsTest {
   }
 
   @Test
-  fun `when query and malformed network response, assert success after retry`() {
+  fun WhenQueryAndMalformedNetworkResponseAssertSuccessAfterRetry() {
     mockServer.enqueue("")
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))

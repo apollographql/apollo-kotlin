@@ -17,7 +17,7 @@ import kotlin.test.assertEquals
 class HttpRequestComposerTest {
 
   @Test
-  fun `request POST body contains operation, query and variables by default`() {
+  fun requestPostBodyContainsOperationQueryAndVariablesByDefault() {
     val composer = DefaultHttpRequestComposer("/")
     val apolloRequest = ApolloRequest(AllPlanetsQuery())
     val httpRequest = composer.compose(apolloRequest)
@@ -28,7 +28,7 @@ class HttpRequestComposerTest {
   }
 
   @Test
-  fun `request headers are forwarded to the server`() {
+  fun requestHeadersAreForwardedToTheServer() {
     val mockServer = MockServer()
     val apolloClient = ApolloClient(mockServer.url())
 
