@@ -115,13 +115,26 @@ fun getNextSnapshot(version: String): String {
   check(digitCount > 0) {
     "Cannot find a number to bump in $version"
   }
+
+  // prefix can be "alpha", "dev", etc...
   val prefix = if (digitCount < part.length) {
     part.substring(0, part.length - digitCount)
   } else {
     ""
   }
-  val number = part.substring(part.length - digitCount, part.length)
+  val numericPart = part.substring(part.length - digitCount, part.length)
+  val asNumber = numericPart.toInt()
 
-  components.add("$prefix${number.toInt() + 1}")
+  val nextPart = if (numericPart[0] == '0') {
+    // https://docs.gradle.org/current/userguide/single_versions.html#version_ordering
+    // Gradle understands that alpha2 > alpha10 but it might not be the case for everyone so
+    // use the same naming schemes as other libs and keep the prefix
+    val width = numericPart.length
+    String.format("%0${width}d", asNumber + 1)
+  } else {
+    (asNumber + 1).toString()
+  }
+
+  components.add("$prefix$nextPart")
   return components.joinToString(".") + "-SNAPSHOT"
 }
