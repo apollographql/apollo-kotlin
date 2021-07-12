@@ -17,23 +17,11 @@ This page describes the most important changes, along with how to migrate an exi
 
 ## Package name / group id / plugin id
 
-Apollo Android 3.0 uses a new identifier for its package name, maven group id, and Gradle plugin id: **`com.apollographql.apollo3`**.
+Apollo Android 3.0 uses a new identifier for its package name, Gradle plugin id, and maven group id: **`com.apollographql.apollo3`**.
 
 This change helps avoid dependency conflicts and conflicting classes in the classpath, as encouraged in [Java Interoperability Policy for Major Version Updates](https://jakewharton.com/java-interoperability-policy-for-major-version-updates/).
 
 > In most cases, you can update identifier throughout your project by performing a find-and-replace on the 2.x identifier, `com.apollographql.apollo`.
-
-#### Package name
-
-All Apollo Android 3.0 classes are imported from the `com.apollographql.apollo3` package:
-
-```kotlin
-// Replace:
-import com.apollographql.apollo.ApolloClient
-
-// With:
-import com.apollographql.apollo3.ApolloClient
-```
 
 #### Group id
 
@@ -63,6 +51,18 @@ plugins {
 plugins {
   id("com.apollographql.apollo3").version("$version")
 }
+```
+
+#### Package name
+
+All Apollo Android 3.0 classes are imported from the `com.apollographql.apollo3` package:
+
+```kotlin
+// Replace:
+import com.apollographql.apollo.ApolloClient
+
+// With:
+import com.apollographql.apollo3.ApolloClient
 ```
 
 ## Gradle configuration
@@ -119,7 +119,7 @@ apollo {
 ```
 
 
-### Removed compilation units
+### Removed `CompilationUnit`s
 
 Apollo Android 2.x creates multiple `CompilationUnit`s for different Android variants or different Kotlin source sets. This runs the GraphQL compiler multiple times. For example, Android compilation generates GraphQL classes at least twice (once for the debug build and once for the release build). In most cases, the generated classes are identical and this needlessly increases build time.
 
@@ -320,7 +320,7 @@ Apollo Android distinguishes between `null` values and absent values.
 
 Apollo Android 2.x uses `Input` to represent optional (maybe nullable) values for input types.
 
-Apollo Android 3.x uses `Optional` instead so that it can be used in places besides input types. For example, fields can be made optional with an [`@optional`](https://github.com/apollographql/apollo-android/blob/5c1ff82ccaded93ae7126cedc6d7835e63fed75a/apollo-compiler/src/main/resources/apollo.graphqls#L6) directive.
+Apollo Android 3.x uses `Optional` instead so that later it can potentially be used in places _besides_ input types (for example, fields could be made optional with an [`@optional`](https://github.com/apollographql/apollo-android/blob/5c1ff82ccaded93ae7126cedc6d7835e63fed75a/apollo-compiler/src/main/resources/apollo.graphqls#L6) directive).
 
 `Optional` is a sealed class, so `when` statements don't need an `else` branch.
 
@@ -368,7 +368,7 @@ By default, the [GraphQL spec](https://spec.graphql.org/draft/#sec-Coercing-Vari
 
 Apollo Android 3.x removes the `Optional` wrapper so that it's more straightforward to construct a query with nullable variables.
 
-> **Note**: This new behavior applies _only_ to variables. Fields of input objects still use `Optional`, because it's common to omit particular input fields.
+> This new behavior applies _only_ to variables. Fields of input objects still use `Optional`, because it's common to omit particular input fields.
 
 If you want to be able to omit a variable, you can opt in to the `Optional` wrapper with the `@optional` directive:
 
