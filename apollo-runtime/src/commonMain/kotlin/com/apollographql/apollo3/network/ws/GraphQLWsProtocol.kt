@@ -55,7 +55,7 @@ class GraphQLWsProtocol(
     return when (map["type"]) {
       "connection_ack" -> WsMessage.ConnectionAck
       "next" -> WsMessage.OperationData(map["id"] as String, map["payload"] as Map<String, Any?>)
-      "error" -> WsMessage.OperationError(map["id"] as String, map["error"] as Map<String, Any?>)
+      "error" -> WsMessage.OperationError(map["id"] as String, map["payload"] as Map<String, Any?>)
       "complete" -> WsMessage.OperationComplete(map["id"] as String)
       else -> WsMessage.Unknown(map)
     }
