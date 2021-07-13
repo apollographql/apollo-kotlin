@@ -41,7 +41,7 @@ interface Executable<D: Executable.Data> {
 }
 
 @Suppress("UNCHECKED_CAST")
-fun <D : Operation.Data> Operation<D>.variables(customScalarAdapters: CustomScalarAdapters): Executable.Variables {
+fun <D : Executable.Data> Executable<D>.variables(customScalarAdapters: CustomScalarAdapters): Executable.Variables {
   val valueMap = MapJsonWriter().apply {
     beginObject()
     serializeVariables(this, customScalarAdapters)
@@ -50,27 +50,7 @@ fun <D : Operation.Data> Operation<D>.variables(customScalarAdapters: CustomScal
   return Executable.Variables(valueMap)
 }
 
-@Suppress("UNCHECKED_CAST")
-fun <D : Fragment.Data> Fragment<D>.variables(customScalarAdapters: CustomScalarAdapters): Executable.Variables {
-  val valueMap = MapJsonWriter().apply {
-    beginObject()
-    serializeVariables(this, customScalarAdapters)
-    endObject()
-  }.root() as Map<String, Any?>
-  return Executable.Variables(valueMap)
-}
-
-fun <D : Operation.Data> Operation<D>.variablesJson(customScalarAdapters: CustomScalarAdapters): String {
-  val buffer = Buffer()
-  BufferedSinkJsonWriter(buffer).apply {
-    beginObject()
-    serializeVariables(this, customScalarAdapters)
-    endObject()
-  }
-  return buffer.readUtf8()
-}
-
-fun <D : Fragment.Data> Fragment<D>.variablesJson(customScalarAdapters: CustomScalarAdapters): String {
+fun <D : Executable.Data> Executable<D>.variablesJson(customScalarAdapters: CustomScalarAdapters): String {
   val buffer = Buffer()
   BufferedSinkJsonWriter(buffer).apply {
     beginObject()
