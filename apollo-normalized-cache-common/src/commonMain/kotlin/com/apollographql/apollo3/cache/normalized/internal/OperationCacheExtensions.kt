@@ -29,8 +29,9 @@ fun <D : Executable.Data> Executable<D>.normalize(
 ): Map<String, Record> {
   val writer = MapJsonWriter()
   adapter().toJson(writer, customScalarAdapters, data)
-  return DefaultNormalizer(variables(customScalarAdapters), rootKey) { type, fields ->
-    cacheResolver.cacheKeyForObject(type, fields)?.key
+  val variables = variables(customScalarAdapters)
+  return DefaultNormalizer(variables, rootKey) { type, fields ->
+    cacheResolver.cacheKeyForObject(type, variables, fields)?.key
   }.normalize(writer.root() as Map<String, Any?>, selections())
 }
 

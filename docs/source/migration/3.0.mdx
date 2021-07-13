@@ -303,7 +303,7 @@ val resolver: CacheKeyResolver = object : CacheKeyResolver() {
 
 // With
 val cacheKeyResolver = object : CacheKeyResolver() {
-  override fun cacheKeyForObject(type: CompiledNamedType, obj: Map<String, Any?>): CacheKey? {
+  override fun cacheKeyForObject(type: CompiledNamedType, variables: Executable.Variables, obj: Map<String, Any?>): CacheKey? {
     return (obj["id"] as? String)?.let { CacheKey(it) }
   }
   override fun cacheKeyForField(field: CompiledField, variables: Executable.Variables): CacheKey? {
