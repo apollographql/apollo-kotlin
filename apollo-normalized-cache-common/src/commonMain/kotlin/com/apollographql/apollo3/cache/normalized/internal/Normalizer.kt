@@ -13,34 +13,47 @@ import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.Record
 
 /**
+ * A function that returns an id for the given object or null to use the fallback id
+ * Returns an id for the given object. Called during normalization after a network reponse has been received.
+ * See also `@typePolicy`
+ */
+typealias CacheKeyForObject = (CompiledNamedType, Map<String, Any?>) -> String?
+
+/**
+ * Same as [CacheKeyForObject] except it also passes information about what field is being normalized and what
+ * variables were used in the query. This is for advanced use cases only. In general, the id of an object
+ * should not depend on where it is queried.
+ */
+typealias CacheKeyForObjectAndField = (CompiledField, Executable.Variables, Map<String, Any?>) -> String?
+
+/**
  * A [Normalizer] takes a [Map]<String, Any?> and turns them into a flat list of [Record]
- * The key of each [Record] is given by [cacheKeyForObject] or defaults to using the path
+ * The key of each [Record] is given by [cacheKeyForObjectAndField] or defaults to using the path
  */
 class Normalizer(
-    val variables: Executable.Variables,
-    val rootKey: String,
-    val cacheKeyForObject: (CompiledNamedType, Map<String, Any?>) -> String?
+    private val variables: Executable.Variables,
+    private val rootKey: String,
+    private val cacheKeyForObjectAndField: CacheKeyForObjectAndField
 )  {
   private val records = mutableMapOf<String, Record>()
 
   fun normalize(map: Map<String, Any?>, selections: List<CompiledSelection>): Map<String, Record> {
-
-    buildRecord(map, null, null, selections)
+    buildRecord(map, rootKey, selections)
 
     return records
   }
 
   /**
    * @param obj the json node representing the object
-   * @param path the path to this object from the root. Might be different from the json path
+   * @param key the key for this record
    * @param selections the selections queried on this object
+   * @return the CacheKey
    */
-  private fun buildRecord(obj: Map<String, Any?>, path: String?, type: CompiledNamedType?, selections: List<CompiledSelection> ): CacheKey {
-    val key = if (type == null) {
-      rootKey
-    } else {
-      cacheKeyForObject(type, obj) ?: path!!
-    }
+  private fun buildRecord(
+      obj: Map<String, Any?>,
+      key: String,
+      selections: List<CompiledSelection>
+  ): CacheKey {
 
     val allFields = collectFields(selections, obj["__typename"] as? String)
 
@@ -48,8 +61,10 @@ class Normalizer(
         key = key,
         fields = obj.entries.mapNotNull { entry ->
           val mergedFields = allFields.filter { it.responseName == entry.key }
-          val first = mergedFields.first()
-          val fieldKey = first.nameWithArguments(variables)
+          val merged = mergedFields.first().copy(
+              selections = mergedFields.flatMap { it.selections }
+          )
+          val fieldKey = merged.nameWithArguments(variables)
 
           if (mergedFields.all { it.shouldSkip(variableValues = variables.valueMap) }) {
             // GraphQL doesn't distinguish between null and absent so this is null but it might be absent
@@ -66,9 +81,9 @@ class Normalizer(
 
           fieldKey to replaceObjects(
               entry.value,
-              first.type,
+              merged,
+              merged.type,
               base.append(fieldKey),
-              mergedFields.flatMap { it.selections }
           )
         }.toMap()
     )
@@ -89,7 +104,17 @@ class Normalizer(
   }
 
 
-  private fun replaceObjects(value: Any?, type_: CompiledType, path: String, selections: List<CompiledSelection>): Any? {
+  /**
+   * @param field the field currently being normalized
+   * @param type_ the type currently being normalized. It can be different from [field.type] for lists.
+   * Since the same field will be used for several objects in list, we can't map 1:1 anymore
+   */
+  private fun replaceObjects(
+      value: Any?,
+      field: CompiledField,
+      type_: CompiledType,
+      path: String,
+  ): Any? {
     /**
      * Remove the NotNull decoration if needed
      */
@@ -107,13 +132,15 @@ class Normalizer(
       type is CompiledListType -> {
         check(value is List<*>)
         value.mapIndexed { index, item ->
-          replaceObjects(item, type.ofType, path.append(index.toString()), selections)
+          replaceObjects(item, field, type.ofType, path.append(index.toString()))
         }
       }
-      // Check for [isCompound] as we don't want to build a record for json scalars
+      // Check for [isComposite] as we don't want to build a record for json scalars
       type is CompiledNamedType && type.isComposite() -> {
         check(value is Map<*, *>)
-        buildRecord(value as Map<String, Any?>, path, type, selections)
+        @Suppress("UNCHECKED_CAST")
+        val key = cacheKeyForObjectAndField(field, variables, value as Map<String, Any?>) ?: path
+        buildRecord(value, key, field.selections)
       }
       else -> {
         // scalar
@@ -154,4 +181,8 @@ class Normalizer(
 
   // The receiver can be null for the root query to save some space in the cache by not storing QUERY_ROOT all over the place
   private fun String?.append(next: String): String = if (this == null) next else "$this.$next"
+}
+
+val IdCacheKeyForObject: CacheKeyForObject = { _, obj ->
+  (obj["id"] as? String)
 }

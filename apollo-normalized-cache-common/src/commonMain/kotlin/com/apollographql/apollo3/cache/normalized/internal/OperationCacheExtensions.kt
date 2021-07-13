@@ -17,22 +17,21 @@ import com.apollographql.apollo3.cache.normalized.Record
 fun <D : Operation.Data> Operation<D>.normalize(
     data: D,
     customScalarAdapters: CustomScalarAdapters,
-    cacheResolver: CacheResolver,
-) = normalize(data, customScalarAdapters, cacheResolver, CacheKey.rootKey().key)
+    cacheKeyForObjectAndField: CacheKeyForObjectAndField,
+) = normalize(data, customScalarAdapters, cacheKeyForObjectAndField, CacheKey.rootKey().key)
 
 @Suppress("UNCHECKED_CAST")
 fun <D : Executable.Data> Executable<D>.normalize(
     data: D,
     customScalarAdapters: CustomScalarAdapters,
-    cacheResolver: CacheResolver,
+    cacheKeyForObjectAndField: CacheKeyForObjectAndField,
     rootKey: String,
 ): Map<String, Record> {
   val writer = MapJsonWriter()
   adapter().toJson(writer, customScalarAdapters, data)
   val variables = variables(customScalarAdapters)
-  return Normalizer(variables, rootKey) { type, fields ->
-    cacheResolver.cacheKeyForObject(type, variables, fields)?.key
-  }.normalize(writer.root() as Map<String, Any?>, selections())
+  return Normalizer(variables, rootKey, cacheKeyForObjectAndField)
+      .normalize(writer.root() as Map<String, Any?>, selections())
 }
 
 fun <D : Executable.Data> Executable<D>.readDataFromCache(

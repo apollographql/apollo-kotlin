@@ -44,5 +44,20 @@ class CacheKey(val key: String) {
     fun rootKey(): CacheKey {
       return ROOT_CACHE_KEY
     }
+
+    /**
+     * Helper function to build a cache key from a list of strings
+     */
+    fun from(typename: String, values: List<String>): CacheKey {
+      return CacheKey(
+          buildString {
+            append(typename)
+            append(":")
+            values.forEach {
+              append(it)
+            }
+          }
+      )
+    }
   }
 }

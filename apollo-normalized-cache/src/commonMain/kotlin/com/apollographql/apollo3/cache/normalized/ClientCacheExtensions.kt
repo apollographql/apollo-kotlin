@@ -12,6 +12,7 @@ import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.internal.ApolloCacheInterceptor
 import com.apollographql.apollo3.cache.normalized.internal.CacheInput
+import com.apollographql.apollo3.cache.normalized.internal.CacheKeyForObject
 import com.apollographql.apollo3.cache.normalized.internal.CacheOutput
 import com.apollographql.apollo3.cache.normalized.internal.DefaultCacheInput
 import com.apollographql.apollo3.cache.normalized.internal.StoreExecutionContext
@@ -59,10 +60,11 @@ const val CACHE_FLAG_STORE_PARTIAL_RESPONSE = 2
  */
 fun ApolloClient.withNormalizedCache(
     normalizedCacheFactory: NormalizedCacheFactory,
+    cacheKeyForObject: CacheKeyForObject,
     cacheResolver: CacheResolver = CacheResolver(),
     writeToCacheAsynchronously: Boolean = false
 ): ApolloClient {
-  return withStore(ApolloStore(normalizedCacheFactory, cacheResolver), writeToCacheAsynchronously)
+  return withStore(ApolloStore(normalizedCacheFactory, cacheKeyForObject, cacheResolver), writeToCacheAsynchronously)
 }
 
 fun ApolloClient.withStore(store: ApolloStore, writeToCacheAsynchronously: Boolean = false): ApolloClient {

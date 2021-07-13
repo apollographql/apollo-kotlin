@@ -23,6 +23,7 @@ import kotlin.reflect.KClass
 
 class DefaultApolloStore(
     normalizedCacheFactory: NormalizedCacheFactory,
+    private val cacheKeyForObjectAndField: CacheKeyForObjectAndField,
     private val cacheResolver: CacheResolver,
 ) : ApolloStore {
   private val changedKeysEvents = MutableSharedFlow<Set<String>>(
@@ -119,7 +120,7 @@ class DefaultApolloStore(
     return operation.normalize(
         data,
         customScalarAdapters,
-        cacheResolver
+        cacheKeyForObjectAndField
     )
   }
 
@@ -197,7 +198,7 @@ class DefaultApolloStore(
       val records = fragment.normalize(
           data = fragmentData,
           customScalarAdapters = customScalarAdapters,
-          cacheResolver = cacheKeyResolver,
+          cacheKeyForObjectAndField = cacheKeyForObjectAndField,
           rootKey = cacheKey.key
       ).values
 
@@ -226,7 +227,7 @@ class DefaultApolloStore(
       val records = operation.normalize(
           data = operationData,
           customScalarAdapters = customScalarAdapters,
-          cacheResolver = cacheKeyResolver
+          cacheKeyForObjectAndField = cacheKeyForObjectAndField
       )
 
       records to cache.merge(records.values.toList(), cacheHeaders)
@@ -253,7 +254,7 @@ class DefaultApolloStore(
       val records = operation.normalize(
           data = operationData,
           customScalarAdapters = customScalarAdapters,
-          cacheResolver = cacheKeyResolver
+          cacheKeyForObjectAndField = cacheKeyForObjectAndField
       ).values.map { record ->
         Record(
             key = record.key,

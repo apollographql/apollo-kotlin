@@ -17,6 +17,7 @@ import com.apollographql.apollo3.integration.normalizer.SameHeroTwiceQuery
 import com.apollographql.apollo3.integration.normalizer.StarshipByIdQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
+import com.apollographql.apollo3.cache.normalized.internal.IdCacheKeyForObject
 import com.apollographql.apollo3.cache.normalized.withFetchPolicy
 import com.apollographql.apollo3.cache.normalized.withStore
 import com.apollographql.apollo3.mockserver.MockServer
@@ -43,7 +44,10 @@ class BasicTest {
 
   @BeforeTest
   fun setUp() {
-    store = ApolloStore(MemoryCacheFactory(), IdCacheResolver())
+    store = ApolloStore(
+        normalizedCacheFactory = MemoryCacheFactory(),
+        cacheKeyForObject = IdCacheKeyForObject
+    )
     mockServer = MockServer()
     apolloClient = ApolloClient(mockServer.url()).withStore(store)
   }

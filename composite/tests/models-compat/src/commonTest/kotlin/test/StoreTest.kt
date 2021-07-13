@@ -9,8 +9,8 @@ import codegen.models.fragment.HumanWithIdFragmentImpl
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKey
-import com.apollographql.apollo3.cache.normalized.IdCacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.internal.IdCacheKeyForObject
 import com.apollographql.apollo3.cache.normalized.withStore
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
@@ -27,7 +27,10 @@ class StoreTest {
 
   @BeforeTest
   fun setUp() {
-    store = ApolloStore(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), IdCacheResolver())
+    store = ApolloStore(
+        normalizedCacheFactory = MemoryCacheFactory(),
+        cacheKeyForObject = IdCacheKeyForObject
+    )
     mockServer = MockServer()
     apolloClient = ApolloClient(mockServer.url()).withStore(store)
   }

@@ -3,8 +3,11 @@ package com.apollographql.apollo3.cache.normalized
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.leafType
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore.RecordChangeSubscriber
+import com.apollographql.apollo3.cache.normalized.internal.CacheKeyForObject
+import com.apollographql.apollo3.cache.normalized.internal.CacheKeyForObjectAndField
 import com.apollographql.apollo3.cache.normalized.internal.NoOpApolloStore
 import com.apollographql.apollo3.cache.normalized.internal.DefaultApolloStore
 import com.benasher44.uuid.Uuid
@@ -187,5 +190,17 @@ interface ApolloStore {
 
 fun ApolloStore(
     normalizedCacheFactory: NormalizedCacheFactory,
+    cacheKeyForObject: CacheKeyForObject = { _, _ -> null },
     cacheResolver: CacheResolver = CacheResolver(),
-): ApolloStore = DefaultApolloStore(normalizedCacheFactory, cacheResolver)
+): ApolloStore {
+  val cacheKeyForObjectAndField: CacheKeyForObjectAndField = { field, _, obj ->
+    cacheKeyForObject(field.type.leafType(), obj)
+  }
+  return DefaultApolloStore(normalizedCacheFactory, cacheKeyForObjectAndField, cacheResolver)
+}
+
+fun ApolloStore(
+    normalizedCacheFactory: NormalizedCacheFactory,
+    cacheKeyForObjectAndField: CacheKeyForObjectAndField,
+    cacheResolver: CacheResolver = CacheResolver(),
+): ApolloStore = DefaultApolloStore(normalizedCacheFactory, cacheKeyForObjectAndField, cacheResolver)

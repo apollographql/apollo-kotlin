@@ -45,13 +45,11 @@ class KotlinSampleApp : Application() {
         .build()
 
     val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory(this, "github_cache")
-    val cacheResolver = object : CacheResolver() {
-      override fun cacheKeyForObject(type: CompiledNamedType, variables: Executable.Variables, obj: Map<String, Any?>): CacheKey? {
-        return if (obj["__typename"] == "Repository") {
-          CacheKey(obj["id"] as String)
-        } else {
-          null
-        }
+    val cacheKeyForObject = { _, obj ->
+      if (obj["__typename"] == "Repository") {
+        obj["id"] as String
+      } else {
+        null
       }
     }
 
@@ -61,7 +59,7 @@ class KotlinSampleApp : Application() {
 
     ApolloClient.builder()
         .serverUrl(baseUrl)
-        .normalizedCache(sqlNormalizedCacheFactory, cacheResolver)
+        .normalizedCache(sqlNormalizedCacheFactory, cacheKeyForObject)
         .httpCache(ApolloHttpCache(cacheStore, logger))
         .defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST)
         .okHttpClient(okHttpClient)
