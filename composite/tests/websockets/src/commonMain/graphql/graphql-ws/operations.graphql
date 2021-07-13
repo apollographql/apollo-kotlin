@@ -1,3 +1,7 @@
 query Hello {
     hello
 }
+
+subscription Greetings {
+    greetings
+}
