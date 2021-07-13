@@ -34,7 +34,7 @@ class WriteToCacheAsynchronouslyTest {
   @BeforeTest
   fun setUp() {
     dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
-    store = ApolloStore(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), IdCacheResolver())
+    store = ApolloStore(MemoryCacheFactory())
     mockServer = MockServer()
     apolloClient = ApolloClient(
         serverUrl = mockServer.url(),

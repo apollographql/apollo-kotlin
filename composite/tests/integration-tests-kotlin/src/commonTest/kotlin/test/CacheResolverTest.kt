@@ -23,7 +23,12 @@ class CacheResolverTest {
         }
       }
     }
-    val apolloClient = ApolloClient(serverUrl = "").withStore(ApolloStore(MemoryCacheFactory(), resolver))
+    val apolloClient = ApolloClient(serverUrl = "").withStore(
+        ApolloStore(
+            normalizedCacheFactory = MemoryCacheFactory(),
+            cacheResolver = resolver
+        )
+    )
 
     runWithMainLoop {
       val response = apolloClient.query(HeroNameQuery())
