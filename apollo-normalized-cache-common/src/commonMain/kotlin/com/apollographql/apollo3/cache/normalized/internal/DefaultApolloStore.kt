@@ -127,7 +127,7 @@ class DefaultApolloStore(
       operation: Operation<D>,
       customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
-  ): D? {
+  ): D {
     // Capture a local reference so as not to freeze "this"
     val cacheKeyResolver = cacheResolver
 
@@ -147,7 +147,7 @@ class DefaultApolloStore(
       cacheKey: CacheKey,
       customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
-  ): D? {
+  ): D {
     // Capture a local reference so as not to freeze "this"
     val cacheKeyResolver = cacheResolver
 

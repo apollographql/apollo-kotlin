@@ -20,7 +20,7 @@ class Normalizer(
     val variables: Executable.Variables,
     val rootKey: String,
     val cacheKeyForObject: (CompiledNamedType, Map<String, Any?>) -> String?
-) {
+)  {
   private val records = mutableMapOf<String, Record>()
 
   fun normalize(map: Map<String, Any?>, selections: List<CompiledSelection>): Map<String, Record> {
