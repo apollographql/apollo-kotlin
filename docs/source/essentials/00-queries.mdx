@@ -17,11 +17,11 @@ This page also assumes that you've already set up Apollo Android for your Androi
 
 ## Defining
 
-In Apollo Android, each query you execute is represented as an instance of a generated class that conforms to the `Query` protocol. To generate these classes, we first need to define the GraphQL operations we want to execute.
+In Apollo Android, each query you execute is represented as an instance of a generated class that implements the [`Query` interface](https://github.com/apollographql/apollo-android/blob/9c998e47f698bdbe5db6b6d6965dbc34183d507e/apollo-api/src/commonMain/kotlin/com/apollographql/apollo3/api/Query.kt#L6). To generate these classes, we first need to define the GraphQL operations we want to execute.
 
 Let's say we define a GraphQL query named `HeroQuery`, like so:
 
-```graphql:title=hero-query.graphql
+```graphql:title=HeroQuery.graphql
 query HeroQuery($id: String!) {
   hero(id: $id) {
     id
@@ -33,9 +33,9 @@ query HeroQuery($id: String!) {
 
 If we define this query in its own `.graphql` file, Apollo Android will generate a corresponding `HeroQuery` class that we can then use to [execute the query](#executing).
 
-To generate classes, Apollo Android requires your server's schema and a set of `.graphql` files (one for each operation in your application). It uses these to generate code you can use to execute queries and access typed results.
+To generate classes, Apollo Android requires your server's schema, along with all of the `.graphql` files that contain your defined operations. It uses these to generate code you can use to execute queries and access typed results.
 
-> All `.graphql` files in your project (or the subset you specify as input to `apollo-codegen` if you customize your code generation build phase script) are combined and treated as _one_ GraphQL document. This means that fragments defined in one `.graphql` file are available across _all_ `.graphql` files. However, it _also_ means that operation and fragment names must be unique (and validation errors will occur if they aren't).
+> All `.graphql` files in your project (or the subset you specify as input to `apollo-codegen` if you customize the script for your code generation build phase) are combined and treated as _one_ GraphQL document. This means that fragments defined in one `.graphql` file are available across _all_ `.graphql` files. However, it _also_ means that operation and fragment names must be unique (and validation errors will occur if they aren't).
 
 
 ## Executing
