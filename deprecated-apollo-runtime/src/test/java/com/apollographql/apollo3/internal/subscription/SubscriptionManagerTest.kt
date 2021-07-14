@@ -5,6 +5,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.cache.normalized.CacheResolver
+import com.apollographql.apollo3.cache.normalized.FieldPolicyCacheResolver
 import com.apollographql.apollo3.subscription.OperationClientMessage
 import com.apollographql.apollo3.subscription.OperationServerMessage
 import com.apollographql.apollo3.subscription.SubscriptionConnectionParams
@@ -34,7 +35,7 @@ class SubscriptionManagerTest {
         SubscriptionConnectionParamsProvider.Const(SubscriptionConnectionParams()),
         MockExecutor(),
         connectionHeartbeatTimeoutMs,
-        CacheResolver(),
+        FieldPolicyCacheResolver,
         false)
     subscriptionManager.addOnStateChangeListener(onStateChangeListener)
   }

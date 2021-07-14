@@ -53,7 +53,7 @@ class Benchmark {
     }
 
     val data = operation.fromResponse(bufferedSource, customScalarAdapters).data!!
-    val records = operation.normalize(data, ResponseAdapterCache.DEFAULT, CacheResolver())
+    val records = operation.normalize(data, ResponseAdapterCache.DEFAULT)
   }
 
   @Test
@@ -96,7 +96,7 @@ class Benchmark {
         sqlStore.writeOperation(operation, data)
       }
 
-      memoryStore = ApolloStore(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), CacheKeyResolver.DEFAULT)
+      memoryStore = ApolloStore(MemoryCacheFactory(), CacheKeyResolver.DEFAULT)
       runBlocking {
         memoryStore.writeOperation(operation, data)
       }

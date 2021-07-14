@@ -10,7 +10,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.internal.IdCacheKeyForObject
+import com.apollographql.apollo3.cache.normalized.internal.IdObjectIdGenerator
 import com.apollographql.apollo3.cache.normalized.withStore
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
@@ -29,7 +29,7 @@ class StoreTest {
   fun setUp() {
     store = ApolloStore(
         normalizedCacheFactory = MemoryCacheFactory(),
-        cacheKeyForObject = IdCacheKeyForObject
+        objectIdGenerator = IdObjectIdGenerator
     )
     mockServer = MockServer()
     apolloClient = ApolloClient(mockServer.url()).withStore(store)

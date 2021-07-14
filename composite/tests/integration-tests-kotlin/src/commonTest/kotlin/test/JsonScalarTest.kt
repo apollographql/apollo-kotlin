@@ -9,6 +9,7 @@ import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.integration.normalizer.GetJsonScalarQuery
 import com.apollographql.apollo3.integration.normalizer.type.Types
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
+import com.apollographql.apollo3.cache.normalized.internal.IdObjectIdGenerator
 import com.apollographql.apollo3.cache.normalized.withFetchPolicy
 import com.apollographql.apollo3.cache.normalized.withStore
 import com.apollographql.apollo3.mockserver.MockServer
@@ -27,7 +28,7 @@ class JsonScalarTest {
 
   @BeforeTest
   fun setUp() {
-    store = ApolloStore(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), IdCacheResolver())
+    store = ApolloStore(MemoryCacheFactory())
     mockServer = MockServer()
     apolloClient = ApolloClient(mockServer.url())
         .withStore(store)

@@ -18,10 +18,12 @@ import com.apollographql.apollo3.api.internal.Optional.Companion.of
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheResolver
+import com.apollographql.apollo3.cache.normalized.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.NormalizedCacheFactory
-import com.apollographql.apollo3.cache.normalized.internal.CacheKeyForObjectAndField
 import com.apollographql.apollo3.cache.normalized.internal.DefaultApolloStore
+import com.apollographql.apollo3.cache.normalized.internal.ObjectIdGenerator
+import com.apollographql.apollo3.cache.normalized.internal.TypePolicyObjectIdGenerator
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo3.fetcher.ResponseFetcher
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
@@ -272,7 +274,7 @@ class ApolloClient internal constructor(
     var apolloStore: ApolloStore = ApolloStore.emptyApolloStore
     var cacheFactory = absent<NormalizedCacheFactory>()
     var cacheKeyResolver = absent<CacheResolver>()
-    var cacheKeyForObjectAndField: CacheKeyForObjectAndField = { _, _, _ -> null }
+    var objectIdGenerator: ObjectIdGenerator = TypePolicyObjectIdGenerator
     var defaultHttpCachePolicy = HttpCachePolicy.NETWORK_ONLY
     var defaultResponseFetcher = ApolloResponseFetchers.CACHE_FIRST
     var defaultCacheHeaders = CacheHeaders.NONE
@@ -391,12 +393,12 @@ class ApolloClient internal constructor(
     @JvmOverloads
     fun normalizedCache(
         normalizedCacheFactory: NormalizedCacheFactory,
-        cacheKeyForObjectAndField: CacheKeyForObjectAndField,
-        cacheResolver: CacheResolver = CacheResolver(),
+        objectIdGenerator: ObjectIdGenerator = TypePolicyObjectIdGenerator,
+        cacheResolver: CacheResolver = FieldPolicyCacheResolver,
     ): Builder {
       cacheFactory = fromNullable(normalizedCacheFactory)
       cacheKeyResolver = fromNullable((cacheResolver))
-      this.cacheKeyForObjectAndField = cacheKeyForObjectAndField
+      this.objectIdGenerator = objectIdGenerator
       return this
     }
 
@@ -638,7 +640,7 @@ class ApolloClient internal constructor(
       val cacheFactory = cacheFactory
       val cacheKeyResolver = cacheKeyResolver
       if (cacheFactory.isPresent && cacheKeyResolver.isPresent) {
-        apolloStore = DefaultApolloStore(cacheFactory.get(), cacheKeyForObjectAndField, cacheKeyResolver.get())
+        apolloStore = DefaultApolloStore(cacheFactory.get(), objectIdGenerator, cacheKeyResolver.get())
       }
       var subscriptionManager = subscriptionManager
       val subscriptionTransportFactory = subscriptionTransportFactory
@@ -649,7 +651,7 @@ class ApolloClient internal constructor(
             subscriptionConnectionParams,
             dispatcher,
             subscriptionHeartbeatTimeout,
-            cacheKeyResolver.or(CacheResolver()),
+            cacheKeyResolver.or(FieldPolicyCacheResolver),
             enableAutoPersistedSubscriptions)
       }
       return ApolloClient(serverUrl,

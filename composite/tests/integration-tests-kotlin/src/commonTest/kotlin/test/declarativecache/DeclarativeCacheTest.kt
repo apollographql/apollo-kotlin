@@ -5,8 +5,13 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.leafType
 import com.apollographql.apollo3.cache.normalized.ApolloStore
+import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheResolver
+import com.apollographql.apollo3.cache.normalized.FieldPolicyCacheResolver
+import com.apollographql.apollo3.cache.normalized.MapCacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.internal.IdObjectIdGenerator
+import com.apollographql.apollo3.cache.normalized.internal.TypePolicyObjectIdGenerator
 import com.apollographql.apollo3.testing.runWithMainLoop
 import declarativecache.GetBookQuery
 import declarativecache.GetBooksQuery
@@ -21,7 +26,7 @@ class DeclarativeCacheTest {
 
   @Test
   fun typePolicyIsWorking() = runWithMainLoop {
-    val store = ApolloStore(MemoryCacheFactory(), CacheResolver())
+    val store = ApolloStore(MemoryCacheFactory())
 
     // Write a book at the "promo" path
     val promoOperation = GetPromoBookQuery()
@@ -41,7 +46,7 @@ class DeclarativeCacheTest {
 
   @Test
   fun fallbackIdIsWorking() = runWithMainLoop {
-    val store = ApolloStore(MemoryCacheFactory(), CacheResolver())
+    val store = ApolloStore(MemoryCacheFactory())
 
     // Write a library at the "promo" path
     val promoOperation = GetPromoLibraryQuery()
@@ -61,7 +66,7 @@ class DeclarativeCacheTest {
 
   @Test
   fun fieldPolicyIsWorking() = runWithMainLoop {
-    val store = ApolloStore(MemoryCacheFactory(), CacheResolver())
+    val store = ApolloStore(MemoryCacheFactory())
 
     val promoOperation = GetPromoBookQuery()
     val promoData = GetPromoBookQuery.Data(promoBook = GetPromoBookQuery.PromoBook(__typename =  "Book", title = "Promo", isbn = "42"))
@@ -75,19 +80,19 @@ class DeclarativeCacheTest {
 
   @Test
   fun canResolveListProgrammatically() = runWithMainLoop {
-    val cacheResolver = object : CacheResolver() {
+    val cacheResolver = object : CacheResolver {
       override fun resolveField(field: CompiledField, variables: Executable.Variables, parent: Map<String, Any?>, parentId: String): Any? {
         if (field.name == "books") {
           val isbns = field.resolveArgument("isbns", variables) as? List<String>
           if (isbns != null) {
-            return isbns.map { buildCacheKey(field.type.leafType().name, listOf(it))}
+            return isbns.map { CacheKey.from(field.type.leafType().name, listOf(it))}
           }
         }
 
-        return super.resolveField(field, variables, parent, parentId)
+        return FieldPolicyCacheResolver.resolveField(field, variables, parent, parentId)
       }
     }
-    val store = ApolloStore(MemoryCacheFactory(), cacheResolver)
+    val store = ApolloStore(MemoryCacheFactory(), cacheResolver = cacheResolver)
 
     val promoOperation = GetPromoBookQuery()
     store.writeOperation(promoOperation, GetPromoBookQuery.Data(promoBook = GetPromoBookQuery.PromoBook(__typename =  "Book", title = "Title1", isbn = "1")))

@@ -16,7 +16,7 @@ class Record (
      * - Boolean
      * - String
      * - Double
-     * - CacheKey
+     * - CacheKey (for composite types)
      * - List
      * - Map (for custom scalars)
      * - null

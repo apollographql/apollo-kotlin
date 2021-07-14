@@ -15,6 +15,7 @@ import com.apollographql.apollo3.integration.normalizer.type.ColorInput
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.integration.normalizer.type.ReviewInput
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
+import com.apollographql.apollo3.cache.normalized.internal.IdObjectIdGenerator
 import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.cache.normalized.withFetchPolicy
 import com.apollographql.apollo3.cache.normalized.withOptimisticUpdates
@@ -40,7 +41,7 @@ class OptimisticCacheTest {
 
   @BeforeTest
   fun setUp() {
-    store = ApolloStore(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), IdCacheResolver())
+    store = ApolloStore(MemoryCacheFactory(), objectIdGenerator = IdObjectIdGenerator)
     mockServer = MockServer()
     apolloClient = ApolloClient(mockServer.url()).withStore(store)
   }

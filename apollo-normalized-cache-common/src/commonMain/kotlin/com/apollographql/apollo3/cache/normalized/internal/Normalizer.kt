@@ -13,27 +13,13 @@ import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.Record
 
 /**
- * A function that returns an id for the given object or null to use the fallback id
- * Returns an id for the given object. Called during normalization after a network reponse has been received.
- * See also `@typePolicy`
- */
-typealias CacheKeyForObject = (CompiledNamedType, Map<String, Any?>) -> String?
-
-/**
- * Same as [CacheKeyForObject] except it also passes information about what field is being normalized and what
- * variables were used in the query. This is for advanced use cases only. In general, the id of an object
- * should not depend on where it is queried.
- */
-typealias CacheKeyForObjectAndField = (CompiledField, Executable.Variables, Map<String, Any?>) -> String?
-
-/**
  * A [Normalizer] takes a [Map]<String, Any?> and turns them into a flat list of [Record]
- * The key of each [Record] is given by [cacheKeyForObjectAndField] or defaults to using the path
+ * The key of each [Record] is given by [objectIdGenerator] or defaults to using the path
  */
 class Normalizer(
     private val variables: Executable.Variables,
     private val rootKey: String,
-    private val cacheKeyForObjectAndField: CacheKeyForObjectAndField
+    private val objectIdGenerator: ObjectIdGenerator
 )  {
   private val records = mutableMapOf<String, Record>()
 
@@ -139,7 +125,11 @@ class Normalizer(
       type is CompiledNamedType && type.isComposite() -> {
         check(value is Map<*, *>)
         @Suppress("UNCHECKED_CAST")
-        val key = cacheKeyForObjectAndField(field, variables, value as Map<String, Any?>) ?: path
+        val key = objectIdGenerator.generateIdFor(
+            type,
+            value as Map<String, Any?>,
+            ObjectIdGeneratorContext(field, variables),
+        )?.key ?: path
         buildRecord(value, key, field.selections)
       }
       else -> {
@@ -183,6 +173,3 @@ class Normalizer(
   private fun String?.append(next: String): String = if (this == null) next else "$this.$next"
 }
 
-val IdCacheKeyForObject: CacheKeyForObject = { _, obj ->
-  (obj["id"] as? String)
-}
