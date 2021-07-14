@@ -1,9 +1,11 @@
 # Apollo Adapters
 
-A few convenients adapters for
+A few convenients adapters:
 
-* InstantAdapter for `kotlinx.datetime.Instant` ISO8601 dates
-* LocalDateAdapter for `kotlinx.datetime.LocalDate` ISO8601 dates
-* DateAdapter for `java.util.Date` ISO8601 dates
-* LongAdapter for `java.lang.Long`
-* BigDecimalAdapter for a MPP `com.apollographql.apollo3.BigDecimal` class holding big decimal values 
+| Adapter | Description |
+|---------|-------------|
+| `com.apollographql.apollo3.adapter.InstantAdapter` | For `kotlinx.datetime.Instant` ISO8601 dates |
+| `com.apollographql.apollo3.adapter.LocalDateAdapter` | For `kotlinx.datetime.LocalDate` ISO8601 dates |
+| `com.apollographql.apollo3.adapter.DateAdapter` | For `java.util.Date` ISO8601 dates |
+| `com.apollographql.apollo3.adapter.LongAdapter` | For `java.lang.Long` |
+| `com.apollographql.apollo3.adapter.BigDecimalAdapter` | For a MPP `com.apollographql.apollo3.BigDecimal` class holding big decimal values |
