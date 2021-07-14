@@ -2,9 +2,9 @@
 title: Inline Fragments
 ---
 
-Apollo Android supports [GraphQL inline fragments](https://graphql.org/learn/queries/#inline-fragments). They are not to be confused with named fragments that are used to reused fields. Inline fragments are used to access polymorphic types:
+Apollo Android supports [GraphQL inline fragments](https://graphql.org/learn/queries/#inline-fragments), which are used to access fields of [polymorphic types](https://www.apollographql.com/docs/apollo-server/schema/unions-interfaces/):
 
-```graphql:title=Hero.graphql
+```graphql{4-9}:title=HeroQuery.graphql
 query HeroForEpisode($ep: Episode!) {
   hero(episode: $ep) {
     name
@@ -18,7 +18,9 @@ query HeroForEpisode($ep: Episode!) {
 }
 ```
 
-The Hero class will contain `AsDroid` and `AsHuman` nested classes to access the Droid fields and human fields respectively:
+> Inline fragments are not to be confused with [named fragments](./50-named-fragments/), which are used to reuse fields across multiple operations.
+
+If codegen includes the operation above, the generated `Hero` class contains `AsDroid` and `AsHuman` nested classes, which enable you to access fields that are specific to `Droid` and `Human`:
 
 ```kotlin
 println("Droid primaryFunction: ${hero.asDroid?.primaryFunction}")
