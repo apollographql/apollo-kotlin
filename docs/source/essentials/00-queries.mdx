@@ -1,28 +1,27 @@
 ---
-title: Queries
+title: Queries in Apollo Android
+sidebar_title: Queries
 ---
 
 import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
-Fetching data in a predictable, type safe way is one of the core features of Apollo Android. In this guide, you'll learn how to Query GraphQL data and use the result in your application.
+Fetching data in a predictable, type-safe way is one of the core features of Apollo Android. In this guide, you'll learn how to query a GraphQL endpoint and use the result in your application.
 
-This page assumes some familiarity with building GraphQL queries. If you'd like a refresher, we recommend [reading this guide](http://graphql.org/learn/queries/) and practicing [running queries in GraphiQL](https://graphql.github.io/swapi-graphql/).
-Since Apollo queries are just standard GraphQL, anything you can type into the GraphiQL query explorer can also be put into `.graphql` files in your project.
+## Prerequisites
 
-The following examples assume that you've already set up Apollo Android for your Android/Kotlin application. Read our [getting started](../#get-started) guide if you need help with either of those steps.
+This page assumes some familiarity with building GraphQL queries. For a refresher, we recommend [reading this guide](http://graphql.org/learn/queries/) and practicing [running queries in Apollo Sandbox](https://studio.apollographql.com/sandbox/explorer?endpoint=https%3A%2F%2Fswapi-graphql.netlify.app%2F.netlify%2Ffunctions%2Findex&explorerURLState=N4IgJg9gxgrgtgUwHYBcQC4QEcYIE4CeABAOIIoBiAlgDZwDORwAOkkUQIY03V2Mtt2RAGa0GTVkKEoqKGgklCAvopVIlIADQgAbhzxUOAI3n0MIEEqA).
 
-Apollo-android takes a schema and a set of `.graphql` files and uses these to generate code you can use to execute queries and access typed results.
+> Because Apollo Android uses standard GraphQL syntax, anything query you can run in Sandbox can also be put into `.graphql` files in your project.
 
-> All `.graphql` files in your project (or the subset you specify as input to `apollo-codegen` if you customize the script you define as the code generation build phase) will be combined and treated as one big GraphQL document. That means fragments defined in one `.graphql` file are available to all other `.graphql` files for example, but it also means operation names and fragment names have to be unique and you will receive validation errors if they are not.
+This page also assumes that you've already set up Apollo Android for your Android/Kotlin application. For help with setup, see the [getting started guide](../#get-started).
 
-## Creating queries 
+## Defining
 
-Queries are represented as instances of generated classes conforming to the `Query` protocol. Constructor arguments can be used to define query variables if needed.
-You pass a query object to `ApolloClient#query(query)` to send the query to the server, execute it, and receive results.
+In Apollo Android, each query you execute is represented as an instance of a generated class that conforms to the `Query` protocol. To generate these classes, we first need to define the GraphQL operations we want to execute.
 
-For example, if you define a query called `GetHero`:
+Let's say we define a GraphQL query named `HeroQuery`, like so:
 
-```graphql
+```graphql:title=hero-query.graphql
 query HeroQuery($id: String!) {
   hero(id: $id) {
     id
@@ -32,28 +31,32 @@ query HeroQuery($id: String!) {
 }
 ```
 
-Here, `query` is the operation type and `HeroQuery` is the operation name.
-Apollo-android will generate a `HeroQuery` class that you can construct (with variables) and pass to `ApolloClient#query(query)`:
+If we define this query in its own `.graphql` file, Apollo Android will generate a corresponding `HeroQuery` class that we can then use to [execute the query](#executing).
 
-```kotlin
-val response = apolloClient.query(feedQuery)
+To generate classes, Apollo Android requires your server's schema and a set of `.graphql` files (one for each operation in your application). It uses these to generate code you can use to execute queries and access typed results.
+
+> All `.graphql` files in your project (or the subset you specify as input to `apollo-codegen` if you customize your code generation build phase script) are combined and treated as _one_ GraphQL document. This means that fragments defined in one `.graphql` file are available across _all_ `.graphql` files. However, it _also_ means that operation and fragment names must be unique (and validation errors will occur if they aren't).
+
+
+## Executing
+
+To execute the query we [just defined](#defining), we pass a `HeroQuery` instance to the `query` method of `ApolloClient`, like so:
+
+```kotlin{2}
+val apolloClient = ApolloClient(serverUrl = "https://your.domain/graphql")
+val response = apolloClient.query(HeroQuery(id = "12"))
 ```
 
-By default, Apollo Android offloads I/O work to a background thread and it is safe to call the `ApolloClient` from the main thread.
+By default, Apollo Android offloads I/O work like this to a background thread, which means it's safe to execute GraphQL operations on the main thread. The result is also dispatched to the main thread, and you can use the response directly to update your data.
 
-* On the JVM, the whole request runs in a coroutine using `Dispatchers.IO` by default. You can customize the dispatcher with the `dispatcher` constructor parameter of `ApolloClient`
-* On native, the request offloads the cache and network I/O to background threads that resume in the main dispatch queue. For this reason, the `ApolloClient` APIs assume they are called from the main thread. It's not possible to customize the dispatcher but cache and network I/O are not done on the main thread.
+* On the JVM, the whole request runs in a coroutine using `Dispatchers.IO` by default. You can customize the dispatcher with the `dispatcher` constructor parameter of `ApolloClient`.
+* On native, the request offloads the cache and network I/O to background threads that resume in the main dispatch queue. For this reason, the `ApolloClient` APIs assume they are called from the main thread. It isn't possible to customize the dispatcher, but cache and network I/O are not done on the main thread.
 
-Cancellation is handled through the `CoroutineScope`. Cancelling the current scope will cancel any ongoing request.
+## Results
 
-Because it is safe to call the `ApolloClient` from the main thread, the result will also be dispatch to the main thread and you can direcly use the response to update your data.
+A query's results are returned as a hierarchy of immutable classes that match the structure of the query's fields. These classes _only_ include fields that are included in the query (other schema fields are omitted).
 
-## Strongly typed query results
-
-Query results are defined as immutable classes that at each level only contain the properties defined in the corresponding part of the query definition.
-This means the type system won't allow you to access fields that are not actually fetched by the query, even if they *are* part of the schema.
-
-In other words, Apollo Android generates classes based on the queries you write, not based on the schema.
+In other words, Apollo Android generates classes based on the queries you write, _not_ based on the schema you query against.
 
 For example, given the following schema:
 
@@ -82,7 +85,7 @@ query HeroAndFriendsNames {
 }
 ```
 
-Apollo Android generates a typesafe model looking like this (details are omitted to focus on the class structure):
+Apollo Android generates a type-safe model that looks like this (details are omitted to focus on the class structure):
 
 ```kotlin
 class HeroAndFriendsNamesQuery {
@@ -92,7 +95,10 @@ class HeroAndFriendsNamesQuery {
 }
 ```
 
-Because the above query doesn't fetch `appearsIn`, this property is not part of the returned result type and cannot be accessed here. Similarly, `id` is only accessible in `Friend` and not `Hero`.
+Because the `HeroAndFriendsNames` query doesn't fetch `appearsIn`, this property is not part of the returned result type and cannot be accessed here. Similarly, `id` is only accessible in `Friend`, _not_ in `Hero`.
 
-Because GraphQL supports nullability, you have compiled-time type safety. If the request is successful, all the queried data will be accessible and only this data. There is no need to handle null fields in UI code.
+Because GraphQL supports nullability, you have compiled-time type safety. If the request is successful, all queried data (and only this data) will be accessible. There is no need to handle null fields in UI code.
 
+## Canceling
+
+Operation cancellation is handled via the `CoroutineScope`. Canceling the current scope cancels any associated ongoing operation.
