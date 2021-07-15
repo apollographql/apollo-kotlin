@@ -1,8 +1,4 @@
-# A field with an enum
+# A query with a case sensitive enum
 query TestQuery {
-  hero {
-    name
-    appearsIn
-    firstAppearsIn
-  }
+  gravity
 }

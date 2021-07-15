@@ -7,35 +7,14 @@ package com.example.enum_field.selections
 
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
-import com.apollographql.apollo3.api.list
-import com.apollographql.apollo3.api.notNull
-import com.example.enum_field.type.Types
-import com.example.enum_field.type.Types.Character
-import com.example.enum_field.type.Types.Episode
+import com.example.enum_field.type.Types.Gravity
 import kotlin.collections.List
 
 object TestQuerySelections {
-  private val hero: List<CompiledSelection> = listOf(
-        CompiledField(
-          name = "name",
-          type = CompiledStringType.notNull()
-        ),
-        CompiledField(
-          name = "appearsIn",
-          type = Episode.list().notNull()
-        ),
-        CompiledField(
-          name = "firstAppearsIn",
-          type = Episode.notNull()
-        )
-      )
-
   val root: List<CompiledSelection> = listOf(
         CompiledField(
-          name = "hero",
-          type = Character,
-          selections = hero
+          name = "gravity",
+          type = Gravity
         )
       )
 }
