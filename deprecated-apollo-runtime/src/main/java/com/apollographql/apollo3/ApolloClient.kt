@@ -18,9 +18,12 @@ import com.apollographql.apollo3.api.internal.Optional.Companion.of
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheResolver
+import com.apollographql.apollo3.cache.normalized.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.internal.DefaultApolloStore
+import com.apollographql.apollo3.cache.normalized.ObjectIdGenerator
+import com.apollographql.apollo3.cache.normalized.TypePolicyObjectIdGenerator
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo3.fetcher.ResponseFetcher
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
@@ -96,7 +99,8 @@ class ApolloClient internal constructor(
     enableAutoPersistedQueries: Boolean,
     subscriptionManager: SubscriptionManager,
     useHttpGetMethodForQueries: Boolean,
-    useHttpGetMethodForPersistedQueries: Boolean) : ApolloQueryCall.Factory, ApolloMutationCall.Factory, ApolloPrefetch.Factory, ApolloSubscriptionCall.Factory {
+    useHttpGetMethodForPersistedQueries: Boolean,
+) : ApolloQueryCall.Factory, ApolloMutationCall.Factory, ApolloPrefetch.Factory, ApolloSubscriptionCall.Factory {
   private val tracker = ApolloCallTracker()
   private val applicationInterceptors: List<ApolloInterceptor>
   private val applicationInterceptorFactories: List<ApolloInterceptorFactory>
@@ -111,12 +115,14 @@ class ApolloClient internal constructor(
   private val useHttpGetMethodForPersistedQueries: Boolean
 
   override fun <D : Mutation.Data> mutate(
-      mutation: Mutation<D>): ApolloMutationCall<D> {
+      mutation: Mutation<D>,
+  ): ApolloMutationCall<D> {
     return newCall(mutation).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
   }
 
   override fun <D : Mutation.Data> mutate(
-      mutation: Mutation<D>, withOptimisticUpdates: D): ApolloMutationCall<D> {
+      mutation: Mutation<D>, withOptimisticUpdates: D,
+  ): ApolloMutationCall<D> {
     return newCall(mutation).toBuilder().responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
         .optimisticUpdates(fromNullable(withOptimisticUpdates)).build()
   }
@@ -126,13 +132,15 @@ class ApolloClient internal constructor(
   }
 
   override fun <D : Operation.Data> prefetch(
-      operation: Operation<D>): ApolloPrefetch {
+      operation: Operation<D>,
+  ): ApolloPrefetch {
     return RealApolloPrefetch(operation, serverUrl!!, httpCallFactory!!, customScalarAdapters, dispatcher!!, logger,
         tracker)
   }
 
   override fun <D : Subscription.Data> subscribe(
-      subscription: Subscription<D>): ApolloSubscriptionCall<D> {
+      subscription: Subscription<D>,
+  ): ApolloSubscriptionCall<D> {
     return RealApolloSubscriptionCall(
         subscription,
         subscriptionManager,
@@ -233,7 +241,8 @@ class ApolloClient internal constructor(
   }
 
   private fun <D : Operation.Data> newCall(
-      operation: Operation<D>): RealApolloCall<D> {
+      operation: Operation<D>,
+  ): RealApolloCall<D> {
     return RealApolloCall.builder<D>()
         .operation(operation)
         .serverUrl(serverUrl)
@@ -265,6 +274,7 @@ class ApolloClient internal constructor(
     var apolloStore: ApolloStore = ApolloStore.emptyApolloStore
     var cacheFactory = absent<NormalizedCacheFactory>()
     var cacheKeyResolver = absent<CacheResolver>()
+    var objectIdGenerator: ObjectIdGenerator = TypePolicyObjectIdGenerator
     var defaultHttpCachePolicy = HttpCachePolicy.NETWORK_ONLY
     var defaultResponseFetcher = ApolloResponseFetchers.CACHE_FIRST
     var defaultCacheHeaders = CacheHeaders.NONE
@@ -381,11 +391,14 @@ class ApolloClient internal constructor(
      * @return The [Builder] object to be used for chaining method calls
      */
     @JvmOverloads
-    fun normalizedCache(normalizedCacheFactory: NormalizedCacheFactory,
-                        cacheResolver: CacheResolver = CacheResolver()
+    fun normalizedCache(
+        normalizedCacheFactory: NormalizedCacheFactory,
+        objectIdGenerator: ObjectIdGenerator = TypePolicyObjectIdGenerator,
+        cacheResolver: CacheResolver = FieldPolicyCacheResolver,
     ): Builder {
       cacheFactory = fromNullable(normalizedCacheFactory)
       cacheKeyResolver = fromNullable((cacheResolver))
+      this.objectIdGenerator = objectIdGenerator
       return this
     }
 
@@ -397,8 +410,10 @@ class ApolloClient internal constructor(
      * @param <T> the value type
      * @return The [Builder] object to be used for chaining method calls
     </T> */
-    fun <T> addCustomScalarAdapter(customScalar: CustomScalarType,
-                                   customScalarAdapter: Adapter<T>): Builder {
+    fun <T> addCustomScalarAdapter(
+        customScalar: CustomScalarType,
+        customScalarAdapter: Adapter<T>,
+    ): Builder {
       customScalarAdapters[customScalar.name] = customScalarAdapter
       return this
     }
@@ -625,7 +640,7 @@ class ApolloClient internal constructor(
       val cacheFactory = cacheFactory
       val cacheKeyResolver = cacheKeyResolver
       if (cacheFactory.isPresent && cacheKeyResolver.isPresent) {
-        apolloStore = DefaultApolloStore(cacheFactory.get(), cacheKeyResolver.get())
+        apolloStore = DefaultApolloStore(cacheFactory.get(), objectIdGenerator, cacheKeyResolver.get())
       }
       var subscriptionManager = subscriptionManager
       val subscriptionTransportFactory = subscriptionTransportFactory
@@ -636,7 +651,7 @@ class ApolloClient internal constructor(
             subscriptionConnectionParams,
             dispatcher,
             subscriptionHeartbeatTimeout,
-            cacheKeyResolver.or(CacheResolver()),
+            cacheKeyResolver.or(FieldPolicyCacheResolver),
             enableAutoPersistedSubscriptions)
       }
       return ApolloClient(serverUrl,
@@ -664,8 +679,10 @@ class ApolloClient internal constructor(
     }
 
     companion object {
-      private fun addHttpCacheInterceptorIfNeeded(callFactory: Call.Factory,
-                                                  httpCacheInterceptor: Interceptor): Call.Factory {
+      private fun addHttpCacheInterceptorIfNeeded(
+          callFactory: Call.Factory,
+          httpCacheInterceptor: Interceptor,
+      ): Call.Factory {
         if (callFactory is OkHttpClient) {
           val client = callFactory
           for (interceptor in client.interceptors()) {

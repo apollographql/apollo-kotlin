@@ -3,18 +3,15 @@ package com.apollographql.apollo3.cache.normalized
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.ClientContext
-import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.internal.ApolloCacheInterceptor
 import com.apollographql.apollo3.cache.normalized.internal.CacheInput
 import com.apollographql.apollo3.cache.normalized.internal.CacheOutput
 import com.apollographql.apollo3.cache.normalized.internal.DefaultCacheInput
-import com.apollographql.apollo3.cache.normalized.internal.StoreExecutionContext
+import com.apollographql.apollo3.exception.ApolloCompositeException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -59,10 +56,11 @@ const val CACHE_FLAG_STORE_PARTIAL_RESPONSE = 2
  */
 fun ApolloClient.withNormalizedCache(
     normalizedCacheFactory: NormalizedCacheFactory,
-    cacheResolver: CacheResolver = CacheResolver(),
+    objectIdGenerator: ObjectIdGenerator = TypePolicyObjectIdGenerator,
+    cacheResolver: CacheResolver = FieldPolicyCacheResolver,
     writeToCacheAsynchronously: Boolean = false
 ): ApolloClient {
-  return withStore(ApolloStore(normalizedCacheFactory, cacheResolver), writeToCacheAsynchronously)
+  return withStore(ApolloStore(normalizedCacheFactory, objectIdGenerator, cacheResolver), writeToCacheAsynchronously)
 }
 
 fun ApolloClient.withStore(store: ApolloStore, writeToCacheAsynchronously: Boolean = false): ApolloClient {

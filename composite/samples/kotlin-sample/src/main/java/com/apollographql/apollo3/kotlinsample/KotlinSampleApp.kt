@@ -12,6 +12,8 @@ import com.apollographql.apollo3.cache.http.ApolloHttpCache
 import com.apollographql.apollo3.cache.http.DiskLruHttpCacheStore
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheResolver
+import com.apollographql.apollo3.cache.normalized.ObjectIdGenerator
+import com.apollographql.apollo3.cache.normalized.ObjectIdGeneratorContext
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo3.kotlinsample.data.ApolloCallbackService
 import com.apollographql.apollo3.kotlinsample.data.ApolloCoroutinesService
@@ -45,8 +47,8 @@ class KotlinSampleApp : Application() {
         .build()
 
     val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory(this, "github_cache")
-    val cacheResolver = object : CacheResolver() {
-      override fun cacheKeyForObject(type: CompiledNamedType, variables: Executable.Variables, obj: Map<String, Any?>): CacheKey? {
+    val objectIdGenerator = object : ObjectIdGenerator {
+      override fun cacheKeyForObject(type: CompiledNamedType, obj: Map<String, Any?>, context: ObjectIdGeneratorContext): CacheKey? {
         return if (obj["__typename"] == "Repository") {
           CacheKey(obj["id"] as String)
         } else {
@@ -61,7 +63,7 @@ class KotlinSampleApp : Application() {
 
     ApolloClient.builder()
         .serverUrl(baseUrl)
-        .normalizedCache(sqlNormalizedCacheFactory, cacheResolver)
+        .normalizedCache(sqlNormalizedCacheFactory, objectIdGenerator)
         .httpCache(ApolloHttpCache(cacheStore, logger))
         .defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST)
         .okHttpClient(okHttpClient)

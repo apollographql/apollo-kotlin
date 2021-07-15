@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.cache.normalized.internal
+package com.apollographql.apollo3.cache.normalized
 
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Executable
@@ -8,31 +8,28 @@ import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.internal.json.MapJsonWriter
 import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.cache.CacheHeaders
-import com.apollographql.apollo3.cache.normalized.CacheKey
-import com.apollographql.apollo3.cache.normalized.CacheResolver
-import com.apollographql.apollo3.cache.normalized.ReadOnlyNormalizedCache
-import com.apollographql.apollo3.cache.normalized.Record
+import com.apollographql.apollo3.cache.normalized.internal.CacheBatchReader
+import com.apollographql.apollo3.cache.normalized.internal.Normalizer
 
 
 fun <D : Operation.Data> Operation<D>.normalize(
     data: D,
     customScalarAdapters: CustomScalarAdapters,
-    cacheResolver: CacheResolver,
-) = normalize(data, customScalarAdapters, cacheResolver, CacheKey.rootKey().key)
+    objectIdGenerator: ObjectIdGenerator,
+) = normalize(data, customScalarAdapters, objectIdGenerator, CacheKey.rootKey().key)
 
 @Suppress("UNCHECKED_CAST")
 fun <D : Executable.Data> Executable<D>.normalize(
     data: D,
     customScalarAdapters: CustomScalarAdapters,
-    cacheResolver: CacheResolver,
+    objectIdGenerator: ObjectIdGenerator,
     rootKey: String,
 ): Map<String, Record> {
   val writer = MapJsonWriter()
   adapter().toJson(writer, customScalarAdapters, data)
   val variables = variables(customScalarAdapters)
-  return Normalizer(variables, rootKey) { type, fields ->
-    cacheResolver.cacheKeyForObject(type, variables, fields)?.key
-  }.normalize(writer.root() as Map<String, Any?>, selections())
+  return Normalizer(variables, rootKey, objectIdGenerator)
+      .normalize(writer.root() as Map<String, Any?>, selections())
 }
 
 fun <D : Executable.Data> Executable<D>.readDataFromCache(

@@ -2,38 +2,15 @@ package com.apollographql.apollo3.cache.normalized
 
 import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledNamedType
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.exception.CacheMissException
-import com.apollographql.apollo3.api.keyFields
 import com.apollographql.apollo3.api.leafType
+import com.apollographql.apollo3.exception.CacheMissException
 import kotlin.jvm.JvmSuppressWildcards
 
-open class CacheResolver {
-
-  /**
-   * Returns a [CacheKey] for the given object. Called during normalization after a network reponse has been received.
-   * See also `@typePolicy`
-   *
-   * @param type the type of the object
-   * @param variables the variables for the current operation. Most of the time, the id of an object shouldn't depend
-   * on which operation it comes from. Use for advanced use cases only.
-   * @param obj the object
-   */
-  open fun cacheKeyForObject(
-      type: CompiledNamedType,
-      variables: Executable.Variables,
-      obj: Map<String, @JvmSuppressWildcards Any?>,
-  ): CacheKey? {
-    val keyFields = type.keyFields()
-
-    if (keyFields.isNotEmpty()) {
-      return buildCacheKey(type.name, keyFields.map { obj[it].toString() })
-    }
-
-    return null
-  }
-
+/**
+ * An interface for [CacheResolver] used to read the cache
+ */
+interface CacheResolver {
   /**
    * Resolves a field from the cache. Called when reading from the cache, usually before a network request.
    * This API is similar to a backend side resolver in that it allows resolving fields to arbitrary values.
@@ -88,7 +65,39 @@ open class CacheResolver {
    * @return a value that can go in a [Record]. No type checking is done. It is the responsibility of implementations to return the correct
    * type
    */
-  open fun resolveField(
+  fun resolveField(
+      field: CompiledField,
+      variables: Executable.Variables,
+      parent: Map<String, @JvmSuppressWildcards Any?>,
+      parentId: String,
+  ): Any?
+}
+
+/**
+ * A cache resolver that uses the parent to resolve fields. [parent] is a [Map] that
+ * can contain the same values as [Record]
+ */
+object MapCacheResolver: CacheResolver {
+  override fun resolveField(
+      field: CompiledField,
+      variables: Executable.Variables,
+      parent: Map<String, @JvmSuppressWildcards Any?>,
+      parentId: String,
+  ): Any? {
+    val name = field.nameWithArguments(variables)
+    if (!parent.containsKey(name)) {
+      throw CacheMissException(parentId, name)
+    }
+
+    return parent[name]
+  }
+}
+
+/**
+ * A [CacheResolver] that uses @fieldPolicy annotations to resolve fields and delegates to [MapCacheResolver] else
+ */
+object FieldPolicyCacheResolver: CacheResolver {
+  override fun resolveField(
       field: CompiledField,
       variables: Executable.Variables,
       parent: Map<String, @JvmSuppressWildcards Any?>,
@@ -99,44 +108,23 @@ open class CacheResolver {
     }
 
     if (keyArgsValues.isNotEmpty()) {
-      return buildCacheKey(field.type.leafType().name, keyArgsValues)
+      return CacheKey.from(field.type.leafType().name, keyArgsValues)
     }
 
-    val name = field.nameWithArguments(variables)
-    if (!parent.containsKey(name)) {
-      throw CacheMissException(parentId, name)
-    }
-
-    return parent[name]
-  }
-
-  /**
-   * Helper function to build a cache key from a list of strings
-   */
-  protected fun buildCacheKey(typename: String, values: List<String>): CacheKey {
-    return CacheKey(
-        buildString {
-          append(typename)
-          append(":")
-          values.forEach {
-            append(it)
-          }
-        }
-    )
+    return MapCacheResolver.resolveField(field, variables, parent, parentId)
   }
 }
 
-class IdCacheResolver: CacheResolver() {
-  override fun cacheKeyForObject(type: CompiledNamedType, variables: Executable.Variables, obj: Map<String, Any?>): CacheKey? {
-    return obj["id"]?.toString()?.let { CacheKey(it) }
-  }
-
+/**
+ * A [CacheResolver] that looks for an "id" argument to resolve fields and delegates to [FieldPolicyCacheResolver] else
+ */
+object IdCacheResolver: CacheResolver {
   override fun resolveField(field: CompiledField, variables: Executable.Variables, parent: Map<String, Any?>, parentId: String): Any? {
     val id = field.resolveArgument("id", variables)?.toString()
     if (id != null) {
        return CacheKey(id)
     }
 
-    return super.resolveField(field, variables, parent, parentId)
+    return FieldPolicyCacheResolver.resolveField(field, variables, parent, parentId)
   }
 }

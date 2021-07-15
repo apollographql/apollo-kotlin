@@ -5,7 +5,6 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.IdCacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameWithIdQuery
@@ -13,6 +12,7 @@ import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithI
 import com.apollographql.apollo3.integration.normalizer.StarshipByIdQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
+import com.apollographql.apollo3.cache.normalized.IdObjectIdGenerator
 import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.cache.normalized.withFetchPolicy
 import com.apollographql.apollo3.cache.normalized.withRefetchPolicy
@@ -39,7 +39,7 @@ class WatcherTest {
 
   @BeforeTest
   fun setUp() {
-    store = ApolloStore(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), IdCacheResolver())
+    store = ApolloStore(MemoryCacheFactory(), objectIdGenerator = IdObjectIdGenerator)
     mockServer = MockServer()
     apolloClient = ApolloClient(mockServer.url()).withStore(store)
   }

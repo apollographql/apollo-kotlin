@@ -54,6 +54,24 @@ class CompiledField(
       throw RuntimeException(e)
     }
   }
+
+  fun copy(
+      name: String= this.name,
+      alias: String? = this.alias,
+      type: CompiledType = this.type,
+      condition: List<CompiledCondition> = this.condition,
+      arguments: List<CompiledArgument> = this.arguments,
+      selections: List<CompiledSelection> = this.selections,
+      ): CompiledField {
+    return CompiledField(
+        name,
+        alias,
+        type,
+        condition,
+        arguments,
+        selections
+    )
+  }
 }
 
 /**

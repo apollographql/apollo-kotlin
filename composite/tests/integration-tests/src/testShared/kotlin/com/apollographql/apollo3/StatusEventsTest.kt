@@ -1,6 +1,5 @@
 package com.apollographql.apollo3
 
-import com.apollographql.apollo3.Utils.checkTestFixture
 import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.Utils.readFileToString
@@ -8,21 +7,16 @@ import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.variablesJson
 import com.apollographql.apollo3.cache.normalized.IdCacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.IdObjectIdGenerator
 import com.apollographql.apollo3.coroutines.await
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
-import com.apollographql.apollo3.http.OkHttpExecutionContext
-import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
-import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
-import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.integration.normalizer.type.Types
-import com.google.common.base.Charsets
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
 import okhttp3.Dispatcher
@@ -58,7 +52,11 @@ class IntegrationTest {
         .serverUrl(server.url("/"))
         .okHttpClient(OkHttpClient.Builder().dispatcher(Dispatcher(immediateExecutorService())).build())
         .addCustomScalarAdapter(Types.Date, dateCustomScalarAdapter)
-        .normalizedCache(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), IdCacheResolver())
+        .normalizedCache(
+            MemoryCacheFactory(),
+            IdObjectIdGenerator,
+            IdCacheResolver
+        )
         .defaultResponseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
         .dispatcher(immediateExecutor())
         .build()

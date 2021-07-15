@@ -5,11 +5,11 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey
-import com.apollographql.apollo3.cache.normalized.IdCacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.Record
-import com.apollographql.apollo3.cache.normalized.internal.normalize
+import com.apollographql.apollo3.cache.normalized.IdObjectIdGenerator
+import com.apollographql.apollo3.cache.normalized.normalize
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
@@ -37,7 +37,7 @@ class NormalizerTest {
 
   @BeforeTest
   fun setUp() {
-    normalizedCache = MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE).create()
+    normalizedCache = MemoryCacheFactory().create()
   }
 
   @Test
@@ -245,7 +245,7 @@ class NormalizerTest {
   companion object {
     internal fun <D : Operation.Data> records(operation: Operation<D>, name: String): Map<String, Record> {
       val response = operation.parseJsonResponse(readResource(name))
-      return operation.normalize(data = response.data!!, CustomScalarAdapters.Empty, IdCacheResolver())
+      return operation.normalize(data = response.data!!, CustomScalarAdapters.Empty, objectIdGenerator = IdObjectIdGenerator)
     }
 
     private const val TEST_FIELD_KEY_JEDI = "hero({\"episode\":\"JEDI\"})"
