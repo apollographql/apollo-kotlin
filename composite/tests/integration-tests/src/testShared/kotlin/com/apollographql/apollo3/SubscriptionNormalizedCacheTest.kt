@@ -8,7 +8,7 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.cache.normalized.IdCacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
-import com.apollographql.apollo3.cache.normalized.internal.IdObjectIdGenerator
+import com.apollographql.apollo3.cache.normalized.IdObjectIdGenerator
 import com.apollographql.apollo3.integration.subscription.NewRepoCommentSubscription
 import com.apollographql.apollo3.isFromCache
 import com.apollographql.apollo3.subscription.OperationClientMessage

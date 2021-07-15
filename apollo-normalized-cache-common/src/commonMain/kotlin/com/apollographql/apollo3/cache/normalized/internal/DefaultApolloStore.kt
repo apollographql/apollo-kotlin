@@ -9,7 +9,10 @@ import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheResolver
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.NormalizedCacheFactory
+import com.apollographql.apollo3.cache.normalized.ObjectIdGenerator
 import com.apollographql.apollo3.cache.normalized.Record
+import com.apollographql.apollo3.cache.normalized.normalize
+import com.apollographql.apollo3.cache.normalized.readDataFromCache
 import com.apollographql.apollo3.mpp.Guard
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.GlobalScope

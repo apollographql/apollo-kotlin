@@ -5,12 +5,11 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey
-import com.apollographql.apollo3.cache.normalized.IdCacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.Record
-import com.apollographql.apollo3.cache.normalized.internal.IdObjectIdGenerator
-import com.apollographql.apollo3.cache.normalized.internal.normalize
+import com.apollographql.apollo3.cache.normalized.IdObjectIdGenerator
+import com.apollographql.apollo3.cache.normalized.normalize
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery

@@ -8,10 +8,7 @@ import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheResolver
 import com.apollographql.apollo3.cache.normalized.FieldPolicyCacheResolver
-import com.apollographql.apollo3.cache.normalized.MapCacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.internal.IdObjectIdGenerator
-import com.apollographql.apollo3.cache.normalized.internal.TypePolicyObjectIdGenerator
 import com.apollographql.apollo3.testing.runWithMainLoop
 import declarativecache.GetBookQuery
 import declarativecache.GetBooksQuery

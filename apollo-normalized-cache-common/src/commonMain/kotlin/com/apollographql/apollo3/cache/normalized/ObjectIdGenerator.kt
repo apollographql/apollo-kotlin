@@ -1,10 +1,9 @@
-package com.apollographql.apollo3.cache.normalized.internal
+package com.apollographql.apollo3.cache.normalized
 
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledNamedType
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.keyFields
-import com.apollographql.apollo3.cache.normalized.CacheKey
 
 /**
  * An [ObjectIdGenerator] is responsible for finding an id for a given object
@@ -20,10 +19,10 @@ interface ObjectIdGenerator {
    * @param type the concrete type of the object. Use this with [CacheKey.from] to namespace the ids
    * @param obj a [Map] representing the object. The values in the map can have the same types as the ones
    * in [Record]
-   * @param context the context in which the object is. In most use cases, the id should not depend on the context.
-   * Only use for advanced use cases.
+   * @param context the context in which the object is normalized. In most use cases, the id should not depend on the normalization
+   * context. Only use for advanced use cases.
    */
-  fun generateIdFor(type: CompiledNamedType, obj: Map<String, Any?>, context: ObjectIdGeneratorContext): CacheKey?
+  fun cacheKeyForObject(type: CompiledNamedType, obj: Map<String, Any?>, context: ObjectIdGeneratorContext): CacheKey?
 }
 
 /**
@@ -34,8 +33,8 @@ interface ObjectIdGenerator {
  * @param variables the variables used in the operation where the object is normalized.
  */
 class ObjectIdGeneratorContext(
-    field: CompiledField,
-    variables: Executable.Variables,
+    val field: CompiledField,
+    val variables: Executable.Variables,
 )
 
 /**
@@ -44,8 +43,8 @@ class ObjectIdGeneratorContext(
  * It will coerce Int, Floats and other types to String using [toString]
  */
 object IdObjectIdGenerator : ObjectIdGenerator {
-  override fun generateIdFor(type: CompiledNamedType, obj: Map<String, Any?>, context: ObjectIdGeneratorContext): CacheKey? {
-    return obj["id"]?.toString()?.let { CacheKey(it) } ?: TypePolicyObjectIdGenerator.generateIdFor(type, obj, context)
+  override fun cacheKeyForObject(type: CompiledNamedType, obj: Map<String, Any?>, context: ObjectIdGeneratorContext): CacheKey? {
+    return obj["id"]?.toString()?.let { CacheKey(it) } ?: TypePolicyObjectIdGenerator.cacheKeyForObject(type, obj, context)
   }
 }
 
@@ -53,7 +52,7 @@ object IdObjectIdGenerator : ObjectIdGenerator {
  * A [ObjectIdGenerator] that uses annotations to compute the id
  */
 object TypePolicyObjectIdGenerator : ObjectIdGenerator {
-  override fun generateIdFor(type: CompiledNamedType, obj: Map<String, Any?>, context: ObjectIdGeneratorContext): CacheKey? {
+  override fun cacheKeyForObject(type: CompiledNamedType, obj: Map<String, Any?>, context: ObjectIdGeneratorContext): CacheKey? {
     val keyFields = type.keyFields()
 
     return if (keyFields.isNotEmpty()) {

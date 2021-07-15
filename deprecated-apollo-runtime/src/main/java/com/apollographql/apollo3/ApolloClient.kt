@@ -22,8 +22,8 @@ import com.apollographql.apollo3.cache.normalized.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.internal.DefaultApolloStore
-import com.apollographql.apollo3.cache.normalized.internal.ObjectIdGenerator
-import com.apollographql.apollo3.cache.normalized.internal.TypePolicyObjectIdGenerator
+import com.apollographql.apollo3.cache.normalized.ObjectIdGenerator
+import com.apollographql.apollo3.cache.normalized.TypePolicyObjectIdGenerator
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo3.fetcher.ResponseFetcher
 import com.apollographql.apollo3.interceptor.ApolloInterceptor

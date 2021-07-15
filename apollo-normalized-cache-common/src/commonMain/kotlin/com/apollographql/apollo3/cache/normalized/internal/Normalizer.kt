@@ -10,6 +10,8 @@ import com.apollographql.apollo3.api.CompiledType
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.isComposite
 import com.apollographql.apollo3.cache.normalized.CacheKey
+import com.apollographql.apollo3.cache.normalized.ObjectIdGenerator
+import com.apollographql.apollo3.cache.normalized.ObjectIdGeneratorContext
 import com.apollographql.apollo3.cache.normalized.Record
 
 /**
@@ -125,7 +127,7 @@ class Normalizer(
       type is CompiledNamedType && type.isComposite() -> {
         check(value is Map<*, *>)
         @Suppress("UNCHECKED_CAST")
-        val key = objectIdGenerator.generateIdFor(
+        val key = objectIdGenerator.cacheKeyForObject(
             type,
             value as Map<String, Any?>,
             ObjectIdGeneratorContext(field, variables),

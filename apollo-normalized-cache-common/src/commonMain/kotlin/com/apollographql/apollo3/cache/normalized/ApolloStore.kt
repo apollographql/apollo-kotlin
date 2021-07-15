@@ -3,13 +3,10 @@ package com.apollographql.apollo3.cache.normalized
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.leafType
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore.RecordChangeSubscriber
 import com.apollographql.apollo3.cache.normalized.internal.NoOpApolloStore
 import com.apollographql.apollo3.cache.normalized.internal.DefaultApolloStore
-import com.apollographql.apollo3.cache.normalized.internal.ObjectIdGenerator
-import com.apollographql.apollo3.cache.normalized.internal.TypePolicyObjectIdGenerator
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.SharedFlow
 import kotlin.reflect.KClass

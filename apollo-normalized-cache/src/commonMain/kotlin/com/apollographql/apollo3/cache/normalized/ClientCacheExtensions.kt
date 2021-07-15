@@ -11,8 +11,6 @@ import com.apollographql.apollo3.cache.normalized.internal.ApolloCacheIntercepto
 import com.apollographql.apollo3.cache.normalized.internal.CacheInput
 import com.apollographql.apollo3.cache.normalized.internal.CacheOutput
 import com.apollographql.apollo3.cache.normalized.internal.DefaultCacheInput
-import com.apollographql.apollo3.cache.normalized.internal.ObjectIdGenerator
-import com.apollographql.apollo3.cache.normalized.internal.TypePolicyObjectIdGenerator
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
