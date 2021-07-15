@@ -61,8 +61,15 @@ private fun GQLDocument.withoutDefinitions(definitions: List<GQLDefinition>): GQ
   )
 }
 
+/**
+ * Adds [definitions] to the [GQLDocument]
+ *
+ * If a definition alreay exists, it is kept as is and a warning is logged
+ *
+ * See https://spec.graphql.org/draft/#sel-FAHnBPLCAACCcooU
+ */
 private fun GQLDocument.withDefinitions(definitions: List<GQLDefinition>): GQLDocument {
-  val mergedDefinitions = definitions.toMutableList()
+  val mergedDefinitions = this.definitions.toMutableList()
 
   definitions.forEach { builtInTypeDefinition ->
     check(builtInTypeDefinition is GQLNamed) {
