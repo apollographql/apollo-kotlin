@@ -44,7 +44,7 @@ class ApolloResponse<out D : Operation.Data>(
   val dataOrThrow: D
     get() {
       return if (hasErrors()) {
-        throw ApolloException("The response has errors")
+        throw ApolloException("The response has errors: $errors")
       } else {
         data ?: throw  ApolloException("The server did not return any data")
       }

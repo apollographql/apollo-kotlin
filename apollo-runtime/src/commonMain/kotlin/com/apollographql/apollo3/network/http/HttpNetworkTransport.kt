@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.flow
 
 class HttpNetworkTransport(
     private val httpRequestComposer: HttpRequestComposer,
-    val engine: HttpEngine,
+    val engine: HttpEngine = DefaultHttpEngine(),
     private val interceptors: List<HttpInterceptor> = emptyList(),
 ) : NetworkTransport {
   private val worker = NonMainWorker()
