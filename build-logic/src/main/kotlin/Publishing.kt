@@ -10,6 +10,7 @@ import org.gradle.plugins.signing.Sign
 import org.gradle.plugins.signing.SigningExtension
 import kotlinx.coroutines.runBlocking
 import org.gradle.api.plugins.ExtraPropertiesExtension
+import org.jetbrains.dokka.gradle.DokkaTask
 import java.util.Locale
 
 fun Project.configurePublishing() {
@@ -20,9 +21,9 @@ fun Project.configurePublishing() {
     it.plugin("maven-publish")
   }
 
-//  pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
-//    configureDokkaJvm()
-//  }
+  pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
+    configureDokka()
+  }
   pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
     configureDokka()
   }
@@ -31,9 +32,15 @@ fun Project.configurePublishing() {
     configurePublishingDelayed()
   }
 }
-fun Project.configureDokka(): String {
+
+fun Project.configureDokka() {
   apply {
-    it.plugin("")
+    it.plugin("org.jetbrains.dokka")
+  }
+
+  tasks.named("dokkaGfm").configure {
+    it as DokkaTask
+
   }
 }
 
