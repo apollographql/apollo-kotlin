@@ -66,5 +66,4 @@ class TransformTest {
 
     return value.value
   }
-
 }

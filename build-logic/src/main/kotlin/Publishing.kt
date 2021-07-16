@@ -20,9 +20,20 @@ fun Project.configurePublishing() {
     it.plugin("maven-publish")
   }
 
+//  pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
+//    configureDokkaJvm()
+//  }
+  pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
+    configureDokka()
+  }
   // Not sure if we still need that afterEvaluate
   afterEvaluate {
     configurePublishingDelayed()
+  }
+}
+fun Project.configureDokka(): String {
+  apply {
+    it.plugin("")
   }
 }
 
