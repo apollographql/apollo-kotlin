@@ -178,7 +178,7 @@ object GraphQLCompiler {
           codegenModels = options.codegenModels,
           flattenModels = options.flattenModels,
           moduleName = options.moduleName,
-          pluginVersion = VERSION,
+          pluginVersion = APOLLO_VERSION,
           schemaPackageName = options.schemaPackageName
       ).writeTo(options.metadataOutputFile)
     }

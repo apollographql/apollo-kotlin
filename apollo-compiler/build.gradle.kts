@@ -40,7 +40,7 @@ abstract class GeneratePluginVersion : DefaultTask() {
     versionFile.parentFile.mkdirs()
     versionFile.writeText("""// Generated file. Do not edit!
 package com.apollographql.apollo3.compiler
-val VERSION = "${project.version}"
+const val APOLLO_VERSION = "${project.version}"
 """)
   }
 }
