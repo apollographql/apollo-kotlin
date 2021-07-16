@@ -13,7 +13,7 @@ export ANDROID_SDK_ROOT="$HOME"/android
 mkdir -p "$ANDROID_SDK_ROOT"/cmdline-tools/
 
 curl https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip > android-commandline-tools.zip
-unzip ../android-commandline-tools.zip
+unzip android-commandline-tools.zip
 mv cmdline-tools "$ANDROID_SDK_ROOT"/cmdline-tools/latest
 export PATH="$ANDROID_SDK_ROOT"/cmdline-tools/latest/bin:$PATH
 
