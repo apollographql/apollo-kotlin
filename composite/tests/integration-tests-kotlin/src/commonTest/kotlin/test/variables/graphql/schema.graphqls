@@ -1,0 +1,4 @@
+type Query {
+  fieldWithNullableParameter(param: Int): Int
+  fieldWithNonNullParameter(param: Int!): Int
+}

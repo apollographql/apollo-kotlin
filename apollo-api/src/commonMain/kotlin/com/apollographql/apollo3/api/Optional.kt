@@ -12,7 +12,7 @@ sealed class Optional<out V> {
   fun getOrNull() = (this as? Present)?.value
   fun getOrThrow() = getOrNull() ?: throw MissingValueException()
 
-  class Present<V>(val value: V) : Optional<V>()
+  data class Present<V>(val value: V) : Optional<V>()
   object Absent : Optional<Nothing>()
 
   fun <V : Any> presentIfNotNull(value: V?): Optional<V> = if (value == null) Absent else Present(value)
