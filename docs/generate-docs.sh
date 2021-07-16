@@ -17,8 +17,17 @@ unzip android-commandline-tools.zip
 mv cmdline-tools "$ANDROID_SDK_ROOT"/cmdline-tools/latest
 export PATH="$ANDROID_SDK_ROOT"/cmdline-tools/latest/bin:$PATH
 
+yes | sdkmanager --install 'patcher;v4'
+yes | sdkmanager --install 'platforms;android-30'
+yes | sdkmanager --install 'emulator'
+yes | sdkmanager --install 'tools'
+yes | sdkmanager --install 'build-tools;29.0.2'
+yes | sdkmanager --install 'platform-tools'
 
 ../gradlew -p ../ dokkaGfm
+
+mkdir -p source/kdoc
+cp -rf ../apollo-api/build/dokka/gfm source/kdoc/apollo-api
 
 gatsby build --prefix-paths
 mkdir -p docs/android
