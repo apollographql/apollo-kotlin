@@ -10,7 +10,7 @@ import com.apollographql.apollo3.api.internal.Optional
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.ApolloStore.RecordChangeSubscriber
 import com.apollographql.apollo3.cache.normalized.Record
-import com.apollographql.apollo3.cache.normalized.internal.dependentKeys
+import com.apollographql.apollo3.cache.normalized.dependentKeys
 import com.apollographql.apollo3.exception.ApolloCanceledException
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException

@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.cache.normalized.CacheResolver
+import com.apollographql.apollo3.cache.normalized.FieldPolicyCacheResolver
 import com.apollographql.apollo3.subscription.ApolloOperationMessageSerializer
 import com.apollographql.apollo3.subscription.OperationClientMessage
 import com.apollographql.apollo3.subscription.OperationServerMessage
@@ -35,7 +36,7 @@ class SubscriptionAutoPersistTest {
         SubscriptionConnectionParamsProvider.Const(SubscriptionConnectionParams()),
         MockExecutor(),
         -1,
-        CacheResolver(),
+        FieldPolicyCacheResolver,
         true)
     Truth.assertThat(subscriptionTransportFactory!!.subscriptionTransport).isNotNull()
     Truth.assertThat(subscriptionManager!!.state).isEqualTo(SubscriptionManagerState.DISCONNECTED)

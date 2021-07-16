@@ -15,7 +15,7 @@ import com.apollographql.apollo3.api.isComposite
  *
  * For simplicity, this only handles one level of list. Subclass [CacheResolver] if you need arbitrary nested lists of objects.
  */
-abstract class CacheKeyResolver : CacheResolver() {
+abstract class CacheKeyResolver : CacheResolver {
 
   /**
    * Return the computed the cache key for an object field.
@@ -56,6 +56,6 @@ abstract class CacheKeyResolver : CacheResolver() {
       }
     }
 
-    return super.resolveField(field, variables, parent, parentId)
+    return MapCacheResolver.resolveField(field, variables, parent, parentId)
   }
 }

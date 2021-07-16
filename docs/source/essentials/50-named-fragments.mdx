@@ -2,7 +2,7 @@
 title: Named fragments
 ---
 
-Apollo Android supports [GraphQL fragments](https://graphql.org/learn/queries/#fragments). Fragments allow you to define a set of fields that can be reusable in your queries.
+Apollo Android supports [GraphQL fragments](https://graphql.org/learn/queries/#fragments), which enable you to reuse a set of fields across multiple operations:
 
 ```graphql:title=Launch.graphql
 fragment launchFragment on Launch {
@@ -20,27 +20,29 @@ query LaunchDetails($id:ID!) {
 }
 ```
 
-Apollo Android will generate a `LaunchFragment` class that can be reused in different queries:
+> These fragments are not to be confused with [inline fragments](./40-inline-fragments/), which are used to access fields of polymorphic types.
+
+If codegen includes the definitions above, Apollo Android generates a `LaunchFragment` class that can be reused in different queries:
 
 ```kotlin:title=LaunchFragment.kt
 data class LaunchFragment(
-     val __typename: String = "Launch",
-     val id: String,
-     val site: String?,
-     val mission: Mission?
-   )
+  val __typename: String = "Launch",
+  val id: String,
+  val site: String?,
+  val mission: Mission?
+)
 ```
 
-Your generated models will have a `.fragments` property to access the fragments:
+Generated models for operations that use the fragment have a `.fragments` property to access the fragment's fields:
 
 ```kotlin
 println("Mission site: ${launch.fragments.launchFragment.site}")
 ```
 
-To reuse a fragment, use it in any other query:
+You can use a defined fragment in any number of operations:
 
 ```graphql:title=Launch.graphql
-// ...
+ # ...previous definitions...
 
 query LaunchList {
   launches {
@@ -50,5 +52,5 @@ query LaunchList {
   }
 }
 ```
-You can define your fragment in any `.graphql` file. The compiler merges all `.graphql` files so it doesn't matter if you have multiple files or put everything in the same file.
 
+You can even use a fragment in operations that are defined in a different `.graphql` file from the fragment itself. This is because Apollo Android codegen merges all `.graphql` files in to a _single_ file before generating models.

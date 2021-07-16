@@ -9,23 +9,24 @@ import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.example.enum_field.type.Episode
+import com.example.enum_field.type.Gravity
 
-object Episode_ResponseAdapter : Adapter<Episode> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Episode {
+object Gravity_ResponseAdapter : Adapter<Gravity> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Gravity {
     val rawValue = reader.nextString()!!
     return when(rawValue) {
-      "NEWHOPE" -> Episode.NEWHOPE
-      "EMPIRE" -> Episode.EMPIRE
-      "jedi" -> Episode.jedi
-      else -> Episode.UNKNOWN__(rawValue)
+      "TOP" -> Gravity.TOP
+      "CENTER" -> Gravity.CENTER
+      "BOTTOM" -> Gravity.BOTTOM
+      "bottom" -> Gravity.bottom
+      else -> Gravity.UNKNOWN__(rawValue)
     }
   }
 
   override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    value: Episode
+    value: Gravity
   ) {
     writer.value(value.rawValue)
   }

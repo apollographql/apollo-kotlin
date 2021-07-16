@@ -8,6 +8,7 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.cache.normalized.IdCacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
+import com.apollographql.apollo3.cache.normalized.IdObjectIdGenerator
 import com.apollographql.apollo3.integration.subscription.NewRepoCommentSubscription
 import com.apollographql.apollo3.isFromCache
 import com.apollographql.apollo3.subscription.OperationClientMessage
@@ -33,7 +34,7 @@ class SubscriptionNormalizedCacheTest {
         .serverUrl("http://google.com")
         .dispatcher(TrampolineExecutor())
         .subscriptionTransportFactory(subscriptionTransportFactory)
-        .normalizedCache(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), IdCacheResolver())
+        .normalizedCache(MemoryCacheFactory(), objectIdGenerator = IdObjectIdGenerator, cacheResolver = IdCacheResolver)
         .build()
     subscriptionCall = apolloClient.subscribe(NewRepoCommentSubscription("repo"))
     networkOperationData = mapOf(

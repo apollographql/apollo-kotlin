@@ -187,5 +187,6 @@ interface ApolloStore {
 
 fun ApolloStore(
     normalizedCacheFactory: NormalizedCacheFactory,
-    cacheResolver: CacheResolver = CacheResolver(),
-): ApolloStore = DefaultApolloStore(normalizedCacheFactory, cacheResolver)
+    objectIdGenerator: ObjectIdGenerator = TypePolicyObjectIdGenerator,
+    cacheResolver: CacheResolver = FieldPolicyCacheResolver,
+): ApolloStore = DefaultApolloStore(normalizedCacheFactory, objectIdGenerator, cacheResolver)
