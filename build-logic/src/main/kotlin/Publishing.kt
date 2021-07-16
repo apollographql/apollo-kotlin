@@ -40,7 +40,8 @@ fun Project.configureDokka() {
 
   tasks.named("dokkaGfm").configure {
     it as DokkaTask
-
+    //https://github.com/Kotlin/dokka/issues/1455
+    it.dependsOn("assemble")
   }
 }
 
