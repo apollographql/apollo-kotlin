@@ -2,13 +2,13 @@
 title: Gradle plugin configuration
 ---
 
-Apollo Android comes with logical defaults that will work for the majority of use cases. If you're getting started, see the [getting started guide](./get-started/) for an overview of the base configuration.
+Apollo Android's default configuration works for the majority of use cases. If you're getting started, see the [getting started guide](./get-started/) for an overview of the default configuration.
 
-This page describes more advanced use cases.
+This article describes configuration options for advanced use cases.
 
-## Using multiple schemas
+## Using multiple GraphQL APIs
 
-Apollo Android supports using multiple endpoints and multiple schemas. For this, create multiple services:
+Apollo Android supports communicating with multiple GraphQL endpoints with different schemas. To do so, create multiple services like so:
 
 ```kotlin
 apollo {
@@ -25,7 +25,7 @@ apollo {
 
 ## Specifying the schema location
 
-Specify the schema location using the `schemaFile` property:
+Specify the location of your schema file using the `schemaFile` property:
 
 ```kotlin
 apollo {
@@ -33,11 +33,13 @@ apollo {
 }
 ```
 
-## Extending the schema
+> By default, Apollo Android combines all files in your project that match the pattern `schema.[graphqls|json|sdl]`.
 
-Apollo Android supports client directives like @nonnull, @optional, @typePolicy, etc. These directives allow to extend the schema with client-specific information.
+## Combining multiple schema files
 
-By default, Apollo Android will look for `schema.[graphqls|json|sdl]` files and merge all of them. If that doesn't work, you can also use the `schemaFiles` property:
+Apollo Android supports a collection of client directives, including `@nonnull`, `@optional`, and `@typePolicy`. These directives enable you to extend your server's base schema with client-specific types and fields.
+
+If you expand your schema in a separate file, you can instruct Apollo Android to construct its schema from a combination of multiple files, like so:
 
 ```kotlin
 apollo {
@@ -45,16 +47,19 @@ apollo {
 }
 ```
 
-## Wiring the generated sources
+> By default, Apollo Android combines all files in your project that match the pattern `schema.[graphqls|json|sdl]`.
 
-By default, Apollo Android adds the generated sources:
+## Wiring generated source
+
+By default, Apollo Android adds generated source:
+
 * to the `main` sourceSet for JVM projects
 * to `commonMain` for multiplatform projects
 * to all non-test variants for Android projects
 
-You can customize this with `withOutputDir`. For an exemple, to wire a service to all the test source set of a Kotlin JVM project:
+You can customize this behavior with the `withOutputDir` property. For exemple, to wire a service to all the test source set of a Kotlin JVM project:
 
-```
+```kotlin
 apollo {
   withOutputDir {
     val kotlinProjectExtension = project.extensions.get("kotlin") as KotlinProjectExtension
@@ -66,9 +71,9 @@ apollo {
 
 ## Downloading a schema
 
-By default the Gradle plugin registers a `downloadApolloSchema` task that you can use from the command line:
+By default, the Gradle plugin registers a `downloadApolloSchema` task that you can use from the command line:
 
-```
+```bash
 # --schema is interpreted relative to the current working directory. This example
 # assumes the root project directory and an Android app in `app`
 ./gradlew downloadApolloSchema \
@@ -76,7 +81,7 @@ By default the Gradle plugin registers a `downloadApolloSchema` task that you ca
   --schema="app/src/main/graphql/com/example/schema.graphqls"
 ```
 
-If you're doing this often or want to automate the process from CI, configure an `introspection {}` block:
+If you're doing this often or want to automate the process from CI, you can configure an `introspection {}` block:
 
 ```kotlin
 apollo {
@@ -90,7 +95,7 @@ apollo {
 }
 ```
 
-If you have a [Studio](https://www.apollographql.com/docs/studio/) registry, use the `registry` block instead:
+If you register your schema with [Apollo Studio](https://www.apollographql.com/docs/studio/), use the `registry` block instead:
 
 ```kotlin
 apollo {
