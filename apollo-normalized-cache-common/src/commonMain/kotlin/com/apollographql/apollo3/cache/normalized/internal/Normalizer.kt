@@ -128,7 +128,6 @@ class Normalizer(
         check(value is Map<*, *>)
         @Suppress("UNCHECKED_CAST")
         val key = objectIdGenerator.cacheKeyForObject(
-            type,
             value as Map<String, Any?>,
             ObjectIdGeneratorContext(field, variables),
         )?.key ?: path
