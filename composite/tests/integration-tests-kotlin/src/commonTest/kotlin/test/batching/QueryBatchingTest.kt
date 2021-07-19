@@ -108,7 +108,7 @@ class QueryBatchingTest {
       }
       val result2 = async {
         // Wait for the first query to be executed
-        delay(50)
+        delay(200)
         apolloClient.query(GetLaunch2Query())
       }
 
