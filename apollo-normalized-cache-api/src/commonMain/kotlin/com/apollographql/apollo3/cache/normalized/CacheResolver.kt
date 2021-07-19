@@ -77,7 +77,7 @@ interface CacheResolver {
  * A cache resolver that uses the parent to resolve fields. [parent] is a [Map] that
  * can contain the same values as [Record]
  */
-object MapCacheResolver: CacheResolver {
+object DefaultCacheResolver: CacheResolver {
   override fun resolveField(
       field: CompiledField,
       variables: Executable.Variables,
@@ -94,7 +94,7 @@ object MapCacheResolver: CacheResolver {
 }
 
 /**
- * A [CacheResolver] that uses @fieldPolicy annotations to resolve fields and delegates to [MapCacheResolver] else
+ * A [CacheResolver] that uses @fieldPolicy annotations to resolve fields and delegates to [DefaultCacheResolver] else
  */
 object FieldPolicyCacheResolver: CacheResolver {
   override fun resolveField(
@@ -111,7 +111,7 @@ object FieldPolicyCacheResolver: CacheResolver {
       return CacheKey.from(field.type.leafType().name, keyArgsValues)
     }
 
-    return MapCacheResolver.resolveField(field, variables, parent, parentId)
+    return DefaultCacheResolver.resolveField(field, variables, parent, parentId)
   }
 }
 

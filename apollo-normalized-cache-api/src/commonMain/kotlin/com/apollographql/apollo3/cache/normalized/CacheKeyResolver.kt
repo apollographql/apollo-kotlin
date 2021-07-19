@@ -56,6 +56,6 @@ abstract class CacheKeyResolver : CacheResolver {
       }
     }
 
-    return MapCacheResolver.resolveField(field, variables, parent, parentId)
+    return DefaultCacheResolver.resolveField(field, variables, parent, parentId)
   }
 }
