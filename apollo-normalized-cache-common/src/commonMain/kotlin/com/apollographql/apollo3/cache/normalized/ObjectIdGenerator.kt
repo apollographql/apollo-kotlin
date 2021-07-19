@@ -7,10 +7,12 @@ import com.apollographql.apollo3.api.leafType
 
 /**
  * An [ObjectIdGenerator] is responsible for finding an id for a given object
- * Called during normalization after a network reponse has been received to build
- * the [Record] that will be stored in cache
+ * - takes Json data as input and returns a unique id for an object
+ * - is used after a network request
+ * - is used during normalization when writing to the cache
  *
  * See also `@typePolicy`
+ * See also [CacheResolver]
  */
 interface ObjectIdGenerator {
   /**

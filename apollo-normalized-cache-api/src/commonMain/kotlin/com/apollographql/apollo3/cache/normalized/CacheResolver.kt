@@ -13,7 +13,11 @@ import kotlin.jvm.JvmSuppressWildcards
 interface CacheResolver {
   /**
    * Resolves a field from the cache. Called when reading from the cache, usually before a network request.
-   * This API is similar to a backend side resolver in that it allows resolving fields to arbitrary values.
+   * - takes a GraphQL field and operation variables as input and generates data for this field
+   * - this data can be a CacheKey for objects but it can also be any other data if needed. In that respect,
+   * it's closer to a resolver as might be found in apollo-server
+   * - is used before a network request
+   * - is used when reading the cache
    *
    * It can be used to map field arguments to [CacheKey]:
    *
@@ -55,6 +59,7 @@ interface CacheResolver {
    * ```
    *
    * See also @fieldPolicy
+   * See also [ObjectIdGenerator]
    *
    * @param field the field to resolve
    * @param variables the variables of the current operation
