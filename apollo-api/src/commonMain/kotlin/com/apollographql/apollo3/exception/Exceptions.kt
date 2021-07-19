@@ -6,9 +6,17 @@ package com.apollographql.apollo3.exception
 open class ApolloException(message: String? = null, cause: Throwable? = null) : RuntimeException(message, cause)
 
 /**
- * A network happened: socket closed, DNS issue, TLS problem, etc...
+ * A network error happened: socket closed, DNS issue, TLS problem, etc...
  */
 class ApolloNetworkException(message: String? = null, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
+
+/**
+ * A WebSocket connection could not be established: e.g., expired token
+ */
+class ApolloWebSocketException(
+    val code: Int,
+    message: String? = null,
+    cause: Throwable? = null) : ApolloException(message = message, cause = cause)
 
 /**
  * The response was received but the response code was not 200
