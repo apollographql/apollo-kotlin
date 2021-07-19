@@ -19,9 +19,9 @@ module.exports = {
           ],
           'Essentials': [
             'essentials/00-queries',
-            'essentials/01-errors',
             'essentials/10-mutations',
             'essentials/20-subscriptions',
+            'essentials/01-errors',
             'essentials/30-custom-scalars',
             'essentials/40-inline-fragments',
             'essentials/50-named-fragments',
