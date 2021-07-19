@@ -4,31 +4,28 @@ This document is meant to give the community some idea of where we're going with
 
 Please open issues or comment/upvote the existing ones for items you'd like to see added here. Feedback is very welcome! We'd love to learn more about how you're using Apollo Android and what you'd like to see in the future.
 
-This document was last updated on April 7th, 2021. For a more detailed and up-to-date view, you can check the project's [milestones](https://github.com/apollographql/apollo-android/milestones?direction=asc&sort=title&state=open).
+This document was last updated on July 19th, 2021. For a more detailed and up-to-date view, you can check the project's [milestones](https://github.com/apollographql/apollo-android/milestones?direction=asc&sort=title&state=open).
 
 ## `2.x` branch 
 
-`main` is the stable `2.x` branch. Non breaking improvements and bugfixes land here. This branch is battle-tested and actively maintained. The next release will include the Gradle plugin as a fatjar to workaround some issues with Gradle classloaders (https://github.com/apollographql/apollo-android/pull/3023) as well as other bugfixes.
+`main` is the stable `2.x` branch. Non breaking improvements and bugfixes land here. This branch is battle-tested and actively maintained. No new features are planned for this branch and only major security or fixes will get new releases.
 
-While working on 2.x, we found a few limitations that could not be fixed without major breaking changes so we started developping `dev-3.x` in parallel. Once `dev-3.x` reaches alpha, it will be merged into `main`
+## `3.x` branch
 
-## `3.0.0-alpha1`
+**`dev-3.x` is in Alpha stage**. It's usable and contains [a ton of new features and improvements](https://github.com/apollographql/apollo-android/releases/tag/v3.0.0-alpha01). It's not stable yet because the API might change but if you don't mind the occasional APIs updates, **please try it out**. The faster we get feedback, the faster it can reach stable.
 
-`dev-3.x` is the branch for the next major version of Apollo Android where new developments happen. A lot of progress has been done on performance ([#2895](https://github.com/apollographql/apollo-android/issues/2895), [#2651](https://github.com/apollographql/apollo-android/issues/2651)), multiplatform ([#2878](https://github.com/apollographql/apollo-android/issues/2878), [#2983](https://github.com/apollographql/apollo-android/issues/2983)) and codegen ([#1854](https://github.com/apollographql/apollo-android/issues/1854)). Developer preview builds are published on maven central under the [`com.apollographql.apollo3`](https://repo1.maven.org/maven2/com/apollographql/apollo3/) group, feel free to try them out! 
-
-Before going `alpha`, the `dev-3.x` branch is still missing:
-
-- **Multiplatform watchers, APQs and optimistic updates** ([#2904](https://github.com/apollographql/apollo-android/issues/2904)): The multiplatform cache infrastructure is now working with a Cache interceptor, SQLLite and in-memory cache. It's still missing watchers, custom fetchers, imperative store API and a few other things.
-
-- **Declarative cache** ([#2331](https://github.com/apollographql/apollo-android/issues/2331)): It's been historically difficult to handle cases like pagination with the current normalized cache. We have also had a lot of questions around the usage of `CacheKeyResolver` and data expiration, garbage collection. Making the normalized cache multiplatform is a good opportunity to improve these APIs. This is the next big thing to tackle.
-
-## `3.0.0-alpha2`
-
-After `3.0.0-alpha1`, `3.0.0-alpha2` will focus on bringing incremental improvements:
-
-- **SQL Cache expiration** ([#2331](https://github.com/apollographql/apollo-android/issues/2331))
-
-- **Testing APIs** ([#3028](https://github.com/apollographql/apollo-android/issues/3028))
+The next things to get worked on are:
 
 
+### Java Codgen ([#2616](https://github.com/apollographql/apollo-android/issues/2616))
+
+To get a first alpha out of the door, the Java codegen was removed. An upcoming version will introduce it again together with making sure the APIs still work when called from Java
+
+### Testing APIs ([#3028](https://github.com/apollographql/apollo-android/issues/3028))
+
+Generating fake Json data for unit test/integration test is verbose as it requires passing a value for each property and potentially having to go through fragments, etc... A possibility is to record the json with a proxy but this becomes harder to maintain as the schema changes. Having some typesafe way to generate json would be very useful for tests.
+
+### Cache improvements ([2331](https://github.com/apollographql/apollo-android/issues/2331))
+
+The declarative cache makes working with the cache and defining unique object ids easier. We also want to include helpers to handle with common cases like pagination, garbage collection and eviction.
 
