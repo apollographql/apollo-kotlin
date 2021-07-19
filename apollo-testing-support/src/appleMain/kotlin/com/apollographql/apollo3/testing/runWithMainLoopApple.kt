@@ -20,6 +20,10 @@ import platform.darwin.dispatch_get_main_queue
 import platform.darwin.dispatch_time
 import kotlin.coroutines.CoroutineContext
 
+actual fun runTest(block: suspend CoroutineScope.() -> Unit) {
+  kotlinx.coroutines.runBlocking { block() }
+}
+
 /**
  * A specialized version of `runBlocking` that keeps a CFRunLoop alive so that apple code can dispatch on the main
  * queue. There is more to the story and this might hopefully be merged with runBlocking below

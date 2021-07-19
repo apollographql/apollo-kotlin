@@ -10,6 +10,7 @@ import okio.Buffer
 import okio.BufferedSink
 import okio.BufferedSource
 import okio.ByteString
+import kotlin.js.JsName
 
 /**
  * Represents a GraphQL operation (mutation, query or subscription).
@@ -31,6 +32,7 @@ interface Operation<D : Operation.Data> : Executable<D> {
   /**
    * An unique identifier for the operation. Used for Automatic Persisted Queries. You can customize it with a [OperationIdGenerator]
    */
+  @JsName("operationId")
   fun id(): String
 
   override fun adapter(): Adapter<D>

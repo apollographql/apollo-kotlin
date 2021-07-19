@@ -21,6 +21,12 @@ kotlin {
         implementation(groovy.util.Eval.x(project, "x.dep.truth"))
       }
     }
+
+    val jsMain by getting {
+      dependencies {
+        implementation(groovy.util.Eval.x(project, "x.dep.kotlin.nodejs"))
+        implementation(kotlin("test-js"))
+      }
+    }
   }
 }
-

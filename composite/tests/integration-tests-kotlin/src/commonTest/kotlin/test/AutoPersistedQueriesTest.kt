@@ -4,7 +4,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.testing.runWithMainLoop
+import com.apollographql.apollo3.testing.runTest
 import com.apollographql.apollo3.withAutoPersistedQueries
 import readResource
 import kotlin.test.BeforeTest
@@ -22,7 +22,7 @@ class AutoPersistedQueriesTest {
   }
 
   @Test
-  fun withApqsDoesntSendDocument() = runWithMainLoop {
+  fun withApqsDoesntSendDocument() = runTest {
     mockServer.enqueue(readResource("HeroNameResponse.json"))
 
     val apolloClient = ApolloClient(mockServer.url()).withAutoPersistedQueries()
@@ -35,7 +35,7 @@ class AutoPersistedQueriesTest {
   }
 
   @Test
-  fun withApqsRetriesAfterError() = runWithMainLoop {
+  fun withApqsRetriesAfterError() = runTest {
     mockServer.enqueue("""
       {
         "errors": [

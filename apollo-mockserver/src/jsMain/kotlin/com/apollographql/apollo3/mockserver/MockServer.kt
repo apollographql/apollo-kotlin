@@ -2,18 +2,18 @@ package com.apollographql.apollo3.mockserver
 
 actual class MockServer {
   actual fun url(): String {
-    TODO()
+    TODO("MockServer.url()")
   }
 
   actual fun enqueue(mockResponse: MockResponse) {
-    TODO()
+    TODO("MockServer.enqueue()")
   }
 
   actual fun takeRequest(): MockRecordedRequest {
-    TODO()
+    TODO("MockServer.takeRequest()")
   }
 
   actual fun stop() {
-    TODO()
+    TODO("MockServer.stop()")
   }
 }

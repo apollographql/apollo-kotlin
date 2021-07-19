@@ -20,6 +20,7 @@ subprojects {
   repositories {
     google()
     mavenCentral()
+    jcenter() // https://github.com/Kotlin/kotlinx-nodejs/issues/16
   }
 
   afterEvaluate {
