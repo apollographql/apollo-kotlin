@@ -1,15 +1,11 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.toJson
-import com.squareup.moshi.JsonWriter
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
-import okio.buffer
-import okio.sink
-import java.io.ByteArrayOutputStream
 import java.util.concurrent.TimeUnit
 
 internal object SchemaHelper {
@@ -21,7 +17,7 @@ internal object SchemaHelper {
         .addInterceptor { chain ->
           chain.request().newBuilder()
               .header("apollographql-client-name", "apollo-gradle-plugin")
-              .header("apollographql-client-version", com.apollographql.apollo3.compiler.VERSION)
+              .header("apollographql-client-version", com.apollographql.apollo3.compiler.APOLLO_VERSION)
               .build()
               .let {
                 chain.proceed(it)
