@@ -1,7 +1,15 @@
 package com.apollographql.apollo3
 
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.cache.normalized.CacheKey
+import com.apollographql.apollo3.cache.normalized.CacheResolver
+import com.apollographql.apollo3.cache.normalized.FieldPolicyCacheResolver
+import com.apollographql.apollo3.cache.normalized.ObjectIdGenerator
+import com.apollographql.apollo3.cache.normalized.ObjectIdGeneratorContext
+import com.apollographql.apollo3.cache.normalized.TypePolicyObjectIdGenerator
 import com.apollographql.apollo3.coroutines.await
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers.CACHE_ONLY
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers.NETWORK_ONLY
@@ -131,5 +139,30 @@ object Utils {
 
   suspend fun <T> Channel<T>.receiveOrTimeout(timeoutMillis: Long = 500) = withTimeout(timeoutMillis) {
     receive()
+  }
+
+  /**
+   * A [CacheResolver] that looks for an "id" argument to resolve fields and delegates to [FieldPolicyCacheResolver] else
+   */
+  object IdCacheResolver: CacheResolver {
+    override fun resolveField(field: CompiledField, variables: Executable.Variables, parent: Map<String, Any?>, parentId: String): Any? {
+      val id = field.resolveArgument("id", variables)?.toString()
+      if (id != null) {
+        return CacheKey(id)
+      }
+
+      return FieldPolicyCacheResolver.resolveField(field, variables, parent, parentId)
+    }
+  }
+
+  /**
+   * A [ObjectIdGenerator] that always uses the "id" field if it exists and delegates to [TypePolicyObjectIdGenerator] else
+   *
+   * It will coerce Int, Floats and other types to String using [toString]
+   */
+  object IdObjectIdGenerator : ObjectIdGenerator {
+    override fun cacheKeyForObject(obj: Map<String, Any?>, context: ObjectIdGeneratorContext): CacheKey? {
+      return obj["id"]?.toString()?.let { CacheKey(it) } ?: TypePolicyObjectIdGenerator.cacheKeyForObject(obj, context)
+    }
   }
 }

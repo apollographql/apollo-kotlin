@@ -115,16 +115,4 @@ object FieldPolicyCacheResolver: CacheResolver {
   }
 }
 
-/**
- * A [CacheResolver] that looks for an "id" argument to resolve fields and delegates to [FieldPolicyCacheResolver] else
- */
-object IdCacheResolver: CacheResolver {
-  override fun resolveField(field: CompiledField, variables: Executable.Variables, parent: Map<String, Any?>, parentId: String): Any? {
-    val id = field.resolveArgument("id", variables)?.toString()
-    if (id != null) {
-       return CacheKey(id)
-    }
 
-    return FieldPolicyCacheResolver.resolveField(field, variables, parent, parentId)
-  }
-}
