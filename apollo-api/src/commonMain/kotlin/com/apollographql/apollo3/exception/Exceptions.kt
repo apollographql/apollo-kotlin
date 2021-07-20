@@ -13,7 +13,7 @@ class ApolloNetworkException(message: String? = null, cause: Throwable? = null) 
 /**
  * A WebSocket connection could not be established: e.g., expired token
  */
-class ApolloWebSocketException(
+class ApolloWebSocketClosedException(
     val code: Int,
     message: String? = null,
     cause: Throwable? = null) : ApolloException(message = message, cause = cause)
