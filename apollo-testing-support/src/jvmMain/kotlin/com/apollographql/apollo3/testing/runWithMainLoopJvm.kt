@@ -5,7 +5,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
 
-actual fun runTest(block: suspend CoroutineScope.() -> Unit) {
+actual fun runTest(block: suspend () -> Unit) {
   kotlinx.coroutines.runBlocking { block() }
 }
 

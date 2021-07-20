@@ -7,10 +7,12 @@ import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runTest
 import com.apollographql.apollo3.withAutoPersistedQueries
 import readResource
+import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlinx.coroutines.delay
 
 class AutoPersistedQueriesTest {
   private lateinit var mockServer: MockServer
@@ -18,7 +20,11 @@ class AutoPersistedQueriesTest {
   @BeforeTest
   fun setUp() {
     mockServer = MockServer()
+  }
 
+  @AfterTest
+  fun tearDown() {
+    mockServer.stop()
   }
 
   @Test

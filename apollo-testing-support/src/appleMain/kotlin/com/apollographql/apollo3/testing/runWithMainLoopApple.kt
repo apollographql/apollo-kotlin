@@ -20,7 +20,7 @@ import platform.darwin.dispatch_get_main_queue
 import platform.darwin.dispatch_time
 import kotlin.coroutines.CoroutineContext
 
-actual fun runTest(block: suspend CoroutineScope.() -> Unit) {
+actual fun runTest(block: suspend () -> Unit) {
   kotlinx.coroutines.runBlocking { block() }
 }
 

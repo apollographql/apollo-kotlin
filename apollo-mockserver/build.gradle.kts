@@ -21,6 +21,12 @@ kotlin {
       }
     }
 
+    val jsMain by getting {
+      dependencies {
+        implementation(groovy.util.Eval.x(project, "x.dep.kotlin.nodejs"))
+      }
+    }
+
     val commonTest by getting {
       dependencies {
         implementation(project(":apollo-testing-support")) {

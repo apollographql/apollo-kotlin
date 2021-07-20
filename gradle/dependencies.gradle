@@ -24,6 +24,7 @@ def versions = [
     rxandroid             : '2.0.1',
     sqldelight            : '1.5.0',
     truth                 : '0.30',
+    ktor                  : '1.6.1',
 ]
 
 ext.dep = [
@@ -106,7 +107,10 @@ ext.dep = [
     kspGradlePlugin: "com.google.devtools.ksp:symbol-processing-gradle-plugin:1.5.20-1.0.0-beta04",
     kotlinxdatetime: "org.jetbrains.kotlinx:kotlinx-datetime:0.1.1",
     kotlinxserializationjson: "org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0",
-    atomicfu: "org.jetbrains.kotlinx:atomicfu:0.15.1"
+    atomicfu: "org.jetbrains.kotlinx:atomicfu:0.15.1",
+    ktor                  : [
+            clientJs: "io.ktor:ktor-client-js:$versions.ktor"
+    ]
 ]
 ext.androidConfig = [
     compileSdkVersion: 30,

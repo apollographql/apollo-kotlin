@@ -22,6 +22,12 @@ kotlin {
       }
     }
 
+    val jsMain by getting {
+      dependencies {
+        api(groovy.util.Eval.x(project, "x.dep.ktor.clientJs"))
+      }
+    }
+
     val appleMain by getting {
       dependencies {
       }

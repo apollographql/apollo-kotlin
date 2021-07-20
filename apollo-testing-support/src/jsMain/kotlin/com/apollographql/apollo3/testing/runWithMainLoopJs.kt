@@ -9,7 +9,7 @@ import kotlinx.coroutines.promise
 import kotlin.coroutines.CoroutineContext
 
 @OptIn(DelicateCoroutinesApi::class)
-actual fun runTest(block: suspend CoroutineScope.() -> Unit): dynamic {
+actual fun runTest(block: suspend () -> Unit): dynamic {
   return GlobalScope.promise { block() }
 }
 
