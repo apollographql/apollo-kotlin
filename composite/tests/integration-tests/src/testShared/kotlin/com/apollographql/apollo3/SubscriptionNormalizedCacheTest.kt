@@ -1,16 +1,12 @@
-package com.apollographql.apollo3.internal.subscription
+package com.apollographql.apollo3
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.ApolloSubscriptionCall
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.cache.normalized.IdCacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
-import com.apollographql.apollo3.cache.normalized.IdObjectIdGenerator
 import com.apollographql.apollo3.integration.subscription.NewRepoCommentSubscription
-import com.apollographql.apollo3.isFromCache
+import com.apollographql.apollo3.internal.subscription.RealSubscriptionManager
 import com.apollographql.apollo3.subscription.OperationClientMessage
 import com.apollographql.apollo3.subscription.OperationServerMessage
 import com.apollographql.apollo3.subscription.SubscriptionTransport
@@ -34,7 +30,7 @@ class SubscriptionNormalizedCacheTest {
         .serverUrl("http://google.com")
         .dispatcher(TrampolineExecutor())
         .subscriptionTransportFactory(subscriptionTransportFactory)
-        .normalizedCache(MemoryCacheFactory(), objectIdGenerator = IdObjectIdGenerator, cacheResolver = IdCacheResolver)
+        .normalizedCache(MemoryCacheFactory(), objectIdGenerator = Utils.IdObjectIdGenerator, cacheResolver = Utils.IdCacheResolver)
         .build()
     subscriptionCall = apolloClient.subscribe(NewRepoCommentSubscription("repo"))
     networkOperationData = mapOf(

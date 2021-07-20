@@ -8,7 +8,7 @@ import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.Record
-import com.apollographql.apollo3.cache.normalized.IdObjectIdGenerator
+import IdObjectIdGenerator
 import com.apollographql.apollo3.cache.normalized.normalize
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
