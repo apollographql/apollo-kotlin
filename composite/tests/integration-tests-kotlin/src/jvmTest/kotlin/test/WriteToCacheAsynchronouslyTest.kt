@@ -22,6 +22,10 @@ import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
+/**
+ * These tests are only on the JVM as on native all the cache operations are serialized so it's impossible to read the cache before it
+ * has been written and confirm/infirm the test. Maybe we could do something with an AtomicReference or something like this
+ */
 class WriteToCacheAsynchronouslyTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
