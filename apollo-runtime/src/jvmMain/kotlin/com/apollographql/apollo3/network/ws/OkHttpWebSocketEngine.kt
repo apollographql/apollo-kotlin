@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.network.ws
 
-import com.apollographql.apollo3.exception.ApolloWebSocketException
+import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
@@ -67,7 +67,7 @@ actual class DefaultWebSocketEngine(
       override fun onClosing(webSocket: WebSocket?, code: Int, reason: String?) {
         webSocketOpenResult.complete(Unit)
 
-        val t = ApolloWebSocketException(code, reason)
+        val t = ApolloWebSocketClosedException(code, reason)
         messageChannel.close(t)
       }
       
