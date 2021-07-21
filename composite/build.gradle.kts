@@ -20,7 +20,12 @@ subprojects {
   repositories {
     google()
     mavenCentral()
-    jcenter() // https://github.com/Kotlin/kotlinx-nodejs/issues/16
+    jcenter {
+      content {
+        // https://github.com/Kotlin/kotlinx-nodejs/issues/16
+        includeModule("org.jetbrains.kotlinx", "kotlinx-nodejs")
+      }
+    }
   }
 
   afterEvaluate {
