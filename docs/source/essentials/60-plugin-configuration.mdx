@@ -86,6 +86,7 @@ If you're doing this often or want to automate the process from CI, you can conf
 ```kotlin
 apollo {
   service("starwars") {
+    // this will create a downloadStarwarsApolloSchema task
     introspection {
       endpointUrl = "https://your.domain/graphql/endpoint"
       // The path is interpreted relative to the current project here, no need to prepend 'app'
@@ -99,6 +100,7 @@ If you register your schema with [Apollo Studio](https://www.apollographql.com/d
 
 ```kotlin
 apollo {
+  // this will create a downloadStarwarsApolloSchema task
   service("starwars") {
     registry {
       key = System.getenv("APOLLO_KEY")
