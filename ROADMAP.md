@@ -17,7 +17,7 @@ This document was last updated on July 19th, 2021. For a more detailed and up-to
 The next things to get worked on are:
 
 
-### Java Codgen ([#2616](https://github.com/apollographql/apollo-android/issues/2616))
+### Java Codegen ([#2616](https://github.com/apollographql/apollo-android/issues/2616))
 
 To get a first alpha out of the door, the Java codegen was removed. An upcoming version will introduce it again together with making sure the APIs still work when called from Java
 
