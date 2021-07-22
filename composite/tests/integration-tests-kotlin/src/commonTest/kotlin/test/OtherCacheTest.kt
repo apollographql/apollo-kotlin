@@ -19,9 +19,8 @@ import com.apollographql.apollo3.cache.normalized.withFetchPolicy
 import com.apollographql.apollo3.cache.normalized.withStore
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.testing.runWithMainLoop
+import com.apollographql.apollo3.testing.runTest
 import readResource
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -36,15 +35,18 @@ class OtherCacheTest {
   private lateinit var apolloClient: ApolloClient
   private lateinit var store: ApolloStore
 
-  @BeforeTest
-  fun setUp() {
+  private suspend fun setUp() {
     store = ApolloStore(MemoryCacheFactory(), objectIdGenerator = IdObjectIdGenerator, cacheResolver = IdCacheResolver)
     mockServer = MockServer()
     apolloClient = ApolloClient(mockServer.url()).withStore(store)
   }
 
+  private suspend fun tearDown() {
+    mockServer.stop()
+  }
+
   @Test
-  fun masterDetailSuccess() = runWithMainLoop {
+  fun masterDetailSuccess() = runTest(before = { setUp() }, after = { tearDown() }) {
     // Store a query that contains all data
     mockServer.enqueue(readResource("HeroAndFriendsNameWithIdsResponse.json"))
     apolloClient.query(
@@ -61,7 +63,7 @@ class OtherCacheTest {
 
   @Test
   @Throws(Exception::class)
-  fun masterDetailFailIncomplete() = runWithMainLoop {
+  fun masterDetailFailIncomplete() = runTest(before = { setUp() }, after = { tearDown() }) {
     // Store a query that contains all data
     mockServer.enqueue(readResource("HeroAndFriendsNameWithIdsResponse.json"))
     apolloClient.query(
@@ -81,7 +83,7 @@ class OtherCacheTest {
 
 
   @Test
-  fun cacheMissThrows() = runWithMainLoop {
+  fun cacheMissThrows() = runTest(before = { setUp() }, after = { tearDown() }) {
     try {
       apolloClient.query(
           ApolloRequest(EpisodeHeroNameQuery(Episode.EMPIRE)).withFetchPolicy(FetchPolicy.CacheOnly)
@@ -94,7 +96,7 @@ class OtherCacheTest {
 
   @Test
   @Throws(Exception::class)
-  fun skipIncludeDirective() = runWithMainLoop {
+  fun skipIncludeDirective() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(readResource("HeroAndFriendsNameResponse.json"))
     apolloClient.query(
         ApolloRequest(HeroAndFriendsDirectivesQuery(episode = Episode.JEDI, includeName = true, skipFriends = false))
@@ -131,7 +133,7 @@ class OtherCacheTest {
 
 
   @Test
-  fun skipIncludeDirectiveUnsatisfiedCache() = runWithMainLoop {
+  fun skipIncludeDirectiveUnsatisfiedCache() = runTest(before = { setUp() }, after = { tearDown() }) {
     // Store a response that doesn't contain friends
     mockServer.enqueue(readResource("HeroNameResponse.json"))
     apolloClient.query(

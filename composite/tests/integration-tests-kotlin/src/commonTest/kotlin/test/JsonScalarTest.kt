@@ -12,9 +12,8 @@ import com.apollographql.apollo3.cache.normalized.withFetchPolicy
 import com.apollographql.apollo3.cache.normalized.withStore
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.testing.runWithMainLoop
+import com.apollographql.apollo3.testing.runTest
 import readResource
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -24,8 +23,7 @@ class JsonScalarTest {
   private lateinit var apolloClient: ApolloClient
   private lateinit var store: ApolloStore
 
-  @BeforeTest
-  fun setUp() {
+  private suspend fun setUp() {
     store = ApolloStore(MemoryCacheFactory())
     mockServer = MockServer()
     apolloClient = ApolloClient(mockServer.url())
@@ -33,9 +31,13 @@ class JsonScalarTest {
         .withCustomScalarAdapter(Types.Json, AnyAdapter)
   }
 
+  private suspend fun tearDown() {
+    mockServer.stop()
+  }
+
   // see https://github.com/apollographql/apollo-android/issues/2854
   @Test
-  fun jsonScalar() = runWithMainLoop {
+  fun jsonScalar() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(readResource("JsonScalar.json"))
     var response = apolloClient.query(GetJsonScalarQuery())
 

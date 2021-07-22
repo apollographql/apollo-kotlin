@@ -7,8 +7,6 @@ import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runTest
 import com.apollographql.apollo3.withAutoPersistedQueries
 import readResource
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -17,18 +15,16 @@ import kotlinx.coroutines.delay
 class AutoPersistedQueriesTest {
   private lateinit var mockServer: MockServer
 
-  @BeforeTest
-  fun setUp() {
+  private suspend fun setUp() {
     mockServer = MockServer()
   }
 
-  @AfterTest
-  fun tearDown() {
+  private suspend fun tearDown() {
     mockServer.stop()
   }
 
   @Test
-  fun withApqsDoesntSendDocument() = runTest {
+  fun withApqsDoesntSendDocument() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(readResource("HeroNameResponse.json"))
 
     val apolloClient = ApolloClient(mockServer.url()).withAutoPersistedQueries()
@@ -41,7 +37,7 @@ class AutoPersistedQueriesTest {
   }
 
   @Test
-  fun withApqsRetriesAfterError() = runTest {
+  fun withApqsRetriesAfterError() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue("""
       {
         "errors": [

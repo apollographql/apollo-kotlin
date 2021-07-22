@@ -9,7 +9,7 @@ import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheResolver
 import com.apollographql.apollo3.cache.normalized.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo3.testing.runWithMainLoop
+import com.apollographql.apollo3.testing.runTest
 import declarativecache.GetBookQuery
 import declarativecache.GetBooksQuery
 import declarativecache.GetOtherBookQuery
@@ -22,7 +22,7 @@ import kotlin.test.assertEquals
 class DeclarativeCacheTest {
 
   @Test
-  fun typePolicyIsWorking() = runWithMainLoop {
+  fun typePolicyIsWorking() = runTest {
     val store = ApolloStore(MemoryCacheFactory())
 
     // Write a book at the "promo" path
@@ -42,7 +42,7 @@ class DeclarativeCacheTest {
   }
 
   @Test
-  fun fallbackIdIsWorking() = runWithMainLoop {
+  fun fallbackIdIsWorking() = runTest {
     val store = ApolloStore(MemoryCacheFactory())
 
     // Write a library at the "promo" path
@@ -62,7 +62,7 @@ class DeclarativeCacheTest {
   }
 
   @Test
-  fun fieldPolicyIsWorking() = runWithMainLoop {
+  fun fieldPolicyIsWorking() = runTest {
     val store = ApolloStore(MemoryCacheFactory())
 
     val promoOperation = GetPromoBookQuery()
@@ -76,7 +76,7 @@ class DeclarativeCacheTest {
   }
 
   @Test
-  fun canResolveListProgrammatically() = runWithMainLoop {
+  fun canResolveListProgrammatically() = runTest {
     val cacheResolver = object : CacheResolver {
       override fun resolveField(field: CompiledField, variables: Executable.Variables, parent: Map<String, Any?>, parentId: String): Any? {
         if (field.name == "books") {

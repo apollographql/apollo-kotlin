@@ -23,13 +23,12 @@ import com.apollographql.apollo3.cache.normalized.withStore
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.receiveOrTimeout
-import com.apollographql.apollo3.testing.runWithMainLoop
+import com.apollographql.apollo3.testing.runTest
 import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import readResource
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import assertEquals2 as assertEquals
 
@@ -38,20 +37,22 @@ class OptimisticCacheTest {
   private lateinit var apolloClient: ApolloClient
   private lateinit var store: ApolloStore
 
-  @BeforeTest
-  fun setUp() {
+  private suspend fun setUp() {
     store = ApolloStore(MemoryCacheFactory(), objectIdGenerator = IdObjectIdGenerator)
     mockServer = MockServer()
     apolloClient = ApolloClient(mockServer.url()).withStore(store)
   }
 
+  private suspend fun tearDown() {
+    mockServer.stop()
+  }
 
   /**
    * Write the updates programmatically, make sure they are seen,
    * roll them back, make sure we're back to the initial state
    */
   @Test
-  fun programmaticOptimiticUpdates() = runWithMainLoop {
+  fun programmaticOptimiticUpdates() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = HeroAndFriendsNamesQuery(Episode.JEDI)
 
     mockServer.enqueue(readResource("HeroAndFriendsNameResponse.json"))
@@ -96,7 +97,7 @@ class OptimisticCacheTest {
    * A more complex scenario where we stack optimistic updates
    */
   @Test
-  fun two_optimistic_two_rollback() = runWithMainLoop {
+  fun two_optimistic_two_rollback() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query1 = HeroAndFriendsNamesWithIDsQuery(Episode.JEDI)
     val mutationId1 = uuid4()
 
@@ -200,7 +201,7 @@ class OptimisticCacheTest {
   }
 
   @Test
-  fun mutation_and_query_watcher() = runWithMainLoop {
+  fun mutation_and_query_watcher() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(readResource("ReviewsEmpireEpisodeResponse.json"))
     val channel = Channel<ReviewsByEpisodeQuery.Data?>()
     val job = launch {
@@ -287,7 +288,7 @@ class OptimisticCacheTest {
 
   @Test
   @Throws(Exception::class)
-  fun two_optimistic_reverse_rollback_order() = runWithMainLoop {
+  fun two_optimistic_reverse_rollback_order() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query1 = HeroAndFriendsNamesWithIDsQuery(Episode.JEDI)
     val mutationId1 = uuid4()
     val query2 = HeroNameWithIdQuery()

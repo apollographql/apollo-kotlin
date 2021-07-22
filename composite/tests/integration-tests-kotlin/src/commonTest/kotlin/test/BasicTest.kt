@@ -23,8 +23,6 @@ import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runTest
 import readResource
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
@@ -42,8 +40,7 @@ class BasicTest {
   private lateinit var apolloClient: ApolloClient
   private lateinit var store: ApolloStore
 
-  @BeforeTest
-  fun setUp() {
+  private suspend fun setUp() {
     store = ApolloStore(
         normalizedCacheFactory = MemoryCacheFactory(),
         objectIdGenerator = IdObjectIdGenerator
@@ -52,12 +49,15 @@ class BasicTest {
     apolloClient = ApolloClient(mockServer.url()).withStore(store)
   }
 
-  @AfterTest
-  fun tearDown() {
+  private suspend fun tearDown() {
     mockServer.stop()
   }
 
-  private fun <D : Query.Data> basicTest(resourceName: String, query: Query<D>, block: ApolloResponse<D>.() -> Unit) = runTest {
+  private fun <D : Query.Data> basicTest(
+      resourceName: String,
+      query: Query<D>,
+      block: ApolloResponse<D>.() -> Unit,
+  ) = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(readResource(resourceName))
     var response = apolloClient.query(ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkOnly))
     response.block()

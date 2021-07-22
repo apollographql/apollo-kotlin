@@ -14,9 +14,8 @@ import com.apollographql.apollo3.integration.upload.type.NestedObject
 import com.apollographql.apollo3.mockserver.MockRecordedRequest
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.testing.runWithMainLoop
+import com.apollographql.apollo3.testing.runTest
 import okio.Buffer
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -52,8 +51,7 @@ class FileUploadTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
 
-  @BeforeTest
-  fun setUp() {
+  private suspend fun setUp() {
     mockServer = MockServer()
 
     // We only test the data that is sent to the server, we don't really mind the response
@@ -66,9 +64,13 @@ class FileUploadTest {
     apolloClient = ApolloClient(mockServer.url())
   }
 
+  private suspend fun tearDown() {
+    mockServer.stop()
+  }
+
   @Test
   @Throws(Exception::class)
-  fun single() = runWithMainLoop {
+  fun single() = runTest(before = { setUp() }, after = { tearDown() }) {
     apolloClient.mutate(mutationSingle)
 
     val request = mockServer.takeRequest()
@@ -83,7 +85,7 @@ class FileUploadTest {
 
   @Test
   @Throws(Exception::class)
-  fun twice() = runWithMainLoop {
+  fun twice() = runTest(before = { setUp() }, after = { tearDown() }) {
     apolloClient.mutate(mutationTwice)
 
     val request = mockServer.takeRequest()
@@ -98,7 +100,7 @@ class FileUploadTest {
 
   @Test
   @Throws(Exception::class)
-  fun multiple() = runWithMainLoop {
+  fun multiple() = runTest(before = { setUp() }, after = { tearDown() }) {
     apolloClient.mutate(mutationMultiple)
 
     val request = mockServer.takeRequest()
@@ -113,7 +115,7 @@ class FileUploadTest {
 
   @Test
   @Throws(Exception::class)
-  fun nested() = runWithMainLoop {
+  fun nested() = runTest(before = { setUp() }, after = { tearDown() }) {
     apolloClient.mutate(mutationNested)
 
     val request = mockServer.takeRequest()

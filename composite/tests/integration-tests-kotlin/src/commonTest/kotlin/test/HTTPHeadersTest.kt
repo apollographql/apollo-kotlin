@@ -9,8 +9,7 @@ import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.network.http.HttpResponseInfo
 import com.apollographql.apollo3.testing.enqueue
-import com.apollographql.apollo3.testing.runWithMainLoop
-import kotlin.test.BeforeTest
+import com.apollographql.apollo3.testing.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -20,33 +19,34 @@ class HTTPHeadersTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
 
-  @BeforeTest
-  fun setUp() {
+  private suspend fun setUp() {
     mockServer = MockServer()
     apolloClient = ApolloClient(mockServer.url())
   }
 
+  private suspend fun tearDown() {
+    mockServer.stop()
+  }
+
   @Test
-  fun makeSureHeadersAreSet() {
+  fun makeSureHeadersAreSet() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
 
     mockServer.enqueue(query, data)
 
-    runWithMainLoop {
-      val response = apolloClient.query(query)
+    val response = apolloClient.query(query)
 
-      assertNotNull(response.data)
+    assertNotNull(response.data)
 
-      val recordedRequest = mockServer.takeRequest()
-      assertEquals("POST", recordedRequest.method)
-      assertNotEquals(null, recordedRequest.headers["Content-Length"])
-      assertNotEquals("0", recordedRequest.headers["Content-Length"])
-    }
+    val recordedRequest = mockServer.takeRequest()
+    assertEquals("POST", recordedRequest.method)
+    assertNotEquals(null, recordedRequest.headers["Content-Length"])
+    assertNotEquals("0", recordedRequest.headers["Content-Length"])
   }
 
   @Test
-  fun headersCanBeReadInResponseExecutionContext() {
+  fun headersCanBeReadInResponseExecutionContext() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
 
@@ -63,11 +63,11 @@ class HTTPHeadersTest {
         )
     )
 
-    runWithMainLoop {
-      val response = apolloClient.query(query)
+    val response = apolloClient.query(query)
 
-      assertEquals(response.executionContext[HttpResponseInfo]?.headers?.get("Header1"), "Value1")
-      assertEquals(response.executionContext[HttpResponseInfo]?.headers?.get("Header2"), "Value2")
-    }
+    fun <T> Map<String, T>.getCaseInsetive(key: String) = get(keys.find { it.equals(key, true)})
+
+    assertEquals("Value1", response.executionContext[HttpResponseInfo]?.headers?.getCaseInsetive("Header1"))
+    assertEquals("Value2", response.executionContext[HttpResponseInfo]?.headers?.getCaseInsetive("Header2"))
   }
 }

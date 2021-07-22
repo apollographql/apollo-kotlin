@@ -9,13 +9,13 @@ import com.apollographql.apollo3.cache.normalized.MapCacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.cache.normalized.withStore
-import com.apollographql.apollo3.testing.runWithMainLoop
+import com.apollographql.apollo3.testing.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class CacheResolverTest {
   @Test
-  fun cacheResolverCanResolveQuery() {
+  fun cacheResolverCanResolveQuery() = runTest {
     val resolver = object : CacheResolver {
       override fun resolveField(field: CompiledField, variables: Executable.Variables, parent: Map<String, Any?>, parentId: String): Any? {
         return when (field.name) {
@@ -31,10 +31,8 @@ class CacheResolverTest {
         )
     )
 
-    runWithMainLoop {
-      val response = apolloClient.query(HeroNameQuery())
+    val response = apolloClient.query(HeroNameQuery())
 
-      assertEquals("Luke", response.data?.hero?.name)
-    }
+    assertEquals("Luke", response.data?.hero?.name)
   }
 }

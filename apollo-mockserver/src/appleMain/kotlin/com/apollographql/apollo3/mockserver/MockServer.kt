@@ -79,7 +79,7 @@ actual class MockServer {
     }, stableRef.asCPointer())
   }
 
-  actual fun url(): String {
+  actual suspend fun url(): String {
     return "http://localhost:$port"
   }
 
@@ -92,7 +92,7 @@ actual class MockServer {
    * If stop() is called while we're reading a request, this might wait forever
    * Revisit once okio has native Timeout
    */
-  actual fun stop() {
+  actual suspend fun stop() {
     socket.stop()
     pthread_join(pthreadT.value, null)
 

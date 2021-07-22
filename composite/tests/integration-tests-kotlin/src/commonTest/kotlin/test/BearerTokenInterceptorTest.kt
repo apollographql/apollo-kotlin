@@ -15,8 +15,6 @@ import kotlinx.coroutines.launch
 import readResource
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -28,21 +26,19 @@ class BearerTokenInterceptorTest {
   private var token1 = "token1"
   private var token2 = "token2"
 
-  @BeforeTest
-  fun setUp() {
+  private suspend fun setUp() {
     tokenProvider = TestTokenProvider(token1, token2)
     mockServer = MockServer()
     mockServer.enqueue(MockResponse(statusCode = 401))
     mockServer.enqueue(readResource("HeroNameResponse.json"))
   }
 
-  @AfterTest
-  fun tearDown() {
+  private suspend fun tearDown() {
     mockServer.stop()
   }
 
   @Test
-  fun succeedsWithInterceptor() = runTest {
+  fun succeedsWithInterceptor() = runTest(before = { setUp() }, after = { tearDown() }) {
     apolloClient = ApolloClient(
         networkTransport = HttpNetworkTransport(
             serverUrl = mockServer.url(),
@@ -58,7 +54,7 @@ class BearerTokenInterceptorTest {
   }
 
   @Test
-  fun failsWithoutInterceptor() = runTest {
+  fun failsWithoutInterceptor() = runTest(before = { setUp() }, after = { tearDown() }) {
     apolloClient = ApolloClient(
         networkTransport = HttpNetworkTransport(
             serverUrl = mockServer.url(),

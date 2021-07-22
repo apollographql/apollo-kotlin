@@ -13,14 +13,12 @@ import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.testing.runBlocking
-import com.apollographql.apollo3.testing.runWithMainLoop
+import com.apollographql.apollo3.testing.runTest
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asCoroutineDispatcher
 import java.util.concurrent.Executors
 import readResource
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -31,8 +29,7 @@ class WriteToCacheAsynchronouslyTest {
   private lateinit var store: ApolloStore
   private lateinit var dispatcher: CoroutineDispatcher
 
-  @BeforeTest
-  fun setUp() {
+  private suspend fun setUp() {
     dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
     store = ApolloStore(MemoryCacheFactory())
     mockServer = MockServer()
@@ -42,11 +39,15 @@ class WriteToCacheAsynchronouslyTest {
     ).withStore(store)
   }
 
+  private suspend fun tearDown() {
+    mockServer.stop()
+  }
+
   /**
    * Write to cache asynchronously, make sure records are not in cache when we receive the response
    */
   @Test
-  fun writeToCacheAsynchronously() = runWithMainLoop(dispatcher) {
+  fun writeToCacheAsynchronously() = runTest(dispatcher, { setUp() }, { tearDown() }) {
     val query = HeroAndFriendsNamesQuery(Episode.JEDI)
 
     mockServer.enqueue(readResource("HeroAndFriendsNameResponse.json"))
@@ -63,7 +64,7 @@ class WriteToCacheAsynchronouslyTest {
    * Write to cache synchronously, make sure records are in cache when we receive the response
    */
   @Test
-  fun writeToCacheSynchronously(): Unit = runBlocking(context = dispatcher) {
+  fun writeToCacheSynchronously() = runTest(dispatcher, { setUp() }, { tearDown() }) {
     val query = HeroAndFriendsNamesQuery(Episode.JEDI)
 
     mockServer.enqueue(readResource("HeroAndFriendsNameResponse.json"))

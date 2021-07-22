@@ -1,22 +1,49 @@
 package com.apollographql.apollo3.mockserver
 
+import Buffer
+import net.AddressInfo
+import okio.ByteString.Companion.toByteString
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
+
 actual class MockServer {
 
   private val responseQueue = mutableListOf<MockResponse>()
+  private val requests = mutableListOf<MockRecordedRequest>()
 
   private val server = http.createServer { req, res ->
-    println(req)
-    res.writeHead(200)
-    res.end("Hello, World!")
-  }.listen(PORT)
+    val requestBody = StringBuilder()
+    req.on("data") { chunk ->
+      when (chunk) {
+        is String -> requestBody.append(chunk)
+        is Buffer -> requestBody.append(chunk.toString("utf8"))
+        else -> println("WTF")
+      }
+    }
+    req.on("end") { _ ->
+      requests.add(
+          MockRecordedRequest(
+              req.method,
+              req.url,
+              req.httpVersion,
+              req.rawHeaders.toList().zipWithNext().toMap(),
+              requestBody.toString().encodeToByteArray().toByteString()
+          )
+      )
+    }
 
-  actual fun url(): String {
-    //TODO Use `client.address()` but it might return null, before the server is listening. So this will have to be suspend fun
-    return "http://localhost:$PORT"
-  }
+    val mockResponse = responseQueue.removeFirst()
+    res.statusCode = mockResponse.statusCode
+    mockResponse.headers.forEach {
+      res.setHeader(it.key, it.value)
+    }
+    res.end(mockResponse.body.utf8())
+  }.listen()
 
-  init {
-    println("MockServer UP")
+  actual suspend fun url() = suspendCoroutine<String> { cont ->
+    server.on("listening") { _ ->
+      cont.resume("http://localhost:${server.address().unsafeCast<AddressInfo>().port}")
+    }
   }
 
   actual fun enqueue(mockResponse: MockResponse) {
@@ -24,15 +51,12 @@ actual class MockServer {
   }
 
   actual fun takeRequest(): MockRecordedRequest {
-    TODO("MockServer.takeRequest()")
+    return requests.removeFirst()
   }
 
-  actual fun stop() {
-    server.close()
-    println("MockServer DOWN")
-  }
-
-  private companion object {
-    const val PORT = 8080
+  actual suspend fun stop() = suspendCoroutine<Unit> { cont ->
+    server.close {
+      cont.resume(Unit)
+    }
   }
 }

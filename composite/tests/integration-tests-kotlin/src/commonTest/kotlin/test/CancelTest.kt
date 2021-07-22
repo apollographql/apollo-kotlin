@@ -5,37 +5,37 @@ import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.testing.runWithMainLoop
+import com.apollographql.apollo3.testing.runTest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import readTestFixture
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 
 class CancelTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
 
-  @BeforeTest
-  fun setUp() {
+  private suspend fun setUp() {
     mockServer = MockServer()
     apolloClient = ApolloClient(mockServer.url())
   }
 
+  private suspend fun tearDown() {
+    mockServer.stop()
+  }
+
   @Test
   @Throws(Exception::class)
-  fun cancelFlow() {
+  fun cancelFlow() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(readTestFixture("resources/EpisodeHeroNameResponse.json"))
 
-    runWithMainLoop {
-      val job = launch {
-        delay(100)
-        apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
-        error("The Flow should have been canceled before reaching that state")
-      }
-      job.cancel()
-      job.join()
+    val job = launch {
+      delay(100)
+      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+      error("The Flow should have been canceled before reaching that state")
     }
+    job.cancel()
+    job.join()
   }
 
 //  @Test

@@ -20,14 +20,13 @@ import com.apollographql.apollo3.cache.normalized.withStore
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.receiveOrTimeout
-import com.apollographql.apollo3.testing.runWithMainLoop
+import com.apollographql.apollo3.testing.runTest
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import readResource
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail
@@ -37,18 +36,21 @@ class WatcherTest {
   private lateinit var apolloClient: ApolloClient
   private lateinit var store: ApolloStore
 
-  @BeforeTest
-  fun setUp() {
+  private suspend fun setUp() {
     store = ApolloStore(MemoryCacheFactory(), objectIdGenerator = IdObjectIdGenerator)
     mockServer = MockServer()
     apolloClient = ApolloClient(mockServer.url()).withStore(store)
+  }
+
+  private suspend fun tearDown() {
+    mockServer.stop()
   }
 
   /**
    * Executing the same query out of band should update the watcher
    */
   @Test
-  fun sameQueryTriggersWatcher() = runWithMainLoop {
+  fun sameQueryTriggersWatcher() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
@@ -76,7 +78,7 @@ class WatcherTest {
    * Writing to the store out of band should update the watcher
    */
   @Test
-  fun storeWriteTriggersWatcher() = runWithMainLoop {
+  fun storeWriteTriggersWatcher() = runTest(before = { setUp() }, after = { tearDown() }) {
     val channel = Channel<EpisodeHeroNameWithIdQuery.Data?>()
     val operation = EpisodeHeroNameWithIdQuery(Episode.EMPIRE)
     mockServer.enqueue(readResource("EpisodeHeroNameResponseWithId.json"))
@@ -107,7 +109,7 @@ class WatcherTest {
    * A new query updates the store with data that is the same as the one originally seen by the watcher
    */
   @Test
-  fun noChangeSameQuery() = runWithMainLoop {
+  fun noChangeSameQuery() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
@@ -134,7 +136,7 @@ class WatcherTest {
    * A new query that contains overlapping fields with the watched query should trigger the watcher
    */
   @Test
-  fun differentQueryTriggersWatcher() = runWithMainLoop {
+  fun differentQueryTriggersWatcher() = runTest(before = { setUp() }, after = { tearDown() }) {
     val channel = Channel<EpisodeHeroNameWithIdQuery.Data?>()
 
     // The first query should get a "R2-D2" name
@@ -164,7 +166,7 @@ class WatcherTest {
    * Same as noChangeSameQuery with different queries
    */
   @Test
-  fun noChangeDifferentQuery() = runWithMainLoop {
+  fun noChangeDifferentQuery() = runTest(before = { setUp() }, after = { tearDown() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
     // The first query should get a "R2-D2" name
@@ -195,7 +197,7 @@ class WatcherTest {
    * from the network
    */
   @Test
-  fun networkRefetchPolicy() = runWithMainLoop {
+  fun networkRefetchPolicy() = runTest(before = { setUp() }, after = { tearDown() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
     // The first query should get a "R2-D2" name
@@ -231,7 +233,7 @@ class WatcherTest {
 
 
   @Test
-  fun nothingReceivedWhenCancelled() = runWithMainLoop {
+  fun nothingReceivedWhenCancelled() = runTest(before = { setUp() }, after = { tearDown() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
     // The first query should get a "R2-D2" name
@@ -265,7 +267,7 @@ class WatcherTest {
    * Doing the initial query as cache only will detect when the query becomes available
    */
   @Test
-  fun cacheOnlyFetchPolicy() = runWithMainLoop {
+  fun cacheOnlyFetchPolicy()  = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
@@ -287,7 +289,7 @@ class WatcherTest {
   }
 
   @Test
-  fun queryWatcherWithCacheOnlyNeverGoesToTheNetwork() = runWithMainLoop {
+  fun queryWatcherWithCacheOnlyNeverGoesToTheNetwork() = runTest(before = { setUp() }, after = { tearDown() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>(capacity = Channel.UNLIMITED)
     val job = launch {
       val request = ApolloRequest(EpisodeHeroNameQuery(Episode.EMPIRE))
@@ -295,10 +297,10 @@ class WatcherTest {
           .withRefetchPolicy(FetchPolicy.CacheOnly)
 
       apolloClient.watch(request).collect {
-            channel.send(it.data)
-          }
+        channel.send(it.data)
+      }
     }
-    
+
     mockServer.enqueue(readResource("StarshipByIdResponse.json"))
     mockServer.enqueue(readResource("EpisodeHeroNameResponseWithId.json"))
 
