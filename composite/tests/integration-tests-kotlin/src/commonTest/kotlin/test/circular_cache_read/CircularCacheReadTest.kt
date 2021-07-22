@@ -14,6 +14,10 @@ class CircularCacheReadTest {
     val store = ApolloStore(MemoryCacheFactory())
 
     val operation = GetUserQuery()
+
+    /**
+     * Create a record that references itself. It should create a stack overflow
+     */
     val data = GetUserQuery.Data(
         user = GetUserQuery.User(
             __typename = "User",

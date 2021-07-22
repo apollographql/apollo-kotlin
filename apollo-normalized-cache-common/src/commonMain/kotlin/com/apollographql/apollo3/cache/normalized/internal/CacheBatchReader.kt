@@ -23,11 +23,11 @@ class CacheBatchReader(
     private val variables: Executable.Variables,
     private val cacheResolver: CacheResolver,
     private val cacheHeaders: CacheHeaders,
-    private val rootSelections: List<CompiledSelection>
+    private val rootSelections: List<CompiledSelection>,
 ) {
   class PendingReference(
       val key: String,
-      val selections: List<CompiledSelection>
+      val selections: List<CompiledSelection>,
   )
 
   private val data = mutableMapOf<String, Map<String, Any?>>()
@@ -38,15 +38,18 @@ class CacheBatchReader(
     val fields = mutableListOf<CompiledField>()
   }
 
+  /**
+   *
+   */
   private fun List<CompiledSelection>.collect(typename: String?, state: CollectState) {
-    forEach {
-      when(it) {
+    forEach { compiledSelection ->
+      when (compiledSelection) {
         is CompiledField -> {
-          state.fields.add(it)
+          state.fields.add(compiledSelection)
         }
         is CompiledFragment -> {
-          if (typename in it.possibleTypes) {
-            it.selections.collect(typename, state)
+          if (typename in compiledSelection.possibleTypes) {
+            compiledSelection.selections.collect(typename, state)
           }
         }
       }
@@ -56,7 +59,7 @@ class CacheBatchReader(
   private fun List<CompiledSelection>.collectAndMergeSameDirectives(typename: String?): List<CompiledField> {
     val state = CollectState()
     collect(typename, state)
-    return state.fields.groupBy { (it.responseName) to it.condition}.values.map {
+    return state.fields.groupBy { (it.responseName) to it.condition }.values.map {
       val first = it.first()
       CompiledField(
           alias = first.alias,
@@ -86,6 +89,7 @@ class CacheBatchReader(
         var record = records[pendingReference.key]
         if (record == null) {
           if (pendingReference.key == CacheKey.rootKey().key) {
+            // This happens the very first time we read the cache
             record = Record(pendingReference.key, emptyMap())
           } else {
             throw CacheMissException(pendingReference.key)
