@@ -59,5 +59,10 @@ class CacheKey(val key: String) {
           }
       )
     }
+
+    /**
+     * Helper function to build a cache key from a list of strings
+     */
+    fun from(typename: String, vararg values: String) = from(typename, values.toList())
   }
 }

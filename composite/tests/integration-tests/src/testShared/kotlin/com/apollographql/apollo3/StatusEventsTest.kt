@@ -9,9 +9,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.cache.normalized.IdCacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.IdObjectIdGenerator
 import com.apollographql.apollo3.coroutines.await
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
@@ -54,8 +52,8 @@ class IntegrationTest {
         .addCustomScalarAdapter(Types.Date, dateCustomScalarAdapter)
         .normalizedCache(
             MemoryCacheFactory(),
-            IdObjectIdGenerator,
-            IdCacheResolver
+            Utils.IdObjectIdGenerator,
+            Utils.IdCacheResolver
         )
         .defaultResponseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
         .dispatcher(immediateExecutor())

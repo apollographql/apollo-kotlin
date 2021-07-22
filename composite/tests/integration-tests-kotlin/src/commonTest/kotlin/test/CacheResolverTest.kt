@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheResolver
-import com.apollographql.apollo3.cache.normalized.MapCacheResolver
+import com.apollographql.apollo3.cache.normalized.DefaultCacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.cache.normalized.withStore
@@ -20,7 +20,7 @@ class CacheResolverTest {
       override fun resolveField(field: CompiledField, variables: Executable.Variables, parent: Map<String, Any?>, parentId: String): Any? {
         return when (field.name) {
           "hero" -> mapOf("name" to "Luke")
-          else -> MapCacheResolver.resolveField(field, variables, parent, parentId)
+          else -> DefaultCacheResolver.resolveField(field, variables, parent, parentId)
         }
       }
     }

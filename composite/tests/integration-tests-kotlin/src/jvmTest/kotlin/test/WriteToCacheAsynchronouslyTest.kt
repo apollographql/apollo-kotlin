@@ -1,11 +1,9 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.ClientScope
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.IdCacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.withStore
 import com.apollographql.apollo3.cache.normalized.withWriteToCacheAsynchronously
@@ -15,14 +13,17 @@ import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runTest
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asCoroutineDispatcher
-import java.util.concurrent.Executors
 import readResource
+import java.util.concurrent.Executors
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
+/**
+ * These tests are only on the JVM as on native all the cache operations are serialized so it's impossible to read the cache before it
+ * has been written and confirm/infirm the test. Maybe we could do something with an AtomicReference or something like this
+ */
 class WriteToCacheAsynchronouslyTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
