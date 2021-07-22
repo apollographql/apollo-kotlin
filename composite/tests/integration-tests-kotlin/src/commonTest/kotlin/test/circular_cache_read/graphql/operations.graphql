@@ -1,0 +1,8 @@
+query GetUser {
+  user {
+    id
+    friend {
+      id
+    }
+  }
+}

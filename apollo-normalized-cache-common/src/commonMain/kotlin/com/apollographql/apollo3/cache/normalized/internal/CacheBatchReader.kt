@@ -23,14 +23,23 @@ class CacheBatchReader(
     private val variables: Executable.Variables,
     private val cacheResolver: CacheResolver,
     private val cacheHeaders: CacheHeaders,
-    private val rootSelections: List<CompiledSelection>
+    private val rootSelections: List<CompiledSelection>,
 ) {
+  /**
+   * @param key: the key of the record we need to fetch
+   * @param path: the path where this pending reference needs to be inserted
+   */
   class PendingReference(
       val key: String,
-      val selections: List<CompiledSelection>
+      val path: List<Any>,
+      val selections: List<CompiledSelection>,
   )
 
-  private val data = mutableMapOf<String, Map<String, Any?>>()
+  /**
+   * The objects read from the cache with only the fields that are selected and maybe some values changed
+   * The key is the path to the object
+   */
+  private val data = mutableMapOf<List<Any>, Map<String, Any?>>()
 
   private val pendingReferences = mutableListOf<PendingReference>()
 
@@ -38,15 +47,18 @@ class CacheBatchReader(
     val fields = mutableListOf<CompiledField>()
   }
 
+  /**
+   *
+   */
   private fun List<CompiledSelection>.collect(typename: String?, state: CollectState) {
-    forEach {
-      when(it) {
+    forEach { compiledSelection ->
+      when (compiledSelection) {
         is CompiledField -> {
-          state.fields.add(it)
+          state.fields.add(compiledSelection)
         }
         is CompiledFragment -> {
-          if (typename in it.possibleTypes) {
-            it.selections.collect(typename, state)
+          if (typename in compiledSelection.possibleTypes) {
+            compiledSelection.selections.collect(typename, state)
           }
         }
       }
@@ -56,7 +68,7 @@ class CacheBatchReader(
   private fun List<CompiledSelection>.collectAndMergeSameDirectives(typename: String?): List<CompiledField> {
     val state = CollectState()
     collect(typename, state)
-    return state.fields.groupBy { (it.responseName) to it.condition}.values.map {
+    return state.fields.groupBy { (it.responseName) to it.condition }.values.map {
       val first = it.first()
       CompiledField(
           alias = first.alias,
@@ -72,8 +84,9 @@ class CacheBatchReader(
   fun toMap(): Map<String, Any?> {
     pendingReferences.add(
         PendingReference(
-            rootKey,
-            rootSelections
+            key = rootKey,
+            selections = rootSelections,
+            path = emptyList()
         )
     )
 
@@ -86,6 +99,7 @@ class CacheBatchReader(
         var record = records[pendingReference.key]
         if (record == null) {
           if (pendingReference.key == CacheKey.rootKey().key) {
+            // This happens the very first time we read the cache
             record = Record(pendingReference.key, emptyMap())
           } else {
             throw CacheMissException(pendingReference.key)
@@ -101,53 +115,61 @@ class CacheBatchReader(
 
           val value = cacheResolver.resolveField(it, variables, record, record.key)
 
-          value.registerCacheKeys(it.selections)
+          value.registerCacheKeys(pendingReference.path + it.responseName, it.selections)
 
           it.responseName to value
         }.toMap()
 
-        val existingValue = data[record.key]
-        val newValue = if (existingValue != null) {
-          existingValue + map
-        } else {
-          map
-        }
-        data[record.key] = newValue
+        data[pendingReference.path] = map
       }
     }
 
     @Suppress("UNCHECKED_CAST")
-    return data[rootKey].resolveCacheKeys() as Map<String, Any?>
+    return data[emptyList()].replaceCacheKeys(emptyList()) as Map<String, Any?>
   }
 
-  private fun Any?.registerCacheKeys(selections: List<CompiledSelection>) {
+  /**
+   * The path leading to this value
+   */
+  private fun Any?.registerCacheKeys(path: List<Any>, selections: List<CompiledSelection>) {
     when (this) {
       is CacheKey -> {
-        pendingReferences.add(PendingReference(key, selections))
+        pendingReferences.add(
+            PendingReference(
+                key = key,
+                selections = selections,
+                path = path
+            )
+        )
       }
       is List<*> -> {
-        forEach {
-          it.registerCacheKeys(selections)
+        forEachIndexed { index, value ->
+          value.registerCacheKeys(path + index, selections)
         }
       }
     }
   }
 
-  private fun Any?.resolveCacheKeys(): Any? {
+  private fun Any?.replaceCacheKeys(path: List<Any>): Any? {
     return when (this) {
       is CacheKey -> {
-        data[key].resolveCacheKeys()
+        data[path].replaceCacheKeys(path)
       }
       is List<*> -> {
-        map {
-          it.resolveCacheKeys()
+        mapIndexed { index, src ->
+          src.replaceCacheKeys(path + index)
         }
       }
       is Map<*, *> -> {
         // This will traverse Map custom scalars but this is ok as it shouldn't contain any CacheKey
-        mapValues { it.value.resolveCacheKeys() }
+        mapValues {
+          it.value.replaceCacheKeys(path + (it.key as String))
+        }
       }
-      else -> this
+      else -> {
+        // Scalar value
+        this
+      }
     }
   }
 }
