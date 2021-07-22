@@ -211,10 +211,13 @@ The Apollo Android 3.x runtime is more modular and doesn't know anything about n
 
 ```kotlin
 dependencies {
-  // Keep for base functionality and memory cache
-  implementation("com.apollographql.apollo:apollo-normalized-cache")
-  // Keep for Sqlite cache
-  implementation("com.apollographql.apollo:apollo-normalized-cache-sqlite")
+  // Replace
+  implementation("com.apollographql.apollo:apollo-normalized-cache") // for memory cache
+  implementation("com.apollographql.apollo:apollo-normalized-cache-sqlite") // for SQL cache
+
+  // With
+  implementation("com.apollographql.apollo3:apollo-normalized-cache") // for memory cache
+  implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite") // for SQL cache
 }
 ```
 
