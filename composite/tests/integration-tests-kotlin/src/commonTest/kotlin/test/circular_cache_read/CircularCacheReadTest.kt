@@ -16,7 +16,7 @@ class CircularCacheReadTest {
     val operation = GetUserQuery()
 
     /**
-     * Create a record that references itself. It should create a stack overflow
+     * Create a record that references itself. It should not create a stack overflow
      */
     val data = GetUserQuery.Data(
         user = GetUserQuery.User(
