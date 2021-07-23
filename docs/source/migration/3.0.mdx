@@ -152,7 +152,6 @@ apollo {
 }
 ```
 
-
 ### Removed `CompilationUnit`s
 
 Apollo Android 2.x creates multiple `CompilationUnit`s for different Android variants or different Kotlin source sets. This runs the GraphQL compiler multiple times. For example, Android compilation generates GraphQL classes at least twice (once for the debug build and once for the release build). In most cases, the generated classes are identical and this needlessly increases build time.
@@ -234,6 +233,67 @@ apolloClient.subscribe(subscription).toFlow()
 // With
 apolloClient.subscribe(subscription)
 ```
+
+## Custom Scalar adapters
+
+The Custom Scalar adapters API has changed a lot to support nullable and absent values as well as streaming use cases. It now uses the same `Adapter` API that is used internally to parse the models:
+
+```kotlin
+// Replace
+val dateAdapter = object : CustomTypeAdapter<Date> {
+  override fun decode(value: CustomTypeValue<*>): Date {
+    DATE_FORMAT.parse(value.value.toString())
+  }
+
+  override fun encode(value: Date): CustomTypeValue<*> {
+    return GraphQLString(DATE_FORMAT.format(value))
+  }
+}
+
+// With
+val dateAdapter = object : Adapter<Date> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Date {
+    return DATE_FORMAT.parse(reader.nextString())
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Date) {
+    writer.value(DATE_FORMAT.format(value))
+  }
+}
+```
+
+The `JsonReader` and `JsonWriter` APIs are similar to the ones you can find in [Moshi](https://github.com/square/moshi) and are stateful APIs that require you to handle the Json properties in the order they arrive from the Json stream. If you prefer, you can also buffer the Json into an untyped `Any?` value that represent the json and use `AnyAdapter` to decode/encode it:
+
+```kotlin
+// Use AnyAdapter to convert between JsonReader/JsonWriter and a Kotlin Any value
+val geoPointAdapter = object : Adapter<GeoPoint> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GeoPoint {
+    val map = AnyAdapter.fromJson(reader) as Map<String, Double>
+    return GeoPoint(map["latitude"] as Double, map["longitude"] as Double)
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: GeoPoint) {
+    val map = mapOf(
+        "latitude" to value.latitude,
+        "longitude" to value.longitude
+    )
+    AnyAdapter.toJson(writer, map)
+  }
+}
+```
+
+After you define your adapters, you need to register them with your `ApolloClient` instance. To do so, call `ApolloClient.withCustomScalarAdapter` once for each adapter:
+
+```kotlin
+// Replace
+val apolloClient = apolloClientBuilder.addCustomTypeAdapter(CustomType.DATE, dateAdapter).build()
+
+// With
+val apolloClient = ApolloClient("https://..").withCustomScalarAdapter(Types.Date, dateAdapter)
+```
+
+This method takes a type-safe generated class from `Types`, along with its corresponding adapter.
+
 
 ## Caching
 
