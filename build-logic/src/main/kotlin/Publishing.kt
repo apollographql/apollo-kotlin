@@ -43,6 +43,11 @@ fun Project.configureDokka() {
     //https://github.com/Kotlin/dokka/issues/1455
     it.dependsOn("assemble")
   }
+  tasks.named("dokkaHtml").configure {
+    it as DokkaTask
+    //https://github.com/Kotlin/dokka/issues/1455
+    it.dependsOn("assemble")
+  }
 }
 
 fun Project.getOssStagingUrl(): String {
