@@ -12,7 +12,6 @@ import kotlinx.coroutines.runBlocking
 import org.gradle.api.plugins.ExtraPropertiesExtension
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
-import java.io.File
 import java.util.Locale
 
 fun Project.configurePublishing() {
@@ -79,7 +78,14 @@ private fun Project.configurePublishingDelayed() {
   /**
    * Javadoc
    */
-  val emptyJavadocJarTaskProvider = tasks.register("emptyJavadocJar", org.gradle.jvm.tasks.Jar::class.java) {
+  val javadocJarTaskProvider = tasks.register("defaultJavadocJar", org.gradle.jvm.tasks.Jar::class.java) {
+    it.archiveClassifier.set("javadoc")
+
+    runCatching {
+      it.from(tasks.named("dokkaHtml").flatMap { (it as DokkaTask).outputDirectory })
+    }
+  }
+  val emptyJavadoJarTaskProvider = tasks.register("emptyJavadocJar", org.gradle.jvm.tasks.Jar::class.java) {
     it.archiveClassifier.set("javadoc")
   }
 
@@ -98,11 +104,17 @@ private fun Project.configurePublishingDelayed() {
       when {
         plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") -> {
           /**
-           * Kotlin MPP creates a nice publication.
-           * It only misses the javadoc for which we add an empty one
+           * Kotlin MPP creates nice publications.
+           * It only misses the javadoc
            */
           publicationContainer.withType(MavenPublication::class.java).configureEach {
-             it.artifact(emptyJavadocJarTaskProvider.get())
+            if (it.name == "kotlinMultiplatform") {
+              // Add the javadoc to the multiplatform publications
+              it.artifact(javadocJarTaskProvider.get())
+            } else {
+              // And an empty one for others so as to save some space
+              it.artifact(emptyJavadoJarTaskProvider.get())
+            }
           }
         }
         plugins.hasPlugin("java-gradle-plugin") -> {
@@ -110,7 +122,7 @@ private fun Project.configurePublishingDelayed() {
            * java-gradle-plugin creates 2 publications (one marker and one regular) but without source/javadoc.
            */
           publicationContainer.withType(MavenPublication::class.java) { mavenPublication ->
-            mavenPublication.artifact(emptyJavadocJarTaskProvider.get())
+            mavenPublication.artifact(javadocJarTaskProvider.get())
             // Only add sources for the main publication
             // XXX: is there a nicer way to do this?
             if (!mavenPublication.name.toLowerCase(Locale.US).contains("marker")) {
@@ -128,7 +140,7 @@ private fun Project.configurePublishingDelayed() {
               mavenPublication.from(components.findByName("release"))
             }
 
-            mavenPublication.artifact(emptyJavadocJarTaskProvider.get())
+            mavenPublication.artifact(javadocJarTaskProvider.get())
             mavenPublication.artifact(createAndroidSourcesTask().get())
 
             mavenPublication.artifactId = findProperty("POM_ARTIFACT_ID") as String?
@@ -141,7 +153,7 @@ private fun Project.configurePublishingDelayed() {
           publicationContainer.create("default", MavenPublication::class.java) { mavenPublication ->
 
             mavenPublication.from(components.findByName("java"))
-            mavenPublication.artifact(emptyJavadocJarTaskProvider.get())
+            mavenPublication.artifact(javadocJarTaskProvider.get())
             mavenPublication.artifact(createJavaSourcesTask().get())
 
             mavenPublication.artifactId = findProperty("POM_ARTIFACT_ID") as String?
