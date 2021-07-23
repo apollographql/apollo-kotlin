@@ -20,6 +20,7 @@ buildscript {
 }
 
 apply(plugin = "com.github.ben-manes.versions")
+apply(plugin = "org.jetbrains.dokka")
 
 ApiCompatibility.configure(rootProject)
 
@@ -150,4 +151,13 @@ tasks.register("quickCheck") {
       }
     }
   }
+}
+
+repositories {
+  mavenCentral() // for dokka
+}
+
+tasks.named("dokkaHtmlMultiModule").configure {
+  this as org.jetbrains.dokka.gradle.DokkaMultiModuleTask
+  outputDirectory.set(buildDir.resolve("dokkaHtml/kdoc"))
 }
