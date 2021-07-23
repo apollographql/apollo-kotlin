@@ -32,7 +32,7 @@ jobs:
 
   gh-pages:
     runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/3.x' }}
+    if: ${{ github.ref == 'refs/heads/dev-3.x' }}
     steps:
       - uses: actions/checkout@v2
       - name: Build Kdoc
