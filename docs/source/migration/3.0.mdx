@@ -80,6 +80,40 @@ apollo {
 
 > At the time of writing, Java codegen is not working but will be added in a future update. For details, see [this GitHub issue](https://github.com/apollographql/apollo-android/issues/2616).
 
+### `customScalarMappings`
+
+In order to make it explicit that custom mappings only apply to custom scalars and not arbitrary types, `customTypeMapping` has been renamed to `customScalarsMapping`
+
+<MultiCodeBlock>
+
+```groovy
+apollo {
+  // Replace
+  customTypeMapping = [
+    "GeoPoint" : "com.example.GeoPoint"
+  ]
+  // With
+  customScalarsMapping = [
+    "GeoPoint" : "com.example.GeoPoint"
+  ]
+}
+```
+
+```kotlin
+apollo {
+  // Replace
+  customTypeMapping.set(mapOf(
+    "GeoPoint" to "com.example.GeoPoint"
+  ))
+  // With
+  customScalarsMapping.set(mapOf(
+    "GeoPoint" to "com.example.GeoPoint"
+  ))
+}
+```
+
+</MultiCodeBlock>
+
 ### Target package name
 
 Apollo Android 2.x computes its target package name based on a combination of uses the file path of GraphQL operation and schema files as well as `packageName` and `rootPackageName` options to compute the target package name. While this is very flexible, it's not easy to anticipate the final package name that is going to be used.
