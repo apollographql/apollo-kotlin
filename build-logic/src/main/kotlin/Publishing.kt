@@ -11,6 +11,8 @@ import org.gradle.plugins.signing.SigningExtension
 import kotlinx.coroutines.runBlocking
 import org.gradle.api.plugins.ExtraPropertiesExtension
 import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.dokka.gradle.DokkaTaskPartial
+import java.io.File
 import java.util.Locale
 
 fun Project.configurePublishing() {
@@ -38,13 +40,11 @@ fun Project.configureDokka() {
     it.plugin("org.jetbrains.dokka")
   }
 
-  tasks.named("dokkaGfm").configure {
-    it as DokkaTask
+  tasks.withType(DokkaTask::class.java).configureEach {
     //https://github.com/Kotlin/dokka/issues/1455
     it.dependsOn("assemble")
   }
-  tasks.named("dokkaHtml").configure {
-    it as DokkaTask
+  tasks.withType(DokkaTaskPartial::class.java).configureEach {
     //https://github.com/Kotlin/dokka/issues/1455
     it.dependsOn("assemble")
   }
