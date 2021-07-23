@@ -1,0 +1,274 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Optional</title>
+</head><body><link href="../../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script><script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script><link href="../../../styles/style.css" rel="Stylesheet"><link href="../../../styles/logo-styles.css" rel="Stylesheet"><link href="../../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../../styles/main.css" rel="Stylesheet"><script type="text/javascript" src="../../../scripts/clipboard.js" async></script><script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script><script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script><script type="text/javascript" src="../../../scripts/main.js" async></script>
+  
+    <div id="container">
+      <div id="leftColumn"><a href="../../../index.html">
+            <div id="logo"></div>
+          </a>
+        <div id="paneSearch"></div>
+        <div id="sideMenu"></div>
+      </div>
+      <div id="main">
+        <script type="text/javascript" src="../../../scripts/main.js"></script><div id="leftToggler"><span class="icon-toggler"></span></div>
+
+        <div class="main-content" id="content" pageids="deprecated-apollo-runtime::com.apollographql.apollo3.api.internal/Optional///PointingToDeclaration//-1481471834">
+          <div class="navigation-wrapper" id="navigation-wrapper">
+            <div class="breadcrumbs"><a href="../../index.html">deprecated-apollo-runtime</a>/<a href="../index.html">com.apollographql.apollo3.api.internal</a>/<a href="index.html">Optional</a></div>
+            <div class="pull-right d-flex">
+              <div id="searchBar"></div>
+            </div>
+          </div>
+          <div class="cover ">
+            <h1 class="cover"><span>Optional</span></h1>
+            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough">abstract class <a href="index.html">Optional</a>&lt;<a href="index.html">T</a>&gt; : <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html">Serializable</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">An immutable object that may contain a non-null reference to another object. Each instance of this type either contains a non-null reference, or contains nothing (in which case we say that the reference is "absent"); it is never said to "contain <code>null</code>".</p><p class="paragraph">A non-null <code>Optional&lt;T&gt;</code> reference can be used as a replacement for a nullable <code>T</code> reference. It allows you to represent "a <code>T</code> that must be present" and a "a <code>T</code> that might be absent" as two distinct types in your program, which can aid clarity.</p><p class="paragraph">Some uses of this class include</p><ul><li><p class="paragraph">As a method return type, as an alternative to returning <code>null</code> to indicate that no value was available</p></li><li><p class="paragraph">To distinguish between "unknown" (for example, not present in a map) and "known to have no value" (present in the map, with value <code>Optional.absent()</code>)  * To wrap nullable references for storage in a collection that does not support <code>null</code> (though there are [</p></li><li><p class="paragraph">several other approaches to this](https://github.com/google/guava/wiki/LivingWithNullHostileCollections) that should be considered first)</p></li></ul><p class="paragraph">A common alternative to using this class is to find or create a suitable [null</p><ul><li><p class="paragraph">object](http://en.wikipedia.org/wiki/Null_Object_pattern) for the type in question.</p></li></ul><p class="paragraph">This class is not intended as a direct analogue of any existing "option" or "maybe" construct from other programming environments, though it may bear some similarities.</p><p class="paragraph">Comparison to <code>java.util.Optional</code> (JDK 8 and higher): A new <code>Optional</code> class was added for Java 8. The two classes are extremely similar, but incompatible (they cannot share a common supertype). All known differences are listed either here or with the relevant methods below.</p><ul><li><p class="paragraph">This class is serializable; <code>java.util.Optional</code> is not.  * <code>java.util.Optional</code> has the additional methods <code>ifPresent</code>, <code>filter</code>, <code>flatMap</code>, and <code>orElseThrow</code>.  * <code>java.util</code> offers the primitive-specialized versions <code>OptionalInt</code>, <code>OptionalLong</code> and <code>OptionalDouble</code>, the use of which is recommended; Guava does not have these.</p></li></ul><p class="paragraph">There are no plans to deprecate this class in the foreseeable future. However, we do gently recommend that you prefer the new, standard Java class whenever possible.</p><p class="paragraph">See the Guava User Guide article on [</p><ul><li><p class="paragraph">using <code>Optional</code>](https://github.com/google/guava/wiki/UsingAndAvoidingNullExplained#optional).</p></li></ul><h4 class="">Author</h4><p class="paragraph">Kurt Alfred Kluever</p><p class="paragraph">Kevin Bourrillion</p><h4 class="">Since</h4><p class="paragraph">10.0 </p></div></div>
+          </div>
+          <div class="tabbedcontent">
+            <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button><button class="section-tab" data-togglable="Parameters">Parameters</button></div>
+            <div class="tabs-section-body">
+              <h2 class="">Parameters</h2>
+              <div data-togglable="Parameters">
+                <div class="platform-hinted WithExtraAttributes" data-platform-hinted="data-platform-hinted" data-togglable="Parameters"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div data-togglable="Parameters"><div class="table" data-togglable="Parameters"><div class="table-row" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"></span></div><div><div class="title"><div data-togglable="Parameters"><t> the type of instance that can be contained. `Optional` is naturally covariant on this type, so it is
+safe to cast an `Optional<t>` to `Optional<s>` for any supertype `S` of `T`.</s></t></t></div></div></div></div></div></div></div></div></div><s>
+              </s></div><s>
+              <h2 class="">Types</h2>
+              <div class="table" data-togglable="Types"><a data-name="-325320288%2FClasslikes%2F-1481471834" anchor-label="Companion" id="-325320288%2FClasslikes%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-companion/index.html">Companion</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-325320288%2FClasslikes%2F-1481471834"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="symbol monospace">object <a href="-companion/index.html">Companion</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Functions</h2>
+              <div class="table" data-togglable="Functions"><a data-name="-721901441%2FFunctions%2F-1481471834" anchor-label="apply" id="-721901441%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="apply.html">apply</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-721901441%2FFunctions%2F-1481471834"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="symbol monospace">abstract fun <a href="apply.html">apply</a>(action: <a href="../-action/index.html">Action</a>&lt;<a href="index.html">T</a>&gt;): <a href="index.html">Optional</a>&lt;<a href="index.html">T</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1623274889%2FFunctions%2F-1481471834" anchor-label="asSet" id="1623274889%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="as-set.html">asSet</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1623274889%2FFunctions%2F-1481471834"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="symbol monospace">abstract fun <a href="as-set.html">asSet</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a>&lt;<a href="index.html">T</a>&gt;?<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="1623274889%2FFunctions%2F-1481471834" anchor-label="asSet" id="1623274889%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a><div class="brief "><a data-name="1623274889%2FFunctions%2F-1481471834" anchor-label="asSet" id="1623274889%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a>Returns an immutable singleton <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a> whose only element is the contained instance if it is present; an empty immutable <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a> otherwise.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1180818688%2FFunctions%2F-1481471834" anchor-label="equals" id="1180818688%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="equals.html">equals</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1180818688%2FFunctions%2F-1481471834"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="symbol monospace">abstract operator override fun <a href="equals.html">equals</a>(object: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="1180818688%2FFunctions%2F-1481471834" anchor-label="equals" id="1180818688%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a><div class="brief "><a data-name="1180818688%2FFunctions%2F-1481471834" anchor-label="equals" id="1180818688%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a>Returns <code>true</code> if <code>object</code> is an <code>Optional</code> instance, and either the contained references are <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#equals-kotlin.Any?-">equal</a> to each other or both are absent.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1123835638%2FFunctions%2F-1481471834" anchor-label="flatMap" id="-1123835638%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="flat-map.html">flatMap</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1123835638%2FFunctions%2F-1481471834"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="symbol monospace">abstract fun &lt;<a href="flat-map.html">V</a>&gt; <a href="flat-map.html">flatMap</a>(function: <a href="../-function/index.html">Function</a>&lt;in <a href="index.html">T</a>, <a href="index.html">Optional</a>&lt;<a href="flat-map.html">V</a>&gt;&gt;): <a href="index.html">Optional</a>&lt;<a href="flat-map.html">V</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1190456637%2FFunctions%2F-1481471834" anchor-label="get" id="-1190456637%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="get.html">get</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1190456637%2FFunctions%2F-1481471834"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="symbol monospace">abstract fun <a href="get.html">get</a>(): <a href="index.html">T</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="-1190456637%2FFunctions%2F-1481471834" anchor-label="get" id="-1190456637%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a><div class="brief "><a data-name="-1190456637%2FFunctions%2F-1481471834" anchor-label="get" id="-1190456637%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a>Returns the contained instance, which must be present.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-302666778%2FFunctions%2F-1481471834" anchor-label="hashCode" id="-302666778%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="hash-code.html">hashCode</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-302666778%2FFunctions%2F-1481471834"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="symbol monospace">abstract override fun <a href="hash-code.html">hashCode</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="-302666778%2FFunctions%2F-1481471834" anchor-label="hashCode" id="-302666778%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a><div class="brief "><a data-name="-302666778%2FFunctions%2F-1481471834" anchor-label="hashCode" id="-302666778%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a>Returns a hash code for this instance.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-80360437%2FFunctions%2F-1481471834" anchor-label="map" id="-80360437%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="map.html">map</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-80360437%2FFunctions%2F-1481471834"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="symbol monospace">abstract fun &lt;<a href="map.html">V</a>&gt; <a href="map.html">map</a>(function: <a href="../-function/index.html">Function</a>&lt;in <a href="index.html">T</a>, <a href="map.html">V</a>&gt;): <a href="index.html">Optional</a>&lt;<a href="map.html">V</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-2047116280%2FFunctions%2F-1481471834" anchor-label="or" id="-2047116280%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="or.html">or</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2047116280%2FFunctions%2F-1481471834"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="symbol monospace">abstract fun <a href="or.html">or</a>(defaultValue: <a href="index.html">T</a>): <a href="index.html">T</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="-1699757024%2FFunctions%2F-1481471834" anchor-label="or" id="-1699757024%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a><div class="brief "><a data-name="-1699757024%2FFunctions%2F-1481471834" anchor-label="or" id="-1699757024%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a>Returns the contained instance if it is present; <code>defaultValue</code> otherwise.</div></div>
+<div class="divergent-group" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="symbol monospace">abstract fun <a href="or.html">or</a>(secondChoice: <a href="index.html">Optional</a>&lt;out <a href="index.html">T</a>&gt;): <a href="index.html">Optional</a>&lt;<a href="index.html">T</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="1149098524%2FFunctions%2F-1481471834" anchor-label="or" id="1149098524%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a><div class="brief "><a data-name="1149098524%2FFunctions%2F-1481471834" anchor-label="or" id="1149098524%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a>Returns this <code>Optional</code> if it has a value present; <code>secondChoice</code> otherwise.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1613357609%2FFunctions%2F-1481471834" anchor-label="orNull" id="-1613357609%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="or-null.html">orNull</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1613357609%2FFunctions%2F-1481471834"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="symbol monospace">abstract fun <a href="or-null.html">orNull</a>(): <a href="index.html">T</a>?<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="-1613357609%2FFunctions%2F-1481471834" anchor-label="orNull" id="-1613357609%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a><div class="brief "><a data-name="-1613357609%2FFunctions%2F-1481471834" anchor-label="orNull" id="-1613357609%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a>Returns the contained instance if it is present; <code>null</code> otherwise.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-480832843%2FFunctions%2F-1481471834" anchor-label="toString" id="-480832843%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="to-string.html">toString</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-480832843%2FFunctions%2F-1481471834"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="symbol monospace">abstract override fun <a href="to-string.html">toString</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="-480832843%2FFunctions%2F-1481471834" anchor-label="toString" id="-480832843%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a><div class="brief "><a data-name="-480832843%2FFunctions%2F-1481471834" anchor-label="toString" id="-480832843%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a>Returns a string representation for this instance.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1265185531%2FFunctions%2F-1481471834" anchor-label="transform" id="1265185531%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="transform.html">transform</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1265185531%2FFunctions%2F-1481471834"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><div class="symbol monospace">abstract fun &lt;<a href="transform.html">V</a>&gt; <a href="transform.html">transform</a>(function: <a href="../-function/index.html">Function</a>&lt;in <a href="index.html">T</a>, <a href="transform.html">V</a>&gt;): <a href="index.html">Optional</a>&lt;<a href="transform.html">V</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="1265185531%2FFunctions%2F-1481471834" anchor-label="transform" id="1265185531%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a><div class="brief "><a data-name="1265185531%2FFunctions%2F-1481471834" anchor-label="transform" id="1265185531%2FFunctions%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a>If the instance is present, it is transformed with the given <a href="../-function/index.html">Function</a>; otherwise, <a href="-companion/absent.html">Optional.absent</a> is returned.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Properties</h2>
+              <div class="table" data-togglable="Properties"><a data-name="697784648%2FProperties%2F-1481471834" anchor-label="isPresent" id="697784648%2FProperties%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-runtime:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="is-present.html">isPresent</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="697784648%2FProperties%2F-1481471834"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-runtime:dokkaHtmlPartial/main"><a data-name="697784648%2FProperties%2F-1481471834" anchor-label="isPresent" id="697784648%2FProperties%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a><div class="symbol monospace">abstract val <a href="is-present.html">isPresent</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="697784648%2FProperties%2F-1481471834" anchor-label="isPresent" id="697784648%2FProperties%2F-1481471834" data-filterable-set=":deprecated-apollo-runtime:dokkaHtmlPartial/main"></a>Returns <code>true</code> if this holder contains a (non-null) instance.</div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </s></div><s>
+          </s></div><s>
+        </s></div><s>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+      </s></div><s>
+    </s></div><s>
+  
+</s></body></html>
+
+

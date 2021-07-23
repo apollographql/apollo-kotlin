@@ -1,0 +1,569 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>DiskLruCache</title>
+</head><body><link href="../../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script><script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script><link href="../../../styles/style.css" rel="Stylesheet"><link href="../../../styles/logo-styles.css" rel="Stylesheet"><link href="../../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../../styles/main.css" rel="Stylesheet"><script type="text/javascript" src="../../../scripts/clipboard.js" async></script><script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script><script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script><script type="text/javascript" src="../../../scripts/main.js" async></script>
+  
+    <div id="container">
+      <div id="leftColumn"><a href="../../../index.html">
+            <div id="logo"></div>
+          </a>
+        <div id="paneSearch"></div>
+        <div id="sideMenu"></div>
+      </div>
+      <div id="main">
+        <script type="text/javascript" src="../../../scripts/main.js"></script><div id="leftToggler"><span class="icon-toggler"></span></div>
+
+        <div class="main-content" id="content" pageids="deprecated-apollo-http-cache::com.apollographql.apollo3.cache.http.internal/DiskLruCache///PointingToDeclaration//-561113081">
+          <div class="navigation-wrapper" id="navigation-wrapper">
+            <div class="breadcrumbs"><a href="../../index.html">deprecated-apollo-http-cache</a>/<a href="../index.html">com.apollographql.apollo3.cache.http.internal</a>/<a href="index.html">DiskLruCache</a></div>
+            <div class="pull-right d-flex">
+              <div id="searchBar"></div>
+            </div>
+          </div>
+          <div class="cover ">
+            <h1 class="cover"><span>Disk</span><wbr><span>Lru</span><wbr><span>Cache</span></h1>
+            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="symbol monospace">class <a href="index.html">DiskLruCache</a> : <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Closeable.html">Closeable</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Flushable.html">Flushable</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">A cache that uses a bounded amount of space on a filesystem. Each cache entry has a string key and a fixed number of values. Each key must match the regex a-z0-9_-{1,64}. Values are byte sequences, accessible as streams or files. Each value must be between <code>0</code> and <code>Integer.MAX_VALUE</code> bytes in length.</p><p class="paragraph">The cache stores its data in a directory on the filesystem. This directory must be exclusive to the cache; the cache may delete or overwrite files from its directory. It is an error for multiple processes to use the same cache directory at the same time.</p><p class="paragraph">This cache limits the number of bytes that it will store on the filesystem. When the number of stored bytes exceeds the limit, the cache will remove entries in the background until the limit is satisfied. The limit is not strict: the cache may temporarily exceed it while waiting for files to be deleted. The limit does not include filesystem overhead or the cache journal so space-sensitive applications should set a conservative limit.</p><p class="paragraph">Clients call .edit to create or update the values of an entry. An entry may have only one editor at one time; if a value is not available to be edited then .edit will return null.</p><ul><li><p class="paragraph">When an entry is being created it is necessary to supply a full set of values; the empty value should be used as a placeholder if necessary.</p></li><li><p class="paragraph">When an entry is being edited, it is not necessary to supply data for every value; values default to their previous value.</p></li></ul><p class="paragraph">Every .edit call must be matched by a call to <a href="-editor/commit.html">Editor.commit</a> or <a href="-editor/abort.html"></a>. Committing is atomic: a read observes the full set of values as they were before or after the commit, but never a mix of values.</p><p class="paragraph">Clients call .get to read a snapshot of an entry. The read will observe the value at the time that .get was called. Updates and removals after the call do not impact ongoing reads.</p><p class="paragraph">This class is tolerant of some I/O errors. If files are missing from the filesystem, the corresponding entries will be dropped from the cache. If an error occurs while writing a cache value, the edit will fail silently. Callers should handle other problems by catching <code>IOException</code> and responding appropriately.</p><p class="paragraph">Copied from OkHttp 3.14.2: https://github.com/square/okhttp/blob/ b8b6ee831c65208940c741f8e091ff02425566d5/ okhttp/src/main/java/okhttp3/internal/cache/DiskLruCache.java</p></div></div>
+          </div>
+          <div class="tabbedcontent">
+            <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
+            <div class="tabs-section-body">
+              <h2 class="">Types</h2>
+              <div class="table" data-togglable="Types"><a data-name="128855520%2FClasslikes%2F-561113081" anchor-label="Companion" id="128855520%2FClasslikes%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-companion/index.html">Companion</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="128855520%2FClasslikes%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="symbol monospace">object <a href="-companion/index.html">Companion</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1032534519%2FClasslikes%2F-561113081" anchor-label="Editor" id="-1032534519%2FClasslikes%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-editor/index.html">Editor</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1032534519%2FClasslikes%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="symbol monospace">inner class <a href="-editor/index.html">Editor</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="-1032534519%2FClasslikes%2F-561113081" anchor-label="Editor" id="-1032534519%2FClasslikes%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a><div class="brief "><a data-name="-1032534519%2FClasslikes%2F-561113081" anchor-label="Editor" id="-1032534519%2FClasslikes%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>Edits the values for an entry.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="962174138%2FClasslikes%2F-561113081" anchor-label="Entry" id="962174138%2FClasslikes%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-entry/index.html">Entry</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="962174138%2FClasslikes%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="symbol monospace">inner class <a href="-entry/index.html">Entry</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1090731090%2FClasslikes%2F-561113081" anchor-label="Snapshot" id="1090731090%2FClasslikes%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-snapshot/index.html">Snapshot</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1090731090%2FClasslikes%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="symbol monospace">inner class <a href="-snapshot/index.html">Snapshot</a> : <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Closeable.html">Closeable</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="1090731090%2FClasslikes%2F-561113081" anchor-label="Snapshot" id="1090731090%2FClasslikes%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a><div class="brief "><a data-name="1090731090%2FClasslikes%2F-561113081" anchor-label="Snapshot" id="1090731090%2FClasslikes%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>A snapshot of the values for an entry.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Functions</h2>
+              <div class="table" data-togglable="Functions"><a data-name="-1609731167%2FFunctions%2F-561113081" anchor-label="close" id="-1609731167%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="close.html">close</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1609731167%2FFunctions%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block">@<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-synchronized/index.html">Synchronized</a>()</div></div>open override fun <a href="close.html">close</a>()<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="-1609731167%2FFunctions%2F-561113081" anchor-label="close" id="-1609731167%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a><div class="brief "><a data-name="-1609731167%2FFunctions%2F-561113081" anchor-label="close" id="-1609731167%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>Closes this cache.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-833712369%2FFunctions%2F-561113081" anchor-label="closeQuietly" id="-833712369%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="close-quietly.html">closeQuietly</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-833712369%2FFunctions%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="symbol monospace">fun <a href="close-quietly.html">closeQuietly</a>(closeable: <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Closeable.html">Closeable</a>?, name: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>?)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1002490153%2FFunctions%2F-561113081" anchor-label="completeEdit" id="1002490153%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="complete-edit.html">completeEdit</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1002490153%2FFunctions%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block">@<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-synchronized/index.html">Synchronized</a>()</div></div>fun <a href="complete-edit.html">completeEdit</a>(editor: <a href="-editor/index.html">DiskLruCache.Editor</a>, success: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1772853526%2FFunctions%2F-561113081" anchor-label="delete" id="1772853526%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="delete.html">delete</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1772853526%2FFunctions%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="symbol monospace">fun <a href="delete.html">delete</a>()<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="1772853526%2FFunctions%2F-561113081" anchor-label="delete" id="1772853526%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a><div class="brief "><a data-name="1772853526%2FFunctions%2F-561113081" anchor-label="delete" id="1772853526%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>Closes the cache and deletes all of its stored values.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1808386386%2FFunctions%2F-561113081" anchor-label="edit" id="1808386386%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="edit.html">edit</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1808386386%2FFunctions%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="symbol monospace">fun <a href="edit.html">edit</a>(key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>): <a href="-editor/index.html">DiskLruCache.Editor</a>?<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="451599309%2FFunctions%2F-561113081" anchor-label="edit" id="451599309%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a><div class="brief "><a data-name="451599309%2FFunctions%2F-561113081" anchor-label="edit" id="451599309%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>Returns an editor for the entry named <code>key</code>, or null if another edit is in progress.</div></div>
+<div class="divergent-group" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block">@<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-synchronized/index.html">Synchronized</a>()</div></div>fun <a href="edit.html">edit</a>(key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, expectedSequenceNumber: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a>): <a href="-editor/index.html">DiskLruCache.Editor</a>?<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="637077961%2FFunctions%2F-561113081" anchor-label="evictAll" id="637077961%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="evict-all.html">evictAll</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="637077961%2FFunctions%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block">@<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-synchronized/index.html">Synchronized</a>()</div></div>fun <a href="evict-all.html">evictAll</a>()<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="637077961%2FFunctions%2F-561113081" anchor-label="evictAll" id="637077961%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a><div class="brief "><a data-name="637077961%2FFunctions%2F-561113081" anchor-label="evictAll" id="637077961%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>Deletes all stored values from the cache.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1283824661%2FFunctions%2F-561113081" anchor-label="flush" id="1283824661%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="flush.html">flush</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1283824661%2FFunctions%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block">@<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-synchronized/index.html">Synchronized</a>()</div></div>open override fun <a href="flush.html">flush</a>()<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="1283824661%2FFunctions%2F-561113081" anchor-label="flush" id="1283824661%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a><div class="brief "><a data-name="1283824661%2FFunctions%2F-561113081" anchor-label="flush" id="1283824661%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>Force buffered operations to the filesystem.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="616455905%2FFunctions%2F-561113081" anchor-label="get" id="616455905%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="get.html">get</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="616455905%2FFunctions%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block">@<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-synchronized/index.html">Synchronized</a>()</div></div>operator fun <a href="get.html">get</a>(key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>): <a href="-snapshot/index.html">DiskLruCache.Snapshot</a>?<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="616455905%2FFunctions%2F-561113081" anchor-label="get" id="616455905%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a><div class="brief "><a data-name="616455905%2FFunctions%2F-561113081" anchor-label="get" id="616455905%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>Returns a snapshot of the entry named <code>key</code>, or null if it doesn't exist is not currently readable.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-572642830%2FFunctions%2F-561113081" anchor-label="getMaxSize" id="-572642830%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="get-max-size.html">getMaxSize</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-572642830%2FFunctions%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block">@<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-synchronized/index.html">Synchronized</a>()</div></div>fun <a href="get-max-size.html">getMaxSize</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="-572642830%2FFunctions%2F-561113081" anchor-label="getMaxSize" id="-572642830%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a><div class="brief "><a data-name="-572642830%2FFunctions%2F-561113081" anchor-label="getMaxSize" id="-572642830%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>Returns the maximum number of bytes that this cache should use to store its data.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-917349167%2FFunctions%2F-561113081" anchor-label="initialize" id="-917349167%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="initialize.html">initialize</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-917349167%2FFunctions%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block">@<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-synchronized/index.html">Synchronized</a>()</div></div>fun <a href="initialize.html">initialize</a>()<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1468963554%2FFunctions%2F-561113081" anchor-label="journalRebuildRequired" id="-1468963554%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="journal-rebuild-required.html">journalRebuildRequired</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1468963554%2FFunctions%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="symbol monospace">fun <a href="journal-rebuild-required.html">journalRebuildRequired</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="-1468963554%2FFunctions%2F-561113081" anchor-label="journalRebuildRequired" id="-1468963554%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a><div class="brief "><a data-name="-1468963554%2FFunctions%2F-561113081" anchor-label="journalRebuildRequired" id="-1468963554%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>We only rebuild the journal when it will halve the size of the journal and eliminate at least 2000 ops.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-208758459%2FFunctions%2F-561113081" anchor-label="rebuildJournal" id="-208758459%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="rebuild-journal.html">rebuildJournal</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-208758459%2FFunctions%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block">@<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-synchronized/index.html">Synchronized</a>()</div></div>fun <a href="rebuild-journal.html">rebuildJournal</a>()<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="-208758459%2FFunctions%2F-561113081" anchor-label="rebuildJournal" id="-208758459%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a><div class="brief "><a data-name="-208758459%2FFunctions%2F-561113081" anchor-label="rebuildJournal" id="-208758459%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>Creates a new journal that omits redundant information.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1320219591%2FFunctions%2F-561113081" anchor-label="remove" id="1320219591%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="remove.html">remove</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1320219591%2FFunctions%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block">@<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-synchronized/index.html">Synchronized</a>()</div></div>fun <a href="remove.html">remove</a>(key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="1320219591%2FFunctions%2F-561113081" anchor-label="remove" id="1320219591%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a><div class="brief "><a data-name="1320219591%2FFunctions%2F-561113081" anchor-label="remove" id="1320219591%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>Drops the entry for <code>key</code> if it exists and can be removed.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-901232946%2FFunctions%2F-561113081" anchor-label="removeEntry" id="-901232946%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="remove-entry.html">removeEntry</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-901232946%2FFunctions%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="symbol monospace">fun <a href="remove-entry.html">removeEntry</a>(entry: <a href="-entry/index.html">DiskLruCache.Entry</a>?): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="779258235%2FFunctions%2F-561113081" anchor-label="setMaxSize" id="779258235%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="set-max-size.html">setMaxSize</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="779258235%2FFunctions%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block">@<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-synchronized/index.html">Synchronized</a>()</div></div>fun <a href="set-max-size.html">setMaxSize</a>(maxSize: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="779258235%2FFunctions%2F-561113081" anchor-label="setMaxSize" id="779258235%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a><div class="brief "><a data-name="779258235%2FFunctions%2F-561113081" anchor-label="setMaxSize" id="779258235%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>Changes the maximum number of bytes the cache can store and queues a job to trim the existing store, if necessary.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-812891008%2FFunctions%2F-561113081" anchor-label="size" id="-812891008%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="size.html">size</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-812891008%2FFunctions%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block">@<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-synchronized/index.html">Synchronized</a>()</div></div>fun <a href="size.html">size</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="-812891008%2FFunctions%2F-561113081" anchor-label="size" id="-812891008%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a><div class="brief "><a data-name="-812891008%2FFunctions%2F-561113081" anchor-label="size" id="-812891008%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>Returns the number of bytes currently being used to store the values in this cache.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="357375050%2FFunctions%2F-561113081" anchor-label="snapshots" id="357375050%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="snapshots.html">snapshots</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="357375050%2FFunctions%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block">@<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-synchronized/index.html">Synchronized</a>()</div></div>fun <a href="snapshots.html">snapshots</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-iterator/index.html">MutableIterator</a>&lt;<a href="-snapshot/index.html">DiskLruCache.Snapshot</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="357375050%2FFunctions%2F-561113081" anchor-label="snapshots" id="357375050%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a><div class="brief "><a data-name="357375050%2FFunctions%2F-561113081" anchor-label="snapshots" id="357375050%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>Returns an iterator over the cache's current entries.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1185181629%2FFunctions%2F-561113081" anchor-label="trimToSize" id="-1185181629%2FFunctions%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="trim-to-size.html">trimToSize</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1185181629%2FFunctions%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><div class="symbol monospace">fun <a href="trim-to-size.html">trimToSize</a>()<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Properties</h2>
+              <div class="table" data-togglable="Properties"><a data-name="-1378393396%2FProperties%2F-561113081" anchor-label="directory" id="-1378393396%2FProperties%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="directory.html">directory</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1378393396%2FProperties%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><a data-name="-1378393396%2FProperties%2F-561113081" anchor-label="directory" id="-1378393396%2FProperties%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a><div class="symbol monospace">val <a href="directory.html">directory</a>: <a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-1378393396%2FProperties%2F-561113081" anchor-label="directory" id="-1378393396%2FProperties%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>Returns the directory where this cache stores its data.</div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-77960714%2FProperties%2F-561113081" anchor-label="fileSystem" id="-77960714%2FProperties%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="file-system.html">fileSystem</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-77960714%2FProperties%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><a data-name="-77960714%2FProperties%2F-561113081" anchor-label="fileSystem" id="-77960714%2FProperties%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a><div class="symbol monospace">val <a href="file-system.html">fileSystem</a>: <a href="../-file-system/index.html">FileSystem</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-514062503%2FProperties%2F-561113081" anchor-label="hasJournalErrors" id="-514062503%2FProperties%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="has-journal-errors.html">hasJournalErrors</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-514062503%2FProperties%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><a data-name="-514062503%2FProperties%2F-561113081" anchor-label="hasJournalErrors" id="-514062503%2FProperties%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a><div class="symbol monospace">var <a href="has-journal-errors.html">hasJournalErrors</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a> = false<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1567062715%2FProperties%2F-561113081" anchor-label="initialized" id="-1567062715%2FProperties%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="initialized.html">initialized</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1567062715%2FProperties%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><a data-name="-1567062715%2FProperties%2F-561113081" anchor-label="initialized" id="-1567062715%2FProperties%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a><div class="symbol monospace">var <a href="initialized.html">initialized</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a> = false<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="177042667%2FProperties%2F-561113081" anchor-label="isClosed" id="177042667%2FProperties%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="is-closed.html">isClosed</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="177042667%2FProperties%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><a data-name="177042667%2FProperties%2F-561113081" anchor-label="isClosed" id="177042667%2FProperties%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a><div class="symbol monospace">var <a href="is-closed.html">isClosed</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a> = false<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="177042667%2FProperties%2F-561113081" anchor-label="isClosed" id="177042667%2FProperties%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>Returns true if this cache has been closed.</div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1712579407%2FProperties%2F-561113081" anchor-label="journalWriter" id="1712579407%2FProperties%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="journal-writer.html">journalWriter</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1712579407%2FProperties%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><a data-name="1712579407%2FProperties%2F-561113081" anchor-label="journalWriter" id="1712579407%2FProperties%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a><div class="symbol monospace">var <a href="journal-writer.html">journalWriter</a>: <span data-unresolved-link="okio/BufferedSink///PointingToDeclaration/">BufferedSink</span>? = null<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1424691296%2FProperties%2F-561113081" anchor-label="lruEntries" id="-1424691296%2FProperties%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="lru-entries.html">lruEntries</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1424691296%2FProperties%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><a data-name="-1424691296%2FProperties%2F-561113081" anchor-label="lruEntries" id="-1424691296%2FProperties%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a><div class="symbol monospace">val <a href="lru-entries.html">lruEntries</a>: <a href="https://docs.oracle.com/javase/8/docs/api/java/util/LinkedHashMap.html">LinkedHashMap</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <a href="-entry/index.html">DiskLruCache.Entry</a>?&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-368007233%2FProperties%2F-561113081" anchor-label="mostRecentRebuildFailed" id="-368007233%2FProperties%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="most-recent-rebuild-failed.html">mostRecentRebuildFailed</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-368007233%2FProperties%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><a data-name="-368007233%2FProperties%2F-561113081" anchor-label="mostRecentRebuildFailed" id="-368007233%2FProperties%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a><div class="symbol monospace">var <a href="most-recent-rebuild-failed.html">mostRecentRebuildFailed</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a> = false<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1281015132%2FProperties%2F-561113081" anchor-label="mostRecentTrimFailed" id="-1281015132%2FProperties%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="most-recent-trim-failed.html">mostRecentTrimFailed</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1281015132%2FProperties%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><a data-name="-1281015132%2FProperties%2F-561113081" anchor-label="mostRecentTrimFailed" id="-1281015132%2FProperties%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a><div class="symbol monospace">var <a href="most-recent-trim-failed.html">mostRecentTrimFailed</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a> = false<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1076192384%2FProperties%2F-561113081" anchor-label="redundantOpCount" id="1076192384%2FProperties%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="redundant-op-count.html">redundantOpCount</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1076192384%2FProperties%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><a data-name="1076192384%2FProperties%2F-561113081" anchor-label="redundantOpCount" id="1076192384%2FProperties%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a><div class="symbol monospace">var <a href="redundant-op-count.html">redundantOpCount</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a> = 0<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1288014333%2FProperties%2F-561113081" anchor-label="valueCount" id="-1288014333%2FProperties%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a>
+                <div class="table-row" data-filterable-current=":deprecated-apollo-http-cache:dokkaHtmlPartial/main" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="value-count.html">valueCount</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1288014333%2FProperties%2F-561113081"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"><a data-name="-1288014333%2FProperties%2F-561113081" anchor-label="valueCount" id="-1288014333%2FProperties%2F-561113081" data-filterable-set=":deprecated-apollo-http-cache:dokkaHtmlPartial/main"></a><div class="symbol monospace">val <a href="value-count.html">valueCount</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+      </div>
+    </div>
+  
+</body></html>
+
+
