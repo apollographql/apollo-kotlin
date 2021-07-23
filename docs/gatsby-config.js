@@ -16,6 +16,7 @@ module.exports = {
             'index',
             'get-started',
             'migration/3.0',
+            '[Kdoc](https://apollographql.github.io/apollo-android/kdoc/)',
           ],
           'Essentials': [
             'essentials/00-queries',
