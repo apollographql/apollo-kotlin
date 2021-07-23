@@ -1,13 +1,12 @@
 #!/bin/bash
-## Set up documentation so README.md is reflected onto apollographql.com/docs/android
 
 set -e
 
+## Install dependencies for dokka
 curl -s "https://get.sdkman.io" | bash
 source "$HOME"/.sdkman/bin/sdkman-init.sh
 
 sdk install java 11.0.11.hs-adpt
-sdk install kotlin 1.5.21
 
 export ANDROID_SDK_ROOT="$HOME"/android
 mkdir -p "$ANDROID_SDK_ROOT"/cmdline-tools/
@@ -24,10 +23,13 @@ yes | sdkmanager --install 'tools'
 yes | sdkmanager --install 'build-tools;29.0.2'
 yes | sdkmanager --install 'platform-tools'
 
+## Build the Kdoc
 ../gradlew -p ../ dokkaGfm
 
-mkdir -p source/kdoc
-cp -rf ../apollo-api/build/dokka/gfm source/kdoc/apollo-api
+## Install Kotlin to run kscripts
+sdk install kotlin 1.5.21
+
+./install_kdoc.main.kts
 
 gatsby build --prefix-paths
 mkdir -p docs/android
