@@ -157,12 +157,7 @@ repositories {
   mavenCentral() // for dokka
 }
 
-tasks.register("dokkaHtmlMultiModuleIfNeeded") {
-  project.logger.log(LogLevel.LIFECYCLE, "Deploying release to OSS staging...")
-  dependsOn(subprojectTasks("dokkaHtmlMultiModule"))
-}
-
 tasks.named("dokkaHtmlMultiModule").configure {
   this as org.jetbrains.dokka.gradle.DokkaMultiModuleTask
-  outputDirectory.set(buildDir.resolve("dokkaHtml"))
+  outputDirectory.set(buildDir.resolve("dokkaHtml/kdoc"))
 }
