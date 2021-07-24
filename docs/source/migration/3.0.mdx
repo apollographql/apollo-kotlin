@@ -174,12 +174,16 @@ To customize the `OkHttpClient`:
 ```kotlin
 // Replace
 val apolloClient = ApolloClient.builder()
+    .serverUrl(serverUrl)
     .okHttpClient(okHttpClient)
     .build()
 
 // With
 val apolloClient = ApolloClient(
-  networkTransport = DefaultHttpNetworkTransport(callFactory = okHttpClient)
+  networkTransport = HttpNetworkTransport(
+    httpRequestComposer = DefaultHttpRequestComposer(serverUrl),
+    engine = DefaultHttpEngine(okHttpClient = okHttpClient)
+  )
 )
 ```
 
