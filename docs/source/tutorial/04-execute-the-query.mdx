@@ -9,9 +9,8 @@ To execute your first query, you need to create an instance of `ApolloClient` an
 Create a new file named Apollo.kt in the `com.example.rocketreserver` package and create an instance of `ApolloClient` in it:
 
 ```kotlin:title=app/src/main/java/com/example/rocketreserver/Apollo.kt
-val apolloClient = ApolloClient.builder()
-    .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com")
-    .build()
+
+val apolloClient = ApolloClient(serverUrl = "https://apollo-fullstack-tutorial.herokuapp.com")
 ```
 
 **Note**: `apolloClient` is a top-level variable so that it can be reused from other parts of the app later on for better performance. Reusing the `apolloClient` allows to reuse the underlying OkHttp instance and the associated threadpools and connections.
