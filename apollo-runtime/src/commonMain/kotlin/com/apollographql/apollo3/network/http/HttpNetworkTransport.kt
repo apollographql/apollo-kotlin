@@ -134,44 +134,6 @@ class HttpNetworkTransport(
     }
   }
 
-  companion object {
-    private fun wrapThrowableIfNeeded(throwable: Throwable): ApolloException {
-      return if (throwable is ApolloException) {
-        throwable
-      } else {
-        // This happens for null pointer exceptions on missing fields
-        ApolloParseException(
-            message = "Failed to parse GraphQL http network response",
-            cause = throwable
-        )
-      }
-    }
-
-    private fun <D : Operation.Data> HttpResponse.parse(
-        request: ApolloRequest<D>,
-        customScalarAdapters: CustomScalarAdapters,
-    ): ApolloResponse<D> {
-      if (statusCode !in 200..299) {
-        throw ApolloHttpException(
-            statusCode = statusCode,
-            headers = headers,
-            message = "Http request failed with status code `${statusCode} (${body?.readUtf8()})`"
-        )
-      }
-
-      return request.operation.parseJsonResponse(
-          source = body!!,
-          customScalarAdapters = customScalarAdapters
-      ).copy(
-          requestUuid = request.requestUuid,
-          executionContext = request.executionContext + HttpResponseInfo(
-              statusCode = statusCode,
-              headers = headers
-          )
-      )
-    }
-  }
-
   override fun dispose() {
     engine.dispose()
   }
@@ -186,5 +148,19 @@ class HttpNetworkTransport(
         engine = newEngine,
         interceptors = interceptors
     )
+  }
+
+  companion object {
+    private fun wrapThrowableIfNeeded(throwable: Throwable): ApolloException {
+      return if (throwable is ApolloException) {
+        throwable
+      } else {
+        // This happens for null pointer exceptions on missing fields
+        ApolloParseException(
+            message = "Failed to parse GraphQL http network response",
+            cause = throwable
+        )
+      }
+    }
   }
 }
