@@ -214,7 +214,7 @@ val apolloClient = ApolloClient.builder()
 // With
 val apolloClient = ApolloClient(
   networkTransport = HttpNetworkTransport(
-    httpRequestComposer = DefaultHttpRequestComposer(serverUrl),
+    server = serverUrl,
     engine = DefaultHttpEngine(okHttpClient = okHttpClient)
   )
 )
