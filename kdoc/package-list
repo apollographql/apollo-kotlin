@@ -3,7 +3,6 @@ $dokka.linkExtension:html
 
 module:apollo-adapters
 com.apollographql.apollo3.adapter
-com.apollographql.apollo3.api
 module:apollo-api
 com.apollographql.apollo3.api
 com.apollographql.apollo3.api.http
@@ -11,6 +10,11 @@ com.apollographql.apollo3.api.internal
 com.apollographql.apollo3.api.internal.json
 com.apollographql.apollo3.api.json
 com.apollographql.apollo3.exception
+module:apollo-ast
+com.apollographql.apollo3.ast
+com.apollographql.apollo3.ast.internal
+com.apollographql.apollo3.ast.transformation
+com.apollographql.apollo3.compiler.parser.antlr
 module:apollo-compiler
 com.apollographql.apollo3.compiler
 com.apollographql.apollo3.compiler.codegen
@@ -25,11 +29,6 @@ com.apollographql.apollo3.compiler.operationoutput
 module:apollo-gradle-plugin
 com.apollographql.apollo3.gradle.api
 com.apollographql.apollo3.gradle.internal
-module:apollo-graphql-ast
-com.apollographql.apollo3.ast
-com.apollographql.apollo3.ast.internal
-com.apollographql.apollo3.ast.transformation
-com.apollographql.apollo3.compiler.parser.antlr
 module:apollo-http-cache
 com.apollographql.apollo3.cache.http
 com.apollographql.apollo3.cache.http.internal
