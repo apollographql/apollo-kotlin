@@ -1,5 +1,6 @@
-package com.apollographql.apollo3.api
+package com.apollographql.apollo3.adapter.test
 
+import com.apollographql.apollo3.adapter.BigDecimal
 import kotlin.test.*
 
 class BigDecimalTests {
