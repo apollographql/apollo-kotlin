@@ -1,8 +1,13 @@
 package com.apollographql.apollo3.compiler
 
+import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
+import com.apollographql.apollo3.ast.GQLStringValue
+import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.encodeToGraphQLSingleQuoted
+import com.apollographql.apollo3.ast.toSchema
 import com.google.common.truth.Truth
 import org.junit.Test
+import kotlin.test.assertEquals
 
 class StringEncodingTest {
   @Test
@@ -15,5 +20,19 @@ class StringEncodingTest {
     Truth.assertThat("""
       a
       line""".trimIndent().encodeToGraphQLSingleQuoted()).isEqualTo("a\\nline")
+  }
+
+  @Test
+  fun `empty triple quotes are detected`() {
+    // See https://github.com/apollographql/apollo-android/issues/3172
+    val schema = """
+      type Query {
+        field(param: String = ${"\"\"\"\"\"\""}): String
+      }
+    """.trimIndent()
+
+    val queryType = schema.toSchema().typeDefinition("Query") as GQLObjectTypeDefinition
+    val defaultValue = (queryType.fields.first().arguments.first().defaultValue as GQLStringValue).value
+    assertEquals("", defaultValue)
   }
 }
