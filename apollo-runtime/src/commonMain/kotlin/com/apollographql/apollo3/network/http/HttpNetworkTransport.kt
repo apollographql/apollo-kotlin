@@ -44,7 +44,34 @@ class HttpNetworkTransport(
       connectTimeoutMillis: Long = 60_000,
       readTimeoutMillis: Long = 60_000,
       interceptors: List<HttpInterceptor> = emptyList(),
-  ) : this(DefaultHttpRequestComposer(serverUrl, headers), DefaultHttpEngine(connectTimeoutMillis, readTimeoutMillis), interceptors)
+  ) : this(
+      DefaultHttpRequestComposer(serverUrl, headers),
+      DefaultHttpEngine(connectTimeoutMillis, readTimeoutMillis),
+      interceptors
+  )
+
+  /**
+   *
+   * @param serverUrl
+   * @param connectTimeoutMillis The timeout interval to use when connecting
+   *
+   * - on iOS, it is used to set [NSMutableURLRequest.timeoutInterval]
+   * - on Android, it is used to set [OkHttpClient.connectTimeout]
+   *
+   * @param readTimeoutMillis The timeout interval to use when waiting for additional data.
+   *
+   * - on iOS, it is used to set [NSURLSessionConfiguration.timeoutIntervalForRequest]
+   * - on Android, it is used to set  [OkHttpClient.readTimeout]
+   */
+  constructor(
+      serverUrl: String,
+      engine: HttpEngine,
+      interceptors: List<HttpInterceptor> = emptyList(),
+  ) : this(
+      DefaultHttpRequestComposer(serverUrl, emptyMap()),
+      engine,
+      interceptors
+  )
 
   private val engineInterceptor = EngineInterceptor()
 

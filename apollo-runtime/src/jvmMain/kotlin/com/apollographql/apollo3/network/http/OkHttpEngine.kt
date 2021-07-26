@@ -106,7 +106,7 @@ fun HttpNetworkTransport(
     callFactory: Call.Factory
 ): HttpNetworkTransport {
   return HttpNetworkTransport(
-      httpRequestComposer = DefaultHttpRequestComposer(serverUrl),
+      serverUrl = serverUrl,
       engine = DefaultHttpEngine(callFactory)
   )
 }
@@ -116,7 +116,7 @@ fun HttpNetworkTransport(
     okHttpClient: OkHttpClient
 ): HttpNetworkTransport {
   return HttpNetworkTransport(
-      httpRequestComposer = DefaultHttpRequestComposer(serverUrl),
+      serverUrl = serverUrl,
       engine = DefaultHttpEngine(okHttpClient)
   )
 }
