@@ -41,7 +41,7 @@ class StringEncodingTest {
     // See https://github.com/apollographql/apollo-android/issues/3172
     val schema = """
       type Query {
-        field(param: String = ${"\"\"\"\"\"\"\"\""}): String
+        field(param: String = ${"\"\"\"\"\"\""}): String
       }
     """.trimIndent()
 
