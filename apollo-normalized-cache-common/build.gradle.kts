@@ -15,17 +15,5 @@ kotlin {
         api(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
       }
     }
-
-    val jvmMain by getting {
-      dependencies {
-        implementation(groovy.util.Eval.x(project, "x.dep.cache"))
-      }
-    }
-
-    val jvmTest by getting {
-      dependencies {
-        implementation(groovy.util.Eval.x(project, "x.dep.truth"))
-      }
-    }
   }
 }

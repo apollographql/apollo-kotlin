@@ -16,8 +16,6 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
   private val cacheLock = ReentrantReadWriteLock()
   private val adapter = Moshi.Builder().build().adapter(Any::class.java)
 
-  constructor(directory: File, maxSize: Long) : this(FileSystem.SYSTEM, directory, maxSize)
-
   private fun createDiskLruCache(): DiskLruCache {
     return DiskLruCache.create(fileSystem, directory, VERSION, ENTRY_COUNT, maxSize)
   }
@@ -60,10 +58,6 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
         adapter.toJson(it, map)
       }
       editor.newSink(ENTRY_BODY).buffer().use {
-        val map = mapOf(
-            "statusCode" to response.statusCode,
-            "headers" to response.headers,
-        )
         val responseBody = response.body
         if (responseBody != null) {
           it.writeAll(responseBody)

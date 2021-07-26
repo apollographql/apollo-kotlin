@@ -5,7 +5,6 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore.RecordChangeSubscriber
-import com.apollographql.apollo3.cache.normalized.internal.NoOpApolloStore
 import com.apollographql.apollo3.cache.normalized.internal.DefaultApolloStore
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.SharedFlow
@@ -29,9 +28,6 @@ interface ApolloStore {
      */
     fun onCacheRecordsChanged(changedRecordKeys: Set<String>)
   }
-
-  fun subscribe(subscriber: RecordChangeSubscriber)
-  fun unsubscribe(subscriber: RecordChangeSubscriber)
 
   /**
    * Read GraphQL operation from store.
@@ -179,10 +175,6 @@ interface ApolloStore {
    * releases resources associated with this store.
    */
   fun dispose()
-
-  companion object {
-    val emptyApolloStore: ApolloStore = NoOpApolloStore()
-  }
 }
 
 fun ApolloStore(

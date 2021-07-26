@@ -2,15 +2,14 @@ package com.apollographql.apollo3.compiler.ir
 
 import com.apollographql.apollo3.api.BVariable
 import com.apollographql.apollo3.api.BooleanExpression
-import com.apollographql.apollo3.compiler.codegen.CgLayout.Companion.modelName
-import com.apollographql.apollo3.compiler.codegen.CgLayout.Companion.upperCamelCaseIgnoringNonLetters
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLFragmentSpread
 import com.apollographql.apollo3.ast.GQLInlineFragment
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.SourceAwareException
+import com.apollographql.apollo3.compiler.codegen.CgLayout.Companion.modelName
+import com.apollographql.apollo3.compiler.codegen.CgLayout.Companion.upperCamelCaseIgnoringNonLetters
 
 internal class ResponseBasedModelGroupBuilder(
     schema: Schema,
@@ -197,7 +196,7 @@ private class FieldNodeBuilder(
     )
   }
 
-  class FieldState(
+  private class FieldState(
       val superResponseFields: List<ResponseField>,
       val fragmentResponseFields: List<ResponseField>,
       val info: IrFieldInfo,

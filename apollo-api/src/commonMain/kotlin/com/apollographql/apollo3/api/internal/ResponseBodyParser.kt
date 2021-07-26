@@ -28,6 +28,7 @@ object ResponseBodyParser {
     var errors: List<Error>? = null
     var extensions: Map<String, Any?>? = null
     while (jsonReader.hasNext()) {
+      @Suppress("UNCHECKED_CAST")
       when (jsonReader.nextName()) {
         "data" -> data = operation.adapter().nullable().fromJson(jsonReader, customScalarAdapters)
         "errors" -> errors = jsonReader.readErrors()
