@@ -35,4 +35,18 @@ class StringEncodingTest {
     val defaultValue = (queryType.fields.first().arguments.first().defaultValue as GQLStringValue).value
     assertEquals("", defaultValue)
   }
+
+  @Test
+  fun `string containing to double quotes is a valid default value`() {
+    // See https://github.com/apollographql/apollo-android/issues/3172
+    val schema = """
+      type Query {
+        field(param: String = ${"\"\"\"\"\"\"\"\""}): String
+      }
+    """.trimIndent()
+
+    val queryType = schema.toSchema().typeDefinition("Query") as GQLObjectTypeDefinition
+    val defaultValue = (queryType.fields.first().arguments.first().defaultValue as GQLStringValue).value
+    assertEquals("", defaultValue)
+  }
 }
