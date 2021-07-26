@@ -80,6 +80,7 @@ class DeclarativeCacheTest {
     val cacheResolver = object : CacheResolver {
       override fun resolveField(field: CompiledField, variables: Executable.Variables, parent: Map<String, Any?>, parentId: String): Any? {
         if (field.name == "books") {
+          @Suppress("UNCHECKED_CAST")
           val isbns = field.resolveArgument("isbns", variables) as? List<String>
           if (isbns != null) {
             return isbns.map { CacheKey.from(field.type.leafType().name, listOf(it))}

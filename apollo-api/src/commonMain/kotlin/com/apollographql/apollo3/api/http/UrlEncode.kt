@@ -21,5 +21,5 @@ internal fun String.urlEncode(
 }
 
 private fun Char.percentEncode(): String {
-  return "%${toInt().toString(16)}".uppercase()
+  return "%${code.toString(16)}".uppercase()
 }

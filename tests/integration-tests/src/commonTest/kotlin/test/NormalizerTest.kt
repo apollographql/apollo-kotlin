@@ -25,6 +25,7 @@ import readResource
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 /**
@@ -211,8 +212,12 @@ class NormalizerTest {
     val lukeRecord = records.get(TEST_FIELD_KEY_JEDI + ".friends.0")
     assertEquals(lukeRecord!!["name"], "Luke Skywalker")
     assertEquals(lukeRecord["height({\"unit\":\"METER\"})"], 1.72)
-    val friends = records.get(TEST_FIELD_KEY_JEDI)!!["friends"] as List<Any>?
-    assertEquals(friends!![0], CacheKey("$TEST_FIELD_KEY_JEDI.friends.0"))
+
+
+    val friends = records[TEST_FIELD_KEY_JEDI]!!["friends"]
+
+    assertIs<List<Any>>(friends)
+    assertEquals(friends[0], CacheKey("$TEST_FIELD_KEY_JEDI.friends.0"))
     assertEquals(friends[1], CacheKey("$TEST_FIELD_KEY_JEDI.friends.1"))
     assertEquals(friends[2], CacheKey("$TEST_FIELD_KEY_JEDI.friends.2"))
   }
@@ -221,9 +226,8 @@ class NormalizerTest {
   fun list_of_objects_with_null_object() {
     val records = records(AllPlanetsQuery(), "AllPlanetsListOfObjectWithNullObject.json")
     val fieldKey = "allPlanets({\"first\":300})"
-    var record: Record?
 
-    record = records.get("$fieldKey.planets.0")
+    var record: Record? = records["$fieldKey.planets.0"]
     assertTrue(record?.get("filmConnection") == null)
     record = records.get("$fieldKey.planets.0.filmConnection")
     assertTrue(record == null)

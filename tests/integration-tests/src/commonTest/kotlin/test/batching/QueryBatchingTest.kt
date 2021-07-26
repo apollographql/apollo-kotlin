@@ -20,6 +20,7 @@ import kotlin.test.Test
 import kotlin.test.Ignore
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
+import kotlin.test.assertIs
 
 class QueryBatchingTest {
   @Test
@@ -76,7 +77,9 @@ class QueryBatchingTest {
       assertEquals("84", result2.await().data?.launch?.id)
 
       val request = mockServer.takeRequest()
-      val requests = AnyAdapter.fromJson(BufferedSourceJsonReader(Buffer().write(request.body))) as List<Map<String, Any?>>
+      val requests = AnyAdapter.fromJson(BufferedSourceJsonReader(Buffer().write(request.body)))
+
+      assertIs<List<Map<String, Any?>>>(requests)
       assertEquals(2, requests.size)
       assertEquals("GetLaunch", requests[0]["operationName"])
       assertEquals("GetLaunch2", requests[1]["operationName"])

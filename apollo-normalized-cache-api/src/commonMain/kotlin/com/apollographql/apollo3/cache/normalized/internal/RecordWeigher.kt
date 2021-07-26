@@ -37,7 +37,7 @@ object RecordWeigher {
       is Int -> SIZE_OF_INT
       is Double -> SIZE_OF_DOUBLE
       is List<*> -> {
-        SIZE_OF_ARRAY_OVERHEAD + field.sumBy { weighField(it) }
+        SIZE_OF_ARRAY_OVERHEAD + field.sumOf { weighField(it) }
       }
       is CacheKey -> {
         SIZE_OF_CACHE_KEY_OVERHEAD + field.key.commonAsUtf8ToByteArray().size
@@ -46,7 +46,7 @@ object RecordWeigher {
        * Custom scalars with a json object representation are stored directly in the record
        */
       is Map<*, *> -> {
-        SIZE_OF_MAP_OVERHEAD + field.keys.sumBy { weighField(it) } + field.values.sumBy { weighField(it) }
+        SIZE_OF_MAP_OVERHEAD + field.keys.sumOf { weighField(it) } + field.values.sumOf { weighField(it) }
       }
       else -> error("Unknown field type in Record: '$field'")
     }

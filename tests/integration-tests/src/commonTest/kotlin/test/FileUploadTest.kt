@@ -2,10 +2,8 @@ package test
 
 import checkTestFixture
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Upload
-import com.apollographql.apollo3.api.UploadAdapter
 import com.apollographql.apollo3.integration.upload.MultipleUploadMutation
 import com.apollographql.apollo3.integration.upload.NestedUploadMutation
 import com.apollographql.apollo3.integration.upload.SingleUploadMutation
@@ -41,12 +39,6 @@ class FileUploadTest {
       nested = nestedObject2,
       topFile = upload2,
       topFileList = listOf(upload1, upload0)
-  )
-
-  private val adapterCache = CustomScalarAdapters(
-      mapOf(
-          "Upload" to UploadAdapter
-      )
   )
 
   private lateinit var mockServer: MockServer
@@ -124,7 +116,6 @@ class FileUploadTest {
   }
 
   private class Part(
-      val contentLength: Long,
       val contentDisposition: String?,
       val contentType: String?,
       val bytes: ByteArray,
@@ -163,7 +154,6 @@ class FileUploadTest {
           }
           parts.add(
               Part(
-                  currentLength,
                   currentDisposition,
                   currentType,
                   buffer.readByteArray(currentLength)
@@ -173,13 +163,13 @@ class FileUploadTest {
           currentDisposition = null
           currentType = null
 
-          check(readByte() == '\r'.toByte())
-          check(readByte() == '\n'.toByte())
+          check(readByte() == '\r'.code.toByte())
+          check(readByte() == '\n'.code.toByte())
           check(readUtf8("--$boundary".length.toLong()) == "--$boundary")
           when (val suffix = readUtf8(2)) {
             "--" -> {
-              check(readByte() == '\r'.toByte())
-              check(readByte() == '\n'.toByte())
+              check(readByte() == '\r'.code.toByte())
+              check(readByte() == '\n'.code.toByte())
               break
             }
             "\r\n" -> Unit

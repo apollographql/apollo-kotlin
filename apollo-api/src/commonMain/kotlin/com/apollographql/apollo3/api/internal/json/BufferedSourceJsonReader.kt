@@ -225,7 +225,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
           }
           '=' -> {
             checkLenient()
-            if (source.request(1) && buffer[0] == '>'.toByte()) {
+            if (source.request(1) && buffer[0] == '>'.code.toByte()) {
               buffer.readByte() // Consume '>'.
             }
           }
@@ -299,7 +299,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
       return result
     }
 
-    if (!isLiteral(buffer[0].toChar())) {
+    if (!isLiteral(buffer[0].toInt().toChar())) {
       throw syntaxError("Expected value")
     }
 
@@ -313,17 +313,17 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     val keywordUpper: String
     val peeking: Int
     when (buffer[0]) {
-      't'.toByte(), 'T'.toByte() -> {
+      't'.code.toByte(), 'T'.code.toByte() -> {
         keyword = "true"
         keywordUpper = "TRUE"
         peeking = PEEKED_TRUE
       }
-      'f'.toByte(), 'F'.toByte() -> {
+      'f'.code.toByte(), 'F'.code.toByte() -> {
         keyword = "false"
         keywordUpper = "FALSE"
         peeking = PEEKED_FALSE
       }
-      'n'.toByte(), 'N'.toByte() -> {
+      'n'.code.toByte(), 'N'.code.toByte() -> {
         keyword = "null"
         keywordUpper = "NULL"
         peeking = PEEKED_NULL
@@ -339,12 +339,12 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
         return PEEKED_NONE
       }
       val c = buffer[i.toLong()]
-      if (c != keyword[i].toByte() && c != keywordUpper[i].toByte()) {
+      if (c != keyword[i].code.toByte() && c != keywordUpper[i].code.toByte()) {
         return PEEKED_NONE
       }
     }
 
-    if (source.request(length + 1.toLong()) && isLiteral(buffer[length.toLong()].toChar())) {
+    if (source.request(length + 1.toLong()) && isLiteral(buffer[length.toLong()].toInt().toChar())) {
       return PEEKED_NONE // Don't match trues, falsey or nullsoft!
     }
 
@@ -362,7 +362,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     var i = 0
     loop@ while (source.request(i + 1.toLong())) {
       val c = buffer[i.toLong()]
-      when (c.toChar()) {
+      when (c.toInt().toChar()) {
         '-' -> {
           when (last) {
             NUMBER_CHAR_NONE -> {
@@ -399,8 +399,8 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
           }
         }
         else -> {
-          if (c < '0'.toByte() || c > '9'.toByte()) {
-            if (!isLiteral(c.toChar())) {
+          if (c < '0'.code.toByte() || c > '9'.code.toByte()) {
+            if (!isLiteral(c.toInt().toChar())) {
               break@loop
             } else {
               return PEEKED_NONE
@@ -409,7 +409,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
 
           when (last) {
             NUMBER_CHAR_SIGN, NUMBER_CHAR_NONE -> {
-              value = -(c - '0'.toByte()).toLong()
+              value = -(c - '0'.code.toByte()).toLong()
               last = NUMBER_CHAR_DIGIT
             }
 
@@ -417,7 +417,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
               if (value == 0L) {
                 return PEEKED_NONE // Leading '0' prefix is not allowed (since it could be octal).
               }
-              val newValue = value * 10 - (c - '0'.toByte())
+              val newValue = value * 10 - (c - '0'.code.toByte())
               fitsInLong = fitsInLong and (value > MIN_INCOMPLETE_INTEGER) || value == MIN_INCOMPLETE_INTEGER && newValue < value
               value = newValue
             }
@@ -577,7 +577,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
       val index = source.indexOfElement(runTerminator)
       if (index == -1L) throw syntaxError("Unterminated string")
       // If we've got an escape character, we're going to need a string builder.
-      if (buffer[index] == '\\'.toByte()) {
+      if (buffer[index] == '\\'.code.toByte()) {
         if (builder == null) builder = StringBuilder()
         builder.append(buffer.readUtf8(index))
         buffer.readByte() // '\'
@@ -609,7 +609,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     while (true) {
       val index = source.indexOfElement(runTerminator)
       if (index == -1L) throw syntaxError("Unterminated string")
-      if (buffer[index] == '\\'.toByte()) {
+      if (buffer[index] == '\\'.code.toByte()) {
         buffer.skip(index + 1)
         readEscapeCharacter()
       } else {
@@ -790,17 +790,17 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     var p = 0
     loop@ while (source.request(p + 1.toLong())) {
       val c = buffer[p++.toLong()].toInt()
-      if (c == '\n'.toInt() || c == ' '.toInt() || c == '\r'.toInt() || c == '\t'.toInt()) {
+      if (c == '\n'.code || c == ' '.code || c == '\r'.code || c == '\t'.code) {
         continue
       }
       buffer.skip(p - 1.toLong())
-      if (c == '/'.toInt()) {
+      if (c == '/'.code) {
         if (!source.request(2)) {
           return c
         }
         checkLenient()
         val peek = buffer[1]
-        return when (peek.toChar()) {
+        return when (peek.toInt().toChar()) {
           '*' -> {
             // skip a /* c-style comment */
             buffer.readByte() // '/'
@@ -823,7 +823,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
           }
           else -> c
         }
-      } else if (c == '#'.toInt()) { // Skip a # hash end-of-line comment. The JSON RFC doesn't specify this behaviour, but it's
+      } else if (c == '#'.code) { // Skip a # hash end-of-line comment. The JSON RFC doesn't specify this behaviour, but it's
         // required to parse existing documents.
         checkLenient()
         skipToEndOfLine()
@@ -862,7 +862,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   private fun skipTo(toFind: String): Boolean {
     outer@ while (source.request(toFind.length.toLong())) {
       for (c in toFind.indices) {
-        if (buffer[c.toLong()] != toFind[c].toByte()) {
+        if (buffer[c.toLong()] != toFind[c].code.toByte()) {
           buffer.readByte()
           continue@outer
         }
@@ -884,7 +884,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   private fun readEscapeCharacter(): Char {
     if (!source.request(1)) throw syntaxError("Unterminated escape sequence")
 
-    return when (val escaped = buffer.readByte().toChar()) {
+    return when (val escaped = buffer.readByte().toInt().toChar()) {
       'u' -> {
         if (!source.request(4)) {
           throw EOFException("Unterminated escape sequence at path " + getPath())
@@ -895,11 +895,11 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
         val end = i + 4
         while (i < end) {
           val c = buffer[i.toLong()]
-          result = (result.toInt() shl 4).toChar()
+          result = (result.code shl 4).toChar()
           result += when {
-            c >= '0'.toByte() && c <= '9'.toByte() -> (c - '0'.toByte())
-            c >= 'a'.toByte() && c <= 'f'.toByte() -> (c - 'a'.toByte() + 10)
-            c >= 'A'.toByte() && c <= 'F'.toByte() -> (c - 'A'.toByte() + 10)
+            c >= '0'.code.toByte() && c <= '9'.code.toByte() -> (c - '0'.code.toByte())
+            c >= 'a'.code.toByte() && c <= 'f'.code.toByte() -> (c - 'a'.code.toByte() + 10)
+            c >= 'A'.code.toByte() && c <= 'F'.code.toByte() -> (c - 'A'.code.toByte() + 10)
             else -> throw syntaxError("\\u" + buffer.readUtf8(4))
           }
           i++

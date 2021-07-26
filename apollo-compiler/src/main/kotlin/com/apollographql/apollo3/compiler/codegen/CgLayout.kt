@@ -1,3 +1,5 @@
+
+
 package com.apollographql.apollo3.compiler.codegen
 
 import com.apollographql.apollo3.compiler.PackageNameGenerator
@@ -39,6 +41,7 @@ class CgLayout(
   fun operationAdapterPackageName(filePath: String) = "${operationPackageName(filePath)}.adapter".stripDots()
   fun operationResponseFieldsPackageName(filePath: String) = "${operationPackageName(filePath)}.selections".stripDots()
 
+  @Suppress("UNUSED_PARAMETER")
   fun fragmentPackageName(filePath: String?) = fragmentPackageName
 
   fun fragmentAdapterPackageName(filePath: String?) = "${fragmentPackageName(filePath)}.adapter".stripDots()
