@@ -2,6 +2,10 @@ package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.ast.toUtf8
+import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
+import com.apollographql.apollo3.compiler.introspection.toGQLDocument
+import com.apollographql.apollo3.compiler.introspection.toIntrospectionSchema
+import junit.framework.Assert.assertTrue
 import org.junit.Assert
 import org.junit.Test
 import java.io.File
@@ -86,5 +90,20 @@ class SdlWritingTest {
     if (path != null) {
       Assert.fail("Schemas don't match at: $path")
     }
+  }
+
+  @Test
+  fun `empty string default value introspection`() {
+    val src = """
+      type Query {
+        field(arg: String! = ""): String
+      }
+    """.trimIndent()
+
+    val jsonSchema = src.toSchema().toIntrospectionSchema().toJson()
+    assertTrue(jsonSchema.contains("\"defaultValue\":\"\\\"\\\"\""))
+
+    val sdlSchema = jsonSchema.toIntrospectionSchema().toGQLDocument().toUtf8()
+    assertTrue(sdlSchema.contains("arg: String! = \"\""))
   }
 }

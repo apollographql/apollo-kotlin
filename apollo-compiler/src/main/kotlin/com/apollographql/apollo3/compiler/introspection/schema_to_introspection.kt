@@ -56,7 +56,7 @@ private class IntrospectionSchemaBuilder(private val schema: Schema) {
         isDeprecated = deprecationReason != null,
         deprecationReason = deprecationReason,
         type = type.toSchemaType(schema),
-        defaultValue = defaultValue?.toKotlinValue(true) // TODO: difference between null and absent
+        defaultValue = defaultValue?.toUtf8()
     )
   }
 
