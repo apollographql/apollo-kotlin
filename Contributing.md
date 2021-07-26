@@ -10,7 +10,7 @@ Project Setup
 
 This project is developed using either IntelliJ IDEA or Android Studio. To build multiplatform projects, you need MacOS and the Xcode developer tools.
  
-To build the samples and integration tests, use the `composite` build. It's a composite build that includes the main build so that it's possible to use `apollo-gradle-plugin` with dependency substitution.
+To build the integration tests, use the `tests` build. It's a composite build that includes the main build so that it's possible to use `apollo-gradle-plugin` with dependency substitution.
 
 DOs and DON'Ts
 --------------
