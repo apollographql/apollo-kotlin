@@ -18,7 +18,6 @@ import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateRespo
 import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSemanticNaming
 import com.apollographql.apollo3.compiler.Options.Companion.defaultWarnOnDeprecatedUsages
 import com.apollographql.apollo3.compiler.PackageNameGenerator
-import com.apollographql.apollo3.compiler.Roots
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
@@ -143,7 +142,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @TaskAction
   fun taskAction() {
-    val roots = Roots(objectFactory.fileCollection().from(rootFolders).files.toList())
     val schemaFiles = schemaFiles.files
     val metadata = metadataFiles.files.toList().map { ApolloMetadata.readFrom(it) }.merge()
 

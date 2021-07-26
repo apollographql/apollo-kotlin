@@ -1,8 +1,5 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
-import com.apollographql.apollo3.cache.normalized.NormalizedCache
-
-
 internal typealias Weigher<Key, Value> = (Key, Value?) -> Int
 
 /**
@@ -77,7 +74,10 @@ internal class LruCache<Key, Value>(
   }
 
   fun dump(): Map<Key, Value> {
-    return cache.mapValues { (_, value) -> value.value as Value }
+    return cache.mapValues { (_, value) ->
+      @Suppress("UNCHECKED_CAST")
+      value.value as Value
+    }
   }
 
   private fun trim() {

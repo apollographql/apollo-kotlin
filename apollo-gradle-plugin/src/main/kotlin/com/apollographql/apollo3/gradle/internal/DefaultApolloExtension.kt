@@ -42,8 +42,8 @@ abstract class DefaultApolloExtension(
 
   // Called when the plugin is applied
   init {
-    require(GradleVersion.current().compareTo(GradleVersion.version(MIN_GRADLE_VERSION)) >= 0) {
-      "apollo-android requires Gradle version ${MIN_GRADLE_VERSION} or greater"
+    require(GradleVersion.current() >= GradleVersion.version(MIN_GRADLE_VERSION)) {
+      "apollo-android requires Gradle version $MIN_GRADLE_VERSION or greater"
     }
 
     apolloConfiguration = project.configurations.create(ModelNames.apolloConfiguration()) {
@@ -308,6 +308,7 @@ abstract class DefaultApolloExtension(
   private fun maybeRegisterCheckDuplicates(rootProject: Project, service: Service): TaskProvider<ApolloCheckDuplicatesTask> {
     val taskName = ModelNames.checkApolloDuplicates(service)
     return try {
+      @Suppress("UNCHECKED_CAST")
       rootProject.tasks.named(taskName) as TaskProvider<ApolloCheckDuplicatesTask>
     } catch (e: Exception) {
       val configuration = rootProject.configurations.create(ModelNames.duplicatesConsumerConfiguration(service)) {

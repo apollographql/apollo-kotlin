@@ -710,6 +710,7 @@ class DiskLruCache internal constructor(/*
     }
   }
 
+  @Suppress("UNUSED_PARAMETER")
   fun closeQuietly(closeable: Closeable?, name: String?) {
     try {
       closeable?.close()
@@ -918,6 +919,7 @@ class DiskLruCache internal constructor(/*
         for (i in 0 until valueCount) {
           sources[i] = fileSystem.source(cleanFiles[i])
         }
+        @Suppress("UNCHECKED_CAST")
         Snapshot(key, sequenceNumber, sources as Array<Source>, lengths)
       } catch (e: FileNotFoundException) {
         // A file must have been deleted manually!
