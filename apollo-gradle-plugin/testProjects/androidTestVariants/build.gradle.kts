@@ -61,10 +61,12 @@ configure<BaseExtension> {
 }
 
 configure<ApolloExtension> {
-  createAllAndroidVariantServices(".", "example") {
-    // Here we set the same schema file for all variants
-    schemaFile.set(file("src/main/graphql/com/example/schema.sdl"))
+  service("test") {
+    srcDir("src/test/graphql")
     packageName.set("com.example")
+    outputDirConnection {
+      connectToAllAndroidUnitTestVariants()
+    }
   }
 }
 

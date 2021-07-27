@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.gradle.internal
 
+import com.android.build.gradle.api.BaseVariant
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.PackageNameGenerator
@@ -13,6 +14,7 @@ import com.apollographql.apollo3.gradle.api.isKotlinMultiplatform
 import com.apollographql.apollo3.gradle.api.kotlinProjectExtension
 import com.apollographql.apollo3.gradle.api.kotlinMultiplatformExtension
 import com.apollographql.apollo3.gradle.api.kotlinProjectExtensionOrThrow
+import com.apollographql.apollo3.gradle.internal.DefaultApolloExtension.Companion.isReallyEmpty
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -464,72 +466,62 @@ abstract class DefaultApolloExtension(
   override fun createAllAndroidVariantServices(
       sourceFolder: String,
       nameSuffix: String,
-      action: Action<Service>
+      action: Action<Service>,
   ) {
     /**
-     * The android plugin will call us back when the variants are ready but before that happens, disable the default service
+     * The android plugin will call us back when the variants are ready but before `afterEvaluate`,
+     * disable the default service
      */
     registerDefaultService = false
 
-    AndroidProject.onEachVariant(project = project, withTestVariants = true) { variant ->
-      val name = "${variant.name}${nameSuffix.capitalizeFirstLetter()}"
-
-      val service = project.objects.newInstance(DefaultService::class.java, project, name)
-      action.execute(service)
-
-      check(!service.sourceFolder.isPresent) {
-        "ApolloGraphQL: service.sourceFolder is not used when calling createAllAndroidVariantServices. Use the parameter instead"
-      }
-      if (service.graphqlSourceDirectorySet.isReallyEmpty) {
-        check(!File(sourceFolder).isRooted && !sourceFolder.startsWith("../..")) {
-          """
+    check(!File(sourceFolder).isRooted && !sourceFolder.startsWith("../..")) {
+      """
           ApolloGraphQL: using 'sourceFolder = "$sourceFolder"' makes no sense with Android variants as the same generated models will be used in all variants.
           """.trimIndent()
+    }
+
+    AndroidProject.onEachVariant(project, true) { variant ->
+      val name = "${variant.name}${nameSuffix.capitalizeFirstLetter()}"
+
+      service(name) { service ->
+        action.execute(service)
+
+        check(!service.sourceFolder.isPresent) {
+          "ApolloGraphQL: service.sourceFolder is not used when calling createAllAndroidVariantServices. Use the parameter instead"
         }
         variant.sourceSets.forEach { sourceProvider ->
           service.srcDir("src/${sourceProvider.name}/graphql/$sourceFolder")
         }
-      }
-      if (service.outputDirAction == null) {
-        service.outputDirAction = Action<Service.OutputDirConnection> { wire ->
+        (service as DefaultService).outputDirAction = Action<Service.OutputDirConnection> { wire ->
           wire.connectToAndroidVariant(variant)
         }
       }
-      registerService(service)
     }
   }
 
   override fun createAllKotlinSourceSetServices(sourceFolder: String, nameSuffix: String, action: Action<Service>) {
     registerDefaultService = false
 
+    check(!File(sourceFolder).isRooted && !sourceFolder.startsWith("../..")) {
+      """ApolloGraphQL: using 'sourceFolder = "$sourceFolder"' makes no sense with Kotlin source sets as the same generated models will be used in all source sets.
+          """.trimMargin()
+    }
+
     project.kotlinProjectExtensionOrThrow.sourceSets.forEach { kotlinSourceSet ->
       val name = "${kotlinSourceSet.name}${nameSuffix.capitalizeFirstLetter()}"
 
-      val service = project.objects.newInstance(DefaultService::class.java, project, name)
-      action.execute(service)
-
-      check(!service.sourceFolder.isPresent) {
-        "ApolloGraphQL: service.sourceFolder is not used when calling createAllKotlinJvmSourceSetServices. Use the parameter instead"
-      }
-
-      if (service.graphqlSourceDirectorySet.isReallyEmpty) {
-        check(!File(sourceFolder).isRooted && !sourceFolder.startsWith("../..")) {
-          """ApolloGraphQL: using 'sourceFolder = "$sourceFolder"' makes no sense with Kotlin source sets as the same generated models will be used in all source sets.
-          """.trimMargin()
+      service(name) { service ->
+        action.execute(service)
+        check(!service.sourceFolder.isPresent) {
+          "ApolloGraphQL: service.sourceFolder is not used when calling createAllKotlinJvmSourceSetServices. Use the parameter instead"
         }
-
         service.srcDir("src/${kotlinSourceSet.name}/graphql/$sourceFolder")
-      }
-      if (service.outputDirAction == null) {
-        service.outputDirAction = Action<Service.OutputDirConnection> { wire ->
-          kotlinSourceSet.kotlin.srcDir(wire.outputDir)
+        (service as DefaultService).outputDirAction = Action<Service.OutputDirConnection> { connection ->
+          kotlinSourceSet.kotlin.srcDir(connection.outputDir)
         }
       }
-
-      registerService(service)
     }
   }
-
 
   abstract override val linkSqlite: Property<Boolean>
 

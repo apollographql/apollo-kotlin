@@ -361,13 +361,13 @@ interface Service {
     fun connectToAllAndroidLibraryVariants()
 
     /**
-     * Connects the generated sources to all the Android test variants.
+     * Connects the generated sources to all the Android instrumented test variants.
      * Throws if the Android plugin is not applied
      */
-    fun connectToAllAndroidTestVariants()
+    fun connectToAllAndroidInstrumentedTestVariants()
 
     /**
-     * Connects the generated sources to all the Android test variants.
+     * Connects the generated sources to all the Android unit test variants.
      * Throws if the Android plugin is not applied
      */
     fun connectToAllAndroidUnitTestVariants()

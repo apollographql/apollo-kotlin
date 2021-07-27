@@ -61,7 +61,7 @@ internal class DefaultOutputDirConnection(
     }
   }
 
-  override fun connectToAllAndroidTestVariants() {
+  override fun connectToAllAndroidInstrumentedTestVariants() {
     project.testVariants?.all { variant ->
       connectToAndroidVariant(variant)
     }
