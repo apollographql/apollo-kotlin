@@ -38,7 +38,7 @@ configure<com.apollographql.apollo3.gradle.api.ApolloExtension> {
         service(it.name) {
           when (it.name) {
             "httpcache" -> {
-              withOperationOutput {}
+              generateOperationOutput.set(true)
               customScalarsMapping.set(mapOf(
                   "Date" to "kotlinx.datetime.LocalDate"
               ))
@@ -61,15 +61,8 @@ configure<com.apollographql.apollo3.gradle.api.ApolloExtension> {
 
           codegenModels.set("operationBased")
           flattenModels.set(false)
-          withOutputDir {
-            val kotlinMultiplatformExtension = project.kotlinMultiplatformExtension!!
-
-            val sourceDirectorySet = kotlinMultiplatformExtension
-                .sourceSets
-                .getByName(org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet.COMMON_TEST_SOURCE_SET_NAME)
-                .kotlin
-
-            sourceDirectorySet.srcDir(outputDir)
+          outputDirConnection {
+            connectToKotlinSourceSet("commonTest")
           }
         }
       }

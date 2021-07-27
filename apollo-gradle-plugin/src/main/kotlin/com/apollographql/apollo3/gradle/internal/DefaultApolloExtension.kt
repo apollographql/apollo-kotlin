@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.gradle.internal
 
+import com.android.build.gradle.api.BaseVariant
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.PackageNameGenerator
@@ -7,13 +8,13 @@ import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.gradle.api.AndroidProject
 import com.apollographql.apollo3.gradle.api.ApolloAttributes
 import com.apollographql.apollo3.gradle.api.ApolloExtension
-import com.apollographql.apollo3.gradle.api.KotlinJvmProject
-import com.apollographql.apollo3.gradle.api.KotlinMultiplatformProject
 import com.apollographql.apollo3.gradle.api.Service
 import com.apollographql.apollo3.gradle.api.androidExtension
 import com.apollographql.apollo3.gradle.api.isKotlinMultiplatform
-import com.apollographql.apollo3.gradle.api.kotlinJvmExtension
+import com.apollographql.apollo3.gradle.api.kotlinProjectExtension
 import com.apollographql.apollo3.gradle.api.kotlinMultiplatformExtension
+import com.apollographql.apollo3.gradle.api.kotlinProjectExtensionOrThrow
+import com.apollographql.apollo3.gradle.internal.DefaultApolloExtension.Companion.isReallyEmpty
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -26,6 +27,7 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
 import java.io.File
 
@@ -258,14 +260,15 @@ abstract class DefaultApolloExtension(
     }
 
     if (service.operationOutputAction != null) {
-      val operationOutputWire = Service.OperationOutputWire(
+      val operationOutputConnection = Service.OperationOutputConnection(
           task = codegenProvider,
           operationOutputFile = codegenProvider.flatMap { it.operationOutputFile }
       )
-      service.operationOutputAction!!.execute(operationOutputWire)
+      service.operationOutputAction!!.execute(operationOutputConnection)
     }
 
-    val outputDirWire = Service.OutputDirWire(
+    val outputDirWire = DefaultOutputDirConnection(
+        project = project,
         task = codegenProvider,
         outputDir = codegenProvider.flatMap { it.outputDir }
     )
@@ -296,11 +299,22 @@ abstract class DefaultApolloExtension(
   /**
    * The default wiring.
    */
-  private val mainWireAction = Action<Service.OutputDirWire> { wire ->
+  private val mainWireAction = Action<Service.OutputDirConnection> { wire ->
     when {
-      project.kotlinMultiplatformExtension != null -> KotlinMultiplatformProject.registerGeneratedDirectoryToCommonMainSourceSet(project, wire)
-      project.androidExtension != null -> AndroidProject.registerGeneratedDirectoryToAllVariants(project, wire)
-      project.kotlinJvmExtension != null -> KotlinJvmProject.registerGeneratedDirectoryToMainSourceSet(project, wire)
+      project.kotlinMultiplatformExtension != null -> {
+        wire.connectToKotlinSourceSet(KotlinSourceSet.COMMON_MAIN_SOURCE_SET_NAME)
+      }
+      project.androidExtension != null -> {
+        /**
+         * Call both application and library
+         * Only one will be active at a time
+         */
+        wire.connectToAllAndroidApplicationVariants()
+        wire.connectToAllAndroidLibraryVariants()
+      }
+      project.kotlinProjectExtension != null -> {
+        wire.connectToKotlinSourceSet("main")
+      }
       else -> throw IllegalStateException("Cannot find the Kotlin extension, please apply a kotlin plugin")
     }
   }
@@ -449,71 +463,65 @@ abstract class DefaultApolloExtension(
     }
   }
 
-  override fun createAllAndroidVariantServices(sourceFolder: String, nameSuffix: String, action: Action<Service>) {
+  override fun createAllAndroidVariantServices(
+      sourceFolder: String,
+      nameSuffix: String,
+      action: Action<Service>,
+  ) {
     /**
-     * The android plugin will call us back when the variants are ready but before that happens, disable the default service
+     * The android plugin will call us back when the variants are ready but before `afterEvaluate`,
+     * disable the default service
      */
     registerDefaultService = false
 
-    AndroidProject.onEachVariant(project = project, withTestVariants = true) { variant ->
-      val name = "${variant.name}${nameSuffix.capitalizeFirstLetter()}"
-
-      val service = project.objects.newInstance(DefaultService::class.java, project, name)
-      action.execute(service)
-
-      check(!service.sourceFolder.isPresent) {
-        "ApolloGraphQL: service.sourceFolder is not used when calling createAllAndroidVariantServices. Use the parameter instead"
-      }
-      if (service.graphqlSourceDirectorySet.isReallyEmpty) {
-        check(!File(sourceFolder).isRooted && !sourceFolder.startsWith("../..")) {
-          """
+    check(!File(sourceFolder).isRooted && !sourceFolder.startsWith("../..")) {
+      """
           ApolloGraphQL: using 'sourceFolder = "$sourceFolder"' makes no sense with Android variants as the same generated models will be used in all variants.
           """.trimIndent()
+    }
+
+    AndroidProject.onEachVariant(project, true) { variant ->
+      val name = "${variant.name}${nameSuffix.capitalizeFirstLetter()}"
+
+      service(name) { service ->
+        action.execute(service)
+
+        check(!service.sourceFolder.isPresent) {
+          "ApolloGraphQL: service.sourceFolder is not used when calling createAllAndroidVariantServices. Use the parameter instead"
         }
         variant.sourceSets.forEach { sourceProvider ->
           service.srcDir("src/${sourceProvider.name}/graphql/$sourceFolder")
         }
-      }
-      if (service.outputDirAction == null) {
-        service.outputDirAction = Action<Service.OutputDirWire> { wire ->
-          AndroidProject.registerGeneratedDirectory(project, variant, wire)
+        (service as DefaultService).outputDirAction = Action<Service.OutputDirConnection> { wire ->
+          wire.connectToAndroidVariant(variant)
         }
       }
-      registerService(service)
     }
   }
 
-  override fun createAllKotlinJvmSourceSetServices(sourceFolder: String, nameSuffix: String, action: Action<Service>) {
+  override fun createAllKotlinSourceSetServices(sourceFolder: String, nameSuffix: String, action: Action<Service>) {
     registerDefaultService = false
 
-    KotlinJvmProject.onEachSourceSet(project) { kotlinSourceSet ->
+    check(!File(sourceFolder).isRooted && !sourceFolder.startsWith("../..")) {
+      """ApolloGraphQL: using 'sourceFolder = "$sourceFolder"' makes no sense with Kotlin source sets as the same generated models will be used in all source sets.
+          """.trimMargin()
+    }
+
+    project.kotlinProjectExtensionOrThrow.sourceSets.forEach { kotlinSourceSet ->
       val name = "${kotlinSourceSet.name}${nameSuffix.capitalizeFirstLetter()}"
 
-      val service = project.objects.newInstance(DefaultService::class.java, project, name)
-      action.execute(service)
-
-      check(!service.sourceFolder.isPresent) {
-        "ApolloGraphQL: service.sourceFolder is not used when calling createAllKotlinJvmSourceSetServices. Use the parameter instead"
-      }
-
-      if (service.graphqlSourceDirectorySet.isReallyEmpty) {
-        check(!File(sourceFolder).isRooted && !sourceFolder.startsWith("../..")) {
-          """ApolloGraphQL: using 'sourceFolder = "$sourceFolder"' makes no sense with Kotlin source sets as the same generated models will be used in all source sets.
-          """.trimMargin()
+      service(name) { service ->
+        action.execute(service)
+        check(!service.sourceFolder.isPresent) {
+          "ApolloGraphQL: service.sourceFolder is not used when calling createAllKotlinJvmSourceSetServices. Use the parameter instead"
         }
-
         service.srcDir("src/${kotlinSourceSet.name}/graphql/$sourceFolder")
-      }
-      if (service.outputDirAction == null) {
-        service.outputDirAction = Action<Service.OutputDirWire> { wire ->
-          kotlinSourceSet.kotlin.srcDir(wire.outputDir)
+        (service as DefaultService).outputDirAction = Action<Service.OutputDirConnection> { connection ->
+          kotlinSourceSet.kotlin.srcDir(connection.outputDir)
         }
       }
-
-      registerService(service)
     }
   }
-
 
   abstract override val linkSqlite: Property<Boolean>
 
