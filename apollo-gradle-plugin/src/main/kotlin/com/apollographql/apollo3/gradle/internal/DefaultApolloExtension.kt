@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.gradle.internal
 
-import com.android.build.gradle.api.BaseVariant
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.PackageNameGenerator
@@ -14,7 +13,6 @@ import com.apollographql.apollo3.gradle.api.isKotlinMultiplatform
 import com.apollographql.apollo3.gradle.api.kotlinProjectExtension
 import com.apollographql.apollo3.gradle.api.kotlinMultiplatformExtension
 import com.apollographql.apollo3.gradle.api.kotlinProjectExtensionOrThrow
-import com.apollographql.apollo3.gradle.internal.DefaultApolloExtension.Companion.isReallyEmpty
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -267,16 +265,16 @@ abstract class DefaultApolloExtension(
       service.operationOutputAction!!.execute(operationOutputConnection)
     }
 
-    val outputDirWire = DefaultOutputDirConnection(
+    val outputDirConnection = DefaultOutputDirConnection(
         project = project,
         task = codegenProvider,
         outputDir = codegenProvider.flatMap { it.outputDir }
     )
     if (service.outputDirAction == null) {
-      service.outputDirAction = mainWireAction
+      service.outputDirAction = mainOutputDirAction
     }
 
-    service.outputDirAction!!.execute(outputDirWire)
+    service.outputDirAction!!.execute(outputDirConnection)
 
     rootProvider.configure {
       it.dependsOn(codegenProvider)
@@ -299,21 +297,21 @@ abstract class DefaultApolloExtension(
   /**
    * The default wiring.
    */
-  private val mainWireAction = Action<Service.OutputDirConnection> { wire ->
+  private val mainOutputDirAction = Action<Service.OutputDirConnection> { connection ->
     when {
       project.kotlinMultiplatformExtension != null -> {
-        wire.connectToKotlinSourceSet(KotlinSourceSet.COMMON_MAIN_SOURCE_SET_NAME)
+        connection.connectToKotlinSourceSet(KotlinSourceSet.COMMON_MAIN_SOURCE_SET_NAME)
       }
       project.androidExtension != null -> {
         /**
          * Call both application and library
          * Only one will be active at a time
          */
-        wire.connectToAllAndroidApplicationVariants()
-        wire.connectToAllAndroidLibraryVariants()
+        connection.connectToAllAndroidApplicationVariants()
+        connection.connectToAllAndroidLibraryVariants()
       }
       project.kotlinProjectExtension != null -> {
-        wire.connectToKotlinSourceSet("main")
+        connection.connectToKotlinSourceSet("main")
       }
       else -> throw IllegalStateException("Cannot find the Kotlin extension, please apply a kotlin plugin")
     }
@@ -492,8 +490,8 @@ abstract class DefaultApolloExtension(
         variant.sourceSets.forEach { sourceProvider ->
           service.srcDir("src/${sourceProvider.name}/graphql/$sourceFolder")
         }
-        (service as DefaultService).outputDirAction = Action<Service.OutputDirConnection> { wire ->
-          wire.connectToAndroidVariant(variant)
+        (service as DefaultService).outputDirAction = Action<Service.OutputDirConnection> { connection ->
+          connection.connectToAndroidVariant(variant)
         }
       }
     }
