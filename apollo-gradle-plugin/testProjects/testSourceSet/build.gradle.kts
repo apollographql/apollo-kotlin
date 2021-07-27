@@ -39,8 +39,7 @@ tasks.withType<KotlinCompile> {
 }
 
 configure<ApolloExtension> {
-  withOutputDir {
-    val kotlinProjectExtension = project.extensions.get("kotlin") as KotlinProjectExtension
-    kotlinProjectExtension.sourceSets.getByName("test").kotlin.srcDir(outputDir)
+  outputDirConnection {
+    connectToKotlinSourceSet("test")
   }
 }

@@ -11,13 +11,10 @@ import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.file.FileCollection
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.provider.Provider
 import org.gradle.api.provider.SetProperty
 import org.gradle.util.GradleVersion
 import javax.inject.Inject
@@ -131,16 +128,15 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     this.registry = registry
   }
 
-  var operationOutputAction: Action<in Service.OperationOutputWire>? = null
+  var operationOutputAction: Action<in Service.OperationOutputConnection>? = null
 
-  override fun withOperationOutput(action: Action<in Service.OperationOutputWire>) {
+  override fun operationOutputConnection(action: Action<in Service.OperationOutputConnection>) {
     this.operationOutputAction = action
-    generateOperationOutput.set(true)
   }
 
-  var outputDirAction: Action<in Service.OutputDirWire>? = null
+  var outputDirAction: Action<in Service.OutputDirConnection>? = null
 
-  override fun withOutputDir(action: Action<in Service.OutputDirWire>) {
+  override fun outputDirConnection(action: Action<in Service.OutputDirConnection>) {
     this.outputDirAction = action
   }
 
