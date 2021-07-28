@@ -78,15 +78,25 @@ private fun Project.configurePublishingDelayed() {
   /**
    * Javadoc
    */
-  val javadocJarTaskProvider = tasks.register("defaultJavadocJar", org.gradle.jvm.tasks.Jar::class.java) {
+  val dokkaJarTaskProvider = tasks.register("defaultJavadocJar", org.gradle.jvm.tasks.Jar::class.java) {
     it.archiveClassifier.set("javadoc")
 
     runCatching {
       it.from(tasks.named("dokkaHtml").flatMap { (it as DokkaTask).outputDirectory })
     }
   }
-  val emptyJavadoJarTaskProvider = tasks.register("emptyJavadocJar", org.gradle.jvm.tasks.Jar::class.java) {
+  val emptyJavadocJarTaskProvider = tasks.register("emptyJavadocJar", org.gradle.jvm.tasks.Jar::class.java) {
     it.archiveClassifier.set("javadoc")
+  }
+
+  /**
+   * Type `echo "apollographql_publish_kdoc=false" >> ~/.gradle/gradle.properties` on your development machine
+   * to save some time during Gradle tests and publishing to mavenLocal
+   */
+  val javadocJarTaskProvider = if (properties["apollographql_publish_kdoc"] == "false") {
+    emptyJavadocJarTaskProvider
+  } else {
+    dokkaJarTaskProvider
   }
 
   tasks.withType(Jar::class.java) {
@@ -113,7 +123,7 @@ private fun Project.configurePublishingDelayed() {
               it.artifact(javadocJarTaskProvider.get())
             } else {
               // And an empty one for others so as to save some space
-              it.artifact(emptyJavadoJarTaskProvider.get())
+              it.artifact(emptyJavadocJarTaskProvider.get())
             }
           }
         }
