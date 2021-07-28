@@ -26,10 +26,16 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.single
+
+typealias FlowDecorator = (Flow<ApolloResponse<*>>) -> Flow<ApolloResponse<*>>
 
 /**
  * The main entry point for the Apollo runtime. An [ApolloClient] is responsible for executing queries, mutations and subscriptions
@@ -41,6 +47,7 @@ class ApolloClient constructor(
     private val interceptors: List<ApolloInterceptor> = emptyList(),
     val executionContext: ExecutionContext = ExecutionContext.Empty,
     private val requestedDispatcher: CoroutineDispatcher? = null,
+    private val flowDecorators: List<FlowDecorator> = emptyList(),
 ) {
 
   private val dispatcher = defaultDispatcher(requestedDispatcher)
@@ -126,6 +133,12 @@ class ApolloClient constructor(
     )
   }
 
+  fun withFlowDecorator(flowDecorator: FlowDecorator): ApolloClient {
+    return copy(
+        flowDecorators = flowDecorators + flowDecorator
+    )
+  }
+
   fun withExecutionContext(executionContext: ExecutionContext): ApolloClient {
     return copy(
         executionContext = this.executionContext + executionContext
@@ -139,7 +152,8 @@ class ApolloClient constructor(
       interceptors: List<ApolloInterceptor> = this.interceptors,
       executionContext: ExecutionContext = this.executionContext,
       requestedDispatcher: CoroutineDispatcher? = this.requestedDispatcher,
-      ): ApolloClient {
+      flowDecorators: List<FlowDecorator> = this.flowDecorators,
+  ): ApolloClient {
     return ApolloClient(
         networkTransport = networkTransport,
         subscriptionNetworkTransport = subscriptionNetworkTransport,
@@ -147,6 +161,7 @@ class ApolloClient constructor(
         interceptors = interceptors,
         executionContext = executionContext,
         requestedDispatcher = requestedDispatcher,
+        flowDecorators = flowDecorators
     )
   }
 
@@ -161,16 +176,11 @@ class ApolloClient constructor(
         subscriptionNetworkTransport = subscriptionNetworkTransport,
     )
 
-    return flow {
-      emit(
-          RealInterceptorChain(
-              interceptors,
-              0,
-          )
-      )
-    }.flatMapConcat { interceptorChain ->
-      interceptorChain.proceed(request)
-    }.flowOn(dispatcher)
+    val interceptorChain = RealInterceptorChain(interceptors, 0)
+    return flowDecorators.fold(interceptorChain.proceed(request).flowOn(dispatcher)) { flow, decorator ->
+      @Suppress("UNCHECKED_CAST")
+      decorator.invoke(flow) as Flow<ApolloResponse<D>>
+    }
   }
 }
 

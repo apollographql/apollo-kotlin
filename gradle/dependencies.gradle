@@ -25,37 +25,39 @@ def versions = [
     truth                 : '0.30',
 ]
 
+ext.versions = versions
+
 ext.dep = [
-    android                 : [
+    android                  : [
         plugin   : "com.android.tools.build:gradle:$versions.androidPlugin",
         minPlugin: "com.android.tools.build:gradle:$versions.minAndroidPlugin",
     ],
-    androidx                : [
+    androidx                 : [
         appcompat             : "androidx.appcompat:appcompat:1.1.0",
         espressoIdlingResource: "androidx.test.espresso:espresso-idling-resource:$versions.espressoIdlingResource",
         recyclerView          : "androidx.recyclerview:recyclerview:1.1.0",
         sqlite                : "androidx.sqlite:sqlite:${versions.androidxSqlite}",
         sqliteFramework       : "androidx.sqlite:sqlite-framework:${versions.androidxSqlite}",
     ],
-    antlr                   : [
+    antlr                    : [
         antlr  : "org.antlr:antlr4:$versions.antlr4",
         runtime: "org.antlr:antlr4-runtime:$versions.antlr4",
     ],
-    apollo                  : [
+    apollo                   : [
         plugin : "com.apollographql.apollo3:apollo-gradle-plugin:$versions.apollo",
         runtime: "com.apollographql.apollo3:apollo-runtime:$versions.apollo",
         api    : "com.apollographql.apollo3:apollo-api:$versions.apollo",
     ],
-    kotlinCompileTesting    : "com.github.tschuchortdev:kotlin-compile-testing:1.4.2",
-    gradleJapiCmpPlugin     : "me.champeau.gradle:japicmp-gradle-plugin:0.2.8",
-    gradleMetalavaPlugin    : "me.tylerbwong.gradle:metalava-gradle:0.1.5",
-    vespene                 : "net.mbonnin.vespene:vespene-lib:0.5",
-    gradlePublishPlugin     : "com.gradle.publish:plugin-publish-plugin:0.12.0",
-    guavaJre                : "com.google.guava:guava:$versions.guava",
-    jetbrainsAnnotations    : "org.jetbrains:annotations:$versions.jetbrainsAnnotations",
-    junit                   : "junit:junit:$versions.junit",
-    kotlinJunit             : "org.jetbrains.kotlin:kotlin-test", // the Kotlin plugin resolves the version
-    kotlin                  : [
+    kotlinCompileTesting     : "com.github.tschuchortdev:kotlin-compile-testing:1.4.2",
+    gradleJapiCmpPlugin      : "me.champeau.gradle:japicmp-gradle-plugin:0.2.8",
+    gradleMetalavaPlugin     : "me.tylerbwong.gradle:metalava-gradle:0.1.5",
+    vespene                  : "net.mbonnin.vespene:vespene-lib:0.5",
+    gradlePublishPlugin      : "com.gradle.publish:plugin-publish-plugin:0.12.0",
+    guavaJre                 : "com.google.guava:guava:$versions.guava",
+    jetbrainsAnnotations     : "org.jetbrains:annotations:$versions.jetbrainsAnnotations",
+    junit                    : "junit:junit:$versions.junit",
+    kotlinJunit              : "org.jetbrains.kotlin:kotlin-test", // the Kotlin plugin resolves the version
+    kotlin                   : [
         plugin            : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
         coroutines        : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.kotlinCoroutines",
         coroutinesRx2     : "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$versions.kotlinCoroutines",
@@ -64,14 +66,14 @@ ext.dep = [
         coroutinesAndroid : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlinCoroutines",
         reflect           : "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin"
     ],
-    moshi                   : [
+    moshi                    : [
         adapters     : "com.squareup.moshi:moshi-adapters:$versions.moshi",
         ksp          : "dev.zacsweers.moshix:moshi-ksp:$versions.moshix",
         sealedKsp    : "dev.zacsweers.moshix:moshi-sealed-ksp:$versions.moshix",
         sealedRuntime: "dev.zacsweers.moshix:moshi-sealed-runtime:$versions.moshix",
         moshi        : "com.squareup.moshi:moshi:$versions.moshi",
     ],
-    okHttp                  : [
+    okHttp                   : [
         mockWebServer : "com.squareup.okhttp3:mockwebserver:$versions.okHttp",
         mockWebServer4: "com.squareup.okhttp3:mockwebserver:$versions.okHttp4",
         okHttp        : "com.squareup.okhttp3:okhttp:$versions.okHttp",
@@ -79,41 +81,43 @@ ext.dep = [
         logging       : "com.squareup.okhttp3:logging-interceptor:$versions.okHttp",
         logging4      : "com.squareup.okhttp3:logging-interceptor:$versions.okHttp4",
     ],
-    okio                    : "com.squareup.okio:okio-multiplatform:$versions.okio",
-    poet                    : [
+    okio                     : "com.squareup.okio:okio-multiplatform:$versions.okio",
+    poet                     : [
         java  : "com.squareup:javapoet:$versions.javaPoet",
         kotlin: "com.squareup:kotlinpoet:$versions.kotlinPoet",
     ],
-    rx                      : [
+    rx                       : [
         java   : "io.reactivex.rxjava2:rxjava:$versions.rxjava",
         java3  : "io.reactivex.rxjava3:rxjava:$versions.rxjava3",
         android: "io.reactivex.rxjava2:rxandroid:$versions.rxandroid",
     ],
-    sqldelight              : [
+    sqldelight               : [
         android: "com.squareup.sqldelight:android-driver:$versions.sqldelight",
         jvm    : "com.squareup.sqldelight:sqlite-driver:$versions.sqldelight",
         native : "com.squareup.sqldelight:native-driver:$versions.sqldelight",
         plugin : "com.squareup.sqldelight:gradle-plugin:$versions.sqldelight"
     ],
-    truth                   : "com.google.truth:truth:$versions.truth",
-    assertj                 : "org.assertj:assertj-core:3.19.0",
-    uuid                    : "com.benasher44:uuid:0.2.2",
-    benManesVersions        : "com.github.ben-manes:gradle-versions-plugin:0.33.0",
-    shadow                  : "com.github.jengelman.gradle.plugins:shadow:6.1.0",
-    kspGradlePlugin         : "com.google.devtools.ksp:symbol-processing-gradle-plugin:1.5.20-1.0.0-beta04",
-    kotlinxdatetime         : "org.jetbrains.kotlinx:kotlinx-datetime:0.1.1",
-    kotlinxserializationjson: "org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0",
-    atomicfu                : "org.jetbrains.kotlinx:atomicfu:0.15.1",
-    dokka                   : "org.jetbrains.dokka:dokka-gradle-plugin:1.5.0",
+    truth                    : "com.google.truth:truth:$versions.truth",
+    assertj                  : "org.assertj:assertj-core:3.19.0",
+    uuid                     : "com.benasher44:uuid:0.2.2",
+    benManesVersions         : "com.github.ben-manes:gradle-versions-plugin:0.33.0",
+    shadow                   : "com.github.jengelman.gradle.plugins:shadow:6.1.0",
+    kspGradlePlugin          : "com.google.devtools.ksp:symbol-processing-gradle-plugin:1.5.20-1.0.0-beta04",
+    kotlinxdatetime          : "org.jetbrains.kotlinx:kotlinx-datetime:0.1.1",
+    kotlinxserializationjson : "org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0",
+    atomicfu                 : "org.jetbrains.kotlinx:atomicfu:0.15.1",
+    dokka                    : "org.jetbrains.dokka:dokka-gradle-plugin:1.5.0",
+    androidSupportAnnotations: "com.android.support:support-annotations:28.0.0",
+    androidTestRunner        : "com.android.support.test:runner:1.0.2",
     /**
      * We use the Nokee [redistributed artifacts](https://docs.nokee.dev/manual/gradle-plugin-development.html#sec:gradle-dev-redistributed-gradle-api)
      * to avoid leaking the Kotlin stdlib on the classpath
      * See https://github.com/gradle/gradle/issues/1835
      */
     // Keep in sync with gradle-wrapper.properties
-    gradleApi               : "dev.gradleplugins:gradle-api:7.1.1",
+    gradleApi                : "dev.gradleplugins:gradle-api:7.1.1",
     // Keep in sync with MIN_GRADLE_VERSION
-    minGradleApi            : "dev.gradleplugins:gradle-api:5.6"
+    minGradleApi             : "dev.gradleplugins:gradle-api:5.6"
 ]
 ext.androidConfig = [
     compileSdkVersion: 30,
