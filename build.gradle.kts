@@ -68,6 +68,17 @@ subprojects {
   version = property("VERSION_NAME")!!
 
   configurePublishing()
+
+  pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
+    // Hack for autocomplete to work with android projects
+    // See https://youtrack.jetbrains.com/issue/KTIJ-14471
+    if (System.getProperty("idea.sync.active") != null) {
+      apply(plugin = "com.android.library")
+      (extensions.findByName("kotlin") as? org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension)?.apply {
+        android()
+      }
+    }
+  }
 }
 
 
