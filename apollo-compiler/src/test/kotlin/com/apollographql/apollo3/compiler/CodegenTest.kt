@@ -97,8 +97,39 @@ class CodegenTest(private val folder: File, private val codegenModels: String, p
       expectedFiles.fold(0) { totalCount, file -> totalCount + file.readLines().size }
     } else -1
 
-    // And that they compile
-    val expectedWarnings = folder.name in listOf("deprecation", "custom_scalar_type_warnings", "arguments_complex", "arguments_simple")
+    /**
+     * Check that generated sources compile
+     */
+
+    /**
+     * Some tests generate warnings.
+     * Most of the time because they are using deprecated fields.
+     * Fine tune this list as we go.
+     */
+    val expectedWarnings = folder.name in listOf(
+        "arguments_complex",
+        "arguments_simple",
+        "case_sensitive_enum",
+        "custom_scalar_type",
+        "deprecated_merged_field",
+        "deprecation",
+        "enum_field",
+        "fragment_with_inline_fragment",
+        "hero_name_query_long_name",
+        "hero_with_review",
+        "inline_fragments_with_friends",
+        "input_object_type",
+        "input_object_variable_and_argument",
+        "mutation_create_review",
+        "mutation_create_review_semantic_naming",
+        "named_fragment_inside_inline_fragment",
+        "nested_conditional_inline",
+        "optional",
+        "root_query_inline_fragment",
+        "union_inline_fragments",
+        "unique_type_name",
+        "variable_default_value",
+    )
     val compileDuration = measureTime {
       KotlinCompiler.assertCompiles(actualFiles.toSet(), !expectedWarnings)
     }
