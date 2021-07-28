@@ -69,13 +69,21 @@ subprojects {
 
   configurePublishing()
 
-  pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
-    // Hack for autocomplete to work with android projects
-    // See https://youtrack.jetbrains.com/issue/KTIJ-14471
-    if (System.getProperty("idea.sync.active") != null) {
-      apply(plugin = "com.android.library")
-      (extensions.findByName("kotlin") as? org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension)?.apply {
-        android()
+  /**
+   * Type `echo "apollographql_android_hack=false" >> ~/.gradle/gradle.properties` on your development machine
+   * to make MPP modules publish an Android artifact so that IntelliJ can resolve the symbols
+   *
+   * See https://youtrack.jetbrains.com/issue/KTIJ-14471
+   */
+  if (properties["apollographql_android_hack"] == "true") {
+    pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
+      // Hack for autocomplete to work with android projects
+      // See https://youtrack.jetbrains.com/issue/KTIJ-14471
+      if (System.getProperty("idea.sync.active") != null) {
+        apply(plugin = "com.android.library")
+        (extensions.findByName("kotlin") as? org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension)?.apply {
+          android()
+        }
       }
     }
   }
