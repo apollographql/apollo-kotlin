@@ -40,7 +40,7 @@ fun addShadowImplementation(dependency: Dependency) {
   dependencies.add("shadowImplementation", dependency)
 }
 dependencies {
-  compileOnly(gradleApi())
+  compileOnly(groovy.util.Eval.x(project, "x.dep.minGradleApi"))
   compileOnly(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
   compileOnly(groovy.util.Eval.x(project, "x.dep.android.minPlugin"))
 
