@@ -60,13 +60,14 @@ class ApolloResponse<out D : Operation.Data>(
         extensions: Map<String, Any?> = this.extensions,
         executionContext: ExecutionContext = this.executionContext
     ): ApolloResponse<D> {
-        return ApolloResponse(
-            requestUuid,
-            operation,
-            data as D?,
-            errors,
-            extensions,
-            executionContext
-        )
+      @Suppress("UNCHECKED_CAST")
+      return ApolloResponse(
+          requestUuid,
+          operation,
+          data as D?,
+          errors,
+          extensions,
+          executionContext
+      )
     }
 }

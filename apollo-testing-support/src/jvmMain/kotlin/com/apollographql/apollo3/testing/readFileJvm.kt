@@ -24,7 +24,7 @@ actual fun checkFile(actualText: String, path: String) {
     }
   }
 
-  val expected = File("../integration-tests/testFixtures/$path")
+  val expected = File("testFixtures/$path")
   expected.parentFile.mkdirs()
   if (actualText != expectedText) {
     if (updateTestFixtures) {

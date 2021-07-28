@@ -131,6 +131,7 @@ internal class ApolloCacheInterceptor(
   ): ApolloResponse<D> {
 
     if (cacheInput.optimisticData != null) {
+      @Suppress("UNCHECKED_CAST")
       store.writeOptimisticUpdates(
           operation = request.operation,
           operationData = cacheInput.optimisticData as D,

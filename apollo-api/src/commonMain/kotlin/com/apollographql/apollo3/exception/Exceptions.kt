@@ -1,3 +1,4 @@
+// This is in the exception package for historical reasons
 package com.apollographql.apollo3.exception
 
 /**

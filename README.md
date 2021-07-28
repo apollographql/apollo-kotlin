@@ -1,16 +1,16 @@
 
 # Apollo Android
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg?maxAge=2592000)](https://raw.githubusercontent.com/apollographql/apollo-android/main/LICENSE) 
-[![Join Spectrum](https://img.shields.io/badge/spectrum-join-orange?logo=spectrum)](https://spectrum.chat/apollo/apollo-android) 
+[![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg?maxAge=2592000)](https://raw.githubusercontent.com/apollographql/apollo-android/main/LICENSE)
+[![Join Spectrum](https://img.shields.io/badge/spectrum-join-orange?logo=spectrum)](https://spectrum.chat/apollo/apollo-android)
 [![Slack](https://img.shields.io/static/v1?label=kotlinlang&message=apollo-android&color=15a2f5&logo=slack)](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ)
 [![CI](https://github.com/apollographql/apollo-android/workflows/CI/badge.svg)](https://github.com/apollographql/apollo-android/actions)
 [![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.apollo3/apollo-api)](https://repo1.maven.org/maven2/com/apollographql/apollo3/)
 [![OSS Snapshots](https://img.shields.io/nexus/s/com.apollographql.apollo3/apollo-api?server=https%3A%2F%2Foss.sonatype.org&label=oss-snapshots)](https://oss.sonatype.org/content/repositories/snapshots/com/apollographql/apollo3/)
 
-Apollo Android is a GraphQL client that generates Java and Kotlin models from GraphQL queries. These models give you a type-safe API to work with GraphQL servers.  Apollo helps you keep your GraphQL query statements together, organized, and easy to access. 
+Apollo Android is a GraphQL client that generates Java and Kotlin models from GraphQL queries. These models give you a type-safe API to work with GraphQL servers.  Apollo helps you keep your GraphQL query statements together, organized, and easy to access.
 
-This library is designed primarily with Android in mind, but you can use it in any Java/Kotlin app. 
+This library is designed primarily with Android in mind, but you can use it in any Java/Kotlin app.
 
 ## Features
 
@@ -46,9 +46,9 @@ The [JS Graphql IntelliJ Plugin](https://jimkyndemeyer.github.io/js-graphql-inte
 
 The latest version is [![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.apollo3/apollo-api)](https://repo1.maven.org/maven2/com/apollographql/apollo3/)
 
-Check the [changelog](https://github.com/apollographql/apollo-android/releases) for the release history. 
+Check the [changelog](https://github.com/apollographql/apollo-android/releases) for the release history.
 
-Releases are hosted on [Maven Central](https://repo1.maven.org/maven2/com/apollographql/apollo3/). The plugin is additionally hosted on the [Gradle Plugin Portal](https://plugins.gradle.org/plugin/com.apollographql.apollo3) 
+Releases are hosted on [Maven Central](https://repo1.maven.org/maven2/com/apollographql/apollo3/). The plugin is additionally hosted on the [Gradle Plugin Portal](https://plugins.gradle.org/plugin/com.apollographql.apollo3)
 
 
 ```groovy:title=build.gradle.kts
@@ -89,7 +89,7 @@ repositories {
 }
 ```
 
-## Requirements 
+## Requirements
 
 Apollo Android runs on the following platforms:
 
@@ -101,7 +101,7 @@ For building, it requires:
 
 * Gradle 5.6
 * Kotlin 1.4+
- 
+
 ## Contributing
 
 If you'd like to contribute, please see [Contributing.md](https://github.com/apollographql/apollo-android/blob/main/Contributing.md).

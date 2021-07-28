@@ -4,11 +4,11 @@ import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Delay
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.DisposableHandle
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Runnable
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import platform.CoreFoundation.CFRunLoopGetCurrent
 import platform.CoreFoundation.CFRunLoopRun
@@ -25,6 +25,7 @@ import kotlin.coroutines.CoroutineContext
  * queue. There is more to the story and this might hopefully be merged with runBlocking below
  * but for now that allows us to run integration tests against a mocked server
  */
+@OptIn(DelicateCoroutinesApi::class)
 actual fun <T> runWithMainLoop(context: CoroutineContext, block: suspend CoroutineScope.() -> T): T {
   var result: Result<T>? = null
   GlobalScope.launch (MainLoopDispatcher) {
@@ -40,7 +41,7 @@ actual fun <T> runWithMainLoop(context: CoroutineContext, block: suspend Corouti
 
 actual fun <T> runBlocking(context: CoroutineContext, block: suspend CoroutineScope.() -> T) = kotlinx.coroutines.runBlocking { block() }
 
-@OptIn(InternalCoroutinesApi::class)
+@OptIn(InternalCoroutinesApi::class, kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 actual val MainLoopDispatcher: CoroutineDispatcher = object : CoroutineDispatcher(), Delay {
 
   override fun dispatch(context: CoroutineContext, block: Runnable) {
@@ -49,7 +50,6 @@ actual val MainLoopDispatcher: CoroutineDispatcher = object : CoroutineDispatche
     }
   }
 
-  @InternalCoroutinesApi
   override fun scheduleResumeAfterDelay(timeMillis: Long, continuation: CancellableContinuation<Unit>) {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeMillis * 1_000_000), dispatch_get_main_queue()) {
       with(continuation) {
@@ -58,7 +58,6 @@ actual val MainLoopDispatcher: CoroutineDispatcher = object : CoroutineDispatche
     }
   }
 
-  @InternalCoroutinesApi
   override fun invokeOnTimeout(timeMillis: Long, block: Runnable, context: CoroutineContext): DisposableHandle {
     val handle = object : DisposableHandle {
       var disposed = false

@@ -1,16 +1,17 @@
 import com.android.build.gradle.BaseExtension
+import kotlinx.coroutines.runBlocking
 import net.mbonnin.vespene.lib.NexusStagingClient
 import org.gradle.api.Project
-import org.gradle.api.plugins.JavaPluginConvention
+import org.gradle.api.plugins.ExtraPropertiesExtension
+import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.plugins.signing.Sign
 import org.gradle.plugins.signing.SigningExtension
-import kotlinx.coroutines.runBlocking
-import org.gradle.api.plugins.ExtraPropertiesExtension
-import java.util.Locale
+import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.dokka.gradle.DokkaTaskPartial
 
 fun Project.configurePublishing() {
   apply {
@@ -20,9 +21,30 @@ fun Project.configurePublishing() {
     it.plugin("maven-publish")
   }
 
+  pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
+    configureDokka()
+  }
+  pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
+    configureDokka()
+  }
   // Not sure if we still need that afterEvaluate
   afterEvaluate {
     configurePublishingDelayed()
+  }
+}
+
+fun Project.configureDokka() {
+  apply {
+    it.plugin("org.jetbrains.dokka")
+  }
+
+  tasks.withType(DokkaTask::class.java).configureEach {
+    //https://github.com/Kotlin/dokka/issues/1455
+    it.dependsOn("assemble")
+  }
+  tasks.withType(DokkaTaskPartial::class.java).configureEach {
+    //https://github.com/Kotlin/dokka/issues/1455
+    it.dependsOn("assemble")
   }
 }
 
@@ -55,8 +77,25 @@ private fun Project.configurePublishingDelayed() {
   /**
    * Javadoc
    */
+  val dokkaJarTaskProvider = tasks.register("defaultJavadocJar", org.gradle.jvm.tasks.Jar::class.java) {
+    it.archiveClassifier.set("javadoc")
+
+    runCatching {
+      it.from(tasks.named("dokkaHtml").flatMap { (it as DokkaTask).outputDirectory })
+    }
+  }
   val emptyJavadocJarTaskProvider = tasks.register("emptyJavadocJar", org.gradle.jvm.tasks.Jar::class.java) {
     it.archiveClassifier.set("javadoc")
+  }
+
+  /**
+   * Type `echo "apollographql_publish_kdoc=false" >> ~/.gradle/gradle.properties` on your development machine
+   * to save some time during Gradle tests and publishing to mavenLocal
+   */
+  val javadocJarTaskProvider = if (properties["apollographql_publish_kdoc"] == "false") {
+    emptyJavadocJarTaskProvider
+  } else {
+    dokkaJarTaskProvider
   }
 
   tasks.withType(Jar::class.java) {
@@ -74,11 +113,17 @@ private fun Project.configurePublishingDelayed() {
       when {
         plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") -> {
           /**
-           * Kotlin MPP creates a nice publication.
-           * It only misses the javadoc for which we add an empty one
+           * Kotlin MPP creates nice publications.
+           * It only misses the javadoc
            */
           publicationContainer.withType(MavenPublication::class.java).configureEach {
-             it.artifact(emptyJavadocJarTaskProvider.get())
+            if (it.name == "kotlinMultiplatform") {
+              // Add the javadoc to the multiplatform publications
+              it.artifact(javadocJarTaskProvider.get())
+            } else {
+              // And an empty one for others so as to save some space
+              it.artifact(emptyJavadocJarTaskProvider.get())
+            }
           }
         }
         plugins.hasPlugin("java-gradle-plugin") -> {
@@ -86,10 +131,10 @@ private fun Project.configurePublishingDelayed() {
            * java-gradle-plugin creates 2 publications (one marker and one regular) but without source/javadoc.
            */
           publicationContainer.withType(MavenPublication::class.java) { mavenPublication ->
-            mavenPublication.artifact(emptyJavadocJarTaskProvider.get())
+            mavenPublication.artifact(javadocJarTaskProvider.get())
             // Only add sources for the main publication
             // XXX: is there a nicer way to do this?
-            if (!mavenPublication.name.toLowerCase(Locale.US).contains("marker")) {
+            if (!mavenPublication.name.lowercase().contains("marker")) {
               mavenPublication.artifact(createJavaSourcesTask())
             }
           }
@@ -104,7 +149,7 @@ private fun Project.configurePublishingDelayed() {
               mavenPublication.from(components.findByName("release"))
             }
 
-            mavenPublication.artifact(emptyJavadocJarTaskProvider.get())
+            mavenPublication.artifact(javadocJarTaskProvider.get())
             mavenPublication.artifact(createAndroidSourcesTask().get())
 
             mavenPublication.artifactId = findProperty("POM_ARTIFACT_ID") as String?
@@ -117,7 +162,7 @@ private fun Project.configurePublishingDelayed() {
           publicationContainer.create("default", MavenPublication::class.java) { mavenPublication ->
 
             mavenPublication.from(components.findByName("java"))
-            mavenPublication.artifact(emptyJavadocJarTaskProvider.get())
+            mavenPublication.artifact(javadocJarTaskProvider.get())
             mavenPublication.artifact(createJavaSourcesTask().get())
 
             mavenPublication.artifactId = findProperty("POM_ARTIFACT_ID") as String?
@@ -224,8 +269,15 @@ private fun Project.setDefaultPomFields(mavenPublication: MavenPublication) {
 
 private fun Project.createJavaSourcesTask(): TaskProvider<Jar> {
   return tasks.register("javaSourcesJar", Jar::class.java) { jar ->
+    /**
+     * Add a dependency on the compileKotlin task to make sure the generated sources like
+     * antlr or SQLDelight get included
+     * See also https://youtrack.jetbrains.com/issue/KT-47936
+     */
+    jar.dependsOn("compileKotlin")
+
     jar.archiveClassifier.set("sources")
-    val sourceSets = project.convention.getPlugin(JavaPluginConvention::class.java).sourceSets
+    val sourceSets = project.extensions.getByType(JavaPluginExtension::class.java).sourceSets
     jar.from(sourceSets.getByName("main").allSource)
   }
 }

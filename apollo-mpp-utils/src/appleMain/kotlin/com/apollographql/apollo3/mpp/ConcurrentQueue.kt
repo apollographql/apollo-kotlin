@@ -40,6 +40,7 @@ class ConcurrentQueue<T> {
     while (queue.count.toInt() == 0) {
       pthread_cond_wait(cond.ptr, mutex.ptr)
     }
+    @Suppress("UNCHECKED_CAST")
     val item = queue.objectAtIndex(0) as T
     queue.removeObjectAtIndex(0)
     pthread_mutex_unlock(mutex.ptr)

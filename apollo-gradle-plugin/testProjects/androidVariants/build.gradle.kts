@@ -43,11 +43,6 @@ configure<BaseExtension> {
     targetSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString())
   }
 
-  compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-  }
-
   // This doesn't really make sense for a library project, but still allows to compile flavor source sets
   flavorDimensions("version")
   productFlavors {
@@ -62,13 +57,8 @@ configure<BaseExtension> {
 
 configure<ApolloExtension> {
   createAllAndroidVariantServices(".", "example") {
+    // Here we set the same schema file for all variants
     schemaFile.set(file("src/main/graphql/com/example/schema.sdl"))
     packageName.set("com.example")
-  }
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-  kotlinOptions {
-    jvmTarget = "1.8"
   }
 }

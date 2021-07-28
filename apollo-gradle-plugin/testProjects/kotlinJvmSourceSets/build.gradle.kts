@@ -33,14 +33,8 @@ dependencies {
 }
 
 configure<ApolloExtension> {
-  createAllKotlinJvmSourceSetServices(".", "example") {
+  createAllKotlinSourceSetServices(".", "example") {
     filePathAwarePackageNameGenerator()
     schemaFile.set(file("src/main/graphql/com/example/schema.sdl"))
-  }
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-  kotlinOptions {
-    jvmTarget = "1.8"
   }
 }

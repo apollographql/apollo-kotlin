@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.network.http
 
+import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
@@ -98,4 +99,24 @@ actual class DefaultHttpEngine(
       it to get(it)!!
     }.toMap()
   }
+}
+
+fun HttpNetworkTransport(
+    serverUrl: String,
+    callFactory: Call.Factory
+): HttpNetworkTransport {
+  return HttpNetworkTransport(
+      serverUrl = serverUrl,
+      engine = DefaultHttpEngine(callFactory)
+  )
+}
+
+fun HttpNetworkTransport(
+    serverUrl: String,
+    okHttpClient: OkHttpClient
+): HttpNetworkTransport {
+  return HttpNetworkTransport(
+      serverUrl = serverUrl,
+      engine = DefaultHttpEngine(okHttpClient)
+  )
 }

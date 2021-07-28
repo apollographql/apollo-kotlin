@@ -45,37 +45,6 @@ class DefaultApolloStore(
     OptimisticCache().chain(normalizedCacheFactory.createChain()) as OptimisticCache
   }
 
-  /**
-   * For backward compatibility only
-   */
-  private var subscribers = Guard("subscribers") {
-    mutableListOf<Pair<ApolloStore.RecordChangeSubscriber, Job>>()
-  }
-
-  override fun subscribe(subscriber: ApolloStore.RecordChangeSubscriber) {
-    val job = GlobalScope.launch {
-      changedKeys.collect {
-        subscriber.onCacheRecordsChanged(it)
-      }
-    }
-    subscribers.blockingAccess {
-      it.add(subscriber to job)
-    }
-  }
-
-  override fun unsubscribe(subscriber: ApolloStore.RecordChangeSubscriber) {
-    val job = subscribers.blockingAccess {
-      val index = it.indexOfFirst { it.first == subscriber }
-      if (index >= 0) {
-        it.removeAt(index).second
-      } else {
-        null
-      }
-    }
-
-    job?.cancel()
-  }
-
   override suspend fun publish(keys: Set<String>) {
     if (keys.isEmpty()) {
       return
@@ -308,7 +277,6 @@ class DefaultApolloStore(
 
   override fun dispose() {
     cacheHolder.dispose()
-    subscribers.dispose()
   }
 }
 

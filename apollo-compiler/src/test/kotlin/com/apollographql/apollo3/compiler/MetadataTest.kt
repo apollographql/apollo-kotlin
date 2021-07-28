@@ -163,7 +163,7 @@ class MetadataTest {
         metadataOutputFile = leafMetadataFile,
     )
 
-    KotlinCompiler.assertCompiles(listOf(rootSourcesDir, leafSourcesDir).kotlinFiles(), true)
+    KotlinCompiler.assertCompiles(listOf(rootSourcesDir, leafSourcesDir).kotlinFiles(), false)
   }
 
   @Test

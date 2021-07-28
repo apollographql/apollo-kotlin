@@ -243,8 +243,7 @@ class ServiceTests {
   fun `operationOutput generates queries with __typename`() {
     withSimpleProject("""
       apollo {
-        withOperationOutput {
-        }
+        generateOperationOutput.set(true)
       }
     """.trimIndent()) { dir ->
       val result = TestUtils.executeTask("generateApolloSources", dir)
@@ -264,8 +263,7 @@ class ServiceTests {
     withSimpleProject("""
       apollo {
         filePathAwarePackageNameGenerator()
-        withOperationOutput {
-        }
+        generateOperationOutput.set(true)
       }
     """.trimIndent()) { dir ->
       val result = TestUtils.executeTask("generateApolloSources", dir)
@@ -284,7 +282,8 @@ class ServiceTests {
   fun `operationOutputFile carries task dependencies`() {
     withSimpleProject("""
       apollo { 
-        withOperationOutput {
+        generateOperationOutput.set(true)
+        operationOutputConnection {
           tasks.register("customTaskService") {
             inputs.file(operationOutputFile)
           }
@@ -333,7 +332,7 @@ class ServiceTests {
   }
 
   @Test
-  fun `withOutputDir can rewire to the test source set`() {
+  fun `outputDirConnection can connect to the test source set`() {
     withTestProject("testSourceSet") { dir ->
       TestUtils.executeTask("build", dir)
 

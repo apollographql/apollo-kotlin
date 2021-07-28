@@ -1,0 +1,77 @@
+import com.apollographql.apollo3.gradle.api.kotlinMultiplatformExtension
+
+plugins {
+  id("com.apollographql.apollo3")
+  kotlin("multiplatform")
+}
+
+configureMppTestsDefaults()
+
+kotlin {
+  sourceSets {
+    val commonMain by getting {
+      dependencies {
+        implementation("com.apollographql.apollo3:apollo-api")
+        implementation("com.apollographql.apollo3:apollo-normalized-cache")
+        implementation("com.apollographql.apollo3:apollo-testing-support")
+        implementation("com.apollographql.apollo3:apollo-mockserver")
+        implementation("com.apollographql.apollo3:apollo-adapters")
+        implementation("com.apollographql.apollo3:apollo-runtime")
+      }
+    }
+
+    val commonTest by getting {
+      dependencies {
+
+        implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
+        implementation(groovy.util.Eval.x(project, "x.dep.kotlinxserializationjson"))
+      }
+    }
+  }
+}
+
+
+configure<com.apollographql.apollo3.gradle.api.ApolloExtension> {
+  file("src/main/graphql/com/apollographql/apollo3/integration").listFiles()!!
+      .filter { it.isDirectory }
+      .forEach {
+        service(it.name) {
+          when (it.name) {
+            "httpcache" -> {
+              generateOperationOutput.set(true)
+              customScalarsMapping.set(mapOf(
+                  "Date" to "kotlinx.datetime.LocalDate"
+              ))
+            }
+            "upload" -> {
+              customScalarsMapping.set(mapOf(
+                  "Upload" to "com.apollographql.apollo3.api.Upload"
+              ))
+            }
+            "normalizer" -> {
+              generateFragmentImplementations.set(true)
+              customScalarsMapping.set(mapOf(
+                  "Date" to "kotlinx.datetime.LocalDate"
+              ))
+            }
+          }
+
+          srcDir(file("src/main/graphql/com/apollographql/apollo3/integration/${it.name}/"))
+          packageName.set("com.apollographql.apollo3.integration.${it.name}")
+
+          codegenModels.set("operationBased")
+          flattenModels.set(false)
+          outputDirConnection {
+            connectToKotlinSourceSet("commonTest")
+          }
+        }
+      }
+  file("src/commonTest/kotlin/test").listFiles()!!
+      .filter { it.isDirectory }
+      .forEach {
+        service(it.name) {
+          srcDir(it)
+          packageName.set(it.name)
+        }
+      }
+}

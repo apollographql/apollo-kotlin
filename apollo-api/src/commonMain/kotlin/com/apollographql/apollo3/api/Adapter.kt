@@ -19,6 +19,7 @@ import okio.BufferedSource
  * - deserialize records
  *
  * For an example, a `Hero` GraphQL type can be represented as:
+ *
  * ```
  * {
  *   "name": "Luke Skywalker",

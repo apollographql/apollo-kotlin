@@ -21,7 +21,7 @@ interface ApolloExtension : Service {
    * registers multiple services for an android project
    *
    * Android projects have variants for buildType/flavor combinations as well as test. Using this method will create a service for
-   * each variant and add the generated sources to the variant.
+   * each application/library variant and add the generated sources to the variant.
    * A variant typically contains several source sets as described in
    * https://developer.android.com/studio/build/build-variants?authuser=2#sourceset-build. This means you can put graphql files in
    * several folders:
@@ -68,7 +68,7 @@ interface ApolloExtension : Service {
    *
    * If your project has more Kotlin source sets, services will be created for those as well
    */
-  fun createAllKotlinJvmSourceSetServices(sourceFolder: String, nameSuffix: String, action: Action<Service> = Action<Service> {})
+  fun createAllKotlinSourceSetServices(sourceFolder: String, nameSuffix: String, action: Action<Service> = Action<Service> {})
 
   /**
    * For Kotlin native projects, whether to link Sqlite (-lsqlite3). This is required by `apollo-normalized-cache-sqlite` but

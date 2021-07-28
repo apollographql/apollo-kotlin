@@ -73,6 +73,7 @@ val geoPointAdapter = object : Adapter<GeoPoint> {
 If you prefer working with `Maps`, Apollo Android comes with `AnyAdapter`, which supports adapting `String`, `Int`, `Double`, `Boolean`, `List`, and `Map`. You can use it in an intermediate step:
 
 ```kotlin
+val geoPointAdapter = object : Adapter<GeoPoint> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GeoPoint {
     val map = AnyAdapter.fromJson(reader) as Map<String, Double>
     return GeoPoint(map["latitude"] as Double, map["longitude"] as Double)
