@@ -24,7 +24,8 @@ abstract class DefaultService @Inject constructor(val project: Project, override
 
   val objects = project.objects
   init {
-    if (GradleVersion.current().compareTo(GradleVersion.version("6.2")) >= 0) {
+    @Suppress("LeakingThis")
+    if (GradleVersion.current() >= GradleVersion.version("6.2")) {
       // This allows users to call customScalarsMapping.put("Date", "java.util.Date")
       // see https://github.com/gradle/gradle/issues/7485
       customScalarsMapping.convention(null as Map<String, String>?)

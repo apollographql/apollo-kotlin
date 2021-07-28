@@ -1,18 +1,17 @@
 import com.android.build.gradle.BaseExtension
+import kotlinx.coroutines.runBlocking
 import net.mbonnin.vespene.lib.NexusStagingClient
 import org.gradle.api.Project
-import org.gradle.api.plugins.JavaPluginConvention
+import org.gradle.api.plugins.ExtraPropertiesExtension
+import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.plugins.signing.Sign
 import org.gradle.plugins.signing.SigningExtension
-import kotlinx.coroutines.runBlocking
-import org.gradle.api.plugins.ExtraPropertiesExtension
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
-import java.util.Locale
 
 fun Project.configurePublishing() {
   apply {
@@ -135,7 +134,7 @@ private fun Project.configurePublishingDelayed() {
             mavenPublication.artifact(javadocJarTaskProvider.get())
             // Only add sources for the main publication
             // XXX: is there a nicer way to do this?
-            if (!mavenPublication.name.toLowerCase(Locale.US).contains("marker")) {
+            if (!mavenPublication.name.lowercase().contains("marker")) {
               mavenPublication.artifact(createJavaSourcesTask())
             }
           }
@@ -270,8 +269,15 @@ private fun Project.setDefaultPomFields(mavenPublication: MavenPublication) {
 
 private fun Project.createJavaSourcesTask(): TaskProvider<Jar> {
   return tasks.register("javaSourcesJar", Jar::class.java) { jar ->
+    /**
+     * Add a dependency on the compileKotlin task to make sure the generated sources like
+     * antlr or SQLDelight get included
+     * See also https://youtrack.jetbrains.com/issue/KT-47936
+     */
+    jar.dependsOn("compileKotlin")
+
     jar.archiveClassifier.set("sources")
-    val sourceSets = project.convention.getPlugin(JavaPluginConvention::class.java).sourceSets
+    val sourceSets = project.extensions.getByType(JavaPluginExtension::class.java).sourceSets
     jar.from(sourceSets.getByName("main").allSource)
   }
 }

@@ -21,7 +21,7 @@ def versions = [
     rxjava                : '2.2.20',
     rxjava3               : '3.0.7',
     rxandroid             : '2.0.1',
-    sqldelight            : '1.5.0',
+    sqldelight            : '1.5.1',
     truth                 : '0.30',
 ]
 
@@ -104,7 +104,16 @@ ext.dep = [
     kotlinxdatetime         : "org.jetbrains.kotlinx:kotlinx-datetime:0.1.1",
     kotlinxserializationjson: "org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0",
     atomicfu                : "org.jetbrains.kotlinx:atomicfu:0.15.1",
-    dokka                   : "org.jetbrains.dokka:dokka-gradle-plugin:1.5.0"
+    dokka                   : "org.jetbrains.dokka:dokka-gradle-plugin:1.5.0",
+    /**
+     * We use the Nokee [redistributed artifacts](https://docs.nokee.dev/manual/gradle-plugin-development.html#sec:gradle-dev-redistributed-gradle-api)
+     * to avoid leaking the Kotlin stdlib on the classpath
+     * See https://github.com/gradle/gradle/issues/1835
+     */
+    // Keep in sync with gradle-wrapper.properties
+    gradleApi               : "dev.gradleplugins:gradle-api:7.1.1",
+    // Keep in sync with MIN_GRADLE_VERSION
+    minGradleApi            : "dev.gradleplugins:gradle-api:5.6"
 ]
 ext.androidConfig = [
     compileSdkVersion: 30,

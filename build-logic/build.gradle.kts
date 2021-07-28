@@ -13,7 +13,7 @@ repositories {
 group = "com.apollographql.apollo"
 
 dependencies {
-  implementation(gradleApi())
+  compileOnly(groovy.util.Eval.x(project, "x.dep.gradleApi"))
   implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4"))
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
 
