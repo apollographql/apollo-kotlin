@@ -70,7 +70,7 @@ subprojects {
   configurePublishing()
 
   /**
-   * Type `echo "apollographql_android_hack=false" >> ~/.gradle/gradle.properties` on your development machine
+   * Type `echo "apollographql_android_hack=true\n" >> ~/.gradle/gradle.properties` on your development machine
    * to make MPP modules publish an Android artifact so that IntelliJ can resolve the symbols
    *
    * See https://youtrack.jetbrains.com/issue/KTIJ-14471
