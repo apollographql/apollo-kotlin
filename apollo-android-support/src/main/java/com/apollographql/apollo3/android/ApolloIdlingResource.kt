@@ -1,11 +1,8 @@
 package com.apollographql.apollo3.android
 import androidx.test.espresso.IdlingResource
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.ClientScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
 
 class ApolloIdlingResource(
     private val resourceName: String,
