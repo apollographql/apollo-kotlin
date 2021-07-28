@@ -41,12 +41,13 @@ subprojects {
     }
   }
 
-  // Ensure "org.gradle.jvm.version" is set to "8" in Gradle metadata.
+  // Ensure "org.gradle.jvm.version" is set to "8" in Gradle metadata of jvm-only modules.
+  // (multiplatform modules don't set this)
   tasks.withType<JavaCompile> {
     sourceCompatibility = JavaVersion.VERSION_1_8.toString()
     targetCompatibility = JavaVersion.VERSION_1_8.toString()
   }
-  
+
   tasks.withType<Test> {
     systemProperty("updateTestFixtures", System.getProperty("updateTestFixtures"))
     systemProperty("testFilter", System.getProperty("testFilter"))
