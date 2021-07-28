@@ -43,11 +43,6 @@ configure<BaseExtension> {
     targetSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString())
   }
 
-  compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-  }
-
   // This doesn't really make sense for a library project, but still allows to compile flavor source sets
   flavorDimensions("version")
   productFlavors {
@@ -67,11 +62,5 @@ configure<ApolloExtension> {
     outputDirConnection {
       connectToAllAndroidUnitTestVariants()
     }
-  }
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-  kotlinOptions {
-    jvmTarget = "1.8"
   }
 }

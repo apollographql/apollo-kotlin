@@ -32,12 +32,6 @@ dependencies {
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.apollo.api"))
 }
 
-tasks.withType<KotlinCompile> {
-  kotlinOptions {
-    jvmTarget = "1.8"
-  }
-}
-
 configure<ApolloExtension> {
   outputDirConnection {
     connectToKotlinSourceSet("test")

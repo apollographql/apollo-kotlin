@@ -1,7 +1,3 @@
-import okhttp3.Credentials.basic
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -45,12 +41,13 @@ subprojects {
     }
   }
 
-  // Ensure "org.gradle.jvm.version" is set to "8" in Gradle metadata.
+  // Ensure "org.gradle.jvm.version" is set to "8" in Gradle metadata of jvm-only modules.
+  // (multiplatform modules don't set this)
   tasks.withType<JavaCompile> {
     sourceCompatibility = JavaVersion.VERSION_1_8.toString()
     targetCompatibility = JavaVersion.VERSION_1_8.toString()
   }
-  
+
   tasks.withType<Test> {
     systemProperty("updateTestFixtures", System.getProperty("updateTestFixtures"))
     systemProperty("testFilter", System.getProperty("testFilter"))
