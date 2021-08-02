@@ -63,7 +63,7 @@ public class ApolloCacheInterceptorTest {
   @Test
   public void testDoesNotCacheErrorResponse() {
     Operation<?, ?, ?> operation = mock(Operation.class);
-    Error error = new Error("Error", Collections.emptyList(), Collections.emptyMap());
+    Error error = new Error("Error", Collections.emptyList(), null, Collections.emptyMap());
     ApolloInterceptor.InterceptorResponse networkResponse = new ApolloInterceptor.InterceptorResponse(
         okHttpResponse,
         com.apollographql.apollo.api.Response.builder(operation).errors(Collections.singletonList(error)).build(),
@@ -80,7 +80,7 @@ public class ApolloCacheInterceptorTest {
   @Test
   public void testCachesErrorResponseWhenStorePartialResponsesCacheHeaderPresent() {
     Operation<?, ?, ?> operation = mock(Operation.class);
-    Error error = new Error("Error", Collections.emptyList(), Collections.emptyMap());
+    Error error = new Error("Error", Collections.emptyList(), null, Collections.emptyMap());
     ApolloInterceptor.InterceptorResponse networkResponse = new ApolloInterceptor.InterceptorResponse(
         okHttpResponse,
         com.apollographql.apollo.api.Response.builder(operation).errors(Collections.singletonList(error)).build(),
