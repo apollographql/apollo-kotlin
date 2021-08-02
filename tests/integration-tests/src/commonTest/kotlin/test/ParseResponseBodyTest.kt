@@ -1,5 +1,6 @@
 package test
 
+import assertEquals2
 import com.apollographql.apollo3.adapter.LocalDateAdapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -22,6 +23,7 @@ import readResource
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 /**
@@ -35,35 +37,64 @@ class ParseResponseBodyTest {
     val response = AllPlanetsQuery().parseJsonResponse(readResource("ResponseError.json"))
     assertTrue(response.hasErrors())
     val errors = response.errors
-    assertEquals(errors?.get(0)?.message, "Cannot query field \"names\" on type \"Species\".")
-    assertEquals(errors?.get(0)?.locations?.get(0)?.line, 3)
-    assertEquals(errors?.get(0)?.locations?.get(0)?.column, 5)
-    assertEquals(errors?.get(0)?.customAttributes?.size, 0)
+    assertEquals2(errors?.get(0)?.message, "Cannot query field \"names\" on type \"Species\".")
+    assertEquals2(errors?.get(0)?.locations?.size, 1)
+    assertEquals2(errors?.get(0)?.locations?.get(0)?.line, 3)
+    assertEquals2(errors?.get(0)?.locations?.get(0)?.column, 5)
+    assertNull(errors?.get(0)?.path)
+    assertNull(errors?.get(0)?.extensions)
   }
 
   @Test
   @Throws(Exception::class)
-  fun `error with no message, no location and custom attributes`() {
-    val response = AllPlanetsQuery().parseJsonResponse(readResource("ResponseErrorWithNullsAndCustomAttributes.json"))
+  fun `error with nulls`() {
+    /**
+     * If I'm reading the spec right, passing null in location/path/extensions is most likely
+     * an error but we are lenient there and allow it
+     */
+    val response = AllPlanetsQuery().parseJsonResponse(readResource("ResponseErrorWithNulls.json"))
     assertTrue(response.hasErrors())
     assertEquals(response.errors?.size, 1)
-    assertEquals(response.errors!![0].message, "")
-    assertEquals(response.errors!![0].customAttributes.size, 2)
-    assertEquals(response.errors!![0].customAttributes["code"], "userNotFound")
-    assertEquals(response.errors!![0].customAttributes["path"], "loginWithPassword")
-    assertEquals(response.errors!![0].locations.size, 0)
+    assertEquals(response.errors!![0].message, "Response with nulls")
+    assertNull(response.errors!![0].locations)
+    assertNull(response.errors!![0].path)
+    assertNull(response.errors!![0].extensions)
   }
 
   @Test
   @Throws(Exception::class)
-  fun `error with message, location and custom attributes`() {
-    val response = AllPlanetsQuery().parseJsonResponse(readResource("ResponseErrorWithCustomAttributes.json"))
+  fun `error with absent`() {
+    /**
+     * location, path and extensions are all optional
+     */
+    val response = AllPlanetsQuery().parseJsonResponse(readResource("ResponseErrorWithAbsent.json"))
     assertTrue(response.hasErrors())
-    assertEquals(response.errors!![0].customAttributes.size, 4)
-    assertEquals(response.errors!![0].customAttributes["code"], 500)
-    assertEquals(response.errors!![0].customAttributes["status"], "Internal Error")
-    assertEquals(response.errors!![0].customAttributes["fatal"], true)
-    assertEquals(response.errors!![0].customAttributes["path"], listOf("query"))
+    assertEquals(response.errors?.size, 1)
+    assertEquals(response.errors!![0].message, "Response with absent")
+    assertNull(response.errors!![0].locations)
+    assertNull(response.errors!![0].path)
+    assertNull(response.errors!![0].extensions)
+  }
+
+
+  @Test
+  @Throws(Exception::class)
+  fun `error with extensions`() {
+    /**
+     * Extensions are mapped to Kotlin types.
+     * Big numbers should throw although this is not tested here
+     */
+    val response = AllPlanetsQuery().parseJsonResponse(readResource("ResponseErrorWithExtensions.json"))
+    assertTrue(response.hasErrors())
+    assertEquals(response.errors!![0].extensions?.size, 4)
+    assertEquals(response.errors!![0].extensions?.get("code"), 500)
+    assertEquals(response.errors!![0].extensions?.get("status"), "Internal Error")
+    assertEquals(response.errors!![0].extensions?.get("fatal"), true)
+    val listOfValues = response.errors!![0].extensions?.get("listOfValues") as List<Any>
+    assertEquals(listOfValues[0], 0)
+    assertEquals(listOfValues[1], "a")
+    assertEquals(listOfValues[2], true)
+    assertEquals(listOfValues[3], 2.4)
   }
 
   @Test
@@ -78,7 +109,7 @@ class ParseResponseBodyTest {
     assertEquals(errors?.get(0)?.message, "Cannot query field \"names\" on type \"Species\".")
     assertEquals(errors?.get(0)?.locations?.get(0)?.line, 3)
     assertEquals(errors?.get(0)?.locations?.get(0)?.column, 5)
-    assertEquals(errors?.get(0)?.customAttributes?.size, 0)
+    assertEquals(errors?.get(0)?.extensions, null)
   }
 
   private fun <T> Adapter<T>.toJsonString(t: T): String {
@@ -157,7 +188,7 @@ class ParseResponseBodyTest {
     assertEquals(errors?.get(0)?.message, "Cannot query field \"names\" on type \"Species\".")
     assertEquals(errors?.get(0)?.locations?.get(0)?.line, 3)
     assertEquals(errors?.get(0)?.locations?.get(0)?.column, 5)
-    assertEquals(errors?.get(0)?.customAttributes?.size, 0)
+    assertEquals(errors?.get(0)?.extensions, null)
   }
 
   @Test
