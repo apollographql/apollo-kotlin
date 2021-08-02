@@ -136,7 +136,33 @@ public class IntegrationTest {
             //noinspection ConstantConditions
             assertThat(response.errors()).containsExactly(new Error(
                 "Cannot query field \"names\" on type \"Species\".",
-                Collections.singletonList(new Error.Location(3, 5)), Collections.<String, Object>emptyMap()));
+                Collections.singletonList(new Error.Location(3, 5)),
+                null,
+                Collections.<String, Object>emptyMap())
+            );
+            return true;
+          }
+        }
+    );
+  }
+
+  @Test public void error_response_with_path() throws Exception {
+    server.enqueue(mockResponse("ResponseErrorWithPath.json"));
+    assertResponse(
+        apolloClient.query(new HeroNameQuery()),
+        new Predicate<Response<HeroNameQuery.Data>>() {
+          @Override public boolean test(Response<HeroNameQuery.Data> response) throws Exception {
+            assertThat(response.hasErrors()).isTrue();
+            //noinspection ConstantConditions
+            assertThat(response.hasErrors()).isTrue();
+            assertThat(response.errors()).hasSize(1);
+            assertThat(response.errors().get(0).message()).isEqualTo("Name for character with ID 1002 could not be fetched.");
+            assertThat(response.errors().get(0).locations()).hasSize(1);
+            assertThat(response.errors().get(0).getPath()).hasSize(4);
+            assertThat(response.errors().get(0).getPath().get(0)).isEqualTo("hero");
+            assertThat(response.errors().get(0).getPath().get(1)).isEqualTo("heroFriends");
+            assertThat(response.errors().get(0).getPath().get(2)).isEqualTo(1);
+            assertThat(response.errors().get(0).getPath().get(3)).isEqualTo("name");
             return true;
           }
         }
@@ -190,7 +216,9 @@ public class IntegrationTest {
             assertThat(response.data().hero().name()).isEqualTo("R2-D2");
             assertThat(response.errors()).containsExactly(new Error(
                 "Cannot query field \"names\" on type \"Species\".",
-                Collections.singletonList(new Error.Location(3, 5)), Collections.<String, Object>emptyMap()));
+                Collections.singletonList(new Error.Location(3, 5)),
+                null,
+                Collections.<String, Object>emptyMap()));
             return true;
           }
         }
@@ -306,6 +334,7 @@ public class IntegrationTest {
         new Error(
             "Cannot query field \"names\" on type \"Species\".",
             Collections.singletonList(new Error.Location(3, 5)),
+            null,
             Collections.<String, Object>emptyMap()
         )
     );

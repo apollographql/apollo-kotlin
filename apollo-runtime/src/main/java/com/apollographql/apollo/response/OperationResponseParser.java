@@ -140,6 +140,7 @@ public final class OperationResponseParser<D extends Operation.Data, W> {
     String message = "";
     final List<Error.Location> locations = new ArrayList<>();
     final Map<String, Object> customAttributes = new HashMap<>();
+    List<Object> path = null;
     for (Map.Entry<String, Object> entry : payload.entrySet()) {
       if ("message".equals(entry.getKey())) {
         Object value = entry.getValue();
@@ -151,13 +152,22 @@ public final class OperationResponseParser<D extends Operation.Data, W> {
             locations.add(parseErrorLocation(item));
           }
         }
+      } else if ("path".equals(entry.getKey())) {
+        path = new ArrayList<Object>();
+        for (Object item : (List<Object>) entry.getValue()) {
+          if (item instanceof Number) {
+            path.add(((Number) item).intValue());
+          } else {
+            path.add(item);
+          }
+        }
       } else {
         if (entry.getValue() != null) {
           customAttributes.put(entry.getKey(), entry.getValue());
         }
       }
     }
-    return new Error(message, locations, customAttributes);
+    return new Error(message, locations, path, customAttributes);
   }
 
   @SuppressWarnings("ConstantConditions")

@@ -56,6 +56,7 @@ object SimpleOperationResponseParser {
   private fun Map<String, Any?>.readError(): Error {
     var message = ""
     var locations = emptyList<Error.Location>()
+    var path: List<Any>? = null
     val customAttributes = mutableMapOf<String, Any?>()
     for ((key, value) in this) {
       when (key) {
@@ -64,10 +65,13 @@ object SimpleOperationResponseParser {
           val locationItems = value as? List<Map<String, Any?>>
           locations = locationItems?.map { it.readErrorLocation() } ?: emptyList()
         }
+        "path" -> {
+          path = (value as? List<Any>)?.map { if (it is Number) it.toInt() else it }
+        }
         else -> customAttributes[key] = value
       }
     }
-    return Error(message, locations, customAttributes)
+    return Error(message, locations, path, customAttributes)
   }
 
   private fun Map<String, Any?>?.readErrorLocation(): Error.Location {

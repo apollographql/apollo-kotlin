@@ -17,9 +17,16 @@ class Error(
     val locations: List<Location> = emptyList(),
 
     /**
+     * If this error comes from a field, the path of the field where the error happened.
+     * Values in the list can be either Strings or Int
+     * Can be null if the error doesn't come from a field, like validation errors.
+     */
+    val path: List<Any>? = null,
+
+    /**
      * Custom attributes associated with this error
      */
-    val customAttributes: Map<String, Any?> = emptyMap()
+    val customAttributes: Map<String, Any?> = emptyMap(),
 ) {
 
   /**
@@ -49,6 +56,7 @@ class Error(
 
     if (message != other.message) return false
     if (locations != other.locations) return false
+    if (path != other.path) return false
     if (customAttributes != other.customAttributes) return false
 
     return true
@@ -57,12 +65,13 @@ class Error(
   override fun hashCode(): Int {
     var result = message.hashCode()
     result = 31 * result + locations.hashCode()
+    result = 31 * result + path.hashCode()
     result = 31 * result + customAttributes.hashCode()
     return result
   }
 
   override fun toString(): String {
-    return "Error(message = $message, locations = $locations, customAttributes = $customAttributes)"
+    return "Error(message = $message, locations = $locations, path = $path, customAttributes = $customAttributes)"
   }
 
   /**
