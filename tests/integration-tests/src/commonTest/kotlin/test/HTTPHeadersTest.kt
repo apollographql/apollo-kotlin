@@ -2,6 +2,7 @@ package test
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.composeJsonResponse
+import com.apollographql.apollo3.api.http.valueOf
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockResponse
@@ -66,8 +67,8 @@ class HTTPHeadersTest {
     runWithMainLoop {
       val response = apolloClient.query(query)
 
-      assertEquals(response.executionContext[HttpResponseInfo]?.headers?.get("Header1"), "Value1")
-      assertEquals(response.executionContext[HttpResponseInfo]?.headers?.get("Header2"), "Value2")
+      assertEquals(response.executionContext[HttpResponseInfo]?.headers?.valueOf("Header1"), "Value1")
+      assertEquals(response.executionContext[HttpResponseInfo]?.headers?.valueOf("Header2"), "Value2")
     }
   }
 }

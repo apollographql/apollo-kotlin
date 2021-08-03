@@ -4,6 +4,7 @@ import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
+import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.mpp.suspendAndResumeOnMain
 import com.apollographql.apollo3.network.toNSData
@@ -81,7 +82,7 @@ actual class DefaultHttpEngine(
       setTimeoutInterval(connectTimeoutMillis.toDouble() / 1000)
 
       request.headers.forEach {
-        setValue(it.value, forHTTPHeaderField = it.key)
+        setValue(it.value, forHTTPHeaderField = it.name)
       }
 
       if (request.method == HttpMethod.Get) {
@@ -137,8 +138,9 @@ private fun buildHttpResponse(
   }
 
   val httpHeaders = httpResponse.allHeaderFields
-      .map { (key, value) -> key.toString() to value.toString() }
-      .toMap()
+      .map { (key, value) ->
+        HttpHeader(key.toString(), value.toString())
+      }
 
   val statusCode = httpResponse.statusCode.toInt()
 

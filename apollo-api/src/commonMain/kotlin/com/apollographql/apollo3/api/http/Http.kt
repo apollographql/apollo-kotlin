@@ -21,18 +21,25 @@ interface HttpBody {
 }
 
 /**
+ * a HTTP header
+ */
+class HttpHeader(val name: String, val value: String)
+
+fun List<HttpHeader>.valueOf(name: String): String? = firstOrNull { it.name == name }?.value
+
+/**
  * a HTTP request to be sent
  */
 class HttpRequest(
     val method: HttpMethod,
     val url: String,
-    val headers: Map<String, String>,
+    val headers: List<HttpHeader>,
     val body: HttpBody?,
 ) {
   fun copy(
       method: HttpMethod = this.method,
       url: String = this.url,
-      headers: Map<String, String> = this.headers,
+      headers: List<HttpHeader> = this.headers,
       body: HttpBody? = this.body,
   ): HttpRequest {
     return HttpRequest(
@@ -53,7 +60,7 @@ class HttpRequest(
  */
 class HttpResponse(
     val statusCode: Int,
-    val headers: Map<String, String>,
+    val headers: List<HttpHeader>,
     /**
      * A streamable body.
      */
@@ -98,7 +105,7 @@ fun HttpRequest.withHeader(name: String, value: String): HttpRequest {
   return HttpRequest(
       method = method,
       url = url,
-      headers = headers + (name to value),
+      headers = headers + HttpHeader(name, value),
       body = body
   )
 }
@@ -106,7 +113,7 @@ fun HttpRequest.withHeader(name: String, value: String): HttpRequest {
 /**
  * adds multiple headers to a given [HttpRequest]
  */
-fun HttpRequest.withHeaders(headers: Map<String, String>): HttpRequest {
+fun HttpRequest.withHeaders(headers: List<HttpHeader>): HttpRequest {
   return HttpRequest(
       method = method,
       url = url,
@@ -118,7 +125,7 @@ fun HttpRequest.withHeaders(headers: Map<String, String>): HttpRequest {
 /**
  * adds multiple headers to a given [HttpResponse]
  */
-fun HttpResponse.withHeaders(headers: Map<String, String>): HttpResponse {
+fun HttpResponse.withHeaders(headers: List<HttpHeader>): HttpResponse {
   return HttpResponse(
       statusCode = statusCode,
       headers = this.headers + headers,
