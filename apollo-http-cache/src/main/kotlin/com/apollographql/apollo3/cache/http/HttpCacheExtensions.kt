@@ -73,7 +73,10 @@ fun <D: Query.Data> ApolloRequest<D>.withHttpFetchPolicy(httpFetchPolicy: HttpFe
 }
 
 val <D : Operation.Data> ApolloResponse<D>.isFromHttpCache
-  get() = executionContext[HttpResponseInfo]?.headers?.containsKey(CachingHttpEngine.FROM_CACHE) ?: false
+  get() = executionContext[HttpResponseInfo]?.headers?.any {
+    // This will return true whatever the value in the header. We might want to fine tune this
+    it.name == CachingHttpEngine.FROM_CACHE
+  } ?: false
 
 fun <D: Query.Data> ApolloRequest<D>.withHttpExpireTimeout(millis: Long): ApolloRequest<D> {
   val context = executionContext[HttpRequestComposerParams] ?: DefaultHttpRequestComposerParams

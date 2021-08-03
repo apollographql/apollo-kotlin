@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
+import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.parseJsonResponse
@@ -40,7 +41,7 @@ class HttpNetworkTransport(
    */
   constructor(
       serverUrl: String,
-      headers: Map<String, String> = emptyMap(),
+      headers: List<HttpHeader> = emptyList(),
       connectTimeoutMillis: Long = 60_000,
       readTimeoutMillis: Long = 60_000,
       interceptors: List<HttpInterceptor> = emptyList(),
@@ -68,7 +69,7 @@ class HttpNetworkTransport(
       engine: HttpEngine,
       interceptors: List<HttpInterceptor> = emptyList(),
   ) : this(
-      DefaultHttpRequestComposer(serverUrl, emptyMap()),
+      DefaultHttpRequestComposer(serverUrl, emptyList()),
       engine,
       interceptors
   )

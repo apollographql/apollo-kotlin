@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpRequestComposerParams
 import com.apollographql.apollo3.api.http.HttpResponse
+import com.apollographql.apollo3.api.http.valueOf
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.internal.json.buildJsonByteString
@@ -80,11 +81,11 @@ class BatchingHttpEngine(
   private val pendingRequests = mutableListOf<PendingRequest>()
 
   override suspend fun execute(request: HttpRequest): HttpResponse {
-    val canBeBatched = request.headers[CAN_BE_BATCHED]?.toBoolean() ?: batchByDefault
+    val canBeBatched = request.headers.valueOf(CAN_BE_BATCHED)?.toBoolean() ?: batchByDefault
 
     if (!canBeBatched) {
       // Remove the CAN_BE_BATCHED header and forward directly
-      return delegate.execute(request.copy(headers = request.headers.filter { it.key != CAN_BE_BATCHED }))
+      return delegate.execute(request.copy(headers = request.headers.filter { it.name != CAN_BE_BATCHED }))
     }
 
     val pendingRequest = PendingRequest(request)
@@ -114,7 +115,7 @@ class BatchingHttpEngine(
 
     val firstRequest = pending.first().request
 
-    val allLengths = pending.map { it.request.headers.get("Content-Length")?.toLongOrNull() ?: -1L }
+    val allLengths = pending.map { it.request.headers.valueOf("Content-Length")?.toLongOrNull() ?: -1L }
     val contentLength = if (allLengths.contains(-1)) {
       -1
     } else {
@@ -142,7 +143,7 @@ class BatchingHttpEngine(
     val request = HttpRequest(
         method = HttpMethod.Post,
         url = firstRequest.url,
-        headers = emptyMap(),
+        headers = emptyList(),
         body = body,
     )
     freeze(request)
@@ -185,7 +186,7 @@ class BatchingHttpEngine(
       pending[index].deferred.complete(
           HttpResponse(
               statusCode = 200,
-              headers = emptyMap(),
+              headers = emptyList(),
               bodyString = byteString,
               bodySource = null
           )
