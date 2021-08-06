@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import com.apollographql.apollo3.gradle.api.ApolloExtension
 
 buildscript {
     apply(from = "../../../gradle/dependencies.gradle")
@@ -40,4 +41,8 @@ configure<KotlinMultiplatformExtension> {
             }
         }
     }
+}
+
+configure<ApolloExtension> {
+    filePathAwarePackageNameGenerator()
 }

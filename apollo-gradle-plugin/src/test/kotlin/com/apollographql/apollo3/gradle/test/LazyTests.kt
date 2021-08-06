@@ -12,6 +12,7 @@ class LazyTests {
 
     val apolloConfiguration = """
 configure<ApolloExtension> {
+  filePathAwarePackageNameGenerator()
   useSemanticNaming.set(project.provider {
       throw IllegalArgumentException("this should not be called during configuration")
   })
@@ -44,7 +45,7 @@ val installTask = tasks.register("installTask", InstallGraphQLFilesTask::class.j
   outputDir.set(project.file("build/toto"))
 }
 configure<ApolloExtension> {
-  println("adding default toto")
+  filePathAwarePackageNameGenerator()
   srcDir(installTask.flatMap { it.outputDir })
 }
 """.trimIndent()

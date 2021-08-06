@@ -25,4 +25,8 @@ repositories {
   }
 }
 
+configure<ApolloExtension> {
+  packageName.set("com.example")
+}
+
 

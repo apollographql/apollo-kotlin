@@ -56,11 +56,12 @@ class ServiceTests {
   fun canConfigureOutputDir() {
     withSimpleProject("""
       apollo {
+        filePathAwarePackageNameGenerator()
         outputDir.set(file("build/apollo"))
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(File(dir, "build/apollo/type/Types.kt").exists())
+      assertTrue(File(dir, "build/apollo/com/example/type/Types.kt").exists())
     }
   }
 
@@ -243,6 +244,7 @@ class ServiceTests {
   fun `operationOutput generates queries with __typename`() {
     withSimpleProject("""
       apollo {
+        filePathAwarePackageNameGenerator()
         generateOperationOutput.set(true)
       }
     """.trimIndent()) { dir ->
@@ -283,6 +285,7 @@ class ServiceTests {
     withSimpleProject("""
       apollo { 
         generateOperationOutput.set(true)
+        filePathAwarePackageNameGenerator()
         operationOutputConnection {
           tasks.register("customTaskService") {
             inputs.file(operationOutputFile)
@@ -297,28 +300,27 @@ class ServiceTests {
   }
 
   @Test
-  fun `symlinks are not followed for the schema`() {
+  fun `symlinks are followed for the schema`() {
     withSimpleProject { dir ->
       File(dir, "src/main/graphql/com/example/schema.json").copyTo(File(dir, "schema.json"))
       File(dir, "src/main/graphql/com/example/schema.json").delete()
 
-
-      Files.createSymbolicLink(File(dir, "src/main/graphql/com/example/schema.json").toPath(),
+      Files.createSymbolicLink(
+          File(dir, "src/main/graphql/com/example/schema.json").toPath(),
           File(dir, "schema.json").toPath()
       )
 
       TestUtils.executeTask("generateApolloSources", dir)
 
-      assertTrue(dir.generatedChild("service/fragment/SpeciesInformation.kt").isFile)
+      assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
     }
   }
 
   @Test
-  fun `symlinks are not followed for sources`() {
+  fun `symlinks are followed for GraphQL sources`() {
     withSimpleProject { dir ->
       File(dir, "src/main/graphql/com/example").copyRecursively(File(dir, "tmp"))
       File(dir, "src/main/graphql/com/").deleteRecursively()
-
 
       Files.createSymbolicLink(
           File(dir, "src/main/graphql/example").toPath(),
@@ -327,7 +329,7 @@ class ServiceTests {
 
       TestUtils.executeTask("generateApolloSources", dir)
 
-      assertTrue(dir.generatedChild("service/fragment/SpeciesInformation.kt").isFile)
+      assertTrue(dir.generatedChild("service/example/fragment/SpeciesInformation.kt").isFile)
     }
   }
 
@@ -336,7 +338,7 @@ class ServiceTests {
     withTestProject("testSourceSet") { dir ->
       TestUtils.executeTask("build", dir)
 
-      assertTrue(dir.generatedChild("service/GreetingQuery.kt").isFile)
+      assertTrue(dir.generatedChild("service/com/example/GreetingQuery.kt").isFile)
       assertTrue(File(dir, "build/libs/testProject.jar").isFile)
     }
   }
@@ -384,11 +386,12 @@ class ServiceTests {
   fun `when generateFragmentImplementations set to true, it generates default fragment implementation`() {
     withSimpleProject("""
       apollo {
+        filePathAwarePackageNameGenerator()
         generateFragmentImplementations = true
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("service/fragment/SpeciesInformationImpl.kt").isFile)
+      assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformationImpl.kt").isFile)
     }
   }
 }

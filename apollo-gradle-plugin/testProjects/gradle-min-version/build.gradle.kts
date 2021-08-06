@@ -33,3 +33,7 @@ dependencies {
   add("implementation", groovy.util.Eval.x(project, "x.dep.apollo.api"))
 }
 
+configure<ApolloExtension> {
+  packageName.set("com.example")
+}
+

@@ -16,7 +16,11 @@ class AndroidProjectTests {
 
   @Test
   fun `android library compiles`() {
-    withProject(apolloConfiguration = "",
+    withProject(apolloConfiguration = """
+      apollo {
+        filePathAwarePackageNameGenerator()
+      }
+    """.trimIndent(),
         usesKotlinDsl = false,
         plugins = listOf(TestUtils.androidLibraryPlugin, TestUtils.apolloPlugin, TestUtils.kotlinAndroidPlugin)) { dir ->
       val result = TestUtils.executeTask("build", dir)
@@ -24,16 +28,20 @@ class AndroidProjectTests {
       assertEquals(TaskOutcome.SUCCESS, result.task(":build")!!.outcome)
 
       // Java classes generated successfully
-      assertTrue(dir.generatedChild("service/DroidDetailsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("service/FilmsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("service/fragment/SpeciesInformation.kt").isFile)
+      assertTrue(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("service/com/example/FilmsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
     }
   }
 
 
   @Test
   fun `android application compiles and produces an apk`() {
-    withProject(apolloConfiguration = "",
+    withProject(apolloConfiguration = """
+      apollo {
+        filePathAwarePackageNameGenerator()
+      }
+    """.trimIndent(),
         usesKotlinDsl = false,
         plugins = listOf(TestUtils.androidApplicationPlugin, TestUtils.apolloPlugin, TestUtils.kotlinAndroidPlugin)) { dir ->
       val result = TestUtils.executeTask("build", dir)
@@ -41,9 +49,9 @@ class AndroidProjectTests {
       assertEquals(TaskOutcome.SUCCESS, result.task(":build")!!.outcome)
 
       // Java classes generated successfully
-      assertTrue(dir.generatedChild("service/DroidDetailsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("service/FilmsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("service/fragment/SpeciesInformation.kt").isFile)
+      assertTrue(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("service/com/example/FilmsQuery.kt").isFile)
+      assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
       assertTrue(File(dir, "build/outputs/apk/debug/testProject-debug.apk").isFile)
     }
   }
