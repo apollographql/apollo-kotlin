@@ -47,6 +47,6 @@ class ParseResponseBodyTest {
     val query = AllPlanetsQuery()
     val data = query.parseJsonResponse(expected).data
     val actual = query.composeJsonResponse(data!!, indent = "  ")
-    assertEquals(actual, expected)
+    assertEquals(expected, actual)
   }
 }
