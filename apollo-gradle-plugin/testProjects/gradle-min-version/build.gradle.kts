@@ -7,7 +7,6 @@ buildscript {
     maven {
       url = uri("../../../build/localMaven")
     }
-    google()
     mavenCentral()
   }
   dependencies {
@@ -17,7 +16,6 @@ buildscript {
   }
 }
 
-
 apply(plugin = "org.jetbrains.kotlin.jvm")
 apply(plugin = "com.apollographql.apollo3")
 
@@ -25,7 +23,6 @@ repositories {
   maven {
     url = uri("../../../build/localMaven")
   }
-  google()
   mavenCentral()
 }
 
