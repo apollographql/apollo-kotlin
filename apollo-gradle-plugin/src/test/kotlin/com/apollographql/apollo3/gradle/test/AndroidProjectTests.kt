@@ -18,7 +18,7 @@ class AndroidProjectTests {
   fun `android library compiles`() {
     withProject(apolloConfiguration = """
       apollo {
-        filePathAwarePackageNameGenerator()
+        packageNamesFromFilePaths()
       }
     """.trimIndent(),
         usesKotlinDsl = false,
@@ -39,7 +39,7 @@ class AndroidProjectTests {
   fun `android application compiles and produces an apk`() {
     withProject(apolloConfiguration = """
       apollo {
-        filePathAwarePackageNameGenerator()
+        packageNamesFromFilePaths()
       }
     """.trimIndent(),
         usesKotlinDsl = false,

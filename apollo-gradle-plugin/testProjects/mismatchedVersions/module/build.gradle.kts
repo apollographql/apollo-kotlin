@@ -8,5 +8,5 @@ dependencies {
 }
 
 configure<ApolloExtension> {
-    filePathAwarePackageNameGenerator()
+    packageNamesFromFilePaths()
 }

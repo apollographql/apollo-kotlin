@@ -33,5 +33,5 @@ configure<KotlinMultiplatformExtension> {
 }
 
 configure<ApolloExtension> {
-    filePathAwarePackageNameGenerator()
+    packageNamesFromFilePaths()
 }

@@ -25,7 +25,7 @@ class ServiceTests {
   fun `customScalarsMapping is working`() {
     withSimpleProject("""
       apollo {
-        filePathAwarePackageNameGenerator()
+        packageNamesFromFilePaths()
         customScalarsMapping = ["DateTime": "java.util.Date"]
       }
     """.trimIndent()) { dir ->
@@ -38,7 +38,7 @@ class ServiceTests {
   fun `registering an unknown custom scalar fails`() {
     withSimpleProject("""
       apollo {
-        filePathAwarePackageNameGenerator()
+        packageNamesFromFilePaths()
         customScalarsMapping = ["UnknownScalar": "java.util.Date"]
       }
     """.trimIndent()) { dir ->
@@ -56,7 +56,7 @@ class ServiceTests {
   fun canConfigureOutputDir() {
     withSimpleProject("""
       apollo {
-        filePathAwarePackageNameGenerator()
+        packageNamesFromFilePaths()
         outputDir.set(file("build/apollo"))
       }
     """.trimIndent()) { dir ->
@@ -69,7 +69,7 @@ class ServiceTests {
   fun `customScalarsMapping put is working`() {
     withSimpleProject("""
       apollo {
-        filePathAwarePackageNameGenerator()
+        packageNamesFromFilePaths()
         customScalarsMapping.put("DateTime", "java.util.Date")
       }
     """.trimIndent()) { dir ->
@@ -83,10 +83,10 @@ class ServiceTests {
     withSimpleProject("""
       apollo {
         service("other") {
-          filePathAwarePackageNameGenerator()
+          packageNamesFromFilePaths()
         }
         service("api") {
-          filePathAwarePackageNameGenerator()
+          packageNamesFromFilePaths()
           customScalarsMapping = ["DateTime": "java.util.Date"]
         }
       }
@@ -100,7 +100,7 @@ class ServiceTests {
   fun `useSemanticNaming defaults to true`() {
     withSimpleProject("""
       apollo {
-        filePathAwarePackageNameGenerator()
+        packageNamesFromFilePaths()
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
@@ -112,7 +112,7 @@ class ServiceTests {
   fun `useSemanticNaming can be turned off correctly`() {
     withSimpleProject("""
       apollo {
-        filePathAwarePackageNameGenerator()
+        packageNamesFromFilePaths()
         useSemanticNaming = false
       }
     """.trimIndent()) { dir ->
@@ -174,7 +174,7 @@ class ServiceTests {
     withSimpleProject("""
       apollo {
         service("starwars") {
-          filePathAwarePackageNameGenerator()
+          packageNamesFromFilePaths()
           exclude = ["**/*.gql"]
         }
       }
@@ -244,7 +244,7 @@ class ServiceTests {
   fun `operationOutput generates queries with __typename`() {
     withSimpleProject("""
       apollo {
-        filePathAwarePackageNameGenerator()
+        packageNamesFromFilePaths()
         generateOperationOutput.set(true)
       }
     """.trimIndent()) { dir ->
@@ -264,7 +264,7 @@ class ServiceTests {
   fun `operationOutput uses same id as the query`() {
     withSimpleProject("""
       apollo {
-        filePathAwarePackageNameGenerator()
+        packageNamesFromFilePaths()
         generateOperationOutput.set(true)
       }
     """.trimIndent()) { dir ->
@@ -285,7 +285,7 @@ class ServiceTests {
     withSimpleProject("""
       apollo { 
         generateOperationOutput.set(true)
-        filePathAwarePackageNameGenerator()
+        packageNamesFromFilePaths()
         operationOutputConnection {
           tasks.register("customTaskService") {
             inputs.file(operationOutputFile)
@@ -347,7 +347,7 @@ class ServiceTests {
   fun `when generateAsInternal set to true - generated models are internal`() {
     val apolloConfiguration = """
       apollo {
-        filePathAwarePackageNameGenerator()
+        packageNamesFromFilePaths()
         generateAsInternal = true
       }
     """.trimIndent()
@@ -386,7 +386,7 @@ class ServiceTests {
   fun `when generateFragmentImplementations set to true, it generates default fragment implementation`() {
     withSimpleProject("""
       apollo {
-        filePathAwarePackageNameGenerator()
+        packageNamesFromFilePaths()
         generateFragmentImplementations = true
       }
     """.trimIndent()) { dir ->

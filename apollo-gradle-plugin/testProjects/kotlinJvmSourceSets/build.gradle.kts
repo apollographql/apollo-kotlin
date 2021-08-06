@@ -13,7 +13,7 @@ dependencies {
 
 configure<ApolloExtension> {
   createAllKotlinSourceSetServices(".", "example") {
-    filePathAwarePackageNameGenerator()
+    packageNamesFromFilePaths()
     schemaFile.set(file("src/main/graphql/com/example/schema.sdl"))
   }
 }

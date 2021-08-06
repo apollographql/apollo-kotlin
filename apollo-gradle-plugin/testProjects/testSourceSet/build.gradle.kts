@@ -12,7 +12,7 @@ dependencies {
 }
 
 configure<ApolloExtension> {
-  filePathAwarePackageNameGenerator()
+  packageNamesFromFilePaths()
   outputDirConnection {
     connectToKotlinSourceSet("test")
   }

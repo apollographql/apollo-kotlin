@@ -21,7 +21,7 @@ class SchemaResolutionTests {
     val apolloConfiguration = """
       apollo {
         service("api") {
-          filePathAwarePackageNameGenerator()
+          packageNamesFromFilePaths()
         }
       }
     """.trimIndent()
@@ -51,7 +51,7 @@ class SchemaResolutionTests {
     val apolloConfiguration = """
       apollo {
         service("api") {
-          filePathAwarePackageNameGenerator()
+          packageNamesFromFilePaths()
           schemaFile.set(file("src/main/graphql/schema.sdl"))
         }
       }
@@ -80,7 +80,7 @@ class SchemaResolutionTests {
     val apolloConfiguration = """
       apollo {
         service("api") {
-          filePathAwarePackageNameGenerator()
+          packageNamesFromFilePaths()
         }
       }
     """.trimIndent()

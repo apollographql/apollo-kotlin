@@ -145,7 +145,7 @@ object TestUtils {
    */
   fun withSimpleProject(apolloConfiguration: String = """
     apollo {
-      filePathAwarePackageNameGenerator()
+      packageNamesFromFilePaths()
     }
   """.trimIndent(), block: (File) -> Unit) = withProject(
       usesKotlinDsl = false,

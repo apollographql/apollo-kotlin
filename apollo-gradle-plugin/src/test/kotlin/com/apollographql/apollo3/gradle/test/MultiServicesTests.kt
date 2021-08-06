@@ -33,7 +33,7 @@ class MultiServicesTests {
   fun `multiple schema files in different folders throw an error`() {
     val apolloConfiguration = """
       apollo {
-        filePathAwarePackageNameGenerator()
+        packageNamesFromFilePaths()
       }
     """.trimIndent()
     withMultipleServicesProject(apolloConfiguration) { dir ->
