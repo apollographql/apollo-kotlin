@@ -57,14 +57,12 @@ By default, Apollo Android adds generated source:
 * to `commonMain` for multiplatform projects
 * to all non-test variants for Android projects
 
-You can customize this behavior with the `withOutputDir` property. For exemple, to wire a service to all the test source set of a Kotlin JVM project:
+You can customize this behavior with the `outputDirConnection` property. For exemple, to wire a service to the test source set of a Kotlin JVM project:
 
 ```kotlin
 apollo {
-  withOutputDir {
-    val kotlinProjectExtension = project.extensions.get("kotlin") as KotlinProjectExtension
-    // Because outputDir is a Gradle Property, it will carry the task dependency to the codegen task
-    kotlinProjectExtension.sourceSets.getByName("test").kotlin.srcDir(outputDir)
+  outputDirConnection {
+    connectToKotlinSourceSet("test")
   }
 }
 ```

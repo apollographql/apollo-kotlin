@@ -74,7 +74,7 @@ object GraphQLCompiler {
      * Step 3, Modify the AST to add typename and key fields
      */
     val incomingFragments = options.metadataFragments.map { it.definition }
-    var allFragmentDefinitions = (definitions.filterIsInstance<GQLFragmentDefinition>() + incomingFragments).associateBy { it.name }
+
     val fragments = definitions.filterIsInstance<GQLFragmentDefinition>().map {
       addRequiredFields(it, options.schema)
     }
@@ -83,8 +83,8 @@ object GraphQLCompiler {
       addRequiredFields(it, options.schema)
     }
 
-    // Update the fragments with the possibly updated fragments
-    allFragmentDefinitions = (fragments + incomingFragments).associateBy { it.name }
+    // Remember the fragments with the possibly updated fragments
+    val allFragmentDefinitions = (fragments + incomingFragments).associateBy { it.name }
 
     operations.forEach {
       checkKeyFields(it, options.schema, allFragmentDefinitions)

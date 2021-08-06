@@ -28,6 +28,7 @@ object ResponseBodyParser {
     var errors: List<Error>? = null
     var extensions: Map<String, Any?>? = null
     while (jsonReader.hasNext()) {
+      @Suppress("UNCHECKED_CAST")
       when (jsonReader.nextName()) {
         "data" -> data = operation.adapter().nullable().fromJson(jsonReader, customScalarAdapters)
         "errors" -> errors = jsonReader.readErrors()
@@ -84,29 +85,39 @@ object ResponseBodyParser {
   @Suppress("UNCHECKED_CAST")
   private fun Map<String, Any?>.readError(): Error {
     var message = ""
-    var locations = emptyList<Error.Location>()
-    val customAttributes = mutableMapOf<String, Any?>()
+    var locations: List<Error.Location>? = null
+    var path: List<Any>? = null
+    var extensions: Map<String, Any?>? = null
     for ((key, value) in this) {
       when (key) {
         "message" -> message = value?.toString() ?: ""
         "locations" -> {
           val locationItems = value as? List<Map<String, Any?>>
-          locations = locationItems?.map { it.readErrorLocation() } ?: emptyList()
+          locations = locationItems?.map { it.readErrorLocation() } 
         }
-        else -> customAttributes[key] = value
+        "path" -> {
+          path = value as? List<Any>
+        }
+        "extensions" -> {
+          extensions = value as? Map<String, Any?>
+        }
+        else -> {
+          // unknown
+        }
       }
     }
-    return Error(message, locations, customAttributes)
+
+    return Error(message, locations, path, extensions)
   }
 
   private fun Map<String, Any?>?.readErrorLocation(): Error.Location {
-    var line: Long = -1
-    var column: Long = -1
+    var line: Int = -1
+    var column: Int = -1
     if (this != null) {
       for ((key, value) in this) {
         when (key) {
-          "line" -> line = (value as Number).toLong()
-          "column" -> column = (value as Number).toLong()
+          "line" -> line = value as Int
+          "column" -> column = value as Int
         }
       }
     }

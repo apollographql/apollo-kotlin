@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
+import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.parseJsonResponse
@@ -40,11 +41,38 @@ class HttpNetworkTransport(
    */
   constructor(
       serverUrl: String,
-      headers: Map<String, String> = emptyMap(),
+      headers: List<HttpHeader> = emptyList(),
       connectTimeoutMillis: Long = 60_000,
       readTimeoutMillis: Long = 60_000,
       interceptors: List<HttpInterceptor> = emptyList(),
-  ) : this(DefaultHttpRequestComposer(serverUrl, headers), DefaultHttpEngine(connectTimeoutMillis, readTimeoutMillis), interceptors)
+  ) : this(
+      DefaultHttpRequestComposer(serverUrl, headers),
+      DefaultHttpEngine(connectTimeoutMillis, readTimeoutMillis),
+      interceptors
+  )
+
+  /**
+   *
+   * @param serverUrl
+   * @param connectTimeoutMillis The timeout interval to use when connecting
+   *
+   * - on iOS, it is used to set [NSMutableURLRequest.timeoutInterval]
+   * - on Android, it is used to set [OkHttpClient.connectTimeout]
+   *
+   * @param readTimeoutMillis The timeout interval to use when waiting for additional data.
+   *
+   * - on iOS, it is used to set [NSURLSessionConfiguration.timeoutIntervalForRequest]
+   * - on Android, it is used to set  [OkHttpClient.readTimeout]
+   */
+  constructor(
+      serverUrl: String,
+      engine: HttpEngine,
+      interceptors: List<HttpInterceptor> = emptyList(),
+  ) : this(
+      DefaultHttpRequestComposer(serverUrl, emptyList()),
+      engine,
+      interceptors
+  )
 
   private val engineInterceptor = EngineInterceptor()
 
@@ -107,44 +135,6 @@ class HttpNetworkTransport(
     }
   }
 
-  companion object {
-    private fun wrapThrowableIfNeeded(throwable: Throwable): ApolloException {
-      return if (throwable is ApolloException) {
-        throwable
-      } else {
-        // This happens for null pointer exceptions on missing fields
-        ApolloParseException(
-            message = "Failed to parse GraphQL http network response",
-            cause = throwable
-        )
-      }
-    }
-
-    private fun <D : Operation.Data> HttpResponse.parse(
-        request: ApolloRequest<D>,
-        customScalarAdapters: CustomScalarAdapters,
-    ): ApolloResponse<D> {
-      if (statusCode !in 200..299) {
-        throw ApolloHttpException(
-            statusCode = statusCode,
-            headers = headers,
-            message = "Http request failed with status code `${statusCode} (${body?.readUtf8()})`"
-        )
-      }
-
-      return request.operation.parseJsonResponse(
-          source = body!!,
-          customScalarAdapters = customScalarAdapters
-      ).copy(
-          requestUuid = request.requestUuid,
-          executionContext = request.executionContext + HttpResponseInfo(
-              statusCode = statusCode,
-              headers = headers
-          )
-      )
-    }
-  }
-
   override fun dispose() {
     engine.dispose()
   }
@@ -159,5 +149,19 @@ class HttpNetworkTransport(
         engine = newEngine,
         interceptors = interceptors
     )
+  }
+
+  companion object {
+    private fun wrapThrowableIfNeeded(throwable: Throwable): ApolloException {
+      return if (throwable is ApolloException) {
+        throwable
+      } else {
+        // This happens for null pointer exceptions on missing fields
+        ApolloParseException(
+            message = "Failed to parse GraphQL http network response",
+            cause = throwable
+        )
+      }
+    }
   }
 }

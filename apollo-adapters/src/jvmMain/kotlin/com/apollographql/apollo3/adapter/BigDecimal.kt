@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.api
+package com.apollographql.apollo3.adapter
 
 import java.math.BigDecimal as JBigDecimal
 

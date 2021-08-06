@@ -67,4 +67,12 @@ class AndroidProjectTests {
       executeTaskAndAssertSuccess(":compileFullDebugAndroidTestKotlin", dir)
     }
   }
+
+  @Test
+  fun `can connect outputDir to tests`() {
+    withTestProject("androidTestVariants") {dir ->
+      // compile library variants
+      executeTaskAndAssertSuccess(":build", dir)
+    }
+  }
 }

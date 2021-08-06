@@ -54,11 +54,6 @@ configure<com.android.build.gradle.LibraryExtension> {
     testInstrumentationRunner = "androidx.benchmark.junit4.AndroidBenchmarkRunner"
   }
 
-  compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-  }
-
   useLibrary("android.test.base")
 }
 

@@ -15,6 +15,7 @@ interface ReadOnlyNormalizedCache {
   /**
    * Calls through to [NormalizedCache.loadRecord]. Implementations should override this
    * method if the underlying storage technology can offer an optimized manner to read multiple records.
+   * There is no guarantee on the order of returned [Record]
    *
    * @param keys         The set of [Record] keys to read.
    * @param cacheHeaders The cache headers associated with the request which generated this record.

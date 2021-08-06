@@ -61,7 +61,7 @@ class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter {
    *
    * Note: the implementation is modified from the Moshi implementation to:
    * - Remove the leading "$."
-   * - Remove square brackets in lists. This isn't great because it doesn't allow to distinguish lists from "0" keys but
+   * - Remove square brackets in lists. This isn't great because it doesn't allow distinguishing lists from "0" keys but
    * this is how File Upload works: https://github.com/jaydenseric/graphql-multipart-request-spec
    */
   override val path: String
@@ -239,7 +239,7 @@ class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter {
     if (indent == null) {
       return
     }
-    sink.writeByte('\n'.toInt())
+    sink.writeByte('\n'.code)
     var i = 1
     val size = stackSize
     while (i < size) {
@@ -255,7 +255,7 @@ class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter {
   private fun beforeName() {
     val context = peekScope()
     if (context == JsonScope.NONEMPTY_OBJECT) { // first in object
-      sink.writeByte(','.toInt())
+      sink.writeByte(','.code)
     } else check(context == JsonScope.EMPTY_OBJECT) {
       // not in an object!
       "Nesting problem."
@@ -281,7 +281,7 @@ class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter {
         newline()
       }
       JsonScope.NONEMPTY_ARRAY -> {
-        sink.writeByte(','.toInt())
+        sink.writeByte(','.code)
         newline()
       }
       JsonScope.DANGLING_NAME -> {
@@ -333,12 +333,12 @@ class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter {
       for (i in 0..0x1f) {
         this[i] = "\\u00${i.toByte().hexString()}"
       }
-      this['"'.toInt()] = "\\\""
-      this['\\'.toInt()] = "\\\\"
-      this['\t'.toInt()] = "\\t"
-      this['\b'.toInt()] = "\\b"
-      this['\n'.toInt()] = "\\n"
-      this['\r'.toInt()] = "\\r"
+      this['"'.code] = "\\\""
+      this['\\'.code] = "\\\\"
+      this['\t'.code] = "\\t"
+      this['\b'.code] = "\\b"
+      this['\n'.code] = "\\n"
+      this['\r'.code] = "\\r"
     }
 
     /**
@@ -347,14 +347,14 @@ class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter {
     @Throws(IOException::class)
     fun string(sink: BufferedSink, value: String) {
       val replacements = REPLACEMENT_CHARS
-      sink.writeByte('"'.toInt())
+      sink.writeByte('"'.code)
       var last = 0
       val length = value.length
       for (i in 0 until length) {
         val c = value[i]
         var replacement: String?
-        if (c.toInt() < 128) {
-          replacement = replacements[c.toInt()]
+        if (c.code < 128) {
+          replacement = replacements[c.code]
           if (replacement == null) {
             continue
           }
@@ -374,7 +374,7 @@ class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter {
       if (last < length) {
         sink.writeUtf8(value, last, length)
       }
-      sink.writeByte('"'.toInt())
+      sink.writeByte('"'.code)
     }
   }
 }

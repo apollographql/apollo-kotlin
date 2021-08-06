@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.cache.http
 
+import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.cache.http.internal.DiskLruCache
 import com.apollographql.apollo3.cache.http.internal.FileSystem
@@ -16,8 +17,6 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
   private val cacheLock = ReentrantReadWriteLock()
   private val adapter = Moshi.Builder().build().adapter(Any::class.java)
 
-  constructor(directory: File, maxSize: Long) : this(FileSystem.SYSTEM, directory, maxSize)
-
   private fun createDiskLruCache(): DiskLruCache {
     return DiskLruCache.create(fileSystem, directory, VERSION, ENTRY_COUNT, maxSize)
   }
@@ -33,10 +32,14 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
       adapter.fromJson(it)
     } as? Map<String, Any> ?: error("HTTP cache: no map")
 
+    val headers = (map["headers"] as? List<Map<String, String>>)?.map {
+      val entry = it.entries.single()
+      HttpHeader(entry.key, entry.value)
+    }
 
     return HttpResponse(
         statusCode = (map["statusCode"] as? String)?.toInt() ?: error("HTTP cache: no statusCode"),
-        headers = (map["headers"] as? Map<String, String>) ?: error("HTTP cache: no headers"),
+        headers = headers ?: error("HTTP cache: no headers"),
         bodySource = snapshot.getSource(ENTRY_BODY).buffer(),
         bodyString = null
     )
@@ -55,15 +58,15 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
       editor.newSink(ENTRY_HEADERS).buffer().use {
         val map = mapOf(
             "statusCode" to response.statusCode.toString(),
-            "headers" to response.headers,
+            "headers" to response.headers.map { httpHeader ->
+              // Moshi doesn't serialize Pairs by default (https://github.com/square/moshi/issues/508) so
+              // we use a Map with a single entry
+              mapOf(httpHeader.name to httpHeader.value)
+            },
         )
         adapter.toJson(it, map)
       }
       editor.newSink(ENTRY_BODY).buffer().use {
-        val map = mapOf(
-            "statusCode" to response.statusCode,
-            "headers" to response.headers,
-        )
         val responseBody = response.body
         if (responseBody != null) {
           it.writeAll(responseBody)

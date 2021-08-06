@@ -1,0 +1,10 @@
+{
+  "errors": [
+    {
+      "message": "Response with nulls",
+      "locations": null,
+      "path": null,
+      "extensions": null
+    }
+  ]
+}

@@ -34,6 +34,7 @@ import java.util.Arrays
 import java.util.Deque
 import java.util.NoSuchElementException
 import java.util.concurrent.Executor
+import java.util.concurrent.TimeUnit
 
 /**
  * Copied from OkHttp 3.14.2:
@@ -45,7 +46,8 @@ class DiskLruCacheTest {
   val tempDir = TemporaryFolder()
 
   @get:Rule
-  val timeout = Timeout(60 * 1000)
+  val timeout = Timeout(60, TimeUnit.SECONDS)
+
   private val fileSystem = FaultyFileSystem(FileSystem.SYSTEM)
   private val appVersion = 100
   private var cacheDir: File? = null
@@ -351,8 +353,8 @@ class DiskLruCacheTest {
     v1Creator!!.commit()
     val snapshot1 = cache!!["k1"]
     val inV1 = snapshot1!!.getSource(0).buffer()
-    Truth.assertThat(inV1.readByte()).isEqualTo('A'.toByte())
-    Truth.assertThat(inV1.readByte()).isEqualTo('A'.toByte())
+    Truth.assertThat(inV1.readByte()).isEqualTo('A'.code.toByte())
+    Truth.assertThat(inV1.readByte()).isEqualTo('A'.code.toByte())
     val v1Updater = cache!!.edit("k1")
     setString(v1Updater, 0, "CCcc")
     setString(v1Updater, 1, "DDdd")
@@ -361,8 +363,8 @@ class DiskLruCacheTest {
     assertSnapshotValue(snapshot2, 0, "CCcc")
     assertSnapshotValue(snapshot2, 1, "DDdd")
     snapshot2!!.close()
-    Truth.assertThat(inV1.readByte()).isEqualTo('a'.toByte())
-    Truth.assertThat(inV1.readByte()).isEqualTo('a'.toByte())
+    Truth.assertThat(inV1.readByte()).isEqualTo('a'.code.toByte())
+    Truth.assertThat(inV1.readByte()).isEqualTo('a'.code.toByte())
     assertSnapshotValue(snapshot1, 1, "BBbb")
     snapshot1.close()
   }
@@ -1794,7 +1796,7 @@ class DiskLruCacheTest {
     expectedLines.add("100")
     expectedLines.add("2")
     expectedLines.add("")
-    expectedLines.addAll(Arrays.asList(*expectedBodyLines))
+    expectedLines.addAll(listOf(*expectedBodyLines))
     Truth.assertThat(readJournalLines()).isEqualTo(expectedLines)
   }
 

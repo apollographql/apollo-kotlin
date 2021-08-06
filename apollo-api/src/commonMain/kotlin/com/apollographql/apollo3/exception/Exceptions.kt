@@ -1,4 +1,7 @@
+// This is in the exception package for historical reasons
 package com.apollographql.apollo3.exception
+
+import com.apollographql.apollo3.api.http.HttpHeader
 
 /**
  * The base class for all exceptions
@@ -23,7 +26,7 @@ class ApolloWebSocketClosedException(
  */
 class ApolloHttpException(
     val statusCode: Int,
-    val headers: Map<String, String>,
+    val headers: List<HttpHeader>,
     message: String,
     cause: Throwable? = null
 ) : ApolloException(message = message, cause = cause)

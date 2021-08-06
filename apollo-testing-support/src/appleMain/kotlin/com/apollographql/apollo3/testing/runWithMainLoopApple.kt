@@ -4,6 +4,7 @@ import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Delay
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.DisposableHandle
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -24,6 +25,7 @@ import kotlin.coroutines.CoroutineContext
  * queue. There is more to the story and this might hopefully be merged with runBlocking below
  * but for now that allows us to run integration tests against a mocked server
  */
+@OptIn(DelicateCoroutinesApi::class)
 actual fun runTest(
     context: CoroutineContext,
     before: suspend CoroutineScope.() -> Unit,
@@ -51,7 +53,6 @@ val MainLoopDispatcher: CoroutineDispatcher = object : CoroutineDispatcher(), De
     }
   }
 
-  @InternalCoroutinesApi
   override fun scheduleResumeAfterDelay(timeMillis: Long, continuation: CancellableContinuation<Unit>) {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeMillis * 1_000_000), dispatch_get_main_queue()) {
       with(continuation) {
@@ -60,7 +61,6 @@ val MainLoopDispatcher: CoroutineDispatcher = object : CoroutineDispatcher(), De
     }
   }
 
-  @InternalCoroutinesApi
   override fun invokeOnTimeout(timeMillis: Long, block: Runnable, context: CoroutineContext): DisposableHandle {
     val handle = object : DisposableHandle {
       var disposed = false

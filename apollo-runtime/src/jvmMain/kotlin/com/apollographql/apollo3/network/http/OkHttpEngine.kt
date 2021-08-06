@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.network.http
 
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
+import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
@@ -37,7 +38,13 @@ actual class DefaultHttpEngine(
   override suspend fun execute(request: HttpRequest): HttpResponse = suspendCancellableCoroutine { continuation ->
     val httpRequest = Request.Builder()
         .url(request.url)
-        .headers(Headers.of(request.headers))
+        .headers(
+            Headers.Builder().apply {
+              request.headers.forEach {
+                this.add(it.name, it.value)
+              }
+            }.build()
+        )
         .apply {
           if (request.method == HttpMethod.Get) {
             get()
@@ -83,7 +90,11 @@ actual class DefaultHttpEngine(
     val result = Result.success(
         HttpResponse(
             statusCode = response.code(),
-            headers = response.headers().toMap(),
+            headers = response.headers().let { headers ->
+              0.until(headers.size()).map { index ->
+                HttpHeader(headers.name(index), headers.value(index))
+              }
+            },
             bodySource = response.body()!!.source(),
             bodyString = null
         )
@@ -93,30 +104,24 @@ actual class DefaultHttpEngine(
 
   override fun dispose() {
   }
-
-  private fun Headers.toMap(): Map<String, String> {
-    return names().map {
-      it to get(it)!!
-    }.toMap()
-  }
 }
 
 fun HttpNetworkTransport(
     serverUrl: String,
-    callFactory: Call.Factory
+    callFactory: Call.Factory,
 ): HttpNetworkTransport {
   return HttpNetworkTransport(
-      httpRequestComposer = DefaultHttpRequestComposer(serverUrl),
+      serverUrl = serverUrl,
       engine = DefaultHttpEngine(callFactory)
   )
 }
 
 fun HttpNetworkTransport(
     serverUrl: String,
-    okHttpClient: OkHttpClient
+    okHttpClient: OkHttpClient,
 ): HttpNetworkTransport {
   return HttpNetworkTransport(
-      httpRequestComposer = DefaultHttpRequestComposer(serverUrl),
+      serverUrl = serverUrl,
       engine = DefaultHttpEngine(okHttpClient)
   )
 }

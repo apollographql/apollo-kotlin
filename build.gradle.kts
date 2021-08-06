@@ -1,7 +1,3 @@
-import okhttp3.Credentials.basic
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -20,6 +16,7 @@ buildscript {
 }
 
 apply(plugin = "com.github.ben-manes.versions")
+apply(plugin = "org.jetbrains.dokka")
 
 ApiCompatibility.configure(rootProject)
 
@@ -44,12 +41,13 @@ subprojects {
     }
   }
 
-  // Ensure "org.gradle.jvm.version" is set to "8" in Gradle metadata.
+  // Ensure "org.gradle.jvm.version" is set to "8" in Gradle metadata of jvm-only modules.
+  // (multiplatform modules don't set this)
   tasks.withType<JavaCompile> {
     sourceCompatibility = JavaVersion.VERSION_1_8.toString()
     targetCompatibility = JavaVersion.VERSION_1_8.toString()
   }
-  
+
   tasks.withType<Test> {
     systemProperty("updateTestFixtures", System.getProperty("updateTestFixtures"))
     systemProperty("testFilter", System.getProperty("testFilter"))
@@ -76,6 +74,25 @@ subprojects {
   version = property("VERSION_NAME")!!
 
   configurePublishing()
+
+  /**
+   * Type `echo "apollographql_android_hack=true\n" >> ~/.gradle/gradle.properties` on your development machine
+   * to make MPP modules publish an Android artifact so that IntelliJ can resolve the symbols
+   *
+   * See https://youtrack.jetbrains.com/issue/KTIJ-14471
+   */
+  if (properties["apollographql_android_hack"] == "true") {
+    pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
+      // Hack for autocomplete to work with android projects
+      // See https://youtrack.jetbrains.com/issue/KTIJ-14471
+      if (System.getProperty("idea.sync.active") != null) {
+        apply(plugin = "com.android.library")
+        (extensions.findByName("kotlin") as? org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension)?.apply {
+          android()
+        }
+      }
+    }
+  }
 }
 
 
@@ -156,4 +173,13 @@ tasks.register("quickCheck") {
       }
     }
   }
+}
+
+repositories {
+  mavenCentral() // for dokka
+}
+
+tasks.named("dokkaHtmlMultiModule").configure {
+  this as org.jetbrains.dokka.gradle.DokkaMultiModuleTask
+  outputDirectory.set(buildDir.resolve("dokkaHtml/kdoc"))
 }

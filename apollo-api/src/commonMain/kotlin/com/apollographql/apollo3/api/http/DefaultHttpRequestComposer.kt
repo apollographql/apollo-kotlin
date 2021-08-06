@@ -24,15 +24,13 @@ import okio.ByteString
  * - Automatic Persisted Queries
  * - Adding the default Apollo headers
  *
- * @param headers: headers to add on top of Apollo headers. The headers are added in the order below. In case an header
- * is defined multiple times, the last one is used:
- * 1. Apollo headers
- * 2. [headers]
- * 3. request headers from [HttpRequestComposerParams]
+ * @param headers: headers to add in addition to Apollo headers and before request-specific headers.
+ * Headers can be added multiple times. It is the responsibility of the caller to deduplicate headers if needed. This can be done
+ * using a [HttpInterceptor] if needed
  */
 class DefaultHttpRequestComposer(
     private val serverUrl: String,
-    private val headers: Map<String, String> = emptyMap(),
+    private val headers: List<HttpHeader> = emptyList(),
 ) : HttpRequestComposer {
 
   override fun <D : Operation.Data> compose(apolloRequest: ApolloRequest<D>): HttpRequest {
@@ -40,16 +38,16 @@ class DefaultHttpRequestComposer(
     val operation = apolloRequest.operation
     val customScalarAdapters = apolloRequest.executionContext[CustomScalarAdapters] ?: CustomScalarAdapters.Empty
 
-    val requestHeaders = mutableMapOf(
-        HEADER_APOLLO_OPERATION_ID to operation.id(),
-        HEADER_APOLLO_OPERATION_NAME to operation.name()
+    val requestHeaders = mutableListOf(
+        HttpHeader(HEADER_APOLLO_OPERATION_ID, operation.id()),
+        HttpHeader(HEADER_APOLLO_OPERATION_NAME, operation.name())
     )
 
     headers.forEach {
-      requestHeaders[it.key] = it.value
+      requestHeaders.add(it)
     }
     params.headers.entries.forEach {
-      requestHeaders[it.key] = it.value
+      requestHeaders.add(HttpHeader(it.key, it.value))
     }
 
     return when (params.method) {
