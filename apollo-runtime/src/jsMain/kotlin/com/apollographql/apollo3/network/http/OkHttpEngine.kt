@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.network.http
 
+import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
@@ -10,7 +11,7 @@ import io.ktor.client.engine.js.Js
 import io.ktor.client.request.header
 import io.ktor.client.request.request
 import io.ktor.http.HttpHeaders
-import io.ktor.util.toMap
+import io.ktor.util.flattenEntries
 import okio.Buffer
 import okio.ByteString.Companion.toByteString
 
@@ -27,7 +28,7 @@ actual class DefaultHttpEngine actual constructor(connectTimeoutMillis: Long, re
           HttpMethod.Post -> io.ktor.http.HttpMethod.Post
         }
         request.headers.forEach {
-          header(it.key, it.value)
+          header(it.name, it.value)
         }
         request.body?.let {
           header(HttpHeaders.ContentType, it.contentType)
@@ -40,7 +41,7 @@ actual class DefaultHttpEngine actual constructor(connectTimeoutMillis: Long, re
       val responseByteArray: ByteArray = response.receive()
       return HttpResponse(
           response.status.value,
-          response.headers.toMap().mapValues { it.value.first() },
+          response.headers.flattenEntries().map { HttpHeader(it.first, it.second) },
           Buffer().write(responseByteArray),
           responseByteArray.toByteString()
       )
