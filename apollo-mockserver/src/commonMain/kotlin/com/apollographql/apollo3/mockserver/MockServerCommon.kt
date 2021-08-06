@@ -15,7 +15,7 @@ fun parseHeader(line: String): Pair<String, String> {
   return line.substring(0, index).trim() to line.substring(index + 1, line.length).trim()
 }
 
-data class MockRecordedRequest(
+class MockRecordedRequest(
     val method: String,
     val path: String,
     val version: String,
