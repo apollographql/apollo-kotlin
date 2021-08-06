@@ -60,7 +60,7 @@ configure<ApolloExtension> {
     srcDir("src/test/graphql")
     packageName.set("com.example")
     outputDirConnection {
-      connectToAllAndroidUnitTestVariants()
+      connectToAndroidSourceSet("test")
     }
   }
 }

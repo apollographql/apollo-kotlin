@@ -349,29 +349,18 @@ interface Service {
     fun connectToJavaSourceSet(name: String)
 
     /**
-     * Connects the generated sources to all the Android application variants.
-     * Throws if the Android Application plugin is not applied
-     */
-    fun connectToAllAndroidApplicationVariants()
-
-    /**
-     * Connects the generated sources to all the Android application variants.
-     * Throws if the Android Library plugin is not applied
-     */
-    fun connectToAllAndroidLibraryVariants()
-
-    /**
-     * Connects the generated sources to all the Android instrumented test variants.
+     * Connects the generated sources to the given Android source set.
      * Throws if the Android plugin is not applied
+     *
+     * @param name: the name of the source set. For an example, "main", "test" or "androidTest"
+     * You can also use more qualified source sets like "demo", "debug" or "demoDebug"
      */
-    fun connectToAllAndroidInstrumentedTestVariants()
+    fun connectToAndroidSourceSet(name: String)
 
     /**
-     * Connects the generated sources to all the Android unit test variants.
-     * Throws if the Android plugin is not applied
+     * Connects the generated sources to the given Android variant. This will
+     * look up the most specific source set used by this variant. For an example, "demoDebug"
      */
-    fun connectToAllAndroidUnitTestVariants()
-
     fun connectToAndroidVariant(variant: BaseVariant)
 
     /**
