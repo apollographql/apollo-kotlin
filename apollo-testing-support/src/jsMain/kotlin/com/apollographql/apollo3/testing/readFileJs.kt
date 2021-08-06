@@ -4,8 +4,8 @@ import fs.readFileSync
 import kotlin.test.assertEquals
 
 actual fun readFile(path: String): String {
-  val pathPrefix = "../../../../../composite/tests/integration-tests/"
-  val pathPrefixKotlin = "../../../../../composite/tests/integration-tests-kotlin/"
+  val pathPrefix = "../../../../../tests/integration-tests/"
+  val pathPrefixKotlin = "../../../../../tests/integration-tests-kotlin/"
   val options = object: fs.`T$44` {
     override var encoding: String? = "utf8"
   }

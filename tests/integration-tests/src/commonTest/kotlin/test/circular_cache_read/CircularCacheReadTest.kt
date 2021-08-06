@@ -4,13 +4,13 @@ import circular_cache_read.GetUserQuery
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo3.testing.runWithMainLoop
+import com.apollographql.apollo3.testing.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class CircularCacheReadTest {
   @Test
-  fun circularReferenceDoesNotStackOverflow() {
+  fun circularReferenceDoesNotStackOverflow() = runTest {
     val store = ApolloStore(MemoryCacheFactory())
 
     val operation = GetUserQuery()
@@ -29,10 +29,8 @@ class CircularCacheReadTest {
         )
     )
 
-    runWithMainLoop {
-      store.writeOperation(operation, data)
-      val result = store.readOperation(operation, customScalarAdapters = CustomScalarAdapters.Empty)
-      assertEquals("42", result!!.user.friend.id)
-    }
+    store.writeOperation(operation, data)
+    val result = store.readOperation(operation, customScalarAdapters = CustomScalarAdapters.Empty)
+    assertEquals("42", result!!.user.friend.id)
   }
 }

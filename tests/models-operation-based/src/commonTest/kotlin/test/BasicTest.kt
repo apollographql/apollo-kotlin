@@ -15,9 +15,8 @@ import com.apollographql.apollo3.cache.normalized.withFetchPolicy
 import com.apollographql.apollo3.cache.normalized.withStore
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.testing.runWithMainLoop
+import com.apollographql.apollo3.testing.runTest
 import readJson
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -28,8 +27,7 @@ class BasicTest {
   private lateinit var apolloClient: ApolloClient
   private lateinit var store: ApolloStore
 
-  @BeforeTest
-  fun setUp() {
+  private suspend fun setUp() {
     store = ApolloStore(
         normalizedCacheFactory = MemoryCacheFactory(),
         objectIdGenerator = IdObjectIdGenerator
@@ -38,7 +36,11 @@ class BasicTest {
     apolloClient = ApolloClient(mockServer.url()).withStore(store)
   }
 
-  private fun <D : Query.Data> basicTest(resourceName: String, query: Query<D>, block: ApolloResponse<D>.() -> Unit) = runWithMainLoop {
+  private suspend fun tearDown() {
+    mockServer.stop()
+  }
+
+  private fun <D : Query.Data> basicTest(resourceName: String, query: Query<D>, block: ApolloResponse<D>.() -> Unit) = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(readJson(resourceName))
     var response = apolloClient.query(ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkOnly))
     response.block()
@@ -65,7 +67,7 @@ class BasicTest {
 
 
   @Test
-  fun `polymorphic Droid fields get parsed to Droid`() = basicTest(
+  fun polymorphicDroidFieldsGetParsedToDroid() = basicTest(
       "MergedFieldWithSameShape_Droid.json",
       MergedFieldWithSameShapeQuery(Episode.NEWHOPE)
   ) {
@@ -75,7 +77,7 @@ class BasicTest {
   }
 
   @Test
-  fun `polymorphic Human fields get parsed to Human`() = basicTest(
+  fun polymorphicHumanFieldsGetParsedToHuman() = basicTest(
       "MergedFieldWithSameShape_Human.json",
       MergedFieldWithSameShapeQuery(Episode.NEWHOPE)
   ) {

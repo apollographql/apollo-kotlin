@@ -1,7 +1,7 @@
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.network.ws.GraphQLWsProtocol
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
-import com.apollographql.apollo3.testing.runWithMainLoop
+import com.apollographql.apollo3.testing.runTest
 import graphql.ws.GreetingsSubscription
 import graphql.ws.HelloQuery
 import kotlinx.coroutines.flow.toList
@@ -14,7 +14,7 @@ import kotlin.test.assertEquals
 @Ignore
 class GraphQLWsTest {
   @Test
-  fun queryOverWebSocket() {
+  fun queryOverWebSocket() = runTest {
     val apolloClient = ApolloClient(
         networkTransport = WebSocketNetworkTransport(
             serverUrl = "http://localhost:9090/graphql",
@@ -22,13 +22,11 @@ class GraphQLWsTest {
         )
     )
 
-    runWithMainLoop {
-      assertEquals("Hello World!", apolloClient.query(HelloQuery()).data?.hello)
-    }
+    assertEquals("Hello World!", apolloClient.query(HelloQuery()).data?.hello)
   }
 
   @Test
-  fun subscriptionOverWebSocket() {
+  fun subscriptionOverWebSocket() = runTest {
     val apolloClient = ApolloClient(
         networkTransport = WebSocketNetworkTransport(
             serverUrl = "http://localhost:9090/graphql",
@@ -36,9 +34,8 @@ class GraphQLWsTest {
         )
     )
 
-    runWithMainLoop {
-      val list = apolloClient.subscribe(GreetingsSubscription()).toList()
-      assertEquals(listOf("Hi", "Bonjour", "Hola", "Ciao", "Zdravo"), list.map { it.data?.greetings })
-    }
+
+    val list = apolloClient.subscribe(GreetingsSubscription()).toList()
+    assertEquals(listOf("Hi", "Bonjour", "Hola", "Ciao", "Zdravo"), list.map { it.data?.greetings })
   }
 }

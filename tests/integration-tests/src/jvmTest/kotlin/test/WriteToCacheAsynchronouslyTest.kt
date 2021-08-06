@@ -28,10 +28,9 @@ class WriteToCacheAsynchronouslyTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
   private lateinit var store: ApolloStore
-  private lateinit var dispatcher: CoroutineDispatcher
+  private var dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
 
   private suspend fun setUp() {
-    dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
     store = ApolloStore(MemoryCacheFactory())
     mockServer = MockServer()
     apolloClient = ApolloClient(
@@ -42,6 +41,7 @@ class WriteToCacheAsynchronouslyTest {
 
   private suspend fun tearDown() {
     mockServer.stop()
+    dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
   }
 
   /**

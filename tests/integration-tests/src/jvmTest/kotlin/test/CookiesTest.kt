@@ -7,7 +7,7 @@ import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
-import com.apollographql.apollo3.testing.runWithMainLoop
+import com.apollographql.apollo3.testing.runTest
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl
@@ -35,7 +35,7 @@ class CookiesTest {
   }
 
   @Test
-  fun cookiesArePersisted() {
+  fun cookiesArePersisted() = runTest {
     val mockServer = MockServer()
     val cookieJar = ObservableCookieJar()
     val okHttpClient = OkHttpClient.Builder()
@@ -49,25 +49,23 @@ class CookiesTest {
         )
     )
 
-    runWithMainLoop {
-      val json = HeroNameQuery().composeJsonData(HeroNameQuery.Data(hero = HeroNameQuery.Data.Hero(name = "Luke")))
+    val json = HeroNameQuery().composeJsonData(HeroNameQuery.Data(hero = HeroNameQuery.Data.Hero(name = "Luke")))
 
-      mockServer.enqueue(MockResponse(
-          body = json,
-          headers = mapOf("Set-Cookie" to "yummy_cookie=choco")
-      ))
+    mockServer.enqueue(MockResponse(
+        body = json,
+        headers = mapOf("Set-Cookie" to "yummy_cookie=choco")
+    ))
 
-      // first query should set the cookie
-      apolloClient.query(HeroNameQuery())
-      // consume the first request
-      mockServer.takeRequest()
+    // first query should set the cookie
+    apolloClient.query(HeroNameQuery())
+    // consume the first request
+    mockServer.takeRequest()
 
-      mockServer.enqueue(json)
-      // first query should send the cookie
-      apolloClient.query(HeroNameQuery())
+    mockServer.enqueue(json)
+    // first query should send the cookie
+    apolloClient.query(HeroNameQuery())
 
-      val cookie = mockServer.takeRequest().headers["Cookie"]
-      assertEquals("yummy_cookie=choco", cookie)
-    }
+    val cookie = mockServer.takeRequest().headers["Cookie"]
+    assertEquals("yummy_cookie=choco", cookie)
   }
 }
