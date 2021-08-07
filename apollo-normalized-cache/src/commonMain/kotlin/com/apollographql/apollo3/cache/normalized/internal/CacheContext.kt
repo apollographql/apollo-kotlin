@@ -47,11 +47,3 @@ fun <D: Operation.Data> defaultFetchPolicy( operation: Operation<D>) = if (opera
   FetchPolicy.NetworkOnly
 }
 
-internal class CacheInfo(
-    val isFromCache: Boolean
-) : ExecutionContext.Element {
-  override val key: ExecutionContext.Key<*>
-    get() = Key
-
-  companion object Key : ExecutionContext.Key<CacheInfo>
-}
