@@ -231,7 +231,7 @@ internal class ApolloCacheInterceptor(
   }
 
   private fun <D : Operation.Data> ApolloResponse<D>.setFromCache(fromCache: Boolean): ApolloResponse<D> {
-    return copy(executionContext = executionContext + CacheOutput(fromCache))
+    return copy(executionContext = executionContext + CacheInfo(fromCache))
   }
 
   private suspend fun <D : Operation.Data> readFromCache(
@@ -251,7 +251,7 @@ internal class ApolloCacheInterceptor(
         requestUuid = request.requestUuid,
         operation = operation,
         data = data,
-        executionContext = request.executionContext + CacheOutput(true)
+        executionContext = request.executionContext + CacheInfo(true)
     )
   }
 }

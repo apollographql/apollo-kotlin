@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.internal.ApolloCacheInterceptor
 import com.apollographql.apollo3.cache.normalized.internal.CacheInput
-import com.apollographql.apollo3.cache.normalized.internal.CacheOutput
+import com.apollographql.apollo3.cache.normalized.internal.CacheInfo
 import com.apollographql.apollo3.cache.normalized.internal.DefaultCacheInput
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import kotlinx.coroutines.flow.Flow
@@ -154,6 +154,6 @@ fun <D : Query.Data> ApolloClient.watch(queryRequest: ApolloRequest<D>): Flow<Ap
 }
 
 val <D : Operation.Data> ApolloResponse<D>.isFromCache
-  get() = executionContext[CacheOutput]?.isFromCache ?: false
+  get() = executionContext[CacheInfo]?.isFromCache ?: false
 
 
