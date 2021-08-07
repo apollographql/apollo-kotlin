@@ -8,7 +8,7 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposerParams
 import com.apollographql.apollo3.api.http.HttpRequestComposerParams
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
-import com.apollographql.apollo3.network.http.HttpResponseInfo
+import com.apollographql.apollo3.network.http.HttpInfo
 import java.io.File
 
 
@@ -68,7 +68,7 @@ fun <D: Query.Data> ApolloRequest<D>.withHttpFetchPolicy(httpFetchPolicy: HttpFe
 }
 
 val <D : Operation.Data> ApolloResponse<D>.isFromHttpCache
-  get() = executionContext[HttpResponseInfo]?.headers?.any {
+  get() = executionContext[HttpInfo]?.headers?.any {
     // This will return true whatever the value in the header. We might want to fine tune this
     it.name == CachingHttpEngine.FROM_CACHE
   } ?: false

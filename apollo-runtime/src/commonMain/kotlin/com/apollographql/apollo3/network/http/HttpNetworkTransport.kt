@@ -15,7 +15,6 @@ import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.internal.NonMainWorker
 import com.apollographql.apollo3.network.NetworkTransport
-import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -120,7 +119,7 @@ class HttpNetworkTransport(
       emit(
           response.copy(
               requestUuid = request.requestUuid,
-              executionContext = request.executionContext + HttpResponseInfo(
+              executionContext = request.executionContext + HttpInfo(
                   statusCode = httpResponse.statusCode,
                   headers = httpResponse.headers
               )
