@@ -5,7 +5,6 @@ import com.apollographql.apollo3.api.ExecutionContext.Key
 import kotlin.jvm.JvmField
 
 
-
 /**
  * A context of GraphQL operation execution, represented as a set of [Key] keys and corresponding [Element] values.
  *
@@ -87,7 +86,7 @@ internal object EmptyExecutionContext : ExecutionContext {
 
 internal class CombinedExecutionContext(
     private val left: ExecutionContext,
-    private val element: Element
+    private val element: Element,
 ) : ExecutionContext {
 
   override fun <E : Element> get(key: Key<E>): E? {
@@ -115,4 +114,14 @@ internal class CombinedExecutionContext(
       else -> CombinedExecutionContext(newLeft, element)
     }
   }
+}
+
+/**
+ * Base class for [ApolloClient] and [ApolloRequest]
+ *
+ * This allows to set parameters on [ApolloClient] and override them per-request in [ApolloRequest] using the same API
+ */
+interface ExecutionParameters<T> where T : ExecutionParameters<T> {
+  val executionContext: ExecutionContext
+  fun withExecutionContext(executionContext: ExecutionContext): T
 }

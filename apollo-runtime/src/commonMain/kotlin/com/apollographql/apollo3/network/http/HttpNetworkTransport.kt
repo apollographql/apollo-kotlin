@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.flow
 class HttpNetworkTransport(
     private val httpRequestComposer: HttpRequestComposer,
     val engine: HttpEngine = DefaultHttpEngine(),
-    private val interceptors: List<HttpInterceptor> = emptyList(),
+    val interceptors: List<HttpInterceptor> = emptyList(),
 ) : NetworkTransport {
   private val worker = NonMainWorker()
 
@@ -40,12 +40,11 @@ class HttpNetworkTransport(
    */
   constructor(
       serverUrl: String,
-      headers: List<HttpHeader> = emptyList(),
       connectTimeoutMillis: Long = 60_000,
       readTimeoutMillis: Long = 60_000,
       interceptors: List<HttpInterceptor> = emptyList(),
   ) : this(
-      DefaultHttpRequestComposer(serverUrl, headers),
+      DefaultHttpRequestComposer(serverUrl),
       DefaultHttpEngine(connectTimeoutMillis, readTimeoutMillis),
       interceptors
   )
@@ -68,7 +67,7 @@ class HttpNetworkTransport(
       engine: HttpEngine,
       interceptors: List<HttpInterceptor> = emptyList(),
   ) : this(
-      DefaultHttpRequestComposer(serverUrl, emptyList()),
+      DefaultHttpRequestComposer(serverUrl),
       engine,
       interceptors
   )
@@ -138,14 +137,19 @@ class HttpNetworkTransport(
     engine.dispose()
   }
 
-  fun swapEngine(
-      newEngine: HttpEngine,
-      ): HttpNetworkTransport {
-    engine.dispose()
-
+  /**
+   * Creates a copy of the [HttpNetworkTransport]
+   *
+   * The copy will own the [engine]. It is an error to call [dispose] after [copy] on the original instance
+   */
+  fun copy(
+      httpRequestComposer: HttpRequestComposer = this.httpRequestComposer,
+      engine: HttpEngine = this.engine,
+      interceptors: List<HttpInterceptor> = this.interceptors
+  ): HttpNetworkTransport {
     return HttpNetworkTransport(
         httpRequestComposer = httpRequestComposer,
-        engine = newEngine,
+        engine = engine,
         interceptors = interceptors
     )
   }
@@ -164,3 +168,8 @@ class HttpNetworkTransport(
     }
   }
 }
+
+/**
+ * Adds a new [HeadersInterceptor] that will add [headers] to each [HttpRequest]
+ */
+fun HttpNetworkTransport.withDefaultHeaders(headers: List<HttpHeader>) = copy (interceptors = this.interceptors + HeadersInterceptor(headers))
