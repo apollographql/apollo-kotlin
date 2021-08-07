@@ -7,7 +7,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
@@ -85,8 +84,7 @@ internal class ApolloCacheInterceptor(
 
     return flow {
       var result = kotlin.runCatching {
-        @Suppress("UNCHECKED_CAST")
-        fetchOne(request, chain, fetchPolicy, customScalarAdapters, cacheInput)
+        fetchOneAndMaybeWriteToCache(request, chain, fetchPolicy, customScalarAdapters, cacheInput)
       }
       val response = result.getOrNull()
 
@@ -110,7 +108,7 @@ internal class ApolloCacheInterceptor(
       store.changedKeys.collect { changedKeys ->
         if (watchedKeys == null || changedKeys.intersect(watchedKeys!!).isNotEmpty()) {
           result = kotlin.runCatching {
-            fetchOne(request, chain, refetchPolicy, customScalarAdapters, cacheInput)
+            fetchOneAndMaybeWriteToCache(request, chain, refetchPolicy, customScalarAdapters, cacheInput)
           }
 
           val newResponse = result.getOrNull()
@@ -126,7 +124,8 @@ internal class ApolloCacheInterceptor(
     }
   }
 
-  private suspend fun <D : Operation.Data> fetchOne(
+
+  private suspend fun <D : Operation.Data> fetchOneAndMaybeWriteToCache(
       request: ApolloRequest<D>,
       chain: ApolloInterceptorChain,
       fetchPolicy: FetchPolicy,
@@ -157,7 +156,9 @@ internal class ApolloCacheInterceptor(
       } else {
         emptySet()
       }
-      maybeWriteToCache(request, response, customScalarAdapters, cacheInput, optimisticKeys)
+      if (!response.isFromCache) {
+        maybeWriteToCache(request, response, customScalarAdapters, cacheInput, optimisticKeys)
+      }
     }
 
     return result.getOrThrow()
