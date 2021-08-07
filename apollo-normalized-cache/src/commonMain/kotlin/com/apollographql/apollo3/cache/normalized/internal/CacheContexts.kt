@@ -1,11 +1,8 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
-import com.apollographql.apollo3.api.ClientContext
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.RequestContext
-import com.apollographql.apollo3.api.ResponseContext
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
@@ -17,7 +14,9 @@ internal class CacheInput(
     val flags: Int = 0,
     val cacheHeaders: CacheHeaders = CacheHeaders.NONE,
     val writeToCacheAsynchronously: Boolean? = null
-): RequestContext(Key) {
+): ExecutionContext.Element {
+  override val key: ExecutionContext.Key<*>
+    get() = Key
 
   fun copy(
       fetchPolicy: FetchPolicy = this.fetchPolicy,
@@ -51,10 +50,15 @@ fun <D: Operation.Data> defaultFetchPolicy( operation: Operation<D>) = if (opera
 
 internal class CacheOutput(
     val isFromCache: Boolean
-) : ResponseContext(CacheOutput) {
+) : ExecutionContext.Element {
+  override val key: ExecutionContext.Key<*>
+    get() = Key
+
   companion object Key : ExecutionContext.Key<CacheOutput>
 }
 
-internal class StoreExecutionContext(val store: ApolloStore): ClientContext(Key) {
+internal class StoreExecutionContext(val store: ApolloStore): ExecutionContext.Element {
+  override val key: ExecutionContext.Key<*>
+    get() = Key
   companion object Key: ExecutionContext.Key<StoreExecutionContext>
 }

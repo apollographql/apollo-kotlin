@@ -116,7 +116,3 @@ internal class CombinedExecutionContext(
     }
   }
 }
-
-abstract class ClientContext(override val key: Key<*>): Element
-abstract class RequestContext(override val key: Key<*>): Element
-abstract class ResponseContext(override val key: Key<*>): Element

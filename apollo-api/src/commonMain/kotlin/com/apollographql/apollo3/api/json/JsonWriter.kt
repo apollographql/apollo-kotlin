@@ -15,8 +15,8 @@
  */
 package com.apollographql.apollo3.api.json
 
-import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.Throws
+import com.apollographql.apollo3.api.Upload
 import okio.IOException
 
 /**

@@ -1,8 +1,8 @@
 package com.apollographql.apollo3.api.http
 
+import okio.Buffer
 import okio.BufferedSink
 import okio.BufferedSource
-import okio.Buffer
 import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
 

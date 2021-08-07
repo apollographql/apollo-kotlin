@@ -3,15 +3,10 @@ package com.apollographql.apollo3.cache.http
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.ExecutionContext
-import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.RequestContext
-import com.apollographql.apollo3.api.ResponseContext
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposerParams
 import com.apollographql.apollo3.api.http.HttpRequestComposerParams
-import com.apollographql.apollo3.cache.http.internal.FileSystem
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.network.http.HttpResponseInfo
 import java.io.File

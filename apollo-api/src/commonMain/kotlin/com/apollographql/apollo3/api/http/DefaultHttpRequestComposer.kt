@@ -2,10 +2,9 @@ package com.apollographql.apollo3.api.http
 
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.ClientContext
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.internal.json.FileUploadAwareJsonWriter
 import com.apollographql.apollo3.api.internal.json.buildJsonByteString
@@ -304,7 +303,7 @@ class HttpRequestComposerParams(
     val sendApqExtensions: Boolean,
     val sendDocument: Boolean,
     val headers: Map<String, String>,
-) : ClientContext(Key) {
+) : ExecutionContext.Element {
   fun copy(
       method: HttpMethod = this.method,
       sendApqExtensions: Boolean = this.sendApqExtensions,
@@ -319,6 +318,8 @@ class HttpRequestComposerParams(
     )
   }
 
+  override val key: ExecutionContext.Key<*>
+    get() = Key
   companion object Key : ExecutionContext.Key<HttpRequestComposerParams>
 }
 
