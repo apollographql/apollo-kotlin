@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.cache.normalized.ApolloStore
@@ -73,7 +74,10 @@ internal class ApolloCacheInterceptor(
     val refetchPolicy = cacheInput.refetchPolicy
     val customScalarAdapters = request.executionContext[CustomScalarAdapters]!!
 
-    if (request.operation is Subscription) {
+    if (request.operation !is Query) {
+      /**
+       * Subscriptions and Mutations should always go to the network
+       */
       return proceed(request, chain).onEach { response ->
         maybeWriteToCache(request, response, customScalarAdapters, cacheInput)
       }
