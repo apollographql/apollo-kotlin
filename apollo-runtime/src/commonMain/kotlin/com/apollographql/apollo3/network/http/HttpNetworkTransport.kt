@@ -14,6 +14,7 @@ import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.internal.NonMainWorker
+import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.network.NetworkTransport
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -89,7 +90,8 @@ class HttpNetworkTransport(
       customScalarAdapters: CustomScalarAdapters,
   ): Flow<ApolloResponse<D>> {
     return flow {
-      val httpResponse = RealInterceptorChain(
+      val millisStart = currentTimeMillis()
+      val httpResponse = DefaultHttpInterceptorChain(
           interceptors = interceptors + engineInterceptor,
           index = 0
       ).proceed(httpRequest)
@@ -119,6 +121,8 @@ class HttpNetworkTransport(
           response.copy(
               requestUuid = request.requestUuid,
               executionContext = request.executionContext + HttpInfo(
+                  millisStart = millisStart,
+                  millisEnd = currentTimeMillis(),
                   statusCode = httpResponse.statusCode,
                   headers = httpResponse.headers
               )
@@ -145,7 +149,7 @@ class HttpNetworkTransport(
   fun copy(
       httpRequestComposer: HttpRequestComposer = this.httpRequestComposer,
       engine: HttpEngine = this.engine,
-      interceptors: List<HttpInterceptor> = this.interceptors
+      interceptors: List<HttpInterceptor> = this.interceptors,
   ): HttpNetworkTransport {
     return HttpNetworkTransport(
         httpRequestComposer = httpRequestComposer,
@@ -172,4 +176,4 @@ class HttpNetworkTransport(
 /**
  * Adds a new [HeadersInterceptor] that will add [headers] to each [HttpRequest]
  */
-fun HttpNetworkTransport.withDefaultHeaders(headers: List<HttpHeader>) = copy (interceptors = this.interceptors + HeadersInterceptor(headers))
+fun HttpNetworkTransport.withDefaultHeaders(headers: List<HttpHeader>) = copy(interceptors = this.interceptors + HeadersInterceptor(headers))

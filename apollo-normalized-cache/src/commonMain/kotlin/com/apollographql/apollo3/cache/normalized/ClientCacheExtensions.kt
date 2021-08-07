@@ -10,7 +10,6 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.internal.ApolloCacheInterceptor
-import com.apollographql.apollo3.cache.normalized.internal.CacheInput
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -39,9 +38,6 @@ enum class FetchPolicy {
   NetworkOnly,
 }
 
-const val CACHE_FLAG_DO_NOT_STORE = 1
-const val CACHE_FLAG_STORE_PARTIAL_RESPONSE = 2
-
 /**
  * Configures an [ApolloClient] with a normalized cache.
  *
@@ -64,7 +60,7 @@ fun ApolloClient.withNormalizedCache(
 }
 
 fun ApolloClient.withStore(store: ApolloStore, writeToCacheAsynchronously: Boolean = false): ApolloClient {
-  return withInterceptor(ApolloCacheInterceptor(store, writeToCacheAsynchronously))
+  return withInterceptor(ApolloCacheInterceptor(store)).withWriteToCacheAsynchronously(writeToCacheAsynchronously)
 }
 
 
@@ -73,14 +69,7 @@ fun <D : Query.Data> ApolloClient.watch(query: Query<D>): Flow<ApolloResponse<D>
 }
 
 fun <D : Query.Data> ApolloClient.watch(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
-  var context = queryRequest.executionContext[CacheInput]
-  if (context == null) {
-    context = CacheInput(FetchPolicy.CacheFirst, FetchPolicy.CacheOnly)
-  } else if (context.refetchPolicy == null) {
-    context = context.copy(refetchPolicy = FetchPolicy.CacheOnly)
-  }
-
-  return queryAsFlow(queryRequest.withExecutionContext(context))
+  return queryAsFlow(queryRequest.withExecutionContext(WatchContext(true)))
 }
 
 fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(query: Query<D>): Flow<ApolloResponse<D>> {
@@ -177,7 +166,7 @@ internal val <D : Query.Data> ApolloRequest<D>.fetchPolicy
   get() = executionContext[FetchPolicyContext]?.value ?: FetchPolicy.CacheFirst
 
 internal val <D : Query.Data> ApolloRequest<D>.refetchPolicy
-  get() = executionContext[RefetchPolicyContext]?.value
+  get() = executionContext[RefetchPolicyContext]?.value ?: FetchPolicy.CacheOnly
 
 internal val <D : Operation.Data> ApolloRequest<D>.doNotStore
   get() = executionContext[DoNotStoreContext]?.value ?: false
@@ -193,6 +182,9 @@ internal val <D : Mutation.Data> ApolloRequest<D>.optimisticData
 
 internal val <D : Operation.Data> ApolloRequest<D>.cacheHeaders
   get() = executionContext[CacheHeadersContext]?.value ?: CacheHeaders.NONE
+
+internal val <D : Operation.Data> ApolloRequest<D>.watch
+  get() = executionContext[WatchContext]?.value ?: false
 
 
 class CacheInfo(
@@ -263,4 +255,11 @@ internal class OptimisticUpdatesContext<D : Mutation.Data>(val value: D) : Execu
     get() = Key
 
   companion object Key : ExecutionContext.Key<OptimisticUpdatesContext<*>>
+}
+
+internal class WatchContext(val value: Boolean) : ExecutionContext.Element {
+  override val key: ExecutionContext.Key<*>
+    get() = Key
+
+  companion object Key : ExecutionContext.Key<WatchContext>
 }

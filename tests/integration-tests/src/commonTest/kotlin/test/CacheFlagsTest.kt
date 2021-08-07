@@ -3,20 +3,19 @@ package test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.cache.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
-import com.apollographql.apollo3.cache.normalized.CACHE_FLAG_DO_NOT_STORE
-import com.apollographql.apollo3.cache.normalized.CACHE_FLAG_STORE_PARTIAL_RESPONSE
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
-import com.apollographql.apollo3.cache.normalized.withCacheFlags
+import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.withCacheHeaders
+import com.apollographql.apollo3.cache.normalized.withDoNotStore
 import com.apollographql.apollo3.cache.normalized.withFetchPolicy
 import com.apollographql.apollo3.cache.normalized.withStore
+import com.apollographql.apollo3.cache.normalized.withStorePartialResponses
+import com.apollographql.apollo3.exception.CacheMissException
+import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.enqueue
@@ -46,7 +45,7 @@ class CacheFlagsTest {
       val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
       mockServer.enqueue(query, data)
 
-      apolloClient.query(ApolloRequest(query).withCacheFlags(CACHE_FLAG_DO_NOT_STORE))
+      apolloClient.query(ApolloRequest(query).withDoNotStore(true))
 
       // Since the previous request was not stored, this should fail
       assertFailsWith(CacheMissException::class) {
@@ -121,7 +120,7 @@ class CacheFlagsTest {
       mockServer.enqueue(AnyAdapter.toJson(partialResponse))
 
       // this should not store the response
-      apolloClient.query(ApolloRequest(query).withCacheFlags(CACHE_FLAG_STORE_PARTIAL_RESPONSE))
+      apolloClient.query(ApolloRequest(query).withStorePartialResponses(true))
 
       val response = apolloClient.query(ApolloRequest(query).withFetchPolicy(FetchPolicy.CacheOnly))
       assertNotNull(response.data)

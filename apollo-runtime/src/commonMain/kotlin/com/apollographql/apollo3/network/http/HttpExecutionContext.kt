@@ -4,6 +4,8 @@ import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.http.HttpHeader
 
 class HttpInfo(
+    val millisStart: Long,
+    val millisEnd: Long,
     val statusCode: Int,
     val headers: List<HttpHeader>
 ) : ExecutionContext.Element {

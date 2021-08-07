@@ -16,7 +16,7 @@ import com.apollographql.apollo3.api.http.withHttpMethod
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.interceptor.NetworkInterceptor
-import com.apollographql.apollo3.interceptor.RealInterceptorChain
+import com.apollographql.apollo3.interceptor.DefaultInterceptorChain
 import com.apollographql.apollo3.internal.defaultDispatcher
 import com.apollographql.apollo3.mpp.ensureNeverFrozen
 import com.apollographql.apollo3.network.NetworkTransport
@@ -171,7 +171,7 @@ class ApolloClient constructor(
         subscriptionNetworkTransport = subscriptionNetworkTransport,
     )
 
-    val interceptorChain = RealInterceptorChain(interceptors, 0)
+    val interceptorChain = DefaultInterceptorChain(interceptors, 0)
     return flowDecorators.fold(interceptorChain.proceed(request).flowOn(dispatcher)) { flow, decorator ->
       @Suppress("UNCHECKED_CAST")
       decorator.invoke(flow) as Flow<ApolloResponse<D>>
