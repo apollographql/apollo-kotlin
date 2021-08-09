@@ -281,7 +281,7 @@ class WatcherTest {
     mockServer.enqueue(readResource("EpisodeHeroNameResponseWithId.json"))
     apolloClient.query(ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkOnly))
 
-    assertEquals(channel.receive()?.hero?.name, "R2-D2")
+    assertEquals(channel.receiveOrTimeout()?.hero?.name, "R2-D2")
 
     job.cancel()
   }
