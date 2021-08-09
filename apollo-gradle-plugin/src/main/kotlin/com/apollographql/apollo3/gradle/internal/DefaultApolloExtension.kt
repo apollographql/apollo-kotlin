@@ -303,12 +303,7 @@ abstract class DefaultApolloExtension(
         connection.connectToKotlinSourceSet(KotlinSourceSet.COMMON_MAIN_SOURCE_SET_NAME)
       }
       project.androidExtension != null -> {
-        /**
-         * Call both application and library
-         * Only one will be active at a time
-         */
-        connection.connectToAllAndroidApplicationVariants()
-        connection.connectToAllAndroidLibraryVariants()
+        connection.connectToAndroidSourceSet("main")
       }
       project.kotlinProjectExtension != null -> {
         connection.connectToKotlinSourceSet("main")
