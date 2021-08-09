@@ -5,7 +5,7 @@ package com.apollographql.apollo3.api
  *
  * @param customScalarAdapters a map from the GraphQL scalar name to the matching runtime [Adapter]
  */
-class CustomScalarAdapters(val customScalarAdapters: Map<String, Adapter<*>>): ClientContext(Key) {
+class CustomScalarAdapters(val customScalarAdapters: Map<String, Adapter<*>>): ExecutionContext.Element {
 
   fun <T : Any> responseAdapterFor(customScalar: CustomScalarType): Adapter<T> {
     return when {
@@ -20,8 +20,10 @@ class CustomScalarAdapters(val customScalarAdapters: Map<String, Adapter<*>>): C
       }
       else -> error("Can't map GraphQL type: `${customScalar.name}` to: `${customScalar.className}`. Did you forget to add a CustomScalarAdapter?")
     }
-
   }
+
+  override val key: ExecutionContext.Key<*>
+    get() = Key
 
   companion object Key: ExecutionContext.Key<CustomScalarAdapters> {
     /**

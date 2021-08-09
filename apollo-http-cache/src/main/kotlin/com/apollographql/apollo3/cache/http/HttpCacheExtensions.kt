@@ -1,19 +1,12 @@
 package com.apollographql.apollo3.cache.http
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.ExecutionContext
-import com.apollographql.apollo3.api.Mutation
+import com.apollographql.apollo3.api.ExecutionParameters
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.RequestContext
-import com.apollographql.apollo3.api.ResponseContext
-import com.apollographql.apollo3.api.http.DefaultHttpRequestComposerParams
-import com.apollographql.apollo3.api.http.HttpRequestComposerParams
-import com.apollographql.apollo3.cache.http.internal.FileSystem
+import com.apollographql.apollo3.api.http.withHttpHeader
+import com.apollographql.apollo3.network.http.HttpInfo
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
-import com.apollographql.apollo3.network.http.HttpResponseInfo
 import java.io.File
 
 
@@ -50,8 +43,8 @@ fun ApolloClient.withHttpCache(
     "withHttpCache requires a HttpNetworkTransport"
   }
   return copy(
-      networkTransport = networkTransport.swapEngine(
-        newEngine = CachingHttpEngine(
+      networkTransport = networkTransport.copy(
+        engine = CachingHttpEngine(
             directory = directory,
             maxSize = maxSize,
             delegate = networkTransport.engine
@@ -60,38 +53,34 @@ fun ApolloClient.withHttpCache(
   )
 }
 
-fun <D: Query.Data> ApolloRequest<D>.withHttpFetchPolicy(httpFetchPolicy: HttpFetchPolicy): ApolloRequest<D> {
-  val context = executionContext[HttpRequestComposerParams] ?: DefaultHttpRequestComposerParams
+val <D : Operation.Data> ApolloResponse<D>.isFromHttpCache
+  get() = executionContext[HttpInfo]?.headers?.any {
+    // This will return true whatever the value in the header. We might want to fine tune this
+    it.name == CachingHttpEngine.FROM_CACHE
+  } ?: false
 
+
+fun <T> ExecutionParameters<T>.withHttpFetchPolicy(httpFetchPolicy: HttpFetchPolicy): T where T: ExecutionParameters<T> {
   val policyStr = when(httpFetchPolicy) {
     HttpFetchPolicy.CacheFirst -> CachingHttpEngine.CACHE_FIRST
     HttpFetchPolicy.CacheOnly -> CachingHttpEngine.CACHE_ONLY
     HttpFetchPolicy.NetworkFirst -> CachingHttpEngine.NETWORK_FIRST
     HttpFetchPolicy.NetworkOnly -> CachingHttpEngine.NETWORK_ONLY
   }
-  return withExecutionContext(context.copy(headers = context.headers + (CachingHttpEngine.CACHE_FETCH_POLICY_HEADER to policyStr)))
+
+  return withHttpHeader(
+      CachingHttpEngine.CACHE_FETCH_POLICY_HEADER, policyStr
+  )
 }
 
-val <D : Operation.Data> ApolloResponse<D>.isFromHttpCache
-  get() = executionContext[HttpResponseInfo]?.headers?.any {
-    // This will return true whatever the value in the header. We might want to fine tune this
-    it.name == CachingHttpEngine.FROM_CACHE
-  } ?: false
+fun <T> ExecutionParameters<T>.withHttpExpireTimeout(millis: Long) where T: ExecutionParameters<T> = withHttpHeader(
+    CachingHttpEngine.CACHE_EXPIRE_TIMEOUT_HEADER, millis.toString()
+)
 
-fun <D: Query.Data> ApolloRequest<D>.withHttpExpireTimeout(millis: Long): ApolloRequest<D> {
-  val context = executionContext[HttpRequestComposerParams] ?: DefaultHttpRequestComposerParams
+fun <T> ExecutionParameters<T>.withHttpExpireAfterRead(expireAfterRead: Boolean) where T: ExecutionParameters<T> = withHttpHeader(
+    CachingHttpEngine.CACHE_EXPIRE_AFTER_READ_HEADER, expireAfterRead.toString()
+)
 
-  return withExecutionContext(context.copy(headers = context.headers + (CachingHttpEngine.CACHE_EXPIRE_TIMEOUT_HEADER to millis.toString())))
-}
-
-fun <D: Query.Data> ApolloRequest<D>.withHttpExpireAfterRead(expireAfterRead: Boolean): ApolloRequest<D> {
-  val context = executionContext[HttpRequestComposerParams] ?: DefaultHttpRequestComposerParams
-
-  return withExecutionContext(context.copy(headers = context.headers + (CachingHttpEngine.CACHE_EXPIRE_AFTER_READ_HEADER to expireAfterRead.toString())))
-}
-
-fun <D: Query.Data> ApolloRequest<D>.withHttpDoNotStore(doNotStore: Boolean): ApolloRequest<D> {
-  val context = executionContext[HttpRequestComposerParams] ?: DefaultHttpRequestComposerParams
-
-  return withExecutionContext(context.copy(headers = context.headers + (CachingHttpEngine.CACHE_DO_NOT_STORE to doNotStore.toString())))
-}
+fun <T> ExecutionParameters<T>.withHttpDoNotStore(doNotStore: Boolean) where T: ExecutionParameters<T> = withHttpHeader(
+    CachingHttpEngine.CACHE_DO_NOT_STORE, doNotStore.toString()
+)

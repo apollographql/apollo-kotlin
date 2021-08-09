@@ -269,7 +269,7 @@ class WatcherTest {
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
-    // This will miss as the cache should be empty
+    // This will initially miss as the cache should be empty
     val job = launch {
       val request = ApolloRequest(query).withFetchPolicy(FetchPolicy.CacheOnly)
       apolloClient.watch(request).collect {

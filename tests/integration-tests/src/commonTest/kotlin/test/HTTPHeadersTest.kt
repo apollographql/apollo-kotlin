@@ -3,12 +3,10 @@ package test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.composeJsonResponse
 import com.apollographql.apollo3.api.http.valueOf
-import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.network.http.HttpResponseInfo
+import com.apollographql.apollo3.network.http.HttpInfo
 import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.testing.runWithMainLoop
 import kotlin.test.BeforeTest
@@ -67,8 +65,8 @@ class HTTPHeadersTest {
     runWithMainLoop {
       val response = apolloClient.query(query)
 
-      assertEquals(response.executionContext[HttpResponseInfo]?.headers?.valueOf("Header1"), "Value1")
-      assertEquals(response.executionContext[HttpResponseInfo]?.headers?.valueOf("Header2"), "Value2")
+      assertEquals(response.executionContext[HttpInfo]?.headers?.valueOf("Header1"), "Value1")
+      assertEquals(response.executionContext[HttpInfo]?.headers?.valueOf("Header2"), "Value2")
     }
   }
 }
