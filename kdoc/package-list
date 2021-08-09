@@ -38,7 +38,6 @@ module:apollo-mpp-utils
 com.apollographql.apollo3.mpp
 module:apollo-normalized-cache
 com.apollographql.apollo3.cache.normalized
-com.apollographql.apollo3.cache.normalized.internal
 module:apollo-normalized-cache-api
 com.apollographql.apollo3.cache
 com.apollographql.apollo3.cache.normalized
