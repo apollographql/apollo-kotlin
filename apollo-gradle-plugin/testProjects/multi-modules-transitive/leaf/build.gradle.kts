@@ -19,5 +19,5 @@ application {
 }
 
 apollo {
-  filePathAwarePackageNameGenerator()
+  packageNamesFromFilePaths()
 }

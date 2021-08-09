@@ -20,3 +20,7 @@ android {
     targetSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString().toInt())
   }
 }
+
+apollo {
+  packageName.set("idling.resource")
+}

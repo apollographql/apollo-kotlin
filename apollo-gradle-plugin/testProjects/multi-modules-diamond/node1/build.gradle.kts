@@ -13,6 +13,6 @@ dependencies {
 }
 
 apollo {
-  filePathAwarePackageNameGenerator()
+  packageNamesFromFilePaths()
   generateApolloMetadata.set(true)
 }

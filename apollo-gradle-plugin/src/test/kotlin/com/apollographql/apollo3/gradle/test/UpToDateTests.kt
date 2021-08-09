@@ -30,12 +30,12 @@ class UpToDateTests {
     assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
 
     // Java classes generated successfully
-    assertTrue(dir.generatedChild("service/DroidDetailsQuery.kt").isFile)
-    assertTrue(dir.generatedChild("service/FilmsQuery.kt").isFile)
-    assertTrue(dir.generatedChild("service/fragment/SpeciesInformation.kt").isFile)
+    assertTrue(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").isFile)
+    assertTrue(dir.generatedChild("service/com/example/FilmsQuery.kt").isFile)
+    assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
 
     // verify that the custom type generated was Any because no customScalarsMapping was specified
-    TestUtils.assertFileContains(dir, "service/type/Types.kt", "\"kotlin.Any\"")
+    TestUtils.assertFileContains(dir, "service/com/example/type/Types.kt", "\"kotlin.Any\"")
   }
 
   fun `nothing changed, task up to date`(dir: File) {
@@ -44,9 +44,9 @@ class UpToDateTests {
     assertEquals(TaskOutcome.UP_TO_DATE, result.task(":generateApolloSources")!!.outcome)
 
     // Java classes generated successfully
-    assertTrue(dir.generatedChild("service/DroidDetailsQuery.kt").isFile)
-    assertTrue(dir.generatedChild("service/FilmsQuery.kt").isFile)
-    assertTrue(dir.generatedChild("service/fragment/SpeciesInformation.kt").isFile)
+    assertTrue(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").isFile)
+    assertTrue(dir.generatedChild("service/com/example/FilmsQuery.kt").isFile)
+    assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
   }
 
   fun `adding a custom scalar to the build script re-generates the CustomScalars`(dir: File) {
@@ -65,7 +65,7 @@ class UpToDateTests {
     // and the task should run again
     assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
 
-    TestUtils.assertFileContains(dir, "service/type/Types.kt", "\"java.util.Date\"")
+    TestUtils.assertFileContains(dir, "service/com/example/type/Types.kt", "\"java.util.Date\"")
 
     val text = File(dir, "build.gradle").readText()
     File(dir, "build.gradle").writeText(text.replace(apolloBlock, ""))
@@ -77,14 +77,14 @@ class UpToDateTests {
       var result = TestUtils.executeTask("generateApolloSources", dir, "-i")
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
-      assertThat(dir.generatedChild("service/DroidDetailsQuery.kt").readText(), containsString("classification"))
+      assertThat(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").readText(), containsString("classification"))
 
       File(dir, "src/main/graphql/com/example/DroidDetails.graphql").replaceInText("classification", "")
 
       result = TestUtils.executeTask("generateApolloSources", dir, "-i")
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
-      assertThat(dir.generatedChild("service/DroidDetailsQuery.kt").readText(), not(containsString("classification")))
+      assertThat(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").readText(), not(containsString("classification")))
     }
   }
 

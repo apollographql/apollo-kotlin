@@ -141,7 +141,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     this.outputDirAction = action
   }
 
-  override fun filePathAwarePackageNameGenerator(rootPackageName: String?) {
+  override fun packageNamesFromFilePaths(rootPackageName: String?) {
     packageNameGenerator.set(
       project.provider {
         PackageNameGenerator.FilePathAware(

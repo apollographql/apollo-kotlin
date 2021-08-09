@@ -186,7 +186,7 @@ interface Service {
    *
    * ```
    * srcDir("src/main/graphql")
-   * filePathAwarePackageNameGenerator("com.example")
+   * packageNamesFromFilePaths("com.example")
    * ```
    *
    * an operation defined in `src/main/graphql/query/feature1` will use `com.example.query.feature1`
@@ -194,7 +194,7 @@ interface Service {
    * an input object defined in `src/main/graphql/schema/schema.graphqls` will use `com.example.schema.type`
    * as package name
    */
-  fun filePathAwarePackageNameGenerator(rootPackageName: String? = null)
+  fun packageNamesFromFilePaths(rootPackageName: String? = null)
 
   /**
    * Whether to generate Kotlin models with `internal` visibility modifier.

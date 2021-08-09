@@ -407,9 +407,14 @@ abstract class DefaultApolloExtension(
       check(!(service.packageName.isPresent && service.packageNameGenerator.isPresent)) {
         println("ApolloGraphQL: it is an error to specify both 'packageName' and 'packageNameGenerator'")
       }
-      val packageNameGenerator = service.packageNameGenerator.getOrElse(
-          PackageNameGenerator.Flat(service.packageName.getOrElse(""))
-      )
+      var packageNameGenerator = service.packageNameGenerator.orNull
+      if (packageNameGenerator == null) {
+        packageNameGenerator = PackageNameGenerator.Flat(service.packageName.orNull ?: error("""ApolloGraphQL: specify 'packageName':
+            |apollo {
+            |  packageName.set("com.example")
+            |}
+          """.trimMargin()))
+      }
       task.packageNameGenerator = packageNameGenerator
       task.generateAsInternal.set(service.generateAsInternal)
       task.generateFilterNotNull.set(project.isKotlinMultiplatform)
