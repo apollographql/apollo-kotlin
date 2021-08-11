@@ -385,10 +385,22 @@ val response = apolloClient.query(request)
 
 ### `CacheKeyResolver`
 
-The `CacheKeyResolver` API has been updated to work with declarative cache.
+The `CacheKeyResolver` API has been split in two different APIs:
 
-* `fromFieldRecordSet` is renamed to `cacheKeyForObject`.
-* `fromFieldArguments` is renamed to `cacheKeyForField`.
+* `ObjectIdGenerator.cacheKeyForObject`
+  * takes Json data as input and returns a unique id for an object.
+  * is used **after** a network request
+  * is used during normalization when **writing** to the cache
+* `CacheKeyResolver.cacheKeyForField`
+  * takes a GraphQL field and operation variables as input and generates an id for this field
+  * is used **before** a network request
+  * is used when **reading** the cache
+
+Previously, both methods were in `CacheResolver` even if under the hood, the code path were very different. By separating them, it makes it explicit and also makes it possible to only implement one of them.
+
+At a high level,
+* `fromFieldRecordSet` is renamed to `ObjectIdGenerator.cacheKeyForObject`.
+* `fromFieldArguments` is renamed to `CacheKeyResolver.cacheKeyForField`.
 * The `CacheKey` return value is now nullable, and `CacheKey.NONE` is replaced with `null`.
 
 ```kotlin
@@ -401,16 +413,30 @@ val resolver: CacheKeyResolver = object : CacheKeyResolver() {
     return CacheKey.from(field.resolveArgument("id", variables) as String)
   }
 }
+val apolloClient = ApolloClient.builder()
+    .serverUrl("https://...")
+    .normalizedCache(cacheFactory, resolver)
+    .build()
+
 
 // With
-val cacheKeyResolver = object : CacheKeyResolver() {
-  override fun cacheKeyForObject(type: CompiledNamedType, variables: Executable.Variables, obj: Map<String, Any?>): CacheKey? {
-    return (obj["id"] as? String)?.let { CacheKey(it) }
-  }
-  override fun cacheKeyForField(field: CompiledField, variables: Executable.Variables): CacheKey? {
-    return (field.resolveArgument("id", variables) as? String)?.let { CacheKey(it) }
+val objectIdGenerator = object : ObjectIdGenerator {
+  override fun cacheKeyForObject(obj: Map<String, Any?>, context: ObjectIdGeneratorContext): CacheKey? {
+    return obj["id"]?.toString()?.let { CacheKey(it) } ?: TypePolicyObjectIdGenerator.cacheKeyForObject(obj, context)
   }
 }
+
+val cacheKeyResolver = object : CacheKeyResolver() {
+  override fun cacheKeyForField(field: CompiledField, variables: Executable.Variables): CacheKey? {
+    return (field.resolveArgument("id", variables) as String?)?.let { CacheKey(it) }
+  }
+}
+
+val apolloClient = ApolloClient("https://").withNormalizedCache(
+    normalizedCacheFactory = cacheFactory,
+    objectIdGenerator = objectIdGenerator,
+    cacheKeyResolver = cacheKeyResolver
+)
 ```
 
 ## Optional values
@@ -484,3 +510,9 @@ query GetHero($id: String @optional) {
 By default, Apollo Android 2.x generates GraphQL enums as Kotlin enums, with an option to generate them as sealed classes to access the raw name of the enum.
 
 Apollo Android 3.x drops Kotlin enums and always generates sealed classes. In addition, Apollo Android 3.x uses the same case for enum names as their GraphQL definition, instead of converting them to uppercase. This enables you to define different enums with different cases, which is valid in GraphQL.
+
+## apollo-android-support
+
+Apollo Android 2.x publishes a small artifact to support running callbacks on a specific Handler and write logs to logcat.
+
+Apollo Android 3.x uses coroutines and exposes more information in its API so that logging hooks shouldn't be required any more. If you were using logs to get information about cache hits/misses, you can now catch `CacheMissException` to get the same information in a more typed way.
