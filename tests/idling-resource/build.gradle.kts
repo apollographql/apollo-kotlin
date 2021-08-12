@@ -6,7 +6,7 @@ plugins {
 
 dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.androidx.espressoIdlingResource"))
-  implementation("com.apollographql.apollo3:apollo-android-support")
+  implementation("com.apollographql.apollo3:apollo-idling-resource")
   testImplementation("com.apollographql.apollo3:apollo-mockserver")
   testImplementation(groovy.util.Eval.x(project, "x.dep.androidSupportAnnotations"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.androidTestRunner"))
