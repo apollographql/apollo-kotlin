@@ -107,4 +107,31 @@ apollo {
 }
 ```
 
+## Multiplatform
+
+For multiplatform projects, put `apolloMetadata` in the top level `dependencies {}` block:
+
+```kotlin
+// feature/build.gradle.kts
+// This module must not have a schema
+// This module can use fragments and types from 'shared' and 'root'
+dependencies {
+    apolloMetadata(project(":shared"))
+}
+
+kotlin {
+    jvm()
+    
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation("com.apollographql.apollo:apollo-api:2.5.8")
+                api("com.apollographql.apollo:apollo-runtime-kotlin:2.5.8")
+            }
+        }
+    }
+}
+```
+
+
 For a more complete example, check the [multi-modules](https://github.com/apollographql/apollo-android-tutorial/tree/multi-modules) branch of the Apollo Android tutorial.
