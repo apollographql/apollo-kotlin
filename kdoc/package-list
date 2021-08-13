@@ -56,5 +56,7 @@ com.apollographql.apollo3.network.http
 com.apollographql.apollo3.network.ws
 module:apollo-rx2-support
 com.apollographql.apollo3.rx2
+module:apollo-rx3-support
+com.apollographql.apollo3.rx3
 module:apollo-testing-support
 com.apollographql.apollo3.testing
