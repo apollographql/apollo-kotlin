@@ -1,4 +1,7 @@
-package com.apollographql.apollo3.rx2
+/*
+ * This file is auto generated from apollo-rx2-support by rxjava3.main.kts, do not edit manually.
+ */
+package com.apollographql.apollo3.rx3
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
@@ -22,51 +25,51 @@ import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.http.HttpInterceptor
 import com.apollographql.apollo3.network.http.HttpInterceptorChain
 import com.benasher44.uuid.Uuid
-import io.reactivex.Flowable
-import io.reactivex.Scheduler
-import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.rx2.asCoroutineDispatcher
-import kotlinx.coroutines.rx2.asFlowable
-import kotlinx.coroutines.rx2.rxCompletable
-import kotlinx.coroutines.rx2.rxSingle
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Scheduler
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.rx3.asCoroutineDispatcher
+import kotlinx.coroutines.rx3.asFlowable
+import kotlinx.coroutines.rx3.rxCompletable
+import kotlinx.coroutines.rx3.rxSingle
 
-fun NetworkTransport.toRx2NetworkTransport(scheduler: Scheduler = Schedulers.io()): Rx2NetworkTransport = object : Rx2NetworkTransport {
+fun NetworkTransport.toRx3NetworkTransport(scheduler: Scheduler = Schedulers.io()): Rx3NetworkTransport = object : Rx3NetworkTransport {
   override fun <D : Operation.Data> execute(request: ApolloRequest<D>): Flowable<ApolloResponse<D>> {
-    return this@toRx2NetworkTransport.execute(request).asFlowable(scheduler.asCoroutineDispatcher())
+    return this@toRx3NetworkTransport.execute(request).asFlowable(scheduler.asCoroutineDispatcher())
   }
   override fun dispose() {
-    this@toRx2NetworkTransport.dispose()
+    this@toRx3NetworkTransport.dispose()
   }
 }
 
-fun HttpInterceptorChain.toRx2HttpInterceptorChain(scheduler: Scheduler = Schedulers.io()): Rx2HttpInterceptorChain = object : Rx2HttpInterceptorChain {
+fun HttpInterceptorChain.toRx3HttpInterceptorChain(scheduler: Scheduler = Schedulers.io()): Rx3HttpInterceptorChain = object : Rx3HttpInterceptorChain {
   override fun proceed(request: HttpRequest): Single<HttpResponse> = rxSingle( scheduler.asCoroutineDispatcher()){
-    this@toRx2HttpInterceptorChain.proceed(request)
+    this@toRx3HttpInterceptorChain.proceed(request)
   }
 }
 
-fun HttpInterceptor.toRx2HttpInterceptor(scheduler: Scheduler = Schedulers.io()): Rx2HttpInterceptor = object : Rx2HttpInterceptor {
-  override fun intercept(request: HttpRequest, chain: Rx2HttpInterceptorChain): Single<HttpResponse> = rxSingle(scheduler.asCoroutineDispatcher()) {
-    this@toRx2HttpInterceptor.intercept(request, chain.toHttpInterceptorChain())
+fun HttpInterceptor.toRx3HttpInterceptor(scheduler: Scheduler = Schedulers.io()): Rx3HttpInterceptor = object : Rx3HttpInterceptor {
+  override fun intercept(request: HttpRequest, chain: Rx3HttpInterceptorChain): Single<HttpResponse> = rxSingle(scheduler.asCoroutineDispatcher()) {
+    this@toRx3HttpInterceptor.intercept(request, chain.toHttpInterceptorChain())
   }
 }
 
-fun ApolloInterceptorChain.toRx2ApolloInterceptorChain(scheduler: Scheduler = Schedulers.io()): Rx2ApolloInterceptorChain = object : Rx2ApolloInterceptorChain {
+fun ApolloInterceptorChain.toRx3ApolloInterceptorChain(scheduler: Scheduler = Schedulers.io()): Rx3ApolloInterceptorChain = object : Rx3ApolloInterceptorChain {
   override fun <D : Operation.Data> proceed(request: ApolloRequest<D>): Flowable<ApolloResponse<D>> {
-    return this@toRx2ApolloInterceptorChain.proceed(request).asFlowable(scheduler.asCoroutineDispatcher())
+    return this@toRx3ApolloInterceptorChain.proceed(request).asFlowable(scheduler.asCoroutineDispatcher())
   }
 }
 
-fun ApolloInterceptor.toRx2ApolloInterceptor(scheduler: Scheduler = Schedulers.io()): Rx2ApolloInterceptor = object : Rx2ApolloInterceptor {
-  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: Rx2ApolloInterceptorChain): Flowable<ApolloResponse<D>> {
-    return this@toRx2ApolloInterceptor.intercept(request, chain.toApolloInterceptorChain()).asFlowable(scheduler.asCoroutineDispatcher())
+fun ApolloInterceptor.toRx3ApolloInterceptor(scheduler: Scheduler = Schedulers.io()): Rx3ApolloInterceptor = object : Rx3ApolloInterceptor {
+  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: Rx3ApolloInterceptorChain): Flowable<ApolloResponse<D>> {
+    return this@toRx3ApolloInterceptor.intercept(request, chain.toApolloInterceptorChain()).asFlowable(scheduler.asCoroutineDispatcher())
   }
 }
 
-fun ApolloStore.toRx2ApolloStore(scheduler: Scheduler = Schedulers.io()) = Rx2ApolloStore(this, scheduler)
+fun ApolloStore.toRx3ApolloStore(scheduler: Scheduler = Schedulers.io()) = Rx3ApolloStore(this, scheduler)
 
-class Rx2ApolloStore(
+class Rx3ApolloStore(
     private val delegate: ApolloStore,
     private val scheduler: Scheduler,
 ) {
@@ -148,9 +151,9 @@ class Rx2ApolloStore(
   }
 }
 
-fun ApolloClient.toRx2ApolloClient(scheduler: Scheduler = Schedulers.io()) = Rx2ApolloClient(this, scheduler)
+fun ApolloClient.toRx3ApolloClient(scheduler: Scheduler = Schedulers.io()) = Rx3ApolloClient(this, scheduler)
 
-class Rx2ApolloClient(private val delegate: ApolloClient, private val scheduler: Scheduler) {
+class Rx3ApolloClient(private val delegate: ApolloClient, private val scheduler: Scheduler) {
   private val dispatcher = scheduler.asCoroutineDispatcher()
 
   fun <D : Query.Data> query(query: Query<D>): Single<ApolloResponse<D>> = query(ApolloRequest(query))
