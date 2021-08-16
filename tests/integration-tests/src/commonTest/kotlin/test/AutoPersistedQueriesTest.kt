@@ -1,6 +1,7 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
@@ -27,7 +28,7 @@ class AutoPersistedQueriesTest {
   fun withApqsDoesntSendDocument() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(readResource("HeroNameResponse.json"))
 
-    val apolloClient = ApolloClient(mockServer.url()).withAutoPersistedQueries()
+    val apolloClient = ApolloClient(mockServer.url()).withAutoPersistedQueries(httpMethodForHashedQueries = HttpMethod.Post)
 
     apolloClient.query(HeroNameQuery())
 
@@ -51,7 +52,7 @@ class AutoPersistedQueriesTest {
 
     mockServer.enqueue(readResource("HeroNameResponse.json"))
 
-    val apolloClient = ApolloClient(mockServer.url()).withAutoPersistedQueries()
+    val apolloClient = ApolloClient(mockServer.url()).withAutoPersistedQueries(httpMethodForHashedQueries = HttpMethod.Post)
 
     apolloClient.query(HeroNameQuery())
 

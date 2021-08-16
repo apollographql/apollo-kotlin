@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.api.Optional.Absent
+import com.apollographql.apollo3.api.Optional.Present
 import com.apollographql.apollo3.exception.MissingValueException
 
 /**

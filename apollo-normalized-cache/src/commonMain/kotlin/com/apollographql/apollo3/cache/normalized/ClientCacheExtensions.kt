@@ -3,14 +3,13 @@ package com.apollographql.apollo3.cache.normalized
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.ExecutionContext
+import com.apollographql.apollo3.api.ExecutionParameters
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.internal.ApolloCacheInterceptor
-import com.apollographql.apollo3.cache.normalized.internal.CacheInput
-import com.apollographql.apollo3.cache.normalized.internal.CacheOutput
-import com.apollographql.apollo3.cache.normalized.internal.DefaultCacheInput
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -39,9 +38,6 @@ enum class FetchPolicy {
   NetworkOnly,
 }
 
-const val CACHE_FLAG_DO_NOT_STORE = 1
-const val CACHE_FLAG_STORE_PARTIAL_RESPONSE = 2
-
 /**
  * Configures an [ApolloClient] with a normalized cache.
  *
@@ -58,47 +54,26 @@ fun ApolloClient.withNormalizedCache(
     normalizedCacheFactory: NormalizedCacheFactory,
     objectIdGenerator: ObjectIdGenerator = TypePolicyObjectIdGenerator,
     cacheResolver: CacheResolver = FieldPolicyCacheResolver,
-    writeToCacheAsynchronously: Boolean = false
+    writeToCacheAsynchronously: Boolean = false,
 ): ApolloClient {
   return withStore(ApolloStore(normalizedCacheFactory, objectIdGenerator, cacheResolver), writeToCacheAsynchronously)
 }
 
 fun ApolloClient.withStore(store: ApolloStore, writeToCacheAsynchronously: Boolean = false): ApolloClient {
-  return withInterceptor(ApolloCacheInterceptor(store, writeToCacheAsynchronously))
+  return withInterceptor(ApolloCacheInterceptor(store)).withWriteToCacheAsynchronously(writeToCacheAsynchronously)
 }
 
-fun <D: Query.Data> ApolloRequest<D>.withFetchPolicy(fetchPolicy: FetchPolicy): ApolloRequest<D> {
-  val context = executionContext[CacheInput] ?: DefaultCacheInput(operation)
-  return withExecutionContext(context.copy(fetchPolicy = fetchPolicy))
-}
-fun <D: Query.Data> ApolloRequest<D>.withRefetchPolicy(refetchPolicy: FetchPolicy): ApolloRequest<D> {
-  val context = executionContext[CacheInput] ?: DefaultCacheInput(operation)
-  return withExecutionContext(context.copy(refetchPolicy = refetchPolicy))
-}
-fun <D: Operation.Data> ApolloRequest<D>.withCacheFlags(flags: Int): ApolloRequest<D> {
-  val context = executionContext[CacheInput] ?: DefaultCacheInput(operation)
-  return withExecutionContext(context.copy(flags = flags))
-}
-fun <D: Operation.Data> ApolloRequest<D>.withCacheHeaders(cacheHeaders: CacheHeaders): ApolloRequest<D> {
-  val context = executionContext[CacheInput] ?: DefaultCacheInput(operation)
-  return withExecutionContext(context.copy(cacheHeaders = cacheHeaders))
-}
-fun <D: Mutation.Data> ApolloRequest<D>.withOptimisticUpdates(data: D): ApolloRequest<D> {
-  val context = executionContext[CacheInput] ?: DefaultCacheInput(operation)
-  return withExecutionContext(context.copy(optimisticData = data))
-}
-fun <D: Query.Data> ApolloRequest<D>.withWriteToCacheAsynchronously(writeToCacheAsynchronously: Boolean): ApolloRequest<D> {
-  val context = executionContext[CacheInput] ?: DefaultCacheInput(operation)
-  return withExecutionContext(context.copy(writeToCacheAsynchronously = writeToCacheAsynchronously))
+
+fun <D : Query.Data> ApolloClient.watch(query: Query<D>): Flow<ApolloResponse<D>> {
+  return watch(ApolloRequest(query))
 }
 
-fun <D: Operation.Data> ApolloRequest<D>.withCacheContext(
-    fetchPolicy: FetchPolicy,
-    refetchPolicy: FetchPolicy? = null,
-    data: D? = null,
-    flags: Int = 0
-): ApolloRequest<D> {
-  return withExecutionContext(CacheInput(fetchPolicy, refetchPolicy, data, flags))
+fun <D : Query.Data> ApolloClient.watch(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
+  return queryAsFlow(queryRequest.withExecutionContext(WatchContext(true)))
+}
+
+fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(query: Query<D>): Flow<ApolloResponse<D>> {
+  return queryCacheAndNetwork(ApolloRequest(query))
 }
 
 
@@ -134,26 +109,157 @@ fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(queryRequest: ApolloReque
   }
 }
 
-fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(query: Query<D>): Flow<ApolloResponse<D>> {
-  return queryCacheAndNetwork(ApolloRequest(query))
+/**
+ * Sets the [FetchPolicy] on this request. D has a bound on [Query.Data] because subscriptions and mutation shouldn't
+ * read the cache
+ */
+fun <D : Query.Data> ApolloRequest<D>.withFetchPolicy(fetchPolicy: FetchPolicy) = withExecutionContext(
+    FetchPolicyContext(fetchPolicy)
+)
+
+/**
+ * Sets the default [FetchPolicy] for the [ApolloClient]. This only affects queries. Mutations and subscriptions will
+ * always use [FetchPolicy.NetworkFirst]
+ */
+fun ApolloClient.withFetchPolicy(fetchPolicy: FetchPolicy) = withExecutionContext(
+    FetchPolicyContext(fetchPolicy)
+)
+
+/**
+ * Sets the [FetchPolicy] used when refetching at the request level. This is only used in combination with [watch].
+ */
+fun <D : Query.Data> ApolloRequest<D>.withRefetchPolicy(refetchPolicy: FetchPolicy) = withExecutionContext(
+    RefetchPolicyContext(refetchPolicy)
+)
+
+/**
+ * Sets the [FetchPolicy] used when refetching at the client level. This is only used in combination with [watch].
+ */
+fun ApolloClient.withRefetchPolicy(refetchPolicy: FetchPolicy) = withExecutionContext(
+    RefetchPolicyContext(refetchPolicy)
+)
+
+fun <T> ExecutionParameters<T>.withDoNotStore(doNotStore: Boolean) where T : ExecutionParameters<T> = withExecutionContext(
+    DoNotStoreContext(doNotStore)
+)
+
+fun <T> ExecutionParameters<T>.withStorePartialResponses(storePartialResponses: Boolean) where T : ExecutionParameters<T> = withExecutionContext(
+    StorePartialResponsesContext(storePartialResponses)
+)
+
+fun <T> ExecutionParameters<T>.withCacheHeaders(cacheHeaders: CacheHeaders) where T : ExecutionParameters<T> = withExecutionContext(
+    CacheHeadersContext(cacheHeaders)
+)
+
+fun <T> ExecutionParameters<T>.withWriteToCacheAsynchronously(writeToCacheAsynchronously: Boolean) where T : ExecutionParameters<T> = withExecutionContext(
+    WriteToCacheAsynchronouslyContext(writeToCacheAsynchronously)
+)
+
+/**
+ * Sets the optimistic updates to write to the cache while a query is pending.
+ */
+fun <D : Mutation.Data> ApolloRequest<D>.withOptimisticUpdates(data: D) = withExecutionContext(
+    OptimisticUpdatesContext(data)
+)
+
+internal val <D : Query.Data> ApolloRequest<D>.fetchPolicy
+  get() = executionContext[FetchPolicyContext]?.value ?: FetchPolicy.CacheFirst
+
+internal val <D : Query.Data> ApolloRequest<D>.refetchPolicy
+  get() = executionContext[RefetchPolicyContext]?.value ?: FetchPolicy.CacheOnly
+
+internal val <D : Operation.Data> ApolloRequest<D>.doNotStore
+  get() = executionContext[DoNotStoreContext]?.value ?: false
+
+internal val <D : Operation.Data> ApolloRequest<D>.storePartialResponses
+  get() = executionContext[StorePartialResponsesContext]?.value ?: false
+
+internal val <D : Operation.Data> ApolloRequest<D>.writeToCacheAsynchronously
+  get() = executionContext[WriteToCacheAsynchronouslyContext]?.value ?: false
+
+internal val <D : Mutation.Data> ApolloRequest<D>.optimisticData
+  get() = executionContext[OptimisticUpdatesContext]?.value
+
+internal val <D : Operation.Data> ApolloRequest<D>.cacheHeaders
+  get() = executionContext[CacheHeadersContext]?.value ?: CacheHeaders.NONE
+
+internal val <D : Operation.Data> ApolloRequest<D>.watch
+  get() = executionContext[WatchContext]?.value ?: false
+
+
+class CacheInfo(
+    val millisStart: Long,
+    val millisEnd: Long,
+    val hit: Boolean,
+    val missedKey: String?,
+    val missedField: String?,
+) : ExecutionContext.Element {
+  override val key: ExecutionContext.Key<*>
+    get() = Key
+
+  companion object Key : ExecutionContext.Key<CacheInfo>
 }
 
-fun <D : Query.Data> ApolloClient.watch(query: Query<D>): Flow<ApolloResponse<D>> {
-  return watch(ApolloRequest(query))
+val <D : Query.Data> ApolloResponse<D>.isFromCache
+  get() = cacheInfo?.hit ?: false
+
+val <D : Query.Data> ApolloResponse<D>.cacheInfo
+  get() = executionContext[CacheInfo]
+
+internal fun <D : Operation.Data> ApolloResponse<D>.withCacheInfo(cacheInfo: CacheInfo) = withExecutionContext(cacheInfo)
+
+internal class FetchPolicyContext(val value: FetchPolicy) : ExecutionContext.Element {
+  override val key: ExecutionContext.Key<*>
+    get() = Key
+
+  companion object Key : ExecutionContext.Key<FetchPolicyContext>
 }
 
-fun <D : Query.Data> ApolloClient.watch(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
-  var context = queryRequest.executionContext[CacheInput]
-  if (context == null) {
-    context = CacheInput(FetchPolicy.CacheFirst, FetchPolicy.CacheOnly)
-  } else if (context.refetchPolicy == null) {
-    context = context.copy(refetchPolicy = FetchPolicy.CacheOnly)
-  }
+internal class RefetchPolicyContext(val value: FetchPolicy) : ExecutionContext.Element {
+  override val key: ExecutionContext.Key<*>
+    get() = Key
 
-  return queryAsFlow(queryRequest.withExecutionContext(context))
+  companion object Key : ExecutionContext.Key<RefetchPolicyContext>
 }
 
-val <D : Operation.Data> ApolloResponse<D>.isFromCache
-  get() = executionContext[CacheOutput]?.isFromCache ?: false
+internal class DoNotStoreContext(val value: Boolean) : ExecutionContext.Element {
+  override val key: ExecutionContext.Key<*>
+    get() = Key
 
+  companion object Key : ExecutionContext.Key<DoNotStoreContext>
+}
 
+internal class StorePartialResponsesContext(val value: Boolean) : ExecutionContext.Element {
+  override val key: ExecutionContext.Key<*>
+    get() = Key
+
+  companion object Key : ExecutionContext.Key<StorePartialResponsesContext>
+}
+
+internal class WriteToCacheAsynchronouslyContext(val value: Boolean) : ExecutionContext.Element {
+  override val key: ExecutionContext.Key<*>
+    get() = Key
+
+  companion object Key : ExecutionContext.Key<WriteToCacheAsynchronouslyContext>
+}
+
+internal class CacheHeadersContext(val value: CacheHeaders) : ExecutionContext.Element {
+  override val key: ExecutionContext.Key<*>
+    get() = Key
+
+  companion object Key : ExecutionContext.Key<CacheHeadersContext>
+}
+
+internal class OptimisticUpdatesContext<D : Mutation.Data>(val value: D) : ExecutionContext.Element {
+  override val key: ExecutionContext.Key<*>
+    get() = Key
+
+  companion object Key : ExecutionContext.Key<OptimisticUpdatesContext<*>>
+}
+
+internal class WatchContext(val value: Boolean) : ExecutionContext.Element {
+  override val key: ExecutionContext.Key<*>
+    get() = Key
+
+  companion object Key : ExecutionContext.Key<WatchContext>
+}

@@ -35,7 +35,7 @@ class ApolloResponse<out D : Operation.Data>(
      * The context of GraphQL [operation] execution.
      * This can contain additional data contributed by interceptors.
      */
-    val executionContext: ExecutionContext = ExecutionContext.Empty
+    val executionContext: ExecutionContext = ExecutionContext.Empty,
 ) {
 
   /**
@@ -52,22 +52,24 @@ class ApolloResponse<out D : Operation.Data>(
 
   fun hasErrors(): Boolean = !errors.isNullOrEmpty()
 
-    fun copy(
-        requestUuid: Uuid = this.requestUuid,
-        operation: Operation<*> = this.operation,
-        data: Any? = this.data,
-        errors: List<Error>? = this.errors,
-        extensions: Map<String, Any?> = this.extensions,
-        executionContext: ExecutionContext = this.executionContext
-    ): ApolloResponse<D> {
-      @Suppress("UNCHECKED_CAST")
-      return ApolloResponse(
-          requestUuid,
-          operation,
-          data as D?,
-          errors,
-          extensions,
-          executionContext
-      )
-    }
+  fun copy(
+      requestUuid: Uuid = this.requestUuid,
+      operation: Operation<*> = this.operation,
+      data: Any? = this.data,
+      errors: List<Error>? = this.errors,
+      extensions: Map<String, Any?> = this.extensions,
+      executionContext: ExecutionContext = this.executionContext,
+  ): ApolloResponse<D> {
+    @Suppress("UNCHECKED_CAST")
+    return ApolloResponse(
+        requestUuid,
+        operation,
+        data as D?,
+        errors,
+        extensions,
+        executionContext
+    )
+  }
+
+  fun withExecutionContext(executionContext: ExecutionContext) = copy(executionContext = executionContext)
 }

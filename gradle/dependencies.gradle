@@ -62,6 +62,7 @@ ext.dep = [
         plugin            : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
         coroutines        : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.kotlinCoroutines",
         coroutinesRx2     : "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$versions.kotlinCoroutines",
+        coroutinesRx3     : "org.jetbrains.kotlinx:kotlinx-coroutines-rx3:$versions.kotlinCoroutines",
         coroutinesReactive: "org.jetbrains.kotlinx:kotlinx-coroutines-reactive:$versions.kotlinCoroutines",
         coroutinesReactor : "org.jetbrains.kotlinx:kotlinx-coroutines-reactor:$versions.kotlinCoroutines",
         coroutinesAndroid : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlinCoroutines",
@@ -88,11 +89,8 @@ ext.dep = [
         java  : "com.squareup:javapoet:$versions.javaPoet",
         kotlin: "com.squareup:kotlinpoet:$versions.kotlinPoet",
     ],
-    rx                       : [
-        java   : "io.reactivex.rxjava2:rxjava:$versions.rxjava",
-        java3  : "io.reactivex.rxjava3:rxjava:$versions.rxjava3",
-        android: "io.reactivex.rxjava2:rxandroid:$versions.rxandroid",
-    ],
+    rx2  : "io.reactivex.rxjava2:rxjava:$versions.rxjava",
+    rx3  : "io.reactivex.rxjava3:rxjava:$versions.rxjava3",
     sqldelight               : [
         android: "com.squareup.sqldelight:android-driver:$versions.sqldelight",
         jvm    : "com.squareup.sqldelight:sqlite-driver:$versions.sqldelight",

@@ -303,12 +303,7 @@ abstract class DefaultApolloExtension(
         connection.connectToKotlinSourceSet(KotlinSourceSet.COMMON_MAIN_SOURCE_SET_NAME)
       }
       project.androidExtension != null -> {
-        /**
-         * Call both application and library
-         * Only one will be active at a time
-         */
-        connection.connectToAllAndroidApplicationVariants()
-        connection.connectToAllAndroidLibraryVariants()
+        connection.connectToAndroidSourceSet("main")
       }
       project.kotlinProjectExtension != null -> {
         connection.connectToKotlinSourceSet("main")
@@ -407,9 +402,14 @@ abstract class DefaultApolloExtension(
       check(!(service.packageName.isPresent && service.packageNameGenerator.isPresent)) {
         println("ApolloGraphQL: it is an error to specify both 'packageName' and 'packageNameGenerator'")
       }
-      val packageNameGenerator = service.packageNameGenerator.getOrElse(
-          PackageNameGenerator.Flat(service.packageName.getOrElse(""))
-      )
+      var packageNameGenerator = service.packageNameGenerator.orNull
+      if (packageNameGenerator == null) {
+        packageNameGenerator = PackageNameGenerator.Flat(service.packageName.orNull ?: error("""ApolloGraphQL: specify 'packageName':
+            |apollo {
+            |  packageName.set("com.example")
+            |}
+          """.trimMargin()))
+      }
       task.packageNameGenerator = packageNameGenerator
       task.generateAsInternal.set(service.generateAsInternal)
       task.generateFilterNotNull.set(project.isKotlinMultiplatform)

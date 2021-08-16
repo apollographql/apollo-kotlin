@@ -1,19 +1,9 @@
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import com.apollographql.apollo3.gradle.api.ApolloExtension
 
 buildscript {
-    apply(from = "../../../gradle/dependencies.gradle")
-
-    repositories {
-        maven {
-            url = uri("../../../build/localMaven")
-        }
-        mavenCentral()
-    }
-    dependencies {
-        classpath(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
-        classpath(groovy.util.Eval.x(project, "x.dep.apollo.plugin"))
-    }
+    apply(from = "../../testProjects/buildscript.gradle.kts")
 }
 
 apply(plugin = "org.jetbrains.kotlin.multiplatform")
@@ -40,4 +30,8 @@ configure<KotlinMultiplatformExtension> {
             }
         }
     }
+}
+
+configure<ApolloExtension> {
+    packageNamesFromFilePaths()
 }

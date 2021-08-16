@@ -6,16 +6,17 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.CustomScalarType
 import com.apollographql.apollo3.api.ExecutionContext
+import com.apollographql.apollo3.api.ExecutionParameters
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.api.http.HttpRequestComposerParams
+import com.apollographql.apollo3.api.http.withHttpMethod
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.interceptor.NetworkInterceptor
-import com.apollographql.apollo3.interceptor.RealInterceptorChain
+import com.apollographql.apollo3.interceptor.DefaultInterceptorChain
 import com.apollographql.apollo3.internal.defaultDispatcher
 import com.apollographql.apollo3.mpp.ensureNeverFrozen
 import com.apollographql.apollo3.network.NetworkTransport
@@ -26,13 +27,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.flatMapConcat
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.single
 
 typealias FlowDecorator = (Flow<ApolloResponse<*>>) -> Flow<ApolloResponse<*>>
@@ -45,10 +40,10 @@ class ApolloClient constructor(
     private val subscriptionNetworkTransport: NetworkTransport = networkTransport,
     private val customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
     private val interceptors: List<ApolloInterceptor> = emptyList(),
-    val executionContext: ExecutionContext = ExecutionContext.Empty,
+    override val executionContext: ExecutionContext = ExecutionContext.Empty,
     private val requestedDispatcher: CoroutineDispatcher? = null,
     private val flowDecorators: List<FlowDecorator> = emptyList(),
-) {
+) : ExecutionParameters<ApolloClient> {
 
   private val dispatcher = defaultDispatcher(requestedDispatcher)
   private val clientScope = ClientScope(CoroutineScope(dispatcher))
@@ -139,7 +134,7 @@ class ApolloClient constructor(
     )
   }
 
-  fun withExecutionContext(executionContext: ExecutionContext): ApolloClient {
+  override fun withExecutionContext(executionContext: ExecutionContext): ApolloClient {
     return copy(
         executionContext = this.executionContext + executionContext
     )
@@ -176,7 +171,7 @@ class ApolloClient constructor(
         subscriptionNetworkTransport = subscriptionNetworkTransport,
     )
 
-    val interceptorChain = RealInterceptorChain(interceptors, 0)
+    val interceptorChain = DefaultInterceptorChain(interceptors, 0)
     return flowDecorators.fold(interceptorChain.proceed(request).flowOn(dispatcher)) { flow, decorator ->
       @Suppress("UNCHECKED_CAST")
       decorator.invoke(flow) as Flow<ApolloResponse<D>>
@@ -199,15 +194,32 @@ fun ApolloClient(
     requestedDispatcher = requestedDispatcher
 )
 
-
-fun ApolloClient.withAutoPersistedQueries(method: HttpMethod = HttpMethod.Post): ApolloClient {
-  return withInterceptor(AutoPersistedQueryInterceptor())
-      .withExecutionContext(
-          HttpRequestComposerParams(
-              method,
-              sendApqExtensions = true,
-              sendDocument = false,
-              headers = emptyMap()
-          )
-      )
+/**
+ * Configures the given [ApolloClient] to try auto persisted queries.
+ *
+ * @param httpMethodForHashedQueries: the [HttpMethod] to use for the initial hashed query that does not send the actual Graphql document.
+ * [HttpMethod.Get] allows to use caching when available while [HttpMethod.Post] usually allows bigger document sizes.
+ * Only used if [hashByDefault] is true
+ * Default: [HttpMethod.Get]
+ *
+ * @param httpMethodForDocumentQueries: the [HttpMethod] to use for the follow up query that sends the full document if the initial
+ * hashed query was not found.
+ * Default: [HttpMethod.Post]
+ *
+ * @param hashByDefault: whether to enable Auto Persisted Queries by default. If true, it will set httpMethodForHashedQueries,
+ * sendApqExtensions=true and sendDocument=false.
+ * If false it will leave them untouched. You can later use [withHashedQuery] to enable them
+ */
+fun ApolloClient.withAutoPersistedQueries(
+    httpMethodForHashedQueries: HttpMethod = HttpMethod.Get,
+    httpMethodForDocumentQueries: HttpMethod = HttpMethod.Post,
+    hashByDefault: Boolean = true
+): ApolloClient {
+  return withInterceptor(AutoPersistedQueryInterceptor(httpMethodForDocumentQueries)).let {
+    if (hashByDefault) {
+      it.withHttpMethod(httpMethodForHashedQueries).withHashedQuery(true)
+    } else {
+      it
+    }
+  }
 }

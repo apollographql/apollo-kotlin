@@ -4,31 +4,38 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.http.HttpRequestComposerParams
+import com.apollographql.apollo3.api.http.HttpMethod
+import com.apollographql.apollo3.api.http.withHttpMethod
+import com.apollographql.apollo3.api.http.withSendApqExtensions
+import com.apollographql.apollo3.api.http.withSendDocument
 import com.apollographql.apollo3.exception.AutoPersistedQueriesNotSupported
+import com.apollographql.apollo3.withAutoPersistedQueryInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.single
 
-class AutoPersistedQueryInterceptor: ApolloInterceptor {
+internal class AutoPersistedQueryInterceptor(val httpMethodForDocumentQueries: HttpMethod) : ApolloInterceptor {
+
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return flow {
-      val params = request.executionContext[HttpRequestComposerParams] ?: error("no DefaultHttpRequestComposerParams found")
+
       var response = chain.proceed(request).single()
 
       when {
         isPersistedQueryNotFound(response.errors) -> {
-          val retryRequest = request.withExecutionContext(params.copy(
-              sendDocument = true
-          ))
+          val retryRequest = request
+              .withHttpMethod(httpMethodForDocumentQueries)
+              .withSendDocument(true)
+              .withSendApqExtensions(true)
+
           response = chain.proceed(retryRequest).single()
-          emit(response)
+          emit(response.withAutoPersistedQueryInfo(false))
         }
         isPersistedQueryNotSupported(response.errors) -> {
           throw AutoPersistedQueriesNotSupported()
         }
         else -> {
-          emit(response)
+          emit(response.withAutoPersistedQueryInfo(true))
         }
       }
     }

@@ -1,11 +1,5 @@
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.api.http.DefaultHttpRequestComposerParams
-import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.api.http.HttpRequestComposerParams
-import com.apollographql.apollo3.api.http.canBeAutoPersisted
-import com.apollographql.apollo3.api.http.withHttpHeader
-import com.apollographql.apollo3.api.http.withHttpMethod
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
 
@@ -15,9 +9,9 @@ import com.benasher44.uuid.uuid4
 class ApolloRequest<D : Operation.Data>(
     val operation: Operation<D>,
     val requestUuid: Uuid = uuid4(),
-    val executionContext: ExecutionContext = ExecutionContext.Empty,
-) {
-  fun withExecutionContext(executionContext: ExecutionContext): ApolloRequest<D> {
+    override val executionContext: ExecutionContext = ExecutionContext.Empty,
+): ExecutionParameters<ApolloRequest<D>> {
+  override fun withExecutionContext(executionContext: ExecutionContext): ApolloRequest<D> {
     return copy(executionContext = this.executionContext + executionContext)
   }
 
@@ -30,28 +24,4 @@ class ApolloRequest<D : Operation.Data>(
       requestUuid,
       executionContext
   )
-}
-
-/**
- * Adds a HTTP header to the request
- */
-fun <D : Operation.Data> ApolloRequest<D>.withHttpHeader(name: String, value: String): ApolloRequest<D> {
-  val params = executionContext[HttpRequestComposerParams]
-  return withExecutionContext(executionContext + params.withHttpHeader(name, value))
-}
-
-/**
- * Sets the [HttpMethod] on the request
- */
-fun <D : Operation.Data> ApolloRequest<D>.withHttpMethod(method: HttpMethod): ApolloRequest<D>  {
-  val params = executionContext[HttpRequestComposerParams]
-  return withExecutionContext(executionContext + params.withHttpMethod(method))
-}
-
-/**
- * Sets whether this request is autopersisted or not
- */
-fun <D : Operation.Data> ApolloRequest<D>.canBeAutoPersisted(canBeAutoPersisted: Boolean): ApolloRequest<D>  {
-  val params = executionContext[HttpRequestComposerParams]
-  return withExecutionContext(executionContext + params.canBeAutoPersisted(canBeAutoPersisted))
 }

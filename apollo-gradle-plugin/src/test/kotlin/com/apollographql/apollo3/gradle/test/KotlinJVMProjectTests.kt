@@ -26,7 +26,7 @@ class KotlinJVMProjectTests {
   fun `non-android-kotlin builds a jar`() {
     val apolloConfiguration = """
       apollo {
-        filePathAwarePackageNameGenerator()
+        packageNamesFromFilePaths()
       }
     """.trimIndent()
     TestUtils.withProject(usesKotlinDsl = false,

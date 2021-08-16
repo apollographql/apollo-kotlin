@@ -49,7 +49,6 @@ object TestUtils {
     File(source, "gradle/settings.gradle").copyTo(target = File(dest, "settings.gradle"))
 
     val isAndroid = plugins.firstOrNull { it.id.startsWith("com.android") } != null
-    val hasKotlin = plugins.firstOrNull { it.id.startsWith("org.jetbrains.kotlin") } != null
 
     if (usesKotlinDsl) {
       val applyLines = plugins.map { "apply(plugin = \"${it.id}\")" }.joinToString("\n")
@@ -144,7 +143,11 @@ object TestUtils {
   /**
    * creates a simple java non-android non-kotlin-gradle project
    */
-  fun withSimpleProject(apolloConfiguration: String = "", block: (File) -> Unit) = withProject(
+  fun withSimpleProject(apolloConfiguration: String = """
+    apollo {
+      packageNamesFromFilePaths()
+    }
+  """.trimIndent(), block: (File) -> Unit) = withProject(
       usesKotlinDsl = false,
       plugins = listOf(kotlinJvmPlugin, apolloPlugin),
       apolloConfiguration = apolloConfiguration

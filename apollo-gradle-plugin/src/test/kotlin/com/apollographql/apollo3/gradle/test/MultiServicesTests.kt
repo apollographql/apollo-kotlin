@@ -31,7 +31,12 @@ class MultiServicesTests {
 
   @Test
   fun `multiple schema files in different folders throw an error`() {
-    withMultipleServicesProject("") { dir ->
+    val apolloConfiguration = """
+      apollo {
+        packageNamesFromFilePaths()
+      }
+    """.trimIndent()
+    withMultipleServicesProject(apolloConfiguration) { dir ->
       try {
         TestUtils.executeTask("generateApolloSources", dir)
         fail("expected to fail")

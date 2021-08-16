@@ -1,4 +1,8 @@
 buildscript {
+    /**
+     * This doesn't use buildscript.gradle.kts as it's copied with different
+     * directory layouts to ensure the build cache works as expected
+     */
     apply(from = "../../../../gradle/dependencies.gradle")
 
     repositories {
@@ -12,4 +16,3 @@ buildscript {
         classpath(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
     }
 }
-

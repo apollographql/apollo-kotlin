@@ -14,15 +14,15 @@ import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.internal.NonMainWorker
+import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.network.NetworkTransport
-import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class HttpNetworkTransport(
     private val httpRequestComposer: HttpRequestComposer,
     val engine: HttpEngine = DefaultHttpEngine(),
-    private val interceptors: List<HttpInterceptor> = emptyList(),
+    val interceptors: List<HttpInterceptor> = emptyList(),
 ) : NetworkTransport {
   private val worker = NonMainWorker()
 
@@ -41,12 +41,11 @@ class HttpNetworkTransport(
    */
   constructor(
       serverUrl: String,
-      headers: List<HttpHeader> = emptyList(),
       connectTimeoutMillis: Long = 60_000,
       readTimeoutMillis: Long = 60_000,
       interceptors: List<HttpInterceptor> = emptyList(),
   ) : this(
-      DefaultHttpRequestComposer(serverUrl, headers),
+      DefaultHttpRequestComposer(serverUrl),
       DefaultHttpEngine(connectTimeoutMillis, readTimeoutMillis),
       interceptors
   )
@@ -69,7 +68,7 @@ class HttpNetworkTransport(
       engine: HttpEngine,
       interceptors: List<HttpInterceptor> = emptyList(),
   ) : this(
-      DefaultHttpRequestComposer(serverUrl, emptyList()),
+      DefaultHttpRequestComposer(serverUrl),
       engine,
       interceptors
   )
@@ -91,7 +90,8 @@ class HttpNetworkTransport(
       customScalarAdapters: CustomScalarAdapters,
   ): Flow<ApolloResponse<D>> {
     return flow {
-      val httpResponse = RealInterceptorChain(
+      val millisStart = currentTimeMillis()
+      val httpResponse = DefaultHttpInterceptorChain(
           interceptors = interceptors + engineInterceptor,
           index = 0
       ).proceed(httpRequest)
@@ -120,7 +120,9 @@ class HttpNetworkTransport(
       emit(
           response.copy(
               requestUuid = request.requestUuid,
-              executionContext = request.executionContext + HttpResponseInfo(
+              executionContext = request.executionContext + HttpInfo(
+                  millisStart = millisStart,
+                  millisEnd = currentTimeMillis(),
                   statusCode = httpResponse.statusCode,
                   headers = httpResponse.headers
               )
@@ -139,14 +141,19 @@ class HttpNetworkTransport(
     engine.dispose()
   }
 
-  fun swapEngine(
-      newEngine: HttpEngine,
-      ): HttpNetworkTransport {
-    engine.dispose()
-
+  /**
+   * Creates a copy of the [HttpNetworkTransport]
+   *
+   * The copy will own the [engine]. It is an error to call [dispose] after [copy] on the original instance
+   */
+  fun copy(
+      httpRequestComposer: HttpRequestComposer = this.httpRequestComposer,
+      engine: HttpEngine = this.engine,
+      interceptors: List<HttpInterceptor> = this.interceptors,
+  ): HttpNetworkTransport {
     return HttpNetworkTransport(
         httpRequestComposer = httpRequestComposer,
-        engine = newEngine,
+        engine = engine,
         interceptors = interceptors
     )
   }
@@ -165,3 +172,8 @@ class HttpNetworkTransport(
     }
   }
 }
+
+/**
+ * Adds a new [HeadersInterceptor] that will add [headers] to each [HttpRequest]
+ */
+fun HttpNetworkTransport.withDefaultHeaders(headers: List<HttpHeader>) = copy(interceptors = this.interceptors + HeadersInterceptor(headers))

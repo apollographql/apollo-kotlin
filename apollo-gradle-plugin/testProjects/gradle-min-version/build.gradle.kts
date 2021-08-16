@@ -7,7 +7,6 @@ buildscript {
     maven {
       url = uri("../../../build/localMaven")
     }
-    google()
     mavenCentral()
   }
   dependencies {
@@ -17,7 +16,6 @@ buildscript {
   }
 }
 
-
 apply(plugin = "org.jetbrains.kotlin.jvm")
 apply(plugin = "com.apollographql.apollo3")
 
@@ -25,11 +23,14 @@ repositories {
   maven {
     url = uri("../../../build/localMaven")
   }
-  google()
   mavenCentral()
 }
 
 dependencies {
   add("implementation", groovy.util.Eval.x(project, "x.dep.apollo.api"))
+}
+
+configure<ApolloExtension> {
+  packageName.set("com.example")
 }
 

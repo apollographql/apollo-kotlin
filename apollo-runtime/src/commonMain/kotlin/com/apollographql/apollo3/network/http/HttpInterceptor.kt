@@ -11,7 +11,7 @@ interface HttpInterceptor {
   suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse
 }
 
-internal class RealInterceptorChain(
+internal class DefaultHttpInterceptorChain(
     private val interceptors: List<HttpInterceptor>,
     private val index: Int,
 ) : HttpInterceptorChain {
@@ -20,7 +20,7 @@ internal class RealInterceptorChain(
     check(index < interceptors.size)
     return interceptors[index].intercept(
         request,
-        RealInterceptorChain(
+        DefaultHttpInterceptorChain(
             interceptors = interceptors,
             index = index + 1,
         )

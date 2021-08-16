@@ -3,6 +3,7 @@ import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.android.ApolloIdlingResource
 import com.apollographql.apollo3.android.withIdlingResource
+import idling.resource.IdlingResourceQuery
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -41,7 +42,7 @@ class IdlingResourceTest {
     assert(!idlingResource.isIdleNow)
     delay(300)
     assert(!idlingResource.isIdleNow)
-    delay(300)
+    delay(500)
     assert(idlingResource.isIdleNow)
   }
 }
