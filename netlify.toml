@@ -4,3 +4,5 @@
   command = "./generate-docs.sh"
 [build.environment]
   NPM_VERSION = "6"
+[context.deploy-preview]
+  command = "gatsby build"
