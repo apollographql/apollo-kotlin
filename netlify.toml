@@ -1,8 +1,10 @@
 [build]
-  base    = "docs/"
-  publish = "docs/public/"
+  base    = "docs"
+  publish = "docs/public"
   command = "./generate-docs.sh"
 [build.environment]
   NPM_VERSION = "6"
-[context.deploy-preview]
-  command = "gatsby build"
+[context.production.environment]
+  PREFIX_PATHS = "true"
+[context.branch-deploy.environment]
+  PREFIX_PATHS = "true"
