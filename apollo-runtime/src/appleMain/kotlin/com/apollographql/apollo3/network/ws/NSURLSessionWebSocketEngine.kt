@@ -194,7 +194,7 @@ private fun NSError.dispatch(webSocketConnectionPtr: COpaquePointer) {
   webSocketConnection.messageChannel.close(
       ApolloNetworkException(
           message = "Web socket communication error",
-          cause = IOException(localizedDescription)
+          platformCause = this
       )
   )
   webSocketConnection.webSocket.cancel()

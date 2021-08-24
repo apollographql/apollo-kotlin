@@ -1,4 +1,4 @@
-// This is in the exception package for historical reasons
+// This is in the `exception` package and not `api.exception` to keep some compatibility with 2.x
 package com.apollographql.apollo3.exception
 
 import com.apollographql.apollo3.api.http.HttpHeader
@@ -10,8 +10,17 @@ open class ApolloException(message: String? = null, cause: Throwable? = null) : 
 
 /**
  * A network error happened: socket closed, DNS issue, TLS problem, etc...
+ *
+ * @param message a message indicating what the error was.
+ * @param platformCause the underlying cause. Might be null. When not null, it can be cast to:
+ * - a [Throwable] on JVM platforms.
+ * - a [NSError] on Darwin platforms.
+ * to get more details about what went wrong.
  */
-class ApolloNetworkException(message: String? = null, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
+class ApolloNetworkException(
+    message: String? = null,
+    val platformCause: Any? = null
+) : ApolloException(message = message, cause = platformCause as? Throwable)
 
 /**
  * A WebSocket connection could not be established: e.g., expired token

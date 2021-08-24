@@ -90,6 +90,7 @@ class ParseResponseBodyTest {
     assertEquals(response.errors!![0].extensions?.get("code"), 500)
     assertEquals(response.errors!![0].extensions?.get("status"), "Internal Error")
     assertEquals(response.errors!![0].extensions?.get("fatal"), true)
+    @Suppress("UNCHECKED_CAST")
     val listOfValues = response.errors!![0].extensions?.get("listOfValues") as List<Any>
     assertEquals(listOfValues[0], 0)
     assertEquals(listOfValues[1], "a")
