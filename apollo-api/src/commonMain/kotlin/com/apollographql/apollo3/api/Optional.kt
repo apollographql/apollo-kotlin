@@ -17,5 +17,7 @@ sealed class Optional<out V> {
   data class Present<V>(val value: V) : Optional<V>()
   object Absent : Optional<Nothing>()
 
-  fun <V : Any> presentIfNotNull(value: V?): Optional<V> = if (value == null) Absent else Present(value)
+  companion object {
+    fun <V : Any> presentIfNotNull(value: V?): Optional<V> = if (value == null) Absent else Present(value)
+  }
 }
