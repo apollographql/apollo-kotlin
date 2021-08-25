@@ -38,7 +38,7 @@ class QueryBatchingTest {
   fun testAgainstARealServer() = runTest(before = { setUp() }, after = { tearDown() }) {
     val apolloClient = ApolloClient(
         networkTransport = HttpNetworkTransport(
-            httpRequestComposer = DefaultHttpRequestComposer("https://apollo-fullstack-tutorial.herokuapp.com/graphql"),
+            serverUrl = "https://apollo-fullstack-tutorial.herokuapp.com/graphql",
             engine = BatchingHttpEngine(),
         )
     )
