@@ -24,6 +24,7 @@ import com.apollographql.apollo3.cache.normalized.refetchPolicy
 import com.apollographql.apollo3.cache.normalized.storePartialResponses
 import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.cache.normalized.withCacheInfo
+import com.apollographql.apollo3.cache.normalized.withDoNotStore
 import com.apollographql.apollo3.cache.normalized.writeToCacheAsynchronously
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.CacheMissException
@@ -179,9 +180,15 @@ internal class ApolloCacheInterceptor(
       }
 
       store.changedKeys.collect { changedKeys ->
+        println("changedKeys: $changedKeys")
         if (watchedKeys == null || changedKeys.intersect(watchedKeys!!).isNotEmpty()) {
           result = kotlin.runCatching {
-            fetchOneMightThrow(request, chain, refetchPolicy, customScalarAdapters)
+            fetchOneMightThrow(
+                request,
+                chain,
+                refetchPolicy,
+                customScalarAdapters
+            )
           }
 
           val newResponse = result.getOrNull()
