@@ -126,7 +126,7 @@ private fun buildHttpResponse(
     return Result.failure(
         ApolloNetworkException(
             message = "Failed to execute GraphQL http network request",
-            cause = IOException(error.localizedDescription)
+            platformCause = error.freeze()
         )
     )
   }

@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.network.http
 
-import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.api.http.HttpMethod
@@ -79,7 +78,7 @@ actual class DefaultHttpEngine(
       continuation.resumeWithException(
           ApolloNetworkException(
               message = "Failed to execute GraphQL http network request",
-              cause = networkResult.exceptionOrNull()!!
+              platformCause = networkResult.exceptionOrNull()!!
           )
       )
       return@suspendCancellableCoroutine
