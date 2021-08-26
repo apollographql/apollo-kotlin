@@ -1,3 +1,4 @@
+import com.android.build.gradle.BaseExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
@@ -27,6 +28,15 @@ fun Project.configureJavaAndKotlinCompilers() {
     project.extensions.getByType(JavaPluginExtension::class.java).apply {
       sourceCompatibility = JavaVersion.VERSION_1_8
       targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    // Android projects
+    project.extensions.findByName("android")?.apply {
+      this as BaseExtension
+      compileOptions {
+        it.sourceCompatibility = JavaVersion.VERSION_1_8
+        it.targetCompatibility = JavaVersion.VERSION_1_8
+      }
     }
   }
 }

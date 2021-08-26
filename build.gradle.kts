@@ -111,15 +111,6 @@ tasks.register("publishToGradlePortalIfNeeded") {
   }
 }
 
-tasks.register("rmbuild") {
-  doLast {
-    projectDir.walk().filter { it.isDirectory && it.name == "build" }
-        .forEach {
-          it.deleteRecursively()
-        }
-  }
-}
-
 tasks.register("fullCheck") {
   subprojects {
     tasks.all {

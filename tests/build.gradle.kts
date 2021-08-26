@@ -12,6 +12,7 @@ buildscript {
   dependencies {
     classpath("com.apollographql.apollo3:apollo-gradle-plugin")
     classpath("com.apollographql.apollo:build-logic")
+    classpath(groovy.util.Eval.x(project, "x.dep.kotlin.springPlugin"))
   }
 }
 
@@ -64,14 +65,5 @@ tasks.register("quickCheck") {
         this@register.dependsOn(this)
       }
     }
-  }
-}
-
-tasks.register("rmbuild") {
-  doLast {
-    projectDir.walk().filter { it.isDirectory && it.name == "build" }
-        .forEach {
-          it.deleteRecursively()
-        }
   }
 }
