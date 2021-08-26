@@ -12,7 +12,6 @@ buildscript {
   dependencies {
     classpath("com.apollographql.apollo3:apollo-gradle-plugin")
     classpath("com.apollographql.apollo:build-logic")
-    classpath("org.jetbrains.kotlin:kotlin-allopen:1.5.0")
   }
 }
 
@@ -22,18 +21,9 @@ subprojects {
     mavenCentral()
   }
 
+  configureJavaAndKotlinCompilers()
+
   afterEvaluate {
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-      kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
-      }
-    }
-    (project.extensions.findByName("kotlin")
-        as? org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension)?.run {
-      sourceSets.all {
-        languageSettings.useExperimentalAnnotation("kotlin.RequiresOptIn")
-      }
-    }
     tasks.withType<AbstractTestTask> {
       testLogging {
         exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL

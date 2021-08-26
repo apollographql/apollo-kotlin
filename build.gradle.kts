@@ -27,26 +27,7 @@ subprojects {
     from(rootProject.file("gradle/dependencies.gradle"))
   }
 
-  afterEvaluate {
-    tasks.withType<KotlinCompile> {
-      kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
-      }
-    }
-    (project.extensions.findByName("kotlin")
-        as? org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension)?.run {
-      sourceSets.all {
-        languageSettings.useExperimentalAnnotation("kotlin.RequiresOptIn")
-      }
-    }
-  }
-
-  // Ensure "org.gradle.jvm.version" is set to "8" in Gradle metadata of jvm-only modules.
-  // (multiplatform modules don't set this)
-  tasks.withType<JavaCompile> {
-    sourceCompatibility = JavaVersion.VERSION_1_8.toString()
-    targetCompatibility = JavaVersion.VERSION_1_8.toString()
-  }
+  configureJavaAndKotlinCompilers()
 
   tasks.withType<Test> {
     systemProperty("updateTestFixtures", System.getProperty("updateTestFixtures"))
