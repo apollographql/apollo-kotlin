@@ -113,7 +113,7 @@ ext.dep = [
      * See https://github.com/gradle/gradle/issues/1835
      */
     // Keep in sync with gradle-wrapper.properties
-    gradleApi                : "dev.gradleplugins:gradle-api:7.1.1",
+    gradleApi                : "dev.gradleplugins:gradle-api:7.2",
     // Keep in sync with MIN_GRADLE_VERSION
     minGradleApi             : "dev.gradleplugins:gradle-api:5.6"
 ]
