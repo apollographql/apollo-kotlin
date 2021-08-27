@@ -24,21 +24,35 @@ class FileUploadTest {
   private val upload1: Upload = Upload.fromString("content_file1", "file1.jpg", "image/jpeg")
   private val upload2: Upload = Upload.fromString("content_file2", "file2.png", "image/png")
 
-  private val nestedObject0 = NestedObject(file = Optional.Present(upload0), fileList = Optional.Present(listOf(upload1, upload2)))
-  private val nestedObject1 = NestedObject(file = Optional.Present(upload1), fileList = Optional.Present(listOf(upload0, upload2)))
+  private val nestedObject0 = NestedObject(
+      Optional.Absent,
+      Optional.Absent,
+      Optional.Present(upload0),
+      Optional.Present(listOf(upload1, upload2)),
+      Optional.Absent
+  )
+  private val nestedObject1 = NestedObject(
+      Optional.Absent,
+      Optional.Absent,
+      Optional.Present(upload1),
+      Optional.Present(listOf(upload0, upload2)),
+      Optional.Absent
+  )
   private val nestedObject2 = NestedObject(
-      file = Optional.Present(upload2),
-      fileList = Optional.Present(listOf(upload0, upload1)),
-      recursiveNested = Optional.Present(listOf(nestedObject0, nestedObject1))
+      Optional.Present(listOf(nestedObject0, nestedObject1)),
+      Optional.Absent,
+      Optional.Present(upload2),
+      Optional.Present(listOf(upload0, upload1)),
+      Optional.Absent,
   )
 
-  private val mutationSingle = SingleUploadMutation(file = upload1)
-  private val mutationTwice = SingleUploadTwiceMutation(file1 = upload1, file2 = upload2)
-  private val mutationMultiple = MultipleUploadMutation(files = listOf(upload1, upload2))
+  private val mutationSingle = SingleUploadMutation(upload1)
+  private val mutationTwice = SingleUploadTwiceMutation(upload1, upload2)
+  private val mutationMultiple = MultipleUploadMutation(listOf(upload1, upload2))
   private val mutationNested = NestedUploadMutation(
-      nested = nestedObject2,
-      topFile = upload2,
-      topFileList = listOf(upload1, upload0)
+      upload2,
+      listOf(upload1, upload0),
+      nestedObject2,
   )
 
   private lateinit var mockServer: MockServer

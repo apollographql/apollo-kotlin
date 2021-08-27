@@ -1,5 +1,6 @@
-package com.apollographql.apollo3.api
+@file:JvmName("Adapters")
 
+package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.internal.json.MapJsonWriter
@@ -7,6 +8,9 @@ import com.apollographql.apollo3.api.internal.json.Utils
 import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import kotlin.jvm.JvmField
+import kotlin.jvm.JvmName
+import kotlin.jvm.JvmSuppressWildcards
 import kotlin.native.concurrent.SharedImmutable
 
 /**
@@ -16,7 +20,7 @@ import kotlin.native.concurrent.SharedImmutable
  * GraphQL to Kotlin.
  * In particular, [AnyAdapter] can be used to read/write a Kotlin representation from/to Json.
  */
-class ListAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<List<T>> {
+class ListAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<List<@JvmSuppressWildcards T>> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): List<T> {
     reader.beginArray()
     val list = mutableListOf<T>()
@@ -36,7 +40,7 @@ class ListAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<List<T>> 
   }
 }
 
-class NullableAdapter<T : Any>(private val wrappedAdapter: Adapter<T>) : Adapter<T?> {
+class NullableAdapter<T : Any>(private val wrappedAdapter: Adapter<T>) : Adapter<@JvmSuppressWildcards T?> {
   init {
     check(wrappedAdapter !is NullableAdapter<*>) {
       "The adapter is already nullable"
@@ -64,7 +68,7 @@ class NullableAdapter<T : Any>(private val wrappedAdapter: Adapter<T>) : Adapter
 /**
  * ResponseAdapters can only express something that's present. Absent values are handled outside of the adapter
  */
-class OptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optional.Present<T>> {
+class OptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optional.Present<@JvmSuppressWildcards T>> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Optional.Present<T> {
     return Optional.Present(wrappedAdapter.fromJson(reader, customScalarAdapters))
   }
@@ -145,7 +149,7 @@ object UploadAdapter : Adapter<Upload> {
 class ObjectAdapter<T>(
     private val wrappedAdapter: Adapter<T>,
     private val buffered: Boolean,
-) : Adapter<T> {
+) : Adapter<@JvmSuppressWildcards T> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
     val actualReader = if (buffered) {
       reader.buffer()
@@ -189,12 +193,17 @@ fun <T> Adapter<T>.optional() = OptionalAdapter(this)
  * Global instances of nullable adapters for built-in scalar types
  */
 @SharedImmutable
+@JvmField
 val NullableStringAdapter = StringAdapter.nullable()
 @SharedImmutable
+@JvmField
 val NullableDoubleAdapter = DoubleAdapter.nullable()
 @SharedImmutable
+@JvmField
 val NullableIntAdapter = IntAdapter.nullable()
 @SharedImmutable
+@JvmField
 val NullableBooleanAdapter = BooleanAdapter.nullable()
 @SharedImmutable
+@JvmField
 val NullableAnyAdapter = AnyAdapter.nullable()

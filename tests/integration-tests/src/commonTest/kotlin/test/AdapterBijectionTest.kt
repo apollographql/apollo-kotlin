@@ -3,9 +3,10 @@ package test
 import com.apollographql.apollo3.adapter.LocalDateAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.toJson
-import com.apollographql.apollo3.integration.httpcache.type.Types
+import com.apollographql.apollo3.integration.httpcache.type.Date
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroWithDatesQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
 import com.apollographql.apollo3.integration.normalizer.HeroNameWithEnumsQuery
@@ -26,9 +27,9 @@ import kotlin.test.assertEquals
 class AdapterBijectionTest {
   @Test
   fun customScalar1() = bijection(
-      EpisodeHeroWithDatesQuery(),
+      EpisodeHeroWithDatesQuery(Optional.Absent),
       EpisodeHeroWithDatesQuery.Data(
-          EpisodeHeroWithDatesQuery.Data.Hero(
+          EpisodeHeroWithDatesQuery.Hero(
               "R222-D222",
               LocalDate(1985, 4, 16),
               emptyList()
@@ -38,9 +39,9 @@ class AdapterBijectionTest {
 
   @Test
   fun customScalar2() = bijection(
-      EpisodeHeroWithDatesQuery(),
+      EpisodeHeroWithDatesQuery(Optional.Absent),
       EpisodeHeroWithDatesQuery.Data(
-          EpisodeHeroWithDatesQuery.Data.Hero(
+          EpisodeHeroWithDatesQuery.Hero(
               "R22-D22",
               LocalDate(1986, 4, 16),
               listOf(
@@ -55,7 +56,7 @@ class AdapterBijectionTest {
   fun enum1() = bijection(
       HeroNameWithEnumsQuery(),
       HeroNameWithEnumsQuery.Data(
-          HeroNameWithEnumsQuery.Data.Hero(
+          HeroNameWithEnumsQuery.Hero(
               "R222-D222",
               Episode.JEDI, emptyList<Episode>()
           )
@@ -66,7 +67,7 @@ class AdapterBijectionTest {
   fun enum2() = bijection(
       HeroNameWithEnumsQuery(),
       HeroNameWithEnumsQuery.Data(
-          HeroNameWithEnumsQuery.Data.Hero(
+          HeroNameWithEnumsQuery.Hero(
               "R22-D22",
               Episode.JEDI,
               listOf(Episode.EMPIRE)
@@ -78,7 +79,7 @@ class AdapterBijectionTest {
   fun objects1() = bijection(
       HeroAndFriendsNamesWithIDsQuery(Episode.JEDI),
       HeroAndFriendsNamesWithIDsQuery.Data(
-          HeroAndFriendsNamesWithIDsQuery.Data.Hero(
+          HeroAndFriendsNamesWithIDsQuery.Hero(
               "2001",
               "R222-D222",
               null
@@ -90,11 +91,11 @@ class AdapterBijectionTest {
   fun objects2() = bijection(
       HeroAndFriendsNamesWithIDsQuery(Episode.JEDI),
       HeroAndFriendsNamesWithIDsQuery.Data(
-          HeroAndFriendsNamesWithIDsQuery.Data.Hero(
+          HeroAndFriendsNamesWithIDsQuery.Hero(
               "2001",
               "R222-D222",
               listOf(
-                  HeroAndFriendsNamesWithIDsQuery.Data.Hero.Friend(
+                  HeroAndFriendsNamesWithIDsQuery.Friend(
                       "1002",
                       "Han Soloooo"
                   )
@@ -108,7 +109,7 @@ class AdapterBijectionTest {
   fun listOfList() = bijection(
       StarshipByIdQuery("Starship1"),
       StarshipByIdQuery.Data(
-          StarshipByIdQuery.Data.Starship(
+          StarshipByIdQuery.Starship(
               "Starship1",
               "SuperRocket",
               listOf(
@@ -145,7 +146,7 @@ class AdapterBijectionTest {
 //  )
 
   private fun <D : Operation.Data> bijection(operation: Operation<D>, data: D) {
-    val responseAdapterCache = CustomScalarAdapters(mapOf(Types.Date.name to LocalDateAdapter))
+    val responseAdapterCache = CustomScalarAdapters(mapOf(Date.type.name to LocalDateAdapter))
     val json = operation.adapter().toJson(value = data, customScalarAdapters = responseAdapterCache)
     val data2 = operation.adapter().fromJson(Buffer().apply { writeUtf8(json) }, responseAdapterCache)
 

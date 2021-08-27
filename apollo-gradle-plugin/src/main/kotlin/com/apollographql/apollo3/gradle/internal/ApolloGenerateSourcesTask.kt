@@ -1,9 +1,19 @@
 package com.apollographql.apollo3.gradle.internal
 
+import com.apollographql.apollo3.ast.GQLDocument
+import com.apollographql.apollo3.ast.GQLSchemaDefinition
+import com.apollographql.apollo3.ast.GQLTypeDefinition
+import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.ast.apolloDefinitions
+import com.apollographql.apollo3.ast.toSchema
+import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.ApolloMetadata
-import com.apollographql.apollo3.compiler.ApolloMetadata.Companion.merge
+import com.apollographql.apollo3.compiler.CommonMetadata
 import com.apollographql.apollo3.compiler.GraphQLCompiler
 import com.apollographql.apollo3.compiler.IncomingOptions
+import com.apollographql.apollo3.compiler.IncomingOptions.Companion.resolveSchema
+import com.apollographql.apollo3.compiler.MODELS_COMPAT
+import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.Options
@@ -18,10 +28,13 @@ import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateRespo
 import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSemanticNaming
 import com.apollographql.apollo3.compiler.Options.Companion.defaultWarnOnDeprecatedUsages
 import com.apollographql.apollo3.compiler.PackageNameGenerator
+import com.apollographql.apollo3.compiler.TARGET_JAVA
+import com.apollographql.apollo3.compiler.TARGET_KOTLIN
+import com.apollographql.apollo3.compiler.introspection.toGQLDocument
+import com.apollographql.apollo3.gradle.api.kotlinProjectExtension
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.file.FileCollection
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
@@ -37,8 +50,8 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
-import org.gradle.api.tasks.SkipWhenEmpty
 import org.gradle.api.tasks.TaskAction
+import java.io.File
 import javax.inject.Inject
 
 @CacheableTask
@@ -75,11 +88,13 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Internal
   lateinit var packageNameGenerator: PackageNameGenerator
+
   @Input
   fun getPackageNameGeneratorVersion() = packageNameGenerator.version
 
   @get:Internal
   lateinit var operationOutputGenerator: OperationOutputGenerator
+
   @Input
   fun getOperationOutputGeneratorVersion() = operationOutputGenerator.version
 
@@ -144,11 +159,25 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @TaskAction
   fun taskAction() {
-    val schemaFiles = schemaFiles.files
-    val metadata = metadataFiles.files.toList().map { ApolloMetadata.readFrom(it) }.merge()
+    val metadata = metadataFiles.files.toList().map { ApolloMetadata.readFrom(it) }
 
-    val incomingOptions = if (metadata != null) {
-      check(schemaFiles.isEmpty()) {
+    val commonMetadatas = metadata.mapNotNull { it.commonMetadata }
+
+    check(commonMetadatas.size <= 1) {
+      "ApolloGraphQL: multiple schemas found in metadata"
+    }
+
+    val commonMetadata = commonMetadatas.singleOrNull()
+    var outputCommonMetadata: CommonMetadata? = null
+
+    val targetLanguage = if (generateKotlinModels.getOrElse(project.kotlinProjectExtension != null)) {
+      TARGET_KOTLIN
+    } else {
+      TARGET_JAVA
+    }
+
+    val incomingOptions = if (commonMetadata != null) {
+      check(schemaFiles.files.isEmpty()) {
         "Specifying 'schemaFiles' has no effect as an upstream module already provided a schema"
       }
       check(!customScalarsMapping.isPresent) {
@@ -157,24 +186,32 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       check(!codegenModels.isPresent) {
         "Specifying 'codegenModels' has no effect as an upstream module already provided a codegenModels"
       }
-      check(!flattenModels.isPresent) {
-        "Specifying 'flattenModels' has no effect as an upstream module already provided a flattenModels"
-      }
-      IncomingOptions.fromMetadata(metadata)
+      IncomingOptions.fromMetadata(commonMetadata, packageNameGenerator)
     } else {
-      val codegenModels = codegenModels.getOrElse(defaultCodegenModels)
-      // Response-based models generate a lot of models and therefore a lot of name clashes if flattened
-      val defaultFlattenModels = flattenModels.getOrElse(codegenModels != MODELS_RESPONSE_BASED)
+      val codegenModels = codegenModels.getOrElse(
+          when (targetLanguage) {
+            TARGET_JAVA -> MODELS_OPERATION_BASED
+            TARGET_KOTLIN -> MODELS_COMPAT
+            else -> error("")
+          }
+      )
+      val customScalarsMapping = customScalarsMapping.getOrElse(emptyMap())
 
-      check(schemaFiles.isNotEmpty()) {
-        "No schema file found in:\n${rootFolders.get().joinToString("\n")}"
-      }
-      IncomingOptions.fromOptions(
-          schemaFiles = schemaFiles,
-          customScalarsMapping = customScalarsMapping.getOrElse(emptyMap()),
+      val (schema, mainSchemaFilePath) = resolveSchema(schemaFiles.files, rootFolders.get())
+
+      outputCommonMetadata = CommonMetadata(
+          schema = schema,
           codegenModels = codegenModels,
-          flattenModels = flattenModels.getOrElse(defaultFlattenModels),
-          packageNameGenerator = packageNameGenerator
+          schemaPath = mainSchemaFilePath,
+          customScalarsMapping = customScalarsMapping,
+          pluginVersion = APOLLO_VERSION
+      )
+
+      IncomingOptions(
+          schema = schema,
+          schemaPackageName = packageNameGenerator.packageName(mainSchemaFilePath),
+          customScalarsMapping = customScalarsMapping,
+          codegenModels = codegenModels,
       )
     }
 
@@ -184,6 +221,24 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       }
     }
 
+    val flattenModels = when {
+      targetLanguage == TARGET_JAVA -> {
+        check(flattenModels.isPresent.not()) {
+          "Java codegen does not support flattenModels"
+        }
+        true
+      }
+      else -> flattenModels.getOrElse(incomingOptions.codegenModels != MODELS_RESPONSE_BASED)
+    }
+    val codegenModels = when {
+      targetLanguage == TARGET_JAVA -> {
+        check(incomingOptions.codegenModels == MODELS_OPERATION_BASED) {
+          "Java codegen does not support codegenModels=${incomingOptions.codegenModels}"
+        }
+        MODELS_OPERATION_BASED
+      }
+      else -> incomingOptions.codegenModels
+    }
     val options = Options(
         executableFiles = graphqlFiles.files,
         outputDir = outputDir.asFile.get(),
@@ -201,11 +256,26 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         generateQueryDocument = generateQueryDocument.getOrElse(defaultGenerateQueryDocument),
         generateResponseFields = generateResponseFields.getOrElse(defaultGenerateResponseFields),
         logger = logger,
-        metadataOutputFile = metadataOutputFile.asFile.orNull,
         moduleName = projectName.get(),
-        incomingOptions = incomingOptions
+        // Response-based models generate a lot of models and therefore a lot of name clashes if flattened
+        flattenModels = flattenModels,
+        incomingCompilerMetadata = metadata.map { it.compilerMetadata },
+        schema = incomingOptions.schema,
+        codegenModels = codegenModels,
+        schemaPackageName = incomingOptions.schemaPackageName,
+        customScalarsMapping = incomingOptions.customScalarsMapping,
+        targetLanguage = targetLanguage
     )
 
-    GraphQLCompiler.write(options)
+    val outputCompilerMetadata = GraphQLCompiler.write(options)
+
+    val metadataOutputFile = metadataOutputFile.asFile.orNull
+    if (metadataOutputFile != null) {
+      ApolloMetadata(
+          commonMetadata = outputCommonMetadata,
+          compilerMetadata = outputCompilerMetadata,
+          moduleName = project.name
+      ).writeTo(metadataOutputFile)
+    }
   }
 }

@@ -161,7 +161,7 @@ interface Service {
    *
    * - $packageName/SomeQuery.kt
    * - $packageName/fragment/SomeFragment.kt
-   * - $packageName/type/Types.kt
+   * - $packageName/type/CustomScalar.kt
    * - $packageName/type/SomeInputObject.kt
    * - $packageName/type/SomeEnum.kt
    *
@@ -252,6 +252,8 @@ interface Service {
   /**
    * Whether to flatten the models. File paths are limited on MacOSX to 256 chars and flattening can help keeping the path length manageable
    * The drawback is that some classes may nameclash in which case they will be suffixed with a number
+   *
+   * Default value: false for "responseBased", true else
    */
   val flattenModels: Property<Boolean>
 

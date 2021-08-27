@@ -100,21 +100,21 @@ class StoreTest {
         HeroWithFriendsFragmentImpl(),
         CacheKey("2001"),
         HeroWithFriendsFragment(
-            id = "2001",
-            name = "R222-D222",
-            friends = listOf(
+            "2001",
+            "R222-D222",
+            listOf(
                 HeroWithFriendsFragment.Friend(
-                    __typename = "Human",
-                    humanWithIdFragment = HumanWithIdFragment(
-                        id = "1000",
-                        name = "SuperMan"
+                    "Human",
+                    HumanWithIdFragment(
+                        "1000",
+                        "SuperMan"
                     )
                 ),
                 HeroWithFriendsFragment.Friend(
-                    __typename = "Human",
-                    humanWithIdFragment = HumanWithIdFragment(
-                        id = "1002",
-                        name = "Han Solo"
+                    "Human",
+                    HumanWithIdFragment(
+                        "1002",
+                        "Han Solo"
                     )
                 ),
             )
@@ -125,8 +125,8 @@ class StoreTest {
         HumanWithIdFragmentImpl(),
         CacheKey("1002"),
         HumanWithIdFragment(
-            id = "1002",
-            name = "Beast"
+            "1002",
+            "Beast"
         ),
     )
 

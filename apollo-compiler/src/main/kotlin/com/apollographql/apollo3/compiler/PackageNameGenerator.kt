@@ -30,7 +30,7 @@ interface PackageNameGenerator {
   class Flat(val packageName: String) : PackageNameGenerator {
     override fun packageName(filePath: String) = packageName
     override val version: String
-      get() = "Flat"
+      get() = "Flat-$packageName"
   }
 
   class FilePathAware constructor(
@@ -49,6 +49,6 @@ interface PackageNameGenerator {
     }
 
     override val version: String
-      get() = "FilePathAware"
+      get() = "FilePathAware-$rootPackageName"
   }
 }

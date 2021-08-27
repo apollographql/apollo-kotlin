@@ -90,9 +90,9 @@ class WatcherTest {
 
     // Someone writes to the store directly
     val data = EpisodeHeroNameWithIdQuery.Data(
-        hero = EpisodeHeroNameWithIdQuery.Data.Hero(
-            id = "2001",
-            name = "Artoo"
+        EpisodeHeroNameWithIdQuery.Hero(
+            "2001",
+            "Artoo"
         )
     )
 
