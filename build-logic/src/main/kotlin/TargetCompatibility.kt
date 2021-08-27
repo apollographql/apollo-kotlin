@@ -30,13 +30,7 @@ fun Project.configureJavaAndKotlinCompilers() {
       targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    // Android projects
-    project.extensions.findByName("android")?.apply {
-      this as BaseExtension
-      compileOptions {
-        it.sourceCompatibility = JavaVersion.VERSION_1_8
-        it.targetCompatibility = JavaVersion.VERSION_1_8
-      }
-    }
+    // Android projects target 1.8 starting with 4.2, no need to do anything
+    // https://developer.android.com/studio/releases/gradle-plugin#4-2-0
   }
 }

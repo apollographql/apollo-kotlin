@@ -67,7 +67,6 @@ fun Project.getOssStagingUrl(): String {
         description = "com.apollo.apollo3 $version"
     )
   }
-  println("publishing to '$repositoryId")
   return "https://oss.sonatype.org/service/local/staging/deployByRepositoryId/${repositoryId}/".also {
     this.extensions.extraProperties["ossStagingUrl"] = it
   }

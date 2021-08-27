@@ -1,8 +1,13 @@
 def versions = [
     minAndroidPlugin      : '3.4.2',
-    androidPlugin         : '4.2.2',
+    /**
+     * We unfortunately cannot bump that to a bigger version because
+     * - 4.2.0 has this issue: https://issuetracker.google.com/issues/175338398
+     * - 7.0.0 is not supported by IntelliJ as of writing
+     */
+    androidPlugin         : '4.1.3',
     androidxSqlite        : '2.1.0',
-    apollo                : '3.0.0-alpha04-SNAPSHOT', // This should only be used by apollo-gradle-plugin-incubating:test to get the artifacts locally
+    apollo                : '3.0.0-alpha04-SNAPSHOT', // This is used by the gradle integration tests to get the artifacts locally
     antlr4                : '4.9.2',
     cache                 : '2.0.2',
     espressoIdlingResource: '3.2.0',
