@@ -17,7 +17,7 @@ def versions = [
     kotlin                : '1.5.30',
     kotlinCoroutines      : '1.5.1',
     moshi                 : '1.12.0',
-    moshix                : '0.12.2',
+    moshix                : '0.13.0',
     okHttp4               : '4.9.1',
     okHttp                : '3.12.11', // Keep this to keep supporting older Android devices
     okio                  : '2.10.0',
