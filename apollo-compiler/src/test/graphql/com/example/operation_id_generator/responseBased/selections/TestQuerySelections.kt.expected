@@ -13,7 +13,7 @@ import com.apollographql.apollo3.api.notNull
 import com.example.operation_id_generator.type.Types.Character
 import kotlin.collections.List
 
-object TestQuerySelections {
+public object TestQuerySelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField(
           name = "id",
@@ -25,7 +25,7 @@ object TestQuerySelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "hero",
           type = Character,

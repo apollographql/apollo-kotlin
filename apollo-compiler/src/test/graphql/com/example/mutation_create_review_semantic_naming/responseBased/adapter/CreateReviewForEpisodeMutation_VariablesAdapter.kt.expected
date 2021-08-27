@@ -14,16 +14,19 @@ import com.example.mutation_create_review_semantic_naming.CreateReviewForEpisode
 import com.example.mutation_create_review_semantic_naming.type.adapter.Episode_ResponseAdapter
 import com.example.mutation_create_review_semantic_naming.type.adapter.ReviewInput_InputAdapter
 import kotlin.IllegalStateException
+import kotlin.Unit
 
-object CreateReviewForEpisodeMutation_VariablesAdapter : Adapter<CreateReviewForEpisodeMutation> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+public object CreateReviewForEpisodeMutation_VariablesAdapter :
+    Adapter<CreateReviewForEpisodeMutation> {
+  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
       CreateReviewForEpisodeMutation = throw
       IllegalStateException("Input type used in output position")
-  override fun toJson(
+
+  public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    value: CreateReviewForEpisodeMutation
-  ) {
+    `value`: CreateReviewForEpisodeMutation
+  ): Unit {
     writer.name("ep")
     Episode_ResponseAdapter.toJson(writer, customScalarAdapters, value.ep)
     writer.name("review")

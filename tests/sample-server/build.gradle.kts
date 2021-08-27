@@ -5,7 +5,11 @@ plugins {
 }
 
 dependencies {
-  api("com.expediagroup:graphql-kotlin-spring-server:4.1.0")
+  api(groovy.util.Eval.x(project, "x.dep.graphqlKotlin"))
+  api(groovy.util.Eval.x(project, "x.dep.kotlin.reflect").toString()) {
+    because("graphqlKotlin pull kotlin-reflect and that triggers a warning like" +
+        "Runtime JAR files in the classpath should have the same version.")
+  }
   implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutinesReactor").toString()) {
     because("reactor must have the same version as the coroutines version")
   }

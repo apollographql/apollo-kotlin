@@ -9,23 +9,23 @@ import com.apollographql.apollo3.api.Fragment
 import kotlin.Deprecated
 import kotlin.String
 
-data class AnimalFragment(
-  val __typename: String,
+public data class AnimalFragment(
+  public val __typename: String,
   /**
    * Synthetic field for inline fragment on Cat
    */
-  val onCat: OnCat?,
+  public val onCat: OnCat?,
   /**
    * Synthetic field for inline fragment on Dog
    */
-  val onDog: OnDog?
+  public val onDog: OnDog?
 ) : Fragment.Data {
-  data class OnCat(
-    val name: String
+  public data class OnCat(
+    public val name: String
   )
 
-  data class OnDog(
+  public data class OnDog(
     @Deprecated(message = "No longer supported")
-    val name: String
+    public val name: String
   )
 }

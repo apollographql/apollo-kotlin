@@ -8,14 +8,14 @@ package com.example.fragment_used_twice.fragment
 import com.apollographql.apollo3.api.Fragment
 import kotlin.String
 
-data class HumanDetails(
-  val __typename: String,
+public data class HumanDetails(
+  public val __typename: String,
   /**
    * What this human calls themselves
    */
-  val name: String,
+  public val name: String,
   /**
    * Synthetic field for 'CharacterDetails'
    */
-  val characterDetails: CharacterDetails?
+  public val characterDetails: CharacterDetails?
 ) : Fragment.Data

@@ -10,17 +10,17 @@ import kotlin.String
 /**
  * Lower case enum type name
  */
-sealed class hero_type(
-  val rawValue: String
+public sealed class hero_type(
+  public val rawValue: String
 ) {
-  object human : hero_type(rawValue = "human")
+  public object human : hero_type(rawValue = "human")
 
-  object droid : hero_type(rawValue = "droid")
+  public object droid : hero_type(rawValue = "droid")
 
   /**
    * Auto generated constant for unknown enum values
    */
-  class UNKNOWN__(
+  public class UNKNOWN__(
     rawValue: String
   ) : hero_type(rawValue = rawValue)
 }

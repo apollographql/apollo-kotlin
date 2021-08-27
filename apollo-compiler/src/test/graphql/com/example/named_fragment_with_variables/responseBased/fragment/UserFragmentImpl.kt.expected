@@ -15,24 +15,26 @@ import com.example.named_fragment_with_variables.fragment.adapter.UserFragmentIm
 import com.example.named_fragment_with_variables.fragment.selections.UserFragmentSelections
 import kotlin.Int
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-data class UserFragmentImpl(
-  val size: Int
+public data class UserFragmentImpl(
+  public val size: Int
 ) : Fragment<UserFragmentImpl.Data> {
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     UserFragmentImpl_VariablesAdapter.toJson(writer, customScalarAdapters, this)
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return UserFragmentImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = UserFragmentSelections.root
+  public override fun selections(): List<CompiledSelection> = UserFragmentSelections.root
 
-  data class Data(
-    override val firstName: String,
-    override val lastName: String,
-    override val avatar: String
+  public data class Data(
+    public override val firstName: String,
+    public override val lastName: String,
+    public override val avatar: String
   ) : UserFragment, Fragment.Data
 }

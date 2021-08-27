@@ -16,7 +16,7 @@ import com.example.root_query_fragment_with_nested_fragments.type.Types.Droid
 import com.example.root_query_fragment_with_nested_fragments.type.Types.Human
 import kotlin.collections.List
 
-object QueryFragmentSelections {
+public object QueryFragmentSelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
@@ -61,7 +61,7 @@ object QueryFragmentSelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
           type = CompiledStringType.notNull()

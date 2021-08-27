@@ -8,9 +8,9 @@ package com.example.nested_named_fragments.fragment
 import com.apollographql.apollo3.api.Fragment
 import kotlin.String
 
-data class PlanetFragment(
+public data class PlanetFragment(
   /**
    * The name of this planet.
    */
-  val name: String?
+  public val name: String?
 ) : Fragment.Data

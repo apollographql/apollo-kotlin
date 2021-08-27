@@ -15,7 +15,7 @@ import com.example.named_fragment_without_implementation.fragment.selections.Hum
 import com.example.named_fragment_without_implementation.type.Types.Character
 import kotlin.collections.List
 
-object TestQuerySelections {
+public object TestQuerySelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
@@ -35,7 +35,7 @@ object TestQuerySelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "hero",
           type = Character,

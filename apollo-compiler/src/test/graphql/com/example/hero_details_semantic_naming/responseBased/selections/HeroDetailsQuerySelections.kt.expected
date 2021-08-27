@@ -17,7 +17,7 @@ import com.example.hero_details_semantic_naming.type.Types.FriendsConnection
 import com.example.hero_details_semantic_naming.type.Types.FriendsEdge
 import kotlin.collections.List
 
-object HeroDetailsQuerySelections {
+public object HeroDetailsQuerySelections {
   private val node: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
@@ -57,7 +57,7 @@ object HeroDetailsQuerySelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "hero",
           type = Character,

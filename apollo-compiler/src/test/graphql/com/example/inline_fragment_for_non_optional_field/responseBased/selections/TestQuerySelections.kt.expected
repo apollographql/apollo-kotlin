@@ -15,7 +15,7 @@ import com.apollographql.apollo3.api.notNull
 import com.example.inline_fragment_for_non_optional_field.type.Types.Character
 import kotlin.collections.List
 
-object TestQuerySelections {
+public object TestQuerySelections {
   private val onHuman: List<CompiledSelection> = listOf(
         CompiledField(
           name = "height",
@@ -38,7 +38,7 @@ object TestQuerySelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "nonOptionalHero",
           type = Character.notNull(),

@@ -8,18 +8,18 @@ package com.example.multiple_fragments.fragment
 import com.apollographql.apollo3.api.Fragment
 import kotlin.String
 
-data class AFragment(
-  val node: Node?
+public data class AFragment(
+  public val node: Node?
 ) : Fragment.Data {
-  data class Node(
-    val __typename: String,
+  public data class Node(
+    public val __typename: String,
     /**
      * Synthetic field for 'fragment1'
      */
-    val fragment1: Fragment1?,
+    public val fragment1: Fragment1?,
     /**
      * Synthetic field for 'fragment2'
      */
-    val fragment2: Fragment2?
+    public val fragment2: Fragment2?
   )
 }

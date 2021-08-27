@@ -9,13 +9,13 @@ import com.apollographql.apollo3.api.Fragment
 import kotlin.Double
 import kotlin.String
 
-data class HumanDetails(
+public data class HumanDetails(
   /**
    * What this human calls themselves
    */
-  val name: String,
+  public val name: String,
   /**
    * Height in the preferred unit, default is meters
    */
-  val height: Double?
+  public val height: Double?
 ) : Fragment.Data

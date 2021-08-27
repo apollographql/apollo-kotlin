@@ -15,13 +15,14 @@ import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.recursive_selection.TestQuery
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object TestQuery_ResponseAdapter {
-  object Data : Adapter<TestQuery.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("tree")
+public object TestQuery_ResponseAdapter {
+  public object Data : Adapter<TestQuery.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("tree")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var tree: TestQuery.Data.Tree? = null
 
@@ -37,19 +38,19 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestQuery.Data
-    ) {
+      `value`: TestQuery.Data
+    ): Unit {
       writer.name("tree")
       Tree.obj().nullable().toJson(writer, customScalarAdapters, value.tree)
     }
 
     private object Tree : Adapter<TestQuery.Data.Tree> {
-      val RESPONSE_NAMES: List<String> = listOf("name", "children", "parent")
+      public val RESPONSE_NAMES: List<String> = listOf("name", "children", "parent")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Tree {
         var name: String? = null
         var children: List<TestQuery.Data.Tree.Child>? = null
@@ -71,11 +72,11 @@ object TestQuery_ResponseAdapter {
         )
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: TestQuery.Data.Tree
-      ) {
+        `value`: TestQuery.Data.Tree
+      ): Unit {
         writer.name("name")
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
@@ -87,10 +88,10 @@ object TestQuery_ResponseAdapter {
       }
 
       private object Child : Adapter<TestQuery.Data.Tree.Child> {
-        val RESPONSE_NAMES: List<String> = listOf("name")
+        public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.Data.Tree.Child {
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Tree.Child {
           var name: String? = null
 
           while(true) {
@@ -105,21 +106,21 @@ object TestQuery_ResponseAdapter {
           )
         }
 
-        override fun toJson(
+        public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          value: TestQuery.Data.Tree.Child
-        ) {
+          `value`: TestQuery.Data.Tree.Child
+        ): Unit {
           writer.name("name")
           StringAdapter.toJson(writer, customScalarAdapters, value.name)
         }
       }
 
       private object Parent : Adapter<TestQuery.Data.Tree.Parent> {
-        val RESPONSE_NAMES: List<String> = listOf("name")
+        public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.Data.Tree.Parent {
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Tree.Parent {
           var name: String? = null
 
           while(true) {
@@ -134,11 +135,11 @@ object TestQuery_ResponseAdapter {
           )
         }
 
-        override fun toJson(
+        public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          value: TestQuery.Data.Tree.Parent
-        ) {
+          `value`: TestQuery.Data.Tree.Parent
+        ): Unit {
           writer.name("name")
           StringAdapter.toJson(writer, customScalarAdapters, value.name)
         }

@@ -8,20 +8,20 @@ package com.example.simple_fragment.fragment
 import kotlin.String
 
 internal interface HeroDetails {
-  val __typename: String
+  public val __typename: String
 
-  companion object {
-    fun HeroDetails.humanDetails() = this as? HumanDetails
+  public companion object {
+    public fun HeroDetails.humanDetails() = this as? HumanDetails
 
-    fun HeroDetails.asHuman() = this as? HumanHeroDetails
+    public fun HeroDetails.asHuman() = this as? HumanHeroDetails
   }
 }
 
 internal interface HumanHeroDetails : HeroDetails, HumanDetails {
-  override val __typename: String
+  public override val __typename: String
 
   /**
    * What this human calls themselves
    */
-  override val name: String
+  public override val name: String
 }

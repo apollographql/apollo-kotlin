@@ -16,13 +16,14 @@ import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
 import com.example.inline_fragment_type_coercion.TestQuery
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object TestQuery_ResponseAdapter {
-  object Data : Adapter<TestQuery.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("foo")
+public object TestQuery_ResponseAdapter {
+  public object Data : Adapter<TestQuery.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("foo")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var foo: TestQuery.Foo? = null
 
@@ -38,20 +39,20 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestQuery.Data
-    ) {
+      `value`: TestQuery.Data
+    ): Unit {
       writer.name("foo")
       Foo.obj(true).nullable().toJson(writer, customScalarAdapters, value.foo)
     }
   }
 
-  object Foo : Adapter<TestQuery.Foo> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "foo")
+  public object Foo : Adapter<TestQuery.Foo> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "foo")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Foo {
       var __typename: String? = null
       var foo: String? = null
@@ -82,11 +83,11 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestQuery.Foo
-    ) {
+      `value`: TestQuery.Foo
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -100,10 +101,10 @@ object TestQuery_ResponseAdapter {
     }
   }
 
-  object AsBar : Adapter<TestQuery.AsBar> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "foo", "bar")
+  public object AsBar : Adapter<TestQuery.AsBar> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "foo", "bar")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.AsBar {
       var __typename: String? = null
       var foo: String? = null
@@ -125,11 +126,11 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestQuery.AsBar
-    ) {
+      `value`: TestQuery.AsBar
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 

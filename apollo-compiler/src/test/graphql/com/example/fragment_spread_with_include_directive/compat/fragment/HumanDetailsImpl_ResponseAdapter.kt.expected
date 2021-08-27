@@ -11,14 +11,15 @@ import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object HumanDetailsImpl_ResponseAdapter {
-  object HumanDetails :
+public object HumanDetailsImpl_ResponseAdapter {
+  public object HumanDetails :
       Adapter<com.example.fragment_spread_with_include_directive.fragment.HumanDetails> {
-    val RESPONSE_NAMES: List<String> = listOf("homePlanet")
+    public val RESPONSE_NAMES: List<String> = listOf("homePlanet")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.fragment_spread_with_include_directive.fragment.HumanDetails {
       var homePlanet: String? = null
 
@@ -34,11 +35,11 @@ object HumanDetailsImpl_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: com.example.fragment_spread_with_include_directive.fragment.HumanDetails
-    ) {
+      `value`: com.example.fragment_spread_with_include_directive.fragment.HumanDetails
+    ): Unit {
       writer.name("homePlanet")
       NullableStringAdapter.toJson(writer, customScalarAdapters, value.homePlanet)
     }

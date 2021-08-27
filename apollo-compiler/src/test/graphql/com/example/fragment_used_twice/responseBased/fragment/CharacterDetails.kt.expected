@@ -8,14 +8,14 @@ package com.example.fragment_used_twice.fragment
 import kotlin.Any
 import kotlin.String
 
-interface CharacterDetails {
+public interface CharacterDetails {
   /**
    * The name of the character
    */
-  val name: String
+  public val name: String
 
   /**
    * The date character was born.
    */
-  val birthDate: Any
+  public val birthDate: Any
 }

@@ -10,8 +10,8 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CompiledStringType
 import kotlin.collections.List
 
-object DroidDetails2Selections {
-  val root: List<CompiledSelection> = listOf(
+public object DroidDetails2Selections {
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "primaryFunction",
           type = CompiledStringType

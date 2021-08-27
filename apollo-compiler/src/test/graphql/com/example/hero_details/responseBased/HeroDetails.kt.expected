@@ -16,73 +16,75 @@ import com.example.hero_details.selections.HeroDetailsSelections
 import com.example.hero_details.type.hero_type
 import kotlin.Int
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class HeroDetails : Query<HeroDetails.Data> {
-  override fun id(): String = OPERATION_ID
+public class HeroDetails() : Query<HeroDetails.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return HeroDetails_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = HeroDetailsSelections.root
+  public override fun selections(): List<CompiledSelection> = HeroDetailsSelections.root
 
-  data class Data(
-    val hero: Hero?
+  public data class Data(
+    public val hero: Hero?
   ) : Query.Data {
-    data class Hero(
+    public data class Hero(
       /**
        * Hero type
        */
-      val type: hero_type,
+      public val type: hero_type,
       /**
        * The name of the character
        */
-      val name: String,
+      public val name: String,
       /**
        * The friends of the character exposed as a connection with edges
        */
-      val friendsConnection: FriendsConnection
+      public val friendsConnection: FriendsConnection
     ) {
-      data class FriendsConnection(
+      public data class FriendsConnection(
         /**
          * The total number of friends
          */
-        val totalCount: Int?,
+        public val totalCount: Int?,
         /**
          * The edges for each of the character's friends.
          */
-        val edges: List<Edge?>?
+        public val edges: List<Edge?>?
       ) {
-        fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
+        public fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
-        data class Edge(
+        public data class Edge(
           /**
            * The character represented by this friendship edge
            */
-          val node: Node?
+          public val node: Node?
         ) {
-          data class Node(
+          public data class Node(
             /**
              * The name of the character
              */
-            val name: String
+            public val name: String
           )
         }
       }
     }
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "8f6f2c3852a89d45ea7eaa08a249906a1fb8f1733c4f2326d0fb8fb75c4af1e3"
 
     /**
@@ -104,9 +106,9 @@ class HeroDetails : Query<HeroDetails.Data> {
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query HeroDetails { hero { type name friendsConnection { totalCount edges { node { name } } } } }"
 
-    const val OPERATION_NAME: String = "HeroDetails"
+    public const val OPERATION_NAME: String = "HeroDetails"
   }
 }

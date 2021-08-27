@@ -10,8 +10,8 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.example.case_sensitive_enum.type.Types.Enum
 import kotlin.collections.List
 
-object TestQuerySelections {
-  val root: List<CompiledSelection> = listOf(
+public object TestQuerySelections {
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "enum",
           type = Enum

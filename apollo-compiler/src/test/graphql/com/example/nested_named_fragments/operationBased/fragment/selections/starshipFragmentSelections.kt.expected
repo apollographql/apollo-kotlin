@@ -17,7 +17,7 @@ import com.example.nested_named_fragments.type.Types.StarshipPilotsConnection
 import com.example.nested_named_fragments.type.Types.StarshipPilotsEdge
 import kotlin.collections.List
 
-object starshipFragmentSelections {
+public object starshipFragmentSelections {
   private val node: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
@@ -45,7 +45,7 @@ object starshipFragmentSelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "id",
           type = CompiledIDType.notNull()

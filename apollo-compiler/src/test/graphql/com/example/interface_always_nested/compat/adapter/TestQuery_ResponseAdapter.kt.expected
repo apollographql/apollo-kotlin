@@ -17,13 +17,14 @@ import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
 import com.example.interface_always_nested.TestQuery
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object TestQuery_ResponseAdapter {
-  object Data : Adapter<TestQuery.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("root")
+public object TestQuery_ResponseAdapter {
+  public object Data : Adapter<TestQuery.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("root")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var root: TestQuery.Root? = null
 
@@ -39,20 +40,20 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestQuery.Data
-    ) {
+      `value`: TestQuery.Data
+    ): Unit {
       writer.name("root")
       Root.obj(true).nullable().toJson(writer, customScalarAdapters, value.root)
     }
   }
 
-  object Root : Adapter<TestQuery.Root> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename")
+  public object Root : Adapter<TestQuery.Root> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Root {
       var __typename: String? = null
 
@@ -80,11 +81,11 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestQuery.Root
-    ) {
+      `value`: TestQuery.Root
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -95,10 +96,10 @@ object TestQuery_ResponseAdapter {
     }
   }
 
-  object AsA : Adapter<TestQuery.AsA> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldA1")
+  public object AsA : Adapter<TestQuery.AsA> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldA1")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.AsA {
       var __typename: String? = null
       var fieldA1: String? = null
@@ -129,11 +130,11 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestQuery.AsA
-    ) {
+      `value`: TestQuery.AsA
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -147,10 +148,10 @@ object TestQuery_ResponseAdapter {
     }
   }
 
-  object AsB : Adapter<TestQuery.AsB> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldA1", "fieldB1")
+  public object AsB : Adapter<TestQuery.AsB> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldA1", "fieldB1")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.AsB {
       var __typename: String? = null
       var fieldA1: String? = null
@@ -172,11 +173,11 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestQuery.AsB
-    ) {
+      `value`: TestQuery.AsB
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 

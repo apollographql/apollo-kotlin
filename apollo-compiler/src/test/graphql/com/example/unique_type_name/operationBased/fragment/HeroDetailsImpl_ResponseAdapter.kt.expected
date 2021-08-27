@@ -16,13 +16,14 @@ import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import kotlin.Int
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object HeroDetailsImpl_ResponseAdapter {
-  object HeroDetails : Adapter<com.example.unique_type_name.fragment.HeroDetails> {
-    val RESPONSE_NAMES: List<String> = listOf("name", "friendsConnection")
+public object HeroDetailsImpl_ResponseAdapter {
+  public object HeroDetails : Adapter<com.example.unique_type_name.fragment.HeroDetails> {
+    public val RESPONSE_NAMES: List<String> = listOf("name", "friendsConnection")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.unique_type_name.fragment.HeroDetails {
       var name: String? = null
       var friendsConnection: com.example.unique_type_name.fragment.HeroDetails.FriendsConnection? = null
@@ -41,11 +42,11 @@ object HeroDetailsImpl_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: com.example.unique_type_name.fragment.HeroDetails
-    ) {
+      `value`: com.example.unique_type_name.fragment.HeroDetails
+    ): Unit {
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
@@ -55,9 +56,9 @@ object HeroDetailsImpl_ResponseAdapter {
 
     private object FriendsConnection :
         Adapter<com.example.unique_type_name.fragment.HeroDetails.FriendsConnection> {
-      val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
+      public val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.unique_type_name.fragment.HeroDetails.FriendsConnection {
         var totalCount: Int? = null
         var edges: List<com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge?>? = null
@@ -77,11 +78,11 @@ object HeroDetailsImpl_ResponseAdapter {
         )
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: com.example.unique_type_name.fragment.HeroDetails.FriendsConnection
-      ) {
+        `value`: com.example.unique_type_name.fragment.HeroDetails.FriendsConnection
+      ): Unit {
         writer.name("totalCount")
         NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount)
 
@@ -91,9 +92,10 @@ object HeroDetailsImpl_ResponseAdapter {
 
       private object Edge :
           Adapter<com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge> {
-        val RESPONSE_NAMES: List<String> = listOf("node")
+        public val RESPONSE_NAMES: List<String> = listOf("node")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters):
             com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge {
           var node: com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge.Node? = null
 
@@ -109,20 +111,21 @@ object HeroDetailsImpl_ResponseAdapter {
           )
         }
 
-        override fun toJson(
+        public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          value: com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge
-        ) {
+          `value`: com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge
+        ): Unit {
           writer.name("node")
           Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
         }
 
         private object Node :
             Adapter<com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge.Node> {
-          val RESPONSE_NAMES: List<String> = listOf("name")
+          public val RESPONSE_NAMES: List<String> = listOf("name")
 
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          public override fun fromJson(reader: JsonReader,
+              customScalarAdapters: CustomScalarAdapters):
               com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge.Node {
             var name: String? = null
 
@@ -138,11 +141,11 @@ object HeroDetailsImpl_ResponseAdapter {
             )
           }
 
-          override fun toJson(
+          public override fun toJson(
             writer: JsonWriter,
             customScalarAdapters: CustomScalarAdapters,
-            value: com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge.Node
-          ) {
+            `value`: com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge.Node
+          ): Unit {
             writer.name("name")
             StringAdapter.toJson(writer, customScalarAdapters, value.name)
           }

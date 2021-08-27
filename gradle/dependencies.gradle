@@ -1,28 +1,31 @@
 def versions = [
     minAndroidPlugin      : '3.4.2',
+    /**
+     * We unfortunately cannot bump that to a bigger version because
+     * - 4.2.0 has this issue: https://issuetracker.google.com/issues/175338398
+     * - 7.0.0 is not supported by IntelliJ as of writing
+     */
     androidPlugin         : '4.1.3',
     androidxSqlite        : '2.1.0',
-    apollo                : '3.0.0-alpha04-SNAPSHOT', // This should only be used by apollo-gradle-plugin-incubating:test to get the artifacts locally
+    apollo                : '3.0.0-alpha04-SNAPSHOT', // This is used by the gradle integration tests to get the artifacts locally
     antlr4                : '4.9.2',
     cache                 : '2.0.2',
-    espressoIdlingResource: '3.2.0',
     guava                 : '28.0-jre',
     javaPoet              : '1.9.0',
     jetbrainsAnnotations  : '13.0',
     junit                 : '4.13.2',
     kotlin                : '1.5.30',
-    kotlinCoroutines      : '1.5.0',
-    kotlinPoet            : '1.6.0',
-    moshi                 : '1.11.0',
-    moshix                : '0.11.2',
-    okHttp4               : '4.9.0',
+    kotlinCoroutines      : '1.5.1',
+    moshi                 : '1.12.0',
+    moshix                : '0.13.0',
+    okHttp4               : '4.9.1',
     okHttp                : '3.12.11', // Keep this to keep supporting older Android devices
     okio                  : '2.10.0',
-    rxjava                : '2.2.20',
-    rxjava3               : '3.0.7',
+    rxjava                : '2.2.21',
+    rxjava3               : '3.1.0',
     rxandroid             : '2.0.1',
     sqldelight            : '1.5.1',
-    truth                 : '0.30',
+    truth                 : '1.1.3',
 ]
 
 ext.versions = versions
@@ -34,7 +37,7 @@ ext.dep = [
     ],
     androidx                 : [
         appcompat             : "androidx.appcompat:appcompat:1.1.0",
-        espressoIdlingResource: "androidx.test.espresso:espresso-idling-resource:$versions.espressoIdlingResource",
+        espressoIdlingResource: "androidx.test.espresso:espresso-idling-resource:3.4.0",
         recyclerView          : "androidx.recyclerview:recyclerview:1.1.0",
         sqlite                : "androidx.sqlite:sqlite:${versions.androidxSqlite}",
         sqliteFramework       : "androidx.sqlite:sqlite-framework:${versions.androidxSqlite}",
@@ -65,7 +68,8 @@ ext.dep = [
         coroutinesReactive: "org.jetbrains.kotlinx:kotlinx-coroutines-reactive:$versions.kotlinCoroutines",
         coroutinesReactor : "org.jetbrains.kotlinx:kotlinx-coroutines-reactor:$versions.kotlinCoroutines",
         coroutinesAndroid : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlinCoroutines",
-        reflect           : "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin"
+        reflect           : "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin",
+        springPlugin      : "org.jetbrains.kotlin:kotlin-allopen:$versions.kotlin"
     ],
     moshi                    : [
         adapters     : "com.squareup.moshi:moshi-adapters:$versions.moshi",
@@ -75,7 +79,6 @@ ext.dep = [
         moshi        : "com.squareup.moshi:moshi:$versions.moshi",
     ],
     okHttp                   : [
-        mockWebServer : "com.squareup.okhttp3:mockwebserver:$versions.okHttp",
         mockWebServer4: "com.squareup.okhttp3:mockwebserver:$versions.okHttp4",
         okHttp        : "com.squareup.okhttp3:okhttp:$versions.okHttp",
         okHttp4       : "com.squareup.okhttp3:okhttp:$versions.okHttp4",
@@ -85,10 +88,10 @@ ext.dep = [
     okio                     : "com.squareup.okio:okio-multiplatform:$versions.okio",
     poet                     : [
         java  : "com.squareup:javapoet:$versions.javaPoet",
-        kotlin: "com.squareup:kotlinpoet:$versions.kotlinPoet",
+        kotlin: "com.squareup:kotlinpoet:1.9.0",
     ],
-    rx2  : "io.reactivex.rxjava2:rxjava:$versions.rxjava",
-    rx3  : "io.reactivex.rxjava3:rxjava:$versions.rxjava3",
+    rx2                      : "io.reactivex.rxjava2:rxjava:$versions.rxjava",
+    rx3                      : "io.reactivex.rxjava3:rxjava:$versions.rxjava3",
     sqldelight               : [
         android: "com.squareup.sqldelight:android-driver:$versions.sqldelight",
         jvm    : "com.squareup.sqldelight:sqlite-driver:$versions.sqldelight",
@@ -96,14 +99,14 @@ ext.dep = [
         plugin : "com.squareup.sqldelight:gradle-plugin:$versions.sqldelight"
     ],
     truth                    : "com.google.truth:truth:$versions.truth",
-    assertj                  : "org.assertj:assertj-core:3.19.0",
-    uuid                     : "com.benasher44:uuid:0.2.2",
+    assertj                  : "org.assertj:assertj-core:3.20.2",
+    uuid                     : "com.benasher44:uuid:0.3.0",
     benManesVersions         : "com.github.ben-manes:gradle-versions-plugin:0.33.0",
     shadow                   : "com.github.jengelman.gradle.plugins:shadow:6.1.0",
     kspGradlePlugin          : "com.google.devtools.ksp:symbol-processing-gradle-plugin:1.5.30-1.0.0-beta08",
-    kotlinxdatetime          : "org.jetbrains.kotlinx:kotlinx-datetime:0.1.1",
+    kotlinxdatetime          : "org.jetbrains.kotlinx:kotlinx-datetime:0.2.1",
     kotlinxserializationjson : "org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0",
-    atomicfu                 : "org.jetbrains.kotlinx:atomicfu:0.15.1",
+    atomicfu                 : "org.jetbrains.kotlinx:atomicfu:0.16.3",
     dokka                    : "org.jetbrains.dokka:dokka-gradle-plugin:1.5.0",
     androidSupportAnnotations: "com.android.support:support-annotations:28.0.0",
     androidTestRunner        : "com.android.support.test:runner:1.0.2",
@@ -113,9 +116,10 @@ ext.dep = [
      * See https://github.com/gradle/gradle/issues/1835
      */
     // Keep in sync with gradle-wrapper.properties
-    gradleApi                : "dev.gradleplugins:gradle-api:7.1.1",
+    gradleApi                : "dev.gradleplugins:gradle-api:7.2",
     // Keep in sync with MIN_GRADLE_VERSION
-    minGradleApi             : "dev.gradleplugins:gradle-api:5.6"
+    minGradleApi             : "dev.gradleplugins:gradle-api:5.6",
+    graphqlKotlin :   "com.expediagroup:graphql-kotlin-spring-server:4.1.0"
 ]
 ext.androidConfig = [
     compileSdkVersion: 30,

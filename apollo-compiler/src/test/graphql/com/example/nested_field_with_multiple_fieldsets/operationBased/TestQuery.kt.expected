@@ -14,91 +14,93 @@ import com.apollographql.apollo3.api.obj
 import com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter
 import com.example.nested_field_with_multiple_fieldsets.selections.TestQuerySelections
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class TestQuery : Query<TestQuery.Data> {
-  override fun id(): String = OPERATION_ID
+public class TestQuery() : Query<TestQuery.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestQuerySelections.root
+  public override fun selections(): List<CompiledSelection> = TestQuerySelections.root
 
-  data class Data(
-    val iface1: Iface1?
+  public data class Data(
+    public val iface1: Iface1?
   ) : Query.Data {
-    data class Iface1(
-      val __typename: String,
+    public data class Iface1(
+      public val __typename: String,
       /**
        * Synthetic field for inline fragment on Iface1
        */
-      val onIface1: OnIface1,
+      public val onIface1: OnIface1,
       /**
        * Synthetic field for inline fragment on Impl1
        */
-      val onImpl1: OnImpl1?
+      public val onImpl1: OnImpl1?
     ) {
-      data class OnIface1(
-        val iface2: Iface2?
+      public data class OnIface1(
+        public val iface2: Iface2?
       ) {
-        data class Iface2(
-          val __typename: String,
+        public data class Iface2(
+          public val __typename: String,
           /**
            * Synthetic field for inline fragment on Iface2
            */
-          val onIface2: OnIface2,
+          public val onIface2: OnIface2,
           /**
            * Synthetic field for inline fragment on Impl2
            */
-          val onImpl2: OnImpl2?
+          public val onImpl2: OnImpl2?
         ) {
-          data class OnIface2(
-            val scalar1: String?
+          public data class OnIface2(
+            public val scalar1: String?
           )
 
-          data class OnImpl2(
-            val scalar2: String?
+          public data class OnImpl2(
+            public val scalar2: String?
           )
         }
       }
 
-      data class OnImpl1(
-        val iface2: Iface2?
+      public data class OnImpl1(
+        public val iface2: Iface2?
       ) {
-        data class Iface2(
-          val __typename: String,
+        public data class Iface2(
+          public val __typename: String,
           /**
            * Synthetic field for inline fragment on Iface2
            */
-          val onIface2: OnIface2,
+          public val onIface2: OnIface2,
           /**
            * Synthetic field for inline fragment on Impl2
            */
-          val onImpl2: OnImpl2?
+          public val onImpl2: OnImpl2?
         ) {
-          data class OnIface2(
-            val scalar3: String?
+          public data class OnIface2(
+            public val scalar3: String?
           )
 
-          data class OnImpl2(
-            val scalar4: String?
+          public data class OnImpl2(
+            public val scalar4: String?
           )
         }
       }
     }
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "39e196d404a902ae82f38401080d30922ca3eadf8fd6dc53ef53d4673c6af264"
 
     /**
@@ -133,9 +135,9 @@ class TestQuery : Query<TestQuery.Data> {
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query TestQuery { iface1 { __typename ... on Iface1 { iface2 { __typename ... on Iface2 { scalar1 } ... on Impl2 { scalar2 } } } ... on Impl1 { iface2 { __typename ... on Iface2 { scalar3 } ... on Impl2 { scalar4 } } } } }"
 
-    const val OPERATION_NAME: String = "TestQuery"
+    public const val OPERATION_NAME: String = "TestQuery"
   }
 }

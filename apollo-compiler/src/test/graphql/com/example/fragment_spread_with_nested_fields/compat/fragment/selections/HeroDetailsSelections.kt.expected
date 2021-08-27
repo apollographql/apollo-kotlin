@@ -16,7 +16,7 @@ import com.example.fragment_spread_with_nested_fields.type.Types.FriendsConnecti
 import com.example.fragment_spread_with_nested_fields.type.Types.FriendsEdge
 import kotlin.collections.List
 
-object HeroDetailsSelections {
+public object HeroDetailsSelections {
   private val node: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
@@ -44,7 +44,7 @@ object HeroDetailsSelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
           type = CompiledStringType.notNull()

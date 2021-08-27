@@ -8,23 +8,23 @@ package com.example.named_fragment_with_variables.type
 import com.apollographql.apollo3.api.CompiledNamedType
 import com.apollographql.apollo3.api.CompiledType
 import com.apollographql.apollo3.api.ObjectType
-import com.apollographql.apollo3.api.possibleTypes
 import kotlin.collections.List
 
 /**
  * Auto generated constants representing the custom scalars, objects, interfaces and unions in the
  * schema. Input objects are left out because they are generated separately
  */
-object Types {
-  val Query: ObjectType = ObjectType(name = "Query")
+public object Types {
+  public val Query: ObjectType = ObjectType(name = "Query")
 
-  val Organization: ObjectType = ObjectType(name = "Organization")
+  public val Organization: ObjectType = ObjectType(name = "Organization")
 
-  val User: ObjectType = ObjectType(name = "User")
+  public val User: ObjectType = ObjectType(name = "User")
 
-  val all: List<CompiledType> = listOf(
+  public val all: List<CompiledType> = listOf(
         Query, Organization, User)
 
 
-  fun possibleTypes(type: CompiledNamedType): List<ObjectType> = possibleTypes(all, type)
+  public fun possibleTypes(type: CompiledNamedType): List<ObjectType> =
+      com.apollographql.apollo3.api.possibleTypes(all, type)
 }

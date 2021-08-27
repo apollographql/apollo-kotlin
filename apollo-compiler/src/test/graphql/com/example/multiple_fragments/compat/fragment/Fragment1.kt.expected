@@ -8,6 +8,6 @@ package com.example.multiple_fragments.fragment
 import com.apollographql.apollo3.api.Fragment
 import kotlin.String
 
-data class Fragment1(
-  val field1: String?
+public data class Fragment1(
+  public val field1: String?
 ) : Fragment.Data

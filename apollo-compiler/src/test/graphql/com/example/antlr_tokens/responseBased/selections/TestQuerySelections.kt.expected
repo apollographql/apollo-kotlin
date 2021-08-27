@@ -13,7 +13,7 @@ import com.apollographql.apollo3.api.CompiledVariable
 import com.example.antlr_tokens.type.Types.TypeWithGraphQLKeywords
 import kotlin.collections.List
 
-object TestQuerySelections {
+public object TestQuerySelections {
   private val typeWithGraphQLKeywords: List<CompiledSelection> = listOf(
         CompiledField(
           name = "on",
@@ -39,7 +39,7 @@ object TestQuerySelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "typeWithGraphQLKeywords",
           type = TypeWithGraphQLKeywords,

@@ -18,7 +18,7 @@ import com.example.unique_type_name.type.Types.Character
 import com.example.unique_type_name.type.Types.Episode
 import kotlin.collections.List
 
-object HeroDetailQuerySelections {
+public object HeroDetailQuerySelections {
   private val friends: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
@@ -81,7 +81,7 @@ object HeroDetailQuerySelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "heroDetailQuery",
           type = Character,

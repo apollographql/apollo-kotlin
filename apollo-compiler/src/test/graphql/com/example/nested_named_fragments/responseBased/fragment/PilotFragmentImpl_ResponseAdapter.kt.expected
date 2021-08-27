@@ -14,13 +14,14 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object PilotFragmentImpl_ResponseAdapter {
-  object Data : Adapter<PilotFragmentImpl.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("name", "homeworld")
+public object PilotFragmentImpl_ResponseAdapter {
+  public object Data : Adapter<PilotFragmentImpl.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("name", "homeworld")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         PilotFragmentImpl.Data {
       var name: String? = null
       var homeworld: PilotFragmentImpl.Data.Homeworld? = null
@@ -39,11 +40,11 @@ object PilotFragmentImpl_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: PilotFragmentImpl.Data
-    ) {
+      `value`: PilotFragmentImpl.Data
+    ): Unit {
       writer.name("name")
       NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
 
@@ -52,9 +53,9 @@ object PilotFragmentImpl_ResponseAdapter {
     }
 
     private object Homeworld : Adapter<PilotFragmentImpl.Data.Homeworld> {
-      val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
+      public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           PilotFragmentImpl.Data.Homeworld {
         var __typename: String? = null
         var name: String? = null
@@ -73,11 +74,11 @@ object PilotFragmentImpl_ResponseAdapter {
         )
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: PilotFragmentImpl.Data.Homeworld
-      ) {
+        `value`: PilotFragmentImpl.Data.Homeworld
+      ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 

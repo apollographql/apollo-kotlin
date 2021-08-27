@@ -14,7 +14,7 @@ import com.example.multiple_fragments.fragment.selections.aFragmentSelections
 import com.example.multiple_fragments.type.Types.A
 import kotlin.collections.List
 
-object TestQuerySelections {
+public object TestQuerySelections {
   private val a: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
@@ -26,7 +26,7 @@ object TestQuerySelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "a",
           type = A,

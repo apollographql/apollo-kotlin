@@ -14,13 +14,15 @@ import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object QueryFragmentImpl_ResponseAdapter {
-  object QueryFragment : Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment> {
-    val RESPONSE_NAMES: List<String> = listOf("organization")
+public object QueryFragmentImpl_ResponseAdapter {
+  public object QueryFragment :
+      Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment> {
+    public val RESPONSE_NAMES: List<String> = listOf("organization")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.named_fragment_with_variables.fragment.QueryFragment {
       var organization: com.example.named_fragment_with_variables.fragment.QueryFragment.Organization? = null
 
@@ -36,20 +38,20 @@ object QueryFragmentImpl_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: com.example.named_fragment_with_variables.fragment.QueryFragment
-    ) {
+      `value`: com.example.named_fragment_with_variables.fragment.QueryFragment
+    ): Unit {
       writer.name("organization")
       Organization.obj().nullable().toJson(writer, customScalarAdapters, value.organization)
     }
 
     private object Organization :
         Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization> {
-      val RESPONSE_NAMES: List<String> = listOf("id", "user")
+      public val RESPONSE_NAMES: List<String> = listOf("id", "user")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.named_fragment_with_variables.fragment.QueryFragment.Organization {
         var id: String? = null
         var user: List<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User>? = null
@@ -68,11 +70,11 @@ object QueryFragmentImpl_ResponseAdapter {
         )
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: com.example.named_fragment_with_variables.fragment.QueryFragment.Organization
-      ) {
+        `value`: com.example.named_fragment_with_variables.fragment.QueryFragment.Organization
+      ): Unit {
         writer.name("id")
         StringAdapter.toJson(writer, customScalarAdapters, value.id)
 
@@ -83,9 +85,10 @@ object QueryFragmentImpl_ResponseAdapter {
       private object User :
           Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User>
           {
-        val RESPONSE_NAMES: List<String> = listOf("__typename")
+        public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters):
             com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User {
           var __typename: String? = null
 
@@ -110,11 +113,11 @@ object QueryFragmentImpl_ResponseAdapter {
           )
         }
 
-        override fun toJson(
+        public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          value: com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User
-        ) {
+          `value`: com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User
+        ): Unit {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 

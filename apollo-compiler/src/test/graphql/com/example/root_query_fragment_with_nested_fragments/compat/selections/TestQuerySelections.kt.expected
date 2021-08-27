@@ -13,8 +13,8 @@ import com.apollographql.apollo3.api.notNull
 import com.example.root_query_fragment_with_nested_fragments.fragment.selections.QueryFragmentSelections
 import kotlin.collections.List
 
-object TestQuerySelections {
-  val root: List<CompiledSelection> = listOf(
+public object TestQuerySelections {
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
           type = CompiledStringType.notNull()

@@ -17,116 +17,118 @@ import com.example.fragments_with_type_condition.fragment.HumanDetails
 import com.example.fragments_with_type_condition.selections.TestQuerySelections
 import kotlin.Double
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class TestQuery : Query<TestQuery.Data> {
-  override fun id(): String = OPERATION_ID
+public class TestQuery() : Query<TestQuery.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestQuerySelections.root
+  public override fun selections(): List<CompiledSelection> = TestQuerySelections.root
 
-  data class Data(
-    val r2: R2?,
-    val luke: Luke?
+  public data class Data(
+    public val r2: R2?,
+    public val luke: Luke?
   ) : Query.Data {
-    interface R2 {
-      val __typename: String
+    public interface R2 {
+      public val __typename: String
 
-      companion object {
-        fun R2.humanDetails() = this as? HumanDetails
+      public companion object {
+        public fun R2.humanDetails() = this as? HumanDetails
 
-        fun R2.droidDetails() = this as? DroidDetails
+        public fun R2.droidDetails() = this as? DroidDetails
 
-        fun R2.asHuman() = this as? HumanR2
+        public fun R2.asHuman() = this as? HumanR2
 
-        fun R2.asDroid() = this as? DroidR2
+        public fun R2.asDroid() = this as? DroidR2
       }
     }
 
-    data class HumanR2(
-      override val __typename: String,
+    public data class HumanR2(
+      public override val __typename: String,
       /**
        * What this human calls themselves
        */
-      override val name: String,
+      public override val name: String,
       /**
        * Height in the preferred unit, default is meters
        */
-      override val height: Double?
+      public override val height: Double?
     ) : R2, HumanDetails
 
-    data class DroidR2(
-      override val __typename: String,
+    public data class DroidR2(
+      public override val __typename: String,
       /**
        * What others call this droid
        */
-      override val name: String,
+      public override val name: String,
       /**
        * This droid's primary function
        */
-      override val primaryFunction: String?
+      public override val primaryFunction: String?
     ) : R2, DroidDetails
 
-    data class OtherR2(
-      override val __typename: String
+    public data class OtherR2(
+      public override val __typename: String
     ) : R2
 
-    interface Luke {
-      val __typename: String
+    public interface Luke {
+      public val __typename: String
 
-      companion object {
-        fun Luke.humanDetails() = this as? HumanDetails
+      public companion object {
+        public fun Luke.humanDetails() = this as? HumanDetails
 
-        fun Luke.droidDetails() = this as? DroidDetails
+        public fun Luke.droidDetails() = this as? DroidDetails
 
-        fun Luke.asHuman() = this as? HumanLuke
+        public fun Luke.asHuman() = this as? HumanLuke
 
-        fun Luke.asDroid() = this as? DroidLuke
+        public fun Luke.asDroid() = this as? DroidLuke
       }
     }
 
-    data class HumanLuke(
-      override val __typename: String,
+    public data class HumanLuke(
+      public override val __typename: String,
       /**
        * What this human calls themselves
        */
-      override val name: String,
+      public override val name: String,
       /**
        * Height in the preferred unit, default is meters
        */
-      override val height: Double?
+      public override val height: Double?
     ) : Luke, HumanDetails
 
-    data class DroidLuke(
-      override val __typename: String,
+    public data class DroidLuke(
+      public override val __typename: String,
       /**
        * What others call this droid
        */
-      override val name: String,
+      public override val name: String,
       /**
        * This droid's primary function
        */
-      override val primaryFunction: String?
+      public override val primaryFunction: String?
     ) : Luke, DroidDetails
 
-    data class OtherLuke(
-      override val __typename: String
+    public data class OtherLuke(
+      public override val __typename: String
     ) : Luke
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "7d805690a4b15b327a23b61c94049254b0e6613ec62e9b913b716be71bb2e54c"
 
     /**
@@ -156,9 +158,9 @@ class TestQuery : Query<TestQuery.Data> {
      *   primaryFunction
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query TestQuery { r2: hero { __typename ...HumanDetails ...DroidDetails } luke: hero { __typename ...HumanDetails ...DroidDetails } }  fragment HumanDetails on Human { name height }  fragment DroidDetails on Droid { name primaryFunction }"
 
-    const val OPERATION_NAME: String = "TestQuery"
+    public const val OPERATION_NAME: String = "TestQuery"
   }
 }

@@ -7,9 +7,9 @@ package com.example.named_fragment_without_implementation.fragment
 
 import kotlin.Double
 
-interface HumanDetails {
+public interface HumanDetails {
   /**
    * Height in the preferred unit, default is meters
    */
-  val height: Double?
+  public val height: Double?
 }

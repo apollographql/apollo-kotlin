@@ -12,16 +12,18 @@ import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.fragments_same_type_condition.fragment.selections.DroidDetails2Selections
+import kotlin.Unit
 import kotlin.collections.List
 
-class DroidDetails2Impl : Fragment<DroidDetails2> {
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+public class DroidDetails2Impl() : Fragment<DroidDetails2> {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<DroidDetails2> {
+  public override fun adapter(): Adapter<DroidDetails2> {
     return DroidDetails2Impl_ResponseAdapter.DroidDetails2.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = DroidDetails2Selections.root
+  public override fun selections(): List<CompiledSelection> = DroidDetails2Selections.root
 }

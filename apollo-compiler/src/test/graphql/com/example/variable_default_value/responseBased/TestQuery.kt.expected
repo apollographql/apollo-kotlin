@@ -17,40 +17,42 @@ import com.example.variable_default_value.adapter.TestQuery_VariablesAdapter
 import com.example.variable_default_value.selections.TestQuerySelections
 import com.example.variable_default_value.type.Episode
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-data class TestQuery(
-  val episode: Optional<Episode> = Optional.Absent
+public data class TestQuery(
+  public val episode: Optional<Episode> = Optional.Absent
 ) : Query<TestQuery.Data> {
-  override fun id(): String = OPERATION_ID
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     TestQuery_VariablesAdapter.toJson(writer, customScalarAdapters, this)
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestQuerySelections.root
+  public override fun selections(): List<CompiledSelection> = TestQuerySelections.root
 
-  data class Data(
-    val hero: Hero?
+  public data class Data(
+    public val hero: Hero?
   ) : Query.Data {
-    data class Hero(
+    public data class Hero(
       /**
        * The name of the character
        */
-      val name: String
+      public val name: String
     )
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "7bba59b12a0090dd1fbc4c409ea7e72bd6885a6b31d442bfeb86f4a67e5b62d9"
 
     /**
@@ -63,9 +65,9 @@ data class TestQuery(
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query TestQuery(${'$'}episode: Episode! = JEDI ) { hero(episode: ${'$'}episode) { name } }"
 
-    const val OPERATION_NAME: String = "TestQuery"
+    public const val OPERATION_NAME: String = "TestQuery"
   }
 }

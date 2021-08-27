@@ -11,14 +11,15 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object HeroDetailsImpl_ResponseAdapter {
-  object HeroDetails :
+public object HeroDetailsImpl_ResponseAdapter {
+  public object HeroDetails :
       Adapter<com.example.fragment_spread_with_include_directive.fragment.HeroDetails> {
-    val RESPONSE_NAMES: List<String> = listOf("name")
+    public val RESPONSE_NAMES: List<String> = listOf("name")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.fragment_spread_with_include_directive.fragment.HeroDetails {
       var name: String? = null
 
@@ -34,11 +35,11 @@ object HeroDetailsImpl_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: com.example.fragment_spread_with_include_directive.fragment.HeroDetails
-    ) {
+      `value`: com.example.fragment_spread_with_include_directive.fragment.HeroDetails
+    ): Unit {
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
     }

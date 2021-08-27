@@ -10,43 +10,43 @@ import kotlin.Double
 import kotlin.String
 import kotlin.collections.List
 
-data class HeroDetails(
+public data class HeroDetails(
   /**
    * The name of the character
    */
-  val name: String,
+  public val name: String,
   /**
    * The friends of the character, or an empty list if they have none
    */
-  val friends: List<Friend?>?
+  public val friends: List<Friend?>?
 ) : Fragment.Data {
-  data class Friend(
-    val __typename: String,
+  public data class Friend(
+    public val __typename: String,
     /**
      * The name of the character
      */
-    val name: String,
+    public val name: String,
     /**
      * Synthetic field for inline fragment on Human
      */
-    val onHuman: OnHuman?,
+    public val onHuman: OnHuman?,
     /**
      * Synthetic field for inline fragment on Droid
      */
-    val onDroid: OnDroid?
+    public val onDroid: OnDroid?
   ) {
-    data class OnHuman(
+    public data class OnHuman(
       /**
        * Height in the preferred unit, default is meters
        */
-      val height: Double?
+      public val height: Double?
     )
 
-    data class OnDroid(
+    public data class OnDroid(
       /**
        * This droid's primary function
        */
-      val primaryFunction: String?
+      public val primaryFunction: String?
     )
   }
 }

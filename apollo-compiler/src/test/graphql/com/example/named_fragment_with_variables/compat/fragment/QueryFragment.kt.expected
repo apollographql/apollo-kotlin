@@ -9,26 +9,26 @@ import com.apollographql.apollo3.api.Fragment
 import kotlin.String
 import kotlin.collections.List
 
-data class QueryFragment(
-  val organization: Organization?
+public data class QueryFragment(
+  public val organization: Organization?
 ) : Fragment.Data {
-  data class Organization(
-    val id: String,
-    val user: List<User>
+  public data class Organization(
+    public val id: String,
+    public val user: List<User>
   )
 
-  data class User(
-    val __typename: String,
+  public data class User(
+    public val __typename: String,
     /**
      * Synthetic field for grouping fragments
      */
-    val fragments: Fragments
+    public val fragments: Fragments
   ) {
-    data class Fragments(
+    public data class Fragments(
       /**
        * Synthetic field for 'UserFragment'
        */
-      val userFragment: UserFragment
+      public val userFragment: UserFragment
     )
   }
 }

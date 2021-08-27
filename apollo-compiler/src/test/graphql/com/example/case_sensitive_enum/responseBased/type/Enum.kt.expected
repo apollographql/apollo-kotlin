@@ -8,23 +8,23 @@ package com.example.case_sensitive_enum.type
 import kotlin.Deprecated
 import kotlin.String
 
-sealed class Enum(
-  val rawValue: String
+public sealed class Enum(
+  public val rawValue: String
 ) {
   @Deprecated(message = "No longer supported")
-  object north : Enum(rawValue = "north")
+  public object north : Enum(rawValue = "north")
 
   @Deprecated(message = "No longer supported")
-  object North : Enum(rawValue = "North")
+  public object North : Enum(rawValue = "North")
 
-  object NORTH : Enum(rawValue = "NORTH")
+  public object NORTH : Enum(rawValue = "NORTH")
 
-  object SOUTH : Enum(rawValue = "SOUTH")
+  public object SOUTH : Enum(rawValue = "SOUTH")
 
   /**
    * Auto generated constant for unknown enum values
    */
-  class UNKNOWN__(
+  public class UNKNOWN__(
     rawValue: String
   ) : Enum(rawValue = rawValue)
 }

@@ -8,25 +8,25 @@ package com.example.deprecated_merged_field.fragment
 import kotlin.Deprecated
 import kotlin.String
 
-interface AnimalFragment {
-  val __typename: String
+public interface AnimalFragment {
+  public val __typename: String
 
-  companion object {
-    fun AnimalFragment.asCat() = this as? CatAnimalFragment
+  public companion object {
+    public fun AnimalFragment.asCat() = this as? CatAnimalFragment
 
-    fun AnimalFragment.asDog() = this as? DogAnimalFragment
+    public fun AnimalFragment.asDog() = this as? DogAnimalFragment
   }
 }
 
-interface CatAnimalFragment : AnimalFragment {
-  override val __typename: String
+public interface CatAnimalFragment : AnimalFragment {
+  public override val __typename: String
 
-  val name: String
+  public val name: String
 }
 
-interface DogAnimalFragment : AnimalFragment {
-  override val __typename: String
+public interface DogAnimalFragment : AnimalFragment {
+  public override val __typename: String
 
   @Deprecated(message = "No longer supported")
-  val name: String
+  public val name: String
 }

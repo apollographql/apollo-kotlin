@@ -7,9 +7,9 @@ package com.example.named_fragment_without_implementation.fragment
 
 import kotlin.String
 
-interface DroidDetails {
+public interface DroidDetails {
   /**
    * This droid's primary function
    */
-  val primaryFunction: String?
+  public val primaryFunction: String?
 }

@@ -9,60 +9,60 @@ import com.apollographql.apollo3.api.CompiledNamedType
 import com.apollographql.apollo3.api.CompiledType
 import com.apollographql.apollo3.api.EnumType
 import com.apollographql.apollo3.api.ObjectType
-import com.apollographql.apollo3.api.possibleTypes
 import kotlin.collections.List
 
 /**
  * Auto generated constants representing the custom scalars, objects, interfaces and unions in the
  * schema. Input objects are left out because they are generated separately
  */
-object Types {
+public object Types {
   /**
    * A list of options for the sort order of the feed
    */
-  val FeedType: EnumType = EnumType("FeedType")
+  public val FeedType: EnumType = EnumType("FeedType")
 
   /**
    * The type of vote to record, when submitting a vote
    */
-  val VoteType: EnumType = EnumType("VoteType")
+  public val VoteType: EnumType = EnumType("VoteType")
 
   /**
    * A comment about an entry, submitted by a user
    */
-  val Comment: ObjectType = ObjectType(name = "Comment")
+  public val Comment: ObjectType = ObjectType(name = "Comment")
 
   /**
    * Information about a GitHub repository submitted to GitHunt
    */
-  val Entry: ObjectType = ObjectType(name = "Entry")
+  public val Entry: ObjectType = ObjectType(name = "Entry")
 
-  val Mutation: ObjectType = ObjectType(name = "Mutation")
+  public val Mutation: ObjectType = ObjectType(name = "Mutation")
 
-  val Query: ObjectType = ObjectType(name = "Query")
+  public val Query: ObjectType = ObjectType(name = "Query")
 
   /**
    * A repository object from the GitHub API. This uses the exact field names returned by the
    * GitHub API for simplicity, even though the convention for GraphQL is usually to camel case.
    */
-  val Repository: ObjectType = ObjectType(name = "Repository")
+  public val Repository: ObjectType = ObjectType(name = "Repository")
 
-  val Subscription: ObjectType = ObjectType(name = "Subscription")
+  public val Subscription: ObjectType = ObjectType(name = "Subscription")
 
   /**
    * A user object from the GitHub API. This uses the exact field names returned from the GitHub
    * API.
    */
-  val User: ObjectType = ObjectType(name = "User")
+  public val User: ObjectType = ObjectType(name = "User")
 
   /**
    * XXX to be removed
    */
-  val Vote: ObjectType = ObjectType(name = "Vote")
+  public val Vote: ObjectType = ObjectType(name = "Vote")
 
-  val all: List<CompiledType> = listOf(
+  public val all: List<CompiledType> = listOf(
         FeedType, VoteType, Comment, Entry, Mutation, Query, Repository, Subscription, User, Vote)
 
 
-  fun possibleTypes(type: CompiledNamedType): List<ObjectType> = possibleTypes(all, type)
+  public fun possibleTypes(type: CompiledNamedType): List<ObjectType> =
+      com.apollographql.apollo3.api.possibleTypes(all, type)
 }

@@ -23,13 +23,14 @@ import com.example.inline_fragment_intersection.type.adapter.Race_ResponseAdapte
 import kotlin.Boolean
 import kotlin.Double
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object TestOperation_ResponseAdapter {
-  object Data : Adapter<TestOperation.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("random")
+public object TestOperation_ResponseAdapter {
+  public object Data : Adapter<TestOperation.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("random")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.Data {
       var random: TestOperation.Random? = null
 
@@ -45,20 +46,20 @@ object TestOperation_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestOperation.Data
-    ) {
+      `value`: TestOperation.Data
+    ): Unit {
       writer.name("random")
       Random.obj(true).toJson(writer, customScalarAdapters, value.random)
     }
   }
 
-  object Random : Adapter<TestOperation.Random> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename")
+  public object Random : Adapter<TestOperation.Random> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.Random {
       var __typename: String? = null
 
@@ -94,11 +95,11 @@ object TestOperation_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestOperation.Random
-    ) {
+      `value`: TestOperation.Random
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -114,10 +115,10 @@ object TestOperation_ResponseAdapter {
     }
   }
 
-  object AsBeing : Adapter<TestOperation.AsBeing> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friends")
+  public object AsBeing : Adapter<TestOperation.AsBeing> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friends")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.AsBeing {
       var __typename: String? = null
       var name: String? = null
@@ -151,11 +152,11 @@ object TestOperation_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestOperation.AsBeing
-    ) {
+      `value`: TestOperation.AsBeing
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -172,10 +173,10 @@ object TestOperation_ResponseAdapter {
     }
   }
 
-  object Friend : Adapter<TestOperation.Friend> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
+  public object Friend : Adapter<TestOperation.Friend> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.Friend {
       var __typename: String? = null
       var name: String? = null
@@ -206,11 +207,11 @@ object TestOperation_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestOperation.Friend
-    ) {
+      `value`: TestOperation.Friend
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -224,10 +225,10 @@ object TestOperation_ResponseAdapter {
     }
   }
 
-  object AsWookie : Adapter<TestOperation.AsWookie> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "lifeExpectancy")
+  public object AsWookie : Adapter<TestOperation.AsWookie> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "lifeExpectancy")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.AsWookie {
       var __typename: String? = null
       var name: String? = null
@@ -249,11 +250,11 @@ object TestOperation_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestOperation.AsWookie
-    ) {
+      `value`: TestOperation.AsWookie
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -265,10 +266,11 @@ object TestOperation_ResponseAdapter {
     }
   }
 
-  object AsHuman : Adapter<TestOperation.AsHuman> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friends", "profilePictureUrl")
+  public object AsHuman : Adapter<TestOperation.AsHuman> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friends",
+        "profilePictureUrl")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.AsHuman {
       var __typename: String? = null
       var name: String? = null
@@ -293,11 +295,11 @@ object TestOperation_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestOperation.AsHuman
-    ) {
+      `value`: TestOperation.AsHuman
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -312,10 +314,10 @@ object TestOperation_ResponseAdapter {
     }
   }
 
-  object Friend1 : Adapter<TestOperation.Friend1> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "isFamous")
+  public object Friend1 : Adapter<TestOperation.Friend1> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "isFamous")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.Friend1 {
       var __typename: String? = null
       var name: String? = null
@@ -349,11 +351,11 @@ object TestOperation_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestOperation.Friend1
-    ) {
+      `value`: TestOperation.Friend1
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -370,11 +372,11 @@ object TestOperation_ResponseAdapter {
     }
   }
 
-  object AsWookie1 : Adapter<TestOperation.AsWookie1> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "isFamous", "lifeExpectancy",
-        "race")
+  public object AsWookie1 : Adapter<TestOperation.AsWookie1> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "isFamous",
+        "lifeExpectancy", "race")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.AsWookie1 {
       var __typename: String? = null
       var name: String? = null
@@ -402,11 +404,11 @@ object TestOperation_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestOperation.AsWookie1
-    ) {
+      `value`: TestOperation.AsWookie1
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -424,10 +426,10 @@ object TestOperation_ResponseAdapter {
     }
   }
 
-  object AsWookie2 : Adapter<TestOperation.AsWookie2> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "race", "friends")
+  public object AsWookie2 : Adapter<TestOperation.AsWookie2> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "race", "friends")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.AsWookie2 {
       var __typename: String? = null
       var race: Race? = null
@@ -449,11 +451,11 @@ object TestOperation_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestOperation.AsWookie2
-    ) {
+      `value`: TestOperation.AsWookie2
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -465,10 +467,10 @@ object TestOperation_ResponseAdapter {
     }
   }
 
-  object Friend2 : Adapter<TestOperation.Friend2> {
-    val RESPONSE_NAMES: List<String> = listOf("lifeExpectancy")
+  public object Friend2 : Adapter<TestOperation.Friend2> {
+    public val RESPONSE_NAMES: List<String> = listOf("lifeExpectancy")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.Friend2 {
       var lifeExpectancy: Double? = null
 
@@ -484,11 +486,11 @@ object TestOperation_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestOperation.Friend2
-    ) {
+      `value`: TestOperation.Friend2
+    ): Unit {
       writer.name("lifeExpectancy")
       NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lifeExpectancy)
     }

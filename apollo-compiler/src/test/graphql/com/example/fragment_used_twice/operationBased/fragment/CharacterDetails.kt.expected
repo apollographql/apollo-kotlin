@@ -9,13 +9,13 @@ import com.apollographql.apollo3.api.Fragment
 import kotlin.Any
 import kotlin.String
 
-data class CharacterDetails(
+public data class CharacterDetails(
   /**
    * The name of the character
    */
-  val name: String,
+  public val name: String,
   /**
    * The date character was born.
    */
-  val birthDate: Any
+  public val birthDate: Any
 ) : Fragment.Data

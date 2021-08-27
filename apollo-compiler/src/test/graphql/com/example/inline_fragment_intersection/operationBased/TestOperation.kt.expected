@@ -17,93 +17,95 @@ import com.example.inline_fragment_intersection.type.Race
 import kotlin.Boolean
 import kotlin.Double
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class TestOperation : Query<TestOperation.Data> {
-  override fun id(): String = OPERATION_ID
+public class TestOperation() : Query<TestOperation.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return TestOperation_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestOperationSelections.root
+  public override fun selections(): List<CompiledSelection> = TestOperationSelections.root
 
-  data class Data(
-    val random: Random
+  public data class Data(
+    public val random: Random
   ) : Query.Data {
-    data class Random(
-      val __typename: String,
+    public data class Random(
+      public val __typename: String,
       /**
        * Synthetic field for inline fragment on Being
        */
-      val onBeing: OnBeing?,
+      public val onBeing: OnBeing?,
       /**
        * Synthetic field for inline fragment on Wookie
        */
-      val onWookie: OnWookie?
+      public val onWookie: OnWookie?
     ) {
-      data class OnBeing(
-        val __typename: String,
-        val name: String,
-        val friends: List<Friend>,
+      public data class OnBeing(
+        public val __typename: String,
+        public val name: String,
+        public val friends: List<Friend>,
         /**
          * Synthetic field for inline fragment on Human
          */
-        val onHuman: OnHuman?
+        public val onHuman: OnHuman?
       ) {
-        data class Friend(
-          val __typename: String,
-          val name: String,
+        public data class Friend(
+          public val __typename: String,
+          public val name: String,
           /**
            * Synthetic field for inline fragment on Wookie
            */
-          val onWookie: OnWookie?
+          public val onWookie: OnWookie?
         ) {
-          data class OnWookie(
-            val lifeExpectancy: Double?
+          public data class OnWookie(
+            public val lifeExpectancy: Double?
           )
         }
 
-        data class OnHuman(
-          val profilePictureUrl: String?,
-          val friends: List<Friend>
+        public data class OnHuman(
+          public val profilePictureUrl: String?,
+          public val friends: List<Friend>
         ) {
-          data class Friend(
-            val __typename: String,
-            val isFamous: Boolean?,
+          public data class Friend(
+            public val __typename: String,
+            public val isFamous: Boolean?,
             /**
              * Synthetic field for inline fragment on Wookie
              */
-            val onWookie: OnWookie?
+            public val onWookie: OnWookie?
           ) {
-            data class OnWookie(
-              val race: Race
+            public data class OnWookie(
+              public val race: Race
             )
           }
         }
       }
 
-      data class OnWookie(
-        val race: Race,
-        val friends: List<Friend>
+      public data class OnWookie(
+        public val race: Race,
+        public val friends: List<Friend>
       ) {
-        data class Friend(
-          val lifeExpectancy: Double?
+        public data class Friend(
+          public val lifeExpectancy: Double?
         )
       }
     }
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "c99acd467295cdc6cf49f2f0e260f5879de276fba742d6faa161453e53fbf9d4"
 
     /**
@@ -151,9 +153,9 @@ class TestOperation : Query<TestOperation.Data> {
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query TestOperation { random { __typename ... on Being { __typename name friends { __typename name ... on Wookie { lifeExpectancy } } ... on Human { profilePictureUrl friends { __typename isFamous ... on Wookie { race } } } } ... on Wookie { race friends { lifeExpectancy } } ... on Being { friends { __typename ... on Wookie { lifeExpectancy } } } } }"
 
-    const val OPERATION_NAME: String = "TestOperation"
+    public const val OPERATION_NAME: String = "TestOperation"
   }
 }

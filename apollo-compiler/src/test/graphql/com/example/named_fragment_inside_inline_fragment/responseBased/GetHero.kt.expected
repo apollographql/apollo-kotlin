@@ -17,51 +17,53 @@ import com.example.named_fragment_inside_inline_fragment.fragment.CharacterName
 import com.example.named_fragment_inside_inline_fragment.selections.GetHeroSelections
 import com.example.named_fragment_inside_inline_fragment.type.Episode
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class GetHero : Query<GetHero.Data> {
-  override fun id(): String = OPERATION_ID
+public class GetHero() : Query<GetHero.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return GetHero_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = GetHeroSelections.root
+  public override fun selections(): List<CompiledSelection> = GetHeroSelections.root
 
-  data class Data(
-    val hero: Hero?
+  public data class Data(
+    public val hero: Hero?
   ) : Query.Data {
-    data class Hero(
-      val __typename: String,
+    public data class Hero(
+      public val __typename: String,
       /**
        * The name of the character
        */
-      override val name: String,
+      public override val name: String,
       /**
        * The movies this character appears in
        */
-      override val appearsIn: List<Episode?>
+      public override val appearsIn: List<Episode?>
     ) : CharacterName, CharacterAppearsIn {
-      fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
+      public fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
 
-      companion object {
-        fun Hero.characterName() = this as? CharacterName
+      public companion object {
+        public fun Hero.characterName() = this as? CharacterName
 
-        fun Hero.characterAppearsIn() = this as? CharacterAppearsIn
+        public fun Hero.characterAppearsIn() = this as? CharacterAppearsIn
       }
     }
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "9885eef2193cd56885e6e1bacd7f02b712820858880de6fb29b3f3b04458c831"
 
     /**
@@ -87,9 +89,9 @@ class GetHero : Query<GetHero.Data> {
      *   appearsIn
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query GetHero { hero { __typename ... on Character { __typename ...characterName ...characterAppearsIn } } }  fragment characterName on Character { name }  fragment characterAppearsIn on Character { appearsIn }"
 
-    const val OPERATION_NAME: String = "GetHero"
+    public const val OPERATION_NAME: String = "GetHero"
   }
 }

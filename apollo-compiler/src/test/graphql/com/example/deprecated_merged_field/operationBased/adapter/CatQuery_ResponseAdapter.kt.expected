@@ -17,13 +17,14 @@ import com.apollographql.apollo3.api.possibleTypes
 import com.example.deprecated_merged_field.CatQuery
 import com.example.deprecated_merged_field.fragment.AnimalFragment
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object CatQuery_ResponseAdapter {
-  object Data : Adapter<CatQuery.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("cat")
+public object CatQuery_ResponseAdapter {
+  public object Data : Adapter<CatQuery.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("cat")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         CatQuery.Data {
       var cat: CatQuery.Data.Cat? = null
 
@@ -39,19 +40,19 @@ object CatQuery_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: CatQuery.Data
-    ) {
+      `value`: CatQuery.Data
+    ): Unit {
       writer.name("cat")
       Cat.obj(true).nullable().toJson(writer, customScalarAdapters, value.cat)
     }
 
     private object Cat : Adapter<CatQuery.Data.Cat> {
-      val RESPONSE_NAMES: List<String> = listOf("__typename")
+      public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           CatQuery.Data.Cat {
         var __typename: String? = null
 
@@ -79,11 +80,11 @@ object CatQuery_ResponseAdapter {
         )
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: CatQuery.Data.Cat
-      ) {
+        `value`: CatQuery.Data.Cat
+      ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 

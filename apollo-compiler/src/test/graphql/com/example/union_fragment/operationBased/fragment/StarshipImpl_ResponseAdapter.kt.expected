@@ -11,13 +11,14 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object StarshipImpl_ResponseAdapter {
-  object Starship : Adapter<com.example.union_fragment.fragment.Starship> {
-    val RESPONSE_NAMES: List<String> = listOf("name")
+public object StarshipImpl_ResponseAdapter {
+  public object Starship : Adapter<com.example.union_fragment.fragment.Starship> {
+    public val RESPONSE_NAMES: List<String> = listOf("name")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.union_fragment.fragment.Starship {
       var name: String? = null
 
@@ -33,11 +34,11 @@ object StarshipImpl_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: com.example.union_fragment.fragment.Starship
-    ) {
+      `value`: com.example.union_fragment.fragment.Starship
+    ): Unit {
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
     }

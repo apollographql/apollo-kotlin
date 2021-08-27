@@ -16,47 +16,49 @@ import com.example.subscriptions.adapter.TestSubscription_VariablesAdapter
 import com.example.subscriptions.selections.TestSubscriptionSelections
 import kotlin.Int
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-data class TestSubscription(
-  val repo: String
+public data class TestSubscription(
+  public val repo: String
 ) : Subscription<TestSubscription.Data> {
-  override fun id(): String = OPERATION_ID
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     TestSubscription_VariablesAdapter.toJson(writer, customScalarAdapters, this)
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return TestSubscription_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestSubscriptionSelections.root
+  public override fun selections(): List<CompiledSelection> = TestSubscriptionSelections.root
 
-  data class Data(
+  public data class Data(
     /**
      * Subscription fires on every comment added
      */
-    val commentAdded: CommentAdded?
+    public val commentAdded: CommentAdded?
   ) : Subscription.Data {
-    data class CommentAdded(
+    public data class CommentAdded(
       /**
        * The SQL ID of this entry
        */
-      val id: Int,
+      public val id: Int,
       /**
        * The text of the comment
        */
-      val content: String
+      public val content: String
     )
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "f053ee1afe42260f1511e417b6133f1cb8507c185e2e7b4e1e579696dbc8f2af"
 
     /**
@@ -70,9 +72,9 @@ data class TestSubscription(
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "subscription TestSubscription(${'$'}repo: String!) { commentAdded(repoFullName: ${'$'}repo) { id content } }"
 
-    const val OPERATION_NAME: String = "TestSubscription"
+    public const val OPERATION_NAME: String = "TestSubscription"
   }
 }
