@@ -12,16 +12,18 @@ import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_inside_inline_fragment.fragment.selections.characterNameSelections
+import kotlin.Unit
 import kotlin.collections.List
 
-class CharacterNameImpl : Fragment<CharacterName> {
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+public class CharacterNameImpl() : Fragment<CharacterName> {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<CharacterName> {
+  public override fun adapter(): Adapter<CharacterName> {
     return CharacterNameImpl_ResponseAdapter.CharacterName.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = characterNameSelections.root
+  public override fun selections(): List<CompiledSelection> = characterNameSelections.root
 }

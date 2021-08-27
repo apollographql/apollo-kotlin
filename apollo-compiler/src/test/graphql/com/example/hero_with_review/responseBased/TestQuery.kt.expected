@@ -17,44 +17,46 @@ import com.example.hero_with_review.selections.TestQuerySelections
 import com.example.hero_with_review.type.Episode
 import kotlin.Int
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-data class TestQuery(
-  val ep: Episode
+public data class TestQuery(
+  public val ep: Episode
 ) : Mutation<TestQuery.Data> {
-  override fun id(): String = OPERATION_ID
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     TestQuery_VariablesAdapter.toJson(writer, customScalarAdapters, this)
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestQuerySelections.root
+  public override fun selections(): List<CompiledSelection> = TestQuerySelections.root
 
-  data class Data(
-    val createReview: CreateReview?
+  public data class Data(
+    public val createReview: CreateReview?
   ) : Mutation.Data {
-    data class CreateReview(
+    public data class CreateReview(
       /**
        * The number of stars this review gave, 1-5
        */
-      val stars: Int,
+      public val stars: Int,
       /**
        * Comment about the movie
        */
-      val commentary: String?
+      public val commentary: String?
     )
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "1faa220c7551ff1343a9bce722af8c12b87c70cc579f743aff1374ae1066f163"
 
     /**
@@ -78,9 +80,9 @@ data class TestQuery(
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "mutation TestQuery(${'$'}ep: Episode!) { createReview(episode: ${'$'}ep, review: { stars: 5 listOfEnums: [JEDI,EMPIRE,NEWHOPE] listOfStringNonOptional: [\"1\",\"2\",\"3\"] favoriteColor: { red: 1 blue: 1 }  } ) { stars commentary } }"
 
-    const val OPERATION_NAME: String = "TestQuery"
+    public const val OPERATION_NAME: String = "TestQuery"
   }
 }

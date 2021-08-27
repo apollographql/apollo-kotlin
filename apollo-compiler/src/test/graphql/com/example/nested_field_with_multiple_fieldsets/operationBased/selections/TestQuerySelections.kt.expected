@@ -15,7 +15,7 @@ import com.example.nested_field_with_multiple_fieldsets.type.Types.Iface1
 import com.example.nested_field_with_multiple_fieldsets.type.Types.Iface2
 import kotlin.collections.List
 
-object TestQuerySelections {
+public object TestQuerySelections {
   private val onIface2: List<CompiledSelection> = listOf(
         CompiledField(
           name = "scalar1",
@@ -105,7 +105,7 @@ object TestQuerySelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "iface1",
           type = Iface1,

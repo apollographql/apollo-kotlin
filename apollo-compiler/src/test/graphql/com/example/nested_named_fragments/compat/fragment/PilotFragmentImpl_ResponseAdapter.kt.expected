@@ -14,13 +14,14 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object PilotFragmentImpl_ResponseAdapter {
-  object PilotFragment : Adapter<com.example.nested_named_fragments.fragment.PilotFragment> {
-    val RESPONSE_NAMES: List<String> = listOf("name", "homeworld")
+public object PilotFragmentImpl_ResponseAdapter {
+  public object PilotFragment : Adapter<com.example.nested_named_fragments.fragment.PilotFragment> {
+    public val RESPONSE_NAMES: List<String> = listOf("name", "homeworld")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.nested_named_fragments.fragment.PilotFragment {
       var name: String? = null
       var homeworld: com.example.nested_named_fragments.fragment.PilotFragment.Homeworld? = null
@@ -39,11 +40,11 @@ object PilotFragmentImpl_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: com.example.nested_named_fragments.fragment.PilotFragment
-    ) {
+      `value`: com.example.nested_named_fragments.fragment.PilotFragment
+    ): Unit {
       writer.name("name")
       NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
 
@@ -52,10 +53,11 @@ object PilotFragmentImpl_ResponseAdapter {
     }
   }
 
-  object Homeworld : Adapter<com.example.nested_named_fragments.fragment.PilotFragment.Homeworld> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename")
+  public object Homeworld :
+      Adapter<com.example.nested_named_fragments.fragment.PilotFragment.Homeworld> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.nested_named_fragments.fragment.PilotFragment.Homeworld {
       var __typename: String? = null
 
@@ -80,11 +82,11 @@ object PilotFragmentImpl_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: com.example.nested_named_fragments.fragment.PilotFragment.Homeworld
-    ) {
+      `value`: com.example.nested_named_fragments.fragment.PilotFragment.Homeworld
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -94,9 +96,9 @@ object PilotFragmentImpl_ResponseAdapter {
 
     private object Fragments :
         Adapter<com.example.nested_named_fragments.fragment.PilotFragment.Homeworld.Fragments> {
-      val RESPONSE_NAMES: List<String> = listOf("__typename")
+      public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.nested_named_fragments.fragment.PilotFragment.Homeworld.Fragments {
         var __typename: String? = null
 
@@ -120,11 +122,11 @@ object PilotFragmentImpl_ResponseAdapter {
         )
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: com.example.nested_named_fragments.fragment.PilotFragment.Homeworld.Fragments
-      ) {
+        `value`: com.example.nested_named_fragments.fragment.PilotFragment.Homeworld.Fragments
+      ): Unit {
         com.example.nested_named_fragments.fragment.PlanetFragmentImpl_ResponseAdapter.PlanetFragment.toJson(writer,
             customScalarAdapters, value.planetFragment)
       }

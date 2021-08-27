@@ -15,7 +15,7 @@ import com.apollographql.apollo3.api.notNull
 import com.example.subscriptions.type.Types.Comment
 import kotlin.collections.List
 
-object TestSubscriptionSelections {
+public object TestSubscriptionSelections {
   private val commentAdded: List<CompiledSelection> = listOf(
         CompiledField(
           name = "id",
@@ -27,7 +27,7 @@ object TestSubscriptionSelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "commentAdded",
           type = Comment,

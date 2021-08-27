@@ -8,9 +8,9 @@ package com.example.named_fragment_without_implementation.fragment
 import com.apollographql.apollo3.api.Fragment
 import kotlin.String
 
-data class DroidDetails(
+public data class DroidDetails(
   /**
    * This droid's primary function
    */
-  val primaryFunction: String?
+  public val primaryFunction: String?
 ) : Fragment.Data

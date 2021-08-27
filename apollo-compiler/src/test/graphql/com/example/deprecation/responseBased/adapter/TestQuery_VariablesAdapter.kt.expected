@@ -13,15 +13,17 @@ import com.apollographql.apollo3.api.nullable
 import com.example.deprecation.TestQuery
 import com.example.deprecation.type.adapter.Episode_ResponseAdapter
 import kotlin.IllegalStateException
+import kotlin.Unit
 
-object TestQuery_VariablesAdapter : Adapter<TestQuery> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery =
-      throw IllegalStateException("Input type used in output position")
-  override fun toJson(
+public object TestQuery_VariablesAdapter : Adapter<TestQuery> {
+  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      TestQuery = throw IllegalStateException("Input type used in output position")
+
+  public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    value: TestQuery
-  ) {
+    `value`: TestQuery
+  ): Unit {
     writer.name("episode")
     Episode_ResponseAdapter.nullable().toJson(writer, customScalarAdapters, value.episode)
   }

@@ -7,27 +7,27 @@ package com.example.nested_named_fragments.fragment
 
 import kotlin.String
 
-interface PilotFragment {
+public interface PilotFragment {
   /**
    * The name of this person.
    */
-  val name: String?
+  public val name: String?
 
   /**
    * A planet that this person was born on or inhabits.
    */
-  val homeworld: Homeworld?
+  public val homeworld: Homeworld?
 
-  interface Homeworld : PlanetFragment {
-    val __typename: String
+  public interface Homeworld : PlanetFragment {
+    public val __typename: String
 
     /**
      * The name of this planet.
      */
-    override val name: String?
+    public override val name: String?
 
-    companion object {
-      fun Homeworld.planetFragment() = this as? PlanetFragment
+    public companion object {
+      public fun Homeworld.planetFragment() = this as? PlanetFragment
     }
   }
 }

@@ -13,33 +13,35 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.fragment_with_multiple_fieldsets.fragment.selections.iFragmentSelections
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class IFragmentImpl : Fragment<IFragmentImpl.Data> {
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+public class IFragmentImpl() : Fragment<IFragmentImpl.Data> {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return IFragmentImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = iFragmentSelections.root
+  public override fun selections(): List<CompiledSelection> = iFragmentSelections.root
 
-  interface Data : IFragment, Fragment.Data {
-    override val __typename: String
+  public interface Data : IFragment, Fragment.Data {
+    public override val __typename: String
 
-    companion object {
-      fun Data.asA() = this as? AData
+    public companion object {
+      public fun Data.asA() = this as? AData
     }
   }
 
-  data class AData(
-    override val __typename: String,
-    override val fieldA: String?
+  public data class AData(
+    public override val __typename: String,
+    public override val fieldA: String?
   ) : Data, AIFragment
 
-  data class OtherData(
-    override val __typename: String
+  public data class OtherData(
+    public override val __typename: String
   ) : Data, IFragment
 }

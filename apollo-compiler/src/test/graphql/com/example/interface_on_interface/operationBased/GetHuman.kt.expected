@@ -15,50 +15,52 @@ import com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter
 import com.example.interface_on_interface.selections.GetHumanSelections
 import kotlin.Double
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class GetHuman : Query<GetHuman.Data> {
-  override fun id(): String = OPERATION_ID
+public class GetHuman() : Query<GetHuman.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return GetHuman_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = GetHumanSelections.root
+  public override fun selections(): List<CompiledSelection> = GetHumanSelections.root
 
-  data class Data(
-    val human: Human,
-    val node: Node
+  public data class Data(
+    public val human: Human,
+    public val node: Node
   ) : Query.Data {
-    data class Human(
-      val id: String,
-      val name: String,
-      val height: Double
+    public data class Human(
+      public val id: String,
+      public val name: String,
+      public val height: Double
     )
 
-    data class Node(
-      val __typename: String,
+    public data class Node(
+      public val __typename: String,
       /**
        * Synthetic field for inline fragment on Human
        */
-      val onHuman: OnHuman?
+      public val onHuman: OnHuman?
     ) {
-      data class OnHuman(
-        val height: Double
+      public data class OnHuman(
+        public val height: Double
       )
     }
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "b5ec6431463438b91c2cf1c33eb4b6a1f9e2580b51fcf5150ef3685b9108a12c"
 
     /**
@@ -79,9 +81,9 @@ class GetHuman : Query<GetHuman.Data> {
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query GetHuman { human { id name height } node { __typename ... on Human { height } } }"
 
-    const val OPERATION_NAME: String = "GetHuman"
+    public const val OPERATION_NAME: String = "GetHuman"
   }
 }

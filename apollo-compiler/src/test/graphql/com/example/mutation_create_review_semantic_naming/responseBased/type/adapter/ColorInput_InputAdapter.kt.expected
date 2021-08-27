@@ -18,15 +18,17 @@ import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.optional
 import com.example.mutation_create_review_semantic_naming.type.ColorInput
 import kotlin.IllegalStateException
+import kotlin.Unit
 
-object ColorInput_InputAdapter : Adapter<ColorInput> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): ColorInput
-      = throw IllegalStateException("Input type used in output position")
-  override fun toJson(
+public object ColorInput_InputAdapter : Adapter<ColorInput> {
+  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      ColorInput = throw IllegalStateException("Input type used in output position")
+
+  public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    value: ColorInput
-  ) {
+    `value`: ColorInput
+  ): Unit {
     if (value.red is Optional.Present) {
       writer.name("red")
       IntAdapter.optional().toJson(writer, customScalarAdapters, value.red)

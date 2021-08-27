@@ -12,13 +12,14 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object DroidFragmentImpl_ResponseAdapter {
-  object Data : Adapter<DroidFragmentImpl.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("name", "primaryFunction")
+public object DroidFragmentImpl_ResponseAdapter {
+  public object Data : Adapter<DroidFragmentImpl.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("name", "primaryFunction")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         DroidFragmentImpl.Data {
       var name: String? = null
       var primaryFunction: String? = null
@@ -37,11 +38,11 @@ object DroidFragmentImpl_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: DroidFragmentImpl.Data
-    ) {
+      `value`: DroidFragmentImpl.Data
+    ): Unit {
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
 

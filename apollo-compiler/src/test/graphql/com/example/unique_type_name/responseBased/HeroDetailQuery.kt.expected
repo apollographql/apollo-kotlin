@@ -18,158 +18,160 @@ import com.example.unique_type_name.type.Episode
 import kotlin.Double
 import kotlin.Int
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class HeroDetailQuery : Query<HeroDetailQuery.Data> {
-  override fun id(): String = OPERATION_ID
+public class HeroDetailQuery() : Query<HeroDetailQuery.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return HeroDetailQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = HeroDetailQuerySelections.root
+  public override fun selections(): List<CompiledSelection> = HeroDetailQuerySelections.root
 
-  data class Data(
-    val heroDetailQuery: HeroDetailQuery?
+  public data class Data(
+    public val heroDetailQuery: HeroDetailQuery?
   ) : Query.Data {
-    interface HeroDetailQuery {
-      val __typename: String
+    public interface HeroDetailQuery {
+      public val __typename: String
 
       /**
        * The name of the character
        */
-      val name: String
+      public val name: String
 
       /**
        * The friends of the character, or an empty list if they have none
        */
-      val friends: List<Friend?>?
+      public val friends: List<Friend?>?
 
-      interface Friend {
+      public interface Friend {
         /**
          * The name of the character
          */
-        val name: String
+        public val name: String
       }
 
-      companion object {
-        fun HeroDetailQuery.asHuman() = this as? HumanHeroDetailQuery
+      public companion object {
+        public fun HeroDetailQuery.asHuman() = this as? HumanHeroDetailQuery
       }
     }
 
-    data class HumanHeroDetailQuery(
-      override val __typename: String,
+    public data class HumanHeroDetailQuery(
+      public override val __typename: String,
       /**
        * The name of the character
        */
-      override val name: String,
+      public override val name: String,
       /**
        * Merged field with multiple descriptions. See parentTypes: 'Character, Human' for more
        * information
        */
-      override val friends: List<Friend?>?,
+      public override val friends: List<Friend?>?,
       /**
        * Height in the preferred unit, default is meters
        */
-      val height: Double?
+      public val height: Double?
     ) : HeroDetailQuery {
-      fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
+      public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
-      data class Friend(
+      public data class Friend(
         /**
          * The name of the character
          */
-        override val name: String,
+        public override val name: String,
         /**
          * The movies this character appears in
          */
-        val appearsIn: List<Episode?>,
+        public val appearsIn: List<Episode?>,
         /**
          * The friends of the character, or an empty list if they have none
          */
-        val friends: List<Friend?>?
+        public val friends: List<Friend?>?
       ) : HeroDetailQuery.Friend {
-        fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
+        public fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
 
-        fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
+        public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
-        data class Friend(
-          val __typename: String,
+        public data class Friend(
+          public val __typename: String,
           /**
            * The name of the character
            */
-          override val name: String,
+          public override val name: String,
           /**
            * The friends of the character exposed as a connection with edges
            */
-          override val friendsConnection: FriendsConnection
+          public override val friendsConnection: FriendsConnection
         ) : HeroDetails {
-          data class FriendsConnection(
+          public data class FriendsConnection(
             /**
              * The total number of friends
              */
-            override val totalCount: Int?,
+            public override val totalCount: Int?,
             /**
              * The edges for each of the character's friends.
              */
-            override val edges: List<Edge?>?
+            public override val edges: List<Edge?>?
           ) : HeroDetails.FriendsConnection {
-            fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
+            public fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
-            data class Edge(
+            public data class Edge(
               /**
                * The character represented by this friendship edge
                */
-              override val node: Node?
+              public override val node: Node?
             ) : HeroDetails.FriendsConnection.Edge {
-              data class Node(
+              public data class Node(
                 /**
                  * The name of the character
                  */
-                override val name: String
+                public override val name: String
               ) : HeroDetails.FriendsConnection.Edge.Node
             }
           }
 
-          companion object {
-            fun Friend.heroDetails() = this as? HeroDetails
+          public companion object {
+            public fun Friend.heroDetails() = this as? HeroDetails
           }
         }
       }
     }
 
-    data class OtherHeroDetailQuery(
-      override val __typename: String,
+    public data class OtherHeroDetailQuery(
+      public override val __typename: String,
       /**
        * The name of the character
        */
-      override val name: String,
+      public override val name: String,
       /**
        * The friends of the character, or an empty list if they have none
        */
-      override val friends: List<Friend?>?
+      public override val friends: List<Friend?>?
     ) : HeroDetailQuery {
-      fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
+      public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
-      data class Friend(
+      public data class Friend(
         /**
          * The name of the character
          */
-        override val name: String
+        public override val name: String
       ) : HeroDetailQuery.Friend
     }
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "9e49497791948cf0840e8353d87b142b6474e023a2082a3fe414b312565599de"
 
     /**
@@ -208,9 +210,9 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query HeroDetailQuery { heroDetailQuery { __typename name friends { name } ... on Human { height friends { appearsIn friends { __typename ...HeroDetails } } } } }  fragment HeroDetails on Character { name friendsConnection { totalCount edges { node { name } } } }"
 
-    const val OPERATION_NAME: String = "HeroDetailQuery"
+    public const val OPERATION_NAME: String = "HeroDetailQuery"
   }
 }

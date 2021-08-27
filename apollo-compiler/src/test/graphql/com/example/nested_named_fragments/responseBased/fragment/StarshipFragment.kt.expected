@@ -8,59 +8,59 @@ package com.example.nested_named_fragments.fragment
 import kotlin.String
 import kotlin.collections.List
 
-interface StarshipFragment {
+public interface StarshipFragment {
   /**
    * The ID of an object
    */
-  val id: String
+  public val id: String
 
   /**
    * The name of this starship. The common name, such as "Death Star".
    */
-  val name: String?
+  public val name: String?
 
-  val pilotConnection: PilotConnection?
+  public val pilotConnection: PilotConnection?
 
-  interface PilotConnection {
+  public interface PilotConnection {
     /**
      * A list of edges.
      */
-    val edges: List<Edge?>?
+    public val edges: List<Edge?>?
 
-    interface Edge {
+    public interface Edge {
       /**
        * The item at the end of the edge
        */
-      val node: Node?
+      public val node: Node?
 
-      interface Node : PilotFragment {
-        val __typename: String
+      public interface Node : PilotFragment {
+        public val __typename: String
 
         /**
          * The name of this person.
          */
-        override val name: String?
+        public override val name: String?
 
         /**
          * A planet that this person was born on or inhabits.
          */
-        override val homeworld: Homeworld?
+        public override val homeworld: Homeworld?
 
-        interface Homeworld : PlanetFragment, PilotFragment.Homeworld {
-          override val __typename: String
+        public interface Homeworld : PlanetFragment, PilotFragment.Homeworld {
+          public override val __typename: String
 
           /**
            * The name of this planet.
            */
-          override val name: String?
+          public override val name: String?
 
-          companion object {
-            fun Homeworld.planetFragment() = this as? PlanetFragment
+          public companion object {
+            public fun Homeworld.planetFragment() = this as? PlanetFragment
           }
         }
 
-        companion object {
-          fun Node.pilotFragment() = this as? PilotFragment
+        public companion object {
+          public fun Node.pilotFragment() = this as? PilotFragment
         }
       }
     }

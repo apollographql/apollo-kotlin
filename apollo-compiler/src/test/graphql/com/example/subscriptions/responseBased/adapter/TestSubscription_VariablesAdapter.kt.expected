@@ -12,15 +12,17 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.subscriptions.TestSubscription
 import kotlin.IllegalStateException
+import kotlin.Unit
 
-object TestSubscription_VariablesAdapter : Adapter<TestSubscription> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+public object TestSubscription_VariablesAdapter : Adapter<TestSubscription> {
+  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
       TestSubscription = throw IllegalStateException("Input type used in output position")
-  override fun toJson(
+
+  public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    value: TestSubscription
-  ) {
+    `value`: TestSubscription
+  ): Unit {
     writer.name("repo")
     StringAdapter.toJson(writer, customScalarAdapters, value.repo)
   }

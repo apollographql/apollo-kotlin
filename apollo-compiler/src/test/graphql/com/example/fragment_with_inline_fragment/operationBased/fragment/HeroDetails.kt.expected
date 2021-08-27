@@ -10,55 +10,55 @@ import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
 
-data class HeroDetails(
-  val __typename: String,
+public data class HeroDetails(
+  public val __typename: String,
   /**
    * The name of the character
    */
-  val name: String,
+  public val name: String,
   /**
    * The friends of the character exposed as a connection with edges
    */
-  val friendsConnection: FriendsConnection,
+  public val friendsConnection: FriendsConnection,
   /**
    * Synthetic field for inline fragment on Droid
    */
-  val onDroid: OnDroid?,
+  public val onDroid: OnDroid?,
   /**
    * Synthetic field for 'HumanDetails'
    */
-  val humanDetails: HumanDetails?
+  public val humanDetails: HumanDetails?
 ) : Fragment.Data {
-  data class FriendsConnection(
+  public data class FriendsConnection(
     /**
      * The total number of friends
      */
-    val totalCount: Int?,
+    public val totalCount: Int?,
     /**
      * The edges for each of the character's friends.
      */
-    val edges: List<Edge?>?
+    public val edges: List<Edge?>?
   ) {
-    data class Edge(
+    public data class Edge(
       /**
        * The character represented by this friendship edge
        */
-      val node: Node?
+      public val node: Node?
     ) {
-      data class Node(
+      public data class Node(
         /**
          * The name of the character
          */
-        val name: String
+        public val name: String
       )
     }
   }
 
-  data class OnDroid(
-    val __typename: String,
+  public data class OnDroid(
+    public val __typename: String,
     /**
      * Synthetic field for 'DroidDetails'
      */
-    val droidDetails: DroidDetails
+    public val droidDetails: DroidDetails
   )
 }

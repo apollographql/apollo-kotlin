@@ -15,45 +15,47 @@ import com.example.arguments_hardcoded.adapter.TestQuery_ResponseAdapter
 import com.example.arguments_hardcoded.selections.TestQuerySelections
 import kotlin.Int
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class TestQuery : Query<TestQuery.Data> {
-  override fun id(): String = OPERATION_ID
+public class TestQuery() : Query<TestQuery.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestQuerySelections.root
+  public override fun selections(): List<CompiledSelection> = TestQuerySelections.root
 
-  data class Data(
-    val reviews: List<Review?>?,
-    val testNullableArguments: Int
+  public data class Data(
+    public val reviews: List<Review?>?,
+    public val testNullableArguments: Int
   ) : Query.Data {
-    fun reviewsFilterNotNull(): List<Review>? = reviews?.filterNotNull()
+    public fun reviewsFilterNotNull(): List<Review>? = reviews?.filterNotNull()
 
-    data class Review(
+    public data class Review(
       /**
        * The number of stars this review gave, 1-5
        */
-      val stars: Int,
+      public val stars: Int,
       /**
        * Comment about the movie
        */
-      val commentary: String?
+      public val commentary: String?
     )
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "a15321a7f7103480873db29a761ae001023b059eb7ad1af9e2816d1a2458c1b5"
 
     /**
@@ -69,9 +71,9 @@ class TestQuery : Query<TestQuery.Data> {
      * boolean: null, list: null)
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query TestQuery { reviews(episode: JEDI, starsInt: 10, starsFloat: 9.9) { stars commentary } testNullableArguments(int: null, string: null, float: null, review: null, episode: null, boolean: null, list: null) }"
 
-    const val OPERATION_NAME: String = "TestQuery"
+    public const val OPERATION_NAME: String = "TestQuery"
   }
 }

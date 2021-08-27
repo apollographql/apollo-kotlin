@@ -7,9 +7,9 @@ package com.example.union_fragment.fragment
 
 import kotlin.String
 
-interface Starship {
+public interface Starship {
   /**
    * The name of the starship
    */
-  val name: String
+  public val name: String
 }

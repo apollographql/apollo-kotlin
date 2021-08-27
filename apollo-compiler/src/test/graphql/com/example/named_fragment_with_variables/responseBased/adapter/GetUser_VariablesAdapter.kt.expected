@@ -15,15 +15,17 @@ import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_with_variables.GetUser
 import com.example.named_fragment_with_variables.type.adapter.UserQuery_InputAdapter
 import kotlin.IllegalStateException
+import kotlin.Unit
 
-object GetUser_VariablesAdapter : Adapter<GetUser> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GetUser =
-      throw IllegalStateException("Input type used in output position")
-  override fun toJson(
+public object GetUser_VariablesAdapter : Adapter<GetUser> {
+  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      GetUser = throw IllegalStateException("Input type used in output position")
+
+  public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    value: GetUser
-  ) {
+    `value`: GetUser
+  ): Unit {
     writer.name("organizationId")
     StringAdapter.toJson(writer, customScalarAdapters, value.organizationId)
     writer.name("query")

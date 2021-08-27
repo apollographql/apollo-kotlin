@@ -14,80 +14,82 @@ import com.apollographql.apollo3.api.obj
 import com.example.test_inline.adapter.GetPage_ResponseAdapter
 import com.example.test_inline.selections.GetPageSelections
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class GetPage : Query<GetPage.Data> {
-  override fun id(): String = OPERATION_ID
+public class GetPage() : Query<GetPage.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return GetPage_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = GetPageSelections.root
+  public override fun selections(): List<CompiledSelection> = GetPageSelections.root
 
-  data class Data(
-    val collection: Collection
+  public data class Data(
+    public val collection: Collection
   ) : Query.Data {
-    interface Collection {
-      val __typename: String
+    public interface Collection {
+      public val __typename: String
 
-      val items: List<Item>
+      public val items: List<Item>
 
-      interface Item {
-        val title: String
+      public interface Item {
+        public val title: String
       }
 
-      companion object {
-        fun Collection.asParticularCollection() = this as? ParticularCollectionCollection
+      public companion object {
+        public fun Collection.asParticularCollection() = this as? ParticularCollectionCollection
       }
     }
 
-    data class ParticularCollectionCollection(
-      override val __typename: String,
-      override val items: List<Item>
+    public data class ParticularCollectionCollection(
+      public override val __typename: String,
+      public override val items: List<Item>
     ) : Collection {
-      interface Item : Collection.Item {
-        override val title: String
+      public interface Item : Collection.Item {
+        public override val title: String
 
-        val __typename: String
+        public val __typename: String
 
-        companion object {
-          fun Item.asParticularItem() = this as? ParticularItemItem
+        public companion object {
+          public fun Item.asParticularItem() = this as? ParticularItemItem
         }
       }
 
-      data class ParticularItemItem(
-        override val title: String,
-        override val __typename: String,
-        val image: String
+      public data class ParticularItemItem(
+        public override val title: String,
+        public override val __typename: String,
+        public val image: String
       ) : Item, Collection.Item
 
-      data class OtherItem(
-        override val title: String,
-        override val __typename: String
+      public data class OtherItem(
+        public override val title: String,
+        public override val __typename: String
       ) : Item, Collection.Item
     }
 
-    data class OtherCollection(
-      override val __typename: String,
-      override val items: List<Item>
+    public data class OtherCollection(
+      public override val __typename: String,
+      public override val items: List<Item>
     ) : Collection {
-      data class Item(
-        override val title: String
+      public data class Item(
+        public override val title: String
       ) : Collection.Item
     }
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "09dd0a176a2233eccc3b2d3a76f25a1083460354f399f8b1aaf172c18cfc202b"
 
     /**
@@ -111,9 +113,9 @@ class GetPage : Query<GetPage.Data> {
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query GetPage { collection { __typename items { title } ... on ParticularCollection { items { __typename ... on ParticularItem { image } } } } }"
 
-    const val OPERATION_NAME: String = "GetPage"
+    public const val OPERATION_NAME: String = "GetPage"
   }
 }

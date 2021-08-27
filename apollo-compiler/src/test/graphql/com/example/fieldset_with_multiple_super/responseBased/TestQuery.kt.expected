@@ -14,77 +14,79 @@ import com.apollographql.apollo3.api.obj
 import com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter
 import com.example.fieldset_with_multiple_super.selections.TestQuerySelections
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class TestQuery : Query<TestQuery.Data> {
-  override fun id(): String = OPERATION_ID
+public class TestQuery() : Query<TestQuery.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestQuerySelections.root
+  public override fun selections(): List<CompiledSelection> = TestQuerySelections.root
 
-  data class Data(
-    val c: C?
+  public data class Data(
+    public val c: C?
   ) : Query.Data {
-    interface C {
-      val __typename: String
+    public interface C {
+      public val __typename: String
 
-      companion object {
-        fun C.asA() = this as? AC
+      public companion object {
+        public fun C.asA() = this as? AC
 
-        fun C.asAB() = this as? ABC
+        public fun C.asAB() = this as? ABC
 
-        fun C.asB() = this as? BC
+        public fun C.asB() = this as? BC
       }
     }
 
-    interface AC : C {
-      override val __typename: String
+    public interface AC : C {
+      public override val __typename: String
 
-      val fieldA1: String?
+      public val fieldA1: String?
     }
 
-    interface BC : C {
-      override val __typename: String
+    public interface BC : C {
+      public override val __typename: String
 
-      val fieldB2: String?
+      public val fieldB2: String?
     }
 
-    data class ABC(
-      override val __typename: String,
-      override val fieldA1: String?,
-      val fieldB1: String?,
-      override val fieldB2: String?,
-      val fieldA2: String?
+    public data class ABC(
+      public override val __typename: String,
+      public override val fieldA1: String?,
+      public val fieldB1: String?,
+      public override val fieldB2: String?,
+      public val fieldA2: String?
     ) : AC, BC
 
-    data class OtherC(
-      override val __typename: String
+    public data class OtherC(
+      public override val __typename: String
     ) : C
 
-    data class OtherAC(
-      override val __typename: String,
-      override val fieldA1: String?
+    public data class OtherAC(
+      public override val __typename: String,
+      public override val fieldA1: String?
     ) : AC
 
-    data class OtherBC(
-      override val __typename: String,
-      override val fieldB2: String?
+    public data class OtherBC(
+      public override val __typename: String,
+      public override val fieldB2: String?
     ) : BC
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "6faa0db26a1466e969ffc48d42fef45419406628c6c607fbbb1a0da1d592fdb2"
 
     /**
@@ -111,9 +113,9 @@ class TestQuery : Query<TestQuery.Data> {
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query TestQuery { c { __typename ... on A { __typename fieldA1 ... on B { fieldB1 } } ... on B { __typename fieldB2 ... on A { fieldA2 } } } }"
 
-    const val OPERATION_NAME: String = "TestQuery"
+    public const val OPERATION_NAME: String = "TestQuery"
   }
 }

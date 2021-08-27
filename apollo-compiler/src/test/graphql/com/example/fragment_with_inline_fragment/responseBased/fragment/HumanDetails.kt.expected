@@ -7,9 +7,9 @@ package com.example.fragment_with_inline_fragment.fragment
 
 import kotlin.String
 
-interface HumanDetails {
+public interface HumanDetails {
   /**
    * What this human calls themselves
    */
-  val name: String
+  public val name: String
 }

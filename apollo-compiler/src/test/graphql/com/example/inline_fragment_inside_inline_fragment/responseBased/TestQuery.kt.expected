@@ -14,82 +14,84 @@ import com.apollographql.apollo3.api.obj
 import com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter
 import com.example.inline_fragment_inside_inline_fragment.selections.TestQuerySelections
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class TestQuery : Query<TestQuery.Data> {
-  override fun id(): String = OPERATION_ID
+public class TestQuery() : Query<TestQuery.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestQuerySelections.root
+  public override fun selections(): List<CompiledSelection> = TestQuerySelections.root
 
-  data class Data(
-    val search: List<Search?>?
+  public data class Data(
+    public val search: List<Search?>?
   ) : Query.Data {
-    fun searchFilterNotNull(): List<Search>? = search?.filterNotNull()
+    public fun searchFilterNotNull(): List<Search>? = search?.filterNotNull()
 
-    interface CharacterSearch : Search {
-      override val __typename: String
+    public interface CharacterSearch : Search {
+      public override val __typename: String
 
       /**
        * The name of the character
        */
-      val name: String
+      public val name: String
     }
 
-    interface Search {
-      val __typename: String
+    public interface Search {
+      public val __typename: String
 
-      companion object {
-        fun Search.asCharacter() = this as? CharacterSearch
+      public companion object {
+        public fun Search.asCharacter() = this as? CharacterSearch
 
-        fun Search.asCharacterHuman() = this as? CharacterHumanSearch
+        public fun Search.asCharacterHuman() = this as? CharacterHumanSearch
 
-        fun Search.asCharacterDroid() = this as? CharacterDroidSearch
+        public fun Search.asCharacterDroid() = this as? CharacterDroidSearch
       }
     }
 
-    data class CharacterHumanSearch(
-      override val __typename: String,
+    public data class CharacterHumanSearch(
+      public override val __typename: String,
       /**
        * The name of the character
        */
-      override val name: String,
+      public override val name: String,
       /**
        * The home planet of the human, or null if unknown
        */
-      val homePlanet: String?
+      public val homePlanet: String?
     ) : CharacterSearch
 
-    data class CharacterDroidSearch(
-      override val __typename: String,
+    public data class CharacterDroidSearch(
+      public override val __typename: String,
       /**
        * The name of the character
        */
-      override val name: String,
+      public override val name: String,
       /**
        * This droid's primary function
        */
-      val primaryFunction: String?
+      public val primaryFunction: String?
     ) : CharacterSearch
 
-    data class OtherSearch(
-      override val __typename: String
+    public data class OtherSearch(
+      public override val __typename: String
     ) : Search
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "4f32ea4bdd2a95a29bde61273602c22c698cd333f1701001d1a339fb276c6438"
 
     /**
@@ -112,9 +114,9 @@ class TestQuery : Query<TestQuery.Data> {
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query TestQuery { search(text: \"bla-bla\") { __typename ... on Character { __typename name ... on Human { homePlanet } ... on Droid { primaryFunction } } } }"
 
-    const val OPERATION_NAME: String = "TestQuery"
+    public const val OPERATION_NAME: String = "TestQuery"
   }
 }

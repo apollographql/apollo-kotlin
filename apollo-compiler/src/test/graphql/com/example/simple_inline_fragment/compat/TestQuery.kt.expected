@@ -15,83 +15,85 @@ import com.example.simple_inline_fragment.adapter.TestQuery_ResponseAdapter
 import com.example.simple_inline_fragment.selections.TestQuerySelections
 import kotlin.Double
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class TestQuery : Query<TestQuery.Data> {
-  override fun id(): String = OPERATION_ID
+public class TestQuery() : Query<TestQuery.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestQuerySelections.root
+  public override fun selections(): List<CompiledSelection> = TestQuerySelections.root
 
-  data class Data(
-    val hero: Hero?
+  public data class Data(
+    public val hero: Hero?
   ) : Query.Data
 
-  data class Hero(
-    val __typename: String,
+  public data class Hero(
+    public val __typename: String,
     /**
      * The ID of the character
      */
-    val id: String,
+    public val id: String,
     /**
      * The name of the character
      */
-    val name: String,
+    public val name: String,
     /**
      * Synthetic field for inline fragment on Human
      */
-    val asHuman: AsHuman?,
+    public val asHuman: AsHuman?,
     /**
      * Synthetic field for inline fragment on Droid
      */
-    val asDroid: AsDroid?
+    public val asDroid: AsDroid?
   )
 
-  data class AsHuman(
-    val __typename: String,
+  public data class AsHuman(
+    public val __typename: String,
     /**
      * The ID of the character
      */
-    val id: String,
+    public val id: String,
     /**
      * The name of the character
      */
-    val name: String,
+    public val name: String,
     /**
      * Height in the preferred unit, default is meters
      */
-    val height: Double?
+    public val height: Double?
   )
 
-  data class AsDroid(
-    val __typename: String,
+  public data class AsDroid(
+    public val __typename: String,
     /**
      * The ID of the character
      */
-    val id: String,
+    public val id: String,
     /**
      * The name of the character
      */
-    val name: String,
+    public val name: String,
     /**
      * This droid's primary function
      */
-    val primaryFunction: String?
+    public val primaryFunction: String?
   )
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "9788d8cb5185e8875c193d2e8aa5cb15fb66916d00f51b55a037b5b8ebffc788"
 
     /**
@@ -117,9 +119,9 @@ class TestQuery : Query<TestQuery.Data> {
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query TestQuery { hero { __typename ... on Character { __typename id ... on Character { name } } ... on Human { height } ... on Droid { primaryFunction } } }"
 
-    const val OPERATION_NAME: String = "TestQuery"
+    public const val OPERATION_NAME: String = "TestQuery"
   }
 }

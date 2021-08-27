@@ -7,19 +7,19 @@ package com.example.inline_fragment_intersection.type
 
 import kotlin.String
 
-sealed class Race(
-  val rawValue: String
+public sealed class Race(
+  public val rawValue: String
 ) {
-  object WOOKIE : Race(rawValue = "WOOKIE")
+  public object WOOKIE : Race(rawValue = "WOOKIE")
 
-  object GUMGAN : Race(rawValue = "GUMGAN")
+  public object GUMGAN : Race(rawValue = "GUMGAN")
 
-  object EWOK : Race(rawValue = "EWOK")
+  public object EWOK : Race(rawValue = "EWOK")
 
   /**
    * Auto generated constant for unknown enum values
    */
-  class UNKNOWN__(
+  public class UNKNOWN__(
     rawValue: String
   ) : Race(rawValue = rawValue)
 }

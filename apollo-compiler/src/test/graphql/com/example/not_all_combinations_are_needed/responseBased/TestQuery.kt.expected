@@ -15,59 +15,61 @@ import com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAda
 import com.example.not_all_combinations_are_needed.fragment.BFragment
 import com.example.not_all_combinations_are_needed.selections.TestQuerySelections
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class TestQuery : Query<TestQuery.Data> {
-  override fun id(): String = OPERATION_ID
+public class TestQuery() : Query<TestQuery.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestQuerySelections.root
+  public override fun selections(): List<CompiledSelection> = TestQuerySelections.root
 
-  data class Data(
-    val root: Root?
+  public data class Data(
+    public val root: Root?
   ) : Query.Data {
-    interface ARoot : Root {
-      override val __typename: String
+    public interface ARoot : Root {
+      public override val __typename: String
 
-      val fieldA1: String?
+      public val fieldA1: String?
     }
 
-    interface Root {
-      val __typename: String
+    public interface Root {
+      public val __typename: String
 
-      companion object {
-        fun Root.bFragment() = this as? BFragment
+      public companion object {
+        public fun Root.bFragment() = this as? BFragment
 
-        fun Root.asA() = this as? ARoot
+        public fun Root.asA() = this as? ARoot
 
-        fun Root.asAB() = this as? ABRoot
+        public fun Root.asAB() = this as? ABRoot
       }
     }
 
-    data class ABRoot(
-      override val __typename: String,
-      override val fieldA1: String?,
-      override val fieldB1: String?
+    public data class ABRoot(
+      public override val __typename: String,
+      public override val fieldA1: String?,
+      public override val fieldB1: String?
     ) : ARoot, BFragment
 
-    data class OtherRoot(
-      override val __typename: String
+    public data class OtherRoot(
+      public override val __typename: String
     ) : Root
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "16500a4d2f3e21ea2357fd3532aff655fc2b37e893570d1e8d1944c4af4f9f1d"
 
     /**
@@ -92,9 +94,9 @@ class TestQuery : Query<TestQuery.Data> {
      *   fieldB1
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query TestQuery { root { __typename ... on A { __typename fieldA1 ... on B { __typename ...bFragment } } } }  fragment bFragment on B { fieldB1 }"
 
-    const val OPERATION_NAME: String = "TestQuery"
+    public const val OPERATION_NAME: String = "TestQuery"
   }
 }

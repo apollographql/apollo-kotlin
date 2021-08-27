@@ -14,52 +14,54 @@ import com.apollographql.apollo3.api.obj
 import com.example.fragment_spread_with_nested_fields.fragment.selections.HeroDetailsSelections
 import kotlin.Int
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return HeroDetailsImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = HeroDetailsSelections.root
+  public override fun selections(): List<CompiledSelection> = HeroDetailsSelections.root
 
-  data class Data(
+  public data class Data(
     /**
      * The name of the character
      */
-    override val name: String,
+    public override val name: String,
     /**
      * The friends of the character exposed as a connection with edges
      */
-    override val friendsConnection: FriendsConnection
+    public override val friendsConnection: FriendsConnection
   ) : HeroDetails, Fragment.Data {
-    data class FriendsConnection(
+    public data class FriendsConnection(
       /**
        * The total number of friends
        */
-      override val totalCount: Int?,
+      public override val totalCount: Int?,
       /**
        * The edges for each of the character's friends.
        */
-      override val edges: List<Edge?>?
+      public override val edges: List<Edge?>?
     ) : HeroDetails.FriendsConnection {
-      fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
+      public fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
-      data class Edge(
+      public data class Edge(
         /**
          * The character represented by this friendship edge
          */
-        override val node: Node?
+        public override val node: Node?
       ) : HeroDetails.FriendsConnection.Edge {
-        data class Node(
+        public data class Node(
           /**
            * The name of the character
            */
-          override val name: String
+          public override val name: String
         ) : HeroDetails.FriendsConnection.Edge.Node
       }
     }

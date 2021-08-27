@@ -14,49 +14,51 @@ import com.apollographql.apollo3.api.obj
 import com.example.introspection_query.adapter.TestQuery_ResponseAdapter
 import com.example.introspection_query.selections.TestQuerySelections
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class TestQuery : Query<TestQuery.Data> {
-  override fun id(): String = OPERATION_ID
+public class TestQuery() : Query<TestQuery.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestQuerySelections.root
+  public override fun selections(): List<CompiledSelection> = TestQuerySelections.root
 
-  data class Data(
-    val __schema: __Schema,
-    val __type: __Type
+  public data class Data(
+    public val __schema: __Schema,
+    public val __type: __Type
   ) : Query.Data {
-    data class __Schema(
-      val queryType: QueryType,
-      val types: List<Type>
+    public data class __Schema(
+      public val queryType: QueryType,
+      public val types: List<Type>
     ) {
-      data class QueryType(
-        val name: String?
+      public data class QueryType(
+        public val name: String?
       )
 
-      data class Type(
-        val name: String?
+      public data class Type(
+        public val name: String?
       )
     }
 
-    data class __Type(
-      val name: String?
+    public data class __Type(
+      public val name: String?
     )
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "0df748160db73d1bbdea0e6e8437222dd4026ef9a3d699923485cf95c7df8366"
 
     /**
@@ -77,9 +79,9 @@ class TestQuery : Query<TestQuery.Data> {
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query TestQuery { __schema { queryType { name } types { name } } __type(name: \"Vehicle\") { name } }"
 
-    const val OPERATION_NAME: String = "TestQuery"
+    public const val OPERATION_NAME: String = "TestQuery"
   }
 }

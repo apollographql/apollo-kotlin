@@ -11,13 +11,14 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object AnimalFragmentImpl_ResponseAdapter {
-  object Data : Adapter<AnimalFragmentImpl.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename")
+public object AnimalFragmentImpl_ResponseAdapter {
+  public object Data : Adapter<AnimalFragmentImpl.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         AnimalFragmentImpl.Data {
       reader.selectName(RESPONSE_NAMES).also {
         check(it == 0) {
@@ -35,11 +36,11 @@ object AnimalFragmentImpl_ResponseAdapter {
       }
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: AnimalFragmentImpl.Data
-    ) {
+      `value`: AnimalFragmentImpl.Data
+    ): Unit {
       when(value) {
         is AnimalFragmentImpl.CatData -> CatData.toJson(writer, customScalarAdapters, value)
         is AnimalFragmentImpl.DogData -> DogData.toJson(writer, customScalarAdapters, value)
@@ -48,10 +49,10 @@ object AnimalFragmentImpl_ResponseAdapter {
     }
   }
 
-  object CatData {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
+  public object CatData {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-    fun fromJson(
+    public fun fromJson(
       reader: JsonReader,
       customScalarAdapters: CustomScalarAdapters,
       typename: String
@@ -73,11 +74,11 @@ object AnimalFragmentImpl_ResponseAdapter {
       )
     }
 
-    fun toJson(
+    public fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: AnimalFragmentImpl.CatData
-    ) {
+      `value`: AnimalFragmentImpl.CatData
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -86,10 +87,10 @@ object AnimalFragmentImpl_ResponseAdapter {
     }
   }
 
-  object DogData {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
+  public object DogData {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-    fun fromJson(
+    public fun fromJson(
       reader: JsonReader,
       customScalarAdapters: CustomScalarAdapters,
       typename: String
@@ -111,11 +112,11 @@ object AnimalFragmentImpl_ResponseAdapter {
       )
     }
 
-    fun toJson(
+    public fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: AnimalFragmentImpl.DogData
-    ) {
+      `value`: AnimalFragmentImpl.DogData
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -124,10 +125,10 @@ object AnimalFragmentImpl_ResponseAdapter {
     }
   }
 
-  object OtherData {
-    val RESPONSE_NAMES: List<String> = listOf("__typename")
+  public object OtherData {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    fun fromJson(
+    public fun fromJson(
       reader: JsonReader,
       customScalarAdapters: CustomScalarAdapters,
       typename: String
@@ -146,11 +147,11 @@ object AnimalFragmentImpl_ResponseAdapter {
       )
     }
 
-    fun toJson(
+    public fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: AnimalFragmentImpl.OtherData
-    ) {
+      `value`: AnimalFragmentImpl.OtherData
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
     }

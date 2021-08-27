@@ -149,3 +149,10 @@ tasks.named("dokkaHtmlMultiModule").configure {
   this as org.jetbrains.dokka.gradle.DokkaMultiModuleTask
   outputDirectory.set(buildDir.resolve("dokkaHtml/kdoc"))
 }
+
+tasks.named("dependencyUpdates").configure {
+  (this as com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask)
+  rejectVersionIf {
+    listOf("alpha", "beta", "rc").any { candidate.version.toLowerCase().contains(it) }
+  }
+}

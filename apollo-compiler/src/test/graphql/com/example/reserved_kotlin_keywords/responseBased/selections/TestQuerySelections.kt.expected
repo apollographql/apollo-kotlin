@@ -17,7 +17,7 @@ import com.example.reserved_kotlin_keywords.type.Types.Character
 import com.example.reserved_kotlin_keywords.type.Types.SearchResult
 import kotlin.collections.List
 
-object TestQuerySelections {
+public object TestQuerySelections {
   private val yield_: List<CompiledSelection> = listOf(
         CompiledField(
           name = "id",
@@ -48,7 +48,7 @@ object TestQuerySelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "hero",
           alias = "yield",

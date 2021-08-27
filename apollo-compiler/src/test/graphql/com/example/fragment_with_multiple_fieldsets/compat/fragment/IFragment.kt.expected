@@ -8,15 +8,15 @@ package com.example.fragment_with_multiple_fieldsets.fragment
 import com.apollographql.apollo3.api.Fragment
 import kotlin.String
 
-data class IFragment(
-  val __typename: String,
+public data class IFragment(
+  public val __typename: String,
   /**
    * Synthetic field for inline fragment on A
    */
-  val asA: AsA?
+  public val asA: AsA?
 ) : Fragment.Data {
-  data class AsA(
-    val __typename: String,
-    val fieldA: String?
+  public data class AsA(
+    public val __typename: String,
+    public val fieldA: String?
   )
 }

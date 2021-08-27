@@ -7,10 +7,10 @@ package com.example.named_fragment_with_variables.fragment
 
 import kotlin.String
 
-interface UserFragment {
-  val firstName: String
+public interface UserFragment {
+  public val firstName: String
 
-  val lastName: String
+  public val lastName: String
 
-  val avatar: String
+  public val avatar: String
 }

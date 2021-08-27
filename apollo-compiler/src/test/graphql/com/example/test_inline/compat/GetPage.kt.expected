@@ -14,64 +14,66 @@ import com.apollographql.apollo3.api.obj
 import com.example.test_inline.adapter.GetPage_ResponseAdapter
 import com.example.test_inline.selections.GetPageSelections
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class GetPage : Query<GetPage.Data> {
-  override fun id(): String = OPERATION_ID
+public class GetPage() : Query<GetPage.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return GetPage_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = GetPageSelections.root
+  public override fun selections(): List<CompiledSelection> = GetPageSelections.root
 
-  data class Data(
-    val collection: Collection
+  public data class Data(
+    public val collection: Collection
   ) : Query.Data
 
-  data class Collection(
-    val __typename: String,
-    val items: List<Item>,
+  public data class Collection(
+    public val __typename: String,
+    public val items: List<Item>,
     /**
      * Synthetic field for inline fragment on ParticularCollection
      */
-    val asParticularCollection: AsParticularCollection?
+    public val asParticularCollection: AsParticularCollection?
   )
 
-  data class Item(
-    val title: String
+  public data class Item(
+    public val title: String
   )
 
-  data class AsParticularCollection(
-    val __typename: String,
-    val items: List<Item1>
+  public data class AsParticularCollection(
+    public val __typename: String,
+    public val items: List<Item1>
   )
 
-  data class Item1(
-    val title: String,
-    val __typename: String,
+  public data class Item1(
+    public val title: String,
+    public val __typename: String,
     /**
      * Synthetic field for inline fragment on ParticularItem
      */
-    val asParticularItem: AsParticularItem?
+    public val asParticularItem: AsParticularItem?
   )
 
-  data class AsParticularItem(
-    val title: String,
-    val __typename: String,
-    val image: String
+  public data class AsParticularItem(
+    public val title: String,
+    public val __typename: String,
+    public val image: String
   )
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "09dd0a176a2233eccc3b2d3a76f25a1083460354f399f8b1aaf172c18cfc202b"
 
     /**
@@ -95,9 +97,9 @@ class GetPage : Query<GetPage.Data> {
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query GetPage { collection { __typename items { title } ... on ParticularCollection { items { __typename ... on ParticularItem { image } } } } }"
 
-    const val OPERATION_NAME: String = "GetPage"
+    public const val OPERATION_NAME: String = "GetPage"
   }
 }

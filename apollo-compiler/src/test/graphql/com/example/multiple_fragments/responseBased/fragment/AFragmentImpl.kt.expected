@@ -13,42 +13,44 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.multiple_fragments.fragment.selections.aFragmentSelections
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class AFragmentImpl : Fragment<AFragmentImpl.Data> {
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+public class AFragmentImpl() : Fragment<AFragmentImpl.Data> {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return AFragmentImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = aFragmentSelections.root
+  public override fun selections(): List<CompiledSelection> = aFragmentSelections.root
 
-  data class Data(
-    override val node: Node?
+  public data class Data(
+    public override val node: Node?
   ) : AFragment, Fragment.Data {
-    interface Node : AFragment.Node {
-      override val __typename: String
+    public interface Node : AFragment.Node {
+      public override val __typename: String
 
-      companion object {
-        fun Node.fragment1() = this as? Fragment1
+      public companion object {
+        public fun Node.fragment1() = this as? Fragment1
 
-        fun Node.fragment2() = this as? Fragment2
+        public fun Node.fragment2() = this as? Fragment2
 
-        fun Node.asANode() = this as? ANodeNode
+        public fun Node.asANode() = this as? ANodeNode
       }
     }
 
-    data class ANodeNode(
-      override val __typename: String,
-      override val field1: String?,
-      override val field2: String?
+    public data class ANodeNode(
+      public override val __typename: String,
+      public override val field1: String?,
+      public override val field2: String?
     ) : Node, Fragment1, Fragment2, AFragment.ANodeNode
 
-    data class OtherNode(
-      override val __typename: String
+    public data class OtherNode(
+      public override val __typename: String
     ) : Node, AFragment.Node
   }
 }

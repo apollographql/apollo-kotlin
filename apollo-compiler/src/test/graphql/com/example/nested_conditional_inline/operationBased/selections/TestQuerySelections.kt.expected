@@ -18,7 +18,7 @@ import com.example.nested_conditional_inline.type.Types
 import com.example.nested_conditional_inline.type.Types.Character
 import kotlin.collections.List
 
-object TestQuerySelections {
+public object TestQuerySelections {
   private val onHuman1: List<CompiledSelection> = listOf(
         CompiledField(
           name = "height",
@@ -104,7 +104,7 @@ object TestQuerySelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "hero",
           type = Character,

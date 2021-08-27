@@ -18,78 +18,80 @@ import com.example.fragment_used_twice.fragment.HumanDetails
 import com.example.fragment_used_twice.selections.TestQuerySelections
 import kotlin.Any
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class TestQuery : Query<TestQuery.Data> {
-  override fun id(): String = OPERATION_ID
+public class TestQuery() : Query<TestQuery.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestQuerySelections.root
+  public override fun selections(): List<CompiledSelection> = TestQuerySelections.root
 
-  data class Data(
-    val hero: Hero?
+  public data class Data(
+    public val hero: Hero?
   ) : Query.Data {
-    interface Hero : HeroDetails {
-      override val __typename: String
+    public interface Hero : HeroDetails {
+      public override val __typename: String
 
       /**
        * The name of the character
        */
-      override val name: String
+      public override val name: String
 
       /**
        * The date character was born.
        */
-      override val birthDate: Any
+      public override val birthDate: Any
 
-      companion object {
-        fun Hero.heroDetails() = this as? HeroDetails
+      public companion object {
+        public fun Hero.heroDetails() = this as? HeroDetails
 
-        fun Hero.humanDetails() = this as? HumanDetails
+        public fun Hero.humanDetails() = this as? HumanDetails
 
-        fun Hero.asHuman() = this as? HumanHero
+        public fun Hero.asHuman() = this as? HumanHero
       }
     }
 
-    data class HumanHero(
-      override val __typename: String,
+    public data class HumanHero(
+      public override val __typename: String,
       /**
        * Merged field with multiple descriptions. See parentTypes: 'Character, Human' for more
        * information
        */
-      override val name: String,
+      public override val name: String,
       /**
        * The date character was born.
        */
-      override val birthDate: Any
+      public override val birthDate: Any
     ) : Hero, HeroDetails, CharacterHumanDetails
 
-    data class OtherHero(
-      override val __typename: String,
+    public data class OtherHero(
+      public override val __typename: String,
       /**
        * The name of the character
        */
-      override val name: String,
+      public override val name: String,
       /**
        * The date character was born.
        */
-      override val birthDate: Any
+      public override val birthDate: Any
     ) : Hero, HeroDetails
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "95ffb2ac3daa9734e241ef2b3224b2a33ffff59e695e9a5ce2e7b9d6ed43fae4"
 
     /**
@@ -121,9 +123,9 @@ class TestQuery : Query<TestQuery.Data> {
      *   ...CharacterDetails
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query TestQuery { hero { __typename ...HeroDetails ...HumanDetails } }  fragment CharacterDetails on Character { name birthDate }  fragment HeroDetails on Character { __typename name ...CharacterDetails }  fragment HumanDetails on Human { __typename name ...CharacterDetails }"
 
-    const val OPERATION_NAME: String = "TestQuery"
+    public const val OPERATION_NAME: String = "TestQuery"
   }
 }

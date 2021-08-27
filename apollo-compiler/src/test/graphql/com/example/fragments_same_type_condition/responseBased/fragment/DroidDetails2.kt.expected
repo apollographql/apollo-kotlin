@@ -7,9 +7,9 @@ package com.example.fragments_same_type_condition.fragment
 
 import kotlin.String
 
-interface DroidDetails2 {
+public interface DroidDetails2 {
   /**
    * This droid's primary function
    */
-  val primaryFunction: String?
+  public val primaryFunction: String?
 }

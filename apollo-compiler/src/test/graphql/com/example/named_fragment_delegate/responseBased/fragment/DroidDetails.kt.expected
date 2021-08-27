@@ -8,26 +8,26 @@ package com.example.named_fragment_delegate.fragment
 import kotlin.String
 import kotlin.collections.List
 
-interface DroidDetails {
+public interface DroidDetails {
   /**
    * What others call this droid
    */
-  val name: String
+  public val name: String
 
   /**
    * This droid's primary function
    */
-  val primaryFunction: String?
+  public val primaryFunction: String?
 
   /**
    * This droid's friends, or an empty list if they have none
    */
-  val friends: List<Friend?>?
+  public val friends: List<Friend?>?
 
-  interface Friend {
+  public interface Friend {
     /**
      * The name of the character
      */
-    val name: String
+    public val name: String
   }
 }

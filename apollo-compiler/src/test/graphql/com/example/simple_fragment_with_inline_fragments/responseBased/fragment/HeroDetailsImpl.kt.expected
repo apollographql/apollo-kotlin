@@ -14,76 +14,78 @@ import com.apollographql.apollo3.api.obj
 import com.example.simple_fragment_with_inline_fragments.fragment.selections.HeroDetailsSelections
 import kotlin.Double
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return HeroDetailsImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = HeroDetailsSelections.root
+  public override fun selections(): List<CompiledSelection> = HeroDetailsSelections.root
 
-  data class Data(
+  public data class Data(
     /**
      * The name of the character
      */
-    override val name: String,
+    public override val name: String,
     /**
      * The friends of the character, or an empty list if they have none
      */
-    override val friends: List<Friend?>?
+    public override val friends: List<Friend?>?
   ) : HeroDetails, Fragment.Data {
-    fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
+    public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
-    interface Friend : HeroDetails.Friend {
-      override val __typename: String
+    public interface Friend : HeroDetails.Friend {
+      public override val __typename: String
 
       /**
        * The name of the character
        */
-      override val name: String
+      public override val name: String
 
-      companion object {
-        fun Friend.asHuman() = this as? HumanFriend
+      public companion object {
+        public fun Friend.asHuman() = this as? HumanFriend
 
-        fun Friend.asDroid() = this as? DroidFriend
+        public fun Friend.asDroid() = this as? DroidFriend
       }
     }
 
-    data class HumanFriend(
-      override val __typename: String,
+    public data class HumanFriend(
+      public override val __typename: String,
       /**
        * The name of the character
        */
-      override val name: String,
+      public override val name: String,
       /**
        * Height in the preferred unit, default is meters
        */
-      override val height: Double?
+      public override val height: Double?
     ) : Friend, HeroDetails.HumanFriend
 
-    data class DroidFriend(
-      override val __typename: String,
+    public data class DroidFriend(
+      public override val __typename: String,
       /**
        * The name of the character
        */
-      override val name: String,
+      public override val name: String,
       /**
        * This droid's primary function
        */
-      override val primaryFunction: String?
+      public override val primaryFunction: String?
     ) : Friend, HeroDetails.DroidFriend
 
-    data class OtherFriend(
-      override val __typename: String,
+    public data class OtherFriend(
+      public override val __typename: String,
       /**
        * The name of the character
        */
-      override val name: String
+      public override val name: String
     ) : Friend, HeroDetails.Friend
   }
 }

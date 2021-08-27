@@ -16,21 +16,21 @@ internal data class ColorInput(
   /**
    * Red color
    */
-  val red: Optional<Int> = Optional.Absent,
+  public val red: Optional<Int> = Optional.Absent,
   /**
    * Green color
    */
-  val green: Optional<Double?> = Optional.Absent,
+  public val green: Optional<Double?> = Optional.Absent,
   /**
    * Blue color
    */
-  val blue: Optional<Double> = Optional.Absent,
+  public val blue: Optional<Double> = Optional.Absent,
   /**
    * for test purpose only
    */
-  val enumWithDefaultValue: Optional<Episode?> = Optional.Absent,
+  public val enumWithDefaultValue: Optional<Episode?> = Optional.Absent,
   /**
    * Circle ref to review input
    */
-  val reviewRefInput: Optional<ReviewRefInput?> = Optional.Absent
+  public val reviewRefInput: Optional<ReviewRefInput?> = Optional.Absent
 )

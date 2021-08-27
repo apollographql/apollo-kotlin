@@ -14,13 +14,14 @@ import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.antlr_tokens.TestQuery
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object TestQuery_ResponseAdapter {
-  object Data : Adapter<TestQuery.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("typeWithGraphQLKeywords")
+public object TestQuery_ResponseAdapter {
+  public object Data : Adapter<TestQuery.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("typeWithGraphQLKeywords")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var typeWithGraphQLKeywords: TestQuery.Data.TypeWithGraphQLKeywords? = null
 
@@ -37,20 +38,20 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestQuery.Data
-    ) {
+      `value`: TestQuery.Data
+    ): Unit {
       writer.name("typeWithGraphQLKeywords")
       TypeWithGraphQLKeywords.obj().nullable().toJson(writer, customScalarAdapters,
           value.typeWithGraphQLKeywords)
     }
 
     private object TypeWithGraphQLKeywords : Adapter<TestQuery.Data.TypeWithGraphQLKeywords> {
-      val RESPONSE_NAMES: List<String> = listOf("on", "null", "alias")
+      public val RESPONSE_NAMES: List<String> = listOf("on", "null", "alias")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.TypeWithGraphQLKeywords {
         var on: String? = null
         var null_: String? = null
@@ -72,11 +73,11 @@ object TestQuery_ResponseAdapter {
         )
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: TestQuery.Data.TypeWithGraphQLKeywords
-      ) {
+        `value`: TestQuery.Data.TypeWithGraphQLKeywords
+      ): Unit {
         writer.name("on")
         NullableStringAdapter.toJson(writer, customScalarAdapters, value.on)
 

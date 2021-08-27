@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.Optional
 import kotlin.Boolean
 import kotlin.String
 
-data class UserQuery(
-  val name: String,
-  val isAdmin: Optional<Boolean?> = Optional.Absent
+public data class UserQuery(
+  public val name: String,
+  public val isAdmin: Optional<Boolean?> = Optional.Absent
 )

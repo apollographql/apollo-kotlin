@@ -16,7 +16,7 @@ import com.example.named_fragment_delegate.type.Types.FriendsEdge
 import com.example.named_fragment_delegate.type.Types.URL
 import kotlin.collections.List
 
-object HumanDetailsSelections {
+public object HumanDetailsSelections {
   private val node: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
@@ -40,7 +40,7 @@ object HumanDetailsSelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
           type = CompiledStringType.notNull()

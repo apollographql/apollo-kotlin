@@ -14,13 +14,14 @@ import com.example.case_sensitive_enum.TestQuery
 import com.example.case_sensitive_enum.type.Enum
 import com.example.case_sensitive_enum.type.adapter.Enum_ResponseAdapter
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object TestQuery_ResponseAdapter {
-  object Data : Adapter<TestQuery.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("enum")
+public object TestQuery_ResponseAdapter {
+  public object Data : Adapter<TestQuery.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("enum")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var enum_: Enum? = null
 
@@ -36,11 +37,11 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestQuery.Data
-    ) {
+      `value`: TestQuery.Data
+    ): Unit {
       writer.name("enum")
       Enum_ResponseAdapter.nullable().toJson(writer, customScalarAdapters, value.enum_)
     }

@@ -9,9 +9,9 @@ import com.apollographql.apollo3.api.Fragment
 import kotlin.String
 
 internal data class HumanDetails(
-  val __typename: String,
+  public val __typename: String,
   /**
    * What this human calls themselves
    */
-  val name: String
+  public val name: String
 ) : Fragment.Data

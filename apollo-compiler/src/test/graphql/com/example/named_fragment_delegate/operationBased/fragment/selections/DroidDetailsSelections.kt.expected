@@ -13,7 +13,7 @@ import com.apollographql.apollo3.api.notNull
 import com.example.named_fragment_delegate.type.Types.Character
 import kotlin.collections.List
 
-object DroidDetailsSelections {
+public object DroidDetailsSelections {
   private val friends: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
@@ -21,7 +21,7 @@ object DroidDetailsSelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
           type = CompiledStringType.notNull()

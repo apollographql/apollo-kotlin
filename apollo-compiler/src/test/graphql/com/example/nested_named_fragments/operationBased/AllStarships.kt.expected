@@ -15,55 +15,57 @@ import com.example.nested_named_fragments.adapter.AllStarships_ResponseAdapter
 import com.example.nested_named_fragments.fragment.StarshipFragment
 import com.example.nested_named_fragments.selections.AllStarshipsSelections
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class AllStarships : Query<AllStarships.Data> {
-  override fun id(): String = OPERATION_ID
+public class AllStarships() : Query<AllStarships.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return AllStarships_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = AllStarshipsSelections.root
+  public override fun selections(): List<CompiledSelection> = AllStarshipsSelections.root
 
-  data class Data(
-    val allStarships: AllStarships?
+  public data class Data(
+    public val allStarships: AllStarships?
   ) : Query.Data {
-    data class AllStarships(
+    public data class AllStarships(
       /**
        * A list of edges.
        */
-      val edges: List<Edge?>?
+      public val edges: List<Edge?>?
     ) {
-      fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
+      public fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
-      data class Edge(
+      public data class Edge(
         /**
          * The item at the end of the edge
          */
-        val node: Node?
+        public val node: Node?
       ) {
-        data class Node(
-          val __typename: String,
+        public data class Node(
+          public val __typename: String,
           /**
            * Synthetic field for 'starshipFragment'
            */
-          val starshipFragment: StarshipFragment
+          public val starshipFragment: StarshipFragment
         )
       }
     }
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "a76ec26a83546f1113b4f2d763d67118a12a70958ef57d44d3f33dedaf90ff72"
 
     /**
@@ -106,9 +108,9 @@ class AllStarships : Query<AllStarships.Data> {
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query AllStarships { allStarships(first: 7) { edges { node { __typename ...starshipFragment } } } }  fragment planetFragment on Planet { name }  fragment pilotFragment on Person { name homeworld { __typename ...planetFragment } }  fragment starshipFragment on Starship { id name pilotConnection { edges { node { __typename ...pilotFragment } } } }"
 
-    const val OPERATION_NAME: String = "AllStarships"
+    public const val OPERATION_NAME: String = "AllStarships"
   }
 }
