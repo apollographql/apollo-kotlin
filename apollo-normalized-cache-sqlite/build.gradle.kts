@@ -24,8 +24,8 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        api(project(":apollo-api"))
-        api(project(":apollo-normalized-cache-api"))
+        api(projects.apolloApi)
+        api(projects.apolloNormalizedCacheApi)
         implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
       }
     }

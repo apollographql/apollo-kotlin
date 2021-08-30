@@ -6,9 +6,9 @@ plugins {
 }
 
 dependencies {
-  implementation(project(":apollo-api"))
-  implementation(project(":apollo-ast"))
-  implementation(project(":apollo-normalized-cache-api")) {
+  implementation(projects.apolloApi)
+  implementation(projects.apolloAst)
+  implementation(projects.apolloNormalizedCacheApi) {
     because("To generate the CacheResolver")
   }
   implementation(groovy.util.Eval.x(project, "x.dep.poet.kotlin"))
