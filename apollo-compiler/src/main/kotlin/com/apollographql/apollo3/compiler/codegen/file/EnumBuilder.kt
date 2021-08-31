@@ -57,7 +57,7 @@ class EnumBuilder(
   }
 
   private fun IrEnum.Value.toObjectTypeSpec(superClass: TypeName): TypeSpec {
-    return TypeSpec.objectBuilder(layout.enumValueName(name))
+    return TypeSpec.objectBuilder(valueClassName())
         .applyIf(description?.isNotBlank() == true) { addKdoc("%L\n", description!!) }
         .applyIf(deprecationReason != null) { addAnnotation(deprecatedAnnotation(deprecationReason!!)) }
         .superclass(superClass)
@@ -88,7 +88,7 @@ class EnumBuilder(
         .beginControlFlow("return when(rawValue)")
         .addCode(
             values
-                .map { CodeBlock.of("%S -> %T", it.name, it.className()) }
+                .map { CodeBlock.of("%S -> %T", it.name, it.valueClassName()) }
                 .joinToCode(separator = "\n", suffix = "\n")
         )
         .addCode("else -> UNKNOWN__(rawValue)\n")
@@ -96,7 +96,7 @@ class EnumBuilder(
         .build()
   }
 
-  private fun IrEnum.Value.className(): TypeName {
+  private fun IrEnum.Value.valueClassName(): ClassName {
     return ClassName(packageName, simpleName, layout.enumValueName(name))
   }
 
