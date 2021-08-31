@@ -14,13 +14,7 @@ import com.example.enum_field.type.Gravity
 object Gravity_ResponseAdapter : Adapter<Gravity> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Gravity {
     val rawValue = reader.nextString()!!
-    return when(rawValue) {
-      "TOP" -> Gravity.TOP
-      "CENTER" -> Gravity.CENTER
-      "BOTTOM" -> Gravity.BOTTOM
-      "bottom" -> Gravity.bottom
-      else -> Gravity.UNKNOWN__(rawValue)
-    }
+    return Gravity.valueOf(rawValue)
   }
 
   override fun toJson(

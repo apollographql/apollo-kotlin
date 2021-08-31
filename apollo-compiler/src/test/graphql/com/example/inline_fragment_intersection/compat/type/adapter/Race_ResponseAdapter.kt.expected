@@ -14,12 +14,7 @@ import com.example.inline_fragment_intersection.type.Race
 object Race_ResponseAdapter : Adapter<Race> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Race {
     val rawValue = reader.nextString()!!
-    return when(rawValue) {
-      "WOOKIE" -> Race.WOOKIE
-      "GUMGAN" -> Race.GUMGAN
-      "EWOK" -> Race.EWOK
-      else -> Race.UNKNOWN__(rawValue)
-    }
+    return Race.valueOf(rawValue)
   }
 
   override fun toJson(

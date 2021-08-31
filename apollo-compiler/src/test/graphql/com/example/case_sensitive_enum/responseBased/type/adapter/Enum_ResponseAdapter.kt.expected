@@ -14,13 +14,7 @@ import com.example.case_sensitive_enum.type.Enum
 object Enum_ResponseAdapter : Adapter<Enum> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Enum {
     val rawValue = reader.nextString()!!
-    return when(rawValue) {
-      "north" -> Enum.north
-      "North" -> Enum.North
-      "NORTH" -> Enum.NORTH
-      "SOUTH" -> Enum.SOUTH
-      else -> Enum.UNKNOWN__(rawValue)
-    }
+    return Enum.valueOf(rawValue)
   }
 
   override fun toJson(

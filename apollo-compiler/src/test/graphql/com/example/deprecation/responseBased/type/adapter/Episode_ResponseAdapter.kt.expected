@@ -14,14 +14,7 @@ import com.example.deprecation.type.Episode
 object Episode_ResponseAdapter : Adapter<Episode> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Episode {
     val rawValue = reader.nextString()!!
-    return when(rawValue) {
-      "NEWHOPE" -> Episode.NEWHOPE
-      "EMPIRE" -> Episode.EMPIRE
-      "JEDI" -> Episode.JEDI
-      "DEPRECATED" -> Episode.DEPRECATED
-      "new" -> Episode.new_
-      else -> Episode.UNKNOWN__(rawValue)
-    }
+    return Episode.valueOf(rawValue)
   }
 
   override fun toJson(
