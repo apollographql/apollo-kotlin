@@ -16,13 +16,14 @@ import com.apollographql.apollo3.api.obj
 import com.example.deprecation.TestQuery
 import kotlin.Boolean
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object TestQuery_ResponseAdapter {
-  object Data : Adapter<TestQuery.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("hero")
+public object TestQuery_ResponseAdapter {
+  public object Data : Adapter<TestQuery.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var hero: TestQuery.Data.Hero? = null
 
@@ -38,19 +39,19 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestQuery.Data
-    ) {
+      `value`: TestQuery.Data
+    ): Unit {
       writer.name("hero")
       Hero.obj().nullable().toJson(writer, customScalarAdapters, value.hero)
     }
 
     private object Hero : Adapter<TestQuery.Data.Hero> {
-      val RESPONSE_NAMES: List<String> = listOf("name", "deprecated", "deprecatedBool")
+      public val RESPONSE_NAMES: List<String> = listOf("name", "deprecated", "deprecatedBool")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Hero {
         var name: String? = null
         var deprecated: String? = null
@@ -72,11 +73,11 @@ object TestQuery_ResponseAdapter {
         )
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: TestQuery.Data.Hero
-      ) {
+        `value`: TestQuery.Data.Hero
+      ): Unit {
         writer.name("name")
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
 

@@ -10,9 +10,11 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.fragment_with_inline_fragment.type.Episode
+import kotlin.Unit
 
-object Episode_ResponseAdapter : Adapter<Episode> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Episode {
+public object Episode_ResponseAdapter : Adapter<Episode> {
+  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      Episode {
     val rawValue = reader.nextString()!!
     return when(rawValue) {
       "NEWHOPE" -> Episode.NEWHOPE
@@ -24,11 +26,11 @@ object Episode_ResponseAdapter : Adapter<Episode> {
     }
   }
 
-  override fun toJson(
+  public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    value: Episode
-  ) {
+    `value`: Episode
+  ): Unit {
     writer.value(value.rawValue)
   }
 }

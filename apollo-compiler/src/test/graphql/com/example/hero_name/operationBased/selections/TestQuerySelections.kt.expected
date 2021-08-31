@@ -14,7 +14,7 @@ import com.example.hero_name.type.Types.Character
 import com.example.hero_name.type.Types.Date
 import kotlin.collections.List
 
-object TestQuerySelections {
+public object TestQuerySelections {
   private val onDroid: List<CompiledSelection> = listOf(
         CompiledField(
           name = "primaryFunction",
@@ -41,7 +41,7 @@ object TestQuerySelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "hero",
           type = Character,

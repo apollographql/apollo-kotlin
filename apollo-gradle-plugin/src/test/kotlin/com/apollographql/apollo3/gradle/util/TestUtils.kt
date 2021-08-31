@@ -28,7 +28,14 @@ object TestUtils {
 
     // See https://github.com/apollographql/apollo-android/issues/2184
     dest.mkdirs()
-    File(dest, "gradle.properties").writeText("org.gradle.jvmargs=-Xmx3g -XX:MaxMetaspaceSize=1g")
+    File(dest, "gradle.properties").writeText("""
+      |org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=1g
+      |# See https://issuetracker.google.com/issues/175338398
+      |# Remove when switching to AGP 7+
+      |systemProp.javax.xml.parsers.DocumentBuilderFactory=com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl
+      |systemProp.javax.xml.parsers.SAXParserFactory=com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl
+      |
+    """.trimMargin())
 
     block(dest)
 

@@ -13,42 +13,44 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.simple_fragment.fragment.selections.HeroDetailsSelections
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
 /**
  * Fragment with Java / Kotlin docs generation
  * with multi lines support
  */
-internal class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+internal class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return HeroDetailsImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = HeroDetailsSelections.root
+  public override fun selections(): List<CompiledSelection> = HeroDetailsSelections.root
 
-  interface Data : HeroDetails, Fragment.Data {
-    override val __typename: String
+  public interface Data : HeroDetails, Fragment.Data {
+    public override val __typename: String
 
-    companion object {
-      fun Data.humanDetails() = this as? HumanDetails
+    public companion object {
+      public fun Data.humanDetails() = this as? HumanDetails
 
-      fun Data.asHuman() = this as? HumanData
+      public fun Data.asHuman() = this as? HumanData
     }
   }
 
-  data class HumanData(
-    override val __typename: String,
+  public data class HumanData(
+    public override val __typename: String,
     /**
      * What this human calls themselves
      */
-    override val name: String
+    public override val name: String
   ) : Data, HumanDetails, HumanHeroDetails
 
-  data class OtherData(
-    override val __typename: String
+  public data class OtherData(
+    public override val __typename: String
   ) : Data, HeroDetails
 }

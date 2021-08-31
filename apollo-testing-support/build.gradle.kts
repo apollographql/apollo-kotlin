@@ -8,10 +8,10 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        api(project(":apollo-api"))
-        api(project(":apollo-normalized-cache-api"))
-        api(project(":apollo-runtime"))
-        api(project(":apollo-mockserver"))
+        api(projects.apolloApi)
+        api(projects.apolloNormalizedCacheApi)
+        api(projects.apolloRuntime)
+        api(projects.apolloMockserver)
         api(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
       }
     }

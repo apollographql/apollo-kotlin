@@ -8,28 +8,28 @@ package com.example.nested_named_fragments.fragment
 import com.apollographql.apollo3.api.Fragment
 import kotlin.String
 
-data class PilotFragment(
+public data class PilotFragment(
   /**
    * The name of this person.
    */
-  val name: String?,
+  public val name: String?,
   /**
    * A planet that this person was born on or inhabits.
    */
-  val homeworld: Homeworld?
+  public val homeworld: Homeworld?
 ) : Fragment.Data {
-  data class Homeworld(
-    val __typename: String,
+  public data class Homeworld(
+    public val __typename: String,
     /**
      * Synthetic field for grouping fragments
      */
-    val fragments: Fragments
+    public val fragments: Fragments
   ) {
-    data class Fragments(
+    public data class Fragments(
       /**
        * Synthetic field for 'planetFragment'
        */
-      val planetFragment: PlanetFragment
+      public val planetFragment: PlanetFragment
     )
   }
 }

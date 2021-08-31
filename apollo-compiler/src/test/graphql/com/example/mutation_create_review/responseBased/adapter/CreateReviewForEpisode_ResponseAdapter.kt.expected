@@ -21,13 +21,14 @@ import com.example.mutation_create_review.type.adapter.Episode_ResponseAdapter
 import java.util.Date
 import kotlin.Int
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
 internal object CreateReviewForEpisode_ResponseAdapter {
-  object Data : Adapter<CreateReviewForEpisode.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("createReview")
+  public object Data : Adapter<CreateReviewForEpisode.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("createReview")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         CreateReviewForEpisode.Data {
       var createReview: CreateReviewForEpisode.Data.CreateReview? = null
 
@@ -43,20 +44,20 @@ internal object CreateReviewForEpisode_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: CreateReviewForEpisode.Data
-    ) {
+      `value`: CreateReviewForEpisode.Data
+    ): Unit {
       writer.name("createReview")
       CreateReview.obj().nullable().toJson(writer, customScalarAdapters, value.createReview)
     }
 
     private object CreateReview : Adapter<CreateReviewForEpisode.Data.CreateReview> {
-      val RESPONSE_NAMES: List<String> = listOf("stars", "commentary", "listOfListOfString",
+      public val RESPONSE_NAMES: List<String> = listOf("stars", "commentary", "listOfListOfString",
           "listOfListOfEnum", "listOfListOfCustom", "listOfListOfObject")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           CreateReviewForEpisode.Data.CreateReview {
         var stars: Int? = null
         var commentary: String? = null
@@ -91,11 +92,11 @@ internal object CreateReviewForEpisode_ResponseAdapter {
         )
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: CreateReviewForEpisode.Data.CreateReview
-      ) {
+        `value`: CreateReviewForEpisode.Data.CreateReview
+      ): Unit {
         writer.name("stars")
         IntAdapter.toJson(writer, customScalarAdapters, value.stars)
 
@@ -121,9 +122,10 @@ internal object CreateReviewForEpisode_ResponseAdapter {
 
       private object ListOfListOfObject :
           Adapter<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject> {
-        val RESPONSE_NAMES: List<String> = listOf("name")
+        public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters):
             CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject {
           var name: String? = null
 
@@ -139,11 +141,11 @@ internal object CreateReviewForEpisode_ResponseAdapter {
           )
         }
 
-        override fun toJson(
+        public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          value: CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject
-        ) {
+          `value`: CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject
+        ): Unit {
           writer.name("name")
           StringAdapter.toJson(writer, customScalarAdapters, value.name)
         }

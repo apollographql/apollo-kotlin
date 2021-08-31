@@ -14,42 +14,44 @@ import com.apollographql.apollo3.api.obj
 import com.example.operation_id_generator.adapter.TestQuery_ResponseAdapter
 import com.example.operation_id_generator.selections.TestQuerySelections
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class TestQuery : Query<TestQuery.Data> {
-  override fun id(): String = OPERATION_ID
+public class TestQuery() : Query<TestQuery.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestQuerySelections.root
+  public override fun selections(): List<CompiledSelection> = TestQuerySelections.root
 
-  data class Data(
-    val hero: Hero?
+  public data class Data(
+    public val hero: Hero?
   ) : Query.Data {
-    data class Hero(
+    public data class Hero(
       /**
        * The ID of the character
        */
-      val id: String,
+      public val id: String,
       /**
        * The name of the character
        */
-      val name: String
+      public val name: String
     )
   }
 
-  companion object {
-    const val OPERATION_ID: String = "hash"
+  public companion object {
+    public const val OPERATION_ID: String = "hash"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -62,8 +64,8 @@ class TestQuery : Query<TestQuery.Data> {
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String = "query TestQuery { hero { id name } }"
+    public const val OPERATION_DOCUMENT: String = "query TestQuery { hero { id name } }"
 
-    const val OPERATION_NAME: String = "TestQuery"
+    public const val OPERATION_NAME: String = "TestQuery"
   }
 }

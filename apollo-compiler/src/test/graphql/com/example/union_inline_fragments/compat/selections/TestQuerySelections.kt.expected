@@ -19,7 +19,7 @@ import com.example.union_inline_fragments.type.Types.Episode
 import com.example.union_inline_fragments.type.Types.SearchResult
 import kotlin.collections.List
 
-object TestQuerySelections {
+public object TestQuerySelections {
   private val onCharacter1: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
@@ -133,7 +133,7 @@ object TestQuerySelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "search",
           type = SearchResult.list(),

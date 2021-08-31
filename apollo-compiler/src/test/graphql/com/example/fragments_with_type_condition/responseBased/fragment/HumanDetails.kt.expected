@@ -8,14 +8,14 @@ package com.example.fragments_with_type_condition.fragment
 import kotlin.Double
 import kotlin.String
 
-interface HumanDetails {
+public interface HumanDetails {
   /**
    * What this human calls themselves
    */
-  val name: String
+  public val name: String
 
   /**
    * Height in the preferred unit, default is meters
    */
-  val height: Double?
+  public val height: Double?
 }

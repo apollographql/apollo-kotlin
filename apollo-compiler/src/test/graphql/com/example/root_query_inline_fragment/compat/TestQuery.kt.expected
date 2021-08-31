@@ -16,81 +16,83 @@ import com.example.root_query_inline_fragment.selections.TestQuerySelections
 import com.example.root_query_inline_fragment.type.Episode
 import kotlin.Double
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class TestQuery : Query<TestQuery.Data> {
-  override fun id(): String = OPERATION_ID
+public class TestQuery() : Query<TestQuery.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestQuerySelections.root
+  public override fun selections(): List<CompiledSelection> = TestQuerySelections.root
 
-  data class Data(
-    val __typename: String,
-    val hero: Hero?,
-    val droid: Droid?
+  public data class Data(
+    public val __typename: String,
+    public val hero: Hero?,
+    public val droid: Droid?
   ) : Query.Data
 
-  data class Hero(
-    val __typename: String,
+  public data class Hero(
+    public val __typename: String,
     /**
      * The name of the character
      */
-    val name: String,
+    public val name: String,
     /**
      * The movies this character appears in
      */
-    val appearsIn: List<Episode?>,
+    public val appearsIn: List<Episode?>,
     /**
      * Synthetic field for inline fragment on Human
      */
-    val asHuman: AsHuman?
+    public val asHuman: AsHuman?
   ) {
-    fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
+    public fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
   }
 
-  data class AsHuman(
-    val __typename: String,
+  public data class AsHuman(
+    public val __typename: String,
     /**
      * The name of the character
      */
-    val name: String,
+    public val name: String,
     /**
      * The movies this character appears in
      */
-    val appearsIn: List<Episode?>,
+    public val appearsIn: List<Episode?>,
     /**
      * Height in the preferred unit, default is meters
      */
-    val height: Double?
+    public val height: Double?
   ) {
-    fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
+    public fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
   }
 
-  data class Droid(
-    val __typename: String,
+  public data class Droid(
+    public val __typename: String,
     /**
      * What others call this droid
      */
-    val name: String,
+    public val name: String,
     /**
      * This droid's primary function
      */
-    val primaryFunction: String?
+    public val primaryFunction: String?
   )
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "25584d760eab0f41189b9f2bbdbba3c0ec491aced65ef23924ecdc8f41ffe78c"
 
     /**
@@ -119,9 +121,9 @@ class TestQuery : Query<TestQuery.Data> {
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query TestQuery { __typename ... on Query { __typename hero { __typename name appearsIn ... on Human { height } } droid(id: 1) { __typename ... on Droid { name primaryFunction } } } }"
 
-    const val OPERATION_NAME: String = "TestQuery"
+    public const val OPERATION_NAME: String = "TestQuery"
   }
 }

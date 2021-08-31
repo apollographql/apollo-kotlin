@@ -14,71 +14,73 @@ import com.apollographql.apollo3.api.obj
 import com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter
 import com.example.inline_fragment_inside_inline_fragment.selections.TestQuerySelections
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class TestQuery : Query<TestQuery.Data> {
-  override fun id(): String = OPERATION_ID
+public class TestQuery() : Query<TestQuery.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestQuerySelections.root
+  public override fun selections(): List<CompiledSelection> = TestQuerySelections.root
 
-  data class Data(
-    val search: List<Search?>?
+  public data class Data(
+    public val search: List<Search?>?
   ) : Query.Data {
-    fun searchFilterNotNull(): List<Search>? = search?.filterNotNull()
+    public fun searchFilterNotNull(): List<Search>? = search?.filterNotNull()
 
-    data class Search(
-      val __typename: String,
+    public data class Search(
+      public val __typename: String,
       /**
        * Synthetic field for inline fragment on Character
        */
-      val onCharacter: OnCharacter?
+      public val onCharacter: OnCharacter?
     ) {
-      data class OnCharacter(
-        val __typename: String,
+      public data class OnCharacter(
+        public val __typename: String,
         /**
          * The name of the character
          */
-        val name: String,
+        public val name: String,
         /**
          * Synthetic field for inline fragment on Human
          */
-        val onHuman: OnHuman?,
+        public val onHuman: OnHuman?,
         /**
          * Synthetic field for inline fragment on Droid
          */
-        val onDroid: OnDroid?
+        public val onDroid: OnDroid?
       ) {
-        data class OnHuman(
+        public data class OnHuman(
           /**
            * The home planet of the human, or null if unknown
            */
-          val homePlanet: String?
+          public val homePlanet: String?
         )
 
-        data class OnDroid(
+        public data class OnDroid(
           /**
            * This droid's primary function
            */
-          val primaryFunction: String?
+          public val primaryFunction: String?
         )
       }
     }
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "4f32ea4bdd2a95a29bde61273602c22c698cd333f1701001d1a339fb276c6438"
 
     /**
@@ -101,9 +103,9 @@ class TestQuery : Query<TestQuery.Data> {
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query TestQuery { search(text: \"bla-bla\") { __typename ... on Character { __typename name ... on Human { homePlanet } ... on Droid { primaryFunction } } } }"
 
-    const val OPERATION_NAME: String = "TestQuery"
+    public const val OPERATION_NAME: String = "TestQuery"
   }
 }

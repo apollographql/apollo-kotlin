@@ -13,27 +13,29 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.root_query_fragment_with_nested_fragments.fragment.selections.droidFragmentSelections
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class DroidFragmentImpl : Fragment<DroidFragmentImpl.Data> {
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+public class DroidFragmentImpl() : Fragment<DroidFragmentImpl.Data> {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return DroidFragmentImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = droidFragmentSelections.root
+  public override fun selections(): List<CompiledSelection> = droidFragmentSelections.root
 
-  data class Data(
+  public data class Data(
     /**
      * What others call this droid
      */
-    override val name: String,
+    public override val name: String,
     /**
      * This droid's primary function
      */
-    override val primaryFunction: String?
+    public override val primaryFunction: String?
   ) : DroidFragment, Fragment.Data
 }

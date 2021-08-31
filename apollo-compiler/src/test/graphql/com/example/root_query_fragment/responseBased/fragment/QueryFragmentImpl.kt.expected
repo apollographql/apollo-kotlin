@@ -13,28 +13,30 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.root_query_fragment.fragment.selections.QueryFragmentSelections
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class QueryFragmentImpl : Fragment<QueryFragmentImpl.Data> {
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+public class QueryFragmentImpl() : Fragment<QueryFragmentImpl.Data> {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return QueryFragmentImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = QueryFragmentSelections.root
+  public override fun selections(): List<CompiledSelection> = QueryFragmentSelections.root
 
-  data class Data(
-    override val __typename: String,
-    override val hero: Hero?
+  public data class Data(
+    public override val __typename: String,
+    public override val hero: Hero?
   ) : QueryFragment, Fragment.Data {
-    data class Hero(
+    public data class Hero(
       /**
        * The name of the character
        */
-      override val name: String
+      public override val name: String
     ) : QueryFragment.Hero
   }
 }

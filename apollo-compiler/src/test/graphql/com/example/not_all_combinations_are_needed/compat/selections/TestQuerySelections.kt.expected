@@ -14,7 +14,7 @@ import com.example.not_all_combinations_are_needed.fragment.selections.bFragment
 import com.example.not_all_combinations_are_needed.type.Types.C
 import kotlin.collections.List
 
-object TestQuerySelections {
+public object TestQuerySelections {
   private val onB: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
@@ -52,7 +52,7 @@ object TestQuerySelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "root",
           type = C,

@@ -15,99 +15,101 @@ import com.example.inline_fragment_merge_fields.adapter.TestQuery_ResponseAdapte
 import com.example.inline_fragment_merge_fields.selections.TestQuerySelections
 import kotlin.Any
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class TestQuery : Query<TestQuery.Data> {
-  override fun id(): String = OPERATION_ID
+public class TestQuery() : Query<TestQuery.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestQuerySelections.root
+  public override fun selections(): List<CompiledSelection> = TestQuerySelections.root
 
-  data class Data(
-    val hero: Hero?
+  public data class Data(
+    public val hero: Hero?
   ) : Query.Data {
-    data class Hero(
-      val __typename: String,
+    public data class Hero(
+      public val __typename: String,
       /**
        * The name of the character
        */
-      val name: String,
+      public val name: String,
       /**
        * The friends of the character exposed as a connection with edges
        */
-      val friendsConnection: FriendsConnection,
+      public val friendsConnection: FriendsConnection,
       /**
        * Synthetic field for inline fragment on Character
        */
-      val onCharacter: OnCharacter
+      public val onCharacter: OnCharacter
     ) {
-      data class FriendsConnection(
+      public data class FriendsConnection(
         /**
          * The edges for each of the character's friends.
          */
-        val edges: List<Edge?>?
+        public val edges: List<Edge?>?
       ) {
-        fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
+        public fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
-        data class Edge(
+        public data class Edge(
           /**
            * The character represented by this friendship edge
            */
-          val node: Node?
+          public val node: Node?
         ) {
-          data class Node(
+          public data class Node(
             /**
              * The name of the character
              */
-            val name: String
+            public val name: String
           )
         }
       }
 
-      data class OnCharacter(
+      public data class OnCharacter(
         /**
          * The name of the character
          */
-        val name: String,
+        public val name: String,
         /**
          * Profile link
          */
-        val profileLink: Any,
+        public val profileLink: Any,
         /**
          * The friends of the character exposed as a connection with edges
          */
-        val friendsConnection: FriendsConnection
+        public val friendsConnection: FriendsConnection
       ) {
-        data class FriendsConnection(
+        public data class FriendsConnection(
           /**
            * The edges for each of the character's friends.
            */
-          val edges: List<Edge?>?
+          public val edges: List<Edge?>?
         ) {
-          fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
+          public fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
-          data class Edge(
+          public data class Edge(
             /**
              * The character represented by this friendship edge
              */
-            val node: Node?
+            public val node: Node?
           ) {
-            data class Node(
+            public data class Node(
               /**
                * The name of the character
                */
-              val name: String
+              public val name: String
             )
           }
         }
@@ -115,8 +117,8 @@ class TestQuery : Query<TestQuery.Data> {
     }
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "516a2d4b3fe97536486d2d559538aab9949d7c7e0de7081caec02439a0cb3969"
 
     /**
@@ -148,9 +150,9 @@ class TestQuery : Query<TestQuery.Data> {
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query TestQuery { hero { __typename name friendsConnection { edges { node { name } } } ... on Character { name profileLink friendsConnection { edges { node { name } } } } } }"
 
-    const val OPERATION_NAME: String = "TestQuery"
+    public const val OPERATION_NAME: String = "TestQuery"
   }
 }

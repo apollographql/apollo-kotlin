@@ -12,16 +12,18 @@ import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.not_all_combinations_are_needed.fragment.selections.bFragmentSelections
+import kotlin.Unit
 import kotlin.collections.List
 
-class BFragmentImpl : Fragment<BFragment> {
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+public class BFragmentImpl() : Fragment<BFragment> {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<BFragment> {
+  public override fun adapter(): Adapter<BFragment> {
     return BFragmentImpl_ResponseAdapter.BFragment.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = bFragmentSelections.root
+  public override fun selections(): List<CompiledSelection> = bFragmentSelections.root
 }

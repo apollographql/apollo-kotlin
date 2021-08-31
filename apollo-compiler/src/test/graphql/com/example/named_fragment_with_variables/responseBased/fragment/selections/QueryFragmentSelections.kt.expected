@@ -17,7 +17,7 @@ import com.example.named_fragment_with_variables.type.Types.Organization
 import com.example.named_fragment_with_variables.type.Types.User
 import kotlin.collections.List
 
-object QueryFragmentSelections {
+public object QueryFragmentSelections {
   private val user: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
@@ -44,7 +44,7 @@ object QueryFragmentSelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "organization",
           type = Organization,

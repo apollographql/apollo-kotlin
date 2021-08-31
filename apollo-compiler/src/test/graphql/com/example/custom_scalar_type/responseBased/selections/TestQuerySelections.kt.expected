@@ -17,7 +17,7 @@ import com.example.custom_scalar_type.type.Types.URL
 import com.example.custom_scalar_type.type.Types.UnsupportedType
 import kotlin.collections.List
 
-object TestQuerySelections {
+public object TestQuerySelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
@@ -45,7 +45,7 @@ object TestQuerySelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "hero",
           type = Character,

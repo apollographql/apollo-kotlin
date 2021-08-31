@@ -12,7 +12,7 @@ import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-object AnimalFragmentSelections {
+public object AnimalFragmentSelections {
   private val onCat: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
@@ -27,7 +27,7 @@ object AnimalFragmentSelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
           type = CompiledStringType.notNull()

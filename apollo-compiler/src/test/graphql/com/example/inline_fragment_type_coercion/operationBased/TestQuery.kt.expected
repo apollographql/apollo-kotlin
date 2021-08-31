@@ -14,47 +14,49 @@ import com.apollographql.apollo3.api.obj
 import com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter
 import com.example.inline_fragment_type_coercion.selections.TestQuerySelections
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class TestQuery : Query<TestQuery.Data> {
-  override fun id(): String = OPERATION_ID
+public class TestQuery() : Query<TestQuery.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestQuerySelections.root
+  public override fun selections(): List<CompiledSelection> = TestQuerySelections.root
 
-  data class Data(
+  public data class Data(
     /**
      * For testing fragment type coercion
      */
-    val foo: Foo?
+    public val foo: Foo?
   ) : Query.Data {
-    data class Foo(
-      val __typename: String,
-      val foo: String,
+    public data class Foo(
+      public val __typename: String,
+      public val foo: String,
       /**
        * Synthetic field for inline fragment on Bar
        */
-      val onBar: OnBar?
+      public val onBar: OnBar?
     ) {
-      data class OnBar(
-        val bar: String
+      public data class OnBar(
+        public val bar: String
       )
     }
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "65c4fd857f5cbd2283f0783a3b3cefd9ead5abb159f5cc20922b0d8e04286662"
 
     /**
@@ -71,9 +73,9 @@ class TestQuery : Query<TestQuery.Data> {
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query TestQuery { foo { __typename foo ... on Bar { bar } } }"
 
-    const val OPERATION_NAME: String = "TestQuery"
+    public const val OPERATION_NAME: String = "TestQuery"
   }
 }

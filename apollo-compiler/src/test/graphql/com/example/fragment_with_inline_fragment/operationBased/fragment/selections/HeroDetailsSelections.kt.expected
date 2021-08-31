@@ -17,7 +17,7 @@ import com.example.fragment_with_inline_fragment.type.Types.FriendsConnection
 import com.example.fragment_with_inline_fragment.type.Types.FriendsEdge
 import kotlin.collections.List
 
-object HeroDetailsSelections {
+public object HeroDetailsSelections {
   private val onDroid: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
@@ -56,7 +56,7 @@ object HeroDetailsSelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
           type = CompiledStringType.notNull()

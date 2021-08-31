@@ -12,8 +12,8 @@ import com.apollographql.apollo3.api.notNull
 import com.example.named_fragment_inside_inline_fragment.type.Types.Episode
 import kotlin.collections.List
 
-object characterAppearsInSelections {
-  val root: List<CompiledSelection> = listOf(
+public object characterAppearsInSelections {
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "appearsIn",
           type = Episode.list().notNull()

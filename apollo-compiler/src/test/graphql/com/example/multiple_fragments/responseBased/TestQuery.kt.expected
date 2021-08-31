@@ -17,62 +17,64 @@ import com.example.multiple_fragments.fragment.Fragment1
 import com.example.multiple_fragments.fragment.Fragment2
 import com.example.multiple_fragments.selections.TestQuerySelections
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class TestQuery : Query<TestQuery.Data> {
-  override fun id(): String = OPERATION_ID
+public class TestQuery() : Query<TestQuery.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestQuerySelections.root
+  public override fun selections(): List<CompiledSelection> = TestQuerySelections.root
 
-  data class Data(
-    val a: A?
+  public data class Data(
+    public val a: A?
   ) : Query.Data {
-    data class A(
-      val __typename: String,
-      override val node: Node?
+    public data class A(
+      public val __typename: String,
+      public override val node: Node?
     ) : AFragment {
-      interface Node : AFragment.Node {
-        override val __typename: String
+      public interface Node : AFragment.Node {
+        public override val __typename: String
 
-        companion object {
-          fun Node.fragment1() = this as? Fragment1
+        public companion object {
+          public fun Node.fragment1() = this as? Fragment1
 
-          fun Node.fragment2() = this as? Fragment2
+          public fun Node.fragment2() = this as? Fragment2
 
-          fun Node.asANode() = this as? ANodeNode
+          public fun Node.asANode() = this as? ANodeNode
         }
       }
 
-      data class ANodeNode(
-        override val __typename: String,
-        override val field1: String?,
-        override val field2: String?
+      public data class ANodeNode(
+        public override val __typename: String,
+        public override val field1: String?,
+        public override val field2: String?
       ) : Node, Fragment1, Fragment2, AFragment.ANodeNode
 
-      data class OtherNode(
-        override val __typename: String
+      public data class OtherNode(
+        public override val __typename: String
       ) : Node, AFragment.Node
 
-      companion object {
-        fun A.aFragment() = this as? AFragment
+      public companion object {
+        public fun A.aFragment() = this as? AFragment
       }
     }
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "17957893a92546c5a6a6c22ea23453c05b06d4bf74f3be7e2ecec5d89338e14c"
 
     /**
@@ -102,9 +104,9 @@ class TestQuery : Query<TestQuery.Data> {
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query TestQuery { a { __typename ...aFragment } }  fragment fragment1 on ANode { field1 }  fragment fragment2 on ANode { field2 }  fragment aFragment on A { node { __typename ...fragment1 ...fragment2 } }"
 
-    const val OPERATION_NAME: String = "TestQuery"
+    public const val OPERATION_NAME: String = "TestQuery"
   }
 }

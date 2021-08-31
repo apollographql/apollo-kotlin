@@ -16,13 +16,14 @@ import com.apollographql.apollo3.api.obj
 import com.example.subscriptions.TestSubscription
 import kotlin.Int
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object TestSubscription_ResponseAdapter {
-  object Data : Adapter<TestSubscription.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("commentAdded")
+public object TestSubscription_ResponseAdapter {
+  public object Data : Adapter<TestSubscription.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("commentAdded")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestSubscription.Data {
       var commentAdded: TestSubscription.Data.CommentAdded? = null
 
@@ -38,19 +39,19 @@ object TestSubscription_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestSubscription.Data
-    ) {
+      `value`: TestSubscription.Data
+    ): Unit {
       writer.name("commentAdded")
       CommentAdded.obj().nullable().toJson(writer, customScalarAdapters, value.commentAdded)
     }
 
     private object CommentAdded : Adapter<TestSubscription.Data.CommentAdded> {
-      val RESPONSE_NAMES: List<String> = listOf("id", "content")
+      public val RESPONSE_NAMES: List<String> = listOf("id", "content")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestSubscription.Data.CommentAdded {
         var id: Int? = null
         var content: String? = null
@@ -69,11 +70,11 @@ object TestSubscription_ResponseAdapter {
         )
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: TestSubscription.Data.CommentAdded
-      ) {
+        `value`: TestSubscription.Data.CommentAdded
+      ): Unit {
         writer.name("id")
         IntAdapter.toJson(writer, customScalarAdapters, value.id)
 

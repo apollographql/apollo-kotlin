@@ -18,46 +18,48 @@ import com.example.input_object_variable_and_argument.type.Episode
 import kotlin.Double
 import kotlin.Int
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-data class TestQuery(
-  val episode: Episode?,
-  val stars: Int,
-  val greenValue: Double
+public data class TestQuery(
+  public val episode: Episode?,
+  public val stars: Int,
+  public val greenValue: Double
 ) : Query<TestQuery.Data> {
-  override fun id(): String = OPERATION_ID
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     TestQuery_VariablesAdapter.toJson(writer, customScalarAdapters, this)
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestQuerySelections.root
+  public override fun selections(): List<CompiledSelection> = TestQuerySelections.root
 
-  data class Data(
-    val heroWithReview: HeroWithReview?
+  public data class Data(
+    public val heroWithReview: HeroWithReview?
   ) : Query.Data {
-    data class HeroWithReview(
+    public data class HeroWithReview(
       /**
        * What this human calls themselves
        */
-      val name: String,
+      public val name: String,
       /**
        * Height in the preferred unit, default is meters
        */
-      val height: Double?
+      public val height: Double?
     )
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "5de0170d60b7008300fa40599880d0b70e67a326a7b1fe27b8fa87aba7e5d36f"
 
     /**
@@ -82,9 +84,9 @@ data class TestQuery(
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query TestQuery(${'$'}episode: Episode, ${'$'}stars: Int!, ${'$'}greenValue: Float!) { heroWithReview(episode: ${'$'}episode, review: { stars: ${'$'}stars favoriteColor: { red: 0 green: ${'$'}greenValue blue: 0 }  booleanNonOptional: false listOfStringNonOptional: [] } , listOfInts: [${'$'}stars,${'$'}stars]) { name height(unit: FOOT) } }"
 
-    const val OPERATION_NAME: String = "TestQuery"
+    public const val OPERATION_NAME: String = "TestQuery"
   }
 }

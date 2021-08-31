@@ -17,13 +17,14 @@ import com.apollographql.apollo3.api.obj
 import com.example.fragments_with_type_condition.TestQuery
 import kotlin.Double
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object TestQuery_ResponseAdapter {
-  object Data : Adapter<TestQuery.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("r2", "luke")
+public object TestQuery_ResponseAdapter {
+  public object Data : Adapter<TestQuery.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("r2", "luke")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var r2: TestQuery.Data.R2? = null
       var luke: TestQuery.Data.Luke? = null
@@ -42,11 +43,11 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestQuery.Data
-    ) {
+      `value`: TestQuery.Data
+    ): Unit {
       writer.name("r2")
       R2.obj().nullable().toJson(writer, customScalarAdapters, value.r2)
 
@@ -55,9 +56,9 @@ object TestQuery_ResponseAdapter {
     }
 
     private object R2 : Adapter<TestQuery.Data.R2> {
-      val RESPONSE_NAMES: List<String> = listOf("__typename")
+      public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.R2 {
         reader.selectName(RESPONSE_NAMES).also {
           check(it == 0) {
@@ -75,11 +76,11 @@ object TestQuery_ResponseAdapter {
         }
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: TestQuery.Data.R2
-      ) {
+        `value`: TestQuery.Data.R2
+      ): Unit {
         when(value) {
           is TestQuery.Data.HumanR2 -> HumanR2.toJson(writer, customScalarAdapters, value)
           is TestQuery.Data.DroidR2 -> DroidR2.toJson(writer, customScalarAdapters, value)
@@ -88,10 +89,10 @@ object TestQuery_ResponseAdapter {
       }
     }
 
-    object HumanR2 {
-      val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "height")
+    public object HumanR2 {
+      public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "height")
 
-      fun fromJson(
+      public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
         typename: String
@@ -116,11 +117,11 @@ object TestQuery_ResponseAdapter {
         )
       }
 
-      fun toJson(
+      public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: TestQuery.Data.HumanR2
-      ) {
+        `value`: TestQuery.Data.HumanR2
+      ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -132,10 +133,10 @@ object TestQuery_ResponseAdapter {
       }
     }
 
-    object DroidR2 {
-      val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "primaryFunction")
+    public object DroidR2 {
+      public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "primaryFunction")
 
-      fun fromJson(
+      public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
         typename: String
@@ -160,11 +161,11 @@ object TestQuery_ResponseAdapter {
         )
       }
 
-      fun toJson(
+      public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: TestQuery.Data.DroidR2
-      ) {
+        `value`: TestQuery.Data.DroidR2
+      ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -176,10 +177,10 @@ object TestQuery_ResponseAdapter {
       }
     }
 
-    object OtherR2 {
-      val RESPONSE_NAMES: List<String> = listOf("__typename")
+    public object OtherR2 {
+      public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      fun fromJson(
+      public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
         typename: String
@@ -198,20 +199,20 @@ object TestQuery_ResponseAdapter {
         )
       }
 
-      fun toJson(
+      public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: TestQuery.Data.OtherR2
-      ) {
+        `value`: TestQuery.Data.OtherR2
+      ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
       }
     }
 
     private object Luke : Adapter<TestQuery.Data.Luke> {
-      val RESPONSE_NAMES: List<String> = listOf("__typename")
+      public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Luke {
         reader.selectName(RESPONSE_NAMES).also {
           check(it == 0) {
@@ -229,11 +230,11 @@ object TestQuery_ResponseAdapter {
         }
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: TestQuery.Data.Luke
-      ) {
+        `value`: TestQuery.Data.Luke
+      ): Unit {
         when(value) {
           is TestQuery.Data.HumanLuke -> HumanLuke.toJson(writer, customScalarAdapters, value)
           is TestQuery.Data.DroidLuke -> DroidLuke.toJson(writer, customScalarAdapters, value)
@@ -242,10 +243,10 @@ object TestQuery_ResponseAdapter {
       }
     }
 
-    object HumanLuke {
-      val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "height")
+    public object HumanLuke {
+      public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "height")
 
-      fun fromJson(
+      public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
         typename: String
@@ -270,11 +271,11 @@ object TestQuery_ResponseAdapter {
         )
       }
 
-      fun toJson(
+      public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: TestQuery.Data.HumanLuke
-      ) {
+        `value`: TestQuery.Data.HumanLuke
+      ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -286,10 +287,10 @@ object TestQuery_ResponseAdapter {
       }
     }
 
-    object DroidLuke {
-      val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "primaryFunction")
+    public object DroidLuke {
+      public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "primaryFunction")
 
-      fun fromJson(
+      public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
         typename: String
@@ -314,11 +315,11 @@ object TestQuery_ResponseAdapter {
         )
       }
 
-      fun toJson(
+      public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: TestQuery.Data.DroidLuke
-      ) {
+        `value`: TestQuery.Data.DroidLuke
+      ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -330,10 +331,10 @@ object TestQuery_ResponseAdapter {
       }
     }
 
-    object OtherLuke {
-      val RESPONSE_NAMES: List<String> = listOf("__typename")
+    public object OtherLuke {
+      public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      fun fromJson(
+      public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
         typename: String
@@ -352,11 +353,11 @@ object TestQuery_ResponseAdapter {
         )
       }
 
-      fun toJson(
+      public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: TestQuery.Data.OtherLuke
-      ) {
+        `value`: TestQuery.Data.OtherLuke
+      ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
       }

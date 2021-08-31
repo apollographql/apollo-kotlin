@@ -16,70 +16,72 @@ import com.example.fragments_with_type_condition.fragment.DroidDetails
 import com.example.fragments_with_type_condition.fragment.HumanDetails
 import com.example.fragments_with_type_condition.selections.TestQuerySelections
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class TestQuery : Query<TestQuery.Data> {
-  override fun id(): String = OPERATION_ID
+public class TestQuery() : Query<TestQuery.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestQuerySelections.root
+  public override fun selections(): List<CompiledSelection> = TestQuerySelections.root
 
-  data class Data(
-    val r2: R2?,
-    val luke: Luke?
+  public data class Data(
+    public val r2: R2?,
+    public val luke: Luke?
   ) : Query.Data
 
-  data class R2(
-    val __typename: String,
+  public data class R2(
+    public val __typename: String,
     /**
      * Synthetic field for grouping fragments
      */
-    val fragments: Fragments
+    public val fragments: Fragments
   ) {
-    data class Fragments(
+    public data class Fragments(
       /**
        * Synthetic field for 'HumanDetails'
        */
-      val humanDetails: HumanDetails?,
+      public val humanDetails: HumanDetails?,
       /**
        * Synthetic field for 'DroidDetails'
        */
-      val droidDetails: DroidDetails?
+      public val droidDetails: DroidDetails?
     )
   }
 
-  data class Luke(
-    val __typename: String,
+  public data class Luke(
+    public val __typename: String,
     /**
      * Synthetic field for grouping fragments
      */
-    val fragments: Fragments
+    public val fragments: Fragments
   ) {
-    data class Fragments(
+    public data class Fragments(
       /**
        * Synthetic field for 'HumanDetails'
        */
-      val humanDetails: HumanDetails?,
+      public val humanDetails: HumanDetails?,
       /**
        * Synthetic field for 'DroidDetails'
        */
-      val droidDetails: DroidDetails?
+      public val droidDetails: DroidDetails?
     )
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "7d805690a4b15b327a23b61c94049254b0e6613ec62e9b913b716be71bb2e54c"
 
     /**
@@ -109,9 +111,9 @@ class TestQuery : Query<TestQuery.Data> {
      *   primaryFunction
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query TestQuery { r2: hero { __typename ...HumanDetails ...DroidDetails } luke: hero { __typename ...HumanDetails ...DroidDetails } }  fragment HumanDetails on Human { name height }  fragment DroidDetails on Droid { name primaryFunction }"
 
-    const val OPERATION_NAME: String = "TestQuery"
+    public const val OPERATION_NAME: String = "TestQuery"
   }
 }

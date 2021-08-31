@@ -10,8 +10,8 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CompiledStringType
 import kotlin.collections.List
 
-object planetFragmentSelections {
-  val root: List<CompiledSelection> = listOf(
+public object planetFragmentSelections {
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
           type = CompiledStringType

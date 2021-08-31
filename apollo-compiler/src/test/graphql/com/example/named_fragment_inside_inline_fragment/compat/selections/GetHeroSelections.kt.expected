@@ -15,7 +15,7 @@ import com.example.named_fragment_inside_inline_fragment.fragment.selections.cha
 import com.example.named_fragment_inside_inline_fragment.type.Types.Character
 import kotlin.collections.List
 
-object GetHeroSelections {
+public object GetHeroSelections {
   private val onCharacter: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
@@ -42,7 +42,7 @@ object GetHeroSelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "hero",
           type = Character,

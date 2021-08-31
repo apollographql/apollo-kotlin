@@ -13,63 +13,65 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.root_query_fragment_with_nested_fragments.fragment.selections.QueryFragmentSelections
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class QueryFragmentImpl : Fragment<QueryFragmentImpl.Data> {
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+public class QueryFragmentImpl() : Fragment<QueryFragmentImpl.Data> {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return QueryFragmentImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = QueryFragmentSelections.root
+  public override fun selections(): List<CompiledSelection> = QueryFragmentSelections.root
 
-  data class Data(
-    override val __typename: String,
-    override val hero: Hero?,
-    override val droid: Droid?,
-    override val human: Human?
+  public data class Data(
+    public override val __typename: String,
+    public override val hero: Hero?,
+    public override val droid: Droid?,
+    public override val human: Human?
   ) : QueryFragment, Fragment.Data {
-    data class Hero(
-      override val __typename: String,
+    public data class Hero(
+      public override val __typename: String,
       /**
        * The name of the character
        */
-      override val name: String
+      public override val name: String
     ) : HeroFragment, QueryFragment.Hero {
-      companion object {
-        fun Hero.heroFragment() = this as? HeroFragment
+      public companion object {
+        public fun Hero.heroFragment() = this as? HeroFragment
       }
     }
 
-    data class Droid(
-      override val __typename: String,
+    public data class Droid(
+      public override val __typename: String,
       /**
        * What others call this droid
        */
-      override val name: String,
+      public override val name: String,
       /**
        * This droid's primary function
        */
-      override val primaryFunction: String?
+      public override val primaryFunction: String?
     ) : DroidFragment, QueryFragment.Droid {
-      companion object {
-        fun Droid.droidFragment() = this as? DroidFragment
+      public companion object {
+        public fun Droid.droidFragment() = this as? DroidFragment
       }
     }
 
-    data class Human(
-      override val __typename: String,
+    public data class Human(
+      public override val __typename: String,
       /**
        * What this human calls themselves
        */
-      override val name: String,
+      public override val name: String,
       /**
        * The home planet of the human, or null if unknown
        */
-      override val homePlanet: String?
+      public override val homePlanet: String?
     ) : QueryFragment.Human
   }
 }

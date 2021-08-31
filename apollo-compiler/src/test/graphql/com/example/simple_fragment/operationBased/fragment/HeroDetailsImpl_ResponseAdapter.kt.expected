@@ -13,13 +13,14 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.possibleTypes
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
 internal object HeroDetailsImpl_ResponseAdapter {
-  object HeroDetails : Adapter<com.example.simple_fragment.fragment.HeroDetails> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename")
+  public object HeroDetails : Adapter<com.example.simple_fragment.fragment.HeroDetails> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.simple_fragment.fragment.HeroDetails {
       var __typename: String? = null
 
@@ -47,11 +48,11 @@ internal object HeroDetailsImpl_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: com.example.simple_fragment.fragment.HeroDetails
-    ) {
+      `value`: com.example.simple_fragment.fragment.HeroDetails
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 

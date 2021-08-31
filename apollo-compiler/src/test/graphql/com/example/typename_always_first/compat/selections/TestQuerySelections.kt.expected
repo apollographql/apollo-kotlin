@@ -14,7 +14,7 @@ import com.apollographql.apollo3.api.notNull
 import com.example.typename_always_first.type.Types.Character
 import kotlin.collections.List
 
-object TestQuerySelections {
+public object TestQuerySelections {
   private val onHuman: List<CompiledSelection> = listOf(
         CompiledField(
           name = "height",
@@ -56,7 +56,7 @@ object TestQuerySelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "hero",
           type = Character,

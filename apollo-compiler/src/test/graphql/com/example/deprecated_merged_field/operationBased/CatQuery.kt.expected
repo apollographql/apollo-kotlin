@@ -15,39 +15,41 @@ import com.example.deprecated_merged_field.adapter.CatQuery_ResponseAdapter
 import com.example.deprecated_merged_field.fragment.AnimalFragment
 import com.example.deprecated_merged_field.selections.CatQuerySelections
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class CatQuery : Query<CatQuery.Data> {
-  override fun id(): String = OPERATION_ID
+public class CatQuery() : Query<CatQuery.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return CatQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = CatQuerySelections.root
+  public override fun selections(): List<CompiledSelection> = CatQuerySelections.root
 
-  data class Data(
-    val cat: Cat?
+  public data class Data(
+    public val cat: Cat?
   ) : Query.Data {
-    data class Cat(
-      val __typename: String,
+    public data class Cat(
+      public val __typename: String,
       /**
        * Synthetic field for 'AnimalFragment'
        */
-      val animalFragment: AnimalFragment?
+      public val animalFragment: AnimalFragment?
     )
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "1339b44a5c30437b050faa2883275f02a22fffe77aa08983f50bccdab674d7ed"
 
     /**
@@ -71,9 +73,9 @@ class CatQuery : Query<CatQuery.Data> {
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query CatQuery { cat { __typename ...AnimalFragment } }  fragment AnimalFragment on Animal { __typename ... on Cat { name } ... on Dog { name } }"
 
-    const val OPERATION_NAME: String = "CatQuery"
+    public const val OPERATION_NAME: String = "CatQuery"
   }
 }

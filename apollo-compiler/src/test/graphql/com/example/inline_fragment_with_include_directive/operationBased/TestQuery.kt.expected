@@ -16,83 +16,85 @@ import com.example.inline_fragment_with_include_directive.adapter.TestQuery_Vari
 import com.example.inline_fragment_with_include_directive.selections.TestQuerySelections
 import kotlin.Boolean
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-data class TestQuery(
-  val withDetails: Boolean,
-  val skipHumanDetails: Boolean
+public data class TestQuery(
+  public val withDetails: Boolean,
+  public val skipHumanDetails: Boolean
 ) : Query<TestQuery.Data> {
-  override fun id(): String = OPERATION_ID
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     TestQuery_VariablesAdapter.toJson(writer, customScalarAdapters, this)
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestQuerySelections.root
+  public override fun selections(): List<CompiledSelection> = TestQuerySelections.root
 
-  data class Data(
-    val hero: Hero?
+  public data class Data(
+    public val hero: Hero?
   ) : Query.Data {
-    data class Hero(
-      val __typename: String,
+    public data class Hero(
+      public val __typename: String,
       /**
        * The ID of the character
        */
-      val id: String,
+      public val id: String,
       /**
        * Synthetic field for inline fragment on Human
        */
-      val onHuman: OnHuman?,
+      public val onHuman: OnHuman?,
       /**
        * Synthetic field for inline fragment on Droid
        */
-      val onDroid: OnDroid?,
+      public val onDroid: OnDroid?,
       /**
        * Synthetic field for inline fragment on Character
        */
-      val onCharacter: OnCharacter?
+      public val onCharacter: OnCharacter?
     ) {
-      data class OnHuman(
+      public data class OnHuman(
         /**
          * What this human calls themselves
          */
-        val name: String,
+        public val name: String,
         /**
          * The home planet of the human, or null if unknown
          */
-        val homePlanet: String?
+        public val homePlanet: String?
       )
 
-      data class OnDroid(
+      public data class OnDroid(
         /**
          * What others call this droid
          */
-        val name: String,
+        public val name: String,
         /**
          * This droid's primary function
          */
-        val primaryFunction: String?
+        public val primaryFunction: String?
       )
 
-      data class OnCharacter(
+      public data class OnCharacter(
         /**
          * The name of the character
          */
-        val name: String
+        public val name: String
       )
     }
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "1fc50a1808d1ff72f74d821b563ee69df2fc04dd650e41d27d75d90d0413bd65"
 
     /**
@@ -117,9 +119,9 @@ data class TestQuery(
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query TestQuery(${'$'}withDetails: Boolean!, ${'$'}skipHumanDetails: Boolean!) { hero { __typename id ... on Human @include(if: ${'$'}withDetails) @skip(if: ${'$'}skipHumanDetails) { name homePlanet } ... on Droid @include(if: ${'$'}withDetails) { name primaryFunction } ... on Character @include(if: ${'$'}withDetails) { name } } }"
 
-    const val OPERATION_NAME: String = "TestQuery"
+    public const val OPERATION_NAME: String = "TestQuery"
   }
 }

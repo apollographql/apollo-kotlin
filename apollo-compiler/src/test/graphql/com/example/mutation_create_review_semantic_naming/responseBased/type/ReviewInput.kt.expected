@@ -15,93 +15,93 @@ import kotlin.collections.List
 /**
  * The input object sent when someone is creating a new review
  */
-data class ReviewInput(
+public data class ReviewInput(
   /**
    * 0-5 stars
    */
-  val stars: Int,
+  public val stars: Int,
   /**
    * for test purpose only
    */
-  val nullableIntFieldWithDefaultValue: Optional<Int?> = Optional.Absent,
+  public val nullableIntFieldWithDefaultValue: Optional<Int?> = Optional.Absent,
   /**
    * Comment about the movie, optional
    */
-  val commentary: Optional<String?> = Optional.Absent,
+  public val commentary: Optional<String?> = Optional.Absent,
   /**
    * Favorite color, optional
    */
-  val favoriteColor: ColorInput,
+  public val favoriteColor: ColorInput,
   /**
    * for test purpose only
    */
-  val enumWithDefaultValue: Optional<Episode?> = Optional.Absent,
+  public val enumWithDefaultValue: Optional<Episode?> = Optional.Absent,
   /**
    * for test purpose only
    */
-  val nonNullableEnumWithDefaultValue: Optional<Episode> = Optional.Absent,
+  public val nonNullableEnumWithDefaultValue: Optional<Episode> = Optional.Absent,
   /**
    * for test purpose only
    */
-  val nullableEnum: Optional<Episode?> = Optional.Absent,
+  public val nullableEnum: Optional<Episode?> = Optional.Absent,
   /**
    * for test purpose only
    */
-  val listOfCustomScalar: Optional<List<Any?>?> = Optional.Absent,
+  public val listOfCustomScalar: Optional<List<Any?>?> = Optional.Absent,
   /**
    * for test purpose only
    */
-  val customScalar: Optional<Any?> = Optional.Absent,
+  public val customScalar: Optional<Any?> = Optional.Absent,
   /**
    * for test purpose only
    */
-  val listOfEnums: Optional<List<Episode?>?> = Optional.Absent,
+  public val listOfEnums: Optional<List<Episode?>?> = Optional.Absent,
   /**
    * for test purpose only
    */
-  val listOfInt: Optional<List<Int?>?> = Optional.Absent,
+  public val listOfInt: Optional<List<Int?>?> = Optional.Absent,
   /**
    * for test purpose only
    */
-  val listOfString: Optional<List<String?>?> = Optional.Absent,
+  public val listOfString: Optional<List<String?>?> = Optional.Absent,
   /**
    * for test purpose only
    */
-  val listOfStringNonOptional: List<String?>,
+  public val listOfStringNonOptional: List<String?>,
   /**
    * for test purpose only
    */
-  val listOfInputTypes: Optional<List<ColorInput?>?> = Optional.Absent,
+  public val listOfInputTypes: Optional<List<ColorInput?>?> = Optional.Absent,
   /**
    * for test purpose only
    */
-  val booleanWithDefaultValue: Optional<Boolean?> = Optional.Absent,
+  public val booleanWithDefaultValue: Optional<Boolean?> = Optional.Absent,
   /**
    * for test purpose only
    */
-  val booleanNonOptional: Optional<Boolean?> = Optional.Absent,
+  public val booleanNonOptional: Optional<Boolean?> = Optional.Absent,
   /**
    * for test purpose only
    */
-  val listOfListOfString: Optional<List<List<String>>?> = Optional.Absent,
+  public val listOfListOfString: Optional<List<List<String>>?> = Optional.Absent,
   /**
    * for test purpose only
    */
-  val listOfListOfEnum: Optional<List<List<Episode>>?> = Optional.Absent,
+  public val listOfListOfEnum: Optional<List<List<Episode>>?> = Optional.Absent,
   /**
    * for test purpose only
    */
-  val listOfListOfCustom: Optional<List<List<Any>>?> = Optional.Absent,
+  public val listOfListOfCustom: Optional<List<List<Any>>?> = Optional.Absent,
   /**
    * for test purpose only
    */
-  val listOfListOfObject: Optional<List<List<ColorInput>>?> = Optional.Absent,
+  public val listOfListOfObject: Optional<List<List<ColorInput>>?> = Optional.Absent,
   /**
    * for test purpose only
    */
-  val CapitalizedField: Optional<String?> = Optional.Absent,
+  public val CapitalizedField: Optional<String?> = Optional.Absent,
   /**
    * for test purpose only
    */
-  val CapitalizedInt: Optional<Int?> = Optional.Absent
+  public val CapitalizedInt: Optional<Int?> = Optional.Absent
 )

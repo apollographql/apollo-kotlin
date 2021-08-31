@@ -27,26 +27,7 @@ subprojects {
     from(rootProject.file("gradle/dependencies.gradle"))
   }
 
-  afterEvaluate {
-    tasks.withType<KotlinCompile> {
-      kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
-      }
-    }
-    (project.extensions.findByName("kotlin")
-        as? org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension)?.run {
-      sourceSets.all {
-        languageSettings.useExperimentalAnnotation("kotlin.RequiresOptIn")
-      }
-    }
-  }
-
-  // Ensure "org.gradle.jvm.version" is set to "8" in Gradle metadata of jvm-only modules.
-  // (multiplatform modules don't set this)
-  tasks.withType<JavaCompile> {
-    sourceCompatibility = JavaVersion.VERSION_1_8.toString()
-    targetCompatibility = JavaVersion.VERSION_1_8.toString()
-  }
+  configureJavaAndKotlinCompilers()
 
   tasks.withType<Test> {
     systemProperty("updateTestFixtures", System.getProperty("updateTestFixtures"))
@@ -136,15 +117,6 @@ tasks.register("publishToGradlePortalIfNeeded") {
   }
 }
 
-tasks.register("rmbuild") {
-  doLast {
-    projectDir.walk().filter { it.isDirectory && it.name == "build" }
-        .forEach {
-          it.deleteRecursively()
-        }
-  }
-}
-
 tasks.register("fullCheck") {
   subprojects {
     tasks.all {
@@ -182,4 +154,11 @@ repositories {
 tasks.named("dokkaHtmlMultiModule").configure {
   this as org.jetbrains.dokka.gradle.DokkaMultiModuleTask
   outputDirectory.set(buildDir.resolve("dokkaHtml/kdoc"))
+}
+
+tasks.named("dependencyUpdates").configure {
+  (this as com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask)
+  rejectVersionIf {
+    listOf("alpha", "beta", "rc").any { candidate.version.toLowerCase().contains(it) }
+  }
 }

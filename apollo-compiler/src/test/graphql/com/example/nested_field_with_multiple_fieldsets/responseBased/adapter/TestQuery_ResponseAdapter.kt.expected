@@ -15,13 +15,14 @@ import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.nested_field_with_multiple_fieldsets.TestQuery
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object TestQuery_ResponseAdapter {
-  object Data : Adapter<TestQuery.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("iface1")
+public object TestQuery_ResponseAdapter {
+  public object Data : Adapter<TestQuery.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("iface1")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var iface1: TestQuery.Data.Iface1? = null
 
@@ -37,19 +38,19 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestQuery.Data
-    ) {
+      `value`: TestQuery.Data
+    ): Unit {
       writer.name("iface1")
       Iface1.obj().nullable().toJson(writer, customScalarAdapters, value.iface1)
     }
 
     private object Iface1 : Adapter<TestQuery.Data.Iface1> {
-      val RESPONSE_NAMES: List<String> = listOf("__typename")
+      public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Iface1 {
         reader.selectName(RESPONSE_NAMES).also {
           check(it == 0) {
@@ -65,11 +66,11 @@ object TestQuery_ResponseAdapter {
         }
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: TestQuery.Data.Iface1
-      ) {
+        `value`: TestQuery.Data.Iface1
+      ): Unit {
         when(value) {
           is TestQuery.Data.Impl1Iface1 -> Impl1Iface1.toJson(writer, customScalarAdapters, value)
           is TestQuery.Data.OtherIface1 -> OtherIface1.toJson(writer, customScalarAdapters, value)
@@ -77,10 +78,10 @@ object TestQuery_ResponseAdapter {
       }
     }
 
-    object Impl1Iface1 {
-      val RESPONSE_NAMES: List<String> = listOf("__typename", "iface2")
+    public object Impl1Iface1 {
+      public val RESPONSE_NAMES: List<String> = listOf("__typename", "iface2")
 
-      fun fromJson(
+      public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
         typename: String
@@ -102,11 +103,11 @@ object TestQuery_ResponseAdapter {
         )
       }
 
-      fun toJson(
+      public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: TestQuery.Data.Impl1Iface1
-      ) {
+        `value`: TestQuery.Data.Impl1Iface1
+      ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -115,10 +116,10 @@ object TestQuery_ResponseAdapter {
       }
 
       private object Iface2 : Adapter<TestQuery.Data.Impl1Iface1.Iface2> {
-        val RESPONSE_NAMES: List<String> = listOf("__typename")
+        public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.Data.Impl1Iface1.Iface2 {
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Impl1Iface1.Iface2 {
           reader.selectName(RESPONSE_NAMES).also {
             check(it == 0) {
               "__typename not present in first position"
@@ -133,11 +134,11 @@ object TestQuery_ResponseAdapter {
           }
         }
 
-        override fun toJson(
+        public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          value: TestQuery.Data.Impl1Iface1.Iface2
-        ) {
+          `value`: TestQuery.Data.Impl1Iface1.Iface2
+        ): Unit {
           when(value) {
             is TestQuery.Data.Impl1Iface1.Impl2Iface2 -> Impl2Iface2.toJson(writer,
                 customScalarAdapters, value)
@@ -147,11 +148,11 @@ object TestQuery_ResponseAdapter {
         }
       }
 
-      object Impl2Iface2 {
-        val RESPONSE_NAMES: List<String> = listOf("__typename", "scalar1", "scalar2", "scalar3",
-            "scalar4")
+      public object Impl2Iface2 {
+        public val RESPONSE_NAMES: List<String> = listOf("__typename", "scalar1", "scalar2",
+            "scalar3", "scalar4")
 
-        fun fromJson(
+        public fun fromJson(
           reader: JsonReader,
           customScalarAdapters: CustomScalarAdapters,
           typename: String
@@ -182,11 +183,11 @@ object TestQuery_ResponseAdapter {
           )
         }
 
-        fun toJson(
+        public fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          value: TestQuery.Data.Impl1Iface1.Impl2Iface2
-        ) {
+          `value`: TestQuery.Data.Impl1Iface1.Impl2Iface2
+        ): Unit {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -204,10 +205,10 @@ object TestQuery_ResponseAdapter {
         }
       }
 
-      object OtherIface2 {
-        val RESPONSE_NAMES: List<String> = listOf("__typename", "scalar1", "scalar3")
+      public object OtherIface2 {
+        public val RESPONSE_NAMES: List<String> = listOf("__typename", "scalar1", "scalar3")
 
-        fun fromJson(
+        public fun fromJson(
           reader: JsonReader,
           customScalarAdapters: CustomScalarAdapters,
           typename: String
@@ -232,11 +233,11 @@ object TestQuery_ResponseAdapter {
           )
         }
 
-        fun toJson(
+        public fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          value: TestQuery.Data.Impl1Iface1.OtherIface2
-        ) {
+          `value`: TestQuery.Data.Impl1Iface1.OtherIface2
+        ): Unit {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -249,10 +250,10 @@ object TestQuery_ResponseAdapter {
       }
     }
 
-    object OtherIface1 {
-      val RESPONSE_NAMES: List<String> = listOf("__typename", "iface2")
+    public object OtherIface1 {
+      public val RESPONSE_NAMES: List<String> = listOf("__typename", "iface2")
 
-      fun fromJson(
+      public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
         typename: String
@@ -274,11 +275,11 @@ object TestQuery_ResponseAdapter {
         )
       }
 
-      fun toJson(
+      public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: TestQuery.Data.OtherIface1
-      ) {
+        `value`: TestQuery.Data.OtherIface1
+      ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -287,10 +288,10 @@ object TestQuery_ResponseAdapter {
       }
 
       private object Iface2 : Adapter<TestQuery.Data.OtherIface1.Iface2> {
-        val RESPONSE_NAMES: List<String> = listOf("__typename")
+        public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.Data.OtherIface1.Iface2 {
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters): TestQuery.Data.OtherIface1.Iface2 {
           reader.selectName(RESPONSE_NAMES).also {
             check(it == 0) {
               "__typename not present in first position"
@@ -305,11 +306,11 @@ object TestQuery_ResponseAdapter {
           }
         }
 
-        override fun toJson(
+        public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          value: TestQuery.Data.OtherIface1.Iface2
-        ) {
+          `value`: TestQuery.Data.OtherIface1.Iface2
+        ): Unit {
           when(value) {
             is TestQuery.Data.OtherIface1.Impl2Iface2 -> Impl2Iface2.toJson(writer,
                 customScalarAdapters, value)
@@ -319,10 +320,10 @@ object TestQuery_ResponseAdapter {
         }
       }
 
-      object Impl2Iface2 {
-        val RESPONSE_NAMES: List<String> = listOf("__typename", "scalar1", "scalar2")
+      public object Impl2Iface2 {
+        public val RESPONSE_NAMES: List<String> = listOf("__typename", "scalar1", "scalar2")
 
-        fun fromJson(
+        public fun fromJson(
           reader: JsonReader,
           customScalarAdapters: CustomScalarAdapters,
           typename: String
@@ -347,11 +348,11 @@ object TestQuery_ResponseAdapter {
           )
         }
 
-        fun toJson(
+        public fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          value: TestQuery.Data.OtherIface1.Impl2Iface2
-        ) {
+          `value`: TestQuery.Data.OtherIface1.Impl2Iface2
+        ): Unit {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -363,10 +364,10 @@ object TestQuery_ResponseAdapter {
         }
       }
 
-      object OtherIface2 {
-        val RESPONSE_NAMES: List<String> = listOf("__typename", "scalar1")
+      public object OtherIface2 {
+        public val RESPONSE_NAMES: List<String> = listOf("__typename", "scalar1")
 
-        fun fromJson(
+        public fun fromJson(
           reader: JsonReader,
           customScalarAdapters: CustomScalarAdapters,
           typename: String
@@ -388,11 +389,11 @@ object TestQuery_ResponseAdapter {
           )
         }
 
-        fun toJson(
+        public fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          value: TestQuery.Data.OtherIface1.OtherIface2
-        ) {
+          `value`: TestQuery.Data.OtherIface1.OtherIface2
+        ): Unit {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 

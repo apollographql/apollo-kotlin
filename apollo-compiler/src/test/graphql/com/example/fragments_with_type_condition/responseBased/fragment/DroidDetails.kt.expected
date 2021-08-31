@@ -7,14 +7,14 @@ package com.example.fragments_with_type_condition.fragment
 
 import kotlin.String
 
-interface DroidDetails {
+public interface DroidDetails {
   /**
    * What others call this droid
    */
-  val name: String
+  public val name: String
 
   /**
    * This droid's primary function
    */
-  val primaryFunction: String?
+  public val primaryFunction: String?
 }

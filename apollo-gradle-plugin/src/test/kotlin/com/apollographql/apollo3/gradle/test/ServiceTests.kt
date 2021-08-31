@@ -104,7 +104,7 @@ class ServiceTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "service/com/example/DroidDetailsQuery.kt", "class DroidDetailsQuery ")
+      TestUtils.assertFileContains(dir, "service/com/example/DroidDetailsQuery.kt", "class DroidDetailsQuery")
     }
   }
 
@@ -117,7 +117,7 @@ class ServiceTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "service/com/example/DroidDetails.kt", "class DroidDetails ")
+      TestUtils.assertFileContains(dir, "service/com/example/DroidDetails.kt", "class DroidDetails")
     }
   }
 
@@ -147,7 +147,7 @@ class ServiceTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "starwars/com/example/DroidDetailsQuery.kt", "class DroidDetailsQuery ")
+      TestUtils.assertFileContains(dir, "starwars/com/example/DroidDetailsQuery.kt", "class DroidDetailsQuery")
     }
   }
 

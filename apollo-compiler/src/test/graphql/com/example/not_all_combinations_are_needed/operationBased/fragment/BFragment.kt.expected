@@ -8,6 +8,6 @@ package com.example.not_all_combinations_are_needed.fragment
 import com.apollographql.apollo3.api.Fragment
 import kotlin.String
 
-data class BFragment(
-  val fieldB1: String?
+public data class BFragment(
+  public val fieldB1: String?
 ) : Fragment.Data

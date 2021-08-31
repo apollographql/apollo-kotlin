@@ -12,16 +12,18 @@ import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.nested_named_fragments.fragment.selections.pilotFragmentSelections
+import kotlin.Unit
 import kotlin.collections.List
 
-class PilotFragmentImpl : Fragment<PilotFragment> {
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+public class PilotFragmentImpl() : Fragment<PilotFragment> {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<PilotFragment> {
+  public override fun adapter(): Adapter<PilotFragment> {
     return PilotFragmentImpl_ResponseAdapter.PilotFragment.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = pilotFragmentSelections.root
+  public override fun selections(): List<CompiledSelection> = pilotFragmentSelections.root
 }

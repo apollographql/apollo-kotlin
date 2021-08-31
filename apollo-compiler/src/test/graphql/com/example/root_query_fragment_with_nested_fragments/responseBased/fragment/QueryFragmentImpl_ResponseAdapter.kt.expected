@@ -14,13 +14,14 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object QueryFragmentImpl_ResponseAdapter {
-  object Data : Adapter<QueryFragmentImpl.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "hero", "droid", "human")
+public object QueryFragmentImpl_ResponseAdapter {
+  public object Data : Adapter<QueryFragmentImpl.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "hero", "droid", "human")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         QueryFragmentImpl.Data {
       var __typename: String? = null
       var hero: QueryFragmentImpl.Data.Hero? = null
@@ -45,11 +46,11 @@ object QueryFragmentImpl_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: QueryFragmentImpl.Data
-    ) {
+      `value`: QueryFragmentImpl.Data
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -64,9 +65,9 @@ object QueryFragmentImpl_ResponseAdapter {
     }
 
     private object Hero : Adapter<QueryFragmentImpl.Data.Hero> {
-      val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
+      public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           QueryFragmentImpl.Data.Hero {
         var __typename: String? = null
         var name: String? = null
@@ -85,11 +86,11 @@ object QueryFragmentImpl_ResponseAdapter {
         )
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: QueryFragmentImpl.Data.Hero
-      ) {
+        `value`: QueryFragmentImpl.Data.Hero
+      ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -99,9 +100,9 @@ object QueryFragmentImpl_ResponseAdapter {
     }
 
     private object Droid : Adapter<QueryFragmentImpl.Data.Droid> {
-      val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "primaryFunction")
+      public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "primaryFunction")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           QueryFragmentImpl.Data.Droid {
         var __typename: String? = null
         var name: String? = null
@@ -123,11 +124,11 @@ object QueryFragmentImpl_ResponseAdapter {
         )
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: QueryFragmentImpl.Data.Droid
-      ) {
+        `value`: QueryFragmentImpl.Data.Droid
+      ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -140,9 +141,9 @@ object QueryFragmentImpl_ResponseAdapter {
     }
 
     private object Human : Adapter<QueryFragmentImpl.Data.Human> {
-      val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "homePlanet")
+      public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "homePlanet")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           QueryFragmentImpl.Data.Human {
         var __typename: String? = null
         var name: String? = null
@@ -164,11 +165,11 @@ object QueryFragmentImpl_ResponseAdapter {
         )
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: QueryFragmentImpl.Data.Human
-      ) {
+        `value`: QueryFragmentImpl.Data.Human
+      ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 

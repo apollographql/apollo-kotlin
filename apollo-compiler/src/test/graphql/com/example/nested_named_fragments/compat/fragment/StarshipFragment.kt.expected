@@ -9,43 +9,43 @@ import com.apollographql.apollo3.api.Fragment
 import kotlin.String
 import kotlin.collections.List
 
-data class StarshipFragment(
+public data class StarshipFragment(
   /**
    * The ID of an object
    */
-  val id: String,
+  public val id: String,
   /**
    * The name of this starship. The common name, such as "Death Star".
    */
-  val name: String?,
-  val pilotConnection: PilotConnection?
+  public val name: String?,
+  public val pilotConnection: PilotConnection?
 ) : Fragment.Data {
-  data class PilotConnection(
+  public data class PilotConnection(
     /**
      * A list of edges.
      */
-    val edges: List<Edge?>?
+    public val edges: List<Edge?>?
   )
 
-  data class Edge(
+  public data class Edge(
     /**
      * The item at the end of the edge
      */
-    val node: Node?
+    public val node: Node?
   )
 
-  data class Node(
-    val __typename: String,
+  public data class Node(
+    public val __typename: String,
     /**
      * Synthetic field for grouping fragments
      */
-    val fragments: Fragments
+    public val fragments: Fragments
   ) {
-    data class Fragments(
+    public data class Fragments(
       /**
        * Synthetic field for 'pilotFragment'
        */
-      val pilotFragment: PilotFragment
+      public val pilotFragment: PilotFragment
     )
   }
 }

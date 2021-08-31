@@ -16,13 +16,14 @@ import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
 import com.example.test_inline.GetPage
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object GetPage_ResponseAdapter {
-  object Data : Adapter<GetPage.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("collection")
+public object GetPage_ResponseAdapter {
+  public object Data : Adapter<GetPage.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("collection")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetPage.Data {
       var collection: GetPage.Data.Collection? = null
 
@@ -38,19 +39,19 @@ object GetPage_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: GetPage.Data
-    ) {
+      `value`: GetPage.Data
+    ): Unit {
       writer.name("collection")
       Collection.obj(true).toJson(writer, customScalarAdapters, value.collection)
     }
 
     private object Collection : Adapter<GetPage.Data.Collection> {
-      val RESPONSE_NAMES: List<String> = listOf("__typename", "items")
+      public val RESPONSE_NAMES: List<String> = listOf("__typename", "items")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           GetPage.Data.Collection {
         var __typename: String? = null
         var items: List<GetPage.Data.Collection.Item>? = null
@@ -81,11 +82,11 @@ object GetPage_ResponseAdapter {
         )
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: GetPage.Data.Collection
-      ) {
+        `value`: GetPage.Data.Collection
+      ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -99,10 +100,10 @@ object GetPage_ResponseAdapter {
       }
 
       private object Item : Adapter<GetPage.Data.Collection.Item> {
-        val RESPONSE_NAMES: List<String> = listOf("title")
+        public val RESPONSE_NAMES: List<String> = listOf("title")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            GetPage.Data.Collection.Item {
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters): GetPage.Data.Collection.Item {
           var title: String? = null
 
           while(true) {
@@ -117,11 +118,11 @@ object GetPage_ResponseAdapter {
           )
         }
 
-        override fun toJson(
+        public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          value: GetPage.Data.Collection.Item
-        ) {
+          `value`: GetPage.Data.Collection.Item
+        ): Unit {
           writer.name("title")
           StringAdapter.toJson(writer, customScalarAdapters, value.title)
         }
@@ -129,9 +130,10 @@ object GetPage_ResponseAdapter {
 
       private object OnParticularCollection :
           Adapter<GetPage.Data.Collection.OnParticularCollection> {
-        val RESPONSE_NAMES: List<String> = listOf("items")
+        public val RESPONSE_NAMES: List<String> = listOf("items")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters):
             GetPage.Data.Collection.OnParticularCollection {
           var items: List<GetPage.Data.Collection.OnParticularCollection.Item>? = null
 
@@ -147,19 +149,20 @@ object GetPage_ResponseAdapter {
           )
         }
 
-        override fun toJson(
+        public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          value: GetPage.Data.Collection.OnParticularCollection
-        ) {
+          `value`: GetPage.Data.Collection.OnParticularCollection
+        ): Unit {
           writer.name("items")
           Item.obj(true).list().toJson(writer, customScalarAdapters, value.items)
         }
 
         private object Item : Adapter<GetPage.Data.Collection.OnParticularCollection.Item> {
-          val RESPONSE_NAMES: List<String> = listOf("__typename")
+          public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          public override fun fromJson(reader: JsonReader,
+              customScalarAdapters: CustomScalarAdapters):
               GetPage.Data.Collection.OnParticularCollection.Item {
             var __typename: String? = null
 
@@ -187,11 +190,11 @@ object GetPage_ResponseAdapter {
             )
           }
 
-          override fun toJson(
+          public override fun toJson(
             writer: JsonWriter,
             customScalarAdapters: CustomScalarAdapters,
-            value: GetPage.Data.Collection.OnParticularCollection.Item
-          ) {
+            `value`: GetPage.Data.Collection.OnParticularCollection.Item
+          ): Unit {
             writer.name("__typename")
             StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -203,9 +206,10 @@ object GetPage_ResponseAdapter {
 
           private object OnParticularItem :
               Adapter<GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem> {
-            val RESPONSE_NAMES: List<String> = listOf("image")
+            public val RESPONSE_NAMES: List<String> = listOf("image")
 
-            override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+            public override fun fromJson(reader: JsonReader,
+                customScalarAdapters: CustomScalarAdapters):
                 GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem {
               var image: String? = null
 
@@ -221,11 +225,11 @@ object GetPage_ResponseAdapter {
               )
             }
 
-            override fun toJson(
+            public override fun toJson(
               writer: JsonWriter,
               customScalarAdapters: CustomScalarAdapters,
-              value: GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem
-            ) {
+              `value`: GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem
+            ): Unit {
               writer.name("image")
               StringAdapter.toJson(writer, customScalarAdapters, value.image)
             }

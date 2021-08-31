@@ -14,7 +14,7 @@ import com.example.optional.type.Types.Character
 import com.example.optional.type.Types.Episode
 import kotlin.collections.List
 
-object TestQuerySelections {
+public object TestQuerySelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
@@ -26,7 +26,7 @@ object TestQuerySelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "hero",
           type = Character,

@@ -14,32 +14,34 @@ import com.apollographql.apollo3.api.obj
 import com.example.fragment_used_twice.fragment.selections.HeroDetailsSelections
 import kotlin.Any
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return HeroDetailsImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = HeroDetailsSelections.root
+  public override fun selections(): List<CompiledSelection> = HeroDetailsSelections.root
 
-  data class Data(
-    override val __typename: String,
+  public data class Data(
+    public override val __typename: String,
     /**
      * The name of the character
      */
-    override val name: String,
+    public override val name: String,
     /**
      * The date character was born.
      */
-    override val birthDate: Any
+    public override val birthDate: Any
   ) : CharacterDetails, HeroDetails, Fragment.Data {
-    companion object {
-      fun Data.characterDetails() = this as? CharacterDetails
+    public companion object {
+      public fun Data.characterDetails() = this as? CharacterDetails
     }
   }
 }

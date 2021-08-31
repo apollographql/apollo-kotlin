@@ -8,9 +8,9 @@ package com.example.root_query_fragment_with_nested_fragments.fragment
 import com.apollographql.apollo3.api.Fragment
 import kotlin.String
 
-data class HeroFragment(
+public data class HeroFragment(
   /**
    * The name of the character
    */
-  val name: String
+  public val name: String
 ) : Fragment.Data

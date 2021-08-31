@@ -13,13 +13,15 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.possibleTypes
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object AnimalFragmentImpl_ResponseAdapter {
-  object AnimalFragment : Adapter<com.example.deprecated_merged_field.fragment.AnimalFragment> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename")
+public object AnimalFragmentImpl_ResponseAdapter {
+  public object AnimalFragment :
+      Adapter<com.example.deprecated_merged_field.fragment.AnimalFragment> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.deprecated_merged_field.fragment.AnimalFragment {
       var __typename: String? = null
 
@@ -55,11 +57,11 @@ object AnimalFragmentImpl_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: com.example.deprecated_merged_field.fragment.AnimalFragment
-    ) {
+      `value`: com.example.deprecated_merged_field.fragment.AnimalFragment
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -76,9 +78,9 @@ object AnimalFragmentImpl_ResponseAdapter {
 
     private object OnCat :
         Adapter<com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat> {
-      val RESPONSE_NAMES: List<String> = listOf("name")
+      public val RESPONSE_NAMES: List<String> = listOf("name")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat {
         var name: String? = null
 
@@ -94,11 +96,11 @@ object AnimalFragmentImpl_ResponseAdapter {
         )
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat
-      ) {
+        `value`: com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat
+      ): Unit {
         writer.name("name")
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
       }
@@ -106,9 +108,9 @@ object AnimalFragmentImpl_ResponseAdapter {
 
     private object OnDog :
         Adapter<com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog> {
-      val RESPONSE_NAMES: List<String> = listOf("name")
+      public val RESPONSE_NAMES: List<String> = listOf("name")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog {
         var name: String? = null
 
@@ -124,11 +126,11 @@ object AnimalFragmentImpl_ResponseAdapter {
         )
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog
-      ) {
+        `value`: com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog
+      ): Unit {
         writer.name("name")
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
       }

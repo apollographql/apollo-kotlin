@@ -18,7 +18,7 @@ import com.example.hero_details.type.Types.FriendsEdge
 import com.example.hero_details.type.Types.Hero_type
 import kotlin.collections.List
 
-object HeroDetailsSelections {
+public object HeroDetailsSelections {
   private val node: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
@@ -62,7 +62,7 @@ object HeroDetailsSelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "hero",
           type = Character,

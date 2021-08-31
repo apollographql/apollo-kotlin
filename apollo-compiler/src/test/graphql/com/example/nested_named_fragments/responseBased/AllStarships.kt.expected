@@ -17,109 +17,111 @@ import com.example.nested_named_fragments.fragment.PlanetFragment
 import com.example.nested_named_fragments.fragment.StarshipFragment
 import com.example.nested_named_fragments.selections.AllStarshipsSelections
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class AllStarships : Query<AllStarships.Data> {
-  override fun id(): String = OPERATION_ID
+public class AllStarships() : Query<AllStarships.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return AllStarships_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = AllStarshipsSelections.root
+  public override fun selections(): List<CompiledSelection> = AllStarshipsSelections.root
 
-  data class Data(
-    val allStarships: AllStarships?
+  public data class Data(
+    public val allStarships: AllStarships?
   ) : Query.Data {
-    data class AllStarships(
+    public data class AllStarships(
       /**
        * A list of edges.
        */
-      val edges: List<Edge?>?
+      public val edges: List<Edge?>?
     ) {
-      fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
+      public fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
-      data class Edge(
+      public data class Edge(
         /**
          * The item at the end of the edge
          */
-        val node: Node?
+        public val node: Node?
       ) {
-        data class Node(
-          val __typename: String,
+        public data class Node(
+          public val __typename: String,
           /**
            * The ID of an object
            */
-          override val id: String,
+          public override val id: String,
           /**
            * The name of this starship. The common name, such as "Death Star".
            */
-          override val name: String?,
-          override val pilotConnection: PilotConnection?
+          public override val name: String?,
+          public override val pilotConnection: PilotConnection?
         ) : StarshipFragment {
-          data class PilotConnection(
+          public data class PilotConnection(
             /**
              * A list of edges.
              */
-            override val edges: List<Edge?>?
+            public override val edges: List<Edge?>?
           ) : StarshipFragment.PilotConnection {
-            fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
+            public fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
-            data class Edge(
+            public data class Edge(
               /**
                * The item at the end of the edge
                */
-              override val node: Node?
+              public override val node: Node?
             ) : StarshipFragment.PilotConnection.Edge {
-              data class Node(
-                override val __typename: String,
+              public data class Node(
+                public override val __typename: String,
                 /**
                  * The name of this person.
                  */
-                override val name: String?,
+                public override val name: String?,
                 /**
                  * A planet that this person was born on or inhabits.
                  */
-                override val homeworld: Homeworld?
+                public override val homeworld: Homeworld?
               ) : PilotFragment, StarshipFragment.PilotConnection.Edge.Node {
-                data class Homeworld(
-                  override val __typename: String,
+                public data class Homeworld(
+                  public override val __typename: String,
                   /**
                    * The name of this planet.
                    */
-                  override val name: String?
+                  public override val name: String?
                 ) : PlanetFragment, PilotFragment.Homeworld,
                     StarshipFragment.PilotConnection.Edge.Node.Homeworld {
-                  companion object {
-                    fun Homeworld.planetFragment() = this as? PlanetFragment
+                  public companion object {
+                    public fun Homeworld.planetFragment() = this as? PlanetFragment
                   }
                 }
 
-                companion object {
-                  fun Node.pilotFragment() = this as? PilotFragment
+                public companion object {
+                  public fun Node.pilotFragment() = this as? PilotFragment
                 }
               }
             }
           }
 
-          companion object {
-            fun Node.starshipFragment() = this as? StarshipFragment
+          public companion object {
+            public fun Node.starshipFragment() = this as? StarshipFragment
           }
         }
       }
     }
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "a76ec26a83546f1113b4f2d763d67118a12a70958ef57d44d3f33dedaf90ff72"
 
     /**
@@ -162,9 +164,9 @@ class AllStarships : Query<AllStarships.Data> {
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query AllStarships { allStarships(first: 7) { edges { node { __typename ...starshipFragment } } } }  fragment planetFragment on Planet { name }  fragment pilotFragment on Person { name homeworld { __typename ...planetFragment } }  fragment starshipFragment on Starship { id name pilotConnection { edges { node { __typename ...pilotFragment } } } }"
 
-    const val OPERATION_NAME: String = "AllStarships"
+    public const val OPERATION_NAME: String = "AllStarships"
   }
 }

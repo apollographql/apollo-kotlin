@@ -11,13 +11,14 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
 internal object HeroDetailsImpl_ResponseAdapter {
-  object Data : Adapter<HeroDetailsImpl.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename")
+  public object Data : Adapter<HeroDetailsImpl.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         HeroDetailsImpl.Data {
       reader.selectName(RESPONSE_NAMES).also {
         check(it == 0) {
@@ -33,11 +34,11 @@ internal object HeroDetailsImpl_ResponseAdapter {
       }
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: HeroDetailsImpl.Data
-    ) {
+      `value`: HeroDetailsImpl.Data
+    ): Unit {
       when(value) {
         is HeroDetailsImpl.HumanData -> HumanData.toJson(writer, customScalarAdapters, value)
         is HeroDetailsImpl.OtherData -> OtherData.toJson(writer, customScalarAdapters, value)
@@ -45,10 +46,10 @@ internal object HeroDetailsImpl_ResponseAdapter {
     }
   }
 
-  object HumanData {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
+  public object HumanData {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-    fun fromJson(
+    public fun fromJson(
       reader: JsonReader,
       customScalarAdapters: CustomScalarAdapters,
       typename: String
@@ -70,11 +71,11 @@ internal object HeroDetailsImpl_ResponseAdapter {
       )
     }
 
-    fun toJson(
+    public fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: HeroDetailsImpl.HumanData
-    ) {
+      `value`: HeroDetailsImpl.HumanData
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -83,10 +84,10 @@ internal object HeroDetailsImpl_ResponseAdapter {
     }
   }
 
-  object OtherData {
-    val RESPONSE_NAMES: List<String> = listOf("__typename")
+  public object OtherData {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    fun fromJson(
+    public fun fromJson(
       reader: JsonReader,
       customScalarAdapters: CustomScalarAdapters,
       typename: String
@@ -105,11 +106,11 @@ internal object HeroDetailsImpl_ResponseAdapter {
       )
     }
 
-    fun toJson(
+    public fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: HeroDetailsImpl.OtherData
-    ) {
+      `value`: HeroDetailsImpl.OtherData
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
     }

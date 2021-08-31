@@ -13,8 +13,8 @@ import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-object UserFragmentSelections {
-  val root: List<CompiledSelection> = listOf(
+public object UserFragmentSelections {
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "firstName",
           type = CompiledStringType.notNull()

@@ -17,13 +17,14 @@ import com.apollographql.apollo3.api.obj
 import com.example.arguments_hardcoded.TestQuery
 import kotlin.Int
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object TestQuery_ResponseAdapter {
-  object Data : Adapter<TestQuery.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("reviews", "testNullableArguments")
+public object TestQuery_ResponseAdapter {
+  public object Data : Adapter<TestQuery.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("reviews", "testNullableArguments")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var reviews: List<TestQuery.Data.Review?>? = null
       var testNullableArguments: Int? = null
@@ -43,11 +44,11 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestQuery.Data
-    ) {
+      `value`: TestQuery.Data
+    ): Unit {
       writer.name("reviews")
       Review.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.reviews)
 
@@ -56,9 +57,9 @@ object TestQuery_ResponseAdapter {
     }
 
     private object Review : Adapter<TestQuery.Data.Review> {
-      val RESPONSE_NAMES: List<String> = listOf("stars", "commentary")
+      public val RESPONSE_NAMES: List<String> = listOf("stars", "commentary")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Review {
         var stars: Int? = null
         var commentary: String? = null
@@ -77,11 +78,11 @@ object TestQuery_ResponseAdapter {
         )
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: TestQuery.Data.Review
-      ) {
+        `value`: TestQuery.Data.Review
+      ): Unit {
         writer.name("stars")
         IntAdapter.toJson(writer, customScalarAdapters, value.stars)
 

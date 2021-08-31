@@ -14,13 +14,14 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object AFragmentImpl_ResponseAdapter {
-  object Data : Adapter<AFragmentImpl.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("node")
+public object AFragmentImpl_ResponseAdapter {
+  public object Data : Adapter<AFragmentImpl.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("node")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         AFragmentImpl.Data {
       var node: AFragmentImpl.Data.Node? = null
 
@@ -36,19 +37,19 @@ object AFragmentImpl_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: AFragmentImpl.Data
-    ) {
+      `value`: AFragmentImpl.Data
+    ): Unit {
       writer.name("node")
       Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
     }
 
     private object Node : Adapter<AFragmentImpl.Data.Node> {
-      val RESPONSE_NAMES: List<String> = listOf("__typename")
+      public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           AFragmentImpl.Data.Node {
         reader.selectName(RESPONSE_NAMES).also {
           check(it == 0) {
@@ -64,11 +65,11 @@ object AFragmentImpl_ResponseAdapter {
         }
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: AFragmentImpl.Data.Node
-      ) {
+        `value`: AFragmentImpl.Data.Node
+      ): Unit {
         when(value) {
           is AFragmentImpl.Data.ANodeNode -> ANodeNode.toJson(writer, customScalarAdapters, value)
           is AFragmentImpl.Data.OtherNode -> OtherNode.toJson(writer, customScalarAdapters, value)
@@ -76,10 +77,10 @@ object AFragmentImpl_ResponseAdapter {
       }
     }
 
-    object ANodeNode {
-      val RESPONSE_NAMES: List<String> = listOf("__typename", "field1", "field2")
+    public object ANodeNode {
+      public val RESPONSE_NAMES: List<String> = listOf("__typename", "field1", "field2")
 
-      fun fromJson(
+      public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
         typename: String
@@ -104,11 +105,11 @@ object AFragmentImpl_ResponseAdapter {
         )
       }
 
-      fun toJson(
+      public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: AFragmentImpl.Data.ANodeNode
-      ) {
+        `value`: AFragmentImpl.Data.ANodeNode
+      ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -120,10 +121,10 @@ object AFragmentImpl_ResponseAdapter {
       }
     }
 
-    object OtherNode {
-      val RESPONSE_NAMES: List<String> = listOf("__typename")
+    public object OtherNode {
+      public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      fun fromJson(
+      public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
         typename: String
@@ -142,11 +143,11 @@ object AFragmentImpl_ResponseAdapter {
         )
       }
 
-      fun toJson(
+      public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: AFragmentImpl.Data.OtherNode
-      ) {
+        `value`: AFragmentImpl.Data.OtherNode
+      ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
       }

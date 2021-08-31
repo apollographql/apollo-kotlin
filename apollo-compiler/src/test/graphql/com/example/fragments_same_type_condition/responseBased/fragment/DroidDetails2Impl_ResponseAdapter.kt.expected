@@ -11,13 +11,14 @@ import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object DroidDetails2Impl_ResponseAdapter {
-  object Data : Adapter<DroidDetails2Impl.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("primaryFunction")
+public object DroidDetails2Impl_ResponseAdapter {
+  public object Data : Adapter<DroidDetails2Impl.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("primaryFunction")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         DroidDetails2Impl.Data {
       var primaryFunction: String? = null
 
@@ -33,11 +34,11 @@ object DroidDetails2Impl_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: DroidDetails2Impl.Data
-    ) {
+      `value`: DroidDetails2Impl.Data
+    ): Unit {
       writer.name("primaryFunction")
       NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
     }

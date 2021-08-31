@@ -14,13 +14,15 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.possibleTypes
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object IFragmentImpl_ResponseAdapter {
-  object IFragment : Adapter<com.example.fragment_with_multiple_fieldsets.fragment.IFragment> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename")
+public object IFragmentImpl_ResponseAdapter {
+  public object IFragment : Adapter<com.example.fragment_with_multiple_fieldsets.fragment.IFragment>
+      {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.fragment_with_multiple_fieldsets.fragment.IFragment {
       var __typename: String? = null
 
@@ -48,11 +50,11 @@ object IFragmentImpl_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: com.example.fragment_with_multiple_fieldsets.fragment.IFragment
-    ) {
+      `value`: com.example.fragment_with_multiple_fieldsets.fragment.IFragment
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -63,10 +65,10 @@ object IFragmentImpl_ResponseAdapter {
     }
   }
 
-  object AsA : Adapter<com.example.fragment_with_multiple_fieldsets.fragment.IFragment.AsA> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldA")
+  public object AsA : Adapter<com.example.fragment_with_multiple_fieldsets.fragment.IFragment.AsA> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldA")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.fragment_with_multiple_fieldsets.fragment.IFragment.AsA {
       var __typename: String? = null
       var fieldA: String? = null
@@ -85,11 +87,11 @@ object IFragmentImpl_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: com.example.fragment_with_multiple_fieldsets.fragment.IFragment.AsA
-    ) {
+      `value`: com.example.fragment_with_multiple_fieldsets.fragment.IFragment.AsA
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 

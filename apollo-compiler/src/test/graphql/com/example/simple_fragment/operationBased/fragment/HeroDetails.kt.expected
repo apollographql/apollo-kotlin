@@ -9,9 +9,9 @@ import com.apollographql.apollo3.api.Fragment
 import kotlin.String
 
 internal data class HeroDetails(
-  val __typename: String,
+  public val __typename: String,
   /**
    * Synthetic field for 'HumanDetails'
    */
-  val humanDetails: HumanDetails?
+  public val humanDetails: HumanDetails?
 ) : Fragment.Data

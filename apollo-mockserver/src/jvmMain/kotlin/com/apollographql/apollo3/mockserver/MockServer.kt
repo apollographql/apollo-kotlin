@@ -22,18 +22,18 @@ actual class MockServer {
   }
 
   actual fun takeRequest(): MockRecordedRequest {
-    return mockWebServer.takeRequest(10, TimeUnit.MILLISECONDS).let {
+    return mockWebServer.takeRequest(10, TimeUnit.MILLISECONDS)?.let {
       MockRecordedRequest(
-          method = it.method,
-          path = it.path,
+          method = it.method!!,
+          path = it.path!!,
           version = parseRequestLine(it.requestLine).third,
           headers = it.headers.toMap(),
           body = it.body.readByteString()
       )
-    }
+    } ?: error("No recorded request")
   }
 
-  private fun Headers.toMap(): Map<String, String> = (0.until(size())).map {
+  private fun Headers.toMap(): Map<String, String> = (0.until(size)).map {
     name(it) to get(name(it))!!
   }.toMap()
 

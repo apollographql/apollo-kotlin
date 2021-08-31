@@ -11,13 +11,14 @@ import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object BFragmentImpl_ResponseAdapter {
-  object Data : Adapter<BFragmentImpl.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("fieldB1")
+public object BFragmentImpl_ResponseAdapter {
+  public object Data : Adapter<BFragmentImpl.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("fieldB1")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         BFragmentImpl.Data {
       var fieldB1: String? = null
 
@@ -33,11 +34,11 @@ object BFragmentImpl_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: BFragmentImpl.Data
-    ) {
+      `value`: BFragmentImpl.Data
+    ): Unit {
       writer.name("fieldB1")
       NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldB1)
     }

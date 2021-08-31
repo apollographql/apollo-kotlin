@@ -12,8 +12,8 @@ import com.apollographql.apollo3.api.notNull
 import com.example.fragment_used_twice.type.Types.Date
 import kotlin.collections.List
 
-object CharacterDetailsSelections {
-  val root: List<CompiledSelection> = listOf(
+public object CharacterDetailsSelections {
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
           type = CompiledStringType.notNull()

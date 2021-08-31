@@ -8,44 +8,44 @@ package com.example.root_query_fragment_with_nested_fragments.fragment
 import com.apollographql.apollo3.api.Fragment
 import kotlin.String
 
-data class QueryFragment(
-  val __typename: String,
-  val hero: Hero?,
-  val droid: Droid?,
-  val human: Human?
+public data class QueryFragment(
+  public val __typename: String,
+  public val hero: Hero?,
+  public val droid: Droid?,
+  public val human: Human?
 ) : Fragment.Data {
-  data class Hero(
-    val __typename: String,
+  public data class Hero(
+    public val __typename: String,
     /**
      * Synthetic field for 'heroFragment'
      */
-    val heroFragment: HeroFragment
+    public val heroFragment: HeroFragment
   )
 
-  data class Droid(
-    val __typename: String,
+  public data class Droid(
+    public val __typename: String,
     /**
      * Synthetic field for 'droidFragment'
      */
-    val droidFragment: DroidFragment
+    public val droidFragment: DroidFragment
   )
 
-  data class Human(
-    val __typename: String,
+  public data class Human(
+    public val __typename: String,
     /**
      * Synthetic field for inline fragment on Human
      */
-    val onHuman: OnHuman
+    public val onHuman: OnHuman
   ) {
-    data class OnHuman(
+    public data class OnHuman(
       /**
        * What this human calls themselves
        */
-      val name: String,
+      public val name: String,
       /**
        * The home planet of the human, or null if unknown
        */
-      val homePlanet: String?
+      public val homePlanet: String?
     )
   }
 }

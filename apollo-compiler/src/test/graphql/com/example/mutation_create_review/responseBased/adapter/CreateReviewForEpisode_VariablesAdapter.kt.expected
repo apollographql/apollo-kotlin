@@ -14,15 +14,17 @@ import com.example.mutation_create_review.CreateReviewForEpisode
 import com.example.mutation_create_review.type.adapter.Episode_ResponseAdapter
 import com.example.mutation_create_review.type.adapter.ReviewInput_InputAdapter
 import kotlin.IllegalStateException
+import kotlin.Unit
 
 internal object CreateReviewForEpisode_VariablesAdapter : Adapter<CreateReviewForEpisode> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
       CreateReviewForEpisode = throw IllegalStateException("Input type used in output position")
-  override fun toJson(
+
+  public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    value: CreateReviewForEpisode
-  ) {
+    `value`: CreateReviewForEpisode
+  ): Unit {
     writer.name("ep")
     Episode_ResponseAdapter.toJson(writer, customScalarAdapters, value.ep)
     writer.name("review")

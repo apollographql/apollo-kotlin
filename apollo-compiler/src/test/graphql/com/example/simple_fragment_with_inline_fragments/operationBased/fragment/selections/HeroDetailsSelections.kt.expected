@@ -15,7 +15,7 @@ import com.apollographql.apollo3.api.notNull
 import com.example.simple_fragment_with_inline_fragments.type.Types.Character
 import kotlin.collections.List
 
-object HeroDetailsSelections {
+public object HeroDetailsSelections {
   private val onHuman: List<CompiledSelection> = listOf(
         CompiledField(
           name = "height",
@@ -49,7 +49,7 @@ object HeroDetailsSelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
           type = CompiledStringType.notNull()
