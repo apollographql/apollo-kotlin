@@ -22,7 +22,6 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
-import com.squareup.kotlinpoet.joinToCode
 
 class EnumResponseAdapterBuilder(
     val context: CgContext,
@@ -57,14 +56,7 @@ class EnumResponseAdapterBuilder(
         .addCode(
             CodeBlock.builder()
                 .addStatement("val rawValue = reader.nextString()!!")
-                .beginControlFlow("return when(rawValue)")
-                .add(
-                    values
-                        .map { CodeBlock.of("%S -> %L.%L", it.name, layout.enumName(name), layout.enumValueName(it.name)) }
-                        .joinToCode(separator = "\n", suffix = "\n")
-                )
-                .add("else -> %L.UNKNOWN__%L\n", layout.enumName(name), "(rawValue)")
-                .endControlFlow()
+                .addStatement("return %T.valueOf(rawValue)", adaptedTypeName)
                 .build()
         )
         .addModifiers(KModifier.OVERRIDE)
