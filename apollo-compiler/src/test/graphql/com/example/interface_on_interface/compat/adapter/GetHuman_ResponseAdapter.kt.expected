@@ -17,13 +17,14 @@ import com.apollographql.apollo3.api.possibleTypes
 import com.example.interface_on_interface.GetHuman
 import kotlin.Double
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object GetHuman_ResponseAdapter {
-  object Data : Adapter<GetHuman.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("human", "node")
+public object GetHuman_ResponseAdapter {
+  public object Data : Adapter<GetHuman.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("human", "node")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetHuman.Data {
       var human: GetHuman.Human? = null
       var node: GetHuman.Node? = null
@@ -42,11 +43,11 @@ object GetHuman_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: GetHuman.Data
-    ) {
+      `value`: GetHuman.Data
+    ): Unit {
       writer.name("human")
       Human.obj().toJson(writer, customScalarAdapters, value.human)
 
@@ -55,10 +56,10 @@ object GetHuman_ResponseAdapter {
     }
   }
 
-  object Human : Adapter<GetHuman.Human> {
-    val RESPONSE_NAMES: List<String> = listOf("id", "name", "height")
+  public object Human : Adapter<GetHuman.Human> {
+    public val RESPONSE_NAMES: List<String> = listOf("id", "name", "height")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetHuman.Human {
       var id: String? = null
       var name: String? = null
@@ -80,11 +81,11 @@ object GetHuman_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: GetHuman.Human
-    ) {
+      `value`: GetHuman.Human
+    ): Unit {
       writer.name("id")
       StringAdapter.toJson(writer, customScalarAdapters, value.id)
 
@@ -96,10 +97,10 @@ object GetHuman_ResponseAdapter {
     }
   }
 
-  object Node : Adapter<GetHuman.Node> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename")
+  public object Node : Adapter<GetHuman.Node> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetHuman.Node {
       var __typename: String? = null
 
@@ -127,11 +128,11 @@ object GetHuman_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: GetHuman.Node
-    ) {
+      `value`: GetHuman.Node
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -142,10 +143,10 @@ object GetHuman_ResponseAdapter {
     }
   }
 
-  object AsHuman : Adapter<GetHuman.AsHuman> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "height")
+  public object AsHuman : Adapter<GetHuman.AsHuman> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "height")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetHuman.AsHuman {
       var __typename: String? = null
       var height: Double? = null
@@ -164,11 +165,11 @@ object GetHuman_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: GetHuman.AsHuman
-    ) {
+      `value`: GetHuman.AsHuman
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 

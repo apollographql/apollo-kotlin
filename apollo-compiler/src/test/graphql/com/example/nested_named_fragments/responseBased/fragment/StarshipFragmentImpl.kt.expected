@@ -13,70 +13,72 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.nested_named_fragments.fragment.selections.starshipFragmentSelections
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class StarshipFragmentImpl : Fragment<StarshipFragmentImpl.Data> {
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+public class StarshipFragmentImpl() : Fragment<StarshipFragmentImpl.Data> {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return StarshipFragmentImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = starshipFragmentSelections.root
+  public override fun selections(): List<CompiledSelection> = starshipFragmentSelections.root
 
-  data class Data(
+  public data class Data(
     /**
      * The ID of an object
      */
-    override val id: String,
+    public override val id: String,
     /**
      * The name of this starship. The common name, such as "Death Star".
      */
-    override val name: String?,
-    override val pilotConnection: PilotConnection?
+    public override val name: String?,
+    public override val pilotConnection: PilotConnection?
   ) : StarshipFragment, Fragment.Data {
-    data class PilotConnection(
+    public data class PilotConnection(
       /**
        * A list of edges.
        */
-      override val edges: List<Edge?>?
+      public override val edges: List<Edge?>?
     ) : StarshipFragment.PilotConnection {
-      fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
+      public fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
-      data class Edge(
+      public data class Edge(
         /**
          * The item at the end of the edge
          */
-        override val node: Node?
+        public override val node: Node?
       ) : StarshipFragment.PilotConnection.Edge {
-        data class Node(
-          override val __typename: String,
+        public data class Node(
+          public override val __typename: String,
           /**
            * The name of this person.
            */
-          override val name: String?,
+          public override val name: String?,
           /**
            * A planet that this person was born on or inhabits.
            */
-          override val homeworld: Homeworld?
+          public override val homeworld: Homeworld?
         ) : PilotFragment, StarshipFragment.PilotConnection.Edge.Node {
-          data class Homeworld(
-            override val __typename: String,
+          public data class Homeworld(
+            public override val __typename: String,
             /**
              * The name of this planet.
              */
-            override val name: String?
+            public override val name: String?
           ) : PlanetFragment, PilotFragment.Homeworld,
               StarshipFragment.PilotConnection.Edge.Node.Homeworld {
-            companion object {
-              fun Homeworld.planetFragment() = this as? PlanetFragment
+            public companion object {
+              public fun Homeworld.planetFragment() = this as? PlanetFragment
             }
           }
 
-          companion object {
-            fun Node.pilotFragment() = this as? PilotFragment
+          public companion object {
+            public fun Node.pilotFragment() = this as? PilotFragment
           }
         }
       }

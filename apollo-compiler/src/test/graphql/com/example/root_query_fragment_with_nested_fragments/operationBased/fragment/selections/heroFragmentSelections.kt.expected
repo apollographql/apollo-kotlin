@@ -11,8 +11,8 @@ import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
 import kotlin.collections.List
 
-object heroFragmentSelections {
-  val root: List<CompiledSelection> = listOf(
+public object heroFragmentSelections {
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
           type = CompiledStringType.notNull()

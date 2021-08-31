@@ -17,13 +17,14 @@ import com.apollographql.apollo3.api.obj
 import com.example.inline_fragment_merge_fields.TestQuery
 import kotlin.Any
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object TestQuery_ResponseAdapter {
-  object Data : Adapter<TestQuery.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("hero")
+public object TestQuery_ResponseAdapter {
+  public object Data : Adapter<TestQuery.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var hero: TestQuery.Hero? = null
 
@@ -39,21 +40,21 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestQuery.Data
-    ) {
+      `value`: TestQuery.Data
+    ): Unit {
       writer.name("hero")
       Hero.obj().nullable().toJson(writer, customScalarAdapters, value.hero)
     }
   }
 
-  object Hero : Adapter<TestQuery.Hero> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friendsConnection",
+  public object Hero : Adapter<TestQuery.Hero> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friendsConnection",
         "profileLink")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Hero {
       var __typename: String? = null
       var name: String? = null
@@ -78,11 +79,11 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestQuery.Hero
-    ) {
+      `value`: TestQuery.Hero
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -97,10 +98,10 @@ object TestQuery_ResponseAdapter {
     }
   }
 
-  object FriendsConnection : Adapter<TestQuery.FriendsConnection> {
-    val RESPONSE_NAMES: List<String> = listOf("edges")
+  public object FriendsConnection : Adapter<TestQuery.FriendsConnection> {
+    public val RESPONSE_NAMES: List<String> = listOf("edges")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.FriendsConnection {
       var edges: List<TestQuery.Edge?>? = null
 
@@ -117,20 +118,20 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestQuery.FriendsConnection
-    ) {
+      `value`: TestQuery.FriendsConnection
+    ): Unit {
       writer.name("edges")
       Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
     }
   }
 
-  object Edge : Adapter<TestQuery.Edge> {
-    val RESPONSE_NAMES: List<String> = listOf("node")
+  public object Edge : Adapter<TestQuery.Edge> {
+    public val RESPONSE_NAMES: List<String> = listOf("node")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Edge {
       var node: TestQuery.Node? = null
 
@@ -146,20 +147,20 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestQuery.Edge
-    ) {
+      `value`: TestQuery.Edge
+    ): Unit {
       writer.name("node")
       Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
     }
   }
 
-  object Node : Adapter<TestQuery.Node> {
-    val RESPONSE_NAMES: List<String> = listOf("name")
+  public object Node : Adapter<TestQuery.Node> {
+    public val RESPONSE_NAMES: List<String> = listOf("name")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Node {
       var name: String? = null
 
@@ -175,11 +176,11 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestQuery.Node
-    ) {
+      `value`: TestQuery.Node
+    ): Unit {
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
     }

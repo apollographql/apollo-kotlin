@@ -7,9 +7,9 @@ package com.example.fragments_same_type_condition.fragment
 
 import kotlin.String
 
-interface DroidDetails1 {
+public interface DroidDetails1 {
   /**
    * What others call this droid
    */
-  val name: String
+  public val name: String
 }

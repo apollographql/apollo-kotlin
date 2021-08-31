@@ -14,14 +14,15 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object QueryFragmentImpl_ResponseAdapter {
-  object QueryFragment :
+public object QueryFragmentImpl_ResponseAdapter {
+  public object QueryFragment :
       Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "hero", "droid", "human")
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "hero", "droid", "human")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment {
       var __typename: String? = null
       var hero: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero? = null
@@ -46,11 +47,11 @@ object QueryFragmentImpl_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment
-    ) {
+      `value`: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -66,9 +67,9 @@ object QueryFragmentImpl_ResponseAdapter {
 
     private object Hero :
         Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero> {
-      val RESPONSE_NAMES: List<String> = listOf("__typename")
+      public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero {
         var __typename: String? = null
 
@@ -93,11 +94,11 @@ object QueryFragmentImpl_ResponseAdapter {
         )
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero
-      ) {
+        `value`: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero
+      ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -109,9 +110,9 @@ object QueryFragmentImpl_ResponseAdapter {
     private object Droid :
         Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid>
         {
-      val RESPONSE_NAMES: List<String> = listOf("__typename")
+      public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid {
         var __typename: String? = null
 
@@ -136,11 +137,11 @@ object QueryFragmentImpl_ResponseAdapter {
         )
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid
-      ) {
+        `value`: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid
+      ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -152,9 +153,9 @@ object QueryFragmentImpl_ResponseAdapter {
     private object Human :
         Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human>
         {
-      val RESPONSE_NAMES: List<String> = listOf("__typename")
+      public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human {
         var __typename: String? = null
 
@@ -179,11 +180,11 @@ object QueryFragmentImpl_ResponseAdapter {
         )
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human
-      ) {
+        `value`: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human
+      ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -194,9 +195,10 @@ object QueryFragmentImpl_ResponseAdapter {
       private object OnHuman :
           Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human.OnHuman>
           {
-        val RESPONSE_NAMES: List<String> = listOf("name", "homePlanet")
+        public val RESPONSE_NAMES: List<String> = listOf("name", "homePlanet")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters):
             com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human.OnHuman {
           var name: String? = null
           var homePlanet: String? = null
@@ -215,11 +217,11 @@ object QueryFragmentImpl_ResponseAdapter {
           )
         }
 
-        override fun toJson(
+        public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          value: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human.OnHuman
-        ) {
+          `value`: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human.OnHuman
+        ): Unit {
           writer.name("name")
           StringAdapter.toJson(writer, customScalarAdapters, value.name)
 

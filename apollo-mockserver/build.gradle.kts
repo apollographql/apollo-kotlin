@@ -17,16 +17,16 @@ kotlin {
 
     val jvmMain by getting {
       dependencies {
-        implementation(groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer"))
+        implementation(groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer4"))
       }
     }
 
     val commonTest by getting {
       dependencies {
-        implementation(project(":apollo-testing-support")) {
+        implementation(projects.apolloTestingSupport) {
           because("runWithMainLoop")
         }
-        implementation(project(":apollo-runtime")) {
+        implementation(projects.apolloRuntime) {
           because("We need HttpEngine for SocketTest")
         }
       }

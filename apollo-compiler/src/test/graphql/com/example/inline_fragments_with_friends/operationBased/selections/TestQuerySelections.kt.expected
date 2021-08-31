@@ -18,7 +18,7 @@ import com.example.inline_fragments_with_friends.type.Types.Character
 import com.example.inline_fragments_with_friends.type.Types.Episode
 import kotlin.collections.List
 
-object TestQuerySelections {
+public object TestQuerySelections {
   private val friends: List<CompiledSelection> = listOf(
         CompiledField(
           name = "appearsIn",
@@ -76,7 +76,7 @@ object TestQuerySelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "hero",
           type = Character,

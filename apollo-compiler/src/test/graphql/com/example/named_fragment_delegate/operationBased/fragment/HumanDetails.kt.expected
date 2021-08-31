@@ -10,37 +10,37 @@ import kotlin.Any
 import kotlin.String
 import kotlin.collections.List
 
-data class HumanDetails(
+public data class HumanDetails(
   /**
    * What this human calls themselves
    */
-  val name: String,
+  public val name: String,
   /**
    * Profile link
    */
-  val profileLink: Any,
+  public val profileLink: Any,
   /**
    * The friends of the human exposed as a connection with edges
    */
-  val friendsConnection: FriendsConnection
+  public val friendsConnection: FriendsConnection
 ) : Fragment.Data {
-  data class FriendsConnection(
+  public data class FriendsConnection(
     /**
      * The edges for each of the character's friends.
      */
-    val edges: List<Edge?>?
+    public val edges: List<Edge?>?
   ) {
-    data class Edge(
+    public data class Edge(
       /**
        * The character represented by this friendship edge
        */
-      val node: Node?
+      public val node: Node?
     ) {
-      data class Node(
+      public data class Node(
         /**
          * The name of the character
          */
-        val name: String
+        public val name: String
       )
     }
   }

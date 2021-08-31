@@ -13,25 +13,27 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_inside_inline_fragment.fragment.selections.characterAppearsInSelections
 import com.example.named_fragment_inside_inline_fragment.type.Episode
+import kotlin.Unit
 import kotlin.collections.List
 
-class CharacterAppearsInImpl : Fragment<CharacterAppearsInImpl.Data> {
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+public class CharacterAppearsInImpl() : Fragment<CharacterAppearsInImpl.Data> {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return CharacterAppearsInImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = characterAppearsInSelections.root
+  public override fun selections(): List<CompiledSelection> = characterAppearsInSelections.root
 
-  data class Data(
+  public data class Data(
     /**
      * The movies this character appears in
      */
-    override val appearsIn: List<Episode?>
+    public override val appearsIn: List<Episode?>
   ) : CharacterAppearsIn, Fragment.Data {
-    fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
+    public fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
   }
 }

@@ -18,50 +18,52 @@ import com.example.fragment_spread_with_include_directive.fragment.HumanDetails
 import com.example.fragment_spread_with_include_directive.selections.TestQuerySelections
 import kotlin.Boolean
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-data class TestQuery(
-  val withDetails: Boolean,
-  val skipHumanDetails: Boolean
+public data class TestQuery(
+  public val withDetails: Boolean,
+  public val skipHumanDetails: Boolean
 ) : Query<TestQuery.Data> {
-  override fun id(): String = OPERATION_ID
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     TestQuery_VariablesAdapter.toJson(writer, customScalarAdapters, this)
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestQuerySelections.root
+  public override fun selections(): List<CompiledSelection> = TestQuerySelections.root
 
-  data class Data(
-    val hero: Hero?
+  public data class Data(
+    public val hero: Hero?
   ) : Query.Data {
-    data class Hero(
-      val __typename: String,
+    public data class Hero(
+      public val __typename: String,
       /**
        * The ID of the character
        */
-      val id: String,
+      public val id: String,
       /**
        * Synthetic field for 'HeroDetails'
        */
-      val heroDetails: HeroDetails?,
+      public val heroDetails: HeroDetails?,
       /**
        * Synthetic field for 'HumanDetails'
        */
-      val humanDetails: HumanDetails?
+      public val humanDetails: HumanDetails?
     )
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "3dbd5da247db9417fdbd2b79ef02f682006b1a507298b2bb57ef40a2fd2db850"
 
     /**
@@ -85,9 +87,9 @@ data class TestQuery(
      *   homePlanet
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query TestQuery(${'$'}withDetails: Boolean!, ${'$'}skipHumanDetails: Boolean!) { hero { __typename id ...HeroDetails @include(if: ${'$'}withDetails) @skip(if: ${'$'}skipHumanDetails) ...HumanDetails @include(if: ${'$'}withDetails) } }  fragment HeroDetails on Character { name }  fragment HumanDetails on Human { homePlanet }"
 
-    const val OPERATION_NAME: String = "TestQuery"
+    public const val OPERATION_NAME: String = "TestQuery"
   }
 }

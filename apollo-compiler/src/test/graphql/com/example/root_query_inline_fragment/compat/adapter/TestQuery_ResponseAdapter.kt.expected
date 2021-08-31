@@ -22,13 +22,14 @@ import com.example.root_query_inline_fragment.type.Episode
 import com.example.root_query_inline_fragment.type.adapter.Episode_ResponseAdapter
 import kotlin.Double
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object TestQuery_ResponseAdapter {
-  object Data : Adapter<TestQuery.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "hero", "droid")
+public object TestQuery_ResponseAdapter {
+  public object Data : Adapter<TestQuery.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "hero", "droid")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var __typename: String? = null
       var hero: TestQuery.Hero? = null
@@ -50,11 +51,11 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestQuery.Data
-    ) {
+      `value`: TestQuery.Data
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -66,10 +67,10 @@ object TestQuery_ResponseAdapter {
     }
   }
 
-  object Hero : Adapter<TestQuery.Hero> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "appearsIn")
+  public object Hero : Adapter<TestQuery.Hero> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "appearsIn")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Hero {
       var __typename: String? = null
       var name: String? = null
@@ -104,11 +105,11 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestQuery.Hero
-    ) {
+      `value`: TestQuery.Hero
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -126,10 +127,10 @@ object TestQuery_ResponseAdapter {
     }
   }
 
-  object AsHuman : Adapter<TestQuery.AsHuman> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "appearsIn", "height")
+  public object AsHuman : Adapter<TestQuery.AsHuman> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "appearsIn", "height")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.AsHuman {
       var __typename: String? = null
       var name: String? = null
@@ -155,11 +156,11 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestQuery.AsHuman
-    ) {
+      `value`: TestQuery.AsHuman
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -175,10 +176,10 @@ object TestQuery_ResponseAdapter {
     }
   }
 
-  object Droid : Adapter<TestQuery.Droid> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "primaryFunction")
+  public object Droid : Adapter<TestQuery.Droid> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "primaryFunction")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Droid {
       var __typename: String? = null
       var name: String? = null
@@ -200,11 +201,11 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: TestQuery.Droid
-    ) {
+      `value`: TestQuery.Droid
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 

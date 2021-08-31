@@ -16,7 +16,7 @@ import com.example.interface_on_interface.type.Types.Human
 import com.example.interface_on_interface.type.Types.Node
 import kotlin.collections.List
 
-object GetHumanSelections {
+public object GetHumanSelections {
   private val human: List<CompiledSelection> = listOf(
         CompiledField(
           name = "id",
@@ -50,7 +50,7 @@ object GetHumanSelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "human",
           type = Human.notNull(),

@@ -7,6 +7,6 @@ package com.example.multiple_fragments.fragment
 
 import kotlin.String
 
-interface Fragment2 {
-  val field2: String?
+public interface Fragment2 {
+  public val field2: String?
 }

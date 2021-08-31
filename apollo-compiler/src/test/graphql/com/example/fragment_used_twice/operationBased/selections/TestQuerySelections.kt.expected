@@ -15,7 +15,7 @@ import com.example.fragment_used_twice.fragment.selections.HumanDetailsSelection
 import com.example.fragment_used_twice.type.Types.Character
 import kotlin.collections.List
 
-object TestQuerySelections {
+public object TestQuerySelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
@@ -31,7 +31,7 @@ object TestQuerySelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "hero",
           type = Character,

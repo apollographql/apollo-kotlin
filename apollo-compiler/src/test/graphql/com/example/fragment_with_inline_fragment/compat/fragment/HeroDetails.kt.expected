@@ -10,102 +10,102 @@ import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
 
-data class HeroDetails(
-  val __typename: String,
+public data class HeroDetails(
+  public val __typename: String,
   /**
    * The name of the character
    */
-  val name: String,
+  public val name: String,
   /**
    * The friends of the character exposed as a connection with edges
    */
-  val friendsConnection: FriendsConnection,
+  public val friendsConnection: FriendsConnection,
   /**
    * Synthetic field for inline fragment on Droid
    */
-  val asDroid: AsDroid?,
+  public val asDroid: AsDroid?,
   /**
    * Synthetic field for grouping fragments
    */
-  val fragments: Fragments
+  public val fragments: Fragments
 ) : Fragment.Data {
-  data class FriendsConnection(
+  public data class FriendsConnection(
     /**
      * The total number of friends
      */
-    val totalCount: Int?,
+    public val totalCount: Int?,
     /**
      * The edges for each of the character's friends.
      */
-    val edges: List<Edge?>?
+    public val edges: List<Edge?>?
   )
 
-  data class AsDroid(
-    val __typename: String,
+  public data class AsDroid(
+    public val __typename: String,
     /**
      * The name of the character
      */
-    val name: String,
+    public val name: String,
     /**
      * The friends of the character exposed as a connection with edges
      */
-    val friendsConnection: FriendsConnection1,
+    public val friendsConnection: FriendsConnection1,
     /**
      * Synthetic field for grouping fragments
      */
-    val fragments: Fragments
+    public val fragments: Fragments
   ) {
-    data class Fragments(
+    public data class Fragments(
       /**
        * Synthetic field for 'DroidDetails'
        */
-      val droidDetails: DroidDetails
+      public val droidDetails: DroidDetails
     )
   }
 
-  data class Fragments(
+  public data class Fragments(
     /**
      * Synthetic field for 'HumanDetails'
      */
-    val humanDetails: HumanDetails?
+    public val humanDetails: HumanDetails?
   )
 
-  data class Edge(
+  public data class Edge(
     /**
      * The character represented by this friendship edge
      */
-    val node: Node?
+    public val node: Node?
   )
 
-  data class Node(
+  public data class Node(
     /**
      * The name of the character
      */
-    val name: String
+    public val name: String
   )
 
-  data class FriendsConnection1(
+  public data class FriendsConnection1(
     /**
      * The total number of friends
      */
-    val totalCount: Int?,
+    public val totalCount: Int?,
     /**
      * The edges for each of the character's friends.
      */
-    val edges: List<Edge1?>?
+    public val edges: List<Edge1?>?
   )
 
-  data class Edge1(
+  public data class Edge1(
     /**
      * The character represented by this friendship edge
      */
-    val node: Node1?
+    public val node: Node1?
   )
 
-  data class Node1(
+  public data class Node1(
     /**
      * The name of the character
      */
-    val name: String
+    public val name: String
   )
 }

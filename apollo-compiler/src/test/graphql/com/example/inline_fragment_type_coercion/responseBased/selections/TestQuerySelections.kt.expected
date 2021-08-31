@@ -13,7 +13,7 @@ import com.apollographql.apollo3.api.notNull
 import com.example.inline_fragment_type_coercion.type.Types.Foo
 import kotlin.collections.List
 
-object TestQuerySelections {
+public object TestQuerySelections {
   private val onBar: List<CompiledSelection> = listOf(
         CompiledField(
           name = "bar",
@@ -36,7 +36,7 @@ object TestQuerySelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "foo",
           type = Foo,

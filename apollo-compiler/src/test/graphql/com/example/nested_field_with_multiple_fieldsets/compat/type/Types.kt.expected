@@ -9,27 +9,27 @@ import com.apollographql.apollo3.api.CompiledNamedType
 import com.apollographql.apollo3.api.CompiledType
 import com.apollographql.apollo3.api.InterfaceType
 import com.apollographql.apollo3.api.ObjectType
-import com.apollographql.apollo3.api.possibleTypes
 import kotlin.collections.List
 
 /**
  * Auto generated constants representing the custom scalars, objects, interfaces and unions in the
  * schema. Input objects are left out because they are generated separately
  */
-object Types {
-  val Iface1: InterfaceType = InterfaceType(name = "Iface1")
+public object Types {
+  public val Iface1: InterfaceType = InterfaceType(name = "Iface1")
 
-  val Iface2: InterfaceType = InterfaceType(name = "Iface2")
+  public val Iface2: InterfaceType = InterfaceType(name = "Iface2")
 
-  val Query: ObjectType = ObjectType(name = "Query")
+  public val Query: ObjectType = ObjectType(name = "Query")
 
-  val Impl1: ObjectType = ObjectType(name = "Impl1", implements = listOf(Iface1))
+  public val Impl1: ObjectType = ObjectType(name = "Impl1", implements = listOf(Iface1))
 
-  val Impl2: ObjectType = ObjectType(name = "Impl2", implements = listOf(Iface2))
+  public val Impl2: ObjectType = ObjectType(name = "Impl2", implements = listOf(Iface2))
 
-  val all: List<CompiledType> = listOf(
+  public val all: List<CompiledType> = listOf(
         Iface1, Iface2, Query, Impl1, Impl2)
 
 
-  fun possibleTypes(type: CompiledNamedType): List<ObjectType> = possibleTypes(all, type)
+  public fun possibleTypes(type: CompiledNamedType): List<ObjectType> =
+      com.apollographql.apollo3.api.possibleTypes(all, type)
 }

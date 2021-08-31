@@ -15,7 +15,7 @@ import com.apollographql.apollo3.api.notNull
 import com.example.input_object_variable_and_argument.type.Types.Human
 import kotlin.collections.List
 
-object TestQuerySelections {
+public object TestQuerySelections {
   private val heroWithReview: List<CompiledSelection> = listOf(
         CompiledField(
           name = "name",
@@ -30,7 +30,7 @@ object TestQuerySelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "heroWithReview",
           type = Human,

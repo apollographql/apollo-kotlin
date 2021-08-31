@@ -13,7 +13,7 @@ import com.apollographql.apollo3.api.notNull
 import com.example.interface_always_nested.type.Types.C
 import kotlin.collections.List
 
-object TestQuerySelections {
+public object TestQuerySelections {
   private val onB: List<CompiledSelection> = listOf(
         CompiledField(
           name = "fieldB1",
@@ -47,7 +47,7 @@ object TestQuerySelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "root",
           type = C,

@@ -17,7 +17,7 @@ import com.apollographql.apollo3.api.notNull
 import com.example.starships.type.Types.Starship
 import kotlin.collections.List
 
-object TestQuerySelections {
+public object TestQuerySelections {
   private val starship: List<CompiledSelection> = listOf(
         CompiledField(
           name = "id",
@@ -33,7 +33,7 @@ object TestQuerySelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "starship",
           type = Starship,

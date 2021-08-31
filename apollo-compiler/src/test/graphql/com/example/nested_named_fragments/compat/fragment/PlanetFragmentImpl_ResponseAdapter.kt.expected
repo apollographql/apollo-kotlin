@@ -11,13 +11,15 @@ import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object PlanetFragmentImpl_ResponseAdapter {
-  object PlanetFragment : Adapter<com.example.nested_named_fragments.fragment.PlanetFragment> {
-    val RESPONSE_NAMES: List<String> = listOf("name")
+public object PlanetFragmentImpl_ResponseAdapter {
+  public object PlanetFragment : Adapter<com.example.nested_named_fragments.fragment.PlanetFragment>
+      {
+    public val RESPONSE_NAMES: List<String> = listOf("name")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.nested_named_fragments.fragment.PlanetFragment {
       var name: String? = null
 
@@ -33,11 +35,11 @@ object PlanetFragmentImpl_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: com.example.nested_named_fragments.fragment.PlanetFragment
-    ) {
+      `value`: com.example.nested_named_fragments.fragment.PlanetFragment
+    ): Unit {
       writer.name("name")
       NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
     }

@@ -14,7 +14,7 @@ import com.example.deprecated_merged_field.fragment.selections.AnimalFragmentSel
 import com.example.deprecated_merged_field.type.Types.Cat
 import kotlin.collections.List
 
-object CatQuerySelections {
+public object CatQuerySelections {
   private val cat: List<CompiledSelection> = listOf(
         CompiledField(
           name = "__typename",
@@ -26,7 +26,7 @@ object CatQuerySelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "cat",
           type = Cat,

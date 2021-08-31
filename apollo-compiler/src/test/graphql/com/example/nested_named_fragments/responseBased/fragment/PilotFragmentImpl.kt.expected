@@ -13,38 +13,40 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.nested_named_fragments.fragment.selections.pilotFragmentSelections
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class PilotFragmentImpl : Fragment<PilotFragmentImpl.Data> {
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+public class PilotFragmentImpl() : Fragment<PilotFragmentImpl.Data> {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return PilotFragmentImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = pilotFragmentSelections.root
+  public override fun selections(): List<CompiledSelection> = pilotFragmentSelections.root
 
-  data class Data(
+  public data class Data(
     /**
      * The name of this person.
      */
-    override val name: String?,
+    public override val name: String?,
     /**
      * A planet that this person was born on or inhabits.
      */
-    override val homeworld: Homeworld?
+    public override val homeworld: Homeworld?
   ) : PilotFragment, Fragment.Data {
-    data class Homeworld(
-      override val __typename: String,
+    public data class Homeworld(
+      public override val __typename: String,
       /**
        * The name of this planet.
        */
-      override val name: String?
+      public override val name: String?
     ) : PlanetFragment, PilotFragment.Homeworld {
-      companion object {
-        fun Homeworld.planetFragment() = this as? PlanetFragment
+      public companion object {
+        public fun Homeworld.planetFragment() = this as? PlanetFragment
       }
     }
   }

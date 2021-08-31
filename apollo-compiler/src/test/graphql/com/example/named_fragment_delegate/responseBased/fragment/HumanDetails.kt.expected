@@ -9,39 +9,39 @@ import kotlin.Any
 import kotlin.String
 import kotlin.collections.List
 
-interface HumanDetails {
+public interface HumanDetails {
   /**
    * What this human calls themselves
    */
-  val name: String
+  public val name: String
 
   /**
    * Profile link
    */
-  val profileLink: Any
+  public val profileLink: Any
 
   /**
    * The friends of the human exposed as a connection with edges
    */
-  val friendsConnection: FriendsConnection
+  public val friendsConnection: FriendsConnection
 
-  interface FriendsConnection {
+  public interface FriendsConnection {
     /**
      * The edges for each of the character's friends.
      */
-    val edges: List<Edge?>?
+    public val edges: List<Edge?>?
 
-    interface Edge {
+    public interface Edge {
       /**
        * The character represented by this friendship edge
        */
-      val node: Node?
+      public val node: Node?
 
-      interface Node {
+      public interface Node {
         /**
          * The name of the character
          */
-        val name: String
+        public val name: String
       }
     }
   }

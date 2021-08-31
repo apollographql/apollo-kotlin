@@ -15,13 +15,14 @@ import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object AFragmentImpl_ResponseAdapter {
-  object AFragment : Adapter<com.example.multiple_fragments.fragment.AFragment> {
-    val RESPONSE_NAMES: List<String> = listOf("node")
+public object AFragmentImpl_ResponseAdapter {
+  public object AFragment : Adapter<com.example.multiple_fragments.fragment.AFragment> {
+    public val RESPONSE_NAMES: List<String> = listOf("node")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.multiple_fragments.fragment.AFragment {
       var node: com.example.multiple_fragments.fragment.AFragment.Node? = null
 
@@ -37,19 +38,19 @@ object AFragmentImpl_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: com.example.multiple_fragments.fragment.AFragment
-    ) {
+      `value`: com.example.multiple_fragments.fragment.AFragment
+    ): Unit {
       writer.name("node")
       Node.obj(true).nullable().toJson(writer, customScalarAdapters, value.node)
     }
 
     private object Node : Adapter<com.example.multiple_fragments.fragment.AFragment.Node> {
-      val RESPONSE_NAMES: List<String> = listOf("__typename")
+      public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.multiple_fragments.fragment.AFragment.Node {
         var __typename: String? = null
 
@@ -85,11 +86,11 @@ object AFragmentImpl_ResponseAdapter {
         )
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: com.example.multiple_fragments.fragment.AFragment.Node
-      ) {
+        `value`: com.example.multiple_fragments.fragment.AFragment.Node
+      ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 

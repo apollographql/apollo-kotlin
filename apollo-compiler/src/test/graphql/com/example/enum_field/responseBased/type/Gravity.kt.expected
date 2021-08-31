@@ -8,22 +8,22 @@ package com.example.enum_field.type
 import kotlin.Deprecated
 import kotlin.String
 
-sealed class Gravity(
-  val rawValue: String
+public sealed class Gravity(
+  public val rawValue: String
 ) {
-  object TOP : Gravity(rawValue = "TOP")
+  public object TOP : Gravity(rawValue = "TOP")
 
-  object CENTER : Gravity(rawValue = "CENTER")
+  public object CENTER : Gravity(rawValue = "CENTER")
 
-  object BOTTOM : Gravity(rawValue = "BOTTOM")
+  public object BOTTOM : Gravity(rawValue = "BOTTOM")
 
   @Deprecated(message = "use BOTTOM instead")
-  object bottom : Gravity(rawValue = "bottom")
+  public object bottom : Gravity(rawValue = "bottom")
 
   /**
    * Auto generated constant for unknown enum values
    */
-  class UNKNOWN__(
+  public class UNKNOWN__(
     rawValue: String
   ) : Gravity(rawValue = rawValue)
 

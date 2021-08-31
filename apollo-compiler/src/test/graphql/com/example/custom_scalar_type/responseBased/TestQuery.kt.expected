@@ -16,58 +16,60 @@ import com.example.custom_scalar_type.selections.TestQuerySelections
 import java.util.Date
 import kotlin.Any
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-class TestQuery : Query<TestQuery.Data> {
-  override fun id(): String = OPERATION_ID
+public class TestQuery() : Query<TestQuery.Data> {
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = TestQuerySelections.root
+  public override fun selections(): List<CompiledSelection> = TestQuerySelections.root
 
-  data class Data(
-    val hero: Hero?
+  public data class Data(
+    public val hero: Hero?
   ) : Query.Data {
-    data class Hero(
+    public data class Hero(
       /**
        * The name of the character
        */
-      val name: String,
+      public val name: String,
       /**
        * The date character was born.
        */
-      val birthDate: Date,
+      public val birthDate: Date,
       /**
        * The dates of appearances
        */
-      val appearanceDates: List<Date>,
+      public val appearanceDates: List<Date>,
       /**
        * The date character was born.
        */
-      val fieldWithUnsupportedType: Any,
+      public val fieldWithUnsupportedType: Any,
       /**
        * Profile link
        */
-      val profileLink: java.lang.String,
+      public val profileLink: java.lang.String,
       /**
        * Links
        */
-      val links: List<java.lang.String>
+      public val links: List<java.lang.String>
     )
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "8f6fd98f3592845e0a3eb760b37ff5bcdad7edc2cbbdfd8350af519bd3a26b19"
 
     /**
@@ -85,9 +87,9 @@ class TestQuery : Query<TestQuery.Data> {
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query TestQuery { hero { name birthDate appearanceDates fieldWithUnsupportedType profileLink links } }"
 
-    const val OPERATION_NAME: String = "TestQuery"
+    public const val OPERATION_NAME: String = "TestQuery"
   }
 }

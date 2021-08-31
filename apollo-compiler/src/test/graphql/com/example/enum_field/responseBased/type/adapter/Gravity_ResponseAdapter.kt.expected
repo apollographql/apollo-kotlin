@@ -10,18 +10,20 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.enum_field.type.Gravity
+import kotlin.Unit
 
-object Gravity_ResponseAdapter : Adapter<Gravity> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Gravity {
+public object Gravity_ResponseAdapter : Adapter<Gravity> {
+  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      Gravity {
     val rawValue = reader.nextString()!!
     return Gravity.valueOf(rawValue)
   }
 
-  override fun toJson(
+  public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    value: Gravity
-  ) {
+    `value`: Gravity
+  ): Unit {
     writer.value(value.rawValue)
   }
 }

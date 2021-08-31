@@ -7,26 +7,26 @@ package com.example.multiple_fragments.fragment
 
 import kotlin.String
 
-interface AFragment {
-  val node: Node?
+public interface AFragment {
+  public val node: Node?
 
-  interface Node {
-    val __typename: String
+  public interface Node {
+    public val __typename: String
 
-    companion object {
-      fun Node.fragment1() = this as? Fragment1
+    public companion object {
+      public fun Node.fragment1() = this as? Fragment1
 
-      fun Node.fragment2() = this as? Fragment2
+      public fun Node.fragment2() = this as? Fragment2
 
-      fun Node.asANode() = this as? ANodeNode
+      public fun Node.asANode() = this as? ANodeNode
     }
   }
 
-  interface ANodeNode : Node, Fragment1, Fragment2 {
-    override val __typename: String
+  public interface ANodeNode : Node, Fragment1, Fragment2 {
+    public override val __typename: String
 
-    override val field1: String?
+    public override val field1: String?
 
-    override val field2: String?
+    public override val field2: String?
   }
 }

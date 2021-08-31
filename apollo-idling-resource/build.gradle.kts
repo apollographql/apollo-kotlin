@@ -5,7 +5,7 @@ plugins {
 
 dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.androidx.espressoIdlingResource"))
-  api(project(":apollo-runtime"))
+  api(projects.apolloRuntime)
 }
 
 android {

@@ -7,6 +7,6 @@ package com.example.not_all_combinations_are_needed.fragment
 
 import kotlin.String
 
-interface BFragment {
-  val fieldB1: String?
+public interface BFragment {
+  public val fieldB1: String?
 }

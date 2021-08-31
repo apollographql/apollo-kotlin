@@ -9,57 +9,57 @@ import kotlin.Double
 import kotlin.String
 import kotlin.collections.List
 
-interface HeroDetails {
+public interface HeroDetails {
   /**
    * The name of the character
    */
-  val name: String
+  public val name: String
 
   /**
    * The friends of the character, or an empty list if they have none
    */
-  val friends: List<Friend?>?
+  public val friends: List<Friend?>?
 
-  interface Friend {
-    val __typename: String
+  public interface Friend {
+    public val __typename: String
 
     /**
      * The name of the character
      */
-    val name: String
+    public val name: String
 
-    companion object {
-      fun Friend.asHuman() = this as? HumanFriend
+    public companion object {
+      public fun Friend.asHuman() = this as? HumanFriend
 
-      fun Friend.asDroid() = this as? DroidFriend
+      public fun Friend.asDroid() = this as? DroidFriend
     }
   }
 
-  interface HumanFriend : Friend {
-    override val __typename: String
+  public interface HumanFriend : Friend {
+    public override val __typename: String
 
     /**
      * The name of the character
      */
-    override val name: String
+    public override val name: String
 
     /**
      * Height in the preferred unit, default is meters
      */
-    val height: Double?
+    public val height: Double?
   }
 
-  interface DroidFriend : Friend {
-    override val __typename: String
+  public interface DroidFriend : Friend {
+    public override val __typename: String
 
     /**
      * The name of the character
      */
-    override val name: String
+    public override val name: String
 
     /**
      * This droid's primary function
      */
-    val primaryFunction: String?
+    public val primaryFunction: String?
   }
 }

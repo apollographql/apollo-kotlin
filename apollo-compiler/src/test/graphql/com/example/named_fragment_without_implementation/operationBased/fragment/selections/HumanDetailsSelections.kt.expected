@@ -10,8 +10,8 @@ import com.apollographql.apollo3.api.CompiledFloatType
 import com.apollographql.apollo3.api.CompiledSelection
 import kotlin.collections.List
 
-object HumanDetailsSelections {
-  val root: List<CompiledSelection> = listOf(
+public object HumanDetailsSelections {
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "height",
           type = CompiledFloatType

@@ -19,7 +19,7 @@ import com.example.inline_fragment_intersection.type.Types.Being
 import com.example.inline_fragment_intersection.type.Types.Race
 import kotlin.collections.List
 
-object TestOperationSelections {
+public object TestOperationSelections {
   private val onWookie: List<CompiledSelection> = listOf(
         CompiledField(
           name = "lifeExpectancy",
@@ -160,7 +160,7 @@ object TestOperationSelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "random",
           type = Anything.notNull(),

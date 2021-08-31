@@ -16,13 +16,14 @@ import com.apollographql.apollo3.api.obj
 import com.example.mutation_create_review_semantic_naming.CreateReviewForEpisodeMutation
 import kotlin.Int
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object CreateReviewForEpisodeMutation_ResponseAdapter {
-  object Data : Adapter<CreateReviewForEpisodeMutation.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("createReview")
+public object CreateReviewForEpisodeMutation_ResponseAdapter {
+  public object Data : Adapter<CreateReviewForEpisodeMutation.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("createReview")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         CreateReviewForEpisodeMutation.Data {
       var createReview: CreateReviewForEpisodeMutation.Data.CreateReview? = null
 
@@ -38,19 +39,19 @@ object CreateReviewForEpisodeMutation_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: CreateReviewForEpisodeMutation.Data
-    ) {
+      `value`: CreateReviewForEpisodeMutation.Data
+    ): Unit {
       writer.name("createReview")
       CreateReview.obj().nullable().toJson(writer, customScalarAdapters, value.createReview)
     }
 
     private object CreateReview : Adapter<CreateReviewForEpisodeMutation.Data.CreateReview> {
-      val RESPONSE_NAMES: List<String> = listOf("stars", "commentary")
+      public val RESPONSE_NAMES: List<String> = listOf("stars", "commentary")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           CreateReviewForEpisodeMutation.Data.CreateReview {
         var stars: Int? = null
         var commentary: String? = null
@@ -69,11 +70,11 @@ object CreateReviewForEpisodeMutation_ResponseAdapter {
         )
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: CreateReviewForEpisodeMutation.Data.CreateReview
-      ) {
+        `value`: CreateReviewForEpisodeMutation.Data.CreateReview
+      ): Unit {
         writer.name("stars")
         IntAdapter.toJson(writer, customScalarAdapters, value.stars)
 

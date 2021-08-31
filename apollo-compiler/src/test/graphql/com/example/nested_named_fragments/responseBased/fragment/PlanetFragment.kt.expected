@@ -7,9 +7,9 @@ package com.example.nested_named_fragments.fragment
 
 import kotlin.String
 
-interface PlanetFragment {
+public interface PlanetFragment {
   /**
    * The name of this planet.
    */
-  val name: String?
+  public val name: String?
 }

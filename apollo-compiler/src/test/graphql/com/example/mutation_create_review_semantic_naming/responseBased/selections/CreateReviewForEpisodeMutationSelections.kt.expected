@@ -15,7 +15,7 @@ import com.apollographql.apollo3.api.notNull
 import com.example.mutation_create_review_semantic_naming.type.Types.Review
 import kotlin.collections.List
 
-object CreateReviewForEpisodeMutationSelections {
+public object CreateReviewForEpisodeMutationSelections {
   private val createReview: List<CompiledSelection> = listOf(
         CompiledField(
           name = "stars",
@@ -27,7 +27,7 @@ object CreateReviewForEpisodeMutationSelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "createReview",
           type = Review,

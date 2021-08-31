@@ -12,13 +12,14 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object IFragmentImpl_ResponseAdapter {
-  object Data : Adapter<IFragmentImpl.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename")
+public object IFragmentImpl_ResponseAdapter {
+  public object Data : Adapter<IFragmentImpl.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         IFragmentImpl.Data {
       reader.selectName(RESPONSE_NAMES).also {
         check(it == 0) {
@@ -34,11 +35,11 @@ object IFragmentImpl_ResponseAdapter {
       }
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: IFragmentImpl.Data
-    ) {
+      `value`: IFragmentImpl.Data
+    ): Unit {
       when(value) {
         is IFragmentImpl.AData -> AData.toJson(writer, customScalarAdapters, value)
         is IFragmentImpl.OtherData -> OtherData.toJson(writer, customScalarAdapters, value)
@@ -46,10 +47,10 @@ object IFragmentImpl_ResponseAdapter {
     }
   }
 
-  object AData {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldA")
+  public object AData {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldA")
 
-    fun fromJson(
+    public fun fromJson(
       reader: JsonReader,
       customScalarAdapters: CustomScalarAdapters,
       typename: String
@@ -71,11 +72,11 @@ object IFragmentImpl_ResponseAdapter {
       )
     }
 
-    fun toJson(
+    public fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: IFragmentImpl.AData
-    ) {
+      `value`: IFragmentImpl.AData
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -84,10 +85,10 @@ object IFragmentImpl_ResponseAdapter {
     }
   }
 
-  object OtherData {
-    val RESPONSE_NAMES: List<String> = listOf("__typename")
+  public object OtherData {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    fun fromJson(
+    public fun fromJson(
       reader: JsonReader,
       customScalarAdapters: CustomScalarAdapters,
       typename: String
@@ -106,11 +107,11 @@ object IFragmentImpl_ResponseAdapter {
       )
     }
 
-    fun toJson(
+    public fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: IFragmentImpl.OtherData
-    ) {
+      `value`: IFragmentImpl.OtherData
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
     }

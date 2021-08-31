@@ -15,13 +15,14 @@ import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_with_variables.GetUser
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object GetUser_ResponseAdapter {
-  object Data : Adapter<GetUser.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "organization")
+public object GetUser_ResponseAdapter {
+  public object Data : Adapter<GetUser.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "organization")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetUser.Data {
       var __typename: String? = null
       var organization: GetUser.Data.Organization? = null
@@ -40,11 +41,11 @@ object GetUser_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: GetUser.Data
-    ) {
+      `value`: GetUser.Data
+    ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
@@ -53,9 +54,9 @@ object GetUser_ResponseAdapter {
     }
 
     private object Organization : Adapter<GetUser.Data.Organization> {
-      val RESPONSE_NAMES: List<String> = listOf("id", "user")
+      public val RESPONSE_NAMES: List<String> = listOf("id", "user")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           GetUser.Data.Organization {
         var id: String? = null
         var user: List<GetUser.Data.Organization.User>? = null
@@ -74,11 +75,11 @@ object GetUser_ResponseAdapter {
         )
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: GetUser.Data.Organization
-      ) {
+        `value`: GetUser.Data.Organization
+      ): Unit {
         writer.name("id")
         StringAdapter.toJson(writer, customScalarAdapters, value.id)
 
@@ -87,10 +88,11 @@ object GetUser_ResponseAdapter {
       }
 
       private object User : Adapter<GetUser.Data.Organization.User> {
-        val RESPONSE_NAMES: List<String> = listOf("__typename", "firstName", "lastName", "avatar")
+        public val RESPONSE_NAMES: List<String> = listOf("__typename", "firstName", "lastName",
+            "avatar")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            GetUser.Data.Organization.User {
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters): GetUser.Data.Organization.User {
           var __typename: String? = null
           var firstName: String? = null
           var lastName: String? = null
@@ -114,11 +116,11 @@ object GetUser_ResponseAdapter {
           )
         }
 
-        override fun toJson(
+        public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          value: GetUser.Data.Organization.User
-        ) {
+          `value`: GetUser.Data.Organization.User
+        ): Unit {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 

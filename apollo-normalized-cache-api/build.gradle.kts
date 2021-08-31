@@ -8,7 +8,7 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        api(project(":apollo-api"))
+        api(projects.apolloApi)
         implementation(groovy.util.Eval.x(project, "x.dep.okio"))
         api(groovy.util.Eval.x(project, "x.dep.uuid"))
       }

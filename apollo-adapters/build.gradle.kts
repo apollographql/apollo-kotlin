@@ -8,7 +8,7 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        api(project(":apollo-api"))
+        api(projects.apolloApi)
         api(groovy.util.Eval.x(project, "x.dep.kotlinxdatetime"))
       }
     }

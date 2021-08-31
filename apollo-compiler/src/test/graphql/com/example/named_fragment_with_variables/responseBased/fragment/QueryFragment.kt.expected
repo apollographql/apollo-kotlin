@@ -8,25 +8,25 @@ package com.example.named_fragment_with_variables.fragment
 import kotlin.String
 import kotlin.collections.List
 
-interface QueryFragment {
-  val organization: Organization?
+public interface QueryFragment {
+  public val organization: Organization?
 
-  interface Organization {
-    val id: String
+  public interface Organization {
+    public val id: String
 
-    val user: List<User>
+    public val user: List<User>
 
-    interface User : UserFragment {
-      val __typename: String
+    public interface User : UserFragment {
+      public val __typename: String
 
-      override val firstName: String
+      public override val firstName: String
 
-      override val lastName: String
+      public override val lastName: String
 
-      override val avatar: String
+      public override val avatar: String
 
-      companion object {
-        fun User.userFragment() = this as? UserFragment
+      public companion object {
+        public fun User.userFragment() = this as? UserFragment
       }
     }
   }

@@ -19,56 +19,58 @@ import com.example.named_fragment_with_variables.selections.GetUserSelections
 import com.example.named_fragment_with_variables.type.UserQuery
 import kotlin.Int
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-data class GetUser(
-  val organizationId: String,
-  val query: UserQuery,
-  val size: Int
+public data class GetUser(
+  public val organizationId: String,
+  public val query: UserQuery,
+  public val size: Int
 ) : Query<GetUser.Data> {
-  override fun id(): String = OPERATION_ID
+  public override fun id(): String = OPERATION_ID
 
-  override fun document(): String = OPERATION_DOCUMENT
+  public override fun document(): String = OPERATION_DOCUMENT
 
-  override fun name(): String = OPERATION_NAME
+  public override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  public override fun serializeVariables(writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters): Unit {
     GetUser_VariablesAdapter.toJson(writer, customScalarAdapters, this)
   }
 
-  override fun adapter(): Adapter<Data> {
+  public override fun adapter(): Adapter<Data> {
     return GetUser_ResponseAdapter.Data.obj()
   }
 
-  override fun selections(): List<CompiledSelection> = GetUserSelections.root
+  public override fun selections(): List<CompiledSelection> = GetUserSelections.root
 
-  data class Data(
-    val __typename: String,
-    override val organization: Organization?
+  public data class Data(
+    public val __typename: String,
+    public override val organization: Organization?
   ) : QueryFragment, Query.Data {
-    data class Organization(
-      override val id: String,
-      override val user: List<User>
+    public data class Organization(
+      public override val id: String,
+      public override val user: List<User>
     ) : QueryFragment.Organization {
-      data class User(
-        override val __typename: String,
-        override val firstName: String,
-        override val lastName: String,
-        override val avatar: String
+      public data class User(
+        public override val __typename: String,
+        public override val firstName: String,
+        public override val lastName: String,
+        public override val avatar: String
       ) : UserFragment, QueryFragment.Organization.User {
-        companion object {
-          fun User.userFragment() = this as? UserFragment
+        public companion object {
+          public fun User.userFragment() = this as? UserFragment
         }
       }
     }
 
-    companion object {
-      fun Data.queryFragment() = this as? QueryFragment
+    public companion object {
+      public fun Data.queryFragment() = this as? QueryFragment
     }
   }
 
-  companion object {
-    const val OPERATION_ID: String =
+  public companion object {
+    public const val OPERATION_ID: String =
         "1314916fa3163a17df2b7a0173e55fef34621507824242308b3006e9ab4740b4"
 
     /**
@@ -96,9 +98,9 @@ data class GetUser(
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String =
+    public const val OPERATION_DOCUMENT: String =
         "query GetUser(${'$'}organizationId: String!, ${'$'}query: UserQuery!, ${'$'}size: Int!) { __typename ...QueryFragment }  fragment UserFragment on User { firstName lastName avatar(size: ${'$'}size) }  fragment QueryFragment on Query { organization(id: ${'$'}organizationId) { id user(query: ${'$'}query) { __typename ...UserFragment } } }"
 
-    const val OPERATION_NAME: String = "GetUser"
+    public const val OPERATION_NAME: String = "GetUser"
   }
 }

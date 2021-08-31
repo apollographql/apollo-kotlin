@@ -17,13 +17,14 @@ import com.example.named_fragment_inside_inline_fragment.GetHero
 import com.example.named_fragment_inside_inline_fragment.type.Episode
 import com.example.named_fragment_inside_inline_fragment.type.adapter.Episode_ResponseAdapter
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object GetHero_ResponseAdapter {
-  object Data : Adapter<GetHero.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("hero")
+public object GetHero_ResponseAdapter {
+  public object Data : Adapter<GetHero.Data> {
+    public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetHero.Data {
       var hero: GetHero.Data.Hero? = null
 
@@ -39,19 +40,19 @@ object GetHero_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: GetHero.Data
-    ) {
+      `value`: GetHero.Data
+    ): Unit {
       writer.name("hero")
       Hero.obj().nullable().toJson(writer, customScalarAdapters, value.hero)
     }
 
     private object Hero : Adapter<GetHero.Data.Hero> {
-      val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "appearsIn")
+      public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "appearsIn")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           GetHero.Data.Hero {
         var __typename: String? = null
         var name: String? = null
@@ -74,11 +75,11 @@ object GetHero_ResponseAdapter {
         )
       }
 
-      override fun toJson(
+      public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: GetHero.Data.Hero
-      ) {
+        `value`: GetHero.Data.Hero
+      ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 

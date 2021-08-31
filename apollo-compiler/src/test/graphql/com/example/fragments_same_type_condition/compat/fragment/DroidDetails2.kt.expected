@@ -8,9 +8,9 @@ package com.example.fragments_same_type_condition.fragment
 import com.apollographql.apollo3.api.Fragment
 import kotlin.String
 
-data class DroidDetails2(
+public data class DroidDetails2(
   /**
    * This droid's primary function
    */
-  val primaryFunction: String?
+  public val primaryFunction: String?
 ) : Fragment.Data

@@ -14,14 +14,15 @@ import com.apollographql.apollo3.api.nullable
 import com.example.named_fragment_inside_inline_fragment.type.Episode
 import com.example.named_fragment_inside_inline_fragment.type.adapter.Episode_ResponseAdapter
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object CharacterAppearsInImpl_ResponseAdapter {
-  object CharacterAppearsIn :
+public object CharacterAppearsInImpl_ResponseAdapter {
+  public object CharacterAppearsIn :
       Adapter<com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn> {
-    val RESPONSE_NAMES: List<String> = listOf("appearsIn")
+    public val RESPONSE_NAMES: List<String> = listOf("appearsIn")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn {
       var appearsIn: List<Episode?>? = null
 
@@ -38,11 +39,11 @@ object CharacterAppearsInImpl_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn
-    ) {
+      `value`: com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn
+    ): Unit {
       writer.name("appearsIn")
       Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,
           value.appearsIn)

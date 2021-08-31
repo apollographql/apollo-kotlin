@@ -11,13 +11,15 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
-object HumanDetailsImpl_ResponseAdapter {
-  object HumanDetails : Adapter<com.example.fragment_with_inline_fragment.fragment.HumanDetails> {
-    val RESPONSE_NAMES: List<String> = listOf("name")
+public object HumanDetailsImpl_ResponseAdapter {
+  public object HumanDetails :
+      Adapter<com.example.fragment_with_inline_fragment.fragment.HumanDetails> {
+    public val RESPONSE_NAMES: List<String> = listOf("name")
 
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.fragment_with_inline_fragment.fragment.HumanDetails {
       var name: String? = null
 
@@ -33,11 +35,11 @@ object HumanDetailsImpl_ResponseAdapter {
       )
     }
 
-    override fun toJson(
+    public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      value: com.example.fragment_with_inline_fragment.fragment.HumanDetails
-    ) {
+      `value`: com.example.fragment_with_inline_fragment.fragment.HumanDetails
+    ): Unit {
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
     }

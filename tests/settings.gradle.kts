@@ -11,3 +11,4 @@ rootProject.projectDir
 includeBuild("../build-logic")
 includeBuild("../")
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")

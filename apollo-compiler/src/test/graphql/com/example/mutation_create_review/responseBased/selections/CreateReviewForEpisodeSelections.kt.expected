@@ -55,7 +55,7 @@ internal object CreateReviewForEpisodeSelections {
         )
       )
 
-  val root: List<CompiledSelection> = listOf(
+  public val root: List<CompiledSelection> = listOf(
         CompiledField(
           name = "createReview",
           type = Review,
