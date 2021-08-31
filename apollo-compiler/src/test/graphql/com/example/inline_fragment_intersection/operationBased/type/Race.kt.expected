@@ -22,4 +22,16 @@ sealed class Race(
   class UNKNOWN__(
     rawValue: String
   ) : Race(rawValue = rawValue)
+
+  companion object {
+    /**
+     * Returns [Race] matched with the specified [rawValue].
+     */
+    fun valueOf(rawValue: String): Race = when(rawValue) {
+      "WOOKIE" -> WOOKIE
+      "GUMGAN" -> GUMGAN
+      "EWOK" -> EWOK
+      else -> UNKNOWN__(rawValue)
+    }
+  }
 }

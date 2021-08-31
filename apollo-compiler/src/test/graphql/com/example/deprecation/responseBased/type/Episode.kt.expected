@@ -47,4 +47,18 @@ sealed class Episode(
   class UNKNOWN__(
     rawValue: String
   ) : Episode(rawValue = rawValue)
+
+  companion object {
+    /**
+     * Returns [Episode] matched with the specified [rawValue].
+     */
+    fun valueOf(rawValue: String): Episode = when(rawValue) {
+      "NEWHOPE" -> NEWHOPE
+      "EMPIRE" -> EMPIRE
+      "JEDI" -> JEDI
+      "DEPRECATED" -> DEPRECATED
+      "new" -> new_
+      else -> UNKNOWN__(rawValue)
+    }
+  }
 }
