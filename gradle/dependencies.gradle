@@ -65,8 +65,8 @@ ext.dep = [
         coroutinesReactor : "org.jetbrains.kotlinx:kotlinx-coroutines-reactor:$versions.kotlinCoroutines",
         coroutinesAndroid : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlinCoroutines",
         reflect           : "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin",
-        nodejs            : "org.jetbrains.kotlinx:kotlinx-nodejs:0.0.7"
-        springPlugin      : "org.jetbrains.kotlin:kotlin-allopen:$versions.kotlin"
+        nodejs            : "org.jetbrains.kotlinx:kotlinx-nodejs:0.0.7",
+        springPlugin      : "org.jetbrains.kotlin:kotlin-allopen:$versions.kotlin",
     ],
     moshi                    : [
         adapters     : "com.squareup.moshi:moshi-adapters:$versions.moshi",
