@@ -8,11 +8,13 @@ import com.apollographql.apollo3.compiler.codegen.helpers.deprecatedAnnotation
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.apollographql.apollo3.compiler.codegen.helpers.maybeAddDescription
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.joinToCode
 
 class EnumBuilder(
     private val context: CgContext,
@@ -50,6 +52,7 @@ class EnumBuilder(
           value.toObjectTypeSpec(ClassName("", layout.enumName(name)))
         })
         .addType(unknownValueTypeSpec())
+        .addType(companionObjectSpec())
         .build()
   }
 
@@ -69,6 +72,32 @@ class EnumBuilder(
         .superclass(ClassName("", layout.enumName(name)))
         .addSuperclassConstructorParameter("rawValue = rawValue")
         .build()
+  }
+
+  private fun IrEnum.companionObjectSpec(): TypeSpec {
+    return TypeSpec.companionObjectBuilder()
+        .addFunction(valueOfFunSpec())
+        .build()
+  }
+
+  private fun IrEnum.valueOfFunSpec(): FunSpec {
+    return FunSpec.builder("valueOf")
+        .addKdoc("Returns [%T] matched with the specified [rawValue].\n", className())
+        .addParameter("rawValue", String::class)
+        .returns(className())
+        .beginControlFlow("return when(rawValue)")
+        .addCode(
+            values
+                .map { CodeBlock.of("%S -> %T", it.name, it.className()) }
+                .joinToCode(separator = "\n", suffix = "\n")
+        )
+        .addCode("else -> UNKNOWN__(rawValue)\n")
+        .endControlFlow()
+        .build()
+  }
+
+  private fun IrEnum.Value.className(): TypeName {
+    return ClassName(packageName, simpleName, layout.enumValueName(name))
   }
 
   fun className(): TypeName {
