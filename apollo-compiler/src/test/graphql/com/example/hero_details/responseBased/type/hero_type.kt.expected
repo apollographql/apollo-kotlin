@@ -23,4 +23,15 @@ public sealed class hero_type(
   public class UNKNOWN__(
     rawValue: String
   ) : hero_type(rawValue = rawValue)
+
+  public companion object {
+    /**
+     * Returns [hero_type] matched with the specified [rawValue].
+     */
+    public fun valueOf(rawValue: String): hero_type = when(rawValue) {
+      "human" -> human
+      "droid" -> droid
+      else -> UNKNOWN__(rawValue)
+    }
+  }
 }

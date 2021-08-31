@@ -16,12 +16,7 @@ public object Race_ResponseAdapter : Adapter<Race> {
   public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
       Race {
     val rawValue = reader.nextString()!!
-    return when(rawValue) {
-      "WOOKIE" -> Race.WOOKIE
-      "GUMGAN" -> Race.GUMGAN
-      "EWOK" -> Race.EWOK
-      else -> Race.UNKNOWN__(rawValue)
-    }
+    return Race.valueOf(rawValue)
   }
 
   public override fun toJson(

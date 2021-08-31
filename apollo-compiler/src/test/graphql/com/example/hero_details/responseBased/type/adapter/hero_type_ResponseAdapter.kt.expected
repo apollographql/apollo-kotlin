@@ -16,11 +16,7 @@ public object hero_type_ResponseAdapter : Adapter<hero_type> {
   public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
       hero_type {
     val rawValue = reader.nextString()!!
-    return when(rawValue) {
-      "human" -> hero_type.human
-      "droid" -> hero_type.droid
-      else -> hero_type.UNKNOWN__(rawValue)
-    }
+    return hero_type.valueOf(rawValue)
   }
 
   public override fun toJson(

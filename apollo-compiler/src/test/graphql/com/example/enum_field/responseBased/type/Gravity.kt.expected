@@ -26,4 +26,17 @@ public sealed class Gravity(
   public class UNKNOWN__(
     rawValue: String
   ) : Gravity(rawValue = rawValue)
+
+  public companion object {
+    /**
+     * Returns [Gravity] matched with the specified [rawValue].
+     */
+    public fun valueOf(rawValue: String): Gravity = when(rawValue) {
+      "TOP" -> TOP
+      "CENTER" -> CENTER
+      "BOTTOM" -> BOTTOM
+      "bottom" -> bottom
+      else -> UNKNOWN__(rawValue)
+    }
+  }
 }

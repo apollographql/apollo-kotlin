@@ -8,11 +8,13 @@ import com.apollographql.apollo3.compiler.codegen.helpers.deprecatedAnnotation
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.apollographql.apollo3.compiler.codegen.helpers.maybeAddDescription
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.joinToCode
 
 class EnumBuilder(
     private val context: CgContext,
@@ -50,11 +52,12 @@ class EnumBuilder(
           value.toObjectTypeSpec(ClassName("", layout.enumName(name)))
         })
         .addType(unknownValueTypeSpec())
+        .addType(companionObjectSpec())
         .build()
   }
 
   private fun IrEnum.Value.toObjectTypeSpec(superClass: TypeName): TypeSpec {
-    return TypeSpec.objectBuilder(layout.enumValueName(name))
+    return TypeSpec.objectBuilder(valueClassName())
         .applyIf(description?.isNotBlank() == true) { addKdoc("%L\n", description!!) }
         .applyIf(deprecationReason != null) { addAnnotation(deprecatedAnnotation(deprecationReason!!)) }
         .superclass(superClass)
@@ -63,12 +66,42 @@ class EnumBuilder(
   }
 
   private fun IrEnum.unknownValueTypeSpec(): TypeSpec {
-    return TypeSpec.classBuilder("UNKNOWN__")
+    return TypeSpec.classBuilder(unknownValueClassName())
         .addKdoc("%L", "Auto generated constant for unknown enum values\n")
         .primaryConstructor(primaryConstructorSpec)
         .superclass(ClassName("", layout.enumName(name)))
         .addSuperclassConstructorParameter("rawValue = rawValue")
         .build()
+  }
+
+  private fun IrEnum.companionObjectSpec(): TypeSpec {
+    return TypeSpec.companionObjectBuilder()
+        .addFunction(valueOfFunSpec())
+        .build()
+  }
+
+  private fun IrEnum.valueOfFunSpec(): FunSpec {
+    return FunSpec.builder("valueOf")
+        .addKdoc("Returns [%T] matched with the specified [rawValue].\n", className())
+        .addParameter("rawValue", String::class)
+        .returns(className())
+        .beginControlFlow("return when(rawValue)")
+        .addCode(
+            values
+                .map { CodeBlock.of("%S -> %T", it.name, it.valueClassName()) }
+                .joinToCode(separator = "\n", suffix = "\n")
+        )
+        .addCode("else -> %T(rawValue)\n", unknownValueClassName())
+        .endControlFlow()
+        .build()
+  }
+
+  private fun IrEnum.Value.valueClassName(): ClassName {
+    return ClassName(packageName, simpleName, layout.enumValueName(name))
+  }
+
+  private fun unknownValueClassName(): ClassName {
+    return ClassName(packageName, simpleName, "UNKNOWN__")
   }
 
   fun className(): TypeName {
