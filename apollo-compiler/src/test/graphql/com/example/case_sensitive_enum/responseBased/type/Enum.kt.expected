@@ -28,11 +28,11 @@ public sealed class Enum(
     rawValue: String
   ) : Enum(rawValue = rawValue)
 
-  companion object {
+  public companion object {
     /**
      * Returns [Enum] matched with the specified [rawValue].
      */
-    fun valueOf(rawValue: String): Enum = when(rawValue) {
+    public fun valueOf(rawValue: String): Enum = when(rawValue) {
       "north" -> north
       "North" -> North
       "NORTH" -> NORTH

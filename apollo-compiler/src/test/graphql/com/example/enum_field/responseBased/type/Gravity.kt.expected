@@ -27,11 +27,11 @@ public sealed class Gravity(
     rawValue: String
   ) : Gravity(rawValue = rawValue)
 
-  companion object {
+  public companion object {
     /**
      * Returns [Gravity] matched with the specified [rawValue].
      */
-    fun valueOf(rawValue: String): Gravity = when(rawValue) {
+    public fun valueOf(rawValue: String): Gravity = when(rawValue) {
       "TOP" -> TOP
       "CENTER" -> CENTER
       "BOTTOM" -> BOTTOM

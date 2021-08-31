@@ -48,11 +48,11 @@ internal sealed class Episode(
     rawValue: String
   ) : Episode(rawValue = rawValue)
 
-  companion object {
+  public companion object {
     /**
      * Returns [Episode] matched with the specified [rawValue].
      */
-    fun valueOf(rawValue: String): Episode = when(rawValue) {
+    public fun valueOf(rawValue: String): Episode = when(rawValue) {
       "NEWHOPE" -> NEWHOPE
       "EMPIRE" -> EMPIRE
       "JEDI" -> JEDI

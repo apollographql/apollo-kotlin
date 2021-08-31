@@ -24,11 +24,11 @@ public sealed class hero_type(
     rawValue: String
   ) : hero_type(rawValue = rawValue)
 
-  companion object {
+  public companion object {
     /**
      * Returns [hero_type] matched with the specified [rawValue].
      */
-    fun valueOf(rawValue: String): hero_type = when(rawValue) {
+    public fun valueOf(rawValue: String): hero_type = when(rawValue) {
       "human" -> human
       "droid" -> droid
       else -> UNKNOWN__(rawValue)
