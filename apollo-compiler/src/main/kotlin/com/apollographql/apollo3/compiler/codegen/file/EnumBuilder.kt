@@ -66,7 +66,7 @@ class EnumBuilder(
   }
 
   private fun IrEnum.unknownValueTypeSpec(): TypeSpec {
-    return TypeSpec.classBuilder("UNKNOWN__")
+    return TypeSpec.classBuilder(unknownValueClassName())
         .addKdoc("%L", "Auto generated constant for unknown enum values\n")
         .primaryConstructor(primaryConstructorSpec)
         .superclass(ClassName("", layout.enumName(name)))
@@ -91,13 +91,17 @@ class EnumBuilder(
                 .map { CodeBlock.of("%S -> %T", it.name, it.valueClassName()) }
                 .joinToCode(separator = "\n", suffix = "\n")
         )
-        .addCode("else -> UNKNOWN__(rawValue)\n")
+        .addCode("else -> %T(rawValue)\n", unknownValueClassName())
         .endControlFlow()
         .build()
   }
 
   private fun IrEnum.Value.valueClassName(): ClassName {
     return ClassName(packageName, simpleName, layout.enumValueName(name))
+  }
+
+  private fun unknownValueClassName(): ClassName {
+    return ClassName(packageName, simpleName, "UNKNOWN__")
   }
 
   fun className(): TypeName {
