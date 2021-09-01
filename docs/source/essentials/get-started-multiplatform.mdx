@@ -39,18 +39,9 @@ kotlin {
 ```
 
 ## Multithreaded coroutines
-If using the x.y.z-native-mt branch of coroutines, gradle will replace the -native-mt version with the non-mt version as outlined [here](https://kotlinlang.org/docs/mobile/concurrency-and-coroutines.html#multithreaded-coroutines). To prevent this happening use the following:
+If using the x.y.z-native-mt branch of coroutines, gradle will replace the -native-mt version with the non-mt version as outlined [here](https://kotlinlang.org/docs/mobile/concurrency-and-coroutines.html#multithreaded-coroutines). To prevent this happening add the following to your root `build.gradle.kts`:
 
-```
-implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core"){
-    version {
-      strictly("x.y.z-native-mt")
-    }
-}
-```
-
-If you have any conflicts when resolving a dependency, this solution can help you - in your root `build.gradle.kts`, add the following:
-```
+```kotlin
 allprojects {
     configurations {
         all {
@@ -62,16 +53,7 @@ allprojects {
 }
 ```
 
-The reason is given here:
-https://docs.gradle.org/current/userguide/dependency_resolution.html#sub:resolution-strategy:
-
-```
-[...] the highest version that is not rejected will be selected.
-If a version declared as strictly is lower than that version, selection will fail.
-```
-And according to semver, 1.5.1-native-mt < 1.5.1
-
-So by bumping to 1.5.1, Gradle now sees 1.5.1-native-mt as a downgrade and fails. 
+This ensures that the same version is used everywhere and that Gradle doesn't fail because `-native-mt` is a pre-release version [(`1.5.1-native-mt < 1.5.1`)](https://docs.gradle.org/current/userguide/dependency_resolution.html#sub:resolution-strategy)
 
 
 ## Download your `schema.json` file
