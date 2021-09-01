@@ -49,6 +49,31 @@ implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core"){
 }
 ```
 
+If you have any conflicts when resolving a dependency, this solution can help you - in your root `build.gradle.kts`, add the following:
+```
+allprojects {
+    configurations {
+        all {
+            resolutionStrategy {
+                force("org.jetbrains.kotlinx:kotlinx-coroutines-core:x.y.z-native-mt")
+            }
+        }
+    }
+}
+```
+
+The reason is given here:
+https://docs.gradle.org/current/userguide/dependency_resolution.html#sub:resolution-strategy:
+
+```
+[...] the highest version that is not rejected will be selected.
+If a version declared as strictly is lower than that version, selection will fail.
+```
+And according to semver, 1.5.1-native-mt < 1.5.1
+
+So by bumping to 1.5.1, Gradle now sees 1.5.1-native-mt as a downgrade and fails. 
+
+
 ## Download your `schema.json` file
 
 <DownloadSchema />
