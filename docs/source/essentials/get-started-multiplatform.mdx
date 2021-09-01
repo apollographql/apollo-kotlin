@@ -39,15 +39,22 @@ kotlin {
 ```
 
 ## Multithreaded coroutines
-If using the x.y.z-native-mt branch of coroutines, gradle will replace the -native-mt version with the non-mt version as outlined [here](https://kotlinlang.org/docs/mobile/concurrency-and-coroutines.html#multithreaded-coroutines). To prevent this happening use the following:
+If using the x.y.z-native-mt branch of coroutines, gradle will replace the -native-mt version with the non-mt version as outlined [here](https://kotlinlang.org/docs/mobile/concurrency-and-coroutines.html#multithreaded-coroutines). To prevent this happening add the following to your root `build.gradle.kts`:
 
-```
-implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core"){
-    version {
-      strictly("x.y.z-native-mt")
+```kotlin
+allprojects {
+    configurations {
+        all {
+            resolutionStrategy {
+                force("org.jetbrains.kotlinx:kotlinx-coroutines-core:x.y.z-native-mt")
+            }
+        }
     }
 }
 ```
+
+This ensures that the same version is used everywhere and that Gradle doesn't fail because `-native-mt` is a pre-release version [(`1.5.1-native-mt < 1.5.1`)](https://docs.gradle.org/current/userguide/dependency_resolution.html#sub:resolution-strategy)
+
 
 ## Download your `schema.json` file
 
