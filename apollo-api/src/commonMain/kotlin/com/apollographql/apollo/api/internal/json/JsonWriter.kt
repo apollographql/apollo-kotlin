@@ -16,6 +16,7 @@
 package com.apollographql.apollo.api.internal.json
 
 import com.apollographql.apollo.api.internal.Throws
+import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader.Companion.MAX_STACK_SIZE
 import com.apollographql.apollo.api.internal.json.JsonScope.getPath
 import okio.BufferedSink
 import okio.IOException
@@ -42,12 +43,12 @@ import kotlin.jvm.JvmStatic
  * malformed JSON string will fail with an [IllegalStateException].
  */
 abstract class JsonWriter : Closeable, Flushable {
-  // The nesting stack. Using a manual array rather than an ArrayList saves 20%. This stack permits  up to 32 levels of nesting including
+  // The nesting stack. Using a manual array rather than an ArrayList saves 20%. This stack permits  up to MAX_STACK_SIZE levels of nesting including
   // the top-level document. Deeper nesting is prone to trigger StackOverflowErrors.
   protected var stackSize = 0
-  protected val scopes = IntArray(32)
-  protected val pathNames = arrayOfNulls<String>(32)
-  protected val pathIndices = IntArray(32)
+  protected val scopes = IntArray(MAX_STACK_SIZE)
+  protected val pathNames = arrayOfNulls<String>(MAX_STACK_SIZE)
+  protected val pathIndices = IntArray(MAX_STACK_SIZE)
 
   /**
    * A string containing a full set of spaces for a single level of indentation, or null for no pretty printing.
