@@ -56,21 +56,21 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
 
   /**
    * The nesting stack. Using a manual array rather than an ArrayList saves 20%.
-   * This stack permits up to 32 levels of nesting including the top-level document.
+   * This stack permits up to MAX_STACK_SIZE levels of nesting including the top-level document.
    * Deeper nesting is prone to trigger StackOverflowErrors.
    */
-  private val stack = IntArray(32).apply {
+  private val stack = IntArray(MAX_STACK_SIZE).apply {
     this[0] = JsonScope.EMPTY_DOCUMENT
   }
   private var stackSize = 1
-  private val pathNames = arrayOfNulls<String>(32)
-  private val pathIndices = IntArray(32)
+  private val pathNames = arrayOfNulls<String>(MAX_STACK_SIZE)
+  private val pathIndices = IntArray(MAX_STACK_SIZE)
 
   private var lenient = false
 
   private var failOnUnknown = false
 
-  private val indexStack = IntArray(32).apply {
+  private val indexStack = IntArray(MAX_STACK_SIZE).apply {
     this[0] = 0
   }
   private var indexStackSize = 1
@@ -967,5 +967,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     private const val NUMBER_CHAR_EXP_E = 5
     private const val NUMBER_CHAR_EXP_SIGN = 6
     private const val NUMBER_CHAR_EXP_DIGIT = 7
+
+    const val MAX_STACK_SIZE = 256
   }
 }
