@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.api.internal.json
 
+import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader.Companion.MAX_STACK_SIZE
 import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
 import com.apollographql.apollo3.api.json.JsonReader
 
@@ -42,10 +43,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   // No need to stack this, when we pop, we know we have to read a new name
   private var currentName: String? = "root"
 
-  /**
-   * See [com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader] for the 32 limitation
-   */
-  private val nameIndexStack = IntArray(32).apply {
+  private val nameIndexStack = IntArray(MAX_STACK_SIZE).apply {
     this[0] = 0
   }
 

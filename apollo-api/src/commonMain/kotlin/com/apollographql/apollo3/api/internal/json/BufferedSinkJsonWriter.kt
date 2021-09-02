@@ -17,6 +17,7 @@ package com.apollographql.apollo3.api.internal.json
 
 import com.apollographql.apollo3.api.Throws
 import com.apollographql.apollo3.api.Upload
+import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader.Companion.MAX_STACK_SIZE
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.exception.JsonDataException
 import okio.BufferedSink
@@ -31,12 +32,12 @@ import okio.IOException
  * To writer to a [Map], see also [MapJsonWriter]
  */
 class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter {
-  // The nesting stack. Using a manual array rather than an ArrayList saves 20%. This stack permits  up to 32 levels of nesting including
+  // The nesting stack. Using a manual array rather than an ArrayList saves 20%. This stack permits  up to MAX_STACK_SIZE levels of nesting including
   // the top-level document. Deeper nesting is prone to trigger StackOverflowErrors.
   private var stackSize = 0
-  private val scopes = IntArray(32)
-  private val pathNames = arrayOfNulls<String>(32)
-  private val pathIndices = IntArray(32)
+  private val scopes = IntArray(MAX_STACK_SIZE)
+  private val pathNames = arrayOfNulls<String>(MAX_STACK_SIZE)
+  private val pathIndices = IntArray(MAX_STACK_SIZE)
 
   /**
    * A string containing a full set of spaces for a single level of indentation, or null for no pretty printing.
