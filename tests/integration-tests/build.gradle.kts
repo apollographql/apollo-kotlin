@@ -51,7 +51,7 @@ fun configureApollo(generateKotlinModels: Boolean) {
     file("src/main/graphql/com/apollographql/apollo3/integration").listFiles()!!
         .filter { it.isDirectory }
         .forEach {
-          service("${it.name}$extra") {
+          service("${it.name}-$extra") {
             when (it.name) {
               "httpcache" -> {
                 generateOperationOutput.set(true)
@@ -82,7 +82,7 @@ fun configureApollo(generateKotlinModels: Boolean) {
     file("src/commonTest/kotlin/test").listFiles()!!
         .filter { it.isDirectory }
         .forEach {
-          service("${it.name}$extra") {
+          service("${it.name}-$extra") {
             srcDir(it)
             this.generateKotlinModels.set(generateKotlinModels)
             codegenModels.set("operationBased")
