@@ -1,0 +1,15 @@
+query listOfIntValue {
+    listOfIntValue(listOfInt: 1)
+}
+
+query listOfIntValueNull {
+    listOfIntValue(listOfInt: null)
+}
+
+query listOfIntValueVariable($var: Int) {
+    listOfIntValue(listOfInt: $var)
+}
+
+query listOfListOfIntValue {
+    listOfListOfIntValue(listOfListOfInt: 1)
+}
