@@ -64,15 +64,10 @@ internal object TestUtils {
     return File(parentFile, "$nameWithoutExtension.$newExtension")
   }
 
-  private fun findSchema(parent: File, nameWithoutExtension: String): Schema? {
-    val schema = File(parent, "$nameWithoutExtension.sdl")
-        .takeIf { it.exists() }?.toSchema()
-
-    if (schema != null) {
-      return schema
-    }
-    return File(parent, "$nameWithoutExtension.json")
-        .takeIf { it.exists() }?.toIntrospectionSchema()?.toSchema()
+  private fun findSchema(dir: File): Schema? {
+    return listOf("graphqls", "sdl", "json").map { File(dir, "schema.$it") }
+        .firstOrNull { it.exists() }
+        ?.toSchema()
   }
 
   /**
@@ -83,16 +78,20 @@ internal object TestUtils {
    * schema.[json|sdl|graphqls] in the hierarchy
    */
   fun checkExpected(graphQLFile: File, block: (Schema?) -> String) {
-    var schema = findSchema(graphQLFile.parentFile, graphQLFile.nameWithoutExtension)
-    if (schema == null) {
-      var parent = graphQLFile.parentFile
-      while (parent.name != "test") {
-        schema = findSchema(parent, "schema")
-        if (schema != null) {
-          break
-        }
-        parent = parent.parentFile
+    var parent = graphQLFile.parentFile
+
+    // We're in src/test/validation/operation/...
+    // There's a schema at src/test/validation/schema.json if we go past that, stop
+    var schema: Schema? = null
+    while (parent.name != "test") {
+      schema = findSchema(parent)
+      if (schema != null) {
+        break
       }
+      parent = parent.parentFile
+    }
+    check (schema != null) {
+      "Cannot find a schema for $graphQLFile"
     }
 
     val actual = block(schema)
