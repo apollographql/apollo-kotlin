@@ -67,7 +67,13 @@ internal object TestUtils {
   private fun findSchema(dir: File): Schema? {
     return listOf("graphqls", "sdl", "json").map { File(dir, "schema.$it") }
         .firstOrNull { it.exists() }
-        ?.toSchema()
+        ?.let {
+          if (it.extension == "json") {
+            it.toIntrospectionSchema().toSchema()
+          } else {
+            it.toSchema()
+          }
+        }
   }
 
   /**
