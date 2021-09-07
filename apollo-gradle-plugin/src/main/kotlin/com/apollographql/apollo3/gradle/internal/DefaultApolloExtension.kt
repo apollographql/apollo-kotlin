@@ -400,7 +400,7 @@ abstract class DefaultApolloExtension(
       }
 
       check(!(service.packageName.isPresent && service.packageNameGenerator.isPresent)) {
-        println("ApolloGraphQL: it is an error to specify both 'packageName' and 'packageNameGenerator'")
+        "ApolloGraphQL: it is an error to specify both 'packageName' and 'packageNameGenerator'"
       }
       var packageNameGenerator = service.packageNameGenerator.orNull
       if (packageNameGenerator == null) {
