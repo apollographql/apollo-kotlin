@@ -46,7 +46,8 @@ class MultiModulesTests {
         TestUtils.executeTask(":node1:generateApolloSources", dir)
         fail("the build did not detect duplicate classes")
       } catch(e: UnexpectedBuildFailure) {
-        Truth.assertThat(e.message).contains("duplicate Fragment 'CatFragment' generated in modules: node1,node2")
+        Truth.assertThat(e.message).contains("duplicate")
+        Truth.assertThat(e.message).contains("in modules: node1,node2")
       }
     }
   }

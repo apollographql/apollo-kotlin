@@ -13,8 +13,8 @@ private fun resolveNameClashes(usedNames: MutableSet<String>, modelName: String)
   return name
 }
 
-private fun List<IrModelGroup>.flatten(flattenNamesInOrder: Boolean): List<IrModelGroup> {
-  val usedNames = mutableSetOf<String>()
+private fun List<IrModelGroup>.flatten(flattenNamesInOrder: Boolean, excludeNames: Set<String>): List<IrModelGroup> {
+  val usedNames = excludeNames.toMutableSet()
   val collectedIrModelGroups = mutableListOf<IrModelGroup>()
 
   return map {
@@ -64,29 +64,34 @@ private fun IrModelGroup.walk2(
 /**
  * walk traverses the models until it reaches the desired depth
  */
-private fun List<IrModelGroup>.walk(depth: Int, flattenNamesInOrder: Boolean, atDepth: Int): List<IrModelGroup> {
-  if (depth == atDepth) {
-    return flatten(flattenNamesInOrder)
+private fun List<IrModelGroup>.walk(depth: Int, flattenNamesInOrder: Boolean, atDepth: Int, excludeNames: Set<String>): List<IrModelGroup> {
+  return if (depth == atDepth) {
+    flatten(flattenNamesInOrder, excludeNames)
   } else {
-    return map { modelGroup ->
-      modelGroup.walk(depth, flattenNamesInOrder, atDepth)
+    map { modelGroup ->
+      modelGroup.walk(depth, flattenNamesInOrder, atDepth, excludeNames)
     }
   }
 }
 
-private fun IrModelGroup.walk(depth: Int, flattenNamesInOrder: Boolean, atDepth: Int): IrModelGroup {
+private fun IrModelGroup.walk(depth: Int, flattenNamesInOrder: Boolean, atDepth: Int, excludeNames: Set<String>): IrModelGroup {
   return copy(
       models = models.map { model ->
         model.copy(
-            modelGroups = model.modelGroups.walk(depth + 1, flattenNamesInOrder, atDepth)
+            modelGroups = model.modelGroups.walk(depth + 1, flattenNamesInOrder, atDepth, excludeNames)
         )
       }
   )
 }
 
-internal fun IrModelGroup.maybeFlatten(flatten: Boolean, flattenNamesInOrder: Boolean, atDepth: Int = 0): List<IrModelGroup> {
+internal fun IrModelGroup.maybeFlatten(
+    flatten: Boolean,
+    flattenNamesInOrder: Boolean,
+    atDepth: Int = 0,
+    excludeNames: Set<String> = emptySet()
+): List<IrModelGroup> {
   return if (flatten) {
-    listOf(this).walk(0, flattenNamesInOrder, atDepth)
+    listOf(this).walk(0, flattenNamesInOrder, atDepth, excludeNames)
   } else {
     listOf(this)
   }

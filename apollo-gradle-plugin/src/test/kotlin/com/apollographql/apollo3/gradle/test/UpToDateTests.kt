@@ -33,9 +33,6 @@ class UpToDateTests {
     assertTrue(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").isFile)
     assertTrue(dir.generatedChild("service/com/example/FilmsQuery.kt").isFile)
     assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
-
-    // verify that the custom type generated was Any because no customScalarsMapping was specified
-    TestUtils.assertFileContains(dir, "service/com/example/type/Types.kt", "\"kotlin.Any\"")
   }
 
   fun `nothing changed, task up to date`(dir: File) {
@@ -65,7 +62,7 @@ class UpToDateTests {
     // and the task should run again
     assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
 
-    TestUtils.assertFileContains(dir, "service/com/example/type/Types.kt", "\"java.util.Date\"")
+    TestUtils.assertFileContains(dir, "service/com/example/type/DateTime.kt", "\"java.util.Date\"")
 
     val text = File(dir, "build.gradle").readText()
     File(dir, "build.gradle").writeText(text.replace(apolloBlock, ""))

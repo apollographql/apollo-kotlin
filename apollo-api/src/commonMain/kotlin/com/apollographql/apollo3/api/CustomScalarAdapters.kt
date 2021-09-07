@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.api
 
+import kotlin.jvm.JvmField
+
 /**
  * A wrapper around a Map<String, [Adapter]> used to retrieve custom scalar adapters at runtime
  *
@@ -29,6 +31,7 @@ class CustomScalarAdapters(val customScalarAdapters: Map<String, Adapter<*>>): E
     /**
      * An empty [CustomScalarAdapters]. If the models were generated with some custom scalars, parsing will fail
      */
+    @JvmField
     val Empty = CustomScalarAdapters(emptyMap())
   }
 }

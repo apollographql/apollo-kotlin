@@ -63,10 +63,11 @@ class Normalizer(
             // If the field is absent, we don't want to serialize "null" to the cache, do not include this field in the record.
             return@mapNotNull null
           }
-          val mergedField = includedFields.first().copy(
-              selections = includedFields.flatMap { it.selections },
-              condition = emptyList()
-          )
+          val mergedField = includedFields.first().newBuilder()
+              .selections(includedFields.flatMap { it.selections })
+              .condition(emptyList())
+              .build()
+
           val fieldKey = mergedField.nameWithArguments(variables)
 
           val base = if (key == rootKey) {

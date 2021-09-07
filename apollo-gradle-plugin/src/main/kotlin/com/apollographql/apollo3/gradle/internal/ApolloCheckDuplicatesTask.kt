@@ -25,17 +25,7 @@ abstract class ApolloCheckDuplicatesTask : DefaultTask() {
     val metadataList = metadataFiles.files.mapNotNull { ApolloMetadata.readFrom(it) }
 
     metadataList.flatMap { metadata ->
-      metadata.generatedFragments.map { it.name to metadata.moduleName }
-    }
-        .groupBy { it.first }
-        .values
-        .find { it.size > 1 }
-        ?.run {
-          throw IllegalStateException("duplicate Fragment '${get(0).first}' generated in modules: ${map { it.second }.joinToString(",")}")
-        }
-
-    metadataList.flatMap { metadata ->
-      (metadata.generatedInputObjects + metadata.generatedInputObjects).map { it to metadata.moduleName }
+      metadata.compilerMetadata.resolverInfo.entries.map { it.key to metadata.moduleName }
     }
         .groupBy { it.first }
         .values

@@ -266,7 +266,7 @@ internal class ExecutableValidationScope(
 
     /**
      * Validate the fragment outside the context of an operation
-     * This is still helpful to show warnings in the IDE while editing fragments of a parent module and the fragment may appear unused
+     * This can be helpful to show warnings in the IDE while editing fragments of a parent module and the fragment may appear unused
      * This will not catch field merging conflicts and missing variables so ultimately, validation
      * against all fragments is required
      */

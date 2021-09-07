@@ -1,10 +1,11 @@
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.api.QueryDocumentMinifier
-import com.apollographql.apollo3.compiler.codegen.KotlinCodeGen
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinCodeGen
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo3.ast.*
 import com.apollographql.apollo3.ast.transformation.addRequiredFields
+import com.apollographql.apollo3.compiler.codegen.java.JavaCodeGen
 import com.apollographql.apollo3.compiler.ir.IrBuilder
 import com.apollographql.apollo3.compiler.ir.dumpTo
 import java.io.File
@@ -16,12 +17,20 @@ object GraphQLCompiler {
   }
 
   fun write(
-      options: Options
-  ) {
+      options: Options,
+  ): CompilerMetadata {
     val executableFiles = options.executableFiles
     val outputDir = options.outputDir
     val debugDir = options.debugDir
     val schema = options.schema
+
+    if (options.targetLanguage == TARGET_JAVA && options.codegenModels != MODELS_OPERATION_BASED) {
+      error("Java codegen does not support ${options.codegenModels}. Only $MODELS_OPERATION_BASED is supported.")
+    }
+    if (options.targetLanguage == TARGET_JAVA && !options.flattenModels) {
+      error("Java codegen does not support nested models as it could trigger name clashes when a nested class has the same name as an " +
+          "enclosing one.")
+    }
 
     checkCustomScalars(schema, options.customScalarsMapping)
 
@@ -36,7 +45,7 @@ object GraphQLCompiler {
     val definitions = mutableListOf<GQLDefinition>()
     val parseIssues = mutableListOf<Issue>()
     executableFiles.map { file ->
-      when(val parseResult = file.parseAsGQLDocument()) {
+      when (val parseResult = file.parseAsGQLDocument()) {
         is ParseResult.Success -> definitions.addAll(parseResult.value.definitions)
         is ParseResult.Error -> parseIssues.addAll(parseResult.issues)
       }
@@ -45,11 +54,13 @@ object GraphQLCompiler {
     // Parsing issues are fatal
     parseIssues.checkNoErrors()
 
+    val incomingFragments = options.incomingCompilerMetadata.flatMap { it.fragments }
+
     /**
      * Step 2, GraphQL validation
      */
     val validationIssues = GQLDocument(
-        definitions = definitions + options.metadataFragments.map { it.definition },
+        definitions = definitions + incomingFragments,
         filePath = null
     ).validateAsExecutable(options.schema)
 
@@ -73,7 +84,6 @@ object GraphQLCompiler {
     /**
      * Step 3, Modify the AST to add typename and key fields
      */
-    val incomingFragments = options.metadataFragments.map { it.definition }
 
     val fragments = definitions.filterIsInstance<GQLFragmentDefinition>().map {
       addRequiredFields(it, options.schema)
@@ -99,6 +109,7 @@ object GraphQLCompiler {
     val ir = IrBuilder(
         schema = options.schema,
         operationDefinitions = operations,
+        fragments = fragments,
         allFragmentDefinitions = allFragmentDefinitions,
         alwaysGenerateTypesMatching = options.alwaysGenerateTypesMatching,
         customScalarToKotlinName = options.customScalarsMapping,
@@ -131,57 +142,45 @@ object GraphQLCompiler {
     /**
      * Write the generated models
      */
-    KotlinCodeGen(
-        ir = ir,
-        generateAsInternal = options.generateAsInternal,
-        operationOutput = operationOutput,
-        useSemanticNaming = options.useSemanticNaming,
-        packageNameGenerator = options.packageNameGenerator,
-        schemaPackageName = options.schemaPackageName,
-        generateFilterNotNull = options.generateFilterNotNull,
-        generateFragmentImplementations = options.generateFragmentImplementations,
-        generateQueryDocument = options.generateQueryDocument,
-        fragmentsToSkip = options.metadataFragments.map { it.name }.toSet(),
-        enumsToSkip = options.enumsToSkip,
-        inputObjectsToSkip = options.inputObjectsToSkip,
-        generateSchema = options.generateTypes,
-        flatten = options.flattenModels,
-        flattenNamesInOrder = options.codegenModels != MODELS_COMPAT
-    ).write(outputDir = outputDir)
-
-    /**
-     * Write the metadata
-     */
-    if (options.metadataOutputFile != null) {
-      options.metadataOutputFile.parentFile.mkdirs()
-      val outgoingSchema = if (options.generateTypes) {
-        options.schema
-      } else {
-        // There is already a schema defined in this tree
-        null
+    val outputResolverInfo = when (options.targetLanguage) {
+      TARGET_KOTLIN -> {
+        KotlinCodeGen(
+            ir = ir,
+            resolverInfos = options.incomingCompilerMetadata.map { it.resolverInfo },
+            generateAsInternal = options.generateAsInternal,
+            operationOutput = operationOutput,
+            useSemanticNaming = options.useSemanticNaming,
+            packageNameGenerator = options.packageNameGenerator,
+            schemaPackageName = options.schemaPackageName,
+            generateFilterNotNull = options.generateFilterNotNull,
+            generateFragmentImplementations = options.generateFragmentImplementations,
+            generateQueryDocument = options.generateQueryDocument,
+            flatten = options.flattenModels,
+            flattenNamesInOrder = options.codegenModels != MODELS_COMPAT
+        ).write(outputDir = outputDir)
       }
-
-      val outgoingMetadataFragments = fragments.map {
-        MetadataFragment(
-            name = it.name,
-            packageName = "${options.schemaPackageName}.fragment",
-            definition = it
-        )
+      TARGET_JAVA -> {
+        JavaCodeGen(
+            ir = ir,
+            resolverInfos = options.incomingCompilerMetadata.map { it.resolverInfo },
+            operationOutput = operationOutput,
+            useSemanticNaming = options.useSemanticNaming,
+            packageNameGenerator = options.packageNameGenerator,
+            schemaPackageName = options.schemaPackageName,
+            generateFragmentImplementations = options.generateFragmentImplementations,
+            generateQueryDocument = options.generateQueryDocument,
+            flatten = options.flattenModels,
+            flattenNamesInOrder = true
+        ).write(outputDir = outputDir)
       }
-
-      ApolloMetadata(
-          schema = outgoingSchema,
-          customScalarsMapping = options.customScalarsMapping,
-          generatedFragments = outgoingMetadataFragments,
-          generatedEnums = ir.enums.map { it.name }.toSet(),
-          generatedInputObjects = ir.inputObjects.map { it.name }.toSet(),
-          codegenModels = options.codegenModels,
-          flattenModels = options.flattenModels,
-          moduleName = options.moduleName,
-          pluginVersion = APOLLO_VERSION,
-          schemaPackageName = options.schemaPackageName
-      ).writeTo(options.metadataOutputFile)
+      else -> error("Target language not supported: ${options.targetLanguage}")
     }
+
+
+    return CompilerMetadata(
+        fragments = fragments,
+        resolverInfo = outputResolverInfo,
+    )
   }
 
   private fun checkCustomScalars(schema: Schema, customScalarsMapping: Map<String, String>) {

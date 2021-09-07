@@ -152,7 +152,7 @@ class BatchingHttpEngine(
       }
       val responseBody = response.body ?: throw ApolloException("null body when executing batched query")
 
-      // TODO: this is most likely going to transform BitNumbers into strings, not sure how much of an issue that is
+      // TODO: this is most likely going to transform BigNumbers into strings, not sure how much of an issue that is
       val list = AnyAdapter.fromJson(BufferedSourceJsonReader(responseBody))
       if (list !is List<*>) throw ApolloException("batched query response is not a list when executing batched query")
 

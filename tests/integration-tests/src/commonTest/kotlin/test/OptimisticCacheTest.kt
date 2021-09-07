@@ -58,13 +58,13 @@ class OptimisticCacheTest {
     apolloClient.query(ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkOnly))
 
     val mutationId = uuid4()
-    val data = HeroAndFriendsNamesQuery.Data(HeroAndFriendsNamesQuery.Data.Hero(
+    val data = HeroAndFriendsNamesQuery.Data(HeroAndFriendsNamesQuery.Hero(
         "R222-D222",
         listOf(
-            HeroAndFriendsNamesQuery.Data.Hero.Friend(
+            HeroAndFriendsNamesQuery.Friend(
                 "SuperMan"
             ),
-            HeroAndFriendsNamesQuery.Data.Hero.Friend(
+            HeroAndFriendsNamesQuery.Friend(
                 "Batman"
             )
         )
@@ -106,15 +106,15 @@ class OptimisticCacheTest {
 
     // now write some optimistic updates for query1
     val data1 = HeroAndFriendsNamesWithIDsQuery.Data(
-        HeroAndFriendsNamesWithIDsQuery.Data.Hero(
+        HeroAndFriendsNamesWithIDsQuery.Hero(
             "2001",
             "R222-D222",
             listOf(
-                HeroAndFriendsNamesWithIDsQuery.Data.Hero.Friend(
+                HeroAndFriendsNamesWithIDsQuery.Friend(
                     "1000",
                     "SuperMan"
                 ),
-                HeroAndFriendsNamesWithIDsQuery.Data.Hero.Friend(
+                HeroAndFriendsNamesWithIDsQuery.Friend(
                     "1003",
                     "Batman"
                 )
@@ -145,7 +145,7 @@ class OptimisticCacheTest {
     apolloClient.query(query2)
 
     // write optimistic data2
-    val data2 = HeroNameWithIdQuery.Data(HeroNameWithIdQuery.Data.Hero(
+    val data2 = HeroNameWithIdQuery.Data(HeroNameWithIdQuery.Hero(
         "1000",
         "Beast"
     ))
@@ -237,15 +237,19 @@ class OptimisticCacheTest {
     val updateReviewMutation = UpdateReviewMutation(
         "empireReview2",
         ReviewInput(
-            commentary = Optional.Present("Not Bad"),
-            stars = 4,
-            favoriteColor = ColorInput()
+            4,
+            Optional.Present("Not Bad"),
+            ColorInput(
+                Optional.Absent,
+                Optional.Absent,
+                Optional.Absent
+            )
         )
     )
     apolloClient.mutate(
         ApolloRequest(updateReviewMutation).withOptimisticUpdates(
             UpdateReviewMutation.Data(
-                UpdateReviewMutation.Data.UpdateReview(
+                UpdateReviewMutation.UpdateReview(
                     "empireReview2",
                     5,
                     "Great"
@@ -300,15 +304,15 @@ class OptimisticCacheTest {
     apolloClient.query(query2)
 
     val data1 = HeroAndFriendsNamesWithIDsQuery.Data(
-        HeroAndFriendsNamesWithIDsQuery.Data.Hero(
+        HeroAndFriendsNamesWithIDsQuery.Hero(
             "2001",
             "R222-D222",
             listOf(
-                HeroAndFriendsNamesWithIDsQuery.Data.Hero.Friend(
+                HeroAndFriendsNamesWithIDsQuery.Friend(
                     "1000",
                     "Robocop"
                 ),
-                HeroAndFriendsNamesWithIDsQuery.Data.Hero.Friend(
+                HeroAndFriendsNamesWithIDsQuery.Friend(
                     "1003",
                     "Batman"
                 )
@@ -320,7 +324,7 @@ class OptimisticCacheTest {
         operationData = data1,
         mutationId = mutationId1,
         publish = true)
-    val data2 = HeroNameWithIdQuery.Data(HeroNameWithIdQuery.Data.Hero(
+    val data2 = HeroNameWithIdQuery.Data(HeroNameWithIdQuery.Hero(
         "1000",
         "Spiderman"
     ))

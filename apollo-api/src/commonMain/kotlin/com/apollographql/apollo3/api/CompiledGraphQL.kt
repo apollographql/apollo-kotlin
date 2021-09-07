@@ -1,24 +1,28 @@
+@file:JvmName("CompiledGraphQL")
+
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.CompiledArgument.Companion.resolveVariables
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils
 import okio.Buffer
+import kotlin.jvm.JvmField
+import kotlin.jvm.JvmName
+import kotlin.jvm.JvmStatic
 import kotlin.native.concurrent.SharedImmutable
-
 
 sealed class CompiledSelection
 
 /**
  * A compiled field from a GraphQL operation
  */
-class CompiledField(
+class CompiledField internal constructor(
     val name: String,
-    val alias: String? = null,
     val type: CompiledType,
-    val condition: List<CompiledCondition> = emptyList(),
-    val arguments: List<CompiledArgument> = emptyList(),
-    val selections: List<CompiledSelection> = emptyList(),
+    val alias: String?,
+    val condition: List<CompiledCondition>,
+    val arguments: List<CompiledArgument>,
+    val selections: List<CompiledSelection>,
 ) : CompiledSelection() {
   val responseName: String
     get() = alias ?: name
@@ -55,33 +59,85 @@ class CompiledField(
     }
   }
 
-  fun copy(
-      name: String= this.name,
-      alias: String? = this.alias,
-      type: CompiledType = this.type,
-      condition: List<CompiledCondition> = this.condition,
-      arguments: List<CompiledArgument> = this.arguments,
-      selections: List<CompiledSelection> = this.selections,
-      ): CompiledField {
-    return CompiledField(
-        name,
-        alias,
-        type,
-        condition,
-        arguments,
-        selections
+  fun newBuilder(): Builder = Builder(this)
+
+  /**
+   * Builder is used from Java generated code. If you're using Kotlin, use the constructor and default values instead
+   */
+  class Builder internal constructor(val name: String, val type: CompiledType) {
+    internal var alias: String? = null
+    internal var condition: List<CompiledCondition> = emptyList()
+    internal var arguments: List<CompiledArgument> = emptyList()
+    internal var selections: List<CompiledSelection> = emptyList()
+
+    constructor(compiledField: CompiledField) : this(compiledField.name, compiledField.type) {
+      this.alias = compiledField.alias
+      this.condition = compiledField.condition
+      this.arguments = compiledField.arguments
+      this.selections = compiledField.selections
+    }
+
+    fun alias(alias: String?) = apply {
+      this.alias = alias
+    }
+
+    fun condition(condition: List<CompiledCondition>) = apply {
+      this.condition = condition
+    }
+
+    fun arguments(arguments: List<CompiledArgument>) = apply {
+      this.arguments = arguments
+    }
+
+    fun selections(selections: List<CompiledSelection>) = apply {
+      this.selections = selections
+    }
+
+    fun build(): CompiledField = CompiledField(
+        name = name,
+        alias = alias,
+        type = type,
+        condition = condition,
+        arguments = arguments,
+        selections = selections
     )
+  }
+
+  companion object {
+    @JvmStatic
+    fun builder(name: String, type: CompiledType): Builder = Builder(name, type)
   }
 }
 
 /**
  * A compiled inline fragment or fragment spread
  */
-class CompiledFragment(
+class CompiledFragment internal constructor(
     val possibleTypes: List<String>,
-    val condition: List<CompiledCondition> = emptyList(),
-    val selections: List<CompiledSelection> = emptyList(),
-) : CompiledSelection()
+    val condition: List<CompiledCondition>,
+    val selections: List<CompiledSelection>,
+) : CompiledSelection() {
+
+  class Builder internal constructor(val possibleTypes: List<String>) {
+    var condition: List<CompiledCondition> = emptyList()
+    var selections: List<CompiledSelection> = emptyList()
+
+    fun condition(condition: List<CompiledCondition>) = apply {
+      this.condition = condition
+    }
+
+    fun selections(selections: List<CompiledSelection>) = apply {
+      this.selections = selections
+    }
+
+    fun build() = CompiledFragment(possibleTypes, condition, selections)
+  }
+
+  companion object {
+    @JvmStatic
+    fun builder(possibleTypes: List<String>): Builder = Builder(possibleTypes)
+  }
+}
 
 
 data class CompiledCondition(val name: String, val inverted: Boolean)
@@ -196,15 +252,48 @@ fun CompiledType.leafType(): CompiledNamedType {
 }
 
 @SharedImmutable
+@JvmField
 val CompiledStringType = ScalarType("String")
+
 @SharedImmutable
+@JvmField
 val CompiledIntType = ScalarType("Int")
+
 @SharedImmutable
+@JvmField
 val CompiledFloatType = ScalarType("Float")
+
 @SharedImmutable
+@JvmField
 val CompiledBooleanType = ScalarType("Boolean")
+
 @SharedImmutable
+@JvmField
 val CompiledIDType = ScalarType("ID")
+
+@SharedImmutable
+@JvmField
+val CompiledSchemaType = ObjectType("__Schema")
+
+@SharedImmutable
+@JvmField
+val CompiledTypeType = ObjectType("__Type")
+
+@SharedImmutable
+@JvmField
+val CompiledFieldType = ObjectType("__Field")
+
+@SharedImmutable
+@JvmField
+val CompiledInputValueType = ObjectType("__InputValue")
+
+@SharedImmutable
+@JvmField
+val CompiledEnumValueType = ObjectType("__EnumValue")
+
+@SharedImmutable
+@JvmField
+val CompiledDirectiveType = ObjectType("__Directive")
 
 fun CompiledNamedType.isComposite(): Boolean {
   return when (this) {

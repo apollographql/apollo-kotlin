@@ -5,7 +5,6 @@ plugins {
 configureMppDefaults(withJs = false)
 
 kotlin {
-
   sourceSets {
     val commonMain by getting {
       dependencies {

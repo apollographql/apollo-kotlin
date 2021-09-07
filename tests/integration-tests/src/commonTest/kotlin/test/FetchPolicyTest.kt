@@ -41,7 +41,7 @@ class FetchPolicyTest {
   @Test
   fun cacheFirst() {
     val query = HeroNameQuery()
-    val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
     mockServer.enqueue(query, data)
 
     // Cache first is also the default, no need to set the fetchPolicy
@@ -75,7 +75,7 @@ class FetchPolicyTest {
   fun networkFirst() {
     runWithMainLoop {
       val query = HeroNameQuery()
-      val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
+      val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
       val request = ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkFirst)
 
@@ -116,7 +116,7 @@ class FetchPolicyTest {
   fun cacheOnly() {
     runWithMainLoop {
       val query = HeroNameQuery()
-      val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
+      val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
       var request = ApolloRequest(query)
 
@@ -142,7 +142,7 @@ class FetchPolicyTest {
   fun networkOnly() {
     runWithMainLoop {
       val query = HeroNameQuery()
-      val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
+      val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
       val request = ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkOnly)
 
@@ -168,7 +168,7 @@ class FetchPolicyTest {
   fun queryCacheAndNetwork() {
     runWithMainLoop {
       val query = HeroNameQuery()
-      val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
+      val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
       // Initial state: everything fails
       // Cache Error + Network Error => Error

@@ -2,45 +2,54 @@ package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.exception.ApolloException
 import com.benasher44.uuid.Uuid
+import kotlin.jvm.JvmField
+import kotlin.jvm.JvmName
 
 /**
  * Represents a GraphQL response. GraphQL responses can be be partial responses so it is valid to have both data != null and errors
  */
 class ApolloResponse<out D : Operation.Data>(
+    @JvmField
     val requestUuid: Uuid,
 
     /**
      * The GraphQL operation this response represents
      */
+    @JvmField
     val operation: Operation<*>,
 
     /**
      * Parsed response of GraphQL [operation] execution.
      * Can be `null` in case if [operation] execution failed.
      */
+    @JvmField
     val data: D?,
 
     /**
      * GraphQL [operation] execution errors returned by the server to let client know that something has gone wrong.
      * This can either be null or empty depending what you server sends back
      */
+    @JvmField
     val errors: List<Error>? = null,
 
     /**
      * Extensions of GraphQL protocol, arbitrary map of key [String] / value [Any] sent by server along with the response.
      */
+    @JvmField
     val extensions: Map<String, Any?> = emptyMap(),
 
     /**
      * The context of GraphQL [operation] execution.
      * This can contain additional data contributed by interceptors.
      */
+    @JvmField
     val executionContext: ExecutionContext = ExecutionContext.Empty,
 ) {
 
   /**
    * A shorthand property to get a non-nullable if handling partial data is not important
    */
+  @get:JvmName("dataOrThrow")
   val dataOrThrow: D
     get() {
       return if (hasErrors()) {
