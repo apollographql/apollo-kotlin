@@ -15,7 +15,6 @@ import java.io.File
  */
 class IncomingOptions(
     val schema: Schema,
-    val customScalarsMapping: Map<String, String>,
     val codegenModels: String,
     val schemaPackageName: String,
 ) {
@@ -23,7 +22,6 @@ class IncomingOptions(
     fun fromMetadata(commonMetadata: CommonMetadata, packageNameGenerator: PackageNameGenerator): IncomingOptions {
       return IncomingOptions(
           schema = commonMetadata.schema,
-          customScalarsMapping = commonMetadata.customScalarsMapping,
           codegenModels = commonMetadata.codegenModels,
           schemaPackageName = packageNameGenerator.packageName(commonMetadata.schemaPath)
       )
