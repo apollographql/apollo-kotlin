@@ -112,7 +112,7 @@ object GraphQLCompiler {
         fragments = fragments,
         allFragmentDefinitions = allFragmentDefinitions,
         alwaysGenerateTypesMatching = options.alwaysGenerateTypesMatching,
-        customScalarToKotlinName = options.customScalarsMapping,
+        customScalarsMapping = options.customScalarsMapping,
         codegenModels = options.codegenModels,
     ).build()
 
@@ -198,7 +198,7 @@ object GraphQLCompiler {
         .toSet()
     val unknownScalars = customScalarsMapping.keys.subtract(schemaScalars)
     check(unknownScalars.isEmpty()) {
-      "ApolloGraphQL: unknown custom scalar(s): ${unknownScalars.joinToString(",")}"
+      "ApolloGraphQL: unknown custom scalar(s) in customScalarsMapping: ${unknownScalars.joinToString(",")}"
     }
   }
 
