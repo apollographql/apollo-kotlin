@@ -18,6 +18,7 @@ import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.interceptor.NetworkInterceptor
 import com.apollographql.apollo3.interceptor.DefaultInterceptorChain
 import com.apollographql.apollo3.internal.defaultDispatcher
+import com.apollographql.apollo3.mpp.assertMainThreadOnNative
 import com.apollographql.apollo3.mpp.ensureNeverFrozen
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
@@ -173,6 +174,7 @@ class ApolloClient @JvmOverloads constructor(
 
   @OptIn(ExperimentalCoroutinesApi::class, kotlinx.coroutines.FlowPreview::class)
   private fun <D : Operation.Data> ApolloRequest<D>.execute(): Flow<ApolloResponse<D>> {
+    assertMainThreadOnNative()
     val executionContext = clientScope + customScalarAdapters + this@ApolloClient.executionContext + this.executionContext
 
     val request = withExecutionContext(executionContext)

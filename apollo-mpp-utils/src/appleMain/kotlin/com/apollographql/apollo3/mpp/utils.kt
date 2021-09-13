@@ -2,6 +2,7 @@ package com.apollographql.apollo3.mpp
 
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.pointed
+import platform.Foundation.NSThread
 import platform.darwin.DISPATCH_TIME_NOW
 import platform.darwin.dispatch_time
 import platform.posix.pthread_self
@@ -23,4 +24,10 @@ actual fun isFrozen(obj: Any) = obj.isFrozen
 
 actual fun freeze(obj: Any) {
   obj.freeze()
+}
+
+actual fun assertMainThreadOnNative() {
+  check(NSThread.isMainThread()) {
+    "Non-main native call"
+  }
 }

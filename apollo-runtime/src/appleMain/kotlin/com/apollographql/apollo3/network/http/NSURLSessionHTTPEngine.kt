@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpResponse
+import com.apollographql.apollo3.mpp.assertMainThreadOnNative
 import com.apollographql.apollo3.mpp.suspendAndResumeOnMain
 import com.apollographql.apollo3.network.toNSData
 import okio.Buffer
@@ -60,7 +61,7 @@ actual class DefaultHttpEngine(
 
   @Suppress("UNCHECKED_CAST")
   override suspend fun execute(request: HttpRequest) = suspendAndResumeOnMain<HttpResponse> { mainContinuation, invokeOnCancellation ->
-    assert(NSThread.isMainThread())
+    assertMainThreadOnNative()
 
     request.freeze()
 

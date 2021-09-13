@@ -21,9 +21,8 @@ import kotlin.native.concurrent.freeze
  * Because of this, this only works for coroutines that run in the main thread.
  */
 suspend fun <R> suspendAndResumeOnMain(block: (MainContinuation<R>, InvokeOnCancellation) -> Unit): R {
-  check(NSThread.isMainThread()) {
-    "suspendAndResumeOnMain must be called from the main thread"
-  }
+  assertMainThreadOnNative()
+
   return suspendCancellableCoroutine { continuation ->
     block(MainContinuation(continuation)) { continuation.invokeOnCancellation(it) }
   }
@@ -36,7 +35,8 @@ typealias InvokeOnCancellation = (CompletionHandler) -> Unit
  */
 class MainContinuation<R>(continuation: CancellableContinuation<R>) {
   init {
-    ensureNeverFrozen(continuation)
+    // See https://github.com/apollographql/apollo-android/issues/3347
+    // ensureNeverFrozen(continuation)
   }
   private val continuationRef = StableRef.create(continuation)
 
