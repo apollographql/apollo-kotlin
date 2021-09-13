@@ -74,12 +74,6 @@ class JavaCodeGen(
     )
     val builders = mutableListOf<JavaClassBuilder>()
 
-    ir.customScalars.forEach {
-      if (it.kotlinName != null) {
-        context.resolver.registerCustomScalar(it.name, ClassName.bestGuess(it.kotlinName))
-      }
-    }
-
     ir.inputObjects
         .filter { !context.resolver.canResolveSchemaType(it.name) }
         .forEach {

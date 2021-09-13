@@ -58,7 +58,7 @@ internal class IrBuilder(
     private val fragments: List<GQLFragmentDefinition>,
     private val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val alwaysGenerateTypesMatching: Set<String>,
-    private val customScalarToKotlinName: Map<String, String>,
+    private val customScalarsMapping: Map<String, String>,
     codegenModels: String,
 ) : FieldMerger {
   private val usedTypes = mutableListOf<String>()
@@ -104,6 +104,9 @@ internal class IrBuilder(
 
     // inject extra types
     usedTypes.addAll(schema.typeDefinitions.keys.filter { shouldAlwaysGenerate(it) })
+    // inject custom scalars specified in the Gradle configuration
+    usedTypes.addAll(customScalarsMapping.keys)
+
     // Input objects and Interfaces contain (possible reentrant) references so we need to loop here
     while (usedTypes.isNotEmpty()) {
       val name = usedTypes.removeAt(0)
@@ -182,7 +185,7 @@ internal class IrBuilder(
   private fun GQLScalarTypeDefinition.toIr(): IrCustomScalar {
     return IrCustomScalar(
         name = name,
-        kotlinName = customScalarToKotlinName[name],
+        kotlinName = customScalarsMapping[name],
         description = description,
         deprecationReason = directives.findDeprecationReason()
     )
@@ -370,7 +373,7 @@ internal class IrBuilder(
               "Float" -> IrFloatType
               "ID" -> IrIdType
               else -> {
-                if (customScalarToKotlinName[name] != null) {
+                if (customScalarsMapping[name] != null) {
                   IrCustomScalarType(name)
                 } else {
                   IrAnyType

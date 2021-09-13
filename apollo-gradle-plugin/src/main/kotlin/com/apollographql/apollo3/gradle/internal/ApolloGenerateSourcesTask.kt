@@ -200,7 +200,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
             else -> error("")
           }
       )
-      val customScalarsMapping = customScalarsMapping.getOrElse(emptyMap())
 
       val (schema, mainSchemaFilePath) = resolveSchema(schemaFiles.files, rootFolders.get())
 
@@ -208,14 +207,12 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
           schema = schema,
           codegenModels = codegenModels,
           schemaPath = mainSchemaFilePath,
-          customScalarsMapping = customScalarsMapping,
           pluginVersion = APOLLO_VERSION
       )
 
       IncomingOptions(
           schema = schema,
           schemaPackageName = packageNameGenerator.packageName(mainSchemaFilePath),
-          customScalarsMapping = customScalarsMapping,
           codegenModels = codegenModels,
       )
     }
@@ -269,7 +266,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         schema = incomingOptions.schema,
         codegenModels = codegenModels,
         schemaPackageName = incomingOptions.schemaPackageName,
-        customScalarsMapping = incomingOptions.customScalarsMapping,
+        customScalarsMapping = customScalarsMapping.getOrElse(emptyMap()),
         targetLanguage = targetLanguage
     )
 

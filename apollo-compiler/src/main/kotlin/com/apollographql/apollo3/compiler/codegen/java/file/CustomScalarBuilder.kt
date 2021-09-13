@@ -20,6 +20,9 @@ class CustomScalarBuilder(
 
   override fun prepare() {
     context.resolver.registerSchemaType(customScalar.name, ClassName.get(packageName, simpleName))
+    if (customScalar.kotlinName != null) {
+      context.resolver.registerCustomScalar(customScalar.name, ClassName.bestGuess(customScalar.kotlinName))
+    }
   }
 
   override fun build(): CodegenJavaFile {
