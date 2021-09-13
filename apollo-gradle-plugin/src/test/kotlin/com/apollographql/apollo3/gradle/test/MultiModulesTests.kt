@@ -1,8 +1,10 @@
 package com.apollographql.apollo3.gradle.test
 
+import com.apollographql.apollo3.compiler.ApolloMetadata
 import com.apollographql.apollo3.gradle.util.TestUtils
 import com.apollographql.apollo3.gradle.util.replaceInText
 import com.google.common.truth.Truth
+import junit.framework.Assert.assertTrue
 import junit.framework.Assert.fail
 import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure
@@ -65,6 +67,21 @@ class MultiModulesTests {
       Truth.assertThat(result.task(":checkServiceApolloDuplicates")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
       Truth.assertThat(result.task(":node2:compileKotlin")?.outcome).isEqualTo(null)
       Truth.assertThat(result.task(":node2:generateServiceApolloSources")?.outcome).isEqualTo(TaskOutcome.UP_TO_DATE)
+    }
+  }
+
+  @Test
+  fun `custom scalars are registered if added to customScalarMappings`() {
+    TestUtils.withTestProject("multi-modules-custom-scalar") { dir ->
+      TestUtils.executeTaskAndAssertSuccess(":leaf:assemble", dir)
+      // Date is generated in the root module
+      assertTrue(File(dir, "root/build/generated/source/apollo/service/com/library/type/Date.kt").exists())
+      // Leaf metadata doesn't contain anything regarding Date
+      val metadata = ApolloMetadata.readFrom(File(dir, "leaf/build/generated/metadata/apollo/service/metadata.json"))
+      Truth.assertThat(metadata.compilerMetadata.resolverInfo.entries.map {it.key.id}).doesNotContain("Date")
+      // But contains GeoPoint
+      Truth.assertThat(metadata.compilerMetadata.resolverInfo.entries.map {it.key.id}).doesNotContain("Date")
+      assertTrue(File(dir, "leaf/build/generated/source/apollo/service/com/library/type/GeoPoint.kt").exists())
     }
   }
 }

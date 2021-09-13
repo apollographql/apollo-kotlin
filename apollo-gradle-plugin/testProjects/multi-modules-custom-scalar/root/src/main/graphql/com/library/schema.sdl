@@ -1,0 +1,7 @@
+type Query {
+  date: Date!
+  geoPoint: GeoPoint!
+}
+
+scalar Date
+scalar GeoPoint

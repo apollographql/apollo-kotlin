@@ -34,18 +34,15 @@ class MetadataTest {
       metadataOutputFile: File,
   ) {
     val schema: Schema
-    val customScalarsMapping: Map<String, String>
     val codegenModels: String
     var outputCommonMetadata: CommonMetadata? = null
     var incomingCompilerMetadata: List<CompilerMetadata> = emptyList()
     if (schemaFile != null) {
       schema = schemaFile.toSchema()
-      customScalarsMapping = defaultCustomScalarsMapping
       codegenModels = MODELS_RESPONSE_BASED
 
       outputCommonMetadata = CommonMetadata(
           schema = schema,
-          customScalarsMapping = customScalarsMapping,
           codegenModels = codegenModels,
           schemaPath = "",
           pluginVersion = APOLLO_VERSION
@@ -54,7 +51,6 @@ class MetadataTest {
       val metadata = metadataFiles.map { ApolloMetadata.readFrom(it) }
       val commonMetadata = metadata.mapNotNull { it.commonMetadata }.single()
       schema = commonMetadata.schema
-      customScalarsMapping = commonMetadata.customScalarsMapping
       codegenModels = commonMetadata.codegenModels
       incomingCompilerMetadata = metadata.map { it.compilerMetadata }
     }
@@ -66,7 +62,7 @@ class MetadataTest {
             schema = schema,
             schemaPackageName = "",
             codegenModels = codegenModels,
-            customScalarsMapping = customScalarsMapping,
+            customScalarsMapping = defaultCustomScalarsMapping,
             packageNameGenerator = PackageNameGenerator.Flat(""),
             alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
             flattenModels = true,

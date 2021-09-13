@@ -88,7 +88,6 @@ data class CommonMetadata(
      */
     val schemaPath: String,
     val pluginVersion: String,
-    val customScalarsMapping: Map<String, String>,
     val codegenModels: String,
 )
 
