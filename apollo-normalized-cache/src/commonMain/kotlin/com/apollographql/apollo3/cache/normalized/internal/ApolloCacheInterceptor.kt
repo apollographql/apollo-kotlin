@@ -180,7 +180,6 @@ internal class ApolloCacheInterceptor(
       }
 
       store.changedKeys.collect { changedKeys ->
-        println("changedKeys: $changedKeys")
         if (watchedKeys == null || changedKeys.intersect(watchedKeys!!).isNotEmpty()) {
           result = kotlin.runCatching {
             fetchOneMightThrow(
