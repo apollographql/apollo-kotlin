@@ -53,6 +53,8 @@ internal object KotlinClassNames {
   val Int = ClassName("kotlin", "Int")
   val String = ClassName("kotlin", "String")
   val Any = ClassName("kotlin", "Any")
+
+  val List = ClassName("kotlin.collections", "List")
 }
 
 fun ResolverClassName.toKotlinPoetClassName(): ClassName = ClassName(packageName, simpleNames)

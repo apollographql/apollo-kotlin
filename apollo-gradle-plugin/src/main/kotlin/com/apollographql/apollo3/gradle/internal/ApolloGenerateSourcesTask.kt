@@ -25,6 +25,7 @@ import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateFilte
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateFragmentImplementations
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateQueryDocument
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateResponseFields
+import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateSchema
 import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSemanticNaming
 import com.apollographql.apollo3.compiler.Options.Companion.defaultWarnOnDeprecatedUsages
 import com.apollographql.apollo3.compiler.PackageNameGenerator
@@ -113,6 +114,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Input
   @get:Optional
   abstract val generateQueryDocument: Property<Boolean>
+
+  @get:Input
+  @get:Optional
+  abstract val generateSchema: Property<Boolean>
 
   @get:Input
   @get:Optional
@@ -251,6 +256,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         generateFilterNotNull = generateFilterNotNull.getOrElse(defaultGenerateFilterNotNull),
         generateFragmentImplementations = generateFragmentImplementations.getOrElse(defaultGenerateFragmentImplementations),
         generateQueryDocument = generateQueryDocument.getOrElse(defaultGenerateQueryDocument),
+        generateSchema = generateSchema.getOrElse(defaultGenerateSchema),
         generateResponseFields = generateResponseFields.getOrElse(defaultGenerateResponseFields),
         logger = logger,
         moduleName = projectName.get(),

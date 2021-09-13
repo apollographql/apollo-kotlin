@@ -1,4 +1,8 @@
+@file:JvmName("PossibleTypes")
+
 package com.apollographql.apollo3.api
+
+import kotlin.jvm.JvmName
 
 private fun possibleTypesInternal(allTypes: List<CompiledType>, type: CompiledNamedType): List<ObjectType> {
   return when (type) {
