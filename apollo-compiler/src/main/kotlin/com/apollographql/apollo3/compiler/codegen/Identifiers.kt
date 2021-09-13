@@ -43,4 +43,5 @@ internal object Identifier {
   // extra underscores at the end to prevent potential name clashes
   const val UNKNOWN__ = "UNKNOWN__"
   const val rawValue = "rawValue"
+  const val types = "types"
 }

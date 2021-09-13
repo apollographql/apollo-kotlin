@@ -96,6 +96,14 @@ class Options(
      * If performance is critical and you have a way to whitelist/read the document from another place, disable this.
      */
     val generateQueryDocument: Boolean = defaultGenerateQueryDocument,
+
+    /**
+     * Whether to generate the __Schema class.
+     *
+     * __Schema is a special class that contains a list of all composite types (objects, interfaces, unions)
+     * It can be used to retrieve the list of possible types for a given CompiledType
+     */
+    val generateSchema: Boolean = defaultGenerateSchema,
     val moduleName: String,
 ) {
 
@@ -124,6 +132,7 @@ class Options(
       generateFragmentImplementations: Boolean = defaultGenerateFragmentImplementations,
       generateResponseFields: Boolean = defaultGenerateResponseFields,
       generateQueryDocument: Boolean = defaultGenerateQueryDocument,
+      generateSchema: Boolean = defaultGenerateSchema,
       moduleName: String = defaultModuleName,
       targetLanguage: String = defaultTargetLanguage,
   ) : this(
@@ -149,6 +158,7 @@ class Options(
       generateFragmentImplementations = generateFragmentImplementations,
       generateResponseFields = generateResponseFields,
       generateQueryDocument = generateQueryDocument,
+      generateSchema = generateSchema,
       moduleName = moduleName,
       targetLanguage = targetLanguage
   )
@@ -176,6 +186,7 @@ class Options(
       generateFragmentImplementations: Boolean = this.generateFragmentImplementations,
       generateResponseFields: Boolean = this.generateResponseFields,
       generateQueryDocument: Boolean = this.generateQueryDocument,
+      generateSchema: Boolean = this.generateSchema,
       moduleName: String = this.moduleName,
       targetLanguage: String = this.targetLanguage,
   ) = Options(
@@ -201,6 +212,7 @@ class Options(
       generateFragmentImplementations = generateFragmentImplementations,
       generateResponseFields = generateResponseFields,
       generateQueryDocument = generateQueryDocument,
+      generateSchema = generateSchema,
       moduleName = moduleName,
       targetLanguage = targetLanguage
   )
@@ -223,6 +235,7 @@ class Options(
     const val defaultCodegenModels = MODELS_OPERATION_BASED
     const val defaultFlattenModels = true
     const val defaultTargetLanguage = TARGET_KOTLIN
+    const val defaultGenerateSchema = false
   }
 }
 

@@ -21,6 +21,7 @@ import com.apollographql.apollo3.compiler.codegen.java.file.OperationResponseAda
 import com.apollographql.apollo3.compiler.codegen.java.file.OperationSelectionsBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.OperationVariablesAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.UnionBuilder
+import com.apollographql.apollo3.compiler.codegen.java.file.SchemaBuilder
 import com.apollographql.apollo3.compiler.ir.Ir
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
@@ -43,6 +44,7 @@ class JavaCodeGen(
     private val operationOutput: OperationOutput,
     private val generateFragmentImplementations: Boolean,
     private val generateQueryDocument: Boolean,
+    private val generateSchema: Boolean,
     /**
      * Whether to flatten the models. This decision is left to the codegen. For fragments for an example, we
      * want to flatten at depth 1 to avoid name clashes, but it's ok to flatten fragment response adapters at
@@ -165,6 +167,10 @@ class JavaCodeGen(
               )
           )
         }
+
+    if (generateSchema) {
+      builders.add(SchemaBuilder(context, ir.objects, ir.interfaces, ir.unions))
+    }
 
     builders.forEach { it.prepare() }
     builders

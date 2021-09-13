@@ -4,7 +4,7 @@
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
       <option name="externalSystemIdString" value="GRADLE" />
-      <option name="scriptParameters" value=":apollo-compiler:test --tests &quot;com.apollographql.apollo3.compiler.CodegenTest&quot; -DtestFilter=.* -DupdateTestFixtures=true" />
+      <option name="scriptParameters" value=":apollo-android:apollo-compiler:test --tests &quot;com.apollographql.apollo3.compiler.CodegenTest&quot; -DtestFilter=schema -DupdateTestFixtures=true" />
       <option name="taskDescriptions">
         <list />
       </option>

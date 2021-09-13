@@ -137,6 +137,7 @@ class CodegenTest() {
               "union_inline_fragments",
               "unique_type_name",
               "variable_default_value",
+              "__schema"
           )
 
           KotlinCompiler.assertCompiles(actualFiles.toSet(), !expectedWarnings)
@@ -298,6 +299,8 @@ class CodegenTest() {
         else -> true
       }
 
+      val generateSchema = folder.name == "__schema"
+
       val schemaFile = folder.listFiles()!!.find { it.isFile && (it.name == "schema.sdl" || it.name == "schema.json" || it.name == "schema.graphqls") }
           ?: File("src/test/graphql/schema.sdl")
 
@@ -323,6 +326,7 @@ class CodegenTest() {
           generateAsInternal = generateAsInternal,
           generateFilterNotNull = true,
           generateFragmentImplementations = generateFragmentImplementations,
+          generateSchema = generateSchema,
           moduleName = folder.name,
           targetLanguage = targetLanguage
       )

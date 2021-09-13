@@ -89,7 +89,7 @@ class CodegenLayout(
   // variables keep the same case as their declared name
   internal fun variableName(name: String) = regularIdentifier(name)
   internal fun propertyName(name: String) = regularIdentifier(name)
-  internal fun typesName() = "Types"
+  internal fun schemaName() = "__Schema"
 
   // ------------------------ Helpers ---------------------------------
   private fun regularIdentifier(name: String) = name.escapeKotlinReservedWord()

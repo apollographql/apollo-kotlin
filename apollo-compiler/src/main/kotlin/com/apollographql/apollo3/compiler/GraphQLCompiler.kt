@@ -103,6 +103,11 @@ object GraphQLCompiler {
       checkKeyFields(it, options.schema, allFragmentDefinitions)
     }
 
+    var alwaysGenerateTypesMatching = options.alwaysGenerateTypesMatching
+    if (options.generateSchema) {
+      // If we generate the __Schema class, we need all types for possibleTypes to work
+      alwaysGenerateTypesMatching = alwaysGenerateTypesMatching + ".*"
+    }
     /**
      * Build the IR
      */
@@ -111,7 +116,7 @@ object GraphQLCompiler {
         operationDefinitions = operations,
         fragments = fragments,
         allFragmentDefinitions = allFragmentDefinitions,
-        alwaysGenerateTypesMatching = options.alwaysGenerateTypesMatching,
+        alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
         customScalarToKotlinName = options.customScalarsMapping,
         codegenModels = options.codegenModels,
     ).build()
@@ -155,8 +160,9 @@ object GraphQLCompiler {
             generateFilterNotNull = options.generateFilterNotNull,
             generateFragmentImplementations = options.generateFragmentImplementations,
             generateQueryDocument = options.generateQueryDocument,
+            generateSchema = options.generateSchema,
             flatten = options.flattenModels,
-            flattenNamesInOrder = options.codegenModels != MODELS_COMPAT
+            flattenNamesInOrder = options.codegenModels != MODELS_COMPAT,
         ).write(outputDir = outputDir)
       }
       TARGET_JAVA -> {
@@ -169,6 +175,7 @@ object GraphQLCompiler {
             schemaPackageName = options.schemaPackageName,
             generateFragmentImplementations = options.generateFragmentImplementations,
             generateQueryDocument = options.generateQueryDocument,
+            generateSchema = options.generateSchema,
             flatten = options.flattenModels,
             flattenNamesInOrder = true
         ).write(outputDir = outputDir)

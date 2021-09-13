@@ -84,6 +84,8 @@ fun configureApollo(generateKotlinModels: Boolean) {
         .forEach {
           service("${it.name}-$extra") {
             srcDir(it)
+
+            generateSchema.set(it.name == "schema")
             this.generateKotlinModels.set(generateKotlinModels)
             codegenModels.set("operationBased")
             packageName.set(it.name)
