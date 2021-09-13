@@ -20,7 +20,7 @@ actual fun defaultDispatcher(requested: CoroutineDispatcher?): CoroutineDispatch
     "Changing the dispatcher is not supported on Apple targets"
   }
   check(NSThread.isMainThread) {
-    "defaultDispatcher mush be called from the main thread"
+    "defaultDispatcher must be called from the main thread"
   }
   
   return DefaultDispatcher
