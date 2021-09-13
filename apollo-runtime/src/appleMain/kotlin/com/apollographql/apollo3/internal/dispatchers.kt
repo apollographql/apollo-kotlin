@@ -30,7 +30,7 @@ actual fun defaultDispatcher(requested: CoroutineDispatcher?): CoroutineDispatch
 actual class BackgroundDispatcher actual constructor() {
   init {
     check(NSThread.isMainThread) {
-      "WebSocketDispatcher must be called from the main thread"
+      "BackgroundDispatcher must be called from the main thread"
     }
   }
   actual val coroutineDispatcher: CoroutineDispatcher
