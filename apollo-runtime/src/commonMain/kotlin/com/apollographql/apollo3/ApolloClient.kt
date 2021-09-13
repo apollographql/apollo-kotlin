@@ -40,7 +40,7 @@ class ApolloClient @JvmOverloads constructor(
     val networkTransport: NetworkTransport,
     private val customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
     private val subscriptionNetworkTransport: NetworkTransport = networkTransport,
-    private val interceptors: List<ApolloInterceptor> = emptyList(),
+    val interceptors: List<ApolloInterceptor> = emptyList(),
     override val executionContext: ExecutionContext = ExecutionContext.Empty,
     private val requestedDispatcher: CoroutineDispatcher? = null,
     private val flowDecorators: List<FlowDecorator> = emptyList(),

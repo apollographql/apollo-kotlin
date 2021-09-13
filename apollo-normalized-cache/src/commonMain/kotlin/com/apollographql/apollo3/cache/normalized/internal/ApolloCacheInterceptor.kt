@@ -41,7 +41,7 @@ import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 
 internal class ApolloCacheInterceptor(
-    private val store: ApolloStore,
+    val store: ApolloStore,
 ) : ApolloInterceptor {
   init {
     // The store has a MutableSharedFlow that doesn't like being frozen

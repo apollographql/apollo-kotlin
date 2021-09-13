@@ -109,6 +109,14 @@ fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(queryRequest: ApolloReque
   }
 }
 
+@Deprecated(message = "Replace with store.clearAll()")
+fun ApolloClient.clearNormalizedCache() {
+  val store = interceptors.firstOrNull { it is ApolloCacheInterceptor }?.let {
+    (it as ApolloCacheInterceptor).store
+  }?: error("no cache configured")
+
+  store.clearAll()
+}
 /**
  * Sets the [FetchPolicy] on this request. D has a bound on [Query.Data] because subscriptions and mutation shouldn't
  * read the cache
