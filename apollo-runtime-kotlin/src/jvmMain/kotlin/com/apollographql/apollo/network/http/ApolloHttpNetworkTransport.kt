@@ -124,14 +124,16 @@ actual class ApolloHttpNetworkTransport(
     val response = request.operation.parse(
         source = responseBody.source(),
         scalarTypeAdapters = request.scalarTypeAdapters
-    )
-    return ApolloResponse(
-        requestUuid = request.requestUuid,
-        response = response,
+    ).copy(
         executionContext = request.executionContext + HttpExecutionContext.Response(
             statusCode = code,
             headers = headers.toMap()
         )
+    )
+
+    return ApolloResponse(
+        requestUuid = request.requestUuid,
+        response = response,
     )
   }
 

@@ -5,6 +5,8 @@ title: Get started with Multiplatform (Experimental)
 import AddPlugin from "../shared/add-plugin.mdx"
 import DownloadSchema from "../shared/download-schema.mdx"
 
+> **Apollo Android 3 is available in alpha.** It is still in active development, and we'd love for folks to test it out. [See the v3 documentation](https://www.apollographql.com/docs/android/v3) and please [report any issues](https://github.com/apollographql/apollo-android/issues/new/choose)!
+
 **Note:** Multiplatform support is experimental and still under heavy development, expect the API to change. If you have feedback, we'd love to hear it. Please see [Contributing.md](https://github.com/apollographql/apollo-android/blob/main/Contributing.md) for how to get in touch.
 
 You can also check out the [multiplatform samples](https://github.com/apollographql/apollo-android/tree/main/samples) for more details.
@@ -37,15 +39,22 @@ kotlin {
 ```
 
 ## Multithreaded coroutines
-If using the x.y.z-native-mt branch of coroutines, gradle will replace the -native-mt version with the non-mt version as outlined [here](https://kotlinlang.org/docs/mobile/concurrency-and-coroutines.html#multithreaded-coroutines). To prevent this happening use the following:
+If using the x.y.z-native-mt branch of coroutines, gradle will replace the -native-mt version with the non-mt version as outlined [here](https://kotlinlang.org/docs/mobile/concurrency-and-coroutines.html#multithreaded-coroutines). To prevent this happening add the following to your root `build.gradle.kts`:
 
-```
-implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core"){
-    version {
-      strictly("x.y.z-native-mt")
+```kotlin
+allprojects {
+    configurations {
+        all {
+            resolutionStrategy {
+                force("org.jetbrains.kotlinx:kotlinx-coroutines-core:x.y.z-native-mt")
+            }
+        }
     }
 }
 ```
+
+This ensures that the same version is used everywhere and that Gradle doesn't fail because `-native-mt` is a pre-release version [(`1.5.1-native-mt < 1.5.1`)](https://docs.gradle.org/current/userguide/dependency_resolution.html#sub:resolution-strategy)
+
 
 ## Download your `schema.json` file
 
@@ -85,5 +94,3 @@ scope.launch {
   println("Launch site: ${response.data?.launch?.site"})
 }
 ```
-
-

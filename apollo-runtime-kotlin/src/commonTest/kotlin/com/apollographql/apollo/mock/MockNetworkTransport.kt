@@ -25,7 +25,6 @@ internal class MockNetworkTransport(
           ApolloResponse(
               requestUuid = request.requestUuid,
               response = request.operation.parse(mockResponseChannel.receive().encodeUtf8()),
-              executionContext = ExecutionContext.Empty
           )
       )
     }
