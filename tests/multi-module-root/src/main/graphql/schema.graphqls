@@ -1,0 +1,6 @@
+type Query {
+  long: Long!
+}
+
+scalar Long
+
