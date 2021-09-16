@@ -185,9 +185,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       check(schemaFiles.files.isEmpty()) {
         "Specifying 'schemaFiles' has no effect as an upstream module already provided a schema"
       }
-      check(!customScalarsMapping.isPresent) {
-        "Specifying 'customScalarsMapping' has no effect as an upstream module already provided a customScalarsMapping"
-      }
       check(!codegenModels.isPresent) {
         "Specifying 'codegenModels' has no effect as an upstream module already provided a codegenModels"
       }

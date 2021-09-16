@@ -217,7 +217,7 @@ data class IrCustomScalar(
     val description: String?,
     val deprecationReason: String?,
 ) {
-  val type = IrCustomScalarType(name)
+  val type = IrScalarType(name)
 }
 
 /**
@@ -269,21 +269,11 @@ data class IrListType(val ofType: IrType) : IrType() {
   override fun leafType() = ofType.leafType()
 }
 
-object IrStringType : IrType()
-object IrIntType : IrType()
-object IrFloatType : IrType()
-object IrBooleanType : IrType()
-object IrIdType : IrType()
-
-/**
- * This is a special value 
- */
-object IrAnyType : IrType()
 
 interface IrNamedType {
   val name: String
 }
-data class IrCustomScalarType(override val name: String) : IrType(), IrNamedType
+data class IrScalarType(override val name: String) : IrType(), IrNamedType
 data class IrInputObjectType(override val name: String) : IrType(), IrNamedType
 data class IrEnumType(override val name: String) : IrType(), IrNamedType
 /**
