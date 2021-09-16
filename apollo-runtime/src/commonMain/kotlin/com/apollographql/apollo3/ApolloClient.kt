@@ -178,7 +178,7 @@ class ApolloClient @JvmOverloads constructor(
     val executionContext = clientScope + customScalarAdapters + this@ApolloClient.executionContext + this.executionContext
 
     val request = withExecutionContext(executionContext)
-    ensureNeverFrozen(request)
+    // ensureNeverFrozen(request)
     val interceptors = interceptors + NetworkInterceptor(
         networkTransport = networkTransport,
         subscriptionNetworkTransport = subscriptionNetworkTransport,

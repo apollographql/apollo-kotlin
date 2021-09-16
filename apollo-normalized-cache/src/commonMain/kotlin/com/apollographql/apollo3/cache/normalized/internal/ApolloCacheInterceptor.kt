@@ -44,8 +44,9 @@ internal class ApolloCacheInterceptor(
     val store: ApolloStore,
 ) : ApolloInterceptor {
   init {
-    // The store has a MutableSharedFlow that doesn't like being frozen
-    ensureNeverFrozen(store)
+    // The store has a MutableSharedFlow that doesn't like being frozen when using coroutines
+    // But is ok to freeze when using coroutines-native-mt (see https://github.com/apollographql/apollo-android/issues/3357)
+    // ensureNeverFrozen(store)
   }
 
   private val <T> ExecutionParameters<T>.clientScope: CoroutineScope where T : ExecutionParameters<T>
