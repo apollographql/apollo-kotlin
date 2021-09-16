@@ -366,7 +366,7 @@ internal class OperationBasedModelGroupBuilder(
           responseName = "__typename",
           description = null,
           deprecationReason = null,
-          type = IrNonNullType(IrStringType)
+          type = IrNonNullType(IrScalarType("String"))
       )
       OperationField(
           info = info,

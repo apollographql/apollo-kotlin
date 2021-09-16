@@ -11,4 +11,5 @@ dependencies {
 apollo {
   packageName.set("multimodule.root")
   generateApolloMetadata.set(true)
+  customScalarsMapping.set(mapOf("Long" to "kotlin.Long"))
 }

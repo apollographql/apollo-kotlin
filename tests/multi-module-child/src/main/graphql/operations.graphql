@@ -1,3 +1,4 @@
+#
 query GetLong2 {
   long2: long
 }

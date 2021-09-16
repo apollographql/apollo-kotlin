@@ -52,6 +52,7 @@ internal object KotlinClassNames {
   val Boolean = ClassName("kotlin", "Boolean")
   val Int = ClassName("kotlin", "Int")
   val String = ClassName("kotlin", "String")
+  val Double = ClassName("kotlin", "Double")
   val Any = ClassName("kotlin", "Any")
 
   val List = ClassName("kotlin.collections", "List")

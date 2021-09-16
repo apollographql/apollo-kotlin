@@ -364,23 +364,8 @@ internal class IrBuilder(
       is GQLListType -> IrListType(ofType = type.toIr())
       is GQLNamedType -> {
         usedTypes.add(name)
-        when (val type = schema.typeDefinition(name)) {
-          is GQLScalarTypeDefinition -> {
-            when (name) {
-              "String" -> IrStringType
-              "Boolean" -> IrBooleanType
-              "Int" -> IrIntType
-              "Float" -> IrFloatType
-              "ID" -> IrIdType
-              else -> {
-                if (customScalarsMapping[name] != null) {
-                  IrCustomScalarType(name)
-                } else {
-                  IrAnyType
-                }
-              }
-            }
-          }
+        when (schema.typeDefinition(name)) {
+          is GQLScalarTypeDefinition -> IrScalarType(name)
           is GQLEnumTypeDefinition -> {
             IrEnumType(name = name)
           }
