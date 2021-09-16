@@ -11,6 +11,7 @@ kotlin {
       dependencies {
         implementation("com.apollographql.apollo3:apollo-testing-support")
         implementation("com.apollographql.apollo3:apollo-mockserver")
+        implementation("com.apollographql.apollo3:apollo-normalized-cache")
         implementation("com.apollographql.apollo3:apollo-mpp-utils")
         implementation("com.apollographql.apollo3:apollo-runtime")
       }
