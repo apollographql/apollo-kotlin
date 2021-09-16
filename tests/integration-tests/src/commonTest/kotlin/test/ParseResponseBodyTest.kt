@@ -1,7 +1,7 @@
 package test
 
 import assertEquals2
-import com.apollographql.apollo3.adapter.LocalDateAdapter
+import com.apollographql.apollo3.adapter.KotlinxLocalDateAdapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.fromJson
@@ -128,12 +128,12 @@ class ParseResponseBodyTest {
 
     val response = AllFilmsQuery().parseJsonResponse(
         readResource("HttpCacheTestAllFilms.json"),
-        CustomScalarAdapters(mapOf(Date.type.name to LocalDateAdapter))
+        CustomScalarAdapters(mapOf(Date.type.name to KotlinxLocalDateAdapter))
     )
     assertFalse(response.hasErrors())
     assertEquals(response.data!!.allFilms?.films?.size, 6)
     assertEquals(
-        response.data!!.allFilms?.films?.map { LocalDateAdapter.toJsonString(it!!.releaseDate) },
+        response.data!!.allFilms?.films?.map { KotlinxLocalDateAdapter.toJsonString(it!!.releaseDate) },
         listOf("1977-05-25", "1980-05-17", "1983-05-25", "1999-05-19", "2002-05-16", "2005-05-19").map { "\"$it\"" }
     )
   }
