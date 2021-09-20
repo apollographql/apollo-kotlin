@@ -1,0 +1,188 @@
+scalar Long
+
+input MovieListFilterInput {
+  unused: String!
+}
+
+type Query {
+  movieList(filter: MovieListFilterInput, id: Long): MovieListMeta
+}
+type Image {
+  avatarsUrl: String
+  fallbackUrl: String
+}
+
+type MovieListMeta {
+  id: ID
+  name: String
+  description: String
+  url: String
+  cover: Image
+  coverBackground: Image
+  filterQuery: MovieListFilter
+  movies(offset: Int!, limit: Int!): Movies
+}
+
+type Movies {
+  limit: Int
+  offset: Int
+  total: Int
+  items: [Item]
+}
+
+interface Item {
+  movie: Movie
+}
+
+type BoxOfficeMovieListItem implements  Item {
+  movie: Movie
+  boxOffice: MoneyAmount
+}
+type MostExpensiveMovieListItem implements  Item {
+  movie: Movie
+  budget: MoneyAmount
+}
+type MostProfitableMovieListItem implements  Item {
+  movie: Movie
+  boxOffice: MoneyAmount
+}
+type OfflineAudienceMovieListItem implements  Item {
+  movie: Movie
+  viewers: Int
+}
+type TopMovieListItem implements  Item {
+  movie: Movie
+  rate: Int
+}
+
+
+type YearsRange {
+  start: Int
+  end: Int
+}
+
+type MovieListFilter {
+  countryId: String
+  excludeViewed: String
+  genreId: String
+  onlyHighRated: Boolean
+  onlyTop: Boolean
+  origin: String
+  type: String
+  viewOption: String
+  years: YearsRange
+}
+
+type MoneyAmount {
+  amount: Int
+  currency: Currency
+}
+
+type Currency {
+  symbol: String
+}
+
+type Movie {
+  id: ID
+  poster: Image
+  url: String
+  title: Title
+  genres: [Genre]
+  countries: [Country]
+  rating: Rating
+  onlineViewOptions: OnlineViewOption
+  distribution: Distribution
+  restriction: Restriction
+  userData: MovieUserData
+}
+
+type Distribution {
+  worldPremiere: WorldPremiere
+}
+
+type WorldPremiere {
+  incompleteDate: IncompleteDate
+}
+
+type IncompleteDate {
+  date: String
+}
+type Title {
+  russian: String
+  english: String
+  original: String
+
+}
+
+type Genre {
+  name: String
+}
+
+type Country {
+  id: ID
+  name: String
+}
+
+type RatingValue {
+  isActive: Boolean
+  count: Int
+  value(precision: Int): Float
+}
+
+type Rating {
+  kinopoisk: RatingValue
+  expectation: RatingValue
+}
+
+type WatchingRejection {
+  details: String
+  reason: String
+}
+
+type OnlineViewOption {
+  contentGroupUuid: String
+  accessType: String
+  description: String
+  isAvailableOnline: Boolean
+  isPurchased: Boolean
+  isAvailableForDownload: Boolean
+  originalOffer: String
+  subscriptionPurchaseTag: String
+  textToDisplay: String
+  purchaseRejectionReason: WatchingRejection
+  watchingRejectionReason: WatchingRejection
+  promotionActionType: String
+  mastercardPromotionAbsoluteAmount: MoneyAmount
+  mainPromotionAbsoluteAmount: MoneyAmount
+  availabilityAnnounce: Announce
+}
+
+type Announce  {
+  announcePromise: String
+  availabilityDate: String
+  groupPeriodType: String
+  type: String
+}
+
+type Restriction {
+  age: String
+  mpaa: String
+}
+
+type Folder {
+  id: String
+  name: String
+}
+
+type Vote {
+  value: String
+}
+
+type MovieUserData {
+  isPlannedToWatch: Boolean
+  folders: [Folder]
+  voting: Vote
+  expectation: Vote
+}
+
+

@@ -1,0 +1,252 @@
+query MovieList($listId: Long, $limit: Int!, $offset: Int!, $isAppendUserData: Boolean!, $filter: MovieListFilterInput) {
+  movieList(filter: $filter, id: $listId) {
+    __typename
+    ...movieListMetaFragment
+    movies(offset: $offset, limit: $limit) {
+      limit
+      offset
+      total
+      items {
+        __typename
+        ... on BoxOfficeMovieListItem {
+          boxOffice {
+            __typename
+            ...moneyAmountFragment
+          }
+        }
+        ... on MostExpensiveMovieListItem {
+          budget {
+            __typename
+            ...moneyAmountFragment
+          }
+        }
+        ... on MostProfitableMovieListItem {
+          boxOffice {
+            __typename
+            ...moneyAmountFragment
+          }
+        }
+        ... on OfflineAudienceMovieListItem {
+          viewers
+        }
+        ... on TopMovieListItem {
+          rate
+        }
+        movie {
+          __typename
+          ...movieSummaryFragment
+        }
+      }
+    }
+  }
+}
+
+fragment imageFragment on Image {
+  avatarsUrl
+  fallbackUrl
+}
+
+fragment yearsRangeFragment on YearsRange {
+  start
+  end
+}
+
+fragment movieListFilterFragment on MovieListFilter {
+  countryId
+  excludeViewed
+  genreId
+  onlyHighRated
+  onlyTop
+  origin
+  type
+  viewOption
+  years {
+    __typename
+    ...yearsRangeFragment
+  }
+}
+
+fragment movieListMetaFragment on MovieListMeta {
+  id
+  name
+  description
+  url
+  cover {
+    __typename
+    ...imageFragment
+  }
+  coverBackground {
+    __typename
+    ...imageFragment
+  }
+  filterQuery {
+    __typename
+    ...movieListFilterFragment
+  }
+  moviesCount: movies(offset: 0, limit: 0) {
+    total
+  }
+}
+
+fragment currencyFragment on Currency {
+  symbol
+}
+
+fragment moneyAmountFragment on MoneyAmount {
+  amount
+  currency {
+    __typename
+    ...currencyFragment
+  }
+}
+
+fragment moviePosterFragment on Movie {
+  poster {
+    __typename
+    ...imageFragment
+  }
+}
+
+fragment titleFragment on Title {
+  russian
+  english
+  original
+}
+
+fragment genreFragment on Genre {
+  name
+}
+
+fragment countryFragment on Country {
+  id
+  name
+}
+
+fragment ratingValueFragment on RatingValue {
+  isActive
+  count
+  value(precision: 1)
+}
+
+fragment ratingFragment on Rating {
+  kinopoisk {
+    __typename
+    ...ratingValueFragment
+  }
+  expectation {
+    __typename
+    ...ratingValueFragment
+  }
+}
+
+fragment watchingRejectionFragment on WatchingRejection {
+  details
+  reason
+}
+
+fragment onlineViewOptionFragment on OnlineViewOption {
+  contentGroupUuid
+  accessType
+  description
+  isAvailableOnline
+  isPurchased
+  isAvailableForDownload
+  originalOffer
+  subscriptionPurchaseTag
+  textToDisplay
+  purchaseRejectionReason {
+    __typename
+    ...watchingRejectionFragment
+  }
+  watchingRejectionReason {
+    __typename
+    ...watchingRejectionFragment
+  }
+  promotionActionType
+  mastercardPromotionAbsoluteAmount {
+    __typename
+    ...moneyAmountFragment
+  }
+  mainPromotionAbsoluteAmount {
+    __typename
+    ...moneyAmountFragment
+  }
+  availabilityAnnounce {
+    announcePromise
+    availabilityDate
+    groupPeriodType
+    type
+  }
+}
+
+fragment restrictionFragment on Restriction {
+  age
+  mpaa
+}
+
+fragment folderFragment on Folder {
+  id
+  name
+}
+
+fragment voteFragment on Vote {
+  value
+}
+
+fragment movieUserDataFragment on MovieUserData {
+  isPlannedToWatch
+  folders {
+    __typename
+    ...folderFragment
+  }
+  voting {
+    __typename
+    ...voteFragment
+  }
+  expectation {
+    value
+  }
+}
+
+fragment movieSummaryFragment on Movie {
+  __typename
+  id
+  url
+  ...moviePosterFragment
+  title {
+    __typename
+    ...titleFragment
+  }
+  genres {
+    __typename
+    ...genreFragment
+  }
+  countries {
+    __typename
+    ...countryFragment
+  }
+  rating {
+    __typename
+    ...ratingFragment
+  }
+  onlineViewOptions {
+    __typename
+    ...onlineViewOptionFragment
+  }
+  distribution {
+    worldPremiere {
+      incompleteDate {
+        date
+      }
+    }
+  }
+  restriction {
+    __typename
+    ...restrictionFragment
+  }
+  userData @include(if: $isAppendUserData) {
+    __typename
+    ...movieUserDataFragment
+  }
+}
+

@@ -6,7 +6,6 @@ plugins {
 configureMppTestsDefaults()
 
 kotlin {
-
   /**
    * Extra target to test the java codegen
    */
