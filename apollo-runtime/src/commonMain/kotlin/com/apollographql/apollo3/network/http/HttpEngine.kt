@@ -2,8 +2,7 @@ package com.apollographql.apollo3.network.http
 
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.ApolloParseException
+import com.apollographql.apollo3.exception.ApolloNetworkException
 
 /**
  * A wrapper around platform specific engines
@@ -11,7 +10,7 @@ import com.apollographql.apollo3.exception.ApolloParseException
 interface HttpEngine {
 
   /**
-   * Executes the given HttpRequest, might throw
+   * Executes the given HttpRequest, might throw [ApolloNetworkException]
    */
   suspend fun execute(request: HttpRequest): HttpResponse
 

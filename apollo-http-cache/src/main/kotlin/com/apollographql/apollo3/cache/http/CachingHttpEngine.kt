@@ -8,6 +8,7 @@ import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.http.valueOf
 import com.apollographql.apollo3.api.http.withHeaders
 import com.apollographql.apollo3.cache.http.internal.FileSystem
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.HttpCacheMissException
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.network.http.HttpEngine
@@ -15,6 +16,7 @@ import okio.Buffer
 import okio.ByteString.Companion.toByteString
 import java.io.File
 import java.time.Instant
+import java.time.format.DateTimeParseException
 
 class CachingHttpEngine(
     directory: File,
@@ -30,11 +32,10 @@ class CachingHttpEngine(
 
     when (policy) {
       CACHE_FIRST -> {
-        val responseResult = kotlin.runCatching {
-          cacheMightThrow(request, cacheKey)
-        }
-        if (responseResult.isSuccess) {
-          return responseResult.getOrThrow()
+        try {
+          return cacheMightThrow(request, cacheKey)
+        } catch (e: ApolloException) {
+          //
         }
 
         return networkMightThrow(request, cacheKey)
@@ -46,16 +47,14 @@ class CachingHttpEngine(
         return networkMightThrow(request, cacheKey)
       }
       NETWORK_FIRST -> {
-        val responseResult = kotlin.runCatching {
-          networkMightThrow(request, cacheKey)
-        }
-
-        if (responseResult.isSuccess) {
-          val response = responseResult.getOrThrow()
+        try {
+          val response = networkMightThrow(request, cacheKey)
           if (response.statusCode in 200..299) {
-            // special case, don't let HTTP errors through
+            //  let HTTP errors through
             return response
           }
+        } catch (e: ApolloException) {
+
         }
 
         return cacheMightThrow(request, cacheKey)
@@ -109,9 +108,11 @@ class CachingHttpEngine(
     }
 
     val timeoutMillis = request.headers.valueOf(CACHE_EXPIRE_TIMEOUT_HEADER)?.toLongOrNull() ?: 0
-    val servedDateMillis = kotlin.runCatching {
+    val servedDateMillis = try {
       Instant.parse(response.headers.valueOf(CACHE_SERVED_DATE_HEADER)).toEpochMilli()
-    }.recover { 0L }.getOrThrow()
+    } catch (e: DateTimeParseException) {
+      0L
+    }
     val nowMillis = Instant.now().toEpochMilli()
 
     if (timeoutMillis > 0 && servedDateMillis > 0 && nowMillis - servedDateMillis > timeoutMillis) {
