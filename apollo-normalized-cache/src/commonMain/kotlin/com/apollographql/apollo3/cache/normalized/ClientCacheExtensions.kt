@@ -63,7 +63,6 @@ fun ApolloClient.withStore(store: ApolloStore, writeToCacheAsynchronously: Boole
   return withInterceptor(ApolloCacheInterceptor(store)).withWriteToCacheAsynchronously(writeToCacheAsynchronously)
 }
 
-
 fun <D : Query.Data> ApolloClient.watch(query: Query<D>): Flow<ApolloResponse<D>> {
   return watch(ApolloRequest(query))
 }
@@ -109,14 +108,19 @@ fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(queryRequest: ApolloReque
   }
 }
 
-@Deprecated(message = "Replace with store.clearAll()")
-fun ApolloClient.clearNormalizedCache() {
-  val store = interceptors.firstOrNull { it is ApolloCacheInterceptor }?.let {
-    (it as ApolloCacheInterceptor).store
-  }?: error("no cache configured")
+val ApolloClient.apolloStore: ApolloStore
+  get() {
+    return interceptors.firstOrNull { it is ApolloCacheInterceptor }?.let {
+      (it as ApolloCacheInterceptor).store
+    } ?: error("no cache configured")
+  }
 
-  store.clearAll()
-}
+@Deprecated(
+    message = "Use apolloStore directly",
+    replaceWith = ReplaceWith("apolloStore.clearAll()")
+)
+fun ApolloClient.clearNormalizedCache() = apolloStore.clearAll()
+
 /**
  * Sets the [FetchPolicy] on this request. D has a bound on [Query.Data] because subscriptions and mutation shouldn't
  * read the cache
