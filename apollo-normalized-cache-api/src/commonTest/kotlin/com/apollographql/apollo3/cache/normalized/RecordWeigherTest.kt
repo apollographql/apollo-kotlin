@@ -8,6 +8,7 @@ class RecordWeigherTest {
   @Test
   fun testRecordWeigher() {
     val expectedDouble = 1.23
+    val expectedLongValue = Long.MAX_VALUE
     val expectedStringValue = "StringValue"
     val expectedBooleanValue = true
     val expectedCacheKey = CacheKey("foo")
@@ -19,12 +20,14 @@ class RecordWeigherTest {
             "double" to expectedDouble,
             "string" to expectedStringValue,
             "boolean" to expectedBooleanValue,
+            "long" to expectedLongValue,
             "cacheReference" to expectedCacheKey,
             "scalarList" to expectedScalarList,
             "referenceList" to expectedCacheKeyList,
         )
     )
-    assertTrue(record.sizeInBytes <= 218)
-    assertTrue(record.sizeInBytes >= 214) // JS takes less space, maybe for strings?
+
+    assertTrue(record.sizeInBytes <= 222)
+    assertTrue(record.sizeInBytes >= 218) // JS takes less space, maybe for strings?
   }
 }

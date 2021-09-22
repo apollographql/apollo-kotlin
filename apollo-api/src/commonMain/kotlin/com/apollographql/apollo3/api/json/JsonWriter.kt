@@ -96,6 +96,16 @@ interface JsonWriter : Closeable {
   fun value(value: Int): JsonWriter
 
   /**
+   * Encodes long `value`.
+   */
+  fun value(value: Long): JsonWriter
+
+  /**
+   * Encodes number `value`.
+   */
+  fun value(value: JsonNumber): JsonWriter
+
+  /**
    * Encodes a [Upload].
    */
   fun value(value: Upload): JsonWriter

@@ -32,7 +32,7 @@ object ResponseBodyParser {
       when (jsonReader.nextName()) {
         "data" -> data = operation.adapter().nullable().fromJson(jsonReader, customScalarAdapters)
         "errors" -> errors = jsonReader.readErrors()
-        "extensions" -> extensions = jsonReader.readRecursively() as Map<String, Any?>
+        "extensions" -> extensions = jsonReader.readRecursively() as? Map<String, Any?>
         else -> jsonReader.skipValue()
       }
     }
@@ -72,55 +72,94 @@ object ResponseBodyParser {
 
   fun parseError(
       payload: Map<String, Any?>,
-  ) = payload.readError()
+  ) = MapJsonReader(payload).readError()
 
   @Suppress("UNCHECKED_CAST")
   private fun JsonReader.readErrors(): List<Error> {
-    val responseErrors = readRecursively() as? List<Map<String, Any?>>
-    return responseErrors?.let {
-      it.map { errorPayload -> errorPayload.readError() }
-    }.orEmpty()
+    if (peek() == JsonReader.Token.NULL) {
+      nextNull()
+      return emptyList()
+    }
+
+    beginArray()
+    val list = mutableListOf<Error>()
+    while(hasNext()) {
+      list.add(readError())
+    }
+    endArray()
+    return list
   }
 
   @Suppress("UNCHECKED_CAST")
-  private fun Map<String, Any?>.readError(): Error {
+  private fun JsonReader.readError(): Error {
     var message = ""
     var locations: List<Error.Location>? = null
     var path: List<Any>? = null
     var extensions: Map<String, Any?>? = null
-    for ((key, value) in this) {
-      when (key) {
-        "message" -> message = value?.toString() ?: ""
+    beginObject()
+    while (hasNext()) {
+      when (nextName()) {
+        "message" -> message = nextString() ?: ""
         "locations" -> {
-          val locationItems = value as? List<Map<String, Any?>>
-          locations = locationItems?.map { it.readErrorLocation() } 
+          locations = readErrorLocations()
         }
         "path" -> {
-          path = value as? List<Any>
+          path = readPath()
         }
         "extensions" -> {
-          extensions = value as? Map<String, Any?>
+          extensions = readRecursively() as? Map<String, Any?>?
         }
-        else -> {
-          // unknown
-        }
+        else -> skipValue()
       }
     }
+    endObject()
 
     return Error(message, locations, path, extensions)
   }
 
-  private fun Map<String, Any?>?.readErrorLocation(): Error.Location {
-    var line: Int = -1
-    var column: Int = -1
-    if (this != null) {
-      for ((key, value) in this) {
-        when (key) {
-          "line" -> line = value as Int
-          "column" -> column = value as Int
-        }
+  private fun JsonReader.readPath(): List<Any>? {
+    if (peek() == JsonReader.Token.NULL) {
+      return nextNull()
+    }
+
+    val list = mutableListOf<Any>()
+    beginArray()
+    while(hasNext()) {
+      when (peek()) {
+        JsonReader.Token.NUMBER, JsonReader.Token.LONG -> list.add(nextInt())
+        else -> list.add(nextString()!!)
       }
     }
+    endArray()
+
+    return list
+  }
+  private fun JsonReader.readErrorLocations(): List<Error.Location>? {
+    if (peek() == JsonReader.Token.NULL) {
+      return nextNull()
+    }
+    val list = mutableListOf<Error.Location>()
+    beginArray()
+    while(hasNext()) {
+      list.add(readErrorLocation())
+    }
+    endArray()
+
+    return list
+  }
+
+  private fun JsonReader.readErrorLocation(): Error.Location {
+    var line: Int = -1
+    var column: Int = -1
+    beginObject()
+    while(hasNext()) {
+      when (nextName()) {
+        "line" -> line = nextInt()
+        "column" -> column = nextInt()
+        else -> skipValue()
+      }
+    }
+    endObject()
     return Error.Location(line, column)
   }
 }

@@ -2,6 +2,8 @@ package com.apollographql.apollo3.api.internal.json
 
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader.Companion.MAX_STACK_SIZE
 import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
+import com.apollographql.apollo3.api.internal.json.Utils.readRecursivelyFast
+import com.apollographql.apollo3.api.json.JsonNumber
 import com.apollographql.apollo3.api.json.JsonReader
 
 /**
@@ -11,6 +13,8 @@ import com.apollographql.apollo3.api.json.JsonReader
  * - String
  * - Int
  * - Double
+ * - Long
+ * - JsonNumber
  * - null
  * - Map<String, Any?> where values are any of these values recursively
  * - List<Any?> where values are any of these values recursively
@@ -112,10 +116,11 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
     is List<*> -> JsonReader.Token.BEGIN_ARRAY
     is Map<*, *> -> JsonReader.Token.BEGIN_OBJECT
     is Int -> JsonReader.Token.NUMBER
+    is Long -> JsonReader.Token.NUMBER
     is Double -> JsonReader.Token.NUMBER
     is String -> JsonReader.Token.STRING
     is Boolean -> JsonReader.Token.BOOLEAN
-    else -> error("")
+    else -> error("Unsupported value $any")
   }
 
   override fun hasNext(): Boolean {
@@ -177,7 +182,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
     return nextValue() as Boolean
   }
 
-  override fun <T> nextNull(): T? {
+  override fun nextNull(): Nothing? {
     nextValue().also {
       check(it == null)
     }
@@ -186,15 +191,44 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
 
   override fun nextDouble(): Double {
     return when (val value = nextValue()) {
-      is Double -> value
-      // Coerce Int to Double https://spec.graphql.org/draft/#sec-Float.Result-Coercion
       is Int -> value.toDouble()
-      else -> error("Cannot coerce $value to Double")
+      is Long -> value.toDoubleExact()
+      is Double -> value
+      is String -> value.toDouble()
+      is JsonNumber -> value.value.toDouble()
+      else -> error("Expected Double but got $this instead")
     }
   }
 
   override fun nextInt(): Int {
-    return nextValue() as Int
+    return when (val value = nextValue()) {
+      is Int -> value
+      is Long -> value.toIntExact()
+      is Double -> value.toIntExact()
+      is String -> value.toInt()
+      is JsonNumber -> value.value.toInt()
+      else -> error("Expected Int but got $this instead")
+    }
+  }
+
+  override fun nextLong(): Long {
+    return when (val value = nextValue()) {
+      is Int -> value.toLong()
+      is Long -> value
+      is Double -> value.toLongExact()
+      is String -> value.toLong()
+      is JsonNumber -> value.value.toLong()
+      else -> error("Expected Int but got $this instead")
+    }
+  }
+
+  override fun nextNumber(): JsonNumber {
+    return when (val value = nextValue()) {
+      is Int, is Long, is Double -> JsonNumber(value.toString())
+      is String -> JsonNumber(value) // assert value is a valid number
+      is JsonNumber -> value
+      else -> error("Expected JsonNumber but got $this instead")
+    }
   }
 
   override fun skipValue() {
@@ -270,7 +304,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
       }
 
       @Suppress("UNCHECKED_CAST")
-      val data = this.readRecursively() as Map<String, Any?>
+      val data = this.readRecursivelyFast() as Map<String, Any?>
       return MapJsonReader(data)
     }
   }
