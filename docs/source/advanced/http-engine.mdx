@@ -12,7 +12,7 @@ In order to customize your HTTP requests, Apollo Android offers several solution
 
 This page is about option 3. and shows how to use your own HTTP client.
 
-# Implementing [HttpEngine](https://apollographql.github.io/apollo-android/kdoc/apollo-runtime/com.apollographql.apollo3.network.http/-http-engine/index.html)
+## Implementing [HttpEngine](https://apollographql.github.io/apollo-android/kdoc/apollo-runtime/com.apollographql.apollo3.network.http/-http-engine/index.html)
 
 To use your own HTTP client, implement the [HttpEngine](https://apollographql.github.io/apollo-android/kdoc/apollo-runtime/com.apollographql.apollo3.network.http/-http-engine/index.html) interface. The details will depend on your actual client but it can look like below:
 
@@ -61,7 +61,7 @@ class MyHttpEngine(val wrappedClient: MyClient) : HttpEngine {
 
 This example shows an asynchronous wrappedClient that runs the network request from a separate thread but since `HttpEngine.execute` is called from a background thread itself, it is also ok to block in `execute()`.
 
-# Use your HttpEngine
+## Use your HttpEngine
 
 Once you have implemented your HttpEngine, you can register it in your [ApolloClient](https://apollographql.github.io/apollo-android/kdoc/apollo-runtime/com.apollographql.apollo3/-apollo-client/index.html) using [HttpNetworkTransport](https://apollographql.github.io/apollo-android/kdoc/apollo-runtime/com.apollographql.apollo3.network.http/-http-network-transport/index.html):
 
