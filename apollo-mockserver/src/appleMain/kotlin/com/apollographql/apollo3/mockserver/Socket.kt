@@ -9,6 +9,7 @@ import kotlinx.cinterop.convert
 import kotlinx.cinterop.get
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.nativeHeap
+import okio.IOException
 import okio.buffer
 import platform.Foundation.NSMutableArray
 import platform.posix.POLLIN
@@ -70,6 +71,7 @@ class Socket(private val socketFd: Int) {
         }
 
         handleConnection(connectionFd)
+        close(connectionFd)
       }
     }
     close(socketFd)
@@ -98,7 +100,12 @@ class Socket(private val socketFd: Int) {
 
         debug("'$connectionFd': Read request")
 
-        val request = readRequest(source)
+        val request = try {
+          readRequest(source)
+        } catch (e: IOException) {
+          debug("'$connectionFd': Connection error")
+          return
+        }
         if (request == null) {
           debug("'$connectionFd': Connection closed")
           return
