@@ -24,7 +24,7 @@
           </div>
           <div class="cover ">
             <h1 class="cover"><span>Map</span><wbr><span>Json</span><wbr><span>Reader</span></h1>
-            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace">class <a href="index.html">MapJsonReader</a>(root: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?&gt;) : <a href="../../com.apollographql.apollo3.api.json/-json-reader/index.html">JsonReader</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">A <a href="../../com.apollographql.apollo3.api.json/-json-reader/index.html">JsonReader</a> that reads data from a regular Map&lt;String, Any?&gt;</p><p class="paragraph">Map values should be any of:</p><ul><li><p class="paragraph">String</p></li><li><p class="paragraph">Int</p></li><li><p class="paragraph">Double</p></li><li><p class="paragraph">null</p></li><li><p class="paragraph">Map&lt;String, Any?&gt; where values are any of these values recursively</p></li><li><p class="paragraph">List&lt;Any?&gt; where values are any of these values recursively</p></li></ul><p class="paragraph">Anything else is undefined</p></div></div>
+            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace">class <a href="index.html">MapJsonReader</a>(root: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?&gt;) : <a href="../../com.apollographql.apollo3.api.json/-json-reader/index.html">JsonReader</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">A <a href="../../com.apollographql.apollo3.api.json/-json-reader/index.html">JsonReader</a> that reads data from a regular Map&lt;String, Any?&gt;</p><p class="paragraph">Map values should be any of:</p><ul><li><p class="paragraph">String</p></li><li><p class="paragraph">Int</p></li><li><p class="paragraph">Double</p></li><li><p class="paragraph">Long</p></li><li><p class="paragraph">JsonNumber</p></li><li><p class="paragraph">null</p></li><li><p class="paragraph">Map&lt;String, Any?&gt; where values are any of these values recursively</p></li><li><p class="paragraph">List&lt;Any?&gt; where values are any of these values recursively</p></li></ul><p class="paragraph">Anything else is undefined</p></div></div>
           </div>
           <div class="tabbedcontent">
             <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button><button class="section-tab" data-togglable="Parameters">Parameters</button></div>
@@ -187,7 +187,7 @@
                       <div class="title"><div class="divergent-group" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
 
   <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace">open operator override fun <a href="has-next.html">hasNext</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace">open override fun <a href="has-next.html">hasNext</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
 <a data-name="-282748179%2FFunctions%2F301449719" anchor-label="hasNext" id="-282748179%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-282748179%2FFunctions%2F301449719" anchor-label="hasNext" id="-282748179%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>Returns true if the current array or object has another element.</div></div>
 </div>
@@ -254,6 +254,26 @@
                     </div>
                   </div>
                 </div>
+<a data-name="-89598223%2FFunctions%2F301449719" anchor-label="nextLong" id="-89598223%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+                <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="next-long.html">nextLong</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-89598223%2FFunctions%2F301449719"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace">open override fun <a href="next-long.html">nextLong</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="-89598223%2FFunctions%2F301449719" anchor-label="nextLong" id="-89598223%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-89598223%2FFunctions%2F301449719" anchor-label="nextLong" id="-89598223%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>Returns the Token.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
 <a data-name="-455704126%2FFunctions%2F301449719" anchor-label="nextName" id="-455704126%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
@@ -287,9 +307,29 @@
                       <div class="title"><div class="divergent-group" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
 
   <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace">open override fun &lt;<a href="next-null.html">T</a>&gt; <a href="next-null.html">nextNull</a>(): <a href="next-null.html">T</a>?<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace">open override fun <a href="next-null.html">nextNull</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>?<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
 <a data-name="-1999943098%2FFunctions%2F301449719" anchor-label="nextNull" id="-1999943098%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-1999943098%2FFunctions%2F301449719" anchor-label="nextNull" id="-1999943098%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>Consumes the next token from the JSON stream and asserts that it is a literal null.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-882637116%2FFunctions%2F301449719" anchor-label="nextNumber" id="-882637116%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+                <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="next-number.html">nextNumber</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-882637116%2FFunctions%2F301449719"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace">open override fun <a href="next-number.html">nextNumber</a>(): <a href="../../com.apollographql.apollo3.api.json/-json-number/index.html">JsonNumber</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="-882637116%2FFunctions%2F301449719" anchor-label="nextNumber" id="-882637116%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-882637116%2FFunctions%2F301449719" anchor-label="nextNumber" id="-882637116%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>Returns the Token.</div></div>
 </div>
                     </div>
                   </div>
@@ -369,7 +409,7 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace">open override fun <a href="select-name.html">selectName</a>(names: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-</div>
+<a data-name="-2093853533%2FFunctions%2F301449719" anchor-label="selectName" id="-2093853533%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-2093853533%2FFunctions%2F301449719" anchor-label="selectName" id="-2093853533%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>An optimized way to retrieve the nextName when the candidates and their order is known.</div></div>
 </div>
                     </div>
                   </div>
