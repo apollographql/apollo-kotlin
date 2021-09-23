@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.api.internal.json
 
 import com.apollographql.apollo3.api.Upload
+import com.apollographql.apollo3.api.json.JsonNumber
 import com.apollographql.apollo3.api.json.JsonWriter
 
 /**
@@ -45,6 +46,14 @@ class FileUploadAwareJsonWriter(private val wrappedWriter: JsonWriter): JsonWrit
   }
 
   override fun value(value: Int) = apply {
+    wrappedWriter.value(value)
+  }
+
+  override fun value(value: Long) = apply {
+    wrappedWriter.value(value)
+  }
+
+  override fun value(value: JsonNumber) = apply {
     wrappedWriter.value(value)
   }
 

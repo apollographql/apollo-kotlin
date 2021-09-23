@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.internal.json.FileUploadAwareJsonWriter
+import com.apollographql.apollo3.api.internal.json.Utils
 import com.apollographql.apollo3.api.internal.json.buildJsonByteString
 import com.apollographql.apollo3.api.internal.json.buildJsonMap
 import com.apollographql.apollo3.api.internal.json.buildJsonString
@@ -257,9 +258,9 @@ class DefaultHttpRequestComposer(
     }
 
     private fun buildUploadMap(uploads: Map<String, Upload>) = buildJsonByteString {
-      AnyAdapter.toJson(this, CustomScalarAdapters.Empty, uploads.entries.mapIndexed { index, entry ->
+      Utils.writeToJson(uploads.entries.mapIndexed { index, entry ->
         index.toString() to listOf(entry.key)
-      }.toMap())
+      }.toMap(), this)
     }
 
 

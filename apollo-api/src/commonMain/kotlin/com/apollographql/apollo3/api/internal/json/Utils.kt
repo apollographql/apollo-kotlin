@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.api.internal.json
 
+import com.apollographql.apollo3.api.json.JsonNumber
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 
@@ -30,12 +31,15 @@ object Utils {
 
       is Boolean -> jsonWriter.value(value)
       is Int -> jsonWriter.value(value)
+      is Long -> jsonWriter.value(value)
       is Double -> jsonWriter.value(value)
-      else -> jsonWriter.value(value.toString())
+      is JsonNumber -> jsonWriter.value(value)
+      is String -> jsonWriter.value(value)
+      else -> error("Cannot write $value to Json")
     }
   }
 
-  fun JsonReader.readRecursively(): Any? {
+  fun JsonReader.readRecursivelyFast(): Any? {
     return when (peek()) {
       JsonReader.Token.NULL -> nextNull()
 
@@ -44,9 +48,8 @@ object Utils {
 
         val result = LinkedHashMap<String, Any?>()
         while (hasNext()) {
-          result[nextName()] = readRecursively()
+          result[nextName()] = readRecursivelyFast()
         }
-
         endObject()
         result
       }
@@ -56,7 +59,7 @@ object Utils {
 
         val result = ArrayList<Any?>()
         while (hasNext()) {
-          result.add(readRecursively())
+          result.add(readRecursivelyFast())
         }
 
         endArray()
@@ -65,34 +68,100 @@ object Utils {
 
       JsonReader.Token.BOOLEAN -> nextBoolean()
 
-      JsonReader.Token.NUMBER -> {
-        val number = nextString()!!
-        // optimize
-        if (number.contains('.') || number.contains('e') || number.contains('E')) {
-          try {
-            number.toDouble()
-          } catch (e: Exception) {
-            number
-          }
-        } else {
-          try {
-            number.toInt()
-          } catch (e: Exception) {
-            number
-          }
-        }
-      }
+      // Map NUMBER to String
+      // Callers can use nextDouble() to convert to Double or write a custom adapter for bigger values
+      // This means that for performance reasons, [JsonNumber] will not never be stored int the Map
+      JsonReader.Token.NUMBER -> nextString()
 
-      JsonReader.Token.LONG -> {
-        val number = nextString()!!
-        try {
-          number.toInt()
-        } catch (e: Exception) {
-          number
-        }
-      }
+      JsonReader.Token.LONG -> nextLong()
 
       else -> nextString()!!
     }
   }
+
+  /**
+   * Reads the reader and maps numbers to the closest representation possible in that order:
+   * - Int
+   * - Long
+   * - Double
+   * - JsonNumber
+   */
+  fun JsonReader.readRecursively(): Any? {
+    return when(val token = peek()) {
+      JsonReader.Token.NULL -> nextNull()
+      JsonReader.Token.BOOLEAN -> nextBoolean()
+      JsonReader.Token.LONG, JsonReader.Token.NUMBER -> guessNumber()
+      JsonReader.Token.STRING -> nextString()
+      JsonReader.Token.BEGIN_OBJECT -> {
+        beginObject()
+        val result = mutableMapOf<String, Any?>()
+        while(hasNext()) {
+          result.put(nextName(), readRecursively())
+        }
+        endObject()
+        result
+      }
+      JsonReader.Token.BEGIN_ARRAY -> {
+        beginArray()
+        val result = mutableListOf<Any?>()
+        while(hasNext()) {
+          result.add(readRecursively())
+        }
+        endArray()
+        result
+      }
+      else -> error("unknown token $token")
+    }
+  }
+
+  private fun JsonReader.guessNumber(): Any {
+    try {
+      return nextInt()
+    } catch (e: Exception) {
+      e.printStackTrace()
+    }
+    try {
+      return nextLong()
+    } catch (e: Exception) {
+    }
+    try {
+      return nextDouble()
+    } catch (e: Exception) {
+    }
+    return nextNumber()
+  }
+}
+
+
+internal fun Long.toIntExact(): Int {
+  val result = toInt()
+  check (result.toLong() == this) {
+    "$this cannot be converted to Int"
+  }
+  return result
+}
+
+internal fun Double.toIntExact(): Int {
+  val result = toInt()
+  check (result.toDouble() == this) {
+    "$this cannot be converted to Int"
+  }
+  return result
+}
+
+
+internal fun Long.toDoubleExact(): Double {
+  val result = toDouble()
+  check (result.toLong() == this) {
+    "$this cannot be converted to Double"
+  }
+  return result
+}
+
+internal fun Double.toLongExact(): Long {
+  val result = toLong()
+  check (result.toDouble() == this) {
+    "$this cannot be converted to Long"
+  }
+  return result
 }

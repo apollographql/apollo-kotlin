@@ -15,13 +15,9 @@ import com.apollographql.apollo3.cache.normalized.normalize
 import com.apollographql.apollo3.cache.normalized.readDataFromCache
 import com.apollographql.apollo3.mpp.Guard
 import com.benasher44.uuid.Uuid
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 class DefaultApolloStore(

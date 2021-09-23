@@ -18,6 +18,7 @@ package com.apollographql.apollo3.api.internal.json
 import com.apollographql.apollo3.api.Throws
 import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader.Companion.MAX_STACK_SIZE
+import com.apollographql.apollo3.api.json.JsonNumber
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.exception.JsonDataException
 import okio.BufferedSink
@@ -152,47 +153,25 @@ class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter {
   }
 
   @Throws(IOException::class)
-  override fun nullValue(): JsonWriter {
-    if (deferredName != null) {
-      writeDeferredName()
-    }
-    beforeValue()
-    sink.writeUtf8("null")
-    pathIndices[stackSize - 1]++
-    return this
-  }
+  override fun nullValue() = jsonValue("null")
 
   @Throws(IOException::class)
-  override fun value(value: Boolean): JsonWriter {
-    return run {
-      writeDeferredName()
-      beforeValue()
-      sink.writeUtf8(if (value) "true" else "false")
-      pathIndices[stackSize - 1]++
-      this
-    }
-  }
+  override fun value(value: Boolean) = jsonValue(if (value) "true" else "false")
 
   @Throws(IOException::class)
   override fun value(value: Double): JsonWriter {
     require(!(!isLenient && (value.isNaN() || value.isInfinite()))) {
       "Numeric values must be finite, but was $value"
     }
-    writeDeferredName()
-    beforeValue()
-    sink.writeUtf8(value.toString())
-    pathIndices[stackSize - 1]++
-    return this
+    return jsonValue(value.toString())
   }
 
   @Throws(IOException::class)
-  override fun value(value: Int): JsonWriter {
-    writeDeferredName()
-    beforeValue()
-    sink.writeUtf8(value.toString())
-    pathIndices[stackSize - 1]++
-    return this
-  }
+  override fun value(value: Int) = jsonValue(value.toString())
+
+  override fun value(value: Long) = jsonValue(value.toString())
+
+  override fun value(value: JsonNumber) = jsonValue(value.toString())
 
   override fun value(value: Upload) = apply {
     nullValue()

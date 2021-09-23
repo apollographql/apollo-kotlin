@@ -42,13 +42,13 @@ interface Executable<D: Executable.Data> {
 }
 
 @Suppress("UNCHECKED_CAST")
-fun <D : Executable.Data> Executable<D>.variables(customScalarAdapters: CustomScalarAdapters): Executable.Variables {
+fun <D : Executable.Data> Executable<D>.variables(customScalarAdapters: CustomScalarAdapters): Variables {
   val valueMap = MapJsonWriter().apply {
     beginObject()
     serializeVariables(this, customScalarAdapters)
     endObject()
   }.root() as Map<String, Any?>
-  return Executable.Variables(valueMap)
+  return Variables(valueMap)
 }
 
 fun <D : Executable.Data> Executable<D>.variablesJson(customScalarAdapters: CustomScalarAdapters): String {

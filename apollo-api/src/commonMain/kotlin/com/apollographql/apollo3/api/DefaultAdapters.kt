@@ -108,6 +108,21 @@ object DoubleAdapter : Adapter<Double> {
   }
 }
 
+/**
+ * An [Adapter] that converts to/from a [Long]
+ *
+ * If the Json number does not fit in a [Long], an exception will be thrown
+ */
+object LongAdapter: Adapter<Long>  {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Long {
+    return reader.nextLong()
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Long) {
+    writer.value(value)
+  }
+}
+
 object BooleanAdapter : Adapter<Boolean> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Boolean {
     return reader.nextBoolean()
@@ -175,7 +190,7 @@ class ObjectAdapter<T>(
       /**
        * And write to the original writer
        */
-      AnyAdapter.toJson(writer, mapWriter.root()!!)
+      Utils.writeToJson(mapWriter.root()!!, writer)
     } else {
       writer.beginObject()
       wrappedAdapter.toJson(writer, customScalarAdapters, value)
@@ -207,3 +222,4 @@ val NullableBooleanAdapter = BooleanAdapter.nullable()
 @SharedImmutable
 @JvmField
 val NullableAnyAdapter = AnyAdapter.nullable()
+

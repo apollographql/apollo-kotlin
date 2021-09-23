@@ -8,6 +8,7 @@ import kotlin.jvm.JvmStatic
 object RecordWeigher {
   private const val SIZE_OF_BOOLEAN = 16
   private const val SIZE_OF_INT = 4
+  private const val SIZE_OF_LONG = 8
   private const val SIZE_OF_DOUBLE = 8
   private const val SIZE_OF_ARRAY_OVERHEAD = 16
   private const val SIZE_OF_MAP_OVERHEAD = 16
@@ -35,6 +36,7 @@ object RecordWeigher {
       is String -> field.commonAsUtf8ToByteArray().size
       is Boolean -> SIZE_OF_BOOLEAN
       is Int -> SIZE_OF_INT
+      is Long -> SIZE_OF_LONG // Might happen with LongAdapter
       is Double -> SIZE_OF_DOUBLE
       is List<*> -> {
         SIZE_OF_ARRAY_OVERHEAD + field.sumOf { weighField(it) }
