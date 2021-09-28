@@ -11,5 +11,4 @@ dependencies {
 
 apollo {
   packageName.set("outofbounds")
-  customScalarsMapping.put("Long", "kotlin.Long")
 }
