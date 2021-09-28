@@ -27,7 +27,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.single
 import kotlin.jvm.JvmOverloads
@@ -104,7 +103,7 @@ class ApolloClient @JvmOverloads constructor(
    * Executes the given mutationRequest and returns a Flow of response or throws on transport errors
    */
   fun <D : Mutation.Data> mutateAsFlow(mutationRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
-    return mutationRequest.execute().buffer()
+    return mutationRequest.execute()
   }
 
   /**
