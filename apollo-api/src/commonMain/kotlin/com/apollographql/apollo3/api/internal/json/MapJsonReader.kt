@@ -1,10 +1,10 @@
 package com.apollographql.apollo3.api.internal.json
 
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader.Companion.MAX_STACK_SIZE
-import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
 import com.apollographql.apollo3.api.internal.json.Utils.readRecursivelyFast
 import com.apollographql.apollo3.api.json.JsonNumber
 import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.exception.JsonDataException
 
 /**
  * A [JsonReader] that reads data from a regular [Map<String, Any?>]
@@ -23,65 +23,65 @@ import com.apollographql.apollo3.api.json.JsonReader
  *
  * @param root the root [Map] to read from
  *
- * The base implementation was taken from Moshi and ported to Kotlin multiplatform with some tweaks to make it better suited for GraphQL
- * (see [JsonReader]).
- *
+ * Because it's mostly used internally the checks/verifications are very slim.
  * To read from a [okio.BufferedSource], see also [BufferedSourceJsonReader]
  */
 class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   // Like a Map but easier to access sequentially
+  // Could be optimized
   private class OrderedMap(val entries: List<Entry>)
   private class Entry(val key: String, val value: Any?)
 
-  private val dataStack = ArrayList<Any>()
-  private val indexStack = ArrayList<Int>()
+  private val dataStack = arrayOfNulls<Any>(MAX_STACK_SIZE)
+  private val indexStack = IntArray(MAX_STACK_SIZE)
+  private val nameIndexStack = IntArray(MAX_STACK_SIZE)
 
-  // A simple holder to kick things off
-  private val sentinel = OrderedMap(listOf(Entry("root", root)))
+  private var stackSize = 0
 
-  // Either a List or an [OrderedMap]
-  private var currentData: Any = sentinel
-  // The current index in the List or [OrderedMap]
-  private var currentIndex = 0
-  // Will be non-null if a name has been read
+  // Will be non-null if a name has been read and is reset when a value is read
   // No need to stack this, when we pop, we know we have to read a new name
-  private var currentName: String? = "root"
+  private var pendingName: String? = null
 
-  private val nameIndexStack = IntArray(MAX_STACK_SIZE).apply {
-    this[0] = 0
+  init {
+    /**
+     * We only allow Maps at the root of the Json. Initialize the state accordingly
+     */
+    push(OrderedMap(listOf(Entry("root", root))))
+    pendingName = "root"
   }
 
-  private var nameIndexStackSize = 1
-
   private fun push(data: Any) {
-    dataStack.add(currentData)
-    indexStack.add(currentIndex)
+    check(stackSize < MAX_STACK_SIZE) {
+      "Nesting too deep"
+    }
 
-    currentData = data
-    currentIndex = 0
-    currentName = null
+    dataStack[stackSize] = data
+    indexStack[stackSize] = 0
+    nameIndexStack[stackSize] = 0
+
+    stackSize++
+    pendingName = null
   }
 
   private fun pop() {
-    currentData = dataStack.removeAt(dataStack.size - 1)
-    currentIndex = indexStack.removeAt(indexStack.size - 1)
-    currentName = null
+    // Allow garbage collection
+    dataStack[stackSize] = null
+    stackSize--
+    pendingName = null
   }
 
-  private fun nextValue() = when (val data = currentData) {
-    is List<*> -> {
-      val value = data[currentIndex]
-      currentIndex++
-      value
+  private fun nextValue(): Any? {
+    return when (val data = dataStack[stackSize - 1]) {
+      is List<*> -> {
+        data[indexStack[stackSize - 1]++]
+      }
+      is OrderedMap -> {
+        check(pendingName != null)
+        pendingName = null
+        data.entries[indexStack[stackSize - 1]++].value
+      }
+      else -> error("")
     }
-    is OrderedMap -> {
-      check(currentName == data.entries[currentIndex].key)
-      val value = data.entries[currentIndex].value
-      currentName = null
-      currentIndex++
-      value
-    }
-    else -> error("")
   }
 
   override fun beginArray() = apply {
@@ -98,17 +98,10 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
     val map = nextValue()
     check(map is Map<*, *>)
     push(OrderedMap(map.entries.map { Entry(it.key as String, it.value) }))
-
-    nameIndexStackSize++
-    check(nameIndexStackSize < 33) {
-      "Json is too deeply nested"
-    }
-    nameIndexStack[nameIndexStackSize - 1] = 0
   }
 
   override fun endObject() = apply {
     pop()
-    nameIndexStackSize--
   }
 
   private fun anyToToken(any: Any?) = when (any) {
@@ -124,41 +117,40 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   }
 
   override fun hasNext(): Boolean {
-    return when (val data = currentData) {
+    return when (val data = dataStack[stackSize - 1]) {
       is List<*> -> {
-        currentIndex < data.size
+        indexStack[stackSize - 1] < data.size
       }
       is OrderedMap -> {
-        currentIndex < data.entries.size
+        indexStack[stackSize - 1] < data.entries.size
       }
       else -> error("")
     }
   }
 
   override fun peek(): JsonReader.Token {
-    return when (val data = currentData) {
+    if (stackSize == 1 && indexStack[0] == 1) {
+      return JsonReader.Token.END_DOCUMENT
+    }
+    return when (val data = dataStack[stackSize - 1]) {
       is List<*> -> {
-        if (currentIndex < data.size) {
-          anyToToken(data[currentIndex])
+        if (indexStack[stackSize - 1] < data.size) {
+          anyToToken(data[indexStack[stackSize - 1]])
         } else {
           JsonReader.Token.END_ARRAY
         }
       }
       is OrderedMap -> {
-        if (currentIndex < data.entries.size) {
-          if (currentName == null) {
+        if (indexStack[stackSize - 1] < data.entries.size) {
+          if (pendingName == null) {
             JsonReader.Token.NAME
           } else {
-            check(currentName == data.entries[currentIndex].key)
-            val value = data.entries[currentIndex].value
+            check(pendingName == data.entries[indexStack[stackSize - 1]].key)
+            val value = data.entries[indexStack[stackSize - 1]].value
             anyToToken(value)
           }
         } else {
-          if (currentName == null && data == sentinel) {
-            JsonReader.Token.END_DOCUMENT
-          } else {
-            JsonReader.Token.END_OBJECT
-          }
+          JsonReader.Token.END_OBJECT
         }
       }
       else -> error("")
@@ -166,11 +158,11 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   }
 
   override fun nextName(): String {
-    val data = currentData
+    val data = dataStack[stackSize - 1]
     check(data is OrderedMap)
-    check(currentName == null)
-    currentName = data.entries[currentIndex].key
-    return currentName!!
+    check(pendingName == null)
+    pendingName = data.entries[indexStack[stackSize - 1]].key
+    return pendingName!!
   }
 
   override fun nextString(): String? {
@@ -245,18 +237,20 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
 
     while (hasNext()) {
       val name = nextName()
-      val expectedIndex = nameIndexStack[nameIndexStackSize - 1]
+      val expectedIndex = nameIndexStack[stackSize - 1]
       if (names[expectedIndex] == name) {
         return expectedIndex.also {
-          nameIndexStack[nameIndexStackSize - 1] = expectedIndex + 1
-          if (nameIndexStack[nameIndexStackSize - 1] == names.size) {
-            nameIndexStack[nameIndexStackSize - 1] = 0
+          nameIndexStack[stackSize - 1] = expectedIndex + 1
+          if (nameIndexStack[stackSize - 1] == names.size) {
+            nameIndexStack[stackSize - 1] = 0
           }
         }
       } else {
         // guess failed, fallback to full search
         var index = expectedIndex
         while (true) {
+          val a = LinkedHashMap<String, String>()
+          a.entries
           index++
           if (index == names.size) {
             index = 0
@@ -266,9 +260,9 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
           }
           if (names[index] == name) {
             return index.also {
-              nameIndexStack[nameIndexStackSize - 1] = index + 1
-              if (nameIndexStack[nameIndexStackSize - 1] == names.size) {
-                nameIndexStack[nameIndexStackSize - 1] = 0
+              nameIndexStack[stackSize - 1] = index + 1
+              if (nameIndexStack[stackSize - 1] == names.size) {
+                nameIndexStack[stackSize - 1] = 0
               }
             }
           }
@@ -277,6 +271,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
         skipValue()
       }
     }
+
     return -1
   }
 
@@ -284,8 +279,8 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
    * Rewinds to the beginning of the current object.
    */
   override fun rewind() {
-    currentIndex = 0
-    currentName = null
+    indexStack[stackSize - 1] = 0
+    nameIndexStack[stackSize - 1] = 0
   }
 
   companion object {
