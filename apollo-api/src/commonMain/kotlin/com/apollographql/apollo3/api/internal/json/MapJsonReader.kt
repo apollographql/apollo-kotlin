@@ -249,8 +249,6 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
         // guess failed, fallback to full search
         var index = expectedIndex
         while (true) {
-          val a = LinkedHashMap<String, String>()
-          a.entries
           index++
           if (index == names.size) {
             index = 0
