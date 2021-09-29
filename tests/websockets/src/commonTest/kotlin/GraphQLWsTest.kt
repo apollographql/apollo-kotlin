@@ -4,6 +4,7 @@ import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import com.apollographql.apollo3.testing.runWithMainLoop
 import graphql.ws.GreetingsSubscription
 import graphql.ws.HelloQuery
+import graphql.ws.SetHelloMutation
 import kotlinx.coroutines.flow.toList
 import kotlin.test.Ignore
 import kotlin.test.Test
@@ -26,6 +27,21 @@ class GraphQLWsTest {
       assertEquals("Hello World!", apolloClient.query(HelloQuery()).data?.hello)
     }
   }
+
+  @Test
+  fun mutationOverWebSocket() {
+    val apolloClient = ApolloClient(
+        networkTransport = WebSocketNetworkTransport(
+            serverUrl = "http://localhost:9090/graphql",
+            protocol = GraphQLWsProtocol()
+        )
+    )
+
+    runWithMainLoop {
+      assertEquals("Hello Mutation!", apolloClient.mutate(SetHelloMutation()).data?.hello)
+    }
+  }
+
 
   @Test
   fun subscriptionOverWebSocket() {
