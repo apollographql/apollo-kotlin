@@ -9,6 +9,7 @@ module.exports = {
         root: __dirname,
         pathPrefix: '/docs/android',
         algoliaIndexName: 'android',
+        algoliaFilters: ['docset:android'],
         subtitle: 'Client (Android)',
         description: 'A guide to using Apollo with Android',
         githubRepo: 'apollographql/apollo-android',
