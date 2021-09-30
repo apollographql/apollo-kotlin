@@ -69,15 +69,7 @@ class CacheBatchReader(
     val state = CollectState()
     collect(typename, state)
     return state.fields.groupBy { (it.responseName) to it.condition }.values.map {
-      val first = it.first()
-      CompiledField(
-          alias = first.alias,
-          name = first.name,
-          type = first.type,
-          condition = first.condition,
-          arguments = first.arguments,
-          selections = it.flatMap { it.selections }
-      )
+      it.first().newBuilder().selections(it.flatMap { it.selections }).build()
     }
   }
 

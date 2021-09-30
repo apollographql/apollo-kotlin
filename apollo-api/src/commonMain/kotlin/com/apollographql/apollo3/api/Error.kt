@@ -2,6 +2,7 @@ package com.apollographql.apollo3.api
 
 /**
  * Represents an error response returned from the GraphQL server
+ * See https://spec.graphql.org/draft/#sec-Errors.Error-result-format
  */
 class Error(
     /**
@@ -11,18 +12,25 @@ class Error(
 
     /**
      * Locations of the errors in the GraphQL operation
+     * It may be null if the location cannot be determined
      */
-    val locations: List<Location> = emptyList(),
+    val locations: List<Location>? = null,
 
     /**
-     * Custom attributes associated with this error
+     * If this error comes from a field, the path of the field where the error happened.
+     * Values in the list can be either Strings or Int
+     * Can be null if the error doesn't come from a field, like validation errors.
      */
-    val customAttributes: Map<String, Any?> = emptyMap(),
+    val path: List<Any>? = null,
+
+    /**
+     * Extensions if any.
+     */
+    val extensions: Map<String, Any?>? = null,
 ) {
 
-
   override fun toString(): String {
-    return "Error(message = $message, locations = $locations, customAttributes = $customAttributes)"
+    return "Error(message = $message, locations = $locations, path=$path, extensions = $extensions)"
   }
 
   /**
@@ -33,12 +41,12 @@ class Error(
       /**
        * Line number of the error location
        */
-      val line: Long,
+      val line: Int,
 
       /**
        * Column number of the error location.
        */
-      val column: Long,
+      val column: Int,
   ) {
     override fun toString(): String {
       return "Location(line = $line, column = $column)"

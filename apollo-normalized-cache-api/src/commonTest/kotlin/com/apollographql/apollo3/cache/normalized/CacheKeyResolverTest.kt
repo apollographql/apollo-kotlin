@@ -92,8 +92,8 @@ class CacheKeyResolverTest {
 
     private val TEST_TYPE = ObjectType(name = "Test", keyFields = listOf("id"))
 
-    val TEST_SIMPLE_FIELD = CompiledField(name = "test", type = TEST_TYPE)
+    val TEST_SIMPLE_FIELD = CompiledField.builder(name = "test", type = TEST_TYPE).build()
 
-    val TEST_LIST_FIELD = CompiledField(name = "testList", type = CompiledListType(ofType = TEST_TYPE))
+    val TEST_LIST_FIELD = CompiledField.builder(name = "testList", type = CompiledListType(ofType = TEST_TYPE)).build()
   }
 }

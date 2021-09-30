@@ -19,13 +19,13 @@ class CircularCacheReadTest {
      * Create a record that references itself. It should not create a stack overflow
      */
     val data = GetUserQuery.Data(
-        user = GetUserQuery.User(
-            __typename = "User",
-            id = "42",
-            friend = GetUserQuery.Friend(
-                __typename = "User",
-                id = "42"
-            )
+        GetUserQuery.User(
+            "42",
+            GetUserQuery.Friend(
+                "42",
+                "User"
+            ),
+            "User",
         )
     )
 

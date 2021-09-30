@@ -6,12 +6,13 @@ plugins {
 }
 
 dependencies {
-  implementation(project(":apollo-api"))
-  implementation(project(":apollo-ast"))
-  implementation(project(":apollo-normalized-cache-api")) {
+  implementation(projects.apolloApi)
+  implementation(projects.apolloAst)
+  implementation(projects.apolloNormalizedCacheApi) {
     because("To generate the CacheResolver")
   }
   implementation(groovy.util.Eval.x(project, "x.dep.poet.kotlin"))
+  implementation(groovy.util.Eval.x(project, "x.dep.poet.java"))
 
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.adapters"))
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
@@ -21,10 +22,10 @@ dependencies {
   ksp(groovy.util.Eval.x(project, "x.dep.moshi.ksp"))
 
   testImplementation(groovy.util.Eval.x(project, "x.dep.kotlinCompileTesting"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.javaCompileTesting"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
   testImplementation(kotlin("test-junit"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.testParameterInjector"))
 }
 
 abstract class GeneratePluginVersion : DefaultTask() {

@@ -13,7 +13,7 @@ interface ApolloInterceptor {
   fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>>
 }
 
-internal class RealInterceptorChain(
+internal class DefaultInterceptorChain(
     private val interceptors: List<ApolloInterceptor>,
     private val index: Int,
 ) : ApolloInterceptorChain {
@@ -22,7 +22,7 @@ internal class RealInterceptorChain(
     check(index < interceptors.size)
     return interceptors[index].intercept(
         request,
-        RealInterceptorChain(
+        DefaultInterceptorChain(
             interceptors = interceptors,
             index = index + 1,
         )

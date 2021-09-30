@@ -161,7 +161,7 @@ interface Service {
    *
    * - $packageName/SomeQuery.kt
    * - $packageName/fragment/SomeFragment.kt
-   * - $packageName/type/Types.kt
+   * - $packageName/type/CustomScalar.kt
    * - $packageName/type/SomeInputObject.kt
    * - $packageName/type/SomeEnum.kt
    *
@@ -186,7 +186,7 @@ interface Service {
    *
    * ```
    * srcDir("src/main/graphql")
-   * filePathAwarePackageNameGenerator("com.example")
+   * packageNamesFromFilePaths("com.example")
    * ```
    *
    * an operation defined in `src/main/graphql/query/feature1` will use `com.example.query.feature1`
@@ -194,7 +194,7 @@ interface Service {
    * an input object defined in `src/main/graphql/schema/schema.graphqls` will use `com.example.schema.type`
    * as package name
    */
-  fun filePathAwarePackageNameGenerator(rootPackageName: String? = null)
+  fun packageNamesFromFilePaths(rootPackageName: String? = null)
 
   /**
    * Whether to generate Kotlin models with `internal` visibility modifier.
@@ -237,10 +237,21 @@ interface Service {
   val generateFragmentImplementations: Property<Boolean>
 
   /**
-   * Unused property for the moment. Left to save users to edit one line. Will be used again when there is
-   * Java codegen
+   * Whether to generate Kotlin or Java models
+   * Default to true if the Kotlin plugin is found
    */
   val generateKotlinModels: Property<Boolean>
+
+  /**
+   * Whether to write the query document in models
+   */
+  val generateQueryDocument: Property<Boolean>
+
+  /**
+   * Whether to generate the __Schema class. The __Schema class lists all composite
+   * types in order to access __typename and/or possibleTypes
+   */
+  val generateSchema: Property<Boolean>
 
   /**
    * What codegen to use. One of "operationBased", "responseBased" or "compat"
@@ -252,6 +263,8 @@ interface Service {
   /**
    * Whether to flatten the models. File paths are limited on MacOSX to 256 chars and flattening can help keeping the path length manageable
    * The drawback is that some classes may nameclash in which case they will be suffixed with a number
+   *
+   * Default value: false for "responseBased", true else
    */
   val flattenModels: Property<Boolean>
 
@@ -349,29 +362,18 @@ interface Service {
     fun connectToJavaSourceSet(name: String)
 
     /**
-     * Connects the generated sources to all the Android application variants.
-     * Throws if the Android Application plugin is not applied
-     */
-    fun connectToAllAndroidApplicationVariants()
-
-    /**
-     * Connects the generated sources to all the Android application variants.
-     * Throws if the Android Library plugin is not applied
-     */
-    fun connectToAllAndroidLibraryVariants()
-
-    /**
-     * Connects the generated sources to all the Android instrumented test variants.
+     * Connects the generated sources to the given Android source set.
      * Throws if the Android plugin is not applied
+     *
+     * @param name: the name of the source set. For an example, "main", "test" or "androidTest"
+     * You can also use more qualified source sets like "demo", "debug" or "demoDebug"
      */
-    fun connectToAllAndroidInstrumentedTestVariants()
+    fun connectToAndroidSourceSet(name: String)
 
     /**
-     * Connects the generated sources to all the Android unit test variants.
-     * Throws if the Android plugin is not applied
+     * Connects the generated sources to the given Android variant. This will
+     * look up the most specific source set used by this variant. For an example, "demoDebug"
      */
-    fun connectToAllAndroidUnitTestVariants()
-
     fun connectToAndroidVariant(variant: BaseVariant)
 
     /**

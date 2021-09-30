@@ -1,9 +1,6 @@
 package test
 
 import codegen.models.HeroAndFriendsWithFragmentsQuery
-import codegen.models.type.Types
-import com.apollographql.apollo3.adapter.LocalDateAdapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.toJson
@@ -37,9 +34,8 @@ class AdapterBijectionTest {
   )
 
   private fun <D : Operation.Data> bijection(operation: Operation<D>, data: D) {
-    val responseAdapterCache = CustomScalarAdapters(mapOf(Types.Date.name to LocalDateAdapter))
-    val json = operation.adapter().toJson(value = data, customScalarAdapters = responseAdapterCache)
-    val data2 = operation.adapter().fromJson(Buffer().apply { writeUtf8(json) }, responseAdapterCache)
+    val json = operation.adapter().toJson(value = data)
+    val data2 = operation.adapter().fromJson(Buffer().apply { writeUtf8(json) })
 
     assertEquals(data, data2)
   }

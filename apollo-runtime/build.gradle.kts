@@ -5,12 +5,11 @@ plugins {
 configureMppDefaults(withJs = false)
 
 kotlin {
-
   sourceSets {
     val commonMain by getting {
       dependencies {
-        api(project(":apollo-api"))
-        api(project(":apollo-mpp-utils"))
+        api(projects.apolloApi)
+        api(projects.apolloMppUtils)
         api(groovy.util.Eval.x(project, "x.dep.okio"))
         api(groovy.util.Eval.x(project, "x.dep.uuid"))
         api(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
@@ -30,7 +29,7 @@ kotlin {
 
     val commonTest by getting {
       dependencies {
-        implementation(project(":apollo-testing-support"))
+        implementation(projects.apolloTestingSupport)
       }
     }
 

@@ -13,5 +13,5 @@ dependencies {
 }
 
 apollo {
-  filePathAwarePackageNameGenerator()
+  packageNamesFromFilePaths()
 }

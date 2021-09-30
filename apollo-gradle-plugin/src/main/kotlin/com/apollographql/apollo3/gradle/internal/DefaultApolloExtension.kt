@@ -10,8 +10,9 @@ import com.apollographql.apollo3.gradle.api.ApolloExtension
 import com.apollographql.apollo3.gradle.api.Service
 import com.apollographql.apollo3.gradle.api.androidExtension
 import com.apollographql.apollo3.gradle.api.isKotlinMultiplatform
-import com.apollographql.apollo3.gradle.api.kotlinProjectExtension
+import com.apollographql.apollo3.gradle.api.javaConvention
 import com.apollographql.apollo3.gradle.api.kotlinMultiplatformExtension
+import com.apollographql.apollo3.gradle.api.kotlinProjectExtension
 import com.apollographql.apollo3.gradle.api.kotlinProjectExtensionOrThrow
 import org.gradle.api.Action
 import org.gradle.api.Project
@@ -303,17 +304,15 @@ abstract class DefaultApolloExtension(
         connection.connectToKotlinSourceSet(KotlinSourceSet.COMMON_MAIN_SOURCE_SET_NAME)
       }
       project.androidExtension != null -> {
-        /**
-         * Call both application and library
-         * Only one will be active at a time
-         */
-        connection.connectToAllAndroidApplicationVariants()
-        connection.connectToAllAndroidLibraryVariants()
+        connection.connectToAndroidSourceSet("main")
       }
       project.kotlinProjectExtension != null -> {
         connection.connectToKotlinSourceSet("main")
       }
-      else -> throw IllegalStateException("Cannot find the Kotlin extension, please apply a kotlin plugin")
+      project.javaConvention != null -> {
+        connection.connectToJavaSourceSet("main")
+      }
+      else -> throw IllegalStateException("Cannot find a Java/Kotlin extension, please apply the kotlin or java plugin")
     }
   }
 
@@ -373,7 +372,7 @@ abstract class DefaultApolloExtension(
       )
 
       task.useSemanticNaming.set(service.useSemanticNaming)
-      task.generateKotlinModels.set(true)
+      task.generateKotlinModels.set(service.generateKotlinModels)
       task.warnOnDeprecatedUsages.set(service.warnOnDeprecatedUsages)
       task.failOnWarnings.set(service.failOnWarnings)
       task.customScalarsMapping.set(service.customScalarsMapping)
@@ -400,22 +399,25 @@ abstract class DefaultApolloExtension(
 
       task.metadataFiles.from(consumerConfiguration)
 
-      if (service.generateKotlinModels.orNull == false) {
-        println("ApolloGraphQL: setting `generateKotlinModels.set(false)` has no effect. Follow https://github.com/apollographql/apollo-android/issues/2616 for Java codegen")
-      }
-
       check(!(service.packageName.isPresent && service.packageNameGenerator.isPresent)) {
-        println("ApolloGraphQL: it is an error to specify both 'packageName' and 'packageNameGenerator'")
+        "ApolloGraphQL: it is an error to specify both 'packageName' and 'packageNameGenerator'"
       }
-      val packageNameGenerator = service.packageNameGenerator.getOrElse(
-          PackageNameGenerator.Flat(service.packageName.getOrElse(""))
-      )
+      var packageNameGenerator = service.packageNameGenerator.orNull
+      if (packageNameGenerator == null) {
+        packageNameGenerator = PackageNameGenerator.Flat(service.packageName.orNull ?: error("""ApolloGraphQL: specify 'packageName':
+            |apollo {
+            |  packageName.set("com.example")
+            |}
+          """.trimMargin()))
+      }
       task.packageNameGenerator = packageNameGenerator
       task.generateAsInternal.set(service.generateAsInternal)
       task.generateFilterNotNull.set(project.isKotlinMultiplatform)
       task.alwaysGenerateTypesMatching.set(service.alwaysGenerateTypesMatching)
       task.projectName.set(project.name)
       task.generateFragmentImplementations.set(service.generateFragmentImplementations)
+      task.generateQueryDocument.set(service.generateQueryDocument)
+      task.generateSchema.set(service.generateSchema)
       task.codegenModels.set(service.codegenModels)
       task.flattenModels.set(service.flattenModels)
     }

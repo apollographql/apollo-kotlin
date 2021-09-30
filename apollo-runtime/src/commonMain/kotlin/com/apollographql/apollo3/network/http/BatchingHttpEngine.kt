@@ -1,14 +1,13 @@
 package com.apollographql.apollo3.network.http
 
 import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.http.DefaultHttpRequestComposerParams
+import com.apollographql.apollo3.api.ExecutionParameters
 import com.apollographql.apollo3.api.http.HttpBody
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
-import com.apollographql.apollo3.api.http.HttpRequestComposerParams
 import com.apollographql.apollo3.api.http.HttpResponse
+import com.apollographql.apollo3.api.http.valueOf
+import com.apollographql.apollo3.api.http.withHttpHeader
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.internal.json.buildJsonByteString
@@ -23,7 +22,6 @@ import com.apollographql.apollo3.network.http.BatchingHttpEngine.Companion.CAN_B
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -47,7 +45,7 @@ import okio.BufferedSink
  *
  * @param batchIntervalMillis the interval between two batches
  * @param maxBatchSize always send the batch when this threshold is reached
- * @param batchByDefault whether batching is opt-in or opt-out at the request level. See also [canBeBatched]
+ * @param batchByDefault whether batching is opt-in or opt-out at the request level. See also [withCanBeBatched]
  */
 class BatchingHttpEngine(
     val delegate: HttpEngine = DefaultHttpEngine(),
@@ -80,11 +78,11 @@ class BatchingHttpEngine(
   private val pendingRequests = mutableListOf<PendingRequest>()
 
   override suspend fun execute(request: HttpRequest): HttpResponse {
-    val canBeBatched = request.headers[CAN_BE_BATCHED]?.toBoolean() ?: batchByDefault
+    val canBeBatched = request.headers.valueOf(CAN_BE_BATCHED)?.toBoolean() ?: batchByDefault
 
     if (!canBeBatched) {
       // Remove the CAN_BE_BATCHED header and forward directly
-      return delegate.execute(request.copy(headers = request.headers.filter { it.key != CAN_BE_BATCHED }))
+      return delegate.execute(request.copy(headers = request.headers.filter { it.name != CAN_BE_BATCHED }))
     }
 
     val pendingRequest = PendingRequest(request)
@@ -114,7 +112,7 @@ class BatchingHttpEngine(
 
     val firstRequest = pending.first().request
 
-    val allLengths = pending.map { it.request.headers.get("Content-Length")?.toLongOrNull() ?: -1L }
+    val allLengths = pending.map { it.request.headers.valueOf("Content-Length")?.toLongOrNull() ?: -1L }
     val contentLength = if (allLengths.contains(-1)) {
       -1
     } else {
@@ -142,19 +140,20 @@ class BatchingHttpEngine(
     val request = HttpRequest(
         method = HttpMethod.Post,
         url = firstRequest.url,
-        headers = emptyMap(),
+        headers = emptyList(),
         body = body,
     )
     freeze(request)
 
-    val result = kotlin.runCatching {
+    var exception: ApolloException? = null
+    val result = try {
       val response = delegate.execute(request)
       if (response.statusCode !in 200..299) {
         throw ApolloHttpException(response.statusCode, response.headers, "HTTP error ${response.statusCode} while executing batched query: '${response.body?.readUtf8()}'")
       }
       val responseBody = response.body ?: throw ApolloException("null body when executing batched query")
 
-      // TODO: this is most likely going to transform BitNumbers into strings, not sure how much of an issue that is
+      // TODO: this is most likely going to transform BigNumbers into strings, not sure how much of an issue that is
       val list = AnyAdapter.fromJson(BufferedSourceJsonReader(responseBody))
       if (list !is List<*>) throw ApolloException("batched query response is not a list when executing batched query")
 
@@ -170,26 +169,28 @@ class BatchingHttpEngine(
           AnyAdapter.toJson(this, it)
         }
       }
+    } catch (e: ApolloException) {
+      exception = e
+      null
     }
 
-    val failure = result.exceptionOrNull()
-    if (failure != null) {
+    if (exception != null) {
       pending.forEach {
-        it.deferred.completeExceptionally(failure)
+        it.deferred.completeExceptionally(exception)
       }
       return
-    }
-
-    result.getOrThrow().forEachIndexed { index, byteString ->
-      // This works because the server must return the responses in order
-      pending[index].deferred.complete(
-          HttpResponse(
-              statusCode = 200,
-              headers = emptyMap(),
-              bodyString = byteString,
-              bodySource = null
-          )
-      )
+    } else {
+      result!!.forEachIndexed { index, byteString ->
+        // This works because the server must return the responses in order
+        pending[index].deferred.complete(
+            HttpResponse(
+                statusCode = 200,
+                headers = emptyList(),
+                bodyString = byteString,
+                bodySource = null
+            )
+        )
+      }
     }
   }
 
@@ -203,8 +204,6 @@ class BatchingHttpEngine(
   }
 }
 
-fun <D : Query.Data> ApolloRequest<D>.canBeBatched(canBeBatched: Boolean): ApolloRequest<D> {
-  val context = executionContext[HttpRequestComposerParams] ?: DefaultHttpRequestComposerParams
-
-  return withExecutionContext(context.copy(headers = context.headers + (CAN_BE_BATCHED to canBeBatched.toString())))
-}
+fun <T> ExecutionParameters<T>.withCanBeBatched(canBeBatched: Boolean) where T : ExecutionParameters<T> = withHttpHeader(
+    CAN_BE_BATCHED, canBeBatched.toString()
+)

@@ -80,6 +80,27 @@ apollo {
 
 > At the time of writing, Java codegen is not working but will be added in a future update. For details, see [this GitHub issue](https://github.com/apollographql/apollo-android/issues/2616).
 
+### `apollo-coroutines-support` is removed
+
+Apollo Android 3.x is kotlin first and exposes suspend functions by default. `apollo-coroutines-support` is not needed anymore:
+
+```kotlin
+// Remove:
+implementation("com.apollographql.apollo:apollo-coroutines-support:$version")
+```
+
+### `apollo-android-support` is removed
+
+Apollo Android 2.x publishes a small artifact to support running callbacks on a specific Handler and write logs to logcat.
+
+Apollo Android 3.x uses coroutines and exposes more information in its API so that logging hooks shouldn't be required any more. If you were using logs to get information about cache hits/misses, you can now catch `CacheMissException` to get the same information in a more strongly typed way.
+
+
+```kotlin
+// Remove:
+implementation("com.apollographql.apollo:apollo-android-support:$version")
+```
+
 ### `customScalarMappings`
 
 In order to make it explicit that custom mappings only apply to custom scalars and not arbitrary types, `customTypeMapping` has been renamed to `customScalarsMapping`
@@ -114,7 +135,43 @@ apollo {
 
 </MultiCodeBlock>
 
-### Target package name
+### Specifying schema and .graphql files
+
+Apollo Android 2.x has a complex logic to determine what files to use as input. For an example, it resolves `sourceFolder` relative to multiple Android variants or kotlin sourceSets, tries to get the .graphql files from the schema location and the other way around too. This logic works in most cases but makes troubleshooting more complicated, especially in more complex scenarios. Also, this runs the GraphQL compiler multiple times for different source sets even if in the vast majority of cases, the same .graphql files are used.
+
+Apollo Android 3.x simplifies this setup. Each `Service` is exactly one compilation. For Android projects, GraphQL classes are generated once and then added to all variants.
+
+If you previously used `graphqlSourceDirectorySet` to explicitely specify the location of GraphQL files, you can now use `srcDir`:
+
+
+```kotlin
+apollo {
+  // Replace
+  graphqlSourceDirectorySet.srcDirs += "shared/graphql"
+
+  // With
+  srcDir("shared/graphql")
+}
+```
+
+If you were relying on the schema location to lookup the .graphql files, you should also now use `srcDir`. It will lookup the schema automatically:
+
+```kotlin
+apollo {
+  // Replace
+  schemaFile.set(file("src/main/graphql-api/schema.graphqls"))
+
+  // With
+  srcDir(file("src/main/graphql-api/"))
+  // If your schema is outside `srcDir`, you'll have to keep schemaFile
+  // schemaFile.set(file("../shared-schemas/schema.graphqls"))
+}
+```
+
+If you need different GraphQL operations for different variants, you can create multiple services for each Android variant using [apollo.createAllAndroidVariantServices](https://apollographql.github.io/apollo-android/kdoc/apollo-gradle-plugin/com.apollographql.apollo3.gradle.api/-apollo-extension/create-all-android-variant-services.html).
+
+
+### Package name
 
 Apollo Android 2.x computes its target package name based on a combination of uses the file path of GraphQL operation and schema files as well as `packageName` and `rootPackageName` options to compute the target package name. While this is very flexible, it's not easy to anticipate the final package name that is going to be used.
 
@@ -140,7 +197,7 @@ If you need different package names for different operation folders, you can fal
 
 ```kotlin
 apollo {
-  filePathAwarePackageNameGenerator("$rootPackageName")
+  packageNamesFromFilePaths("$rootPackageName")
 }
 ```
 
@@ -149,38 +206,6 @@ For even more control, you can also define your own `PackageNameGenerator`:
 ```kotlin
 apollo {
   packageNameGenerator.set(customPackageNameGenerator)
-}
-```
-
-### Removed `CompilationUnit`s
-
-Apollo Android 2.x creates multiple `CompilationUnit`s for different Android variants or different Kotlin source sets. This runs the GraphQL compiler multiple times. For example, Android compilation generates GraphQL classes at least twice (once for the debug build and once for the release build). In most cases, the generated classes are identical and this needlessly increases build time.
-
-Apollo Android 3.x removes `CompilationUnit`s. Instead, each `Service` is exactly one compilation. For Android projects, GraphQL classes are generated once and then added to all variants.
-
-If you need different GraphQL operations for different variants, you can create multiple services for each Android variant like so:
-
-```kotlin
-apollo {
-  createAllAndroidVariantServices(
-    sourceFolder = "starwars", // will look into src/main/graphql/starwars, src/debug/graphql/starwars, etc
-    nameSuffix = "starwars", // will create tasks named generateDebugStarwarsApolloSources, generateReleaseStarwarsApolloSources, etc.
-  ) {
-    // configure your service here
-  }
-}
-```
-
-If you previously used `graphqlSourceDirectorySet` to explicitely specify the location of GraphQL files, you can now use `srcDir`:
-
-
-```kotlin
-apollo {
-  // Replace
-  graphqlSourceDirectorySet.srcDirs += "shared/graphql"
-
-  // With
-  srcDir("shared/graphql")
 }
 ```
 
@@ -215,7 +240,7 @@ val apolloClient = ApolloClient.builder()
 val apolloClient = ApolloClient(
   networkTransport = HttpNetworkTransport(
     server = serverUrl,
-    engine = DefaultHttpEngine(okHttpClient = okHttpClient)
+    okHttpClient = okHttpClient
   )
 )
 ```
@@ -240,7 +265,25 @@ apolloClient.subscribe(subscription)
 
 ## Custom Scalar adapters
 
-The Custom Scalar adapters API has changed a lot to support nullable and absent values as well as streaming use cases. It now uses the same `Adapter` API that is used internally to parse the models:
+Apollo Android 3 ships an optional [apollo-adapters](https://apollographql.github.io/apollo-android/kdoc/apollo-adapters/com.apollographql.apollo3.adapter/index.html) artifact that includes adapters for common scalar types like:
+
+* `InstantAdapter` for `kotlinx.datetime.Instant` ISO8601 dates
+* `LocalDateAdapter` for `kotlinx.datetime.LocalDate` ISO8601 dates
+* `DateAdapter` for `java.util.Date` ISO8601 dates
+* `LongAdapter` for `java.lang.Long`
+* `BigDecimalAdapter` for a MPP `BigDecimal` class holding big decimal values
+
+To include them, add the below to your gradle file:
+
+```kotlin
+dependencies {
+  implementation("com.apollographql.apollo:apollo-adapters:$version")
+}
+```
+
+If the above adapters do not fit your needs or if you need to customize them, you can use the Custom Scalar adapters API.
+
+The Custom Scalar adapters API has changed a lot to support nullable and absent values as well as streaming use cases. Apollo Android 3 makes it possible to read/write custom scalars without having to create an intermediate copy in memory. To do this, it uses the same `Adapter` API that is used internally to parse the models:
 
 ```kotlin
 // Replace
@@ -385,10 +428,22 @@ val response = apolloClient.query(request)
 
 ### `CacheKeyResolver`
 
-The `CacheKeyResolver` API has been updated to work with declarative cache.
+The `CacheKeyResolver` API has been split in two different APIs:
 
-* `fromFieldRecordSet` is renamed to `cacheKeyForObject`.
-* `fromFieldArguments` is renamed to `cacheKeyForField`.
+* `ObjectIdGenerator.cacheKeyForObject`
+  * takes Json data as input and returns a unique id for an object.
+  * is used **after** a network request
+  * is used during normalization when **writing** to the cache
+* `CacheKeyResolver.cacheKeyForField`
+  * takes a GraphQL field and operation variables as input and generates an id for this field
+  * is used **before** a network request
+  * is used when **reading** the cache
+
+Previously, both methods were in `CacheResolver` even if under the hood, the code path were very different. By separating them, it makes it explicit and also makes it possible to only implement one of them.
+
+At a high level,
+* `fromFieldRecordSet` is renamed to `ObjectIdGenerator.cacheKeyForObject`.
+* `fromFieldArguments` is renamed to `CacheKeyResolver.cacheKeyForField`.
 * The `CacheKey` return value is now nullable, and `CacheKey.NONE` is replaced with `null`.
 
 ```kotlin
@@ -401,16 +456,30 @@ val resolver: CacheKeyResolver = object : CacheKeyResolver() {
     return CacheKey.from(field.resolveArgument("id", variables) as String)
   }
 }
+val apolloClient = ApolloClient.builder()
+    .serverUrl("https://...")
+    .normalizedCache(cacheFactory, resolver)
+    .build()
+
 
 // With
-val cacheKeyResolver = object : CacheKeyResolver() {
-  override fun cacheKeyForObject(type: CompiledNamedType, variables: Executable.Variables, obj: Map<String, Any?>): CacheKey? {
-    return (obj["id"] as? String)?.let { CacheKey(it) }
-  }
-  override fun cacheKeyForField(field: CompiledField, variables: Executable.Variables): CacheKey? {
-    return (field.resolveArgument("id", variables) as? String)?.let { CacheKey(it) }
+val objectIdGenerator = object : ObjectIdGenerator {
+  override fun cacheKeyForObject(obj: Map<String, Any?>, context: ObjectIdGeneratorContext): CacheKey? {
+    return obj["id"]?.toString()?.let { CacheKey(it) } ?: TypePolicyObjectIdGenerator.cacheKeyForObject(obj, context)
   }
 }
+
+val cacheKeyResolver = object : CacheKeyResolver() {
+  override fun cacheKeyForField(field: CompiledField, variables: Executable.Variables): CacheKey? {
+    return (field.resolveArgument("id", variables) as String?)?.let { CacheKey(it) }
+  }
+}
+
+val apolloClient = ApolloClient("https://").withNormalizedCache(
+    normalizedCacheFactory = cacheFactory,
+    objectIdGenerator = objectIdGenerator,
+    cacheKeyResolver = cacheKeyResolver
+)
 ```
 
 ## Optional values

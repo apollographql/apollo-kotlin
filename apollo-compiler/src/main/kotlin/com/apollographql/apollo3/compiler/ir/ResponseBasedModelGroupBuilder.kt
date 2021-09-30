@@ -8,8 +8,8 @@ import com.apollographql.apollo3.ast.GQLFragmentSpread
 import com.apollographql.apollo3.ast.GQLInlineFragment
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.compiler.codegen.CgLayout.Companion.modelName
-import com.apollographql.apollo3.compiler.codegen.CgLayout.Companion.upperCamelCaseIgnoringNonLetters
+import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.modelName
+import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.upperCamelCaseIgnoringNonLetters
 
 internal class ResponseBasedModelGroupBuilder(
     schema: Schema,
@@ -52,16 +52,16 @@ private data class ResponseField(
     val override: Boolean,
     val condition: BooleanExpression<BVariable>,
     val responseFieldSets: List<ResponseFieldSet>,
-    val modelId: IrModelId?,
+    val modelId: String?,
 )
 
 private data class ResponseFieldSet(
-    val id: IrModelId,
+    val id: String,
     val typeSet: TypeSet,
     val responseFields: List<ResponseField>,
     val possibleTypes: Set<String>,
     val accessors: List<IrAccessor>,
-    val implements: List<IrModelId>,
+    val implements: List<String>,
     val rawTypename: String,
     /**
      * Needed for ordering the type specs as well as naming the models
@@ -117,20 +117,15 @@ private class FieldNodeBuilder(
       rawTypeName: String,
       operationName: String,
   ): ResponseField {
-    val root = IrModelRoot(
-        IrRootKind.OperationData,
-        operationName
-    )
     val info = IrFieldInfo(
         responseName = "data",
         description = null,
-        type = IrModelType(IrUnknownModelId),
+        type = IrModelType(MODEL_UNKNOWN),
         deprecationReason = null
     )
 
     return buildFieldNode(
-        root = root,
-        path = "",
+        path = "${MODEL_OPERATION_DATA}.$operationName",
         info = info,
         selections = selections,
         rawTypename = rawTypeName,
@@ -143,21 +138,16 @@ private class FieldNodeBuilder(
   fun buildFragmentInterface(name: String): ResponseField {
     return cachedFragmentFieldNodes.getOrPut(name) {
       val fragment = allFragmentDefinitions[name] ?: error("Cannot find fragment $name")
-      val root = IrModelRoot(
-          IrRootKind.FragmentInterface,
-          name
-      )
 
       val info = IrFieldInfo(
           responseName = name,
           description = null,
-          type = IrModelType(IrUnknownModelId),
+          type = IrModelType(MODEL_UNKNOWN),
           deprecationReason = null
       )
 
       return buildFieldNode(
-          root = root,
-          path = "",
+          path = "${MODEL_FRAGMENT_INTERFACE}.$name",
           info = info,
           selections = fragment.selectionSet.selections,
           rawTypename = fragment.typeCondition.name,
@@ -172,21 +162,15 @@ private class FieldNodeBuilder(
     val ifaceFieldNode = buildFragmentInterface(name)
     val fragment = allFragmentDefinitions[name] ?: error("Cannot find fragment $name")
 
-    val root = IrModelRoot(
-        IrRootKind.FragmentData,
-        name
-    )
-
     val info = IrFieldInfo(
         responseName = "data",
         description = null,
-        type = IrModelType(IrUnknownModelId),
+        type = IrModelType(MODEL_UNKNOWN),
         deprecationReason = null
     )
 
     return buildFieldNode(
-        root = root,
-        path = "",
+        path = "${MODEL_FRAGMENT_DATA}.$name",
         info = info,
         selections = fragment.selectionSet.selections,
         rawTypename = fragment.typeCondition.name,
@@ -200,7 +184,6 @@ private class FieldNodeBuilder(
       val superResponseFields: List<ResponseField>,
       val fragmentResponseFields: List<ResponseField>,
       val info: IrFieldInfo,
-      val root: IrModelRoot,
       val modelDescriptors: Set<ModelDescriptor>,
       val path: String,
       val selections: List<GQLSelection>,
@@ -209,7 +192,7 @@ private class FieldNodeBuilder(
     val cachedFieldSetNodes = mutableMapOf<ModelDescriptor, ResponseFieldSet>()
   }
 
-  private fun getModelId(models: Collection<ResponseFieldSet>, typeSet: TypeSet): IrModelId {
+  private fun getModelId(models: Collection<ResponseFieldSet>, typeSet: TypeSet): String {
     return models.filter { it.typeSet == typeSet }.let {
       val ret = it.firstOrNull { it.isInterface } ?: it.firstOrNull()
       check(ret != null) {
@@ -234,7 +217,6 @@ private class FieldNodeBuilder(
    * 2. we can build the "Other" fields
    */
   private fun buildFieldNode(
-      root: IrModelRoot,
       path: String,
       info: IrFieldInfo,
       condition: BooleanExpression<BVariable>,
@@ -279,7 +261,6 @@ private class FieldNodeBuilder(
     val fieldState = FieldState(
         superResponseFields = superResponseFields,
         fragmentResponseFields = fragmentFieldNodes,
-        root = root,
         info = info,
         modelDescriptors = modelDescriptors.toSet(),
         path = path,
@@ -376,11 +357,10 @@ private class FieldNodeBuilder(
 
     val path = subpath(state.path, state.info, typeSet, isOther)
     val fieldSetNode = ResponseFieldSet(
-        id = IrModelId(state.root, path),
+        id = path,
         accessors = emptyList(),
         responseFields = mergedFields.map { mergedField ->
           buildFieldNode(
-              root = state.root,
               path = path,
               info = mergedField.info,
               condition = mergedField.condition,

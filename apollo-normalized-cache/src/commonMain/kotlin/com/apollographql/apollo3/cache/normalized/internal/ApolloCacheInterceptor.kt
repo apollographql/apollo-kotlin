@@ -5,60 +5,81 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ExecutionContext
+import com.apollographql.apollo3.api.ExecutionParameters
+import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
-import com.apollographql.apollo3.exception.ApolloCompositeException
+import com.apollographql.apollo3.api.internal.customScalarAdapters
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
-import com.apollographql.apollo3.interceptor.ApolloInterceptor
-import com.apollographql.apollo3.cache.normalized.CACHE_FLAG_DO_NOT_STORE
-import com.apollographql.apollo3.cache.normalized.CACHE_FLAG_STORE_PARTIAL_RESPONSE
+import com.apollographql.apollo3.cache.normalized.CacheInfo
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
+import com.apollographql.apollo3.cache.normalized.cacheHeaders
 import com.apollographql.apollo3.cache.normalized.dependentKeys
+import com.apollographql.apollo3.cache.normalized.doNotStore
+import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.isFromCache
+import com.apollographql.apollo3.cache.normalized.optimisticData
+import com.apollographql.apollo3.cache.normalized.refetchPolicy
+import com.apollographql.apollo3.cache.normalized.storePartialResponses
+import com.apollographql.apollo3.cache.normalized.watch
+import com.apollographql.apollo3.cache.normalized.withCacheInfo
+import com.apollographql.apollo3.cache.normalized.withDoNotStore
+import com.apollographql.apollo3.cache.normalized.writeToCacheAsynchronously
+import com.apollographql.apollo3.exception.ApolloCompositeException
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.CacheMissException
+import com.apollographql.apollo3.interceptor.ApolloInterceptor
+import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
+import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.mpp.ensureNeverFrozen
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 
 internal class ApolloCacheInterceptor(
-    private val store: ApolloStore,
-    private val writeToCacheAsynchronously: Boolean,
+    val store: ApolloStore,
 ) : ApolloInterceptor {
   init {
-    // The store has a MutableSharedFlow that doesn't like being frozen
-    ensureNeverFrozen(store)
+    // The store has a MutableSharedFlow that doesn't like being frozen when using coroutines
+    // But is ok to freeze when using coroutines-native-mt (see https://github.com/apollographql/apollo-android/issues/3357)
+    // ensureNeverFrozen(store)
   }
-  private suspend fun maybeAsync(executionContext: ExecutionContext, block: suspend () -> Unit) {
-    val coroutineScope = executionContext[ClientScope]?.coroutineScope
-    if ((executionContext[CacheInput]?.writeToCacheAsynchronously ?: writeToCacheAsynchronously) && coroutineScope != null) {
-      coroutineScope.launch { block() }
+
+  private val <T> ExecutionParameters<T>.clientScope: CoroutineScope where T : ExecutionParameters<T>
+    get() = executionContext[ClientScope]!!.coroutineScope
+
+  private suspend fun <D : Operation.Data> maybeAsync(request: ApolloRequest<D>, block: suspend () -> Unit) {
+    if (request.writeToCacheAsynchronously) {
+      request.clientScope.launch { block() }
     } else {
       block()
     }
   }
 
+  /**
+   * @param extraKeys extra keys to publish in case we has optimistic data
+   */
   private suspend fun <D : Operation.Data> maybeWriteToCache(
       request: ApolloRequest<D>,
       response: ApolloResponse<D>,
       customScalarAdapters: CustomScalarAdapters,
-      cacheInput: CacheInput,
-      extraKeys: Set<String> = emptySet()
+      extraKeys: Set<String> = emptySet(),
   ) {
-    if (cacheInput.flags.and(CACHE_FLAG_DO_NOT_STORE) != 0) {
+    if (request.doNotStore) {
       return
     }
-    if (response.hasErrors() && cacheInput.flags.and(CACHE_FLAG_STORE_PARTIAL_RESPONSE) == 0) {
+    if (response.hasErrors() && !request.storePartialResponses) {
       return
     }
 
-    maybeAsync(request.executionContext) {
-      val cacheKeys = if (!response.isFromCache && response.data != null) {
-        store.writeOperation(request.operation, response.data!!, customScalarAdapters, cacheInput.cacheHeaders, publish = false)
+    maybeAsync(request) {
+      val cacheKeys = if (response.data != null) {
+        store.writeOperation(request.operation, response.data!!, customScalarAdapters, request.cacheHeaders, publish = false)
       } else {
         emptySet()
       }
@@ -66,33 +87,90 @@ internal class ApolloCacheInterceptor(
     }
   }
 
-
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-    val cacheInput = request.executionContext[CacheInput] ?: DefaultCacheInput(request.operation)
-    val fetchPolicy = cacheInput.fetchPolicy
-    val refetchPolicy = cacheInput.refetchPolicy
-    val customScalarAdapters = request.executionContext[CustomScalarAdapters]!!
-
-    if (request.operation is Subscription) {
-      return proceed(request, chain).onEach { response ->
-        maybeWriteToCache(request, response, customScalarAdapters, cacheInput)
+    return when (request.operation) {
+      is Subscription -> {
+        // That's a lot of unchecked casts but should be always true
+        @Suppress("UNCHECKED_CAST")
+        interceptSubscription(request as ApolloRequest<Subscription.Data>, chain) as Flow<ApolloResponse<D>>
       }
+      is Mutation -> {
+        // That's a lot of unchecked casts but should be always true
+        @Suppress("UNCHECKED_CAST")
+        interceptMutation(request as ApolloRequest<Mutation.Data>, chain) as Flow<ApolloResponse<D>>
+      }
+      is Query -> {
+        // That's a lot of unchecked casts but should be always true
+        @Suppress("UNCHECKED_CAST")
+        interceptQuery(request as ApolloRequest<Query.Data>, chain) as Flow<ApolloResponse<D>>
+      }
+      else -> error("Unknown operation ${request.operation}")
     }
+  }
+
+  /**
+   * Subscriptions  always go to the network
+   */
+  private fun <D : Subscription.Data> interceptSubscription(
+      request: ApolloRequest<D>,
+      chain: ApolloInterceptorChain,
+  ): Flow<ApolloResponse<D>> {
+    return readFromNetwork(request, chain, request.customScalarAdapters)
+  }
+
+  /**
+   * Mutations always go to the network and support optimistic data
+   */
+  private fun <D : Mutation.Data> interceptMutation(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+    val customScalarAdapters = request.customScalarAdapters
 
     return flow {
-      var result = kotlin.runCatching {
+      val optimisticData = request.optimisticData
+      if (optimisticData != null) {
         @Suppress("UNCHECKED_CAST")
-        fetchOne(request, chain, fetchPolicy, customScalarAdapters, cacheInput)
+        store.writeOptimisticUpdates(
+            operation = request.operation,
+            operationData = optimisticData as D,
+            mutationId = request.requestUuid,
+            customScalarAdapters = customScalarAdapters,
+            publish = true
+        )
       }
-      val response = result.getOrNull()
 
-      if (response != null) {
+      /**
+       * This doesn't use [readFromNetwork] so that we can publish all keys all at once after the keys have been rolled back
+       */
+      val response = chain.proceed(request).single()
+
+      val optimisticKeys = if (optimisticData != null) {
+        store.rollbackOptimisticUpdates(request.requestUuid, publish = false)
+      } else {
+        emptySet()
+      }
+
+      maybeWriteToCache(request, response, customScalarAdapters, optimisticKeys)
+      emit(response)
+    }
+  }
+
+
+  private fun <D : Query.Data> interceptQuery(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+    val fetchPolicy = request.fetchPolicy
+    val refetchPolicy = request.refetchPolicy
+    val customScalarAdapters = request.customScalarAdapters
+    return flow {
+      var exception: ApolloException? = null
+      var response: ApolloResponse<D>? = null
+      try {
+        response = fetchOneMightThrow(request, chain, fetchPolicy, customScalarAdapters)
         emit(response)
+      } catch (e: ApolloException) {
+        exception = e
       }
 
-      if (refetchPolicy == null) {
-        if (result.isFailure) {
-          throw result.exceptionOrNull()!!
+      if (!request.watch) {
+        if (exception != null) {
+          throw exception
         }
         return@flow
       }
@@ -105,153 +183,148 @@ internal class ApolloCacheInterceptor(
 
       store.changedKeys.collect { changedKeys ->
         if (watchedKeys == null || changedKeys.intersect(watchedKeys!!).isNotEmpty()) {
-          result = kotlin.runCatching {
-            fetchOne(request, chain, refetchPolicy, customScalarAdapters, cacheInput)
-          }
-
-          val newResponse = result.getOrNull()
-          if (newResponse != null) {
+          try {
+            val newResponse = fetchOneMightThrow(
+                request,
+                chain,
+                refetchPolicy,
+                customScalarAdapters
+            )
             emit(newResponse)
 
             if (!newResponse.hasErrors() && newResponse.data != null) {
               watchedKeys = store.normalize(request.operation, newResponse.data!!, customScalarAdapters).values.dependentKeys()
             }
+          } catch (e: ApolloException) {
+
           }
         }
       }
     }
   }
 
-  private suspend fun <D : Operation.Data> fetchOne(
+  private suspend fun <D : Query.Data> fetchOneMightThrow(
       request: ApolloRequest<D>,
       chain: ApolloInterceptorChain,
       fetchPolicy: FetchPolicy,
       customScalarAdapters: CustomScalarAdapters,
-      cacheInput: CacheInput,
-  ): ApolloResponse<D> {
-
-    if (cacheInput.optimisticData != null) {
-      @Suppress("UNCHECKED_CAST")
-      store.writeOptimisticUpdates(
-          operation = request.operation,
-          operationData = cacheInput.optimisticData as D,
-          mutationId = request.requestUuid,
-          customScalarAdapters = customScalarAdapters,
-          publish = true
-      )
-    }
-
-    val result = kotlin.runCatching {
-      fetchOneMightThrow(request, chain, fetchPolicy, customScalarAdapters, cacheInput)
-    }
-
-    if (result.isSuccess) {
-      val response = result.getOrThrow()
-
-      val optimisticKeys = if (cacheInput.optimisticData != null) {
-        store.rollbackOptimisticUpdates(request.requestUuid, publish = false)
-      } else {
-        emptySet()
-      }
-      maybeWriteToCache(request, response, customScalarAdapters, cacheInput, optimisticKeys)
-    }
-
-    return result.getOrThrow()
-  }
-
-  private suspend fun <D : Operation.Data> fetchOneMightThrow(
-      request: ApolloRequest<D>,
-      chain: ApolloInterceptorChain,
-      fetchPolicy: FetchPolicy,
-      customScalarAdapters: CustomScalarAdapters,
-      cacheInput: CacheInput,
   ): ApolloResponse<D> {
     when (fetchPolicy) {
       FetchPolicy.CacheFirst -> {
-        val cacheResult = kotlin.runCatching {
-          readFromCache(request, customScalarAdapters, cacheInput)
+        val cacheResult = readFromCache(request, customScalarAdapters)
+
+        if (cacheResult.response != null) {
+          return cacheResult.response.withCacheInfo(cacheResult.cacheInfo)
         }
 
-        val cacheResponse = cacheResult.getOrNull()
-        if (cacheResponse != null) {
-          return cacheResponse
-        }
-
-        val networkResult = kotlin.runCatching {
-          proceed(request, chain).single()
-        }
-
-        val networkResponse = networkResult.getOrNull()
-        if (networkResponse != null) {
-          return networkResponse
+        var networkException: ApolloException? = null
+        try {
+          return readOneFromNetwork(request, chain, customScalarAdapters)
+              .withCacheInfo(cacheResult.cacheInfo)
+        } catch (e: ApolloException) {
+          networkException = e
         }
 
         throw ApolloCompositeException(
-            cacheResult.exceptionOrNull(),
-            networkResult.exceptionOrNull()
+            cacheResult.error,
+            networkException
         )
       }
       FetchPolicy.NetworkFirst -> {
-        val networkResult = kotlin.runCatching {
-          proceed(request, chain).single()
+        var networkException: ApolloException? = null
+        try {
+          return readOneFromNetwork(request, chain, customScalarAdapters)
+        } catch (e: ApolloException) {
+          networkException = e
         }
 
-        val networkResponse = networkResult.getOrNull()
-        if (networkResponse != null) {
-          return networkResponse
-        }
-
-        val cacheResult = kotlin.runCatching {
-          readFromCache(request, customScalarAdapters, cacheInput)
-        }
-
-        val cacheResponse = cacheResult.getOrNull()
-        if (cacheResponse != null) {
-          return cacheResponse
+        val cacheResult = readFromCache(request, customScalarAdapters)
+        if (cacheResult.response != null) {
+          return cacheResult.response.withCacheInfo(cacheResult.cacheInfo)
         }
 
         throw ApolloCompositeException(
-            networkResult.exceptionOrNull(),
-            cacheResult.exceptionOrNull(),
+            networkException,
+            cacheResult.error,
         )
       }
       FetchPolicy.CacheOnly -> {
-        return readFromCache(request, customScalarAdapters, cacheInput)
+        val cacheResult = readFromCache(request, customScalarAdapters)
+        if (cacheResult.response != null) {
+          return cacheResult.response.withCacheInfo(cacheResult.cacheInfo)
+        }
+        throw cacheResult.error!!
       }
       FetchPolicy.NetworkOnly -> {
-        return proceed(request, chain).single()
+        return readOneFromNetwork(request, chain, customScalarAdapters)
       }
     }
   }
 
-  private fun <D : Operation.Data> proceed(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-    return chain.proceed(request).map {
-      it.setFromCache(false)
+  private class CacheResult<D : Query.Data>(
+      val response: ApolloResponse<D>?,
+      val cacheInfo: CacheInfo,
+      val error: Throwable?,
+  )
+
+  private suspend fun <D : Query.Data> readFromCache(
+      request: ApolloRequest<D>,
+      customScalarAdapters: CustomScalarAdapters,
+  ): CacheResult<D> {
+    val operation = request.operation
+    val millisStart = currentTimeMillis()
+
+    var exception: ApolloException? = null
+    val data = try {
+      store.readOperation(
+          operation = operation,
+          customScalarAdapters = customScalarAdapters,
+          cacheHeaders = request.cacheHeaders
+      )
+    } catch (e: ApolloException) {
+      exception = e
+      null
+    }
+
+    val response = if (data != null) {
+      ApolloResponse(
+          requestUuid = request.requestUuid,
+          operation = operation,
+          data = data,
+          executionContext = request.executionContext
+      )
+    } else {
+      null
+    }
+
+    val cacheMissException = exception as? CacheMissException
+
+    return CacheResult(
+        response = response,
+        cacheInfo = CacheInfo(
+            millisStart = millisStart,
+            millisEnd = currentTimeMillis(),
+            hit = response != null,
+            missedKey = cacheMissException?.key,
+            missedField = cacheMissException?.fieldName
+        ),
+        error = exception
+    )
+  }
+
+  private fun <D : Operation.Data> readFromNetwork(
+      request: ApolloRequest<D>,
+      chain: ApolloInterceptorChain,
+      customScalarAdapters: CustomScalarAdapters,
+  ): Flow<ApolloResponse<D>> {
+    return chain.proceed(request).onEach {
+      maybeWriteToCache(request, it, customScalarAdapters)
     }
   }
 
-  private fun <D : Operation.Data> ApolloResponse<D>.setFromCache(fromCache: Boolean): ApolloResponse<D> {
-    return copy(executionContext = executionContext + CacheOutput(fromCache))
-  }
-
-  private suspend fun <D : Operation.Data> readFromCache(
+  private suspend fun <D : Operation.Data> readOneFromNetwork(
       request: ApolloRequest<D>,
+      chain: ApolloInterceptorChain,
       customScalarAdapters: CustomScalarAdapters,
-      cacheInput: CacheInput
-  ): ApolloResponse<D> {
-    val operation = request.operation
-
-    val data = store.readOperation(
-        operation = operation,
-        customScalarAdapters = customScalarAdapters,
-        cacheHeaders = cacheInput.cacheHeaders
-    )
-
-    return ApolloResponse(
-        requestUuid = request.requestUuid,
-        operation = operation,
-        data = data,
-        executionContext = request.executionContext + CacheOutput(true)
-    )
-  }
+  ): ApolloResponse<D> = readFromNetwork(request, chain, customScalarAdapters).single()
 }

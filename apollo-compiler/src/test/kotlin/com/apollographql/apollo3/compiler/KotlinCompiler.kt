@@ -8,7 +8,7 @@ import java.io.File
 object KotlinCompiler {
   fun assertCompiles(files: Set<File>, allWarningsAsErrors: Boolean) {
     val kotlinFiles = files.map {
-      SourceFile.kotlin(it.name, it.readText())
+      SourceFile.fromPath(it)
     }.toList()
 
     val result = KotlinCompilation().apply {

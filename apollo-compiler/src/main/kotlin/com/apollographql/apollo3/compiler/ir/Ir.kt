@@ -5,35 +5,31 @@ import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.compiler.codegen.Identifier.type
 
 /*
 * IR.
 *
 * Compared to the GraphQL AST, the IR:
+* - Transforms [GQLField] into [IrProperty] and [IrModel]
 * - moves @include/@skip directives on inline fragments and object fields to their children selections
 * - interprets @deprecated directives
 * - coerces argument values and resolves defaultValue
 * - infers fragment variables
 * - registers used types and fragments
-* - compute the packageName
 * - more generally removes all references to the GraphQL AST and "embeds" type definitions/field definitions
-*
-* @param metadataFragments: the metadata fragments carried over from the previous step so that the final codegen step does not generate them
-* @param metadataEnums: the metadata enums carried over from the previous step so that the final codegen step does not generate them
-* @param metadataInputObjects: the metadata input objects carried over from the previous step so that the final codegen step does not generate them
 */
 data class Ir(
     val operations: List<IrOperation>,
     val fragments: List<IrNamedFragment>,
     val inputObjects: List<IrInputObject>,
     val enums: List<IrEnum>,
-    val allEnums: List<IrEnum>,
     val customScalars: List<IrCustomScalar>,
     val objects: List<IrObject>,
     val unions: List<IrUnion>,
     val interfaces: List<IrInterface>,
     val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
-    val schema: Schema
+    val schema: Schema,
 )
 
 data class IrEnum(
@@ -53,8 +49,8 @@ data class IrEnum(
 /**
  * An input field
  *
- * Note: [IrInputField],  and [IrVariable] are all very similar since they all share
- * the [com.apollographql.apollo3.ast.GQLInputValueDefinition] type but they also
+ * Note: [IrInputField], and [IrVariable] are all very similar since they all share
+ * the [com.apollographql.apollo3.ast.GQLInputValueDefinition] type, but they also
  * have differences which is why they are different IR models:
  * - [IrVariable] doesn't have a description
  */
@@ -123,17 +119,17 @@ data class IrFieldInfo(
 )
 
 sealed class IrAccessor {
-  abstract val returnedModelId: IrModelId
+  abstract val returnedModelId: String
 }
 
 data class IrFragmentAccessor(
     val fragmentName: String,
-    override val returnedModelId: IrModelId,
+    override val returnedModelId: String,
 ) : IrAccessor()
 
 data class IrSubtypeAccessor(
     val typeSet: TypeSet,
-    override val returnedModelId: IrModelId,
+    override val returnedModelId: String,
 ) : IrAccessor()
 
 /**
@@ -141,7 +137,7 @@ data class IrSubtypeAccessor(
  */
 data class IrModel(
     val modelName: String,
-    val id: IrModelId,
+    val id: String,
     /**
      * The typeSet of this model.
      * Used by the adapters for ordering/making the code look nice
@@ -154,7 +150,8 @@ data class IrModel(
      */
     val possibleTypes: Set<String>,
     val accessors: List<IrAccessor>,
-    val implements: List<IrModelId>,
+    // A list of paths
+    val implements: List<String>,
     /**
      * Nested models. Might be empty if the models are flattened
      */
@@ -176,11 +173,11 @@ data class IrProperty(
     val condition: BooleanExpression<BTerm>,
     val isSynthetic: Boolean,
     val requiresBuffering: Boolean,
-    val hidden: Boolean
+    val hidden: Boolean,
 )
 
 data class IrModelGroup(
-    val baseModelId: IrModelId,
+    val baseModelId: String,
     val models: List<IrModel>,
 )
 
@@ -220,7 +217,7 @@ data class IrCustomScalar(
     val description: String?,
     val deprecationReason: String?,
 ) {
-  val type = IrCustomScalarType(name)
+  val type = IrScalarType(name)
 }
 
 /**
@@ -272,17 +269,32 @@ data class IrListType(val ofType: IrType) : IrType() {
   override fun leafType() = ofType.leafType()
 }
 
-object IrStringType : IrType()
-object IrIntType : IrType()
-object IrFloatType : IrType()
-object IrBooleanType : IrType()
-object IrIdType : IrType()
-object IrAnyType : IrType()
 
-data class IrCustomScalarType(val name: String) : IrType()
-data class IrInputObjectType(val name: String) : IrType()
-data class IrEnumType(val name: String) : IrType()
-data class IrModelType(val id: IrModelId) : IrType()
+interface IrNamedType {
+  val name: String
+}
+data class IrScalarType(override val name: String) : IrType(), IrNamedType
+data class IrInputObjectType(override val name: String) : IrType(), IrNamedType
+data class IrEnumType(override val name: String) : IrType(), IrNamedType
+/**
+ * @param path a unique path identifying the model.
+ *
+ * fragmentData.$fragmentName.hero.friend
+ * fragmentIface.$fragmentName.hero.friend
+ * operationData.$operationName.hero.friend
+ * operationData.$operationName.hero.otherFriend
+ * ?
+ */
+data class IrModelType(val path: String) : IrType()
+
+const val MODEL_OPERATION_DATA = "operationData"
+const val MODEL_FRAGMENT_DATA = "fragmentData"
+const val MODEL_FRAGMENT_INTERFACE = "fragmentIface"
+const val MODEL_UNKNOWN = "?"
+
+data class IrObjectType(override val name: String) : IrType(), IrNamedType
+data class IrInterfaceType(override val name: String) : IrType(), IrNamedType
+data class IrUnionType(override val name: String) : IrType(), IrNamedType
 
 fun IrType.makeOptional(): IrType = IrNonNullType(IrOptionalType(this))
 fun IrType.makeNullable(): IrType = if (this is IrNonNullType) {
@@ -290,25 +302,16 @@ fun IrType.makeNullable(): IrType = if (this is IrNonNullType) {
 } else {
   this
 }
+
 fun IrType.makeNonNull(): IrType = if (this is IrNonNullType) {
   this
 } else {
   IrNonNullType(this)
 }
+
 fun IrType.isOptional() = (this is IrNonNullType) && (this.ofType is IrOptionalType)
 
-/**
- * A placeholder for compound types until we assign them an id
- */
-val IrUnknownModelId = IrModelId(IrModelRoot(IrRootKind.OperationData, "?"), "?")
-
-/**
- * A unique, stable id identifying a model
- */
-data class IrModelId(val root: IrModelRoot, val id: String)
-data class IrModelRoot(val kind: IrRootKind, val name: String)
-enum class IrRootKind {
-  FragmentInterface,
-  FragmentData,
-  OperationData
+fun IrType.makeNonOptional(): IrType {
+  return ((this as? IrNonNullType)?.ofType as? IrOptionalType)?.ofType ?: error("$type is not an optional type")
 }
+

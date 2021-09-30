@@ -2,6 +2,7 @@ package com.apollographql.apollo3.cache.http.internal
 
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
+import com.apollographql.apollo3.api.http.valueOf
 import com.apollographql.apollo3.api.http.withHeader
 import com.apollographql.apollo3.cache.http.CachingHttpEngine
 import com.apollographql.apollo3.cache.http.DiskLruHttpCache
@@ -38,7 +39,7 @@ class CachingHttpEngineTest {
           method = HttpMethod.Get,
           url = mockServer.url(),
           body = null,
-          headers = emptyMap()
+          headers = emptyList()
       )
       var response = engine.execute(request)
       assertEquals("success", response.body?.readUtf8())
@@ -46,7 +47,7 @@ class CachingHttpEngineTest {
       // 2nd request should hit the cache
       response = engine.execute(request.withHeader(CachingHttpEngine.CACHE_FETCH_POLICY_HEADER, CachingHttpEngine.CACHE_ONLY))
       assertEquals("success", response.body?.readUtf8())
-      assertEquals("true", response.headers[CachingHttpEngine.FROM_CACHE])
+      assertEquals("true", response.headers.valueOf(CachingHttpEngine.FROM_CACHE))
     }
   }
 
@@ -59,7 +60,7 @@ class CachingHttpEngineTest {
           method = HttpMethod.Get,
           url = mockServer.url(),
           body = null,
-          headers = emptyMap()
+          headers = emptyList()
       )
 
       // Warm the cache
@@ -82,7 +83,7 @@ class CachingHttpEngineTest {
           method = HttpMethod.Get,
           url = mockServer.url(),
           body = null,
-          headers = emptyMap()
+          headers = emptyList()
       )
 
       // Warm the cache

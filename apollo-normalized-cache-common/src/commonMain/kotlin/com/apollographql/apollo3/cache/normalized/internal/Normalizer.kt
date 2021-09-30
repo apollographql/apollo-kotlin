@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
+import com.apollographql.apollo3.api.CompiledCondition
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledListType
@@ -21,8 +22,8 @@ import com.apollographql.apollo3.cache.normalized.Record
 class Normalizer(
     private val variables: Executable.Variables,
     private val rootKey: String,
-    private val objectIdGenerator: ObjectIdGenerator
-)  {
+    private val objectIdGenerator: ObjectIdGenerator,
+) {
   private val records = mutableMapOf<String, Record>()
 
   fun normalize(map: Map<String, Any?>, selections: List<CompiledSelection>): Map<String, Record> {
@@ -40,25 +41,34 @@ class Normalizer(
   private fun buildRecord(
       obj: Map<String, Any?>,
       key: String,
-      selections: List<CompiledSelection>
+      selections: List<CompiledSelection>,
   ): CacheKey {
 
-    val allFields = collectFields(selections, obj["__typename"] as? String)
+    val typename = obj["__typename"] as? String
+    val allFields = collectFields(selections, typename)
 
     val record = Record(
         key = key,
         fields = obj.entries.mapNotNull { entry ->
-          val mergedFields = allFields.filter { it.responseName == entry.key }
-          val merged = mergedFields.first().copy(
-              selections = mergedFields.flatMap { it.selections }
-          )
-          val fieldKey = merged.nameWithArguments(variables)
-
-          if (mergedFields.all { it.shouldSkip(variableValues = variables.valueMap) }) {
-            // GraphQL doesn't distinguish between null and absent so this is null but it might be absent
-            // If it is absent, we don't want to serialize it to the cache
+          val compiledFields = allFields.filter { it.responseName == entry.key }
+          if (compiledFields.isEmpty()) {
+            // If we come here, `obj` contains more data than the CompiledSelections can understand
+            // It's not 100% clear how this could happen, log what field triggered this
+            throw RuntimeException("Cannot find a CompiledField for entry: {${entry.key}: ${entry.value}}, __typename = $typename, key = $key")
+          }
+          val includedFields = compiledFields.filter {
+            !it.shouldSkip(variableValues = variables.valueMap)
+          }
+          if (includedFields.isEmpty()) {
+            // If the field is absent, we don't want to serialize "null" to the cache, do not include this field in the record.
             return@mapNotNull null
           }
+          val mergedField = includedFields.first().newBuilder()
+              .selections(includedFields.flatMap { it.selections })
+              .condition(emptyList())
+              .build()
+
+          val fieldKey = mergedField.nameWithArguments(variables)
 
           val base = if (key == rootKey) {
             // If we're at the root level, skip `QUERY_ROOT` altogether to save a few bytes
@@ -69,8 +79,8 @@ class Normalizer(
 
           fieldKey to replaceObjects(
               entry.value,
-              merged,
-              merged.type,
+              mergedField,
+              mergedField.type,
               base.append(fieldKey),
           )
         }.toMap()
@@ -161,7 +171,7 @@ class Normalizer(
 
   /**
    * @param typename the typename of the object. It might be null if the `__typename` field wasn't queried. If
-   * that's the case, we will collect less fields we should and records will miss some values leading to more
+   * that's the case, we will collect less fields than we should and records will miss some values leading to more
    * cache miss
    */
   private fun collectFields(selections: List<CompiledSelection>, typename: String?): List<CompiledField> {

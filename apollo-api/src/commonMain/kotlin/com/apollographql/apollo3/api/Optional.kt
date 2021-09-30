@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.api.Optional.Absent
+import com.apollographql.apollo3.api.Optional.Present
 import com.apollographql.apollo3.exception.MissingValueException
 
 /**
@@ -15,5 +17,7 @@ sealed class Optional<out V> {
   data class Present<V>(val value: V) : Optional<V>()
   object Absent : Optional<Nothing>()
 
-  fun <V : Any> presentIfNotNull(value: V?): Optional<V> = if (value == null) Absent else Present(value)
+  companion object {
+    fun <V : Any> presentIfNotNull(value: V?): Optional<V> = if (value == null) Absent else Present(value)
+  }
 }

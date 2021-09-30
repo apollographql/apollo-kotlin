@@ -31,8 +31,9 @@ module.exports = {
           Advanced: [
             'advanced/client-awareness',
             'advanced/interceptors-http',
-            'advanced/multi-modules',
+            'advanced/http-engine',
             'advanced/no-runtime',
+            'advanced/multi-modules',
             'advanced/nonnull',
             'advanced/persisted-queries',
             'advanced/upload',

@@ -28,7 +28,14 @@ object TestUtils {
 
     // See https://github.com/apollographql/apollo-android/issues/2184
     dest.mkdirs()
-    File(dest, "gradle.properties").writeText("org.gradle.jvmargs=-Xmx3g -XX:MaxMetaspaceSize=1g")
+    File(dest, "gradle.properties").writeText("""
+      |org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=1g
+      |# See https://issuetracker.google.com/issues/175338398
+      |# Remove when switching to AGP 7+
+      |systemProp.javax.xml.parsers.DocumentBuilderFactory=com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl
+      |systemProp.javax.xml.parsers.SAXParserFactory=com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl
+      |
+    """.trimMargin())
 
     block(dest)
 
@@ -49,7 +56,6 @@ object TestUtils {
     File(source, "gradle/settings.gradle").copyTo(target = File(dest, "settings.gradle"))
 
     val isAndroid = plugins.firstOrNull { it.id.startsWith("com.android") } != null
-    val hasKotlin = plugins.firstOrNull { it.id.startsWith("org.jetbrains.kotlin") } != null
 
     if (usesKotlinDsl) {
       val applyLines = plugins.map { "apply(plugin = \"${it.id}\")" }.joinToString("\n")
@@ -144,7 +150,11 @@ object TestUtils {
   /**
    * creates a simple java non-android non-kotlin-gradle project
    */
-  fun withSimpleProject(apolloConfiguration: String = "", block: (File) -> Unit) = withProject(
+  fun withSimpleProject(apolloConfiguration: String = """
+    apollo {
+      packageNamesFromFilePaths()
+    }
+  """.trimIndent(), block: (File) -> Unit) = withProject(
       usesKotlinDsl = false,
       plugins = listOf(kotlinJvmPlugin, apolloPlugin),
       apolloConfiguration = apolloConfiguration

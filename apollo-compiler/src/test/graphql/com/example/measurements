@@ -1,155 +1,224 @@
-Test:                                              CodegenModels:                 Total LOC:        Codegen (ms):
-aggregate                                          all                                 97136                2.31s                73.2s
-aggregate                                          responseBased                       29983                689ms                20.2s
-aggregate                                          operationBased                      26576                665ms                20.3s
-aggregate                                          compat                              28183                568ms                20.4s
-aggregate                                          no-fragments                        12394                386ms                12.4s
+Test:                                              Total LOC:                  Codegen (ms):    Compilation (ms):
+aggregate                                          all                                142675         2.916757764s     1m 30.888107559s
+aggregate                                          responseBased                       38511         1.083852930s        37.440504881s
+aggregate                                          operationBased                      78625         1.258131929s        30.177720772s
+aggregate                                          compat                              25539         574.772905ms        23.269881906s
 
-fragment_with_inline_fragment                      responseBased                        2251                   54                1.37s
-nested_named_fragments                             responseBased                        1577                   34                688ms
-fragment_with_inline_fragment                      compat                               1393                   28                974ms
-nested_named_fragments                             compat                               1349                   24                677ms
-unique_type_name                                   responseBased                        1262                   23                621ms
-nested_named_fragments                             operationBased                       1223                   38                620ms
-named_fragment_delegate                            responseBased                        1221                   27                727ms
-root_query_fragment_with_nested_fragments          responseBased                        1149                   24                568ms
-fragment_with_inline_fragment                      operationBased                       1124                   28                839ms
-unique_type_name                                   compat                               1078                   20                494ms
-fragment_used_twice                                responseBased                        1044                   28                740ms
-root_query_fragment_with_nested_fragments          compat                               1040                   16                661ms
-union_inline_fragments                             operationBased                       1028                   18                519ms
-union_inline_fragments                             responseBased                        1028                   15                544ms
-unique_type_name                                   operationBased                       1017                   16                588ms
-nested_conditional_inline                          responseBased                        1012                   15                545ms
-simple_fragment_with_inline_fragments              responseBased                        1011                   16                461ms
-fragments_with_type_condition                      responseBased                        1007                   18                633ms
-inline_fragment_intersection                       responseBased                        1000                   21                652ms
-union_inline_fragments                             compat                                987                   11                469ms
-inline_fragment_intersection                       compat                                968                   15                603ms
-mutation_create_review                             responseBased                         960                   18                582ms
-root_query_fragment_with_nested_fragments          operationBased                        950                   29                587ms
-nested_conditional_inline                          compat                                932                   16                498ms
-fragment_used_twice                                compat                                926                   23                738ms
-named_fragment_delegate                            compat                                901                   17                719ms
-inline_fragment_intersection                       operationBased                        899                   25                620ms
-multiple_fragments                                 responseBased                         870                   20                555ms
-nested_conditional_inline                          operationBased                        864                   16                487ms
-named_fragment_delegate                            operationBased                        862                   25                580ms
-named_fragment_with_variables                      responseBased                         862                   26                519ms
-mutation_create_review_semantic_naming             responseBased                         835                   16                626ms
-input_object_type                                  responseBased                         834                   30                555ms
-fragments_with_type_condition                      compat                                820                   15                558ms
-named_fragment_with_variables                      compat                                815                   16                525ms
-fragment_spread_with_nested_fields                 responseBased                         800                   21                670ms
-fragment_used_twice                                operationBased                        792                   17                693ms
-simple_fragment                                    responseBased                         786                   14                390ms
-simple_fragment_with_inline_fragments              compat                                754                   14                381ms
-inline_fragments_with_friends                      responseBased                         747                   13                470ms
-multiple_fragments                                 compat                                743                   25                717ms
-two_heroes_with_friends                            responseBased                         742                   12                393ms
-named_fragment_inside_inline_fragment              operationBased                        733                   21                652ms
-fragments_with_type_condition                      operationBased                        732                   24                519ms
-inline_fragment_merge_fields                       operationBased                        730                   17                533ms
-named_fragment_inside_inline_fragment              compat                                728                   23                578ms
-named_fragment_with_variables                      operationBased                        728                   17                533ms
-inline_fragments_with_friends                      compat                                727                   12                477ms
-root_query_inline_fragment                         operationBased                        727                   10                457ms
-simple_fragment                                    compat                                722                   11                381ms
-nested_field_with_multiple_fieldsets               responseBased                         721                   13                485ms
-named_fragment_inside_inline_fragment              responseBased                         704                   21                474ms
-root_query_inline_fragment                         responseBased                         699                   38                378ms
-inline_fragments_with_friends                      operationBased                        695                   13                489ms
-fragment_spread_with_include_directive             compat                                693                   16                632ms
-nested_field_with_multiple_fieldsets               operationBased                        678                   14                466ms
-simple_fragment_with_inline_fragments              operationBased                        678                   11                399ms
-fragment_spread_with_nested_fields                 compat                                673                   20                667ms
-root_query_inline_fragment                         compat                                667                   10                396ms
-fragments_same_type_condition                      responseBased                         665                   14                501ms
-inline_fragment_with_include_directive             compat                                656                   12                449ms
-multiple_fragments                                 operationBased                        654                   18                530ms
-fragment_spread_with_include_directive             operationBased                        649                   16                619ms
-fragments_same_type_condition                      compat                                634                   14                463ms
-simple_fragment                                    operationBased                        634                    9                380ms
-fragment_spread_with_nested_fields                 operationBased                        633                   23                633ms
-nested_field_with_multiple_fieldsets               compat                                621                    8                452ms
-deprecated_merged_field                            responseBased                         615                   31                782ms
-inline_fragment_with_include_directive             operationBased                        605                   16                441ms
-named_fragment_without_implementation              compat                                597                   12                367ms
-simple_inline_fragment                             operationBased                        595                    8                355ms
-fragments_same_type_condition                      operationBased                        590                   20                480ms
-named_fragment_without_implementation              responseBased                         588                    8                381ms
-simple_inline_fragment                             responseBased                         585                    7                345ms
-union_fragment                                     compat                                582                   10                365ms
-inline_fragment_inside_inline_fragment             compat                                577                    8                438ms
-hero_details                                       responseBased                         567                   15                470ms
-simple_inline_fragment                             compat                                562                    7                333ms
-union_fragment                                     responseBased                         561                    9                358ms
-inline_fragment_merge_fields                       compat                                554                    9                418ms
-inline_fragment_merge_fields                       responseBased                         554                   10                405ms
-named_fragment_without_implementation              operationBased                        553                   11                407ms
-not_all_combinations_are_needed                    compat                                544                    9                379ms
-inline_fragment_inside_inline_fragment             operationBased                        543                   10                473ms
-deprecated_merged_field                            compat                                540                   23                851ms
-inline_fragment_inside_inline_fragment             responseBased                         538                    9                421ms
-fieldset_with_multiple_super                       compat                                535                   17                686ms
-test_inline                                        responseBased                         534                    9                364ms
-union_fragment                                     operationBased                        531                   13                329ms
-fragment_with_multiple_fieldsets                   responseBased                         527                   14                488ms
-typename_always_first                              responseBased                         518                    8                330ms
-fieldset_with_multiple_super                       operationBased                        507                   19                640ms
-typename_always_first                              operationBased                        505                    7                335ms
-typename_always_first                              compat                                505                    7                357ms
-root_query_fragment                                responseBased                         503                   18                529ms
-root_query_fragment                                compat                                501                    8                368ms
-reserved_kotlin_keywords                           responseBased                         500                    8                349ms
-fieldset_with_multiple_super                       responseBased                         494                   17                645ms
-not_all_combinations_are_needed                    operationBased                        493                   10                373ms
-hero_details_semantic_naming                       responseBased                         491                   18                443ms
-input_object_variable_and_argument                 responseBased                         489                    8                494ms
-deprecated_merged_field                            operationBased                        484                   26                835ms
-hero_name                                          responseBased                         477                    8                411ms
-hero_with_review                                   responseBased                         477                    9                451ms
-reserved_kotlin_keywords                           compat                                477                    7                331ms
-test_inline                                        compat                                476                    6                337ms
-reserved_kotlin_keywords                           operationBased                        470                    8                399ms
-deprecation                                        responseBased                         469                   22                632ms
-introspection_query                                responseBased                         466                   13                401ms
-not_all_combinations_are_needed                    responseBased                         466                    9                343ms
-hero_name_query_long_name                          responseBased                         464                   11                389ms
-fragment_with_multiple_fieldsets                   compat                                462                   14                468ms
-root_query_fragment                                operationBased                        457                   10                365ms
-inline_fragment_for_non_optional_field             responseBased                         450                   10                415ms
-test_inline                                        operationBased                        450                    8                350ms
-path_vs_flat_accessors                             responseBased                         446                    7                494ms
-hero_name                                          compat                                444                   10                383ms
-variable_default_value                             responseBased                         436                    8                311ms
-inline_fragment_type_coercion                      responseBased                         432                    8                388ms
-path_vs_flat_accessors                             compat                                429                    6                346ms
-inline_fragment_for_non_optional_field             compat                                421                    8                378ms
-recursive_selection                                responseBased                         421                   42                479ms
-optional                                           responseBased                         419                    7                313ms
-field_with_include_directive                       responseBased                         417                   17                513ms
-hero_name                                          operationBased                        417                    8                412ms
-path_vs_flat_accessors                             operationBased                        415                    9                350ms
-fragment_with_multiple_fieldsets                   operationBased                        412                   16                435ms
-custom_scalar_type                                 responseBased                         408                   23                676ms
-inline_fragment_type_coercion                      compat                                408                    8                353ms
-inline_fragment_for_non_optional_field             operationBased                        404                   11                423ms
-inline_fragment_type_coercion                      operationBased                        394                    9                369ms
-interface_always_nested                            responseBased                         392                   16                355ms
-two_heroes_unique                                  responseBased                         392                    6                300ms
-interface_on_interface                             responseBased                         387                    8                436ms
-starships                                          responseBased                         382                   13                296ms
-interface_always_nested                            compat                                377                    8                340ms
-enum_field                                         responseBased                         376                   11                547ms
-antlr_tokens                                       responseBased                         375                   15                712ms
-interface_on_interface                             compat                                365                    6                348ms
-arguments_hardcoded                                responseBased                         363                   17                664ms
-interface_always_nested                            operationBased                        363                   12                375ms
-interface_on_interface                             operationBased                        358                    8                396ms
-operation_id_generator                             responseBased                         325                    6                280ms
-merged_include                                     responseBased                         324                    6                411ms
-nonnull                                            responseBased                         309                    8                301ms
-subscriptions                                      responseBased                         298                    5                286ms
-case_sensitive_enum                                responseBased                         217                   12                488ms
-empty                                              responseBased                         138                    4                362ms
+kotlin-responseBased-fragment_with_inline_fragment                 2215                   68         1.678029663s
+java-operationBased-nested_named_fragments                         1721                   12         121.343865ms
+java-operationBased-fragment_with_inline_fragment                  1681                   18         151.281005ms
+java-operationBased-union_inline_fragments                         1513                   10         107.806490ms
+java-operationBased-inline_fragment_intersection                   1493                   14         119.429233ms
+java-operationBased-unique_type_name                               1485                   11         128.095413ms
+kotlin-responseBased-nested_named_fragments                        1435                   45         886.831090ms
+java-operationBased-root_query_fragment_with_nested_fragments                 1418                   18         113.919576ms
+kotlin-compat-fragment_with_inline_fragment                        1350                   33         1.279932107s
+java-operationBased-mutation_create_review                         1336                   13         122.234720ms
+java-operationBased-__schema                                       1300                   64         916.179754ms
+java-operationBased-named_fragment_delegate                        1299                   15         104.254619ms
+kotlin-responseBased-unique_type_name                              1212                   29         777.564854ms
+java-operationBased-named_fragment_with_variables                  1203                   12         110.857695ms
+kotlin-compat-nested_named_fragments                               1203                   26         736.382293ms
+java-operationBased-nested_conditional_inline                      1169                    8         103.941324ms
+kotlin-responseBased-named_fragment_delegate                       1166                   30         768.418899ms
+java-operationBased-nested_field_with_multiple_fieldsets                 1146                    8          93.377960ms
+java-operationBased-input_object_type                              1145                    9         111.455127ms
+java-operationBased-mutation_create_review_semantic_naming                 1133                    9         111.127711ms
+java-operationBased-fragment_used_twice                            1131                   12         136.365469ms
+java-operationBased-multiple_fragments                             1115                    9          93.154697ms
+kotlin-responseBased-inline_fragment_intersection                  1096                   26         814.347858ms
+java-operationBased-inline_fragment_merge_fields                   1093                   10          95.711639ms
+java-operationBased-two_heroes_with_friends                        1092                    7         100.111334ms
+kotlin-operationBased-nested_named_fragments                       1079                   20         669.974653ms
+kotlin-operationBased-fragment_with_inline_fragment                 1078                   23         967.276542ms
+kotlin-responseBased-root_query_fragment_with_nested_fragments                 1074                   23         739.237328ms
+kotlin-compat-inline_fragment_intersection                         1063                   20         842.201941ms
+kotlin-responseBased-__schema                                      1038                   59         1.595081503s
+kotlin-compat-unique_type_name                                     1021                   19         635.279446ms
+java-operationBased-named_fragment_inside_inline_fragment                 1020                    8         103.413612ms
+kotlin-operationBased-union_inline_fragments                       1001                   22         679.268300ms
+kotlin-operationBased-inline_fragment_intersection                  999                   26         777.855491ms
+kotlin-responseBased-union_inline_fragments                         998                   21         634.676536ms
+java-operationBased-fragments_with_type_condition                   993                    9         107.126898ms
+java-operationBased-root_query_inline_fragment                      972                    7         143.876286ms
+kotlin-compat-root_query_fragment_with_nested_fragments                  965                   21         615.002952ms
+kotlin-operationBased-unique_type_name                              965                   24         605.207349ms
+kotlin-compat-union_inline_fragments                                955                   15         632.513685ms
+kotlin-responseBased-fragment_used_twice                            952                   25         840.580022ms
+kotlin-responseBased-mutation_create_review                         926                   19         745.425858ms
+kotlin-responseBased-nested_conditional_inline                      919                   16         661.623452ms
+java-operationBased-simple_fragment_with_inline_fragments                  918                    7         101.729185ms
+java-operationBased-inline_fragments_with_friends                   913                   12          91.649201ms
+java-operationBased-fragment_spread_with_nested_fields                  903                   10         136.908943ms
+kotlin-responseBased-simple_fragment_with_inline_fragments                  896                   25         662.967758ms
+kotlin-responseBased-fragments_with_type_condition                  894                   21         722.713480ms
+kotlin-responseBased-named_fragment_with_variables                  879                   19         672.232625ms
+kotlin-operationBased-root_query_fragment_with_nested_fragments                  876                   21         652.831495ms
+kotlin-responseBased-multiple_fragments                             875                   26         638.986254ms
+java-operationBased-fragment_spread_with_include_directive                  873                   10         148.754863ms
+java-operationBased-simple_fragment                                 854                    6          94.089780ms
+kotlin-compat-named_fragment_delegate                               840                   14         629.313531ms
+kotlin-compat-nested_conditional_inline                             839                   15         637.503025ms
+kotlin-compat-fragment_used_twice                                   835                   28         827.623866ms
+kotlin-compat-named_fragment_with_variables                         833                   15         610.302448ms
+java-operationBased-fragments_same_type_condition                   803                   14         101.007272ms
+kotlin-operationBased-named_fragment_delegate                       803                   18         613.414302ms
+java-operationBased-hero_details                                    800                   11          95.488127ms
+java-operationBased-deprecated_merged_field                         793                   19         162.520475ms
+java-operationBased-fieldset_with_multiple_super                    788                    9         125.001980ms
+java-operationBased-simple_inline_fragment                          787                    5          81.452136ms
+java-operationBased-not_all_combinations_are_needed                  785                    6          87.557459ms
+kotlin-responseBased-input_object_type                              782                   19         641.914721ms
+java-operationBased-inline_fragment_with_include_directive                  777                    7          98.513675ms
+kotlin-operationBased-nested_conditional_inline                     773                   16         640.579532ms
+kotlin-responseBased-mutation_create_review_semantic_naming                  768                   16         669.992336ms
+java-operationBased-test_inline                                     755                    7          79.593315ms
+kotlin-compat-multiple_fragments                                    748                   18         560.398751ms
+kotlin-operationBased-named_fragment_with_variables                  746                   18         592.169559ms
+java-operationBased-inline_fragment_inside_inline_fragment                  743                    6          93.587643ms
+java-operationBased-union_fragment                                  743                    7          89.319371ms
+kotlin-responseBased-fragment_spread_with_nested_fields                  723                   23         819.821257ms
+kotlin-responseBased-nested_field_with_multiple_fieldsets                  716                   15         575.192962ms
+kotlin-compat-fragments_with_type_condition                         709                   15         637.841297ms
+kotlin-operationBased-fragment_used_twice                           701                   27         706.363065ms
+kotlin-operationBased-nested_field_with_multiple_fieldsets                  677                   14         560.455323ms
+kotlin-responseBased-simple_fragment                                674                   16         502.167272ms
+java-operationBased-named_fragment_without_implementation                  672                    5         102.120609ms
+java-operationBased-hero_details_semantic_naming                    671                    9          87.551060ms
+java-operationBased-fragment_with_multiple_fieldsets                  667                    6         100.793775ms
+kotlin-operationBased-inline_fragment_merge_fields                  667                   18         580.737307ms
+kotlin-responseBased-two_heroes_with_friends                        661                   22         498.427877ms
+kotlin-operationBased-multiple_fragments                            659                   27         573.533408ms
+kotlin-responseBased-inline_fragments_with_friends                  653                   15         546.777931ms
+java-operationBased-path_vs_flat_accessors                          650                    5          80.874648ms
+kotlin-operationBased-root_query_inline_fragment                    650                   18         529.988574ms
+kotlin-operationBased-named_fragment_inside_inline_fragment                  645                   21         496.379463ms
+kotlin-compat-named_fragment_inside_inline_fragment                  640                   12         494.070719ms
+kotlin-compat-simple_fragment_with_inline_fragments                  639                   16         598.876838ms
+kotlin-compat-inline_fragments_with_friends                         633                   13         548.815257ms
+java-operationBased-reserved_kotlin_keywords                        628                    6          84.657131ms
+java-operationBased-typename_always_first                           625                    4          73.166203ms
+kotlin-responseBased-root_query_inline_fragment                     622                   13         508.201832ms
+kotlin-operationBased-fragments_with_type_condition                  621                   12         578.778026ms
+kotlin-responseBased-named_fragment_inside_inline_fragment                  616                   17         496.149581ms
+kotlin-compat-nested_field_with_multiple_fieldsets                  616                   10         528.666408ms
+kotlin-compat-simple_fragment                                       610                   12         554.999102ms
+java-operationBased-interface_on_interface                          604                    5          82.918347ms
+kotlin-responseBased-deprecated_merged_field                        602                   19         850.470492ms
+kotlin-operationBased-inline_fragments_with_friends                  600                   14         541.743153ms
+java-operationBased-introspection_query                             598                    6          73.966970ms
+kotlin-compat-fragment_spread_with_nested_fields                    594                   21         696.476348ms
+kotlin-compat-root_query_inline_fragment                            590                   11         525.464114ms
+kotlin-compat-fragment_spread_with_include_directive                  583                   17         647.819091ms
+java-operationBased-root_query_fragment                             577                    7          83.575420ms
+kotlin-operationBased-simple_fragment_with_inline_fragments                  565                   11         470.443531ms
+java-operationBased-input_object_variable_and_argument                  561                    5          82.795482ms
+java-operationBased-interface_always_nested                         558                    4          78.388239ms
+kotlin-operationBased-fragment_spread_with_nested_fields                  554                   21         652.075070ms
+kotlin-responseBased-fragments_same_type_condition                  553                   15         536.451619ms
+kotlin-compat-inline_fragment_with_include_directive                  540                   12         510.349001ms
+kotlin-operationBased-fragment_spread_with_include_directive                  539                   15         632.646605ms
+java-operationBased-deprecation                                     535                    7         125.908167ms
+java-operationBased-recursive_selection                             530                    4          76.125112ms
+kotlin-compat-union_fragment                                        529                   12         439.939470ms
+kotlin-compat-deprecated_merged_field                               528                   20         745.866664ms
+kotlin-responseBased-test_inline                                    527                   11         473.391242ms
+kotlin-compat-not_all_combinations_are_needed                       526                    8         488.905732ms
+kotlin-compat-fragments_same_type_condition                         524                   11         543.715213ms
+kotlin-operationBased-simple_fragment                               522                   15         436.972575ms
+kotlin-compat-inline_fragment_inside_inline_fragment                  521                   13         507.064486ms
+java-operationBased-hero_with_review                                520                    6          83.044560ms
+kotlin-responseBased-fragment_with_multiple_fieldsets                  512                   12         561.626646ms
+kotlin-compat-fieldset_with_multiple_super                          511                   13         700.837739ms
+kotlin-responseBased-hero_details                                   508                   17         530.558993ms
+kotlin-responseBased-union_fragment                                 508                   11         415.876206ms
+java-operationBased-field_with_include_directive                    499                    7         124.357592ms
+java-operationBased-hero_name                                       499                    4          82.788275ms
+java-operationBased-hero_name_query_long_name                       494                    5          83.248804ms
+java-operationBased-variable_default_value                          494                    4          90.642455ms
+kotlin-operationBased-inline_fragment_inside_inline_fragment                  489                   11         490.341323ms
+kotlin-operationBased-inline_fragment_with_include_directive                  489                   10         482.543531ms
+kotlin-responseBased-inline_fragment_merge_fields                   488                   10         447.582398ms
+kotlin-compat-inline_fragment_merge_fields                          486                   12         467.406373ms
+kotlin-operationBased-fieldset_with_multiple_super                  483                   15         704.590036ms
+kotlin-responseBased-inline_fragment_inside_inline_fragment                  482                   10         486.204779ms
+kotlin-compat-named_fragment_without_implementation                  481                    8         441.092247ms
+kotlin-operationBased-fragments_same_type_condition                  480                    9         507.811249ms
+java-operationBased-custom_scalar_type                              479                    9         136.039287ms
+kotlin-operationBased-simple_inline_fragment                        478                   15         462.193845ms
+kotlin-operationBased-union_fragment                                478                   12         420.404438ms
+kotlin-operationBased-not_all_combinations_are_needed                  475                   10         428.034449ms
+kotlin-operationBased-deprecated_merged_field                       472                   22         725.964841ms
+kotlin-responseBased-fieldset_with_multiple_super                   470                   13         642.612790ms
+kotlin-responseBased-named_fragment_without_implementation                  470                   13         436.491081ms
+java-operationBased-optional                                        470                    4          76.674431ms
+java-operationBased-inline_fragment_for_non_optional_field                  468                    5          86.587235ms
+kotlin-responseBased-simple_inline_fragment                         468                   11         416.956796ms
+kotlin-compat-test_inline                                           468                   11         443.123081ms
+java-operationBased-inline_fragment_type_coercion                   460                    4          90.938614ms
+java-operationBased-two_heroes_unique                               453                    4          71.726055ms
+kotlin-compat-fragment_with_multiple_fieldsets                      448                   10         542.351391ms
+kotlin-responseBased-not_all_combinations_are_needed                  447                    9         424.790072ms
+kotlin-operationBased-test_inline                                   445                   10         444.564990ms
+kotlin-responseBased-reserved_kotlin_keywords                       444                   11         435.282264ms
+kotlin-compat-simple_inline_fragment                                444                    8         454.982372ms
+kotlin-operationBased-named_fragment_without_implementation                  437                    8         430.062965ms
+kotlin-responseBased-path_vs_flat_accessors                         422                    8         412.073407ms
+kotlin-compat-reserved_kotlin_keywords                              421                    7         429.841612ms
+kotlin-responseBased-input_object_variable_and_argument                  414                    8         439.223011ms
+kotlin-operationBased-reserved_kotlin_keywords                      414                   10         416.961413ms
+kotlin-responseBased-hero_details_semantic_naming                   409                   11         514.417494ms
+kotlin-compat-path_vs_flat_accessors                                405                    6         423.642811ms
+java-operationBased-starships                                       405                    4          75.515154ms
+kotlin-responseBased-interface_on_interface                         400                    8         419.757289ms
+kotlin-responseBased-typename_always_first                          400                    7         381.475452ms
+kotlin-operationBased-fragment_with_multiple_fieldsets                  398                    9         524.083449ms
+java-operationBased-subscriptions                                   396                    5          69.055659ms
+kotlin-operationBased-path_vs_flat_accessors                        391                    7         412.754336ms
+java-operationBased-antlr_tokens                                    390                   14         163.119545ms
+kotlin-responseBased-root_query_fragment                            388                   12         443.691198ms
+kotlin-operationBased-typename_always_first                         387                   10         415.721565ms
+kotlin-compat-typename_always_first                                 387                    6         377.598909ms
+kotlin-compat-root_query_fragment                                   386                    9         398.652069ms
+kotlin-responseBased-hero_with_review                               385                    9         441.203897ms
+kotlin-compat-interface_on_interface                                378                    6         407.378349ms
+kotlin-responseBased-deprecation                                    377                   16         555.601892ms
+kotlin-responseBased-hero_name                                      376                    7         433.876999ms
+kotlin-responseBased-hero_name_query_long_name                      375                    9         407.874626ms
+kotlin-operationBased-interface_on_interface                        371                   11         416.560944ms
+java-operationBased-arguments_hardcoded                             368                    6         144.475582ms
+kotlin-responseBased-interface_always_nested                        368                    8         423.267822ms
+kotlin-compat-interface_always_nested                               353                    6         426.591308ms
+java-operationBased-merged_include                                  349                    7          73.256289ms
+java-operationBased-operation_id_generator                          348                    4          76.309498ms
+kotlin-compat-hero_name                                             344                    6         432.617723ms
+kotlin-responseBased-variable_default_value                         344                    8         387.048154ms
+kotlin-operationBased-root_query_fragment                           342                    7         436.977109ms
+kotlin-responseBased-custom_scalar_type                             339                   14         631.007590ms
+kotlin-operationBased-interface_always_nested                       339                    7         437.401333ms
+java-operationBased-case_sensitive_enum                             334                    6         147.489703ms
+java-operationBased-enum_field                                      334                    5         108.959803ms
+kotlin-responseBased-inline_fragment_for_non_optional_field                  332                    8         405.457077ms
+kotlin-responseBased-introspection_query                            332                   10         394.466057ms
+java-operationBased-nonnull                                         330                    3          70.060507ms
+kotlin-responseBased-optional                                       325                    6         370.016811ms
+kotlin-responseBased-field_with_include_directive                   318                   14         515.661919ms
+kotlin-operationBased-hero_name                                     316                    8         453.129315ms
+kotlin-responseBased-inline_fragment_type_coercion                  314                   27         409.967237ms
+kotlin-compat-inline_fragment_for_non_optional_field                  303                    9         396.506438ms
+kotlin-responseBased-recursive_selection                            302                    7         373.917424ms
+kotlin-compat-inline_fragment_type_coercion                         290                    7         451.935699ms
+kotlin-operationBased-inline_fragment_for_non_optional_field                  286                    6         404.778187ms
+kotlin-operationBased-inline_fragment_type_coercion                  276                    6         434.771447ms
+kotlin-responseBased-two_heroes_unique                              273                   10         342.574009ms
+kotlin-responseBased-starships                                      263                    6         363.328896ms
+kotlin-responseBased-antlr_tokens                                   256                   12         617.648413ms
+kotlin-responseBased-subscriptions                                  252                    7         336.369896ms
+kotlin-responseBased-arguments_hardcoded                            245                   12         610.517372ms
+kotlin-responseBased-case_sensitive_enum                            215                   14         494.360240ms
+kotlin-responseBased-enum_field                                     214                    7         423.832073ms
+kotlin-responseBased-operation_id_generator                         207                    4         302.542244ms
+kotlin-responseBased-merged_include                                 206                    5         319.957912ms
+kotlin-responseBased-nonnull                                        191                    4         302.254718ms
+kotlin-responseBased-empty                                            0                    0         211.455425ms
+java-operationBased-empty                                             0                    0              8.621us

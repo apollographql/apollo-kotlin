@@ -1,4 +1,8 @@
+@file:JvmName("BooleanExpressions")
+
 package com.apollographql.apollo3.api
+
+import kotlin.jvm.JvmName
 
 /**
  * A boolean expression
@@ -29,6 +33,8 @@ sealed class BooleanExpression<out T : Any> {
   }
 
   data class Or<T : Any>(val operands: Set<BooleanExpression<T>>) : BooleanExpression<T>() {
+    constructor(vararg operands: BooleanExpression<T>): this(operands.toSet())
+
     init {
       check(operands.isNotEmpty()) {
         "ApolloGraphQL: cannot create a 'Or' condition from an empty list"
@@ -53,6 +59,8 @@ sealed class BooleanExpression<out T : Any> {
   }
 
   data class And<T : Any>(val operands: Set<BooleanExpression<T>>) : BooleanExpression<T>() {
+    constructor(vararg operands: BooleanExpression<T>): this(operands.toSet())
+
     init {
       check(operands.isNotEmpty()) {
         "ApolloGraphQL: cannot create a 'And' condition from an empty list"
@@ -123,5 +131,7 @@ data class BVariable(val name: String) : BTerm()
 /**
  * A term that comes from a fragment type condition and that needs to be matched against __typename
  */
-data class BPossibleTypes(val possibleTypes: Set<String>) : BTerm()
+data class BPossibleTypes(val possibleTypes: Set<String>) : BTerm() {
+  constructor(vararg types: String): this(types.toSet())
+}
 

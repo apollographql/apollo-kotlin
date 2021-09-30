@@ -4,7 +4,7 @@ package com.apollographql.apollo3.ast
  * A wrapper around a schema GQLDocument that:
  * - always contain builtin types contrary to introspection that will not contain directives and SDL that will not contain
  * any builtin definitions
- * - always have a schema definition
+ * - always has a schema definition
  * - has type extensions merged
  * - has some helper functions to retrieve a type by name and/or possible types
  *

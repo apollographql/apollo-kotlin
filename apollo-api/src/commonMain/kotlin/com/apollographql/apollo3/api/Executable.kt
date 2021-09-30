@@ -1,5 +1,6 @@
 package  com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.api.Executable.Variables
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.MapJsonWriter
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -41,13 +42,13 @@ interface Executable<D: Executable.Data> {
 }
 
 @Suppress("UNCHECKED_CAST")
-fun <D : Executable.Data> Executable<D>.variables(customScalarAdapters: CustomScalarAdapters): Executable.Variables {
+fun <D : Executable.Data> Executable<D>.variables(customScalarAdapters: CustomScalarAdapters): Variables {
   val valueMap = MapJsonWriter().apply {
     beginObject()
     serializeVariables(this, customScalarAdapters)
     endObject()
   }.root() as Map<String, Any?>
-  return Executable.Variables(valueMap)
+  return Variables(valueMap)
 }
 
 fun <D : Executable.Data> Executable<D>.variablesJson(customScalarAdapters: CustomScalarAdapters): String {

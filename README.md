@@ -69,8 +69,6 @@ dependencies {
   implementation("com.apollographql.apollo3:deprecated-apollo-coroutines-support:x.y.z")
   // optional: for RxJava3 support  
   implementation("com.apollographql.apollo3:deprecated-apollo-rx3-support:x.y.z")
-  // optional: Most of apollo-android does not depend on Android in practice and runs on any JVM or on Kotlin native. apollo-android-support contains a few Android-only helper classes. For an example to send logs to logcat or run callbacks on the main thread.
-  implementation("com.apollographql.apollo3:deprecated-apollo-android-support:x.y.z")
   // optional: if you just want the generated models and parsers and write your own HTTP code/cache code, you can remove apollo-runtime
   // and use apollo-api instead  
   implementation("com.apollographql.apollo3:apollo-api:x.y.z")

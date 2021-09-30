@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
-import com.apollographql.apollo3.api.http.DefaultHttpRequestComposerParams
 import com.apollographql.apollo3.api.internal.ResponseBodyParser
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.writeObject
@@ -103,7 +102,7 @@ fun <D : Operation.Data> Operation<D>.parseJsonData(
 }
 
 /**
- * see [parseJsonResponse]
+ * see [parseJsonData]
  */
 fun <D : Operation.Data> Operation<D>.parseJsonData(
     string: String,
@@ -204,7 +203,6 @@ fun <D : Operation.Data> Operation<D>.composeJsonRequest(
   val request = composer.compose(
       ApolloRequest(operation = this)
           .withExecutionContext(customScalarAdapters)
-          .withExecutionContext(DefaultHttpRequestComposerParams)
   )
 
   request.body!!.writeTo(sink)

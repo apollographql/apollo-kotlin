@@ -1,0 +1,16 @@
+plugins {
+  id("org.jetbrains.kotlin.jvm")
+  id("com.apollographql.apollo3")
+}
+
+repositories {
+  mavenCentral()
+}
+
+apollo {
+  // Make sure Action<> can be called from Groovy
+  service("main") {
+    // Make sure groovy can find the no-arg overload
+    packageNamesFromFilePaths()
+  }
+}

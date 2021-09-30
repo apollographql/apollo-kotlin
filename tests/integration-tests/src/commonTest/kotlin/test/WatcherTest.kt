@@ -90,9 +90,9 @@ class WatcherTest {
 
     // Someone writes to the store directly
     val data = EpisodeHeroNameWithIdQuery.Data(
-        hero = EpisodeHeroNameWithIdQuery.Data.Hero(
-            id = "2001",
-            name = "Artoo"
+        EpisodeHeroNameWithIdQuery.Hero(
+            "2001",
+            "Artoo"
         )
     )
 
@@ -216,6 +216,9 @@ class WatcherTest {
     // - The second one will be for the watcher refetch and contains "ArTwo"
     mockServer.enqueue(readResource("EpisodeHeroNameResponseNameChange.json"))
     mockServer.enqueue(readResource("EpisodeHeroNameResponseNameChangeTwo.json"))
+    // - Because the network only watcher will also store in the cache a different name value, it will trigger itself again
+    // Enqueue a stable response to avoid errors during tests
+    mockServer.enqueue(readResource("EpisodeHeroNameResponseNameChangeTwo.json"))
     val response = apolloClient.query(
         ApolloRequest(
             EpisodeHeroNameQuery(Episode.EMPIRE)
@@ -269,7 +272,7 @@ class WatcherTest {
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
-    // This will miss as the cache should be empty
+    // This will initially miss as the cache should be empty
     val job = launch {
       val request = ApolloRequest(query).withFetchPolicy(FetchPolicy.CacheOnly)
       apolloClient.watch(request).collect {

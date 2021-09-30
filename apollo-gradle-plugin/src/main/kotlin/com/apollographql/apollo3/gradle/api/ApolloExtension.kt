@@ -11,11 +11,10 @@ interface ApolloExtension : Service {
   /**
    * registers a new service
    *
-   * @param name: the name of the service, this is an arbitrary name only used to create the tasks. The only constraints are that
-   * the different names must be unique
+   * @param name: the name of the service, this is an arbitrary name only used to create the tasks. It must be unique
    * @param action: the configure action for the [Service]
    */
-  fun service(name: String, action: Action<Service> = Action<Service> {})
+  fun service(name: String, action: Action<Service>)
 
   /**
    * registers multiple services for an android project
@@ -46,9 +45,11 @@ interface ApolloExtension : Service {
    * - releaseUnitTestStarwars
    * If your project has multiple flavours or build types, services will be created for those as well
    *
-   * This name must be unique
+   * [nameSuffix] name must be unique
+   *
+   * @param action: an action to configure the packageName and other parameters on each service. Will be called once for each variant
    */
-  fun createAllAndroidVariantServices(sourceFolder: String, nameSuffix: String, action: Action<Service> = Action<Service> {})
+  fun createAllAndroidVariantServices(sourceFolder: String, nameSuffix: String, action: Action<Service>)
 
   /**
    * registers multiple services for a Kotlin project
@@ -67,8 +68,10 @@ interface ApolloExtension : Service {
    * - testStarwars
    *
    * If your project has more Kotlin source sets, services will be created for those as well
+   *
+   * @param action: an action to configure the packageName and other parameters on each service. Will be called once for each sourceSet
    */
-  fun createAllKotlinSourceSetServices(sourceFolder: String, nameSuffix: String, action: Action<Service> = Action<Service> {})
+  fun createAllKotlinSourceSetServices(sourceFolder: String, nameSuffix: String, action: Action<Service>)
 
   /**
    * For Kotlin native projects, whether to link Sqlite (-lsqlite3). This is required by `apollo-normalized-cache-sqlite` but

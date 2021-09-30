@@ -12,7 +12,7 @@ class LoggingInterceptor(private val log: (String) -> Unit = { println(it) }): H
         log("${request.method.name} ${request.url}")
 
         request.headers.forEach {
-            log("${it.key}: ${it.value}")
+            log("${it.name}: ${it.value}")
         }
         log("[end of headers]")
 
@@ -26,7 +26,7 @@ class LoggingInterceptor(private val log: (String) -> Unit = { println(it) }): H
         log("HTTP: ${httpResponse.statusCode}")
 
         httpResponse.headers.forEach {
-            log("${it.key}: ${it.value}")
+            log("${it.name}: ${it.value}")
         }
         log("[end of headers]")
 

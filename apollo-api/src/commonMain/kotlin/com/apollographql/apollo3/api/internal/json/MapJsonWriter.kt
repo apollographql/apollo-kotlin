@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.api.internal.json
 
 import com.apollographql.apollo3.api.Upload
+import com.apollographql.apollo3.api.json.JsonNumber
 import com.apollographql.apollo3.api.json.JsonWriter
 
 /**
@@ -8,16 +9,15 @@ import com.apollographql.apollo3.api.json.JsonWriter
  *
  * Call [beginObject], [name], [value], etc... like for regular Json writing. Once you're done, get the result in [root]
  *
- * The returned [Map] will contain:
+ * The returned [Map] will contain values of the following types:
  * - String
  * - Int
  * - Double
+ * - Long
+ * - JsonNumber
  * - null
  * - Map<String, Any?> where values are any of these values recursively
  * - List<Any?> where values are any of these values recursively
- *
- * The base implementation was taken from Moshi and ported to Kotlin multiplatform with some tweaks to make it better suited for GraphQL
- * (see [JsonWriter]).
  *
  * To write to a [okio.BufferedSink], see also [BufferedSinkJsonWriter]
  */
@@ -120,6 +120,10 @@ class MapJsonWriter : JsonWriter {
   override fun value(value: Double) = valueInternal(value)
 
   override fun value(value: Int) = valueInternal(value)
+
+  override fun value(value: Long) = valueInternal(value)
+
+  override fun value(value: JsonNumber) = valueInternal(value)
 
   override fun value(value: Upload) = valueInternal(null)
 

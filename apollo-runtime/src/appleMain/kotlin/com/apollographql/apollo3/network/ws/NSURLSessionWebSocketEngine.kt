@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.mpp.assertMainThreadOnNative
 import com.apollographql.apollo3.network.toNSData
 import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.StableRef
@@ -63,7 +64,7 @@ actual class DefaultWebSocketEngine(
       url: String,
       headers: Map<String, String>,
   ): WebSocketConnection {
-    assert(NSThread.isMainThread())
+    assertMainThreadOnNative()
 
     val serverUrl = NSURL(string = url)
 
@@ -124,7 +125,7 @@ private class WebSocketConnectionImpl(
   }
 
   override suspend fun send(data: ByteString) {
-    assert(NSThread.isMainThread())
+    assertMainThreadOnNative()
     if (!messageChannel.isClosedForReceive) {
       val message = NSURLSessionWebSocketMessage(data.toByteArray().toNSData())
       val webSocketConnectionPtr = StableRef.create(this).asCPointer()
@@ -137,7 +138,7 @@ private class WebSocketConnectionImpl(
   }
 
   override suspend fun send(string: String) {
-    assert(NSThread.isMainThread())
+    assertMainThreadOnNative()
     if (!messageChannel.isClosedForReceive) {
       val message = NSURLSessionWebSocketMessage(string)
       val webSocketConnectionPtr = StableRef.create(this).asCPointer()
@@ -150,12 +151,12 @@ private class WebSocketConnectionImpl(
   }
 
   override fun close() {
-    assert(NSThread.isMainThread())
+    assertMainThreadOnNative()
     messageChannel.close()
   }
 
   fun receiveNext() {
-    assert(NSThread.isMainThread())
+    assertMainThreadOnNative()
 
     val webSocketConnectionPtr = StableRef.create(this).asCPointer()
     val completionHandler = { message: NSURLSessionWebSocketMessage?, error: NSError? ->
@@ -194,7 +195,7 @@ private fun NSError.dispatch(webSocketConnectionPtr: COpaquePointer) {
   webSocketConnection.messageChannel.close(
       ApolloNetworkException(
           message = "Web socket communication error",
-          cause = IOException(localizedDescription)
+          platformCause = this
       )
   )
   webSocketConnection.webSocket.cancel()

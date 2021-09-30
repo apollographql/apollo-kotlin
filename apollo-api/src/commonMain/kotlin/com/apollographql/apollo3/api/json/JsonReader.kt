@@ -15,8 +15,8 @@
  */
 package com.apollographql.apollo3.api.json
 
-import com.apollographql.apollo3.api.Throws
-import okio.IOException
+import com.apollographql.apollo3.exception.JsonDataException
+import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
 
 /**
  * Reads a JSON [RFC 7159](http://www.ietf.org/rfc/rfc7159.txt) encoded value as a stream of tokens.
@@ -29,53 +29,50 @@ import okio.IOException
  *
  * Each {@code JsonReader} may be used to read a single JSON stream. Instances of this class are not thread safe.
  *
- * **Note**: This interface was originally from Moshi and has been tweaked to better match the GraphQL use cases such as the
- * absence of arbitrary precision
+ * Json doesn't have int, long, double values. Only string and number. That means nextInt(), nextDouble(), nextLong() and nextNumber() will
+ * coerce the Json value into the expected type or throw if the conversion is not possible or loses precision.
+ *
+ * [BufferedSourceJsonReader] can parse longs without having to buffer so when possible, prefer nextLong() over nextInt()
+ *
+ * **Note**: This interface was originally from Moshi and has been tweaked to better match the GraphQL use cases
  */
 interface JsonReader : Closeable {
 
   /**
+   * Returns the type of the next token without consuming it.
+   */
+  fun peek(): Token
+
+  /**
    * Consumes the next token from the JSON stream and asserts that it is the beginning of a new array.
    */
-  @Throws(IOException::class)
   fun beginArray(): JsonReader
 
   /**
    * Consumes the next token from the JSON stream and asserts that it is the end of the current array.
    */
-  @Throws(IOException::class)
   fun endArray(): JsonReader
 
   /**
    * Consumes the next token from the JSON stream and asserts that it is the beginning of a new object.
    */
-  @Throws(IOException::class)
   fun beginObject(): JsonReader
 
   /**
    * Consumes the next token from the JSON stream and asserts that it is the end of the current object.
    */
-  @Throws(IOException::class)
   fun endObject(): JsonReader
 
   /**
    * Returns true if the current array or object has another element.
    */
-  @Throws(IOException::class)
-  operator fun hasNext(): Boolean
-
-  /**
-   * Returns the type of the next token without consuming it.
-   */
-  @Throws(IOException::class)
-  fun peek(): Token
+  fun hasNext(): Boolean
 
   /**
    * Returns the next token [Token.NAME], and consumes it.
    *
    * @throws JsonDataException if the next token in the stream is not a property name.
    */
-  @Throws(IOException::class)
   fun nextName(): String
 
   /**
@@ -85,7 +82,6 @@ interface JsonReader : Closeable {
    *
    * @throws JsonDataException if the next token is not a string or if this reader is closed.
    */
-  @Throws(IOException::class)
   fun nextString(): String?
 
   /**
@@ -93,7 +89,6 @@ interface JsonReader : Closeable {
    *
    * @throws JsonDataException if the next token is not a boolean or if this reader is closed.
    */
-  @Throws(IOException::class)
   fun nextBoolean(): Boolean
 
   /**
@@ -101,19 +96,7 @@ interface JsonReader : Closeable {
    *
    * @throws JsonDataException if the next token is not null or if this reader is closed.
    */
-  @Throws(IOException::class)
-  fun <T> nextNull(): T?
-
-  /**
-   * Returns the [Token.NUMBER] value of the next token, consuming it.
-   *
-   * If the next token is a string, this method will attempt to parse it as a double.
-   *
-   * @throws JsonDataException if the next token is not a literal value, or if the next literal value cannot be parsed as a double,
-   * or is non-finite.
-   */
-  @Throws(IOException::class)
-  fun nextDouble(): Double
+  fun nextNull(): Nothing?
 
   /**
    * Returns the [Token.NUMBER] value of the next token, consuming it.
@@ -124,21 +107,52 @@ interface JsonReader : Closeable {
    * @throws JsonDataException if the next token is not a literal value, if the next literal value cannot be parsed as a number, or
    * exactly represented as an int.
    */
-  @Throws(IOException::class)
   fun nextInt(): Int
+
+  /**
+   * Returns the [Token.NUMBER] value of the next token, consuming it.
+   *
+   * If the next token is a string, this method will attempt to parse it as a double.
+   *
+   * @throws JsonDataException if the next token is not a literal value, or if the next literal value cannot be parsed as a double,
+   * or is non-finite.
+   */
+  fun nextDouble(): Double
+
+  /**
+   * Returns the [Token.NUMBER] value of the next token, consuming it.
+   *
+   * If the next token is a string, this method will attempt to parse it as an long. If the next token's numeric value cannot be exactly
+   * represented by a [Long], this method throws.
+   *
+   * @throws JsonDataException if the next token is not a literal value, if the next literal value cannot be parsed as a number, or
+   * exactly represented as a Long.
+   */
+  fun nextLong(): Long
+
+  /**
+   * Returns the [Token.NUMBER] value of the next token, consuming it.
+   */
+  fun nextNumber(): JsonNumber
 
   /**
    * Skips the next value recursively. If it is an object or array, all nested elements are skipped.
    *
    * This method is intended for use when the JSON token stream contains unrecognized or unhandled values.
-   *
-   * @throws JsonDataException if this parser has been configured to [failOnUnknown] values.
    */
-  @Throws(IOException::class)
   fun skipValue()
 
+  /**
+   * An optimized way to retrieve the nextName when the candidates and their order is known. [selectName] maintains the current index in
+   * the list and saves having to string compare [nextName] to every candidate.
+   *
+   * @return the index of the next name or -1 if there is no next name
+   */
   fun selectName(names: List<String>): Int
 
+  /**
+   * Reset the current object so that [selectName] start returning names again
+   */
   fun rewind()
 
   /**
@@ -187,7 +201,7 @@ interface JsonReader : Closeable {
      */
     NULL,
     /**
-     * The end of the JSON stream. This sentinel value is returned by [ ][JsonReader.peek] to signal that the JSON-encoded value has no
+     * The end of the JSON stream. This sentinel value is returned by [JsonReader.peek] to signal that the JSON-encoded value has no
      * more tokens.
      */
     END_DOCUMENT

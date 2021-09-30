@@ -1,0 +1,20 @@
+{
+  "errors": [
+    {
+      "message": "Cannot query field \"names\" on type \"Species\".",
+      "locations": [
+        {
+          "line": 3,
+          "column": 5
+        }
+      ],
+      "extensions": {
+        "code": 500,
+        "status": "Internal Error",
+        "fatal": true,
+        "listOfValues": [ 0, "a", true, 2.4 ]
+      },
+      "path":["query"]
+    }
+  ]
+}

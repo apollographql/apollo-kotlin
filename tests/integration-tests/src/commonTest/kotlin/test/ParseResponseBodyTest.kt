@@ -1,6 +1,7 @@
 package test
 
-import com.apollographql.apollo3.adapter.LocalDateAdapter
+import assertEquals2
+import com.apollographql.apollo3.adapter.KotlinxLocalDateAdapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.fromJson
@@ -8,9 +9,10 @@ import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.use
 import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.api.toJson
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.integration.httpcache.AllFilmsQuery
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
-import com.apollographql.apollo3.integration.httpcache.type.Types
+import com.apollographql.apollo3.integration.httpcache.type.Date
 import com.apollographql.apollo3.integration.normalizer.CharacterWithBirthDateQuery
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.GetJsonScalarQuery
@@ -22,6 +24,7 @@ import readResource
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 /**
@@ -35,35 +38,65 @@ class ParseResponseBodyTest {
     val response = AllPlanetsQuery().parseJsonResponse(readResource("ResponseError.json"))
     assertTrue(response.hasErrors())
     val errors = response.errors
-    assertEquals(errors?.get(0)?.message, "Cannot query field \"names\" on type \"Species\".")
-    assertEquals(errors?.get(0)?.locations?.get(0)?.line, 3)
-    assertEquals(errors?.get(0)?.locations?.get(0)?.column, 5)
-    assertEquals(errors?.get(0)?.customAttributes?.size, 0)
+    assertEquals2(errors?.get(0)?.message, "Cannot query field \"names\" on type \"Species\".")
+    assertEquals2(errors?.get(0)?.locations?.size, 1)
+    assertEquals2(errors?.get(0)?.locations?.get(0)?.line, 3)
+    assertEquals2(errors?.get(0)?.locations?.get(0)?.column, 5)
+    assertNull(errors?.get(0)?.path)
+    assertNull(errors?.get(0)?.extensions)
   }
 
   @Test
   @Throws(Exception::class)
-  fun `error with no message, no location and custom attributes`() {
-    val response = AllPlanetsQuery().parseJsonResponse(readResource("ResponseErrorWithNullsAndCustomAttributes.json"))
+  fun `error with nulls`() {
+    /**
+     * If I'm reading the spec right, passing null in location/path/extensions is most likely
+     * an error but we are lenient there and allow it
+     */
+    val response = AllPlanetsQuery().parseJsonResponse(readResource("ResponseErrorWithNulls.json"))
     assertTrue(response.hasErrors())
     assertEquals(response.errors?.size, 1)
-    assertEquals(response.errors!![0].message, "")
-    assertEquals(response.errors!![0].customAttributes.size, 2)
-    assertEquals(response.errors!![0].customAttributes["code"], "userNotFound")
-    assertEquals(response.errors!![0].customAttributes["path"], "loginWithPassword")
-    assertEquals(response.errors!![0].locations.size, 0)
+    assertEquals(response.errors!![0].message, "Response with nulls")
+    assertNull(response.errors!![0].locations)
+    assertNull(response.errors!![0].path)
+    assertNull(response.errors!![0].extensions)
   }
 
   @Test
   @Throws(Exception::class)
-  fun `error with message, location and custom attributes`() {
-    val response = AllPlanetsQuery().parseJsonResponse(readResource("ResponseErrorWithCustomAttributes.json"))
+  fun `error with absent`() {
+    /**
+     * location, path and extensions are all optional
+     */
+    val response = AllPlanetsQuery().parseJsonResponse(readResource("ResponseErrorWithAbsent.json"))
     assertTrue(response.hasErrors())
-    assertEquals(response.errors!![0].customAttributes.size, 4)
-    assertEquals(response.errors!![0].customAttributes["code"], 500)
-    assertEquals(response.errors!![0].customAttributes["status"], "Internal Error")
-    assertEquals(response.errors!![0].customAttributes["fatal"], true)
-    assertEquals(response.errors!![0].customAttributes["path"], listOf("query"))
+    assertEquals(response.errors?.size, 1)
+    assertEquals(response.errors!![0].message, "Response with absent")
+    assertNull(response.errors!![0].locations)
+    assertNull(response.errors!![0].path)
+    assertNull(response.errors!![0].extensions)
+  }
+
+
+  @Test
+  @Throws(Exception::class)
+  fun `error with extensions`() {
+    /**
+     * Extensions are mapped to Kotlin types.
+     * Big numbers should throw although this is not tested here
+     */
+    val response = AllPlanetsQuery().parseJsonResponse(readResource("ResponseErrorWithExtensions.json"))
+    assertTrue(response.hasErrors())
+    assertEquals(response.errors!![0].extensions?.size, 4)
+    assertEquals(response.errors!![0].extensions?.get("code"), 500)
+    assertEquals(response.errors!![0].extensions?.get("status"), "Internal Error")
+    assertEquals(response.errors!![0].extensions?.get("fatal"), true)
+    @Suppress("UNCHECKED_CAST")
+    val listOfValues = response.errors!![0].extensions?.get("listOfValues") as List<Any>
+    assertEquals(listOfValues[0], 0)
+    assertEquals(listOfValues[1], "a")
+    assertEquals(listOfValues[2], true)
+    assertEquals(listOfValues[3], 2.4)
   }
 
   @Test
@@ -78,7 +111,7 @@ class ParseResponseBodyTest {
     assertEquals(errors?.get(0)?.message, "Cannot query field \"names\" on type \"Species\".")
     assertEquals(errors?.get(0)?.locations?.get(0)?.line, 3)
     assertEquals(errors?.get(0)?.locations?.get(0)?.column, 5)
-    assertEquals(errors?.get(0)?.customAttributes?.size, 0)
+    assertEquals(errors?.get(0)?.extensions, null)
   }
 
   private fun <T> Adapter<T>.toJsonString(t: T): String {
@@ -95,12 +128,12 @@ class ParseResponseBodyTest {
 
     val response = AllFilmsQuery().parseJsonResponse(
         readResource("HttpCacheTestAllFilms.json"),
-        CustomScalarAdapters(mapOf(Types.Date.name to LocalDateAdapter))
+        CustomScalarAdapters(mapOf(Date.type.name to KotlinxLocalDateAdapter))
     )
     assertFalse(response.hasErrors())
     assertEquals(response.data!!.allFilms?.films?.size, 6)
     assertEquals(
-        response.data!!.allFilms?.films?.map { LocalDateAdapter.toJsonString(it!!.releaseDate) },
+        response.data!!.allFilms?.films?.map { KotlinxLocalDateAdapter.toJsonString(it!!.releaseDate) },
         listOf("1977-05-25", "1980-05-17", "1983-05-25", "1999-05-19", "2002-05-16", "2005-05-19").map { "\"$it\"" }
     )
   }
@@ -120,6 +153,9 @@ class ParseResponseBodyTest {
       HeroNameQuery().parseJsonResponse(readResource("ResponseDataMissing.json"))
       error("an error was expected")
     } catch (e: NullPointerException) {
+      // This is the Kotlin codegen case
+    } catch (e: ApolloException) {
+      // This is the (better) Java codegen case
     }
   }
 
@@ -157,7 +193,7 @@ class ParseResponseBodyTest {
     assertEquals(errors?.get(0)?.message, "Cannot query field \"names\" on type \"Species\".")
     assertEquals(errors?.get(0)?.locations?.get(0)?.line, 3)
     assertEquals(errors?.get(0)?.locations?.get(0)?.column, 5)
-    assertEquals(errors?.get(0)?.customAttributes?.size, 0)
+    assertEquals(errors?.get(0)?.extensions, null)
   }
 
   @Test
@@ -184,7 +220,7 @@ class ParseResponseBodyTest {
   @Test
   fun `not registering an adapter, neither at runtime or in the gradle plugin defaults to Any`() {
     val data = GetJsonScalarQuery.Data(
-        json = mapOf("1" to "2", "3" to listOf("a", "b"))
+        mapOf("1" to "2", "3" to listOf("a", "b"))
     )
     val query = GetJsonScalarQuery()
 
@@ -195,11 +231,11 @@ class ParseResponseBodyTest {
   @Test
   fun `forgetting to add a runtime adapter for a scalar registered in the plugin fails`() {
     val data = CharacterWithBirthDateQuery.Data(
-        character = CharacterWithBirthDateQuery.Data.Character(
-            birthDate = LocalDate(1970, 1, 1),
+        CharacterWithBirthDateQuery.Character(
+            LocalDate(1970, 1, 1),
         )
     )
-    val query = CharacterWithBirthDateQuery(id = "1")
+    val query = CharacterWithBirthDateQuery("1")
     try {
       query.adapter().fromJson(query.adapter().toJson(data))
       error("expected IllegalStateException")

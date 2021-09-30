@@ -11,7 +11,7 @@ import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.network.http.BatchingHttpEngine
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
-import com.apollographql.apollo3.network.http.canBeBatched
+import com.apollographql.apollo3.network.http.withCanBeBatched
 import com.apollographql.apollo3.testing.runWithMainLoop
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -28,7 +28,7 @@ class QueryBatchingTest {
   fun testAgainstARealServer() {
     val apolloClient = ApolloClient(
         networkTransport = HttpNetworkTransport(
-            httpRequestComposer = DefaultHttpRequestComposer("https://apollo-fullstack-tutorial.herokuapp.com/graphql"),
+            serverUrl = "https://apollo-fullstack-tutorial.herokuapp.com/graphql",
             engine = BatchingHttpEngine(),
         )
     )
@@ -139,7 +139,7 @@ class QueryBatchingTest {
 
     runWithMainLoop {
       val result1 = async {
-        apolloClient.query(ApolloRequest(GetLaunchQuery()).canBeBatched(false))
+        apolloClient.query(ApolloRequest(GetLaunchQuery()).withCanBeBatched(false))
       }
       val result2 = async {
         // Make sure GetLaunch2Query gets executed after GetLaunchQuery as there is no guarantee otherwise

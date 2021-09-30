@@ -41,12 +41,13 @@ fun addShadowImplementation(dependency: Dependency) {
 }
 dependencies {
   compileOnly(groovy.util.Eval.x(project, "x.dep.minGradleApi"))
+  //compileOnly(groovy.util.Eval.x(project, "x.dep.gradleApi"))
   compileOnly(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
   compileOnly(groovy.util.Eval.x(project, "x.dep.android.minPlugin"))
 
-  addShadowImplementation(project(":apollo-compiler"))
-  addShadowImplementation(project(":apollo-ast"))
-  addShadowImplementation(project(":apollo-api"))
+  addShadowImplementation(projects.apolloCompiler)
+  addShadowImplementation(projects.apolloAst)
+  addShadowImplementation(projects.apolloApi)
 
   addShadowImplementation(create(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4")))
   // Needed for manual Json construction in `SchemaDownloader`

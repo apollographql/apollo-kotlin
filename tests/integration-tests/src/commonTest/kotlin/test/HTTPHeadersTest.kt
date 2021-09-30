@@ -1,13 +1,13 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.composeJsonResponse
-import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
+import com.apollographql.apollo3.api.http.valueOf
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.network.http.HttpResponseInfo
+import com.apollographql.apollo3.network.http.HttpInfo
 import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.testing.runWithMainLoop
 import kotlin.test.BeforeTest
@@ -29,7 +29,7 @@ class HTTPHeadersTest {
   @Test
   fun `Make sure headers are set`() {
     val query = HeroNameQuery()
-    val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
     mockServer.enqueue(query, data)
 
@@ -48,7 +48,7 @@ class HTTPHeadersTest {
   @Test
   fun headersCanBeReadInResponseExecutionContext() {
     val query = HeroNameQuery()
-    val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
     val json = query.composeJsonResponse(data)
 
@@ -66,8 +66,8 @@ class HTTPHeadersTest {
     runWithMainLoop {
       val response = apolloClient.query(query)
 
-      assertEquals(response.executionContext[HttpResponseInfo]?.headers?.get("Header1"), "Value1")
-      assertEquals(response.executionContext[HttpResponseInfo]?.headers?.get("Header2"), "Value2")
+      assertEquals(response.executionContext[HttpInfo]?.headers?.valueOf("Header1"), "Value1")
+      assertEquals(response.executionContext[HttpInfo]?.headers?.valueOf("Header2"), "Value2")
     }
   }
 }

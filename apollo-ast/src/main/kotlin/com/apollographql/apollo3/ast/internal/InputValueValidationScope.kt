@@ -50,12 +50,13 @@ internal fun ValidationScope.validateAndCoerceValue(value: GQLValue, expectedTyp
       return validateAndCoerceValue(value, expectedType.type)
     }
     is GQLListType -> {
-      if (value !is GQLListValue) {
-        registerIssue(value, expectedType)
-        return value
+      val coercedValue = if (value !is GQLListValue) {
+        GQLListValue(sourceLocation = value.sourceLocation, listOf(value))
+      } else {
+        value
       }
       return GQLListValue(
-          values = value.values.map { validateAndCoerceValue(it, expectedType.type) }
+          values = coercedValue.values.map { validateAndCoerceValue(it, expectedType.type) }
       )
     }
     is GQLNamedType -> {

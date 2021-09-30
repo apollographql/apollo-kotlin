@@ -15,37 +15,23 @@ import java.io.File
  */
 class IncomingOptions(
     val schema: Schema,
-    val schemaPackageName: String,
-    val customScalarsMapping: Map<String, String>,
     val codegenModels: String,
-    val flattenModels: Boolean,
-    val metadataInputObjects: Set<String>,
-    val metadataEnums: Set<String>,
-    val isFromMetadata: Boolean,
-    val metadataFragments: List<MetadataFragment>,
+    val schemaPackageName: String,
 ) {
   companion object {
-    fun fromMetadata(metadata: ApolloMetadata): IncomingOptions {
+    fun fromMetadata(commonMetadata: CommonMetadata, packageNameGenerator: PackageNameGenerator): IncomingOptions {
       return IncomingOptions(
-          schema = metadata.schema!!,
-          schemaPackageName = metadata.schemaPackageName,
-          customScalarsMapping = metadata.customScalarsMapping,
-          codegenModels = metadata.codegenModels,
-          flattenModels = metadata.flattenModels,
-          metadataInputObjects = metadata.generatedInputObjects,
-          metadataEnums = metadata.generatedEnums,
-          isFromMetadata = true,
-          metadataFragments = metadata.generatedFragments,
+          schema = commonMetadata.schema,
+          codegenModels = commonMetadata.codegenModels,
+          schemaPackageName = packageNameGenerator.packageName(commonMetadata.schemaPath)
       )
     }
 
-    fun fromOptions(
-        schemaFiles: Set<File>,
-        customScalarsMapping: Map<String, String>,
-        codegenModels: String,
-        packageNameGenerator: PackageNameGenerator,
-        flattenModels: Boolean,
-    ): IncomingOptions {
+    fun resolveSchema(schemaFiles: Collection<File>, rootFolders: List<String>): Pair<Schema, String> {
+      check(schemaFiles.isNotEmpty()) {
+        "No schema file found in:\n${rootFolders.joinToString("\n")}"
+      }
+
       val schemaDocuments = schemaFiles.map {
         it.toGQLDocument()
       }
@@ -68,19 +54,7 @@ class IncomingOptions(
           filePath = null
       )
 
-      val schema = schemaDocument.toSchema()
-
-      return IncomingOptions(
-          schema = schema,
-          schemaPackageName = packageNameGenerator.packageName(mainSchemaDocument.filePath!!),
-          customScalarsMapping = customScalarsMapping,
-          codegenModels = codegenModels,
-          flattenModels = flattenModels,
-          metadataInputObjects = emptySet(),
-          metadataEnums = emptySet(),
-          isFromMetadata = false,
-          metadataFragments = emptyList(),
-      )
+      return schemaDocument.toSchema() to mainSchemaDocument.filePath!!
     }
   }
 }
