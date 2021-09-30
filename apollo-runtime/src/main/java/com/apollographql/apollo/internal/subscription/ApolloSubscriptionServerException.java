@@ -12,7 +12,7 @@ public class ApolloSubscriptionServerException extends ApolloSubscriptionExcepti
   public final Map<String, Object> errorPayload;
 
   public ApolloSubscriptionServerException(@NotNull Map<String, Object> errorPayload) {
-    super("Subscription failed");
+    super("Subscription failed. Check errorPayload for more details.");
     this.errorPayload = unmodifiableMap(checkNotNull(errorPayload, "errorPayload == null"));
   }
 }
