@@ -151,6 +151,14 @@ apollo {
 
   // With
   srcDir("shared/graphql")
+  
+  // Replace
+  graphqlSourceDirectorySet.include("**/*.graphql")
+  graphqlSourceDirectorySet.exclude("**/schema.graphql")
+
+  // With
+  include.add("**/*.graphql")
+  exclude.add("**/schema.graphql")
 }
 ```
 
