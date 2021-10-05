@@ -1,0 +1,15 @@
+type Query {
+  unused: Int
+}
+
+input Login {
+  email: String!
+}
+
+type Mutation {
+  login(input: Login!): User!
+}
+
+type User {
+  response: String!
+}
