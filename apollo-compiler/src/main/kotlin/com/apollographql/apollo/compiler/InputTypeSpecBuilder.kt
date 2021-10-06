@@ -49,9 +49,9 @@ class InputTypeSpecBuilder(
       val builderFields = fields.map { it.name.decapitalize().escapeJavaReservedWord() to it.javaTypeName(context) }
       val builderFieldDefaultValues = fields
           .filterNot {
-            // ignore any custom type default values for now as we don't support them
+            // ignore any custom type or object default values for now as we don't support them
             val normalizedType = it.type.removeSuffix("!").removeSurrounding("[", "]").removeSuffix("!")
-            normalizedType.isCustomScalarType(context)
+            normalizedType.isCustomScalarType(context) || normalizedType.isInputObject(context)
           }
           .associate { it.name.decapitalize().escapeJavaReservedWord() to it.defaultValue }
       val javaDocs = fields

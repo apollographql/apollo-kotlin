@@ -68,7 +68,7 @@ public final class Input implements InputType {
   }
 
   public static final class Builder {
-    private @NotNull Filter filter = "{delay:0}";
+    private @NotNull Filter filter;
 
     Builder() {
     }

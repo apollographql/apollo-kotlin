@@ -41,6 +41,11 @@ private fun InputType.Field.parameterSpec(): ParameterSpec {
     else -> rawTypeName
   }
   val defaultValue = defaultValue
+      /**
+       * For input objects, do not try to create a defaultValue
+       * See https://github.com/apollographql/apollo-android/issues/3394
+       */
+      ?.takeIf { type !is FieldType.Object }
       ?.toDefaultValueCodeBlock(typeName = rawTypeName, fieldType = type)
       .let { code ->
         if (isOptional) {

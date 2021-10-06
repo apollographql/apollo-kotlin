@@ -1,6 +1,9 @@
 package com.apollographql.apollo.compiler
 
+import com.apollographql.apollo.compiler.ast.ObjectType
 import com.apollographql.apollo.compiler.ir.CodeGenerationContext
+import com.apollographql.apollo.compiler.ir.TypeDeclaration.Companion.KIND_INPUT_OBJECT_TYPE
+import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
@@ -413,6 +416,10 @@ fun String.isCustomScalarType(context: CodeGenerationContext): Boolean {
   } else {
     context.customTypeMap.containsKey(normalizedType)
   }
+}
+
+fun String.isInputObject(context: CodeGenerationContext): Boolean {
+  return context.typeDeclarations.firstOrNull { it.name == this }?.kind == KIND_INPUT_OBJECT_TYPE
 }
 
 fun TypeName.isScalar(context: CodeGenerationContext) = (Util.SCALAR_TYPES.contains(this) || isEnum(context))
