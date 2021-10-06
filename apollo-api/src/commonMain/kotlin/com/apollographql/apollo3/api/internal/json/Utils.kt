@@ -118,7 +118,6 @@ object Utils {
     try {
       return nextInt()
     } catch (e: Exception) {
-      e.printStackTrace()
     }
     try {
       return nextLong()

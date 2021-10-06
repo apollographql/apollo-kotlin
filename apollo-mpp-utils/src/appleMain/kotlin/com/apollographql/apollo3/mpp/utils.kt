@@ -30,3 +30,5 @@ actual fun assertMainThreadOnNative() {
     "Non-main native call"
   }
 }
+
+actual fun platform() = Platform.Native

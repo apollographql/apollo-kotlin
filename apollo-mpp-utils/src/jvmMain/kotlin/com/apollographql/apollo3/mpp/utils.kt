@@ -17,3 +17,5 @@ actual fun freeze(obj: Any) {
 
 actual fun assertMainThreadOnNative() {
 }
+
+actual fun platform() = Platform.Jvm
