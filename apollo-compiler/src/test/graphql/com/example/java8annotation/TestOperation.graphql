@@ -1,0 +1,6 @@
+
+mutation LoginBarber($input: Login!) {
+  login(input: $input) {
+    response
+  }
+}
