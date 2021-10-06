@@ -18,11 +18,9 @@ import kotlin.test.Test
 
 class CancelTest {
   private lateinit var mockServer: MockServer
-  private lateinit var apolloClient: ApolloClient
 
   private suspend fun setUp() {
     mockServer = MockServer()
-    apolloClient = ApolloClient(mockServer.url())
   }
 
   private suspend fun tearDown() {
@@ -32,6 +30,7 @@ class CancelTest {
   @Test
   fun cancelFlow() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(readTestFixture("resources/EpisodeHeroNameResponse.json"))
+    val apolloClient = ApolloClient(mockServer.url())
 
     val job = launch {
       delay(100)
@@ -45,8 +44,7 @@ class CancelTest {
   @Test
   fun canCancelQueryCacheAndNetwork() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(readTestFixture("resources/EpisodeHeroNameResponse.json"), 500)
-
-    val sharedFlow = MutableSharedFlow<Unit>()
+    val apolloClient = ApolloClient(mockServer.url()).withNormalizedCache(MemoryCacheFactory())
 
     val job = launch {
       apolloClient.queryCacheAndNetwork(EpisodeHeroNameQuery(Episode.EMPIRE)).toList()
