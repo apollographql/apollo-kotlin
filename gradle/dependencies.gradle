@@ -83,7 +83,7 @@ ext.dep = [
         logging       : "com.squareup.okhttp3:logging-interceptor:$versions.okHttp",
         logging4      : "com.squareup.okhttp3:logging-interceptor:$versions.okHttp4",
     ],
-    okio                     : "com.squareup.okio:okio-multiplatform:$versions.okio",
+    okio                     : "com.squareup.okio:okio:$versions.okio",
     poet                     : [
         java  : "com.squareup:javapoet:$versions.javaPoet",
         kotlin: "com.squareup:kotlinpoet:1.9.0",
