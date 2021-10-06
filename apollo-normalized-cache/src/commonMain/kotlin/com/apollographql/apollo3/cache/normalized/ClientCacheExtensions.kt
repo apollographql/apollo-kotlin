@@ -11,8 +11,12 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.internal.ApolloCacheInterceptor
 import com.apollographql.apollo3.exception.ApolloCompositeException
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.mpp.currentTimeMillis
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onErrorCollect
 
 enum class FetchPolicy {
   /**
@@ -63,7 +67,6 @@ fun ApolloClient.withStore(store: ApolloStore, writeToCacheAsynchronously: Boole
   return withInterceptor(ApolloCacheInterceptor(store)).withWriteToCacheAsynchronously(writeToCacheAsynchronously)
 }
 
-
 fun <D : Query.Data> ApolloClient.watch(query: Query<D>): Flow<ApolloResponse<D>> {
   return watch(ApolloRequest(query))
 }
@@ -85,29 +88,41 @@ fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(query: Query<D>): Flow<Ap
  */
 fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
   return flow {
-    val cacheResult = kotlin.runCatching {
-      query(queryRequest.withFetchPolicy(FetchPolicy.CacheOnly))
-    }
-    val cacheResponse = cacheResult.getOrNull()
-    if (cacheResponse != null) {
-      emit(cacheResponse)
-    }
-    val networkResult = kotlin.runCatching {
-      query(queryRequest.withFetchPolicy(FetchPolicy.NetworkOnly))
-    }
-    val networkResponse = networkResult.getOrNull()
-    if (networkResponse != null) {
-      emit(networkResponse)
+    var cacheException: ApolloException? = null
+    var networkException: ApolloException? = null
+    try {
+     emit(query(queryRequest.withFetchPolicy(FetchPolicy.CacheOnly)))
+    } catch (e: ApolloException) {
+      cacheException = e
     }
 
-    if (cacheResponse == null && networkResponse == null) {
+    try {
+      emit(query(queryRequest.withFetchPolicy(FetchPolicy.NetworkOnly)))
+    } catch (e: ApolloException) {
+      networkException = e
+    }
+
+    if (cacheException != null && networkException != null) {
       throw ApolloCompositeException(
-          cacheResult.exceptionOrNull(),
-          networkResult.exceptionOrNull()
+          cacheException,
+          networkException
       )
     }
   }
 }
+
+val ApolloClient.apolloStore: ApolloStore
+  get() {
+    return interceptors.firstOrNull { it is ApolloCacheInterceptor }?.let {
+      (it as ApolloCacheInterceptor).store
+    } ?: error("no cache configured")
+  }
+
+@Deprecated(
+    message = "Use apolloStore directly",
+    replaceWith = ReplaceWith("apolloStore.clearAll()")
+)
+fun ApolloClient.clearNormalizedCache() = apolloStore.clearAll()
 
 /**
  * Sets the [FetchPolicy] on this request. D has a bound on [Query.Data] because subscriptions and mutation shouldn't

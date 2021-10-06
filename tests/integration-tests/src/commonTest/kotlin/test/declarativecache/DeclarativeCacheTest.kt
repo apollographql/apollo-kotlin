@@ -27,12 +27,12 @@ class DeclarativeCacheTest {
 
     // Write a book at the "promo" path
     val promoOperation = GetPromoBookQuery()
-    val promoData = GetPromoBookQuery.Data(promoBook = GetPromoBookQuery.PromoBook(__typename =  "Book", title = "Promo", isbn = "42"))
+    val promoData = GetPromoBookQuery.Data(GetPromoBookQuery.PromoBook("Promo", "42", "Book"))
     store.writeOperation(promoOperation, promoData)
 
     // Overwrite the book title through the "other" path
     val otherOperation = GetOtherBookQuery()
-    val otherData = GetOtherBookQuery.Data(otherBook = GetOtherBookQuery.OtherBook(__typename =  "Book", title = "Other", isbn = "42"))
+    val otherData = GetOtherBookQuery.Data(GetOtherBookQuery.OtherBook("42", "Other", "Book"))
     store.writeOperation(otherOperation, otherData)
 
     // Get the "promo" book again, the title must be updated
@@ -47,12 +47,12 @@ class DeclarativeCacheTest {
 
     // Write a library at the "promo" path
     val promoOperation = GetPromoLibraryQuery()
-    val promoData = GetPromoLibraryQuery.Data(promoLibrary = GetPromoLibraryQuery.PromoLibrary(__typename =  "Library", id = "3", address = "PromoAddress"))
+    val promoData = GetPromoLibraryQuery.Data(GetPromoLibraryQuery.PromoLibrary("PromoAddress", "3", "Library"))
     store.writeOperation(promoOperation, promoData)
 
     // Overwrite the library address through the "other" path
     val otherOperation = GetOtherLibraryQuery()
-    val otherData = GetOtherLibraryQuery.Data(otherLibrary = GetOtherLibraryQuery.OtherLibrary(__typename =  "Library", id = "3", address = "OtherAddress"))
+    val otherData = GetOtherLibraryQuery.Data(GetOtherLibraryQuery.OtherLibrary("3", "OtherAddress", "Library"))
     store.writeOperation(otherOperation, otherData)
 
     // Get the "promo" library again, the address must be updated
@@ -66,10 +66,10 @@ class DeclarativeCacheTest {
     val store = ApolloStore(MemoryCacheFactory())
 
     val promoOperation = GetPromoBookQuery()
-    val promoData = GetPromoBookQuery.Data(promoBook = GetPromoBookQuery.PromoBook(__typename =  "Book", title = "Promo", isbn = "42"))
+    val promoData = GetPromoBookQuery.Data(GetPromoBookQuery.PromoBook("Promo", "42", "Book"))
     store.writeOperation(promoOperation, promoData)
 
-    val operation = GetBookQuery(isbn = "42")
+    val operation = GetBookQuery("42")
     val data = store.readOperation(operation, CustomScalarAdapters.Empty)
 
     assertEquals("Promo", data?.book?.title)
@@ -93,18 +93,18 @@ class DeclarativeCacheTest {
     val store = ApolloStore(MemoryCacheFactory(), cacheResolver = cacheResolver)
 
     val promoOperation = GetPromoBookQuery()
-    store.writeOperation(promoOperation, GetPromoBookQuery.Data(promoBook = GetPromoBookQuery.PromoBook(__typename =  "Book", title = "Title1", isbn = "1")))
-    store.writeOperation(promoOperation, GetPromoBookQuery.Data(promoBook = GetPromoBookQuery.PromoBook(__typename =  "Book", title = "Title2", isbn = "2")))
-    store.writeOperation(promoOperation, GetPromoBookQuery.Data(promoBook = GetPromoBookQuery.PromoBook(__typename =  "Book", title = "Title3", isbn = "3")))
-    store.writeOperation(promoOperation, GetPromoBookQuery.Data(promoBook = GetPromoBookQuery.PromoBook(__typename =  "Book", title = "Title4", isbn = "4")))
+    store.writeOperation(promoOperation, GetPromoBookQuery.Data(GetPromoBookQuery.PromoBook("Title1", "1", "Book")))
+    store.writeOperation(promoOperation, GetPromoBookQuery.Data(GetPromoBookQuery.PromoBook("Title2", "2", "Book")))
+    store.writeOperation(promoOperation, GetPromoBookQuery.Data(GetPromoBookQuery.PromoBook("Title3", "3", "Book")))
+    store.writeOperation(promoOperation, GetPromoBookQuery.Data(GetPromoBookQuery.PromoBook("Title4", "4", "Book")))
 
-    var operation = GetBooksQuery(isbns = listOf("4", "1"))
+    var operation = GetBooksQuery(listOf("4", "1"))
     var data = store.readOperation(operation, CustomScalarAdapters.Empty)
 
     assertEquals("Title4", data?.books?.get(0)?.title)
     assertEquals("Title1", data?.books?.get(1)?.title)
 
-    operation = GetBooksQuery(isbns = listOf("3"))
+    operation = GetBooksQuery(listOf("3"))
     data = store.readOperation(operation, CustomScalarAdapters.Empty)
 
     assertEquals("Title3", data?.books?.get(0)?.title)

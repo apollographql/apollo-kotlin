@@ -15,10 +15,10 @@ import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.withHttpMethod
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
-import com.apollographql.apollo3.interceptor.NetworkInterceptor
 import com.apollographql.apollo3.interceptor.DefaultInterceptorChain
+import com.apollographql.apollo3.interceptor.NetworkInterceptor
 import com.apollographql.apollo3.internal.defaultDispatcher
-import com.apollographql.apollo3.mpp.ensureNeverFrozen
+import com.apollographql.apollo3.mpp.assertMainThreadOnNative
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
@@ -29,17 +29,18 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.single
+import kotlin.jvm.JvmOverloads
 
 typealias FlowDecorator = (Flow<ApolloResponse<*>>) -> Flow<ApolloResponse<*>>
 
 /**
  * The main entry point for the Apollo runtime. An [ApolloClient] is responsible for executing queries, mutations and subscriptions
  */
-class ApolloClient constructor(
+class ApolloClient @JvmOverloads constructor(
     val networkTransport: NetworkTransport,
-    private val subscriptionNetworkTransport: NetworkTransport = networkTransport,
     private val customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-    private val interceptors: List<ApolloInterceptor> = emptyList(),
+    private val subscriptionNetworkTransport: NetworkTransport = networkTransport,
+    val interceptors: List<ApolloInterceptor> = emptyList(),
     override val executionContext: ExecutionContext = ExecutionContext.Empty,
     private val requestedDispatcher: CoroutineDispatcher? = null,
     private val flowDecorators: List<FlowDecorator> = emptyList(),
@@ -47,6 +48,16 @@ class ApolloClient constructor(
 
   private val dispatcher = defaultDispatcher(requestedDispatcher)
   private val clientScope = ClientScope(CoroutineScope(dispatcher))
+
+  /**
+   * A short-hand constructor
+   */
+  constructor(
+      serverUrl: String,
+  ) : this(
+      networkTransport = HttpNetworkTransport(serverUrl = serverUrl),
+      subscriptionNetworkTransport = WebSocketNetworkTransport(serverUrl = serverUrl),
+  )
 
   /**
    * Executes the given query and returns a response or throws on transport errors
@@ -162,10 +173,11 @@ class ApolloClient constructor(
 
   @OptIn(ExperimentalCoroutinesApi::class, kotlinx.coroutines.FlowPreview::class)
   private fun <D : Operation.Data> ApolloRequest<D>.execute(): Flow<ApolloResponse<D>> {
+    assertMainThreadOnNative()
     val executionContext = clientScope + customScalarAdapters + this@ApolloClient.executionContext + this.executionContext
 
     val request = withExecutionContext(executionContext)
-    ensureNeverFrozen(request)
+    // ensureNeverFrozen(request)
     val interceptors = interceptors + NetworkInterceptor(
         networkTransport = networkTransport,
         subscriptionNetworkTransport = subscriptionNetworkTransport,
@@ -179,20 +191,6 @@ class ApolloClient constructor(
   }
 }
 
-fun ApolloClient(
-    serverUrl: String,
-    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-    interceptors: List<ApolloInterceptor> = emptyList(),
-    executionContext: ExecutionContext = ExecutionContext.Empty,
-    requestedDispatcher: CoroutineDispatcher? = null,
-) = ApolloClient(
-    networkTransport = HttpNetworkTransport(serverUrl = serverUrl),
-    subscriptionNetworkTransport = WebSocketNetworkTransport(serverUrl = serverUrl),
-    customScalarAdapters = customScalarAdapters,
-    interceptors = interceptors,
-    executionContext = executionContext,
-    requestedDispatcher = requestedDispatcher
-)
 
 /**
  * Configures the given [ApolloClient] to try auto persisted queries.
@@ -213,7 +211,7 @@ fun ApolloClient(
 fun ApolloClient.withAutoPersistedQueries(
     httpMethodForHashedQueries: HttpMethod = HttpMethod.Get,
     httpMethodForDocumentQueries: HttpMethod = HttpMethod.Post,
-    hashByDefault: Boolean = true
+    hashByDefault: Boolean = true,
 ): ApolloClient {
   return withInterceptor(AutoPersistedQueryInterceptor(httpMethodForDocumentQueries)).let {
     if (hashByDefault) {

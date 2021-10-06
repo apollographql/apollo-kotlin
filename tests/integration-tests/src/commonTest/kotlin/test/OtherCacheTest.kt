@@ -99,12 +99,12 @@ class OtherCacheTest {
   fun skipIncludeDirective() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(readResource("HeroAndFriendsNameResponse.json"))
     apolloClient.query(
-        ApolloRequest(HeroAndFriendsDirectivesQuery(episode = Episode.JEDI, includeName = true, skipFriends = false))
+        ApolloRequest(HeroAndFriendsDirectivesQuery(Episode.JEDI, true, false))
             .withFetchPolicy(FetchPolicy.NetworkOnly)
     )
 
     var response = apolloClient.query(
-        ApolloRequest(HeroAndFriendsDirectivesQuery(episode = Episode.JEDI, includeName = true, skipFriends = false))
+        ApolloRequest(HeroAndFriendsDirectivesQuery(Episode.JEDI, true, false))
             .withFetchPolicy(FetchPolicy.CacheOnly)
     )
     assertEquals2(response.data?.hero?.name, "R2-D2")
@@ -114,7 +114,7 @@ class OtherCacheTest {
     assertEquals2(response.data?.hero?.friends?.get(2)?.name, "Leia Organa")
 
     response = apolloClient.query(
-        ApolloRequest(HeroAndFriendsDirectivesQuery(episode = Episode.JEDI, includeName = false, skipFriends = false))
+        ApolloRequest(HeroAndFriendsDirectivesQuery(Episode.JEDI, false, false))
             .withFetchPolicy(FetchPolicy.CacheOnly)
     )
     assertNull(response.data?.hero?.name)
@@ -124,7 +124,7 @@ class OtherCacheTest {
     assertEquals2(response.data?.hero?.friends?.get(2)?.name, "Leia Organa")
 
     response = apolloClient.query(
-        ApolloRequest(HeroAndFriendsDirectivesQuery(episode = Episode.JEDI, includeName = true, skipFriends = true))
+        ApolloRequest(HeroAndFriendsDirectivesQuery(Episode.JEDI, true, true))
             .withFetchPolicy(FetchPolicy.CacheOnly)
     )
     assertEquals2(response.data?.hero?.name, "R2-D2")
@@ -138,14 +138,14 @@ class OtherCacheTest {
     mockServer.enqueue(readResource("HeroNameResponse.json"))
     apolloClient.query(
         ApolloRequest(
-            HeroAndFriendsDirectivesQuery(episode = Episode.JEDI, includeName = true, skipFriends = true)
+            HeroAndFriendsDirectivesQuery(Episode.JEDI, true, true)
         ).withFetchPolicy(FetchPolicy.NetworkOnly)
     )
 
     // Get it from the cache, we should get the name but no friends
     val response = apolloClient.query(
         ApolloRequest(
-            HeroAndFriendsDirectivesQuery(episode = Episode.JEDI, includeName = true, skipFriends = true)
+            HeroAndFriendsDirectivesQuery(Episode.JEDI, true, true)
         ).withFetchPolicy(FetchPolicy.CacheOnly)
     )
 
@@ -156,7 +156,7 @@ class OtherCacheTest {
     try {
       apolloClient.query(
           ApolloRequest(
-              HeroAndFriendsDirectivesQuery(episode = Episode.JEDI, includeName = true, skipFriends = false)
+              HeroAndFriendsDirectivesQuery(Episode.JEDI, true, false)
           ).withFetchPolicy(FetchPolicy.CacheOnly)
       )
       fail("A CacheMissException was expected")

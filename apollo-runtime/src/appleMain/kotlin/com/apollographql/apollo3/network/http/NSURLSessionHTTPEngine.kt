@@ -1,21 +1,19 @@
 package com.apollographql.apollo3.network.http
 
-import com.apollographql.apollo3.exception.ApolloHttpException
-import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
-import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpResponse
+import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.mpp.assertMainThreadOnNative
 import com.apollographql.apollo3.mpp.suspendAndResumeOnMain
 import com.apollographql.apollo3.network.toNSData
 import okio.Buffer
-import okio.IOException
 import okio.toByteString
 import platform.Foundation.NSData
 import platform.Foundation.NSError
 import platform.Foundation.NSHTTPURLResponse
 import platform.Foundation.NSMutableURLRequest
-import platform.Foundation.NSThread
 import platform.Foundation.NSURL
 import platform.Foundation.NSURLRequest
 import platform.Foundation.NSURLRequestReloadIgnoringCacheData
@@ -60,7 +58,7 @@ actual class DefaultHttpEngine(
 
   @Suppress("UNCHECKED_CAST")
   override suspend fun execute(request: HttpRequest) = suspendAndResumeOnMain<HttpResponse> { mainContinuation, invokeOnCancellation ->
-    assert(NSThread.isMainThread())
+    assertMainThreadOnNative()
 
     request.freeze()
 

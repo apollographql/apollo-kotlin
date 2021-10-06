@@ -145,14 +145,15 @@ class BatchingHttpEngine(
     )
     freeze(request)
 
-    val result = kotlin.runCatching {
+    var exception: ApolloException? = null
+    val result = try {
       val response = delegate.execute(request)
       if (response.statusCode !in 200..299) {
         throw ApolloHttpException(response.statusCode, response.headers, "HTTP error ${response.statusCode} while executing batched query: '${response.body?.readUtf8()}'")
       }
       val responseBody = response.body ?: throw ApolloException("null body when executing batched query")
 
-      // TODO: this is most likely going to transform BitNumbers into strings, not sure how much of an issue that is
+      // TODO: this is most likely going to transform BigNumbers into strings, not sure how much of an issue that is
       val list = AnyAdapter.fromJson(BufferedSourceJsonReader(responseBody))
       if (list !is List<*>) throw ApolloException("batched query response is not a list when executing batched query")
 
@@ -168,26 +169,28 @@ class BatchingHttpEngine(
           AnyAdapter.toJson(this, it)
         }
       }
+    } catch (e: ApolloException) {
+      exception = e
+      null
     }
 
-    val failure = result.exceptionOrNull()
-    if (failure != null) {
+    if (exception != null) {
       pending.forEach {
-        it.deferred.completeExceptionally(failure)
+        it.deferred.completeExceptionally(exception)
       }
       return
-    }
-
-    result.getOrThrow().forEachIndexed { index, byteString ->
-      // This works because the server must return the responses in order
-      pending[index].deferred.complete(
-          HttpResponse(
-              statusCode = 200,
-              headers = emptyList(),
-              bodyString = byteString,
-              bodySource = null
-          )
-      )
+    } else {
+      result!!.forEachIndexed { index, byteString ->
+        // This works because the server must return the responses in order
+        pending[index].deferred.complete(
+            HttpResponse(
+                statusCode = 200,
+                headers = emptyList(),
+                bodyString = byteString,
+                bodySource = null
+            )
+        )
+      }
     }
   }
 
@@ -201,6 +204,6 @@ class BatchingHttpEngine(
   }
 }
 
-fun <T> ExecutionParameters<T>.withCanBeBatched(canBeBatched: Boolean) where T: ExecutionParameters<T> = withHttpHeader(
+fun <T> ExecutionParameters<T>.withCanBeBatched(canBeBatched: Boolean) where T : ExecutionParameters<T> = withHttpHeader(
     CAN_BE_BATCHED, canBeBatched.toString()
 )

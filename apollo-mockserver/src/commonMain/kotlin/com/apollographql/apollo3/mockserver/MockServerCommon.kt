@@ -5,6 +5,8 @@ import okio.BufferedSink
 import okio.BufferedSource
 import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
+import kotlin.jvm.JvmOverloads
+import kotlin.jvm.JvmStatic
 
 fun parseHeader(line: String): Pair<String, String> {
   val index = line.indexOfFirst { it == ':' }
@@ -45,14 +47,15 @@ class MockResponse(
     val headers: Map<String, String> = emptyMap(),
     val delayMs: Long = 0,
 ) {
+  @JvmOverloads
   constructor(
-      statusCode: Int = 200,
       body: String,
+      statusCode: Int = 200,
       headers: Map<String, String> = emptyMap()
   ) : this(statusCode, body.encodeUtf8(), headers)
 }
 
-fun readRequest(source: BufferedSource): MockRecordedRequest? {
+internal fun readRequest(source: BufferedSource): MockRecordedRequest? {
   var line = source.readUtf8Line()
   if (line == null) {
     // the connection was closed

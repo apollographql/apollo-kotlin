@@ -35,8 +35,7 @@ class WriteToCacheAsynchronouslyTest {
     mockServer = MockServer()
     apolloClient = ApolloClient(
         serverUrl = mockServer.url(),
-        requestedDispatcher = dispatcher
-    ).withStore(store)
+    ).copy(requestedDispatcher = dispatcher).withStore(store)
   }
 
   private suspend fun tearDown() {

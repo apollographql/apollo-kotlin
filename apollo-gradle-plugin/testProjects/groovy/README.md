@@ -1,0 +1,1 @@
+Makes sure the Gradle API can be called from Groovy

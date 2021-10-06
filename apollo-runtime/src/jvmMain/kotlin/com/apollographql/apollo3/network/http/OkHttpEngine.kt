@@ -5,6 +5,7 @@ import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
+import com.apollographql.apollo3.exception.ApolloException
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
 import okhttp3.Headers
@@ -13,6 +14,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import okio.BufferedSink
+import okio.IOException
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -70,35 +72,37 @@ actual class DefaultHttpEngine(
       call.cancel()
     }
 
-    val networkResult = kotlin.runCatching {
+    var exception: IOException? = null
+    val response = try {
       call.execute()
+    } catch (e: IOException) {
+      exception = e
+      null
     }
 
-    if (networkResult.isFailure) {
+    if (exception != null) {
       continuation.resumeWithException(
           ApolloNetworkException(
               message = "Failed to execute GraphQL http network request",
-              platformCause = networkResult.exceptionOrNull()!!
+              platformCause = exception
           )
       )
       return@suspendCancellableCoroutine
+    } else {
+      val result = Result.success(
+          HttpResponse(
+              statusCode = response!!.code(),
+              headers = response.headers().let { headers ->
+                0.until(headers.size()).map { index ->
+                  HttpHeader(headers.name(index), headers.value(index))
+                }
+              },
+              bodySource = response.body()!!.source(),
+              bodyString = null
+          )
+      )
+      continuation.resume(result.getOrThrow())
     }
-
-    val response = networkResult.getOrThrow()
-
-    val result = Result.success(
-        HttpResponse(
-            statusCode = response.code(),
-            headers = response.headers().let { headers ->
-              0.until(headers.size()).map { index ->
-                HttpHeader(headers.name(index), headers.value(index))
-              }
-            },
-            bodySource = response.body()!!.source(),
-            bodyString = null
-        )
-    )
-    continuation.resume(result.getOrThrow())
   }
 
   override fun dispose() {

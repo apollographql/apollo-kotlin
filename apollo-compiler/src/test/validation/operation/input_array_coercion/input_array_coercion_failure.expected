@@ -1,0 +1,8 @@
+ERROR: ValidationError (3:30)
+Variable `var` of type `Int` used in position expecting type `[Int]`
+------------
+ERROR: ValidationError (8:37)
+Value `null` cannot be used in position expecting `[Int!]!`
+------------
+ERROR: ValidationError (16:30)
+Value `"Foo"` cannot be used in position expecting `Int`

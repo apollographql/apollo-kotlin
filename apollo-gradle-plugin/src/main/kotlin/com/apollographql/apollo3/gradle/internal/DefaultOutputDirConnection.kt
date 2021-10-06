@@ -1,5 +1,9 @@
 package com.apollographql.apollo3.gradle.internal
 
+import com.android.build.gradle.AppExtension
+import com.android.build.gradle.FeatureExtension
+import com.android.build.gradle.LibraryExtension
+import com.android.build.gradle.TestedExtension
 import com.android.build.gradle.api.AndroidSourceSet
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.TestVariant
@@ -8,6 +12,8 @@ import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.gradle.api.Service
 import com.apollographql.apollo3.gradle.api.androidExtensionOrThrow
 import com.apollographql.apollo3.gradle.api.applicationVariants
+import com.apollographql.apollo3.gradle.api.javaConvention
+import com.apollographql.apollo3.gradle.api.javaConventionOrThrow
 import com.apollographql.apollo3.gradle.api.kotlinProjectExtensionOrThrow
 import com.apollographql.apollo3.gradle.api.libraryVariants
 import com.apollographql.apollo3.gradle.api.testVariants
@@ -18,6 +24,7 @@ import org.gradle.api.file.Directory
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.internal.HasConvention
 import org.gradle.api.plugins.JavaPluginConvention
+import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskProvider
 import org.jetbrains.kotlin.gradle.plugin.KOTLIN_DSL_NAME
@@ -35,10 +42,10 @@ internal class DefaultOutputDirConnection(
   }
 
   override fun connectToJavaSourceSet(name: String) {
-    project.convention.getByType(JavaPluginConvention::class.java)
+    project.javaConventionOrThrow
         .sourceSets
         .getByName(name)
-        .allJava
+        .java
         .srcDir(outputDir)
   }
 
@@ -75,6 +82,45 @@ internal class DefaultOutputDirConnection(
   }
 
   override fun connectToAndroidSourceSet(name: String) {
+    val container = project.container(BaseVariant::class.java)
+
+    val extension = project.androidExtensionOrThrow
+    when (extension) {
+      is LibraryExtension -> {
+        extension.libraryVariants.all { variant ->
+          container.add(variant)
+        }
+      }
+      is AppExtension -> {
+        extension.applicationVariants.all { variant ->
+          container.add(variant)
+        }
+      }
+      is FeatureExtension -> {
+        extension.featureVariants.all { variant ->
+          container.add(variant)
+        }
+      }
+      else -> error("Unsupported extension: $extension")
+    }
+
+    if (extension is TestedExtension) {
+      extension.testVariants.all { variant ->
+        container.add(variant)
+      }
+      extension.unitTestVariants.all { variant ->
+        container.add(variant)
+      }
+    }
+
+    container.all {
+      if (it.sourceSets.any { it.name == name }) {
+        // This is required for AS to see the sources
+        // See https://github.com/apollographql/apollo-android/issues/3351
+        it.addJavaSourceFoldersToModel(outputDir.get().asFile)
+      }
+    }
+
     project.androidExtensionOrThrow
         .sourceSets
         .getByName(name)

@@ -161,7 +161,7 @@ interface Service {
    *
    * - $packageName/SomeQuery.kt
    * - $packageName/fragment/SomeFragment.kt
-   * - $packageName/type/Types.kt
+   * - $packageName/type/CustomScalar.kt
    * - $packageName/type/SomeInputObject.kt
    * - $packageName/type/SomeEnum.kt
    *
@@ -237,10 +237,21 @@ interface Service {
   val generateFragmentImplementations: Property<Boolean>
 
   /**
-   * Unused property for the moment. Left to save users to edit one line. Will be used again when there is
-   * Java codegen
+   * Whether to generate Kotlin or Java models
+   * Default to true if the Kotlin plugin is found
    */
   val generateKotlinModels: Property<Boolean>
+
+  /**
+   * Whether to write the query document in models
+   */
+  val generateQueryDocument: Property<Boolean>
+
+  /**
+   * Whether to generate the __Schema class. The __Schema class lists all composite
+   * types in order to access __typename and/or possibleTypes
+   */
+  val generateSchema: Property<Boolean>
 
   /**
    * What codegen to use. One of "operationBased", "responseBased" or "compat"
@@ -252,6 +263,8 @@ interface Service {
   /**
    * Whether to flatten the models. File paths are limited on MacOSX to 256 chars and flattening can help keeping the path length manageable
    * The drawback is that some classes may nameclash in which case they will be suffixed with a number
+   *
+   * Default value: false for "responseBased", true else
    */
   val flattenModels: Property<Boolean>
 

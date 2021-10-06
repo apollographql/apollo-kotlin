@@ -24,8 +24,10 @@ import com.apollographql.apollo3.cache.normalized.refetchPolicy
 import com.apollographql.apollo3.cache.normalized.storePartialResponses
 import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.cache.normalized.withCacheInfo
+import com.apollographql.apollo3.cache.normalized.withDoNotStore
 import com.apollographql.apollo3.cache.normalized.writeToCacheAsynchronously
 import com.apollographql.apollo3.exception.ApolloCompositeException
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
@@ -40,11 +42,12 @@ import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 
 internal class ApolloCacheInterceptor(
-    private val store: ApolloStore,
+    val store: ApolloStore,
 ) : ApolloInterceptor {
   init {
-    // The store has a MutableSharedFlow that doesn't like being frozen
-    ensureNeverFrozen(store)
+    // The store has a MutableSharedFlow that doesn't like being frozen when using coroutines
+    // But is ok to freeze when using coroutines-native-mt (see https://github.com/apollographql/apollo-android/issues/3357)
+    // ensureNeverFrozen(store)
   }
 
   private val <T> ExecutionParameters<T>.clientScope: CoroutineScope where T : ExecutionParameters<T>
@@ -156,18 +159,18 @@ internal class ApolloCacheInterceptor(
     val refetchPolicy = request.refetchPolicy
     val customScalarAdapters = request.customScalarAdapters
     return flow {
-      var result = kotlin.runCatching {
-        fetchOneMightThrow(request, chain, fetchPolicy, customScalarAdapters)
-      }
-      val response = result.getOrNull()
-
-      if (response != null) {
+      var exception: ApolloException? = null
+      var response: ApolloResponse<D>? = null
+      try {
+        response = fetchOneMightThrow(request, chain, fetchPolicy, customScalarAdapters)
         emit(response)
+      } catch (e: ApolloException) {
+        exception = e
       }
 
       if (!request.watch) {
-        if (result.isFailure) {
-          throw result.exceptionOrNull()!!
+        if (exception != null) {
+          throw exception
         }
         return@flow
       }
@@ -180,17 +183,20 @@ internal class ApolloCacheInterceptor(
 
       store.changedKeys.collect { changedKeys ->
         if (watchedKeys == null || changedKeys.intersect(watchedKeys!!).isNotEmpty()) {
-          result = kotlin.runCatching {
-            fetchOneMightThrow(request, chain, refetchPolicy, customScalarAdapters)
-          }
-
-          val newResponse = result.getOrNull()
-          if (newResponse != null) {
+          try {
+            val newResponse = fetchOneMightThrow(
+                request,
+                chain,
+                refetchPolicy,
+                customScalarAdapters
+            )
             emit(newResponse)
 
             if (!newResponse.hasErrors() && newResponse.data != null) {
               watchedKeys = store.normalize(request.operation, newResponse.data!!, customScalarAdapters).values.dependentKeys()
             }
+          } catch (e: ApolloException) {
+
           }
         }
       }
@@ -211,28 +217,25 @@ internal class ApolloCacheInterceptor(
           return cacheResult.response.withCacheInfo(cacheResult.cacheInfo)
         }
 
-        val networkResult = kotlin.runCatching {
-          readOneFromNetwork(request, chain, customScalarAdapters)
-        }
-
-        val networkResponse = networkResult.getOrNull()
-        if (networkResponse != null) {
-          return networkResponse.withCacheInfo(cacheResult.cacheInfo)
+        var networkException: ApolloException? = null
+        try {
+          return readOneFromNetwork(request, chain, customScalarAdapters)
+              .withCacheInfo(cacheResult.cacheInfo)
+        } catch (e: ApolloException) {
+          networkException = e
         }
 
         throw ApolloCompositeException(
             cacheResult.error,
-            networkResult.exceptionOrNull()
+            networkException
         )
       }
       FetchPolicy.NetworkFirst -> {
-        val networkResult = kotlin.runCatching {
-          readOneFromNetwork(request, chain, customScalarAdapters)
-        }
-
-        val networkResponse = networkResult.getOrNull()
-        if (networkResponse != null) {
-          return networkResponse
+        var networkException: ApolloException? = null
+        try {
+          return readOneFromNetwork(request, chain, customScalarAdapters)
+        } catch (e: ApolloException) {
+          networkException = e
         }
 
         val cacheResult = readFromCache(request, customScalarAdapters)
@@ -241,7 +244,7 @@ internal class ApolloCacheInterceptor(
         }
 
         throw ApolloCompositeException(
-            networkResult.exceptionOrNull(),
+            networkException,
             cacheResult.error,
         )
       }
@@ -271,26 +274,30 @@ internal class ApolloCacheInterceptor(
     val operation = request.operation
     val millisStart = currentTimeMillis()
 
-    val result = kotlin.runCatching {
+    var exception: ApolloException? = null
+    val data = try {
       store.readOperation(
           operation = operation,
           customScalarAdapters = customScalarAdapters,
           cacheHeaders = request.cacheHeaders
       )
+    } catch (e: ApolloException) {
+      exception = e
+      null
     }
 
-    val response = if (result.isSuccess) {
+    val response = if (data != null) {
       ApolloResponse(
           requestUuid = request.requestUuid,
           operation = operation,
-          data = result.getOrThrow(),
+          data = data,
           executionContext = request.executionContext
       )
     } else {
       null
     }
 
-    val cacheMissException = result.exceptionOrNull() as? CacheMissException
+    val cacheMissException = exception as? CacheMissException
 
     return CacheResult(
         response = response,
@@ -301,7 +308,7 @@ internal class ApolloCacheInterceptor(
             missedKey = cacheMissException?.key,
             missedField = cacheMissException?.fieldName
         ),
-        error = result.exceptionOrNull()
+        error = exception
     )
   }
 

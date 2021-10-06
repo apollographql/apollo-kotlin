@@ -1,0 +1,17 @@
+# From https://spec.graphql.org/draft/#sel-IALbLDHCFCAACCQla, variables cannot be coerced?
+query listOfIntValueVariable($var: Int) {
+    listOfIntValue(listOfInt: $var)
+}
+
+# Should fail as null values are not expected
+query listOfNonNullIntValue {
+    listOfNonNullIntValue(listOfInt: null)
+}
+
+# Should fail as string values are not expected
+# This triggers the warning below
+# Value `"Foo"` cannot be used in position expecting `Int`
+# It should theorically be 'Value `"Foo"` cannot be used in position expecting `[Int]`'. Not sure how to fix this.
+query listOfIntValue {
+    listOfIntValue(listOfInt: "Foo")
+}

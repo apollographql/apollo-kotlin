@@ -43,7 +43,7 @@ class CacheFlagsTest {
   @Test
   fun doNotStore() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = HeroNameQuery()
-    val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
     mockServer.enqueue(query, data)
 
     apolloClient.query(ApolloRequest(query).withDoNotStore(true))
@@ -57,7 +57,7 @@ class CacheFlagsTest {
   @Test
   fun testEvictAfterRead() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = HeroNameQuery()
-    val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
     mockServer.enqueue(query, data)
 
     // Store the data

@@ -1,4 +1,10 @@
-This project contains the tests for the vast majority of `apollo-xyz` modules that share a "standard"
- Gradle configuration with MPP support, no Android, etc...
+This project contains the bulk of integration tests modules. These tests:
 
-In particular, these tests do not use fragments because fragments are generated differently depending the codegen options. Tests that use fragments are available in the `models-response-based` or `models-operation-based` projects
+- Don't use android
+- Don't use sample-server
+- Don't use RxJava
+- Use operationBased codegen
+- Are run with both Java and Kotlin codegen
+- Are run on the JVM and on MacOS
+
+For more specialized tests, create a separate module

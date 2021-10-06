@@ -49,7 +49,7 @@ class CookiesTest {
         )
     )
 
-    val json = HeroNameQuery().composeJsonData(HeroNameQuery.Data(hero = HeroNameQuery.Data.Hero(name = "Luke")))
+    val json = HeroNameQuery().composeJsonData(HeroNameQuery.Data(hero = HeroNameQuery.Hero(name = "Luke")))
 
     mockServer.enqueue(MockResponse(
         body = json,

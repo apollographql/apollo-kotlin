@@ -4,6 +4,7 @@ import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import com.apollographql.apollo3.testing.runTest
 import graphql.ws.GreetingsSubscription
 import graphql.ws.HelloQuery
+import graphql.ws.SetHelloMutation
 import kotlinx.coroutines.flow.toList
 import kotlin.test.Ignore
 import kotlin.test.Test
@@ -26,7 +27,7 @@ class GraphQLWsTest {
   }
 
   @Test
-  fun subscriptionOverWebSocket() = runTest {
+  fun mutationOverWebSocket() = runTest {
     val apolloClient = ApolloClient(
         networkTransport = WebSocketNetworkTransport(
             serverUrl = "http://localhost:9090/graphql",
@@ -34,6 +35,18 @@ class GraphQLWsTest {
         )
     )
 
+    assertEquals("Hello Mutation!", apolloClient.mutate(SetHelloMutation()).data?.hello)
+  }
+
+
+  @Test
+  fun subscriptionOverWebSocket() = runTest {
+    val apolloClient = ApolloClient(
+        networkTransport = WebSocketNetworkTransport(
+            serverUrl = "http://localhost:9090/graphql",
+            protocol = GraphQLWsProtocol()
+        )
+    )
 
     val list = apolloClient.subscribe(GreetingsSubscription()).toList()
     assertEquals(listOf("Hi", "Bonjour", "Hola", "Ciao", "Zdravo"), list.map { it.data?.greetings })

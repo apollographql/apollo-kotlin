@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.compiler.conditionalFragments
 
 import com.apollographql.apollo3.compiler.GraphQLCompiler
-import com.apollographql.apollo3.compiler.IncomingOptions
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 import com.apollographql.apollo3.compiler.Options
@@ -17,12 +16,12 @@ class ConditionalFragmentsTest {
       GraphQLCompiler.write(
           Options(
               executableFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/operations.graphql")),
-              outputDir = File("build/test/conditionalFragmentsTest"),
               schemaFile = File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/schema.graphqls"),
-              codegenModels = MODELS_RESPONSE_BASED,
+              outputDir = File("build/test/conditionalFragmentsTest"),
+              packageName = "",
               customScalarsMapping = emptyMap(),
-              flattenModels = false,
-              packageName = ""
+              codegenModels = MODELS_RESPONSE_BASED,
+              flattenModels = false
           )
       )
     }
@@ -35,12 +34,12 @@ class ConditionalFragmentsTest {
     GraphQLCompiler.write(
         Options(
             executableFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/operations.graphql")),
-            outputDir = File("build/test/conditionalFragmentsTest"),
             schemaFile = File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/schema.graphqls"),
-            codegenModels = MODELS_OPERATION_BASED,
+            outputDir = File("build/test/conditionalFragmentsTest"),
+            packageName = "",
             customScalarsMapping = emptyMap(),
-            flattenModels = false,
-            packageName = ""
+            codegenModels = MODELS_OPERATION_BASED,
+            flattenModels = false
         )
     )
   }

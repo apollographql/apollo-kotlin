@@ -43,7 +43,7 @@ class FetchPolicyTest {
   @Test
   fun cacheFirst() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = HeroNameQuery()
-    val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
     mockServer.enqueue(query, data)
 
     // Cache first is also the default, no need to set the fetchPolicy
@@ -74,7 +74,7 @@ class FetchPolicyTest {
   @Test
   fun networkFirst() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = HeroNameQuery()
-    val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
     val request = ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkFirst)
 
@@ -113,7 +113,7 @@ class FetchPolicyTest {
   @Test
   fun cacheOnly() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = HeroNameQuery()
-    val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
     var request = ApolloRequest(query)
 
@@ -159,9 +159,52 @@ class FetchPolicyTest {
   }
 
   @Test
+  fun networkOnly() = runTest(before = { setUp() }, after = { tearDown() }) {
+    val query = HeroNameQuery()
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
+
+    // Initial state: everything fails
+    // Cache Error + Network Error => Error
+    mockServer.enqueue(MockResponse(statusCode = 500))
+    assertFailsWith(ApolloCompositeException::class) {
+      apolloClient.queryCacheAndNetwork(query).toList()
+    }
+
+    // Make the network return something
+    // Cache Error + Nework Success => 1 response
+    mockServer.enqueue(query, data)
+    var responses = apolloClient.queryCacheAndNetwork(query).toList()
+
+    assertEquals(1, responses.size)
+    assertNotNull(responses[0].data)
+    assertFalse(responses[0].isFromCache)
+    assertEquals("R2-D2", responses[0].data?.hero?.name)
+
+    // Now cache is populated but make the network fail again
+    // Cache Success + Network Error => 1 response
+    mockServer.enqueue(MockResponse(statusCode = 500))
+    responses = apolloClient.queryCacheAndNetwork(query).toList()
+
+    assertEquals(1, responses.size)
+    assertNotNull(responses[0].data)
+    assertTrue(responses[0].isFromCache)
+    assertEquals("R2-D2", responses[0].data?.hero?.name)
+
+    // Cache Success + Network Success => 1 response
+    mockServer.enqueue(query, data)
+    responses = apolloClient.queryCacheAndNetwork(query).toList()
+
+    assertEquals(2, responses.size)
+    assertNotNull(responses[0].data)
+    assertTrue(responses[0].isFromCache)
+    assertNotNull(responses[1].data)
+    assertFalse(responses[1].isFromCache)
+  }
+
+  @Test
   fun queryCacheAndNetwork() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = HeroNameQuery()
-    val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
     // Initial state: everything fails
     // Cache Error + Network Error => Error

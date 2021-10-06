@@ -1,6 +1,15 @@
 package com.apollographql.apollo3.compiler.codegen
 
 internal object Identifier {
+  const val adapter = "adapter"
+  const val evaluate = "evaluate"
+  const val notNull = "notNull"
+
+  const val list = "list"
+  const val optional = "optional"
+  const val nullable = "nullable"
+
+  const val type = "type"
   const val customScalarAdapters = "customScalarAdapters"
   const val value = "value"
   const val reader = "reader"
@@ -26,4 +35,13 @@ internal object Identifier {
   const val OPERATION_NAME = "OPERATION_NAME"
   const val OPERATION_ID = "OPERATION_ID"
   const val RESPONSE_NAMES = "RESPONSE_NAMES"
+
+  /**
+   * Only used by generated code
+   */
+  const val valueOf = "valueOf"
+  // extra underscores at the end to prevent potential name clashes
+  const val UNKNOWN__ = "UNKNOWN__"
+  const val rawValue = "rawValue"
+  const val types = "types"
 }

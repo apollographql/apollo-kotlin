@@ -104,13 +104,14 @@ class MemoryCacheTest {
   }
 
   @Test
-  fun testExpiration() {
+  fun testExpiresImmediatly() {
     val testRecord = createTestRecord("")
     val lruCache = createCache(expireAfterMillis = 0)
     lruCache.merge(testRecord, CacheHeaders.NONE)
 
     assertNull(lruCache.loadRecord(testRecord.key, CacheHeaders.NONE))
   }
+
 
   @Test
   fun testDualCacheSingleRecord() {

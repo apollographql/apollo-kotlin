@@ -17,6 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -76,7 +77,7 @@ class WebSocketNetworkTransport(
   private class OperationComplete(override val id: String) : Event
 
   private val commands = Channel<Command>(64)
-  private val mutableEvents = MutableSharedFlow<Event>()
+  private val mutableEvents = MutableSharedFlow<Event>(0, 64, BufferOverflow.SUSPEND)
   private val events = mutableEvents.asSharedFlow()
 
   val subscriptionCount = mutableEvents.subscriptionCount

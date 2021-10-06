@@ -15,13 +15,9 @@ import com.apollographql.apollo3.cache.normalized.normalize
 import com.apollographql.apollo3.cache.normalized.readDataFromCache
 import com.apollographql.apollo3.mpp.Guard
 import com.benasher44.uuid.Uuid
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 class DefaultApolloStore(
@@ -34,7 +30,6 @@ class DefaultApolloStore(
       // If multiple watchers start notifying each other and potentially themselves, the buffer of changedKeysEvent will grow forever.
       // I think as long as the refetchPolicy is [FetchPolicy.CacheOnly] everything should be fine as there is no reentrant emission.
       // If the refetechPolicy is something else, we should certainly try to detect it in the cache interceptor
-      // See ReentrantChannelTest for more details.
       extraBufferCapacity = 10,
       onBufferOverflow = BufferOverflow.DROP_OLDEST
   )

@@ -1,0 +1,20 @@
+query GetRandom {
+  random
+}
+
+query Animal {
+  animal {
+    ... on Dog {
+      species
+    }
+
+    ...catFragment
+  }
+}
+
+fragment catFragment on Cat {
+  species
+  habitat {
+    temperature
+  }
+}

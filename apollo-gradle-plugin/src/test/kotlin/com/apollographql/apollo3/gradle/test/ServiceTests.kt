@@ -30,7 +30,7 @@ class ServiceTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "service/com/example/type/Types.kt", "\"java.util.Date\"")
+      TestUtils.assertFileContains(dir, "service/com/example/type/DateTime.kt", "\"java.util.Date\"")
     }
   }
 
@@ -61,7 +61,7 @@ class ServiceTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(File(dir, "build/apollo/com/example/type/Types.kt").exists())
+      assertTrue(File(dir, "build/apollo/com/example/type/DateTime.kt").exists())
     }
   }
 
@@ -74,7 +74,7 @@ class ServiceTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "service/com/example/type/Types.kt", "\"java.util.Date\"")
+      TestUtils.assertFileContains(dir, "service/com/example/type/DateTime.kt", "\"java.util.Date\"")
     }
   }
 
@@ -92,7 +92,7 @@ class ServiceTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "api/com/example/type/Types.kt", "\"java.util.Date\"")
+      TestUtils.assertFileContains(dir, "api/com/example/type/DateTime.kt", "\"java.util.Date\"")
     }
   }
 
@@ -130,7 +130,7 @@ class ServiceTests {
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
       assertTrue(dir.generatedChild("service/com/starwars/DroidDetailsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("service/com/starwars/type/Types.kt").isFile)
+      assertTrue(dir.generatedChild("service/com/starwars/type/DateTime.kt").isFile)
       assertTrue(dir.generatedChild("service/com/starwars/fragment/SpeciesInformation.kt").isFile)
     }
   }
@@ -366,8 +366,8 @@ class ServiceTests {
       assertTrue(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").isFile)
       assertThat(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").readText(), containsString("internal class"))
 
-      assertTrue(dir.generatedChild("service/com/example/type/Types.kt").isFile)
-      assertThat(dir.generatedChild("service/com/example/type/Types.kt").readText(), containsString("internal object Types"))
+      assertTrue(dir.generatedChild("service/com/example/type/DateTime.kt").isFile)
+      assertThat(dir.generatedChild("service/com/example/type/DateTime.kt").readText(), containsString("internal class DateTime"))
 
       assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
       assertThat(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").readText(), containsString("internal data class"))

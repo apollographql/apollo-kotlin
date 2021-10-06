@@ -1,0 +1,10 @@
+{
+  "data": {
+    "animal": {
+      "__typename": "Animal",
+      "species": "Cat",
+      "name": "Hank",
+      "other": "foo"
+    }
+  }
+}

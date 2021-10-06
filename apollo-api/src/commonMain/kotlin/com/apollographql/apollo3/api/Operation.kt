@@ -104,7 +104,7 @@ fun <D : Operation.Data> Operation<D>.parseJsonData(
 }
 
 /**
- * see [parseJsonResponse]
+ * see [parseJsonData]
  */
 fun <D : Operation.Data> Operation<D>.parseJsonData(
     string: String,

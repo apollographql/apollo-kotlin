@@ -16,7 +16,9 @@
 package com.apollographql.apollo3.api.internal.json
 
 import com.apollographql.apollo3.api.Throws
+import com.apollographql.apollo3.api.json.JsonNumber
 import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.exception.JsonDataException
 import com.apollographql.apollo3.exception.JsonEncodingException
 import okio.Buffer
@@ -56,21 +58,19 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
 
   /**
    * The nesting stack. Using a manual array rather than an ArrayList saves 20%.
-   * This stack permits up to 32 levels of nesting including the top-level document.
+   * This stack permits up to MAX_STACK_SIZE levels of nesting including the top-level document.
    * Deeper nesting is prone to trigger StackOverflowErrors.
    */
-  private val stack = IntArray(32).apply {
+  private val stack = IntArray(MAX_STACK_SIZE).apply {
     this[0] = JsonScope.EMPTY_DOCUMENT
   }
   private var stackSize = 1
-  private val pathNames = arrayOfNulls<String>(32)
-  private val pathIndices = IntArray(32)
+  private val pathNames = arrayOfNulls<String>(MAX_STACK_SIZE)
+  private val pathIndices = IntArray(MAX_STACK_SIZE)
 
   private var lenient = false
 
-  private var failOnUnknown = false
-
-  private val indexStack = IntArray(32).apply {
+  private val indexStack = IntArray(MAX_STACK_SIZE).apply {
     this[0] = 0
   }
   private var indexStackSize = 1
@@ -509,7 +509,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   }
 
   @Throws(IOException::class)
-  override fun <T> nextNull(): T? {
+  override fun nextNull(): Nothing? {
     return when (peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()) {
       PEEKED_NULL -> {
         peeked = PEEKED_NONE
@@ -561,6 +561,54 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     peeked = PEEKED_NONE
     pathIndices[stackSize - 1]++
     return result
+  }
+
+  @Throws(IOException::class)
+  override fun nextLong(): Long {
+    val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
+    when {
+      p == PEEKED_LONG -> {
+        peeked = PEEKED_NONE
+        pathIndices[stackSize - 1]++
+        return peekedLong
+      }
+      p == PEEKED_NUMBER -> {
+        peekedString = buffer.readUtf8(peekedNumberLength.toLong())
+      }
+      p == PEEKED_DOUBLE_QUOTED || p == PEEKED_SINGLE_QUOTED -> {
+        peekedString = if (p == PEEKED_DOUBLE_QUOTED) nextQuotedValue(DOUBLE_QUOTE_OR_SLASH) else nextQuotedValue(SINGLE_QUOTE_OR_SLASH)
+        try {
+          val result = peekedString!!.toLong()
+          peeked = PEEKED_NONE
+          pathIndices[stackSize - 1]++
+          return result
+        } catch (ignored: NumberFormatException) { // Fall back to parse as a double below.
+        }
+      }
+      p != PEEKED_BUFFERED -> throw JsonDataException("Expected a long but was ${peek()} at path ${getPath()}")
+    }
+
+    peeked = PEEKED_BUFFERED
+
+    val asDouble: Double = try {
+      peekedString!!.toDouble()
+    } catch (e: NumberFormatException) {
+      throw JsonDataException("Expected a long but was $peekedString at path ${getPath()}")
+    }
+
+    val result = asDouble.toLong()
+    if (result.toDouble() != asDouble) { // Make sure no precision was lost casting to 'long'.
+      throw JsonDataException("Expected a long but was $peekedString at path ${getPath()}")
+    }
+    peekedString = null
+    peeked = PEEKED_NONE
+    pathIndices[stackSize - 1]++
+    return result
+  }
+
+  @Throws(IOException::class)
+  override fun nextNumber(): JsonNumber {
+    return JsonNumber(nextString()!!)
   }
 
   /**
@@ -687,8 +735,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
 
   @Throws(IOException::class)
   override fun skipValue() {
-    if (failOnUnknown) throw JsonDataException("Cannot skip unexpected ${peek()} at ${getPath()}")
-
     var count = 0
     do {
       when (peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()) {
@@ -967,5 +1013,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     private const val NUMBER_CHAR_EXP_E = 5
     private const val NUMBER_CHAR_EXP_SIGN = 6
     private const val NUMBER_CHAR_EXP_DIGIT = 7
+
+    const val MAX_STACK_SIZE = 256
   }
 }

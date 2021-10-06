@@ -31,7 +31,7 @@ class HTTPHeadersTest {
   @Test
   fun makeSureHeadersAreSet() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = HeroNameQuery()
-    val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
     mockServer.enqueue(query, data)
 
@@ -48,7 +48,7 @@ class HTTPHeadersTest {
   @Test
   fun headersCanBeReadInResponseExecutionContext() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = HeroNameQuery()
-    val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
     val json = query.composeJsonResponse(data)
 

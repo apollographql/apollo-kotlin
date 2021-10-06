@@ -2,8 +2,7 @@ package com.apollographql.apollo3.network.http
 
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.ApolloParseException
+import com.apollographql.apollo3.exception.ApolloNetworkException
 
 /**
  * A wrapper around platform specific engines
@@ -11,10 +10,18 @@ import com.apollographql.apollo3.exception.ApolloParseException
 interface HttpEngine {
 
   /**
-   * Executes the given HttpRequest, might throw
+   * Executes the given HttpRequest
+   *
+   * throws [ApolloNetworkException] if a network error happens
+   * HTTP errors should not throw but instead return a [HttpResponse] indicating the status code
    */
   suspend fun execute(request: HttpRequest): HttpResponse
 
+  /**
+   * Disposes any resources used by the [HttpEngine]
+   *
+   * Use this to dispose a connection pool for an example
+   */
   fun dispose()
 }
 

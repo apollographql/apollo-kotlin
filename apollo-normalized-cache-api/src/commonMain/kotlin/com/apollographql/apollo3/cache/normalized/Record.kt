@@ -12,10 +12,9 @@ class Record (
     /**
      * a list of fields. Values can be
      * - Int
-     * - Long
-     * - Boolean
-     * - String
      * - Double
+     * - Boolean
+     * - String (
      * - CacheKey (for composite types)
      * - List
      * - Map (for custom scalars)

@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.BTerm
 import com.apollographql.apollo3.api.BVariable
 import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.api.and
-import com.apollographql.apollo3.compiler.codegen.CgLayout.Companion.modelName
+import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.modelName
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
@@ -25,14 +25,10 @@ internal class OperationBasedModelGroupBuilder(
 ) : ModelGroupBuilder {
 
   override fun buildOperationData(selections: List<GQLSelection>, rawTypeName: String, operationName: String): IrModelGroup {
-    val root = IrModelRoot(
-        IrRootKind.OperationData,
-        operationName
-    )
     val info = IrFieldInfo(
         responseName = "data",
         description = null,
-        type = IrNonNullType(IrModelType(IrUnknownModelId)),
+        type = IrNonNullType(IrModelType(MODEL_UNKNOWN)),
         deprecationReason = null
     )
 
@@ -42,8 +38,7 @@ internal class OperationBasedModelGroupBuilder(
       selections
     }
     return buildField(
-        root = root,
-        path = "",
+        path = "${MODEL_OPERATION_DATA}.$operationName",
         info = info,
         selections = mergedSelections.map { SelectionWithParent(it, rawTypeName) },
         condition = BooleanExpression.True,
@@ -56,14 +51,15 @@ internal class OperationBasedModelGroupBuilder(
   }
 
   override fun buildFragmentData(fragmentName: String): IrModelGroup {
-    val root = IrModelRoot(
-        IrRootKind.FragmentData,
-        fragmentName
-    )
+    /**
+     * XXX: because we want the model to be named after the fragment (and not data), we use
+     * fragmentName below. This means the id for the very first model is going to be
+     * FragmentName.FragmentName unlike operations where it's OperationName.Data
+     */
     val info = IrFieldInfo(
         responseName = fragmentName,
         description = null,
-        type = IrNonNullType(IrModelType(IrUnknownModelId)),
+        type = IrNonNullType(IrModelType(MODEL_UNKNOWN)),
         deprecationReason = null
     )
 
@@ -76,8 +72,7 @@ internal class OperationBasedModelGroupBuilder(
     }
 
     return buildField(
-        root = root,
-        path = "",
+        path = "${MODEL_FRAGMENT_DATA}.$fragmentName",
         info = info,
         selections = mergedSelections.map { SelectionWithParent(it, fragmentDefinition.typeCondition.name) },
         condition = BooleanExpression.True,
@@ -111,7 +106,7 @@ internal class OperationBasedModelGroupBuilder(
   private class SelectionWithParent(val selection: GQLSelection, val parent: String)
 
   /**
-   * @param root the [IrModelRoot] used to identify the resulting model
+   * @param kind the [IrKind] used to identify the resulting model
    * @param path the path up to but not including this field
    * @param info information about this field
    * @param selections the sub-selections of this fields. If [collectAllInlineFragmentFields] is true, might contain parent fields that
@@ -121,7 +116,6 @@ internal class OperationBasedModelGroupBuilder(
    *
    */
   private fun buildField(
-      root: IrModelRoot,
       path: String,
       info: IrFieldInfo,
       selections: List<SelectionWithParent>,
@@ -154,7 +148,6 @@ internal class OperationBasedModelGroupBuilder(
       val childInfo = mergedField.info.maybeNullable(mergedField.condition != BooleanExpression.True)
 
       buildField(
-          root = root,
           path = selfPath,
           info = childInfo,
           selections = mergedField.selections.map { SelectionWithParent(it, mergedField.rawTypeName) },
@@ -229,7 +222,7 @@ internal class OperationBasedModelGroupBuilder(
                 }
                 childCondition = entry.key.and(childCondition).simplify()
 
-                var type: IrType = IrModelType(IrUnknownModelId)
+                var type: IrType = IrModelType(MODEL_UNKNOWN)
                 if (childCondition == BooleanExpression.True) {
                   type = IrNonNullType(type)
                 }
@@ -249,7 +242,6 @@ internal class OperationBasedModelGroupBuilder(
                 }
 
                 buildField(
-                    root = root,
                     path = selfPath,
                     info = childInfo,
                     selections = childSelections,
@@ -295,9 +287,9 @@ internal class OperationBasedModelGroupBuilder(
               .and(childCondition)
               .simplify()
 
-          val fragmentModelId = IrModelId(IrModelRoot(IrRootKind.FragmentData, first.name), "." + first.name)
+          val fragmentModelPath = "${MODEL_FRAGMENT_DATA}.${first.name}.${first.name}"
 
-          var type: IrType = IrModelType(fragmentModelId)
+          var type: IrType = IrModelType(fragmentModelPath)
           if (childCondition == BooleanExpression.True) {
             type = IrNonNullType(type)
           }
@@ -315,7 +307,6 @@ internal class OperationBasedModelGroupBuilder(
             selfPath
           }
           buildField(
-              root = root,
               path = p,
               info = childInfo,
               selections = emptyList(), // Don't create a model for fragments spreads
@@ -328,7 +319,7 @@ internal class OperationBasedModelGroupBuilder(
       val childPath = "$selfPath.$FRAGMENTS_SYNTHETIC_FIELD"
 
       val fragmentsFieldSet = OperationFieldSet(
-          id = IrModelId(root, childPath),
+          id = childPath,
           fields = listOf(hiddenTypenameField) + fragmentSpreadFields
       )
 
@@ -352,7 +343,7 @@ internal class OperationBasedModelGroupBuilder(
       fragmentSpreadFields
     }
     val fieldSet = OperationFieldSet(
-        id = IrModelId(root, selfPath),
+        id = selfPath,
         fields = fields + inlineFragmentsFields + fragmentsFields
     )
 
@@ -375,7 +366,7 @@ internal class OperationBasedModelGroupBuilder(
           responseName = "__typename",
           description = null,
           deprecationReason = null,
-          type = IrNonNullType(IrStringType)
+          type = IrNonNullType(IrScalarType("String"))
       )
       OperationField(
           info = info,
@@ -398,7 +389,7 @@ private class OperationField(
 )
 
 private data class OperationFieldSet(
-    val id: IrModelId,
+    val id: String,
     val fields: List<OperationField>,
 )
 

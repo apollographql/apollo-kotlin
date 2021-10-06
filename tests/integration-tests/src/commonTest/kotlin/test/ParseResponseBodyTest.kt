@@ -1,7 +1,7 @@
 package test
 
 import assertEquals2
-import com.apollographql.apollo3.adapter.LocalDateAdapter
+import com.apollographql.apollo3.adapter.KotlinxLocalDateAdapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.fromJson
@@ -9,9 +9,10 @@ import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.use
 import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.api.toJson
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.integration.httpcache.AllFilmsQuery
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
-import com.apollographql.apollo3.integration.httpcache.type.Types
+import com.apollographql.apollo3.integration.httpcache.type.Date
 import com.apollographql.apollo3.integration.normalizer.CharacterWithBirthDateQuery
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.GetJsonScalarQuery
@@ -127,12 +128,12 @@ class ParseResponseBodyTest {
 
     val response = AllFilmsQuery().parseJsonResponse(
         readResource("HttpCacheTestAllFilms.json"),
-        CustomScalarAdapters(mapOf(Types.Date.name to LocalDateAdapter))
+        CustomScalarAdapters(mapOf(Date.type.name to KotlinxLocalDateAdapter))
     )
     assertFalse(response.hasErrors())
     assertEquals(response.data!!.allFilms?.films?.size, 6)
     assertEquals(
-        response.data!!.allFilms?.films?.map { LocalDateAdapter.toJsonString(it!!.releaseDate) },
+        response.data!!.allFilms?.films?.map { KotlinxLocalDateAdapter.toJsonString(it!!.releaseDate) },
         listOf("1977-05-25", "1980-05-17", "1983-05-25", "1999-05-19", "2002-05-16", "2005-05-19").map { "\"$it\"" }
     )
   }
@@ -152,6 +153,9 @@ class ParseResponseBodyTest {
       HeroNameQuery().parseJsonResponse(readResource("ResponseDataMissing.json"))
       error("an error was expected")
     } catch (e: NullPointerException) {
+      // This is the Kotlin codegen case
+    } catch (e: ApolloException) {
+      // This is the (better) Java codegen case
     }
   }
 
@@ -216,7 +220,7 @@ class ParseResponseBodyTest {
   @Test
   fun notRegisteringAnAdapterNeitherAtRuntimeOrInTheGradlePluginDefaultsToAny() {
     val data = GetJsonScalarQuery.Data(
-        json = mapOf("1" to "2", "3" to listOf("a", "b"))
+        mapOf("1" to "2", "3" to listOf("a", "b"))
     )
     val query = GetJsonScalarQuery()
 
@@ -227,11 +231,11 @@ class ParseResponseBodyTest {
   @Test
   fun forgettingToAddARuntimeAdapterForAScalarRegisteredInThePluginFails() {
     val data = CharacterWithBirthDateQuery.Data(
-        character = CharacterWithBirthDateQuery.Data.Character(
-            birthDate = LocalDate(1970, 1, 1),
+        CharacterWithBirthDateQuery.Character(
+            LocalDate(1970, 1, 1),
         )
     )
-    val query = CharacterWithBirthDateQuery(id = "1")
+    val query = CharacterWithBirthDateQuery("1")
     try {
       query.adapter().fromJson(query.adapter().toJson(data))
       error("expected IllegalStateException")

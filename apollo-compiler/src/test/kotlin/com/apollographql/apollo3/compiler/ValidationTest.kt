@@ -20,11 +20,10 @@ class ValidationTest(name: String, private val graphQLFile: File) {
   private fun List<Issue>.serialize() = joinToString(separator) {
     "${it.severity}: ${it.javaClass.simpleName} (${it.sourceLocation.line}:${it.sourceLocation.position})\n${it.message}"
   }
-
-
+  
   @Test
   fun testValidation() = checkExpected(graphQLFile) { schema ->
-    val issues = if (graphQLFile.parentFile.name == "operation") {
+    val issues = if (graphQLFile.parentFile.name == "operation" || graphQLFile.parentFile.parentFile.name == "operation" ) {
       val parseResult = graphQLFile.parseAsGQLDocument()
 
       when (parseResult) {

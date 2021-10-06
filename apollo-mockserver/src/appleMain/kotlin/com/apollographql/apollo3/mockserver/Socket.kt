@@ -9,6 +9,7 @@ import kotlinx.cinterop.convert
 import kotlinx.cinterop.get
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.nativeHeap
+import okio.IOException
 import okio.buffer
 import platform.Foundation.NSMutableArray
 import platform.posix.POLLIN
@@ -70,6 +71,7 @@ class Socket(private val socketFd: Int) {
         }
 
         handleConnection(connectionFd)
+        close(connectionFd)
       }
     }
     close(socketFd)
@@ -98,7 +100,12 @@ class Socket(private val socketFd: Int) {
 
         debug("'$connectionFd': Read request")
 
-        val request = readRequest(source)
+        val request = try {
+          readRequest(source)
+        } catch (e: IOException) {
+          debug("'$connectionFd': Connection error")
+          return
+        }
         if (request == null) {
           debug("'$connectionFd': Connection closed")
           return
@@ -109,7 +116,9 @@ class Socket(private val socketFd: Int) {
         val mockResponse = synchronized(lock) {
           recordedRequests.addObject(request.freeze())
 
-          check(queuedResponses.count.toInt() > 0)
+          check(queuedResponses.count.toInt() > 0) {
+            "no queued responses"
+          }
           queuedResponses.objectAtIndex(0).also {
             queuedResponses.removeObjectAtIndex(0)
           } as MockResponse
@@ -146,7 +155,9 @@ class Socket(private val socketFd: Int) {
 
   fun takeRequest(): MockRecordedRequest {
     return synchronized(lock) {
-      check(recordedRequests.count.toInt() > 0)
+      check(recordedRequests.count.toInt() > 0) {
+        "no recorded request"
+      }
       recordedRequests.objectAtIndex(0).also {
         recordedRequests.removeObjectAtIndex(0)
       } as MockRecordedRequest
