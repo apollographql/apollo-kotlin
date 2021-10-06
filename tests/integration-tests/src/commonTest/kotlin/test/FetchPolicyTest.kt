@@ -137,7 +137,7 @@ class FetchPolicyTest {
   @Test
   fun networkOnly() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = HeroNameQuery()
-    val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
     val request = ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkOnly)
 
