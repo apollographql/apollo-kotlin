@@ -89,7 +89,13 @@ object GraphQLDocumentSourceBuilder {
     get() {
       var indent = 0
       return lines().joinToString(separator = "\n") { line ->
-        if (line.endsWith("}")) indent -= 2
+        if (line.endsWith("}")) {
+          indent -= 2
+          if (indent < 0) {
+            // Workaround for https://github.com/apollographql/apollo-android/issues/3393
+            indent = 0
+          }
+        }
         (" ".repeat(indent) + line).also {
           if (line.endsWith("{")) indent += 2
         }
