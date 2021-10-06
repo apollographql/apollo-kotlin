@@ -24,19 +24,22 @@ import kotlin.test.assertIs
 
 class QueryBatchingTest {
   private lateinit var mockServer: MockServer
+  private lateinit var apolloClient: ApolloClient
 
-  private suspend fun setUp() {
+      private suspend fun setUp() {
     mockServer = MockServer()
   }
 
   private suspend fun tearDown() {
     mockServer.stop()
+    // This is important. JS will hand if the BatchingHttpEngine scope is not cancelled
+    apolloClient.dispose()
   }
 
   @Test
   @Ignore // because it uses a real-life server that might be down
   fun testAgainstARealServer() = runTest(before = { setUp() }, after = { tearDown() }) {
-    val apolloClient = ApolloClient(
+    apolloClient = ApolloClient(
         networkTransport = HttpNetworkTransport(
             serverUrl = "https://apollo-fullstack-tutorial.herokuapp.com/graphql",
             engine = BatchingHttpEngine(),
@@ -60,7 +63,7 @@ class QueryBatchingTest {
     """.trimIndent()
 
     mockServer.enqueue(response)
-    val apolloClient = ApolloClient(
+    apolloClient = ApolloClient(
         networkTransport = HttpNetworkTransport(
             httpRequestComposer = DefaultHttpRequestComposer(mockServer.url()),
             engine = BatchingHttpEngine(
@@ -100,7 +103,7 @@ class QueryBatchingTest {
   fun queriesAreNotBatchedIfSubmitedFarAppart() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue("""[{"data":{"launch":{"id":"83"}}}]""")
     mockServer.enqueue("""[{"data":{"launch":{"id":"84"}}}]""")
-    val apolloClient = ApolloClient(
+    apolloClient = ApolloClient(
         networkTransport = HttpNetworkTransport(
             httpRequestComposer = DefaultHttpRequestComposer(mockServer.url()),
             engine = BatchingHttpEngine(
@@ -129,7 +132,7 @@ class QueryBatchingTest {
   fun queriesCanBeOptOutOfBatching() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue("""{"data":{"launch":{"id":"83"}}}""")
     mockServer.enqueue("""[{"data":{"launch":{"id":"84"}}}]""")
-    val apolloClient = ApolloClient(
+    apolloClient = ApolloClient(
         networkTransport = HttpNetworkTransport(
             httpRequestComposer = DefaultHttpRequestComposer(mockServer.url()),
             engine = BatchingHttpEngine(
