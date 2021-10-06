@@ -32,7 +32,7 @@ class QueryBatchingTest {
 
   private suspend fun tearDown() {
     mockServer.stop()
-    // This is important. JS will hand if the BatchingHttpEngine scope is not cancelled
+    // This is important. JS will hang if the BatchingHttpEngine scope is not cancelled
     apolloClient.dispose()
   }
 
