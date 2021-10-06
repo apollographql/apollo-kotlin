@@ -34,6 +34,25 @@ private val InputType.primaryConstructorSpec: FunSpec
         .build()
   }
 
+private fun FieldType.leafType(): FieldType {
+  return when (this) {
+    is FieldType.Array -> this.rawType
+    else -> this
+  }
+}
+
+private fun Any?.isEmptyList(): Boolean {
+  return if (this is List<*>) {
+    if (isEmpty()) {
+      true
+    } else {
+      first()?.isEmptyList() == true
+    }
+  } else {
+    false
+  }
+}
+
 private fun InputType.Field.parameterSpec(): ParameterSpec {
   val rawTypeName = type.asTypeName()
   val typeName = when {
@@ -45,7 +64,7 @@ private fun InputType.Field.parameterSpec(): ParameterSpec {
        * For input objects, do not try to create a defaultValue
        * See https://github.com/apollographql/apollo-android/issues/3394
        */
-      ?.takeIf { type !is FieldType.Object }
+      ?.takeIf { type.leafType() !is FieldType.Object || it.isEmptyList() }
       ?.toDefaultValueCodeBlock(typeName = rawTypeName, fieldType = type)
       .let { code ->
         if (isOptional) {
