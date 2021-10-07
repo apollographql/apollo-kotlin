@@ -4,7 +4,6 @@ import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.cache.CacheHeaders
-import com.apollographql.apollo3.cache.normalized.ApolloStore.RecordChangeSubscriber
 import com.apollographql.apollo3.cache.normalized.internal.DefaultApolloStore
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.SharedFlow
@@ -12,22 +11,12 @@ import kotlin.reflect.KClass
 
 /**
  * ApolloStore exposes a thread-safe api to access a [com.apollographql.apollo3.cache.normalized.NormalizedCache].
- * It also maintains a list of [RecordChangeSubscriber] that will be notified with changed records.
- *
- * Most clients should have no need to directly interface with an [ApolloStore].
  */
 interface ApolloStore {
-  val changedKeys: SharedFlow<Set<String>>
-
   /**
-   * Listens to changed record keys dispatched via [.publish].
+   * [changedKeys] will emit changes as they are written
    */
-  interface RecordChangeSubscriber {
-    /**
-     * @param changedRecordKeys A set of record keys which correspond to records which have had content changes.
-     */
-    fun onCacheRecordsChanged(changedRecordKeys: Set<String>)
-  }
+  val changedKeys: SharedFlow<Set<String>>
 
   /**
    * Read GraphQL operation from store.
