@@ -69,17 +69,17 @@ class GraphQLWsProtocol(
   }
 
   @Suppress("UNCHECKED_CAST")
-  override fun parseMessage(message: String, webSocketConnection: WebSocketConnection): WsMessage {
+  override fun parseMessage(message: String, webSocketConnection: WebSocketConnection): WsServerMessage {
     val map = AnyAdapter.fromJson(BufferedSourceJsonReader(Buffer().writeUtf8(message))) as Map<String, Any?>
 
     return when (map["type"]) {
-      "connection_ack" -> WsMessage.ConnectionAck
-      "next" -> WsMessage.OperationData(map["id"] as String, map["payload"] as Map<String, Any?>)
-      "error" -> WsMessage.OperationError(map["id"] as String, map["payload"] as Map<String, Any?>)
-      "complete" -> WsMessage.OperationComplete(map["id"] as String)
-      "ping" -> WsMessage.Ping(map["payload"] as Map<String, Any?>?)
-      "pong" -> WsMessage.Pong(map["payload"] as Map<String, Any?>?)
-      else -> WsMessage.Unknown(map)
+      "connection_ack" -> WsServerMessage.ConnectionAck
+      "next" -> WsServerMessage.OperationData(map["id"] as String, map["payload"] as Map<String, Any?>)
+      "error" -> WsServerMessage.OperationError(map["id"] as String, map["payload"] as Map<String, Any?>)
+      "complete" -> WsServerMessage.OperationComplete(map["id"] as String)
+      "ping" -> WsServerMessage.Ping(map["payload"] as Map<String, Any?>?)
+      "pong" -> WsServerMessage.Pong(map["payload"] as Map<String, Any?>?)
+      else -> WsServerMessage.Unknown(map)
     }
   }
 }

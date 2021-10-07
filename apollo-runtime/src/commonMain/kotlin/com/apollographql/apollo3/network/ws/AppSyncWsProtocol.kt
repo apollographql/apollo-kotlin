@@ -58,17 +58,17 @@ class AppSyncWsProtocol(
   override fun pong(payload: Map<String, Any?>?): Map<String, Any?>? = null
 
   @Suppress("UNCHECKED_CAST")
-  override fun parseMessage(message: String, webSocketConnection: WebSocketConnection): WsMessage {
+  override fun parseMessage(message: String, webSocketConnection: WebSocketConnection): WsServerMessage {
     val map = AnyAdapter.fromJson(BufferedSourceJsonReader(Buffer().writeUtf8(message))) as Map<String, Any?>
 
     return when (map["type"]) {
-      "connection_ack" -> WsMessage.ConnectionAck
-      "connection_error" -> WsMessage.ConnectionError(map["payload"] as Map<String, Any?>?)
-      "data" -> WsMessage.OperationData(map["id"] as String, map["payload"] as Map<String, Any?>)
-      "error" -> WsMessage.OperationError(map["id"] as String, map["payload"] as Map<String, Any?>)
-      "complete" -> WsMessage.OperationComplete(map["id"] as String)
-      "ka" -> WsMessage.KeepAlive
-      else -> WsMessage.Unknown(map)
+      "connection_ack" -> WsServerMessage.ConnectionAck
+      "connection_error" -> WsServerMessage.ConnectionError(map["payload"] as Map<String, Any?>?)
+      "data" -> WsServerMessage.OperationData(map["id"] as String, map["payload"] as Map<String, Any?>)
+      "error" -> WsServerMessage.OperationError(map["id"] as String, map["payload"] as Map<String, Any?>)
+      "complete" -> WsServerMessage.OperationComplete(map["id"] as String)
+      "ka" -> WsServerMessage.KeepAlive
+      else -> WsServerMessage.Unknown(map)
     }
   }
 }
