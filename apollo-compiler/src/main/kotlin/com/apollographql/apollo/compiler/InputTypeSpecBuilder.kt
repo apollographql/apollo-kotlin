@@ -42,16 +42,28 @@ class InputTypeSpecBuilder(
     )
   }
 
+  private fun Any?.isEmptyList(): Boolean {
+    return if (this is List<*>) {
+      if (isEmpty()) {
+        true
+      } else {
+        first()?.isEmptyList() == true
+      }
+    } else {
+      false
+    }
+  }
   private fun TypeSpec.Builder.addBuilder(): TypeSpec.Builder {
     if (fields.isEmpty()) {
       return this
     } else {
       val builderFields = fields.map { it.name.decapitalize().escapeJavaReservedWord() to it.javaTypeName(context) }
       val builderFieldDefaultValues = fields
-          .filterNot {
-            // ignore any custom type default values for now as we don't support them
+          .filter {
+            // ignore any custom type or object default values for now as we don't support them
             val normalizedType = it.type.removeSuffix("!").removeSurrounding("[", "]").removeSuffix("!")
-            normalizedType.isCustomScalarType(context)
+            !normalizedType.isCustomScalarType(context)
+                && (!normalizedType.isInputObject(context) || it.defaultValue.isEmptyList())
           }
           .associate { it.name.decapitalize().escapeJavaReservedWord() to it.defaultValue }
       val javaDocs = fields
