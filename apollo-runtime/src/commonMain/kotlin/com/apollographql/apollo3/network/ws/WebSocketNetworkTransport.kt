@@ -81,6 +81,8 @@ class WebSocketNetworkTransport(
   private val commands = Channel<Command>(64)
   private val mutableEvents = MutableSharedFlow<Event>(0, 64, BufferOverflow.SUSPEND)
   private val events = mutableEvents.asSharedFlow()
+  
+  val subscriptionCount = mutableEvents.subscriptionCount
 
   private val pongChannel = Channel<WsMessage.Pong>(0, BufferOverflow.DROP_OLDEST)
 
