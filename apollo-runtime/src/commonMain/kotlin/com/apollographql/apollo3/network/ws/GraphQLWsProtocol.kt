@@ -48,6 +48,26 @@ class GraphQLWsProtocol(
     )
   }
 
+  override fun ping(payload: Map<String, Any?>?): Map<String, Any?>? {
+    val map = mutableMapOf<String, Any?>(
+        "type" to "ping",
+    )
+    if (payload != null) {
+      map["payload"] = payload
+    }
+    return map
+  }
+
+  override fun pong(payload: Map<String, Any?>?): Map<String, Any?>? {
+    val map = mutableMapOf<String, Any?>(
+        "type" to "pong",
+    )
+    if (payload != null) {
+      map["payload"] = payload
+    }
+    return map
+  }
+
   @Suppress("UNCHECKED_CAST")
   override fun parseMessage(message: String, webSocketConnection: WebSocketConnection): WsMessage {
     val map = AnyAdapter.fromJson(BufferedSourceJsonReader(Buffer().writeUtf8(message))) as Map<String, Any?>
@@ -57,6 +77,8 @@ class GraphQLWsProtocol(
       "next" -> WsMessage.OperationData(map["id"] as String, map["payload"] as Map<String, Any?>)
       "error" -> WsMessage.OperationError(map["id"] as String, map["payload"] as Map<String, Any?>)
       "complete" -> WsMessage.OperationComplete(map["id"] as String)
+      "ping" -> WsMessage.Ping(map["payload"] as Map<String, Any?>?)
+      "pong" -> WsMessage.Pong(map["payload"] as Map<String, Any?>?)
       else -> WsMessage.Unknown(map)
     }
   }

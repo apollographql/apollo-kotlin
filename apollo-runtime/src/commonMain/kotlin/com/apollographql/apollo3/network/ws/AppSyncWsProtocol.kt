@@ -54,6 +54,9 @@ class AppSyncWsProtocol(
     )
   }
 
+  override fun ping(payload: Map<String, Any?>?): Map<String, Any?>? = null
+  override fun pong(payload: Map<String, Any?>?): Map<String, Any?>? = null
+
   @Suppress("UNCHECKED_CAST")
   override fun parseMessage(message: String, webSocketConnection: WebSocketConnection): WsMessage {
     val map = AnyAdapter.fromJson(BufferedSourceJsonReader(Buffer().writeUtf8(message))) as Map<String, Any?>

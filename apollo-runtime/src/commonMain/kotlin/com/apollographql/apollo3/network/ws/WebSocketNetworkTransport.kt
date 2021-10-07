@@ -67,6 +67,8 @@ class WebSocketNetworkTransport(
   private interface Command
   class StartOperation<D : Operation.Data>(val request: ApolloRequest<D>) : Command
   class StopOperation<D : Operation.Data>(val request: ApolloRequest<D>) : Command
+  class PingOperation(val payload: Map<String, Any?>?) : Command
+  class PongOperation(val payload: Map<String, Any?>?) : Command
 
   private interface Event {
     val id: String
@@ -80,7 +82,7 @@ class WebSocketNetworkTransport(
   private val mutableEvents = MutableSharedFlow<Event>(0, 64, BufferOverflow.SUSPEND)
   private val events = mutableEvents.asSharedFlow()
 
-  val subscriptionCount = mutableEvents.subscriptionCount
+  private val pongChannel = Channel<WsMessage.Pong>(0, BufferOverflow.DROP_OLDEST)
 
   private val backgroundDispatcher = BackgroundDispatcher()
   private val coroutineScope = CoroutineScope(backgroundDispatcher.coroutineDispatcher)
@@ -156,6 +158,16 @@ class WebSocketNetworkTransport(
               }
             }
           }
+          is PingOperation -> {
+            protocol.ping(command.payload)?.let { message ->
+              currentConnection?.sendMessage(message)
+            }
+          }
+          is PongOperation -> {
+            protocol.pong(command.payload)?.let { message ->
+              currentConnection?.sendMessage(message)
+            }
+          }
         }
       }
     }
@@ -170,6 +182,11 @@ class WebSocketNetworkTransport(
         is WsMessage.OperationData -> OperationData(wsMessage.id, wsMessage.payload)
         is WsMessage.OperationError -> OperationError(wsMessage.id, ApolloNetworkException("Cannot execute operation: ${wsMessage.payload}"))
         is WsMessage.OperationComplete -> OperationComplete(wsMessage.id)
+        is WsMessage.Ping -> null // don't expect ping from server at this time
+        is WsMessage.Pong -> {
+          pongChannel.send(wsMessage)
+          null
+        }
         is WsMessage.Unknown -> null
         is WsMessage.KeepAlive -> null // should we acknowledge the keepalive somehow here?
         is WsMessage.ConnectionAck -> null // should not happen at this point
@@ -216,6 +233,15 @@ class WebSocketNetworkTransport(
     }
 
     return webSocketConnection
+  }
+
+  suspend fun ping(payload: Map<String, Any?>? = null): WsMessage.Pong {
+    commands.send(PingOperation(payload))
+    return pongChannel.receive()
+  }
+
+  suspend fun pong(payload: Map<String, Any?>? = null) {
+    commands.send(PongOperation(payload))
   }
 
   override fun <D : Operation.Data> execute(

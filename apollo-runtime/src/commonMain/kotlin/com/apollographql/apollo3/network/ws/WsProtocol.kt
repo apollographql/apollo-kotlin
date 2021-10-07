@@ -29,6 +29,12 @@ interface WsProtocol {
   fun <D: Operation.Data> operationStop(request: ApolloRequest<D>): Map<String, Any?>
 
   /**
+   * ping and pong messages for graphql-ws
+   */
+  fun ping(payload: Map<String, Any?>? = null): Map<String, Any?>?
+  fun pong(payload: Map<String, Any?>? = null): Map<String, Any?>?
+
+  /**
    * parse the given message and return one of [WsMessage]
    *
    * @param message the message. If the message is received as binary, it will be converted to a String. Non-text binary messages are
@@ -49,6 +55,8 @@ sealed class WsMessage {
   class OperationData(val id: String, val payload: Map<String, Any?>) : WsMessage()
   class OperationError(val id: String, val payload: Map<String, Any?>) : WsMessage()
   class OperationComplete(val id: String): WsMessage()
+  class Ping(val payload: Map<String, Any?>?): WsMessage()
+  class Pong(val payload: Map<String, Any?>?): WsMessage()
   object KeepAlive: WsMessage()
   class Unknown(val map: Map<String, Any?>): WsMessage()
 }
