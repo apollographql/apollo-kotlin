@@ -2,16 +2,9 @@ plugins {
   kotlin("multiplatform")
 }
 
-// Mockserver is only used for tests and therefore doesn't need Browser targets
-// So we configure JS manually
-configureMppDefaults(withJs = false)
+configureMppTestsDefaults()
 
 kotlin {
-  js(IR) {
-    useCommonJs()
-    nodejs()
-  }
-
   sourceSets {
     val commonMain by getting {
       dependencies {
@@ -42,12 +35,6 @@ kotlin {
         implementation(projects.apolloRuntime) {
           because("We need HttpEngine for SocketTest")
         }
-      }
-    }
-
-    val jsTest by getting {
-      dependencies {
-        implementation(kotlin("test-js"))
       }
     }
   }

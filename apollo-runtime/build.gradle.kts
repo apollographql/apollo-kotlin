@@ -33,12 +33,6 @@ kotlin {
       }
     }
 
-    val commonTest by getting {
-      dependencies {
-        implementation(projects.apolloTestingSupport)
-      }
-    }
-
     val jvmTest by getting {
       dependencies {
         implementation(kotlin("test-junit"))

@@ -3,7 +3,7 @@ package test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
-import com.apollographql.apollo3.testing.runWithMainLoop
+import com.apollographql.apollo3.testing.runTest
 import platform.Foundation.NSError
 import platform.Foundation.NSURLErrorCannotFindHost
 import platform.Foundation.NSURLErrorDomain
@@ -14,7 +14,7 @@ import kotlin.test.assertNotNull
 
 class HttpEngineTest {
   @Test
-  fun canReadNSError() = runWithMainLoop {
+  fun canReadNSError() = runTest {
     val apolloClient = ApolloClient("https://inexistent.host/graphql")
 
     val result = kotlin.runCatching {
