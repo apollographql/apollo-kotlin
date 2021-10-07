@@ -95,7 +95,7 @@ Handle errors if needed:
 Finally if everything is successful, store the login and go back to the previous screen:
 
 ```kotlin:title=app/src/main/java/com/example/rocketreserver/LoginFragment.kt
-                User.setToken(context!!, login)
+                User.setToken(requireContext(), login)
                 findNavController().popBackStack()
             }
         }

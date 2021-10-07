@@ -53,6 +53,7 @@ modify `LaunchListAdapter.kt` to get a callback when the end of the list is reac
 ```
 
 Note that you can add some look-ahead and trigger the callback before the end of list is reached if you want to minimize the wait time and trigger a new network requests a few items before the end of list is reached.
+This is a basic implementation of a paging adapter - in a real project you would probably use something like the [Jetpack Paging library](https://developer.android.com/topic/libraries/architecture/paging/v3-overview).
 
 ## Connect to the callback
 
@@ -66,10 +67,10 @@ In `LaunchListFragment.kt`, register this callback and link it to a coroutine [C
 
         val channel = Channel<Unit>(Channel.CONFLATED)
 
-        // offer a first item to do the initial load else the list will stay empty forever
-        channel.offer(Unit)
+        // Send a first item to do the initial load else the list will stay empty forever
+        channel.trySend(Unit)
         adapter.onEndOfListReached = {
-            channel.offer(Unit)
+            channel.trySend(Unit)
         }
 ```
 
