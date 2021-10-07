@@ -11,6 +11,7 @@ import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
+import com.apollographql.apollo3.testing.runTest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -42,8 +43,7 @@ class HttpCacheTest {
     }
   """.trimIndent()
 
-  @Before
-  fun before() {
+  private suspend fun before() {
     mockServer = MockServer()
     val dir = File("build/httpCache")
     dir.deleteRecursively()
@@ -55,8 +55,13 @@ class HttpCacheTest {
     )
   }
 
+  private suspend fun tearDown() {
+    apolloClient.dispose()
+    mockServer.stop()
+  }
+
   @Test
-  fun CacheFirst() {
+  fun CacheFirst() = runTest(before = { before() }, after = { tearDown() }) {
     mockServer.enqueue(response)
 
     runBlocking {
@@ -71,7 +76,7 @@ class HttpCacheTest {
   }
 
   @Test
-  fun NetworkOnly() {
+  fun NetworkOnly() = runTest(before = { before() }, after = { tearDown() }) {
     mockServer.enqueue(response)
     mockServer.enqueue(MockResponse(statusCode = 500))
 
@@ -88,7 +93,7 @@ class HttpCacheTest {
   }
 
   @Test
-  fun NetworkFirst() {
+  fun NetworkFirst() = runTest(before = { before() }, after = { tearDown() }) {
     mockServer.enqueue(response)
     mockServer.enqueue(MockResponse(statusCode = 500))
 
@@ -105,7 +110,7 @@ class HttpCacheTest {
   }
 
   @Test
-  fun Timeout() {
+  fun Timeout() = runTest(before = { before() }, after = { tearDown() }) {
     mockServer.enqueue(response)
 
     runBlocking {
@@ -128,7 +133,7 @@ class HttpCacheTest {
   }
 
   @Test
-  fun DifferentQueriesDoNotOverlap() {
+  fun DifferentQueriesDoNotOverlap() = runTest(before = { before() }, after = { tearDown() }) {
     mockServer.enqueue(response)
     mockServer.enqueue(response2)
 

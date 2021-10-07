@@ -12,6 +12,7 @@ import com.apollographql.apollo3.rx2.Rx2ApolloClient
 import com.apollographql.apollo3.rx2.Rx2ApolloStore
 import com.apollographql.apollo3.rx2.toRx2ApolloClient
 import com.apollographql.apollo3.rx2.toRx2ApolloStore
+import kotlinx.coroutines.runBlocking
 import rxjava.GetRandomQuery
 import java.util.concurrent.TimeUnit
 import kotlin.test.BeforeTest
@@ -26,7 +27,7 @@ class RxJavaTest {
   fun setUp() {
     val store = ApolloStore(MemoryCacheFactory())
     mockServer = MockServer()
-    rx2ApolloClient = ApolloClient(mockServer.url()).withStore(store).toRx2ApolloClient()
+    rx2ApolloClient = ApolloClient(runBlocking { mockServer.url() }).withStore(store).toRx2ApolloClient()
     rx2ApolloStore = store.toRx2ApolloStore()
   }
 

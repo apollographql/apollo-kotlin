@@ -121,7 +121,7 @@ ext.dep = [
     // Keep in sync with MIN_GRADLE_VERSION
     minGradleApi             : "dev.gradleplugins:gradle-api:5.6",
     graphqlKotlin            : "com.expediagroup:graphql-kotlin-spring-server:4.1.0",
-    testParameterInjector    : "com.google.testparameterinjector:test-parameter-injector:1.4"
+    testParameterInjector    : "com.google.testparameterinjector:test-parameter-injector:1.4",
 ]
 ext.androidConfig = [
     compileSdkVersion: 30,
