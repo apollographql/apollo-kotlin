@@ -91,11 +91,21 @@ package com.apollographql.apollo.gradle.api {
     property public abstract org.gradle.api.provider.Property<java.lang.String> sourceSetName;
   }
 
+  public interface RegisterOperationsConfig {
+    method public org.gradle.api.provider.Property<java.lang.String> getGraph();
+    method public org.gradle.api.provider.Property<java.lang.String> getGraphVariant();
+    method public org.gradle.api.provider.Property<java.lang.String> getKey();
+    property public abstract org.gradle.api.provider.Property<java.lang.String> graph;
+    property public abstract org.gradle.api.provider.Property<java.lang.String> graphVariant;
+    property public abstract org.gradle.api.provider.Property<java.lang.String> key;
+  }
+
   public interface Service extends com.apollographql.apollo.gradle.api.CompilerParams {
     method public org.gradle.api.provider.ListProperty<java.lang.String> getExclude();
     method public org.gradle.api.provider.Property<java.lang.String> getSchemaPath();
     method public org.gradle.api.provider.Property<java.lang.String> getSourceFolder();
     method public void introspection(org.gradle.api.Action<? super com.apollographql.apollo.gradle.api.Introspection> configure);
+    method public void registerOperations(org.gradle.api.Action<? super com.apollographql.apollo.gradle.api.RegisterOperationsConfig> configure);
     property public abstract org.gradle.api.provider.ListProperty<java.lang.String> exclude;
     property public abstract org.gradle.api.provider.Property<java.lang.String> schemaPath;
     property public abstract org.gradle.api.provider.Property<java.lang.String> sourceFolder;
