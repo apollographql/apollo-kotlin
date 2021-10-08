@@ -10,7 +10,7 @@ Open `LaunchListAdapter` and add a `launches` property:
 
 ```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchListAdapter.kt
 class LaunchListAdapter(
-    val launches: List<LaunchListQuery.Launch>
+    private val launches: List<LaunchListQuery.Launch>
 ) : RecyclerView.Adapter<LaunchListAdapter.ViewHolder>() {
 ```
 

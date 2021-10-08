@@ -70,10 +70,6 @@ There is no need to create a new instance of the apolloClient for each GraphQL r
 private var instance: ApolloClient? = null
 
 fun apolloClient(context: Context): ApolloClient {
-    check(Looper.myLooper() == Looper.getMainLooper()) {
-        "Only the main thread can get the apolloClient instance"
-    }
-
     if (instance != null) {
         return instance!!
     }

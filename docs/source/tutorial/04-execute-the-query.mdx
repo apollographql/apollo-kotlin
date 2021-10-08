@@ -29,7 +29,7 @@ Open `LaunchListFragment.kt`, override `onViewCreated` and launch a new coroutin
         lifecycleScope.launchWhenResumed {
             val response = apolloClient.query(LaunchListQuery()).await()
 
-            Log.d("LaunchList", "Success ${response?.data}")
+            Log.d("LaunchList", "Success ${response.data}")
         }
     }
 ```

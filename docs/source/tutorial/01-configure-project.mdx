@@ -32,7 +32,7 @@ Now you will add Apollo Android to the project.
 
 You can find the latest version of Apollo Android from the [github releases page](https://github.com/apollographql/apollo-android/releases). It is also displayed at the top of the [apollo-android repo](https://github.com/apollographql/apollo-android/).
 
-This tutorial uses `2.5.5` because it is the latest version at the time of writing. Feel free to use a more recent version if one is available.
+This tutorial uses `2.5.9` because it is the latest version at the time of writing. Feel free to use a more recent version if one is available.
 
 ## Apply the plugin
 
@@ -42,7 +42,7 @@ Apply the Apollo plugin in `app/build.gradle.kts`. There are two `build.gradle.k
 plugins {
     id("com.android.application")
     // ...
-    id("com.apollographql.apollo").version("2.5.5")
+    id("com.apollographql.apollo").version("2.5.9")
 }
 ```
 
@@ -64,10 +64,9 @@ Now add `apollo-runtime` and `apollo-coroutines-support` to the list of dependen
 
 ```groovy:title=app/build.gradle.kts
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     // ...
-    implementation 'com.apollographql.apollo:apollo-runtime:2.5.5'
-    implementation 'com.apollographql.apollo:apollo-coroutines-support:2.5.5'
+    implementation("com.apollographql.apollo:apollo-runtime:2.5.9")
+    implementation("com.apollographql.apollo:apollo-coroutines-support:2.5.9")
     // ...
 }
 ```
