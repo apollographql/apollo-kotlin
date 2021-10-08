@@ -1,5 +1,6 @@
 package com.apollographql.apollo.gradle.api
 
+import com.apollographql.apollo.gradle.internal.RegisterOperations
 import org.gradle.api.Action
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
@@ -15,6 +16,11 @@ interface Service : CompilerParams {
    * Configures the [Introspection]
    */
   fun introspection(configure: Action<in Introspection>)
+
+  /**
+   * Configures the [Introspection]
+   */
+  fun registerOperations(configure: Action<in RegisterOperationsConfig>)
 
   /**
    * path to the folder containing the graphql files relative to the current source set

@@ -1,0 +1,40 @@
+---
+title: Operation safelisting
+sidebar_title: Operation safelisting (enterprise only)
+description: Secure your graph by enforcing a safelist of registered operations
+---
+
+import { ExpansionPanel } from 'gatsby-theme-apollo-docs';
+
+## Overview
+
+> **Operation safelisting requires an Apollo Studio [Enterprise plan](https://www.apollographql.com/plans/).** To enable this feature, please contact Apollo.
+
+If you enabled operation safelisting on your backend (see [here](https://www.apollographql.com/docs/studio/operation-registry/) for more information about how to do this), you can use Apollo Android Gradle plugin to register your operations automatically. Apollo Android might transform the GraphQL files you write to include `__typename` (for polymorphic types) or trim whitespaces (to save some space). Registering your operations through the Gradle plugin ensures the transformed versions are registered so that there is an exact match between what is registered and what is sent by your app.
+
+Add this to your Gradle configuration:
+
+```kotlin
+apollo {
+  service("$serviceName") {
+
+    // Configure operation safelisting
+    registerOperations {
+      // You can get a key at https://studio.apollographql.com/graph/$graphId/settings
+      key.set(System.getenv("APOLLO_KEY"))
+      // Configure your graph.
+      graph.set(System.getenv("APOLLO_GRAPH"))
+      // Configure your variant.
+      graphVariant.set("current")
+    }
+  }
+}
+```
+
+When your operations are stable and you want to safelist them, execute the `registerMain${serviceName}ApolloOperations` task to push all your operation to the registry.
+
+```kotlin
+./gradlew registerMainServiceApolloOperations
+```
+
+If everything goes well, your queries are now safelisted and safe to use in your mobile app.

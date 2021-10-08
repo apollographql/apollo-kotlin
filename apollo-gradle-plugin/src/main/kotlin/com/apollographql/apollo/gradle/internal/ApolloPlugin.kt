@@ -10,9 +10,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
-import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.attributes.Usage
-import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
 import java.net.URLDecoder
@@ -134,6 +132,8 @@ open class ApolloPlugin : Plugin<Project> {
             androidExtension != null -> AndroidTaskConfigurator.registerGeneratedDirectory(project, compilationUnit, codegenProvider)
             else -> JvmTaskConfigurator.registerGeneratedDirectory(project, compilationUnit, codegenProvider)
           }
+
+          maybeRegisterRegisterOperationsTasks(project, compilationUnit, codegenProvider)
 
         }
 
@@ -263,6 +263,20 @@ open class ApolloPlugin : Plugin<Project> {
       project.tasks.register(ModelNames.pushApolloSchema(), ApolloPushSchemaTask::class.java) { task ->
         task.group = TASK_GROUP
       }
+    }
+
+    private fun maybeRegisterRegisterOperationsTasks(project: Project, compilationUnit: DefaultCompilationUnit, codegenProvider: TaskProvider<ApolloGenerateSourcesTask>) {
+      val registerOperationsConfig = compilationUnit.service.registerOperationsConfig
+      if (registerOperationsConfig != null) {
+          project.tasks.register(ModelNames.registerOperations(compilationUnit), ApolloRegisterOperationsTask::class.java) { task ->
+            task.group = TASK_GROUP
+
+            task.graph.set(registerOperationsConfig.graph)
+            task.graphVariant.set(registerOperationsConfig.graphVariant)
+            task.key.set(registerOperationsConfig.key)
+            task.operationOutput.set(codegenProvider.flatMap { it.operationOutputFile })
+          }
+        }
     }
 
     fun toMap(s: String): Map<String, String> {
