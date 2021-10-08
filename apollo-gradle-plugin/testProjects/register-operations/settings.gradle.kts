@@ -1,2 +1,2 @@
-rootProject.name="operationIds"
+rootProject.name="registerOperations"
 
