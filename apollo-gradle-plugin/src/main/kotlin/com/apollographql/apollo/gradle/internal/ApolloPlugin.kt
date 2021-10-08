@@ -269,6 +269,7 @@ open class ApolloPlugin : Plugin<Project> {
       val registerOperationsConfig = compilationUnit.service.registerOperationsConfig
       if (registerOperationsConfig != null) {
           project.tasks.register(ModelNames.registerOperations(compilationUnit), ApolloRegisterOperationsTask::class.java) { task ->
+            task.group = TASK_GROUP
 
             task.graph.set(registerOperationsConfig.graph)
             task.graphVariant.set(registerOperationsConfig.graphVariant)

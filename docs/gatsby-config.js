@@ -63,6 +63,7 @@ module.exports = {
             'essentials/fragments',
             'essentials/inline-fragments',
             'essentials/migration',
+            'advanced/operation-safelisting',
           ],
         }
       }
