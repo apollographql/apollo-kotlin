@@ -133,6 +133,8 @@ open class ApolloPlugin : Plugin<Project> {
             else -> JvmTaskConfigurator.registerGeneratedDirectory(project, compilationUnit, codegenProvider)
           }
 
+          maybeRegisterRegisterOperationsTasks(project, compilationUnit, codegenProvider)
+
         }
 
         rootProvider.configure {
@@ -263,20 +265,18 @@ open class ApolloPlugin : Plugin<Project> {
       }
     }
 
-    private fun maybeRegisterRegisterOperationsTasks(project: Project, apolloExtension: DefaultApolloExtension) {
-      apolloExtension.services.forEach { service ->
-        val registerOperationsConfig = service.registerOperationsConfig
-        if (registerOperationsConfig != null) {
-          project.tasks.register(ModelNames.downloadApolloSchema(service), ApolloRegisterOperationsTask::class.java) { task ->
+    private fun maybeRegisterRegisterOperationsTasks(project: Project, compilationUnit: DefaultCompilationUnit, codegenProvider: TaskProvider<ApolloGenerateSourcesTask>) {
+      val registerOperationsConfig = compilationUnit.service.registerOperationsConfig
+      if (registerOperationsConfig != null) {
+          project.tasks.register(ModelNames.registerOperations(compilationUnit), ApolloRegisterOperationsTask::class.java) { task ->
 
             task.graph.set(registerOperationsConfig.graph)
             task.graphVariant.set(registerOperationsConfig.graphVariant)
             task.key.set(registerOperationsConfig.key)
+            task.operationOutput.set(codegenProvider.flatMap { it.operationOutputFile })
           }
         }
-      }
     }
-
 
     fun toMap(s: String): Map<String, String> {
       return s.split("&")
@@ -294,7 +294,6 @@ open class ApolloPlugin : Plugin<Project> {
       registerCompilationUnits(project, apolloExtension, checkVersionsTask)
 
       registerDownloadSchemaTasks(project, apolloExtension)
-      maybeRegisterRegisterOperationsTasks(project, apolloExtension)
       project.tasks.register(ModelNames.convertApolloSchema(), ApolloConvertSchemaTask::class.java) { task ->
         task.group = TASK_GROUP
       }

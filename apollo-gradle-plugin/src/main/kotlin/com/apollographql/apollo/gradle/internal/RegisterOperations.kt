@@ -1,6 +1,9 @@
 package com.apollographql.apollo.gradle.internal
 
+import com.apollographql.apollo.compiler.fromJson
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
+import com.apollographql.apollo.gradle.internal.SchemaDownloader.cast
+import org.jetbrains.kotlin.gradle.utils.`is`
 
 object RegisterOperations {
   private val mutation = """
@@ -62,20 +65,32 @@ object RegisterOperations {
 
     val responseString = response.body.use { it?.string() }
 
-    println("got response $responseString")
-//    val document = responseString
-//        ?.fromJson<Map<String, *>>()
-//        ?.get("data").cast<Map<String, *>>()
-//        ?.get("service").cast<Map<String, *>>()
-//        ?.get("variant").cast<Map<String, *>>()
-//        ?.get("activeSchemaPublish").cast<Map<String, *>>()
-//        ?.get("schema").cast<Map<String, *>>()
-//        ?.get("document").cast<String>()
-//
-//    check(document != null) {
-//      "Cannot retrieve document from $responseString\nCheck graph id and variant"
-//    }
-//    return document
+    val errors = responseString
+        ?.fromJson<Map<String, *>>()
+        ?.get("data").cast<Map<String, *>>()
+        ?.get("service").cast<Map<String, *>>()
+        ?.get("registerOperationsWithResponse").cast<Map<String, *>>()
+        ?.get("invalidOperations").cast<List<Map<String, *>>>()
+        ?.flatMap {
+          it.get("errors").cast<List<String>>() ?: emptyList()
+        } ?: emptyList()
 
+    check(errors.isEmpty()) {
+      "Cannot push operations: ${errors.joinToString("\n")}"
+    }
+
+    val success = responseString
+        ?.fromJson<Map<String, *>>()
+        ?.get("data").cast<Map<String, *>>()
+        ?.get("service").cast<Map<String, *>>()
+        ?.get("registerOperationsWithResponse").cast<Map<String, *>>()
+        ?.get("registrationSuccess").cast<Boolean>()
+        ?: false
+
+    check(success) {
+      "Cannot push operations: $responseString"
+    }
+
+    println("Operations pushed successfully")
   }
 }
