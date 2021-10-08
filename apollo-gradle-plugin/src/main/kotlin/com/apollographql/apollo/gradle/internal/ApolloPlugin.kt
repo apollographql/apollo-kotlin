@@ -10,9 +10,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
-import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.attributes.Usage
-import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
 import java.net.URLDecoder
@@ -265,6 +263,21 @@ open class ApolloPlugin : Plugin<Project> {
       }
     }
 
+    private fun maybeRegisterRegisterOperationsTasks(project: Project, apolloExtension: DefaultApolloExtension) {
+      apolloExtension.services.forEach { service ->
+        val registerOperationsConfig = service.registerOperationsConfig
+        if (registerOperationsConfig != null) {
+          project.tasks.register(ModelNames.downloadApolloSchema(service), ApolloRegisterOperationsTask::class.java) { task ->
+
+            task.graph.set(registerOperationsConfig.graph)
+            task.graphVariant.set(registerOperationsConfig.graphVariant)
+            task.key.set(registerOperationsConfig.key)
+          }
+        }
+      }
+    }
+
+
     fun toMap(s: String): Map<String, String> {
       return s.split("&")
           .map {
@@ -281,6 +294,7 @@ open class ApolloPlugin : Plugin<Project> {
       registerCompilationUnits(project, apolloExtension, checkVersionsTask)
 
       registerDownloadSchemaTasks(project, apolloExtension)
+      maybeRegisterRegisterOperationsTasks(project, apolloExtension)
       project.tasks.register(ModelNames.convertApolloSchema(), ApolloConvertSchemaTask::class.java) { task ->
         task.group = TASK_GROUP
       }
