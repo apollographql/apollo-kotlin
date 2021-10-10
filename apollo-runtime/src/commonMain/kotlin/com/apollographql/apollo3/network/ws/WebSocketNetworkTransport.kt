@@ -1,24 +1,19 @@
 package com.apollographql.apollo3.network.ws
 
-import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableAnyAdapter
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.api.internal.ResponseBodyParser
-import com.apollographql.apollo3.api.internal.json.buildJsonByteString
-import com.apollographql.apollo3.api.internal.json.buildJsonString
-import com.apollographql.apollo3.api.toJson
+import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.internal.BackgroundDispatcher
 import com.apollographql.apollo3.network.NetworkTransport
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,9 +22,8 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onSubscription
-import kotlinx.coroutines.flow.takeWhile
+import kotlinx.coroutines.flow.transformWhile
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeout
 
 
 /**
@@ -44,206 +38,122 @@ import kotlinx.coroutines.withTimeout
 class WebSocketNetworkTransport(
     private val serverUrl: String,
     private val webSocketEngine: WebSocketEngine = DefaultWebSocketEngine(),
-    private val connectionAcknowledgeTimeoutMs: Long = 10_000,
     private val idleTimeoutMillis: Long = 60_000,
-    private val protocol: WsProtocol = SubscriptionWsProtocol(),
-) : NetworkTransport {
+    private val protocolFactory: WsProtocol.Factory = SubscriptionWsProtocol.Factory { null },
+) : NetworkTransport, WsProtocol.Listener {
 
   constructor(
       serverUrl: String,
-      connectionAcknowledgeTimeoutMs: Long = 10_000,
       idleTimeoutMillis: Long = 60_000,
-      protocol: WsProtocol = SubscriptionWsProtocol(),
+      protocolFactory: WsProtocol.Factory = SubscriptionWsProtocol.Factory { null },
   ) : this(
       serverUrl,
       DefaultWebSocketEngine(),
-      connectionAcknowledgeTimeoutMs,
       idleTimeoutMillis,
-      protocol
+      protocolFactory
   )
-
-  private val sendMessage: suspend WebSocketConnection.(Map<String, Any?>) -> Unit
 
   private interface Command
   class StartOperation<D : Operation.Data>(val request: ApolloRequest<D>) : Command
   class StopOperation<D : Operation.Data>(val request: ApolloRequest<D>) : Command
-  class PingOperation(val payload: Map<String, Any?>?) : Command
-  class PongOperation(val payload: Map<String, Any?>?) : Command
 
   private interface Event {
-    val id: String
+    val id: String?
   }
 
-  private class OperationData(override val id: String, val payload: Map<String, Any?>) : Event
-  private class OperationError(override val id: String, val cause: Throwable) : Event
-  private class OperationComplete(override val id: String) : Event
+  private class OperationResponse(override val id: String?, val payload: Map<String, Any?>) : Event
+  private class OperationError(override val id: String?, val payload: Map<String, Any?>?) : Event
+  private class OperationComplete(override val id: String?) : Event
+  private class NetworkError(val cause: Throwable?) : Event {
+    override val id: String? = null
+  }
 
-  private val commands = Channel<Command>(64)
-  private val mutableEvents = MutableSharedFlow<Event>(0, 64, BufferOverflow.SUSPEND)
+  /**
+   * Use unlimited buffers so that we never have to suspend when writing a command or an event
+   * and we avoid deadlocks. This might be overkill but is most likely never going to be a problem in practice.
+   */
+  private val commands = Channel<Command>(UNLIMITED)
+  private val mutableEvents = MutableSharedFlow<Event>(0, Int.MAX_VALUE, BufferOverflow.SUSPEND)
   private val events = mutableEvents.asSharedFlow()
-  
-  val subscriptionCount = mutableEvents.subscriptionCount
 
-  private val pongChannel = Channel<WsServerMessage.Pong>(0, BufferOverflow.DROP_OLDEST)
+  val subscriptionCount = mutableEvents.subscriptionCount
 
   private val backgroundDispatcher = BackgroundDispatcher()
   private val coroutineScope = CoroutineScope(backgroundDispatcher.coroutineDispatcher)
 
   init {
-    /**
-     * When receiving, we can always convert as required.
-     * When sending, some servers might be sensitive to the type of frame so
-     * this is configurable
-     */
-    sendMessage = when (protocol.frameType) {
-      WsFrameType.Binary -> { message ->
-        send(message.toByteString())
-      }
-      WsFrameType.Text -> { message ->
-        send(message.toUtf8())
-      }
-    }
     coroutineScope.launch {
-      var currentConnection: WebSocketConnection? = null
-      var readJob: Job? = null
+      /**
+       * No need to lock these variables as they are all accessed from the same thread
+       */
       var idleJob: Job? = null
-      val subscribers = mutableSetOf<String>()
+      var connectionJob: Job? = null
+      var protocol: WsProtocol? = null
+      var subscriptions = 0
 
       while (true) {
-        when (val command = commands.receive()) {
-          is StartOperation<*> -> {
-            idleJob?.cancel()
-            subscribers.add(command.request.requestUuid.toString())
-            if (currentConnection == null) {
-              try {
-                currentConnection = createConnection()
-              } catch (e: Exception) {
-                subscribers.forEach {
-                  mutableEvents.emit(
-                      OperationError(it, e)
-                  )
-                }
-              }
+        val command = commands.receive()
 
-              if (currentConnection != null) {
-                readJob?.cancel()
-                readJob = launch {
-                  try {
-                    readWebSocket(currentConnection!!)
-                  } catch (e: Exception) {
-                    subscribers.forEach {
-                      mutableEvents.emit(
-                          OperationError(it, e)
-                      )
-                    }
-                    currentConnection?.close()
-                    currentConnection = null
-                  }
-                }
-              }
-            }
-            currentConnection?.sendMessage(protocol.operationStart(command.request))
+        if (protocol == null) {
+          if (command !is StartOperation<*>) {
+            // A stop was received but we don't have a connection. Ignore it
+            continue
+          }
+
+          val webSocketConnection = try {
+            webSocketEngine.open(
+                url = serverUrl,
+                headers = mapOf(
+                    "Sec-WebSocket-Protocol" to protocolFactory.name,
+                )
+            )
+          } catch (e: Exception) {
+            // Error opening the websocket
+            mutableEvents.emit(NetworkError(e))
+            continue
+          }
+
+          protocol = protocolFactory.create(
+              webSocketConnection = webSocketConnection,
+              listener = this@WebSocketNetworkTransport,
+          )
+          try {
+            protocol.connectionInit()
+          } catch (e: Exception) {
+            protocol = null
+            // Error initializing the connection
+            mutableEvents.emit(NetworkError(e))
+            continue
+          }
+          connectionJob = launch {
+            protocol!!.run(this)
+          }
+        }
+
+        when (command) {
+          is StartOperation<*> -> {
+            subscriptions++
+            protocol.startOperation(command.request)
           }
           is StopOperation<*> -> {
-            subscribers.remove(command.request.requestUuid.toString())
-            currentConnection?.sendMessage(protocol.operationStop(command.request))
-            if (subscribers.isEmpty()) {
-              idleJob?.cancel()
-              idleJob = launch {
-                delay(idleTimeoutMillis)
-                check(subscribers.isEmpty())
-                protocol.connectionTerminate()?.let {
-                  currentConnection?.sendMessage(it)
-                }
-                currentConnection?.close()
-                currentConnection = null
-              }
-            }
+            subscriptions--
+            protocol.stopOperation(command.request)
           }
-          is PingOperation -> {
-            protocol.ping(command.payload)?.let { message ->
-              currentConnection?.sendMessage(message)
-            }
+        }
+
+        if (subscriptions == 0) {
+          idleJob = launch {
+            delay(idleTimeoutMillis)
+            connectionJob?.cancel()
+            connectionJob = null
+            protocol = null
           }
-          is PongOperation -> {
-            protocol.pong(command.payload)?.let { message ->
-              currentConnection?.sendMessage(message)
-            }
-          }
+        } else {
+          idleJob?.cancel()
+          idleJob = null
         }
       }
     }
-  }
-
-  private suspend fun readWebSocket(webSocketConnection: WebSocketConnection) {
-    while (true) {
-      val bytes = webSocketConnection.receive()
-
-      val wsMessage = protocol.parseMessage(bytes.utf8(), webSocketConnection)
-      val event = when (wsMessage) {
-        is WsServerMessage.OperationData -> OperationData(wsMessage.id, wsMessage.payload)
-        is WsServerMessage.OperationError -> OperationError(wsMessage.id, ApolloNetworkException("Cannot execute operation: ${wsMessage.payload}"))
-        is WsServerMessage.OperationComplete -> OperationComplete(wsMessage.id)
-        is WsServerMessage.Ping -> {
-          // Just return Pong to server for now
-          commands.send(PongOperation(wsMessage.payload))
-          null
-        }
-        is WsServerMessage.Pong -> {
-          pongChannel.send(wsMessage)
-          null
-        }
-        is WsServerMessage.Unknown -> null
-        is WsServerMessage.KeepAlive -> null // should we acknowledge the keepalive somehow here?
-        is WsServerMessage.ConnectionAck -> null // should not happen at this point
-        is WsServerMessage.ConnectionError -> null // should not happen at this point
-      }
-      if (event != null) {
-        mutableEvents.emit(event)
-      }
-    }
-  }
-
-  private fun Map<String, Any?>.toByteString() = buildJsonByteString {
-    AnyAdapter.toJson(this, this@toByteString)
-  }
-
-  private fun Map<String, Any?>.toUtf8() = buildJsonString {
-    AnyAdapter.toJson(this, this@toUtf8)
-  }
-
-  private suspend fun createConnection(): WebSocketConnection {
-    val webSocketConnection = webSocketEngine.open(
-        url = serverUrl,
-        headers = mapOf(
-            "Sec-WebSocket-Protocol" to protocol.name,
-        )
-    )
-    try {
-      withTimeout(connectionAcknowledgeTimeoutMs) {
-        webSocketConnection.sendMessage(protocol.connectionInit())
-        while (true) {
-          val payload = webSocketConnection.receive()
-
-          when (val message = protocol.parseMessage(payload.utf8(), webSocketConnection)) {
-            is WsServerMessage.ConnectionAck -> return@withTimeout null
-            is WsServerMessage.ConnectionError -> throw ApolloNetworkException("Server error when connecting to $serverUrl: ${NullableAnyAdapter.toJson(message.payload)}")
-            else -> Unit // unknown message?
-          }
-        }
-      }
-    } catch (e: TimeoutCancellationException) {
-      throw ApolloNetworkException("Ack not received after $connectionAcknowledgeTimeoutMs millis when connecting to $serverUrl")
-    } catch (e: Exception) {
-      throw ApolloNetworkException("Error while connecting to $serverUrl", e)
-    }
-
-    return webSocketConnection
-  }
-
-  suspend fun ping(payload: Map<String, Any?>? = null): WsServerMessage.Pong {
-    commands.send(PingOperation(payload))
-    return pongChannel.receive()
   }
 
   override fun <D : Operation.Data> execute(
@@ -252,26 +162,58 @@ class WebSocketNetworkTransport(
     return events.onSubscription {
       commands.send(StartOperation(request))
     }.filter {
-      it.id == request.requestUuid.toString()
-    }.takeWhile {
-      it !is OperationComplete
+      it.id == request.requestUuid.toString() || it.id == null
+    }.transformWhile {
+      when (it) {
+        is OperationComplete -> {
+          false
+        }
+        is NetworkError -> {
+          emit(it)
+          false
+        }
+        else -> {
+          emit(it)
+          true
+        }
+      }
     }.map {
       when (it) {
-        is OperationData -> ResponseBodyParser.parse(
+        is OperationResponse -> ResponseBodyParser.parse(
             it.payload,
             request.operation,
             request.executionContext[CustomScalarAdapters]!!
         ).copy(requestUuid = request.requestUuid)
-        is OperationError -> throw it.cause
+        is OperationError -> throw ApolloNetworkException("Cannot start operation ${request.operation.name()}: ${it.payload}")
+        is NetworkError -> {
+          throw ApolloNetworkException("Network error while executing ${request.operation.name()}", it.cause)
+        }
         else -> error("Unsupported event $it")
       }
     }.onCompletion {
       commands.send(StopOperation(request))
     }
   }
+
   override fun dispose() {
     coroutineScope.cancel()
     backgroundDispatcher.dispose()
+  }
+
+  override fun operationResponse(id: String, payload: Map<String, Any?>) {
+    mutableEvents.tryEmit(OperationResponse(id, payload))
+  }
+
+  override fun operationError(id: String, payload: Map<String, Any?>?) {
+    mutableEvents.tryEmit(OperationError(id, payload))
+  }
+
+  override fun operationComplete(id: String) {
+    mutableEvents.tryEmit(OperationComplete(id))
+  }
+
+  override fun networkError(cause: Throwable) {
+    mutableEvents.tryEmit(NetworkError(cause))
   }
 }
 

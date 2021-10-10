@@ -6,9 +6,12 @@ import kotlinx.coroutines.flow.collect
 import kotlin.test.Ignore
 import kotlin.test.Test
 
+// Ignored because it depends on a remote server
+// This test requires to book a trip using playground https://apollo-fullstack-tutorial.herokuapp.com/
+// See https://github.com/martinbonnin/graphql-ws-server
+@Ignore
 class FullStackTest {
   @Test
-  @Ignore
   fun simple() {
     val apolloClient = ApolloClient(
         networkTransport = WebSocketNetworkTransport(

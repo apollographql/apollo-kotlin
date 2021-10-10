@@ -27,8 +27,8 @@ class ApolloNetworkException(
  */
 class ApolloWebSocketClosedException(
     val code: Int,
-    message: String? = null,
-    cause: Throwable? = null) : ApolloException(message = message, cause = cause)
+    val reason: String? = null,
+    cause: Throwable? = null) : ApolloException(message = "WebSocket Closed code='$code' reason='$reason'", cause = cause)
 
 /**
  * The response was received but the response code was not 200
