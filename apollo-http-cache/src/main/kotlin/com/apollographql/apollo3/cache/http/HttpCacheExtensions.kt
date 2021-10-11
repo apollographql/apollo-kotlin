@@ -34,21 +34,20 @@ enum class HttpFetchPolicy {
   NetworkOnly,
 }
 
-fun ApolloClient.withHttpCache(
+fun ApolloClient.Builder.httpCache(
     directory: File,
     maxSize: Long,
-): ApolloClient {
+): ApolloClient.Builder {
   val networkTransport = networkTransport
   check(networkTransport is HttpNetworkTransport) {
     "withHttpCache requires a HttpNetworkTransport"
   }
-  return copy(
-      networkTransport = networkTransport.copy(
-        engine = CachingHttpEngine(
-            directory = directory,
-            maxSize = maxSize,
-            delegate = networkTransport.engine
-        )
+  return networkTransport(networkTransport.copy(
+          engine = CachingHttpEngine(
+              directory = directory,
+              maxSize = maxSize,
+              delegate = networkTransport.engine
+          )
       )
   )
 }

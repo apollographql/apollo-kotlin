@@ -16,12 +16,14 @@ import kotlin.test.assertEquals
 class GraphQLWsTest {
   @Test
   fun queryOverWebSocket() {
-    val apolloClient = ApolloClient(
-        networkTransport = WebSocketNetworkTransport(
-            serverUrl = "http://localhost:9090/graphql",
-            protocolFactory = GraphQLWsProtocol.Factory()
+    val apolloClient = ApolloClient.Builder()
+        .networkTransport(
+            WebSocketNetworkTransport(
+                serverUrl = "http://localhost:9090/graphql",
+                protocolFactory = GraphQLWsProtocol.Factory()
+            )
         )
-    )
+        .build()
 
     runWithMainLoop {
       assertEquals("Hello World!", apolloClient.query(HelloQuery()).data?.hello)
@@ -30,12 +32,14 @@ class GraphQLWsTest {
 
   @Test
   fun mutationOverWebSocket() {
-    val apolloClient = ApolloClient(
-        networkTransport = WebSocketNetworkTransport(
-            serverUrl = "http://localhost:9090/graphql",
-            protocolFactory = GraphQLWsProtocol.Factory()
+    val apolloClient = ApolloClient.Builder()
+        .networkTransport(
+            WebSocketNetworkTransport(
+                serverUrl = "http://localhost:9090/graphql",
+                protocolFactory = GraphQLWsProtocol.Factory()
+            )
         )
-    )
+        .build()
 
     runWithMainLoop {
       assertEquals("Hello Mutation!", apolloClient.mutate(SetHelloMutation()).data?.hello)
@@ -45,12 +49,14 @@ class GraphQLWsTest {
 
   @Test
   fun subscriptionOverWebSocket() {
-    val apolloClient = ApolloClient(
-        networkTransport = WebSocketNetworkTransport(
-            serverUrl = "http://localhost:9090/graphql",
-            protocolFactory = GraphQLWsProtocol.Factory()
+    val apolloClient = ApolloClient.Builder()
+        .networkTransport(
+            WebSocketNetworkTransport(
+                serverUrl = "http://localhost:9090/graphql",
+                protocolFactory = GraphQLWsProtocol.Factory()
+            )
         )
-    )
+        .build()
 
     runWithMainLoop {
       val list = apolloClient.subscribe(GreetingsSubscription()).toList()

@@ -1,11 +1,11 @@
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
+import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.cache.normalized.withFetchPolicy
-import com.apollographql.apollo3.cache.normalized.withStore
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.rx2.Rx2ApolloClient
@@ -26,7 +26,7 @@ class RxJavaTest {
   fun setUp() {
     val store = ApolloStore(MemoryCacheFactory())
     mockServer = MockServer()
-    rx2ApolloClient = ApolloClient(mockServer.url()).withStore(store).toRx2ApolloClient()
+    rx2ApolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store).build().toRx2ApolloClient()
     rx2ApolloStore = store.toRx2ApolloStore()
   }
 

@@ -1,5 +1,6 @@
 package test
 
+import IdObjectIdGenerator
 import codegen.models.HeroParentTypeDependentFieldQuery
 import codegen.models.HeroParentTypeDependentFieldQuery.Data.DroidHero.Friend.Companion.asHuman
 import codegen.models.HeroParentTypeDependentFieldQuery.Data.Hero.Companion.asDroid
@@ -12,11 +13,10 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
-import IdObjectIdGenerator
+import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.cache.normalized.withFetchPolicy
-import com.apollographql.apollo3.cache.normalized.withStore
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runWithMainLoop
@@ -39,7 +39,7 @@ class BasicTest {
         objectIdGenerator = IdObjectIdGenerator
     )
     mockServer = MockServer()
-    apolloClient = ApolloClient(mockServer.url()).withStore(store)
+    apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store).build()
   }
 
   private fun <D : Query.Data> basicTest(resourceName: String, query: Query<D>, block: ApolloResponse<D>.() -> Unit) = runWithMainLoop {

@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.withStore
+import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.cache.normalized.withWriteToCacheAsynchronously
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
@@ -37,9 +37,11 @@ class WriteToCacheAsynchronouslyTest {
     dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
     store = ApolloStore(MemoryCacheFactory())
     mockServer = MockServer()
-    apolloClient = ApolloClient(
-        serverUrl = mockServer.url(),
-    ).copy(requestedDispatcher = dispatcher).withStore(store)
+    apolloClient = ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .requestedDispatcher(dispatcher)
+        .store(store)
+        .build()
   }
 
   /**

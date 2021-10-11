@@ -29,35 +29,24 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.single
-import kotlin.jvm.JvmOverloads
 
 typealias FlowDecorator = (Flow<ApolloResponse<*>>) -> Flow<ApolloResponse<*>>
 
 /**
  * The main entry point for the Apollo runtime. An [ApolloClient] is responsible for executing queries, mutations and subscriptions
  */
-class ApolloClient @JvmOverloads constructor(
-    val networkTransport: NetworkTransport,
-    private val customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-    private val subscriptionNetworkTransport: NetworkTransport = networkTransport,
-    val interceptors: List<ApolloInterceptor> = emptyList(),
-    override val executionContext: ExecutionContext = ExecutionContext.Empty,
-    private val requestedDispatcher: CoroutineDispatcher? = null,
-    private val flowDecorators: List<FlowDecorator> = emptyList(),
+class ApolloClient private constructor(
+    private val networkTransport: NetworkTransport,
+    private val customScalarAdapters: CustomScalarAdapters,
+    private val subscriptionNetworkTransport: NetworkTransport,
+    val interceptors: List<ApolloInterceptor>,
+    override val executionContext: ExecutionContext,
+    private val requestedDispatcher: CoroutineDispatcher?,
+    private val flowDecorators: List<FlowDecorator>,
 ) : ExecutionParameters<ApolloClient> {
 
   private val dispatcher = defaultDispatcher(requestedDispatcher)
   private val clientScope = ClientScope(CoroutineScope(dispatcher))
-
-  /**
-   * A short-hand constructor
-   */
-  constructor(
-      serverUrl: String,
-  ) : this(
-      networkTransport = HttpNetworkTransport(serverUrl = serverUrl),
-      subscriptionNetworkTransport = WebSocketNetworkTransport(serverUrl = serverUrl),
-  )
 
   /**
    * Executes the given query and returns a response or throws on transport errors
@@ -119,39 +108,13 @@ class ApolloClient @JvmOverloads constructor(
     subscriptionNetworkTransport.dispose()
   }
 
-  /**
-   * Registers the given [customScalarAdapter]
-   *
-   * @param customScalarType a generated [CustomScalarType] from the [Types] generated object
-   * @param customScalarAdapter the [Adapter] to use for this custom scalar
-   */
-  fun <T> withCustomScalarAdapter(customScalarType: CustomScalarType, customScalarAdapter: Adapter<T>): ApolloClient {
-    return copy(
-        customScalarAdapters = CustomScalarAdapters(
-            customScalarAdapters.customScalarAdapters + mapOf(customScalarType.name to customScalarAdapter)
-        )
-    )
-  }
-
-  fun withInterceptor(interceptor: ApolloInterceptor): ApolloClient {
-    return copy(
-        interceptors = interceptors + interceptor
-    )
-  }
-
-  fun withFlowDecorator(flowDecorator: FlowDecorator): ApolloClient {
-    return copy(
-        flowDecorators = flowDecorators + flowDecorator
-    )
-  }
-
   override fun withExecutionContext(executionContext: ExecutionContext): ApolloClient {
     return copy(
         executionContext = this.executionContext + executionContext
     )
   }
 
-  fun copy(
+  private fun copy(
       networkTransport: NetworkTransport = this.networkTransport,
       subscriptionNetworkTransport: NetworkTransport = this.subscriptionNetworkTransport,
       customScalarAdapters: CustomScalarAdapters = this.customScalarAdapters,
@@ -189,6 +152,78 @@ class ApolloClient @JvmOverloads constructor(
       decorator.invoke(flow) as Flow<ApolloResponse<D>>
     }
   }
+
+  class Builder : ExecutionParameters<Builder> {
+    var networkTransport: NetworkTransport? = null
+    private var subscriptionNetworkTransport: NetworkTransport? = null
+    private var customScalarAdapters: MutableMap<String, Adapter<*>> = mutableMapOf()
+    private val interceptors: MutableList<ApolloInterceptor> = mutableListOf()
+    private val flowDecorators: MutableList<FlowDecorator> = mutableListOf()
+    private var requestedDispatcher: CoroutineDispatcher? = null
+    override var executionContext: ExecutionContext = ExecutionContext.Empty
+
+    fun serverUrl(serverUrl: String): Builder {
+      networkTransport = HttpNetworkTransport(serverUrl = serverUrl)
+      subscriptionNetworkTransport = WebSocketNetworkTransport(serverUrl = serverUrl)
+      return this
+    }
+
+    fun networkTransport(networkTransport: NetworkTransport): Builder {
+      this.networkTransport = networkTransport
+      return this
+    }
+
+    fun subscriptionNetworkTransport(subscriptionNetworkTransport: NetworkTransport): Builder {
+      this.subscriptionNetworkTransport = subscriptionNetworkTransport
+      return this
+    }
+
+    /**
+     * Registers the given [customScalarAdapter]
+     *
+     * @param customScalarType a generated [CustomScalarType] from the [Types] generated object
+     * @param customScalarAdapter the [Adapter] to use for this custom scalar
+     */
+    fun <T> addCustomScalarAdapter(customScalarType: CustomScalarType, customScalarAdapter: Adapter<T>): Builder {
+      customScalarAdapters[customScalarType.name] = customScalarAdapter
+      return this
+    }
+
+    fun addInterceptor(interceptor: ApolloInterceptor): Builder {
+      interceptors += interceptor
+      return this
+    }
+
+    fun addFlowDecorator(flowDecorator: FlowDecorator): Builder {
+      flowDecorators += flowDecorators + flowDecorator
+      return this
+    }
+
+    fun requestedDispatcher(requestedDispatcher: CoroutineDispatcher): Builder {
+      this.requestedDispatcher = requestedDispatcher
+      return this
+    }
+
+    override fun withExecutionContext(executionContext: ExecutionContext): Builder {
+      this.executionContext = this.executionContext + executionContext
+      return this
+    }
+
+    fun build(): ApolloClient {
+      check(networkTransport != null) {
+        "NetworkTransport not set, please call either serverUrl() or networkTransport()"
+      }
+      return ApolloClient(
+          networkTransport = networkTransport!!,
+          subscriptionNetworkTransport = subscriptionNetworkTransport ?: networkTransport!!,
+          customScalarAdapters = CustomScalarAdapters(customScalarAdapters),
+          interceptors = interceptors,
+          flowDecorators = flowDecorators,
+          requestedDispatcher = requestedDispatcher,
+          executionContext = executionContext,
+      )
+    }
+  }
 }
 
 
@@ -208,12 +243,12 @@ class ApolloClient @JvmOverloads constructor(
  * sendApqExtensions=true and sendDocument=false.
  * If false it will leave them untouched. You can later use [withHashedQuery] to enable them
  */
-fun ApolloClient.withAutoPersistedQueries(
+fun ApolloClient.Builder.autoPersistedQueries(
     httpMethodForHashedQueries: HttpMethod = HttpMethod.Get,
     httpMethodForDocumentQueries: HttpMethod = HttpMethod.Post,
     hashByDefault: Boolean = true,
-): ApolloClient {
-  return withInterceptor(AutoPersistedQueryInterceptor(httpMethodForDocumentQueries)).let {
+): ApolloClient.Builder {
+  return addInterceptor(AutoPersistedQueryInterceptor(httpMethodForDocumentQueries)).let {
     if (hashByDefault) {
       it.withHttpMethod(httpMethodForHashedQueries).withHashedQuery(true)
     } else {

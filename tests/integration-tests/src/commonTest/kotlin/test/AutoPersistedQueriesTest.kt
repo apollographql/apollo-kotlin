@@ -2,11 +2,11 @@ package test
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.http.HttpMethod
+import com.apollographql.apollo3.autoPersistedQueries
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runWithMainLoop
-import com.apollographql.apollo3.withAutoPersistedQueries
 import readResource
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -26,7 +26,7 @@ class AutoPersistedQueriesTest {
   fun withApqsDoesntSendDocument() = runWithMainLoop {
     mockServer.enqueue(readResource("HeroNameResponse.json"))
 
-    val apolloClient = ApolloClient(mockServer.url()).withAutoPersistedQueries(httpMethodForHashedQueries = HttpMethod.Post)
+    val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).autoPersistedQueries(httpMethodForHashedQueries = HttpMethod.Post).build()
 
     apolloClient.query(HeroNameQuery())
 
@@ -50,7 +50,7 @@ class AutoPersistedQueriesTest {
 
     mockServer.enqueue(readResource("HeroNameResponse.json"))
 
-    val apolloClient = ApolloClient(mockServer.url()).withAutoPersistedQueries(httpMethodForHashedQueries = HttpMethod.Post)
+    val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).autoPersistedQueries(httpMethodForHashedQueries = HttpMethod.Post).build()
 
     apolloClient.query(HeroNameQuery())
 

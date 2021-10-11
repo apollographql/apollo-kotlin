@@ -29,7 +29,7 @@ class HttpRequestComposerTest {
   @Test
   fun `request headers are forwarded to the server`() {
     val mockServer = MockServer()
-    val apolloClient = ApolloClient(mockServer.url())
+    val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).build()
 
     runWithMainLoop {
       kotlin.runCatching {

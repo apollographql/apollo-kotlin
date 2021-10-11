@@ -51,17 +51,17 @@ enum class FetchPolicy {
  * @param writeToCacheAsynchronously set to true to write to the cache after the response has been emitted.
  * This allows to display results faster
  */
-fun ApolloClient.withNormalizedCache(
+fun ApolloClient.Builder.normalizedCache(
     normalizedCacheFactory: NormalizedCacheFactory,
     objectIdGenerator: ObjectIdGenerator = TypePolicyObjectIdGenerator,
     cacheResolver: CacheResolver = FieldPolicyCacheResolver,
     writeToCacheAsynchronously: Boolean = false,
-): ApolloClient {
-  return withStore(ApolloStore(normalizedCacheFactory, objectIdGenerator, cacheResolver), writeToCacheAsynchronously)
+): ApolloClient.Builder {
+  return store(ApolloStore(normalizedCacheFactory, objectIdGenerator, cacheResolver), writeToCacheAsynchronously)
 }
 
-fun ApolloClient.withStore(store: ApolloStore, writeToCacheAsynchronously: Boolean = false): ApolloClient {
-  return withInterceptor(ApolloCacheInterceptor(store)).withWriteToCacheAsynchronously(writeToCacheAsynchronously)
+fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: Boolean = false): ApolloClient.Builder {
+  return addInterceptor(ApolloCacheInterceptor(store)).withWriteToCacheAsynchronously(writeToCacheAsynchronously)
 }
 
 fun <D : Query.Data> ApolloClient.watch(query: Query<D>): Flow<ApolloResponse<D>> {
@@ -133,7 +133,7 @@ fun <D : Query.Data> ApolloRequest<D>.withFetchPolicy(fetchPolicy: FetchPolicy) 
  * Sets the default [FetchPolicy] for the [ApolloClient]. This only affects queries. Mutations and subscriptions will
  * always use [FetchPolicy.NetworkFirst]
  */
-fun ApolloClient.withFetchPolicy(fetchPolicy: FetchPolicy) = withExecutionContext(
+fun ApolloClient.Builder.withFetchPolicy(fetchPolicy: FetchPolicy) = withExecutionContext(
     FetchPolicyContext(fetchPolicy)
 )
 
@@ -147,7 +147,7 @@ fun <D : Query.Data> ApolloRequest<D>.withRefetchPolicy(refetchPolicy: FetchPoli
 /**
  * Sets the [FetchPolicy] used when refetching at the client level. This is only used in combination with [watch].
  */
-fun ApolloClient.withRefetchPolicy(refetchPolicy: FetchPolicy) = withExecutionContext(
+fun ApolloClient.Builder.withRefetchPolicy(refetchPolicy: FetchPolicy) = withExecutionContext(
     RefetchPolicyContext(refetchPolicy)
 )
 

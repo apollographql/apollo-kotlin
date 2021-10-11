@@ -47,12 +47,14 @@ class HttpCacheTest {
     mockServer = MockServer()
     val dir = File("build/httpCache")
     dir.deleteRecursively()
-    apolloClient = ApolloClient(
-        networkTransport = HttpNetworkTransport(
-            httpRequestComposer = DefaultHttpRequestComposer(mockServer.url()),
-            engine = CachingHttpEngine(dir, Long.MAX_VALUE)
+    apolloClient = ApolloClient.Builder()
+        .networkTransport(
+            HttpNetworkTransport(
+                httpRequestComposer = DefaultHttpRequestComposer(mockServer.url()),
+                engine = CachingHttpEngine(dir, Long.MAX_VALUE)
+            )
         )
-    )
+        .build()
   }
 
   @Test

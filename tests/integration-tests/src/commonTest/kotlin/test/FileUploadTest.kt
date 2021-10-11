@@ -69,7 +69,7 @@ class FileUploadTest {
       }
     """.trimIndent())
 
-    apolloClient = ApolloClient(mockServer.url())
+    apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).build()
   }
 
   @Test

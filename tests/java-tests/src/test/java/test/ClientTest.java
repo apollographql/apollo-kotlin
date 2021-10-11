@@ -18,7 +18,7 @@ public class ClientTest {
   @Before
   public void before() {
     mockServer = new MockServer();
-    apolloClient = new ApolloClient(mockServer.url());
+    apolloClient = new ApolloClient.Builder().serverUrl(mockServer.url()).build();
   }
 
   @Test

@@ -37,8 +37,8 @@ class ApolloIdlingResource(
   }
 }
 
-fun ApolloClient.withIdlingResource(idlingResource: ApolloIdlingResource): ApolloClient {
-  return withFlowDecorator {
+fun ApolloClient.Builder.withIdlingResource(idlingResource: ApolloIdlingResource): ApolloClient.Builder {
+  return addFlowDecorator {
     it.onStart {
       idlingResource.operationStart()
     }.onCompletion {
