@@ -29,27 +29,35 @@ interface WsProtocol {
   fun <D: Operation.Data> operationStop(request: ApolloRequest<D>): Map<String, Any?>
 
   /**
-   * parse the given message and return one of [WsMessage]
+   * ping and pong messages for graphql-ws
+   */
+  fun ping(payload: Map<String, Any?>? = null): Map<String, Any?>?
+  fun pong(payload: Map<String, Any?>? = null): Map<String, Any?>?
+
+  /**
+   * parse the given message and return one of [WsServerMessage]
    *
    * @param message the message. If the message is received as binary, it will be converted to a String. Non-text binary messages are
    * not supported.
    * @param webSocketConnection the [WebSocketConnection]. This can be used by [WsProtocol] implementations to react to a given message.
    * For an example a [WsProtocol] might implement a custom ping/pong scheme this way
    */
-  fun parseMessage(message: String, webSocketConnection: WebSocketConnection): WsMessage
+  fun parseMessage(message: String, webSocketConnection: WebSocketConnection): WsServerMessage
 }
 
 enum class WsFrameType {
   Text,
   Binary
 }
-sealed class WsMessage {
-  object ConnectionAck : WsMessage()
-  class ConnectionError(val payload: Map<String, Any?>?) : WsMessage()
-  class OperationData(val id: String, val payload: Map<String, Any?>) : WsMessage()
-  class OperationError(val id: String, val payload: Map<String, Any?>) : WsMessage()
-  class OperationComplete(val id: String): WsMessage()
-  object KeepAlive: WsMessage()
-  class Unknown(val map: Map<String, Any?>): WsMessage()
+sealed class WsServerMessage {
+  object ConnectionAck : WsServerMessage()
+  class ConnectionError(val payload: Map<String, Any?>?) : WsServerMessage()
+  class OperationData(val id: String, val payload: Map<String, Any?>) : WsServerMessage()
+  class OperationError(val id: String, val payload: Map<String, Any?>) : WsServerMessage()
+  class OperationComplete(val id: String): WsServerMessage()
+  class Ping(val payload: Map<String, Any?>?): WsServerMessage()
+  class Pong(val payload: Map<String, Any?>?): WsServerMessage()
+  object KeepAlive: WsServerMessage()
+  class Unknown(val map: Map<String, Any?>): WsServerMessage()
 }
 

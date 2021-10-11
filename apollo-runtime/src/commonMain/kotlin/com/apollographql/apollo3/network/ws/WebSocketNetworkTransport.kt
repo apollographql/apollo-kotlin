@@ -67,6 +67,8 @@ class WebSocketNetworkTransport(
   private interface Command
   class StartOperation<D : Operation.Data>(val request: ApolloRequest<D>) : Command
   class StopOperation<D : Operation.Data>(val request: ApolloRequest<D>) : Command
+  class PingOperation(val payload: Map<String, Any?>?) : Command
+  class PongOperation(val payload: Map<String, Any?>?) : Command
 
   private interface Event {
     val id: String
@@ -79,8 +81,10 @@ class WebSocketNetworkTransport(
   private val commands = Channel<Command>(64)
   private val mutableEvents = MutableSharedFlow<Event>(0, 64, BufferOverflow.SUSPEND)
   private val events = mutableEvents.asSharedFlow()
-
+  
   val subscriptionCount = mutableEvents.subscriptionCount
+
+  private val pongChannel = Channel<WsServerMessage.Pong>(0, BufferOverflow.DROP_OLDEST)
 
   private val backgroundDispatcher = BackgroundDispatcher()
   private val coroutineScope = CoroutineScope(backgroundDispatcher.coroutineDispatcher)
@@ -156,6 +160,16 @@ class WebSocketNetworkTransport(
               }
             }
           }
+          is PingOperation -> {
+            protocol.ping(command.payload)?.let { message ->
+              currentConnection?.sendMessage(message)
+            }
+          }
+          is PongOperation -> {
+            protocol.pong(command.payload)?.let { message ->
+              currentConnection?.sendMessage(message)
+            }
+          }
         }
       }
     }
@@ -167,13 +181,22 @@ class WebSocketNetworkTransport(
 
       val wsMessage = protocol.parseMessage(bytes.utf8(), webSocketConnection)
       val event = when (wsMessage) {
-        is WsMessage.OperationData -> OperationData(wsMessage.id, wsMessage.payload)
-        is WsMessage.OperationError -> OperationError(wsMessage.id, ApolloNetworkException("Cannot execute operation: ${wsMessage.payload}"))
-        is WsMessage.OperationComplete -> OperationComplete(wsMessage.id)
-        is WsMessage.Unknown -> null
-        is WsMessage.KeepAlive -> null // should we acknowledge the keepalive somehow here?
-        is WsMessage.ConnectionAck -> null // should not happen at this point
-        is WsMessage.ConnectionError -> null // should not happen at this point
+        is WsServerMessage.OperationData -> OperationData(wsMessage.id, wsMessage.payload)
+        is WsServerMessage.OperationError -> OperationError(wsMessage.id, ApolloNetworkException("Cannot execute operation: ${wsMessage.payload}"))
+        is WsServerMessage.OperationComplete -> OperationComplete(wsMessage.id)
+        is WsServerMessage.Ping -> {
+          // Just return Pong to server for now
+          commands.send(PongOperation(wsMessage.payload))
+          null
+        }
+        is WsServerMessage.Pong -> {
+          pongChannel.send(wsMessage)
+          null
+        }
+        is WsServerMessage.Unknown -> null
+        is WsServerMessage.KeepAlive -> null // should we acknowledge the keepalive somehow here?
+        is WsServerMessage.ConnectionAck -> null // should not happen at this point
+        is WsServerMessage.ConnectionError -> null // should not happen at this point
       }
       if (event != null) {
         mutableEvents.emit(event)
@@ -203,8 +226,8 @@ class WebSocketNetworkTransport(
           val payload = webSocketConnection.receive()
 
           when (val message = protocol.parseMessage(payload.utf8(), webSocketConnection)) {
-            is WsMessage.ConnectionAck -> return@withTimeout null
-            is WsMessage.ConnectionError -> throw ApolloNetworkException("Server error when connecting to $serverUrl: ${NullableAnyAdapter.toJson(message.payload)}")
+            is WsServerMessage.ConnectionAck -> return@withTimeout null
+            is WsServerMessage.ConnectionError -> throw ApolloNetworkException("Server error when connecting to $serverUrl: ${NullableAnyAdapter.toJson(message.payload)}")
             else -> Unit // unknown message?
           }
         }
@@ -216,6 +239,11 @@ class WebSocketNetworkTransport(
     }
 
     return webSocketConnection
+  }
+
+  suspend fun ping(payload: Map<String, Any?>? = null): WsServerMessage.Pong {
+    commands.send(PingOperation(payload))
+    return pongChannel.receive()
   }
 
   override fun <D : Operation.Data> execute(
