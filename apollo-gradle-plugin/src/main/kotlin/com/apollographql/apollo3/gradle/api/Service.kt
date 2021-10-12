@@ -254,6 +254,14 @@ interface Service {
   val generateSchema: Property<Boolean>
 
   /**
+   * Whether to generate the type safe Data builders. These are mainly used for tests but can also be used for other use
+   * cases too.
+   *
+   * Only valid when [generateKotlinModels] is true
+   */
+  val generateTestBuilders: Property<Boolean>
+
+  /**
    * What codegen to use. One of "operationBased", "responseBased" or "compat"
    *
    * Default value: "compat"

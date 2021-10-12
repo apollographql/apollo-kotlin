@@ -48,6 +48,7 @@ class KotlinCodeGen(
     private val generateFragmentImplementations: Boolean,
     private val generateQueryDocument: Boolean,
     private val generateSchema: Boolean,
+    private val generateTestBuilders: Boolean,
     /**
      * Whether to flatten the models. This decision is left to the codegen. For fragments for an example, we
      * want to flatten at depth 1 to avoid name clashes, but it's ok to flatten fragment response adapters at
