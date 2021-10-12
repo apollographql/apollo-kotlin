@@ -16,11 +16,7 @@ actual class BackgroundDispatcher {
 }
 
 actual class DefaultMutex: Mutex {
-  private val lock = Unit
-
   override fun <T> lock(block: () -> T): T {
-    synchronized(lock) {
-      return block()
-    }
+    return block()
   }
 }
