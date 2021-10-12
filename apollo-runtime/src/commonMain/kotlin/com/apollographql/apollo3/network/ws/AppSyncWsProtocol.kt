@@ -78,7 +78,14 @@ class AppSyncWsProtocol(
   }
 
   /**
-   * @param authorization
+   * @param authorization: a map containing the authorization information. For an example:
+   * ```
+   *  mapOf(
+   *     "host" to "example1234567890000.appsync-api.us-east-1.amazonaws.com",
+   *     "x-api-key" to "da2-12345678901234567890123456"
+   *   )
+   * ```
+   *
    */
   class Factory(
       private val authorization: Map<String, Any?>,
