@@ -65,7 +65,7 @@ class RxJavaTest {
   fun writingToTheStoreWorks() {
     rx2ApolloStore.rxWriteOperation(GetRandomQuery(), GetRandomQuery.Data(random = 43)).blockingGet()
     rx2ApolloClient.query(
-        ApolloRequest(GetRandomQuery()).withFetchPolicy(FetchPolicy.CacheOnly)
+        ApolloRequest.Builder(GetRandomQuery()).withFetchPolicy(FetchPolicy.CacheOnly).build()
     ).test()
         .awaitDone(1, TimeUnit.SECONDS)
         .assertValue {

@@ -129,7 +129,7 @@ class StoreTest {
   private suspend fun storeAllFriends() {
     mockServer.enqueue(readResource("HeroAndFriendsNameWithIdsResponse.json"))
     val response = apolloClient.query(
-        ApolloRequest(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).withFetchPolicy(FetchPolicy.NetworkOnly)
+        ApolloRequest.Builder(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).withFetchPolicy(FetchPolicy.NetworkOnly).build()
     )
 
     assertEquals(response.data?.hero?.name, "R2-D2")
@@ -138,7 +138,7 @@ class StoreTest {
 
   private suspend fun assertFriendIsCached(id: String, name: String) {
     val characterResponse = apolloClient.query(
-        ApolloRequest(CharacterNameByIdQuery(id)).withFetchPolicy(FetchPolicy.CacheOnly)
+        ApolloRequest.Builder(CharacterNameByIdQuery(id)).withFetchPolicy(FetchPolicy.CacheOnly).build()
     )
     assertEquals2(characterResponse.isFromCache, true)
     assertEquals2(characterResponse.data?.character?.name, name)
@@ -147,7 +147,7 @@ class StoreTest {
   private suspend fun assertFriendIsNotCached(id: String) {
     try {
       apolloClient.query(
-          ApolloRequest(CharacterNameByIdQuery(id)).withFetchPolicy(FetchPolicy.CacheOnly)
+          ApolloRequest.Builder(CharacterNameByIdQuery(id)).withFetchPolicy(FetchPolicy.CacheOnly).build()
       )
       fail("A CacheMissException was expected")
     } catch (e: CacheMissException) {
@@ -157,7 +157,7 @@ class StoreTest {
   private suspend fun assertRootNotCached() {
     try {
       apolloClient.query(
-          ApolloRequest(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).withFetchPolicy(FetchPolicy.CacheOnly)
+          ApolloRequest.Builder(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).withFetchPolicy(FetchPolicy.CacheOnly).build()
       )
       fail("A CacheMissException was expected")
     } catch (e: CacheMissException) {

@@ -55,7 +55,7 @@ class OptimisticCacheTest {
     val query = HeroAndFriendsNamesQuery(Episode.JEDI)
 
     mockServer.enqueue(readResource("HeroAndFriendsNameResponse.json"))
-    apolloClient.query(ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkOnly))
+    apolloClient.query(ApolloRequest.Builder(query).withFetchPolicy(FetchPolicy.NetworkOnly).build())
 
     val mutationId = uuid4()
     val data = HeroAndFriendsNamesQuery.Data(HeroAndFriendsNamesQuery.Hero(
@@ -75,7 +75,7 @@ class OptimisticCacheTest {
         mutationId = mutationId,
         publish = true)
 
-    var response = apolloClient.query(ApolloRequest(query).withFetchPolicy(FetchPolicy.CacheOnly))
+    var response = apolloClient.query(ApolloRequest.Builder(query).withFetchPolicy(FetchPolicy.CacheOnly).build())
 
     assertEquals(response.data?.hero?.name, "R222-D222")
     assertEquals(response.data?.hero?.friends?.size, 2)
@@ -83,7 +83,7 @@ class OptimisticCacheTest {
     assertEquals(response.data?.hero?.friends?.get(1)?.name, "Batman")
 
     store.rollbackOptimisticUpdates(mutationId, false)
-    response = apolloClient.query(ApolloRequest(query).withFetchPolicy(FetchPolicy.CacheOnly))
+    response = apolloClient.query(ApolloRequest.Builder(query).withFetchPolicy(FetchPolicy.CacheOnly).build())
 
     assertEquals(response.data?.hero?.name, "R2-D2")
     assertEquals(response.data?.hero?.friends?.size, 3)
@@ -102,7 +102,7 @@ class OptimisticCacheTest {
 
     // execute query1 from the network
     mockServer.enqueue(readResource("HeroAndFriendsNameWithIdsResponse.json"))
-    apolloClient.query(ApolloRequest(query1).withFetchPolicy(FetchPolicy.NetworkOnly))
+    apolloClient.query(ApolloRequest.Builder(query1).withFetchPolicy(FetchPolicy.NetworkOnly).build())
 
     // now write some optimistic updates for query1
     val data1 = HeroAndFriendsNamesWithIDsQuery.Data(
@@ -128,7 +128,7 @@ class OptimisticCacheTest {
         publish = true)
 
     // check if query1 see optimistic updates
-    var response1 = apolloClient.query(ApolloRequest(query1).withFetchPolicy(FetchPolicy.CacheOnly))
+    var response1 = apolloClient.query(ApolloRequest.Builder(query1).withFetchPolicy(FetchPolicy.CacheOnly).build())
     assertEquals(response1.data?.hero?.id, "2001")
     assertEquals(response1.data?.hero?.name, "R222-D222")
     assertEquals(response1.data?.hero?.friends?.size, 2)
@@ -156,7 +156,7 @@ class OptimisticCacheTest {
         publish = true)
 
     // check if query1 sees data2
-    response1 = apolloClient.query(ApolloRequest(query1).withFetchPolicy(FetchPolicy.CacheOnly))
+    response1 = apolloClient.query(ApolloRequest.Builder(query1).withFetchPolicy(FetchPolicy.CacheOnly).build())
     assertEquals(response1.data?.hero?.id, "2001")
     assertEquals(response1.data?.hero?.name, "R222-D222")
     assertEquals(response1.data?.hero?.friends?.size, 2)
@@ -166,7 +166,7 @@ class OptimisticCacheTest {
     assertEquals(response1.data?.hero?.friends?.get(1)?.name, "Batman")
 
     // check if query2 sees data2
-    var response2 = apolloClient.query(ApolloRequest(query2).withFetchPolicy(FetchPolicy.CacheOnly))
+    var response2 = apolloClient.query(ApolloRequest.Builder(query2).withFetchPolicy(FetchPolicy.CacheOnly).build())
     assertEquals(response2.data?.hero?.id, "1000")
     assertEquals(response2.data?.hero?.name, "Beast")
 
@@ -174,7 +174,7 @@ class OptimisticCacheTest {
     store.rollbackOptimisticUpdates(mutationId1, false)
 
     // check if query2 sees the rollback
-    response1 = apolloClient.query(ApolloRequest(query1).withFetchPolicy(FetchPolicy.CacheOnly))
+    response1 = apolloClient.query(ApolloRequest.Builder(query1).withFetchPolicy(FetchPolicy.CacheOnly).build())
     assertEquals(response1.data?.hero?.id, "2001")
     assertEquals(response1.data?.hero?.name, "R2-D2")
     assertEquals(response1.data?.hero?.friends?.size, 3)
@@ -186,7 +186,7 @@ class OptimisticCacheTest {
     assertEquals(response1.data?.hero?.friends?.get(2)?.name, "Leia Organa")
 
     // check if query2 see the latest optimistic updates
-    response2 = apolloClient.query(ApolloRequest(query2).withFetchPolicy(FetchPolicy.CacheOnly))
+    response2 = apolloClient.query(ApolloRequest.Builder(query2).withFetchPolicy(FetchPolicy.CacheOnly).build())
     assertEquals(response2.data?.hero?.id, "1000")
     assertEquals(response2.data?.hero?.name, "Beast")
 
@@ -194,7 +194,7 @@ class OptimisticCacheTest {
     store.rollbackOptimisticUpdates(mutationId2, false)
 
     // check if query2 see the latest optimistic updates
-    response2 = apolloClient.query(ApolloRequest(query2).withFetchPolicy(FetchPolicy.CacheOnly))
+    response2 = apolloClient.query(ApolloRequest.Builder(query2).withFetchPolicy(FetchPolicy.CacheOnly).build())
     assertEquals(response2.data?.hero?.id, "1000")
     assertEquals(response2.data?.hero?.name, "SuperMan")
   }
@@ -205,9 +205,10 @@ class OptimisticCacheTest {
     val channel = Channel<ReviewsByEpisodeQuery.Data?>()
     val job = launch {
       apolloClient.watch(
-          ApolloRequest(ReviewsByEpisodeQuery(Episode.EMPIRE))
+          ApolloRequest.Builder(ReviewsByEpisodeQuery(Episode.EMPIRE))
               .withFetchPolicy(FetchPolicy.NetworkOnly)
               .withRefetchPolicy(FetchPolicy.CacheOnly)
+              .build()
       ).collect {
         channel.send(it.data)
       }
@@ -247,7 +248,7 @@ class OptimisticCacheTest {
         )
     )
     apolloClient.mutate(
-        ApolloRequest(updateReviewMutation).withOptimisticUpdates(
+        ApolloRequest.Builder(updateReviewMutation).withOptimisticUpdates(
             UpdateReviewMutation.Data(
                 UpdateReviewMutation.UpdateReview(
                     "empireReview2",
@@ -256,6 +257,7 @@ class OptimisticCacheTest {
                 )
             )
         )
+            .build()
     )
 
     /**
@@ -335,7 +337,7 @@ class OptimisticCacheTest {
         publish = true)
 
     // check if query1 see optimistic updates
-    var response1 = apolloClient.query(ApolloRequest(query1).withFetchPolicy(FetchPolicy.CacheOnly))
+    var response1 = apolloClient.query(ApolloRequest.Builder(query1).withFetchPolicy(FetchPolicy.CacheOnly).build())
     assertEquals(response1.data?.hero?.id, "2001")
     assertEquals(response1.data?.hero?.name, "R222-D222")
     assertEquals(response1.data?.hero?.friends?.size, 2)
@@ -346,7 +348,7 @@ class OptimisticCacheTest {
 
 
     // check if query2 see the latest optimistic updates
-    var response2 = apolloClient.query(ApolloRequest(query2).withFetchPolicy(FetchPolicy.CacheOnly))
+    var response2 = apolloClient.query(ApolloRequest.Builder(query2).withFetchPolicy(FetchPolicy.CacheOnly).build())
     assertEquals(response2.data?.hero?.id, "1000")
     assertEquals(response2.data?.hero?.name, "Spiderman")
 
@@ -354,7 +356,7 @@ class OptimisticCacheTest {
     store.rollbackOptimisticUpdates(mutationId2, false)
 
     // check if query1 see the latest optimistic updates
-    response1 = apolloClient.query(ApolloRequest(query1).withFetchPolicy(FetchPolicy.CacheOnly))
+    response1 = apolloClient.query(ApolloRequest.Builder(query1).withFetchPolicy(FetchPolicy.CacheOnly).build())
     assertEquals(response1.data?.hero?.id, "2001")
     assertEquals(response1.data?.hero?.name, "R222-D222")
     assertEquals(response1.data?.hero?.friends?.size, 2)
@@ -365,7 +367,7 @@ class OptimisticCacheTest {
 
 
     // check if query2 see the latest optimistic updates
-    response2 = apolloClient.query(ApolloRequest(query2).withFetchPolicy(FetchPolicy.CacheOnly))
+    response2 = apolloClient.query(ApolloRequest.Builder(query2).withFetchPolicy(FetchPolicy.CacheOnly).build())
     assertEquals(response2.data?.hero?.id, "1000")
     assertEquals(response2.data?.hero?.name, "Robocop")
 
@@ -373,7 +375,7 @@ class OptimisticCacheTest {
     store.rollbackOptimisticUpdates(mutationId1, false)
 
     // check if query1 see the latest non-optimistic updates
-    response1 = apolloClient.query(ApolloRequest(query1).withFetchPolicy(FetchPolicy.CacheOnly))
+    response1 = apolloClient.query(ApolloRequest.Builder(query1).withFetchPolicy(FetchPolicy.CacheOnly).build())
     assertEquals(response1.data?.hero?.id, "2001")
     assertEquals(response1.data?.hero?.name, "R2-D2")
     assertEquals(response1.data?.hero?.friends?.size, 3)
@@ -386,7 +388,7 @@ class OptimisticCacheTest {
 
 
     // check if query2 see the latest non-optimistic updates
-    response2 = apolloClient.query(ApolloRequest(query2).withFetchPolicy(FetchPolicy.CacheOnly))
+    response2 = apolloClient.query(ApolloRequest.Builder(query2).withFetchPolicy(FetchPolicy.CacheOnly).build())
     assertEquals(response2.data?.hero?.id, "1000")
     assertEquals(response2.data?.hero?.name, "SuperMan")
   }

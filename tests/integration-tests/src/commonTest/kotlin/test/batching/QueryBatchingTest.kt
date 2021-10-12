@@ -147,7 +147,7 @@ class QueryBatchingTest {
 
     runWithMainLoop {
       val result1 = async {
-        apolloClient.query(ApolloRequest(GetLaunchQuery()).withCanBeBatched(false))
+        apolloClient.query(ApolloRequest.Builder(GetLaunchQuery()).withCanBeBatched(false).build())
       }
       val result2 = async {
         // Make sure GetLaunch2Query gets executed after GetLaunchQuery as there is no guarantee otherwise

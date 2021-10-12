@@ -82,7 +82,7 @@ class HttpCacheTest {
       assertEquals(42, response.data?.random)
       assertEquals(false, response.isFromHttpCache)
 
-      val request = ApolloRequest(GetRandomQuery()).withHttpFetchPolicy(HttpFetchPolicy.NetworkOnly)
+      val request = ApolloRequest.Builder(GetRandomQuery()).withHttpFetchPolicy(HttpFetchPolicy.NetworkOnly).build()
       assertFails {
         apolloClient.query(request)
       }
@@ -99,7 +99,7 @@ class HttpCacheTest {
       assertEquals(42, response.data?.random)
       assertEquals(false, response.isFromHttpCache)
 
-      val request = ApolloRequest(GetRandomQuery()).withHttpFetchPolicy(HttpFetchPolicy.NetworkFirst)
+      val request = ApolloRequest.Builder(GetRandomQuery()).withHttpFetchPolicy(HttpFetchPolicy.NetworkFirst).build()
       response = apolloClient.query(request)
       assertEquals(42, response.data?.random)
       assertEquals(true, response.isFromHttpCache)
@@ -115,15 +115,16 @@ class HttpCacheTest {
       assertEquals(42, response.data?.random)
       assertEquals(false, response.isFromHttpCache)
 
-      response = apolloClient.query(ApolloRequest(GetRandomQuery()).withHttpExpireTimeout(500))
+      response = apolloClient.query(ApolloRequest.Builder(GetRandomQuery()).withHttpExpireTimeout(500).build())
       assertEquals(42, response.data?.random)
       assertEquals(true, response.isFromHttpCache)
 
       delay(1000)
       assertFailsWith(HttpCacheMissException::class) {
-        apolloClient.query(ApolloRequest(GetRandomQuery())
+        apolloClient.query(ApolloRequest.Builder(GetRandomQuery())
             .withHttpExpireTimeout(500)
             .withHttpFetchPolicy(HttpFetchPolicy.CacheOnly)
+            .build()
         )
       }
     }

@@ -44,9 +44,9 @@ class BasicTest {
 
   private fun <D : Query.Data> basicTest(resourceName: String, query: Query<D>, block: ApolloResponse<D>.() -> Unit) = runWithMainLoop {
     mockServer.enqueue(readJson(resourceName))
-    var response = apolloClient.query(ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkOnly))
+    var response = apolloClient.query(ApolloRequest.Builder(query).withFetchPolicy(FetchPolicy.NetworkOnly).build())
     response.block()
-    response = apolloClient.query(ApolloRequest(query).withFetchPolicy(FetchPolicy.CacheOnly))
+    response = apolloClient.query(ApolloRequest.Builder(query).withFetchPolicy(FetchPolicy.CacheOnly).build())
     response.block()
   }
 

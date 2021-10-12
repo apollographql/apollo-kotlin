@@ -52,18 +52,18 @@ class ApolloClient private constructor(
    * Executes the given query and returns a response or throws on transport errors
    * use [query] ([ApolloRequest]) to customize the request
    */
-  suspend fun <D : Query.Data> query(query: Query<D>): ApolloResponse<D> = query(ApolloRequest(query))
+  suspend fun <D : Query.Data> query(query: Query<D>): ApolloResponse<D> = query(ApolloRequest.Builder(query).build())
 
   /**
    * Executes the given mutation and returns a response or throws on transport errors
    * use [mutation] ([ApolloRequest]) to customize the request
    */
-  suspend fun <D : Mutation.Data> mutate(mutation: Mutation<D>): ApolloResponse<D> = mutate(ApolloRequest(mutation))
+  suspend fun <D : Mutation.Data> mutate(mutation: Mutation<D>): ApolloResponse<D> = mutate(ApolloRequest.Builder(mutation).build())
 
   /**
    * Subscribes to the given subscription. The subscription is cancelled when the coroutine collecting the flow is canceled
    */
-  fun <D : Subscription.Data> subscribe(subscription: Subscription<D>): Flow<ApolloResponse<D>> = subscribe(ApolloRequest(subscription))
+  fun <D : Subscription.Data> subscribe(subscription: Subscription<D>): Flow<ApolloResponse<D>> = subscribe(ApolloRequest.Builder(subscription).build())
 
   /**
    * Executes the given queryRequest and returns a response or throws on transport errors

@@ -51,8 +51,8 @@ class JsonScalarTest {
      * Update the json value, it should be replaced, not merged
      */
     mockServer.enqueue(readResource("JsonScalarModified.json"))
-    apolloClient.query(ApolloRequest(GetJsonScalarQuery()).withFetchPolicy(FetchPolicy.NetworkFirst))
-    response = apolloClient.query(ApolloRequest(GetJsonScalarQuery()).withFetchPolicy(FetchPolicy.CacheOnly))
+    apolloClient.query(ApolloRequest.Builder(GetJsonScalarQuery()).withFetchPolicy(FetchPolicy.NetworkFirst).build())
+    response = apolloClient.query(ApolloRequest.Builder(GetJsonScalarQuery()).withFetchPolicy(FetchPolicy.CacheOnly).build())
 
     assertFalse(response.hasErrors())
 

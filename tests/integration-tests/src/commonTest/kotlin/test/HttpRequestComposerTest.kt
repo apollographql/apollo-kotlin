@@ -18,7 +18,7 @@ class HttpRequestComposerTest {
   @Test
   fun `request POST body contains operation, query and variables by default`() {
     val composer = DefaultHttpRequestComposer("/")
-    val apolloRequest = ApolloRequest(AllPlanetsQuery())
+    val apolloRequest = ApolloRequest.Builder(AllPlanetsQuery()).build()
     val httpRequest = composer.compose(apolloRequest)
 
     val bodyText = Buffer().also { httpRequest.body?.writeTo(it) }.readUtf8()
@@ -35,7 +35,7 @@ class HttpRequestComposerTest {
       kotlin.runCatching {
         // No need to enqueue a successful response, we just want to make sure our headers reached the server
         mockServer.enqueue("error")
-        apolloClient.query(ApolloRequest(AllPlanetsQuery()).withHttpHeader("test", "is passing"))
+        apolloClient.query(ApolloRequest.Builder(AllPlanetsQuery()).withHttpHeader("test", "is passing").build())
       }
 
       val response = mockServer.takeRequest()

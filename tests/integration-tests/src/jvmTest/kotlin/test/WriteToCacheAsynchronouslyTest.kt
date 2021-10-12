@@ -53,8 +53,9 @@ class WriteToCacheAsynchronouslyTest {
 
     mockServer.enqueue(readResource("HeroAndFriendsNameResponse.json"))
     apolloClient.query(
-        ApolloRequest(query)
+        ApolloRequest.Builder(query)
             .withWriteToCacheAsynchronously(true)
+            .build()
     )
 
     val record = store.accessCache { it.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE) }
@@ -70,8 +71,9 @@ class WriteToCacheAsynchronouslyTest {
 
     mockServer.enqueue(readResource("HeroAndFriendsNameResponse.json"))
     apolloClient.query(
-        ApolloRequest(query)
+        ApolloRequest.Builder(query)
             .withWriteToCacheAsynchronously(false)
+            .build()
     )
 
     val record = store.accessCache { it.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE) }

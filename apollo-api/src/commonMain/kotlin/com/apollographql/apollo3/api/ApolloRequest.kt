@@ -6,13 +6,17 @@ import com.benasher44.uuid.uuid4
 /**
  * A GraphQL request to execute. Execution can be customized with [executionContext]
  */
-class ApolloRequest<D : Operation.Data>(
+class ApolloRequest<D : Operation.Data> private constructor(
     val operation: Operation<D>,
-    val requestUuid: Uuid = uuid4(),
-    override val executionContext: ExecutionContext = ExecutionContext.Empty,
-): ExecutionParameters<ApolloRequest<D>> {
+    val requestUuid: Uuid,
+    override val executionContext: ExecutionContext,
+) : ExecutionParameters<ApolloRequest<D>> {
   override fun withExecutionContext(executionContext: ExecutionContext): ApolloRequest<D> {
     return copy(executionContext = this.executionContext + executionContext)
+  }
+
+  fun newBuilder(): Builder<D> {
+    return Builder(operation, requestUuid).also { it.executionContext = executionContext }
   }
 
   fun copy(
@@ -24,4 +28,24 @@ class ApolloRequest<D : Operation.Data>(
       requestUuid,
       executionContext
   )
+
+  class Builder<D : Operation.Data>(
+      var operation: Operation<D>,
+      var requestUuid: Uuid = uuid4(),
+  ) : ExecutionParameters<Builder<D>> {
+    override var executionContext: ExecutionContext = ExecutionContext.Empty
+
+    override fun withExecutionContext(executionContext: ExecutionContext): Builder<D> {
+      this.executionContext = this.executionContext + executionContext
+      return this
+    }
+
+    fun build(): ApolloRequest<D> {
+      return ApolloRequest(
+          operation = operation,
+          requestUuid = requestUuid,
+          executionContext = executionContext,
+      )
+    }
+  }
 }

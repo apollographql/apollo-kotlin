@@ -45,11 +45,11 @@ class CacheFlagsTest {
       val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
       mockServer.enqueue(query, data)
 
-      apolloClient.query(ApolloRequest(query).withDoNotStore(true))
+      apolloClient.query(ApolloRequest.Builder(query).withDoNotStore(true).build())
 
       // Since the previous request was not stored, this should fail
       assertFailsWith(CacheMissException::class) {
-        apolloClient.query(ApolloRequest(query).withFetchPolicy(FetchPolicy.CacheOnly))
+        apolloClient.query(ApolloRequest.Builder(query).withFetchPolicy(FetchPolicy.CacheOnly).build())
       }
     }
   }
@@ -62,21 +62,22 @@ class CacheFlagsTest {
       mockServer.enqueue(query, data)
 
       // Store the data
-      apolloClient.query(ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkOnly))
+      apolloClient.query(ApolloRequest.Builder(query).withFetchPolicy(FetchPolicy.NetworkOnly).build())
 
       // This should work and evict the entries
       val response = apolloClient.query(
-          ApolloRequest(query)
+          ApolloRequest.Builder(query)
               .withFetchPolicy(FetchPolicy.CacheOnly)
               .withCacheHeaders(
                   CacheHeaders.builder().addHeader(ApolloCacheHeaders.EVICT_AFTER_READ, "true").build()
               )
+              .build()
       )
       assertEquals("R2-D2", response.data?.hero?.name)
 
       // Second time should fail
       assertFailsWith(CacheMissException::class) {
-        apolloClient.query(ApolloRequest(query).withFetchPolicy(FetchPolicy.CacheOnly))
+        apolloClient.query(ApolloRequest.Builder(query).withFetchPolicy(FetchPolicy.CacheOnly).build())
       }
     }
   }
@@ -105,10 +106,10 @@ class CacheFlagsTest {
       mockServer.enqueue(AnyAdapter.toJson(partialResponse))
 
       // this should not store the response
-      apolloClient.query(ApolloRequest(query))
+      apolloClient.query(ApolloRequest.Builder(query).build())
 
       assertFailsWith(CacheMissException::class) {
-        apolloClient.query(ApolloRequest(query).withFetchPolicy(FetchPolicy.CacheOnly))
+        apolloClient.query(ApolloRequest.Builder(query).withFetchPolicy(FetchPolicy.CacheOnly).build())
       }
     }
   }
@@ -120,9 +121,9 @@ class CacheFlagsTest {
       mockServer.enqueue(AnyAdapter.toJson(partialResponse))
 
       // this should not store the response
-      apolloClient.query(ApolloRequest(query).withStorePartialResponses(true))
+      apolloClient.query(ApolloRequest.Builder(query).withStorePartialResponses(true).build())
 
-      val response = apolloClient.query(ApolloRequest(query).withFetchPolicy(FetchPolicy.CacheOnly))
+      val response = apolloClient.query(ApolloRequest.Builder(query).withFetchPolicy(FetchPolicy.CacheOnly).build())
       assertNotNull(response.data)
     }
   }

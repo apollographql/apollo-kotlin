@@ -48,12 +48,12 @@ class OtherCacheTest {
     // Store a query that contains all data
     mockServer.enqueue(readResource("HeroAndFriendsNameWithIdsResponse.json"))
     apolloClient.query(
-        ApolloRequest(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).withFetchPolicy(FetchPolicy.NetworkOnly)
+        ApolloRequest.Builder(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).withFetchPolicy(FetchPolicy.NetworkOnly).build()
     )
 
     // Getting a subtree of that data should work
     val detailsResponse = apolloClient.query(
-        ApolloRequest(CharacterNameByIdQuery("1002")).withFetchPolicy(FetchPolicy.CacheOnly)
+        ApolloRequest.Builder(CharacterNameByIdQuery("1002")).withFetchPolicy(FetchPolicy.CacheOnly).build()
     )
 
     assertEquals(detailsResponse.data?.character!!.name, "Han Solo")
@@ -65,13 +65,13 @@ class OtherCacheTest {
     // Store a query that contains all data
     mockServer.enqueue(readResource("HeroAndFriendsNameWithIdsResponse.json"))
     apolloClient.query(
-        ApolloRequest(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).withFetchPolicy(FetchPolicy.NetworkOnly)
+        ApolloRequest.Builder(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).withFetchPolicy(FetchPolicy.NetworkOnly).build()
     )
 
     // Some details are not present in the master query, we should get a cache miss
     try {
       apolloClient.query(
-          ApolloRequest(CharacterDetailsQuery("1002")).withFetchPolicy(FetchPolicy.CacheOnly)
+          ApolloRequest.Builder(CharacterDetailsQuery("1002")).withFetchPolicy(FetchPolicy.CacheOnly).build()
       )
       fail("we expected a cache miss")
     } catch (e: CacheMissException) {
@@ -84,7 +84,7 @@ class OtherCacheTest {
   fun cacheMissThrows() = runWithMainLoop {
     try {
       apolloClient.query(
-          ApolloRequest(EpisodeHeroNameQuery(Episode.EMPIRE)).withFetchPolicy(FetchPolicy.CacheOnly)
+          ApolloRequest.Builder(EpisodeHeroNameQuery(Episode.EMPIRE)).withFetchPolicy(FetchPolicy.CacheOnly).build()
       )
       fail("we expected a cache miss")
     } catch (e: CacheMissException) {
@@ -97,13 +97,15 @@ class OtherCacheTest {
   fun skipIncludeDirective() = runWithMainLoop {
     mockServer.enqueue(readResource("HeroAndFriendsNameResponse.json"))
     apolloClient.query(
-        ApolloRequest(HeroAndFriendsDirectivesQuery(Episode.JEDI, true, false))
+        ApolloRequest.Builder(HeroAndFriendsDirectivesQuery(Episode.JEDI, true, false))
             .withFetchPolicy(FetchPolicy.NetworkOnly)
+            .build()
     )
 
     var response = apolloClient.query(
-        ApolloRequest(HeroAndFriendsDirectivesQuery(Episode.JEDI, true, false))
+        ApolloRequest.Builder(HeroAndFriendsDirectivesQuery(Episode.JEDI, true, false))
             .withFetchPolicy(FetchPolicy.CacheOnly)
+            .build()
     )
     assertEquals2(response.data?.hero?.name, "R2-D2")
     assertEquals2(response.data?.hero?.friends?.size, 3)
@@ -112,8 +114,9 @@ class OtherCacheTest {
     assertEquals2(response.data?.hero?.friends?.get(2)?.name, "Leia Organa")
 
     response = apolloClient.query(
-        ApolloRequest(HeroAndFriendsDirectivesQuery(Episode.JEDI, false, false))
+        ApolloRequest.Builder(HeroAndFriendsDirectivesQuery(Episode.JEDI, false, false))
             .withFetchPolicy(FetchPolicy.CacheOnly)
+            .build()
     )
     assertNull(response.data?.hero?.name)
     assertEquals2(response.data?.hero?.friends?.size, 3)
@@ -122,8 +125,9 @@ class OtherCacheTest {
     assertEquals2(response.data?.hero?.friends?.get(2)?.name, "Leia Organa")
 
     response = apolloClient.query(
-        ApolloRequest(HeroAndFriendsDirectivesQuery(Episode.JEDI, true, true))
+        ApolloRequest.Builder(HeroAndFriendsDirectivesQuery(Episode.JEDI, true, true))
             .withFetchPolicy(FetchPolicy.CacheOnly)
+            .build()
     )
     assertEquals2(response.data?.hero?.name, "R2-D2")
     assertNull(response.data?.hero?.friends)
@@ -135,16 +139,18 @@ class OtherCacheTest {
     // Store a response that doesn't contain friends
     mockServer.enqueue(readResource("HeroNameResponse.json"))
     apolloClient.query(
-        ApolloRequest(
+        ApolloRequest.Builder(
             HeroAndFriendsDirectivesQuery(Episode.JEDI, true, true)
         ).withFetchPolicy(FetchPolicy.NetworkOnly)
+            .build()
     )
 
     // Get it from the cache, we should get the name but no friends
     val response = apolloClient.query(
-        ApolloRequest(
+        ApolloRequest.Builder(
             HeroAndFriendsDirectivesQuery(Episode.JEDI, true, true)
         ).withFetchPolicy(FetchPolicy.CacheOnly)
+            .build()
     )
 
     assertEquals(response.data?.hero?.name, "R2-D2")
@@ -153,9 +159,10 @@ class OtherCacheTest {
     // Now try to get the friends from the cache, it should fail
     try {
       apolloClient.query(
-          ApolloRequest(
+          ApolloRequest.Builder(
               HeroAndFriendsDirectivesQuery(Episode.JEDI, true, false)
           ).withFetchPolicy(FetchPolicy.CacheOnly)
+              .build()
       )
       fail("A CacheMissException was expected")
     } catch (e: CacheMissException) {

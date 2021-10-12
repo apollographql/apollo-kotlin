@@ -153,11 +153,11 @@ fun ApolloClient.toRx2ApolloClient(scheduler: Scheduler = Schedulers.io()) = Rx2
 class Rx2ApolloClient(private val delegate: ApolloClient, private val scheduler: Scheduler) {
   private val dispatcher = scheduler.asCoroutineDispatcher()
 
-  fun <D : Query.Data> query(query: Query<D>): Single<ApolloResponse<D>> = query(ApolloRequest(query))
+  fun <D : Query.Data> query(query: Query<D>): Single<ApolloResponse<D>> = query(ApolloRequest.Builder(query).build())
 
-  fun <D : Mutation.Data> mutate(mutation: Mutation<D>): Single<ApolloResponse<D>> = mutate(ApolloRequest(mutation))
+  fun <D : Mutation.Data> mutate(mutation: Mutation<D>): Single<ApolloResponse<D>> = mutate(ApolloRequest.Builder(mutation).build())
 
-  fun <D : Subscription.Data> subscribe(subscription: Subscription<D>): Flowable<ApolloResponse<D>> = subscribe(ApolloRequest(subscription))
+  fun <D : Subscription.Data> subscribe(subscription: Subscription<D>): Flowable<ApolloResponse<D>> = subscribe(ApolloRequest.Builder(subscription).build())
 
   fun <D : Query.Data> query(queryRequest: ApolloRequest<D>): Single<ApolloResponse<D>> = rxSingle(dispatcher) {
     delegate.query(queryRequest)

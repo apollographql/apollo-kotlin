@@ -72,7 +72,7 @@ class ExceptionsTest {
 
     val response = runWithMainLoop {
       apolloClient
-          .queryAsFlow(ApolloRequest(query))
+          .queryAsFlow(ApolloRequest.Builder(query).build())
           .retryWhen { _, attempt -> attempt == 0L }
           .single()
     }

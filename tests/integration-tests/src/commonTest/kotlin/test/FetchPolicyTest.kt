@@ -47,7 +47,7 @@ class FetchPolicyTest {
     // Cache first is also the default, no need to set the fetchPolicy
     runWithMainLoop {
       // First query should hit the network and save in cache
-      val request = ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkFirst)
+      val request = ApolloRequest.Builder(query).withFetchPolicy(FetchPolicy.NetworkFirst).build()
       var response = apolloClient.query(request)
 
       assertNotNull(response.data)
@@ -77,7 +77,7 @@ class FetchPolicyTest {
       val query = HeroNameQuery()
       val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
-      val request = ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkFirst)
+      val request = ApolloRequest.Builder(query).withFetchPolicy(FetchPolicy.NetworkFirst).build()
 
       // First query should hit the network and save in cache
       mockServer.enqueue(query, data)
@@ -118,7 +118,7 @@ class FetchPolicyTest {
       val query = HeroNameQuery()
       val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
-      var request = ApolloRequest(query)
+      var request = ApolloRequest.Builder(query).build()
 
       // First query should hit the network and save in cache
       mockServer.enqueue(query, data)
@@ -127,7 +127,7 @@ class FetchPolicyTest {
       assertNotNull(response.data)
       assertFalse(response.isFromCache)
 
-      request = request.withFetchPolicy(FetchPolicy.CacheOnly)
+      request = request.newBuilder().withFetchPolicy(FetchPolicy.CacheOnly).build()
 
       // Second query should only hit the cache
       response = apolloClient.query(request)
@@ -144,7 +144,7 @@ class FetchPolicyTest {
       val query = HeroNameQuery()
       val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
-      val request = ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkOnly)
+      val request = ApolloRequest.Builder(query).withFetchPolicy(FetchPolicy.NetworkOnly).build()
 
       // First query should hit the network and save in cache
       mockServer.enqueue(query, data)

@@ -65,7 +65,7 @@ fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: B
 }
 
 fun <D : Query.Data> ApolloClient.watch(query: Query<D>): Flow<ApolloResponse<D>> {
-  return watch(ApolloRequest(query))
+  return watch(ApolloRequest.Builder(query).build())
 }
 
 fun <D : Query.Data> ApolloClient.watch(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
@@ -73,7 +73,7 @@ fun <D : Query.Data> ApolloClient.watch(queryRequest: ApolloRequest<D>): Flow<Ap
 }
 
 fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(query: Query<D>): Flow<ApolloResponse<D>> {
-  return queryCacheAndNetwork(ApolloRequest(query))
+  return queryCacheAndNetwork(ApolloRequest.Builder(query).build())
 }
 
 
@@ -88,13 +88,13 @@ fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(queryRequest: ApolloReque
     var cacheException: ApolloException? = null
     var networkException: ApolloException? = null
     try {
-     emit(query(queryRequest.withFetchPolicy(FetchPolicy.CacheOnly)))
+     emit(query(queryRequest.newBuilder().withFetchPolicy(FetchPolicy.CacheOnly).build()))
     } catch (e: ApolloException) {
       cacheException = e
     }
 
     try {
-      emit(query(queryRequest.withFetchPolicy(FetchPolicy.NetworkOnly)))
+      emit(query(queryRequest.newBuilder().withFetchPolicy(FetchPolicy.NetworkOnly).build()))
     } catch (e: ApolloException) {
       networkException = e
     }
@@ -125,7 +125,7 @@ fun ApolloClient.clearNormalizedCache() = apolloStore.clearAll()
  * Sets the [FetchPolicy] on this request. D has a bound on [Query.Data] because subscriptions and mutation shouldn't
  * read the cache
  */
-fun <D : Query.Data> ApolloRequest<D>.withFetchPolicy(fetchPolicy: FetchPolicy) = withExecutionContext(
+fun <D : Query.Data> ApolloRequest.Builder<D>.withFetchPolicy(fetchPolicy: FetchPolicy) = withExecutionContext(
     FetchPolicyContext(fetchPolicy)
 )
 
@@ -140,7 +140,7 @@ fun ApolloClient.Builder.withFetchPolicy(fetchPolicy: FetchPolicy) = withExecuti
 /**
  * Sets the [FetchPolicy] used when refetching at the request level. This is only used in combination with [watch].
  */
-fun <D : Query.Data> ApolloRequest<D>.withRefetchPolicy(refetchPolicy: FetchPolicy) = withExecutionContext(
+fun <D : Query.Data> ApolloRequest.Builder<D>.withRefetchPolicy(refetchPolicy: FetchPolicy) = withExecutionContext(
     RefetchPolicyContext(refetchPolicy)
 )
 
@@ -170,7 +170,7 @@ fun <T> ExecutionParameters<T>.withWriteToCacheAsynchronously(writeToCacheAsynch
 /**
  * Sets the optimistic updates to write to the cache while a query is pending.
  */
-fun <D : Mutation.Data> ApolloRequest<D>.withOptimisticUpdates(data: D) = withExecutionContext(
+fun <D : Mutation.Data> ApolloRequest.Builder<D>.withOptimisticUpdates(data: D) = withExecutionContext(
     OptimisticUpdatesContext(data)
 )
 
