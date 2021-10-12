@@ -21,6 +21,7 @@ class GraphQLWsProtocol(
     private val pongPayload: Map<String, Any?>? = null,
     private val connectionAcknowledgeTimeoutMs: Long,
     private val pingIntervalMillis: Long,
+    private val frameType: WsFrameType,
     webSocketConnection: WebSocketConnection,
     listener: Listener,
 ) : WsProtocol(webSocketConnection, listener) {
@@ -34,7 +35,7 @@ class GraphQLWsProtocol(
       message.put("payload", connectionPayload)
     }
 
-    sendMessageMapBinary(message)
+    sendMessageMap(message, frameType)
 
     withTimeout(connectionAcknowledgeTimeoutMs) {
       val map = receiveMessageMap()
@@ -46,21 +47,23 @@ class GraphQLWsProtocol(
   }
 
   override fun <D : Operation.Data> startOperation(request: ApolloRequest<D>) {
-    sendMessageMapBinary(
+    sendMessageMap(
         mapOf(
             "type" to "subscribe",
             "id" to request.requestUuid.toString(),
             "payload" to DefaultHttpRequestComposer.composePayload(request)
-        )
+        ),
+        frameType
     )
   }
 
   override fun <D : Operation.Data> stopOperation(request: ApolloRequest<D>) {
-    sendMessageMapBinary(
+    sendMessageMap(
         mapOf(
             "type" to "complete",
             "id" to request.requestUuid.toString()
-        )
+        ),
+        frameType
     )
   }
 
@@ -76,7 +79,7 @@ class GraphQLWsProtocol(
 
         while(true) {
           delay(pingIntervalMillis)
-          sendMessageMapBinary(map)
+          sendMessageMap(map, frameType)
         }
       }
     }
@@ -96,7 +99,7 @@ class GraphQLWsProtocol(
         if (pongPayload != null) {
           map["payload"] = pongPayload
         }
-        sendMessageMapBinary(map)
+        sendMessageMap(map, frameType)
       }
       "pong" -> Unit // Nothing to do, the server acknowledged one of our pings
       else -> Unit // Unknown message
@@ -117,6 +120,7 @@ class GraphQLWsProtocol(
       private val pingPayload: Map<String, Any?>? = null,
       private val pongPayload: Map<String, Any?>? = null,
       private val connectionAcknowledgeTimeoutMs: Long = 10_000,
+      private val frameType: WsFrameType = WsFrameType.Text
   ) : WsProtocol.Factory {
     override val name: String
       get() = "graphql-transport-ws"
@@ -128,6 +132,7 @@ class GraphQLWsProtocol(
           pongPayload = pongPayload,
           connectionAcknowledgeTimeoutMs = connectionAcknowledgeTimeoutMs,
           pingIntervalMillis = pingIntervalMillis,
+          frameType = frameType,
           webSocketConnection = webSocketConnection,
           listener = listener
       )

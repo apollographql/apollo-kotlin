@@ -89,6 +89,12 @@ abstract class WsProtocol(
   protected fun sendMessageMapText(messageMap: Map<String, Any?>) {
     webSocketConnection.send(messageMap.toUtf8())
   }
+  protected fun sendMessageMap(messageMap: Map<String, Any?>, frameType: WsFrameType) {
+    when(frameType) {
+      WsFrameType.Text -> sendMessageMapText(messageMap)
+      WsFrameType.Binary -> sendMessageMapBinary(messageMap)
+    }
+  }
 
   protected suspend fun receiveMessageMap() = webSocketConnection.receive().toMessageMap()
 
@@ -122,3 +128,7 @@ abstract class WsProtocol(
   }
 }
 
+enum class WsFrameType {
+  Text,
+  Binary
+}
