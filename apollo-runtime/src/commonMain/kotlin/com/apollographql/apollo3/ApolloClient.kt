@@ -153,14 +153,25 @@ class ApolloClient private constructor(
     }
   }
 
-  class Builder : ExecutionParameters<Builder> {
-    var networkTransport: NetworkTransport? = null
-    private var subscriptionNetworkTransport: NetworkTransport? = null
-    private var customScalarAdapters: MutableMap<String, Adapter<*>> = mutableMapOf()
-    private val interceptors: MutableList<ApolloInterceptor> = mutableListOf()
-    private val flowDecorators: MutableList<FlowDecorator> = mutableListOf()
-    private var requestedDispatcher: CoroutineDispatcher? = null
-    override var executionContext: ExecutionContext = ExecutionContext.Empty
+  class Builder internal constructor(
+      var networkTransport: NetworkTransport?,
+      private var subscriptionNetworkTransport: NetworkTransport?,
+      private var customScalarAdapters: MutableMap<String, Adapter<*>>,
+      private val interceptors: MutableList<ApolloInterceptor>,
+      private val flowDecorators: MutableList<FlowDecorator>,
+      private var requestedDispatcher: CoroutineDispatcher?,
+      override var executionContext: ExecutionContext,
+  ) : ExecutionParameters<Builder> {
+
+    constructor() : this(
+        networkTransport = null,
+        subscriptionNetworkTransport = null,
+        customScalarAdapters = mutableMapOf(),
+        interceptors = mutableListOf(),
+        flowDecorators = mutableListOf(),
+        requestedDispatcher = null,
+        executionContext = ExecutionContext.Empty,
+    )
 
     fun serverUrl(serverUrl: String): Builder {
       networkTransport = HttpNetworkTransport(serverUrl = serverUrl)
@@ -223,6 +234,18 @@ class ApolloClient private constructor(
           executionContext = executionContext,
       )
     }
+  }
+
+  fun newBuilder(): Builder {
+    return Builder(
+        networkTransport = networkTransport,
+        subscriptionNetworkTransport = subscriptionNetworkTransport,
+        customScalarAdapters = customScalarAdapters.customScalarAdapters.toMutableMap(),
+        interceptors = interceptors.toMutableList(),
+        flowDecorators = flowDecorators.toMutableList(),
+        requestedDispatcher = requestedDispatcher,
+        executionContext = executionContext,
+    )
   }
 }
 
