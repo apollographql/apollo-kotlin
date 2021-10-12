@@ -113,10 +113,10 @@ class GraphQLWsProtocol(
    */
   class Factory(
       private val connectionPayload: Map<String, Any?>? = null,
-      private val pingIntervalMillis: Long = 60_000,
+      private val pingIntervalMillis: Long = -1,
       private val pingPayload: Map<String, Any?>? = null,
       private val pongPayload: Map<String, Any?>? = null,
-      private val connectionAcknowledgeTimeoutMs: Long = -1,
+      private val connectionAcknowledgeTimeoutMs: Long = 60_000,
   ) : WsProtocol.Factory {
     override val name: String
       get() = "graphql-transport-ws"
