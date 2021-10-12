@@ -86,37 +86,27 @@ Minor detail: `customScalarAdapters`, `interceptors`, `executionContext` and `fl
 
 ### Proposed API
 
-**Short**
-
 ```kotlin
-val apolloClient = ApolloClient.Builder("http://example.com").build()
+val apolloClient = ApolloClient.Builder()
+        // Built-in
+        .serverUrl(...)
+        .networkTransport(...)
+        .subscriptionNetworkTransport(...)
+        .requestedDispatcher(...)
+        .addCustomScalarAdapter(...)
+        .addInterceptor(...)
+        .addFlowDecorator(...)
+        .addExecutionContext(...)
+        
+        // Extensions
+        .autoPersistedQueries(...)
+        .httpCache(...)
+        // etc.
+
+        .build()
 ```
 
-**Full**
-
-```kotlin
-val apolloClient = ApolloClient.Builder(
-          // Mandatory
-          networkTransport = ...,
-          subscriptionNetworkTransport = ...,
-          executionContext = ...,
-       )
-          // Optional (members)
-          .requestedDispatcher(...)
-          .addCustomScalarAdapter(...)
-          .addInterceptor(...)
-          .addFlowDecorator(...)
-          .addExecutionContext(...)
-
-          // Optional (extensions)
-          .autoPersistedQueries(...)
-          .httpCache(...)
-          // etc.
-
-          .build()
-```
-
-❓ Is the `executionContext` constructor parameter really needed? If not we could delete it to simplify the API.
+Note: at least `serverUrl()` or `networkTransport()` must be called, otherwise an exception will be raised when calling `build()`.
 
 Naming:
 
@@ -127,71 +117,81 @@ Naming:
 
 Here's a preview of what the `Builder` inner class should look like.
 
-⚠️ Note: not all fields are shown, for brievety. 
+⚠️ Note: not all the code is shown, for brevity.
 
 ```kotlin
 class Builder private constructor(
-    private val networkTransport: NetworkTransport,
-    private val subscriptionNetworkTransport: NetworkTransport = networkTransport,
-    override val executionContext: ExecutionContext,
+    var networkTransport: NetworkTransport?,
+    private var subscriptionNetworkTransport: NetworkTransport?,
+    private var customScalarAdapters: MutableMap<String, Adapter<*>>,
+    private val interceptors: MutableList<ApolloInterceptor>,
+    private val flowDecorators: MutableList<FlowDecorator>,
     private var requestedDispatcher: CoroutineDispatcher?,
-    private val interceptors: List<ApolloInterceptor>,
+    override var executionContext: ExecutionContext,
 ) : ExecutionParameters<Builder> {
 
-  constructor(
-      networkTransport: NetworkTransport,
-      subscriptionNetworkTransport: NetworkTransport = networkTransport,
-      executionContext: ExecutionContext = ExecutionContext.Empty, // <- not sure if this parameter is useful?
-  ) : this(
-      networkTransport = networkTransport,
-      subscriptionNetworkTransport = subscriptionNetworkTransport,
-      executionContext = executionContext,
-      requestedDispatcher = null,
-      interceptors = mutableListOf()
+  constructor() : this(
+    networkTransport = null,
+    subscriptionNetworkTransport = null,
+    customScalarAdapters = mutableMapOf(),
+    interceptors = mutableListOf(),
+    flowDecorators = mutableListOf(),
+    requestedDispatcher = null,
+    executionContext = ExecutionContext.Empty,
   )
 
-  /**
-   * A short-hand constructor
-   */
-  constructor(
-      serverUrl: String,
-  ) : this(
-      networkTransport = HttpNetworkTransport(serverUrl = serverUrl),
-      subscriptionNetworkTransport = WebSocketNetworkTransport(serverUrl = serverUrl),
-  )
+  fun ApolloClient.newBuilder(): Builder {
+    return Builder(...)
+  }
 
-  fun requestedDispatcher(requestedDispatcher: CoroutineDispatcher): Builder {
-    this.requestedDispatcher = requestedDispatcher
+  fun serverUrl(serverUrl: String): Builder {
+    networkTransport = HttpNetworkTransport(serverUrl = serverUrl)
+    subscriptionNetworkTransport = WebSocketNetworkTransport(serverUrl = serverUrl)
+    return this
+  }
+
+  fun networkTransport(networkTransport: NetworkTransport): Builder {
+    this.networkTransport = networkTransport
+    return this
+  }
+
+  fun subscriptionNetworkTransport(subscriptionNetworkTransport: NetworkTransport): Builder { ... }
+
+  fun <T> addCustomScalarAdapter(customScalarType: CustomScalarType, customScalarAdapter: Adapter<T>): Builder {
+    customScalarAdapters[customScalarType.name] = customScalarAdapter
     return this
   }
 
   fun addInterceptor(interceptor: ApolloInterceptor): Builder {
-    return copy(
-        interceptors = interceptors + interceptor
-    )
+    interceptors += interceptor
+    return this
   }
+
+  fun addFlowDecorator(flowDecorator: FlowDecorator): Builder { ... }
+
+  fun requestedDispatcher(requestedDispatcher: CoroutineDispatcher): Builder { ... }
 
   override fun withExecutionContext(executionContext: ExecutionContext): Builder {
-    return copy(
-        executionContext = this.executionContext + executionContext
-    )
+    this.executionContext = this.executionContext + executionContext
+    return this
   }
 
-  fun copy(...): Builder {...}
-
   fun build(): ApolloClient {
+    check(networkTransport != null) {
+      "NetworkTransport not set, please call either serverUrl() or networkTransport()"
+    }
     return ApolloClient(
-        networkTransport = networkTransport,
-        subscriptionNetworkTransport = subscriptionNetworkTransport,
-        requestedDispatcher = requestedDispatcher,
-        interceptors = interceptors,
-        executionContext = executionContext,
+            networkTransport = networkTransport!!,
+            subscriptionNetworkTransport = subscriptionNetworkTransport ?: networkTransport!!,
+            customScalarAdapters = CustomScalarAdapters(customScalarAdapters),
+            interceptors = interceptors,
+            ...
     )
   }
 }
 ```
 
-💡 Note: the primary constructor that exposes all the fields is `private`, it is only used by the `copy` method. Users can use either of the 2 other constructors.
+Note: the private constructor exists solely to be called by the `newBuilder()` method.
 
 ### Updates to `ApolloClient`
 
@@ -204,11 +204,11 @@ class Builder private constructor(
     - `withExecutionContext`
 - Make the `copy` fun `private`
     - Note: `withExecutionContext` is using `copy` which is why we can't just delete it. We could instead make `executionContext` a var with a `private set`, and get rid of `copy`?
-- Make `networkTransport`  `private` (⚠️ not sure about this one - searching for usage seems to indicate it can be safely done, but this may break outside code?)
+- Make `networkTransport`  `private`
 
 ### About `ExecutionParameters`
 
-Currently this interface is implemented by `ApolloClient` and `ApolloRequest` :
+Currently this interface is implemented by `ApolloClient` and `ApolloRequest`:
 
 ```kotlin
 interface ExecutionParameters<T> where T : ExecutionParameters<T> {
@@ -217,16 +217,39 @@ interface ExecutionParameters<T> where T : ExecutionParameters<T> {
 }
 ```
 
-It will now be implemented by the Builders - but we have to keep `ApolloClient` and `ApolloRequest` implementing it, as the `executionContext` val is used in several extensions (e.g., `ExecutionParameters<T>.httpMethod()`)
+We will instead split this interface in 2:
+- `HasExecutionContext`: implemented by `ApolloClient` and `ApolloRequest`
+- `HasMutableExecutionContext`: implemented by the Builders.
 
-**Suggestion**: we should probably rename `withExecutionContext` to `addExecutionContext` for consistency - WDYT?
+There are places in the code where extensions are called directly on `ApolloClient` or `ApolloRequest`.
+In order to keep this ability, we'll add a `newBuilder()` method, allowing to "mutate" these 2 classes.
 
-🤔 Maybe we could split this interface in 2:
+For instance:
 
-- One with only the `val executionContext` (read-only, for `ApolloClient` and `ApolloRequest`)
-- One with the mutation method (for the Builders)
+**Before**
+```kotlin
+queryRequest.withFetchPolicy(FetchPolicy.CacheOnly)
+```
 
-If we want to go ahead with this, it should done as a separate task, to keep this refactoring manageable.
+**After**
+```kotlin
+queryRequest.newBuilder().fetchPolicy(FetchPolicy.CacheOnly).build()
+```
+
+Another example is an interceptor wanting to add custom headers. This would look like:
+
+```kotlin
+class MyInterceptor : ApolloInterceptor {
+  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+    chain.proceed(
+      request
+        .newBuilder()
+        .httpHeader("myHeader", "value")
+        .build()
+    )
+  }
+}
+```
 
 ### Migrate extensions to use Builder
 
@@ -311,16 +334,16 @@ The `Builder` should look like this:
 
 ```kotlin
 class Builder<D : Operation.Data>(
-    val operation: Operation<D>,
-    val requestUuid: Uuid = uuid4(),
-    override val executionContext: ExecutionContext = ExecutionContext.Empty, // <- not sure if this parameter is useful?
+    var operation: Operation<D>,
+    var requestUuid: Uuid = uuid4(),
 ) : ExecutionParameters<Builder<D>> {
+
+  override var executionContext: ExecutionContext = ExecutionContext.Empty
   
   override fun withExecutionContext(executionContext: ExecutionContext): Builder<D> {
-    return copy(executionContext = this.executionContext + executionContext)
+    this.executionContext = this.executionContext + executionContext
+    return this
   }
-  
-  fun copy(...): Builder {...}
   
   fun build(): ApolloRequest<D> {
     return ApolloRequest(
@@ -345,22 +368,3 @@ For consistency, all With-ers (extensions on `ExecutionParameters`) should be re
 - Tests
 - Documentation
 - Migration guide
-
-## Open questions
-
-- After this refact, it will still be possible to call `ExecutionParameters` extensions directly on `ApolloClient` and `ApolloRequest`, which is a bit inconsistent. Instead, would it make more sense to implement `buildUpon()` or `builder()` methods that return a `Builder` on which these methods should be called?
-
-For instance, an interceptor wanting to add custom headers would look like:
-
-```kotlin
-class MyInterceptor : ApolloInterceptor {
-  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-    chain.proceed(
-      request
-        .buildUpon()
-        .httpHeader("myHeader", "value")
-        .build()
-    )
-  }
-}
-```
