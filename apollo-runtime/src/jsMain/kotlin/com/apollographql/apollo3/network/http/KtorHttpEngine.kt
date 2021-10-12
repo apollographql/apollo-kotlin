@@ -37,7 +37,6 @@ actual class DefaultHttpEngine actual constructor(connectTimeoutMillis: Long, re
           body = buffer.readUtf8()
         }
       }
-      println(response.headers)
       val responseByteArray: ByteArray = response.receive()
       return HttpResponse(
           response.status.value,
