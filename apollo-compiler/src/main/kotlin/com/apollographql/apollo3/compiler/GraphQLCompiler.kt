@@ -161,6 +161,7 @@ object GraphQLCompiler {
             generateFragmentImplementations = options.generateFragmentImplementations,
             generateQueryDocument = options.generateQueryDocument,
             generateSchema = options.generateSchema,
+            generateTestBuilders = options.generateTestBuilders,
             flatten = options.flattenModels,
             flattenNamesInOrder = options.codegenModels != MODELS_COMPAT,
         ).write(outputDir = outputDir)

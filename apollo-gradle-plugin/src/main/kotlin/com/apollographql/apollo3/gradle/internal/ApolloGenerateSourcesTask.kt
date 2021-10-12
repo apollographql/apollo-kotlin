@@ -26,6 +26,7 @@ import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateFragm
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateQueryDocument
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateResponseFields
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateSchema
+import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateTestBuilders
 import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSemanticNaming
 import com.apollographql.apollo3.compiler.Options.Companion.defaultWarnOnDeprecatedUsages
 import com.apollographql.apollo3.compiler.PackageNameGenerator
@@ -156,6 +157,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Optional
   abstract val flattenModels: Property<Boolean>
 
+  @get:Input
+  @get:Optional
+  abstract val generateTestBuilders: Property<Boolean>
+
   @get:Inject
   abstract val objectFactory: ObjectFactory
 
@@ -264,7 +269,8 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         codegenModels = codegenModels,
         schemaPackageName = incomingOptions.schemaPackageName,
         customScalarsMapping = customScalarsMapping.getOrElse(emptyMap()),
-        targetLanguage = targetLanguage
+        targetLanguage = targetLanguage,
+        generateTestBuilders = generateTestBuilders.getOrElse(defaultGenerateTestBuilders)
     )
 
     val outputCompilerMetadata = GraphQLCompiler.write(options)

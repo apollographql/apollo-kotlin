@@ -18,7 +18,8 @@ class ConditionalFragmentsTest {
               executableFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/operations.graphql")),
               schemaFile = File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/schema.graphqls"),
               outputDir = File("build/test/conditionalFragmentsTest"),
-              packageName = "",
+              packageName = ""
+          ).copy(
               customScalarsMapping = emptyMap(),
               codegenModels = MODELS_RESPONSE_BASED,
               flattenModels = false
@@ -36,7 +37,8 @@ class ConditionalFragmentsTest {
             executableFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/operations.graphql")),
             schemaFile = File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/schema.graphqls"),
             outputDir = File("build/test/conditionalFragmentsTest"),
-            packageName = "",
+            packageName = ""
+        ).copy(
             customScalarsMapping = emptyMap(),
             codegenModels = MODELS_OPERATION_BASED,
             flattenModels = false
