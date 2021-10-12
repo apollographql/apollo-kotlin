@@ -1,9 +1,21 @@
 package com.apollographql.apollo.gradle.internal
 
+import com.apollographql.apollo.compiler.OperationIdGenerator
 import com.apollographql.apollo.compiler.fromJson
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo.gradle.internal.SchemaDownloader.cast
-import org.jetbrains.kotlin.gradle.utils.`is`
+import graphql.language.AstPrinter
+import graphql.language.AstSorter
+import graphql.language.AstTransformer
+import graphql.language.FloatValue
+import graphql.language.IntValue
+import graphql.language.Node
+import graphql.language.NodeVisitorStub
+import graphql.language.StringValue
+import graphql.parser.Parser
+import graphql.util.TraversalControl
+import graphql.util.TraverserContext
+import graphql.util.TreeTransformerUtil.changeNode
 
 object RegisterOperations {
   private val mutation = """
@@ -36,6 +48,48 @@ object RegisterOperations {
       }
   """.trimIndent()
 
+  private fun String.normalize(): String {
+    val document = Parser.parse(this)
+
+    // From https://github.com/apollographql/apollo-tooling/blob/6d69f226c2e2c54b4fc0de6394d813bddfb54694/packages/apollo-graphql/src/operationId.ts#L84
+
+    // No need to "Drop unused definition" as we only include only one operation
+
+    // hideLiterals
+
+    val hiddenLiterals = AstTransformer().transform(document, object : NodeVisitorStub() {
+      override fun visitIntValue(node: IntValue?, context: TraverserContext<Node<*>>?): TraversalControl {
+
+        return changeNode(context, node!!.transform {
+          it.value(0)
+        })
+      }
+
+      override fun visitFloatValue(node: FloatValue?, context: TraverserContext<Node<*>>?): TraversalControl {
+        return changeNode(context, node!!.transform {
+          it.value(0.0)
+        })
+      }
+
+      override fun visitStringValue(node: StringValue?, context: TraverserContext<Node<*>>?): TraversalControl {
+        return changeNode(context, node!!.transform {
+          it.value("")
+        })
+      }
+    })
+
+    val sortedDocument = AstSorter().sort(hiddenLiterals)
+
+    return AstPrinter.printAst(sortedDocument)
+        .replace(Regex("\\s+"), " ")
+        .replace(Regex("([^_a-zA-Z0-9]) ")) { it.groupValues[1] }
+        .replace(Regex(" ([^_a-zA-Z0-9])")) { it.groupValues[1] }
+  }
+
+  internal fun String.safelistingHash(): String {
+    return OperationIdGenerator.Sha256().apply(normalize(), "")
+  }
+
   fun registerOperations(
       key: String,
       graphID: String,
@@ -50,9 +104,10 @@ object RegisterOperations {
             "version" to com.apollographql.apollo.compiler.VERSION,
         ),
         "operations" to operationOutput.entries.map {
+          val document = it.value.source
           mapOf(
-              "signature" to it.key,
-              "document" to it.value.source
+              "signature" to document.safelistingHash(),
+              "document" to document
           )
         },
         "manifestVersion" to 2,
