@@ -128,6 +128,6 @@ interface HasExecutionContext {
 /**
  * Implemented by classes whose [ExecutionContext] can be mutated: [ApolloClient.Builder] and [ApolloRequest.Builder].
  */
-interface ExecutionParameters<T> : HasExecutionContext where T : ExecutionParameters<T> {
+interface HasMutableExecutionContext<T> : HasExecutionContext where T : HasMutableExecutionContext<T> {
   fun withExecutionContext(executionContext: ExecutionContext): T
 }

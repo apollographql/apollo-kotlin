@@ -2,7 +2,7 @@ package com.apollographql.apollo3
 
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
-import com.apollographql.apollo3.api.ExecutionParameters
+import com.apollographql.apollo3.api.HasMutableExecutionContext
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.withSendApqExtensions
 import com.apollographql.apollo3.api.http.withSendDocument
@@ -31,4 +31,4 @@ fun <D : Operation.Data> ApolloResponse<D>.withAutoPersistedQueryInfo(hit: Boole
 /**
  * A shorthand method that sets sendDocument and sendApqExtensions at the same time.
  */
-fun <T> ExecutionParameters<T>.withHashedQuery(hashed: Boolean) where T : ExecutionParameters<T> = withSendDocument(!hashed).withSendApqExtensions(hashed)
+fun <T> HasMutableExecutionContext<T>.withHashedQuery(hashed: Boolean) where T : HasMutableExecutionContext<T> = withSendDocument(!hashed).withSendApqExtensions(hashed)

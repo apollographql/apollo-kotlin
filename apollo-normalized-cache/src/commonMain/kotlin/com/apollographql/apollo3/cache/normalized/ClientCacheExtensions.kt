@@ -4,7 +4,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
-import com.apollographql.apollo3.api.ExecutionParameters
+import com.apollographql.apollo3.api.HasMutableExecutionContext
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
@@ -151,19 +151,19 @@ fun ApolloClient.Builder.withRefetchPolicy(refetchPolicy: FetchPolicy) = withExe
     RefetchPolicyContext(refetchPolicy)
 )
 
-fun <T> ExecutionParameters<T>.withDoNotStore(doNotStore: Boolean) where T : ExecutionParameters<T> = withExecutionContext(
+fun <T> HasMutableExecutionContext<T>.withDoNotStore(doNotStore: Boolean) where T : HasMutableExecutionContext<T> = withExecutionContext(
     DoNotStoreContext(doNotStore)
 )
 
-fun <T> ExecutionParameters<T>.withStorePartialResponses(storePartialResponses: Boolean) where T : ExecutionParameters<T> = withExecutionContext(
+fun <T> HasMutableExecutionContext<T>.withStorePartialResponses(storePartialResponses: Boolean) where T : HasMutableExecutionContext<T> = withExecutionContext(
     StorePartialResponsesContext(storePartialResponses)
 )
 
-fun <T> ExecutionParameters<T>.withCacheHeaders(cacheHeaders: CacheHeaders) where T : ExecutionParameters<T> = withExecutionContext(
+fun <T> HasMutableExecutionContext<T>.withCacheHeaders(cacheHeaders: CacheHeaders) where T : HasMutableExecutionContext<T> = withExecutionContext(
     CacheHeadersContext(cacheHeaders)
 )
 
-fun <T> ExecutionParameters<T>.withWriteToCacheAsynchronously(writeToCacheAsynchronously: Boolean) where T : ExecutionParameters<T> = withExecutionContext(
+fun <T> HasMutableExecutionContext<T>.withWriteToCacheAsynchronously(writeToCacheAsynchronously: Boolean) where T : HasMutableExecutionContext<T> = withExecutionContext(
     WriteToCacheAsynchronouslyContext(writeToCacheAsynchronously)
 )
 

@@ -1,8 +1,8 @@
 package com.apollographql.apollo3.api.http
 
 import com.apollographql.apollo3.api.ExecutionContext
-import com.apollographql.apollo3.api.ExecutionParameters
 import com.apollographql.apollo3.api.HasExecutionContext
+import com.apollographql.apollo3.api.HasMutableExecutionContext
 
 
 fun HasExecutionContext.httpMethod() = executionContext[HttpMethodContext]?.value ?: HttpMethod.Post
@@ -17,23 +17,25 @@ fun HasExecutionContext.sendDocument() = executionContext[SendDocumentContext]?.
  *
  * Default: [HttpMethod.Post]
  */
-fun <T> ExecutionParameters<T>.withHttpMethod(httpMethod: HttpMethod) where T : ExecutionParameters<T> = withExecutionContext(executionContext + HttpMethodContext(httpMethod))
+fun <T> HasMutableExecutionContext<T>.withHttpMethod(httpMethod: HttpMethod) where T : HasMutableExecutionContext<T> = withExecutionContext(executionContext + HttpMethodContext(httpMethod))
 
 /**
  *
  */
-fun <T> ExecutionParameters<T>.withHttpHeaders(httpHeaders: List<HttpHeader>) where T : ExecutionParameters<T> = withExecutionContext(
+fun <T> HasMutableExecutionContext<T>.withHttpHeaders(httpHeaders: List<HttpHeader>) where T : HasMutableExecutionContext<T> = withExecutionContext(
     executionContext + HttpHeadersContext(httpHeaders() + httpHeaders)
 )
-fun <T> ExecutionParameters<T>.withHttpHeader(httpHeader: HttpHeader) where T : ExecutionParameters<T> = withExecutionContext(
+
+fun <T> HasMutableExecutionContext<T>.withHttpHeader(httpHeader: HttpHeader) where T : HasMutableExecutionContext<T> = withExecutionContext(
     executionContext + HttpHeadersContext(httpHeaders() + httpHeader)
 )
-fun <T> ExecutionParameters<T>.withHttpHeader(name: String, value: String) where T : ExecutionParameters<T> = withHttpHeader(
+
+fun <T> HasMutableExecutionContext<T>.withHttpHeader(name: String, value: String) where T : HasMutableExecutionContext<T> = withHttpHeader(
     HttpHeader(name, value)
 )
 
-fun <T> ExecutionParameters<T>.withSendApqExtensions(sendApqExtensions: Boolean) where T : ExecutionParameters<T> = withExecutionContext(executionContext + SendApqExtensionsContext(sendApqExtensions))
-fun <T> ExecutionParameters<T>.withSendDocument(sendDocument: Boolean) where T : ExecutionParameters<T> = withExecutionContext(executionContext + SendDocumentContext(sendDocument))
+fun <T> HasMutableExecutionContext<T>.withSendApqExtensions(sendApqExtensions: Boolean) where T : HasMutableExecutionContext<T> = withExecutionContext(executionContext + SendApqExtensionsContext(sendApqExtensions))
+fun <T> HasMutableExecutionContext<T>.withSendDocument(sendDocument: Boolean) where T : HasMutableExecutionContext<T> = withExecutionContext(executionContext + SendDocumentContext(sendDocument))
 
 
 /**

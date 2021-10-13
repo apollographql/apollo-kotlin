@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.network.http
 
 import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.ExecutionParameters
+import com.apollographql.apollo3.api.HasMutableExecutionContext
 import com.apollographql.apollo3.api.http.HttpBody
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
@@ -204,6 +204,6 @@ class BatchingHttpEngine(
   }
 }
 
-fun <T> ExecutionParameters<T>.withCanBeBatched(canBeBatched: Boolean) where T : ExecutionParameters<T> = withHttpHeader(
+fun <T> HasMutableExecutionContext<T>.withCanBeBatched(canBeBatched: Boolean) where T : HasMutableExecutionContext<T> = withHttpHeader(
     CAN_BE_BATCHED, canBeBatched.toString()
 )

@@ -29,7 +29,7 @@ class ApolloRequest<D : Operation.Data> private constructor(
   class Builder<D : Operation.Data>(
       var operation: Operation<D>,
       var requestUuid: Uuid = uuid4(),
-  ) : ExecutionParameters<Builder<D>> {
+  ) : HasMutableExecutionContext<Builder<D>> {
     override var executionContext: ExecutionContext = ExecutionContext.Empty
 
     override fun withExecutionContext(executionContext: ExecutionContext): Builder<D> {

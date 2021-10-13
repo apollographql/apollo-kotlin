@@ -6,8 +6,8 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.CustomScalarType
 import com.apollographql.apollo3.api.ExecutionContext
-import com.apollographql.apollo3.api.ExecutionParameters
 import com.apollographql.apollo3.api.HasExecutionContext
+import com.apollographql.apollo3.api.HasMutableExecutionContext
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
@@ -156,7 +156,7 @@ class ApolloClient private constructor(
       private val flowDecorators: MutableList<FlowDecorator>,
       private var requestedDispatcher: CoroutineDispatcher?,
       override var executionContext: ExecutionContext,
-  ) : ExecutionParameters<Builder> {
+  ) : HasMutableExecutionContext<Builder> {
 
     constructor() : this(
         networkTransport = null,
