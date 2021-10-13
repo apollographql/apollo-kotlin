@@ -30,7 +30,7 @@ kotlin {
     val commonTest by getting {
       dependencies {
         implementation(projects.apolloTestingSupport) {
-          because("runWithMainLoop")
+          because("runTest")
         }
         implementation(projects.apolloRuntime) {
           because("We need HttpEngine for SocketTest")
