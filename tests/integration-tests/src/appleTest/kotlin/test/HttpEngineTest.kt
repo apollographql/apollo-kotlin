@@ -4,6 +4,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.testing.runWithMainLoop
+import platform.CFNetwork.kCFErrorDomainCFNetwork
 import platform.CFNetwork.kCFErrorHTTPSProxyConnectionFailure
 import platform.Foundation.NSError
 import platform.Foundation.NSURLErrorCannotFindHost
@@ -32,11 +33,13 @@ class HttpEngineTest {
     // assertIs<NSError>(cause)
     check(cause is NSError)
 
-    assertTrue(when(cause.code) {
-      NSURLErrorCannotFindHost -> true
-      kCFErrorHTTPSProxyConnectionFailure.toLong() -> true // Happens locally if a proxy is running
-      else -> false
-    })
-    assertEquals(NSURLErrorDomain, cause.domain)
+    assertTrue(
+        when {
+          cause.domain == NSURLErrorDomain && cause.code == NSURLErrorCannotFindHost -> true
+          // Happens locally if a proxy is running
+          cause.domain == kCFErrorDomainCFNetwork && cause.code == kCFErrorHTTPSProxyConnectionFailure.toLong() -> true
+          else -> false
+        }
+    )
   }
 }
