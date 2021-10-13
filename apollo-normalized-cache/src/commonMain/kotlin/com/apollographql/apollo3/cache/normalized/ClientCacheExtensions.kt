@@ -69,7 +69,7 @@ fun <D : Query.Data> ApolloClient.watch(query: Query<D>): Flow<ApolloResponse<D>
 }
 
 fun <D : Query.Data> ApolloClient.watch(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
-  return queryAsFlow(queryRequest.withExecutionContext(WatchContext(true)))
+  return queryAsFlow(queryRequest.newBuilder().withExecutionContext(WatchContext(true)).build())
 }
 
 fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(query: Query<D>): Flow<ApolloResponse<D>> {

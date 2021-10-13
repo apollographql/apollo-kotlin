@@ -7,6 +7,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.CustomScalarType
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.ExecutionParameters
+import com.apollographql.apollo3.api.HasExecutionContext
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
@@ -43,7 +44,7 @@ class ApolloClient private constructor(
     override val executionContext: ExecutionContext,
     private val requestedDispatcher: CoroutineDispatcher?,
     private val flowDecorators: List<FlowDecorator>,
-) : ExecutionParameters<ApolloClient> {
+) : HasExecutionContext {
 
   private val dispatcher = defaultDispatcher(requestedDispatcher)
   private val clientScope = ClientScope(CoroutineScope(dispatcher))
@@ -108,12 +109,6 @@ class ApolloClient private constructor(
     subscriptionNetworkTransport.dispose()
   }
 
-  override fun withExecutionContext(executionContext: ExecutionContext): ApolloClient {
-    return copy(
-        executionContext = this.executionContext + executionContext
-    )
-  }
-
   private fun copy(
       networkTransport: NetworkTransport = this.networkTransport,
       subscriptionNetworkTransport: NetworkTransport = this.subscriptionNetworkTransport,
@@ -139,7 +134,7 @@ class ApolloClient private constructor(
     assertMainThreadOnNative()
     val executionContext = clientScope + customScalarAdapters + this@ApolloClient.executionContext + this.executionContext
 
-    val request = withExecutionContext(executionContext)
+    val request = newBuilder().withExecutionContext(executionContext).build()
     // ensureNeverFrozen(request)
     val interceptors = interceptors + NetworkInterceptor(
         networkTransport = networkTransport,

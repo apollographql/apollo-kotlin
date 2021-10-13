@@ -10,10 +10,7 @@ class ApolloRequest<D : Operation.Data> private constructor(
     val operation: Operation<D>,
     val requestUuid: Uuid,
     override val executionContext: ExecutionContext,
-) : ExecutionParameters<ApolloRequest<D>> {
-  override fun withExecutionContext(executionContext: ExecutionContext): ApolloRequest<D> {
-    return copy(executionContext = this.executionContext + executionContext)
-  }
+) : HasExecutionContext {
 
   fun newBuilder(): Builder<D> {
     return Builder(operation, requestUuid).also { it.executionContext = executionContext }

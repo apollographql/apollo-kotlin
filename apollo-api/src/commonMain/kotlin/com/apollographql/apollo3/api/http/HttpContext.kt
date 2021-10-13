@@ -2,14 +2,14 @@ package com.apollographql.apollo3.api.http
 
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.ExecutionParameters
+import com.apollographql.apollo3.api.HasExecutionContext
 
 
-fun <T> ExecutionParameters<T>.httpMethod() where T : ExecutionParameters<T> = executionContext[HttpMethodContext]?.value ?: HttpMethod.Post
-fun <T> ExecutionParameters<T>.httpHeaders() where T : ExecutionParameters<T> = executionContext[HttpHeadersContext]?.value ?: emptyList()
-fun <T> ExecutionParameters<T>.sendApqExtensions() where T : ExecutionParameters<T> = executionContext[SendApqExtensionsContext]?.value
-    ?: false
+fun HasExecutionContext.httpMethod() = executionContext[HttpMethodContext]?.value ?: HttpMethod.Post
+fun HasExecutionContext.httpHeaders() = executionContext[HttpHeadersContext]?.value ?: emptyList()
+fun HasExecutionContext.sendApqExtensions() = executionContext[SendApqExtensionsContext]?.value ?: false
 
-fun <T> ExecutionParameters<T>.sendDocument() where T : ExecutionParameters<T> = executionContext[SendDocumentContext]?.value ?: true
+fun HasExecutionContext.sendDocument() = executionContext[SendDocumentContext]?.value ?: true
 
 /**
  * Configures whether the request should use GET or POST

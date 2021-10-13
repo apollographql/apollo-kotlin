@@ -24,9 +24,11 @@ internal class AutoPersistedQueryInterceptor(val httpMethodForDocumentQueries: H
       when {
         isPersistedQueryNotFound(response.errors) -> {
           val retryRequest = request
+              .newBuilder()
               .withHttpMethod(httpMethodForDocumentQueries)
               .withSendDocument(true)
               .withSendApqExtensions(true)
+              .build()
 
           response = chain.proceed(retryRequest).single()
           emit(response.withAutoPersistedQueryInfo(false))

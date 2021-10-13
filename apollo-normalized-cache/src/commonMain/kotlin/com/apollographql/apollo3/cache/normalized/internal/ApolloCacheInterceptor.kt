@@ -4,8 +4,7 @@ import com.apollographql.apollo3.ClientScope
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.ExecutionContext
-import com.apollographql.apollo3.api.ExecutionParameters
+import com.apollographql.apollo3.api.HasExecutionContext
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
@@ -18,13 +17,11 @@ import com.apollographql.apollo3.cache.normalized.cacheHeaders
 import com.apollographql.apollo3.cache.normalized.dependentKeys
 import com.apollographql.apollo3.cache.normalized.doNotStore
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
-import com.apollographql.apollo3.cache.normalized.isFromCache
 import com.apollographql.apollo3.cache.normalized.optimisticData
 import com.apollographql.apollo3.cache.normalized.refetchPolicy
 import com.apollographql.apollo3.cache.normalized.storePartialResponses
 import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.cache.normalized.withCacheInfo
-import com.apollographql.apollo3.cache.normalized.withDoNotStore
 import com.apollographql.apollo3.cache.normalized.writeToCacheAsynchronously
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
@@ -32,7 +29,6 @@ import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.mpp.currentTimeMillis
-import com.apollographql.apollo3.mpp.ensureNeverFrozen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -50,7 +46,7 @@ internal class ApolloCacheInterceptor(
     // ensureNeverFrozen(store)
   }
 
-  private val <T> ExecutionParameters<T>.clientScope: CoroutineScope where T : ExecutionParameters<T>
+  private val HasExecutionContext.clientScope: CoroutineScope
     get() = executionContext[ClientScope]!!.coroutineScope
 
   private suspend fun <D : Operation.Data> maybeAsync(request: ApolloRequest<D>, block: suspend () -> Unit) {
