@@ -1,11 +1,12 @@
 package com.apollographql.apollo3.network.ws
 
-import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
-import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
-import okio.Buffer
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 
 
 /**
@@ -16,70 +17,125 @@ import okio.Buffer
  */
 class GraphQLWsProtocol(
     private val connectionPayload: Map<String, Any?>? = null,
-    override val frameType: WsFrameType = WsFrameType.Binary,
-) : WsProtocol {
-  override val name: String
-    get() = "graphql-transport-ws"
+    private val pingPayload: Map<String, Any?>? = null,
+    private val pongPayload: Map<String, Any?>? = null,
+    private val connectionAcknowledgeTimeoutMs: Long,
+    private val pingIntervalMillis: Long,
+    private val frameType: WsFrameType,
+    webSocketConnection: WebSocketConnection,
+    listener: Listener,
+) : WsProtocol(webSocketConnection, listener) {
 
-  override suspend fun connectionInit(): Map<String, Any?> {
-    val map = mutableMapOf<String, Any?>(
+  override suspend fun connectionInit() {
+    val message = mutableMapOf<String, Any?>(
         "type" to "connection_init",
     )
+
     if (connectionPayload != null) {
-      map.put("payload", connectionPayload)
+      message.put("payload", connectionPayload)
     }
-    return map
-  }
 
-  override fun connectionTerminate(): Map<String, Any?>? = null
+    sendMessageMap(message, frameType)
 
-  override fun <D : Operation.Data> operationStart(request: ApolloRequest<D>): Map<String, Any?> {
-    return mapOf(
-        "type" to "subscribe",
-        "id" to request.requestUuid.toString(),
-        "payload" to DefaultHttpRequestComposer.composePayload(request)
-    )
-  }
-
-  override fun <D : Operation.Data> operationStop(request: ApolloRequest<D>): Map<String, Any?> {
-    return mapOf(
-        "type" to "complete",
-        "id" to request.requestUuid.toString()
-    )
-  }
-
-  override fun ping(payload: Map<String, Any?>?): Map<String, Any?>? {
-    val map = mutableMapOf<String, Any?>(
-        "type" to "ping",
-    )
-    if (payload != null) {
-      map["payload"] = payload
+    withTimeout(connectionAcknowledgeTimeoutMs) {
+      val map = receiveMessageMap()
+      when (val type = map["type"]) {
+        "connection_ack" -> return@withTimeout
+        else -> println("unknown graphql-ws message while waiting for connection_ack: '$type")
+      }
     }
-    return map
   }
 
-  override fun pong(payload: Map<String, Any?>?): Map<String, Any?>? {
-    val map = mutableMapOf<String, Any?>(
-        "type" to "pong",
+  override fun <D : Operation.Data> startOperation(request: ApolloRequest<D>) {
+    sendMessageMap(
+        mapOf(
+            "type" to "subscribe",
+            "id" to request.requestUuid.toString(),
+            "payload" to DefaultHttpRequestComposer.composePayload(request)
+        ),
+        frameType
     )
-    if (payload != null) {
-      map["payload"] = payload
-    }
-    return map
   }
 
-  @Suppress("UNCHECKED_CAST")
-  override fun parseMessage(message: String, webSocketConnection: WebSocketConnection): WsServerMessage {
-    val map = AnyAdapter.fromJson(BufferedSourceJsonReader(Buffer().writeUtf8(message))) as Map<String, Any?>
+  override fun <D : Operation.Data> stopOperation(request: ApolloRequest<D>) {
+    sendMessageMap(
+        mapOf(
+            "type" to "complete",
+            "id" to request.requestUuid.toString()
+        ),
+        frameType
+    )
+  }
 
-    return when (map["type"]) {
-      "connection_ack" -> WsServerMessage.ConnectionAck
-      "next" -> WsServerMessage.OperationData(map["id"] as String, map["payload"] as Map<String, Any?>)
-      "error" -> WsServerMessage.OperationError(map["id"] as String, map["payload"] as Map<String, Any?>)
-      "complete" -> WsServerMessage.OperationComplete(map["id"] as String)
-      "ping" -> WsServerMessage.Ping(map["payload"] as Map<String, Any?>?)
-      "pong" -> WsServerMessage.Pong(map["payload"] as Map<String, Any?>?)
-      else -> WsServerMessage.Unknown(map)
+  override fun run(scope: CoroutineScope) {
+    if (pingIntervalMillis > 0) {
+      scope.launch {
+        val map = mutableMapOf<String, Any?>(
+            "type" to "ping",
+        )
+        if (pingPayload != null) {
+          map["payload"] = pingPayload
+        }
+
+        while(true) {
+          delay(pingIntervalMillis)
+          sendMessageMap(map, frameType)
+        }
+      }
+    }
+    super.run(scope)
+  }
+
+  override fun handleServerMessage(messageMap: Map<String, Any?>) {
+    @Suppress("UNCHECKED_CAST")
+    when (messageMap["type"]) {
+      "next" -> listener.operationResponse(messageMap["id"] as String, messageMap["payload"] as Map<String, Any?>)
+      "error" -> listener.operationError(messageMap["id"] as String, messageMap["payload"] as Map<String, Any?>)
+      "complete" -> listener.operationComplete(messageMap["id"] as String)
+      "ping" -> {
+        val map = mutableMapOf<String, Any?>(
+            "type" to "pong",
+        )
+        if (pongPayload != null) {
+          map["payload"] = pongPayload
+        }
+        sendMessageMap(map, frameType)
+      }
+      "pong" -> Unit // Nothing to do, the server acknowledged one of our pings
+      else -> Unit // Unknown message
+    }
+  }
+
+  /**
+   * A factory that for [WsProtocol]
+   *
+   * @param pingIntervalMillis the interval between two client-initiated pings or -1 to not send any ping.
+   * Default value: -1
+   * @param pingPayload the ping payload to send in "ping" messages or null to not send a payload
+   * @param pongPayload the pong payload to send in "pong" messages or null to not send a payload
+   */
+  class Factory(
+      private val connectionPayload: Map<String, Any?>? = null,
+      private val pingIntervalMillis: Long = -1,
+      private val pingPayload: Map<String, Any?>? = null,
+      private val pongPayload: Map<String, Any?>? = null,
+      private val connectionAcknowledgeTimeoutMs: Long = 10_000,
+      private val frameType: WsFrameType = WsFrameType.Text
+  ) : WsProtocol.Factory {
+    override val name: String
+      get() = "graphql-transport-ws"
+
+    override fun create(webSocketConnection: WebSocketConnection, listener: Listener): WsProtocol {
+      return GraphQLWsProtocol(
+          connectionPayload = connectionPayload,
+          pingPayload = pingPayload,
+          pongPayload = pongPayload,
+          connectionAcknowledgeTimeoutMs = connectionAcknowledgeTimeoutMs,
+          pingIntervalMillis = pingIntervalMillis,
+          frameType = frameType,
+          webSocketConnection = webSocketConnection,
+          listener = listener
+      )
     }
   }
 }

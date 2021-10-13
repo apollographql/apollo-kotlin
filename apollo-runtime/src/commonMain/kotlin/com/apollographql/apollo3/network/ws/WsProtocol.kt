@@ -1,63 +1,134 @@
 package com.apollographql.apollo3.network.ws
 
+import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
+import com.apollographql.apollo3.api.internal.json.buildJsonByteString
+import com.apollographql.apollo3.api.internal.json.buildJsonString
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import okio.Buffer
 
 /**
- * A [WsProtocol] is responsible for handling the details of the WebSocketProtocol
+ * A [WsProtocol] is responsible for handling the details of the WebSocket protocol.
+ *
+ * Implementations must implement [WsProtocol.readWebsocket], [WsProtocol.startOperation], [WsProtocol.stopOperation]
+ * Additionally, implementation can use the provided [scope] to implement keep alive or other long running processes
+ *
+ * [WsProtocol.readWebsocket], [WsProtocol.startOperation], [WsProtocol.stopOperation] and [scope] all share the same
+ * thread and rely on [webSocketConnection] to do the operations async
+ *
+ * @param webSocketConnection the connection
+ * @param listener a listener
+ * @param scope a [CoroutineScope] bound to this websocket
  */
-interface WsProtocol {
-  /**
-   * Whether to send binary or text frames
-   */
-  val frameType: WsFrameType
+abstract class WsProtocol(
+    protected val webSocketConnection: WebSocketConnection,
+    protected val listener: Listener,
+) {
+
+  interface Listener {
+    /**
+     * A response was received. payload might contain "errors"
+     * For subscriptions, several responses might be received.
+     */
+    fun operationResponse(id: String, payload: Map<String, Any?>)
+
+    /**
+     * An error was received in response to an operationStart
+     */
+    fun operationError(id: String, payload: Map<String, Any?>?)
+
+    /**
+     * An operation is complete
+     */
+    fun operationComplete(id: String)
+
+    /**
+     * a general network error was received.
+     */
+    fun networkError(cause: Throwable)
+  }
 
   /**
-   * The name of the protocol as in the Sec-WebSocket-Protocol header
+   * Initializes the connection and suspends until the server acknowledges it.
    *
-   * Example: "graphql-transport-ws" or "graphql-ws"
+   * @throws Exception
    */
-  val name: String
+  abstract suspend fun connectionInit()
 
   /**
-   * The message to send to initialize a connection. This method can suspend if updating/refreshing authorization parameters is
-   * required
+   * Handles a server message and notifies [listener] appropriately
    */
-  suspend fun connectionInit(): Map<String, Any?>
-  fun connectionTerminate(): Map<String, Any?>?
-  fun <D: Operation.Data> operationStart(request: ApolloRequest<D>): Map<String, Any?>
-  fun <D: Operation.Data> operationStop(request: ApolloRequest<D>): Map<String, Any?>
+  abstract fun handleServerMessage(messageMap: Map<String, Any?>)
 
   /**
-   * ping and pong messages for graphql-ws
+   * Starts the given operation
    */
-  fun ping(payload: Map<String, Any?>? = null): Map<String, Any?>?
-  fun pong(payload: Map<String, Any?>? = null): Map<String, Any?>?
+  abstract fun <D: Operation.Data> startOperation(request: ApolloRequest<D>)
 
   /**
-   * parse the given message and return one of [WsServerMessage]
-   *
-   * @param message the message. If the message is received as binary, it will be converted to a String. Non-text binary messages are
-   * not supported.
-   * @param webSocketConnection the [WebSocketConnection]. This can be used by [WsProtocol] implementations to react to a given message.
-   * For an example a [WsProtocol] might implement a custom ping/pong scheme this way
+   * Stops the given operation
    */
-  fun parseMessage(message: String, webSocketConnection: WebSocketConnection): WsServerMessage
+  abstract fun <D: Operation.Data> stopOperation(request: ApolloRequest<D>)
+
+  protected fun Map<String, Any?>.toByteString() = buildJsonByteString {
+    AnyAdapter.toJson(this, this@toByteString)
+  }
+
+  protected fun Map<String, Any?>.toUtf8() = buildJsonString {
+    AnyAdapter.toJson(this, this@toUtf8)
+  }
+
+  protected fun String.toMessageMap() = AnyAdapter.fromJson(BufferedSourceJsonReader(Buffer().writeUtf8(this))) as Map<String, Any?>
+
+  protected fun sendMessageMapBinary(messageMap: Map<String, Any?>) {
+    webSocketConnection.send(messageMap.toByteString())
+  }
+  protected fun sendMessageMapText(messageMap: Map<String, Any?>) {
+    webSocketConnection.send(messageMap.toUtf8())
+  }
+  protected fun sendMessageMap(messageMap: Map<String, Any?>, frameType: WsFrameType) {
+    when(frameType) {
+      WsFrameType.Text -> sendMessageMapText(messageMap)
+      WsFrameType.Binary -> sendMessageMapBinary(messageMap)
+    }
+  }
+
+  protected suspend fun receiveMessageMap() = webSocketConnection.receive().toMessageMap()
+
+  open fun run(scope: CoroutineScope) {
+    scope.launch {
+      try {
+        while(true) {
+          handleServerMessage(receiveMessageMap())
+        }
+      } catch (e: Exception) {
+        listener.networkError(e)
+      }
+    }
+  }
+
+  interface Factory {
+    /**
+     * The name of the protocol as in the Sec-WebSocket-Protocol header
+     *
+     * Example: "graphql-transport-ws" or "graphql-ws"
+     */
+    val name: String
+
+    /**
+     * Create a [WsProtocol]
+     */
+    fun create(
+        webSocketConnection: WebSocketConnection,
+        listener: Listener,
+    ): WsProtocol
+  }
 }
 
 enum class WsFrameType {
   Text,
   Binary
 }
-sealed class WsServerMessage {
-  object ConnectionAck : WsServerMessage()
-  class ConnectionError(val payload: Map<String, Any?>?) : WsServerMessage()
-  class OperationData(val id: String, val payload: Map<String, Any?>) : WsServerMessage()
-  class OperationError(val id: String, val payload: Map<String, Any?>) : WsServerMessage()
-  class OperationComplete(val id: String): WsServerMessage()
-  class Ping(val payload: Map<String, Any?>?): WsServerMessage()
-  class Pong(val payload: Map<String, Any?>?): WsServerMessage()
-  object KeepAlive: WsServerMessage()
-  class Unknown(val map: Map<String, Any?>): WsServerMessage()
-}
-
