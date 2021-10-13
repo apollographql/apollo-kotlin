@@ -20,8 +20,12 @@ fun Project.configureMppDefaults(withJs: Boolean = true) {
       }
     }
 
-    val appleMain = sourceSets.create("appleMain")
-    val appleTest = sourceSets.create("appleTest")
+    val appleMain = sourceSets.create("appleMain") {
+      it.dependsOn(sourceSets.getByName("commonMain"))
+    }
+    val appleTest = sourceSets.create("appleTest") {
+      it.dependsOn(sourceSets.getByName("commonTest"))
+    }
 
     macosX64()
     iosX64()
