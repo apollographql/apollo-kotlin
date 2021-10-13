@@ -1,6 +1,6 @@
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.android.ApolloIdlingResource
-import com.apollographql.apollo3.android.withIdlingResource
+import com.apollographql.apollo3.android.idlingResource
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import idling.resource.IdlingResourceQuery
@@ -24,7 +24,7 @@ class IdlingResourceTest {
     val idlingResource = ApolloIdlingResource("test")
     val apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
-        .withIdlingResource(idlingResource)
+        .idlingResource(idlingResource)
         .build()
 
     launch(start = CoroutineStart.UNDISPATCHED) {

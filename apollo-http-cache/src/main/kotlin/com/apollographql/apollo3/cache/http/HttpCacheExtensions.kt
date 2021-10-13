@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.cache.http
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.HasMutableExecutionContext
 import com.apollographql.apollo3.api.Operation
@@ -83,3 +84,38 @@ fun <T> HasMutableExecutionContext<T>.httpExpireAfterRead(expireAfterRead: Boole
 fun <T> HasMutableExecutionContext<T>.httpDoNotStore(doNotStore: Boolean) where T : HasMutableExecutionContext<T> = httpHeader(
     CachingHttpEngine.CACHE_DO_NOT_STORE, doNotStore.toString()
 )
+
+
+// BEGIN With-ers to Builders compatibility layer
+
+@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+fun ApolloClient.withHttpCache(
+    directory: File,
+    maxSize: Long,
+): ApolloClient = newBuilder().httpCache(directory, maxSize).build()
+
+@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+fun ApolloClient.withHttpFetchPolicy(httpFetchPolicy: HttpFetchPolicy) = newBuilder().httpFetchPolicy(httpFetchPolicy).build()
+
+@Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
+fun <D : Operation.Data> ApolloRequest<D>.withHttpFetchPolicy(httpFetchPolicy: HttpFetchPolicy) = newBuilder().httpFetchPolicy(httpFetchPolicy).build()
+
+@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+fun ApolloClient.withHttpExpireTimeout(millis: Long) = newBuilder().httpExpireTimeout(millis).build()
+
+@Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
+fun <D : Operation.Data> ApolloRequest<D>.withHttpExpireTimeout(millis: Long) = newBuilder().httpExpireTimeout(millis).build()
+
+@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+fun ApolloClient.withHttpExpireAfterRead(expireAfterRead: Boolean) = newBuilder().httpExpireAfterRead(expireAfterRead).build()
+
+@Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
+fun <D : Operation.Data> ApolloRequest<D>.withHttpExpireAfterRead(expireAfterRead: Boolean) = newBuilder().httpExpireAfterRead(expireAfterRead).build()
+
+@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+fun ApolloClient.withHttpDoNotStore(doNotStore: Boolean) = newBuilder().httpDoNotStore(doNotStore).build()
+
+@Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
+fun <D : Operation.Data> ApolloRequest<D>.withHttpDoNotStore(doNotStore: Boolean) = newBuilder().httpDoNotStore(doNotStore).build()
+
+// END With-ers to Builders compatibility layer

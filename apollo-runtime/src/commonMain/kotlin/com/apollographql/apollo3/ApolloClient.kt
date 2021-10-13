@@ -12,8 +12,13 @@ import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
+import com.apollographql.apollo3.api.http.httpHeader
+import com.apollographql.apollo3.api.http.httpHeaders
 import com.apollographql.apollo3.api.http.httpMethod
+import com.apollographql.apollo3.api.http.sendApqExtensions
+import com.apollographql.apollo3.api.http.sendDocument
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.interceptor.DefaultInterceptorChain
@@ -30,24 +35,36 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.single
+import kotlin.jvm.JvmOverloads
 
 typealias FlowDecorator = (Flow<ApolloResponse<*>>) -> Flow<ApolloResponse<*>>
 
 /**
  * The main entry point for the Apollo runtime. An [ApolloClient] is responsible for executing queries, mutations and subscriptions
  */
-class ApolloClient private constructor(
+class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder instead.  This will be removed in v3.0.0.") constructor(
     private val networkTransport: NetworkTransport,
-    private val customScalarAdapters: CustomScalarAdapters,
-    private val subscriptionNetworkTransport: NetworkTransport,
-    val interceptors: List<ApolloInterceptor>,
-    override val executionContext: ExecutionContext,
-    private val requestedDispatcher: CoroutineDispatcher?,
-    private val flowDecorators: List<FlowDecorator>,
+    private val customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+    private val subscriptionNetworkTransport: NetworkTransport = networkTransport,
+    val interceptors: List<ApolloInterceptor> = emptyList(),
+    override val executionContext: ExecutionContext = ExecutionContext.Empty,
+    private val requestedDispatcher: CoroutineDispatcher? = null,
+    private val flowDecorators: List<FlowDecorator> = emptyList(),
 ) : HasExecutionContext {
 
   private val dispatcher = defaultDispatcher(requestedDispatcher)
   private val clientScope = ClientScope(CoroutineScope(dispatcher))
+
+  /**
+   * A short-hand constructor
+   */
+  @Deprecated("Please use ApolloClient.Builder instead.  This will be removed in v3.0.0.")
+  constructor(
+      serverUrl: String,
+  ) : this(
+      networkTransport = HttpNetworkTransport(serverUrl = serverUrl),
+      subscriptionNetworkTransport = WebSocketNetworkTransport(serverUrl = serverUrl),
+  )
 
   /**
    * Executes the given query and returns a response or throws on transport errors
@@ -107,6 +124,36 @@ class ApolloClient private constructor(
     clientScope.coroutineScope.cancel()
     networkTransport.dispose()
     subscriptionNetworkTransport.dispose()
+  }
+
+  @Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+  fun <T> withCustomScalarAdapter(customScalarType: CustomScalarType, customScalarAdapter: Adapter<T>): ApolloClient {
+    return copy(
+        customScalarAdapters = CustomScalarAdapters(
+            customScalarAdapters.customScalarAdapters + mapOf(customScalarType.name to customScalarAdapter)
+        )
+    )
+  }
+
+  @Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+  fun withInterceptor(interceptor: ApolloInterceptor): ApolloClient {
+    return copy(
+        interceptors = interceptors + interceptor
+    )
+  }
+
+  @Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+  fun withFlowDecorator(flowDecorator: FlowDecorator): ApolloClient {
+    return copy(
+        flowDecorators = flowDecorators + flowDecorator
+    )
+  }
+
+  @Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+  fun withExecutionContext(executionContext: ExecutionContext): ApolloClient {
+    return copy(
+        executionContext = this.executionContext + executionContext
+    )
   }
 
   private fun copy(
@@ -274,3 +321,34 @@ fun ApolloClient.Builder.autoPersistedQueries(
     }
   }
 }
+
+// BEGIN With-ers to Builders compatibility layer
+
+@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+fun ApolloClient.withAutoPersistedQueries(
+    httpMethodForHashedQueries: HttpMethod = HttpMethod.Get,
+    httpMethodForDocumentQueries: HttpMethod = HttpMethod.Post,
+    hashByDefault: Boolean = true,
+): ApolloClient {
+  return this.newBuilder().autoPersistedQueries(httpMethodForHashedQueries, httpMethodForDocumentQueries, hashByDefault).build()
+}
+
+@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+fun ApolloClient.withHttpMethod(httpMethod: HttpMethod) = newBuilder().httpMethod(httpMethod).build()
+
+@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+fun ApolloClient.withHttpHeaders(httpHeaders: List<HttpHeader>) = newBuilder().httpHeaders(httpHeaders).build()
+
+@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+fun ApolloClient.withHttpHeader(httpHeader: HttpHeader) = newBuilder().httpHeader(httpHeader).build()
+
+@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+fun ApolloClient.withHttpHeader(name: String, value: String) = newBuilder().httpHeader(name, value).build()
+
+@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+fun ApolloClient.withSendApqExtensions(sendApqExtensions: Boolean) = newBuilder().sendApqExtensions(sendApqExtensions).build()
+
+@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+fun ApolloClient.withSendDocument(sendDocument: Boolean) = newBuilder().sendDocument(sendDocument).build()
+
+// END With-ers to Builders compatibility layer
