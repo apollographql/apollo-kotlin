@@ -73,7 +73,7 @@ actual class DefaultWebSocketEngine(
       setHTTPMethod("GET")
     }
 
-    val messageChannel = Channel<ByteString>(Channel.BUFFERED)
+    val messageChannel = Channel<String>(Channel.UNLIMITED)
     val isOpen = CompletableDeferred<Boolean>()
 
     val connectionListener = object : WebSocketConnectionListener {
@@ -108,7 +108,7 @@ actual class DefaultWebSocketEngine(
 @OptIn(ExperimentalCoroutinesApi::class)
 private class WebSocketConnectionImpl(
     val webSocket: NSURLSessionWebSocketTask,
-    val messageChannel: Channel<ByteString>
+    val messageChannel: Channel<String>
 ) : WebSocketConnection {
   init {
     messageChannel.invokeOnClose {
@@ -120,11 +120,11 @@ private class WebSocketConnectionImpl(
     receiveNext()
   }
 
-  override suspend fun receive(): ByteString {
+  override suspend fun receive(): String {
     return messageChannel.receive()
   }
 
-  override suspend fun send(data: ByteString) {
+  override fun send(data: ByteString) {
     assertMainThreadOnNative()
     if (!messageChannel.isClosedForReceive) {
       val message = NSURLSessionWebSocketMessage(data.toByteArray().toNSData())
@@ -137,7 +137,7 @@ private class WebSocketConnectionImpl(
     }
   }
 
-  override suspend fun send(string: String) {
+  override fun send(string: String) {
     assertMainThreadOnNative()
     if (!messageChannel.isClosedForReceive) {
       val message = NSURLSessionWebSocketMessage(string)
@@ -228,11 +228,11 @@ private fun NSURLSessionWebSocketMessage.dispatchAndRequestNext(webSocketConnect
 
   val data = when (type) {
     NSURLSessionWebSocketMessageTypeData -> {
-      data?.toByteString()
+      data?.toByteString()?.utf8()
     }
 
     NSURLSessionWebSocketMessageTypeString -> {
-      string?.commonAsUtf8ToByteArray()?.toByteString()
+      string
     }
 
     else -> null

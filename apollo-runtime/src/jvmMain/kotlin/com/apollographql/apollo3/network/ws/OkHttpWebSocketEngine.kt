@@ -28,9 +28,10 @@ actual class DefaultWebSocketEngine(
       url: String,
       headers: Map<String, String>
   ): WebSocketConnection {
-    val messageChannel = Channel<ByteString>(Channel.BUFFERED)
+    val messageChannel = Channel<String>(Channel.UNLIMITED)
     val webSocketOpenResult = CompletableDeferred<Unit>()
 
+    //println("opening $url")
     val request = Request.Builder()
         .url(url)
         .headers(Headers.of(headers))
@@ -43,23 +44,16 @@ actual class DefaultWebSocketEngine(
 
       override fun onMessage(webSocket: WebSocket, text: String) {
         //println("receivedText: ${text}")
-        runBlocking {
-          kotlin.runCatching {
-            messageChannel.send(text.toByteArray().toByteString())
-          }
-        }
+        messageChannel.trySend(text)
       }
 
       override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
         //println("receivedBytes: ${bytes.utf8()}")
-        runBlocking {
-          kotlin.runCatching {
-            messageChannel.send(bytes)
-          }
-        }
+        messageChannel.trySend(bytes.utf8())
       }
 
       override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+        //println("onFailure: ${t.message} - ${response?.body()?.string()}")
         webSocketOpenResult.complete(Unit)
         messageChannel.close(t)
       }
@@ -87,23 +81,21 @@ actual class DefaultWebSocketEngine(
     }
 
     return object : WebSocketConnection {
-      override suspend fun receive(): ByteString {
+      override suspend fun receive(): String {
         return messageChannel.receive()
       }
 
-      override suspend fun send(data: ByteString) {
-        //println("send: ${data.utf8()}")
-        while(!webSocket.send(data)) {
-          // Wait until the queue has some data available
-          delay(100)
+      override fun send(data: ByteString) {
+        //println("sendBytes: ${data.utf8()}")
+        check(webSocket.send(data)) {
+          "WeSocket queue full"
         }
       }
 
-      override suspend fun send(string: String) {
-        //println("send: $string")
-        while(!webSocket.send(string)) {
-          // Wait until the queue has some data available
-          delay(100)
+      override fun send(string: String) {
+        //println("sendText: $string")
+        check(webSocket.send(string)) {
+          "WeSocket queue full"
         }
       }
 

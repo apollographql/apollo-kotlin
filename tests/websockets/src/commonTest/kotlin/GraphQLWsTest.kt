@@ -19,7 +19,7 @@ class GraphQLWsTest {
     val apolloClient = ApolloClient(
         networkTransport = WebSocketNetworkTransport(
             serverUrl = "http://localhost:9090/graphql",
-            protocol = GraphQLWsProtocol()
+            protocolFactory = GraphQLWsProtocol.Factory()
         )
     )
 
@@ -31,7 +31,7 @@ class GraphQLWsTest {
     val apolloClient = ApolloClient(
         networkTransport = WebSocketNetworkTransport(
             serverUrl = "http://localhost:9090/graphql",
-            protocol = GraphQLWsProtocol()
+            protocolFactory = GraphQLWsProtocol.Factory()
         )
     )
 
@@ -44,7 +44,7 @@ class GraphQLWsTest {
     val apolloClient = ApolloClient(
         networkTransport = WebSocketNetworkTransport(
             serverUrl = "http://localhost:9090/graphql",
-            protocol = GraphQLWsProtocol()
+            protocolFactory = GraphQLWsProtocol.Factory()
         )
     )
 
