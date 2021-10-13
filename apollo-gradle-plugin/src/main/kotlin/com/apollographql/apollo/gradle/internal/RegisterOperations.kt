@@ -54,7 +54,7 @@ object RegisterOperations {
 
     // From https://github.com/apollographql/apollo-tooling/blob/6d69f226c2e2c54b4fc0de6394d813bddfb54694/packages/apollo-graphql/src/operationId.ts#L84
 
-    // No need to "Drop unused definition" as we only include only one operation
+    // No need to "Drop unused definition" as we include only one operation
 
     // hideLiterals
 
