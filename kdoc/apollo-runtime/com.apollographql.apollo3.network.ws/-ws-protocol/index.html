@@ -24,11 +24,75 @@
           </div>
           <div class="cover ">
             <h1 class="cover"><span>Ws</span><wbr><span>Protocol</span></h1>
-            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace">interface <a href="index.html">WsProtocol</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">A <a href="index.html">WsProtocol</a> is responsible for handling the details of the WebSocketProtocol</p></div></div>
+            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace">abstract class <a href="index.html">WsProtocol</a>(webSocketConnection: <a href="../-web-socket-connection/index.html">WebSocketConnection</a>, listener: <a href="-listener/index.html">WsProtocol.Listener</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">A <a href="index.html">WsProtocol</a> is responsible for handling the details of the WebSocket protocol.</p><p class="paragraph">Implementations must implement WsProtocol.readWebsocket, <a href="start-operation.html">WsProtocol.startOperation</a>, <a href="stop-operation.html">WsProtocol.stopOperation</a> Additionally, implementation can use the provided scope to implement keep alive or other long running processes</p><p class="paragraph">WsProtocol.readWebsocket, <a href="start-operation.html">WsProtocol.startOperation</a>, <a href="stop-operation.html">WsProtocol.stopOperation</a> and scope all share the same thread and rely on <a href="../../../apollo-runtime/com.apollographql.apollo3.network.ws/-ws-protocol/web-socket-connection.html">webSocketConnection</a> to do the operations async</p></div></div>
           </div>
           <div class="tabbedcontent">
-            <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button><button class="section-tab" data-togglable="Inheritors">Inheritors</button></div>
+            <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Parameters">Parameters</button><button class="section-tab" data-togglable="Inheritors">Inheritors</button></div>
             <div class="tabs-section-body">
+              <h2 class="">Parameters</h2>
+              <div data-togglable="Parameters">
+                <div class="platform-hinted WithExtraAttributes" data-platform-hinted="data-platform-hinted" data-togglable="Parameters"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div data-togglable="Parameters"><div class="table" data-togglable="Parameters"><div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex">webSocketConnection</span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">the connection</p></div></div></div></div></div><div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex">listener</span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">a listener</p></div></div></div></div></div><div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex">scope</span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">a <span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span> bound to this websocket</p></div></div></div></div></div></div></div></div></div>
+              </div>
+              <h2 class="tabbedcontent">Constructors</h2>
+              <div class="table" data-togglable="Constructors"><a data-name="-135194528%2FConstructors%2F-1314432391" anchor-label="WsProtocol" id="-135194528%2FConstructors%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
+                <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
+                  <div class="main-subrow keyValue TabbedContent">
+                    <div class=""><span class="inline-flex"><a href="-ws-protocol.html">WsProtocol</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-135194528%2FConstructors%2F-1314432391"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace">fun <a href="-ws-protocol.html">WsProtocol</a>(webSocketConnection: <a href="../-web-socket-connection/index.html">WebSocketConnection</a>, listener: <a href="-listener/index.html">WsProtocol.Listener</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">the connection</div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Types</h2>
+              <div class="table" data-togglable="Types"><a data-name="-1449908743%2FClasslikes%2F-1314432391" anchor-label="Factory" id="-1449908743%2FClasslikes%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
+                <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-factory/index.html">Factory</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1449908743%2FClasslikes%2F-1314432391"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace">interface <a href="-factory/index.html">Factory</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="715527339%2FClasslikes%2F-1314432391" anchor-label="Listener" id="715527339%2FClasslikes%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
+                <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-listener/index.html">Listener</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="715527339%2FClasslikes%2F-1314432391"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace">interface <a href="-listener/index.html">Listener</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <h2 class="">Functions</h2>
               <div class="table" data-togglable="Functions"><a data-name="896419228%2FFunctions%2F-1314432391" anchor-label="connectionInit" id="896419228%2FFunctions%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
@@ -43,17 +107,17 @@
                       <div class="title"><div class="divergent-group" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
 
   <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace">abstract suspend fun <a href="connection-init.html">connectionInit</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace">abstract suspend fun <a href="connection-init.html">connectionInit</a>()<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="896419228%2FFunctions%2F-1314432391" anchor-label="connectionInit" id="896419228%2FFunctions%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="896419228%2FFunctions%2F-1314432391" anchor-label="connectionInit" id="896419228%2FFunctions%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>The message to send to initialize a connection.</div></div>
+<a data-name="896419228%2FFunctions%2F-1314432391" anchor-label="connectionInit" id="896419228%2FFunctions%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="896419228%2FFunctions%2F-1314432391" anchor-label="connectionInit" id="896419228%2FFunctions%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>Initializes the connection and suspends until the server acknowledges it.</div></div>
 </div>
                     </div>
                   </div>
                 </div>
-<a data-name="-105468691%2FFunctions%2F-1314432391" anchor-label="connectionTerminate" id="-105468691%2FFunctions%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
+<a data-name="-709632738%2FFunctions%2F-1314432391" anchor-label="handleServerMessage" id="-709632738%2FFunctions%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="connection-terminate.html">connectionTerminate</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-105468691%2FFunctions%2F-1314432391"></span>
+                    <div class=""><span class="inline-flex"><a href="handle-server-message.html">handleServerMessage</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-709632738%2FFunctions%2F-1314432391"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -63,17 +127,17 @@
                       <div class="title"><div class="divergent-group" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
 
   <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace">abstract fun <a href="connection-terminate.html">connectionTerminate</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?&gt;?<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace">abstract fun <a href="handle-server-message.html">handleServerMessage</a>(messageMap: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?&gt;)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-</div>
+<a data-name="-709632738%2FFunctions%2F-1314432391" anchor-label="handleServerMessage" id="-709632738%2FFunctions%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-709632738%2FFunctions%2F-1314432391" anchor-label="handleServerMessage" id="-709632738%2FFunctions%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>Handles a server message and notifies <a href="../../../apollo-runtime/com.apollographql.apollo3.network.ws/-ws-protocol/listener.html">listener</a> appropriately</div></div>
 </div>
                     </div>
                   </div>
                 </div>
-<a data-name="437296372%2FFunctions%2F-1314432391" anchor-label="operationStart" id="437296372%2FFunctions%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
+<a data-name="-2077212539%2FFunctions%2F-1314432391" anchor-label="run" id="-2077212539%2FFunctions%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="operation-start.html">operationStart</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="437296372%2FFunctions%2F-1314432391"></span>
+                    <div class=""><span class="inline-flex"><a href="run.html">run</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2077212539%2FFunctions%2F-1314432391"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -83,17 +147,17 @@
                       <div class="title"><div class="divergent-group" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
 
   <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace">abstract fun &lt;<a href="operation-start.html">D</a> : <a href="../../../apollo-api/com.apollographql.apollo3.api/-operation/-data/index.html">Operation.Data</a>&gt; <a href="operation-start.html">operationStart</a>(request: <a href="../../../apollo-api/com.apollographql.apollo3.api/-apollo-request/index.html">ApolloRequest</a>&lt;<a href="operation-start.html">D</a>&gt;): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace">open fun <a href="run.html">run</a>(scope: <span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
 </div>
 </div>
                     </div>
                   </div>
                 </div>
-<a data-name="1131864828%2FFunctions%2F-1314432391" anchor-label="operationStop" id="1131864828%2FFunctions%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
+<a data-name="-579101346%2FFunctions%2F-1314432391" anchor-label="startOperation" id="-579101346%2FFunctions%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="operation-stop.html">operationStop</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1131864828%2FFunctions%2F-1314432391"></span>
+                    <div class=""><span class="inline-flex"><a href="start-operation.html">startOperation</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-579101346%2FFunctions%2F-1314432391"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -103,17 +167,17 @@
                       <div class="title"><div class="divergent-group" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
 
   <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace">abstract fun &lt;<a href="operation-stop.html">D</a> : <a href="../../../apollo-api/com.apollographql.apollo3.api/-operation/-data/index.html">Operation.Data</a>&gt; <a href="operation-stop.html">operationStop</a>(request: <a href="../../../apollo-api/com.apollographql.apollo3.api/-apollo-request/index.html">ApolloRequest</a>&lt;<a href="operation-stop.html">D</a>&gt;): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace">abstract fun &lt;<a href="start-operation.html">D</a> : <a href="../../../apollo-api/com.apollographql.apollo3.api/-operation/-data/index.html">Operation.Data</a>&gt; <a href="start-operation.html">startOperation</a>(request: <a href="../../../apollo-api/com.apollographql.apollo3.api/-apollo-request/index.html">ApolloRequest</a>&lt;<a href="start-operation.html">D</a>&gt;)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-</div>
+<a data-name="-579101346%2FFunctions%2F-1314432391" anchor-label="startOperation" id="-579101346%2FFunctions%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-579101346%2FFunctions%2F-1314432391" anchor-label="startOperation" id="-579101346%2FFunctions%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>Starts the given operation</div></div>
 </div>
                     </div>
                   </div>
                 </div>
-<a data-name="-1804070797%2FFunctions%2F-1314432391" anchor-label="parseMessage" id="-1804070797%2FFunctions%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
+<a data-name="1441046392%2FFunctions%2F-1314432391" anchor-label="stopOperation" id="1441046392%2FFunctions%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="parse-message.html">parseMessage</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1804070797%2FFunctions%2F-1314432391"></span>
+                    <div class=""><span class="inline-flex"><a href="stop-operation.html">stopOperation</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1441046392%2FFunctions%2F-1314432391"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -123,84 +187,10 @@
                       <div class="title"><div class="divergent-group" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
 
   <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace">abstract fun <a href="parse-message.html">parseMessage</a>(message: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, webSocketConnection: <a href="../-web-socket-connection/index.html">WebSocketConnection</a>): <a href="../-ws-server-message/index.html">WsServerMessage</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace">abstract fun &lt;<a href="stop-operation.html">D</a> : <a href="../../../apollo-api/com.apollographql.apollo3.api/-operation/-data/index.html">Operation.Data</a>&gt; <a href="stop-operation.html">stopOperation</a>(request: <a href="../../../apollo-api/com.apollographql.apollo3.api/-apollo-request/index.html">ApolloRequest</a>&lt;<a href="stop-operation.html">D</a>&gt;)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="-1804070797%2FFunctions%2F-1314432391" anchor-label="parseMessage" id="-1804070797%2FFunctions%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-1804070797%2FFunctions%2F-1314432391" anchor-label="parseMessage" id="-1804070797%2FFunctions%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>parse the given message and return one of <a href="../-ws-server-message/index.html">WsServerMessage</a></div></div>
+<a data-name="1441046392%2FFunctions%2F-1314432391" anchor-label="stopOperation" id="1441046392%2FFunctions%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="1441046392%2FFunctions%2F-1314432391" anchor-label="stopOperation" id="1441046392%2FFunctions%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>Stops the given operation</div></div>
 </div>
-                    </div>
-                  </div>
-                </div>
-<a data-name="16608329%2FFunctions%2F-1314432391" anchor-label="ping" id="16608329%2FFunctions%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
-                <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
-                  <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="ping.html">ping</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="16608329%2FFunctions%2F-1314432391"></span>
-                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                        </span></span></div>
-                    <div>
-                      <div class="platform-tags ">
-                        <div class="platform-tag common-like">common</div>
-                      </div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace">abstract fun <a href="ping.html">ping</a>(payload: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?&gt;? = null): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?&gt;?<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-<a data-name="16608329%2FFunctions%2F-1314432391" anchor-label="ping" id="16608329%2FFunctions%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="16608329%2FFunctions%2F-1314432391" anchor-label="ping" id="16608329%2FFunctions%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>ping and pong messages for graphql-ws</div></div>
-</div>
-                    </div>
-                  </div>
-                </div>
-<a data-name="-1761257981%2FFunctions%2F-1314432391" anchor-label="pong" id="-1761257981%2FFunctions%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
-                <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
-                  <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="pong.html">pong</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1761257981%2FFunctions%2F-1314432391"></span>
-                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                        </span></span></div>
-                    <div>
-                      <div class="platform-tags ">
-                        <div class="platform-tag common-like">common</div>
-                      </div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace">abstract fun <a href="pong.html">pong</a>(payload: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?&gt;? = null): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?&gt;?<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <h2 class="">Properties</h2>
-              <div class="table" data-togglable="Properties"><a data-name="1238174729%2FProperties%2F-1314432391" anchor-label="frameType" id="1238174729%2FProperties%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
-                <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
-                  <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="frame-type.html">frameType</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1238174729%2FProperties%2F-1314432391"></span>
-                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                        </span></span></div>
-                    <div>
-                      <div class="platform-tags ">
-                        <div class="platform-tag common-like">common</div>
-                      </div>
-                      <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><a data-name="1238174729%2FProperties%2F-1314432391" anchor-label="frameType" id="1238174729%2FProperties%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace">abstract val <a href="frame-type.html">frameType</a>: <a href="../-ws-frame-type/index.html">WsFrameType</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="1238174729%2FProperties%2F-1314432391" anchor-label="frameType" id="1238174729%2FProperties%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>Whether to send binary or text frames</div></div></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-<a data-name="1881136895%2FProperties%2F-1314432391" anchor-label="name" id="1881136895%2FProperties%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
-                <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
-                  <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="name.html">name</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1881136895%2FProperties%2F-1314432391"></span>
-                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                        </span></span></div>
-                    <div>
-                      <div class="platform-tags ">
-                        <div class="platform-tag common-like">common</div>
-                      </div>
-                      <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><a data-name="1881136895%2FProperties%2F-1314432391" anchor-label="name" id="1881136895%2FProperties%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace">abstract val <a href="name.html">name</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="1881136895%2FProperties%2F-1314432391" anchor-label="name" id="1881136895%2FProperties%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>The name of the protocol as in the Sec-WebSocket-Protocol headerExample: "graphql-transport-ws" or "graphql-ws"</div></div></div>
-                      </div>
                     </div>
                   </div>
                 </div>
