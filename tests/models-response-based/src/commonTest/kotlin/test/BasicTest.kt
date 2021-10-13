@@ -15,8 +15,8 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.store
-import com.apollographql.apollo3.cache.normalized.withFetchPolicy
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runWithMainLoop
@@ -44,9 +44,9 @@ class BasicTest {
 
   private fun <D : Query.Data> basicTest(resourceName: String, query: Query<D>, block: ApolloResponse<D>.() -> Unit) = runWithMainLoop {
     mockServer.enqueue(readJson(resourceName))
-    var response = apolloClient.query(ApolloRequest.Builder(query).withFetchPolicy(FetchPolicy.NetworkOnly).build())
+    var response = apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.NetworkOnly).build())
     response.block()
-    response = apolloClient.query(ApolloRequest.Builder(query).withFetchPolicy(FetchPolicy.CacheOnly).build())
+    response = apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.CacheOnly).build())
     response.block()
   }
 

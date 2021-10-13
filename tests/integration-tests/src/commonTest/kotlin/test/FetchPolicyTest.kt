@@ -5,10 +5,10 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.isFromCache
 import com.apollographql.apollo3.cache.normalized.queryCacheAndNetwork
 import com.apollographql.apollo3.cache.normalized.store
-import com.apollographql.apollo3.cache.normalized.withFetchPolicy
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockResponse
@@ -47,7 +47,7 @@ class FetchPolicyTest {
     // Cache first is also the default, no need to set the fetchPolicy
     runWithMainLoop {
       // First query should hit the network and save in cache
-      val request = ApolloRequest.Builder(query).withFetchPolicy(FetchPolicy.NetworkFirst).build()
+      val request = ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.NetworkFirst).build()
       var response = apolloClient.query(request)
 
       assertNotNull(response.data)
@@ -77,7 +77,7 @@ class FetchPolicyTest {
       val query = HeroNameQuery()
       val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
-      val request = ApolloRequest.Builder(query).withFetchPolicy(FetchPolicy.NetworkFirst).build()
+      val request = ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.NetworkFirst).build()
 
       // First query should hit the network and save in cache
       mockServer.enqueue(query, data)
@@ -127,7 +127,7 @@ class FetchPolicyTest {
       assertNotNull(response.data)
       assertFalse(response.isFromCache)
 
-      request = request.newBuilder().withFetchPolicy(FetchPolicy.CacheOnly).build()
+      request = request.newBuilder().fetchPolicy(FetchPolicy.CacheOnly).build()
 
       // Second query should only hit the cache
       response = apolloClient.query(request)
@@ -144,7 +144,7 @@ class FetchPolicyTest {
       val query = HeroNameQuery()
       val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
-      val request = ApolloRequest.Builder(query).withFetchPolicy(FetchPolicy.NetworkOnly).build()
+      val request = ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.NetworkOnly).build()
 
       // First query should hit the network and save in cache
       mockServer.enqueue(query, data)

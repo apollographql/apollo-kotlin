@@ -4,8 +4,8 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.HasMutableExecutionContext
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.http.withSendApqExtensions
-import com.apollographql.apollo3.api.http.withSendDocument
+import com.apollographql.apollo3.api.http.sendApqExtensions
+import com.apollographql.apollo3.api.http.sendDocument
 
 /**
  * Information about auto persisted queries
@@ -31,4 +31,4 @@ fun <D : Operation.Data> ApolloResponse<D>.withAutoPersistedQueryInfo(hit: Boole
 /**
  * A shorthand method that sets sendDocument and sendApqExtensions at the same time.
  */
-fun <T> HasMutableExecutionContext<T>.withHashedQuery(hashed: Boolean) where T : HasMutableExecutionContext<T> = withSendDocument(!hashed).withSendApqExtensions(hashed)
+fun <T> HasMutableExecutionContext<T>.hashedQuery(hashed: Boolean) where T : HasMutableExecutionContext<T> = sendDocument(!hashed).sendApqExtensions(hashed)

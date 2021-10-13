@@ -61,7 +61,7 @@ fun ApolloClient.Builder.normalizedCache(
 }
 
 fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: Boolean = false): ApolloClient.Builder {
-  return addInterceptor(ApolloCacheInterceptor(store)).withWriteToCacheAsynchronously(writeToCacheAsynchronously)
+  return addInterceptor(ApolloCacheInterceptor(store)).writeToCacheAsynchronously(writeToCacheAsynchronously)
 }
 
 fun <D : Query.Data> ApolloClient.watch(query: Query<D>): Flow<ApolloResponse<D>> {
@@ -69,7 +69,7 @@ fun <D : Query.Data> ApolloClient.watch(query: Query<D>): Flow<ApolloResponse<D>
 }
 
 fun <D : Query.Data> ApolloClient.watch(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
-  return queryAsFlow(queryRequest.newBuilder().withExecutionContext(WatchContext(true)).build())
+  return queryAsFlow(queryRequest.newBuilder().addExecutionContext(WatchContext(true)).build())
 }
 
 fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(query: Query<D>): Flow<ApolloResponse<D>> {
@@ -88,13 +88,13 @@ fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(queryRequest: ApolloReque
     var cacheException: ApolloException? = null
     var networkException: ApolloException? = null
     try {
-     emit(query(queryRequest.newBuilder().withFetchPolicy(FetchPolicy.CacheOnly).build()))
+      emit(query(queryRequest.newBuilder().fetchPolicy(FetchPolicy.CacheOnly).build()))
     } catch (e: ApolloException) {
       cacheException = e
     }
 
     try {
-      emit(query(queryRequest.newBuilder().withFetchPolicy(FetchPolicy.NetworkOnly).build()))
+      emit(query(queryRequest.newBuilder().fetchPolicy(FetchPolicy.NetworkOnly).build()))
     } catch (e: ApolloException) {
       networkException = e
     }
@@ -125,7 +125,7 @@ fun ApolloClient.clearNormalizedCache() = apolloStore.clearAll()
  * Sets the [FetchPolicy] on this request. D has a bound on [Query.Data] because subscriptions and mutation shouldn't
  * read the cache
  */
-fun <D : Query.Data> ApolloRequest.Builder<D>.withFetchPolicy(fetchPolicy: FetchPolicy) = withExecutionContext(
+fun <D : Query.Data> ApolloRequest.Builder<D>.fetchPolicy(fetchPolicy: FetchPolicy) = addExecutionContext(
     FetchPolicyContext(fetchPolicy)
 )
 
@@ -133,44 +133,44 @@ fun <D : Query.Data> ApolloRequest.Builder<D>.withFetchPolicy(fetchPolicy: Fetch
  * Sets the default [FetchPolicy] for the [ApolloClient]. This only affects queries. Mutations and subscriptions will
  * always use [FetchPolicy.NetworkFirst]
  */
-fun ApolloClient.Builder.withFetchPolicy(fetchPolicy: FetchPolicy) = withExecutionContext(
+fun ApolloClient.Builder.fetchPolicy(fetchPolicy: FetchPolicy) = addExecutionContext(
     FetchPolicyContext(fetchPolicy)
 )
 
 /**
  * Sets the [FetchPolicy] used when refetching at the request level. This is only used in combination with [watch].
  */
-fun <D : Query.Data> ApolloRequest.Builder<D>.withRefetchPolicy(refetchPolicy: FetchPolicy) = withExecutionContext(
+fun <D : Query.Data> ApolloRequest.Builder<D>.refetchPolicy(refetchPolicy: FetchPolicy) = addExecutionContext(
     RefetchPolicyContext(refetchPolicy)
 )
 
 /**
  * Sets the [FetchPolicy] used when refetching at the client level. This is only used in combination with [watch].
  */
-fun ApolloClient.Builder.withRefetchPolicy(refetchPolicy: FetchPolicy) = withExecutionContext(
+fun ApolloClient.Builder.refetchPolicy(refetchPolicy: FetchPolicy) = addExecutionContext(
     RefetchPolicyContext(refetchPolicy)
 )
 
-fun <T> HasMutableExecutionContext<T>.withDoNotStore(doNotStore: Boolean) where T : HasMutableExecutionContext<T> = withExecutionContext(
+fun <T> HasMutableExecutionContext<T>.doNotStore(doNotStore: Boolean) where T : HasMutableExecutionContext<T> = addExecutionContext(
     DoNotStoreContext(doNotStore)
 )
 
-fun <T> HasMutableExecutionContext<T>.withStorePartialResponses(storePartialResponses: Boolean) where T : HasMutableExecutionContext<T> = withExecutionContext(
+fun <T> HasMutableExecutionContext<T>.storePartialResponses(storePartialResponses: Boolean) where T : HasMutableExecutionContext<T> = addExecutionContext(
     StorePartialResponsesContext(storePartialResponses)
 )
 
-fun <T> HasMutableExecutionContext<T>.withCacheHeaders(cacheHeaders: CacheHeaders) where T : HasMutableExecutionContext<T> = withExecutionContext(
+fun <T> HasMutableExecutionContext<T>.cacheHeaders(cacheHeaders: CacheHeaders) where T : HasMutableExecutionContext<T> = addExecutionContext(
     CacheHeadersContext(cacheHeaders)
 )
 
-fun <T> HasMutableExecutionContext<T>.withWriteToCacheAsynchronously(writeToCacheAsynchronously: Boolean) where T : HasMutableExecutionContext<T> = withExecutionContext(
+fun <T> HasMutableExecutionContext<T>.writeToCacheAsynchronously(writeToCacheAsynchronously: Boolean) where T : HasMutableExecutionContext<T> = addExecutionContext(
     WriteToCacheAsynchronouslyContext(writeToCacheAsynchronously)
 )
 
 /**
  * Sets the optimistic updates to write to the cache while a query is pending.
  */
-fun <D : Mutation.Data> ApolloRequest.Builder<D>.withOptimisticUpdates(data: D) = withExecutionContext(
+fun <D : Mutation.Data> ApolloRequest.Builder<D>.optimisticUpdates(data: D) = addExecutionContext(
     OptimisticUpdatesContext(data)
 )
 

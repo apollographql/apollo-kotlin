@@ -32,7 +32,7 @@ class ApolloRequest<D : Operation.Data> private constructor(
   ) : HasMutableExecutionContext<Builder<D>> {
     override var executionContext: ExecutionContext = ExecutionContext.Empty
 
-    override fun withExecutionContext(executionContext: ExecutionContext): Builder<D> {
+    override fun addExecutionContext(executionContext: ExecutionContext): Builder<D> {
       this.executionContext = this.executionContext + executionContext
       return this
     }

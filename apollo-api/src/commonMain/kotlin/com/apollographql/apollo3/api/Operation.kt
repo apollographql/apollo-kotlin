@@ -202,7 +202,7 @@ fun <D : Operation.Data> Operation<D>.composeJsonRequest(
 
   val request = composer.compose(
       ApolloRequest.Builder(operation = this)
-          .withExecutionContext(customScalarAdapters)
+          .addExecutionContext(customScalarAdapters)
           .build()
   )
 

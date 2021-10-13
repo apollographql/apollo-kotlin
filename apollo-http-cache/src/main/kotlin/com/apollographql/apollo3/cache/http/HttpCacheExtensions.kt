@@ -4,7 +4,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.HasMutableExecutionContext
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.http.withHttpHeader
+import com.apollographql.apollo3.api.http.httpHeader
 import com.apollographql.apollo3.network.http.HttpInfo
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import java.io.File
@@ -59,7 +59,7 @@ val <D : Operation.Data> ApolloResponse<D>.isFromHttpCache
   } ?: false
 
 
-fun <T> HasMutableExecutionContext<T>.withHttpFetchPolicy(httpFetchPolicy: HttpFetchPolicy): T where T : HasMutableExecutionContext<T> {
+fun <T> HasMutableExecutionContext<T>.httpFetchPolicy(httpFetchPolicy: HttpFetchPolicy): T where T : HasMutableExecutionContext<T> {
   val policyStr = when (httpFetchPolicy) {
     HttpFetchPolicy.CacheFirst -> CachingHttpEngine.CACHE_FIRST
     HttpFetchPolicy.CacheOnly -> CachingHttpEngine.CACHE_ONLY
@@ -67,19 +67,19 @@ fun <T> HasMutableExecutionContext<T>.withHttpFetchPolicy(httpFetchPolicy: HttpF
     HttpFetchPolicy.NetworkOnly -> CachingHttpEngine.NETWORK_ONLY
   }
 
-  return withHttpHeader(
+  return httpHeader(
       CachingHttpEngine.CACHE_FETCH_POLICY_HEADER, policyStr
   )
 }
 
-fun <T> HasMutableExecutionContext<T>.withHttpExpireTimeout(millis: Long) where T : HasMutableExecutionContext<T> = withHttpHeader(
+fun <T> HasMutableExecutionContext<T>.httpExpireTimeout(millis: Long) where T : HasMutableExecutionContext<T> = httpHeader(
     CachingHttpEngine.CACHE_EXPIRE_TIMEOUT_HEADER, millis.toString()
 )
 
-fun <T> HasMutableExecutionContext<T>.withHttpExpireAfterRead(expireAfterRead: Boolean) where T : HasMutableExecutionContext<T> = withHttpHeader(
+fun <T> HasMutableExecutionContext<T>.httpExpireAfterRead(expireAfterRead: Boolean) where T : HasMutableExecutionContext<T> = httpHeader(
     CachingHttpEngine.CACHE_EXPIRE_AFTER_READ_HEADER, expireAfterRead.toString()
 )
 
-fun <T> HasMutableExecutionContext<T>.withHttpDoNotStore(doNotStore: Boolean) where T : HasMutableExecutionContext<T> = withHttpHeader(
+fun <T> HasMutableExecutionContext<T>.httpDoNotStore(doNotStore: Boolean) where T : HasMutableExecutionContext<T> = httpHeader(
     CachingHttpEngine.CACHE_DO_NOT_STORE, doNotStore.toString()
 )

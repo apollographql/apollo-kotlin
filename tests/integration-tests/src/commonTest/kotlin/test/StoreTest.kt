@@ -9,9 +9,9 @@ import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.isFromCache
 import com.apollographql.apollo3.cache.normalized.store
-import com.apollographql.apollo3.cache.normalized.withFetchPolicy
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.integration.normalizer.CharacterNameByIdQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
@@ -129,7 +129,7 @@ class StoreTest {
   private suspend fun storeAllFriends() {
     mockServer.enqueue(readResource("HeroAndFriendsNameWithIdsResponse.json"))
     val response = apolloClient.query(
-        ApolloRequest.Builder(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).withFetchPolicy(FetchPolicy.NetworkOnly).build()
+        ApolloRequest.Builder(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).fetchPolicy(FetchPolicy.NetworkOnly).build()
     )
 
     assertEquals(response.data?.hero?.name, "R2-D2")
@@ -138,7 +138,7 @@ class StoreTest {
 
   private suspend fun assertFriendIsCached(id: String, name: String) {
     val characterResponse = apolloClient.query(
-        ApolloRequest.Builder(CharacterNameByIdQuery(id)).withFetchPolicy(FetchPolicy.CacheOnly).build()
+        ApolloRequest.Builder(CharacterNameByIdQuery(id)).fetchPolicy(FetchPolicy.CacheOnly).build()
     )
     assertEquals2(characterResponse.isFromCache, true)
     assertEquals2(characterResponse.data?.character?.name, name)
@@ -147,7 +147,7 @@ class StoreTest {
   private suspend fun assertFriendIsNotCached(id: String) {
     try {
       apolloClient.query(
-          ApolloRequest.Builder(CharacterNameByIdQuery(id)).withFetchPolicy(FetchPolicy.CacheOnly).build()
+          ApolloRequest.Builder(CharacterNameByIdQuery(id)).fetchPolicy(FetchPolicy.CacheOnly).build()
       )
       fail("A CacheMissException was expected")
     } catch (e: CacheMissException) {
@@ -157,7 +157,7 @@ class StoreTest {
   private suspend fun assertRootNotCached() {
     try {
       apolloClient.query(
-          ApolloRequest.Builder(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).withFetchPolicy(FetchPolicy.CacheOnly).build()
+          ApolloRequest.Builder(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).fetchPolicy(FetchPolicy.CacheOnly).build()
       )
       fail("A CacheMissException was expected")
     } catch (e: CacheMissException) {

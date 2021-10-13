@@ -3,8 +3,8 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.store
-import com.apollographql.apollo3.cache.normalized.withFetchPolicy
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
@@ -65,7 +65,7 @@ class RxJavaTest {
   fun writingToTheStoreWorks() {
     rx2ApolloStore.rxWriteOperation(GetRandomQuery(), GetRandomQuery.Data(random = 43)).blockingGet()
     rx2ApolloClient.query(
-        ApolloRequest.Builder(GetRandomQuery()).withFetchPolicy(FetchPolicy.CacheOnly).build()
+        ApolloRequest.Builder(GetRandomQuery()).fetchPolicy(FetchPolicy.CacheOnly).build()
     ).test()
         .awaitDone(1, TimeUnit.SECONDS)
         .assertValue {

@@ -4,7 +4,7 @@ import checkTestFixture
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
-import com.apollographql.apollo3.api.http.withHttpHeader
+import com.apollographql.apollo3.api.http.httpHeader
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
@@ -35,7 +35,7 @@ class HttpRequestComposerTest {
       kotlin.runCatching {
         // No need to enqueue a successful response, we just want to make sure our headers reached the server
         mockServer.enqueue("error")
-        apolloClient.query(ApolloRequest.Builder(AllPlanetsQuery()).withHttpHeader("test", "is passing").build())
+        apolloClient.query(ApolloRequest.Builder(AllPlanetsQuery()).httpHeader("test", "is passing").build())
       }
 
       val response = mockServer.takeRequest()

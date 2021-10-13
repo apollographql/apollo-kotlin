@@ -6,7 +6,7 @@ import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.store
-import com.apollographql.apollo3.cache.normalized.withWriteToCacheAsynchronously
+import com.apollographql.apollo3.cache.normalized.writeToCacheAsynchronously
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
@@ -54,7 +54,7 @@ class WriteToCacheAsynchronouslyTest {
     mockServer.enqueue(readResource("HeroAndFriendsNameResponse.json"))
     apolloClient.query(
         ApolloRequest.Builder(query)
-            .withWriteToCacheAsynchronously(true)
+            .writeToCacheAsynchronously(true)
             .build()
     )
 
@@ -72,7 +72,7 @@ class WriteToCacheAsynchronouslyTest {
     mockServer.enqueue(readResource("HeroAndFriendsNameResponse.json"))
     apolloClient.query(
         ApolloRequest.Builder(query)
-            .withWriteToCacheAsynchronously(false)
+            .writeToCacheAsynchronously(false)
             .build()
     )
 

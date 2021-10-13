@@ -17,25 +17,25 @@ fun HasExecutionContext.sendDocument() = executionContext[SendDocumentContext]?.
  *
  * Default: [HttpMethod.Post]
  */
-fun <T> HasMutableExecutionContext<T>.withHttpMethod(httpMethod: HttpMethod) where T : HasMutableExecutionContext<T> = withExecutionContext(executionContext + HttpMethodContext(httpMethod))
+fun <T> HasMutableExecutionContext<T>.httpMethod(httpMethod: HttpMethod) where T : HasMutableExecutionContext<T> = addExecutionContext(executionContext + HttpMethodContext(httpMethod))
 
 /**
  *
  */
-fun <T> HasMutableExecutionContext<T>.withHttpHeaders(httpHeaders: List<HttpHeader>) where T : HasMutableExecutionContext<T> = withExecutionContext(
-    executionContext + HttpHeadersContext(httpHeaders() + httpHeaders)
+fun <T> HasMutableExecutionContext<T>.httpHeaders(httpHeaders: List<HttpHeader>) where T : HasMutableExecutionContext<T> = addExecutionContext(
+    executionContext + HttpHeadersContext(this@httpHeaders.httpHeaders() + httpHeaders)
 )
 
-fun <T> HasMutableExecutionContext<T>.withHttpHeader(httpHeader: HttpHeader) where T : HasMutableExecutionContext<T> = withExecutionContext(
+fun <T> HasMutableExecutionContext<T>.httpHeader(httpHeader: HttpHeader) where T : HasMutableExecutionContext<T> = addExecutionContext(
     executionContext + HttpHeadersContext(httpHeaders() + httpHeader)
 )
 
-fun <T> HasMutableExecutionContext<T>.withHttpHeader(name: String, value: String) where T : HasMutableExecutionContext<T> = withHttpHeader(
+fun <T> HasMutableExecutionContext<T>.httpHeader(name: String, value: String) where T : HasMutableExecutionContext<T> = httpHeader(
     HttpHeader(name, value)
 )
 
-fun <T> HasMutableExecutionContext<T>.withSendApqExtensions(sendApqExtensions: Boolean) where T : HasMutableExecutionContext<T> = withExecutionContext(executionContext + SendApqExtensionsContext(sendApqExtensions))
-fun <T> HasMutableExecutionContext<T>.withSendDocument(sendDocument: Boolean) where T : HasMutableExecutionContext<T> = withExecutionContext(executionContext + SendDocumentContext(sendDocument))
+fun <T> HasMutableExecutionContext<T>.sendApqExtensions(sendApqExtensions: Boolean) where T : HasMutableExecutionContext<T> = addExecutionContext(executionContext + SendApqExtensionsContext(sendApqExtensions))
+fun <T> HasMutableExecutionContext<T>.sendDocument(sendDocument: Boolean) where T : HasMutableExecutionContext<T> = addExecutionContext(executionContext + SendDocumentContext(sendDocument))
 
 
 /**

@@ -3,9 +3,9 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.cache.http.CachingHttpEngine
 import com.apollographql.apollo3.cache.http.HttpFetchPolicy
+import com.apollographql.apollo3.cache.http.httpExpireTimeout
+import com.apollographql.apollo3.cache.http.httpFetchPolicy
 import com.apollographql.apollo3.cache.http.isFromHttpCache
-import com.apollographql.apollo3.cache.http.withHttpExpireTimeout
-import com.apollographql.apollo3.cache.http.withHttpFetchPolicy
 import com.apollographql.apollo3.exception.HttpCacheMissException
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
@@ -82,7 +82,7 @@ class HttpCacheTest {
       assertEquals(42, response.data?.random)
       assertEquals(false, response.isFromHttpCache)
 
-      val request = ApolloRequest.Builder(GetRandomQuery()).withHttpFetchPolicy(HttpFetchPolicy.NetworkOnly).build()
+      val request = ApolloRequest.Builder(GetRandomQuery()).httpFetchPolicy(HttpFetchPolicy.NetworkOnly).build()
       assertFails {
         apolloClient.query(request)
       }
@@ -99,7 +99,7 @@ class HttpCacheTest {
       assertEquals(42, response.data?.random)
       assertEquals(false, response.isFromHttpCache)
 
-      val request = ApolloRequest.Builder(GetRandomQuery()).withHttpFetchPolicy(HttpFetchPolicy.NetworkFirst).build()
+      val request = ApolloRequest.Builder(GetRandomQuery()).httpFetchPolicy(HttpFetchPolicy.NetworkFirst).build()
       response = apolloClient.query(request)
       assertEquals(42, response.data?.random)
       assertEquals(true, response.isFromHttpCache)
@@ -115,15 +115,15 @@ class HttpCacheTest {
       assertEquals(42, response.data?.random)
       assertEquals(false, response.isFromHttpCache)
 
-      response = apolloClient.query(ApolloRequest.Builder(GetRandomQuery()).withHttpExpireTimeout(500).build())
+      response = apolloClient.query(ApolloRequest.Builder(GetRandomQuery()).httpExpireTimeout(500).build())
       assertEquals(42, response.data?.random)
       assertEquals(true, response.isFromHttpCache)
 
       delay(1000)
       assertFailsWith(HttpCacheMissException::class) {
         apolloClient.query(ApolloRequest.Builder(GetRandomQuery())
-            .withHttpExpireTimeout(500)
-            .withHttpFetchPolicy(HttpFetchPolicy.CacheOnly)
+            .httpExpireTimeout(500)
+            .httpFetchPolicy(HttpFetchPolicy.CacheOnly)
             .build()
         )
       }

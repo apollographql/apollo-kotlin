@@ -5,9 +5,9 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.api.http.withHttpMethod
-import com.apollographql.apollo3.api.http.withSendApqExtensions
-import com.apollographql.apollo3.api.http.withSendDocument
+import com.apollographql.apollo3.api.http.httpMethod
+import com.apollographql.apollo3.api.http.sendApqExtensions
+import com.apollographql.apollo3.api.http.sendDocument
 import com.apollographql.apollo3.exception.AutoPersistedQueriesNotSupported
 import com.apollographql.apollo3.withAutoPersistedQueryInfo
 import kotlinx.coroutines.flow.Flow
@@ -25,9 +25,9 @@ internal class AutoPersistedQueryInterceptor(val httpMethodForDocumentQueries: H
         isPersistedQueryNotFound(response.errors) -> {
           val retryRequest = request
               .newBuilder()
-              .withHttpMethod(httpMethodForDocumentQueries)
-              .withSendDocument(true)
-              .withSendApqExtensions(true)
+              .httpMethod(httpMethodForDocumentQueries)
+              .sendDocument(true)
+              .sendApqExtensions(true)
               .build()
 
           response = chain.proceed(retryRequest).single()

@@ -13,7 +13,7 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.api.http.withHttpMethod
+import com.apollographql.apollo3.api.http.httpMethod
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.interceptor.DefaultInterceptorChain
@@ -134,7 +134,7 @@ class ApolloClient private constructor(
     assertMainThreadOnNative()
     val executionContext = clientScope + customScalarAdapters + this@ApolloClient.executionContext + this.executionContext
 
-    val request = newBuilder().withExecutionContext(executionContext).build()
+    val request = newBuilder().addExecutionContext(executionContext).build()
     // ensureNeverFrozen(request)
     val interceptors = interceptors + NetworkInterceptor(
         networkTransport = networkTransport,
@@ -210,7 +210,7 @@ class ApolloClient private constructor(
       return this
     }
 
-    override fun withExecutionContext(executionContext: ExecutionContext): Builder {
+    override fun addExecutionContext(executionContext: ExecutionContext): Builder {
       this.executionContext = this.executionContext + executionContext
       return this
     }
@@ -259,7 +259,7 @@ class ApolloClient private constructor(
  *
  * @param hashByDefault: whether to enable Auto Persisted Queries by default. If true, it will set httpMethodForHashedQueries,
  * sendApqExtensions=true and sendDocument=false.
- * If false it will leave them untouched. You can later use [withHashedQuery] to enable them
+ * If false it will leave them untouched. You can later use [hashedQuery] to enable them
  */
 fun ApolloClient.Builder.autoPersistedQueries(
     httpMethodForHashedQueries: HttpMethod = HttpMethod.Get,
@@ -268,7 +268,7 @@ fun ApolloClient.Builder.autoPersistedQueries(
 ): ApolloClient.Builder {
   return addInterceptor(AutoPersistedQueryInterceptor(httpMethodForDocumentQueries)).let {
     if (hashByDefault) {
-      it.withHttpMethod(httpMethodForHashedQueries).withHashedQuery(true)
+      it.httpMethod(httpMethodForHashedQueries).hashedQuery(true)
     } else {
       it
     }
