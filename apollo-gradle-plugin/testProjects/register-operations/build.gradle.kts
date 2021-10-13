@@ -32,7 +32,7 @@ configure<ApolloExtension> {
   service("service") {
     registerOperations {
       key.set(System.getenv("APOLLO_KEY"))
-      graph.set(System.getenv("APOLLO_GRAPH"))
+      graph.set(System.getenv("APOLLO_GRAPH_ID"))
       graphVariant.set("current")
     }
   }

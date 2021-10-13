@@ -16,6 +16,7 @@ import graphql.parser.Parser
 import graphql.util.TraversalControl
 import graphql.util.TraverserContext
 import graphql.util.TreeTransformerUtil.changeNode
+import java.math.BigInteger
 
 object RegisterOperations {
   private val mutation = """
@@ -66,9 +67,12 @@ object RegisterOperations {
       }
 
       override fun visitFloatValue(node: FloatValue?, context: TraverserContext<Node<*>>?): TraversalControl {
-        return changeNode(context, node!!.transform {
-          it.value(0.0)
-        })
+        /**
+         * Because in JS (0.0).toString == "0" (vs "0.0" on the JVM), we replace the FloatValue by an IntValue
+         * Since we always hide literals, this should be correct
+         * See https://youtrack.jetbrains.com/issue/KT-33358
+         */
+        return changeNode(context, IntValue(BigInteger.valueOf(0)))
       }
 
       override fun visitStringValue(node: StringValue?, context: TraverserContext<Node<*>>?): TraversalControl {

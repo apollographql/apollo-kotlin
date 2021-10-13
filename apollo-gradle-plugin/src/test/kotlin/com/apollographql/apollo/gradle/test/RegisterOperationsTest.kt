@@ -16,7 +16,7 @@ class RegisterOperationsTest {
       }
     """.trimIndent()
 
-    Truth.assertThat(query.safelistingHash()).isEqualTo("f9613f4bd179eedf33b9962c22859b3bdf56dfac9c39cefa1ce940894071a482")
+    Truth.assertThat(query.safelistingHash()).isEqualTo("33bcef0fa53cb2235e9f069c446d88ee5d425846d58dcb61d30563c9740fccdd")
   }
 
   @Test
@@ -24,13 +24,13 @@ class RegisterOperationsTest {
     val query = """
       query GetLaunch {
         launch(id: "83", intValue: 42, floatValue: 4.5) {
-          cursor
           id
+          cursor
         }
       }
     """.trimIndent()
 
-    Truth.assertThat(query.safelistingHash()).isEqualTo("f9613f4bd179eedf33b9962c22859b3bdf56dfac9c39cefa1ce940894071a482")
+    Truth.assertThat(query.safelistingHash()).isEqualTo("33bcef0fa53cb2235e9f069c446d88ee5d425846d58dcb61d30563c9740fccdd")
   }
 
   @Test
@@ -38,12 +38,12 @@ class RegisterOperationsTest {
     val query = """
       query GetLaunch {
         launch(id: "82", intValue: 41, floatValue: 3.5) {
-          cursor
           id
+          cursor
         }
       }
     """.trimIndent()
 
-    Truth.assertThat(query.safelistingHash()).isEqualTo("f9613f4bd179eedf33b9962c22859b3bdf56dfac9c39cefa1ce940894071a482")
+    Truth.assertThat(query.safelistingHash()).isEqualTo("33bcef0fa53cb2235e9f069c446d88ee5d425846d58dcb61d30563c9740fccdd")
   }
 }
