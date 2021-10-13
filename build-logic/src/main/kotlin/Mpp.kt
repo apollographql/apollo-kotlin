@@ -59,7 +59,6 @@ fun Project.configureMppDefaults(withJs: Boolean = true) {
 /**
  * Same as [configureMppDefaults] but without iOS targets.
  * Tests only run on the JVM, JS and MacOS
- * Used from
  */
 fun Project.configureMppTestsDefaults(withJs: Boolean = true) {
   val kotlinExtension = extensions.findByName("kotlin") as? org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
