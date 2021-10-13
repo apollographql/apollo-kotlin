@@ -58,6 +58,7 @@ dependencies {
   addShadowImplementation(create(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4")))
   // Needed for manual Json construction in `SchemaDownloader`
   addShadowImplementation(create(groovy.util.Eval.x(project, "x.dep.moshi.moshi")))
+  addShadowImplementation(create(groovy.util.Eval.x(project, "x.dep.graphqlJava")))
 
   testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))

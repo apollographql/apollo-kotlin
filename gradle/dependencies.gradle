@@ -106,6 +106,7 @@ ext.dep = [
     truth                 : "com.google.truth:truth:$versions.truth",
     uuid                  : "com.benasher44:uuid:0.2.0",
     shadow                : "com.github.jengelman.gradle.plugins:shadow:6.1.0",
+    graphqlJava: "com.graphql-java:graphql-java:17.3"
 ]
 ext.androidConfig = [
     compileSdkVersion: 28,
