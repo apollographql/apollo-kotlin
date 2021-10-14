@@ -196,7 +196,7 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
   }
 
   class Builder internal constructor(
-      var networkTransport: NetworkTransport?,
+      private var _networkTransport: NetworkTransport?,
       private var subscriptionNetworkTransport: NetworkTransport?,
       private var customScalarAdapters: MutableMap<String, Adapter<*>>,
       private val interceptors: MutableList<ApolloInterceptor>,
@@ -205,8 +205,11 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
       override var executionContext: ExecutionContext,
   ) : HasMutableExecutionContext<Builder> {
 
+    val networkTransport: NetworkTransport?
+      get() = _networkTransport
+
     constructor() : this(
-        networkTransport = null,
+        _networkTransport = null,
         subscriptionNetworkTransport = null,
         customScalarAdapters = mutableMapOf(),
         interceptors = mutableListOf(),
@@ -216,13 +219,13 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
     )
 
     fun serverUrl(serverUrl: String): Builder {
-      networkTransport = HttpNetworkTransport(serverUrl = serverUrl)
+      _networkTransport = HttpNetworkTransport(serverUrl = serverUrl)
       subscriptionNetworkTransport = WebSocketNetworkTransport(serverUrl = serverUrl)
       return this
     }
 
     fun networkTransport(networkTransport: NetworkTransport): Builder {
-      this.networkTransport = networkTransport
+      _networkTransport = networkTransport
       return this
     }
 
@@ -263,12 +266,12 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
     }
 
     fun build(): ApolloClient {
-      check(networkTransport != null) {
+      check(_networkTransport != null) {
         "NetworkTransport not set, please call either serverUrl() or networkTransport()"
       }
       return ApolloClient(
-          networkTransport = networkTransport!!,
-          subscriptionNetworkTransport = subscriptionNetworkTransport ?: networkTransport!!,
+          networkTransport = _networkTransport!!,
+          subscriptionNetworkTransport = subscriptionNetworkTransport ?: _networkTransport!!,
           customScalarAdapters = CustomScalarAdapters(customScalarAdapters),
           interceptors = interceptors,
           flowDecorators = flowDecorators,
@@ -280,7 +283,7 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
 
   fun newBuilder(): Builder {
     return Builder(
-        networkTransport = networkTransport,
+        _networkTransport = networkTransport,
         subscriptionNetworkTransport = subscriptionNetworkTransport,
         customScalarAdapters = customScalarAdapters.customScalarAdapters.toMutableMap(),
         interceptors = interceptors.toMutableList(),
@@ -322,8 +325,6 @@ fun ApolloClient.Builder.autoPersistedQueries(
   }
 }
 
-// BEGIN With-ers to Builders compatibility layer
-
 @Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
 fun ApolloClient.withAutoPersistedQueries(
     httpMethodForHashedQueries: HttpMethod = HttpMethod.Get,
@@ -350,5 +351,3 @@ fun ApolloClient.withSendApqExtensions(sendApqExtensions: Boolean) = newBuilder(
 
 @Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
 fun ApolloClient.withSendDocument(sendDocument: Boolean) = newBuilder().sendDocument(sendDocument).build()
-
-// END With-ers to Builders compatibility layer

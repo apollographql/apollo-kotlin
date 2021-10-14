@@ -34,13 +34,8 @@ fun <D : Operation.Data> ApolloResponse<D>.withAutoPersistedQueryInfo(hit: Boole
  */
 fun <T> HasMutableExecutionContext<T>.hashedQuery(hashed: Boolean) where T : HasMutableExecutionContext<T> = sendDocument(!hashed).sendApqExtensions(hashed)
 
-
-// BEGIN With-ers to Builders compatibility layer
-
 @Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
 fun ApolloClient.withHashedQuery(hashed: Boolean) = newBuilder().hashedQuery(hashed).build()
 
 @Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
 fun <D : Operation.Data> ApolloRequest<D>.withHashedQuery(hashed: Boolean) = newBuilder().hashedQuery(hashed).build()
-
-// END With-ers to Builders compatibility layer

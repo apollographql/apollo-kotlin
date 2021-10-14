@@ -13,14 +13,17 @@ import com.benasher44.uuid.uuid4
 /**
  * A GraphQL request to execute. Execution can be customized with [executionContext]
  */
-class ApolloRequest<D : Operation.Data> private constructor(
+class ApolloRequest<D : Operation.Data> @Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.") constructor(
     val operation: Operation<D>,
     val requestUuid: Uuid,
     override val executionContext: ExecutionContext,
 ) : HasExecutionContext {
 
   fun newBuilder(): Builder<D> {
-    return Builder(operation, requestUuid).also { it.executionContext = executionContext }
+    return Builder(operation).also {
+      it.requestUuid(requestUuid)
+      it.executionContext = executionContext
+    }
   }
 
   fun copy(
@@ -34,10 +37,15 @@ class ApolloRequest<D : Operation.Data> private constructor(
   )
 
   class Builder<D : Operation.Data>(
-      var operation: Operation<D>,
-      var requestUuid: Uuid = uuid4(),
+      private var operation: Operation<D>,
   ) : HasMutableExecutionContext<Builder<D>> {
+    private var requestUuid: Uuid = uuid4()
     override var executionContext: ExecutionContext = ExecutionContext.Empty
+
+    fun requestUuid(requestUuid: Uuid): Builder<D> {
+      this.requestUuid = requestUuid
+      return this
+    }
 
     override fun addExecutionContext(executionContext: ExecutionContext): Builder<D> {
       this.executionContext = this.executionContext + executionContext
@@ -53,8 +61,6 @@ class ApolloRequest<D : Operation.Data> private constructor(
     }
   }
 }
-
-// BEGIN With-ers to Builders compatibility layer
 
 @Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
 fun <D : Operation.Data> ApolloRequest<D>.withHttpMethod(httpMethod: HttpMethod) = newBuilder().httpMethod(httpMethod).build()
@@ -73,5 +79,3 @@ fun <D : Operation.Data> ApolloRequest<D>.withSendApqExtensions(sendApqExtension
 
 @Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
 fun <D : Operation.Data> ApolloRequest<D>.withSendDocument(sendDocument: Boolean) = newBuilder().sendDocument(sendDocument).build()
-
-// END With-ers to Builders compatibility layer

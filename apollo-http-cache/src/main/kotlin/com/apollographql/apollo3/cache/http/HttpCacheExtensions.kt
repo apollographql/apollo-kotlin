@@ -85,9 +85,6 @@ fun <T> HasMutableExecutionContext<T>.httpDoNotStore(doNotStore: Boolean) where 
     CachingHttpEngine.CACHE_DO_NOT_STORE, doNotStore.toString()
 )
 
-
-// BEGIN With-ers to Builders compatibility layer
-
 @Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
 fun ApolloClient.withHttpCache(
     directory: File,
@@ -117,5 +114,3 @@ fun ApolloClient.withHttpDoNotStore(doNotStore: Boolean) = newBuilder().httpDoNo
 
 @Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
 fun <D : Operation.Data> ApolloRequest<D>.withHttpDoNotStore(doNotStore: Boolean) = newBuilder().httpDoNotStore(doNotStore).build()
-
-// END With-ers to Builders compatibility layer
