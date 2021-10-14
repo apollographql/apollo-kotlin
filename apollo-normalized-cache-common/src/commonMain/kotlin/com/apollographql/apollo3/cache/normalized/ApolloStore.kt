@@ -23,37 +23,45 @@ interface ApolloStore {
    * This is a synchronous operation that might block if the underlying cache is doing IO
    *
    * @param operation to be read
-   * @return {@ApolloStoreOperation} to be performed, that will be resolved with cached data for specified operation
+   *
+   * @throws [com.apollographql.apollo3.exception.CacheMissException] on cache miss
+   * @throws [com.apollographql.apollo3.exception.ApolloException] on other cache read errors
+   *
+   * @return the operation data
    */
   suspend fun <D : Operation.Data> readOperation(
       operation: Operation<D>,
-      customScalarAdapters: CustomScalarAdapters,
+      customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
       cacheHeaders: CacheHeaders = CacheHeaders.NONE,
-  ): D?
+  ): D
 
   /**
    * Read a GraphQL fragment from the store.
    * This is a synchronous operation that might block if the underlying cache is doing IO
    *
+   * @param fragment to be read
    * @param cacheKey    [CacheKey] to be used to find cache record for the fragment
-   * @param <F>         type of fragment to be read
-   * @return the fragment's data or null if it's a cache miss
+   *
+   * @throws [com.apollographql.apollo3.exception.CacheMissException] on cache miss
+   * @throws [com.apollographql.apollo3.exception.ApolloException] on other cache read errors
+   *
+   * @return the fragment data
    */
   suspend fun <D : Fragment.Data> readFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
       cacheHeaders: CacheHeaders = CacheHeaders.NONE,
-  ): D?
+  ): D
 
   /**
-   * Write operation to the store and optionally publish changes of [Record] which have changed,
+   * Write an operation data to the store and optionally publish changes of [Record] which have changed,
    * that will notify any watcher that depends on these [Record] to re-fetch.
    * This is a synchronous operation that might block if the underlying cache is doing IO
    *
    * @param operation     [Operation] response data of which should be written to the store
    * @param operationData [Operation.Data] operation response data to be written to the store
-   * @param publish       whether or not to publish the changed keys to listeners
+   * @param publish       whether to publish the changed keys to listeners
    * @return the changed keys
    */
   suspend fun <D : Operation.Data> writeOperation(
@@ -65,14 +73,14 @@ interface ApolloStore {
   ): Set<String>
 
   /**
-   * Write fragment to the store and optionally publish changes of [Record] which have changed,
+   * Write a fragment data to the store and optionally publish changes of [Record] which have changed,
    * that will notify any watcher that depends on these [Record] to re-fetch.
    * This is a synchronous operation that might block if the underlying cache is doing IO
    *
    * @param fragment data to be written to the store
    * @param cacheKey [CacheKey] to be used as root record key
    * @param fragmentData [Fragment.Data] to be written to the store
-   * @param publish whether or not to publish the changed keys to listeners
+   * @param publish whether to publish the changed keys to listeners
    * @return the changed keys
    */
   suspend fun <D : Fragment.Data> writeFragment(
