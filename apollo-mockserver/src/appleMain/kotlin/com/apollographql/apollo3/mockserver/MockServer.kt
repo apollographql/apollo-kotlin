@@ -30,7 +30,7 @@ import kotlin.native.concurrent.freeze
 actual class MockServer {
   private val pthreadT: pthread_tVar
   private val port: Int
-  private val socket: Socket
+  private var socket: Socket? = null
 
   init {
     val socketFd = socket(AF_INET, SOCK_STREAM, 0)
@@ -64,7 +64,7 @@ actual class MockServer {
 
     socket = Socket(socketFd)
 
-    val stableRef = StableRef.create(socket.freeze())
+    val stableRef = StableRef.create(socket!!.freeze())
 
     pthread_create(pthreadT.ptr, null, staticCFunction { arg ->
       initRuntimeIfNeeded()
@@ -84,7 +84,10 @@ actual class MockServer {
   }
 
   actual fun enqueue(mockResponse: MockResponse) {
-    socket.enqueue(mockResponse)
+    check(socket != null) {
+      "Cannot enqueue a response to a stopped MockServer"
+    }
+    socket!!.enqueue(mockResponse)
   }
 
   /**
@@ -93,13 +96,21 @@ actual class MockServer {
    * Revisit once okio has native Timeout
    */
   actual suspend fun stop() {
-    socket.stop()
+    if (socket == null) {
+      return
+    }
+    socket!!.stop()
     pthread_join(pthreadT.value, null)
 
     nativeHeap.free(pthreadT.rawPtr)
+    pthreadT.value = null
+    socket = null
   }
 
   actual fun takeRequest(): MockRecordedRequest {
-    return socket.takeRequest()
+    check(socket != null) {
+      "Cannot take a request from a stopped MockServer"
+    }
+    return socket!!.takeRequest()
   }
 }

@@ -55,7 +55,7 @@ class ExceptionsTest {
   }
 
   @Test
-  fun whenNetworkErrorAssertApolloNetworkException() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun whenNetworkErrorAssertApolloNetworkException() = runTest(before = { setUp() }) {
     mockServer.stop()
 
     val result = kotlin.runCatching {
