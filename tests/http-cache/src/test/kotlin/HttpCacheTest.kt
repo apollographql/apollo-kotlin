@@ -14,8 +14,8 @@ import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
-import rxjava.GetRandom2Query
-import rxjava.GetRandomQuery
+import httpcache.GetRandom2Query
+import httpcache.GetRandomQuery
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
