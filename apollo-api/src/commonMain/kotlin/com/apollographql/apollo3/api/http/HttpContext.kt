@@ -5,11 +5,11 @@ import com.apollographql.apollo3.api.HasExecutionContext
 import com.apollographql.apollo3.api.HasMutableExecutionContext
 
 
-fun HasExecutionContext.httpMethod() = executionContext[HttpMethodContext]?.value ?: HttpMethod.Post
-fun HasExecutionContext.httpHeaders() = executionContext[HttpHeadersContext]?.value ?: emptyList()
-fun HasExecutionContext.sendApqExtensions() = executionContext[SendApqExtensionsContext]?.value ?: false
+val HasExecutionContext.httpMethod get() = executionContext[HttpMethodContext]?.value ?: HttpMethod.Post
+val HasExecutionContext.httpHeaders get() = executionContext[HttpHeadersContext]?.value ?: emptyList()
+val HasExecutionContext.sendApqExtensions get() = executionContext[SendApqExtensionsContext]?.value ?: false
 
-fun HasExecutionContext.sendDocument() = executionContext[SendDocumentContext]?.value ?: true
+val HasExecutionContext.sendDocument get() = executionContext[SendDocumentContext]?.value ?: true
 
 /**
  * Configures whether the request should use GET or POST
@@ -23,11 +23,11 @@ fun <T> HasMutableExecutionContext<T>.httpMethod(httpMethod: HttpMethod) where T
  *
  */
 fun <T> HasMutableExecutionContext<T>.httpHeaders(httpHeaders: List<HttpHeader>) where T : HasMutableExecutionContext<T> = addExecutionContext(
-    executionContext + HttpHeadersContext(this@httpHeaders.httpHeaders() + httpHeaders)
+    executionContext + HttpHeadersContext(this@httpHeaders.httpHeaders + httpHeaders)
 )
 
 fun <T> HasMutableExecutionContext<T>.httpHeader(httpHeader: HttpHeader) where T : HasMutableExecutionContext<T> = addExecutionContext(
-    executionContext + HttpHeadersContext(httpHeaders() + httpHeader)
+    executionContext + HttpHeadersContext(httpHeaders + httpHeader)
 )
 
 fun <T> HasMutableExecutionContext<T>.httpHeader(name: String, value: String) where T : HasMutableExecutionContext<T> = httpHeader(
