@@ -6,7 +6,7 @@ import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runTest
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
-import rxjava.GetRandomQuery
+import httpcache.GetRandomQuery
 import java.io.File
 import kotlin.test.assertEquals
 

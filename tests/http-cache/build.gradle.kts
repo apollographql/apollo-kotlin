@@ -12,5 +12,5 @@ dependencies {
 }
 
 apollo {
-  packageName.set("rxjava")
+  packageName.set("httpcache")
 }

@@ -4,13 +4,18 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.runWithMainLoop
+import kotlinx.cinterop.pointed
+import platform.CFNetwork.kCFErrorDomainCFNetwork
+import platform.CFNetwork.kCFErrorHTTPSProxyConnectionFailure
+import platform.Foundation.CFBridgingRelease
 import platform.Foundation.NSError
 import platform.Foundation.NSURLErrorCannotFindHost
 import platform.Foundation.NSURLErrorDomain
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 class HttpEngineTest {
   @Test
@@ -30,7 +35,14 @@ class HttpEngineTest {
     // assertIs<NSError>(cause)
     check(cause is NSError)
 
-    assertEquals(NSURLErrorCannotFindHost, cause.code)
-    assertEquals(NSURLErrorDomain, cause.domain)
+    assertTrue(
+        when {
+          // Happens locally if a proxy is running
+          cause.domain == (CFBridgingRelease(kCFErrorDomainCFNetwork) as String) && cause.code == kCFErrorHTTPSProxyConnectionFailure.toLong() -> true
+          // Default case
+          cause.domain == NSURLErrorDomain && cause.code == NSURLErrorCannotFindHost -> true
+          else -> false
+        }
+    )
   }
 }
