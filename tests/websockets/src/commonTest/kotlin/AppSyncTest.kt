@@ -3,7 +3,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.network.ws.AppSyncWsProtocol
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
-import com.apollographql.apollo3.testing.runtTest
+import com.apollographql.apollo3.testing.runTest
 import fullstack.tutorial.TripsBookedSubscription
 import kotlinx.coroutines.flow.collect
 import kotlin.test.Ignore
@@ -16,7 +16,7 @@ import kotlin.test.Test
 class AppSyncTest {
 
   @Test
-  fun simple() = runtTest {
+  fun simple() = runTest {
     val apiKey = "changeMe"
     val host = "6l5lltvi6fgmrpx5abfxrtq6wu.appsync-api.eu-west-3.amazonaws.com"
 
