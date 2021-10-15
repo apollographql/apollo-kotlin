@@ -201,8 +201,9 @@ fun <D : Operation.Data> Operation<D>.composeJsonRequest(
   val composer = DefaultHttpRequestComposer("unused")
 
   val request = composer.compose(
-      ApolloRequest(operation = this)
-          .withExecutionContext(customScalarAdapters)
+      ApolloRequest.Builder(operation = this)
+          .addExecutionContext(customScalarAdapters)
+          .build()
   )
 
   request.body!!.writeTo(sink)

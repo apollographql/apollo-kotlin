@@ -1,13 +1,16 @@
 package com.apollographql.apollo3.network.http
 
+import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.ExecutionParameters
+import com.apollographql.apollo3.api.ApolloRequest
+import com.apollographql.apollo3.api.HasMutableExecutionContext
+import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.HttpBody
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
+import com.apollographql.apollo3.api.http.httpHeader
 import com.apollographql.apollo3.api.http.valueOf
-import com.apollographql.apollo3.api.http.withHttpHeader
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.internal.json.buildJsonByteString
@@ -45,7 +48,7 @@ import okio.BufferedSink
  *
  * @param batchIntervalMillis the interval between two batches
  * @param maxBatchSize always send the batch when this threshold is reached
- * @param batchByDefault whether batching is opt-in or opt-out at the request level. See also [withCanBeBatched]
+ * @param batchByDefault whether batching is opt-in or opt-out at the request level. See also [canBeBatched]
  */
 class BatchingHttpEngine(
     val delegate: HttpEngine = DefaultHttpEngine(),
@@ -204,6 +207,12 @@ class BatchingHttpEngine(
   }
 }
 
-fun <T> ExecutionParameters<T>.withCanBeBatched(canBeBatched: Boolean) where T : ExecutionParameters<T> = withHttpHeader(
+fun <T> HasMutableExecutionContext<T>.canBeBatched(canBeBatched: Boolean) where T : HasMutableExecutionContext<T> = httpHeader(
     CAN_BE_BATCHED, canBeBatched.toString()
 )
+
+@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+fun ApolloClient.withCanBeBatched(canBeBatched: Boolean) = newBuilder().canBeBatched(canBeBatched).build()
+
+@Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
+fun <D : Operation.Data> ApolloRequest<D>.withCanBeBatched(canBeBatched: Boolean) = newBuilder().canBeBatched(canBeBatched).build()

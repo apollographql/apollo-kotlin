@@ -14,12 +14,14 @@ class HttpInterceptorTest {
   @Test
   fun testLoggingInterceptor() {
     val mockServer = MockServer()
-    val client = ApolloClient(
-        networkTransport = HttpNetworkTransport(
-            serverUrl = mockServer.url(),
-            interceptors = listOf(LoggingInterceptor())
+    val client = ApolloClient.Builder()
+        .networkTransport(
+            HttpNetworkTransport(
+                serverUrl = mockServer.url(),
+                interceptors = listOf(LoggingInterceptor())
+            )
         )
-    )
+        .build()
 
     mockServer.enqueue(readResource("HeroNameResponse.json"))
 

@@ -7,8 +7,8 @@ import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheResolver
 import com.apollographql.apollo3.cache.normalized.DefaultCacheResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
-import com.apollographql.apollo3.cache.normalized.withStore
 import com.apollographql.apollo3.testing.runWithMainLoop
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -24,12 +24,14 @@ class CacheResolverTest {
         }
       }
     }
-    val apolloClient = ApolloClient(serverUrl = "").withStore(
-        ApolloStore(
-            normalizedCacheFactory = MemoryCacheFactory(),
-            cacheResolver = resolver
+    val apolloClient = ApolloClient.Builder().serverUrl(serverUrl = "")
+        .store(
+            ApolloStore(
+                normalizedCacheFactory = MemoryCacheFactory(),
+                cacheResolver = resolver
+            )
         )
-    )
+        .build()
 
     runWithMainLoop {
       val response = apolloClient.query(HeroNameQuery())

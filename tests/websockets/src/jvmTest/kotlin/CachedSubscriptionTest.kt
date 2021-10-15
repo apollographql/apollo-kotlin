@@ -2,8 +2,8 @@ import com.apollographql.apollo.sample.server.DefaultApplication
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.cache.normalized.watch
-import com.apollographql.apollo3.cache.normalized.withStore
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import kotlinx.coroutines.channels.Channel
@@ -47,12 +47,11 @@ class CachedSubscriptionTest {
         MemoryCacheFactory(Int.MAX_VALUE),
     )
 
-    val apolloClient = ApolloClient(
-        networkTransport = HttpNetworkTransport(serverUrl = "http://localhost:8080/graphql"),
-        subscriptionNetworkTransport = WebSocketNetworkTransport(
-            serverUrl = "http://localhost:8080/subscriptions"
-        )
-    ).withStore(store)
+    val apolloClient = ApolloClient.Builder()
+        .networkTransport(HttpNetworkTransport(serverUrl = "http://localhost:8080/graphql"))
+        .subscriptionNetworkTransport(WebSocketNetworkTransport(serverUrl = "http://localhost:8080/subscriptions"))
+        .store(store)
+        .build()
 
     runBlocking {
       val channel = Channel<Int>()
@@ -74,7 +73,7 @@ class CachedSubscriptionTest {
           .collect {
             println("subscription received: $it")
           }
-      
+
       withTimeout(600) {
         assertEquals(listOf(1, 2), channel.consumeAsFlow().take(2).toList())
       }

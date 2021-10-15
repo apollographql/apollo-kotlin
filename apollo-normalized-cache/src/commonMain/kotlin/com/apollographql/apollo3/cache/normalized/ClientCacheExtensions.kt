@@ -4,7 +4,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
-import com.apollographql.apollo3.api.ExecutionParameters
+import com.apollographql.apollo3.api.HasMutableExecutionContext
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
@@ -51,29 +51,29 @@ enum class FetchPolicy {
  * @param writeToCacheAsynchronously set to true to write to the cache after the response has been emitted.
  * This allows to display results faster
  */
-fun ApolloClient.withNormalizedCache(
+fun ApolloClient.Builder.normalizedCache(
     normalizedCacheFactory: NormalizedCacheFactory,
     objectIdGenerator: ObjectIdGenerator = TypePolicyObjectIdGenerator,
     cacheResolver: CacheResolver = FieldPolicyCacheResolver,
     writeToCacheAsynchronously: Boolean = false,
-): ApolloClient {
-  return withStore(ApolloStore(normalizedCacheFactory, objectIdGenerator, cacheResolver), writeToCacheAsynchronously)
+): ApolloClient.Builder {
+  return store(ApolloStore(normalizedCacheFactory, objectIdGenerator, cacheResolver), writeToCacheAsynchronously)
 }
 
-fun ApolloClient.withStore(store: ApolloStore, writeToCacheAsynchronously: Boolean = false): ApolloClient {
-  return withInterceptor(ApolloCacheInterceptor(store)).withWriteToCacheAsynchronously(writeToCacheAsynchronously)
+fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: Boolean = false): ApolloClient.Builder {
+  return addInterceptor(ApolloCacheInterceptor(store)).writeToCacheAsynchronously(writeToCacheAsynchronously)
 }
 
 fun <D : Query.Data> ApolloClient.watch(query: Query<D>): Flow<ApolloResponse<D>> {
-  return watch(ApolloRequest(query))
+  return watch(ApolloRequest.Builder(query).build())
 }
 
 fun <D : Query.Data> ApolloClient.watch(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
-  return queryAsFlow(queryRequest.withExecutionContext(WatchContext(true)))
+  return queryAsFlow(queryRequest.newBuilder().addExecutionContext(WatchContext(true)).build())
 }
 
 fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(query: Query<D>): Flow<ApolloResponse<D>> {
-  return queryCacheAndNetwork(ApolloRequest(query))
+  return queryCacheAndNetwork(ApolloRequest.Builder(query).build())
 }
 
 
@@ -88,13 +88,13 @@ fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(queryRequest: ApolloReque
     var cacheException: ApolloException? = null
     var networkException: ApolloException? = null
     try {
-     emit(query(queryRequest.withFetchPolicy(FetchPolicy.CacheOnly)))
+      emit(query(queryRequest.newBuilder().fetchPolicy(FetchPolicy.CacheOnly).build()))
     } catch (e: ApolloException) {
       cacheException = e
     }
 
     try {
-      emit(query(queryRequest.withFetchPolicy(FetchPolicy.NetworkOnly)))
+      emit(query(queryRequest.newBuilder().fetchPolicy(FetchPolicy.NetworkOnly).build()))
     } catch (e: ApolloException) {
       networkException = e
     }
@@ -125,7 +125,7 @@ fun ApolloClient.clearNormalizedCache() = apolloStore.clearAll()
  * Sets the [FetchPolicy] on this request. D has a bound on [Query.Data] because subscriptions and mutation shouldn't
  * read the cache
  */
-fun <D : Query.Data> ApolloRequest<D>.withFetchPolicy(fetchPolicy: FetchPolicy) = withExecutionContext(
+fun <D : Query.Data> ApolloRequest.Builder<D>.fetchPolicy(fetchPolicy: FetchPolicy) = addExecutionContext(
     FetchPolicyContext(fetchPolicy)
 )
 
@@ -133,44 +133,44 @@ fun <D : Query.Data> ApolloRequest<D>.withFetchPolicy(fetchPolicy: FetchPolicy) 
  * Sets the default [FetchPolicy] for the [ApolloClient]. This only affects queries. Mutations and subscriptions will
  * always use [FetchPolicy.NetworkFirst]
  */
-fun ApolloClient.withFetchPolicy(fetchPolicy: FetchPolicy) = withExecutionContext(
+fun ApolloClient.Builder.fetchPolicy(fetchPolicy: FetchPolicy) = addExecutionContext(
     FetchPolicyContext(fetchPolicy)
 )
 
 /**
  * Sets the [FetchPolicy] used when refetching at the request level. This is only used in combination with [watch].
  */
-fun <D : Query.Data> ApolloRequest<D>.withRefetchPolicy(refetchPolicy: FetchPolicy) = withExecutionContext(
+fun <D : Query.Data> ApolloRequest.Builder<D>.refetchPolicy(refetchPolicy: FetchPolicy) = addExecutionContext(
     RefetchPolicyContext(refetchPolicy)
 )
 
 /**
  * Sets the [FetchPolicy] used when refetching at the client level. This is only used in combination with [watch].
  */
-fun ApolloClient.withRefetchPolicy(refetchPolicy: FetchPolicy) = withExecutionContext(
+fun ApolloClient.Builder.refetchPolicy(refetchPolicy: FetchPolicy) = addExecutionContext(
     RefetchPolicyContext(refetchPolicy)
 )
 
-fun <T> ExecutionParameters<T>.withDoNotStore(doNotStore: Boolean) where T : ExecutionParameters<T> = withExecutionContext(
+fun <T> HasMutableExecutionContext<T>.doNotStore(doNotStore: Boolean) where T : HasMutableExecutionContext<T> = addExecutionContext(
     DoNotStoreContext(doNotStore)
 )
 
-fun <T> ExecutionParameters<T>.withStorePartialResponses(storePartialResponses: Boolean) where T : ExecutionParameters<T> = withExecutionContext(
+fun <T> HasMutableExecutionContext<T>.storePartialResponses(storePartialResponses: Boolean) where T : HasMutableExecutionContext<T> = addExecutionContext(
     StorePartialResponsesContext(storePartialResponses)
 )
 
-fun <T> ExecutionParameters<T>.withCacheHeaders(cacheHeaders: CacheHeaders) where T : ExecutionParameters<T> = withExecutionContext(
+fun <T> HasMutableExecutionContext<T>.cacheHeaders(cacheHeaders: CacheHeaders) where T : HasMutableExecutionContext<T> = addExecutionContext(
     CacheHeadersContext(cacheHeaders)
 )
 
-fun <T> ExecutionParameters<T>.withWriteToCacheAsynchronously(writeToCacheAsynchronously: Boolean) where T : ExecutionParameters<T> = withExecutionContext(
+fun <T> HasMutableExecutionContext<T>.writeToCacheAsynchronously(writeToCacheAsynchronously: Boolean) where T : HasMutableExecutionContext<T> = addExecutionContext(
     WriteToCacheAsynchronouslyContext(writeToCacheAsynchronously)
 )
 
 /**
  * Sets the optimistic updates to write to the cache while a query is pending.
  */
-fun <D : Mutation.Data> ApolloRequest<D>.withOptimisticUpdates(data: D) = withExecutionContext(
+fun <D : Mutation.Data> ApolloRequest.Builder<D>.optimisticUpdates(data: D) = addExecutionContext(
     OptimisticUpdatesContext(data)
 )
 
@@ -275,3 +275,62 @@ internal class WatchContext(val value: Boolean) : ExecutionContext.Element {
 
   companion object Key : ExecutionContext.Key<WatchContext>
 }
+
+@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+fun ApolloClient.withNormalizedCache(
+    normalizedCacheFactory: NormalizedCacheFactory,
+    objectIdGenerator: ObjectIdGenerator = TypePolicyObjectIdGenerator,
+    cacheResolver: CacheResolver = FieldPolicyCacheResolver,
+    writeToCacheAsynchronously: Boolean = false,
+) = newBuilder().normalizedCache(
+    normalizedCacheFactory = normalizedCacheFactory,
+    objectIdGenerator = objectIdGenerator,
+    cacheResolver = cacheResolver,
+    writeToCacheAsynchronously = writeToCacheAsynchronously,
+)
+    .build()
+
+@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+fun ApolloClient.withStore(
+    store: ApolloStore,
+    writeToCacheAsynchronously: Boolean = false,
+) = newBuilder().store(store, writeToCacheAsynchronously).build()
+
+@Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
+fun <D : Query.Data> ApolloRequest<D>.withFetchPolicy(fetchPolicy: FetchPolicy) = newBuilder().fetchPolicy(fetchPolicy).build()
+
+@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+fun ApolloClient.withFetchPolicy(fetchPolicy: FetchPolicy) = newBuilder().fetchPolicy(fetchPolicy).build()
+
+@Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
+fun <D : Query.Data> ApolloRequest<D>.withRefetchPolicy(refetchPolicy: FetchPolicy) = newBuilder().refetchPolicy(refetchPolicy).build()
+
+@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+fun ApolloClient.withRefetchPolicy(refetchPolicy: FetchPolicy) = newBuilder().refetchPolicy(refetchPolicy).build()
+
+@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+fun ApolloClient.withDoNotStore(doNotStore: Boolean) = newBuilder().doNotStore(doNotStore).build()
+
+@Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
+fun <D : Operation.Data> ApolloRequest<D>.withDoNotStore(doNotStore: Boolean) = newBuilder().doNotStore(doNotStore).build()
+
+@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+fun ApolloClient.withStorePartialResponses(storePartialResponses: Boolean) = newBuilder().storePartialResponses(storePartialResponses).build()
+
+@Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
+fun <D : Operation.Data> ApolloRequest<D>.withStorePartialResponses(storePartialResponses: Boolean) = newBuilder().storePartialResponses(storePartialResponses).build()
+
+@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+fun ApolloClient.withCacheHeaders(cacheHeaders: CacheHeaders) = newBuilder().cacheHeaders(cacheHeaders).build()
+
+@Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
+fun <D : Operation.Data> ApolloRequest<D>.withCacheHeaders(cacheHeaders: CacheHeaders) = newBuilder().cacheHeaders(cacheHeaders).build()
+
+@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+fun ApolloClient.withWriteToCacheAsynchronously(writeToCacheAsynchronously: Boolean) = newBuilder().writeToCacheAsynchronously(writeToCacheAsynchronously).build()
+
+@Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
+fun <D : Operation.Data> ApolloRequest<D>.withWriteToCacheAsynchronously(writeToCacheAsynchronously: Boolean) = newBuilder().writeToCacheAsynchronously(writeToCacheAsynchronously).build()
+
+@Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
+fun <D : Mutation.Data> ApolloRequest<D>.withOptimisticUpdates(data: D) = newBuilder().optimisticUpdates(data).build()

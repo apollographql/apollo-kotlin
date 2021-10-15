@@ -10,11 +10,7 @@ import com.apollographql.apollo3.network.http.BearerTokenInterceptor
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.testing.TestTokenProvider
 import com.apollographql.apollo3.testing.runWithMainLoop
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import readResource
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -37,12 +33,14 @@ class BearerTokenInterceptorTest {
 
   @Test
   fun succeedsWithInterceptor() {
-    apolloClient = ApolloClient(
-        networkTransport = HttpNetworkTransport(
-            serverUrl = mockServer.url(),
-            interceptors = listOf(BearerTokenInterceptor(tokenProvider))
+    apolloClient = ApolloClient.Builder()
+        .networkTransport(
+            HttpNetworkTransport(
+                serverUrl = mockServer.url(),
+                interceptors = listOf(BearerTokenInterceptor(tokenProvider))
+            )
         )
-    )
+        .build()
 
     runWithMainLoop {
       val response = apolloClient.query(HeroNameQuery())
@@ -55,11 +53,13 @@ class BearerTokenInterceptorTest {
 
   @Test
   fun failsWithoutInterceptor() {
-    apolloClient = ApolloClient(
-        networkTransport = HttpNetworkTransport(
-            serverUrl = mockServer.url(),
+    apolloClient = ApolloClient.Builder()
+        .networkTransport(
+            HttpNetworkTransport(
+                serverUrl = mockServer.url(),
+            )
         )
-    )
+        .build()
 
     runWithMainLoop {
       try {

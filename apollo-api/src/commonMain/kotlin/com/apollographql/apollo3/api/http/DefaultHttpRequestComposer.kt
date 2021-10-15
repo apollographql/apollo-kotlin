@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.api.http
 
-import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
@@ -38,12 +37,12 @@ class DefaultHttpRequestComposer(
     val requestHeaders = listOf(
         HttpHeader(HEADER_APOLLO_OPERATION_ID, operation.id()),
         HttpHeader(HEADER_APOLLO_OPERATION_NAME, operation.name())
-    ) + apolloRequest.httpHeaders()
+    ) + apolloRequest.httpHeaders
 
-    val sendApqExtensions = apolloRequest.sendApqExtensions()
-    val sendDocument = apolloRequest.sendDocument()
+    val sendApqExtensions = apolloRequest.sendApqExtensions
+    val sendDocument = apolloRequest.sendDocument
 
-    return when (apolloRequest.httpMethod()) {
+    return when (apolloRequest.httpMethod) {
       HttpMethod.Get -> {
         HttpRequest(
             method = HttpMethod.Get,
@@ -279,8 +278,8 @@ class DefaultHttpRequestComposer(
         apolloRequest: ApolloRequest<D>,
     ): Map<String, Any?> {
       val operation = apolloRequest.operation
-      val sendApqExtensions = apolloRequest.sendApqExtensions()
-      val sendDocument = apolloRequest.sendDocument()
+      val sendApqExtensions = apolloRequest.sendApqExtensions
+      val sendDocument = apolloRequest.sendDocument
       val customScalarAdapters = apolloRequest.executionContext[CustomScalarAdapters] ?: error("Cannot find a ResponseAdapterCache")
 
       val query = if (sendDocument) operation.document() else null

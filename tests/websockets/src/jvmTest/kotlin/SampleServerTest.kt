@@ -38,11 +38,13 @@ class SampleServerTest {
 
   @Test
   fun simple() {
-    val apolloClient = ApolloClient(
-        networkTransport = WebSocketNetworkTransport(
-            serverUrl = "http://localhost:8080/subscriptions"
+    val apolloClient = ApolloClient.Builder()
+        .networkTransport(
+            WebSocketNetworkTransport(
+                serverUrl = "http://localhost:8080/subscriptions"
+            )
         )
-    )
+        .build()
 
     runBlocking {
       val list = apolloClient.subscribe(CountSubscription(5, 0))
@@ -54,11 +56,13 @@ class SampleServerTest {
 
   @Test
   fun interleavedSubscriptions() {
-    val apolloClient = ApolloClient(
-        networkTransport = WebSocketNetworkTransport(
-            serverUrl = "http://localhost:8080/subscriptions"
+    val apolloClient = ApolloClient.Builder()
+        .networkTransport(
+            WebSocketNetworkTransport(
+                serverUrl = "http://localhost:8080/subscriptions"
+            )
         )
-    )
+        .build()
 
     runBlocking {
       val items = mutableListOf<Int>()
@@ -83,9 +87,9 @@ class SampleServerTest {
         serverUrl = "http://localhost:8080/subscriptions",
         idleTimeoutMillis = 1000
     )
-    val apolloClient = ApolloClient(
-        networkTransport = transport
-    )
+    val apolloClient = ApolloClient.Builder()
+        .networkTransport(transport)
+        .build()
 
     runBlocking {
       apolloClient.subscribe(CountSubscription(50, 1000)).first()
@@ -102,7 +106,7 @@ class SampleServerTest {
 
   @Test
   fun slowConsumer() {
-    val apolloClient = ApolloClient(serverUrl = "http://localhost:8080/subscriptions")
+    val apolloClient = ApolloClient.Builder().serverUrl(serverUrl = "http://localhost:8080/subscriptions").build()
 
     runBlocking {
       /**
@@ -111,7 +115,7 @@ class SampleServerTest {
        * (which is still probably slower than the server) and make sure we didn't drop any items
        */
       val number = apolloClient.subscribe(CountSubscription(1000, 0))
-          .map { it.data!!.count  }
+          .map { it.data!!.count }
           .onEach {
             if (it < 3) {
               delay(100)
@@ -130,9 +134,9 @@ class SampleServerTest {
         serverUrl = "http://localhost:8080/subscriptions",
         idleTimeoutMillis = 1000
     )
-    val apolloClient = ApolloClient(
-        networkTransport = transport
-    )
+    val apolloClient = ApolloClient.Builder()
+        .networkTransport(transport)
+        .build()
     runBlocking {
       /**
        * Collect all items the server sends us

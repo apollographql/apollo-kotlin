@@ -13,11 +13,13 @@ import kotlin.test.Test
 class FullStackTest {
   @Test
   fun simple() {
-    val apolloClient = ApolloClient(
-        networkTransport = WebSocketNetworkTransport(
-            serverUrl = "https://apollo-fullstack-tutorial.herokuapp.com/graphql"
+    val apolloClient = ApolloClient.Builder()
+        .networkTransport(
+            WebSocketNetworkTransport(
+                serverUrl = "https://apollo-fullstack-tutorial.herokuapp.com/graphql"
+            )
         )
-    )
+        .build()
 
     runWithMainLoop {
       apolloClient.subscribe(TripsBookedSubscription())

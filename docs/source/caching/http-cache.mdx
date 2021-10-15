@@ -23,79 +23,60 @@ dependencies {
 
 ```kotlin:title=Kotlin
 // Directory where cached responses will be stored
-val file = File(cacheDir, "apolloCache")
+val directory = File(cacheDir, "apolloCache")
 
 // Size in bytes of the cache
-val size: Long = 1024 * 1024
-
-// Create the http response cache store
-val cacheStore = DiskLruHttpCacheStore(file, size)
+val maxSize: Long = 1024 * 1024
 
 // Build the ApolloClient
-val apolloClient = ApolloClient.builder()
+val apolloClient = ApolloClient.Builder()
     .serverUrl("/")
-    .httpCache(ApolloHttpCache(cacheStore))
-    .okHttpClient(okHttpClient)
+    .httpCache(directory = directory, maxSize = maxSize)
     .build()
                    
-// Control the cache policy  
-val query = FeedQuery(limit = 10, type = FeedType.HOT)
+// Control the fetch policy  
+val query = ApolloRequest.Builder(FeedQuery(limit = 10, type = FeedType.HOT))
+    .httpFetchPolicy(HttpFetchPolicy.CacheFirst)
+    .build()
 val dataResponse = apolloClient.query(query)
-    .httpCachePolicy(HttpCachePolicy.CACHE_FIRST)
-    .toDeferred()
-    .await()
 ```
 
 ```java:title=Java
-//Directory where cached responses will be stored
-File file = new File(cacheDir, "apolloCache");
+// Directory where cached responses will be stored
+File directory = new File(cacheDir, "apolloCache");
 
-//Size in bytes of the cache
-long size = 1024*1024;
+// Size in bytes of the cache
+long maxSize = 1024 * 1024;
 
-//Create the http response cache store
-DiskLruHttpCacheStore cacheStore = new DiskLruHttpCacheStore(file, size); 
+// Build the ApolloClient
+ApolloClient apolloClient = HttpCacheExtensionsKt.httpCache(
+    new ApolloClient.Builder().serverUrl("/"),
+    directory,
+    maxSize
+  )
+  .build();
+Rx2ApolloClient rx2ApolloClient = new Rx2ApolloClient(apolloClient, Schedulers.io());
 
-//Build the ApolloClient
-ApolloClient apolloClient = ApolloClient.builder()
-  .serverUrl("/")
-  .httpCache(new ApolloHttpCache(cacheStore))
-  .okHttpClient(okHttpClient)
+// Control the fetch policy
+ApolloRequest<FeedQuery.Data> query = HttpCacheExtensionsKt.httpFetchPolicy(
+    new ApolloRequest.Builder<>(new FeedQuery(10, FeedType.HOT)),
+    HttpFetchPolicy.CacheFirst
+  )
   .build();
 
-apolloClient
-  .query(
-    FeedQuery.builder()
-      .limit(10)
-      .type(FeedType.HOT)
-      .build()
-  )
-  .httpCachePolicy(HttpCachePolicy.CACHE_FIRST)
-  .enqueue(new ApolloCall.Callback<FeedQuery.Data>() {
-    @Override public void onResponse(@NotNull Response<FeedQuery.Data> dataResponse) {
-      ...
-    }
-
-    @Override public void onFailure(@NotNull Throwable t) {
-      ...
-    }
-  }); 
+ApolloResponse<FeedQuery.Data> response = rx2ApolloClient.query(query).blockingGet();
 ```
 
 </MultiCodeBlock>
 
 **IMPORTANT:** Caching is provided only for `query` operations. It isn't available for `mutation` operations.
 
-There are four available cache policies `HttpCachePolicy`:
+There are four available cache policies in `HttpFetchPolicy`:
 
-- `NETWORK_ONLY` - Fetch a response from the network only, ignoring any cached responses. This is the default.
-- `CACHE_ONLY` - Fetch a response from the cache only, ignoring the network. If the cached response doesn't exist or is expired, then
-return an error.
-- `CACHE_FIRST` - Fetch a response from the cache first. If the response doesn't exist or is expired, then fetch a response from the
-network.
-- `NETWORK_FIRST` - Fetch a response from the network first. If the network fails and the cached response isn't expired, then return cached
-data instead.
-
-For `CACHE_ONLY`, `CACHE_FIRST` and `NETWORK_FIRST` policies you can define the timeout after what cached response is treated as expired
-and will be evicted from the http cache, `expireAfter(expireTimeout, timeUnit)`.`
+- `NetworkOnly` - Fetch a response from the network only, ignoring any cached responses. This is the default.
+- `CacheOnly` - Fetch a response from the cache only, ignoring the network. If the cached response doesn't exist or is expired, then return
+  an error.
+- `CacheFirst` - Fetch a response from the cache first. If the response doesn't exist or is expired, then fetch a response from the network.
+- `NetworkFirst` - Fetch a response from the network first. If the network fails and the cached response isn't expired, then return cached
+  data instead.
 

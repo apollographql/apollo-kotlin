@@ -53,7 +53,7 @@ In your application code, create an instance of `ApolloClient`, providing your G
 
 ```kotlin
 // Replace the serverUrl with your GraphQL endpoint
-val apolloClient = ApolloClient(serverUrl = "https://your.domain/graphql")
+val apolloClient = ApolloClient.Builder().serverUrl("https://your.domain/graphql").build()
 ```
 
 Now you can execute your defined query with `ApolloClient` like so:
