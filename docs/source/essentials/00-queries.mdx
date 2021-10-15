@@ -43,14 +43,17 @@ To generate classes, Apollo Android requires your server's schema, along with al
 To execute the query we [just defined](#defining), we pass a `HeroQuery` instance to the `query` method of `ApolloClient`, like so:
 
 ```kotlin{2}
-val apolloClient = ApolloClient(serverUrl = "https://your.domain/graphql")
+val apolloClient = ApolloClient.Builder().serverUrl("https://your.domain/graphql").build()
 val response = apolloClient.query(HeroQuery(id = "12"))
 ```
 
 By default, Apollo Android offloads I/O work like this to a background thread, which means it's safe to execute GraphQL operations on the main thread. The result is also dispatched to the main thread, and you can use the response directly to update your data.
 
-* On the JVM, the whole request runs in a coroutine using `Dispatchers.IO` by default. You can customize the dispatcher with the `dispatcher` constructor parameter of `ApolloClient`.
-* On native, the request offloads the cache and network I/O to background threads that resume in the main dispatch queue. For this reason, the `ApolloClient` APIs assume they are called from the main thread. It isn't possible to customize the dispatcher, but cache and network I/O are not done on the main thread.
+* On the JVM, the whole request runs in a coroutine using `Dispatchers.IO` by default. You can customize the dispatcher with
+  the `requestedDispatcher` method of `ApolloClient.Builder`.
+* On native, the request offloads the cache and network I/O to background threads that resume in the main dispatch queue. For this reason,
+  the `ApolloClient` APIs assume they are called from the main thread. It isn't possible to customize the dispatcher, but cache and network
+  I/O are not done on the main thread.
 
 ## Results
 

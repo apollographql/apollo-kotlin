@@ -93,10 +93,13 @@ This solution is more concise but slightly less performant.
 
 ## Register adapters
 
-After you define your adapters, you need to register them with your `ApolloClient` instance. To do so, call `ApolloClient.withCustomScalarAdapter` once for each adapter:
+After you define your adapters, you need to register them with your `ApolloClient` instance. To do so,
+call `ApolloClient.Builder.customScalarAdapter` once for each adapter:
 
 ```kotlin
-val apolloClient = ApolloClient("https://").withCustomScalarAdapter(Types.GeoPoint, geoPointAdapter)
+val apolloClient = ApolloClient.Builder().serverUrl("https://")
+    .customScalarAdapter(Types.GeoPoint, geoPointAdapter)
+    .build()
 ```
 
 This method takes a type-safe generated class from `Types`, along with its corresponding adapter.
@@ -133,5 +136,7 @@ apollo {
 And add it to your `ApolloClient`:
 
 ```kotlin
-val apolloClient = ApolloClient("https://").withCustomScalarAdapter(Types.Date, DateAdapter())
+val apolloClient = ApolloClient.Builder().serverUrl("https://")
+    .customScalarAdapter(Types.Date, DateAdapter())
+    .build()
 ```
