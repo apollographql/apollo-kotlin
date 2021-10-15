@@ -12,11 +12,8 @@ import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.internal.ApolloCacheInterceptor
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.mpp.currentTimeMillis
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onErrorCollect
 
 enum class FetchPolicy {
   /**
@@ -215,10 +212,10 @@ class CacheInfo(
   companion object Key : ExecutionContext.Key<CacheInfo>
 }
 
-val <D : Query.Data> ApolloResponse<D>.isFromCache
+val <D : Operation.Data> ApolloResponse<D>.isFromCache
   get() = cacheInfo?.hit ?: false
 
-val <D : Query.Data> ApolloResponse<D>.cacheInfo
+val <D : Operation.Data> ApolloResponse<D>.cacheInfo
   get() = executionContext[CacheInfo]
 
 internal fun <D : Operation.Data> ApolloResponse<D>.withCacheInfo(cacheInfo: CacheInfo) = withExecutionContext(cacheInfo)
