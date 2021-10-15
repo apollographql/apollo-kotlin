@@ -218,20 +218,17 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
         executionContext = ExecutionContext.Empty,
     )
 
-    fun serverUrl(serverUrl: String): Builder {
+    fun serverUrl(serverUrl: String) = apply {
       _networkTransport = HttpNetworkTransport(serverUrl = serverUrl)
       subscriptionNetworkTransport = WebSocketNetworkTransport(serverUrl = serverUrl)
-      return this
     }
 
-    fun networkTransport(networkTransport: NetworkTransport): Builder {
+    fun networkTransport(networkTransport: NetworkTransport) = apply {
       _networkTransport = networkTransport
-      return this
     }
 
-    fun subscriptionNetworkTransport(subscriptionNetworkTransport: NetworkTransport): Builder {
+    fun subscriptionNetworkTransport(subscriptionNetworkTransport: NetworkTransport) = apply {
       this.subscriptionNetworkTransport = subscriptionNetworkTransport
-      return this
     }
 
     /**
@@ -240,29 +237,24 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
      * @param customScalarType a generated [CustomScalarType] from the [Types] generated object
      * @param customScalarAdapter the [Adapter] to use for this custom scalar
      */
-    fun <T> addCustomScalarAdapter(customScalarType: CustomScalarType, customScalarAdapter: Adapter<T>): Builder {
+    fun <T> addCustomScalarAdapter(customScalarType: CustomScalarType, customScalarAdapter: Adapter<T>) = apply {
       customScalarAdapters[customScalarType.name] = customScalarAdapter
-      return this
     }
 
-    fun addInterceptor(interceptor: ApolloInterceptor): Builder {
+    fun addInterceptor(interceptor: ApolloInterceptor) = apply {
       interceptors += interceptor
-      return this
     }
 
-    fun addFlowDecorator(flowDecorator: FlowDecorator): Builder {
+    fun addFlowDecorator(flowDecorator: FlowDecorator) = apply {
       flowDecorators += flowDecorators + flowDecorator
-      return this
     }
 
-    fun requestedDispatcher(requestedDispatcher: CoroutineDispatcher): Builder {
+    fun requestedDispatcher(requestedDispatcher: CoroutineDispatcher) = apply {
       this.requestedDispatcher = requestedDispatcher
-      return this
     }
 
-    override fun addExecutionContext(executionContext: ExecutionContext): Builder {
+    override fun addExecutionContext(executionContext: ExecutionContext) = apply {
       this.executionContext = this.executionContext + executionContext
-      return this
     }
 
     fun build(): ApolloClient {

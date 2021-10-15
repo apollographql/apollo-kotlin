@@ -42,14 +42,12 @@ class ApolloRequest<D : Operation.Data> @Deprecated("Please use ApolloRequest.Bu
     private var requestUuid: Uuid = uuid4()
     override var executionContext: ExecutionContext = ExecutionContext.Empty
 
-    fun requestUuid(requestUuid: Uuid): Builder<D> {
+    fun requestUuid(requestUuid: Uuid) = apply {
       this.requestUuid = requestUuid
-      return this
     }
 
-    override fun addExecutionContext(executionContext: ExecutionContext): Builder<D> {
+    override fun addExecutionContext(executionContext: ExecutionContext) = apply {
       this.executionContext = this.executionContext + executionContext
-      return this
     }
 
     fun build(): ApolloRequest<D> {
