@@ -96,12 +96,13 @@ Here's the current matrix of supported features per platform:
 |  | `jvm` | `iosX64`, `iosArm64` | `macosX64` | `js` |
 | --- | :---: | :---: | :---: | :---: |
 | `apollo-api` (models)|✅|✅|✅|✅|
-| `apollo-runtime` (network, query batching, apq, ...) |✅|✅|✅|🚫|
-| `apollo-normalized-cache` |✅|✅|✅|🚫|
+| `apollo-runtime` (network, query batching, apq, ...) |✅|✅|✅|✅¹|
+| `apollo-normalized-cache` |✅|✅|✅|✅|
 | `apollo-normalized-cache-sqlite` |✅|✅|✅|🚫|
 | `apollo-adapters` |✅|✅|✅|✅|
 | `apollo-http-cache` |✅|🚫|🚫|🚫|
 
+¹: WebSockets are currently not supported on `js`
 
 ## Requirements
 
