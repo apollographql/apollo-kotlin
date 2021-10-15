@@ -2,7 +2,7 @@ plugins {
   kotlin("multiplatform")
 }
 
-configureMppDefaults(withJs = false)
+configureMppTestsDefaults()
 
 kotlin {
   sourceSets {
@@ -21,10 +21,16 @@ kotlin {
       }
     }
 
+    val jsMain by getting {
+      dependencies {
+        implementation(groovy.util.Eval.x(project, "x.dep.kotlin.nodejs"))
+      }
+    }
+
     val commonTest by getting {
       dependencies {
         implementation(projects.apolloTestingSupport) {
-          because("runWithMainLoop")
+          because("runTest")
         }
         implementation(projects.apolloRuntime) {
           because("We need HttpEngine for SocketTest")

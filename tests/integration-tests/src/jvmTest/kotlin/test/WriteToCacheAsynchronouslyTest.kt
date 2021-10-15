@@ -11,13 +11,11 @@ import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.testing.runBlocking
-import com.apollographql.apollo3.testing.runWithMainLoop
+import com.apollographql.apollo3.testing.runTest
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
 import readResource
 import java.util.concurrent.Executors
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -30,11 +28,9 @@ class WriteToCacheAsynchronouslyTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
   private lateinit var store: ApolloStore
-  private lateinit var dispatcher: CoroutineDispatcher
+  private var dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
 
-  @BeforeTest
-  fun setUp() {
-    dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+  private suspend fun setUp() {
     store = ApolloStore(MemoryCacheFactory())
     mockServer = MockServer()
     apolloClient = ApolloClient.Builder()
@@ -44,11 +40,16 @@ class WriteToCacheAsynchronouslyTest {
         .build()
   }
 
+  private suspend fun tearDown() {
+    mockServer.stop()
+    dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+  }
+
   /**
    * Write to cache asynchronously, make sure records are not in cache when we receive the response
    */
   @Test
-  fun writeToCacheAsynchronously() = runWithMainLoop(dispatcher) {
+  fun writeToCacheAsynchronously() = runTest(dispatcher, { setUp() }, { tearDown() }) {
     val query = HeroAndFriendsNamesQuery(Episode.JEDI)
 
     mockServer.enqueue(readResource("HeroAndFriendsNameResponse.json"))
@@ -66,7 +67,7 @@ class WriteToCacheAsynchronouslyTest {
    * Write to cache synchronously, make sure records are in cache when we receive the response
    */
   @Test
-  fun writeToCacheSynchronously(): Unit = runBlocking(context = dispatcher) {
+  fun writeToCacheSynchronously() = runTest(dispatcher, { setUp() }, { tearDown() }) {
     val query = HeroAndFriendsNamesQuery(Episode.JEDI)
 
     mockServer.enqueue(readResource("HeroAndFriendsNameResponse.json"))

@@ -26,23 +26,26 @@ import kotlin.coroutines.CoroutineContext
  * but for now that allows us to run integration tests against a mocked server
  */
 @OptIn(DelicateCoroutinesApi::class)
-actual fun <T> runWithMainLoop(context: CoroutineContext, block: suspend CoroutineScope.() -> T): T {
-  var result: Result<T>? = null
-  GlobalScope.launch (MainLoopDispatcher) {
-    result = kotlin.runCatching {
+actual fun runTest(
+    context: CoroutineContext,
+    before: suspend CoroutineScope.() -> Unit,
+    after: suspend CoroutineScope.() -> Unit,
+    block: suspend CoroutineScope.() -> Unit,
+) {
+  GlobalScope.launch(context + MainLoopDispatcher) {
+    before()
+    try {
       block()
+    } finally {
+      after()
     }
     CFRunLoopStop(CFRunLoopGetCurrent())
   }
   CFRunLoopRun()
-
-  return result!!.getOrThrow()
 }
 
-actual fun <T> runBlocking(context: CoroutineContext, block: suspend CoroutineScope.() -> T) = kotlinx.coroutines.runBlocking { block() }
-
-@OptIn(InternalCoroutinesApi::class, kotlinx.coroutines.ExperimentalCoroutinesApi::class)
-actual val MainLoopDispatcher: CoroutineDispatcher = object : CoroutineDispatcher(), Delay {
+@OptIn(InternalCoroutinesApi::class)
+val MainLoopDispatcher: CoroutineDispatcher = object : CoroutineDispatcher(), Delay {
 
   override fun dispatch(context: CoroutineContext, block: Runnable) {
     dispatch_async(dispatch_get_main_queue()) {
@@ -76,4 +79,3 @@ actual val MainLoopDispatcher: CoroutineDispatcher = object : CoroutineDispatche
     return handle
   }
 }
-

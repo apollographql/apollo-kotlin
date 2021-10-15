@@ -6,14 +6,23 @@ import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.network.http.LoggingInterceptor
-import com.apollographql.apollo3.testing.runWithMainLoop
+import com.apollographql.apollo3.testing.runTest
 import readResource
 import kotlin.test.Test
 
 class HttpInterceptorTest {
+  private lateinit var mockServer: MockServer
+
+  private suspend fun setUp() {
+    mockServer = MockServer()
+  }
+
+  private suspend fun tearDown() {
+    mockServer.stop()
+  }
+
   @Test
-  fun testLoggingInterceptor() {
-    val mockServer = MockServer()
+  fun testLoggingInterceptor() = runTest(before = { setUp() }, after = { tearDown() }) {
     val client = ApolloClient.Builder()
         .networkTransport(
             HttpNetworkTransport(
@@ -25,8 +34,6 @@ class HttpInterceptorTest {
 
     mockServer.enqueue(readResource("HeroNameResponse.json"))
 
-    runWithMainLoop {
-      client.query(HeroNameQuery())
-    }
+    client.query(HeroNameQuery())
   }
 }

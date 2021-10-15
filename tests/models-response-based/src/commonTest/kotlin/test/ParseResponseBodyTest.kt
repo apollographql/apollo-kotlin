@@ -6,6 +6,8 @@ import codegen.models.AllPlanetsQuery.Data.AllPlanets.Planet.FilmConnection.Film
 import codegen.models.fragment.PlanetFragment
 import com.apollographql.apollo3.api.composeJsonResponse
 import com.apollographql.apollo3.api.parseJsonResponse
+import com.apollographql.apollo3.mpp.Platform
+import com.apollographql.apollo3.mpp.platform
 import readJson
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -47,6 +49,9 @@ class ParseResponseBodyTest {
     val query = AllPlanetsQuery()
     val data = query.parseJsonResponse(expected).data
     val actual = query.composeJsonResponse(data!!, indent = "  ")
-    assertEquals(actual, expected)
+    if (platform() != Platform.Js) {
+      // Do not check strings on JS because of https://youtrack.jetbrains.com/issue/KT-33358#focus=Comments-27-3656643.0-0
+      assertEquals(expected, actual)
+    }
   }
 }

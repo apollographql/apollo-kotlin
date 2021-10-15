@@ -2,7 +2,7 @@ plugins {
   kotlin("multiplatform")
 }
 
-configureMppDefaults(withJs = false)
+configureMppTestsDefaults(withJs = true)
 
 kotlin {
   sourceSets {
@@ -21,6 +21,17 @@ kotlin {
         implementation(groovy.util.Eval.x(project, "x.dep.truth"))
       }
     }
+
+    val jsMain by getting {
+      dependencies {
+        implementation(groovy.util.Eval.x(project, "x.dep.kotlin.nodejs"))
+        implementation(kotlin("test-js"))
+      }
+    }
+    val jsTest by getting {
+      dependencies {
+        implementation(kotlin("test-js"))
+      }
+    }
   }
 }
-

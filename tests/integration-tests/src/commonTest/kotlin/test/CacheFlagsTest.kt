@@ -19,8 +19,7 @@ import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.enqueue
-import com.apollographql.apollo3.testing.runWithMainLoop
-import kotlin.test.BeforeTest
+import com.apollographql.apollo3.testing.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -31,54 +30,53 @@ class CacheFlagsTest {
   private lateinit var apolloClient: ApolloClient
   private lateinit var store: ApolloStore
 
-  @BeforeTest
-  fun setUp() {
+  private suspend fun setUp() {
     store = ApolloStore(MemoryCacheFactory())
     mockServer = MockServer()
     apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store).build()
   }
 
+  private suspend fun tearDown() {
+    mockServer.stop()
+  }
+
   @Test
-  fun doNotStore() {
-    runWithMainLoop {
-      val query = HeroNameQuery()
-      val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
-      mockServer.enqueue(query, data)
+  fun doNotStore() = runTest(before = { setUp() }, after = { tearDown() }) {
+    val query = HeroNameQuery()
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
+    mockServer.enqueue(query, data)
 
-      apolloClient.query(ApolloRequest.Builder(query).doNotStore(true).build())
+    apolloClient.query(ApolloRequest.Builder(query).doNotStore(true).build())
 
-      // Since the previous request was not stored, this should fail
-      assertFailsWith(CacheMissException::class) {
-        apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.CacheOnly).build())
-      }
+    // Since the previous request was not stored, this should fail
+    assertFailsWith(CacheMissException::class) {
+      apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.CacheOnly).build())
     }
   }
 
   @Test
-  fun testEvictAfterRead() {
-    runWithMainLoop {
-      val query = HeroNameQuery()
-      val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
-      mockServer.enqueue(query, data)
+  fun testEvictAfterRead() = runTest(before = { setUp() }, after = { tearDown() }) {
+    val query = HeroNameQuery()
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
+    mockServer.enqueue(query, data)
 
-      // Store the data
-      apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.NetworkOnly).build())
+    // Store the data
+    apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.NetworkOnly).build())
 
-      // This should work and evict the entries
-      val response = apolloClient.query(
-          ApolloRequest.Builder(query)
-              .fetchPolicy(FetchPolicy.CacheOnly)
-              .cacheHeaders(
-                  CacheHeaders.builder().addHeader(ApolloCacheHeaders.EVICT_AFTER_READ, "true").build()
-              )
+    // This should work and evict the entries
+    val response = apolloClient.query(
+        ApolloRequest.Builder(query)
+            .fetchPolicy(FetchPolicy.CacheOnly)
+            .cacheHeaders(
+                CacheHeaders.builder().addHeader(ApolloCacheHeaders.EVICT_AFTER_READ, "true").build()
+            )
               .build()
-      )
-      assertEquals("R2-D2", response.data?.hero?.name)
+    )
+    assertEquals("R2-D2", response.data?.hero?.name)
 
-      // Second time should fail
-      assertFailsWith(CacheMissException::class) {
-        apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.CacheOnly).build())
-      }
+    // Second time should fail
+    assertFailsWith(CacheMissException::class) {
+      apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.CacheOnly).build())
     }
   }
 
@@ -100,31 +98,27 @@ class CacheFlagsTest {
   )
 
   @Test
-  fun partialResponsesAreNotStored() {
-    runWithMainLoop {
-      val query = HeroNameQuery()
-      mockServer.enqueue(AnyAdapter.toJson(partialResponse))
+  fun partialResponsesAreNotStored() = runTest(before = { setUp() }, after = { tearDown() }) {
+    val query = HeroNameQuery()
+    mockServer.enqueue(AnyAdapter.toJson(partialResponse))
 
-      // this should not store the response
-      apolloClient.query(ApolloRequest.Builder(query).build())
+    // this should not store the response
+    apolloClient.query(ApolloRequest.Builder(query).build())
 
-      assertFailsWith(CacheMissException::class) {
-        apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.CacheOnly).build())
-      }
+    assertFailsWith(CacheMissException::class) {
+      apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.CacheOnly).build())
     }
   }
 
   @Test
-  fun storePartialResponse() {
-    runWithMainLoop {
-      val query = HeroNameQuery()
-      mockServer.enqueue(AnyAdapter.toJson(partialResponse))
+  fun storePartialResponse() = runTest(before = { setUp() }, after = { tearDown() }) {
+    val query = HeroNameQuery()
+    mockServer.enqueue(AnyAdapter.toJson(partialResponse))
 
-      // this should not store the response
-      apolloClient.query(ApolloRequest.Builder(query).storePartialResponses(true).build())
+    // this should not store the response
+    apolloClient.query(ApolloRequest.Builder(query).storePartialResponses(true).build())
 
-      val response = apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.CacheOnly).build())
-      assertNotNull(response.data)
-    }
+    val response = apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.CacheOnly).build())
+    assertNotNull(response.data)
   }
 }

@@ -34,7 +34,7 @@ class ParseResponseBodyTest {
 
   @Test
   @Throws(Exception::class)
-  fun `errors are properly read`() {
+  fun errorsAreProperlyRead() {
     val response = AllPlanetsQuery().parseJsonResponse(readResource("ResponseError.json"))
     assertTrue(response.hasErrors())
     val errors = response.errors
@@ -48,7 +48,7 @@ class ParseResponseBodyTest {
 
   @Test
   @Throws(Exception::class)
-  fun `error with nulls`() {
+  fun errorWithNulls() {
     /**
      * If I'm reading the spec right, passing null in location/path/extensions is most likely
      * an error but we are lenient there and allow it
@@ -64,7 +64,7 @@ class ParseResponseBodyTest {
 
   @Test
   @Throws(Exception::class)
-  fun `error with absent`() {
+  fun errorWithAbsent() {
     /**
      * location, path and extensions are all optional
      */
@@ -80,7 +80,7 @@ class ParseResponseBodyTest {
 
   @Test
   @Throws(Exception::class)
-  fun `error with extensions`() {
+  fun errorWithExtensions() {
     /**
      * Extensions are mapped to Kotlin types.
      * Big numbers should throw although this is not tested here
@@ -198,7 +198,7 @@ class ParseResponseBodyTest {
 
   @Test
   @Throws(Exception::class)
-  fun `extensions are read from response`() {
+  fun extensionsAreReadFromResponse() {
     val query = HeroNameQuery()
     val extensions = query.parseJsonResponse(readResource("HeroNameResponse.json")).extensions
     assertEquals(
@@ -218,7 +218,7 @@ class ParseResponseBodyTest {
   }
 
   @Test
-  fun `not registering an adapter, neither at runtime or in the gradle plugin defaults to Any`() {
+  fun notRegisteringAnAdapterNeitherAtRuntimeOrInTheGradlePluginDefaultsToAny() {
     val data = GetJsonScalarQuery.Data(
         mapOf("1" to "2", "3" to listOf("a", "b"))
     )
@@ -229,7 +229,7 @@ class ParseResponseBodyTest {
 
 
   @Test
-  fun `forgetting to add a runtime adapter for a scalar registered in the plugin fails`() {
+  fun forgettingToAddARuntimeAdapterForAScalarRegisteredInThePluginFails() {
     val data = CharacterWithBirthDateQuery.Data(
         CharacterWithBirthDateQuery.Character(
             LocalDate(1970, 1, 1),

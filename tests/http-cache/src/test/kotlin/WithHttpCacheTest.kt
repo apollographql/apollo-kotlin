@@ -3,6 +3,7 @@ import com.apollographql.apollo3.cache.http.httpCache
 import com.apollographql.apollo3.cache.http.isFromHttpCache
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.testing.runTest
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import httpcache.GetRandomQuery
@@ -14,7 +15,7 @@ class WithHttpCacheTest {
    * Make sure `withHttpCache is working as expected`
    */
   @Test
-  fun withHttpCacheTest() {
+  fun withHttpCacheTest() = runTest {
     val mockResponse = """
     {
       "data": {

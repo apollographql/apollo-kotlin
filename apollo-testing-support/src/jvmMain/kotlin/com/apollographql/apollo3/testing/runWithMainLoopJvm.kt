@@ -1,16 +1,19 @@
 package com.apollographql.apollo3.testing
 
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlin.coroutines.CoroutineContext
 
-actual fun <T> runBlocking(context: CoroutineContext, block: suspend CoroutineScope.() -> T): T {
-  return kotlinx.coroutines.runBlocking(context, block)
+actual fun runTest(
+    context: CoroutineContext,
+    before: suspend CoroutineScope.() -> Unit,
+    after: suspend CoroutineScope.() -> Unit,
+    block: suspend CoroutineScope.() -> Unit,
+) = runBlocking(context) {
+  before()
+  try {
+    block()
+  } finally {
+    after()
+  }
 }
-
-actual fun <T> runWithMainLoop(context: CoroutineContext, block: suspend CoroutineScope.() -> T): T {
-  return kotlinx.coroutines.runBlocking(context, block)
-}
-
-actual val MainLoopDispatcher: CoroutineDispatcher = Dispatchers.Default

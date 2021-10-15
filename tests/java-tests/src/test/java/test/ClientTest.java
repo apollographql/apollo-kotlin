@@ -8,6 +8,10 @@ import com.apollographql.apollo3.rx2.Rx2ApolloClient;
 import com.google.common.truth.Truth;
 import io.reactivex.schedulers.Schedulers;
 import javatest.GetRandomQuery;
+import kotlin.coroutines.Continuation;
+import kotlin.coroutines.CoroutineContext;
+import kotlin.coroutines.EmptyCoroutineContext;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,7 +22,20 @@ public class ClientTest {
   @Before
   public void before() {
     mockServer = new MockServer();
-    apolloClient = new ApolloClient.Builder().serverUrl(mockServer.url()).build();
+
+    /**
+     * Because url doesn't suspend on the JVM, we can just use the return value
+     */
+    String url = (String)mockServer.url(new Continuation<String>() {
+      @NotNull @Override public CoroutineContext getContext() {
+        return EmptyCoroutineContext.INSTANCE;
+      }
+
+      @Override public void resumeWith(@NotNull Object o) {
+      }
+    });
+
+    apolloClient = new ApolloClient.Builder().serverUrl(url).build();
   }
 
   @Test

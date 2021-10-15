@@ -43,6 +43,12 @@ subprojects {
   repositories {
     google()
     mavenCentral()
+    jcenter {
+      content {
+        // https://github.com/Kotlin/kotlinx-nodejs/issues/16
+        includeModule("org.jetbrains.kotlinx", "kotlinx-nodejs")
+      }
+    }
   }
 
   group = property("GROUP")!!

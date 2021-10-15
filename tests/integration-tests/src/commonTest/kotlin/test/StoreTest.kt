@@ -18,9 +18,8 @@ import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithI
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.testing.runWithMainLoop
+import com.apollographql.apollo3.testing.runTest
 import readResource
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail
@@ -35,15 +34,18 @@ class StoreTest {
   private lateinit var apolloClient: ApolloClient
   private lateinit var store: ApolloStore
 
-  @BeforeTest
-  fun setUp() {
+  private suspend fun setUp() {
     store = ApolloStore(MemoryCacheFactory(), objectIdGenerator = IdObjectIdGenerator, cacheResolver = IdCacheResolver)
     mockServer = MockServer()
     apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store).build()
   }
 
+  private suspend fun tearDown() {
+    mockServer.stop()
+  }
+
   @Test
-  fun removeFromStore() = runWithMainLoop {
+  fun removeFromStore() = runTest(before = { setUp() }, after = { tearDown() }) {
     storeAllFriends()
     assertFriendIsCached("1002", "Han Solo")
 
@@ -74,7 +76,7 @@ class StoreTest {
 
   @Test
   @Throws(Exception::class)
-  fun removeMultipleFromStore() = runWithMainLoop {
+  fun removeMultipleFromStore() = runTest(before = { setUp() }, after = { tearDown() }) {
     storeAllFriends()
     assertFriendIsCached("1000", "Luke Skywalker")
     assertFriendIsCached("1002", "Han Solo")
@@ -93,7 +95,7 @@ class StoreTest {
 
   @Test
   @Throws(Exception::class)
-  fun cascadeRemove() = runWithMainLoop {
+  fun cascadeRemove() = runTest(before = { setUp() }, after = { tearDown() }) {
     // put everything in the cache
     storeAllFriends()
 
@@ -114,7 +116,7 @@ class StoreTest {
 
   @Test
   @Throws(Exception::class)
-  fun directAccess() = runWithMainLoop {
+  fun directAccess() = runTest(before = { setUp() }, after = { tearDown() }) {
     // put everything in the cache
     storeAllFriends()
 

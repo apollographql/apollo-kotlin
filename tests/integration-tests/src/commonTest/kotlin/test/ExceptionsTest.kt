@@ -9,10 +9,9 @@ import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.enqueue
-import com.apollographql.apollo3.testing.runWithMainLoop
+import com.apollographql.apollo3.testing.runTest
 import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.flow.single
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -21,14 +20,17 @@ class ExceptionsTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
 
-  @BeforeTest
-  fun setUp() {
+  private suspend fun setUp() {
     mockServer = MockServer()
     apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).build()
   }
 
+  private suspend fun tearDown() {
+    mockServer.stop()
+  }
+
   @Test
-  fun `when query and malformed network response, assert Exception`() = runWithMainLoop {
+  fun whenQueryAndMalformedNetworkResponseAssertException() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue("malformed")
 
     val result = kotlin.runCatching {
@@ -39,7 +41,7 @@ class ExceptionsTest {
   }
 
   @Test
-  fun `when http error, assert execute fails`() = runWithMainLoop {
+  fun whenHttpErrorAssertExecuteFails() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(MockResponse(statusCode = 404))
 
     val result = kotlin.runCatching {
@@ -52,7 +54,7 @@ class ExceptionsTest {
   }
 
   @Test
-  fun `when network error, assert ApolloNetworkException`() = runWithMainLoop {
+  fun whenNetworkErrorAssertApolloNetworkException() = runTest(before = { setUp() }) {
     mockServer.stop()
 
     val result = kotlin.runCatching {
@@ -64,18 +66,16 @@ class ExceptionsTest {
   }
 
   @Test
-  fun `when query and malformed network response, assert success after retry`() {
+  fun WhenQueryAndMalformedNetworkResponseAssertSuccessAfterRetry() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue("")
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
     mockServer.enqueue(query, data)
 
-    val response = runWithMainLoop {
-      apolloClient
-          .queryAsFlow(ApolloRequest.Builder(query).build())
-          .retryWhen { _, attempt -> attempt == 0L }
-          .single()
-    }
+    val response = apolloClient
+        .queryAsFlow(ApolloRequest.Builder(query).build())
+        .retryWhen { _, attempt -> attempt == 0L }
+        .single()
 
     assertEquals(data, response.data)
   }

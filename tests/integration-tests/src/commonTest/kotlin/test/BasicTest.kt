@@ -21,9 +21,8 @@ import com.apollographql.apollo3.integration.normalizer.StarshipByIdQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.testing.runWithMainLoop
+import com.apollographql.apollo3.testing.runTest
 import readResource
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
@@ -41,8 +40,7 @@ class BasicTest {
   private lateinit var apolloClient: ApolloClient
   private lateinit var store: ApolloStore
 
-  @BeforeTest
-  fun setUp() {
+  private suspend fun setUp() {
     store = ApolloStore(
         normalizedCacheFactory = MemoryCacheFactory(),
         objectIdGenerator = IdObjectIdGenerator
@@ -51,7 +49,15 @@ class BasicTest {
     apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store).build()
   }
 
-  private fun <D : Query.Data> basicTest(resourceName: String, query: Query<D>, block: ApolloResponse<D>.() -> Unit) = runWithMainLoop {
+  private suspend fun tearDown() {
+    mockServer.stop()
+  }
+
+  private fun <D : Query.Data> basicTest(
+      resourceName: String,
+      query: Query<D>,
+      block: ApolloResponse<D>.() -> Unit,
+  ) = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(readResource(resourceName))
     var response = apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.NetworkOnly).build())
     response.block()
@@ -150,7 +156,7 @@ class BasicTest {
 
 
   @Test
-  fun `requesting the same field twice with an alias`() = basicTest(
+  fun requestingTheSameFieldTwiceWithAnAlias() = basicTest(
       "SameHeroTwiceResponse.json",
       SameHeroTwiceQuery()
   ) {

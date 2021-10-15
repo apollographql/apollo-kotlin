@@ -2,7 +2,7 @@ plugins {
   kotlin("multiplatform")
 }
 
-configureMppDefaults(withJs = false)
+configureMppDefaults()
 
 kotlin {
   sourceSets {
@@ -22,14 +22,14 @@ kotlin {
       }
     }
 
-    val appleMain by getting {
+    val jsMain by getting {
       dependencies {
+        api(groovy.util.Eval.x(project, "x.dep.ktor.clientJs"))
       }
     }
 
-    val commonTest by getting {
+    val appleMain by getting {
       dependencies {
-        implementation(projects.apolloTestingSupport)
       }
     }
 

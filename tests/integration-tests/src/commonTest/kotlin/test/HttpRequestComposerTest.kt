@@ -8,38 +8,44 @@ import com.apollographql.apollo3.api.http.httpHeader
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.testing.runWithMainLoop
+import com.apollographql.apollo3.testing.runTest
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class HttpRequestComposerTest {
+  private lateinit var mockServer: MockServer
+
+  private suspend fun setUp() {
+    mockServer = MockServer()
+  }
+
+  private suspend fun tearDown() {
+    mockServer.stop()
+  }
 
   @Test
-  fun `request POST body contains operation, query and variables by default`() {
+  fun requestPostBodyContainsOperationQueryAndVariablesByDefault() {
     val composer = DefaultHttpRequestComposer("/")
     val apolloRequest = ApolloRequest.Builder(AllPlanetsQuery()).build()
     val httpRequest = composer.compose(apolloRequest)
 
     val bodyText = Buffer().also { httpRequest.body?.writeTo(it) }.readUtf8()
 
-    checkTestFixture(bodyText , "IntegrationTest/allPlanets.json")
+    checkTestFixture(bodyText, "IntegrationTest/allPlanets.json")
   }
 
   @Test
-  fun `request headers are forwarded to the server`() {
-    val mockServer = MockServer()
+  fun requestHeadersAreForwardedToTheServer() = runTest(before = { setUp() }, after = { tearDown() }) {
     val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).build()
 
-    runWithMainLoop {
-      kotlin.runCatching {
-        // No need to enqueue a successful response, we just want to make sure our headers reached the server
-        mockServer.enqueue("error")
-        apolloClient.query(ApolloRequest.Builder(AllPlanetsQuery()).httpHeader("test", "is passing").build())
-      }
-
-      val response = mockServer.takeRequest()
-      assertEquals("is passing", response.headers["test"])
+    kotlin.runCatching {
+      // No need to enqueue a successful response, we just want to make sure our headers reached the server
+      mockServer.enqueue("error")
+      apolloClient.query(ApolloRequest.Builder(AllPlanetsQuery()).httpHeader("test", "is passing").build())
     }
+
+    val response = mockServer.takeRequest()
+    assertEquals("is passing", response.headers["test"])
   }
 }

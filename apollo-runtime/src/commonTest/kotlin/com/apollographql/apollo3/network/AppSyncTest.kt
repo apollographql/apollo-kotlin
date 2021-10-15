@@ -1,11 +1,6 @@
 package com.apollographql.apollo3.network
 
 import com.apollographql.apollo3.network.ws.AppSyncWsProtocol
-import com.apollographql.apollo3.testing.runBlocking
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlin.coroutines.coroutineContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

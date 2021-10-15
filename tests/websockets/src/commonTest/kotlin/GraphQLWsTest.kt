@@ -1,7 +1,7 @@
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.network.ws.GraphQLWsProtocol
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
-import com.apollographql.apollo3.testing.runWithMainLoop
+import com.apollographql.apollo3.testing.runTest
 import graphql.ws.GreetingsSubscription
 import graphql.ws.HelloQuery
 import graphql.ws.SetHelloMutation
@@ -15,7 +15,7 @@ import kotlin.test.assertEquals
 @Ignore
 class GraphQLWsTest {
   @Test
-  fun queryOverWebSocket() {
+  fun queryOverWebSocket() = runTest {
     val apolloClient = ApolloClient.Builder()
         .networkTransport(
             WebSocketNetworkTransport(
@@ -25,13 +25,11 @@ class GraphQLWsTest {
         )
         .build()
 
-    runWithMainLoop {
-      assertEquals("Hello World!", apolloClient.query(HelloQuery()).data?.hello)
-    }
+    assertEquals("Hello World!", apolloClient.query(HelloQuery()).data?.hello)
   }
 
   @Test
-  fun mutationOverWebSocket() {
+  fun mutationOverWebSocket() = runTest {
     val apolloClient = ApolloClient.Builder()
         .networkTransport(
             WebSocketNetworkTransport(
@@ -41,14 +39,12 @@ class GraphQLWsTest {
         )
         .build()
 
-    runWithMainLoop {
-      assertEquals("Hello Mutation!", apolloClient.mutate(SetHelloMutation()).data?.hello)
-    }
+    assertEquals("Hello Mutation!", apolloClient.mutate(SetHelloMutation()).data?.hello)
   }
 
 
   @Test
-  fun subscriptionOverWebSocket() {
+  fun subscriptionOverWebSocket() = runTest {
     val apolloClient = ApolloClient.Builder()
         .networkTransport(
             WebSocketNetworkTransport(
@@ -58,9 +54,7 @@ class GraphQLWsTest {
         )
         .build()
 
-    runWithMainLoop {
-      val list = apolloClient.subscribe(GreetingsSubscription()).toList()
-      assertEquals(listOf("Hi", "Bonjour", "Hola", "Ciao", "Zdravo"), list.map { it.data?.greetings })
-    }
+    val list = apolloClient.subscribe(GreetingsSubscription()).toList()
+    assertEquals(listOf("Hi", "Bonjour", "Hola", "Ciao", "Zdravo"), list.map { it.data?.greetings })
   }
 }

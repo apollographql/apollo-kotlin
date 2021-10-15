@@ -20,6 +20,12 @@ subprojects {
   repositories {
     google()
     mavenCentral()
+    jcenter {
+      content {
+        // https://github.com/Kotlin/kotlinx-nodejs/issues/16
+        includeModule("org.jetbrains.kotlinx", "kotlinx-nodejs")
+      }
+    }
   }
 
   configureJavaAndKotlinCompilers()
@@ -28,6 +34,9 @@ subprojects {
     tasks.withType<AbstractTestTask> {
       testLogging {
         exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        events.add(org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED)
+        events.add(org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED)
+        showStandardStreams = true
       }
     }
   }

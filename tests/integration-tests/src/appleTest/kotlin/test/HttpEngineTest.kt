@@ -3,8 +3,7 @@ package test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
-import com.apollographql.apollo3.testing.runWithMainLoop
-import kotlinx.cinterop.pointed
+import com.apollographql.apollo3.testing.runTest
 import platform.CFNetwork.kCFErrorDomainCFNetwork
 import platform.CFNetwork.kCFErrorHTTPSProxyConnectionFailure
 import platform.Foundation.CFBridgingRelease
@@ -18,7 +17,7 @@ import kotlin.test.assertTrue
 
 class HttpEngineTest {
   @Test
-  fun canReadNSError() = runWithMainLoop {
+  fun canReadNSError() = runTest {
     val apolloClient = ApolloClient.Builder().serverUrl("https://inexistent.host/graphql").build()
 
     val result = kotlin.runCatching {

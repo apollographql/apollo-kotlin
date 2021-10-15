@@ -4,21 +4,28 @@ import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.synchronized
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.IntVar
+import kotlinx.cinterop.alloc
 import kotlinx.cinterop.allocArray
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.get
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.nativeHeap
+import kotlinx.cinterop.nativeHeap.free
+import kotlinx.cinterop.ptr
+import kotlinx.cinterop.value
 import okio.IOException
 import okio.buffer
 import platform.Foundation.NSMutableArray
 import platform.posix.POLLIN
+import platform.posix.SOL_SOCKET
+import platform.posix.SO_NOSIGPIPE
 import platform.posix.accept
 import platform.posix.close
 import platform.posix.errno
 import platform.posix.pipe
 import platform.posix.poll
 import platform.posix.pollfd
+import platform.posix.setsockopt
 import platform.posix.usleep
 import platform.posix.write
 import kotlin.experimental.and
@@ -70,6 +77,10 @@ class Socket(private val socketFd: Int) {
           "Cannot accept socket (errno = $errno)"
         }
 
+        val one = alloc<IntVar>()
+        one.value = 1
+        setsockopt(connectionFd, SOL_SOCKET, SO_NOSIGPIPE, one.ptr, 4);
+
         handleConnection(connectionFd)
         close(connectionFd)
       }
@@ -103,7 +114,7 @@ class Socket(private val socketFd: Int) {
         val request = try {
           readRequest(source)
         } catch (e: IOException) {
-          debug("'$connectionFd': Connection error")
+          debug("'$connectionFd': readRequest error")
           return
         }
         if (request == null) {
@@ -129,7 +140,13 @@ class Socket(private val socketFd: Int) {
         if (mockResponse.delayMs > 0) {
           usleep((mockResponse.delayMs * 1000).convert())
         }
-        writeResponse(sink, mockResponse, request.version)
+
+        try {
+          writeResponse(sink, mockResponse, request.version)
+        } catch (e: IOException) {
+          debug("'$connectionFd': writeResponse error")
+          return
+        }
 
         debug("Response Written")
       }

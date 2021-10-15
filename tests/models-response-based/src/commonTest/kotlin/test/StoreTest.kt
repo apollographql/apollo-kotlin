@@ -15,9 +15,8 @@ import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.testing.runWithMainLoop
+import com.apollographql.apollo3.testing.runTest
 import readJson
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -26,8 +25,7 @@ class StoreTest {
   private lateinit var apolloClient: ApolloClient
   private lateinit var store: ApolloStore
 
-  @BeforeTest
-  fun setUp() {
+  private suspend fun setUp() {
     store = ApolloStore(
         normalizedCacheFactory = MemoryCacheFactory(),
         objectIdGenerator = IdObjectIdGenerator
@@ -36,8 +34,12 @@ class StoreTest {
     apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store).build()
   }
 
+  private suspend fun tearDown() {
+    mockServer.stop()
+  }
+
   @Test
-  fun readFragmentFromStore() = runWithMainLoop {
+  fun readFragmentFromStore() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(readJson("HeroAndFriendsWithTypename.json"))
     apolloClient.query(HeroAndFriendsWithTypenameQuery())
 
@@ -82,7 +84,7 @@ class StoreTest {
    * Modify the store by writing fragments
    */
   @Test
-  fun fragments() = runWithMainLoop {
+  fun fragments() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(readJson("HeroAndFriendsNamesWithIDs.json"))
     val query = HeroAndFriendsWithFragmentsQuery()
     var response = apolloClient.query(query)

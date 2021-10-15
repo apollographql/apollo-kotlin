@@ -9,7 +9,7 @@ dependencies {
   implementation("com.apollographql.apollo3:apollo-mockserver")
   implementation("com.apollographql.apollo3:apollo-rx2-support")
   testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
-  implementation(groovy.util.Eval.x(project, "x.dep.truth"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
 }
 
 apollo {

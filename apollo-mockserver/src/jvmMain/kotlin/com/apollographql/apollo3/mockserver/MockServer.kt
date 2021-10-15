@@ -37,11 +37,11 @@ actual class MockServer {
     name(it) to get(name(it))!!
   }.toMap()
 
-  actual fun url(): String {
+  actual suspend fun url(): String {
     return mockWebServer.url("/").toString()
   }
 
-  actual fun stop() {
+  actual suspend fun stop() {
     mockWebServer.shutdown()
   }
 }
