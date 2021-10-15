@@ -1,22 +1,22 @@
 package test
 
+import IdObjectIdGenerator
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
+import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.fetchPolicy
+import com.apollographql.apollo3.cache.normalized.refetchPolicy
+import com.apollographql.apollo3.cache.normalized.store
+import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameWithIdQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
 import com.apollographql.apollo3.integration.normalizer.StarshipByIdQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
-import com.apollographql.apollo3.cache.normalized.FetchPolicy
-import IdObjectIdGenerator
-import com.apollographql.apollo3.cache.normalized.watch
-import com.apollographql.apollo3.cache.normalized.withFetchPolicy
-import com.apollographql.apollo3.cache.normalized.withRefetchPolicy
-import com.apollographql.apollo3.cache.normalized.withStore
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.receiveOrTimeout
@@ -39,7 +39,7 @@ class WatcherTest {
   private suspend fun setUp() {
     store = ApolloStore(MemoryCacheFactory(), objectIdGenerator = IdObjectIdGenerator)
     mockServer = MockServer()
-    apolloClient = ApolloClient(mockServer.url()).withStore(store)
+    apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store).build()
   }
 
   private suspend fun tearDown() {
@@ -66,7 +66,7 @@ class WatcherTest {
 
     // Another newer call gets updated information with "Artoo"
     mockServer.enqueue(readResource("EpisodeHeroNameResponseNameChange.json"))
-    apolloClient.query(ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkOnly))
+    apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.NetworkOnly).build())
 
     assertEquals(channel.receiveOrTimeout()?.hero?.name, "Artoo")
 
@@ -125,7 +125,7 @@ class WatcherTest {
 
     // Another newer call gets the same name (R2-D2)
     mockServer.enqueue(readResource("EpisodeHeroNameResponseWithId.json"))
-    apolloClient.query(ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkOnly))
+    apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.NetworkOnly).build())
 
     channel.assertEmpty()
 
@@ -152,9 +152,10 @@ class WatcherTest {
     // Another newer call gets updated information with "Artoo"
     mockServer.enqueue(readResource("HeroAndFriendsNameWithIdsNameChange.json"))
     apolloClient.query(
-        ApolloRequest(
+        ApolloRequest.Builder(
             HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)
-        ).withFetchPolicy(FetchPolicy.NetworkOnly)
+        ).fetchPolicy(FetchPolicy.NetworkOnly)
+            .build()
     )
 
     assertEquals(channel.receiveOrTimeout()?.hero?.name, "Artoo")
@@ -182,9 +183,10 @@ class WatcherTest {
     // Another newer call gets the same information
     mockServer.enqueue(readResource("HeroAndFriendsNameWithIdsResponse.json"))
     apolloClient.query(
-        ApolloRequest(
+        ApolloRequest.Builder(
             HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)
-        ).withFetchPolicy(FetchPolicy.NetworkOnly)
+        ).fetchPolicy(FetchPolicy.NetworkOnly)
+            .build()
     )
 
     channel.assertEmpty()
@@ -203,9 +205,10 @@ class WatcherTest {
     // The first query should get a "R2-D2" name
     mockServer.enqueue(readResource("EpisodeHeroNameResponseWithId.json"))
     val job = launch {
-      val request = ApolloRequest(EpisodeHeroNameQuery(Episode.EMPIRE))
-          .withFetchPolicy(FetchPolicy.NetworkOnly)
-          .withRefetchPolicy(FetchPolicy.NetworkOnly)
+      val request = ApolloRequest.Builder(EpisodeHeroNameQuery(Episode.EMPIRE))
+          .fetchPolicy(FetchPolicy.NetworkOnly)
+          .refetchPolicy(FetchPolicy.NetworkOnly)
+          .build()
       apolloClient.watch(request).collect {
         channel.send(it.data)
       }
@@ -222,9 +225,10 @@ class WatcherTest {
     // Enqueue a stable response to avoid errors during tests
     mockServer.enqueue(readResource("EpisodeHeroNameResponseNameChangeTwo.json"))
     val response = apolloClient.query(
-        ApolloRequest(
+        ApolloRequest.Builder(
             EpisodeHeroNameQuery(Episode.EMPIRE)
-        ).withFetchPolicy(FetchPolicy.NetworkOnly)
+        ).fetchPolicy(FetchPolicy.NetworkOnly)
+            .build()
     )
     assertEquals(response.data?.hero?.name, "Artoo")
 
@@ -242,9 +246,10 @@ class WatcherTest {
     // The first query should get a "R2-D2" name
     mockServer.enqueue(readResource("EpisodeHeroNameResponseWithId.json"))
     val job = launch {
-      val request = ApolloRequest(EpisodeHeroNameQuery(Episode.EMPIRE))
-          .withFetchPolicy(FetchPolicy.NetworkOnly)
-          .withRefetchPolicy(FetchPolicy.NetworkOnly)
+      val request = ApolloRequest.Builder(EpisodeHeroNameQuery(Episode.EMPIRE))
+          .fetchPolicy(FetchPolicy.NetworkOnly)
+          .refetchPolicy(FetchPolicy.NetworkOnly)
+          .build()
       apolloClient.watch(request).collect {
         channel.send(it.data)
       }
@@ -276,7 +281,7 @@ class WatcherTest {
 
     // This will initially miss as the cache should be empty
     val job = launch {
-      val request = ApolloRequest(query).withFetchPolicy(FetchPolicy.CacheOnly)
+      val request = ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.CacheOnly).build()
       apolloClient.watch(request).collect {
         channel.send(it.data)
       }
@@ -284,7 +289,7 @@ class WatcherTest {
 
     // Another newer call gets updated information with "R2-D2"
     mockServer.enqueue(readResource("EpisodeHeroNameResponseWithId.json"))
-    apolloClient.query(ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkOnly))
+    apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.NetworkOnly).build())
 
     assertEquals(channel.receiveOrTimeout()?.hero?.name, "R2-D2")
 
@@ -295,9 +300,10 @@ class WatcherTest {
   fun queryWatcherWithCacheOnlyNeverGoesToTheNetwork() = runTest(before = { setUp() }, after = { tearDown() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>(capacity = Channel.UNLIMITED)
     val job = launch {
-      val request = ApolloRequest(EpisodeHeroNameQuery(Episode.EMPIRE))
-          .withFetchPolicy(FetchPolicy.CacheOnly)
-          .withRefetchPolicy(FetchPolicy.CacheOnly)
+      val request = ApolloRequest.Builder(EpisodeHeroNameQuery(Episode.EMPIRE))
+          .fetchPolicy(FetchPolicy.CacheOnly)
+          .refetchPolicy(FetchPolicy.CacheOnly)
+          .build()
 
       apolloClient.watch(request).collect {
         channel.send(it.data)

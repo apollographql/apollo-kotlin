@@ -1,7 +1,6 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.composeJsonResponse
 import com.apollographql.apollo3.api.http.valueOf
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
@@ -21,7 +20,7 @@ class HTTPHeadersTest {
 
   private suspend fun setUp() {
     mockServer = MockServer()
-    apolloClient = ApolloClient(mockServer.url())
+    apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).build()
   }
 
   private suspend fun tearDown() {

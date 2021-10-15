@@ -2,8 +2,8 @@ package test
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.cache.normalized.queryCacheAndNetwork
-import com.apollographql.apollo3.cache.normalized.withNormalizedCache
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
@@ -30,7 +30,7 @@ class CancelTest {
   @Test
   fun cancelFlow() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(readTestFixture("resources/EpisodeHeroNameResponse.json"))
-    val apolloClient = ApolloClient(mockServer.url())
+    val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).build()
 
     val job = launch {
       delay(100)
@@ -44,7 +44,7 @@ class CancelTest {
   @Test
   fun canCancelQueryCacheAndNetwork() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(readTestFixture("resources/EpisodeHeroNameResponse.json"), 500)
-    val apolloClient = ApolloClient(mockServer.url()).withNormalizedCache(MemoryCacheFactory())
+    val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).normalizedCache(MemoryCacheFactory()).build()
 
     val job = launch {
       apolloClient.queryCacheAndNetwork(EpisodeHeroNameQuery(Episode.EMPIRE)).toList()

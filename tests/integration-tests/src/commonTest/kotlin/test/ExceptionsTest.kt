@@ -8,9 +8,8 @@ import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.testing.runTest
 import com.apollographql.apollo3.testing.enqueue
-import kotlinx.coroutines.delay
+import com.apollographql.apollo3.testing.runTest
 import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.flow.single
 import kotlin.test.Test
@@ -23,7 +22,7 @@ class ExceptionsTest {
 
   private suspend fun setUp() {
     mockServer = MockServer()
-    apolloClient = ApolloClient(mockServer.url())
+    apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).build()
   }
 
   private suspend fun tearDown() {
@@ -74,7 +73,7 @@ class ExceptionsTest {
     mockServer.enqueue(query, data)
 
     val response = apolloClient
-        .queryAsFlow(ApolloRequest(query))
+        .queryAsFlow(ApolloRequest.Builder(query).build())
         .retryWhen { _, attempt -> attempt == 0L }
         .single()
 

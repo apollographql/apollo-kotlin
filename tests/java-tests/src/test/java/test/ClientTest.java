@@ -35,7 +35,7 @@ public class ClientTest {
       }
     });
 
-    apolloClient = new ApolloClient(url);
+    apolloClient = new ApolloClient.Builder().serverUrl(url).build();
   }
 
   @Test

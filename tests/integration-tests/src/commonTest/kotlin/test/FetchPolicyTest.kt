@@ -2,15 +2,15 @@ package test
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
+import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.isFromCache
 import com.apollographql.apollo3.cache.normalized.queryCacheAndNetwork
-import com.apollographql.apollo3.cache.normalized.withFetchPolicy
-import com.apollographql.apollo3.cache.normalized.withStore
+import com.apollographql.apollo3.cache.normalized.store
+import com.apollographql.apollo3.exception.ApolloCompositeException
+import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
@@ -33,7 +33,7 @@ class FetchPolicyTest {
   private suspend fun setUp() {
     store = ApolloStore(MemoryCacheFactory())
     mockServer = MockServer()
-    apolloClient = ApolloClient(mockServer.url()).withStore(store)
+    apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store).build()
   }
 
   private suspend fun tearDown() {
@@ -48,7 +48,7 @@ class FetchPolicyTest {
 
     // Cache first is also the default, no need to set the fetchPolicy
     // First query should hit the network and save in cache
-    val request = ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkFirst)
+    val request = ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.NetworkFirst).build()
     var response = apolloClient.query(request)
 
     assertNotNull(response.data)
@@ -76,7 +76,7 @@ class FetchPolicyTest {
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
-    val request = ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkFirst)
+    val request = ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.NetworkFirst).build()
 
     // First query should hit the network and save in cache
     mockServer.enqueue(query, data)
@@ -115,7 +115,7 @@ class FetchPolicyTest {
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
-    var request = ApolloRequest(query)
+    var request = ApolloRequest.Builder(query).build()
 
     // First query should hit the network and save in cache
     mockServer.enqueue(query, data)
@@ -124,7 +124,7 @@ class FetchPolicyTest {
     assertNotNull(response.data)
     assertFalse(response.isFromCache)
 
-    request = request.withFetchPolicy(FetchPolicy.CacheOnly)
+    request = request.newBuilder().fetchPolicy(FetchPolicy.CacheOnly).build()
 
     // Second query should only hit the cache
     response = apolloClient.query(request)
@@ -139,7 +139,7 @@ class FetchPolicyTest {
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
-    val request = ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkOnly)
+    val request = ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.NetworkOnly).build()
 
     // First query should hit the network and save in cache
     mockServer.enqueue(query, data)

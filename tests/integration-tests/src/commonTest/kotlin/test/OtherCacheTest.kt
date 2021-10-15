@@ -1,22 +1,22 @@
 package test
 
+import IdCacheResolver
+import IdObjectIdGenerator
 import assertEquals2
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import IdCacheResolver
+import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.fetchPolicy
+import com.apollographql.apollo3.cache.normalized.store
+import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.integration.normalizer.CharacterDetailsQuery
 import com.apollographql.apollo3.integration.normalizer.CharacterNameByIdQuery
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsDirectivesQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
-import com.apollographql.apollo3.cache.normalized.FetchPolicy
-import IdObjectIdGenerator
-import com.apollographql.apollo3.cache.normalized.withFetchPolicy
-import com.apollographql.apollo3.cache.normalized.withStore
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runTest
@@ -38,7 +38,7 @@ class OtherCacheTest {
   private suspend fun setUp() {
     store = ApolloStore(MemoryCacheFactory(), objectIdGenerator = IdObjectIdGenerator, cacheResolver = IdCacheResolver)
     mockServer = MockServer()
-    apolloClient = ApolloClient(mockServer.url()).withStore(store)
+    apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store).build()
   }
 
   private suspend fun tearDown() {
@@ -50,12 +50,12 @@ class OtherCacheTest {
     // Store a query that contains all data
     mockServer.enqueue(readResource("HeroAndFriendsNameWithIdsResponse.json"))
     apolloClient.query(
-        ApolloRequest(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).withFetchPolicy(FetchPolicy.NetworkOnly)
+        ApolloRequest.Builder(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).fetchPolicy(FetchPolicy.NetworkOnly).build()
     )
 
     // Getting a subtree of that data should work
     val detailsResponse = apolloClient.query(
-        ApolloRequest(CharacterNameByIdQuery("1002")).withFetchPolicy(FetchPolicy.CacheOnly)
+        ApolloRequest.Builder(CharacterNameByIdQuery("1002")).fetchPolicy(FetchPolicy.CacheOnly).build()
     )
 
     assertEquals(detailsResponse.data?.character!!.name, "Han Solo")
@@ -67,13 +67,13 @@ class OtherCacheTest {
     // Store a query that contains all data
     mockServer.enqueue(readResource("HeroAndFriendsNameWithIdsResponse.json"))
     apolloClient.query(
-        ApolloRequest(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).withFetchPolicy(FetchPolicy.NetworkOnly)
+        ApolloRequest.Builder(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).fetchPolicy(FetchPolicy.NetworkOnly).build()
     )
 
     // Some details are not present in the master query, we should get a cache miss
     try {
       apolloClient.query(
-          ApolloRequest(CharacterDetailsQuery("1002")).withFetchPolicy(FetchPolicy.CacheOnly)
+          ApolloRequest.Builder(CharacterDetailsQuery("1002")).fetchPolicy(FetchPolicy.CacheOnly).build()
       )
       fail("we expected a cache miss")
     } catch (e: CacheMissException) {
@@ -86,7 +86,7 @@ class OtherCacheTest {
   fun cacheMissThrows() = runTest(before = { setUp() }, after = { tearDown() }) {
     try {
       apolloClient.query(
-          ApolloRequest(EpisodeHeroNameQuery(Episode.EMPIRE)).withFetchPolicy(FetchPolicy.CacheOnly)
+          ApolloRequest.Builder(EpisodeHeroNameQuery(Episode.EMPIRE)).fetchPolicy(FetchPolicy.CacheOnly).build()
       )
       fail("we expected a cache miss")
     } catch (e: CacheMissException) {
@@ -99,13 +99,15 @@ class OtherCacheTest {
   fun skipIncludeDirective() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(readResource("HeroAndFriendsNameResponse.json"))
     apolloClient.query(
-        ApolloRequest(HeroAndFriendsDirectivesQuery(Episode.JEDI, true, false))
-            .withFetchPolicy(FetchPolicy.NetworkOnly)
+        ApolloRequest.Builder(HeroAndFriendsDirectivesQuery(Episode.JEDI, true, false))
+            .fetchPolicy(FetchPolicy.NetworkOnly)
+            .build()
     )
 
     var response = apolloClient.query(
-        ApolloRequest(HeroAndFriendsDirectivesQuery(Episode.JEDI, true, false))
-            .withFetchPolicy(FetchPolicy.CacheOnly)
+        ApolloRequest.Builder(HeroAndFriendsDirectivesQuery(Episode.JEDI, true, false))
+            .fetchPolicy(FetchPolicy.CacheOnly)
+            .build()
     )
     assertEquals2(response.data?.hero?.name, "R2-D2")
     assertEquals2(response.data?.hero?.friends?.size, 3)
@@ -114,8 +116,9 @@ class OtherCacheTest {
     assertEquals2(response.data?.hero?.friends?.get(2)?.name, "Leia Organa")
 
     response = apolloClient.query(
-        ApolloRequest(HeroAndFriendsDirectivesQuery(Episode.JEDI, false, false))
-            .withFetchPolicy(FetchPolicy.CacheOnly)
+        ApolloRequest.Builder(HeroAndFriendsDirectivesQuery(Episode.JEDI, false, false))
+            .fetchPolicy(FetchPolicy.CacheOnly)
+            .build()
     )
     assertNull(response.data?.hero?.name)
     assertEquals2(response.data?.hero?.friends?.size, 3)
@@ -124,8 +127,9 @@ class OtherCacheTest {
     assertEquals2(response.data?.hero?.friends?.get(2)?.name, "Leia Organa")
 
     response = apolloClient.query(
-        ApolloRequest(HeroAndFriendsDirectivesQuery(Episode.JEDI, true, true))
-            .withFetchPolicy(FetchPolicy.CacheOnly)
+        ApolloRequest.Builder(HeroAndFriendsDirectivesQuery(Episode.JEDI, true, true))
+            .fetchPolicy(FetchPolicy.CacheOnly)
+            .build()
     )
     assertEquals2(response.data?.hero?.name, "R2-D2")
     assertNull(response.data?.hero?.friends)
@@ -137,16 +141,18 @@ class OtherCacheTest {
     // Store a response that doesn't contain friends
     mockServer.enqueue(readResource("HeroNameResponse.json"))
     apolloClient.query(
-        ApolloRequest(
+        ApolloRequest.Builder(
             HeroAndFriendsDirectivesQuery(Episode.JEDI, true, true)
-        ).withFetchPolicy(FetchPolicy.NetworkOnly)
+        ).fetchPolicy(FetchPolicy.NetworkOnly)
+            .build()
     )
 
     // Get it from the cache, we should get the name but no friends
     val response = apolloClient.query(
-        ApolloRequest(
+        ApolloRequest.Builder(
             HeroAndFriendsDirectivesQuery(Episode.JEDI, true, true)
-        ).withFetchPolicy(FetchPolicy.CacheOnly)
+        ).fetchPolicy(FetchPolicy.CacheOnly)
+            .build()
     )
 
     assertEquals(response.data?.hero?.name, "R2-D2")
@@ -155,9 +161,10 @@ class OtherCacheTest {
     // Now try to get the friends from the cache, it should fail
     try {
       apolloClient.query(
-          ApolloRequest(
+          ApolloRequest.Builder(
               HeroAndFriendsDirectivesQuery(Episode.JEDI, true, false)
-          ).withFetchPolicy(FetchPolicy.CacheOnly)
+          ).fetchPolicy(FetchPolicy.CacheOnly)
+              .build()
       )
       fail("A CacheMissException was expected")
     } catch (e: CacheMissException) {

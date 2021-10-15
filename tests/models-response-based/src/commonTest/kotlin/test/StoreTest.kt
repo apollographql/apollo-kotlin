@@ -1,5 +1,6 @@
 package test
 
+import IdObjectIdGenerator
 import codegen.models.HeroAndFriendsWithFragmentsQuery
 import codegen.models.HeroAndFriendsWithFragmentsQuery.Data.Hero.Companion.heroWithFriendsFragment
 import codegen.models.HeroAndFriendsWithTypenameQuery
@@ -11,8 +12,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import IdObjectIdGenerator
-import com.apollographql.apollo3.cache.normalized.withStore
+import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runTest
@@ -31,7 +31,7 @@ class StoreTest {
         objectIdGenerator = IdObjectIdGenerator
     )
     mockServer = MockServer()
-    apolloClient = ApolloClient(mockServer.url()).withStore(store)
+    apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store).build()
   }
 
   private suspend fun tearDown() {

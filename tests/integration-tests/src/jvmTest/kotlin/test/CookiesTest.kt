@@ -42,12 +42,14 @@ class CookiesTest {
         .cookieJar(cookieJar)
         .build()
 
-    val apolloClient = ApolloClient(
-        networkTransport = HttpNetworkTransport(
-            serverUrl = mockServer.url(),
-            okHttpClient = okHttpClient
+    val apolloClient = ApolloClient.Builder()
+        .networkTransport(
+            HttpNetworkTransport(
+                serverUrl = mockServer.url(),
+                okHttpClient = okHttpClient
+            )
         )
-    )
+        .build()
 
     val json = HeroNameQuery().composeJsonData(HeroNameQuery.Data(hero = HeroNameQuery.Hero(name = "Luke")))
 

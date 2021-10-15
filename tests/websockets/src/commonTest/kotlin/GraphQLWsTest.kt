@@ -16,24 +16,28 @@ import kotlin.test.assertEquals
 class GraphQLWsTest {
   @Test
   fun queryOverWebSocket() = runTest {
-    val apolloClient = ApolloClient(
-        networkTransport = WebSocketNetworkTransport(
-            serverUrl = "http://localhost:9090/graphql",
-            protocolFactory = GraphQLWsProtocol.Factory()
+    val apolloClient = ApolloClient.Builder()
+        .networkTransport(
+            WebSocketNetworkTransport(
+                serverUrl = "http://localhost:9090/graphql",
+                protocolFactory = GraphQLWsProtocol.Factory()
+            )
         )
-    )
+        .build()
 
     assertEquals("Hello World!", apolloClient.query(HelloQuery()).data?.hello)
   }
 
   @Test
   fun mutationOverWebSocket() = runTest {
-    val apolloClient = ApolloClient(
-        networkTransport = WebSocketNetworkTransport(
-            serverUrl = "http://localhost:9090/graphql",
-            protocolFactory = GraphQLWsProtocol.Factory()
+    val apolloClient = ApolloClient.Builder()
+        .networkTransport(
+            WebSocketNetworkTransport(
+                serverUrl = "http://localhost:9090/graphql",
+                protocolFactory = GraphQLWsProtocol.Factory()
+            )
         )
-    )
+        .build()
 
     assertEquals("Hello Mutation!", apolloClient.mutate(SetHelloMutation()).data?.hello)
   }
@@ -41,12 +45,14 @@ class GraphQLWsTest {
 
   @Test
   fun subscriptionOverWebSocket() = runTest {
-    val apolloClient = ApolloClient(
-        networkTransport = WebSocketNetworkTransport(
-            serverUrl = "http://localhost:9090/graphql",
-            protocolFactory = GraphQLWsProtocol.Factory()
+    val apolloClient = ApolloClient.Builder()
+        .networkTransport(
+            WebSocketNetworkTransport(
+                serverUrl = "http://localhost:9090/graphql",
+                protocolFactory = GraphQLWsProtocol.Factory()
+            )
         )
-    )
+        .build()
 
     val list = apolloClient.subscribe(GreetingsSubscription()).toList()
     assertEquals(listOf("Hi", "Bonjour", "Hola", "Ciao", "Zdravo"), list.map { it.data?.greetings })

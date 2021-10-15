@@ -1,11 +1,12 @@
 package com.apollographql.apollo3
 
+import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
-import com.apollographql.apollo3.api.ExecutionParameters
+import com.apollographql.apollo3.api.HasMutableExecutionContext
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.http.withSendApqExtensions
-import com.apollographql.apollo3.api.http.withSendDocument
+import com.apollographql.apollo3.api.http.sendApqExtensions
+import com.apollographql.apollo3.api.http.sendDocument
 
 /**
  * Information about auto persisted queries
@@ -31,4 +32,10 @@ fun <D : Operation.Data> ApolloResponse<D>.withAutoPersistedQueryInfo(hit: Boole
 /**
  * A shorthand method that sets sendDocument and sendApqExtensions at the same time.
  */
-fun <T> ExecutionParameters<T>.withHashedQuery(hashed: Boolean) where T : ExecutionParameters<T> = withSendDocument(!hashed).withSendApqExtensions(hashed)
+fun <T> HasMutableExecutionContext<T>.hashedQuery(hashed: Boolean) where T : HasMutableExecutionContext<T> = sendDocument(!hashed).sendApqExtensions(hashed)
+
+@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+fun ApolloClient.withHashedQuery(hashed: Boolean) = newBuilder().hashedQuery(hashed).build()
+
+@Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
+fun <D : Operation.Data> ApolloRequest<D>.withHashedQuery(hashed: Boolean) = newBuilder().hashedQuery(hashed).build()

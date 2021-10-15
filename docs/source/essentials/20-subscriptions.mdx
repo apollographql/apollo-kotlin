@@ -20,11 +20,11 @@ Unlike with queries and mutations, a subscription operation can include only _on
 Because subscriptions usually use WebSocket instead of HTTP, you need to customize the `NetworkTransport`. To support this, Apollo Android provides `WebSocketNetworkTransport`:
 
 ```kotlin
-val apolloClient = ApolloClient(
-  networkTransport = WebSocketNetworkTransport(
+val apolloClient = ApolloClient.Builder()
+  .networkTransport(WebSocketNetworkTransport(
     serverUrl = "https://apollo-fullstack-tutorial.herokuapp.com/graphql"
-  )
-)
+  ))
+  .build()
 ```
 
 `WebSocketNetworkTransport` helps you customize the protocol for different backends via the `WsProtocol` interface. It includes built-in support for AppSync with `AppSyncWsProtocol` and [graphql-ws](https://github.com/enisdenjo/graphql-ws) `GraphQLWsProtocol`.
@@ -32,12 +32,12 @@ val apolloClient = ApolloClient(
 For example, you can configure a `graphql-ws` transport like so:
 
 ```kotlin
-val apolloClient = ApolloClient(
-  networkTransport = WebSocketNetworkTransport(
-    serverUrl = "http://localhost:9090/graphql",
-    protocol = GraphQLWsProtocol()
-  )
-)
+val apolloClient = ApolloClient.Builder()
+    .networkTransport(WebSocketNetworkTransport(
+        serverUrl = "http://localhost:9090/graphql",
+        protocol = GraphQLWsProtocol()
+    ))
+    .build()
 ```
 
 ## Listening to a subscription

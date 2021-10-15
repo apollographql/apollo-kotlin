@@ -1,11 +1,11 @@
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
-import com.apollographql.apollo3.cache.normalized.withFetchPolicy
-import com.apollographql.apollo3.cache.normalized.withStore
+import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.fetchPolicy
+import com.apollographql.apollo3.cache.normalized.store
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.rx2.Rx2ApolloClient
@@ -27,7 +27,7 @@ class RxJavaTest {
   fun setUp() {
     val store = ApolloStore(MemoryCacheFactory())
     mockServer = MockServer()
-    rx2ApolloClient = ApolloClient(runBlocking { mockServer.url() }).withStore(store).toRx2ApolloClient()
+    rx2ApolloClient = ApolloClient.Builder().serverUrl(runBlocking { mockServer.url() }).store(store).build().toRx2ApolloClient()
     rx2ApolloStore = store.toRx2ApolloStore()
   }
 
@@ -66,7 +66,7 @@ class RxJavaTest {
   fun writingToTheStoreWorks() {
     rx2ApolloStore.rxWriteOperation(GetRandomQuery(), GetRandomQuery.Data(random = 43)).blockingGet()
     rx2ApolloClient.query(
-        ApolloRequest(GetRandomQuery()).withFetchPolicy(FetchPolicy.CacheOnly)
+        ApolloRequest.Builder(GetRandomQuery()).fetchPolicy(FetchPolicy.CacheOnly).build()
     ).test()
         .awaitDone(1, TimeUnit.SECONDS)
         .assertValue {

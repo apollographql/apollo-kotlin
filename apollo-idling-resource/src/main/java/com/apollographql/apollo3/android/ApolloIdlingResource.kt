@@ -37,8 +37,8 @@ class ApolloIdlingResource(
   }
 }
 
-fun ApolloClient.withIdlingResource(idlingResource: ApolloIdlingResource): ApolloClient {
-  return withFlowDecorator {
+fun ApolloClient.Builder.idlingResource(idlingResource: ApolloIdlingResource): ApolloClient.Builder {
+  return addFlowDecorator {
     it.onStart {
       idlingResource.operationStart()
     }.onCompletion {
@@ -46,3 +46,6 @@ fun ApolloClient.withIdlingResource(idlingResource: ApolloIdlingResource): Apoll
     }
   }
 }
+
+@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+fun ApolloClient.withIdlingResource(idlingResource: ApolloIdlingResource) = newBuilder().idlingResource(idlingResource).build()

@@ -1,5 +1,6 @@
 package test
 
+import IdObjectIdGenerator
 import codegen.models.HeroParentTypeDependentFieldQuery
 import codegen.models.MergedFieldWithSameShapeQuery
 import codegen.models.type.Episode
@@ -8,11 +9,10 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
-import IdObjectIdGenerator
-import com.apollographql.apollo3.cache.normalized.withFetchPolicy
-import com.apollographql.apollo3.cache.normalized.withStore
+import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.fetchPolicy
+import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runTest
@@ -33,7 +33,7 @@ class BasicTest {
         objectIdGenerator = IdObjectIdGenerator
     )
     mockServer = MockServer()
-    apolloClient = ApolloClient(mockServer.url()).withStore(store)
+    apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store).build()
   }
 
   private suspend fun tearDown() {
@@ -42,9 +42,9 @@ class BasicTest {
 
   private fun <D : Query.Data> basicTest(resourceName: String, query: Query<D>, block: ApolloResponse<D>.() -> Unit) = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(readJson(resourceName))
-    var response = apolloClient.query(ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkOnly))
+    var response = apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.NetworkOnly).build())
     response.block()
-    response = apolloClient.query(ApolloRequest(query).withFetchPolicy(FetchPolicy.CacheOnly))
+    response = apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.CacheOnly).build())
     response.block()
   }
 

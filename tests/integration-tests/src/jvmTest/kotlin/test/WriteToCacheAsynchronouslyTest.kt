@@ -5,8 +5,8 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.withStore
-import com.apollographql.apollo3.cache.normalized.withWriteToCacheAsynchronously
+import com.apollographql.apollo3.cache.normalized.store
+import com.apollographql.apollo3.cache.normalized.writeToCacheAsynchronously
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
@@ -33,9 +33,11 @@ class WriteToCacheAsynchronouslyTest {
   private suspend fun setUp() {
     store = ApolloStore(MemoryCacheFactory())
     mockServer = MockServer()
-    apolloClient = ApolloClient(
-        serverUrl = mockServer.url(),
-    ).copy(requestedDispatcher = dispatcher).withStore(store)
+    apolloClient = ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .requestedDispatcher(dispatcher)
+        .store(store)
+        .build()
   }
 
   private suspend fun tearDown() {
@@ -52,8 +54,9 @@ class WriteToCacheAsynchronouslyTest {
 
     mockServer.enqueue(readResource("HeroAndFriendsNameResponse.json"))
     apolloClient.query(
-        ApolloRequest(query)
-            .withWriteToCacheAsynchronously(true)
+        ApolloRequest.Builder(query)
+            .writeToCacheAsynchronously(true)
+            .build()
     )
 
     val record = store.accessCache { it.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE) }
@@ -69,8 +72,9 @@ class WriteToCacheAsynchronouslyTest {
 
     mockServer.enqueue(readResource("HeroAndFriendsNameResponse.json"))
     apolloClient.query(
-        ApolloRequest(query)
-            .withWriteToCacheAsynchronously(false)
+        ApolloRequest.Builder(query)
+            .writeToCacheAsynchronously(false)
+            .build()
     )
 
     val record = store.accessCache { it.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE) }

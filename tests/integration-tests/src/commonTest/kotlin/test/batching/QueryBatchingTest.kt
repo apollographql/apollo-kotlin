@@ -11,13 +11,13 @@ import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.network.http.BatchingHttpEngine
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
-import com.apollographql.apollo3.network.http.withCanBeBatched
+import com.apollographql.apollo3.network.http.canBeBatched
 import com.apollographql.apollo3.testing.runTest
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import okio.Buffer
-import kotlin.test.Test
 import kotlin.test.Ignore
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 import kotlin.test.assertIs
@@ -39,12 +39,14 @@ class QueryBatchingTest {
   @Test
   @Ignore // because it uses a real-life server that might be down
   fun testAgainstARealServer() = runTest(before = { setUp() }, after = { tearDown() }) {
-    apolloClient = ApolloClient(
-        networkTransport = HttpNetworkTransport(
-            serverUrl = "https://apollo-fullstack-tutorial.herokuapp.com/graphql",
-            engine = BatchingHttpEngine(),
+    apolloClient = ApolloClient.Builder()
+        .networkTransport(
+            HttpNetworkTransport(
+                serverUrl = "https://apollo-fullstack-tutorial.herokuapp.com/graphql",
+                engine = BatchingHttpEngine(),
+            )
         )
-    )
+        .build()
 
     val result1 = async {
       apolloClient.query(GetLaunchQuery())
@@ -63,14 +65,16 @@ class QueryBatchingTest {
     """.trimIndent()
 
     mockServer.enqueue(response)
-    apolloClient = ApolloClient(
-        networkTransport = HttpNetworkTransport(
-            httpRequestComposer = DefaultHttpRequestComposer(mockServer.url()),
-            engine = BatchingHttpEngine(
-                batchIntervalMillis = 300
-            ),
+    apolloClient = ApolloClient.Builder()
+        .networkTransport(
+            HttpNetworkTransport(
+                httpRequestComposer = DefaultHttpRequestComposer(mockServer.url()),
+                engine = BatchingHttpEngine(
+                    batchIntervalMillis = 300
+                ),
+            )
         )
-    )
+        .build()
 
     val result1 = async {
       apolloClient.query(GetLaunchQuery())
@@ -103,14 +107,16 @@ class QueryBatchingTest {
   fun queriesAreNotBatchedIfSubmitedFarAppart() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue("""[{"data":{"launch":{"id":"83"}}}]""")
     mockServer.enqueue("""[{"data":{"launch":{"id":"84"}}}]""")
-    apolloClient = ApolloClient(
-        networkTransport = HttpNetworkTransport(
-            httpRequestComposer = DefaultHttpRequestComposer(mockServer.url()),
-            engine = BatchingHttpEngine(
-                batchIntervalMillis = 10
-            ),
+    apolloClient = ApolloClient.Builder()
+        .networkTransport(
+            HttpNetworkTransport(
+                httpRequestComposer = DefaultHttpRequestComposer(mockServer.url()),
+                engine = BatchingHttpEngine(
+                    batchIntervalMillis = 10
+                ),
+            )
         )
-    )
+        .build()
 
     val result1 = async {
       apolloClient.query(GetLaunchQuery())
@@ -132,17 +138,19 @@ class QueryBatchingTest {
   fun queriesCanBeOptOutOfBatching() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue("""{"data":{"launch":{"id":"83"}}}""")
     mockServer.enqueue("""[{"data":{"launch":{"id":"84"}}}]""")
-    apolloClient = ApolloClient(
-        networkTransport = HttpNetworkTransport(
-            httpRequestComposer = DefaultHttpRequestComposer(mockServer.url()),
-            engine = BatchingHttpEngine(
-                batchIntervalMillis = 300
-            ),
+    apolloClient = ApolloClient.Builder()
+        .networkTransport(
+            HttpNetworkTransport(
+                httpRequestComposer = DefaultHttpRequestComposer(mockServer.url()),
+                engine = BatchingHttpEngine(
+                    batchIntervalMillis = 300
+                ),
+            )
         )
-    )
+        .build()
 
     val result1 = async {
-      apolloClient.query(ApolloRequest(GetLaunchQuery()).withCanBeBatched(false))
+      apolloClient.query(ApolloRequest.Builder(GetLaunchQuery()).canBeBatched(false).build())
     }
     val result2 = async {
       // Make sure GetLaunch2Query gets executed after GetLaunchQuery as there is no guarantee otherwise

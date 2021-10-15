@@ -1,15 +1,15 @@
 package com.apollographql.apollo3.api.http
 
 import com.apollographql.apollo3.api.ExecutionContext
-import com.apollographql.apollo3.api.ExecutionParameters
+import com.apollographql.apollo3.api.HasExecutionContext
+import com.apollographql.apollo3.api.HasMutableExecutionContext
 
 
-fun <T> ExecutionParameters<T>.httpMethod() where T : ExecutionParameters<T> = executionContext[HttpMethodContext]?.value ?: HttpMethod.Post
-fun <T> ExecutionParameters<T>.httpHeaders() where T : ExecutionParameters<T> = executionContext[HttpHeadersContext]?.value ?: emptyList()
-fun <T> ExecutionParameters<T>.sendApqExtensions() where T : ExecutionParameters<T> = executionContext[SendApqExtensionsContext]?.value
-    ?: false
+val HasExecutionContext.httpMethod get() = executionContext[HttpMethodContext]?.value ?: HttpMethod.Post
+val HasExecutionContext.httpHeaders get() = executionContext[HttpHeadersContext]?.value ?: emptyList()
+val HasExecutionContext.sendApqExtensions get() = executionContext[SendApqExtensionsContext]?.value ?: false
 
-fun <T> ExecutionParameters<T>.sendDocument() where T : ExecutionParameters<T> = executionContext[SendDocumentContext]?.value ?: true
+val HasExecutionContext.sendDocument get() = executionContext[SendDocumentContext]?.value ?: true
 
 /**
  * Configures whether the request should use GET or POST
@@ -17,23 +17,25 @@ fun <T> ExecutionParameters<T>.sendDocument() where T : ExecutionParameters<T> =
  *
  * Default: [HttpMethod.Post]
  */
-fun <T> ExecutionParameters<T>.withHttpMethod(httpMethod: HttpMethod) where T : ExecutionParameters<T> = withExecutionContext(executionContext + HttpMethodContext(httpMethod))
+fun <T> HasMutableExecutionContext<T>.httpMethod(httpMethod: HttpMethod) where T : HasMutableExecutionContext<T> = addExecutionContext(executionContext + HttpMethodContext(httpMethod))
 
 /**
  *
  */
-fun <T> ExecutionParameters<T>.withHttpHeaders(httpHeaders: List<HttpHeader>) where T : ExecutionParameters<T> = withExecutionContext(
-    executionContext + HttpHeadersContext(httpHeaders() + httpHeaders)
+fun <T> HasMutableExecutionContext<T>.httpHeaders(httpHeaders: List<HttpHeader>) where T : HasMutableExecutionContext<T> = addExecutionContext(
+    executionContext + HttpHeadersContext(this@httpHeaders.httpHeaders + httpHeaders)
 )
-fun <T> ExecutionParameters<T>.withHttpHeader(httpHeader: HttpHeader) where T : ExecutionParameters<T> = withExecutionContext(
-    executionContext + HttpHeadersContext(httpHeaders() + httpHeader)
+
+fun <T> HasMutableExecutionContext<T>.httpHeader(httpHeader: HttpHeader) where T : HasMutableExecutionContext<T> = addExecutionContext(
+    executionContext + HttpHeadersContext(httpHeaders + httpHeader)
 )
-fun <T> ExecutionParameters<T>.withHttpHeader(name: String, value: String) where T : ExecutionParameters<T> = withHttpHeader(
+
+fun <T> HasMutableExecutionContext<T>.httpHeader(name: String, value: String) where T : HasMutableExecutionContext<T> = httpHeader(
     HttpHeader(name, value)
 )
 
-fun <T> ExecutionParameters<T>.withSendApqExtensions(sendApqExtensions: Boolean) where T : ExecutionParameters<T> = withExecutionContext(executionContext + SendApqExtensionsContext(sendApqExtensions))
-fun <T> ExecutionParameters<T>.withSendDocument(sendDocument: Boolean) where T : ExecutionParameters<T> = withExecutionContext(executionContext + SendDocumentContext(sendDocument))
+fun <T> HasMutableExecutionContext<T>.sendApqExtensions(sendApqExtensions: Boolean) where T : HasMutableExecutionContext<T> = addExecutionContext(executionContext + SendApqExtensionsContext(sendApqExtensions))
+fun <T> HasMutableExecutionContext<T>.sendDocument(sendDocument: Boolean) where T : HasMutableExecutionContext<T> = addExecutionContext(executionContext + SendDocumentContext(sendDocument))
 
 
 /**

@@ -1,6 +1,6 @@
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.cache.http.httpCache
 import com.apollographql.apollo3.cache.http.isFromHttpCache
-import com.apollographql.apollo3.cache.http.withHttpCache
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runTest
@@ -27,8 +27,10 @@ class WithHttpCacheTest {
     val mockServer = MockServer()
     val dir = File("build/httpCache")
     dir.deleteRecursively()
-    val apolloClient = ApolloClient(mockServer.url())
-        .withHttpCache(dir, Long.MAX_VALUE)
+    val apolloClient = ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .httpCache(dir, Long.MAX_VALUE)
+        .build()
     mockServer.enqueue(mockResponse)
 
     runBlocking {

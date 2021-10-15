@@ -117,11 +117,17 @@ internal class CombinedExecutionContext(
 }
 
 /**
- * Base class for [ApolloClient] and [ApolloRequest]
+ * Implemented by classes that have an [ExecutionContext]: [ApolloClient] and [ApolloRequest].
  *
- * This allows to set parameters on [ApolloClient] and override them per-request in [ApolloRequest] using the same API
+ * This allows to set parameters on [ApolloClient] and override them per-request in [ApolloRequest] using the same API.
  */
-interface ExecutionParameters<T> where T : ExecutionParameters<T> {
+interface HasExecutionContext {
   val executionContext: ExecutionContext
-  fun withExecutionContext(executionContext: ExecutionContext): T
+}
+
+/**
+ * Implemented by classes whose [ExecutionContext] can be mutated: [ApolloClient.Builder] and [ApolloRequest.Builder].
+ */
+interface HasMutableExecutionContext<T> : HasExecutionContext where T : HasMutableExecutionContext<T> {
+  fun addExecutionContext(executionContext: ExecutionContext): T
 }
