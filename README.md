@@ -87,6 +87,22 @@ repositories {
 }
 ```
 
+## Multiplatform
+
+Apollo Android is a [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html) project. 
+
+Here's the current matrix of supported features per platform:
+
+|  | `jvm` | `iosX64`, `iosArm64` | `macosX64` | `macosArm64` | `js` |
+| --- | --- | --- | --- | --- | --- |
+| `apollo-api` (models)|✅|✅|✅|🚫|✅|
+| `apollo-runtime` (network, query batching, apq, ...) |✅|✅|✅|🚫|🚫|
+| `apollo-normalized-cache` |✅|✅|✅|🚫|🚫|
+| `apollo-normalized-cache-sqlite` |✅|✅|✅|🚫|🚫|
+| `apollo-http-cache` |✅|🚫|🚫|🚫|🚫|
+| `apollo-adapters` |✅|✅|✅|🚫|✅|
+
+
 ## Requirements
 
 Apollo Android runs on the following platforms:
