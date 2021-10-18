@@ -37,7 +37,7 @@ To learn more about the process of normalization, check this [blog post](https:/
 
 ## Storing your data in memory
 
-Apollo Android comes with an `MemoryCache` that will store your data in memory:
+Apollo Android comes with a `MemoryCache` that will store your data in memory:
 
 <MultiCodeBlock>
 
@@ -242,7 +242,7 @@ One big advantage of using a normalized cache is that your UI can now react to c
 
 ## Interacting with the cache
 
-To manipulate the cache directly, `ApolloStore` exposes `read` and `write` methods:
+To manipulate the cache directly, `ApolloStore` exposes `readOperation`/`readFragment` and `writeOperation`/`writeFragment` methods:
 
 ```kotlin
   // Reading data from the store
