@@ -26,6 +26,7 @@ internal object Identifier {
   const val id = "id"
   const val name = "name"
   const val document = "document"
+  const val Data = "Data"
 
   const val cacheKeyForObject = "cacheKeyForObject"
   const val field = "field"
@@ -44,4 +45,9 @@ internal object Identifier {
   const val UNKNOWN__ = "UNKNOWN__"
   const val rawValue = "rawValue"
   const val types = "types"
+
+  /**
+   * Kotlin language identifiers
+   */
+  const val Companion = "Companion"
 }

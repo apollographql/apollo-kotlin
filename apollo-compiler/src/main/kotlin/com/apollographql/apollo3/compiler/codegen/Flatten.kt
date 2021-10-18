@@ -86,7 +86,7 @@ private fun IrModelGroup.walk(depth: Int, flattenNamesInOrder: Boolean, atDepth:
 
 internal fun IrModelGroup.maybeFlatten(
     flatten: Boolean,
-    flattenNamesInOrder: Boolean,
+    flattenNamesInOrder: Boolean = true,
     atDepth: Int = 0,
     excludeNames: Set<String> = emptySet()
 ): List<IrModelGroup> {
