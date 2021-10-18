@@ -78,8 +78,6 @@ apollo {
 }
 ```
 
-> At the time of writing, Java codegen is not working but will be added in a future update. For details, see [this GitHub issue](https://github.com/apollographql/apollo-android/issues/2616).
-
 ### `apollo-coroutines-support` is removed
 
 Apollo Android 3.x is kotlin first and exposes suspend functions by default. `apollo-coroutines-support` is not needed anymore:
@@ -137,11 +135,11 @@ apollo {
 
 ### Specifying schema and .graphql files
 
-Apollo Android 2.x has a complex logic to determine what files to use as input. For an example, it resolves `sourceFolder` relative to multiple Android variants or kotlin sourceSets, tries to get the .graphql files from the schema location and the other way around too. This logic works in most cases but makes troubleshooting more complicated, especially in more complex scenarios. Also, this runs the GraphQL compiler multiple times for different source sets even if in the vast majority of cases, the same .graphql files are used.
+Apollo Android 2.x has a complex logic to determine what files to use as input. For example, it resolves `sourceFolder` relative to multiple Android variants or kotlin sourceSets, tries to get the .graphql files from the schema location and the other way around too. This logic works in most cases but makes troubleshooting more complicated, especially in more complex scenarios. Also, this runs the GraphQL compiler multiple times for different source sets even if in the vast majority of cases, the same .graphql files are used.
 
 Apollo Android 3.x simplifies this setup. Each `Service` is exactly one compilation. For Android projects, GraphQL classes are generated once and then added to all variants.
 
-If you previously used `graphqlSourceDirectorySet` to explicitely specify the location of GraphQL files, you can now use `srcDir`:
+If you previously used `graphqlSourceDirectorySet` to explicitly specify the location of GraphQL files, you can now use `srcDir`:
 
 
 ```kotlin
@@ -181,7 +179,7 @@ If you need different GraphQL operations for different variants, you can create 
 
 ### Package name
 
-Apollo Android 2.x computes its target package name based on a combination of uses the file path of GraphQL operation and schema files as well as `packageName` and `rootPackageName` options to compute the target package name. While this is very flexible, it's not easy to anticipate the final package name that is going to be used.
+Apollo Android 2.x computes its target package name based on a combination of the path of GraphQL operation and schema files, and the `packageName` and `rootPackageName` options. While this is very flexible, it's not easy to anticipate the final package name that is going to be used.
 
 Apollo Android 3.x uses a flat package name by default using the `packageName` option:
 
@@ -217,25 +215,25 @@ apollo {
 }
 ```
 
-## Constructors
+## Builders
 
-Apollo Android 2.x uses the `Builder` pattern in various places to create new instances.
-
-Apollo Android 3.x instead uses Kotlin default arguments and exposes constructors as top-level functions.
-
-For example, for `ApolloClient`:
+On Apollo Android 2.x you would use the `ApolloClient.builder()` method to instantiate a new Builder. With 3.x, use the `ApolloClient.Builder()` constructor instead (notice the capital `B`).
 
 ```kotlin
 // Replace
 val apolloClient = ApolloClient.builder()
-    .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com")
+    .serverUrl(serverUrl)
+    // ...other Builder methods
     .build()
 
 // With
-val apolloClient = ApolloClient(serverUrl = "https://apollo-fullstack-tutorial.herokuapp.com")
+val apolloClient = ApolloClient.Builder()
+    .serverUrl(serverUrl)
+    // ...other Builder methods
+    .build()
 ```
 
-To customize the `OkHttpClient`:
+Using a custom HttpClient on Apollo Android 3.x is different from doing so on 2.x due to the more platform-agnostic nature of the API:
 
 ```kotlin
 // Replace
@@ -245,17 +243,19 @@ val apolloClient = ApolloClient.builder()
     .build()
 
 // With
-val apolloClient = ApolloClient(
-  networkTransport = HttpNetworkTransport(
-    server = serverUrl,
-    okHttpClient = okHttpClient
-  )
-)
+val apolloClient = ApolloClient.Builder()
+    .networkTransport(
+        HttpNetworkTransport(
+            serverUrl = serverUrl,
+            engine = DefaultHttpEngine(okHttpClient)
+        )
+    )
+    .build()
 ```
 
 ## Coroutines APIs
 
-Apollo Android 2.x has callback APIs that can become verbose and require explicitely handling cancellation.
+Apollo Android 2.x has callback APIs that can become verbose and require explicitly handling cancellation.
 
 Apollo Android 3.x exposes more concise coroutines APIs that handle cancellation automatically through the coroutine scope.
 
@@ -281,11 +281,11 @@ Apollo Android 3 ships an optional [apollo-adapters](https://apollographql.githu
 * `LongAdapter` for `java.lang.Long`
 * `BigDecimalAdapter` for a MPP `BigDecimal` class holding big decimal values
 
-To include them, add the below to your gradle file:
+To include them, add this dependency to your gradle file:
 
 ```kotlin
 dependencies {
-  implementation("com.apollographql.apollo:apollo-adapters:$version")
+  implementation("com.apollographql.apollo3:apollo-adapters:$version")
 }
 ```
 
@@ -297,7 +297,7 @@ The Custom Scalar adapters API has changed a lot to support nullable and absent 
 // Replace
 val dateAdapter = object : CustomTypeAdapter<Date> {
   override fun decode(value: CustomTypeValue<*>): Date {
-    DATE_FORMAT.parse(value.value.toString())
+    return DATE_FORMAT.parse(value.value.toString())
   }
 
   override fun encode(value: Date): CustomTypeValue<*> {
@@ -337,14 +337,14 @@ val geoPointAdapter = object : Adapter<GeoPoint> {
 }
 ```
 
-After you define your adapters, you need to register them with your `ApolloClient` instance. To do so, call `ApolloClient.withCustomScalarAdapter` once for each adapter:
+After you define your adapters, you need to register them with your `ApolloClient` instance. To do so, call `ApolloClient.Builder.addCustomScalarAdapter` once for each adapter:
 
 ```kotlin
 // Replace
 val apolloClient = apolloClientBuilder.addCustomTypeAdapter(CustomType.DATE, dateAdapter).build()
 
 // With
-val apolloClient = ApolloClient("https://..").withCustomScalarAdapter(Types.Date, dateAdapter)
+val apolloClient = apolloClientBuilder.addCustomScalarAdapter(Types.Date, dateAdapter).build()
 ```
 
 This method takes a type-safe generated class from `Types`, along with its corresponding adapter.
@@ -379,12 +379,14 @@ val cacheFactory = LruNormalizedCacheFactory(
 val apolloClient = ApolloClient.builder()
   .serverUrl("https://...")
   .normalizedCache(cacheFactory)
-  .build())
+  .build()
 
 // With
 val cacheFactory = MemoryCacheFactory(maxSizeBytes = 10 * 1024 * 1024)
-val apolloClient = ApolloClient("https://...")
-                      .withNormalizedCache(cacheFactory)
+val apolloClient = ApolloClient.Builder()
+  .serverUrl("https://...")
+  .normalizedCache(cacheFactory)
+  .build()
 ```
 
 Configuring the fetch policy is now made on an `ApolloRequest` instance:
@@ -398,7 +400,7 @@ val response = apolloClient.query(query)
                       .await()
 
 // With
-val request = ApolloRequest(query).withFetchPolicy(CacheFirst)
+val request = ApolloRequest.Builder(query).fetchPolicy(CacheFirst).build()
 val response = apolloClient.query(request)
 ```
 
@@ -415,8 +417,10 @@ val apolloClient = ApolloClient.builder()
     .build()
 
 // With
-val apolloClient = ApolloClient("https://...")
-                      .withHttpCache(File(cacheDir, "apolloCache"), 1024 * 1024)
+val apolloClient = ApolloClient.Builder()
+    .serverUrl("https://...")
+    .httpCache(File(cacheDir, "apolloCache"), 1024 * 1024)
+    .build()
 ```
 
 Configuring the HTTP fetch policy is now made on an `ApolloRequest` instance:
@@ -430,7 +434,7 @@ val response = apolloClient.query(query)
                       .await()
 
 // With
-val request = ApolloRequest(query).withHttpFetchPolicy(CacheFirst)
+val request = ApolloRequest.Builder(query).httpFetchPolicy(CacheFirst).build()
 val response = apolloClient.query(request)
 ```
 
@@ -486,7 +490,7 @@ val cacheKeyResolver = object : CacheKeyResolver() {
 val apolloClient = ApolloClient("https://").withNormalizedCache(
     normalizedCacheFactory = cacheFactory,
     objectIdGenerator = objectIdGenerator,
-    cacheKeyResolver = cacheKeyResolver
+    cacheResolver = cacheKeyResolver
 )
 ```
 
