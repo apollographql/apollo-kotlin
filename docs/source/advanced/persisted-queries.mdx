@@ -7,16 +7,22 @@ import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 ## Automatic persisted queries
 
 Apollo Android supports [Automatic Persisted Queries](https://www.apollographql.com/docs/apollo-server/performance/apq/).
-Your server needs to supports it (apollo-server supports it out of the box).
+Your server needs to support it (apollo-server supports it out of the box).
 Enable the feature in apollo-android like so:
 
 ```kotlin
-val apolloClient = ApolloClient("https://...").withAutoPersistedQueries()
+val apolloClient = ApolloClient.Builder()
+    .serverUrl("https://...")
+    .autoPersistedQueries()
+    .build()
 ```
 
 You can optionally configure apollo-android to send GET HTTP verbs for queries, to benefit from caching if your server uses a CDN:
 ```kotlin
-val apolloClient = ApolloClient("https://...").withAutoPersistedQueries(method = HttpMethod.Get)
+val apolloClient = ApolloClient.Builder()
+    .serverUrl("https://...")
+    .autoPersistedQueries(httpMethodForDocumentQueries = HttpMethod.Get)
+    .build()
 ```
 
 
@@ -43,7 +49,7 @@ apollo {
     operationIdGenerator.set(object: com.apollographql.apollo3.compiler.OperationIdGenerator {
         override val version = "my-md5-version1"
 
-        override fun apply(operationDocument: String, operationFilepath: String): String {
+        override fun apply(operationDocument: String, operationName: String): String {
             return operationDocument.md5()
         }
     })
@@ -55,7 +61,7 @@ import com.apollographql.apollo3.compiler.OperationIdGenerator
 
 apollo {
   operationIdGenerator = new OperationIdGenerator() {
-    String apply(String operationDocument, String operationFilepath) {
+    String apply(String operationDocument, String operationName) {
       return operationDocument.md5()
     }
 

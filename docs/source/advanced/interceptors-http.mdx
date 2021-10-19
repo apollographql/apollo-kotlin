@@ -9,7 +9,7 @@ The interface is a single method. For an example, implementing an authentication
 ```kotlin
 class AuthorizationInterceptor(val token: String) : HttpInterceptor {
   override suspend fun intercept(request: HttpRequest,  chain: HttpInterceptorChain): HttpResponse {
-    return chain.proceed(request.withHeader("Authorization", "Bearer $token"))
+    return chain.proceed(request.newBuilder().header("Authorization", "Bearer $token").build())
   }
 }
 ```
@@ -17,12 +17,14 @@ class AuthorizationInterceptor(val token: String) : HttpInterceptor {
 Then add the interceptor to your `HttpNetworkTransport`:
 
 ```kotlin
-val apolloClient = ApolloClient(
-    networkTransport = HttpNetworkTransport(
-        serverUrl = "https://",
-        interceptors = listOf(AuthorizationInterceptor(token)
+val apolloClient = ApolloClient.Builder()
+    .networkTransport(
+        HttpNetworkTransport(
+            serverUrl = "https://",
+            interceptors = listOf(AuthorizationInterceptor(token))
+        )
     )
-)
+    .build()
 ```
 
 By default, Apollo Android comes with `ClientAwarenessInterceptor` and `LoggingInterceptor`.
@@ -31,15 +33,17 @@ By default, Apollo Android comes with `ClientAwarenessInterceptor` and `LoggingI
 
 If your project is a JVM only project and you already have an `OkHttp` `Interceptor`, you can also reuse it:
 
-```
+```kotlin
 val okHttpClient = OkHttpClient.Builder()
-                      .addInterceptor(interceptor)
-                      .build()
+    .addInterceptor(interceptor)
+    .build()
 
-val apolloClient = ApolloClient(
-    networkTransport = HttpNetworkTransport(
-        httpRequestComposer = DefaultHttpRequestComposer("https://"),
-        engine = DefaultHttpEngine(okHttpClient)
+val apolloClient = ApolloClient.Builder()
+    .networkTransport(
+        HttpNetworkTransport(
+            serverUrl = "https://",
+            engine = DefaultHttpEngine(okHttpClient)
+        )
     )
-)
+    .build()
 ```

@@ -66,13 +66,15 @@ This example shows an asynchronous wrappedClient that runs the network request f
 Once you have implemented your HttpEngine, you can register it in your [ApolloClient](https://apollographql.github.io/apollo-android/kdoc/apollo-runtime/com.apollographql.apollo3/-apollo-client/index.html) using [HttpNetworkTransport](https://apollographql.github.io/apollo-android/kdoc/apollo-runtime/com.apollographql.apollo3.network.http/-http-network-transport/index.html):
 
 ```kotlin
-    // Use your HttpEngine
-    val client = ApolloClient(
-        networkTransport = HttpNetworkTransport(
+// Use your HttpEngine
+val client = ApolloClient.Builder()
+    .networkTransport(
+        HttpNetworkTransport(
             serverUrl = "https://com.example/graphql",
             engine = MyHttpEngine(wrappedClient)
         )
     )
+    .build()
 ```
 
 This is everything needed. Your GraphQL queries will then use `MyHttpEngine` to execute the HTTP requests.
