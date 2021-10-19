@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen
 
+import com.apollographql.apollo3.api.test.StubbedProperty
+
 /**
  * A list of constant [ResolverClassName] that don't use `class.name` and therefore survive proguard/R8
  */
@@ -48,4 +50,6 @@ internal object ClassNames {
   val DefaultTestResolver = ResolverClassName(apolloApiTestPackageName, "DefaultTestResolver")
   val MapJsonReader = ResolverClassName(apolloApiJsonPackageName, "MapJsonReader")
   val MapBuilder = ResolverClassName(apolloApiJsonPackageName, "MapBuilder")
+  val StubbedProperty = ResolverClassName(apolloApiTestPackageName, "StubbedProperty")
+  val MandatoryTypenameProperty = ResolverClassName(apolloApiTestPackageName, "MandatoryTypenameProperty")
 }

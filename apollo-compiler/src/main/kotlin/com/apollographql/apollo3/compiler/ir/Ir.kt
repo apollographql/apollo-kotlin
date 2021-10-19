@@ -164,8 +164,8 @@ data class IrModel(
  * @param condition a condition for reading the property
  * @param isSynthetic synthetic properties are special as we need to rewind the reader before reading them
  * @param requiresBuffering true if this property contains synthetic properties
- * @param hidden allows to hide a property from the model but still send it to the server and have it in the response
- * This is used for typename for an example
+ * @param hidden allows to hide a property from the model but still have it part of the selections.
+ * This is used for typename in compat models because the adapters need to read __typename
  */
 data class IrProperty(
     val info: IrFieldInfo,

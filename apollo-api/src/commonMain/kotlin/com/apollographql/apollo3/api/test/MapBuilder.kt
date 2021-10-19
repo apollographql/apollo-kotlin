@@ -5,11 +5,11 @@ import kotlin.reflect.KProperty
 
 
 abstract class MapBuilder {
-  private val map = mutableMapOf<String, Any?>()
+  protected val __map = mutableMapOf<String, Any?>()
 
   fun <T> resolve(responseName: String, type: CompiledType, vararg ctors: () -> Map<String, Any?>): T {
-    return if (map.contains(responseName)) {
-      map[responseName] as T
+    return if (__map.contains(responseName)) {
+      __map[responseName] as T
     } else {
       val resolver = currentTestResolver ?: error("No TestResolver found, wrap with withTestResolver() {}")
       return resolver.resolve(responseName, type, ctors)
@@ -47,7 +47,7 @@ class MandatoryTypenameProperty {
       property: KProperty<*>,
   ): String {
     check(typename != null) {
-      "__typename is not known at compile-time for fallback types. Please specify it explicitely"
+      "__typename is not known at compile-time for this type. Please specify it explicitely"
     }
     return typename!!
   }

@@ -11,11 +11,12 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinMemberNames
-import com.apollographql.apollo3.compiler.codegen.kotlin.test.TestBuilderBuilder
-import com.apollographql.apollo3.compiler.codegen.maybeFlatten
+import com.apollographql.apollo3.compiler.codegen.kotlin.test.TBuilderBuilder
+import com.apollographql.apollo3.compiler.ir.IrFieldInfo
+import com.apollographql.apollo3.compiler.ir.IrModel
 import com.apollographql.apollo3.compiler.ir.IrModelGroup
 import com.apollographql.apollo3.compiler.ir.IrOperation
-import com.squareup.kotlinpoet.ClassName
+import com.apollographql.apollo3.compiler.ir.PossibleTypes
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.LambdaTypeName
@@ -32,10 +33,10 @@ class TestBuildersBuilder(
   private val packageName = context.layout.operationTestBuildersPackageName(operation.filePath)
   private val simpleName = context.layout.operationTestBuildersWrapperName(operation)
 
-  private val testBuildersBuilder = dataModelGroup.maybeFlatten(flatten).map {
-    TestBuilderBuilder(
+  private val testBuildersBuilder = dataModelGroup.toTBuilders().single().maybeFlatten(flatten).map {
+    TBuilderBuilder(
         context = context,
-        modelGroup = it,
+        tbuilder = it,
         path = listOf(packageName, simpleName),
         inner = false
     )
@@ -56,7 +57,7 @@ class TestBuildersBuilder(
   private fun typeSpec(): TypeSpec {
     return TypeSpec.objectBuilder(simpleName)
         .addTypes(
-            testBuildersBuilder.flatMap { it.build() }
+            testBuildersBuilder.map { it.build() }
         )
         .addFunction(
             dataExtension()
@@ -125,4 +126,43 @@ class TestBuildersBuilder(
     builder.endControlFlow()
     return builder.build()
   }
+}
+
+internal data class TBuilder(
+    val kotlinName: String,
+    val id: String,
+    val possibleTypes: PossibleTypes,
+    val properties: List<IrFieldInfo>,
+    val ctors: List<TCtor>,
+    val nestedTBuilders: List<TBuilder>
+)
+
+internal data class TCtor(
+    val kotlinName: String,
+    val id: String,
+)
+
+internal fun IrModel.toTBuilder(): TBuilder {
+  val nestedBuilders = modelGroups.flatMap { it.toTBuilders() }
+  return TBuilder(
+      kotlinName = modelName,
+      properties = properties.map { it.info },
+      id = id,
+      ctors = nestedBuilders.map { TCtor(it.kotlinName, it.id) },
+      nestedTBuilders = nestedBuilders,
+      possibleTypes = possibleTypes
+  )
+}
+
+internal fun IrModelGroup.toTBuilders(): List<TBuilder> {
+  return models.filter { !it.isInterface }.map {
+    it.toTBuilder()
+  }
+}
+
+internal fun TBuilder.maybeFlatten(flatten: Boolean): List<TBuilder> {
+  if (!flatten) {
+    return listOf(this)
+  }
+  return listOf(this.copy(nestedTBuilders = emptyList())) + nestedTBuilders.flatMap { it.maybeFlatten(flatten) }
 }

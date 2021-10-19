@@ -53,16 +53,21 @@ class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?) {
     }
     return result
   }
+
   fun canResolveSchemaType(name: String) = resolve(ResolverKey(ResolverKeyKind.SchemaType, name)) != null
 
   private fun register(kind: ResolverKeyKind, id: String, className: ClassName) = classNames.put(ResolverKey(kind, id), className)
 
-  fun resolveIrType(type: IrType): TypeName {
+  fun resolveIrType(type: IrType, override: (IrType) -> TypeName? = { null }): TypeName {
+    override(type)?.let {
+      return it
+    }
+
     if (type is IrNonNullType) {
       return resolveIrType(type.ofType).copy(nullable = false)
     }
 
-    return when  {
+    return when {
       type is IrNonNullType -> error("") // make the compiler happy, this case is handled as a fast path
       type is IrOptionalType -> Optional::class.asClassName().parameterizedBy(resolveIrType(type.ofType))
       type is IrListType -> List::class.asClassName().parameterizedBy(resolveIrType(type.ofType))
@@ -81,7 +86,7 @@ class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?) {
 
   fun adapterInitializer(type: IrType, requiresBuffering: Boolean): CodeBlock {
     if (type !is IrNonNullType) {
-      return when  {
+      return when {
         type is IrScalarType && type.name == "ID" -> nullableScalarAdapter("NullableStringAdapter")
         type is IrScalarType && type.name == "Boolean" -> nullableScalarAdapter("NullableBooleanAdapter")
         type is IrScalarType && type.name == "String" -> nullableScalarAdapter("NullableStringAdapter")
