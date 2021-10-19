@@ -45,6 +45,8 @@ internal object Identifier {
   const val UNKNOWN__ = "UNKNOWN__"
   const val rawValue = "rawValue"
   const val types = "types"
+  const val testResolver = "testResolver"
+  const val block = "block"
 
   /**
    * Kotlin language identifiers
