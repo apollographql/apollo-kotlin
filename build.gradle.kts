@@ -162,3 +162,16 @@ tasks.named("dependencyUpdates").configure {
     listOf("alpha", "beta", "rc").any { candidate.version.toLowerCase().contains(it) }
   }
 }
+
+tasks.withType(org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask::class.java)
+    .named("kotlinNpmInstall")
+    .configure {
+      args.addAll(
+          listOf(
+              "--network-concurrency",
+              "1",
+              "--mutex",
+              "network"
+          )
+      )
+    }

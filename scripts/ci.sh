@@ -5,13 +5,6 @@ set -x
 
 export PATH="$ANDROID_HOME"/tools/bin:$PATH
 
-# Workaround for `Process 'Resolving NPM dependencies using yarn' returns 137`
-# Looks like starting node takes too many resources and fails give it its own self-contained
-# Gradle instance
-# See also https://youtrack.jetbrains.com/issue/KT-47215#focus=Comments-27-5298779.0-0
-./gradlew -p tests :apollo-android:apollo-api:compileKotlinJsIr
-./gradlew --stop
-
 ./gradlew -p tests fullCheck
 
 # check that the public API did not change with Metalava
