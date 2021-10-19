@@ -2,20 +2,19 @@
 title: "10. Authenticate your queries"
 ---
 
-In this section, you will book a flight 🚀! Booking a flight requires being authenticated to the server so the correct person is sent to space! To do that, and since Apollo Android is using [OkHttp](https://square.github.io/okhttp/) to handle HTTP requests, you will use OkHttp [Interceptors](https://square.github.io/okhttp/interceptors/) to add headers to your GraphQL requests.
+In this section, you will book a flight 🚀! Booking a flight requires being authenticated to the server so the correct person is sent to space! To do that, you will use an [ApolloInterceptor](https://apollographql.github.io/apollo-android/kdoc/apollo-runtime/com.apollographql.apollo3.interceptor/-apollo-interceptor/index.html) to add headers to your GraphQL requests.
 
 ## Add the interceptor
 
 In `Apollo.kt`, add the `AuthorizationInterceptor` class:
 
 ```kotlin:title=app/src/main/kotlin/com/example/rocketreserver/Apollo.kt
-private class AuthorizationInterceptor(val context: Context): Interceptor {
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val request = chain.request().newBuilder()
-            .addHeader("Authorization", User.getToken(context) ?: "")
+private class AuthorizationInterceptor(val context: Context) : ApolloInterceptor {
+    override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+        val requestWithHeader = request.newBuilder()
+            .httpHeader("Authorization", User.getToken(context) ?: "")
             .build()
-
-        return chain.proceed(request)
+        return chain.proceed(requestWithHeader)
     }
 }
 ```
@@ -27,12 +26,9 @@ This interceptor appends an `"Authorization: $token"` HTTP header to every reque
 Create a custom `OkHttpClient` that will use this interceptor and pass it to the `ApolloClient`:
 
 ```kotlin:title=app/src/main/kotlin/com/example/rocketreserver/Apollo.kt
-    instance = ApolloClient.builder()
-        .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/")
-        .okHttpClient(OkHttpClient.Builder()
-            .addInterceptor(AuthorizationInterceptor(context))
-            .build()
-        )
+    val apolloClient = ApolloClient.Builder()
+        .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com")
+        .addInterceptor(AuthorizationInterceptor(context))
         .build()
 ```
 
@@ -40,12 +36,9 @@ Notice that `Apollo.kt` now requires a context to create the interceptor and rea
 
 ```kotlin:title=app/src/main/kotlin/com/example/rocketreserver/Apollo.kt
 fun apolloClient(context: Context): ApolloClient {
-    return ApolloClient.builder()
-        .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/")
-        .okHttpClient(OkHttpClient.Builder()
-            .addInterceptor(AuthorizationInterceptor(context))
-            .build()
-        )
+    return ApolloClient.Builder()
+        .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com")
+        .addInterceptor(AuthorizationInterceptor(context))
         .build()
 }
 ```
@@ -74,13 +67,9 @@ fun apolloClient(context: Context): ApolloClient {
         return instance!!
     }
 
-    instance = ApolloClient.builder()
-        .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/")
-        .okHttpClient(
-            OkHttpClient.Builder()
-            .addInterceptor(AuthorizationInterceptor(context))
-            .build()
-        )
+    instance = ApolloClient.Builder()
+        .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com")
+        .addInterceptor(AuthorizationInterceptor(context))
         .build()
 
     return instance!!
@@ -139,7 +128,7 @@ lifecycleScope.launchWhenResumed {
     }
 
     val response = try {
-        apolloClient(requireContext()).mutate(mutation).await()
+        apolloClient(requireContext()).mutate(mutation)
     } catch (e: ApolloException) {
         configureButton(isBooked)
         return@launchWhenResumed

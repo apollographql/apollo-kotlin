@@ -42,7 +42,7 @@ modify `LaunchListAdapter.kt` to get a callback when the end of the list is reac
     var onEndOfListReached: (() -> Unit)? = null
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val launch = launches.get(position)
+        val launch = launches[position]
         // ...
 
         if (position == launches.size - 1) {
@@ -87,7 +87,7 @@ Start a coroutine and execute the query. Replace the previous single query with 
       var cursor: String? = null
       for (item in channel) {
           val response = try {
-              apolloClient.query(LaunchListQuery(cursor = Input.fromNullable(cursor))).await()
+              apolloClient.query(LaunchListQuery(cursor))
           } catch (e: ApolloException) {
               Log.d("LaunchList", "Failure", e)
               return@launchWhenResumed
