@@ -90,10 +90,9 @@ In `MainActivity`, register your subscription and start listening to events usin
         lifecycleScope.launch {
             apolloClient(this@MainActivity).subscribe(TripsBookedSubscription()).toFlow()
                 .collect {
-                    val trips = it.data?.tripsBooked
-                    val text = when {
-                        trips == null -> getString(R.string.subscriptionError)
-                        trips == -1 -> getString(R.string.tripCancelled)
+                    val text = when (val trips = it.data?.tripsBooked) {
+                        null -> getString(R.string.subscriptionError)
+                        -1 -> getString(R.string.tripCancelled)
                         else -> getString(R.string.tripBooked, trips)
                     }
                     Snackbar.make(

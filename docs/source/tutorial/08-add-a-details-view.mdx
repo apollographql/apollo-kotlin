@@ -204,8 +204,7 @@ Add a `configureButton` method that redirects to the login page:
         }
 
         binding.bookButton.setOnClickListener {
-            val context = context
-            if (context != null && User.getToken(context) == null) {
+            if (User.getToken(requireContext()) == null) {
                 findNavController().navigate(
                     R.id.open_login
                 )

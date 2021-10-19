@@ -12,7 +12,7 @@ cd apollo-android-tutorial
 git checkout initial
 ```
 
-At any time, if you want to view a completed version of the project, checkout the `master` branch.
+At any time, if you want to view a completed version of the project, checkout the `main` branch.
 
 ## Open the project in Android Studio
 
@@ -32,7 +32,7 @@ Now you will add Apollo Android to the project.
 
 You can find the latest version of Apollo Android from the [github releases page](https://github.com/apollographql/apollo-android/releases). It is also displayed at the top of the [apollo-android repo](https://github.com/apollographql/apollo-android/).
 
-This tutorial uses `2.2.0` because it is the latest version at the time of writing. Feel free to use a more recent version if one is available.
+This tutorial uses `3.0.0` because it is the latest version at the time of writing. Feel free to use a more recent version if one is available.
 
 ## Apply the plugin
 
@@ -42,7 +42,7 @@ Apply the Apollo plugin in `app/build.gradle.kts`. There are two `build.gradle.k
 plugins {
     id("com.android.application")
     // ...
-    id("com.apollographql.apollo3").version("2.2.0")
+    id("com.apollographql.apollo3").version("3.3.0")
 }
 ```
 
@@ -64,11 +64,8 @@ Now add `apollo-runtime` and `apollo-coroutines-support` to the list of dependen
 
 ```groovy:title=app/build.gradle.kts
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     // ...
-    implementation 'com.apollographql.apollo3:apollo-runtime:2.2.0'
-    implementation 'com.apollographql.apollo3:deprecated-apollo-coroutines-support:2.2.0'
-    // ...
+    implementation 'com.apollographql.apollo3:apollo-runtime:3.0.0'
 }
 ```
 
