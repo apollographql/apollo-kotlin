@@ -23,6 +23,7 @@ DOs and DON'Ts
 * Include tests when adding new features. When fixing bugs, start with adding a test that highlights how the current behavior is broken.
 * Keep the discussions focused. When a new or related topic comes up, it's often better to create a new issue than to side track the discussion.
 * Run all Gradle verification tasks (`./gradlew check`) before submitting a pull request.
+* Run `./gradlew metalavaGenerateSignature` when changing the public API so that API compatibility can be enforced.
 
 ### DON'T:
 
