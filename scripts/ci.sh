@@ -9,7 +9,7 @@ export PATH="$ANDROID_HOME"/tools/bin:$PATH
 # Looks like starting node takes too many resources and fails give it its own self-contained
 # Gradle instance
 # See also https://youtrack.jetbrains.com/issue/KT-47215#focus=Comments-27-5298779.0-0
-./gradlew  kotlinNpmCachesSetup kotlinNpmInstall
+./gradlew -p tests :apollo-android:apollo-api:compileKotlinJsIr
 ./gradlew --stop
 
 ./gradlew -p tests fullCheck
