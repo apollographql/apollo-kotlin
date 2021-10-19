@@ -164,8 +164,7 @@ tasks.named("dependencyUpdates").configure {
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask::class.java)
-    .named("kotlinNpmInstall")
-    .configure {
+    .all {
       args.addAll(
           listOf(
               "--network-concurrency",
