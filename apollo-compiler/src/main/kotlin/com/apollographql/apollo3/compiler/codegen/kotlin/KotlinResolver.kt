@@ -209,4 +209,8 @@ class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?) {
   fun registerSchemaType(name: String, className: ClassName) = register(ResolverKeyKind.SchemaType, name, className)
   fun registerModel(path: String, className: ClassName) = register(ResolverKeyKind.Model, path, className)
   fun registerCustomScalar(name: String, className: ClassName) = register(ResolverKeyKind.CustomScalarTarget, name, className)
+
+
+  fun registerTestBuilder(path: String, className: ClassName) = register(ResolverKeyKind.TestBuilder, path, className)
+  fun resolveTestBuilder(path: String) = resolveAndAssert(ResolverKeyKind.TestBuilder, path)
 }

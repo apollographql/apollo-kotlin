@@ -1,10 +1,10 @@
-package com.apollographql.apollo3.api.internal.json
+package com.apollographql.apollo3.api.json
 
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader.Companion.MAX_STACK_SIZE
 import com.apollographql.apollo3.api.internal.json.Utils.readRecursivelyFast
-import com.apollographql.apollo3.api.json.JsonNumber
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.exception.JsonDataException
+import com.apollographql.apollo3.api.internal.json.toDoubleExact
+import com.apollographql.apollo3.api.internal.json.toIntExact
+import com.apollographql.apollo3.api.internal.json.toLongExact
 
 /**
  * A [JsonReader] that reads data from a regular [Map<String, Any?>]
