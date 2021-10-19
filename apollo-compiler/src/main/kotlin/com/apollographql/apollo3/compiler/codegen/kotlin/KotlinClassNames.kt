@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin
 
+import com.apollographql.apollo3.api.test.MandatoryTypenameProperty
+import com.apollographql.apollo3.api.test.StubbedProperty
 import com.apollographql.apollo3.api.test.TestResolver
 import com.apollographql.apollo3.compiler.codegen.ClassNames
 import com.apollographql.apollo3.compiler.codegen.ClassNames.apolloApiPackageName
@@ -51,6 +53,8 @@ internal object KotlinClassNames {
   val DefaultTestResolver = ClassNames.DefaultTestResolver.toKotlinPoetClassName()
   val MapJsonReader = ClassNames.MapJsonReader.toKotlinPoetClassName()
   val MapBuilder = ClassNames.MapBuilder.toKotlinPoetClassName()
+  val StubbedProperty = ClassNames.StubbedProperty.toKotlinPoetClassName()
+  val MandatoryTypenameProperty = ClassNames.MandatoryTypenameProperty.toKotlinPoetClassName()
 
   /**
    * Kotlin class names
@@ -63,6 +67,7 @@ internal object KotlinClassNames {
   val Unit = ClassName("kotlin", "Unit")
 
   val List = ClassName("kotlin.collections", "List")
+  val Map = ClassName("kotlin.collections", "Map")
 }
 
 fun ResolverClassName.toKotlinPoetClassName(): ClassName = ClassName(packageName, simpleNames)
