@@ -216,6 +216,7 @@ package com.apollographql.apollo.api {
     method public static <V> com.apollographql.apollo.api.Input<V> fromNullable(V? value);
     method public int hashCode();
     method public static <V> com.apollographql.apollo.api.Input<V> optional(V? value);
+    method public String toString();
     field public static final com.apollographql.apollo.api.Input.Companion Companion;
     field public final boolean defined;
     field public final V? value;

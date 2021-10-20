@@ -4,7 +4,7 @@ import kotlin.jvm.JvmField
 import kotlin.jvm.JvmStatic
 
 /**
- * A wrapper class of provide [value] with a [defined] state.
+ * A wrapper class to provide a [value] with a [defined] state.
  *
  * Wrapper can be in one of 2 states:
  * - *defined* (`defined == true`) means reference to [value] is set explicitly
@@ -32,6 +32,10 @@ class Input<V> internal constructor(
     var result = value?.hashCode() ?: 0
     result = 31 * result + defined.hashCode()
     return result
+  }
+
+  override fun toString(): String {
+    return "Input(value = $value, defined = $defined)"
   }
 
   companion object {
