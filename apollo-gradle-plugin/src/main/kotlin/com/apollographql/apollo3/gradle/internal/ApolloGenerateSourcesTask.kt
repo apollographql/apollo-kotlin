@@ -134,6 +134,9 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   abstract val outputDir: DirectoryProperty
 
   @get:OutputDirectory
+  abstract val testDir: DirectoryProperty
+
+  @get:OutputDirectory
   @get:Optional
   abstract val debugDir: DirectoryProperty
 
@@ -246,6 +249,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
     val options = Options(
         executableFiles = graphqlFiles.files,
         outputDir = outputDir.asFile.get(),
+        testDir = testDir.asFile.get(),
         debugDir = debugDir.asFile.orNull,
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching.getOrElse(defaultAlwaysGenerateTypesMatching),
         operationOutputFile = operationOutputFile.asFile.orNull,

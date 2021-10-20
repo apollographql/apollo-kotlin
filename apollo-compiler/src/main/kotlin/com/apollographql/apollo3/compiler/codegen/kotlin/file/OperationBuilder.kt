@@ -15,6 +15,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.document
 import com.apollographql.apollo3.compiler.codegen.Identifier.id
 import com.apollographql.apollo3.compiler.codegen.Identifier.name
 import com.apollographql.apollo3.compiler.codegen.java.L
+import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClass
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toNamedType
@@ -41,7 +42,7 @@ class OperationBuilder(
     private val operation: IrOperation,
     flatten: Boolean,
     flattenNamesInOrder: Boolean
-): CgFileBuilder {
+): CgOutputFileBuilder {
   private val layout = context.layout
   private val packageName = layout.operationPackageName(operation.filePath)
   private val simpleName = layout.operationName(operation)

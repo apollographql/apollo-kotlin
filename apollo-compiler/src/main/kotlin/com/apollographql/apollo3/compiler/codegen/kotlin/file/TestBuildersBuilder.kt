@@ -11,6 +11,8 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.testResolver
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.CgTestFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinMemberNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.test.TBuilderBuilder
@@ -35,7 +37,7 @@ class TestBuildersBuilder(
     val dataModelGroup: IrModelGroup,
     val operation: IrOperation,
     val flatten: Boolean,
-) : CgFileBuilder {
+) : CgTestFileBuilder {
   private val packageName = context.layout.operationTestBuildersPackageName(operation.filePath)
   private val simpleName = context.layout.operationTestBuildersWrapperName(operation)
 

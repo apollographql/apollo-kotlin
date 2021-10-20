@@ -51,6 +51,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
 
   abstract override val debugDir: DirectoryProperty
   abstract override val outputDir: DirectoryProperty
+  abstract override val testDir: DirectoryProperty
 
   abstract override val generateOperationOutput: Property<Boolean>
   abstract override val operationOutputFile: RegularFileProperty
@@ -135,10 +136,15 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     this.operationOutputAction = action
   }
 
-  var outputDirAction: Action<in Service.OutputDirConnection>? = null
+  var outputDirAction: Action<in Service.DirectoryConnection>? = null
+  var testDirAction: Action<in Service.DirectoryConnection>? = null
 
-  override fun outputDirConnection(action: Action<in Service.OutputDirConnection>) {
+  override fun outputDirConnection(action: Action<in Service.DirectoryConnection>) {
     this.outputDirAction = action
+  }
+
+  override fun testDirConnection(action: Action<in Service.DirectoryConnection>) {
+    this.testDirAction = action
   }
 
   override fun packageNamesFromFilePaths(rootPackageName: String?) {

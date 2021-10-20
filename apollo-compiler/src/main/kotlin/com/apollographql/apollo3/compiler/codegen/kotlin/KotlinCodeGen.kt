@@ -4,7 +4,7 @@ import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
-import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.EnumResponseAdapterBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.CustomScalarBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.FragmentBuilder
@@ -62,7 +62,7 @@ class KotlinCodeGen(
    * @param outputDir: the directory where to write the Kotlin files
    * @return a ResolverInfo to be used by downstream modules
    */
-  fun write(outputDir: File): ResolverInfo {
+  fun write(outputDir: File, testDir: File): ResolverInfo {
     val upstreamResolver = resolverInfos.fold(null as KotlinResolver?) { acc, resolverInfo ->
       KotlinResolver(resolverInfo.entries, acc)
     }
@@ -186,12 +186,12 @@ class KotlinCodeGen(
 
     builders.forEach { it.prepare() }
     builders
-        .map {
-          it.build()
-        }.forEach {
+        .forEach { cgFileBuilder ->
+          val cgFile = cgFileBuilder.build()
+
           val builder = FileSpec.builder(
-              packageName = it.packageName,
-              fileName = it.fileName
+              packageName = cgFile.packageName,
+              fileName = cgFile.fileName
           ).addComment(
               """
                 
@@ -202,12 +202,17 @@ class KotlinCodeGen(
               """.trimIndent()
           )
 
-          it.typeSpecs.map { typeSpec -> typeSpec.internal(generateAsInternal) }.forEach { typeSpec ->
+          cgFile.typeSpecs.map { typeSpec -> typeSpec.internal(generateAsInternal) }.forEach { typeSpec ->
             builder.addType(typeSpec)
+          }
+
+          val dir = when(cgFileBuilder) {
+            is CgOutputFileBuilder -> outputDir
+            is CgTestFileBuilder ->testDir
           }
           builder
               .build()
-              .writeTo(outputDir)
+              .writeTo(dir)
         }
 
     return ResolverInfo(

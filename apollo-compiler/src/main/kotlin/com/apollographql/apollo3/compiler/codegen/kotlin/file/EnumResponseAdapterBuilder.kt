@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
+package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -13,6 +13,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.reader
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
+import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -28,7 +29,7 @@ import com.squareup.kotlinpoet.joinToCode
 class EnumResponseAdapterBuilder(
     val context: KotlinContext,
     val enum: IrEnum,
-) : CgFileBuilder {
+) : CgOutputFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typeAdapterPackageName()
   private val simpleName = layout.enumResponseAdapterName(enum.name)
