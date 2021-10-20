@@ -80,6 +80,12 @@ query HeroParentTypeDependentField($episode: Episode) {
     }
 }
 
+query Birthdate {
+    hero {
+        birthDate
+    }
+}
+
 query MergedFieldWithSameShape($episode: Episode) {
     hero(episode: $episode) {
         ... on Human {

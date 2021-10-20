@@ -1,11 +1,17 @@
 package test
 
 import codegen.models.AllPlanetsQuery
+import codegen.models.BirthdateQuery
 import codegen.models.HeroAndFriendsWithTypenameQuery
 import codegen.models.MergedFieldWithSameShapeQuery
 import codegen.models.test.AllPlanetsQuery_TestBuilder.Data
+import codegen.models.test.BirthdateQuery_TestBuilder.Data
 import codegen.models.test.HeroAndFriendsWithTypenameQuery_TestBuilder.Data
 import codegen.models.test.MergedFieldWithSameShapeQuery_TestBuilder.Data
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -58,5 +64,29 @@ class TestBuildersTest {
     val hero = data.hero
     assertIs<MergedFieldWithSameShapeQuery.Data.HumanHero>(hero)
     assertEquals("Earth", hero.property)
+  }
+
+  @Test
+  fun customScalar() {
+    /**
+     * A very simple adapter that simply converts to Long in order to avoid pulling kotlinx.datetime in the classpath
+     */
+    val adapter = object : Adapter<Long> {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Long {
+        return reader.nextString()!!.toLong()
+      }
+
+      override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Long) {
+        TODO("Not yet implemented")
+      }
+
+    }
+    val data = BirthdateQuery.Data(customScalarAdapters = CustomScalarAdapters(mapOf("Date" to adapter))) {
+      hero = hero {
+        birthDate = "12345"
+      }
+    }
+
+    assertEquals(12345L, data.hero?.birthDate)
   }
 }
