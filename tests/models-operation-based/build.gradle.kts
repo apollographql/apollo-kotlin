@@ -45,6 +45,7 @@ fun configureApollo(generateKotlinModels: Boolean) {
       packageName.set("codegen.models")
       generateFragmentImplementations.set(true)
       codegenModels.set("operationBased")
+      this.generateTestBuilders.set(generateKotlinModels)
       this.generateKotlinModels.set(generateKotlinModels)
       configureConnection(generateKotlinModels)
     }

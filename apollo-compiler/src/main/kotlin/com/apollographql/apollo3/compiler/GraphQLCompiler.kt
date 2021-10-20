@@ -115,6 +115,7 @@ object GraphQLCompiler {
     val ir = IrBuilder(
         schema = options.schema,
         operationDefinitions = operations,
+        alwaysGenerateResponseBasedDataModelGroup = options.generateTestBuilders,
         fragments = fragments,
         allFragmentDefinitions = allFragmentDefinitions,
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
