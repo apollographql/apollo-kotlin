@@ -21,6 +21,7 @@ object GraphQLCompiler {
   ): CompilerMetadata {
     val executableFiles = options.executableFiles
     val outputDir = options.outputDir
+    val testDir = options.testDir
     val debugDir = options.debugDir
     val schema = options.schema
 
@@ -164,7 +165,7 @@ object GraphQLCompiler {
             generateTestBuilders = options.generateTestBuilders,
             flatten = options.flattenModels,
             flattenNamesInOrder = options.codegenModels != MODELS_COMPAT,
-        ).write(outputDir = outputDir)
+        ).write(outputDir = outputDir, testDir = testDir)
       }
       TARGET_JAVA -> {
         JavaCodeGen(

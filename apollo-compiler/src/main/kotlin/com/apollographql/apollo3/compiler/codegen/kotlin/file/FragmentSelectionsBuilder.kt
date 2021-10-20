@@ -5,6 +5,7 @@ import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
 import com.apollographql.apollo3.compiler.ir.IrNamedFragment
 import com.apollographql.apollo3.compiler.codegen.kotlin.selections.CompiledSelectionsBuilder
 import com.squareup.kotlinpoet.ClassName
@@ -14,7 +15,7 @@ class FragmentSelectionsBuilder(
     val fragment: IrNamedFragment,
     val schema: Schema,
     val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
-) : CgFileBuilder {
+) : CgOutputFileBuilder {
   private val packageName = context.layout.fragmentResponseFieldsPackageName(fragment.filePath)
   private val simpleName = context.layout.fragmentSelectionsName(fragment.name)
 

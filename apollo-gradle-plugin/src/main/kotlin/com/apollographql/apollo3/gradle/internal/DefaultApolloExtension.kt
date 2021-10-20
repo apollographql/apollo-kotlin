@@ -266,16 +266,27 @@ abstract class DefaultApolloExtension(
       service.operationOutputAction!!.execute(operationOutputConnection)
     }
 
-    val outputDirConnection = DefaultOutputDirConnection(
-        project = project,
-        task = codegenProvider,
-        outputDir = codegenProvider.flatMap { it.outputDir }
-    )
     if (service.outputDirAction == null) {
-      service.outputDirAction = mainOutputDirAction
+      service.outputDirAction = defaultOutputDirAction
+    }
+    if (service.testDirAction == null) {
+      service.testDirAction = defaultTestDirAction
     }
 
-    service.outputDirAction!!.execute(outputDirConnection)
+    service.outputDirAction!!.execute(
+        DefaultDirectoryConnection(
+            project = project,
+            task = codegenProvider,
+            outputDir = codegenProvider.flatMap { it.outputDir }
+        )
+    )
+    service.testDirAction!!.execute(
+        DefaultDirectoryConnection(
+            project = project,
+            task = codegenProvider,
+            outputDir = codegenProvider.flatMap { it.testDir }
+        )
+    )
 
     rootProvider.configure {
       it.dependsOn(codegenProvider)
@@ -298,7 +309,7 @@ abstract class DefaultApolloExtension(
   /**
    * The default wiring.
    */
-  private val mainOutputDirAction = Action<Service.OutputDirConnection> { connection ->
+  private val defaultOutputDirAction = Action<Service.DirectoryConnection> { connection ->
     when {
       project.kotlinMultiplatformExtension != null -> {
         connection.connectToKotlinSourceSet(KotlinSourceSet.COMMON_MAIN_SOURCE_SET_NAME)
@@ -311,6 +322,25 @@ abstract class DefaultApolloExtension(
       }
       project.javaConvention != null -> {
         connection.connectToJavaSourceSet("main")
+      }
+      else -> throw IllegalStateException("Cannot find a Java/Kotlin extension, please apply the kotlin or java plugin")
+    }
+  }
+
+  private val defaultTestDirAction = Action<Service.DirectoryConnection> { connection ->
+    when {
+      project.kotlinMultiplatformExtension != null -> {
+        connection.connectToKotlinSourceSet(KotlinSourceSet.COMMON_TEST_SOURCE_SET_NAME)
+      }
+      project.androidExtension != null -> {
+        connection.connectToAndroidSourceSet("test")
+        connection.connectToAndroidSourceSet("androidTest")
+      }
+      project.kotlinProjectExtension != null -> {
+        connection.connectToKotlinSourceSet("test")
+      }
+      project.javaConvention != null -> {
+        connection.connectToJavaSourceSet("test")
       }
       else -> throw IllegalStateException("Cannot find a Java/Kotlin extension, please apply the kotlin or java plugin")
     }
@@ -377,7 +407,11 @@ abstract class DefaultApolloExtension(
       task.failOnWarnings.set(service.failOnWarnings)
       task.customScalarsMapping.set(service.customScalarsMapping)
       task.outputDir.apply {
-        set(service.outputDir.orElse(BuildDirLayout.sources(project, service)).get())
+        set(service.outputDir.orElse(BuildDirLayout.outputDir(project, service)).get())
+        disallowChanges()
+      }
+      task.testDir.apply {
+        set(service.testDir.orElse(BuildDirLayout.testDir(project, service)).get())
         disallowChanges()
       }
       task.debugDir.apply {
@@ -493,7 +527,7 @@ abstract class DefaultApolloExtension(
         variant.sourceSets.forEach { sourceProvider ->
           service.srcDir("src/${sourceProvider.name}/graphql/$sourceFolder")
         }
-        (service as DefaultService).outputDirAction = Action<Service.OutputDirConnection> { connection ->
+        (service as DefaultService).outputDirAction = Action<Service.DirectoryConnection> { connection ->
           connection.connectToAndroidVariant(variant)
         }
       }
@@ -517,7 +551,7 @@ abstract class DefaultApolloExtension(
           "ApolloGraphQL: service.sourceFolder is not used when calling createAllKotlinJvmSourceSetServices. Use the parameter instead"
         }
         service.srcDir("src/${kotlinSourceSet.name}/graphql/$sourceFolder")
-        (service as DefaultService).outputDirAction = Action<Service.OutputDirConnection> { connection ->
+        (service as DefaultService).outputDirAction = Action<Service.DirectoryConnection> { connection ->
           kotlinSourceSet.kotlin.srcDir(connection.outputDir)
         }
       }

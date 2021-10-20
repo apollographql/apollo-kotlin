@@ -25,9 +25,13 @@ class Options(
      */
     val schema: Schema,
     /**
-     * The output directory where to write the generated models
+     * The directory where to write the generated models
      */
     val outputDir: File,
+    /**
+     * The directory where to write the generated models test code
+     */
+    val testDir: File,
     /**
      * A debug directory to dump some intermediate artifacts.
      */
@@ -123,11 +127,13 @@ class Options(
       executableFiles: Set<File>,
       schemaFile: File,
       outputDir: File,
+      testDir: File = outputDir,
       packageName: String = "",
   ) : this(
       executableFiles = executableFiles,
       schema = schemaFile.toGQLDocument().toSchema(),
       outputDir = outputDir,
+      testDir = testDir,
       schemaPackageName = packageName,
       packageNameGenerator = PackageNameGenerator.Flat(packageName),
   )
@@ -135,6 +141,7 @@ class Options(
   fun copy(
       schema: Schema = this.schema,
       outputDir: File = this.outputDir,
+      testDir: File = this.testDir,
       debugDir: File? = this.debugDir,
       operationOutputFile: File? = this.operationOutputFile,
       executableFiles: Set<File> = this.executableFiles,
@@ -186,6 +193,7 @@ class Options(
       moduleName = moduleName,
       targetLanguage = targetLanguage,
       generateTestBuilders = generateTestBuilders,
+      testDir = testDir
   )
 
   companion object {
