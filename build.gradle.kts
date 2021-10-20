@@ -163,6 +163,7 @@ tasks.named("dependencyUpdates").configure {
   }
 }
 
+
 tasks.withType(org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask::class.java)
     .all {
       args.addAll(
@@ -174,3 +175,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstall
           )
       )
     }
+// See https://youtrack.jetbrains.com/issue/KT-47215
+plugins.withType<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin> {
+  the<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension>().disableGranularWorkspaces()
+}
