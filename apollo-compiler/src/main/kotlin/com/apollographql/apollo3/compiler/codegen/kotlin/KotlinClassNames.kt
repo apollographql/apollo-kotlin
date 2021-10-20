@@ -5,6 +5,7 @@ import com.apollographql.apollo3.api.test.StubbedProperty
 import com.apollographql.apollo3.api.test.TestResolver
 import com.apollographql.apollo3.compiler.codegen.ClassNames
 import com.apollographql.apollo3.compiler.codegen.ClassNames.apolloApiPackageName
+import com.apollographql.apollo3.compiler.codegen.ClassNames.apolloApiTestPackageName
 import com.apollographql.apollo3.compiler.codegen.ResolverClassName
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.MemberName
@@ -73,5 +74,5 @@ internal object KotlinClassNames {
 fun ResolverClassName.toKotlinPoetClassName(): ClassName = ClassName(packageName, simpleNames)
 
 object KotlinMemberNames {
-  val withTestResolver = MemberName(apolloApiPackageName, "withTestResolver")
+  val withTestResolver = MemberName(apolloApiTestPackageName, "withTestResolver")
 }

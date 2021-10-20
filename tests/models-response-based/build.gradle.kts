@@ -27,5 +27,6 @@ apollo {
   srcDir(file("../models-fixtures/graphql"))
   packageName.set("codegen.models")
   generateFragmentImplementations.set(true)
+  generateTestBuilders.set(true)
   codegenModels.set("responseBased")
 }

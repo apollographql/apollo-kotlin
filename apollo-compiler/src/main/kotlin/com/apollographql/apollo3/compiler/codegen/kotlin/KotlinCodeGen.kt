@@ -21,6 +21,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.file.OperationResponseA
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.OperationSelectionsBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.OperationVariablesAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.SchemaBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.file.TestBuildersBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.UnionBuilder
 import com.apollographql.apollo3.compiler.ir.Ir
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
@@ -166,6 +167,17 @@ class KotlinCodeGen(
                   flattenNamesInOrder
               )
           )
+
+          if (generateTestBuilders) {
+            builders.add(
+                TestBuildersBuilder(
+                    context,
+                    operation.dataModelGroup,
+                    operation,
+                    flatten
+                )
+            )
+          }
         }
 
     if (generateSchema) {
