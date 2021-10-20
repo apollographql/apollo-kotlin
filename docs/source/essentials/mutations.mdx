@@ -180,7 +180,7 @@ apollo {
 
 **Note1** You don't need to register custom type adapter for `FileUpload`.
 
-**Note2** While Apollo Android doesn't use reflection for regular operations, file upload is. If you're using Proguard/R8, you need to keep everything inheriting from `InputType`:
+**Note2** While Apollo Android doesn't use reflection for regular operations, it does for file upload. If you're using Proguard/R8, you need to keep everything inheriting from `InputType`:
 
 ```proguard:title=proguard-rules.pro
 -keep class * implements com.apollographql.apollo.api.InputType { *; }
@@ -202,17 +202,17 @@ mutation SingleUpload($file: Upload!) {
 }
 ```
 
-Call your mutation with mimetype and a valid `File`.
+Call your mutation with mimetype and a valid file path.
 
 <MultiCodeBlock>
 
 ```kotlin
-  mutationSingle = SingleUploadMutation(file = FileUpload("image/jpeg", File("/my/image.jpg")))
+  mutationSingle = SingleUploadMutation(file = FileUpload.create("image/jpeg", "/my/image.jpg"))
 ```
 
 ```java
   mutationSingle = SingleUploadMutation.builder()
-        .file(new FileUpload("image/jpeg", new File("/my/image.jpg")))
+        .file(FileuploadKt.create(FileUpload.Companion, "image/jpeg", "/my/image.jpg"))
         .build();
 ```
 
@@ -237,19 +237,22 @@ If you don't have a `File`, you can also subclass `FileUpload`:
 ```
 
 ```java
-  FileUpload upload = new FileUpload(mimetype) {
-    @Override Long contentLength() {
-      // return contentLength here
+FileUpload upload = new FileUpload(mimetype) {
+    @Override
+    public long contentLength() {
+        // return contentLength here
     }
-
-    @Override String fileName() {
-      // return fileName here
+    
+    @Override
+    public String fileName() {
+        // return fileName to use in the multipart request here
     }
-
-    @Override void writeTo(sink: BufferedSink)() {
-      // write the data here
+    
+    @Override
+    public void writeTo(@NonNull BufferedSink sink) {
+        // write the data here
     }
-  };
+};
 ```
 
 </MultiCodeBlock>
