@@ -48,7 +48,7 @@ plugins {
 
 The plugin contains the compiler that will generate models from your queries when you build your project.
 
-## Configure the plugin
+## Configure the Apollo Gradle plugin
 
 Configure the Apollo plugin to specify the package in which the Kotlin files will be generated. Put this at the end of `app/build.gradle.kts`:
 
@@ -60,7 +60,7 @@ apollo {
 
 ## Add dependencies
 
-Now add `apollo-runtime` to the list of dependencies. This is the actual code that will run on the device and help schedule queries.
+Now add `apollo-runtime` to the list of dependencies. This is the actual code that will run on the device, execute queries and parse responses.
 
 ```groovy:title=app/build.gradle.kts
 dependencies {
