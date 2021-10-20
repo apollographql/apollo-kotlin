@@ -59,6 +59,7 @@ class MetadataTest {
         Options(
             executableFiles = operationFiles,
             outputDir = outputDir,
+            testDir = outputDir,
             schema = schema,
             schemaPackageName = "",
             codegenModels = codegenModels,
