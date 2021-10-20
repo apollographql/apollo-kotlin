@@ -193,8 +193,8 @@ class WebSocketNetworkTransport(
           throw ApolloNetworkException("Network error while executing ${request.operation.name()}", it.cause)
         }
         // Cannot happen as OperationComplete is filtered out upstream
-        is OperationComplete -> error("Unexpected event $it")
         is GeneralError -> throw ApolloNetworkException("General error while executing operation ${request.operation.name()}: ${it.payload}")
+        is OperationComplete -> error("Unexpected event $it")
       }
     }.onCompletion {
       commands.send(StopOperation(request))
