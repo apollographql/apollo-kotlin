@@ -5,6 +5,9 @@ set -x
 
 export PATH="$ANDROID_HOME"/tools/bin:$PATH
 
+./gradlew compileKotlinJs
+./gradlew --stop
+
 ./gradlew -p tests fullCheck
 
 # check that the public API did not change with Metalava
