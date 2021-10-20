@@ -65,9 +65,18 @@ In `Apollo.kt`, configure a `subscriptionNetworkTransport` for your `ApolloClien
 
 ```kotlin:title=Apollo.kt
     instance = ApolloClient.Builder()
-        .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
-        .subscriptionNetworkTransport(WebSocketNetworkTransport("wss://apollo-fullstack-tutorial.herokuapp.com/graphql"))
-        .addInterceptor(AuthorizationInterceptor(context))
+        .networkTransport(
+            HttpNetworkTransport(
+                serverUrl = "https://apollo-fullstack-tutorial.herokuapp.com/graphql",
+                okHttpClient = okHttpClient
+            )
+        )
+        .subscriptionNetworkTransport(
+            WebSocketNetworkTransport(
+                serverUrl = "wss://apollo-fullstack-tutorial.herokuapp.com/graphql",
+                webSocketEngine = DefaultWebSocketEngine(okHttpClient)
+            )
+        )
         .build()
 ```
 
