@@ -7,7 +7,9 @@ configureMppTestsDefaults()
 
 kotlin {
   /**
-   * Extra target to test the java codegen
+   * Extra target to test the java codegen. There will be 2 JVM tasks:
+   * - compileKotlinJvm
+   * - compileKotlinJavaCodegen
    */
   jvm("javaCodegen") {
     withJava()
@@ -66,6 +68,12 @@ fun com.apollographql.apollo3.gradle.api.Service.configureConnection(generateKot
     } else {
       // For autocomplete to work
       connectToKotlinSourceSet("commonTest")
+    }
+  }
+  testDirConnection {
+    if (generateKotlinModels) {
+      // Only connect to jvmTest, not commonTest
+      connectToKotlinSourceSet("jvmTest")
     }
   }
 }
