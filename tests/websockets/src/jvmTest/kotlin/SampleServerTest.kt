@@ -1,7 +1,9 @@
 import com.apollographql.apollo.sample.server.DefaultApplication
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
@@ -17,7 +19,10 @@ import org.junit.Test
 import org.springframework.boot.runApplication
 import org.springframework.context.ConfigurableApplicationContext
 import sample.server.CountSubscription
+import sample.server.OperationErrorSubscription
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
+import kotlin.test.assertTrue
 
 class SampleServerTest {
   companion object {
@@ -149,6 +154,28 @@ class SampleServerTest {
       withTimeout(500) {
         transport.subscriptionCount.first { it == 0 }
       }
+    }
+  }
+
+  @Test
+  fun operationError() {
+    val apolloClient = ApolloClient.Builder()
+        .networkTransport(
+            WebSocketNetworkTransport(
+                serverUrl = "http://localhost:8080/subscriptions"
+            )
+        )
+        .build()
+
+    runBlocking {
+      var caught: Throwable? = null
+      apolloClient.subscribe(OperationErrorSubscription())
+          .catch {
+            caught = it
+          }
+          .collect()
+      assertIs<ApolloNetworkException>(caught)
+      assertTrue(caught!!.message!!.contains("Woops"))
     }
   }
 }

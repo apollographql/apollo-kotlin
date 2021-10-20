@@ -5,10 +5,7 @@ import com.expediagroup.graphql.server.operations.Subscription
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.reactive.asPublisher
-import org.reactivestreams.Publisher
 import org.springframework.stereotype.Component
-import reactor.core.publisher.Flux
-import java.time.Duration
 
 
 @Component
@@ -42,5 +39,9 @@ class RootSubscription : Subscription {
       emit(it)
       delay(100)
     }
+  }.asPublisher()
+
+  fun operationError() = flow<String> {
+    throw Exception("Woops")
   }.asPublisher()
 }

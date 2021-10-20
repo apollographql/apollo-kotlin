@@ -8,4 +8,5 @@ type Subscription {
   count(delayMillis: Int!, to: Int!): Int!
   countString(delayMillis: Int!, to: Int!): String!
   time: Int!
+  operationError: String!
 }
