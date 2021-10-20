@@ -75,6 +75,7 @@ data class IrOperation(
     val selections: List<GQLSelection>,
     val sourceWithFragments: String,
     val filePath: String,
+    val responseBasedDataModelGroup: IrModelGroup?,
     val dataModelGroup: IrModelGroup,
 )
 

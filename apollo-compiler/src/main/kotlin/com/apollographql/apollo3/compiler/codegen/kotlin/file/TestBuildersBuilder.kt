@@ -41,7 +41,7 @@ class TestBuildersBuilder(
   private val packageName = context.layout.operationTestBuildersPackageName(operation.filePath)
   private val simpleName = context.layout.operationTestBuildersWrapperName(operation)
 
-  private val testBuildersBuilder = dataModelGroup.toTBuilders(context.layout).single().maybeFlatten(flatten).map {
+  private val testBuildersBuilder = dataModelGroup.toTBuilders(context.layout).single().maybeFlatten(flatten, mutableSetOf()).map {
     TBuilderBuilder(
         context = context,
         tbuilder = it,
@@ -194,6 +194,18 @@ private fun IrProperty.tProperty(modelGroups: List<IrModelGroup>): TProperty {
 
 }
 
+private fun resolveNameClashes(usedNames: MutableSet<String>, modelName: String): String {
+  var i = 0
+  var name = modelName
+  while (usedNames.contains(name)) {
+    i++
+    name = "$modelName$i"
+  }
+  usedNames.add(name)
+  return name
+}
+
+
 internal fun IrModel.toTBuilder(layout: CodegenLayout): TBuilder {
   val nestedBuilders = modelGroups.flatMap { it.toTBuilders(layout) }
   return TBuilder(
@@ -211,9 +223,14 @@ internal fun IrModelGroup.toTBuilders(layout: CodegenLayout): List<TBuilder> {
   }
 }
 
-internal fun TBuilder.maybeFlatten(flatten: Boolean): List<TBuilder> {
+internal fun TBuilder.maybeFlatten(flatten: Boolean, usedNames: MutableSet<String>): List<TBuilder> {
   if (!flatten) {
     return listOf(this)
   }
-  return listOf(this.copy(nestedTBuilders = emptyList())) + nestedTBuilders.flatMap { it.maybeFlatten(flatten) }
+  return listOf(
+      this.copy(
+          kotlinName = resolveNameClashes(usedNames, kotlinName),
+          nestedTBuilders = emptyList()
+      )
+  ) + nestedTBuilders.flatMap { it.maybeFlatten(flatten, usedNames) }
 }

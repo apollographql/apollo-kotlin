@@ -172,7 +172,7 @@ class KotlinCodeGen(
             builders.add(
                 TestBuildersBuilder(
                     context,
-                    operation.dataModelGroup,
+                    operation.responseBasedDataModelGroup ?: error("generateTestBuilders requires generateTestBuilders"),
                     operation,
                     flatten
                 )
