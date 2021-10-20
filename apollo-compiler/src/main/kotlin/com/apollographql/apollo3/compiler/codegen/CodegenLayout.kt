@@ -100,6 +100,9 @@ class CodegenLayout(
   }
 
   fun rootSelectionsPropertyName() = "root"
+  fun testBuilder(modelName: String): String {
+    return "${modelName}Builder"
+  }
 
   companion object {
     fun upperCamelCaseIgnoringNonLetters(strings: Collection<String>): String {

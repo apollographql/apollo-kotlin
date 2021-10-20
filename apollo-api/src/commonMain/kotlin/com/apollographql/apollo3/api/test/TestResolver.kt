@@ -31,7 +31,7 @@ open class DefaultTestResolver : TestResolver {
   }
 
   open fun resolveString(path: List<Any>): String {
-    return path.filterIsInstance<String>().last()
+    return path.subList(path.indexOfLast { it is String }, path.size).joinToString("")
   }
 
   open fun resolveFloat(path: List<Any>): Double {

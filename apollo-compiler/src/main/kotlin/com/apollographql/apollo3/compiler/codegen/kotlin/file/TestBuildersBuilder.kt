@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
+import com.apollographql.apollo3.ast.GQLType
+import com.apollographql.apollo3.compiler.codegen.CodegenLayout
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.Data
 import com.apollographql.apollo3.compiler.codegen.Identifier.block
@@ -12,10 +14,14 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinMemberNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.test.TBuilderBuilder
-import com.apollographql.apollo3.compiler.ir.IrFieldInfo
+import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
 import com.apollographql.apollo3.compiler.ir.IrModel
 import com.apollographql.apollo3.compiler.ir.IrModelGroup
+import com.apollographql.apollo3.compiler.ir.IrModelType
+import com.apollographql.apollo3.compiler.ir.IrNonNullType
 import com.apollographql.apollo3.compiler.ir.IrOperation
+import com.apollographql.apollo3.compiler.ir.IrProperty
+import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.PossibleTypes
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -33,7 +39,7 @@ class TestBuildersBuilder(
   private val packageName = context.layout.operationTestBuildersPackageName(operation.filePath)
   private val simpleName = context.layout.operationTestBuildersWrapperName(operation)
 
-  private val testBuildersBuilder = dataModelGroup.toTBuilders().single().maybeFlatten(flatten).map {
+  private val testBuildersBuilder = dataModelGroup.toTBuilders(context.layout).single().maybeFlatten(flatten).map {
     TBuilderBuilder(
         context = context,
         tbuilder = it,
@@ -114,7 +120,13 @@ class TestBuildersBuilder(
 
     builder.beginControlFlow("return %M(${testResolver})", KotlinMemberNames.withTestResolver)
 
-    builder.add("%T.$fromJson(\n", context.resolver.resolveModelAdapter(operation.dataModelGroup.baseModelId))
+    builder.add(
+        "%L.$fromJson(\n",
+        context.resolver.adapterInitializer(
+            IrNonNullType(IrModelType(operation.dataModelGroup.baseModelId)),
+            requiresBuffering = false
+        )
+    )
     builder.indent()
     builder.add("%T(%T().apply($block).build()),\n",
         KotlinClassNames.MapJsonReader,
@@ -132,9 +144,21 @@ internal data class TBuilder(
     val kotlinName: String,
     val id: String,
     val possibleTypes: PossibleTypes,
-    val properties: List<IrFieldInfo>,
+    val properties: List<TProperty>,
+    val nestedTBuilders: List<TBuilder>,
+)
+
+internal data class TProperty(
+    /**
+     * Properties taken from [com.apollographql.apollo3.compiler.ir.IrProperty]
+     */
+    val responseName: String,
+    val description: String?,
+    val type: IrType,
+    val gqlType: GQLType?,
+    val deprecationReason: String?,
+
     val ctors: List<TCtor>,
-    val nestedTBuilders: List<TBuilder>
 )
 
 internal data class TCtor(
@@ -142,21 +166,46 @@ internal data class TCtor(
     val id: String,
 )
 
-internal fun IrModel.toTBuilder(): TBuilder {
-  val nestedBuilders = modelGroups.flatMap { it.toTBuilders() }
+private fun IrProperty.tProperty(modelGroups: List<IrModelGroup>): TProperty {
+  val leafPath = (info.type.leafType() as? IrModelType)?.path
+
+  /**
+   * Lookup the modelGroup for this property
+   * This feels a bit weird because this is information we had before the tree gets split into properties and models
+   * We might be able to remove that lookup
+   */
+
+  val modelGroup = if (leafPath != null) {
+    modelGroups.single { it.baseModelId == leafPath }
+  } else {
+    null
+  }
+
+  return TProperty(
+      responseName = info.responseName,
+      type = info.type,
+      description = info.description,
+      deprecationReason = info.deprecationReason,
+      gqlType = info.gqlType ?: error("Synthetic fields do not belong in the Test Builders"),
+      ctors = modelGroup?.models?.filter { !it.isInterface }?.map { TCtor(it.modelName.decapitalizeFirstLetter(), it.id) } ?: emptyList(),
+  )
+
+}
+
+internal fun IrModel.toTBuilder(layout: CodegenLayout): TBuilder {
+  val nestedBuilders = modelGroups.flatMap { it.toTBuilders(layout) }
   return TBuilder(
-      kotlinName = modelName,
-      properties = properties.map { it.info },
+      kotlinName = layout.testBuilder(modelName),
+      properties = properties.map { it.tProperty(modelGroups) },
       id = id,
-      ctors = nestedBuilders.map { TCtor(it.kotlinName, it.id) },
       nestedTBuilders = nestedBuilders,
       possibleTypes = possibleTypes
   )
 }
 
-internal fun IrModelGroup.toTBuilders(): List<TBuilder> {
+internal fun IrModelGroup.toTBuilders(layout: CodegenLayout): List<TBuilder> {
   return models.filter { !it.isInterface }.map {
-    it.toTBuilder()
+    it.toTBuilder(layout)
   }
 }
 
