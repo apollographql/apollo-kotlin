@@ -6,6 +6,8 @@ import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLFragmentSpread
 import com.apollographql.apollo3.ast.GQLInlineFragment
+import com.apollographql.apollo3.ast.GQLNamedType
+import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.modelName
@@ -121,7 +123,8 @@ private class FieldNodeBuilder(
         responseName = "data",
         description = null,
         type = IrModelType(MODEL_UNKNOWN),
-        deprecationReason = null
+        deprecationReason = null,
+        gqlType = GQLNonNullType(type = GQLNamedType(name = rawTypeName))
     )
 
     return buildFieldNode(
@@ -143,7 +146,8 @@ private class FieldNodeBuilder(
           responseName = name,
           description = null,
           type = IrModelType(MODEL_UNKNOWN),
-          deprecationReason = null
+          deprecationReason = null,
+          gqlType = GQLNonNullType(type = fragment.typeCondition)
       )
 
       return buildFieldNode(
@@ -166,7 +170,8 @@ private class FieldNodeBuilder(
         responseName = "data",
         description = null,
         type = IrModelType(MODEL_UNKNOWN),
-        deprecationReason = null
+        deprecationReason = null,
+        gqlType = GQLNonNullType(type = fragment.typeCondition)
     )
 
     return buildFieldNode(
@@ -513,7 +518,6 @@ private fun ResponseField.toIrProperty(): IrProperty {
       info = info.copy(type = type),
       override = override,
       condition = BooleanExpression.True,
-      isSynthetic = false,
       requiresBuffering = false,
       hidden = false
   )

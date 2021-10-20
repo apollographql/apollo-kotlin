@@ -491,6 +491,7 @@ internal class IrBuilder(
           description = description,
           deprecationReason = deprecationReason,
           type = irType,
+          gqlType = first.type
       )
 
       MergedField(

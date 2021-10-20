@@ -59,18 +59,18 @@ class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?) {
   private fun register(kind: ResolverKeyKind, id: String, className: ClassName) = classNames.put(ResolverKey(kind, id), className)
 
   fun resolveIrType(type: IrType, override: (IrType) -> TypeName? = { null }): TypeName {
+    if (type is IrNonNullType) {
+      return resolveIrType(type.ofType, override).copy(nullable = false)
+    }
+
     override(type)?.let {
       return it
     }
 
-    if (type is IrNonNullType) {
-      return resolveIrType(type.ofType).copy(nullable = false)
-    }
-
     return when {
       type is IrNonNullType -> error("") // make the compiler happy, this case is handled as a fast path
-      type is IrOptionalType -> Optional::class.asClassName().parameterizedBy(resolveIrType(type.ofType))
-      type is IrListType -> List::class.asClassName().parameterizedBy(resolveIrType(type.ofType))
+      type is IrOptionalType -> Optional::class.asClassName().parameterizedBy(resolveIrType(type.ofType, override))
+      type is IrListType -> List::class.asClassName().parameterizedBy(resolveIrType(type.ofType, override))
       type is IrScalarType && type.name == "String" -> KotlinClassNames.String
       type is IrScalarType && type.name == "Float" -> KotlinClassNames.Double
       type is IrScalarType && type.name == "Int" -> KotlinClassNames.Int

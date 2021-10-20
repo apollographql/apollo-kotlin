@@ -10,25 +10,18 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.from
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.TBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.TCtor
+import com.apollographql.apollo3.compiler.codegen.kotlin.file.TProperty
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
-import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
-import com.apollographql.apollo3.compiler.ir.IrFieldInfo
-import com.apollographql.apollo3.compiler.ir.IrInterfaceType
-import com.apollographql.apollo3.compiler.ir.IrListType
-import com.apollographql.apollo3.compiler.ir.IrNamedType
-import com.apollographql.apollo3.compiler.ir.IrNonNullType
-import com.apollographql.apollo3.compiler.ir.IrObjectType
+import com.apollographql.apollo3.compiler.codegen.kotlin.selections.CompiledSelectionsBuilder.Companion.codeBlock
+import com.apollographql.apollo3.compiler.ir.IrModelType
 import com.apollographql.apollo3.compiler.ir.IrScalarType
-import com.apollographql.apollo3.compiler.ir.IrType
-import com.apollographql.apollo3.compiler.ir.IrUnionType
 import com.apollographql.apollo3.compiler.ir.PossibleTypes
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.LambdaTypeName
-import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
@@ -70,7 +63,7 @@ internal class TBuilderBuilder(
             tbuilder.properties.map { it.propertySpec(tbuilder.possibleTypes) }
         )
         .addFunctions(
-            tbuilder.ctors.map { it.funSpec() }
+            tbuilder.properties.flatMap { it.ctors.map { it.funSpec() } }
         )
         .addFunction(
             buildFun()
@@ -89,8 +82,8 @@ internal class TBuilderBuilder(
             .add("return mapOf(\n")
             .indent()
             .apply {
-              tbuilder.properties.forEach { fieldInfo ->
-                add("%S to %L,\n", fieldInfo.responseName, fieldInfo.resolveCodeBlock() )
+              tbuilder.properties.forEach { tprop ->
+                add("%S to %L,\n", tprop.responseName, tprop.resolveCodeBlock())
               }
             }
             .unindent()
@@ -101,32 +94,23 @@ internal class TBuilderBuilder(
     return builder.build()
   }
 
-  private fun IrType.codeBlock(context: KotlinContext): CodeBlock {
-    return when (this) {
-      is IrNonNullType -> {
-        val notNullFun = MemberName("com.apollographql.apollo3.api", "notNull")
-        CodeBlock.of("%L.%M()", ofType.codeBlock(context), notNullFun)
-      }
-      is IrListType -> {
-        val listFun = MemberName("com.apollographql.apollo3.api", "list")
-        CodeBlock.of("%L.%M()", ofType.codeBlock(context), listFun)
-      }
-      is IrNamedType -> {
-        context.resolver.resolveCompiledType(name)
-      }
-      else -> error("Cannot generate compiled type for $this")
-    }
-  }
-  private fun IrFieldInfo.resolveCodeBlock(): CodeBlock {
+  private fun TProperty.resolveCodeBlock(): CodeBlock {
     if (responseName == "__typename") {
       return CodeBlock.of("__typename")
     }
     return CodeBlock.builder()
-        .add("resolve(%S, %L)", responseName, type.codeBlock(context))
+        .add("resolve(%S, %L", responseName, gqlType!!.codeBlock(context))
+        .apply {
+          ctors.forEach {
+            add(", { %L() }", it.kotlinName)
+          }
+        }
+        .add(")")
         .build()
   }
+
   private fun TCtor.funSpec(): FunSpec {
-    return FunSpec.builder(kotlinName.decapitalizeFirstLetter())
+    return FunSpec.builder(kotlinName)
         .addParameter(
             ParameterSpec.builder(
                 block,
@@ -148,28 +132,25 @@ internal class TBuilderBuilder(
 
   private val anyMapClassName = KotlinClassNames.Map.parameterizedBy(KotlinClassNames.String, KotlinClassNames.Any.copy(nullable = true))
 
-  private fun IrFieldInfo.className(): TypeName {
+  private fun TProperty.className(): TypeName {
     return context.resolver.resolveIrType(type) {
       when (it) {
-        is IrObjectType,
-        is IrInterfaceType,
-        is IrUnionType,
-        -> anyMapClassName
+        is IrModelType -> anyMapClassName
         is IrScalarType -> if (builtInTypes.contains(it.name)) {
           null
         } else {
           KotlinClassNames.String
         }
         else -> null
-      }
+      }?.copy(nullable = true)
     }
   }
 
-  private fun IrFieldInfo.propertySpec(possibleTypes: PossibleTypes): PropertySpec {
+  private fun TProperty.propertySpec(possibleTypes: PossibleTypes): PropertySpec {
     if (responseName == "__typename") {
       return if (possibleTypes.size == 1) {
         PropertySpec.builder(__typename, KotlinClassNames.String)
-            .initializer("%S", possibleTypes.size)
+            .initializer("%S", possibleTypes.single())
             .mutable(true)
             .build()
       } else {
