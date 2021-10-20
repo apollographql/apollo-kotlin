@@ -49,7 +49,7 @@ internal object ClassNames {
   val TestResolver = ResolverClassName(apolloApiTestPackageName, "TestResolver")
   val DefaultTestResolver = ResolverClassName(apolloApiTestPackageName, "DefaultTestResolver")
   val MapJsonReader = ResolverClassName(apolloApiJsonPackageName, "MapJsonReader")
-  val MapBuilder = ResolverClassName(apolloApiJsonPackageName, "MapBuilder")
+  val MapBuilder = ResolverClassName(apolloApiTestPackageName, "MapBuilder")
   val StubbedProperty = ResolverClassName(apolloApiTestPackageName, "StubbedProperty")
   val MandatoryTypenameProperty = ResolverClassName(apolloApiTestPackageName, "MandatoryTypenameProperty")
 }

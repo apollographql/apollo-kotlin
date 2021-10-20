@@ -112,7 +112,7 @@ class TestBuildersBuilder(
 
     val builder = CodeBlock.builder()
 
-    builder.beginControlFlow("return %M(${testResolver}", KotlinMemberNames.withTestResolver)
+    builder.beginControlFlow("return %M(${testResolver})", KotlinMemberNames.withTestResolver)
 
     builder.add("%T.$fromJson(\n", context.resolver.resolveModelAdapter(operation.dataModelGroup.baseModelId))
     builder.indent()

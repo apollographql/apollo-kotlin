@@ -76,7 +76,7 @@ class CodegenLayout(
   }
 
   fun operationResponseAdapterWrapperName(operation: IrOperation) = operationName(operation) + "_ResponseAdapter"
-  fun operationTestBuildersWrapperName(operation: IrOperation) = operationName(operation) + "_ResponseAdapter"
+  fun operationTestBuildersWrapperName(operation: IrOperation) = operationName(operation) + "_TestBuilder"
   fun operationVariablesAdapterName(operation: IrOperation) = operationName(operation) + "_VariablesAdapter"
   fun operationSelectionsName(operation: IrOperation) = operationName(operation) + "Selections"
 

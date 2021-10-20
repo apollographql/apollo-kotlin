@@ -4,7 +4,6 @@ import com.apollographql.apollo3.api.BVariable
 import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledCondition
-import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.ast.GQLArgument
@@ -141,7 +140,7 @@ class CompiledSelectionsBuilder(
     builder.add("name·=·%S,\n", name)
     val fieldDefinition = definitionFromScope(schema, parentType)!!
     builder.add(
-        CodeBlock.of("type·=·%L\n", fieldDefinition.type.codeBlock())
+        CodeBlock.of("type·=·%L\n", fieldDefinition.type.codeBlock(context))
     )
     builder.unindent()
     builder.add(")")
@@ -224,21 +223,24 @@ class CompiledSelectionsBuilder(
     return builder.build()
   }
 
-  private fun GQLType.codeBlock(): CodeBlock {
-    return when (this) {
-      is GQLNonNullType -> {
-        val notNullFun = MemberName("com.apollographql.apollo3.api", "notNull")
-        CodeBlock.of("%L.%M()", type.codeBlock(), notNullFun)
-      }
-      is GQLListType -> {
-        val listFun = MemberName("com.apollographql.apollo3.api", "list")
-        CodeBlock.of("%L.%M()", type.codeBlock(), listFun)
-      }
-      is GQLNamedType -> {
-        context.resolver.resolveCompiledType(name)
+  companion object {
+    fun GQLType.codeBlock(context: KotlinContext): CodeBlock {
+      return when (this) {
+        is GQLNonNullType -> {
+          val notNullFun = MemberName("com.apollographql.apollo3.api", "notNull")
+          CodeBlock.of("%L.%M()", type.codeBlock(context), notNullFun)
+        }
+        is GQLListType -> {
+          val listFun = MemberName("com.apollographql.apollo3.api", "list")
+          CodeBlock.of("%L.%M()", type.codeBlock(context), listFun)
+        }
+        is GQLNamedType -> {
+          context.resolver.resolveCompiledType(name)
+        }
       }
     }
   }
+
 
   private fun GQLListValue.codeBlock(): CodeBlock {
     if (values.isEmpty()) {
