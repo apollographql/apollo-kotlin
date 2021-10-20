@@ -176,6 +176,10 @@ class WebSocketNetworkTransport(
           emit(it)
           false
         }
+        is GeneralError -> {
+          emit(it)
+          false
+        }
         else -> {
           emit(it)
           true
