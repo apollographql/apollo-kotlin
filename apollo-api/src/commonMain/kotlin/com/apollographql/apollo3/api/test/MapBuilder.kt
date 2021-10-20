@@ -3,8 +3,14 @@ package com.apollographql.apollo3.api.test
 import com.apollographql.apollo3.api.CompiledType
 import kotlin.reflect.KProperty
 
-
+/**
+ * Base class for test builders that define a DSL to build type safe operation data
+ */
 abstract class MapBuilder {
+  /**
+   * __map is public and therefore visible by callers. We prefix it with "__" to avoid the risk of mistaking it
+   * with fields
+   */
   protected val __map = mutableMapOf<String, Any?>()
 
   fun <T> resolve(responseName: String, type: CompiledType, vararg ctors: () -> Map<String, Any?>): T {

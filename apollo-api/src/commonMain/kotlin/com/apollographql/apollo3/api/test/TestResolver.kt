@@ -7,7 +7,20 @@ import com.apollographql.apollo3.api.CompiledType
 import com.apollographql.apollo3.api.CustomScalarType
 import kotlin.native.concurrent.ThreadLocal
 
+/**
+ * Implement [TestResolver] to generate fake data during tests.
+ */
 interface TestResolver {
+  /**
+   * Resolve the given field
+   *
+   * @param responseName the name of the field as seen in the json
+   * @param compiledType the GraphQL type of the field
+   * @param ctors if [compiledType] is a composite type or any non-null or list combination of a composite type,
+   * ctors contain a list of constructors for the possible shapes
+   *
+   * @return T the Kotlin value for the field. Can be Int, Double, String, List<Any?> or Map<String, Any?> or null
+   */
   fun <T> resolve(responseName: String, compiledType: CompiledType, ctors: Array<out () -> Map<String, Any?>>?): T
 }
 
@@ -63,7 +76,6 @@ open class DefaultTestResolver : TestResolver {
     stackSize--
     stack[stackSize] = 0 // Allow garbage collection
   }
-
 
   private fun <T> resolveInternal(responseName: String, compiledType: CompiledType, ctors: Array<out () -> Map<String, Any?>>?): T {
     val path = stack.take(stackSize).toList()

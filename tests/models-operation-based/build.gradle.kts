@@ -60,6 +60,7 @@ fun com.apollographql.apollo3.gradle.api.Service.configureConnection(generateKot
         connectToKotlinSourceSet("appleTest")
         connectToKotlinSourceSet("jsTest")
       } else {
+        // For java, the source set is always called 'main'
         connectToJavaSourceSet("main")
       }
     } else {
