@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 class EnumTest {
   @Test
   fun valueOf() {
-    assertEquals(Episode.EMPIRE, Episode.valueOf("EMPIRE"))
-    assertEquals(Episode.UNKNOWN__("NEW_EPISODE"), Episode.valueOf("NEW_EPISODE"))
+    assertEquals(Episode.EMPIRE, Episode.safeValueOf("EMPIRE"))
+    assertEquals(Episode.UNKNOWN__("NEW_EPISODE"), Episode.safeValueOf("NEW_EPISODE"))
   }
 }
