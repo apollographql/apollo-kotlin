@@ -36,7 +36,7 @@ abstract class WsProtocol(
     fun operationResponse(id: String, payload: Map<String, Any?>)
 
     /**
-     * An error was received in response to an operationStart
+     * An error was received in relation to an operation
      */
     fun operationError(id: String, payload: Map<String, Any?>?)
 
@@ -46,7 +46,12 @@ abstract class WsProtocol(
     fun operationComplete(id: String)
 
     /**
-     * a general network error was received.
+     * A general error was received
+     */
+    fun generalError(payload: Map<String, Any?>?)
+
+    /**
+     * A network error occurred
      */
     fun networkError(cause: Throwable)
   }

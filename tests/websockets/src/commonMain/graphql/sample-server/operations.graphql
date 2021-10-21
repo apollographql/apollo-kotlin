@@ -10,6 +10,10 @@ subscription TimeSubscription  {
   time
 }
 
+subscription OperationError {
+  operationError
+}
+
 query TimeQuery {
   time
 }

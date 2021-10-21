@@ -70,7 +70,14 @@ class AppSyncWsProtocol(
     @Suppress("UNCHECKED_CAST")
     return when (messageMap["type"]) {
       "data" -> listener.operationResponse(messageMap["id"] as String, messageMap["payload"] as Map<String, Any?>)
-      "error" -> listener.operationError(messageMap["id"] as String, messageMap["payload"] as Map<String, Any?>)
+      "error" -> {
+        val id = messageMap["id"]
+        if (id is String) {
+          listener.operationError(id, messageMap["payload"] as Map<String, Any?>?)
+        } else {
+          listener.generalError(messageMap["payload"] as Map<String, Any?>?)
+        }
+      }
       "complete" -> listener.operationComplete(messageMap["id"] as String)
       "ka" -> Unit // Keep Alive: nothing to do
       else -> Unit // Unknown message

@@ -4,9 +4,6 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.exception.ApolloNetworkException
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 
 /**
@@ -41,22 +38,18 @@ class SubscriptionWsProtocol(
     }
   }
 
-  override fun run(scope: CoroutineScope) {
-    scope.launch {
-      while(true) {
-        delay(30000)
-        sendMessageMapBinary(mapOf(
-            "type" to "ka"
-        ))
-      }
-    }
-    super.run(scope)
-  }
   override fun handleServerMessage(messageMap: Map<String, Any?>) {
     @Suppress("UNCHECKED_CAST")
     when (messageMap["type"]) {
       "data" -> listener.operationResponse(messageMap["id"] as String, messageMap["payload"] as Map<String, Any?>)
-      "error" -> listener.operationError(messageMap["id"] as String, messageMap["payload"] as Map<String, Any?>?)
+      "error" -> {
+        val id = messageMap["id"]
+        if (id is String) {
+          listener.operationError(id, messageMap["payload"] as Map<String, Any?>?)
+        } else {
+          listener.generalError(messageMap["payload"] as Map<String, Any?>?)
+        }
+      }
       "complete" -> listener.operationComplete(messageMap["id"] as String)
       else -> Unit // unknown message...
     }

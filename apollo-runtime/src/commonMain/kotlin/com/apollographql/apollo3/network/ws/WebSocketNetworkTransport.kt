@@ -57,13 +57,17 @@ class WebSocketNetworkTransport(
   class StartOperation<D : Operation.Data>(val request: ApolloRequest<D>) : Command
   class StopOperation<D : Operation.Data>(val request: ApolloRequest<D>) : Command
 
-  private interface Event {
+  private sealed interface Event {
     val id: String?
   }
 
   private class OperationResponse(override val id: String?, val payload: Map<String, Any?>) : Event
   private class OperationError(override val id: String?, val payload: Map<String, Any?>?) : Event
   private class OperationComplete(override val id: String?) : Event
+  private class GeneralError(val payload: Map<String, Any?>?) : Event {
+    override val id: String? = null
+  }
+
   private class NetworkError(val cause: Throwable?) : Event {
     override val id: String? = null
   }
@@ -172,6 +176,10 @@ class WebSocketNetworkTransport(
           emit(it)
           false
         }
+        is GeneralError -> {
+          emit(it)
+          false
+        }
         else -> {
           emit(it)
           true
@@ -188,7 +196,9 @@ class WebSocketNetworkTransport(
         is NetworkError -> {
           throw ApolloNetworkException("Network error while executing ${request.operation.name()}", it.cause)
         }
-        else -> error("Unsupported event $it")
+        // Cannot happen as OperationComplete is filtered out upstream
+        is GeneralError -> throw ApolloNetworkException("General error while executing operation ${request.operation.name()}: ${it.payload}")
+        is OperationComplete -> error("Unexpected event $it")
       }
     }.onCompletion {
       commands.send(StopOperation(request))
@@ -210,6 +220,10 @@ class WebSocketNetworkTransport(
 
   override fun operationComplete(id: String) {
     mutableEvents.tryEmit(OperationComplete(id))
+  }
+
+  override fun generalError(payload: Map<String, Any?>?) {
+    mutableEvents.tryEmit(GeneralError(payload))
   }
 
   override fun networkError(cause: Throwable) {
