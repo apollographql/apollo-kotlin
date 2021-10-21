@@ -2,12 +2,15 @@ package test
 
 import codegen.models.AllPlanetsQuery
 import codegen.models.BirthdateQuery
+import codegen.models.EpisodeQuery
 import codegen.models.HeroAndFriendsWithTypenameQuery
 import codegen.models.MergedFieldWithSameShapeQuery
 import codegen.models.test.AllPlanetsQuery_TestBuilder.Data
 import codegen.models.test.BirthdateQuery_TestBuilder.Data
+import codegen.models.test.EpisodeQuery_TestBuilder.Data
 import codegen.models.test.HeroAndFriendsWithTypenameQuery_TestBuilder.Data
 import codegen.models.test.MergedFieldWithSameShapeQuery_TestBuilder.Data
+import codegen.models.type.Episode
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledListType
 import com.apollographql.apollo3.api.CompiledNamedType
@@ -200,6 +203,17 @@ class TestBuildersTest {
     )
 
     assertEquals(expected, data)
+  }
+
+  @Test
+  fun enum() {
+    val data = EpisodeQuery.Data {
+      hero = hero {
+        appearsIn = listOf(Episode.JEDI.rawValue)
+      }
+    }
+
+    assertEquals(Episode.JEDI, data.hero?.appearsIn?.single())
   }
 
 }

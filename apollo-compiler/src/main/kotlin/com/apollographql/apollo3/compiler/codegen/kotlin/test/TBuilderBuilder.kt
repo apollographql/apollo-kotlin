@@ -14,6 +14,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.file.TProperty
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.kotlin.selections.CompiledSelectionsBuilder.Companion.codeBlock
+import com.apollographql.apollo3.compiler.ir.IrEnumType
 import com.apollographql.apollo3.compiler.ir.IrModelType
 import com.apollographql.apollo3.compiler.ir.IrScalarType
 import com.apollographql.apollo3.compiler.ir.PossibleTypes
@@ -135,6 +136,7 @@ internal class TBuilderBuilder(
   private fun TProperty.className(): TypeName {
     return context.resolver.resolveIrType(type) {
       when (it) {
+        is IrEnumType -> KotlinClassNames.String
         is IrModelType -> anyMapClassName
         is IrScalarType -> if (builtInTypes.contains(it.name)) {
           null
