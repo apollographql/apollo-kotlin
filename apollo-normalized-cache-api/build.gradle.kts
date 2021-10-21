@@ -15,7 +15,3 @@ kotlin {
     }
   }
 }
-
-metalava {
-  hiddenPackages += setOf("com.apollographql.apollo3.cache.normalized.internal")
-}

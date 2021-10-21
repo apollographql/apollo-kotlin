@@ -1,0 +1,152 @@
+public final class com/apollographql/apollo3/cache/ApolloCacheHeaders {
+	public static final field DO_NOT_STORE Ljava/lang/String;
+	public static final field EVICT_AFTER_READ Ljava/lang/String;
+	public static final field INSTANCE Lcom/apollographql/apollo3/cache/ApolloCacheHeaders;
+}
+
+public final class com/apollographql/apollo3/cache/CacheHeaders {
+	public static final field Companion Lcom/apollographql/apollo3/cache/CacheHeaders$Companion;
+	public static final field NONE Lcom/apollographql/apollo3/cache/CacheHeaders;
+	public static final fun builder ()Lcom/apollographql/apollo3/cache/CacheHeaders$Builder;
+	public final fun hasHeader (Ljava/lang/String;)Z
+	public final fun headerValue (Ljava/lang/String;)Ljava/lang/String;
+	public final fun toBuilder ()Lcom/apollographql/apollo3/cache/CacheHeaders$Builder;
+}
+
+public final class com/apollographql/apollo3/cache/CacheHeaders$Builder {
+	public fun <init> ()V
+	public final fun addHeader (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/cache/CacheHeaders$Builder;
+	public final fun addHeaders (Ljava/util/Map;)Lcom/apollographql/apollo3/cache/CacheHeaders$Builder;
+	public final fun build ()Lcom/apollographql/apollo3/cache/CacheHeaders;
+}
+
+public final class com/apollographql/apollo3/cache/CacheHeaders$Companion {
+	public final fun builder ()Lcom/apollographql/apollo3/cache/CacheHeaders$Builder;
+}
+
+public final class com/apollographql/apollo3/cache/normalized/CacheKey {
+	public static final field Companion Lcom/apollographql/apollo3/cache/normalized/CacheKey$Companion;
+	public fun <init> (Ljava/lang/String;)V
+	public static final fun canDeserialize (Ljava/lang/String;)Z
+	public static final fun deserialize (Ljava/lang/String;)Lcom/apollographql/apollo3/cache/normalized/CacheKey;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static final fun rootKey ()Lcom/apollographql/apollo3/cache/normalized/CacheKey;
+	public final fun serialize ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/cache/normalized/CacheKey$Companion {
+	public final fun canDeserialize (Ljava/lang/String;)Z
+	public final fun deserialize (Ljava/lang/String;)Lcom/apollographql/apollo3/cache/normalized/CacheKey;
+	public final fun from (Ljava/lang/String;Ljava/util/List;)Lcom/apollographql/apollo3/cache/normalized/CacheKey;
+	public final fun from (Ljava/lang/String;[Ljava/lang/String;)Lcom/apollographql/apollo3/cache/normalized/CacheKey;
+	public final fun rootKey ()Lcom/apollographql/apollo3/cache/normalized/CacheKey;
+}
+
+public abstract class com/apollographql/apollo3/cache/normalized/CacheKeyResolver : com/apollographql/apollo3/cache/normalized/CacheResolver {
+	public fun <init> ()V
+	public abstract fun cacheKeyForField (Lcom/apollographql/apollo3/api/CompiledField;Lcom/apollographql/apollo3/api/Executable$Variables;)Lcom/apollographql/apollo3/cache/normalized/CacheKey;
+	public fun listOfCacheKeysForField (Lcom/apollographql/apollo3/api/CompiledField;Lcom/apollographql/apollo3/api/Executable$Variables;)Ljava/util/List;
+	public final fun resolveField (Lcom/apollographql/apollo3/api/CompiledField;Lcom/apollographql/apollo3/api/Executable$Variables;Ljava/util/Map;Ljava/lang/String;)Ljava/lang/Object;
+}
+
+public abstract interface class com/apollographql/apollo3/cache/normalized/CacheResolver {
+	public abstract fun resolveField (Lcom/apollographql/apollo3/api/CompiledField;Lcom/apollographql/apollo3/api/Executable$Variables;Ljava/util/Map;Ljava/lang/String;)Ljava/lang/Object;
+}
+
+public final class com/apollographql/apollo3/cache/normalized/DefaultCacheResolver : com/apollographql/apollo3/cache/normalized/CacheResolver {
+	public static final field INSTANCE Lcom/apollographql/apollo3/cache/normalized/DefaultCacheResolver;
+	public fun resolveField (Lcom/apollographql/apollo3/api/CompiledField;Lcom/apollographql/apollo3/api/Executable$Variables;Ljava/util/Map;Ljava/lang/String;)Ljava/lang/Object;
+}
+
+public final class com/apollographql/apollo3/cache/normalized/FieldPolicyCacheResolver : com/apollographql/apollo3/cache/normalized/CacheResolver {
+	public static final field INSTANCE Lcom/apollographql/apollo3/cache/normalized/FieldPolicyCacheResolver;
+	public fun resolveField (Lcom/apollographql/apollo3/api/CompiledField;Lcom/apollographql/apollo3/api/Executable$Variables;Ljava/util/Map;Ljava/lang/String;)Ljava/lang/Object;
+}
+
+public abstract class com/apollographql/apollo3/cache/normalized/NormalizedCache : com/apollographql/apollo3/cache/normalized/ReadOnlyNormalizedCache {
+	public static final field Companion Lcom/apollographql/apollo3/cache/normalized/NormalizedCache$Companion;
+	public fun <init> ()V
+	public final fun chain (Lcom/apollographql/apollo3/cache/normalized/NormalizedCache;)Lcom/apollographql/apollo3/cache/normalized/NormalizedCache;
+	public abstract fun clearAll ()V
+	public final fun getNextCache ()Lcom/apollographql/apollo3/cache/normalized/NormalizedCache;
+	public abstract fun merge (Lcom/apollographql/apollo3/cache/normalized/Record;Lcom/apollographql/apollo3/cache/CacheHeaders;)Ljava/util/Set;
+	public abstract fun merge (Ljava/util/Collection;Lcom/apollographql/apollo3/cache/CacheHeaders;)Ljava/util/Set;
+	public static final fun prettifyDump (Ljava/util/Map;)Ljava/lang/String;
+	public abstract fun remove (Lcom/apollographql/apollo3/cache/normalized/CacheKey;Z)Z
+	public abstract fun remove (Ljava/lang/String;)I
+}
+
+public final class com/apollographql/apollo3/cache/normalized/NormalizedCache$Companion {
+	public final fun patternToRegex (Ljava/lang/String;)Lkotlin/text/Regex;
+	public final fun prettifyDump (Ljava/util/Map;)Ljava/lang/String;
+}
+
+public abstract class com/apollographql/apollo3/cache/normalized/NormalizedCacheFactory {
+	public fun <init> ()V
+	public final fun chain (Lcom/apollographql/apollo3/cache/normalized/NormalizedCacheFactory;)Lcom/apollographql/apollo3/cache/normalized/NormalizedCacheFactory;
+	public abstract fun create ()Lcom/apollographql/apollo3/cache/normalized/NormalizedCache;
+	public final fun createChain ()Lcom/apollographql/apollo3/cache/normalized/NormalizedCache;
+}
+
+public abstract interface class com/apollographql/apollo3/cache/normalized/ReadOnlyNormalizedCache {
+	public abstract fun dump ()Ljava/util/Map;
+	public abstract fun loadRecord (Ljava/lang/String;Lcom/apollographql/apollo3/cache/CacheHeaders;)Lcom/apollographql/apollo3/cache/normalized/Record;
+	public abstract fun loadRecords (Ljava/util/Collection;Lcom/apollographql/apollo3/cache/CacheHeaders;)Ljava/util/Collection;
+}
+
+public final class com/apollographql/apollo3/cache/normalized/Record : java/util/Map, kotlin/jvm/internal/markers/KMappedMarker {
+	public fun <init> (Ljava/lang/String;Ljava/util/Map;Ljava/util/UUID;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/util/Map;Ljava/util/UUID;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun clear ()V
+	public synthetic fun compute (Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;
+	public fun compute (Ljava/lang/String;Ljava/util/function/BiFunction;)Ljava/lang/Object;
+	public synthetic fun computeIfAbsent (Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;
+	public fun computeIfAbsent (Ljava/lang/String;Ljava/util/function/Function;)Ljava/lang/Object;
+	public synthetic fun computeIfPresent (Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;
+	public fun computeIfPresent (Ljava/lang/String;Ljava/util/function/BiFunction;)Ljava/lang/Object;
+	public final fun containsKey (Ljava/lang/Object;)Z
+	public fun containsKey (Ljava/lang/String;)Z
+	public fun containsValue (Ljava/lang/Object;)Z
+	public final fun entrySet ()Ljava/util/Set;
+	public final fun fieldKeys ()Ljava/util/Set;
+	public final fun get (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun get (Ljava/lang/String;)Ljava/lang/Object;
+	public fun getEntries ()Ljava/util/Set;
+	public final fun getFields ()Ljava/util/Map;
+	public final fun getKey ()Ljava/lang/String;
+	public fun getKeys ()Ljava/util/Set;
+	public final fun getMutationId ()Ljava/util/UUID;
+	public fun getSize ()I
+	public final fun getSizeInBytes ()I
+	public fun getValues ()Ljava/util/Collection;
+	public fun isEmpty ()Z
+	public final fun keySet ()Ljava/util/Set;
+	public synthetic fun merge (Ljava/lang/Object;Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;
+	public fun merge (Ljava/lang/String;Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;
+	public final fun mergeWith (Lcom/apollographql/apollo3/cache/normalized/Record;)Lkotlin/Pair;
+	public synthetic fun put (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun put (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun putAll (Ljava/util/Map;)V
+	public synthetic fun putIfAbsent (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun putIfAbsent (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
+	public final fun referencedFields ()Ljava/util/List;
+	public fun remove (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun remove (Ljava/lang/Object;Ljava/lang/Object;)Z
+	public synthetic fun replace (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public synthetic fun replace (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Z
+	public fun replace (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun replace (Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)Z
+	public fun replaceAll (Ljava/util/function/BiFunction;)V
+	public final fun size ()I
+	public final fun values ()Ljava/util/Collection;
+}
+
+public final class com/apollographql/apollo3/cache/normalized/RecordFieldJsonAdapter {
+	public static final field INSTANCE Lcom/apollographql/apollo3/cache/normalized/RecordFieldJsonAdapter;
+	public final fun fromJson (Ljava/lang/String;)Ljava/util/Map;
+	public final fun toJson (Ljava/util/Map;)Ljava/lang/String;
+}
+

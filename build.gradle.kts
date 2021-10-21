@@ -1,5 +1,5 @@
+import JapiCmp.configureJapiCmp
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
   repositories {
@@ -17,8 +17,8 @@ buildscript {
 
 apply(plugin = "com.github.ben-manes.versions")
 apply(plugin = "org.jetbrains.dokka")
+apply(plugin = "org.jetbrains.kotlinx.binary-compatibility-validator")
 
-ApiCompatibility.configure(rootProject)
 
 version = property("VERSION_NAME")!!
 
@@ -178,4 +178,23 @@ tasks.withType(org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstall
 // See https://youtrack.jetbrains.com/issue/KT-47215
 plugins.withType<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin> {
   the<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension>().disableGranularWorkspaces()
+}
+
+rootProject.configureJapiCmp()
+
+configure<kotlinx.validation.ApiValidationExtension> {
+  ignoredPackages.addAll(
+      listOf(
+          "com.apollographql.apollo3.api.internal",
+          "com.apollographql.apollo3.gradle.internal",
+          "com.apollographql.apollo3.cache.normalized.internal",
+      )
+  )
+  ignoredProjects.addAll(
+      listOf(
+          "apollo-compiler",
+          "apollo-ast",
+          "apollo-testing-support"
+      )
+  )
 }
