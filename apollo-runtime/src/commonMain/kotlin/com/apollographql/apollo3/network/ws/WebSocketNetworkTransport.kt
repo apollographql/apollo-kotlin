@@ -177,6 +177,9 @@ class WebSocketNetworkTransport(
           false
         }
         is GeneralError -> {
+          // The server sends an error without an operation id. This happens when sending an unknown message type
+          // to https://apollo-fullstack-tutorial.herokuapp.com/ for an example. In that case, this error is not fatal
+          // and the server will continue honouring other subscriptions so we just filter the error out and log it.
           println("Received general error while executing operation ${request.operation.name()}: ${it.payload}")
           true
         }
