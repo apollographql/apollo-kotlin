@@ -38,12 +38,11 @@ internal object Identifier {
   const val OPERATION_NAME = "OPERATION_NAME"
   const val OPERATION_ID = "OPERATION_ID"
   const val RESPONSE_NAMES = "RESPONSE_NAMES"
-  const val safeValueOf = "safeValueOf"
 
   /**
    * Only used by generated code
    */
-  const val valueOf = "valueOf"
+  const val safeValueOf = "safeValueOf"
   // extra underscores at the end to prevent potential name clashes
   const val UNKNOWN__ = "UNKNOWN__"
   const val rawValue = "rawValue"
