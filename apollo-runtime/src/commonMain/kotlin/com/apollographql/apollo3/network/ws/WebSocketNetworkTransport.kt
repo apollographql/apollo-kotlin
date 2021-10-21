@@ -177,8 +177,8 @@ class WebSocketNetworkTransport(
           false
         }
         is GeneralError -> {
-          emit(it)
-          false
+          println("Received general error while executing operation ${request.operation.name()}: ${it.payload}")
+          true
         }
         else -> {
           emit(it)
@@ -193,12 +193,10 @@ class WebSocketNetworkTransport(
             request.executionContext[CustomScalarAdapters]!!
         ).copy(requestUuid = request.requestUuid)
         is OperationError -> throw ApolloNetworkException("Cannot start operation ${request.operation.name()}: ${it.payload}")
-        is NetworkError -> {
-          throw ApolloNetworkException("Network error while executing ${request.operation.name()}", it.cause)
-        }
-        // Cannot happen as OperationComplete is filtered out upstream
-        is GeneralError -> throw ApolloNetworkException("General error while executing operation ${request.operation.name()}: ${it.payload}")
-        is OperationComplete -> error("Unexpected event $it")
+        is NetworkError -> throw ApolloNetworkException("Network error while executing ${request.operation.name()}", it.cause)
+
+        // Cannot happen as these events are filtered out upstream
+        is OperationComplete, is GeneralError -> error("Unexpected event $it")
       }
     }.onCompletion {
       commands.send(StopOperation(request))
