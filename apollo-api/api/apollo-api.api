@@ -797,8 +797,81 @@ public abstract interface class com/apollographql/apollo3/api/json/JsonWriter : 
 	public abstract fun value (Z)Lcom/apollographql/apollo3/api/json/JsonWriter;
 }
 
+public final class com/apollographql/apollo3/api/json/MapJsonReader : com/apollographql/apollo3/api/json/JsonReader {
+	public static final field Companion Lcom/apollographql/apollo3/api/json/MapJsonReader$Companion;
+	public fun <init> (Ljava/util/Map;)V
+	public synthetic fun beginArray ()Lcom/apollographql/apollo3/api/json/JsonReader;
+	public fun beginArray ()Lcom/apollographql/apollo3/api/json/MapJsonReader;
+	public synthetic fun beginObject ()Lcom/apollographql/apollo3/api/json/JsonReader;
+	public fun beginObject ()Lcom/apollographql/apollo3/api/json/MapJsonReader;
+	public fun close ()V
+	public synthetic fun endArray ()Lcom/apollographql/apollo3/api/json/JsonReader;
+	public fun endArray ()Lcom/apollographql/apollo3/api/json/MapJsonReader;
+	public synthetic fun endObject ()Lcom/apollographql/apollo3/api/json/JsonReader;
+	public fun endObject ()Lcom/apollographql/apollo3/api/json/MapJsonReader;
+	public final fun getRoot ()Ljava/util/Map;
+	public fun hasNext ()Z
+	public fun nextBoolean ()Z
+	public fun nextDouble ()D
+	public fun nextInt ()I
+	public fun nextLong ()J
+	public fun nextName ()Ljava/lang/String;
+	public fun nextNull ()Ljava/lang/Void;
+	public fun nextNumber ()Lcom/apollographql/apollo3/api/json/JsonNumber;
+	public fun nextString ()Ljava/lang/String;
+	public fun peek ()Lcom/apollographql/apollo3/api/json/JsonReader$Token;
+	public fun rewind ()V
+	public fun selectName (Ljava/util/List;)I
+	public fun skipValue ()V
+}
+
+public final class com/apollographql/apollo3/api/json/MapJsonReader$Companion {
+	public final fun buffer (Lcom/apollographql/apollo3/api/json/JsonReader;)Lcom/apollographql/apollo3/api/json/MapJsonReader;
+}
+
 public final class com/apollographql/apollo3/api/json/UseKt {
 	public static final fun use (Ljava/io/Closeable;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+}
+
+public class com/apollographql/apollo3/api/test/DefaultTestResolver : com/apollographql/apollo3/api/test/TestResolver {
+	public fun <init> ()V
+	public fun resolve (Ljava/lang/String;Lcom/apollographql/apollo3/api/CompiledType;[Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+	public fun resolveBoolean (Ljava/util/List;)Z
+	public fun resolveComposite (Ljava/util/List;[Lkotlin/jvm/functions/Function0;)Ljava/util/Map;
+	public fun resolveCustomScalar (Ljava/util/List;)Ljava/lang/String;
+	public fun resolveFloat (Ljava/util/List;)D
+	public fun resolveInt (Ljava/util/List;)I
+	public fun resolveListSize (Ljava/util/List;)I
+	public fun resolveString (Ljava/util/List;)Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/api/test/MandatoryTypenameProperty {
+	public fun <init> ()V
+	public final fun getValue (Lcom/apollographql/apollo3/api/test/MapBuilder;Lkotlin/reflect/KProperty;)Ljava/lang/String;
+	public final fun setValue (Lcom/apollographql/apollo3/api/test/MapBuilder;Lkotlin/reflect/KProperty;Ljava/lang/String;)V
+}
+
+public abstract class com/apollographql/apollo3/api/test/MapBuilder {
+	public fun <init> ()V
+	public abstract fun build ()Ljava/util/Map;
+	protected final fun get__map ()Ljava/util/Map;
+	public final fun resolve (Ljava/lang/String;Lcom/apollographql/apollo3/api/CompiledType;[Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+}
+
+public final class com/apollographql/apollo3/api/test/StubbedProperty {
+	public fun <init> (Ljava/util/Map;Ljava/lang/String;)V
+	public final fun getValue (Lcom/apollographql/apollo3/api/test/MapBuilder;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public final fun setValue (Lcom/apollographql/apollo3/api/test/MapBuilder;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+}
+
+public abstract interface class com/apollographql/apollo3/api/test/TestResolver {
+	public abstract fun resolve (Ljava/lang/String;Lcom/apollographql/apollo3/api/CompiledType;[Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+}
+
+public final class com/apollographql/apollo3/api/test/TestResolverKt {
+	public static final fun getCurrentTestResolver ()Lcom/apollographql/apollo3/api/test/TestResolver;
+	public static final fun setCurrentTestResolver (Lcom/apollographql/apollo3/api/test/TestResolver;)V
+	public static final fun withTestResolver (Lcom/apollographql/apollo3/api/test/TestResolver;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
 }
 
 public final class com/apollographql/apollo3/exception/ApolloCanceledException : com/apollographql/apollo3/exception/ApolloException {
