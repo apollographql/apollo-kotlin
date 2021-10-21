@@ -9,9 +9,15 @@ import codegen.models.test.BirthdateQuery_TestBuilder.Data
 import codegen.models.test.HeroAndFriendsWithTypenameQuery_TestBuilder.Data
 import codegen.models.test.MergedFieldWithSameShapeQuery_TestBuilder.Data
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompiledListType
+import com.apollographql.apollo3.api.CompiledNamedType
+import com.apollographql.apollo3.api.CompiledNotNullType
+import com.apollographql.apollo3.api.CompiledType
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.test.DefaultTestResolver
+import com.apollographql.apollo3.api.test.TestResolver
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -89,4 +95,111 @@ class TestBuildersTest {
 
     assertEquals(12345L, data.hero?.birthDate)
   }
+
+  @Test
+  fun customDefaultTestResolver() {
+    val defaultString = "default"
+    val defaultInt = 5
+    val defaultFloat = 7.0
+    val myTestResolver = object : DefaultTestResolver() {
+      override fun resolveList(path: List<Any>): Int {
+        return 1
+      }
+
+      override fun resolveInt(path: List<Any>): Int {
+        return defaultInt
+      }
+
+      override fun resolveString(path: List<Any>): String {
+        return defaultString
+      }
+
+      override fun resolveFloat(path: List<Any>): Double {
+        return defaultFloat
+      }
+
+      override fun resolveComposite(path: List<Any>, ctors: Array<out () -> Map<String, Any?>>): Map<String, Any?> {
+        return ctors[0]()
+      }
+    }
+
+    val data = AllPlanetsQuery.Data(testResolver = myTestResolver) {}
+
+    val expected = AllPlanetsQuery.Data(
+        allPlanets = AllPlanetsQuery.Data.AllPlanets(
+            planets = listOf(
+                AllPlanetsQuery.Data.AllPlanets.Planet(
+                    __typename = "Planet",
+                    name = defaultString,
+                    climates = listOf(defaultString),
+                    surfaceWater = defaultFloat,
+                    filmConnection = AllPlanetsQuery.Data.AllPlanets.Planet.FilmConnection(
+                        totalCount = defaultInt,
+                        films = listOf(
+                            AllPlanetsQuery.Data.AllPlanets.Planet.FilmConnection.Film(
+                                __typename = "Film",
+                                title = defaultString,
+                                producers = listOf(defaultString)
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+
+    assertEquals(expected, data)
+  }
+
+  @Test
+  fun customTestResolver() {
+    val defaultString = "default"
+    val defaultInt = 5
+    val defaultFloat = 7.0
+
+    val myTestResolver = object : TestResolver {
+      override fun <T> resolve(responseName: String, compiledType: CompiledType, ctors: Array<out () -> Map<String, Any?>>?): T {
+        return when (compiledType) {
+          is CompiledNotNullType -> resolve(responseName, compiledType.ofType, ctors)
+          is CompiledListType -> listOf(resolve<Any>(responseName, compiledType.ofType, ctors))
+          is CompiledNamedType -> {
+            when (compiledType.name) {
+              "Int" -> defaultInt
+              "Float" -> defaultFloat
+              "String" -> defaultString
+              else -> ctors!![0]()
+            }
+          }
+        } as T
+
+      }
+    }
+    val data = AllPlanetsQuery.Data(testResolver = myTestResolver) {}
+
+    val expected = AllPlanetsQuery.Data(
+        allPlanets = AllPlanetsQuery.Data.AllPlanets(
+            planets = listOf(
+                AllPlanetsQuery.Data.AllPlanets.Planet(
+                    __typename = "Planet",
+                    name = defaultString,
+                    climates = listOf(defaultString),
+                    surfaceWater = defaultFloat,
+                    filmConnection = AllPlanetsQuery.Data.AllPlanets.Planet.FilmConnection(
+                        totalCount = defaultInt,
+                        films = listOf(
+                            AllPlanetsQuery.Data.AllPlanets.Planet.FilmConnection.Film(
+                                __typename = "Film",
+                                title = defaultString,
+                                producers = listOf(defaultString)
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+
+    assertEquals(expected, data)
+  }
+
 }
