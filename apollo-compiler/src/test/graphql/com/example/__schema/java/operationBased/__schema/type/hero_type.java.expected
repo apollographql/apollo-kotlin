@@ -26,7 +26,7 @@ public class hero_type {
     this.rawValue = rawValue;
   }
 
-  public static hero_type valueOf(String rawValue) {
+  public static hero_type safeValueOf(String rawValue) {
     switch(rawValue) {
       case "human": return hero_type.human;
       case "droid": return hero_type.droid;

@@ -18,7 +18,7 @@ public enum Episode_ResponseAdapter implements Adapter<Episode> {
   @Override
   public Episode fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
     String rawValue = reader.nextString();
-    return Episode.valueOf(rawValue);
+    return Episode.safeValueOf(rawValue);
   }
 
   @Override

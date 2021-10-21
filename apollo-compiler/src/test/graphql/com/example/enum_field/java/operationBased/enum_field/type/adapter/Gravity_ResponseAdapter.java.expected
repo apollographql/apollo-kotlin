@@ -18,7 +18,7 @@ public enum Gravity_ResponseAdapter implements Adapter<Gravity> {
   @Override
   public Gravity fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
     String rawValue = reader.nextString();
-    return Gravity.valueOf(rawValue);
+    return Gravity.safeValueOf(rawValue);
   }
 
   @Override

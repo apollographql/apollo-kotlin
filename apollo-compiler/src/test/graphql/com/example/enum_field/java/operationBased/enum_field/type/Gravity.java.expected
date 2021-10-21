@@ -27,7 +27,7 @@ public class Gravity {
     this.rawValue = rawValue;
   }
 
-  public static Gravity valueOf(String rawValue) {
+  public static Gravity safeValueOf(String rawValue) {
     switch(rawValue) {
       case "TOP": return Gravity.TOP;
       case "CENTER": return Gravity.CENTER;

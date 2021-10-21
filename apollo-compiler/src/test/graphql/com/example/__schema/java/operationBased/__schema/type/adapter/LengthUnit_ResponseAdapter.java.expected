@@ -18,7 +18,7 @@ public enum LengthUnit_ResponseAdapter implements Adapter<LengthUnit> {
   @Override
   public LengthUnit fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
     String rawValue = reader.nextString();
-    return LengthUnit.valueOf(rawValue);
+    return LengthUnit.safeValueOf(rawValue);
   }
 
   @Override
