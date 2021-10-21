@@ -35,7 +35,7 @@ open class DefaultTestResolver : TestResolver {
   private var compositeCounter = 0
   private var booleanCounter = false
 
-  open fun resolveList(path: List<Any>): Int {
+  open fun resolveListSize(path: List<Any>): Int {
     return 3
   }
 
@@ -82,7 +82,7 @@ open class DefaultTestResolver : TestResolver {
     return when (compiledType) {
       is CompiledNotNullType -> resolve(responseName, compiledType.ofType, ctors)
       is CompiledListType -> {
-        0.until(resolveList(path)).map { i ->
+        0.until(resolveListSize(path)).map { i ->
           push(i)
           resolveInternal<Any>(responseName, compiledType.ofType, ctors).also {
             pop()

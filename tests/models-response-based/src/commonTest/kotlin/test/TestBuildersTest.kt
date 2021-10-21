@@ -102,7 +102,7 @@ class TestBuildersTest {
     val defaultInt = 5
     val defaultFloat = 7.0
     val myTestResolver = object : DefaultTestResolver() {
-      override fun resolveList(path: List<Any>): Int {
+      override fun resolveListSize(path: List<Any>): Int {
         return 1
       }
 
