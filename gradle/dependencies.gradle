@@ -122,6 +122,7 @@ ext.dep = [
     minGradleApi             : "dev.gradleplugins:gradle-api:5.6",
     graphqlKotlin            : "com.expediagroup:graphql-kotlin-spring-server:4.1.0",
     testParameterInjector    : "com.google.testparameterinjector:test-parameter-injector:1.4",
+    binaryCompatibilityValidator: "org.jetbrains.kotlinx:binary-compatibility-validator:0.8.0-RC"
 ]
 ext.androidConfig = [
     compileSdkVersion: 30,

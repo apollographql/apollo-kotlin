@@ -7,11 +7,6 @@ plugins {
   id("com.github.johnrengelman.shadow")
 }
 
-
-metalava {
-  hiddenPackages += setOf("com.apollographql.apollo3.gradle.internal")
-}
-
 /**
  * Special configuration to be included in resulting shadowed jar, but not added to the generated pom and gradle
  * metadata files.

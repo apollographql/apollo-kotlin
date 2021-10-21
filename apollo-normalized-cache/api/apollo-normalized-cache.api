@@ -1,0 +1,68 @@
+public final class com/apollographql/apollo3/cache/normalized/CacheInfo : com/apollographql/apollo3/api/ExecutionContext$Element {
+	public static final field Key Lcom/apollographql/apollo3/cache/normalized/CacheInfo$Key;
+	public fun <init> (JJZLjava/lang/String;Ljava/lang/String;)V
+	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public fun get (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext$Element;
+	public final fun getHit ()Z
+	public fun getKey ()Lcom/apollographql/apollo3/api/ExecutionContext$Key;
+	public final fun getMillisEnd ()J
+	public final fun getMillisStart ()J
+	public final fun getMissedField ()Ljava/lang/String;
+	public final fun getMissedKey ()Ljava/lang/String;
+	public fun minusKey (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext;
+	public fun plus (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ExecutionContext;
+}
+
+public final class com/apollographql/apollo3/cache/normalized/CacheInfo$Key : com/apollographql/apollo3/api/ExecutionContext$Key {
+}
+
+public final class com/apollographql/apollo3/cache/normalized/ClientCacheExtensionsKt {
+	public static final fun cacheHeaders (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Lcom/apollographql/apollo3/cache/CacheHeaders;)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
+	public static final fun clearNormalizedCache (Lcom/apollographql/apollo3/ApolloClient;)Z
+	public static final fun doNotStore (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Z)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
+	public static final fun fetchPolicy (Lcom/apollographql/apollo3/ApolloClient$Builder;Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public static final fun fetchPolicy (Lcom/apollographql/apollo3/api/ApolloRequest$Builder;Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;)Lcom/apollographql/apollo3/api/ApolloRequest$Builder;
+	public static final fun getApolloStore (Lcom/apollographql/apollo3/ApolloClient;)Lcom/apollographql/apollo3/cache/normalized/ApolloStore;
+	public static final fun getCacheInfo (Lcom/apollographql/apollo3/api/ApolloResponse;)Lcom/apollographql/apollo3/cache/normalized/CacheInfo;
+	public static final fun isFromCache (Lcom/apollographql/apollo3/api/ApolloResponse;)Z
+	public static final fun normalizedCache (Lcom/apollographql/apollo3/ApolloClient$Builder;Lcom/apollographql/apollo3/cache/normalized/NormalizedCacheFactory;Lcom/apollographql/apollo3/cache/normalized/ObjectIdGenerator;Lcom/apollographql/apollo3/cache/normalized/CacheResolver;Z)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public static synthetic fun normalizedCache$default (Lcom/apollographql/apollo3/ApolloClient$Builder;Lcom/apollographql/apollo3/cache/normalized/NormalizedCacheFactory;Lcom/apollographql/apollo3/cache/normalized/ObjectIdGenerator;Lcom/apollographql/apollo3/cache/normalized/CacheResolver;ZILjava/lang/Object;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public static final fun optimisticUpdates (Lcom/apollographql/apollo3/api/ApolloRequest$Builder;Lcom/apollographql/apollo3/api/Mutation$Data;)Lcom/apollographql/apollo3/api/ApolloRequest$Builder;
+	public static final fun queryCacheAndNetwork (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun queryCacheAndNetwork (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/Query;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun refetchPolicy (Lcom/apollographql/apollo3/ApolloClient$Builder;Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public static final fun refetchPolicy (Lcom/apollographql/apollo3/api/ApolloRequest$Builder;Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;)Lcom/apollographql/apollo3/api/ApolloRequest$Builder;
+	public static final fun store (Lcom/apollographql/apollo3/ApolloClient$Builder;Lcom/apollographql/apollo3/cache/normalized/ApolloStore;Z)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public static synthetic fun store$default (Lcom/apollographql/apollo3/ApolloClient$Builder;Lcom/apollographql/apollo3/cache/normalized/ApolloStore;ZILjava/lang/Object;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public static final fun storePartialResponses (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Z)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
+	public static final fun watch (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun watch (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/Query;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun withCacheHeaders (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/cache/CacheHeaders;)Lcom/apollographql/apollo3/ApolloClient;
+	public static final fun withCacheHeaders (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/cache/CacheHeaders;)Lcom/apollographql/apollo3/api/ApolloRequest;
+	public static final fun withDoNotStore (Lcom/apollographql/apollo3/ApolloClient;Z)Lcom/apollographql/apollo3/ApolloClient;
+	public static final fun withDoNotStore (Lcom/apollographql/apollo3/api/ApolloRequest;Z)Lcom/apollographql/apollo3/api/ApolloRequest;
+	public static final fun withFetchPolicy (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;)Lcom/apollographql/apollo3/ApolloClient;
+	public static final fun withFetchPolicy (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;)Lcom/apollographql/apollo3/api/ApolloRequest;
+	public static final fun withNormalizedCache (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/cache/normalized/NormalizedCacheFactory;Lcom/apollographql/apollo3/cache/normalized/ObjectIdGenerator;Lcom/apollographql/apollo3/cache/normalized/CacheResolver;Z)Lcom/apollographql/apollo3/ApolloClient;
+	public static synthetic fun withNormalizedCache$default (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/cache/normalized/NormalizedCacheFactory;Lcom/apollographql/apollo3/cache/normalized/ObjectIdGenerator;Lcom/apollographql/apollo3/cache/normalized/CacheResolver;ZILjava/lang/Object;)Lcom/apollographql/apollo3/ApolloClient;
+	public static final fun withOptimisticUpdates (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/api/Mutation$Data;)Lcom/apollographql/apollo3/api/ApolloRequest;
+	public static final fun withRefetchPolicy (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;)Lcom/apollographql/apollo3/ApolloClient;
+	public static final fun withRefetchPolicy (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;)Lcom/apollographql/apollo3/api/ApolloRequest;
+	public static final fun withStore (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/cache/normalized/ApolloStore;Z)Lcom/apollographql/apollo3/ApolloClient;
+	public static synthetic fun withStore$default (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/cache/normalized/ApolloStore;ZILjava/lang/Object;)Lcom/apollographql/apollo3/ApolloClient;
+	public static final fun withStorePartialResponses (Lcom/apollographql/apollo3/ApolloClient;Z)Lcom/apollographql/apollo3/ApolloClient;
+	public static final fun withStorePartialResponses (Lcom/apollographql/apollo3/api/ApolloRequest;Z)Lcom/apollographql/apollo3/api/ApolloRequest;
+	public static final fun withWriteToCacheAsynchronously (Lcom/apollographql/apollo3/ApolloClient;Z)Lcom/apollographql/apollo3/ApolloClient;
+	public static final fun withWriteToCacheAsynchronously (Lcom/apollographql/apollo3/api/ApolloRequest;Z)Lcom/apollographql/apollo3/api/ApolloRequest;
+	public static final fun writeToCacheAsynchronously (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Z)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
+}
+
+public final class com/apollographql/apollo3/cache/normalized/FetchPolicy : java/lang/Enum {
+	public static final field CacheFirst Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;
+	public static final field CacheOnly Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;
+	public static final field NetworkFirst Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;
+	public static final field NetworkOnly Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;
+	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;
+	public static fun values ()[Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;
+}
+
