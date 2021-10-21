@@ -1,0 +1,11 @@
+query NullableParams($param1: Int, $param2: Float) {
+  field(param1: $param1, param2: $param2)
+}
+
+query NonNullableParams($param1: Int!, $param2: Float!) {
+  field(param1: $param1, param2: $param2)
+}
+
+query DefaultValueParams($param1: Int = 0, $param2: Float! = 0.0) {
+  field(param1: $param1, param2: $param2)
+}

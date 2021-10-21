@@ -121,6 +121,7 @@ object GraphQLCompiler {
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
         customScalarsMapping = options.customScalarsMapping,
         codegenModels = options.codegenModels,
+        generateOptionalOperationVariables = options.generateOptionalOperationVariables
     ).build()
 
     if (debugDir != null) {

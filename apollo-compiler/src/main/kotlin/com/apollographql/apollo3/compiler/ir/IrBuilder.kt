@@ -61,6 +61,7 @@ internal class IrBuilder(
     private val alwaysGenerateTypesMatching: Set<String>,
     private val customScalarsMapping: Map<String, String>,
     private val codegenModels: String,
+    private val generateOptionalOperationVariables: Boolean,
 ) : FieldMerger {
   private val usedTypes = mutableListOf<String>()
 
@@ -354,13 +355,29 @@ internal class IrBuilder(
     val coercedDefaultValue = defaultValue?.coerceInSchemaContextOrThrow(type, schema)
 
     var irType = type.toIr()
-    // By default the GraphQL spec treats nullable types as optional variables but most of the times
-    // users writing query variables want to give them a value so default to making them non-optional
-    // and only make them optional if there is a defaultValue (which means the user has a use case for
-    // not sending the value) or if it's opt-in explicitly through the @optional directive
-    if (coercedDefaultValue != null || directives.findOptional()) {
-      irType = irType.makeOptional()
+    when {
+      irType is IrNonNullType && coercedDefaultValue == null -> {
+        // The variable is non-nullable and has no defaultValue => it must always be sent
+        // Leave irType as-is
+      }
+      coercedDefaultValue != null -> {
+        // the variable has a defaultValue meaning that there is a use case for not providing it
+        irType = irType.makeOptional()
+      }
+      irType !is IrNonNullType -> {
+        // The variable is nullable. By the GraphQL spec, it means it's also optional
+        // In practice though, this is rarely needed because if the user added tha variable in
+        // the first place, there is a high change they're going to use it.
+        // To simplify the callsite, we default to not adding the [Optional] wrapper.
+        //
+        // One counter example is bi-directional pagination where 'before' or 'after' could be
+        // left Absent
+        if (directives.findOptional() || generateOptionalOperationVariables) {
+          irType = irType.makeOptional()
+        }
+      }
     }
+
     return IrVariable(
         name = name,
         defaultValue = coercedDefaultValue?.toIrValue(),

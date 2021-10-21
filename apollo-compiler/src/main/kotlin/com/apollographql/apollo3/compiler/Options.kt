@@ -133,6 +133,16 @@ class Options(
     @Deprecated("Kotlin sealed classes are more flexible than Kotlin enums to represent GraphQL enums because they can expose the" +
         "rawValue of the unknown enums.")
     val sealedClassesForEnumsMatching: List<String> = defaultSealedClassesForEnumsMatching,
+
+    /**
+     * Whether to generate operation variables as [com.apollographql.apollo3.api.Optional]
+     *
+     * Using [com.apollographql.apollo3.api.Optional] allows to omit the variables if needed but makes the
+     * callsite more verbose in most cases.
+     *
+     * Default: false
+     */
+    val generateOptionalOperationVariables: Boolean = defaultGenerateOptionalOperationVariables
 ) {
 
   /**
@@ -184,17 +194,19 @@ class Options(
       targetLanguage: String = this.targetLanguage,
       generateTestBuilders: Boolean = this.generateTestBuilders,
       sealedClassesForEnumsMatching: List<String> = this.sealedClassesForEnumsMatching,
+      generateOptionalOperationVariables: Boolean = this.generateOptionalOperationVariables
   ) = Options(
+      executableFiles = executableFiles,
       schema = schema,
       outputDir = outputDir,
       debugDir = debugDir,
-      executableFiles = executableFiles,
       operationOutputFile = operationOutputFile,
       schemaPackageName = schemaPackageName,
       packageNameGenerator = packageNameGenerator,
       alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
       operationOutputGenerator = operationOutputGenerator,
       incomingCompilerMetadata = incomingCompilerMetadata,
+      targetLanguage = targetLanguage,
       customScalarsMapping = customScalarsMapping,
       codegenModels = codegenModels,
       flattenModels = flattenModels,
@@ -209,10 +221,10 @@ class Options(
       generateQueryDocument = generateQueryDocument,
       generateSchema = generateSchema,
       moduleName = moduleName,
-      targetLanguage = targetLanguage,
       generateTestBuilders = generateTestBuilders,
       testDir = testDir,
-      sealedClassesForEnumsMatching =  sealedClassesForEnumsMatching
+      sealedClassesForEnumsMatching =  sealedClassesForEnumsMatching,
+      generateOptionalOperationVariables = generateOptionalOperationVariables,
   )
 
   companion object {
@@ -236,6 +248,7 @@ class Options(
     const val defaultGenerateSchema = false
     const val defaultGenerateTestBuilders = false
     val defaultSealedClassesForEnumsMatching = listOf(".*")
+    const val defaultGenerateOptionalOperationVariables = false
   }
 }
 

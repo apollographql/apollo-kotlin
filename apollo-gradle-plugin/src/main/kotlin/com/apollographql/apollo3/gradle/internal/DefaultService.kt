@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.gradle.internal
 
-import com.apollographql.apollo3.compiler.OperationIdGenerator
-import com.apollographql.apollo3.compiler.OperationOutputGenerator
+import com.apollographql.apollo3.compiler.MODELS_COMPAT
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.Roots
 import com.apollographql.apollo3.gradle.api.Introspection
@@ -9,13 +8,6 @@ import com.apollographql.apollo3.gradle.api.Registry
 import com.apollographql.apollo3.gradle.api.Service
 import org.gradle.api.Action
 import org.gradle.api.Project
-import org.gradle.api.file.ConfigurableFileCollection
-import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.provider.ListProperty
-import org.gradle.api.provider.MapProperty
-import org.gradle.api.provider.Property
-import org.gradle.api.provider.SetProperty
 import org.gradle.util.GradleVersion
 import javax.inject.Inject
 
@@ -41,53 +33,6 @@ abstract class DefaultService @Inject constructor(val project: Project, override
       sealedClassesForEnumsMatching.set(null as List<String>?)
     }
   }
-
-  abstract override val exclude: ListProperty<String>
-
-  abstract override val include: ListProperty<String>
-
-  abstract override val sourceFolder: Property<String>
-
-  abstract override val schemaFile: RegularFileProperty
-  abstract override val schemaFiles: ConfigurableFileCollection
-
-  abstract override val debugDir: DirectoryProperty
-  abstract override val outputDir: DirectoryProperty
-  abstract override val testDir: DirectoryProperty
-
-  abstract override val generateOperationOutput: Property<Boolean>
-  abstract override val operationOutputFile: RegularFileProperty
-
-  abstract override val warnOnDeprecatedUsages: Property<Boolean>
-
-  abstract override val failOnWarnings: Property<Boolean>
-
-  abstract override val customScalarsMapping: MapProperty<String, String>
-
-  abstract override val operationIdGenerator: Property<OperationIdGenerator>
-
-  abstract override val operationOutputGenerator: Property<OperationOutputGenerator>
-
-  abstract override val packageName: Property<String>
-  abstract override val packageNameGenerator: Property<PackageNameGenerator>
-
-  abstract override val useSemanticNaming: Property<Boolean>
-
-  abstract override val generateAsInternal: Property<Boolean>
-
-  abstract override val generateKotlinModels: Property<Boolean>
-
-  abstract override val generateApolloMetadata: Property<Boolean>
-
-  abstract override val alwaysGenerateTypesMatching: SetProperty<String>
-
-  abstract override val generateFragmentImplementations: Property<Boolean>
-
-  abstract override val codegenModels: Property<String>
-
-  abstract override val flattenModels: Property<Boolean>
-
-  abstract override val sealedClassesForEnumsMatching: ListProperty<String>
 
   val graphqlSourceDirectorySet = objects.sourceDirectorySet("graphql", "graphql")
 
@@ -145,6 +90,13 @@ abstract class DefaultService @Inject constructor(val project: Project, override
 
   override fun outputDirConnection(action: Action<in Service.DirectoryConnection>) {
     this.outputDirAction = action
+  }
+
+  override fun useVersion2Compat(rootPackageName: String?) {
+    packageNamesFromFilePaths(rootPackageName)
+    codegenModels.set(MODELS_COMPAT)
+    sealedClassesForEnumsMatching.set(emptyList())
+    generateOptionalOperationVariables.set(true)
   }
 
   override fun testDirConnection(action: Action<in Service.DirectoryConnection>) {

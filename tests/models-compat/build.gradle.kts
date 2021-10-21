@@ -1,3 +1,5 @@
+import com.apollographql.apollo3.compiler.MODELS_COMPAT
+
 plugins {
   id("com.apollographql.apollo3")
   id("org.jetbrains.kotlin.multiplatform")
@@ -37,6 +39,7 @@ apollo {
         service(it.name) {
           srcDir(it)
           packageName.set(it.name)
+          codegenModels.set(MODELS_COMPAT)
         }
       }
 }
