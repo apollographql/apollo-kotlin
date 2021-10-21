@@ -24,7 +24,7 @@ internal sealed class Episode(
     /**
      * Returns [Episode] matched with the specified [rawValue].
      */
-    public fun valueOf(rawValue: String): Episode = when(rawValue) {
+    public fun safeValueOf(rawValue: String): Episode = when(rawValue) {
       "NEWHOPE" -> NEWHOPE
       "EMPIRE" -> EMPIRE
       "JEDI" -> JEDI

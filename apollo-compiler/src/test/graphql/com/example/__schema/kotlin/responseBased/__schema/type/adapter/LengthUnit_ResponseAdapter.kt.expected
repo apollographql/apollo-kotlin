@@ -16,7 +16,7 @@ public object LengthUnit_ResponseAdapter : Adapter<LengthUnit> {
   public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
       LengthUnit {
     val rawValue = reader.nextString()!!
-    return LengthUnit.valueOf(rawValue)
+    return LengthUnit.safeValueOf(rawValue)
   }
 
   public override fun toJson(

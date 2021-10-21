@@ -21,7 +21,7 @@ public sealed class Gravity(
     /**
      * Returns [Gravity] matched with the specified [rawValue].
      */
-    public fun valueOf(rawValue: String): Gravity = when(rawValue) {
+    public fun safeValueOf(rawValue: String): Gravity = when(rawValue) {
       "TOP" -> TOP
       "CENTER" -> CENTER
       "BOTTOM" -> BOTTOM

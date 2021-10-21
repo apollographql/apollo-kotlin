@@ -23,7 +23,7 @@ public sealed class LengthUnit(
     /**
      * Returns [LengthUnit] matched with the specified [rawValue].
      */
-    public fun valueOf(rawValue: String): LengthUnit = when(rawValue) {
+    public fun safeValueOf(rawValue: String): LengthUnit = when(rawValue) {
       "METER" -> METER
       "FOOT" -> FOOT
       else -> UNKNOWN__(rawValue)

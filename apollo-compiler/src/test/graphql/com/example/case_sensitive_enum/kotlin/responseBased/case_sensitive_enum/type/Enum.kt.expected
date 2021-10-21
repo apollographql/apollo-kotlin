@@ -21,7 +21,7 @@ public sealed class Enum(
     /**
      * Returns [Enum] matched with the specified [rawValue].
      */
-    public fun valueOf(rawValue: String): Enum = when(rawValue) {
+    public fun safeValueOf(rawValue: String): Enum = when(rawValue) {
       "north" -> north
       "North" -> North
       "NORTH" -> NORTH

@@ -16,7 +16,7 @@ public object Gravity_ResponseAdapter : Adapter<Gravity> {
   public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
       Gravity {
     val rawValue = reader.nextString()!!
-    return Gravity.valueOf(rawValue)
+    return Gravity.safeValueOf(rawValue)
   }
 
   public override fun toJson(

@@ -16,7 +16,7 @@ public object Enum_ResponseAdapter : Adapter<Enum> {
   public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
       Enum {
     val rawValue = reader.nextString()!!
-    return Enum.valueOf(rawValue)
+    return Enum.safeValueOf(rawValue)
   }
 
   public override fun toJson(
