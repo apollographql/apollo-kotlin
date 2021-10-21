@@ -454,6 +454,7 @@ abstract class DefaultApolloExtension(
       task.generateSchema.set(service.generateSchema)
       task.codegenModels.set(service.codegenModels)
       task.flattenModels.set(service.flattenModels)
+      task.sealedClassesForEnumsMatching.set(service.sealedClassesForEnumsMatching)
       task.generateTestBuilders.set(service.generateTestBuilders)
     }
   }

@@ -8,6 +8,11 @@ import java.io.File
 
 const val MODELS_RESPONSE_BASED = "responseBased"
 const val MODELS_OPERATION_BASED = "operationBased"
+
+@Deprecated(
+    "MODELS_COMPAT is provided for 2.x compatibility and will be removed in a future version.",
+    replaceWith = ReplaceWith("MODELS_OPERATION_BASED")
+)
 const val MODELS_COMPAT = "compat"
 
 const val TARGET_KOTLIN = "kotlin"
@@ -116,6 +121,18 @@ class Options(
      */
     val generateTestBuilders: Boolean = defaultGenerateTestBuilders,
     val moduleName: String = defaultModuleName,
+
+    /**
+     * A list of [Regex] patterns for GraphQL enums that should be generated as Kotlin sealed classes instead of the default Kotlin enums.
+     *
+     * Use this if you want your client to have access to the rawValue of the enum. This can be useful if new GraphQL enums are added but
+     * the client was compiled against an older schema that doesn't have knowledge of the new enums.
+     *
+     * Default: listOf(".*")
+     */
+    @Deprecated("Kotlin sealed classes are more flexible than Kotlin enums to represent GraphQL enums because they can expose the" +
+        "rawValue of the unknown enums.")
+    val sealedClassesForEnumsMatching: List<String> = defaultSealedClassesForEnumsMatching,
 ) {
 
   /**
@@ -166,6 +183,7 @@ class Options(
       moduleName: String = this.moduleName,
       targetLanguage: String = this.targetLanguage,
       generateTestBuilders: Boolean = this.generateTestBuilders,
+      sealedClassesForEnumsMatching: List<String> = this.sealedClassesForEnumsMatching,
   ) = Options(
       schema = schema,
       outputDir = outputDir,
@@ -193,7 +211,8 @@ class Options(
       moduleName = moduleName,
       targetLanguage = targetLanguage,
       generateTestBuilders = generateTestBuilders,
-      testDir = testDir
+      testDir = testDir,
+      sealedClassesForEnumsMatching =  sealedClassesForEnumsMatching
   )
 
   companion object {
@@ -216,6 +235,7 @@ class Options(
     const val defaultTargetLanguage = TARGET_KOTLIN
     const val defaultGenerateSchema = false
     const val defaultGenerateTestBuilders = false
+    val defaultSealedClassesForEnumsMatching = listOf(".*")
   }
 }
 

@@ -307,6 +307,18 @@ interface Service {
   val debugDir: DirectoryProperty
 
   /**
+   * A list of [Regex] patterns for GraphQL enums that should be generated as Kotlin sealed classes instead of the default Kotlin enums.
+   *
+   * Use this if you want your client to have access to the rawValue of the enum. This can be useful if new GraphQL enums are added but
+   * the client was compiled against an older schema that doesn't have knowledge of the new enums.
+   *
+   * Default: listOf(".*")
+   */
+  @Deprecated("Kotlin sealed classes are more flexible than Kotlin enums to represent GraphQL enums because they can expose the" +
+      "rawValue of the unknown enums.")
+  val sealedClassesForEnumsMatching: ListProperty<String>
+
+  /**
    * Configures [Introspection] to download an introspection Json schema
    */
   fun introspection(configure: Action<in Introspection>)

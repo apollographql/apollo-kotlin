@@ -85,6 +85,8 @@ abstract class DefaultService @Inject constructor(val project: Project, override
 
   abstract override val flattenModels: Property<Boolean>
 
+  abstract override val sealedClassesForEnumsMatching: ListProperty<String>
+
   val graphqlSourceDirectorySet = objects.sourceDirectorySet("graphql", "graphql")
 
   override fun srcDir(directory: Any) {

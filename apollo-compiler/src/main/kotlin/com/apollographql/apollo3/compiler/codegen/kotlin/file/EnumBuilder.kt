@@ -1,17 +1,13 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
-import com.apollographql.apollo3.api.CompiledNamedType
-import com.apollographql.apollo3.api.EnumType
 import com.apollographql.apollo3.compiler.applyIf
-import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.java.L
+import com.apollographql.apollo3.compiler.codegen.Identifier.safeValueOf
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.deprecatedAnnotation
-import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
 import com.squareup.kotlinpoet.ClassName
@@ -22,7 +18,6 @@ import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 
 class EnumBuilder(
@@ -72,7 +67,7 @@ class EnumBuilder(
   private fun IrEnum.companionTypeSpec(): TypeSpec {
     return TypeSpec.companionObjectBuilder()
         .addProperty(typePropertySpec())
-        .addFunction(valueOfFunSpec())
+        .addFunction(safeValueOfFunSpec())
         .build()
   }
 
@@ -117,8 +112,8 @@ class EnumBuilder(
         .build()
   }
 
-  private fun IrEnum.valueOfFunSpec(): FunSpec {
-    return FunSpec.builder("valueOf")
+  private fun IrEnum.safeValueOfFunSpec(): FunSpec {
+    return FunSpec.builder(safeValueOf)
         .addKdoc("Returns [%T] matched with the specified [rawValue].\n", className())
         .addParameter("rawValue", String::class)
         .returns(className())

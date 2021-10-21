@@ -7,6 +7,7 @@ import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.CustomScalarBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumCompatBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.FragmentBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.FragmentModelsBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.FragmentResponseAdapterBuilder
@@ -26,7 +27,6 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.file.UnionBuilder
 import com.apollographql.apollo3.compiler.ir.Ir
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
-import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
@@ -56,7 +56,10 @@ class KotlinCodeGen(
      * depth 0
      */
     private val flatten: Boolean,
+    @Deprecated("Used for backward compatibility with 2.x")
     private val flattenNamesInOrder: Boolean,
+    @Deprecated("Used for backward compatibility with 2.x")
+    private val sealedClassesForEnumsMatching: List<String>,
 ) {
   /**
    * @param outputDir: the directory where to write the Kotlin files
@@ -88,7 +91,11 @@ class KotlinCodeGen(
     ir.enums
         .filter { !context.resolver.canResolveSchemaType(it.name) }
         .forEach { enum ->
-          builders.add(EnumBuilder(context, enum))
+          if (sealedClassesForEnumsMatching.any { Regex(it).matches(enum.name) }) {
+            builders.add(EnumBuilder(context, enum))
+          } else {
+            builders.add(EnumCompatBuilder(context, enum))
+          }
           builders.add(EnumResponseAdapterBuilder(context, enum))
         }
     ir.objects

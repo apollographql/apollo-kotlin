@@ -1,0 +1,23 @@
+type Query {
+  direction: Direction
+  gravity: Gravity
+}
+
+enum Direction {
+  NORTH,
+  north @deprecated,
+  SOUTH,
+  EAST,
+  WEST
+}
+
+
+enum Gravity {
+  TOP,
+  # fails with java.lang.AssertionError: Class with incorrect id found: expected enums/type/Gravity.TOP, actual enums/type/Gravity.top
+  # top @deprecated,
+  top2 @deprecated,
+  BOTTOM,
+  LEFT,
+  RIGHT
+}
