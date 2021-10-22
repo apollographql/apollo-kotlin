@@ -1,11 +1,5 @@
 package com.apollographql.apollo3.gradle.internal
 
-import com.apollographql.apollo3.ast.GQLDocument
-import com.apollographql.apollo3.ast.GQLSchemaDefinition
-import com.apollographql.apollo3.ast.GQLTypeDefinition
-import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.apolloDefinitions
-import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.ApolloMetadata
 import com.apollographql.apollo3.compiler.CommonMetadata
@@ -18,7 +12,6 @@ import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.Options
 import com.apollographql.apollo3.compiler.Options.Companion.defaultAlwaysGenerateTypesMatching
-import com.apollographql.apollo3.compiler.Options.Companion.defaultCodegenModels
 import com.apollographql.apollo3.compiler.Options.Companion.defaultFailOnWarnings
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateAsInternal
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateFilterNotNull
@@ -26,12 +19,12 @@ import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateFragm
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateQueryDocument
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateResponseFields
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateSchema
+import com.apollographql.apollo3.compiler.Options.Companion.defaultSealedClassesForEnumsMatching
 import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSemanticNaming
 import com.apollographql.apollo3.compiler.Options.Companion.defaultWarnOnDeprecatedUsages
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.TARGET_JAVA
 import com.apollographql.apollo3.compiler.TARGET_KOTLIN
-import com.apollographql.apollo3.compiler.introspection.toGQLDocument
 import com.apollographql.apollo3.gradle.api.kotlinProjectExtension
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
@@ -52,7 +45,6 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
-import java.io.File
 import javax.inject.Inject
 
 @CacheableTask
@@ -277,7 +269,8 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         codegenModels = codegenModels,
         schemaPackageName = incomingOptions.schemaPackageName,
         customScalarsMapping = customScalarsMapping.getOrElse(emptyMap()),
-        targetLanguage = targetLanguage
+        targetLanguage = targetLanguage,
+        sealedClassesForEnumsMatching = sealedClassesForEnumsMatching.getOrElse(defaultSealedClassesForEnumsMatching)
     )
 
     val outputCompilerMetadata = GraphQLCompiler.write(options)
