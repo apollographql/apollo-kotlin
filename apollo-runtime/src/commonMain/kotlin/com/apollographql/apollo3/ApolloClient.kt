@@ -284,6 +284,11 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
         executionContext = executionContext,
     )
   }
+
+  companion object {
+    @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("ApolloClient.Builder()"))
+    fun builder() = Builder()
+  }
 }
 
 
