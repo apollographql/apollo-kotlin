@@ -55,19 +55,29 @@ import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 internal class IrBuilder(
     private val schema: Schema,
     private val operationDefinitions: List<GQLOperationDefinition>,
+    private val alwaysGenerateResponseBasedDataModelGroup: Boolean,
     private val fragments: List<GQLFragmentDefinition>,
     private val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val alwaysGenerateTypesMatching: Set<String>,
     private val customScalarsMapping: Map<String, String>,
-    codegenModels: String,
+    private val codegenModels: String,
 ) : FieldMerger {
   private val usedTypes = mutableListOf<String>()
 
-  private val modelGroupBuilder: ModelGroupBuilder = when (codegenModels) {
-    MODELS_RESPONSE_BASED -> ResponseBasedModelGroupBuilder(
+  private val responseBasedBuilder = ResponseBasedModelGroupBuilder(
         schema,
         allFragmentDefinitions,
         this
+    )
+
+  private val builder = when(codegenModels) {
+    MODELS_COMPAT -> OperationBasedModelGroupBuilder(
+        schema = schema,
+        allFragmentDefinitions = allFragmentDefinitions,
+        fieldMerger = this,
+        insertFragmentSyntheticField = true,
+        collectAllInlineFragmentFields = true,
+        mergeTrivialInlineFragments = true
     )
     MODELS_OPERATION_BASED -> OperationBasedModelGroupBuilder(
         schema = schema,
@@ -77,17 +87,9 @@ internal class IrBuilder(
         collectAllInlineFragmentFields = false,
         mergeTrivialInlineFragments = false,
     )
-    MODELS_COMPAT -> OperationBasedModelGroupBuilder(
-        schema = schema,
-        allFragmentDefinitions = allFragmentDefinitions,
-        fieldMerger = this,
-        insertFragmentSyntheticField = true,
-        collectAllInlineFragmentFields = true,
-        mergeTrivialInlineFragments = true
-    )
-    else -> error("Unknown codegenModels: '$codegenModels'")
+    MODELS_RESPONSE_BASED -> responseBasedBuilder
+    else -> error("codegenModels='$codegenModels' is not supported")
   }
-
   private fun shouldAlwaysGenerate(name: String) = alwaysGenerateTypesMatching.map { Regex(it) }.any { it.matches(name) }
 
   fun build(): Ir {
@@ -273,11 +275,21 @@ internal class IrBuilder(
       allFragmentDefinitions[fragmentName]!!.formatToString()
     }).trimEnd('\n')
 
-    val dataModelGroup = modelGroupBuilder.buildOperationData(
+    val dataModelGroup = builder.buildOperationData(
         selections = selectionSet.selections,
         rawTypeName = typeDefinition.name,
         operationName = name!!
     )
+
+    val responseBasedModelGroup = when {
+      codegenModels == MODELS_RESPONSE_BASED -> dataModelGroup
+      alwaysGenerateResponseBasedDataModelGroup -> responseBasedBuilder.buildOperationData(
+          selections = selectionSet.selections,
+          rawTypeName = typeDefinition.name,
+          operationName = name!!
+      )
+      else -> null
+    }
 
     return IrOperation(
         name = name!!,
@@ -288,7 +300,8 @@ internal class IrBuilder(
         selections = selectionSet.selections,
         sourceWithFragments = sourceWithFragments,
         filePath = sourceLocation.filePath!!,
-        dataModelGroup = dataModelGroup
+        dataModelGroup = dataModelGroup,
+        responseBasedDataModelGroup = responseBasedModelGroup
     )
   }
 
@@ -304,11 +317,11 @@ internal class IrBuilder(
 
     val variableDefinitions = inferVariables(schema, allFragmentDefinitions)
 
-    val interfaceModelGroup = modelGroupBuilder.buildFragmentInterface(
+    val interfaceModelGroup = builder.buildFragmentInterface(
         fragmentName = name
     )
 
-    val dataModelGroup = modelGroupBuilder.buildFragmentData(
+    val dataModelGroup = builder.buildFragmentData(
         fragmentName = name
     )
 
@@ -491,6 +504,7 @@ internal class IrBuilder(
           description = description,
           deprecationReason = deprecationReason,
           type = irType,
+          gqlType = first.type
       )
 
       MergedField(

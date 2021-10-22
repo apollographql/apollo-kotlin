@@ -4,6 +4,7 @@ import com.apollographql.apollo3.api.BTerm
 import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLSelection
+import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.compiler.codegen.Identifier.type
 
@@ -74,6 +75,7 @@ data class IrOperation(
     val selections: List<GQLSelection>,
     val sourceWithFragments: String,
     val filePath: String,
+    val responseBasedDataModelGroup: IrModelGroup?,
     val dataModelGroup: IrModelGroup,
 )
 
@@ -112,6 +114,11 @@ data class IrFieldInfo(
      * from the fieldDefinition
      */
     val type: IrType,
+    /**
+     * The GraphQL type of the field needed to build the CompiledField
+     * null for synthetic fields
+     */
+    val gqlType: GQLType?,
     /**
      * from the fieldDefinition directives
      */
@@ -162,19 +169,22 @@ data class IrModel(
 
 /**
  * @param condition a condition for reading the property
- * @param isSynthetic synthetic properties are special as we need to rewind the reader before reading them
  * @param requiresBuffering true if this property contains synthetic properties
- * @param hidden allows to hide a property from the model but still send it to the server and have it in the response
- * This is used for typename for an example
+ * @param hidden allows to hide a property from the model but still have it part of the selections.
+ * This is used for typename in compat models because the adapters need to read __typename
  */
 data class IrProperty(
     val info: IrFieldInfo,
     val override: Boolean,
     val condition: BooleanExpression<BTerm>,
-    val isSynthetic: Boolean,
     val requiresBuffering: Boolean,
     val hidden: Boolean,
-)
+) {
+  // synthetic properties are special as we need to rewind the reader before reading them
+  val isSynthetic: Boolean
+    get() = info.gqlType == null
+
+}
 
 data class IrModelGroup(
     val baseModelId: String,
@@ -273,9 +283,11 @@ data class IrListType(val ofType: IrType) : IrType() {
 interface IrNamedType {
   val name: String
 }
+
 data class IrScalarType(override val name: String) : IrType(), IrNamedType
 data class IrInputObjectType(override val name: String) : IrType(), IrNamedType
 data class IrEnumType(override val name: String) : IrType(), IrNamedType
+
 /**
  * @param path a unique path identifying the model.
  *
@@ -291,10 +303,6 @@ const val MODEL_OPERATION_DATA = "operationData"
 const val MODEL_FRAGMENT_DATA = "fragmentData"
 const val MODEL_FRAGMENT_INTERFACE = "fragmentIface"
 const val MODEL_UNKNOWN = "?"
-
-data class IrObjectType(override val name: String) : IrType(), IrNamedType
-data class IrInterfaceType(override val name: String) : IrType(), IrNamedType
-data class IrUnionType(override val name: String) : IrType(), IrNamedType
 
 fun IrType.makeOptional(): IrType = IrNonNullType(IrOptionalType(this))
 fun IrType.makeNullable(): IrType = if (this is IrNonNullType) {

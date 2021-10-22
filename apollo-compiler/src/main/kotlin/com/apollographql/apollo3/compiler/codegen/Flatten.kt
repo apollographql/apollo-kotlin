@@ -51,7 +51,7 @@ private fun IrModelGroup.walk2(
         }
         model.copy(
             /**
-             * This tries to mimic the 2.x name resolution, which is slightly counter intuitive as the models encountered first
+             * This tries to mimic the 2.x name resolution, which is slightly counterintuitive as the models encountered first
              * will have a larger index
              */
             modelName = name ?: resolveNameClashes(usedNames, model.modelName),
@@ -86,7 +86,7 @@ private fun IrModelGroup.walk(depth: Int, flattenNamesInOrder: Boolean, atDepth:
 
 internal fun IrModelGroup.maybeFlatten(
     flatten: Boolean,
-    flattenNamesInOrder: Boolean,
+    flattenNamesInOrder: Boolean = true,
     atDepth: Int = 0,
     excludeNames: Set<String> = emptySet()
 ): List<IrModelGroup> {

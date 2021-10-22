@@ -39,6 +39,7 @@ class CodegenLayout(
 
   fun operationPackageName(filePath: String) = packageNameGenerator.packageName(filePath)
   fun operationAdapterPackageName(filePath: String) = "${operationPackageName(filePath)}.adapter".stripDots()
+  fun operationTestBuildersPackageName(filePath: String) = "${operationPackageName(filePath)}.test".stripDots()
   fun operationResponseFieldsPackageName(filePath: String) = "${operationPackageName(filePath)}.selections".stripDots()
 
   @Suppress("UNUSED_PARAMETER")
@@ -75,6 +76,7 @@ class CodegenLayout(
   }
 
   fun operationResponseAdapterWrapperName(operation: IrOperation) = operationName(operation) + "_ResponseAdapter"
+  fun operationTestBuildersWrapperName(operation: IrOperation) = operationName(operation) + "_TestBuilder"
   fun operationVariablesAdapterName(operation: IrOperation) = operationName(operation) + "_VariablesAdapter"
   fun operationSelectionsName(operation: IrOperation) = operationName(operation) + "Selections"
 
@@ -98,6 +100,9 @@ class CodegenLayout(
   }
 
   fun rootSelectionsPropertyName() = "root"
+  fun testBuilder(modelName: String): String {
+    return "${modelName}Builder"
+  }
 
   companion object {
     fun upperCamelCaseIgnoringNonLetters(strings: Collection<String>): String {

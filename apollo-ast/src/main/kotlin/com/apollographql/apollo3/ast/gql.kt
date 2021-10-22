@@ -218,7 +218,7 @@ sealed class GQLTypeDefinition : GQLDefinition, GQLNamed, GQLDescribed {
   /**
    * This duplicates some of what's in "builtins.graphqls" but it's easier to access
    */
-  private companion object {
+  companion object {
     val builtInTypes: Set<String> = setOf(
         "Int",
         "Float",

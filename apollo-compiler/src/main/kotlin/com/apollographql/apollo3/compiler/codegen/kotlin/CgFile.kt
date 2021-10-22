@@ -14,7 +14,10 @@ class CgFile(
   constructor(packageName: String, typeSpec: TypeSpec) : this(packageName, listOf(typeSpec), typeSpec.name!!)
 }
 
-interface CgFileBuilder {
+sealed interface CgFileBuilder {
   fun prepare()
   fun build(): CgFile
 }
+
+interface CgOutputFileBuilder : CgFileBuilder
+interface CgTestFileBuilder : CgFileBuilder

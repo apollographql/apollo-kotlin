@@ -62,6 +62,7 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Service {
 	public abstract fun getGenerateOperationOutput ()Lorg/gradle/api/provider/Property;
 	public abstract fun getGenerateQueryDocument ()Lorg/gradle/api/provider/Property;
 	public abstract fun getGenerateSchema ()Lorg/gradle/api/provider/Property;
+	public abstract fun getGenerateTestBuilders ()Lorg/gradle/api/provider/Property;
 	public abstract fun getInclude ()Lorg/gradle/api/provider/ListProperty;
 	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun getOperationIdGenerator ()Lorg/gradle/api/provider/Property;
@@ -73,6 +74,7 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Service {
 	public abstract fun getSchemaFile ()Lorg/gradle/api/file/RegularFileProperty;
 	public abstract fun getSchemaFiles ()Lorg/gradle/api/file/ConfigurableFileCollection;
 	public abstract fun getSourceFolder ()Lorg/gradle/api/provider/Property;
+	public abstract fun getTestDir ()Lorg/gradle/api/file/DirectoryProperty;
 	public abstract fun getUseSemanticNaming ()Lorg/gradle/api/provider/Property;
 	public abstract fun getWarnOnDeprecatedUsages ()Lorg/gradle/api/provider/Property;
 	public abstract fun introspection (Lorg/gradle/api/Action;)V
@@ -81,24 +83,25 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Service {
 	public abstract fun packageNamesFromFilePaths (Ljava/lang/String;)V
 	public abstract fun registry (Lorg/gradle/api/Action;)V
 	public abstract fun srcDir (Ljava/lang/Object;)V
+	public abstract fun testDirConnection (Lorg/gradle/api/Action;)V
 }
 
 public final class com/apollographql/apollo3/gradle/api/Service$DefaultImpls {
 	public static synthetic fun packageNamesFromFilePaths$default (Lcom/apollographql/apollo3/gradle/api/Service;Ljava/lang/String;ILjava/lang/Object;)V
 }
 
-public final class com/apollographql/apollo3/gradle/api/Service$OperationOutputConnection {
-	public fun <init> (Lorg/gradle/api/tasks/TaskProvider;Lorg/gradle/api/provider/Provider;)V
-	public final fun getOperationOutputFile ()Lorg/gradle/api/provider/Provider;
-	public final fun getTask ()Lorg/gradle/api/tasks/TaskProvider;
-}
-
-public abstract interface class com/apollographql/apollo3/gradle/api/Service$OutputDirConnection {
+public abstract interface class com/apollographql/apollo3/gradle/api/Service$DirectoryConnection {
 	public abstract fun connectToAndroidSourceSet (Ljava/lang/String;)V
 	public abstract fun connectToAndroidVariant (Lcom/android/build/gradle/api/BaseVariant;)V
 	public abstract fun connectToJavaSourceSet (Ljava/lang/String;)V
 	public abstract fun connectToKotlinSourceSet (Ljava/lang/String;)V
 	public abstract fun getOutputDir ()Lorg/gradle/api/provider/Provider;
 	public abstract fun getTask ()Lorg/gradle/api/tasks/TaskProvider;
+}
+
+public final class com/apollographql/apollo3/gradle/api/Service$OperationOutputConnection {
+	public fun <init> (Lorg/gradle/api/tasks/TaskProvider;Lorg/gradle/api/provider/Provider;)V
+	public final fun getOperationOutputFile ()Lorg/gradle/api/provider/Provider;
+	public final fun getTask ()Lorg/gradle/api/tasks/TaskProvider;
 }
 

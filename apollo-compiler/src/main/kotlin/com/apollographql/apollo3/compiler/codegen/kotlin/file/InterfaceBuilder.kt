@@ -2,6 +2,7 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
@@ -12,7 +13,7 @@ import com.squareup.kotlinpoet.TypeSpec
 class InterfaceBuilder(
     private val context: KotlinContext,
     private val iface: IrInterface
-): CgFileBuilder {
+): CgOutputFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
   private val simpleName = layout.compiledTypeName(name = iface.name)

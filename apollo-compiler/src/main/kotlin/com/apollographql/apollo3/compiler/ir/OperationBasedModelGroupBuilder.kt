@@ -11,6 +11,8 @@ import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLFragmentSpread
 import com.apollographql.apollo3.ast.GQLInlineFragment
+import com.apollographql.apollo3.ast.GQLNamedType
+import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.transformation.mergeTrivialInlineFragments
@@ -21,7 +23,7 @@ internal class OperationBasedModelGroupBuilder(
     private val fieldMerger: FieldMerger,
     private val insertFragmentSyntheticField: Boolean,
     private val collectAllInlineFragmentFields: Boolean,
-    private val mergeTrivialInlineFragments: Boolean
+    private val mergeTrivialInlineFragments: Boolean,
 ) : ModelGroupBuilder {
 
   override fun buildOperationData(selections: List<GQLSelection>, rawTypeName: String, operationName: String): IrModelGroup {
@@ -29,7 +31,8 @@ internal class OperationBasedModelGroupBuilder(
         responseName = "data",
         description = null,
         type = IrNonNullType(IrModelType(MODEL_UNKNOWN)),
-        deprecationReason = null
+        deprecationReason = null,
+        gqlType = GQLNonNullType(type = GQLNamedType(name = rawTypeName))
     )
 
     val mergedSelections = if (mergeTrivialInlineFragments) {
@@ -42,7 +45,6 @@ internal class OperationBasedModelGroupBuilder(
         info = info,
         selections = mergedSelections.map { SelectionWithParent(it, rawTypeName) },
         condition = BooleanExpression.True,
-        isSynthetic = false
     ).toModelGroup()!!
   }
 
@@ -51,6 +53,8 @@ internal class OperationBasedModelGroupBuilder(
   }
 
   override fun buildFragmentData(fragmentName: String): IrModelGroup {
+    val fragmentDefinition = allFragmentDefinitions[fragmentName]!!
+
     /**
      * XXX: because we want the model to be named after the fragment (and not data), we use
      * fragmentName below. This means the id for the very first model is going to be
@@ -60,10 +64,10 @@ internal class OperationBasedModelGroupBuilder(
         responseName = fragmentName,
         description = null,
         type = IrNonNullType(IrModelType(MODEL_UNKNOWN)),
-        deprecationReason = null
+        deprecationReason = null,
+        gqlType = GQLNonNullType(type = fragmentDefinition.typeCondition)
     )
 
-    val fragmentDefinition = allFragmentDefinitions[fragmentName]!!
 
     val mergedSelections = if (mergeTrivialInlineFragments) {
       fragmentDefinition.selectionSet.selections.mergeTrivialInlineFragments(schema, fragmentDefinition.typeCondition.name)
@@ -76,7 +80,6 @@ internal class OperationBasedModelGroupBuilder(
         info = info,
         selections = mergedSelections.map { SelectionWithParent(it, fragmentDefinition.typeCondition.name) },
         condition = BooleanExpression.True,
-        isSynthetic = false
     ).toModelGroup()!!
   }
 
@@ -112,22 +115,18 @@ internal class OperationBasedModelGroupBuilder(
    * @param selections the sub-selections of this fields. If [collectAllInlineFragmentFields] is true, might contain parent fields that
    * might not all be on the same parent type. Hence [SelectionWithParent]
    * @param condition the condition for this field. Might be a mix of include directives and type conditions
-   * @param isSynthetic whether this is a synthetic field. This is used to determine whether this field requires buffering
-   *
    */
   private fun buildField(
       path: String,
       info: IrFieldInfo,
       selections: List<SelectionWithParent>,
       condition: BooleanExpression<BTerm>,
-      isSynthetic: Boolean,
   ): OperationField {
     if (selections.isEmpty()) {
       return OperationField(
           info = info,
           condition = condition,
           fieldSet = null,
-          isSynthetic = isSynthetic,
           hide = false,
       )
     }
@@ -152,7 +151,6 @@ internal class OperationBasedModelGroupBuilder(
           info = childInfo,
           selections = mergedField.selections.map { SelectionWithParent(it, mergedField.rawTypeName) },
           condition = BooleanExpression.True,
-          isSynthetic = false
       )
     }
 
@@ -230,7 +228,8 @@ internal class OperationBasedModelGroupBuilder(
                     responseName = "$prefix$name",
                     description = "Synthetic field for inline fragment on $typeCondition",
                     deprecationReason = null,
-                    type = type
+                    type = type,
+                    gqlType = null
                 )
 
                 var childSelections = entry.value.flatMap {
@@ -238,7 +237,7 @@ internal class OperationBasedModelGroupBuilder(
                 }
 
                 if (collectAllInlineFragmentFields) {
-                  childSelections = selections.filter { it.selection is GQLField} + childSelections
+                  childSelections = selections.filter { it.selection is GQLField } + childSelections
                 }
 
                 buildField(
@@ -246,7 +245,6 @@ internal class OperationBasedModelGroupBuilder(
                     info = childInfo,
                     selections = childSelections,
                     condition = childCondition,
-                    isSynthetic = true
                 )
               }
         }
@@ -298,7 +296,8 @@ internal class OperationBasedModelGroupBuilder(
               responseName = first.name.decapitalize().escapeKotlinReservedWord(),
               description = "Synthetic field for '${first.name}'",
               deprecationReason = null,
-              type = type
+              type = type,
+              gqlType = null
           )
 
           val p = if (insertFragmentSyntheticField) {
@@ -311,7 +310,6 @@ internal class OperationBasedModelGroupBuilder(
               info = childInfo,
               selections = emptyList(), // Don't create a model for fragments spreads
               condition = childCondition,
-              isSynthetic = true
           )
         }
 
@@ -327,7 +325,8 @@ internal class OperationBasedModelGroupBuilder(
           responseName = FRAGMENTS_SYNTHETIC_FIELD,
           description = "Synthetic field for grouping fragments",
           deprecationReason = null,
-          type = IrNonNullType(IrModelType(fragmentsFieldSet.id))
+          type = IrNonNullType(IrModelType(fragmentsFieldSet.id)),
+          gqlType = null
       )
 
       listOf(
@@ -335,7 +334,6 @@ internal class OperationBasedModelGroupBuilder(
               info = fragmentsFieldInfo,
               condition = BooleanExpression.True,
               fieldSet = fragmentsFieldSet,
-              isSynthetic = true,
               hide = false
           )
       )
@@ -353,7 +351,6 @@ internal class OperationBasedModelGroupBuilder(
         info = patchedInfo,
         condition = condition,
         fieldSet = fieldSet,
-        isSynthetic = isSynthetic,
         hide = false
     )
   }
@@ -366,13 +363,13 @@ internal class OperationBasedModelGroupBuilder(
           responseName = "__typename",
           description = null,
           deprecationReason = null,
-          type = IrNonNullType(IrScalarType("String"))
+          type = IrNonNullType(IrScalarType("String")),
+          gqlType = GQLNamedType(name = "String")
       )
       OperationField(
           info = info,
           condition = BooleanExpression.True,
           fieldSet = null,
-          isSynthetic = false,
           hide = true
       )
     }
@@ -384,9 +381,12 @@ private class OperationField(
     val info: IrFieldInfo,
     val condition: BooleanExpression<BTerm>,
     val fieldSet: OperationFieldSet?,
-    val isSynthetic: Boolean,
     val hide: Boolean,
-)
+) {
+  val isSynthetic: Boolean
+    get() = info.gqlType == null
+
+}
 
 private data class OperationFieldSet(
     val id: String,
@@ -423,7 +423,6 @@ private fun OperationFieldSet.toModel(info: IrFieldInfo): IrModel {
 private fun OperationField.toProperty(): IrProperty {
   return IrProperty(
       info = info,
-      isSynthetic = isSynthetic,
       override = false,
       condition = condition,
       requiresBuffering = fieldSet?.fields?.any { it.isSynthetic } ?: false,

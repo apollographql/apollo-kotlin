@@ -19,9 +19,15 @@ object BuildDirLayout {
     )
   }
 
-  internal fun sources(project: Project, service: Service): Provider<Directory> {
+  internal fun outputDir(project: Project, service: Service): Provider<Directory> {
     return project.layout.buildDirectory.dir(
         "generated/source/apollo/${service.name}"
+    )
+  }
+
+  internal fun testDir(project: Project, service: Service): Provider<Directory> {
+    return project.layout.buildDirectory.dir(
+        "generated/source/apolloTest/${service.name}"
     )
   }
 

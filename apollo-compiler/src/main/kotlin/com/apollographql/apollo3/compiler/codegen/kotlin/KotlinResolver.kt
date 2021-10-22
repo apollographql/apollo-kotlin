@@ -53,19 +53,24 @@ class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?) {
     }
     return result
   }
+
   fun canResolveSchemaType(name: String) = resolve(ResolverKey(ResolverKeyKind.SchemaType, name)) != null
 
   private fun register(kind: ResolverKeyKind, id: String, className: ClassName) = classNames.put(ResolverKey(kind, id), className)
 
-  fun resolveIrType(type: IrType): TypeName {
+  fun resolveIrType(type: IrType, override: (IrType) -> TypeName? = { null }): TypeName {
     if (type is IrNonNullType) {
-      return resolveIrType(type.ofType).copy(nullable = false)
+      return resolveIrType(type.ofType, override).copy(nullable = false)
     }
 
-    return when  {
+    override(type)?.let {
+      return it
+    }
+
+    return when {
       type is IrNonNullType -> error("") // make the compiler happy, this case is handled as a fast path
-      type is IrOptionalType -> Optional::class.asClassName().parameterizedBy(resolveIrType(type.ofType))
-      type is IrListType -> List::class.asClassName().parameterizedBy(resolveIrType(type.ofType))
+      type is IrOptionalType -> Optional::class.asClassName().parameterizedBy(resolveIrType(type.ofType, override))
+      type is IrListType -> List::class.asClassName().parameterizedBy(resolveIrType(type.ofType, override))
       type is IrScalarType && type.name == "String" -> KotlinClassNames.String
       type is IrScalarType && type.name == "Float" -> KotlinClassNames.Double
       type is IrScalarType && type.name == "Int" -> KotlinClassNames.Int
@@ -81,7 +86,7 @@ class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?) {
 
   fun adapterInitializer(type: IrType, requiresBuffering: Boolean): CodeBlock {
     if (type !is IrNonNullType) {
-      return when  {
+      return when {
         type is IrScalarType && type.name == "ID" -> nullableScalarAdapter("NullableStringAdapter")
         type is IrScalarType && type.name == "Boolean" -> nullableScalarAdapter("NullableBooleanAdapter")
         type is IrScalarType && type.name == "String" -> nullableScalarAdapter("NullableStringAdapter")
@@ -209,4 +214,8 @@ class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?) {
   fun registerSchemaType(name: String, className: ClassName) = register(ResolverKeyKind.SchemaType, name, className)
   fun registerModel(path: String, className: ClassName) = register(ResolverKeyKind.Model, path, className)
   fun registerCustomScalar(name: String, className: ClassName) = register(ResolverKeyKind.CustomScalarTarget, name, className)
+
+
+  fun registerTestBuilder(path: String, className: ClassName) = register(ResolverKeyKind.TestBuilder, path, className)
+  fun resolveTestBuilder(path: String) = resolveAndAssert(ResolverKeyKind.TestBuilder, path)
 }

@@ -26,10 +26,13 @@ internal object Identifier {
   const val id = "id"
   const val name = "name"
   const val document = "document"
+  const val Data = "Data"
 
   const val cacheKeyForObject = "cacheKeyForObject"
   const val field = "field"
   const val variables = "variables"
+  const val __map = "__map"
+
 
   const val OPERATION_DOCUMENT = "OPERATION_DOCUMENT"
   const val OPERATION_NAME = "OPERATION_NAME"
@@ -44,4 +47,11 @@ internal object Identifier {
   const val UNKNOWN__ = "UNKNOWN__"
   const val rawValue = "rawValue"
   const val types = "types"
+  const val testResolver = "testResolver"
+  const val block = "block"
+
+  /**
+   * Kotlin language identifiers
+   */
+  const val Companion = "Companion"
 }

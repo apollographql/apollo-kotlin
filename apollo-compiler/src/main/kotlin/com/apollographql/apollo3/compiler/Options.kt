@@ -25,9 +25,13 @@ class Options(
      */
     val schema: Schema,
     /**
-     * The output directory where to write the generated models
+     * The directory where to write the generated models
      */
     val outputDir: File,
+    /**
+     * The directory where to write the generated models test code
+     */
+    val testDir: File,
     /**
      * A debug directory to dump some intermediate artifacts.
      */
@@ -104,68 +108,40 @@ class Options(
      * It can be used to retrieve the list of possible types for a given CompiledType
      */
     val generateSchema: Boolean = defaultGenerateSchema,
-    val moduleName: String,
+    /**
+     * Whether to generate the type safe Data builders. These are mainly used for tests but can also be used for other use
+     * cases too.
+     *
+     * Only valid when [targetLanguage] is "kotlin"
+     */
+    val generateTestBuilders: Boolean = defaultGenerateTestBuilders,
+    val moduleName: String = defaultModuleName,
 ) {
 
   /**
    * A shorthand version that takes a File as input for the schema as well as a simple packageName and
-   * has default values for quick configuration
+   * has default values for quick configuration.
+   * XXX: move this to a builder?
    */
   constructor(
       executableFiles: Set<File>,
       schemaFile: File,
       outputDir: File,
-      debugDir: File? = null,
-      operationOutputFile: File? = null,
+      testDir: File = outputDir,
       packageName: String = "",
-      alwaysGenerateTypesMatching: Set<String> = emptySet(),
-      operationOutputGenerator: OperationOutputGenerator = defaultOperationOutputGenerator,
-      customScalarsMapping: Map<String, String> = emptyMap(),
-      codegenModels: String = defaultCodegenModels,
-      flattenModels: Boolean = codegenModels != MODELS_RESPONSE_BASED,
-      useSemanticNaming: Boolean = defaultUseSemanticNaming,
-      warnOnDeprecatedUsages: Boolean = defaultWarnOnDeprecatedUsages,
-      failOnWarnings: Boolean = defaultFailOnWarnings,
-      logger: GraphQLCompiler.Logger = defaultLogger,
-      generateAsInternal: Boolean = defaultGenerateAsInternal,
-      generateFilterNotNull: Boolean = defaultGenerateFilterNotNull,
-      generateFragmentImplementations: Boolean = defaultGenerateFragmentImplementations,
-      generateResponseFields: Boolean = defaultGenerateResponseFields,
-      generateQueryDocument: Boolean = defaultGenerateQueryDocument,
-      generateSchema: Boolean = defaultGenerateSchema,
-      moduleName: String = defaultModuleName,
-      targetLanguage: String = defaultTargetLanguage,
   ) : this(
       executableFiles = executableFiles,
       schema = schemaFile.toGQLDocument().toSchema(),
       outputDir = outputDir,
-      debugDir = debugDir,
-      operationOutputFile = operationOutputFile,
+      testDir = testDir,
       schemaPackageName = packageName,
       packageNameGenerator = PackageNameGenerator.Flat(packageName),
-      incomingCompilerMetadata = emptyList(),
-      alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
-      operationOutputGenerator = operationOutputGenerator,
-      customScalarsMapping = customScalarsMapping,
-      codegenModels = codegenModels,
-      flattenModels = flattenModels,
-      useSemanticNaming = useSemanticNaming,
-      warnOnDeprecatedUsages = warnOnDeprecatedUsages,
-      failOnWarnings = failOnWarnings,
-      logger = logger,
-      generateAsInternal = generateAsInternal,
-      generateFilterNotNull = generateFilterNotNull,
-      generateFragmentImplementations = generateFragmentImplementations,
-      generateResponseFields = generateResponseFields,
-      generateQueryDocument = generateQueryDocument,
-      generateSchema = generateSchema,
-      moduleName = moduleName,
-      targetLanguage = targetLanguage
   )
 
   fun copy(
       schema: Schema = this.schema,
       outputDir: File = this.outputDir,
+      testDir: File = this.testDir,
       debugDir: File? = this.debugDir,
       operationOutputFile: File? = this.operationOutputFile,
       executableFiles: Set<File> = this.executableFiles,
@@ -189,6 +165,7 @@ class Options(
       generateSchema: Boolean = this.generateSchema,
       moduleName: String = this.moduleName,
       targetLanguage: String = this.targetLanguage,
+      generateTestBuilders: Boolean = this.generateTestBuilders,
   ) = Options(
       schema = schema,
       outputDir = outputDir,
@@ -214,7 +191,9 @@ class Options(
       generateQueryDocument = generateQueryDocument,
       generateSchema = generateSchema,
       moduleName = moduleName,
-      targetLanguage = targetLanguage
+      targetLanguage = targetLanguage,
+      generateTestBuilders = generateTestBuilders,
+      testDir = testDir
   )
 
   companion object {
@@ -236,6 +215,7 @@ class Options(
     const val defaultFlattenModels = true
     const val defaultTargetLanguage = TARGET_KOTLIN
     const val defaultGenerateSchema = false
+    const val defaultGenerateTestBuilders = false
   }
 }
 

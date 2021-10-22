@@ -3,6 +3,7 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.file
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.ResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.ir.IrOperation
@@ -13,7 +14,7 @@ class OperationResponseAdapterBuilder(
     val operation: IrOperation,
     val flatten: Boolean,
     val flattenNamesInOrder: Boolean
-) : CgFileBuilder {
+) : CgOutputFileBuilder {
   private val packageName = context.layout.operationAdapterPackageName(operation.filePath)
   private val simpleName = context.layout.operationResponseAdapterWrapperName(operation)
 

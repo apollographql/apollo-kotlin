@@ -7,7 +7,9 @@ configureMppTestsDefaults()
 
 kotlin {
   /**
-   * Extra target to test the java codegen
+   * Extra target to test the java codegen. There will be 2 JVM tasks:
+   * - compileKotlinJvm
+   * - compileKotlinJavaCodegen
    */
   jvm("javaCodegen") {
     withJava()
@@ -45,6 +47,7 @@ fun configureApollo(generateKotlinModels: Boolean) {
       packageName.set("codegen.models")
       generateFragmentImplementations.set(true)
       codegenModels.set("operationBased")
+      this.generateTestBuilders.set(generateKotlinModels)
       this.generateKotlinModels.set(generateKotlinModels)
       configureConnection(generateKotlinModels)
     }
@@ -59,11 +62,18 @@ fun com.apollographql.apollo3.gradle.api.Service.configureConnection(generateKot
         connectToKotlinSourceSet("appleTest")
         connectToKotlinSourceSet("jsTest")
       } else {
+        // For java, the source set is always called 'main'
         connectToJavaSourceSet("main")
       }
     } else {
       // For autocomplete to work
       connectToKotlinSourceSet("commonTest")
+    }
+  }
+  testDirConnection {
+    if (generateKotlinModels) {
+      // Only connect to jvmTest, not commonTest
+      connectToKotlinSourceSet("jvmTest")
     }
   }
 }

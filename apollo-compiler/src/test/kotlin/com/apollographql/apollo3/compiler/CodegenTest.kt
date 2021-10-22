@@ -317,7 +317,8 @@ class CodegenTest() {
           executableFiles = graphqlFiles,
           schemaFile = schemaFile,
           outputDir = File("build/generated/test/${folder.name}/$targetLanguage/$codegenModels/"),
-          packageName = "com.example.${folder.name}",
+          packageName = "com.example.${folder.name}"
+      ).copy(
           operationOutputGenerator = operationOutputGenerator,
           customScalarsMapping = customScalarsMapping,
           codegenModels = codegenModels,

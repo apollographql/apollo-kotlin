@@ -254,6 +254,14 @@ interface Service {
   val generateSchema: Property<Boolean>
 
   /**
+   * Whether to generate the type safe Data builders. These are mainly used for tests but can also be used for other use
+   * cases too.
+   *
+   * Only valid when [generateKotlinModels] is true
+   */
+  val generateTestBuilders: Property<Boolean>
+
+  /**
    * What codegen to use. One of "operationBased", "responseBased" or "compat"
    *
    * Default value: "compat"
@@ -273,6 +281,12 @@ interface Service {
    * If you want a [DirectoryProperty] that carries the task dependency, use [outputDirConnection]
    */
   val outputDir: DirectoryProperty
+
+  /**
+   * The directory where the test builders will be written.
+   * If you want a [DirectoryProperty] that carries the task dependency, use [outputDirConnection]
+   */
+  val testDir: DirectoryProperty
 
   /**
    * Whether to generate the operationOutput.json
@@ -327,24 +341,38 @@ interface Service {
   )
 
   /**
-   * overrides the way the task is connected.
-   * Use this if you want to connect the generated sources to another task than the default destination.
+   * Overrides the way the generated models are connected.
+   * Use this if you want to connect the generated models to another task than the default destination.
    *
    * By default, the generated sources are connected to:
    * - main sourceSet for Kotlin projects
    * - commonMain sourceSet for Kotlin multiplatform projects
-   * - all application variants for Android projects
+   * - main sourceSet for Android projects
    */
-  fun outputDirConnection(action: Action<in OutputDirConnection>)
+  fun outputDirConnection(action: Action<in DirectoryConnection>)
 
   /**
-   * An [OutputDirConnection] defines how the generated sources are connected to the rest of the
+   * Overrides the way the generated test builders are connected.
+   * Use this if you want to connect the generated test builders to another task than the default destination.
+   *
+   * By default, the generated sources are connected to:
+   * - test sourceSet for Kotlin projects
+   * - commonTest sourceSet for Kotlin multiplatform projects
+   * - test *and* androidTest variants for Android projects
+   */
+  fun testDirConnection(action: Action<in DirectoryConnection>)
+
+  /**
+   * A [DirectoryConnection] defines how the generated sources are connected to the rest of the
    * build.
    *
    * It provides helpers for the most common options as well as direct access to an output [Provider]
    * that will carry task dependency.
+   *
+   * It is valid to call multiple connectXyz() methods to connect the generated sources to multiple
+   * downstream tasks
    */
-  interface OutputDirConnection {
+  interface DirectoryConnection {
     /**
      * Connects the generated sources to the given Kotlin source set.
      * Throws if the Kotlin plugin is not applied

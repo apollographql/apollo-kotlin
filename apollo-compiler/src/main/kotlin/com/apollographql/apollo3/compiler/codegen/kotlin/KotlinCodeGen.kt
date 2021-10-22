@@ -4,7 +4,7 @@ import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
-import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.EnumResponseAdapterBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.CustomScalarBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.FragmentBuilder
@@ -21,6 +21,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.file.OperationResponseA
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.OperationSelectionsBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.OperationVariablesAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.SchemaBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.file.TestBuildersBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.UnionBuilder
 import com.apollographql.apollo3.compiler.ir.Ir
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
@@ -48,6 +49,7 @@ class KotlinCodeGen(
     private val generateFragmentImplementations: Boolean,
     private val generateQueryDocument: Boolean,
     private val generateSchema: Boolean,
+    private val generateTestBuilders: Boolean,
     /**
      * Whether to flatten the models. This decision is left to the codegen. For fragments for an example, we
      * want to flatten at depth 1 to avoid name clashes, but it's ok to flatten fragment response adapters at
@@ -60,7 +62,7 @@ class KotlinCodeGen(
    * @param outputDir: the directory where to write the Kotlin files
    * @return a ResolverInfo to be used by downstream modules
    */
-  fun write(outputDir: File): ResolverInfo {
+  fun write(outputDir: File, testDir: File): ResolverInfo {
     val upstreamResolver = resolverInfos.fold(null as KotlinResolver?) { acc, resolverInfo ->
       KotlinResolver(resolverInfo.entries, acc)
     }
@@ -165,6 +167,17 @@ class KotlinCodeGen(
                   flattenNamesInOrder
               )
           )
+
+          if (generateTestBuilders) {
+            builders.add(
+                TestBuildersBuilder(
+                    context,
+                    operation.responseBasedDataModelGroup ?: error("generateTestBuilders requires generateTestBuilders"),
+                    operation,
+                    flatten
+                )
+            )
+          }
         }
 
     if (generateSchema) {
@@ -173,12 +186,12 @@ class KotlinCodeGen(
 
     builders.forEach { it.prepare() }
     builders
-        .map {
-          it.build()
-        }.forEach {
+        .forEach { cgFileBuilder ->
+          val cgFile = cgFileBuilder.build()
+
           val builder = FileSpec.builder(
-              packageName = it.packageName,
-              fileName = it.fileName
+              packageName = cgFile.packageName,
+              fileName = cgFile.fileName
           ).addComment(
               """
                 
@@ -189,12 +202,17 @@ class KotlinCodeGen(
               """.trimIndent()
           )
 
-          it.typeSpecs.map { typeSpec -> typeSpec.internal(generateAsInternal) }.forEach { typeSpec ->
+          cgFile.typeSpecs.map { typeSpec -> typeSpec.internal(generateAsInternal) }.forEach { typeSpec ->
             builder.addType(typeSpec)
+          }
+
+          val dir = when(cgFileBuilder) {
+            is CgOutputFileBuilder -> outputDir
+            is CgTestFileBuilder ->testDir
           }
           builder
               .build()
-              .writeTo(outputDir)
+              .writeTo(dir)
         }
 
     return ResolverInfo(

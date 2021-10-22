@@ -11,32 +11,24 @@ import com.android.build.gradle.api.UnitTestVariant
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.gradle.api.Service
 import com.apollographql.apollo3.gradle.api.androidExtensionOrThrow
-import com.apollographql.apollo3.gradle.api.applicationVariants
-import com.apollographql.apollo3.gradle.api.javaConvention
 import com.apollographql.apollo3.gradle.api.javaConventionOrThrow
 import com.apollographql.apollo3.gradle.api.kotlinProjectExtensionOrThrow
-import com.apollographql.apollo3.gradle.api.libraryVariants
-import com.apollographql.apollo3.gradle.api.testVariants
-import com.apollographql.apollo3.gradle.api.unitTestVariants
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.Directory
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.internal.HasConvention
-import org.gradle.api.plugins.JavaPluginConvention
-import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskProvider
 import org.jetbrains.kotlin.gradle.plugin.KOTLIN_DSL_NAME
 import org.jetbrains.kotlin.gradle.plugin.KOTLIN_JS_DSL_NAME
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-internal class DefaultOutputDirConnection(
+internal class DefaultDirectoryConnection(
     private val project: Project,
     override val task: TaskProvider<out Task>,
     override val outputDir: Provider<Directory>
-): Service.OutputDirConnection {
+): Service.DirectoryConnection {
   override fun connectToKotlinSourceSet(name: String) {
     project.kotlinProjectExtensionOrThrow.sourceSets.getByName(name).kotlin.srcDir(outputDir)
   }
