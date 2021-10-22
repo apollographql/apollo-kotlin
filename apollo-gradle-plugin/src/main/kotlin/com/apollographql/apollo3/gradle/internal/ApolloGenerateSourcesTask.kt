@@ -19,6 +19,7 @@ import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateFragm
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateQueryDocument
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateResponseFields
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateSchema
+import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateTestBuilders
 import com.apollographql.apollo3.compiler.Options.Companion.defaultSealedClassesForEnumsMatching
 import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSemanticNaming
 import com.apollographql.apollo3.compiler.Options.Companion.defaultWarnOnDeprecatedUsages
@@ -270,6 +271,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         schemaPackageName = incomingOptions.schemaPackageName,
         customScalarsMapping = customScalarsMapping.getOrElse(emptyMap()),
         targetLanguage = targetLanguage,
+        generateTestBuilders = generateTestBuilders.getOrElse(defaultGenerateTestBuilders),
         sealedClassesForEnumsMatching = sealedClassesForEnumsMatching.getOrElse(defaultSealedClassesForEnumsMatching)
     )
 
