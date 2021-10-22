@@ -1,4 +1,5 @@
 public final class com/apollographql/apollo3/ApolloClient : com/apollographql/apollo3/api/HasExecutionContext {
+	public static final field Companion Lcom/apollographql/apollo3/ApolloClient$Companion;
 	public fun <init> (Lcom/apollographql/apollo3/network/NetworkTransport;)V
 	public fun <init> (Lcom/apollographql/apollo3/network/NetworkTransport;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)V
 	public fun <init> (Lcom/apollographql/apollo3/network/NetworkTransport;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/network/NetworkTransport;)V
@@ -41,6 +42,10 @@ public final class com/apollographql/apollo3/ApolloClient$Builder : com/apollogr
 	public final fun serverUrl (Ljava/lang/String;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public fun setExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)V
 	public final fun subscriptionNetworkTransport (Lcom/apollographql/apollo3/network/NetworkTransport;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+}
+
+public final class com/apollographql/apollo3/ApolloClient$Companion {
+	public final fun builder ()Lcom/apollographql/apollo3/ApolloClient$Builder;
 }
 
 public final class com/apollographql/apollo3/ApolloClientKt {
