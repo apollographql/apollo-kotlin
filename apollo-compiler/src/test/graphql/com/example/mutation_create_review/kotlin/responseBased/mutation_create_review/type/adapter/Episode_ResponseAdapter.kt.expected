@@ -16,7 +16,7 @@ internal object Episode_ResponseAdapter : Adapter<Episode> {
   public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
       Episode {
     val rawValue = reader.nextString()!!
-    return Episode.valueOf(rawValue)
+    return Episode.safeValueOf(rawValue)
   }
 
   public override fun toJson(

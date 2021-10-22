@@ -2,7 +2,7 @@ package com.apollographql.apollo3.compiler.codegen.java.file
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.rawValue
-import com.apollographql.apollo3.compiler.codegen.Identifier.valueOf
+import com.apollographql.apollo3.compiler.codegen.Identifier.safeValueOf
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
@@ -72,7 +72,7 @@ class EnumBuilder(
             }
         )
         .addMethod(
-            MethodSpec.methodBuilder(valueOf)
+            MethodSpec.methodBuilder(safeValueOf)
                 .addParameter(JavaClassNames.String, rawValue)
                 .addModifiers(Modifier.PUBLIC)
                 .addModifiers(Modifier.STATIC)

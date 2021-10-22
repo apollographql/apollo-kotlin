@@ -32,7 +32,7 @@ public class Episode {
     this.rawValue = rawValue;
   }
 
-  public static Episode valueOf(String rawValue) {
+  public static Episode safeValueOf(String rawValue) {
     switch(rawValue) {
       case "NEWHOPE": return Episode.NEWHOPE;
       case "EMPIRE": return Episode.EMPIRE;

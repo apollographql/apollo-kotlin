@@ -20,7 +20,7 @@ public sealed class Race(
     /**
      * Returns [Race] matched with the specified [rawValue].
      */
-    public fun valueOf(rawValue: String): Race = when(rawValue) {
+    public fun safeValueOf(rawValue: String): Race = when(rawValue) {
       "WOOKIE" -> WOOKIE
       "GUMGAN" -> GUMGAN
       "EWOK" -> EWOK

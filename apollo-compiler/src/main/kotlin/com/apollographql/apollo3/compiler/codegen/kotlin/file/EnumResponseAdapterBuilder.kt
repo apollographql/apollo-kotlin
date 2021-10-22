@@ -10,6 +10,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
+import com.apollographql.apollo3.compiler.codegen.Identifier.safeValueOf
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
@@ -59,7 +60,7 @@ class EnumResponseAdapterBuilder(
         .addCode(
             CodeBlock.builder()
                 .addStatement("val·rawValue·=·reader.nextString()!!")
-                .addStatement("return·%T.valueOf(rawValue)", adaptedTypeName)
+                .addStatement("return·%T.$safeValueOf(rawValue)", adaptedTypeName)
                 .build()
         )
         .addModifiers(KModifier.OVERRIDE)
@@ -77,7 +78,7 @@ class EnumResponseAdapterBuilder(
   }
 }
 
-internal fun toResponseFunSpecBuilder(typeName: TypeName) = FunSpec.builder(toJson)
+private fun toResponseFunSpecBuilder(typeName: TypeName) = FunSpec.builder(toJson)
     .addModifiers(KModifier.OVERRIDE)
     .addParameter(name = writer, type = JsonWriter::class.asTypeName())
     .addParameter(name = customScalarAdapters, type = CustomScalarAdapters::class)

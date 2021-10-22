@@ -27,7 +27,7 @@ public class Enum {
     this.rawValue = rawValue;
   }
 
-  public static Enum valueOf(String rawValue) {
+  public static Enum safeValueOf(String rawValue) {
     switch(rawValue) {
       case "north": return Enum.north;
       case "North": return Enum.North;

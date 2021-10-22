@@ -25,7 +25,7 @@ public class Race {
     this.rawValue = rawValue;
   }
 
-  public static Race valueOf(String rawValue) {
+  public static Race safeValueOf(String rawValue) {
     switch(rawValue) {
       case "WOOKIE": return Race.WOOKIE;
       case "GUMGAN": return Race.GUMGAN;

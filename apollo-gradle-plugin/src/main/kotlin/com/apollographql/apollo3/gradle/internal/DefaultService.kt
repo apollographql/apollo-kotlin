@@ -32,11 +32,13 @@ abstract class DefaultService @Inject constructor(val project: Project, override
       include.convention(null as List<String>?)
       exclude.convention(null as List<String>?)
       alwaysGenerateTypesMatching.convention(null as Set<String>?)
+      sealedClassesForEnumsMatching.convention(null as List<String>?)
     } else {
       customScalarsMapping.set(null as Map<String, String>?)
       include.set(null as List<String>?)
       exclude.set(null as List<String>?)
       alwaysGenerateTypesMatching.set(null as Set<String>?)
+      sealedClassesForEnumsMatching.set(null as List<String>?)
     }
   }
 
@@ -84,6 +86,8 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   abstract override val codegenModels: Property<String>
 
   abstract override val flattenModels: Property<Boolean>
+
+  abstract override val sealedClassesForEnumsMatching: ListProperty<String>
 
   val graphqlSourceDirectorySet = objects.sourceDirectorySet("graphql", "graphql")
 
