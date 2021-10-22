@@ -1,9 +1,8 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
-import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.UNKNOWN__
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
@@ -17,7 +16,7 @@ import com.squareup.kotlinpoet.TypeSpec
 class EnumCompatBuilder(
     private val context: KotlinContext,
     private val enum: IrEnum,
-) : CgFileBuilder {
+) : CgOutputFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
   private val simpleName = layout.enumName(name = enum.name)
