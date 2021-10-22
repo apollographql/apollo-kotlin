@@ -254,6 +254,16 @@ interface Service {
   val generateSchema: Property<Boolean>
 
   /**
+   * Whether to generate operation variables as [com.apollographql.apollo3.api.Optional]
+   *
+   * Using [com.apollographql.apollo3.api.Optional] allows to omit the variables if needed but makes the
+   * callsite more verbose in most cases.
+   *
+   * Default: false
+   */
+  val generateOptionalOperationVariables: Property<Boolean>
+
+  /**
    * Whether to generate the type safe Data builders. These are mainly used for tests but can also be used for other use
    * cases too.
    *
@@ -317,6 +327,27 @@ interface Service {
   @Deprecated("Kotlin sealed classes are more flexible than Kotlin enums to represent GraphQL enums because they can expose the" +
       "rawValue of the unknown enums.")
   val sealedClassesForEnumsMatching: ListProperty<String>
+
+  /**
+   * A shorthand method that configures defaults that match Apollo Android 2.x codegen
+   *
+   * In practice, it does the following:
+   *
+   * ```
+   * packageNamesFromFilePaths(rootPackageName)
+   * codegenModels.set(MODELS_COMPAT)
+   * sealedClassesForEnumsMatching.set(emptyList())
+   * generateOptionalOperationVariables.set(true)
+   * ```
+   *
+   * See the individual options for a more complete description.
+   *
+   * This method is deprecated and provided for migration purposes only. It will be removed
+   * in a future version
+   */
+  @Deprecated("useVersion2Compat() is a helper function to help migrating to 3.x " +
+      "and will be removed in a future version")
+  fun useVersion2Compat(rootPackageName: String? = null)
 
   /**
    * Configures [Introspection] to download an introspection Json schema

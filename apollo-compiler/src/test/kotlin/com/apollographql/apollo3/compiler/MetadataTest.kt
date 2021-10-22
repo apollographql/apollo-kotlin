@@ -62,13 +62,13 @@ class MetadataTest {
             testDir = outputDir,
             schema = schema,
             schemaPackageName = "",
-            codegenModels = codegenModels,
-            customScalarsMapping = defaultCustomScalarsMapping,
             packageNameGenerator = PackageNameGenerator.Flat(""),
             alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
-            flattenModels = true,
             incomingCompilerMetadata =incomingCompilerMetadata,
-            moduleName = "test"
+            customScalarsMapping = defaultCustomScalarsMapping,
+            codegenModels = codegenModels,
+            flattenModels = true,
+            moduleName = "test",
         )
     )
     ApolloMetadata(

@@ -269,10 +269,6 @@ abstract class DefaultApolloExtension(
     if (service.outputDirAction == null) {
       service.outputDirAction = defaultOutputDirAction
     }
-    if (service.testDirAction == null) {
-      service.testDirAction = defaultTestDirAction
-    }
-
     service.outputDirAction!!.execute(
         DefaultDirectoryConnection(
             project = project,
@@ -280,6 +276,10 @@ abstract class DefaultApolloExtension(
             outputDir = codegenProvider.flatMap { it.outputDir }
         )
     )
+
+    if (service.testDirAction == null) {
+      service.testDirAction = defaultTestDirAction
+    }
     service.testDirAction!!.execute(
         DefaultDirectoryConnection(
             project = project,
@@ -454,8 +454,9 @@ abstract class DefaultApolloExtension(
       task.generateSchema.set(service.generateSchema)
       task.codegenModels.set(service.codegenModels)
       task.flattenModels.set(service.flattenModels)
-      task.sealedClassesForEnumsMatching.set(service.sealedClassesForEnumsMatching)
       task.generateTestBuilders.set(service.generateTestBuilders)
+      task.sealedClassesForEnumsMatching.set(service.sealedClassesForEnumsMatching)
+      task.generateOptionalOperationVariables.set(service.generateOptionalOperationVariables)
     }
   }
 

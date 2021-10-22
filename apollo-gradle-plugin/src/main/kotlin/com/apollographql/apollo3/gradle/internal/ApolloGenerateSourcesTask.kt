@@ -6,16 +6,17 @@ import com.apollographql.apollo3.compiler.CommonMetadata
 import com.apollographql.apollo3.compiler.GraphQLCompiler
 import com.apollographql.apollo3.compiler.IncomingOptions
 import com.apollographql.apollo3.compiler.IncomingOptions.Companion.resolveSchema
-import com.apollographql.apollo3.compiler.MODELS_COMPAT
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.Options
 import com.apollographql.apollo3.compiler.Options.Companion.defaultAlwaysGenerateTypesMatching
+import com.apollographql.apollo3.compiler.Options.Companion.defaultCodegenModels
 import com.apollographql.apollo3.compiler.Options.Companion.defaultFailOnWarnings
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateAsInternal
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateFilterNotNull
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateFragmentImplementations
+import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateOptionalOperationVariables
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateQueryDocument
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateResponseFields
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateSchema
@@ -158,6 +159,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Input
   @get:Optional
+  abstract val generateOptionalOperationVariables: Property<Boolean>
+
+  @get:Input
+  @get:Optional
   abstract val generateTestBuilders: Property<Boolean>
 
   @get:Inject
@@ -194,14 +199,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       }
       IncomingOptions.fromMetadata(commonMetadata, packageNameGenerator)
     } else {
-      val codegenModels = codegenModels.getOrElse(
-          when (targetLanguage) {
-            TARGET_JAVA -> MODELS_OPERATION_BASED
-            TARGET_KOTLIN -> MODELS_COMPAT
-            else -> error("")
-          }
-      )
-
+      val codegenModels = codegenModels.getOrElse(defaultCodegenModels)
       val (schema, mainSchemaFilePath) = resolveSchema(schemaFiles.files, rootFolders.get())
 
       outputCommonMetadata = CommonMetadata(
@@ -272,7 +270,8 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         customScalarsMapping = customScalarsMapping.getOrElse(emptyMap()),
         targetLanguage = targetLanguage,
         generateTestBuilders = generateTestBuilders.getOrElse(defaultGenerateTestBuilders),
-        sealedClassesForEnumsMatching = sealedClassesForEnumsMatching.getOrElse(defaultSealedClassesForEnumsMatching)
+        sealedClassesForEnumsMatching = sealedClassesForEnumsMatching.getOrElse(defaultSealedClassesForEnumsMatching),
+        generateOptionalOperationVariables = generateOptionalOperationVariables.getOrElse(defaultGenerateOptionalOperationVariables)
     )
 
     val outputCompilerMetadata = GraphQLCompiler.write(options)
