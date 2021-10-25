@@ -98,7 +98,7 @@ call `ApolloClient.Builder.customScalarAdapter` once for each adapter:
 
 ```kotlin
 val apolloClient = ApolloClient.Builder().serverUrl("https://")
-    .customScalarAdapter(Types.GeoPoint, geoPointAdapter)
+    .addCustomScalarAdapter(GeoPoint.type, geoPointAdapter)
     .build()
 ```
 
@@ -137,6 +137,6 @@ And add it to your `ApolloClient`:
 
 ```kotlin
 val apolloClient = ApolloClient.Builder().serverUrl("https://")
-    .customScalarAdapter(Types.Date, DateAdapter())
+    .addCustomScalarAdapter(Date.type, DateAdapter())
     .build()
 ```
