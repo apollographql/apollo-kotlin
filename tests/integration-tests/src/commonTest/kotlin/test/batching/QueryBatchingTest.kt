@@ -4,7 +4,6 @@ import batching.GetLaunch2Query
 import batching.GetLaunchQuery
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.mockserver.MockServer
@@ -49,10 +48,10 @@ class QueryBatchingTest {
         .build()
 
     val result1 = async {
-      apolloClient.query(GetLaunchQuery())
+      apolloClient.query(GetLaunchQuery()).execute()
     }
     val result2 = async {
-      apolloClient.query(GetLaunch2Query())
+      apolloClient.query(GetLaunch2Query()).execute()
     }
     assertEquals("83", result1.await().data?.launch?.id)
     assertEquals("84", result2.await().data?.launch?.id)
@@ -77,13 +76,13 @@ class QueryBatchingTest {
         .build()
 
     val result1 = async {
-      apolloClient.query(GetLaunchQuery())
+      apolloClient.query(GetLaunchQuery()).execute()
     }
     val result2 = async {
       // Make sure GetLaunch2Query gets executed after GetLaunchQuery as there is no guarantee otherwise
       // 300ms batchIntervalMillis and 50ms delay here should be enough. Increase values if some tests become flaky
       delay(50)
-      apolloClient.query(GetLaunch2Query())
+      apolloClient.query(GetLaunch2Query()).execute()
     }
 
     assertEquals("83", result1.await().data?.launch?.id)
@@ -119,12 +118,12 @@ class QueryBatchingTest {
         .build()
 
     val result1 = async {
-      apolloClient.query(GetLaunchQuery())
+      apolloClient.query(GetLaunchQuery()).execute()
     }
     val result2 = async {
       // Wait for the first query to be executed
       delay(200)
-      apolloClient.query(GetLaunch2Query())
+      apolloClient.query(GetLaunch2Query()).execute()
     }
 
     assertEquals("83", result1.await().data?.launch?.id)
@@ -150,12 +149,12 @@ class QueryBatchingTest {
         .build()
 
     val result1 = async {
-      apolloClient.query(ApolloRequest.Builder(GetLaunchQuery()).canBeBatched(false).build())
+      apolloClient.query(GetLaunchQuery()).canBeBatched(false).execute()
     }
     val result2 = async {
       // Make sure GetLaunch2Query gets executed after GetLaunchQuery as there is no guarantee otherwise
       delay(50)
-      apolloClient.query(GetLaunch2Query())
+      apolloClient.query(GetLaunch2Query()).execute()
     }
 
     assertEquals("83", result1.await().data?.launch?.id)

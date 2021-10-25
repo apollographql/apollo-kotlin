@@ -34,7 +34,7 @@ class HTTPHeadersTest {
 
     mockServer.enqueue(query, data)
 
-    val response = apolloClient.query(query)
+    val response = apolloClient.query(query).execute()
 
     assertNotNull(response.data)
 
@@ -62,7 +62,7 @@ class HTTPHeadersTest {
         )
     )
 
-    val response = apolloClient.query(query)
+    val response = apolloClient.query(query).execute()
 
     assertEquals(response.executionContext[HttpInfo]?.headers?.valueOf("Header1"), "Value1")
     assertEquals(response.executionContext[HttpInfo]?.headers?.valueOf("Header2"), "Value2")

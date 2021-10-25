@@ -59,13 +59,13 @@ class CookiesTest {
     ))
 
     // first query should set the cookie
-    apolloClient.query(HeroNameQuery())
+    apolloClient.query(HeroNameQuery()).execute()
     // consume the first request
     mockServer.takeRequest()
 
     mockServer.enqueue(json)
     // first query should send the cookie
-    apolloClient.query(HeroNameQuery())
+    apolloClient.query(HeroNameQuery()).execute()
 
     val cookie = mockServer.takeRequest().headers["Cookie"]
     assertEquals("yummy_cookie=choco", cookie)

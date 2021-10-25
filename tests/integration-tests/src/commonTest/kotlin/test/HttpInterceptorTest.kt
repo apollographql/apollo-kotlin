@@ -34,6 +34,6 @@ class HttpInterceptorTest {
 
     mockServer.enqueue(readResource("HeroNameResponse.json"))
 
-    client.query(HeroNameQuery())
+    client.query(HeroNameQuery()).execute()
   }
 }

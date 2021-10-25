@@ -1,5 +1,5 @@
+
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.cache.http.CachingHttpEngine
 import com.apollographql.apollo3.cache.http.HttpFetchPolicy
@@ -12,11 +12,10 @@ import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.testing.runTest
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
-import org.junit.Before
 import httpcache.GetRandom2Query
 import httpcache.GetRandomQuery
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -67,11 +66,11 @@ class HttpCacheTest {
     mockServer.enqueue(response)
 
     runBlocking {
-      var response = apolloClient.query(GetRandomQuery())
+      var response = apolloClient.query(GetRandomQuery()).execute()
       assertEquals(42, response.data?.random)
       assertEquals(false, response.isFromHttpCache)
 
-      response = apolloClient.query(GetRandomQuery())
+      response = apolloClient.query(GetRandomQuery()).execute()
       assertEquals(42, response.data?.random)
       assertEquals(true, response.isFromHttpCache)
     }
@@ -83,13 +82,14 @@ class HttpCacheTest {
     mockServer.enqueue(MockResponse(statusCode = 500))
 
     runBlocking {
-      val response = apolloClient.query(GetRandomQuery())
+      val response = apolloClient.query(GetRandomQuery()).execute()
       assertEquals(42, response.data?.random)
       assertEquals(false, response.isFromHttpCache)
 
-      val request = ApolloRequest.Builder(GetRandomQuery()).httpFetchPolicy(HttpFetchPolicy.NetworkOnly).build()
       assertFails {
-        apolloClient.query(request)
+        apolloClient.query(GetRandomQuery())
+            .httpFetchPolicy(HttpFetchPolicy.NetworkOnly)
+            .execute()
       }
     }
   }
@@ -101,11 +101,13 @@ class HttpCacheTest {
 
     runBlocking {
       var response = apolloClient.query(GetRandomQuery())
+          .execute()
       assertEquals(42, response.data?.random)
       assertEquals(false, response.isFromHttpCache)
 
-      val request = ApolloRequest.Builder(GetRandomQuery()).httpFetchPolicy(HttpFetchPolicy.NetworkFirst).build()
-      response = apolloClient.query(request)
+      response = apolloClient.query(GetRandomQuery())
+          .httpFetchPolicy(HttpFetchPolicy.NetworkFirst)
+          .execute()
       assertEquals(42, response.data?.random)
       assertEquals(true, response.isFromHttpCache)
     }
@@ -116,21 +118,20 @@ class HttpCacheTest {
     mockServer.enqueue(response)
 
     runBlocking {
-      var response = apolloClient.query(GetRandomQuery())
+      var response = apolloClient.query(GetRandomQuery()).execute()
       assertEquals(42, response.data?.random)
       assertEquals(false, response.isFromHttpCache)
 
-      response = apolloClient.query(ApolloRequest.Builder(GetRandomQuery()).httpExpireTimeout(500).build())
+      response = apolloClient.query(GetRandomQuery()).httpExpireTimeout(500).execute()
       assertEquals(42, response.data?.random)
       assertEquals(true, response.isFromHttpCache)
 
       delay(1000)
       assertFailsWith(HttpCacheMissException::class) {
-        apolloClient.query(ApolloRequest.Builder(GetRandomQuery())
+        apolloClient.query(GetRandomQuery())
             .httpExpireTimeout(500)
             .httpFetchPolicy(HttpFetchPolicy.CacheOnly)
-            .build()
-        )
+            .execute()
       }
     }
   }
@@ -141,11 +142,11 @@ class HttpCacheTest {
     mockServer.enqueue(response2)
 
     runBlocking {
-      val response = apolloClient.query(GetRandomQuery())
+      val response = apolloClient.query(GetRandomQuery()).execute()
       assertEquals(42, response.data?.random)
       assertEquals(false, response.isFromHttpCache)
 
-      val response2 = apolloClient.query(GetRandom2Query())
+      val response2 = apolloClient.query(GetRandom2Query()).execute()
       assertEquals(42, response2.data?.random2)
       assertEquals(false, response2.isFromHttpCache)
     }

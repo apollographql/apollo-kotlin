@@ -11,7 +11,6 @@ import readResource
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import kotlinx.coroutines.delay
 
 class AutoPersistedQueriesTest {
   private lateinit var mockServer: MockServer
@@ -30,7 +29,7 @@ class AutoPersistedQueriesTest {
 
     val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).autoPersistedQueries(httpMethodForHashedQueries = HttpMethod.Post).build()
 
-    apolloClient.query(HeroNameQuery())
+    apolloClient.query(HeroNameQuery()).execute()
 
     val request = mockServer.takeRequest()
 
@@ -54,7 +53,7 @@ class AutoPersistedQueriesTest {
 
     val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).autoPersistedQueries(httpMethodForHashedQueries = HttpMethod.Post).build()
 
-    apolloClient.query(HeroNameQuery())
+    apolloClient.query(HeroNameQuery()).execute()
 
     var request = mockServer.takeRequest()
     assertFalse(request.body.utf8().contains("query"))

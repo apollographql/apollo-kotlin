@@ -30,7 +30,11 @@ class MainTest {
         println("Dispatchers.Main: ${currentThreadId()}")
         val server = MockServer()
         server.enqueue(json)
-        val response = ApolloClient.Builder().serverUrl(server.url()).build().query(GetRandomQuery())
+        val response = ApolloClient.Builder()
+            .serverUrl(server.url())
+            .build()
+            .query(GetRandomQuery())
+            .execute()
         check(response.dataOrThrow.random == 42)
       }
     }
@@ -43,7 +47,7 @@ class MainTest {
     val client = ApolloClient.Builder().serverUrl(server.url()).build().freeze()
     withContext(Dispatchers.Default) {
       assertFailsWith(IllegalStateException::class) {
-        client.query(GetRandomQuery())
+        client.query(GetRandomQuery()).execute()
       }
     }
   }
@@ -55,7 +59,7 @@ class MainTest {
     val client = ApolloClient.Builder().serverUrl(server.url()).normalizedCache(MemoryCacheFactory()).build()
     withContext(Dispatchers.Default) {
       withContext(Dispatchers.Main) {
-        val response = client.query(GetRandomQuery())
+        val response = client.query(GetRandomQuery()).execute()
         check(response.dataOrThrow.random == 42)
       }
     }

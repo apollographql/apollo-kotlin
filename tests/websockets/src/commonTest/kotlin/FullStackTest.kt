@@ -22,6 +22,7 @@ class FullStackTest {
         .build()
 
     apolloClient.subscribe(TripsBookedSubscription())
+        .execute()
         .collect {
           println("trips booked: ${it.data?.tripsBooked}")
         }

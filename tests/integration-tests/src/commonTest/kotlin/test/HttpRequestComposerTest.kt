@@ -42,7 +42,7 @@ class HttpRequestComposerTest {
     kotlin.runCatching {
       // No need to enqueue a successful response, we just want to make sure our headers reached the server
       mockServer.enqueue("error")
-      apolloClient.query(ApolloRequest.Builder(AllPlanetsQuery()).httpHeader("test", "is passing").build())
+      apolloClient.query(AllPlanetsQuery()).httpHeader("test", "is passing").execute()
     }
 
     val response = mockServer.takeRequest()

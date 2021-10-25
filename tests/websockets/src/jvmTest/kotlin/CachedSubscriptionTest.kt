@@ -56,7 +56,8 @@ class CachedSubscriptionTest {
     runBlocking {
       val channel = Channel<Int>()
       val job = launch {
-        apolloClient.watch(TimeQuery())
+        apolloClient.query(TimeQuery())
+            .watch()
             .map { it.data!!.time }
             .collect {
               channel.send(it)
@@ -68,6 +69,7 @@ class CachedSubscriptionTest {
 
       println("starting subscription")
       apolloClient.subscribe(TimeSubscription())
+          .execute()
           .take(3)
           .map { it.data!!.time }
           .collect {

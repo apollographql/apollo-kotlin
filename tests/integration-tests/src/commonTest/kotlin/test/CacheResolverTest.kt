@@ -33,7 +33,7 @@ class CacheResolverTest {
         )
         .build()
 
-    val response = apolloClient.query(HeroNameQuery())
+    val response = apolloClient.query(HeroNameQuery()).execute()
 
     assertEquals("Luke", response.data?.hero?.name)
   }

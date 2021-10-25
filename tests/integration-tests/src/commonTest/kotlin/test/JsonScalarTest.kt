@@ -2,7 +2,6 @@ package test
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
@@ -40,7 +39,7 @@ class JsonScalarTest {
   @Test
   fun jsonScalar() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(readResource("JsonScalar.json"))
-    var response = apolloClient.query(GetJsonScalarQuery())
+    var response = apolloClient.query(GetJsonScalarQuery()).execute()
 
     assertFalse(response.hasErrors())
     var expectedMap = mapOf(
@@ -53,8 +52,8 @@ class JsonScalarTest {
      * Update the json value, it should be replaced, not merged
      */
     mockServer.enqueue(readResource("JsonScalarModified.json"))
-    apolloClient.query(ApolloRequest.Builder(GetJsonScalarQuery()).fetchPolicy(FetchPolicy.NetworkFirst).build())
-    response = apolloClient.query(ApolloRequest.Builder(GetJsonScalarQuery()).fetchPolicy(FetchPolicy.CacheOnly).build())
+    apolloClient.query(GetJsonScalarQuery()).fetchPolicy(FetchPolicy.NetworkFirst).execute()
+    response = apolloClient.query(GetJsonScalarQuery()).fetchPolicy(FetchPolicy.CacheOnly).execute()
 
     assertFalse(response.hasErrors())
 
