@@ -94,7 +94,7 @@ This solution is more concise but slightly less performant.
 ## Register adapters
 
 After you define your adapters, you need to register them with your `ApolloClient` instance. To do so,
-call `ApolloClient.Builder.customScalarAdapter` once for each adapter:
+call `ApolloClient.Builder.addCustomScalarAdapter` once for each adapter:
 
 ```kotlin
 val apolloClient = ApolloClient.Builder().serverUrl("https://")
