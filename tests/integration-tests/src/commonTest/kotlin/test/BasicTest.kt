@@ -2,7 +2,6 @@ package test
 
 import IdObjectIdGenerator
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.cache.normalized.ApolloStore
@@ -59,9 +58,13 @@ class BasicTest {
       block: ApolloResponse<D>.() -> Unit,
   ) = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(readResource(resourceName))
-    var response = apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.NetworkOnly).build())
+    var response = apolloClient.query(query)
+        .fetchPolicy(FetchPolicy.NetworkOnly)
+        .execute()
     response.block()
-    response = apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.CacheOnly).build())
+    response = apolloClient.query(query)
+        .fetchPolicy(FetchPolicy.CacheOnly)
+        .execute()
     response.block()
   }
 

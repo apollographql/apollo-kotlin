@@ -1,6 +1,8 @@
 package com.apollographql.apollo3.rx2
 
-import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.ApolloMutationCall
+import com.apollographql.apollo3.ApolloQueryCall
+import com.apollographql.apollo3.ApolloSubscriptionCall
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -15,7 +17,6 @@ import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
-import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.network.NetworkTransport
@@ -77,7 +78,7 @@ class Rx2ApolloStore(
       customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders = CacheHeaders.NONE,
   ): Single<D> = rxSingle(dispatcher) {
-    delegate.readOperation(operation, customScalarAdapters, cacheHeaders) ?: throw CacheMissException("Cache miss excpetion for $operation")
+    delegate.readOperation(operation, customScalarAdapters, cacheHeaders)
   }
 
   fun <D : Fragment.Data> rxReadFragment(
@@ -86,7 +87,7 @@ class Rx2ApolloStore(
       customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
       cacheHeaders: CacheHeaders = CacheHeaders.NONE,
   ): Single<D> = rxSingle(dispatcher) {
-    delegate.readFragment(fragment, cacheKey, customScalarAdapters, cacheHeaders) ?: throw CacheMissException("Cache miss excpetion for $fragment")
+    delegate.readFragment(fragment, cacheKey, customScalarAdapters, cacheHeaders)
   }
 
   fun <D : Operation.Data> rxWriteOperation(
@@ -148,38 +149,10 @@ class Rx2ApolloStore(
   }
 }
 
-fun ApolloClient.toRx2ApolloClient(scheduler: Scheduler = Schedulers.io()) = Rx2ApolloClient(this, scheduler)
-
-class Rx2ApolloClient(private val delegate: ApolloClient, private val scheduler: Scheduler) {
-  private val dispatcher = scheduler.asCoroutineDispatcher()
-
-  fun <D : Query.Data> query(query: Query<D>): Single<ApolloResponse<D>> = query(ApolloRequest.Builder(query).build())
-
-  fun <D : Mutation.Data> mutate(mutation: Mutation<D>): Single<ApolloResponse<D>> = mutate(ApolloRequest.Builder(mutation).build())
-
-  fun <D : Subscription.Data> subscribe(subscription: Subscription<D>): Flowable<ApolloResponse<D>> = subscribe(ApolloRequest.Builder(subscription).build())
-
-  fun <D : Query.Data> query(queryRequest: ApolloRequest<D>): Single<ApolloResponse<D>> = rxSingle(dispatcher) {
-    delegate.query(queryRequest)
-  }
-
-  fun <D : Query.Data> queryAsFlow(queryRequest: ApolloRequest<D>): Flowable<ApolloResponse<D>>  {
-    return delegate.queryAsFlow(queryRequest).asFlowable(dispatcher)
-  }
-
-  fun <D : Mutation.Data> mutate(mutationRequest: ApolloRequest<D>): Single<ApolloResponse<D>> = rxSingle(dispatcher) {
-    delegate.mutate(mutationRequest)
-  }
-
-  fun <D : Mutation.Data> mutateAsFlow(mutationRequest: ApolloRequest<D>): Flowable<ApolloResponse<D>> {
-    return delegate.mutateAsFlow(mutationRequest).asFlowable(dispatcher)
-  }
-
-  fun <D : Operation.Data> subscribe(subscriptionRequest: ApolloRequest<D>): Flowable<ApolloResponse<D>> {
-    return delegate.subscribe(subscriptionRequest).asFlowable(dispatcher)
-  }
-
-  fun dispose() {
-    delegate.dispose()
-  }
+fun <D: Query.Data> ApolloQueryCall<D>.rxSingle(scheduler: Scheduler) = rxSingle(scheduler.asCoroutineDispatcher()) {
+  execute()
 }
+fun <D: Mutation.Data> ApolloMutationCall<D>.rxSingle(scheduler: Scheduler) = rxSingle(scheduler.asCoroutineDispatcher()) {
+  execute()
+}
+fun <D: Subscription.Data> ApolloSubscriptionCall<D>.rxFlowable(scheduler: Scheduler) = execute().asFlowable(scheduler.asCoroutineDispatcher())

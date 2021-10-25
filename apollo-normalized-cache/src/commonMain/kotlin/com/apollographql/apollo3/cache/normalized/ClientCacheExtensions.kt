@@ -1,6 +1,8 @@
 package com.apollographql.apollo3.cache.normalized
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.ApolloMutationCall
+import com.apollographql.apollo3.ApolloQueryCall
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
@@ -64,16 +66,9 @@ fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: B
   return addInterceptor(ApolloCacheInterceptor(store)).writeToCacheAsynchronously(writeToCacheAsynchronously)
 }
 
-fun <D : Query.Data> ApolloClient.watch(query: Query<D>): Flow<ApolloResponse<D>> {
-  return watch(ApolloRequest.Builder(query).build())
-}
 
-fun <D : Query.Data> ApolloClient.watch(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
-  return queryAsFlow(queryRequest.newBuilder().addExecutionContext(WatchContext(true)).build())
-}
-
-fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(query: Query<D>): Flow<ApolloResponse<D>> {
-  return queryCacheAndNetwork(ApolloRequest.Builder(query).build())
+fun <D : Query.Data> ApolloQueryCall<D>.watch(): Flow<ApolloResponse<D>> {
+  return copy().addExecutionContext(WatchContext(true)).executeAsFlow()
 }
 
 
@@ -83,18 +78,18 @@ fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(query: Query<D>): Flow<Ap
  *
  * Any [FetchPolicy] on [queryRequest] will be ignored
  */
-fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
+fun <D : Query.Data> ApolloQueryCall<D>.executeCacheAndNetwork(): Flow<ApolloResponse<D>> {
   return flow {
     var cacheException: ApolloException? = null
     var networkException: ApolloException? = null
     try {
-      emit(query(queryRequest.newBuilder().fetchPolicy(FetchPolicy.CacheOnly).build()))
+      emit(copy().fetchPolicy(FetchPolicy.CacheOnly).execute())
     } catch (e: ApolloException) {
       cacheException = e
     }
 
     try {
-      emit(query(queryRequest.newBuilder().fetchPolicy(FetchPolicy.NetworkOnly).build()))
+      emit(copy().fetchPolicy(FetchPolicy.NetworkOnly).execute())
     } catch (e: ApolloException) {
       networkException = e
     }
@@ -122,48 +117,33 @@ val ApolloClient.apolloStore: ApolloStore
 fun ApolloClient.clearNormalizedCache() = apolloStore.clearAll()
 
 /**
- * Sets the [FetchPolicy] on this request. D has a bound on [Query.Data] because subscriptions and mutation shouldn't
- * read the cache
+ * Sets the initial [FetchPolicy]
+ * This only has effects for queries. Mutations and subscriptions always use [FetchPolicy.NetworkOnly]
  */
-fun <D : Query.Data> ApolloRequest.Builder<D>.fetchPolicy(fetchPolicy: FetchPolicy) = addExecutionContext(
+fun <T : HasMutableExecutionContext<T>> HasMutableExecutionContext<T>.fetchPolicy(fetchPolicy: FetchPolicy) = addExecutionContext(
     FetchPolicyContext(fetchPolicy)
 )
 
 /**
- * Sets the default [FetchPolicy] for the [ApolloClient]. This only affects queries. Mutations and subscriptions will
- * always use [FetchPolicy.NetworkFirst]
+ * Sets the [FetchPolicy] used when watching queries and a cache change has been published
  */
-fun ApolloClient.Builder.fetchPolicy(fetchPolicy: FetchPolicy) = addExecutionContext(
-    FetchPolicyContext(fetchPolicy)
+fun <T : HasMutableExecutionContext<T>> HasMutableExecutionContext<T>.refetchPolicy(fetchPolicy: FetchPolicy) = addExecutionContext(
+    RefetchPolicyContext(fetchPolicy)
 )
 
-/**
- * Sets the [FetchPolicy] used when refetching at the request level. This is only used in combination with [watch].
- */
-fun <D : Query.Data> ApolloRequest.Builder<D>.refetchPolicy(refetchPolicy: FetchPolicy) = addExecutionContext(
-    RefetchPolicyContext(refetchPolicy)
-)
-
-/**
- * Sets the [FetchPolicy] used when refetching at the client level. This is only used in combination with [watch].
- */
-fun ApolloClient.Builder.refetchPolicy(refetchPolicy: FetchPolicy) = addExecutionContext(
-    RefetchPolicyContext(refetchPolicy)
-)
-
-fun <T> HasMutableExecutionContext<T>.doNotStore(doNotStore: Boolean) where T : HasMutableExecutionContext<T> = addExecutionContext(
+fun <T : HasMutableExecutionContext<T>> HasMutableExecutionContext<T>.doNotStore(doNotStore: Boolean) = addExecutionContext(
     DoNotStoreContext(doNotStore)
 )
 
-fun <T> HasMutableExecutionContext<T>.storePartialResponses(storePartialResponses: Boolean) where T : HasMutableExecutionContext<T> = addExecutionContext(
+fun <T : HasMutableExecutionContext<T>> HasMutableExecutionContext<T>.storePartialResponses(storePartialResponses: Boolean) = addExecutionContext(
     StorePartialResponsesContext(storePartialResponses)
 )
 
-fun <T> HasMutableExecutionContext<T>.cacheHeaders(cacheHeaders: CacheHeaders) where T : HasMutableExecutionContext<T> = addExecutionContext(
+fun <T : HasMutableExecutionContext<T>> HasMutableExecutionContext<T>.cacheHeaders(cacheHeaders: CacheHeaders) = addExecutionContext(
     CacheHeadersContext(cacheHeaders)
 )
 
-fun <T> HasMutableExecutionContext<T>.writeToCacheAsynchronously(writeToCacheAsynchronously: Boolean) where T : HasMutableExecutionContext<T> = addExecutionContext(
+fun <T : HasMutableExecutionContext<T>> HasMutableExecutionContext<T>.writeToCacheAsynchronously(writeToCacheAsynchronously: Boolean) = addExecutionContext(
     WriteToCacheAsynchronouslyContext(writeToCacheAsynchronously)
 )
 
@@ -171,6 +151,9 @@ fun <T> HasMutableExecutionContext<T>.writeToCacheAsynchronously(writeToCacheAsy
  * Sets the optimistic updates to write to the cache while a query is pending.
  */
 fun <D : Mutation.Data> ApolloRequest.Builder<D>.optimisticUpdates(data: D) = addExecutionContext(
+    OptimisticUpdatesContext(data)
+)
+fun <D : Mutation.Data> ApolloMutationCall<D>.optimisticUpdates(data: D) = addExecutionContext(
     OptimisticUpdatesContext(data)
 )
 

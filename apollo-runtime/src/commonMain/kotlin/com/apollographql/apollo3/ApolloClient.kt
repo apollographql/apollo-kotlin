@@ -34,7 +34,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.single
 import kotlin.jvm.JvmOverloads
 
 typealias FlowDecorator = (Flow<ApolloResponse<*>>) -> Flow<ApolloResponse<*>>
@@ -70,54 +69,23 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
    * Executes the given query and returns a response or throws on transport errors
    * use [query] ([ApolloRequest]) to customize the request
    */
-  suspend fun <D : Query.Data> query(query: Query<D>): ApolloResponse<D> = query(ApolloRequest.Builder(query).build())
+  fun <D : Query.Data> query(query: Query<D>): ApolloQueryCall<D> {
+    return ApolloQueryCall(this, query)
+  }
 
   /**
    * Executes the given mutation and returns a response or throws on transport errors
    * use [mutation] ([ApolloRequest]) to customize the request
    */
-  suspend fun <D : Mutation.Data> mutate(mutation: Mutation<D>): ApolloResponse<D> = mutate(ApolloRequest.Builder(mutation).build())
+  fun <D : Mutation.Data> mutate(mutation: Mutation<D>): ApolloMutationCall<D> {
+    return ApolloMutationCall(this, mutation)
+  }
 
   /**
    * Subscribes to the given subscription. The subscription is cancelled when the coroutine collecting the flow is canceled
    */
-  fun <D : Subscription.Data> subscribe(subscription: Subscription<D>): Flow<ApolloResponse<D>> = subscribe(ApolloRequest.Builder(subscription).build())
-
-  /**
-   * Executes the given queryRequest and returns a response or throws on transport errors
-   */
-  suspend fun <D : Query.Data> query(queryRequest: ApolloRequest<D>): ApolloResponse<D> {
-    return queryRequest.execute().single()
-  }
-
-  /**
-   * Executes the given queryRequest and returns a Flow of responses.
-   *
-   * It is used by [watch] when multiple responses are expected in response to a single query
-   */
-  fun <D : Query.Data> queryAsFlow(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
-    return queryRequest.execute()
-  }
-
-  /**
-   * Executes the given mutationRequest and returns a response or throws on transport errors
-   */
-  suspend fun <D : Mutation.Data> mutate(mutationRequest: ApolloRequest<D>): ApolloResponse<D> {
-    return mutationRequest.execute().single()
-  }
-
-  /**
-   * Executes the given mutationRequest and returns a Flow of response or throws on transport errors
-   */
-  fun <D : Mutation.Data> mutateAsFlow(mutationRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
-    return mutationRequest.execute()
-  }
-
-  /**
-   * Executes the given subscriptionRequest and returns a response or throws on transport errors
-   */
-  fun <D : Operation.Data> subscribe(subscriptionRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
-    return subscriptionRequest.execute()
+  fun <D : Subscription.Data> subscribe(subscription: Subscription<D>): ApolloSubscriptionCall<D> {
+    return ApolloSubscriptionCall(this, subscription)
   }
 
   fun dispose() {
@@ -177,11 +145,11 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
   }
 
   @OptIn(ExperimentalCoroutinesApi::class, kotlinx.coroutines.FlowPreview::class)
-  private fun <D : Operation.Data> ApolloRequest<D>.execute(): Flow<ApolloResponse<D>> {
+  fun <D : Operation.Data> executeAsFlow(apolloRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
     assertMainThreadOnNative()
-    val executionContext = clientScope + customScalarAdapters + this@ApolloClient.executionContext + this.executionContext
+    val executionContext = clientScope + customScalarAdapters + executionContext + apolloRequest.executionContext
 
-    val request = newBuilder().addExecutionContext(executionContext).build()
+    val request = apolloRequest.newBuilder().addExecutionContext(executionContext).build()
     // ensureNeverFrozen(request)
     val interceptors = interceptors + NetworkInterceptor(
         networkTransport = networkTransport,
