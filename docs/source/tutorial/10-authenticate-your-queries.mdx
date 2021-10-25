@@ -27,11 +27,16 @@ This interceptor appends an `"Authorization: $token"` HTTP header to every reque
 Create a custom `OkHttpClient` that will use this interceptor and pass it to the `ApolloClient`:
 
 ```kotlin:title=app/src/main/kotlin/com/example/rocketreserver/Apollo.kt
-    instance = ApolloClient.builder()
-        .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/")
-        .okHttpClient(OkHttpClient.Builder()
-            .addInterceptor(AuthorizationInterceptor(context))
-            .build()
+    val okHttpClient = OkHttpClient.Builder()
+        .addInterceptor(AuthorizationInterceptor(context))
+        .build()
+        
+    val apolloClient = ApolloClient.Builder()
+        .networkTransport(
+            HttpNetworkTransport(
+                serverUrl = "https://apollo-fullstack-tutorial.herokuapp.com/graphql",
+                okHttpClient = okHttpClient
+            )
         )
         .build()
 ```
@@ -40,11 +45,16 @@ Notice that `Apollo.kt` now requires a context to create the interceptor and rea
 
 ```kotlin:title=app/src/main/kotlin/com/example/rocketreserver/Apollo.kt
 fun apolloClient(context: Context): ApolloClient {
-    return ApolloClient.builder()
-        .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/")
-        .okHttpClient(OkHttpClient.Builder()
-            .addInterceptor(AuthorizationInterceptor(context))
-            .build()
+    val okHttpClient = OkHttpClient.Builder()
+        .addInterceptor(AuthorizationInterceptor(context))
+        .build()
+        
+    return ApolloClient.Builder()
+        .networkTransport(
+            HttpNetworkTransport(
+                serverUrl = "https://apollo-fullstack-tutorial.herokuapp.com/graphql",
+                okHttpClient = okHttpClient
+            )
         )
         .build()
 }
@@ -54,13 +64,13 @@ Replace all usages of `apolloClient` with `apolloClient(context)`. There is one 
 
 ```kotlin
 // LaunchListFragment
-apolloClient(requireContext()).query(LaunchListQuery(cursor = Input.Present(cursor))).await()
+apolloClient(requireContext()).query(LaunchListQuery(cursor)).await()
 
 // LaunchDetailsFragment
 apolloClient(requireContext()).query(LaunchDetailsQuery(id = args.launchId)).await()
 
 // LoginFragment
-apolloClient(requireContext()).mutate(LoginMutation(email = Input.Present(email))).await()
+apolloClient(requireContext()).mutate(LoginMutation(email)).await()
 
 ```
 
@@ -70,20 +80,20 @@ There is no need to create a new instance of the apolloClient for each GraphQL r
 private var instance: ApolloClient? = null
 
 fun apolloClient(context: Context): ApolloClient {
-    check(Looper.myLooper() == Looper.getMainLooper()) {
-        "Only the main thread can get the apolloClient instance"
-    }
-
     if (instance != null) {
         return instance!!
     }
 
-    instance = ApolloClient.builder()
-        .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/")
-        .okHttpClient(
-            OkHttpClient.Builder()
-            .addInterceptor(AuthorizationInterceptor(context))
-            .build()
+    val okHttpClient = OkHttpClient.Builder()
+        .addInterceptor(AuthorizationInterceptor(context))
+        .build()
+        
+    instance = ApolloClient.Builder()
+        .networkTransport(
+            HttpNetworkTransport(
+                serverUrl = "https://apollo-fullstack-tutorial.herokuapp.com/graphql",
+                okHttpClient = okHttpClient
+            )
         )
         .build()
 
@@ -143,7 +153,7 @@ lifecycleScope.launchWhenResumed {
     }
 
     val response = try {
-        apolloClient(requireContext()).mutate(mutation).await()
+        apolloClient(requireContext()).mutate(mutation)
     } catch (e: ApolloException) {
         configureButton(isBooked)
         return@launchWhenResumed

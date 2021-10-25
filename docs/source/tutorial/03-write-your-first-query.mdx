@@ -67,7 +67,7 @@ Run the query again, and you'll now see that in addition to the information you 
 
 Now that your query is fetching the right data, head back to Android Studio.
 
-1. Right click on the `src/main/graphql/com/example/rocketserver` folder. This folder should contain your `schema.json`. Select **New > File**:
+1. Right click on the `src/main/graphql/com/example/rocketreserver` folder. This folder should contain your `schema.graphqls`. Select **New > File**:
 
 <img src="images/new_file.png" class="screenshot" alt="New GraphQL file"/>
 
@@ -96,11 +96,11 @@ Build your project to have the Apollo Android plugin generate your first model. 
 
 ## Examine generated code
 
-From the menu, select **Navigate > Class** and start typing `LaunchList`, Android Studio should suggest to open `LaunchListQuery.kt`. The file should be in `build/generated/source/apollo/service/com/example/rocketreserver/LaunchListQuery.kt`.
+From the menu, select **Navigate > Class** and start typing `LaunchList`, Android Studio should suggest to open `LaunchListQuery.kt`. The file should be in `app/build/generated/source/apollo/service/com/example/rocketreserver/LaunchListQuery.kt`.
 
 The `LaunchListQuery.kt` file defines a root class, `LaunchListQuery`, with many nested classes. If you compare the classes to the JSON data returned in GraphiQL, you see that the structure matches. These classes include properties only for the fields that your query requests.
 
-Try commenting out the `id` property in `LaunchList.graphql`, saving, then building again. When the build completes, the innermost `Launch` now only includes the built-in `__typename` and the requested `site` property.
+Try commenting out the `id` property in `LaunchList.graphql`, saving, then building again. When the build completes, the innermost `Launch` now only includes the requested `site` property.
 
 Uncomment `id` and rebuild to restore the property.
 

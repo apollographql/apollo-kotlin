@@ -11,7 +11,7 @@ Open [GraphQL Playground](https://apollo-fullstack-tutorial.herokuapp.com/) and 
 
 <img alt="The definition of tripsBooked in the schema" class="screenshot" src="images/schema_tripsBooked_definition.png"/>
 
-This subscription doesn't take any argument and returns a single scalar named `tripsBooked`. Since the you can book multiple trips at once, `tripsBooked` is an Int. It will contain the number of trips booked at once or -1 if a trip has been cancelled.
+This subscription doesn't take any argument and returns a single scalar named `tripsBooked`. Since you can book multiple trips at once, `tripsBooked` is an Int. It will contain the number of trips booked at once or -1 if a trip has been cancelled.
 
 Type the following subscription in the left panel:
 
@@ -61,17 +61,22 @@ subscription TripsBooked {
 
 ## Configure your ApolloClient to use subscriptions
 
-In `Apollo.kt`, add a `SubscriptionTransport.Factory` to your `ApolloClient`. Here it uses a `WebSocketSubscriptionTransport.Factory` and `OkHttp`:
+In `Apollo.kt`, configure a `subscriptionNetworkTransport` for your `ApolloClient`:
 
 ```kotlin:title=Apollo.kt
-    val okHttpClient = OkHttpClient.Builder()
-        .addInterceptor(AuthorizationInterceptor(context))
-        .build()
-
-    instance = ApolloClient.builder()
-        .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
-        .subscriptionTransportFactory(WebSocketSubscriptionTransport.Factory("wss://apollo-fullstack-tutorial.herokuapp.com/graphql", okHttpClient))
-        .okHttpClient(okHttpClient)
+    instance = ApolloClient.Builder()
+        .networkTransport(
+            HttpNetworkTransport(
+                serverUrl = "https://apollo-fullstack-tutorial.herokuapp.com/graphql",
+                okHttpClient = okHttpClient
+            )
+        )
+        .subscriptionNetworkTransport(
+            WebSocketNetworkTransport(
+                serverUrl = "wss://apollo-fullstack-tutorial.herokuapp.com/graphql",
+                webSocketEngine = DefaultWebSocketEngine(okHttpClient)
+            )
+        )
         .build()
 ```
 
@@ -88,12 +93,11 @@ In `MainActivity`, register your subscription and start listening to events usin
         setContentView(R.layout.activity_main)
 
         lifecycleScope.launch {
-            apolloClient(this@MainActivity).subscribe(TripsBookedSubscription()).toFlow()
+            apolloClient(this@MainActivity).subscribe(TripsBookedSubscription())
                 .collect {
-                    val trips = it.data?.tripsBooked
-                    val text = when {
-                        trips == null -> getString(R.string.subscriptionError)
-                        trips == -1 -> getString(R.string.tripCancelled)
+                    val text = when (val trips = it.data?.tripsBooked) {
+                        null -> getString(R.string.subscriptionError)
+                        -1 -> getString(R.string.tripCancelled)
                         else -> getString(R.string.tripBooked, trips)
                     }
                     Snackbar.make(
