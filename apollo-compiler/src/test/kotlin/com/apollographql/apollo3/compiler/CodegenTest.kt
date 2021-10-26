@@ -329,7 +329,8 @@ class CodegenTest() {
           generateFragmentImplementations = generateFragmentImplementations,
           generateSchema = generateSchema,
           moduleName = folder.name,
-          targetLanguage = targetLanguage
+          targetLanguage = targetLanguage,
+          targetLanguageVersion = "1.5.0",
       )
     }
 

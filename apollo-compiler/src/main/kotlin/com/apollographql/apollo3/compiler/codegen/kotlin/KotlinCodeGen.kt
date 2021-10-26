@@ -2,6 +2,7 @@ package com.apollographql.apollo3.compiler.codegen.kotlin
 
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.PackageNameGenerator
+import com.apollographql.apollo3.compiler.Version
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumResponseAdapterBuilder
@@ -60,6 +61,7 @@ class KotlinCodeGen(
     private val flattenNamesInOrder: Boolean,
     @Deprecated("Used for backward compatibility with 2.x")
     private val sealedClassesForEnumsMatching: List<String>,
+    private val targetLanguageVersion: Version,
 ) {
   /**
    * @param outputDir: the directory where to write the Kotlin files
@@ -78,7 +80,8 @@ class KotlinCodeGen(
 
     val context = KotlinContext(
         layout = layout,
-        resolver = KotlinResolver(emptyList(), upstreamResolver)
+        resolver = KotlinResolver(emptyList(), upstreamResolver),
+        targetLanguageVersion = targetLanguageVersion,
     )
     val builders = mutableListOf<CgFileBuilder>()
 

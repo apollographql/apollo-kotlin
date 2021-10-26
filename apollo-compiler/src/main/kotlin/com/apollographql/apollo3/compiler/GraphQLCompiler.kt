@@ -167,7 +167,8 @@ object GraphQLCompiler {
             generateTestBuilders = options.generateTestBuilders,
             flatten = options.flattenModels,
             flattenNamesInOrder = options.codegenModels != MODELS_COMPAT,
-            sealedClassesForEnumsMatching = options.sealedClassesForEnumsMatching
+            sealedClassesForEnumsMatching = options.sealedClassesForEnumsMatching,
+            targetLanguageVersion = Version.parse(options.targetLanguageVersion),
         ).write(outputDir = outputDir, testDir = testDir)
       }
       TARGET_JAVA -> {

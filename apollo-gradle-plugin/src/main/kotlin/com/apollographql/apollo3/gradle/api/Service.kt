@@ -249,6 +249,19 @@ interface Service {
   val generateKotlinModels: Property<Boolean>
 
   /**
+   * Target language version for the generated code.
+   *
+   * Currently only used when `generateKotlinModels` is `true`.
+   * Example values: "1.4.0", "1.5.0".
+   *
+   * This can be used to prevent certain language features (e.g. sealed interfaces)
+   * from being used in the generated code.
+   *
+   * Default: use the version of the Kotlin plugin.
+   */
+  val languageVersion: Property<Boolean>
+
+  /**
    * Whether to write the query document in models
    */
   val generateQueryDocument: Property<Boolean>

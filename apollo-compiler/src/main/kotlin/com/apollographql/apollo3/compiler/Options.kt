@@ -69,6 +69,10 @@ class Options(
      */
     val incomingCompilerMetadata: List<CompilerMetadata> = emptyList(),
     val targetLanguage: String = defaultTargetLanguage,
+    /**
+     * Currently only used when [targetLanguage] is "kotlin".
+     */
+    val targetLanguageVersion: String = defaultTargetLanguageVersion,
 
     //========== codegen options ============
     val customScalarsMapping: Map<String, String> = defaultCustomScalarsMapping,
@@ -192,6 +196,7 @@ class Options(
       generateSchema: Boolean = this.generateSchema,
       moduleName: String = this.moduleName,
       targetLanguage: String = this.targetLanguage,
+      targetLanguageVersion: String = this.targetLanguageVersion,
       generateTestBuilders: Boolean = this.generateTestBuilders,
       sealedClassesForEnumsMatching: List<String> = this.sealedClassesForEnumsMatching,
       generateOptionalOperationVariables: Boolean = this.generateOptionalOperationVariables
@@ -207,6 +212,7 @@ class Options(
       operationOutputGenerator = operationOutputGenerator,
       incomingCompilerMetadata = incomingCompilerMetadata,
       targetLanguage = targetLanguage,
+      targetLanguageVersion = targetLanguageVersion,
       customScalarsMapping = customScalarsMapping,
       codegenModels = codegenModels,
       flattenModels = flattenModels,
@@ -245,6 +251,7 @@ class Options(
     const val defaultCodegenModels = MODELS_OPERATION_BASED
     const val defaultFlattenModels = true
     const val defaultTargetLanguage = TARGET_KOTLIN
+    const val defaultTargetLanguageVersion = ""
     const val defaultGenerateSchema = false
     const val defaultGenerateTestBuilders = false
     val defaultSealedClassesForEnumsMatching = listOf(".*")

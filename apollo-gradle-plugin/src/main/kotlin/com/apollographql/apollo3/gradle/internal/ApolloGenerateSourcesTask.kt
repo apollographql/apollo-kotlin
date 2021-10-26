@@ -47,6 +47,7 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
+import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import javax.inject.Inject
 
 @CacheableTask
@@ -104,6 +105,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Input
   @get:Optional
   abstract val generateKotlinModels: Property<Boolean>
+
+  @get:Input
+  @get:Optional
+  abstract val languageVersion: Property<String>
 
   @get:Input
   @get:Optional
@@ -190,6 +195,12 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       TARGET_JAVA
     }
 
+    val targetLanguageVersion = languageVersion.getOrNull() ?: if (targetLanguage == TARGET_KOTLIN) {
+      project.getKotlinPluginVersion()
+    } else {
+      ""
+    }
+
     val incomingOptions = if (commonMetadata != null) {
       check(schemaFiles.files.isEmpty()) {
         "Specifying 'schemaFiles' has no effect as an upstream module already provided a schema"
@@ -269,6 +280,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         schemaPackageName = incomingOptions.schemaPackageName,
         customScalarsMapping = customScalarsMapping.getOrElse(emptyMap()),
         targetLanguage = targetLanguage,
+        targetLanguageVersion = targetLanguageVersion,
         generateTestBuilders = generateTestBuilders.getOrElse(defaultGenerateTestBuilders),
         sealedClassesForEnumsMatching = sealedClassesForEnumsMatching.getOrElse(defaultSealedClassesForEnumsMatching),
         generateOptionalOperationVariables = generateOptionalOperationVariables.getOrElse(defaultGenerateOptionalOperationVariables)
