@@ -2,6 +2,8 @@
 title: Named fragments
 ---
 
+> _Note: this page is using the default Operation based codegen. For Response based codegen, see [this page](../advanced/response-based-codegen.mdx)_.
+
 Apollo Android supports [GraphQL fragments](https://graphql.org/learn/queries/#fragments), which enable you to reuse a set of fields across multiple operations:
 
 ```graphql:title=Launch.graphql
@@ -38,6 +40,8 @@ Generated models for operations that use the fragment have a `.launchFragment` p
 println("Mission site: ${launch.launchFragment?.site}")
 ```
 
+Note that `launchFragment` will be `null` or not depending on whether the returned object is a `Launch`.
+
 You can reuse a fragment in any number of operations:
 
 ```graphql:title=Launch.graphql
@@ -54,25 +58,3 @@ query LaunchList {
 
 You can even use a fragment in operations that are defined in a different `.graphql` file from the fragment itself. This is because Apollo Android codegen merges all `.graphql` files in to a _single_ file before generating models.
 
-### Response based codegen
-
-Note that the `launchFragment` field above will be `null` or not depending on the actual type returned by the server.
-
-If you prefer, you can opt to use the **Response based** codegen which handles fragments differently:
-
-```kotlin:title=build.gradle.kts
-apollo {
-    // ...
-    codegenModels.set(MODELS_RESPONSE_BASED)
-}
-```
-
-With the Response based codegen, in the example above, the generated `LaunchFragment` will be an interface, which is implemented by the generated `Data.Launch` class and its subclasses when relevant.
-
-This can be used like so:
-
-```kotlin
-if (launch is LaunchFragment) println(launch.site)
-```
-
-> More discussion about the different codegen options is available [here](https://github.com/apollographql/apollo-android/blob/dev-3.x/design-docs/Codegen.md).

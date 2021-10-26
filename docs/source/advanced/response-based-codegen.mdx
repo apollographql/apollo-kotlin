@@ -1,0 +1,123 @@
+---
+title: Response based codegen
+---
+
+Apollo Android comes with different code generation engines ("codegens") that can be used depending on your needs:
+
+- **Operation based** (the default): the generated models follow the shape of the operation
+- **Response based**: the generated models match the shape of the response
+- **Compat** (deprecated): equivalent to Operation based, but produces code compatible with how Apollo Android v2 did, to ease upgrading to v3
+
+The models produced by the **Response based** codegen are generally nicer to use and more performant, at the cost of a greater size of the generated code.
+
+> 💡 A more in-depth document about the different codegens is available [here](https://github.com/apollographql/apollo-android/blob/dev-3.x/design-docs/Codegen.md).
+
+
+To use the Response based codegen:
+
+```kotlin:title=build.gradle.kts
+apollo {
+    // ...
+    codegenModels.set(MODELS_RESPONSE_BASED)
+}
+```
+
+# Inline fragments
+
+Let's consider this query:
+
+```graphql{4-9}:title=HeroQuery.graphql
+query HeroForEpisode($ep: Episode!) {
+  hero(episode: $ep) {
+    name
+    ... on Droid {
+      primaryFunction
+    }
+    ... on Human {
+      height
+    }
+  }
+}
+```
+
+With the Response based codegen, the generated `Hero` will be an interface, with 3 nested implementations: `DroidHero`, `HumanHero` and `OtherHero`.
+
+This can be used like so:
+
+```kotlin
+when (hero) {
+  is DroidHero -> println(hero.primaryFunction)
+  is HumanHero -> println(hero.height)
+  is OtherHero -> {
+    // Account for other Hero types (including unknown ones)
+    // Note: in this example `name` is common to all Hero types
+    println(hero.name)
+  }
+}
+```
+
+# Named fragments
+
+Considering this example:
+
+```graphql{9-15}:title=HeroQuery.graphql
+query HeroForEpisode($ep: Episode!) {
+    hero(episode: $ep) {
+        name
+        ...DroidFields
+        ...HumanFields
+    }
+}
+
+fragment DroidFields on Droid {
+    primaryFunction
+}
+
+fragment HumanFields on Human {
+    height
+}
+```
+
+With the Response based codegen, the generated code for the `DroidFields` and `HumanFields` fragments will be interfaces:
+
+```kotlin
+interface DroidFields {
+  val primaryFunction: String
+}
+
+interface HumanFields {
+  val height: Double
+}
+```
+
+These interfaces are implemented by subclasses of the generated `HeroForEpisodeQuery.Data.Hero` (and other models for any operations using
+these fragments):
+
+```kotlin:title=HeroForEpisodeQuery.kt
+interface Hero {
+  val name: String
+}
+
+data class DroidHero(
+  override val name: String,
+  override val primaryFunction: String
+) : Hero, DroidFields
+
+data class HumanHero(
+  override val name: String,
+  override val height: Double
+) : Hero, HumanFields
+
+data class OtherHero(
+  override val name: String
+) : Hero
+```
+
+This can be used like so:
+
+```kotlin
+when (hero) {
+  is DroidFields -> println(hero.primaryFunction)
+  is HumanFields -> println(hero.height)
+}
+```

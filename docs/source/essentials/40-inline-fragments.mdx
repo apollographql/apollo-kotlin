@@ -2,6 +2,9 @@
 title: Inline Fragments
 ---
 
+> _Note: this page is using the default Operation based codegen. For Response based codegen, see [this page](../advanced/response-based-codegen.mdx)_.
+
+
 Apollo Android supports [GraphQL inline fragments](https://graphql.org/learn/queries/#inline-fragments), which are used to access fields of [polymorphic types](https://www.apollographql.com/docs/apollo-server/schema/unions-interfaces/):
 
 ```graphql{4-9}:title=HeroQuery.graphql
@@ -28,30 +31,3 @@ println("Human height: ${hero.onHuman?.height}")
 ```
 
 Note that the `onXyz` fields will be `null` or not depending on the actual type of Hero returned by the server.
-
-If you prefer, you can opt to use the **Response based** codegen which handles fragments differently:
-
-```kotlin:title=build.gradle.kts
-apollo {
-    // ...
-    codegenModels.set(MODELS_RESPONSE_BASED)
-}
-```
-
-With the Response based codegen, in the example above, the generated `Hero` will be an interface, with 3 nested implementations: `DroidHero`, `HumanHero` and `OtherHero`.
-
-This can be used like so:
-
-```kotlin
-when (hero) {
-  is DroidHero -> println(hero.primaryFunction)
-  is HumanHero -> println(hero.height)
-  is OtherHero -> {
-    // Account for other Hero types (including unknown ones)
-    // Note: in this example `name` is common to all Hero types
-    println(hero.name)
-  }
-}
-```
-
-> More discussion about the different codegen options is available [here](https://github.com/apollographql/apollo-android/blob/dev-3.x/design-docs/Codegen.md).
