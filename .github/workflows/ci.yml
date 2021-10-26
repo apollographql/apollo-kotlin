@@ -21,8 +21,9 @@ jobs:
           java-version: 1.8
       - name: Build with Gradle
         run: |
-        ulimit -c unlimited
-        ./scripts/ci.sh
+          ulimit -c unlimited
+          ./scripts/ci.sh
+
         env: # Or as an environment variable
           SONATYPE_NEXUS_PASSWORD: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
           SONATYPE_NEXUS_USERNAME: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
