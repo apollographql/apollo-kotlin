@@ -20,7 +20,9 @@ jobs:
         with:
           java-version: 1.8
       - name: Build with Gradle
-        run: ./scripts/ci.sh
+        run: |
+        ulimit -c unlimited
+        ./scripts/ci.sh
         env: # Or as an environment variable
           SONATYPE_NEXUS_PASSWORD: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
           SONATYPE_NEXUS_USERNAME: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
@@ -29,6 +31,12 @@ jobs:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PRIVATE_KEY_PASSWORD: ${{ secrets.GPG_PRIVATE_KEY_PASSWORD }}
           COM_APOLLOGRAPHQL_PROFILE_ID: ${{ secrets.COM_APOLLOGRAPHQL_PROFILE_ID }}
+      - name: List cores
+        run: |
+          echo "/cores:"
+          ls -al /cores/
+          echo "~/Library/Logs/DiagnosticReports/:"
+          ls -al ~/Library/Logs/DiagnosticReports/
 
   gh-pages:
     runs-on: ubuntu-latest
