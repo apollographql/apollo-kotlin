@@ -29,7 +29,7 @@ public class AnimalFragmentImpl() : Fragment<AnimalFragmentImpl.Data> {
 
   public override fun selections(): List<CompiledSelection> = AnimalFragmentSelections.root
 
-  public sealed interface Data : AnimalFragment, Fragment.Data {
+  public interface Data : AnimalFragment, Fragment.Data {
     public override val __typename: String
 
     public companion object {

@@ -32,7 +32,7 @@ internal class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
 
   public override fun selections(): List<CompiledSelection> = HeroDetailsSelections.root
 
-  public sealed interface Data : HeroDetails, Fragment.Data {
+  public interface Data : HeroDetails, Fragment.Data {
     public override val __typename: String
 
     public companion object {

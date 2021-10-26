@@ -41,7 +41,7 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
   ) : HeroDetails, Fragment.Data {
     public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
-    public sealed interface Friend : HeroDetails.Friend {
+    public interface Friend : HeroDetails.Friend {
       public override val __typename: String
 
       /**

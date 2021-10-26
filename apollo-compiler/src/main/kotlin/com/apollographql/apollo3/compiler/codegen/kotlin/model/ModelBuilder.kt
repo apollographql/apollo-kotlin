@@ -12,7 +12,6 @@ import com.apollographql.apollo3.compiler.ir.IrAccessor
 import com.apollographql.apollo3.compiler.ir.IrFragmentAccessor
 import com.apollographql.apollo3.compiler.ir.IrModel
 import com.apollographql.apollo3.compiler.ir.IrSubtypeAccessor
-import com.apollographql.apollo3.compiler.ir.MODEL_FRAGMENT_INTERFACE
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -24,14 +23,16 @@ class ModelBuilder(
     private val model: IrModel,
     private val superClassName: ClassName?,
     private val path: List<String>,
+    private val hasSubclassesInSamePackage: Boolean,
 ) {
   private val nestedBuilders = model.modelGroups.flatMap {
     it.models.map {
       ModelBuilder(
-          context,
-          it,
-          null,
-          path + model.modelName
+          context = context,
+          model = it,
+          superClassName = null,
+          path = path + model.modelName,
+          hasSubclassesInSamePackage = hasSubclassesInSamePackage,
       )
     }
   }
@@ -66,9 +67,8 @@ class ModelBuilder(
 
     val typeSpecBuilder = if (isInterface) {
       TypeSpec.interfaceBuilder(modelName)
-          // This is kind of a hack: we want all interfaces to be sealed except the ones in Fragments
-          // because they are implemented in a different package, which is not allowed in Kotlin
-          .applyIf(!id.startsWith(MODEL_FRAGMENT_INTERFACE)) { addModifiers(KModifier.SEALED) }
+          // All interfaces can be sealed except if implementations exist in different packages (not allowed in Kotlin)
+          .applyIf(hasSubclassesInSamePackage) { addModifiers(KModifier.SEALED) }
           .addProperties(properties)
     } else {
       TypeSpec.classBuilder(modelName)
