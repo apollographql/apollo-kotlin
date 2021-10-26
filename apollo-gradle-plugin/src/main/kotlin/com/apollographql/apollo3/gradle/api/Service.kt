@@ -27,18 +27,20 @@ interface Service {
   val name: String
 
   /**
-   * Files to include as in [org.gradle.api.tasks.util.PatternFilterable]
+   * Operation files to include.
+   * The values are interpreted as in [org.gradle.api.tasks.util.PatternFilterable]
    *
-   * Default: ["**&#47;*.graphql", "**&#47;*.gql"]
+   * Default: listOf("**&#47;*.graphql", "**&#47;*.gql")
    */
-  val include: ListProperty<String>
+  val includes: ListProperty<String>
 
   /**
-   * Files to exclude as in [org.gradle.api.tasks.util.PatternFilterable]
+   * Operation files to exclude.
+   * The values are interpreted as in [org.gradle.api.tasks.util.PatternFilterable]
    *
-   * The empty list by default
+   * Default: emptyList()
    */
-  val exclude: ListProperty<String>
+  val excludes: ListProperty<String>
 
   /**
    * Where to look for GraphQL sources.

@@ -21,14 +21,14 @@ abstract class DefaultService @Inject constructor(val project: Project, override
       // This allows users to call customScalarsMapping.put("Date", "java.util.Date")
       // see https://github.com/gradle/gradle/issues/7485
       customScalarsMapping.convention(null as Map<String, String>?)
-      include.convention(null as List<String>?)
-      exclude.convention(null as List<String>?)
+      includes.convention(null as List<String>?)
+      excludes.convention(null as List<String>?)
       alwaysGenerateTypesMatching.convention(null as Set<String>?)
       sealedClassesForEnumsMatching.convention(null as List<String>?)
     } else {
       customScalarsMapping.set(null as Map<String, String>?)
-      include.set(null as List<String>?)
-      exclude.set(null as List<String>?)
+      includes.set(null as List<String>?)
+      excludes.set(null as List<String>?)
       alwaysGenerateTypesMatching.set(null as Set<String>?)
       sealedClassesForEnumsMatching.set(null as List<String>?)
     }

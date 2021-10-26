@@ -94,8 +94,8 @@ abstract class DefaultApolloExtension(
             && defaultService.schemaFiles.isEmpty
             && defaultService.alwaysGenerateTypesMatching.isPresent.not()
             && defaultService.customScalarsMapping.isPresent.not()
-            && defaultService.exclude.isPresent.not()
-            && defaultService.include.isPresent.not()
+            && defaultService.excludes.isPresent.not()
+            && defaultService.includes.isPresent.not()
             && defaultService.failOnWarnings.isPresent.not()
             && defaultService.generateApolloMetadata.isPresent.not()
             && defaultService.generateAsInternal.isPresent.not()
@@ -385,8 +385,8 @@ abstract class DefaultApolloExtension(
 
         service.graphqlSourceDirectorySet.srcDir(dir)
       }
-      service.graphqlSourceDirectorySet.include(service.include.getOrElse(listOf("**/*.graphql", "**/*.gql")))
-      service.graphqlSourceDirectorySet.exclude(service.exclude.getOrElse(emptyList()))
+      service.graphqlSourceDirectorySet.include(service.includes.getOrElse(listOf("**/*.graphql", "**/*.gql")))
+      service.graphqlSourceDirectorySet.exclude(service.excludes.getOrElse(emptyList()))
 
       task.graphqlFiles.setFrom(service.graphqlSourceDirectorySet)
       // Since this is stored as a list of string, the order matter hence the sorting
