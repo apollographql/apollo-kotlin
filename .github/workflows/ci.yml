@@ -37,9 +37,12 @@ jobs:
         run: |
           echo "/cores:"
           ls -al /cores/
-          echo "~/Library/Logs/DiagnosticReports/:"
+          echo ~/Library/Logs/DiagnosticReports/
           ls -al ~/Library/Logs/DiagnosticReports/
-
+      - uses: actions/upload-artifact@v2.2.4 # capture all crashes as build artifacts
+        with:
+          name: crashes
+          path: ~/Library/Logs/DiagnosticReports/
   gh-pages:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/dev-3.x' }}
