@@ -10,6 +10,7 @@ Apollo Android 3.0 rewrites most of Apollo Android's internals in Kotlin. Among 
 
 * Kotlin-first, coroutine-based APIs
 * A unified runtime for both JVM and multiplatform
+* Declarative cache, `@nonnull` client directives, performance improvements and more...
 
 Although most of the library's concepts are the same, many APIs have changed to work better in Kotlin.
 
@@ -19,9 +20,9 @@ This page describes the most important changes, along with how to migrate an exi
 
 Apollo Android 3.0 uses a new identifier for its package name, Gradle plugin id, and maven group id: **`com.apollographql.apollo3`**.
 
-This change helps avoid dependency conflicts and conflicting classes in the classpath, as encouraged in [Java Interoperability Policy for Major Version Updates](https://jakewharton.com/java-interoperability-policy-for-major-version-updates/).
+This change avoids dependency conflicts as encouraged in [Java Interoperability Policy for Major Version Updates](https://jakewharton.com/java-interoperability-policy-for-major-version-updates/). It also allows to run version 2 and version 3 side by side if needed.
 
-> In most cases, you can update identifier throughout your project by performing a find-and-replace on the 2.x identifier, `com.apollographql.apollo`.
+> In most cases, you can update the identifier throughout your project by performing a find-and-replace and replapcing `com.apollographql.apollo` with `com.apollographql.apollo3`.
 
 #### Group id
 
@@ -160,7 +161,7 @@ apollo {
 }
 ```
 
-If you were relying on the schema location to lookup the .graphql files, you should also now use `srcDir`. It will lookup the schema automatically:
+If you were relying on the schema location to automatically lookup the .graphql files, you should also now add `srcDir()` to explicitly set the location of your .graphql files:
 
 ```kotlin
 apollo {
@@ -168,9 +169,10 @@ apollo {
   schemaFile.set(file("src/main/graphql-api/schema.graphqls"))
 
   // With
+  // Keep schemaFile
+  schemaFile.set(file("src/main/graphql-api/schema.graphqls"))
+  // explicitly set srcDir
   srcDir(file("src/main/graphql-api/"))
-  // If your schema is outside `srcDir`, you'll have to keep schemaFile
-  // schemaFile.set(file("../shared-schemas/schema.graphqls"))
 }
 ```
 
