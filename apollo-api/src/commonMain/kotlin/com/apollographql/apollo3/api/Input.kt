@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.api
 
+import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
 
 @Deprecated("Input is a helper class to help migrating to 3.x " +
@@ -31,4 +32,10 @@ class Input {
 
 @Deprecated("toInput() is a helper function to help migrating to 3.x " +
     "and will be removed in a future version", ReplaceWith("Optional.presentIfNotNull(this)"))
+@JvmName("toInput")
 fun <T> T.toInput(): Optional<T> = Optional.presentIfNotNull(this)
+
+@Deprecated("toInput() is a helper function to help migrating to 3.x " +
+    "and will be removed in a future version", ReplaceWith("Optional.Present(this)"))
+@JvmName("toInput")
+fun <T : Any> T.toInput(): Optional<T> = Optional.Present(this)
