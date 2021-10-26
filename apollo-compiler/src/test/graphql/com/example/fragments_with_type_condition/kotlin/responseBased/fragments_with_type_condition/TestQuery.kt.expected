@@ -42,7 +42,7 @@ public class TestQuery() : Query<TestQuery.Data> {
     public val r2: R2?,
     public val luke: Luke?
   ) : Query.Data {
-    public interface R2 {
+    public sealed interface R2 {
       public val __typename: String
 
       public companion object {
@@ -84,7 +84,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       public override val __typename: String
     ) : R2
 
-    public interface Luke {
+    public sealed interface Luke {
       public val __typename: String
 
       public companion object {

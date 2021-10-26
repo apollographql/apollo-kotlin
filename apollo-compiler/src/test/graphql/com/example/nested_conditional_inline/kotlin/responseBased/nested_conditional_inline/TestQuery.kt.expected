@@ -43,7 +43,7 @@ public data class TestQuery(
   public data class Data(
     public val hero: Hero?
   ) : Query.Data {
-    public interface Hero {
+    public sealed interface Hero {
       public val __typename: String
 
       /**
@@ -71,7 +71,7 @@ public data class TestQuery(
     ) : Hero {
       public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
-      public interface Friend {
+      public sealed interface Friend {
         public val __typename: String
 
         /**
@@ -118,7 +118,7 @@ public data class TestQuery(
     ) : Hero {
       public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
-      public interface Friend {
+      public sealed interface Friend {
         public val __typename: String
 
         /**

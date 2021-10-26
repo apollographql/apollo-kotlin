@@ -39,7 +39,7 @@ public class TestQuery() : Query<TestQuery.Data> {
   public data class Data(
     public val nonOptionalHero: NonOptionalHero
   ) : Query.Data {
-    public interface NonOptionalHero {
+    public sealed interface NonOptionalHero {
       public val __typename: String
 
       /**

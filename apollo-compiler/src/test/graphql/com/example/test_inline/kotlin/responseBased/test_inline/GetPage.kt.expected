@@ -38,12 +38,12 @@ public class GetPage() : Query<GetPage.Data> {
   public data class Data(
     public val collection: Collection
   ) : Query.Data {
-    public interface Collection {
+    public sealed interface Collection {
       public val __typename: String
 
       public val items: List<Item>
 
-      public interface Item {
+      public sealed interface Item {
         public val title: String
       }
 
@@ -56,7 +56,7 @@ public class GetPage() : Query<GetPage.Data> {
       public override val __typename: String,
       public override val items: List<Item>
     ) : Collection {
-      public interface Item : Collection.Item {
+      public sealed interface Item : Collection.Item {
         public override val title: String
 
         public val __typename: String

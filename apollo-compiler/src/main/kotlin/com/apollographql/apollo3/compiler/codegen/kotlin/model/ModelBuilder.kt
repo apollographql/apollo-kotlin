@@ -1,8 +1,8 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.model
 
 import com.apollographql.apollo3.compiler.applyIf
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.upperCamelCaseIgnoringNonLetters
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.from
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClassFromProperties
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
@@ -12,6 +12,7 @@ import com.apollographql.apollo3.compiler.ir.IrAccessor
 import com.apollographql.apollo3.compiler.ir.IrFragmentAccessor
 import com.apollographql.apollo3.compiler.ir.IrModel
 import com.apollographql.apollo3.compiler.ir.IrSubtypeAccessor
+import com.apollographql.apollo3.compiler.ir.MODEL_FRAGMENT_INTERFACE
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -65,6 +66,9 @@ class ModelBuilder(
 
     val typeSpecBuilder = if (isInterface) {
       TypeSpec.interfaceBuilder(modelName)
+          // This is kind of a hack: we want all interfaces to be sealed except the ones in Fragments
+          // because they are implemented in a different package, which is not allowed in Kotlin
+          .applyIf(!id.startsWith(MODEL_FRAGMENT_INTERFACE)) { addModifiers(KModifier.SEALED) }
           .addProperties(properties)
     } else {
       TypeSpec.classBuilder(modelName)

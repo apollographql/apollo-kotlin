@@ -45,7 +45,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       public val __typename: String,
       public override val node: Node?
     ) : AFragment {
-      public interface Node : AFragment.Node {
+      public sealed interface Node : AFragment.Node {
         public override val __typename: String
 
         public companion object {

@@ -1,0 +1,14 @@
+query AnimalQuery {
+    animal {
+        ...CatFragment
+        ...DogFragment
+    }
+}
+
+fragment CatFragment on Cat {
+    meow
+}
+
+fragment DogFragment on Dog {
+    woof
+}

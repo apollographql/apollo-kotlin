@@ -41,7 +41,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      */
     public val foo: Foo?
   ) : Query.Data {
-    public interface Foo {
+    public sealed interface Foo {
       public val __typename: String
 
       public val foo: String

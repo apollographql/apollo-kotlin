@@ -46,7 +46,7 @@ public class GetHuman() : Query<GetHuman.Data> {
       public val height: Double
     )
 
-    public interface Node {
+    public sealed interface Node {
       public val __typename: String
 
       public companion object {

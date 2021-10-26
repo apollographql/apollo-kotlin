@@ -40,7 +40,7 @@ public class TestQuery() : Query<TestQuery.Data> {
   public data class Data(
     public val i: I?
   ) : Query.Data {
-    public interface I : IFragment {
+    public sealed interface I : IFragment {
       public override val __typename: String
 
       public companion object {

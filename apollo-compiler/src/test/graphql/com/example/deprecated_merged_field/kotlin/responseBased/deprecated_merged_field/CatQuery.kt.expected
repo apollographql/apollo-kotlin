@@ -42,7 +42,7 @@ public class CatQuery() : Query<CatQuery.Data> {
   public data class Data(
     public val cat: Cat?
   ) : Query.Data {
-    public interface Cat {
+    public sealed interface Cat {
       public val __typename: String
 
       public companion object {
@@ -54,14 +54,14 @@ public class CatQuery() : Query<CatQuery.Data> {
       }
     }
 
-    public interface AnimalDogCat : AnimalCat, CatAnimalFragment, DogAnimalFragment {
+    public sealed interface AnimalDogCat : AnimalCat, CatAnimalFragment, DogAnimalFragment {
       public override val __typename: String
 
       @Deprecated(message = "Deprecated in: 'Dog'")
       public override val name: String
     }
 
-    public interface AnimalCat : Cat, CatAnimalFragment {
+    public sealed interface AnimalCat : Cat, CatAnimalFragment {
       public override val __typename: String
 
       public override val name: String

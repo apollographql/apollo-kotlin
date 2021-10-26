@@ -28,7 +28,7 @@ public class IFragmentImpl() : Fragment<IFragmentImpl.Data> {
 
   public override fun selections(): List<CompiledSelection> = iFragmentSelections.root
 
-  public interface Data : IFragment, Fragment.Data {
+  public sealed interface Data : IFragment, Fragment.Data {
     public override val __typename: String
 
     public companion object {
