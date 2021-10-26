@@ -94,6 +94,10 @@ interface Service {
    */
   val customScalarsMapping: MapProperty<String, String>
 
+  @Deprecated("customTypeMapping is a helper property to help migrating to 3.x " +
+      "and will be removed in a future version", ReplaceWith("customScalarsMapping"))
+  val customTypeMapping: MapProperty<String, String>
+
   /**
    * By default, Apollo uses `Sha256` hashing algorithm to generate an ID for the query.
    * To provide a custom ID generation logic, pass an `instance` that implements the [OperationIdGenerator]. How the ID is generated is
