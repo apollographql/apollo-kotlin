@@ -22,31 +22,30 @@ query LaunchDetails($id:ID!) {
 
 > These fragments are not to be confused with [inline fragments](./40-inline-fragments/), which are used to access fields of polymorphic types.
 
-If codegen includes the definitions above, Apollo Android generates a `LaunchFragment` class that can be reused in different queries:
+With the definitions above, Apollo Android generates a `LaunchFragment` class that can be reused in different queries:
 
 ```kotlin:title=LaunchFragment.kt
 data class LaunchFragment(
-  val __typename: String = "Launch",
   val id: String,
   val site: String?,
   val mission: Mission?
 )
 ```
 
-Generated models for operations that use the fragment have a `.fragments` property to access the fragment's fields:
+Generated models for operations that use the fragment have a `.launchFragment` property to access the fragment's fields:
 
 ```kotlin
-println("Mission site: ${launch.fragments.launchFragment.site}")
+println("Mission site: ${launch.launchFragment?.site}")
 ```
 
-You can use a defined fragment in any number of operations:
+You can reuse a fragment in any number of operations:
 
 ```graphql:title=Launch.graphql
  # ...previous definitions...
 
 query LaunchList {
   launches {
-	launches {
+    launches {
       ...launchFragment
     }
   }
@@ -54,3 +53,26 @@ query LaunchList {
 ```
 
 You can even use a fragment in operations that are defined in a different `.graphql` file from the fragment itself. This is because Apollo Android codegen merges all `.graphql` files in to a _single_ file before generating models.
+
+### Response based codegen
+
+Note that the `launchFragment` field above will be `null` or not depending on the actual type returned by the server.
+
+If you prefer, you can opt to use the **Response based** codegen which handles fragments differently:
+
+```kotlin:title=build.gradle.kts
+apollo {
+    // ...
+    codegenModels.set(MODELS_RESPONSE_BASED)
+}
+```
+
+With the Response based codegen, in the example above, the generated `LaunchFragment` will be an interface, which is implemented by the generated `Data.Launch` class and its subclasses when relevant.
+
+This can be used like so:
+
+```kotlin
+if (launch is LaunchFragment) println(launch.site)
+```
+
+> More discussion about the different codegen options is available [here](https://github.com/apollographql/apollo-android/blob/dev-3.x/design-docs/Codegen.md).

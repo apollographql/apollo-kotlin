@@ -20,9 +20,38 @@ query HeroForEpisode($ep: Episode!) {
 
 > Inline fragments are not to be confused with [named fragments](./50-named-fragments/), which are used to reuse fields across multiple operations.
 
-If codegen includes the operation above, the generated `Hero` class contains `AsDroid` and `AsHuman` nested classes, which enable you to access fields that are specific to `Droid` and `Human`:
+When an operation includes the fragments above, the generated `Hero` class will contain `OnDroid` and `OnHuman` nested classes and `onDroid` / `onHuman` fields, which enable you to access fields that are specific to `Droid` and `Human`:
 
 ```kotlin
-println("Droid primaryFunction: ${hero.asDroid?.primaryFunction}")
-println("Human height: ${hero.asHuman?.height}")
+println("Droid primaryFunction: ${hero.onDroid?.primaryFunction}")
+println("Human height: ${hero.onHuman?.height}")
 ```
+
+Note that the `onXyz` fields will be `null` or not depending on the actual type of Hero returned by the server.
+
+If you prefer, you can opt to use the **Response based** codegen which handles fragments differently:
+
+```kotlin:title=build.gradle.kts
+apollo {
+    // ...
+    codegenModels.set(MODELS_RESPONSE_BASED)
+}
+```
+
+With the Response based codegen, in the example above, the generated `Hero` will be an interface, with 3 nested implementations: `DroidHero`, `HumanHero` and `OtherHero`.
+
+This can be used like so:
+
+```kotlin
+when (hero) {
+  is DroidHero -> println(hero.primaryFunction)
+  is HumanHero -> println(hero.height)
+  is OtherHero -> {
+    // Account for other Hero types (including unknown ones)
+    // Note: in this example `name` is common to all Hero types
+    println(hero.name)
+  }
+}
+```
+
+> More discussion about the different codegen options is available [here](https://github.com/apollographql/apollo-android/blob/dev-3.x/design-docs/Codegen.md).
