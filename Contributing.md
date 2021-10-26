@@ -52,6 +52,12 @@ Please note that we will not accept pull requests for style changes.
 Releasing
 --------
 
+To create a new tag, use the script:
+```bash
+scripts/tag.main.kts <version-name>
+```
+and then push it.
+
 The CI contains credentials and will push artifacts to sonatype/gradlePortal when a tag is pushed. Every tag will trigger a new release.
 
 After a successful release, do not forget to add a changelog to the [releases page](https://github.com/apollographql/apollo-android/releases).

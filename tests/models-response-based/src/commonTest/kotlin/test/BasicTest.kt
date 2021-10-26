@@ -1,6 +1,7 @@
 package test
 
 import IdObjectIdGenerator
+import codegen.models.HeroHumanOrDroidQuery
 import codegen.models.HeroParentTypeDependentFieldQuery
 import codegen.models.HeroParentTypeDependentFieldQuery.Data.DroidHero.Friend.Companion.asHuman
 import codegen.models.HeroParentTypeDependentFieldQuery.Data.Hero.Companion.asDroid
@@ -90,5 +91,18 @@ class BasicTest {
     assertFalse(hasErrors())
     assertTrue(data?.hero is MergedFieldWithSameShapeQuery.Data.HumanHero)
     assertEquals(data?.hero?.asHuman()?.property, "Tatooine")
+  }
+
+  @Test
+  fun canUseExhaustiveWhen() = basicTest(
+      "HeroHumanOrDroid.json",
+      HeroHumanOrDroidQuery(Episode.NEWHOPE)
+  ) {
+    val name = when (val hero = data!!.hero!!) {
+      is HeroHumanOrDroidQuery.Data.DroidHero -> hero.name
+      is HeroHumanOrDroidQuery.Data.HumanHero -> hero.name
+      is HeroHumanOrDroidQuery.Data.OtherHero -> hero.name
+    }
+    assertEquals(name, "R2-D2")
   }
 }
