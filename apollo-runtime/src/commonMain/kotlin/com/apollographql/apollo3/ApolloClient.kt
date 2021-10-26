@@ -143,7 +143,7 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
   }
 
   /**
-   * Low lebel API to execute the given [apolloRequest] and return a [Flow].
+   * Low level API to execute the given [apolloRequest] and return a [Flow].
    *
    * Prefer [query], [mutate] or [subscribe] when possible.
    *
