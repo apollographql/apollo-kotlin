@@ -175,7 +175,7 @@ class ServiceTests {
       apollo {
         service("starwars") {
           packageNamesFromFilePaths()
-          exclude = ["**/*.gql"]
+          excludes = ["**/*.gql"]
         }
       }
     """.trimIndent()) { dir ->

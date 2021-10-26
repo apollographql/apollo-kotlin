@@ -52,7 +52,7 @@ class KotlinDSLTests {
           srcDir("src/main/graphql/com/example")
           schemaFile.set(file("src/main/graphql/com/example/schema.json"))
           packageName.set("com.starwars")
-          exclude.set(listOf("*.gql"))
+          excludes.set(listOf("*.gql"))
         }
       }
     """.trimIndent()
