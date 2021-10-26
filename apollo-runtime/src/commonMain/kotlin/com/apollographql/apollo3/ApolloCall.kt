@@ -30,7 +30,7 @@ abstract class ApolloCall<D: Operation.Data, E: HasMutableExecutionContext<E>>
 }
 
 /**
- * [ApolloQueryCall] contains everything needed to execute an [ApolloRequest] with the given [ApolloClient]
+ * [ApolloQueryCall] contains everything needed to execute a [Query] with the given [ApolloClient]
  *
  * [ApolloQueryCall] is mutable. You can customize it before calling [execute]
  */
@@ -58,7 +58,7 @@ class ApolloQueryCall<D: Query.Data>(apolloClient: ApolloClient, query: Query<D>
 }
 
 /**
- * [ApolloMutationCall] contains everything needed to execute an [ApolloRequest] with the given [ApolloClient]
+ * [ApolloMutationCall] contains everything needed to execute a [Mutation] with the given [ApolloClient]
  *
  * [ApolloMutationCall] is mutable. You can customize it before calling [execute]
  */
@@ -86,7 +86,7 @@ class ApolloMutationCall<D: Mutation.Data>(apolloClient: ApolloClient, mutation:
 }
 
 /**
- * [ApolloSubscriptionCall] contains everything needed to execute an [ApolloRequest] with the given [ApolloClient]
+ * [ApolloSubscriptionCall] contains everything needed to execute a [Subscription] with the given [ApolloClient]
  *
  * [ApolloSubscriptionCall] is mutable. You can customize it before calling [execute]
  */
