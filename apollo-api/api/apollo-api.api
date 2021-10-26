@@ -452,6 +452,24 @@ public final class com/apollographql/apollo3/api/ImmutableMapBuilder {
 	public final fun put (Ljava/lang/Object;Ljava/lang/Object;)Lcom/apollographql/apollo3/api/ImmutableMapBuilder;
 }
 
+public final class com/apollographql/apollo3/api/Input {
+	public static final field Companion Lcom/apollographql/apollo3/api/Input$Companion;
+	public fun <init> ()V
+	public static final fun absent ()Lcom/apollographql/apollo3/api/Optional$Absent;
+	public static final fun fromNullable (Ljava/lang/Object;)Lcom/apollographql/apollo3/api/Optional;
+	public static final fun optional (Ljava/lang/Object;)Lcom/apollographql/apollo3/api/Optional;
+}
+
+public final class com/apollographql/apollo3/api/Input$Companion {
+	public final fun absent ()Lcom/apollographql/apollo3/api/Optional$Absent;
+	public final fun fromNullable (Ljava/lang/Object;)Lcom/apollographql/apollo3/api/Optional;
+	public final fun optional (Ljava/lang/Object;)Lcom/apollographql/apollo3/api/Optional;
+}
+
+public final class com/apollographql/apollo3/api/InputKt {
+	public static final fun toInput (Ljava/lang/Object;)Lcom/apollographql/apollo3/api/Optional;
+}
+
 public final class com/apollographql/apollo3/api/InputObjectType : com/apollographql/apollo3/api/CompiledNamedType {
 	public fun <init> (Ljava/lang/String;)V
 }
