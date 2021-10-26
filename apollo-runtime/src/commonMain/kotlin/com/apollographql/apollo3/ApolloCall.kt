@@ -29,32 +29,87 @@ abstract class ApolloCall<D: Operation.Data, E: HasMutableExecutionContext<E>>
   }
 }
 
+/**
+ * [ApolloQueryCall] contains everything needed to execute an [ApolloRequest] with the given [ApolloClient]
+ *
+ * [ApolloQueryCall] is mutable. You can customize it before calling [execute]
+ */
 class ApolloQueryCall<D: Query.Data>(apolloClient: ApolloClient, query: Query<D>)
   : ApolloCall<D, ApolloQueryCall<D>>(apolloClient, query) {
+  /**
+   * Executes the [ApolloQueryCall]
+   * [ApolloQueryCall] can be executed several times
+   *
+   * Example:
+   * ```
+   * val response = apolloClient.query(HeroQuery())
+   *                  .httpHeader("Authorization", myToken)
+   *                  .fetchPolicy(FetchPolicy.NetworkOnly)
+   *                  .execute()
+   * ```
+   */
+  suspend fun execute(): ApolloResponse<D> {
+    return executeAsFlow().single()
+  }
+
   fun copy(): ApolloQueryCall<D> {
     return ApolloQueryCall(apolloClient, operation as Query<D>).addExecutionContext(executionContext)
   }
+}
+
+/**
+ * [ApolloMutationCall] contains everything needed to execute an [ApolloRequest] with the given [ApolloClient]
+ *
+ * [ApolloMutationCall] is mutable. You can customize it before calling [execute]
+ */
+class ApolloMutationCall<D: Mutation.Data>(apolloClient: ApolloClient, mutation: Mutation<D>)
+  : ApolloCall<D, ApolloMutationCall<D>>(apolloClient, mutation) {
+  /**
+   * Executes the [ApolloMutationCall]
+   * [ApolloMutationCall] can be executed several times
+   *
+   * Example:
+   * ```
+   * val response = apolloClient.mutate(SetHeroName("Luke"))
+   *                  .httpHeader("Authorization", myToken)
+   *                  .optimisticData(data)
+   *                  .execute()
+   * ```
+   */
   suspend fun execute(): ApolloResponse<D> {
     return executeAsFlow().single()
   }
-}
 
-class ApolloMutationCall<D: Mutation.Data>(apolloClient: ApolloClient, mutation: Mutation<D>)
-  : ApolloCall<D, ApolloMutationCall<D>>(apolloClient, mutation) {
   fun copy(): ApolloMutationCall<D> {
     return ApolloMutationCall(apolloClient, operation as Mutation<D>).addExecutionContext(executionContext)
   }
-  suspend fun execute(): ApolloResponse<D> {
-    return executeAsFlow().single()
-  }
 }
 
+/**
+ * [ApolloSubscriptionCall] contains everything needed to execute an [ApolloRequest] with the given [ApolloClient]
+ *
+ * [ApolloSubscriptionCall] is mutable. You can customize it before calling [execute]
+ */
 class ApolloSubscriptionCall<D: Subscription.Data>(apolloClient: ApolloClient, subscription: Subscription<D>)
   : ApolloCall<D, ApolloSubscriptionCall<D>>(apolloClient, subscription) {
-  fun copy(): ApolloSubscriptionCall<D> {
-    return ApolloSubscriptionCall(apolloClient, operation as Subscription<D>).addExecutionContext(executionContext)
-  }
+  /**
+   * Executes the [ApolloSubscriptionCall]
+   * [ApolloSubscriptionCall] can be executed several times
+   *
+   * Example:
+   * ```
+   * apolloClient.subscribe(NewOrders())
+   *                  .execute()
+   *                  .collect {
+   *                    println("order received: ${it.data?.order?.id"})
+   *                  }
+   * ```
+   */
   fun execute(): Flow<ApolloResponse<D>> {
     return executeAsFlow()
+  }
+
+  fun copy(): ApolloSubscriptionCall<D> {
+    return ApolloSubscriptionCall(apolloClient, operation as Subscription<D>).addExecutionContext(executionContext)
   }
 }

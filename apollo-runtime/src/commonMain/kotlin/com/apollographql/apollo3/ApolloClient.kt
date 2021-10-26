@@ -66,23 +66,21 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
   )
 
   /**
-   * Executes the given query and returns a response or throws on transport errors
-   * use [query] ([ApolloRequest]) to customize the request
+   * Creates a new [ApolloQueryCall] that you can customize and/or execute.
    */
   fun <D : Query.Data> query(query: Query<D>): ApolloQueryCall<D> {
     return ApolloQueryCall(this, query)
   }
 
   /**
-   * Executes the given mutation and returns a response or throws on transport errors
-   * use [mutation] ([ApolloRequest]) to customize the request
+   * Creates a new [ApolloMutationCall] that you can customize and/or execute.
    */
   fun <D : Mutation.Data> mutate(mutation: Mutation<D>): ApolloMutationCall<D> {
     return ApolloMutationCall(this, mutation)
   }
 
   /**
-   * Subscribes to the given subscription. The subscription is cancelled when the coroutine collecting the flow is canceled
+   * Creates a new [ApolloSubscriptionCall] that you can customize and/or execute.
    */
   fun <D : Subscription.Data> subscribe(subscription: Subscription<D>): ApolloSubscriptionCall<D> {
     return ApolloSubscriptionCall(this, subscription)
@@ -144,6 +142,17 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
     )
   }
 
+  /**
+   * Low lebel API to execute the given [apolloRequest] and return a [Flow].
+   *
+   * Prefer [query], [mutate] or [subscribe] when possible.
+   *
+   * For simple queries, the returned [Flow] will contain only one element.
+   * For more advanced use cases like watchers or subscriptions, it may contain any number of elements and never
+   * finish. You can cancel the corresponding coroutine to terminate the [Flow] in this case.
+   *
+   *
+   */
   @OptIn(ExperimentalCoroutinesApi::class, kotlinx.coroutines.FlowPreview::class)
   fun <D : Operation.Data> executeAsFlow(apolloRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
     assertMainThreadOnNative()
