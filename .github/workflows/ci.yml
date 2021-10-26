@@ -39,10 +39,11 @@ jobs:
           ls -al /cores/
           echo ~/Library/Logs/DiagnosticReports/
           ls -al ~/Library/Logs/DiagnosticReports/
-      - uses: actions/upload-artifact@v2.2.4 # capture all crashes as build artifacts
+      - uses: actions/upload-artifact@v2.2.4
+        if: always()
         with:
           name: crashes
-          path: ~/Library/Logs/DiagnosticReports/
+          path: /Users/runner/Library/Logs/DiagnosticReports/
   gh-pages:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/dev-3.x' }}
