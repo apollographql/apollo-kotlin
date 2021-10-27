@@ -32,7 +32,7 @@ class Input {
 
 @Deprecated("toInput() is a helper function to help migrating to 3.x " +
     "and will be removed in a future version", ReplaceWith("Optional.presentIfNotNull(this)"))
-@JvmName("toInput")
+@JvmName("toInputOrAbsent")
 fun <T> T.toInput(): Optional<T> = Optional.presentIfNotNull(this)
 
 @Deprecated("toInput() is a helper function to help migrating to 3.x " +

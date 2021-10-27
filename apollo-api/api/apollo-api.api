@@ -468,6 +468,7 @@ public final class com/apollographql/apollo3/api/Input$Companion {
 
 public final class com/apollographql/apollo3/api/InputKt {
 	public static final fun toInput (Ljava/lang/Object;)Lcom/apollographql/apollo3/api/Optional;
+	public static final fun toInputOrAbsent (Ljava/lang/Object;)Lcom/apollographql/apollo3/api/Optional;
 }
 
 public final class com/apollographql/apollo3/api/InputObjectType : com/apollographql/apollo3/api/CompiledNamedType {
