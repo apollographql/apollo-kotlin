@@ -5,7 +5,7 @@ set -x
 
 export PATH="$ANDROID_HOME"/tools/bin:$PATH
 
-./gradlew compileKotlinJs
+./gradlew compileKotlinJsIr compileKotlinJsLegacy
 ./gradlew --stop
 
 ./gradlew -p tests fullCheck

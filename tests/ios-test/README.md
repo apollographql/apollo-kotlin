@@ -1,0 +1,1 @@
+A test that uses `mockserver` and `apollo-testing-support` on the iOS simulator. We run most of our tests on macOSX64 because it's usually faster and behaves the same as iOS but there are use cases where running tests on an iOS simulator is required too. This module tests that. 

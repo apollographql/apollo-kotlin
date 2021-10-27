@@ -2,7 +2,7 @@ plugins {
   kotlin("multiplatform")
 }
 
-configureMppTestsDefaults()
+configureMppDefaults(withJs = true)
 
 kotlin {
   sourceSets {
