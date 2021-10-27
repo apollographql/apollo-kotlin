@@ -251,8 +251,8 @@ interface Service {
   /**
    * Target language version for the generated code.
    *
-   * Currently only used when `generateKotlinModels` is `true`.
-   * Must be in the form "X.Y" or "X.Y.Z", e.g. "1.4", "1.5.0".
+   * Only valid when [generateKotlinModels] is `true`
+   * Must be in the form "X.Y", e.g. "1.4" or "1.5" 
    *
    * This can be used to prevent certain language features (e.g. sealed interfaces)
    * from being used in the generated code.

@@ -195,12 +195,11 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       TARGET_JAVA
     }
 
-    val targetLanguageVersion = languageVersion.getOrNull() ?: if (targetLanguage == TARGET_KOTLIN) {
+    val targetLanguageVersion = languageVersion.getOrElse(if (targetLanguage == TARGET_KOTLIN) {
       project.getKotlinPluginVersion()
     } else {
       ""
-    }
-
+    })
     val incomingOptions = if (commonMetadata != null) {
       check(schemaFiles.files.isEmpty()) {
         "Specifying 'schemaFiles' has no effect as an upstream module already provided a schema"
