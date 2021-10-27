@@ -32,13 +32,6 @@ jobs:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PRIVATE_KEY_PASSWORD: ${{ secrets.GPG_PRIVATE_KEY_PASSWORD }}
           COM_APOLLOGRAPHQL_PROFILE_ID: ${{ secrets.COM_APOLLOGRAPHQL_PROFILE_ID }}
-      - name: List cores
-        if: always()
-        run: |
-          echo "/cores:"
-          ls -al /cores/
-          echo ~/Library/Logs/DiagnosticReports/
-          ls -al ~/Library/Logs/DiagnosticReports/
       - uses: actions/upload-artifact@v2.2.4
         if: always()
         with:
