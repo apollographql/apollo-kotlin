@@ -22,6 +22,12 @@ apollo {
 }
 ```
 
+Compared to operationBased, the responseBased codegen has these differences:
+- Models have a **1:1 mapping** with the JSON structure received in the response
+- Polymorphism is handled by generating **interfaces** and the possible shapes as data classes implementing them
+- Fragments are also generated as **interfaces**
+- Any merged fields will appear once in the models
+
 # Inline fragments
 
 Let's consider this query:
@@ -48,12 +54,22 @@ Because `Hero` is an interface with different implementations, you can use a `wh
 when (hero) {
   is DroidHero -> println(hero.primaryFunction)
   is HumanHero -> println(hero.height)
-  is OtherHero -> {
+  else -> {
     // Account for other Hero types (including unknown ones)
     // Note: in this example `name` is common to all Hero types
     println(hero.name)
   }
 }
+```
+## Accessors
+
+As a convenience, methods named `asXyz` returning the possible implementations are also generated. They show up in the IDE's completion, and allow avoiding manual casts. 
+
+In our example they can be used like so:
+
+```kotlin
+val primaryFunction = hero1.asDroid().primaryFunction
+val height = hero2.asHuman().height
 ```
 
 # Named fragments
@@ -120,4 +136,15 @@ when (hero) {
   is DroidFields -> println(hero.primaryFunction)
   is HumanFields -> println(hero.height)
 }
+```
+
+## Accessors
+
+Accessors are also generated (named after the fragment) for each named fragment that a model can be cast to. 
+
+In our example, they can be used like so:
+
+```kotlin
+val primaryFunction = hero1.droidFields().primaryFunction
+val height = hero2.humanFields().height
 ```
