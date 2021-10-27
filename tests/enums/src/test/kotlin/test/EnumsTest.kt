@@ -24,6 +24,8 @@ class EnumsTest {
   fun sealedClassesKnownValues() {
     // Order is important
     // knownValues() should return the same order that the values are declared in the schema
+    // Convert to List because Array.equals uses referential equality, see
+    // https://blog.jetbrains.com/kotlin/2015/09/feedback-request-limitations-on-data-classes/
     assertEquals(
         arrayOf(
             Gravity.TOP,
@@ -31,8 +33,8 @@ class EnumsTest {
             Gravity.BOTTOM,
             Gravity.LEFT,
             Gravity.RIGHT,
-        ),
-        Gravity.knownValues()
+        ).toList(),
+        Gravity.knownValues().toList()
     )
   }
 }
