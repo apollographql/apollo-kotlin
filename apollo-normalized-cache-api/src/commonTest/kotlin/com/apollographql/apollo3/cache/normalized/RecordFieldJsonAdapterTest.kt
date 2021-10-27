@@ -4,6 +4,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import kotlin.test.expect
 
 class RecordFieldJsonAdapterTest {
 
@@ -19,6 +20,7 @@ class RecordFieldJsonAdapterTest {
     val expectedMapKey = "foo"
     val expectedMapValue = "bar"
     val expectedMap = mapOf(expectedMapKey to expectedMapValue)
+    val expectLongValue: Long = 1
     val record = Record(
         key = "root",
         fields = mapOf(
@@ -30,7 +32,8 @@ class RecordFieldJsonAdapterTest {
             "referenceList" to expectedCacheKeyList,
             "nullValue" to null,
             "listOfScalarList" to expectedListOfScalarList,
-            "map" to expectedMap
+            "map" to expectedMap,
+            "long" to expectLongValue
         )
     )
 
@@ -50,5 +53,7 @@ class RecordFieldJsonAdapterTest {
         actual = (deserializedMap["listOfScalarList"] as List<*>)[0] as Iterable<*>?,
         expected = expectedScalarList)
     assertEquals(actual = (deserializedMap["map"] as Map<*, *>)[expectedMapKey], expected = expectedMapValue)
+    assertEquals(actual = deserializedMap["long"]?.toString(), expected = expectLongValue.toString())
+
   }
 }
