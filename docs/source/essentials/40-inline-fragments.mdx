@@ -2,6 +2,9 @@
 title: Inline Fragments
 ---
 
+> _Note: this page is using the default operationBased codegen. For the responseBased codegen, see [this page](../advanced/response-based-codegen.mdx)_.
+
+
 Apollo Android supports [GraphQL inline fragments](https://graphql.org/learn/queries/#inline-fragments), which are used to access fields of [polymorphic types](https://www.apollographql.com/docs/apollo-server/schema/unions-interfaces/):
 
 ```graphql{4-9}:title=HeroQuery.graphql
@@ -20,9 +23,11 @@ query HeroForEpisode($ep: Episode!) {
 
 > Inline fragments are not to be confused with [named fragments](./50-named-fragments/), which are used to reuse fields across multiple operations.
 
-If codegen includes the operation above, the generated `Hero` class contains `AsDroid` and `AsHuman` nested classes, which enable you to access fields that are specific to `Droid` and `Human`:
+When an operation includes the fragments above, the generated `Hero` class will contain `OnDroid` and `OnHuman` nested classes and `onDroid` / `onHuman` fields, which enable you to access fields that are specific to `Droid` and `Human`:
 
 ```kotlin
-println("Droid primaryFunction: ${hero.asDroid?.primaryFunction}")
-println("Human height: ${hero.asHuman?.height}")
+println("Droid primaryFunction: ${hero.onDroid?.primaryFunction}")
+println("Human height: ${hero.onHuman?.height}")
 ```
+
+Note that the `onXyz` fields will be `null` or not depending on the actual type of Hero returned by the server.

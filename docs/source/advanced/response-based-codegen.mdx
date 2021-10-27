@@ -1,0 +1,150 @@
+---
+title: Response based codegen
+---
+
+Apollo Android comes with different code generation engines ("codegens") that can be used depending on your needs:
+
+- **operationBased** (the default): the generated models follow the shape of the operation
+- **responseBased**: the generated models match the shape of the response
+- **compat** (deprecated): equivalent to operationBased, but produces code compatible with how Apollo Android v2 did, to ease upgrading to v3
+
+The models produced by the **responseBased** codegen are more performant and expose more type information, at the cost of more generated code.
+
+> 💡 A more in-depth document about the different codegens is available [here](https://github.com/apollographql/apollo-android/blob/dev-3.x/design-docs/Codegen.md).
+
+
+To use the **responseBased** codegen, configure `codegenModels` in your Gradle scripts:
+
+```kotlin:title=build.gradle.kts
+apollo {
+    // ...
+    codegenModels.set(MODELS_RESPONSE_BASED)
+}
+```
+
+Compared to operationBased, the responseBased codegen has these differences:
+- Models have a **1:1 mapping** with the JSON structure received in the response
+- Polymorphism is handled by generating **interfaces** and the possible shapes as data classes implementing them
+- Fragments are also generated as **interfaces**
+- Any merged fields will appear once in the models
+
+# Inline fragments
+
+Let's consider this query:
+
+```graphql{4-9}:title=HeroQuery.graphql
+query HeroForEpisode($ep: Episode!) {
+  hero(episode: $ep) {
+    name
+    ... on Droid {
+      primaryFunction
+    }
+    ... on Human {
+      height
+    }
+  }
+}
+```
+
+With the Response based codegen, the generated `Hero` will be an interface, with 3 nested implementations: `DroidHero`, `HumanHero` and `OtherHero`.
+
+Because `Hero` is an interface with different implementations, you can use a `when` clause to handle each different case:
+
+```kotlin
+when (hero) {
+  is DroidHero -> println(hero.primaryFunction)
+  is HumanHero -> println(hero.height)
+  else -> {
+    // Account for other Hero types (including unknown ones)
+    // Note: in this example `name` is common to all Hero types
+    println(hero.name)
+  }
+}
+```
+## Accessors
+
+As a convenience, methods named `asXyz` returning the possible implementations are also generated. They show up in the IDE's completion, and allow avoiding manual casts. 
+
+In our example they can be used like so:
+
+```kotlin
+val primaryFunction = hero1.asDroid().primaryFunction
+val height = hero2.asHuman().height
+```
+
+# Named fragments
+
+Considering this example:
+
+```graphql{9-15}:title=HeroQuery.graphql
+query HeroForEpisode($ep: Episode!) {
+    hero(episode: $ep) {
+        name
+        ...DroidFields
+        ...HumanFields
+    }
+}
+
+fragment DroidFields on Droid {
+    primaryFunction
+}
+
+fragment HumanFields on Human {
+    height
+}
+```
+
+With the Response based codegen, the generated code for the `DroidFields` and `HumanFields` fragments will be interfaces:
+
+```kotlin
+interface DroidFields {
+  val primaryFunction: String
+}
+
+interface HumanFields {
+  val height: Double
+}
+```
+
+These interfaces are implemented by subclasses of the generated `HeroForEpisodeQuery.Data.Hero` (and other models for any operations using
+these fragments):
+
+```kotlin:title=HeroForEpisodeQuery.kt
+interface Hero {
+  val name: String
+}
+
+data class DroidHero(
+  override val name: String,
+  override val primaryFunction: String
+) : Hero, DroidFields
+
+data class HumanHero(
+  override val name: String,
+  override val height: Double
+) : Hero, HumanFields
+
+data class OtherHero(
+  override val name: String
+) : Hero
+```
+
+This can be used like so:
+
+```kotlin
+when (hero) {
+  is DroidFields -> println(hero.primaryFunction)
+  is HumanFields -> println(hero.height)
+}
+```
+
+## Accessors
+
+Accessors are also generated (named after the fragment) for each named fragment that a model can be cast to. 
+
+In our example, they can be used like so:
+
+```kotlin
+val primaryFunction = hero1.droidFields().primaryFunction
+val height = hero2.humanFields().height
+```
