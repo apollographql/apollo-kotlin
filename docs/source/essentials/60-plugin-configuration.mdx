@@ -14,11 +14,11 @@ Apollo Android supports communicating with multiple GraphQL endpoints with diffe
 apollo {
   service("starwars") {
     srcDir("src/main/graphql/starwars")
-    packageName = "com.starwars"
+    packageName.set("com.starwars")
   }
   service("githunt") {
     srcDir("src/main/graphql/githunt")
-    packageName = "com.githunt"
+    packageName.set("com.githunt")
   }
 }
 ```
@@ -85,9 +85,10 @@ If you're doing this often or want to automate the process from CI, you can conf
 ```kotlin
 apollo {
   service("starwars") {
+    packageName.set("com.starwars")
     // this will create a downloadStarwarsApolloSchema task
     introspection {
-      endpointUrl = "https://your.domain/graphql/endpoint"
+      endpointUrl.set("https://your.domain/graphql/endpoint")
       // The path is interpreted relative to the current project here, no need to prepend 'app'
       schemaFile.set(file("src/main/graphql/com/example/schema.graphqls"))
     }
@@ -101,9 +102,10 @@ If you register your schema with [Apollo Studio](https://www.apollographql.com/d
 apollo {
   // this will create a downloadStarwarsApolloSchema task
   service("starwars") {
+    packageName.set("com.starwars")
     registry {
-      key = System.getenv("APOLLO_KEY")
-      graph = System.geten("APOLLO_GRAPH")
+      key.set(System.getenv("APOLLO_KEY"))
+      graph.set(System.geten("APOLLO_GRAPH"))
       // The path is interpreted relative to the current project here, no need to prepend 'app'
       schemaFile.set(file("src/main/graphql/com/example/schema.graphqls"))
     }
