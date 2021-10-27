@@ -12,15 +12,16 @@ data class VersionNumber(
   companion object {
     val KOTLIN_1_5 = VersionNumber(1, 5, 0)
 
-    private val REGEX = Regex("(\\d)\\.(\\d)\\.(\\d).*")
+    private val REGEX = Regex("(\\d)\\.(\\d)(\\.(\\d).*)?")
 
     fun parse(s: String): VersionNumber {
-      val matchResult = REGEX.find(s) ?: return VersionNumber(0, 0, 0)
+      val matchResult = REGEX.find(s) ?: error("Could not parse '$s' as a version number")
       val (major, minor, patch) = matchResult.destructured
       return VersionNumber(
           major.toInt(),
           minor.toInt(),
-          patch.toInt(),
+          // Allow e.g. "1.4" to be interpreted as "1.4.0"
+          patch.ifEmpty { "0" }.toInt(),
       )
     }
   }

@@ -330,7 +330,7 @@ class CodegenTest() {
           generateSchema = generateSchema,
           moduleName = folder.name,
           targetLanguage = targetLanguage,
-          targetLanguageVersion = "1.5.0",
+          targetLanguageVersion = "1.5",
       )
     }
 
