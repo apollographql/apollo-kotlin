@@ -1,10 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin
 
-import com.apollographql.apollo3.api.test.MandatoryTypenameProperty
-import com.apollographql.apollo3.api.test.StubbedProperty
-import com.apollographql.apollo3.api.test.TestResolver
 import com.apollographql.apollo3.compiler.codegen.ClassNames
-import com.apollographql.apollo3.compiler.codegen.ClassNames.apolloApiPackageName
 import com.apollographql.apollo3.compiler.codegen.ClassNames.apolloApiTestPackageName
 import com.apollographql.apollo3.compiler.codegen.ResolverClassName
 import com.squareup.kotlinpoet.ClassName
@@ -69,6 +65,7 @@ internal object KotlinClassNames {
 
   val List = ClassName("kotlin.collections", "List")
   val Map = ClassName("kotlin.collections", "Map")
+  val Array = ClassName("kotlin", "Array")
 }
 
 fun ResolverClassName.toKotlinPoetClassName(): ClassName = ClassName(packageName, simpleNames)
