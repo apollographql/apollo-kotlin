@@ -7,6 +7,7 @@ package com.example.enum_field.type
 
 import com.apollographql.apollo3.api.EnumType
 import kotlin.Any
+import kotlin.Array
 import kotlin.Boolean
 import kotlin.Deprecated
 import kotlin.Int
@@ -19,7 +20,7 @@ public sealed class Gravity(
     public val type: EnumType = EnumType("Gravity")
 
     /**
-     * Returns [Gravity] matched with the specified [rawValue].
+     * Returns the [Gravity] that represents the specified [rawValue].
      */
     public fun safeValueOf(rawValue: String): Gravity = when(rawValue) {
       "TOP" -> TOP
@@ -28,6 +29,15 @@ public sealed class Gravity(
       "bottom" -> bottom
       else -> UNKNOWN__(rawValue)
     }
+
+    /**
+     * Returns all [Gravity] known at compile time
+     */
+    public fun knownValues(): Array<Gravity> = arrayOf(
+      TOP,
+      CENTER,
+      BOTTOM,
+      bottom)
   }
 
   public object TOP : Gravity(rawValue = "TOP")
