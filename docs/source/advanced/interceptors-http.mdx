@@ -9,7 +9,7 @@ The interface is a single method. For an example, implementing an authentication
 ```kotlin
 class AuthorizationInterceptor(val token: String) : HttpInterceptor {
   override suspend fun intercept(request: HttpRequest,  chain: HttpInterceptorChain): HttpResponse {
-    return chain.proceed(request.newBuilder().header("Authorization", "Bearer $token").build())
+    return chain.proceed(request.withHeader("Authorization", "Bearer $token"))
   }
 }
 ```
