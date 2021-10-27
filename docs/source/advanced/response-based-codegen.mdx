@@ -4,16 +4,16 @@ title: Response based codegen
 
 Apollo Android comes with different code generation engines ("codegens") that can be used depending on your needs:
 
-- **Operation based** (the default): the generated models follow the shape of the operation
-- **Response based**: the generated models match the shape of the response
-- **Compat** (deprecated): equivalent to Operation based, but produces code compatible with how Apollo Android v2 did, to ease upgrading to v3
+- **operationBased** (the default): the generated models follow the shape of the operation
+- **responseBased**: the generated models match the shape of the response
+- **compat** (deprecated): equivalent to operationBased, but produces code compatible with how Apollo Android v2 did, to ease upgrading to v3
 
-The models produced by the **Response based** codegen are more performant and expose more type information, at the cost of more generated code.
+The models produced by the **responseBased** codegen are more performant and expose more type information, at the cost of more generated code.
 
 > 💡 A more in-depth document about the different codegens is available [here](https://github.com/apollographql/apollo-android/blob/dev-3.x/design-docs/Codegen.md).
 
 
-To use the Response based codegen, configure `codegenModels` in your Gradle scripts:
+To use the **responseBased** codegen, configure `codegenModels` in your Gradle scripts:
 
 ```kotlin:title=build.gradle.kts
 apollo {
