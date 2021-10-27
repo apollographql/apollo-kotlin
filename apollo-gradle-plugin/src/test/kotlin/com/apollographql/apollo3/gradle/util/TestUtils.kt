@@ -48,11 +48,12 @@ object TestUtils {
                   plugins: List<Plugin>,
                   apolloConfiguration: String,
                   isFlavored: Boolean = false,
+                  graphqlPath: String = "starwars",
                   block: (File) -> Unit) = withDirectory {
     val source = fixturesDirectory()
     val dest = it
 
-    File(source, "starwars").copyRecursively(target = File(dest, "src/main/graphql/com/example"))
+    File(source, graphqlPath).copyRecursively(target = File(dest, "src/main/graphql/com/example"))
     File(source, "gradle/settings.gradle").copyTo(target = File(dest, "settings.gradle"))
 
     val isAndroid = plugins.firstOrNull { it.id.startsWith("com.android") } != null

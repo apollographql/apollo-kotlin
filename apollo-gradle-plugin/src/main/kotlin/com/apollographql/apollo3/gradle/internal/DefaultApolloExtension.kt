@@ -458,6 +458,7 @@ abstract class DefaultApolloExtension(
       task.generateTestBuilders.set(service.generateTestBuilders)
       task.sealedClassesForEnumsMatching.set(service.sealedClassesForEnumsMatching)
       task.generateOptionalOperationVariables.set(service.generateOptionalOperationVariables)
+      task.languageVersion.set(service.languageVersion)
     }
   }
 

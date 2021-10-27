@@ -1,0 +1,17 @@
+type Query {
+    hero: Character!
+}
+
+interface Character {
+    name: String!
+}
+
+type Droid implements Character {
+    name: String!
+    primaryFunction: String!
+}
+
+type Human implements Character {
+    name: String!
+    height: Float!
+}

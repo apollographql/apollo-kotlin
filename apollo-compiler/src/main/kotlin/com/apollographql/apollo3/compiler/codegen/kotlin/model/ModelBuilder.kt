@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.model
 
-import com.apollographql.apollo3.compiler.Version
+import com.apollographql.apollo3.compiler.VersionNumber
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.upperCamelCaseIgnoringNonLetters
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
@@ -69,7 +69,7 @@ class ModelBuilder(
     val typeSpecBuilder = if (isInterface) {
       TypeSpec.interfaceBuilder(modelName)
           // All interfaces can be sealed except if implementations exist in different packages (not allowed in Kotlin)
-          .applyIf(context.targetLanguageVersion.isAtLeast(Version.KOTLIN_1_5) && hasSubclassesInSamePackage) {
+          .applyIf(context.targetLanguageVersion.isAtLeast(VersionNumber.KOTLIN_1_5) && hasSubclassesInSamePackage) {
             addModifiers(KModifier.SEALED)
           }
           .addProperties(properties)

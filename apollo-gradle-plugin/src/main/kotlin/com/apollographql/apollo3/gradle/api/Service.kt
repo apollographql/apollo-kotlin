@@ -259,7 +259,7 @@ interface Service {
    *
    * Default: use the version of the Kotlin plugin.
    */
-  val languageVersion: Property<Boolean>
+  val languageVersion: Property<String>
 
   /**
    * Whether to write the query document in models
