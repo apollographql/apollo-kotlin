@@ -15,8 +15,11 @@ const val MODELS_OPERATION_BASED = "operationBased"
 )
 const val MODELS_COMPAT = "compat"
 
-const val TARGET_KOTLIN = "kotlin"
-const val TARGET_JAVA = "java"
+enum class TargetLanguage {
+  JAVA,
+  KOTLIN_1_4,
+  KOTLIN_1_5,
+}
 
 class Options(
     /**
@@ -68,11 +71,7 @@ class Options(
      * The metadata from upstream
      */
     val incomingCompilerMetadata: List<CompilerMetadata> = emptyList(),
-    val targetLanguage: String = defaultTargetLanguage,
-    /**
-     * Currently only used when [targetLanguage] is "kotlin".
-     */
-    val targetLanguageVersion: String = defaultTargetLanguageVersion,
+    val targetLanguage: TargetLanguage = defaultTargetLanguage,
 
     //========== codegen options ============
     val customScalarsMapping: Map<String, String> = defaultCustomScalarsMapping,
@@ -146,7 +145,7 @@ class Options(
      *
      * Default: false
      */
-    val generateOptionalOperationVariables: Boolean = defaultGenerateOptionalOperationVariables
+    val generateOptionalOperationVariables: Boolean = defaultGenerateOptionalOperationVariables,
 ) {
 
   /**
@@ -195,11 +194,10 @@ class Options(
       generateQueryDocument: Boolean = this.generateQueryDocument,
       generateSchema: Boolean = this.generateSchema,
       moduleName: String = this.moduleName,
-      targetLanguage: String = this.targetLanguage,
-      targetLanguageVersion: String = this.targetLanguageVersion,
+      targetLanguage: TargetLanguage = this.targetLanguage,
       generateTestBuilders: Boolean = this.generateTestBuilders,
       sealedClassesForEnumsMatching: List<String> = this.sealedClassesForEnumsMatching,
-      generateOptionalOperationVariables: Boolean = this.generateOptionalOperationVariables
+      generateOptionalOperationVariables: Boolean = this.generateOptionalOperationVariables,
   ) = Options(
       executableFiles = executableFiles,
       schema = schema,
@@ -212,7 +210,6 @@ class Options(
       operationOutputGenerator = operationOutputGenerator,
       incomingCompilerMetadata = incomingCompilerMetadata,
       targetLanguage = targetLanguage,
-      targetLanguageVersion = targetLanguageVersion,
       customScalarsMapping = customScalarsMapping,
       codegenModels = codegenModels,
       flattenModels = flattenModels,
@@ -250,8 +247,7 @@ class Options(
     const val defaultModuleName = "apollographql"
     const val defaultCodegenModels = MODELS_OPERATION_BASED
     const val defaultFlattenModels = true
-    const val defaultTargetLanguage = TARGET_KOTLIN
-    const val defaultTargetLanguageVersion = ""
+    val defaultTargetLanguage = TargetLanguage.KOTLIN_1_5
     const val defaultGenerateSchema = false
     const val defaultGenerateTestBuilders = false
     val defaultSealedClassesForEnumsMatching = listOf(".*")

@@ -2,13 +2,13 @@ package com.apollographql.apollo3.compiler.codegen.kotlin
 
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.PackageNameGenerator
-import com.apollographql.apollo3.compiler.VersionNumber
+import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
-import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.CustomScalarBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumCompatBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.FragmentBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.FragmentModelsBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.FragmentResponseAdapterBuilder
@@ -61,7 +61,7 @@ class KotlinCodeGen(
     private val flattenNamesInOrder: Boolean,
     @Deprecated("Used for backward compatibility with 2.x")
     private val sealedClassesForEnumsMatching: List<String>,
-    private val targetLanguageVersion: VersionNumber,
+    private val targetLanguageVersion: TargetLanguage,
 ) {
   /**
    * @param outputDir: the directory where to write the Kotlin files

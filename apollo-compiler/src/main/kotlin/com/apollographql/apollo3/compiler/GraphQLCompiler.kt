@@ -1,13 +1,24 @@
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.api.QueryDocumentMinifier
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinCodeGen
-import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
-import com.apollographql.apollo3.ast.*
+import com.apollographql.apollo3.ast.GQLDefinition
+import com.apollographql.apollo3.ast.GQLDocument
+import com.apollographql.apollo3.ast.GQLFragmentDefinition
+import com.apollographql.apollo3.ast.GQLOperationDefinition
+import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
+import com.apollographql.apollo3.ast.Issue
+import com.apollographql.apollo3.ast.ParseResult
+import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.ast.checkKeyFields
+import com.apollographql.apollo3.ast.checkNoErrors
+import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.transformation.addRequiredFields
+import com.apollographql.apollo3.ast.validateAsExecutable
 import com.apollographql.apollo3.compiler.codegen.java.JavaCodeGen
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinCodeGen
 import com.apollographql.apollo3.compiler.ir.IrBuilder
 import com.apollographql.apollo3.compiler.ir.dumpTo
+import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import java.io.File
 
 object GraphQLCompiler {
@@ -25,10 +36,10 @@ object GraphQLCompiler {
     val debugDir = options.debugDir
     val schema = options.schema
 
-    if (options.targetLanguage == TARGET_JAVA && options.codegenModels != MODELS_OPERATION_BASED) {
+    if (options.targetLanguage == TargetLanguage.JAVA && options.codegenModels != MODELS_OPERATION_BASED) {
       error("Java codegen does not support ${options.codegenModels}. Only $MODELS_OPERATION_BASED is supported.")
     }
-    if (options.targetLanguage == TARGET_JAVA && !options.flattenModels) {
+    if (options.targetLanguage == TargetLanguage.JAVA && !options.flattenModels) {
       error("Java codegen does not support nested models as it could trigger name clashes when a nested class has the same name as an " +
           "enclosing one.")
     }
@@ -151,7 +162,22 @@ object GraphQLCompiler {
      * Write the generated models
      */
     val outputResolverInfo = when (options.targetLanguage) {
-      TARGET_KOTLIN -> {
+      TargetLanguage.JAVA -> {
+        JavaCodeGen(
+            ir = ir,
+            resolverInfos = options.incomingCompilerMetadata.map { it.resolverInfo },
+            operationOutput = operationOutput,
+            useSemanticNaming = options.useSemanticNaming,
+            packageNameGenerator = options.packageNameGenerator,
+            schemaPackageName = options.schemaPackageName,
+            generateFragmentImplementations = options.generateFragmentImplementations,
+            generateQueryDocument = options.generateQueryDocument,
+            generateSchema = options.generateSchema,
+            flatten = options.flattenModels,
+            flattenNamesInOrder = true
+        ).write(outputDir = outputDir)
+      }
+      else -> {
         KotlinCodeGen(
             ir = ir,
             resolverInfos = options.incomingCompilerMetadata.map { it.resolverInfo },
@@ -168,25 +194,9 @@ object GraphQLCompiler {
             flatten = options.flattenModels,
             flattenNamesInOrder = options.codegenModels != MODELS_COMPAT,
             sealedClassesForEnumsMatching = options.sealedClassesForEnumsMatching,
-            targetLanguageVersion = VersionNumber.parse(options.targetLanguageVersion),
+            targetLanguageVersion = options.targetLanguage,
         ).write(outputDir = outputDir, testDir = testDir)
       }
-      TARGET_JAVA -> {
-        JavaCodeGen(
-            ir = ir,
-            resolverInfos = options.incomingCompilerMetadata.map { it.resolverInfo },
-            operationOutput = operationOutput,
-            useSemanticNaming = options.useSemanticNaming,
-            packageNameGenerator = options.packageNameGenerator,
-            schemaPackageName = options.schemaPackageName,
-            generateFragmentImplementations = options.generateFragmentImplementations,
-            generateQueryDocument = options.generateQueryDocument,
-            generateSchema = options.generateSchema,
-            flatten = options.flattenModels,
-            flattenNamesInOrder = true
-        ).write(outputDir = outputDir)
-      }
-      else -> error("Target language not supported: ${options.targetLanguage}")
     }
 
 
