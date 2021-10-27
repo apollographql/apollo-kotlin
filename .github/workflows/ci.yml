@@ -35,10 +35,7 @@ jobs:
       - name: List cores
         if: always()
         run: |
-          echo "/cores:"
-          ls -al /cores/
-          echo ~/Library/Logs/DiagnosticReports/
-          ls -al ~/Library/Logs/DiagnosticReports/
+          ./scripts/list-cores.main.kts
       - uses: actions/upload-artifact@v2.2.4
         if: always()
         with:
