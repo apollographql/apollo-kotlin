@@ -4,6 +4,8 @@ import IdObjectIdGenerator
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.LongAdapter
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
@@ -18,6 +20,7 @@ import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithI
 import com.apollographql.apollo3.integration.normalizer.HeroAppearsInQuery
 import com.apollographql.apollo3.integration.normalizer.SameHeroTwiceQuery
 import com.apollographql.apollo3.integration.normalizer.StarshipByIdQuery
+import com.apollographql.apollo3.integration.normalizer.type.Date
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
@@ -58,6 +61,13 @@ class BasicTest {
       query: Query<D>,
       block: ApolloResponse<D>.() -> Unit,
   ) = runTest(before = { setUp() }, after = { tearDown() }) {
+    val customScalarAdapters = CustomScalarAdapters.Builder()
+        .add(Date.type, LongAdapter)
+        .add(Date.type, LongAdapter)
+        .build()
+
+    val customScalarAdapters = CustomScalarAdapters(mapOf())
+
     mockServer.enqueue(readResource(resourceName))
     var response = apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.NetworkOnly).build())
     response.block()
