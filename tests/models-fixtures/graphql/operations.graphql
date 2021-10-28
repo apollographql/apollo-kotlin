@@ -114,3 +114,15 @@ fragment PlanetFragment on Planet {
     climates
     surfaceWater
 }
+
+query HeroHumanOrDroid($episode: Episode) {
+    hero(episode: $episode) {
+        name
+        ... on Human {
+            homePlanet
+        }
+        ... on Droid {
+            primaryFunction
+        }
+    }
+}

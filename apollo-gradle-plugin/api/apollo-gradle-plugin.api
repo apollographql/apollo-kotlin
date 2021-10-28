@@ -66,6 +66,7 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Service {
 	public abstract fun getGenerateSchema ()Lorg/gradle/api/provider/Property;
 	public abstract fun getGenerateTestBuilders ()Lorg/gradle/api/provider/Property;
 	public abstract fun getIncludes ()Lorg/gradle/api/provider/ListProperty;
+	public abstract fun getLanguageVersion ()Lorg/gradle/api/provider/Property;
 	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun getOperationIdGenerator ()Lorg/gradle/api/provider/Property;
 	public abstract fun getOperationOutputFile ()Lorg/gradle/api/file/RegularFileProperty;

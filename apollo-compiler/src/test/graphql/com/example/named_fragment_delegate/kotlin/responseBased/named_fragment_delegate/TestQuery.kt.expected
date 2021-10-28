@@ -41,7 +41,7 @@ public class TestQuery() : Query<TestQuery.Data> {
   public data class Data(
     public val hero: Hero?
   ) : Query.Data {
-    public interface Hero {
+    public sealed interface Hero {
       public val __typename: String
 
       public companion object {

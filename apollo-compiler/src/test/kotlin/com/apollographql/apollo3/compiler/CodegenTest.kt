@@ -4,6 +4,8 @@ import com.apollographql.apollo3.ast.GQLFragmentSpread
 import com.apollographql.apollo3.ast.GQLInlineFragment
 import com.apollographql.apollo3.ast.GQLNode
 import com.apollographql.apollo3.ast.parseAsGQLDocument
+import com.apollographql.apollo3.compiler.TargetLanguage.JAVA
+import com.apollographql.apollo3.compiler.TargetLanguage.KOTLIN_1_5
 import com.apollographql.apollo3.compiler.TestUtils.checkTestFixture
 import com.apollographql.apollo3.compiler.TestUtils.shouldUpdateMeasurements
 import com.apollographql.apollo3.compiler.TestUtils.shouldUpdateTestFixtures
@@ -13,7 +15,6 @@ import org.junit.AfterClass
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
-import java.util.Locale
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -51,8 +52,9 @@ class CodegenTest() {
     val codegenDuration = measureTime {
       GraphQLCompiler.write(options)
     }
+    val targetLanguagePath = if (options.targetLanguage == JAVA) "java" else "kotlin"
 
-    val expectedRoot = folder.resolve("${options.targetLanguage}/$codegenModels")
+    val expectedRoot = folder.resolve("$targetLanguagePath/$codegenModels")
     // Because codegen will put files under a given packageName, we skip the first 2 folders
     val actualRoot = options.outputDir.resolve("com/example")
 
@@ -108,7 +110,8 @@ class CodegenTest() {
      */
     val compileDuration = measureTime {
       when (options.targetLanguage) {
-        TARGET_KOTLIN -> {
+        JAVA -> JavaCompiler.assertCompiles(actualFiles.toSet())
+        else -> {
           /**
            * Some tests generate warnings.
            * Most of the time because they are using deprecated fields.
@@ -142,8 +145,6 @@ class CodegenTest() {
 
           KotlinCompiler.assertCompiles(actualFiles.toSet(), !expectedWarnings)
         }
-        TARGET_JAVA -> JavaCompiler.assertCompiles(actualFiles.toSet())
-        else -> error("No compiler found for ${options.targetLanguage}")
       }
     }
 
@@ -307,16 +308,17 @@ class CodegenTest() {
       val graphqlFiles = setOf(File(folder, "TestOperation.graphql"))
       val operationOutputGenerator = OperationOutputGenerator.Default(operationIdGenerator)
 
-      val targetLanguage = if (generateKotlinModels) TARGET_KOTLIN else TARGET_JAVA
+      val targetLanguage = if (generateKotlinModels) KOTLIN_1_5 else JAVA
+      val targetLanguagePath = if (generateKotlinModels) "kotlin" else "java"
       val flattenModels = when {
-        targetLanguage == TARGET_JAVA -> true
+        targetLanguage == JAVA -> true
         else -> codegenModels == MODELS_COMPAT
       }
 
       return Options(
           executableFiles = graphqlFiles,
           schemaFile = schemaFile,
-          outputDir = File("build/generated/test/${folder.name}/$targetLanguage/$codegenModels/"),
+          outputDir = File("build/generated/test/${folder.name}/$targetLanguagePath/$codegenModels/"),
           packageName = "com.example.${folder.name}"
       ).copy(
           operationOutputGenerator = operationOutputGenerator,
@@ -329,7 +331,7 @@ class CodegenTest() {
           generateFragmentImplementations = generateFragmentImplementations,
           generateSchema = generateSchema,
           moduleName = folder.name,
-          targetLanguage = targetLanguage
+          targetLanguage = targetLanguage,
       )
     }
 

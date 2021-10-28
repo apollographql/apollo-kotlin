@@ -37,7 +37,8 @@ class FragmentBuilder(
           context = context,
           model = it,
           superClassName = if (it.id == fragment.dataModelGroup.baseModelId) Fragment.Data::class.asClassName() else null,
-          path = listOf(packageName, simpleName)
+          path = listOf(packageName, simpleName),
+          hasSubclassesInSamePackage = false,
       )
     }
   } else {

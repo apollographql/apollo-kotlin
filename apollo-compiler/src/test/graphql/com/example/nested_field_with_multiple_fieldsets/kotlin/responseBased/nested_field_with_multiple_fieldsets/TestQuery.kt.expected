@@ -38,12 +38,12 @@ public class TestQuery() : Query<TestQuery.Data> {
   public data class Data(
     public val iface1: Iface1?
   ) : Query.Data {
-    public interface Iface1 {
+    public sealed interface Iface1 {
       public val __typename: String
 
       public val iface2: Iface2?
 
-      public interface Iface2 {
+      public sealed interface Iface2 {
         public val __typename: String
 
         public val scalar1: String?
@@ -53,7 +53,7 @@ public class TestQuery() : Query<TestQuery.Data> {
         }
       }
 
-      public interface Impl2Iface2 : Iface2 {
+      public sealed interface Impl2Iface2 : Iface2 {
         public override val __typename: String
 
         public override val scalar1: String?
@@ -70,7 +70,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       public override val __typename: String,
       public override val iface2: Iface2?
     ) : Iface1 {
-      public interface Iface2 : Iface1.Iface2 {
+      public sealed interface Iface2 : Iface1.Iface2 {
         public override val __typename: String
 
         public override val scalar1: String?
@@ -101,7 +101,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       public override val __typename: String,
       public override val iface2: Iface2?
     ) : Iface1 {
-      public interface Iface2 : Iface1.Iface2 {
+      public sealed interface Iface2 : Iface1.Iface2 {
         public override val __typename: String
 
         public override val scalar1: String?

@@ -1,0 +1,24 @@
+query Hero {
+  hero {
+    name
+    ...DroidFields
+    ...HumanFields
+
+    ... on Droid {
+        primaryFunction
+    }
+
+    ... on Human {
+        height
+    }
+  }
+}
+
+fragment DroidFields on Droid {
+  primaryFunction
+}
+
+fragment HumanFields on Human {
+  height
+}
+

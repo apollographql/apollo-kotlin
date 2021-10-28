@@ -53,7 +53,7 @@ public class TestQuery() : Query<TestQuery.Data> {
     ) : HeroDetails {
       public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
-      public interface Friend : HeroDetails.Friend {
+      public sealed interface Friend : HeroDetails.Friend {
         public override val __typename: String
 
         /**

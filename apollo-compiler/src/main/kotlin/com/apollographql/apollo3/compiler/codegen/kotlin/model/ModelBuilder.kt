@@ -1,8 +1,9 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.model
 
+import com.apollographql.apollo3.compiler.TargetLanguage.KOTLIN_1_5
 import com.apollographql.apollo3.compiler.applyIf
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.upperCamelCaseIgnoringNonLetters
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.from
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClassFromProperties
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
@@ -23,14 +24,16 @@ class ModelBuilder(
     private val model: IrModel,
     private val superClassName: ClassName?,
     private val path: List<String>,
+    private val hasSubclassesInSamePackage: Boolean,
 ) {
   private val nestedBuilders = model.modelGroups.flatMap {
     it.models.map {
       ModelBuilder(
-          context,
-          it,
-          null,
-          path + model.modelName
+          context = context,
+          model = it,
+          superClassName = null,
+          path = path + model.modelName,
+          hasSubclassesInSamePackage = hasSubclassesInSamePackage,
       )
     }
   }
@@ -65,6 +68,10 @@ class ModelBuilder(
 
     val typeSpecBuilder = if (isInterface) {
       TypeSpec.interfaceBuilder(modelName)
+          // All interfaces can be sealed except if implementations exist in different packages (not allowed in Kotlin)
+          .applyIf(context.isTargetLanguageVersionAtLeast(KOTLIN_1_5) && hasSubclassesInSamePackage) {
+            addModifiers(KModifier.SEALED)
+          }
           .addProperties(properties)
     } else {
       TypeSpec.classBuilder(modelName)

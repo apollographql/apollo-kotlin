@@ -25,8 +25,7 @@ import com.apollographql.apollo3.compiler.Options.Companion.defaultSealedClasses
 import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSemanticNaming
 import com.apollographql.apollo3.compiler.Options.Companion.defaultWarnOnDeprecatedUsages
 import com.apollographql.apollo3.compiler.PackageNameGenerator
-import com.apollographql.apollo3.compiler.TARGET_JAVA
-import com.apollographql.apollo3.compiler.TARGET_KOTLIN
+import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.gradle.api.kotlinProjectExtension
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
@@ -47,6 +46,7 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
+import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import javax.inject.Inject
 
 @CacheableTask
@@ -104,6 +104,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Input
   @get:Optional
   abstract val generateKotlinModels: Property<Boolean>
+
+  @get:Input
+  @get:Optional
+  abstract val languageVersion: Property<String>
 
   @get:Input
   @get:Optional
@@ -185,11 +189,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
     var outputCommonMetadata: CommonMetadata? = null
 
     val targetLanguage = if (generateKotlinModels.getOrElse(project.kotlinProjectExtension != null)) {
-      TARGET_KOTLIN
+      getKotlinTargetLanguage(languageVersion.getOrNull())
     } else {
-      TARGET_JAVA
+      TargetLanguage.JAVA
     }
-
     val incomingOptions = if (commonMetadata != null) {
       check(schemaFiles.files.isEmpty()) {
         "Specifying 'schemaFiles' has no effect as an upstream module already provided a schema"
@@ -223,7 +226,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
     }
 
     val flattenModels = when {
-      targetLanguage == TARGET_JAVA -> {
+      targetLanguage == TargetLanguage.JAVA -> {
         check(flattenModels.isPresent.not()) {
           "Java codegen does not support flattenModels"
         }
@@ -232,7 +235,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       else -> flattenModels.getOrElse(incomingOptions.codegenModels != MODELS_RESPONSE_BASED)
     }
     val codegenModels = when {
-      targetLanguage == TARGET_JAVA -> {
+      targetLanguage == TargetLanguage.JAVA -> {
         check(incomingOptions.codegenModels == MODELS_OPERATION_BASED) {
           "Java codegen does not support codegenModels=${incomingOptions.codegenModels}"
         }
@@ -284,5 +287,24 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
           moduleName = project.name
       ).writeTo(metadataOutputFile)
     }
+  }
+
+  private fun getKotlinTargetLanguage(userSpecified: String?): TargetLanguage {
+    return when (userSpecified) {
+      "1.4" -> TargetLanguage.KOTLIN_1_4
+      "1.5" -> TargetLanguage.KOTLIN_1_5
+      null -> {
+        // User didn't specify a version: defaults to the Kotlin plugin's version
+        val majorMinor = project.getKotlinPluginVersion().take(3)
+        if (majorMinor == "1.4") {
+          TargetLanguage.KOTLIN_1_4
+        } else {
+          // For "1.5" *and* unknown (must be higher) versions use "1.5"
+          TargetLanguage.KOTLIN_1_5
+        }
+      }
+      else -> error("ApolloGraphQL: languageVersion '$userSpecified' is not supported, must be either '1.4' or '1.5'")
+    }
+
   }
 }

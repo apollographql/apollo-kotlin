@@ -40,7 +40,7 @@ public class TestQuery() : Query<TestQuery.Data> {
   ) : Query.Data {
     public fun searchFilterNotNull(): List<Search>? = search?.filterNotNull()
 
-    public interface CharacterSearch : Search {
+    public sealed interface CharacterSearch : Search {
       public override val __typename: String
 
       /**
@@ -49,7 +49,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       public val name: String
     }
 
-    public interface Search {
+    public sealed interface Search {
       public val __typename: String
 
       public companion object {

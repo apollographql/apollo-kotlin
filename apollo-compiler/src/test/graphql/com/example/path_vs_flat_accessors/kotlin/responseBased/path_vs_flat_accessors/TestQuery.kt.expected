@@ -38,7 +38,7 @@ public class TestQuery() : Query<TestQuery.Data> {
   public data class Data(
     public val root: Root?
   ) : Query.Data {
-    public interface Root {
+    public sealed interface Root {
       public val __typename: String
 
       public companion object {
@@ -50,11 +50,11 @@ public class TestQuery() : Query<TestQuery.Data> {
       }
     }
 
-    public interface ARoot : Root {
+    public sealed interface ARoot : Root {
       public override val __typename: String
     }
 
-    public interface BRoot : Root {
+    public sealed interface BRoot : Root {
       public override val __typename: String
 
       public val fieldB2: String?

@@ -31,7 +31,8 @@ class FragmentModelsBuilder(
             context = context,
             model = it,
             superClassName = if (addSuperInterface && it.id == fragment.dataModelGroup.baseModelId) Fragment.Data::class.asClassName() else null,
-            path = listOf(packageName)
+            path = listOf(packageName),
+            hasSubclassesInSamePackage = false,
         )
       }
 

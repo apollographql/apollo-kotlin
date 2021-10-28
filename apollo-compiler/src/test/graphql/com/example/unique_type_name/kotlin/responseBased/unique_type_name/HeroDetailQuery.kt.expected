@@ -42,7 +42,7 @@ public class HeroDetailQuery() : Query<HeroDetailQuery.Data> {
   public data class Data(
     public val heroDetailQuery: HeroDetailQuery?
   ) : Query.Data {
-    public interface HeroDetailQuery {
+    public sealed interface HeroDetailQuery {
       public val __typename: String
 
       /**
@@ -55,7 +55,7 @@ public class HeroDetailQuery() : Query<HeroDetailQuery.Data> {
        */
       public val friends: List<Friend?>?
 
-      public interface Friend {
+      public sealed interface Friend {
         /**
          * The name of the character
          */

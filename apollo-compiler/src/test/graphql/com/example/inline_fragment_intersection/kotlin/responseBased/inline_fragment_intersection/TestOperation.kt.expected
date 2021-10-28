@@ -41,14 +41,14 @@ public class TestOperation() : Query<TestOperation.Data> {
   public data class Data(
     public val random: Random
   ) : Query.Data {
-    public interface BeingRandom : Random {
+    public sealed interface BeingRandom : Random {
       public override val __typename: String
 
       public val name: String
 
       public val friends: List<Friend>
 
-      public interface Friend {
+      public sealed interface Friend {
         public val __typename: String
 
         public val name: String
@@ -58,7 +58,7 @@ public class TestOperation() : Query<TestOperation.Data> {
         }
       }
 
-      public interface WookieFriend : Friend {
+      public sealed interface WookieFriend : Friend {
         public override val __typename: String
 
         public override val name: String
@@ -67,19 +67,19 @@ public class TestOperation() : Query<TestOperation.Data> {
       }
     }
 
-    public interface WookieRandom : Random {
+    public sealed interface WookieRandom : Random {
       public override val __typename: String
 
       public val race: Race
 
       public val friends: List<Friend>
 
-      public interface Friend {
+      public sealed interface Friend {
         public val lifeExpectancy: Double?
       }
     }
 
-    public interface Random {
+    public sealed interface Random {
       public val __typename: String
 
       public companion object {
@@ -99,7 +99,7 @@ public class TestOperation() : Query<TestOperation.Data> {
       public override val friends: List<Friend>,
       public val profilePictureUrl: String?
     ) : BeingRandom {
-      public interface Friend : BeingRandom.Friend {
+      public sealed interface Friend : BeingRandom.Friend {
         public override val __typename: String
 
         public override val name: String
@@ -132,7 +132,7 @@ public class TestOperation() : Query<TestOperation.Data> {
       public override val friends: List<Friend>,
       public override val race: Race
     ) : BeingRandom, WookieRandom {
-      public interface Friend : BeingRandom.Friend, WookieRandom.Friend {
+      public sealed interface Friend : BeingRandom.Friend, WookieRandom.Friend {
         public override val __typename: String
 
         public override val name: String
