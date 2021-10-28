@@ -116,6 +116,10 @@ private fun printDocument(document: Document): String {
         val out = args[0] as StringBuilder
         val node = args[1] as Field
 
+        /**
+         * This code is a copy/paste from graphql-java. It could be simplified but keeping it
+         * closer to graphql-java will make it easier to follow changes if any
+         */
         val compactMode = false
         val argSep = if (compactMode) "," else ", "
         val aliasSuffix = if (compactMode) ":" else ": "
