@@ -52,6 +52,9 @@ class RecordFieldJsonAdapterTest {
         actual = (deserializedMap["listOfScalarList"] as List<*>)[0] as Iterable<*>?,
         expected = expectedScalarList)
     assertEquals(actual = (deserializedMap["map"] as Map<*, *>)[expectedMapKey], expected = expectedMapValue)
+    // The default deserialization algorithm will use the number type with the smallest possible width.
+    // This is OK as the generated parser know what to expect and will convert back to Long if needed.
+    // This test compares Strings to avoid a failure.
     assertEquals(actual = deserializedMap["long"]?.toString(), expected = expectLongValue.toString())
 
   }
