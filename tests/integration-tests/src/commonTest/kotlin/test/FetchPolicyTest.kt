@@ -1,13 +1,12 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.executeCacheAndNetwork
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.isFromCache
-import com.apollographql.apollo3.cache.normalized.queryCacheAndNetwork
 import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
@@ -46,16 +45,16 @@ class FetchPolicyTest {
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
     mockServer.enqueue(query, data)
 
-    // Cache first is also the default, no need to set the fetchPolicy
     // First query should hit the network and save in cache
-    val request = ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.NetworkFirst).build()
-    var response = apolloClient.query(request)
+    var response = apolloClient.query(query)
+        .fetchPolicy(FetchPolicy.NetworkFirst)
+        .execute()
 
     assertNotNull(response.data)
     assertFalse(response.isFromCache)
 
     // Second query should only hit the cache
-    response = apolloClient.query(query)
+    response = apolloClient.query(query).execute()
 
     assertNotNull(response.data)
     assertTrue(response.isFromCache)
@@ -64,7 +63,7 @@ class FetchPolicyTest {
     store.clearAll()
     mockServer.enqueue("malformed")
     try {
-      apolloClient.query(query)
+      apolloClient.query(query).execute()
       fail("we expected the query to fail")
     } catch (e: Exception) {
       assertTrue(e is ApolloCompositeException)
@@ -76,25 +75,25 @@ class FetchPolicyTest {
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
-    val request = ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.NetworkFirst).build()
+    val call = apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkFirst)
 
     // First query should hit the network and save in cache
     mockServer.enqueue(query, data)
-    var response = apolloClient.query(request)
+    var response = call.execute()
 
     assertNotNull(response.data)
     assertFalse(response.isFromCache)
 
     // Now data is cached but it shouldn't be used since network will go through
     mockServer.enqueue(query, data)
-    response = apolloClient.query(request)
+    response = call.execute()
 
     assertNotNull(response.data)
     assertFalse(response.isFromCache)
 
     // Network error -> we should hit now the cache
     mockServer.enqueue("malformed")
-    response = apolloClient.query(request)
+    response = call.execute()
 
     assertNotNull(response.data)
     assertTrue(response.isFromCache)
@@ -103,7 +102,7 @@ class FetchPolicyTest {
     mockServer.enqueue("malformed")
     store.clearAll()
     try {
-      apolloClient.query(request)
+      call.execute()
       fail("NETWORK_FIRST should throw the network exception if nothing is in the cache")
     } catch (e: Exception) {
 
@@ -115,19 +114,16 @@ class FetchPolicyTest {
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
-    var request = ApolloRequest.Builder(query).build()
 
     // First query should hit the network and save in cache
     mockServer.enqueue(query, data)
-    var response = apolloClient.query(request)
+    var response = apolloClient.query(query).execute()
 
     assertNotNull(response.data)
     assertFalse(response.isFromCache)
 
-    request = request.newBuilder().fetchPolicy(FetchPolicy.CacheOnly).build()
-
     // Second query should only hit the cache
-    response = apolloClient.query(request)
+    response = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheOnly).execute()
 
     // And make sure we don't read the network
     assertNotNull(response.data)
@@ -139,11 +135,11 @@ class FetchPolicyTest {
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
-    val request = ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.NetworkOnly).build()
+    val call =  apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly)
 
     // First query should hit the network and save in cache
     mockServer.enqueue(query, data)
-    val response = apolloClient.query(request)
+    val response = call.execute()
 
     assertNotNull(response.data)
     assertFalse(response.isFromCache)
@@ -151,7 +147,7 @@ class FetchPolicyTest {
     // Offer a malformed response, it should fail
     mockServer.enqueue("malformed")
     try {
-      apolloClient.query(request)
+      call.execute()
       fail("we expected a failure")
     } catch (e: Exception) {
 
@@ -167,13 +163,13 @@ class FetchPolicyTest {
     // Cache Error + Network Error => Error
     mockServer.enqueue(MockResponse(statusCode = 500))
     assertFailsWith(ApolloCompositeException::class) {
-      apolloClient.queryCacheAndNetwork(query).toList()
+      apolloClient.query(query).executeCacheAndNetwork().toList()
     }
 
     // Make the network return something
     // Cache Error + Nework Success => 1 response
     mockServer.enqueue(query, data)
-    var responses = apolloClient.queryCacheAndNetwork(query).toList()
+    var responses = apolloClient.query(query).executeCacheAndNetwork().toList()
 
     assertEquals(1, responses.size)
     assertNotNull(responses[0].data)
@@ -183,7 +179,7 @@ class FetchPolicyTest {
     // Now cache is populated but make the network fail again
     // Cache Success + Network Error => 1 response
     mockServer.enqueue(MockResponse(statusCode = 500))
-    responses = apolloClient.queryCacheAndNetwork(query).toList()
+    responses = apolloClient.query(query).executeCacheAndNetwork().toList()
 
     assertEquals(1, responses.size)
     assertNotNull(responses[0].data)
@@ -192,7 +188,7 @@ class FetchPolicyTest {
 
     // Cache Success + Network Success => 1 response
     mockServer.enqueue(query, data)
-    responses = apolloClient.queryCacheAndNetwork(query).toList()
+    responses = apolloClient.query(query).executeCacheAndNetwork().toList()
 
     assertEquals(2, responses.size)
     assertNotNull(responses[0].data)

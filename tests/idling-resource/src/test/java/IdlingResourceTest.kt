@@ -29,7 +29,7 @@ class IdlingResourceTest {
 
     launch(start = CoroutineStart.UNDISPATCHED) {
       kotlin.runCatching {
-        apolloClient.query(IdlingResourceQuery())
+        apolloClient.query(IdlingResourceQuery()).execute()
       }
     }
     assert(!idlingResource.isIdleNow)

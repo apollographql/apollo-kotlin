@@ -44,7 +44,7 @@ class BearerTokenInterceptorTest {
         )
         .build()
 
-    val response = apolloClient.query(HeroNameQuery())
+    val response = apolloClient.query(HeroNameQuery()).execute()
     assertEquals("R2-D2", response.data?.hero?.name)
 
     assertEquals("Bearer $token1", mockServer.takeRequest().headers["Authorization"])
@@ -62,7 +62,7 @@ class BearerTokenInterceptorTest {
         .build()
 
     try {
-      apolloClient.query(HeroNameQuery())
+      apolloClient.query(HeroNameQuery()).execute()
     } catch (e: ApolloHttpException) {
       assertEquals(401, e.statusCode)
     }

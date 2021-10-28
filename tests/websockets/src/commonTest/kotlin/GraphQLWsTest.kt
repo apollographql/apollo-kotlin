@@ -25,7 +25,7 @@ class GraphQLWsTest {
         )
         .build()
 
-    assertEquals("Hello World!", apolloClient.query(HelloQuery()).data?.hello)
+    assertEquals("Hello World!", apolloClient.query(HelloQuery()).execute().data?.hello)
   }
 
   @Test
@@ -39,7 +39,7 @@ class GraphQLWsTest {
         )
         .build()
 
-    assertEquals("Hello Mutation!", apolloClient.mutate(SetHelloMutation()).data?.hello)
+    assertEquals("Hello Mutation!", apolloClient.mutate(SetHelloMutation()).execute().data?.hello)
   }
 
 
@@ -54,7 +54,9 @@ class GraphQLWsTest {
         )
         .build()
 
-    val list = apolloClient.subscribe(GreetingsSubscription()).toList()
+    val list = apolloClient.subscribe(GreetingsSubscription())
+        .execute()
+        .toList()
     assertEquals(listOf("Hi", "Bonjour", "Hola", "Ciao", "Zdravo"), list.map { it.data?.greetings })
   }
 }

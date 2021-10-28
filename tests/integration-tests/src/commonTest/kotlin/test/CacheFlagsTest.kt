@@ -2,7 +2,6 @@ package test
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.cache.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.CacheHeaders
@@ -46,11 +45,11 @@ class CacheFlagsTest {
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
     mockServer.enqueue(query, data)
 
-    apolloClient.query(ApolloRequest.Builder(query).doNotStore(true).build())
+    apolloClient.query(query).doNotStore(true).execute()
 
     // Since the previous request was not stored, this should fail
     assertFailsWith(CacheMissException::class) {
-      apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.CacheOnly).build())
+      apolloClient.query(query).fetchPolicy(FetchPolicy.CacheOnly).execute()
     }
   }
 
@@ -61,22 +60,19 @@ class CacheFlagsTest {
     mockServer.enqueue(query, data)
 
     // Store the data
-    apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.NetworkOnly).build())
+    apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
     // This should work and evict the entries
-    val response = apolloClient.query(
-        ApolloRequest.Builder(query)
+    val response = apolloClient.query(query)
             .fetchPolicy(FetchPolicy.CacheOnly)
-            .cacheHeaders(
-                CacheHeaders.builder().addHeader(ApolloCacheHeaders.EVICT_AFTER_READ, "true").build()
-            )
-              .build()
-    )
+            .cacheHeaders(CacheHeaders.builder().addHeader(ApolloCacheHeaders.EVICT_AFTER_READ, "true").build())
+        .execute()
+
     assertEquals("R2-D2", response.data?.hero?.name)
 
     // Second time should fail
     assertFailsWith(CacheMissException::class) {
-      apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.CacheOnly).build())
+      apolloClient.query(query).fetchPolicy(FetchPolicy.CacheOnly).execute()
     }
   }
 
@@ -103,10 +99,10 @@ class CacheFlagsTest {
     mockServer.enqueue(AnyAdapter.toJson(partialResponse))
 
     // this should not store the response
-    apolloClient.query(ApolloRequest.Builder(query).build())
+    apolloClient.query(query).execute()
 
     assertFailsWith(CacheMissException::class) {
-      apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.CacheOnly).build())
+      apolloClient.query(query).fetchPolicy(FetchPolicy.CacheOnly).execute()
     }
   }
 
@@ -116,9 +112,9 @@ class CacheFlagsTest {
     mockServer.enqueue(AnyAdapter.toJson(partialResponse))
 
     // this should not store the response
-    apolloClient.query(ApolloRequest.Builder(query).storePartialResponses(true).build())
+    apolloClient.query(query).storePartialResponses(true).execute()
 
-    val response = apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.CacheOnly).build())
+    val response = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheOnly).execute()
     assertNotNull(response.data)
   }
 }

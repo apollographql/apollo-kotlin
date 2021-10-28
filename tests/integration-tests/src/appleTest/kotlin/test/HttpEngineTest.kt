@@ -21,7 +21,7 @@ class HttpEngineTest {
     val apolloClient = ApolloClient.Builder().serverUrl("https://inexistent.host/graphql").build()
 
     val result = kotlin.runCatching {
-      apolloClient.query(HeroNameQuery())
+      apolloClient.query(HeroNameQuery()).execute()
     }
 
     val apolloNetworkException = result.exceptionOrNull()

@@ -40,7 +40,7 @@ class StoreTest {
   @Test
   fun readFragmentFromStore() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(readJson("HeroAndFriendsWithTypename.json"))
-    apolloClient.query(HeroAndFriendsWithTypenameQuery())
+    apolloClient.query(HeroAndFriendsWithTypenameQuery()).execute()
 
     val heroWithFriendsFragment = store.readFragment(
         HeroWithFriendsFragmentImpl(),
@@ -86,7 +86,7 @@ class StoreTest {
   fun fragments() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(readJson("HeroAndFriendsNamesWithIDs.json"))
     val query = HeroAndFriendsWithFragmentsQuery()
-    var response = apolloClient.query(query)
+    var response = apolloClient.query(query).execute()
     assertEquals(response.data?.hero?.__typename, "Droid")
     assertEquals(response.data?.hero?.fragments?.heroWithFriendsFragment?.id, "2001")
     assertEquals(response.data?.hero?.fragments?.heroWithFriendsFragment?.name, "R2-D2")
@@ -137,7 +137,7 @@ class StoreTest {
     )
 
     // Values should have changed
-    response = apolloClient.query(query)
+    response = apolloClient.query(query).execute()
     assertEquals(response.data?.hero?.__typename, "Droid")
     assertEquals(response.data?.hero?.fragments?.heroWithFriendsFragment?.id, "2001")
     assertEquals(response.data?.hero?.fragments?.heroWithFriendsFragment?.name, "R222-D222")

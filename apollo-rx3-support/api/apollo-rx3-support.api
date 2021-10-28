@@ -1,16 +1,3 @@
-public final class com/apollographql/apollo3/rx3/Rx3ApolloClient {
-	public fun <init> (Lcom/apollographql/apollo3/ApolloClient;Lio/reactivex/rxjava3/core/Scheduler;)V
-	public final fun dispose ()V
-	public final fun mutate (Lcom/apollographql/apollo3/api/ApolloRequest;)Lio/reactivex/rxjava3/core/Single;
-	public final fun mutate (Lcom/apollographql/apollo3/api/Mutation;)Lio/reactivex/rxjava3/core/Single;
-	public final fun mutateAsFlow (Lcom/apollographql/apollo3/api/ApolloRequest;)Lio/reactivex/rxjava3/core/Flowable;
-	public final fun query (Lcom/apollographql/apollo3/api/ApolloRequest;)Lio/reactivex/rxjava3/core/Single;
-	public final fun query (Lcom/apollographql/apollo3/api/Query;)Lio/reactivex/rxjava3/core/Single;
-	public final fun queryAsFlow (Lcom/apollographql/apollo3/api/ApolloRequest;)Lio/reactivex/rxjava3/core/Flowable;
-	public final fun subscribe (Lcom/apollographql/apollo3/api/ApolloRequest;)Lio/reactivex/rxjava3/core/Flowable;
-	public final fun subscribe (Lcom/apollographql/apollo3/api/Subscription;)Lio/reactivex/rxjava3/core/Flowable;
-}
-
 public abstract interface class com/apollographql/apollo3/rx3/Rx3ApolloInterceptor {
 	public abstract fun intercept (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/rx3/Rx3ApolloInterceptorChain;)Lio/reactivex/rxjava3/core/Flowable;
 }
@@ -64,8 +51,9 @@ public final class com/apollographql/apollo3/rx3/ToCoroutinesKt {
 }
 
 public final class com/apollographql/apollo3/rx3/ToRx3Kt {
-	public static final fun toRx3ApolloClient (Lcom/apollographql/apollo3/ApolloClient;Lio/reactivex/rxjava3/core/Scheduler;)Lcom/apollographql/apollo3/rx3/Rx3ApolloClient;
-	public static synthetic fun toRx3ApolloClient$default (Lcom/apollographql/apollo3/ApolloClient;Lio/reactivex/rxjava3/core/Scheduler;ILjava/lang/Object;)Lcom/apollographql/apollo3/rx3/Rx3ApolloClient;
+	public static final fun rxFlowable (Lcom/apollographql/apollo3/ApolloSubscriptionCall;Lio/reactivex/rxjava3/core/Scheduler;)Lio/reactivex/rxjava3/core/Flowable;
+	public static final fun rxSingle (Lcom/apollographql/apollo3/ApolloMutationCall;Lio/reactivex/rxjava3/core/Scheduler;)Lio/reactivex/rxjava3/core/Single;
+	public static final fun rxSingle (Lcom/apollographql/apollo3/ApolloQueryCall;Lio/reactivex/rxjava3/core/Scheduler;)Lio/reactivex/rxjava3/core/Single;
 	public static final fun toRx3ApolloInterceptor (Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;Lio/reactivex/rxjava3/core/Scheduler;)Lcom/apollographql/apollo3/rx3/Rx3ApolloInterceptor;
 	public static synthetic fun toRx3ApolloInterceptor$default (Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;Lio/reactivex/rxjava3/core/Scheduler;ILjava/lang/Object;)Lcom/apollographql/apollo3/rx3/Rx3ApolloInterceptor;
 	public static final fun toRx3ApolloInterceptorChain (Lcom/apollographql/apollo3/interceptor/ApolloInterceptorChain;Lio/reactivex/rxjava3/core/Scheduler;)Lcom/apollographql/apollo3/rx3/Rx3ApolloInterceptorChain;

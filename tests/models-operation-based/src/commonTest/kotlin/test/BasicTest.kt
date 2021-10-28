@@ -5,7 +5,6 @@ import codegen.models.HeroParentTypeDependentFieldQuery
 import codegen.models.MergedFieldWithSameShapeQuery
 import codegen.models.type.Episode
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.cache.normalized.ApolloStore
@@ -42,9 +41,9 @@ class BasicTest {
 
   private fun <D : Query.Data> basicTest(resourceName: String, query: Query<D>, block: ApolloResponse<D>.() -> Unit) = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(readJson(resourceName))
-    var response = apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.NetworkOnly).build())
+    var response = apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
     response.block()
-    response = apolloClient.query(ApolloRequest.Builder(query).fetchPolicy(FetchPolicy.CacheOnly).build())
+    response = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheOnly).execute()
     response.block()
   }
 

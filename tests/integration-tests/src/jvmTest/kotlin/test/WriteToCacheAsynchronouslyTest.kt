@@ -1,7 +1,6 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
@@ -12,7 +11,6 @@ import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runTest
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
 import readResource
 import java.util.concurrent.Executors
@@ -53,11 +51,10 @@ class WriteToCacheAsynchronouslyTest {
     val query = HeroAndFriendsNamesQuery(Episode.JEDI)
 
     mockServer.enqueue(readResource("HeroAndFriendsNameResponse.json"))
-    apolloClient.query(
-        ApolloRequest.Builder(query)
-            .writeToCacheAsynchronously(true)
-            .build()
-    )
+    apolloClient.query(query)
+        .writeToCacheAsynchronously(true)
+        .execute()
+
 
     val record = store.accessCache { it.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE) }
     assertNull(record)
@@ -71,11 +68,9 @@ class WriteToCacheAsynchronouslyTest {
     val query = HeroAndFriendsNamesQuery(Episode.JEDI)
 
     mockServer.enqueue(readResource("HeroAndFriendsNameResponse.json"))
-    apolloClient.query(
-        ApolloRequest.Builder(query)
-            .writeToCacheAsynchronously(false)
-            .build()
-    )
+    apolloClient.query(query)
+        .writeToCacheAsynchronously(false)
+        .execute()
 
     val record = store.accessCache { it.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE) }
     assertNotNull(record)

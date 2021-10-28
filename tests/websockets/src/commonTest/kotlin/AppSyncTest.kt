@@ -1,10 +1,9 @@
+
 import appsync.CommentsSubscription
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.network.ws.AppSyncWsProtocol
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import com.apollographql.apollo3.testing.runTest
-import fullstack.tutorial.TripsBookedSubscription
 import kotlinx.coroutines.flow.collect
 import kotlin.test.Ignore
 import kotlin.test.Test
@@ -37,7 +36,7 @@ class AppSyncTest {
         )
     )
 
-    apolloClient.subscribe(CommentsSubscription())
+    apolloClient.subscribe(CommentsSubscription()).execute()
         .collect {
           println("comment: ${it.data?.subscribeToEventComments?.content}")
         }

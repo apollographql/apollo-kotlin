@@ -1,3 +1,13 @@
+public abstract class com/apollographql/apollo3/ApolloCall : com/apollographql/apollo3/api/HasMutableExecutionContext {
+	public fun <init> (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/Operation;)V
+	public fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
+	public final fun executeAsFlow ()Lkotlinx/coroutines/flow/Flow;
+	public final fun getApolloClient ()Lcom/apollographql/apollo3/ApolloClient;
+	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
+	public final fun getOperation ()Lcom/apollographql/apollo3/api/Operation;
+	public fun setExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)V
+}
+
 public final class com/apollographql/apollo3/ApolloClient : com/apollographql/apollo3/api/HasExecutionContext {
 	public static final field Companion Lcom/apollographql/apollo3/ApolloClient$Companion;
 	public fun <init> (Lcom/apollographql/apollo3/network/NetworkTransport;)V
@@ -10,17 +20,13 @@ public final class com/apollographql/apollo3/ApolloClient : com/apollographql/ap
 	public synthetic fun <init> (Lcom/apollographql/apollo3/network/NetworkTransport;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/network/NetworkTransport;Ljava/util/List;Lcom/apollographql/apollo3/api/ExecutionContext;Lkotlinx/coroutines/CoroutineDispatcher;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun <init> (Ljava/lang/String;)V
 	public final fun dispose ()V
+	public final fun executeAsFlow (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
 	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
 	public final fun getInterceptors ()Ljava/util/List;
-	public final fun mutate (Lcom/apollographql/apollo3/api/ApolloRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun mutate (Lcom/apollographql/apollo3/api/Mutation;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun mutateAsFlow (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
+	public final fun mutate (Lcom/apollographql/apollo3/api/Mutation;)Lcom/apollographql/apollo3/ApolloMutationCall;
 	public final fun newBuilder ()Lcom/apollographql/apollo3/ApolloClient$Builder;
-	public final fun query (Lcom/apollographql/apollo3/api/ApolloRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun query (Lcom/apollographql/apollo3/api/Query;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun queryAsFlow (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
-	public final fun subscribe (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
-	public final fun subscribe (Lcom/apollographql/apollo3/api/Subscription;)Lkotlinx/coroutines/flow/Flow;
+	public final fun query (Lcom/apollographql/apollo3/api/Query;)Lcom/apollographql/apollo3/ApolloQueryCall;
+	public final fun subscribe (Lcom/apollographql/apollo3/api/Subscription;)Lcom/apollographql/apollo3/ApolloSubscriptionCall;
 	public final fun withCustomScalarAdapter (Lcom/apollographql/apollo3/api/CustomScalarType;Lcom/apollographql/apollo3/api/Adapter;)Lcom/apollographql/apollo3/ApolloClient;
 	public final fun withExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/ApolloClient;
 	public final fun withFlowDecorator (Lkotlin/jvm/functions/Function1;)Lcom/apollographql/apollo3/ApolloClient;
@@ -59,6 +65,24 @@ public final class com/apollographql/apollo3/ApolloClientKt {
 	public static final fun withHttpMethod (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/http/HttpMethod;)Lcom/apollographql/apollo3/ApolloClient;
 	public static final fun withSendApqExtensions (Lcom/apollographql/apollo3/ApolloClient;Z)Lcom/apollographql/apollo3/ApolloClient;
 	public static final fun withSendDocument (Lcom/apollographql/apollo3/ApolloClient;Z)Lcom/apollographql/apollo3/ApolloClient;
+}
+
+public final class com/apollographql/apollo3/ApolloMutationCall : com/apollographql/apollo3/ApolloCall {
+	public fun <init> (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/Mutation;)V
+	public final fun copy ()Lcom/apollographql/apollo3/ApolloMutationCall;
+	public final fun execute (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/apollographql/apollo3/ApolloQueryCall : com/apollographql/apollo3/ApolloCall {
+	public fun <init> (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/Query;)V
+	public final fun copy ()Lcom/apollographql/apollo3/ApolloQueryCall;
+	public final fun execute (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/apollographql/apollo3/ApolloSubscriptionCall : com/apollographql/apollo3/ApolloCall {
+	public fun <init> (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/Subscription;)V
+	public final fun copy ()Lcom/apollographql/apollo3/ApolloSubscriptionCall;
+	public final fun execute ()Lkotlinx/coroutines/flow/Flow;
 }
 
 public final class com/apollographql/apollo3/AutoPersistedQueryInfo : com/apollographql/apollo3/api/ExecutionContext$Element {
