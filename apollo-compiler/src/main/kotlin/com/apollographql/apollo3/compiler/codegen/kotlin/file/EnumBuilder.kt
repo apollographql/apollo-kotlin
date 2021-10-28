@@ -1,20 +1,21 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.compiler.applyIf
+import com.apollographql.apollo3.compiler.codegen.Identifier.knownValues
 import com.apollographql.apollo3.compiler.codegen.Identifier.safeValueOf
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.deprecatedAnnotation
-import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
+import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
@@ -68,6 +69,7 @@ class EnumBuilder(
     return TypeSpec.companionObjectBuilder()
         .addProperty(typePropertySpec())
         .addFunction(safeValueOfFunSpec())
+        .addFunction(knownValuesFunSpec())
         .build()
   }
 
@@ -114,7 +116,7 @@ class EnumBuilder(
 
   private fun IrEnum.safeValueOfFunSpec(): FunSpec {
     return FunSpec.builder(safeValueOf)
-        .addKdoc("Returns [%T] matched with the specified [rawValue].\n", className())
+        .addKdoc("Returns the [%T] that represents the specified [rawValue].\n", className())
         .addParameter("rawValue", String::class)
         .returns(className())
         .beginControlFlow("return·when(rawValue)")
@@ -125,6 +127,26 @@ class EnumBuilder(
         )
         .addCode("else -> %T(rawValue)\n", unknownValueClassName())
         .endControlFlow()
+        .build()
+  }
+
+  private fun IrEnum.knownValuesFunSpec(): FunSpec {
+    return FunSpec.builder(knownValues)
+        .addKdoc("Returns all [%T] known at compile time", className())
+        .returns(KotlinClassNames.Array.parameterizedBy(className()))
+        .addCode(
+            CodeBlock.builder()
+                .add("return·arrayOf(\n")
+                .indent()
+                .add(
+                    values.map {
+                      CodeBlock.of("%T", it.valueClassName())
+                    }.joinToCode(",\n")
+                )
+                .unindent()
+                .add(")\n")
+                .build()
+        )
         .build()
   }
 

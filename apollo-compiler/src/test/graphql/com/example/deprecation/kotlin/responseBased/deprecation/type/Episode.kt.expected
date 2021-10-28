@@ -7,6 +7,7 @@ package com.example.deprecation.type
 
 import com.apollographql.apollo3.api.EnumType
 import kotlin.Any
+import kotlin.Array
 import kotlin.Boolean
 import kotlin.Deprecated
 import kotlin.Int
@@ -22,7 +23,7 @@ public sealed class Episode(
     public val type: EnumType = EnumType("Episode")
 
     /**
-     * Returns [Episode] matched with the specified [rawValue].
+     * Returns the [Episode] that represents the specified [rawValue].
      */
     public fun safeValueOf(rawValue: String): Episode = when(rawValue) {
       "NEWHOPE" -> NEWHOPE
@@ -32,6 +33,16 @@ public sealed class Episode(
       "new" -> new_
       else -> UNKNOWN__(rawValue)
     }
+
+    /**
+     * Returns all [Episode] known at compile time
+     */
+    public fun knownValues(): Array<Episode> = arrayOf(
+      NEWHOPE,
+      EMPIRE,
+      JEDI,
+      DEPRECATED,
+      new_)
   }
 
   /**

@@ -7,6 +7,7 @@ package com.example.case_sensitive_enum.type
 
 import com.apollographql.apollo3.api.EnumType
 import kotlin.Any
+import kotlin.Array
 import kotlin.Boolean
 import kotlin.Deprecated
 import kotlin.Int
@@ -19,7 +20,7 @@ public sealed class Enum(
     public val type: EnumType = EnumType("Enum")
 
     /**
-     * Returns [Enum] matched with the specified [rawValue].
+     * Returns the [Enum] that represents the specified [rawValue].
      */
     public fun safeValueOf(rawValue: String): Enum = when(rawValue) {
       "north" -> north
@@ -28,6 +29,15 @@ public sealed class Enum(
       "SOUTH" -> SOUTH
       else -> UNKNOWN__(rawValue)
     }
+
+    /**
+     * Returns all [Enum] known at compile time
+     */
+    public fun knownValues(): Array<Enum> = arrayOf(
+      north,
+      North,
+      NORTH,
+      SOUTH)
   }
 
   @Deprecated(message = "No longer supported")

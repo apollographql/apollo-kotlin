@@ -7,6 +7,7 @@ package com.example.inline_fragment_intersection.type
 
 import com.apollographql.apollo3.api.EnumType
 import kotlin.Any
+import kotlin.Array
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
@@ -18,7 +19,7 @@ public sealed class Race(
     public val type: EnumType = EnumType("Race")
 
     /**
-     * Returns [Race] matched with the specified [rawValue].
+     * Returns the [Race] that represents the specified [rawValue].
      */
     public fun safeValueOf(rawValue: String): Race = when(rawValue) {
       "WOOKIE" -> WOOKIE
@@ -26,6 +27,14 @@ public sealed class Race(
       "EWOK" -> EWOK
       else -> UNKNOWN__(rawValue)
     }
+
+    /**
+     * Returns all [Race] known at compile time
+     */
+    public fun knownValues(): Array<Race> = arrayOf(
+      WOOKIE,
+      GUMGAN,
+      EWOK)
   }
 
   public object WOOKIE : Race(rawValue = "WOOKIE")
