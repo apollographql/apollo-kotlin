@@ -254,8 +254,10 @@ interface Service {
    * Only valid when [generateKotlinModels] is `true`
    * Must be either "1.4" or "1.5"
    *
-   * This can be used to prevent certain language features (e.g. sealed interfaces)
-   * from being used in the generated code.
+   * Using an higher languageVersion allows generated code to use more language features like
+   * sealed interfaces in Kotlin 1.5 for an example.
+   *
+   * See also https://kotlinlang.org/docs/gradle.html#attributes-common-to-jvm-and-js
    *
    * Default: use the version of the Kotlin plugin.
    */

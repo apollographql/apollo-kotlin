@@ -16,6 +16,7 @@ const val MODELS_OPERATION_BASED = "operationBased"
 const val MODELS_COMPAT = "compat"
 
 enum class TargetLanguage {
+  // The order is important. See [isTargetLanguageVersionAtLeast]
   JAVA,
   KOTLIN_1_4,
   KOTLIN_1_5,
