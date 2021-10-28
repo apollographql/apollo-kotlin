@@ -55,6 +55,7 @@ object RecordFieldJsonAdapter {
       is String -> this.value(value)
       is Boolean -> this.value(value)
       is Int -> this.value(value)
+      is Long -> this.value(value)
       is Double -> this.value(value)
       is CacheKey -> this.value(value.serialize())
       is List<*> -> {

@@ -19,6 +19,7 @@ class RecordFieldJsonAdapterTest {
     val expectedMapKey = "foo"
     val expectedMapValue = "bar"
     val expectedMap = mapOf(expectedMapKey to expectedMapValue)
+    val expectLongValue: Long = 1
     val record = Record(
         key = "root",
         fields = mapOf(
@@ -30,7 +31,8 @@ class RecordFieldJsonAdapterTest {
             "referenceList" to expectedCacheKeyList,
             "nullValue" to null,
             "listOfScalarList" to expectedListOfScalarList,
-            "map" to expectedMap
+            "map" to expectedMap,
+            "long" to expectLongValue
         )
     )
 
@@ -50,5 +52,10 @@ class RecordFieldJsonAdapterTest {
         actual = (deserializedMap["listOfScalarList"] as List<*>)[0] as Iterable<*>?,
         expected = expectedScalarList)
     assertEquals(actual = (deserializedMap["map"] as Map<*, *>)[expectedMapKey], expected = expectedMapValue)
+    // The default deserialization algorithm will use the number type with the smallest possible width.
+    // This is OK as the generated parser know what to expect and will convert back to Long if needed.
+    // This test compares Strings to avoid a failure.
+    assertEquals(actual = deserializedMap["long"]?.toString(), expected = expectLongValue.toString())
+
   }
 }
