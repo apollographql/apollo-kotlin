@@ -85,6 +85,12 @@ private fun <T : Node<*>> join(nodes: List<T>, delim: String, nodeMethod: (Node<
   return joined.toString()
 }
 
+/**
+ * A document printer that can use " " as a separator for field arguments when the line becomes bigger than 80 chars
+ * as in graphql-js: https://github.com/graphql/graphql-js/blob/6453612a6c40a1f8ad06845f1516c5f0dafa666c/src/language/printer.ts#L62
+ *
+ * It heavily uses reflection because this isn't public API in graphql-java
+ */
 private fun printDocument(document: Document): String {
   val printerCtor = AstPrinter::class.java.getDeclaredConstructor(Boolean::class.java).apply {
     isAccessible = true
