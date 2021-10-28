@@ -146,7 +146,7 @@ class AdapterBijectionTest {
 //  )
 
   private fun <D : Operation.Data> bijection(operation: Operation<D>, data: D) {
-    val responseAdapterCache = CustomScalarAdapters(mapOf(Date.type.name to KotlinxLocalDateAdapter))
+    val responseAdapterCache = CustomScalarAdapters().set(Date.type, KotlinxLocalDateAdapter)
     val json = operation.adapter().toJson(value = data, customScalarAdapters = responseAdapterCache)
     val data2 = operation.adapter().fromJson(Buffer().apply { writeUtf8(json) }, responseAdapterCache)
 
