@@ -91,7 +91,7 @@ class TestBuildersTest {
       }
 
     }
-    val data = BirthdateQuery.Data(customScalarAdapters = CustomScalarAdapters().set(Date.type, adapter)) {
+    val data = BirthdateQuery.Data(customScalarAdapters = CustomScalarAdapters.Builder().add(Date.type, adapter).build()) {
       hero = hero {
         birthDate = "12345"
       }

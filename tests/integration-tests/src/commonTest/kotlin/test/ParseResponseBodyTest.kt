@@ -128,7 +128,7 @@ class ParseResponseBodyTest {
 
     val response = AllFilmsQuery().parseJsonResponse(
         readResource("HttpCacheTestAllFilms.json"),
-        CustomScalarAdapters().set(Date.type, KotlinxLocalDateAdapter)
+        CustomScalarAdapters.Builder().add(Date.type, KotlinxLocalDateAdapter).build()
     )
     assertFalse(response.hasErrors())
     assertEquals(response.data!!.allFilms?.films?.size, 6)
