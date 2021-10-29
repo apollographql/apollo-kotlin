@@ -102,8 +102,9 @@ actual class MockServer {
     socket!!.stop()
     pthread_join(pthreadT.value, null)
 
-    nativeHeap.free(pthreadT.rawPtr)
     pthreadT.value = null
+    nativeHeap.free(pthreadT.rawPtr)
+
     socket = null
   }
 
