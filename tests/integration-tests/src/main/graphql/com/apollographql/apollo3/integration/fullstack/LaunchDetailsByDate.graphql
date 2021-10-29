@@ -1,0 +1,16 @@
+query LaunchDetailsByDate($date:Date!) {
+  launchByDate(date: $date) {
+    id
+    site
+    mission {
+      name
+      missionPatch(size:LARGE)
+    }
+    rocket {
+      name
+      type
+    }
+    isBooked
+    date
+  }
+}

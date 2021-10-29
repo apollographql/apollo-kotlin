@@ -2,9 +2,9 @@ package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
-import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.json.MapJsonReader
 import okio.Buffer
 import okio.BufferedSink
 import okio.BufferedSource
@@ -53,10 +53,10 @@ interface Adapter<T> {
    * }
    * ```
    *
-   * Alternatively, you can use the the built-in [AnyAdapter] to simplify the parsing loop:
+   * Alternatively, you can use the built-in [AnyAdapter] to simplify the parsing loop:
    * ```
    * override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Hero {
-   *   val map = AnyAdapter.fromResponse(reader) as Map<String, String>
+   *   val map = AnyAdapter.fromJson(reader) as Map<String, String>
    *
    *   return Hero(map["name"]!!, map["homeworld"]!!)
    * }
@@ -77,7 +77,7 @@ interface Adapter<T> {
    * }
    *```
    *
-   * Alternatively, you can use the the built-in [AnyAdapter]:
+   * Alternatively, you can use the built-in [AnyAdapter]:
    * ```
    * override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Hero) {
    *   val map = mapOf("name" to value.name, "homeworld" to value.homeworld)

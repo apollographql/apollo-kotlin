@@ -51,6 +51,14 @@ class CustomScalarAdapters
       adaptersMap[customScalarType.name] = customScalarAdapter
     }
 
+    @Deprecated("Used for backward compatibility with 2.x")
+    fun <T> add(
+        customScalarType: CustomScalarType,
+        customTypeAdapter: CustomTypeAdapter<T>,
+    ) = apply {
+      adaptersMap[customScalarType.name] = Version2CustomTypeAdapterToAdapter(customTypeAdapter)
+    }
+
     fun addAll(customScalarAdapters: CustomScalarAdapters) = apply {
       this.adaptersMap.putAll(customScalarAdapters.adaptersMap)
     }

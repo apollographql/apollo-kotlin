@@ -5,6 +5,7 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.CustomScalarType
+import com.apollographql.apollo3.api.CustomTypeAdapter
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.HasExecutionContext
 import com.apollographql.apollo3.api.HasMutableExecutionContext
@@ -12,6 +13,7 @@ import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.api.Version2CustomTypeAdapterToAdapter
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.httpHeader
@@ -229,6 +231,12 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
         customScalarType: CustomScalarType,
         customScalarAdapter: Adapter<T>,
     ) = addCustomScalarAdapter(customScalarType, customScalarAdapter)
+
+    @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("addCustomScalarAdapter"))
+    fun <T> addCustomTypeAdapter(
+        customScalarType: CustomScalarType,
+        customTypeAdapter: CustomTypeAdapter<T>,
+    ) = addCustomScalarAdapter(customScalarType, Version2CustomTypeAdapterToAdapter(customTypeAdapter))
 
     fun addInterceptor(interceptor: ApolloInterceptor) = apply {
       interceptors += interceptor
