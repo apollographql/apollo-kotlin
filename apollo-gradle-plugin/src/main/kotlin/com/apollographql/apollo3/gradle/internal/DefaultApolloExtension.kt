@@ -66,7 +66,6 @@ abstract class DefaultApolloExtension(
         }
       }
     }
-    KotlinVersion.CURRENT
     apolloConfiguration = project.configurations.create(ModelNames.apolloConfiguration()) {
       it.isCanBeConsumed = false
       it.isCanBeResolved = false
