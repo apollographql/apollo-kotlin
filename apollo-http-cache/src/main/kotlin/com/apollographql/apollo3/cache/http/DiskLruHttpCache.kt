@@ -37,12 +37,13 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
       HttpHeader(entry.key, entry.value)
     }
 
-    return HttpResponse(
+    return HttpResponse.Builder(
         statusCode = (map["statusCode"] as? String)?.toInt() ?: error("HTTP cache: no statusCode"),
-        headers = headers ?: error("HTTP cache: no headers"),
         bodySource = snapshot.getSource(ENTRY_BODY).buffer(),
         bodyString = null
     )
+        .addHeaders(headers ?: error("HTTP cache: no headers"))
+        .build()
   }
 
   fun write(response: HttpResponse, cacheKey: String) {

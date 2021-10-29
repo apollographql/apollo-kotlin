@@ -38,12 +38,14 @@ actual class DefaultHttpEngine actual constructor(connectTimeoutMillis: Long, re
         }
       }
       val responseByteArray: ByteArray = response.receive()
-      return HttpResponse(
-          response.status.value,
-          response.headers.flattenEntries().map { HttpHeader(it.first, it.second) },
-          Buffer().write(responseByteArray),
-          responseByteArray.toByteString()
+      return HttpResponse.Builder(
+          statusCode = response.status.value,
+          bodySource = Buffer().write(responseByteArray),
+          bodyString = responseByteArray.toByteString()
       )
+          .addHeaders(response.headers.flattenEntries().map { HttpHeader(it.first, it.second) })
+          .build()
+
     } catch (t: Throwable) {
       throw ApolloNetworkException(t.message, t)
     }

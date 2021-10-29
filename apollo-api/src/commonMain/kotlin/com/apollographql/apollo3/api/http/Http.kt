@@ -95,7 +95,9 @@ class HttpRequest
  *
  * The [body] of a [HttpResponse] must always be closed if non null
  */
-class HttpResponse(
+class HttpResponse
+@Deprecated("Please use HttpResponse.Builder methods instead.  This will be removed in v3.0.0.")
+/* private */ constructor(
     val statusCode: Int,
     val headers: List<HttpHeader>,
     /**
@@ -111,6 +113,35 @@ class HttpResponse(
 
   val body: BufferedSource?
     get() = bodySource ?: bodyString?.let { Buffer().write(it) }
+
+  fun newBuilder() = Builder(
+      statusCode = statusCode,
+      bodySource = bodySource,
+      bodyString = bodyString,
+  ).apply { addHeaders(headers) }
+
+  class Builder(
+      val statusCode: Int,
+      private val bodySource: BufferedSource?,
+      private val bodyString: ByteString?,
+  ) {
+    private val headers = mutableListOf<HttpHeader>()
+
+    fun addHeader(name: String, value: String) = apply {
+      headers += HttpHeader(name, value)
+    }
+
+    fun addHeaders(headers: List<HttpHeader>) = apply {
+      this.headers.addAll(headers)
+    }
+
+    fun build() = HttpResponse(
+        statusCode = statusCode,
+        headers = headers,
+        bodySource = bodySource,
+        bodyString = bodyString,
+    )
+  }
 }
 
 fun HttpBody(
@@ -141,14 +172,5 @@ fun HttpRequest.withHeader(name: String, value: String) = newBuilder().addHeader
 @Deprecated("Please use HttpRequest.Builder methods instead.  This will be removed in v3.0.0.")
 fun HttpRequest.withHeaders(headers: List<HttpHeader>) = newBuilder().addHeaders(headers).build()
 
-/**
- * adds multiple headers to a given [HttpResponse]
- */
-fun HttpResponse.withHeaders(headers: List<HttpHeader>): HttpResponse {
-  return HttpResponse(
-      statusCode = statusCode,
-      headers = this.headers + headers,
-      bodySource = body,
-      bodyString = null
-  )
-}
+@Deprecated("Please use HttpResponse.Builder methods instead.  This will be removed in v3.0.0.")
+fun HttpResponse.withHeaders(headers: List<HttpHeader>) = newBuilder().addHeaders(headers).build()
