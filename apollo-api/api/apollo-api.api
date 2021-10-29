@@ -748,9 +748,10 @@ public final class com/apollographql/apollo3/api/http/HttpRequest {
 }
 
 public final class com/apollographql/apollo3/api/http/HttpRequest$Builder {
-	public fun <init> (Lcom/apollographql/apollo3/api/http/HttpMethod;Ljava/lang/String;Lcom/apollographql/apollo3/api/http/HttpBody;)V
+	public fun <init> (Lcom/apollographql/apollo3/api/http/HttpMethod;Ljava/lang/String;)V
 	public final fun addHeader (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/api/http/HttpRequest$Builder;
 	public final fun addHeaders (Ljava/util/List;)Lcom/apollographql/apollo3/api/http/HttpRequest$Builder;
+	public final fun body (Lcom/apollographql/apollo3/api/http/HttpBody;)V
 	public final fun build ()Lcom/apollographql/apollo3/api/http/HttpRequest;
 }
 
@@ -767,9 +768,11 @@ public final class com/apollographql/apollo3/api/http/HttpResponse {
 }
 
 public final class com/apollographql/apollo3/api/http/HttpResponse$Builder {
-	public fun <init> (ILokio/BufferedSource;Lokio/ByteString;)V
+	public fun <init> (I)V
 	public final fun addHeader (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/api/http/HttpResponse$Builder;
 	public final fun addHeaders (Ljava/util/List;)Lcom/apollographql/apollo3/api/http/HttpResponse$Builder;
+	public final fun body (Lokio/BufferedSource;)Lcom/apollographql/apollo3/api/http/HttpResponse$Builder;
+	public final fun body (Lokio/ByteString;)Lcom/apollographql/apollo3/api/http/HttpResponse$Builder;
 	public final fun build ()Lcom/apollographql/apollo3/api/http/HttpResponse;
 	public final fun getStatusCode ()I
 }

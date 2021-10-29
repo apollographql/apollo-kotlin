@@ -35,11 +35,8 @@ class LoggingInterceptor(private val log: (String) -> Unit = { println(it) }) : 
       log(body.utf8())
     }
 
-    return HttpResponse.Builder(
-        statusCode = httpResponse.statusCode,
-        bodyString = body,
-        bodySource = null
-    )
+    return HttpResponse.Builder(statusCode = httpResponse.statusCode)
+        .also { if (body != null) it.body(body) }
         .addHeaders(httpResponse.headers)
         .build()
   }

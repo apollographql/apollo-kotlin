@@ -89,11 +89,8 @@ actual class DefaultHttpEngine(
       return@suspendCancellableCoroutine
     } else {
       val result = Result.success(
-          HttpResponse.Builder(
-              statusCode = response!!.code(),
-              bodySource = response.body()!!.source(),
-              bodyString = null
-          )
+          HttpResponse.Builder(statusCode = response!!.code())
+              .body(response.body()!!.source())
               .addHeaders(
                   response.headers().let { headers ->
                     0.until(headers.size()).map { index ->

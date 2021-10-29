@@ -47,8 +47,10 @@ class HttpRequest
   fun newBuilder() = Builder(
       method = method,
       url = url,
-      body = body
-  ).apply { addHeaders(headers) }
+  ).apply {
+    if (body != null) body(body)
+    addHeaders(headers)
+  }
 
   fun copy(
       method: HttpMethod = this.method,
@@ -67,9 +69,13 @@ class HttpRequest
   class Builder(
       private val method: HttpMethod,
       private val url: String,
-      private val body: HttpBody?,
   ) {
+    private var body: HttpBody? = null
     private val headers = mutableListOf<HttpHeader>()
+
+    fun body(body: HttpBody) {
+      this.body = body
+    }
 
     fun addHeader(name: String, value: String) = apply {
       headers += HttpHeader(name, value)
@@ -106,7 +112,7 @@ class HttpResponse
     private val bodySource: BufferedSource?,
     /**
      * An immutable body that can be freezed when used from Kotlin native.
-     * Prefer [bodySource] on the JVM so that the response can be streamed.
+     * Prefer [bodySource] on non-native so that the response can be streamed.
      */
     private val bodyString: ByteString?,
 ) {
@@ -116,16 +122,35 @@ class HttpResponse
 
   fun newBuilder() = Builder(
       statusCode = statusCode,
-      bodySource = bodySource,
-      bodyString = bodyString,
-  ).apply { addHeaders(headers) }
+  ).apply {
+    if (bodySource != null) body(bodySource)
+    if (bodyString != null) body(bodyString)
+    addHeaders(headers)
+  }
 
   class Builder(
       val statusCode: Int,
-      private val bodySource: BufferedSource?,
-      private val bodyString: ByteString?,
   ) {
+    private var bodySource: BufferedSource? = null
+    private var bodyString: ByteString? = null
     private val headers = mutableListOf<HttpHeader>()
+
+    /**
+     * A streamable body.
+     */
+    fun body(bodySource: BufferedSource) = apply {
+      check(bodyString == null) { "body(ByteString) was already set, either body(BufferedSource) or body(ByteString) can be set" }
+      this.bodySource = bodySource
+    }
+
+    /**
+     * An immutable body that can be freezed when used from Kotlin native.
+     * Prefer [bodySource] on non-native so that the response can be streamed.
+     */
+    fun body(bodyString: ByteString) = apply {
+      check(bodySource == null) { "body(BufferedSource) was already set, either body(BufferedSource) or body(ByteString) can be set" }
+      this.bodyString = bodyString
+    }
 
     fun addHeader(name: String, value: String) = apply {
       headers += HttpHeader(name, value)
@@ -135,12 +160,14 @@ class HttpResponse
       this.headers.addAll(headers)
     }
 
-    fun build() = HttpResponse(
-        statusCode = statusCode,
-        headers = headers,
-        bodySource = bodySource,
-        bodyString = bodyString,
-    )
+    fun build(): HttpResponse {
+      return HttpResponse(
+          statusCode = statusCode,
+          headers = headers,
+          bodySource = bodySource,
+          bodyString = bodyString,
+      )
+    }
   }
 }
 
