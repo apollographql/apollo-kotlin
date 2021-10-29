@@ -55,6 +55,10 @@ interface Service {
    *
    * Use [srcDir] if your files are outside "src/main/graphql" or to have them in multiple folders.
    *
+   * @param directory the directory where the .graphql operation files are
+   * [directory] is evaluated as in [Project.file](https://docs.gradle.org/current/javadoc/org/gradle/api/Project.html#file-java.lang.Object-)
+   * Valid value include path Strings, File and RegularFileProperty
+   *
    */
   fun srcDir(directory: Any)
 
