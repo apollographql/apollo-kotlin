@@ -6,7 +6,6 @@ import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.http.valueOf
-import com.apollographql.apollo3.api.http.withHeaders
 import com.apollographql.apollo3.cache.http.internal.FileSystem
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.HttpCacheMissException
@@ -74,12 +73,14 @@ class CachingHttpEngine(
     val doNotStore = request.headers.valueOf(CACHE_DO_NOT_STORE)?.lowercase() == "true"
     if (response.statusCode in 200..299 && !doNotStore) {
       store.write(
-          response.withHeaders(
-              listOf(
-                  HttpHeader(CACHE_KEY_HEADER, cacheKey),
-                  HttpHeader(CACHE_SERVED_DATE_HEADER, Instant.now().toString()),
+          response.newBuilder()
+              .addHeaders(
+                  listOf(
+                      HttpHeader(CACHE_KEY_HEADER, cacheKey),
+                      HttpHeader(CACHE_SERVED_DATE_HEADER, Instant.now().toString()),
+                  )
               )
-          ),
+              .build(),
           cacheKey)
 
       // Writing the response will consume the response body, so we re-read it from the cache
@@ -92,12 +93,15 @@ class CachingHttpEngine(
   private fun cacheMightThrow(request: HttpRequest, cacheKey: String): HttpResponse {
     val operationName = request.headers.valueOf(DefaultHttpRequestComposer.HEADER_APOLLO_OPERATION_NAME)
     val response = try {
-      store.read(cacheKey).withHeaders(
-          listOf(
-              HttpHeader(FROM_CACHE, "true"),
-              HttpHeader(CACHE_KEY_HEADER, cacheKey),
+      store.read(cacheKey)
+          .newBuilder()
+          .addHeaders(
+              listOf(
+                  HttpHeader(FROM_CACHE, "true"),
+                  HttpHeader(CACHE_KEY_HEADER, cacheKey),
+              )
           )
-      )
+          .build()
     } catch (e: Exception) {
       throw HttpCacheMissException("HTTP Cache miss for $operationName", e)
     }

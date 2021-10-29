@@ -1,11 +1,10 @@
 package com.apollographql.apollo3.network.http
 
 import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
-import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloNetworkException
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
 import okhttp3.Headers
@@ -90,16 +89,16 @@ actual class DefaultHttpEngine(
       return@suspendCancellableCoroutine
     } else {
       val result = Result.success(
-          HttpResponse(
-              statusCode = response!!.code(),
-              headers = response.headers().let { headers ->
-                0.until(headers.size()).map { index ->
-                  HttpHeader(headers.name(index), headers.value(index))
-                }
-              },
-              bodySource = response.body()!!.source(),
-              bodyString = null
-          )
+          HttpResponse.Builder(statusCode = response!!.code())
+              .body(response.body()!!.source())
+              .addHeaders(
+                  response.headers().let { headers ->
+                    0.until(headers.size()).map { index ->
+                      HttpHeader(headers.name(index), headers.value(index))
+                    }
+                  }
+              )
+              .build()
       )
       continuation.resume(result.getOrThrow())
     }

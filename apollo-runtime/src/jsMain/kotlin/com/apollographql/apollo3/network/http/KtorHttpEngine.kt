@@ -13,7 +13,6 @@ import io.ktor.client.request.request
 import io.ktor.http.HttpHeaders
 import io.ktor.util.flattenEntries
 import okio.Buffer
-import okio.ByteString.Companion.toByteString
 
 actual class DefaultHttpEngine actual constructor(connectTimeoutMillis: Long, readTimeoutMillis: Long) : HttpEngine {
   private val client = HttpClient(Js) {
@@ -38,12 +37,12 @@ actual class DefaultHttpEngine actual constructor(connectTimeoutMillis: Long, re
         }
       }
       val responseByteArray: ByteArray = response.receive()
-      return HttpResponse(
-          response.status.value,
-          response.headers.flattenEntries().map { HttpHeader(it.first, it.second) },
-          Buffer().write(responseByteArray),
-          responseByteArray.toByteString()
-      )
+      val responseBufferedSource = Buffer().write(responseByteArray)
+      return HttpResponse.Builder(statusCode = response.status.value)
+          .body(responseBufferedSource)
+          .addHeaders(response.headers.flattenEntries().map { HttpHeader(it.first, it.second) })
+          .build()
+
     } catch (t: Throwable) {
       throw ApolloNetworkException(t.message, t)
     }

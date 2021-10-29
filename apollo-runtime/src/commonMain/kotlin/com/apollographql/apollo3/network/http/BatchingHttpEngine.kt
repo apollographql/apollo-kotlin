@@ -186,12 +186,9 @@ class BatchingHttpEngine(
       result!!.forEachIndexed { index, byteString ->
         // This works because the server must return the responses in order
         pending[index].deferred.complete(
-            HttpResponse(
-                statusCode = 200,
-                headers = emptyList(),
-                bodyString = byteString,
-                bodySource = null
-            )
+            HttpResponse.Builder(statusCode = 200)
+                .body(byteString)
+                .build()
         )
       }
     }
