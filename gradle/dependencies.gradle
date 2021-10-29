@@ -15,7 +15,7 @@ def versions = [
     moshix              : '0.13.0',
     okHttp4             : '4.9.1',
     okHttp              : '3.12.11', // Keep this to keep supporting older Android devices
-    okio                : '3.0.0-alpha.10', // Needed for JS IR. Hopefully Okio 3.x goes stable before we want to release 3.0
+    okio                : '3.0.0',
     rxjava              : '2.2.21',
     rxjava3             : '3.1.0',
     rxandroid           : '2.0.1',
@@ -101,7 +101,7 @@ ext.dep = [
     uuid                     : "com.benasher44:uuid:0.3.0",
     benManesVersions         : "com.github.ben-manes:gradle-versions-plugin:0.33.0",
     shadow                   : "com.github.jengelman.gradle.plugins:shadow:6.1.0",
-    kspGradlePlugin          : "com.google.devtools.ksp:symbol-processing-gradle-plugin:1.5.30-1.0.0-beta08",
+    kspGradlePlugin          : "com.google.devtools.ksp:symbol-processing-gradle-plugin:1.5.31-1.0.0",
     kotlinxdatetime          : "org.jetbrains.kotlinx:kotlinx-datetime:0.2.1",
     kotlinxserializationjson : "org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0",
     atomicfu                 : "org.jetbrains.kotlinx:atomicfu:0.16.3",
