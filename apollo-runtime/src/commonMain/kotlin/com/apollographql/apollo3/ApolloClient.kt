@@ -232,7 +232,7 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
       this.subscriptionNetworkTransport = subscriptionNetworkTransport
     }
 
-    fun customScalarAdapter(customScalarAdapters: CustomScalarAdapters) {
+    fun customScalarAdapters(customScalarAdapters: CustomScalarAdapters) {
       this.customScalarAdaptersBuilder = CustomScalarAdapters.Builder().addAll(customScalarAdapters)
     }
 
