@@ -8,14 +8,16 @@ import kotlin.jvm.JvmField
 class CustomScalarAdapters
 @Deprecated("Please use CustomScalarAdapters.Builder instead.  This will be removed in v3.0.0.")
 /* private */ constructor(
-    private val customScalarAdapters: Map<String, Adapter<*>>,
+    customScalarAdapters: Map<String, Adapter<*>>,
 ) : ExecutionContext.Element {
+
+  private val adaptersMap: Map<String, Adapter<*>> = customScalarAdapters
 
   fun <T : Any> responseAdapterFor(customScalar: CustomScalarType): Adapter<T> {
     return when {
-      customScalarAdapters[customScalar.name] != null -> {
+      adaptersMap[customScalar.name] != null -> {
         @Suppress("UNCHECKED_CAST")
-        customScalarAdapters[customScalar.name] as Adapter<T>
+        adaptersMap[customScalar.name] as Adapter<T>
       }
       customScalar.className == "com.apollographql.apollo3.api.Upload" -> {
         // Shortcut to save users a call to `registerCustomScalarAdapter`
@@ -37,20 +39,26 @@ class CustomScalarAdapters
     val Empty = CustomScalarAdapters(emptyMap())
   }
 
+  fun newBuilder() = Builder().addAll(this)
+
   class Builder {
-    private val customScalarAdapters: MutableMap<String, Adapter<*>> = mutableMapOf()
+    private val adaptersMap: MutableMap<String, Adapter<*>> = mutableMapOf()
 
     fun <T> add(
         customScalarType: CustomScalarType,
         customScalarAdapter: Adapter<T>,
     ) = apply {
-      customScalarAdapters[customScalarType.name] = customScalarAdapter
+      adaptersMap[customScalarType.name] = customScalarAdapter
     }
 
     fun addAll(customScalarAdapters: CustomScalarAdapters) = apply {
-      this.customScalarAdapters.putAll(customScalarAdapters.customScalarAdapters)
+      this.adaptersMap.putAll(customScalarAdapters.adaptersMap)
     }
 
-    fun build() = CustomScalarAdapters(customScalarAdapters)
+    fun clear() {
+      adaptersMap.clear()
+    }
+
+    fun build() = CustomScalarAdapters(adaptersMap)
   }
 }

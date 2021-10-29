@@ -199,7 +199,7 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
   class Builder internal constructor(
       private var _networkTransport: NetworkTransport?,
       private var subscriptionNetworkTransport: NetworkTransport?,
-      private var customScalarAdaptersBuilder: CustomScalarAdapters.Builder,
+      private val customScalarAdaptersBuilder: CustomScalarAdapters.Builder,
       private val interceptors: MutableList<ApolloInterceptor>,
       private val flowDecorators: MutableList<FlowDecorator>,
       private var requestedDispatcher: CoroutineDispatcher?,
@@ -233,7 +233,8 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
     }
 
     fun customScalarAdapters(customScalarAdapters: CustomScalarAdapters) {
-      this.customScalarAdaptersBuilder = CustomScalarAdapters.Builder().addAll(customScalarAdapters)
+      customScalarAdaptersBuilder.clear()
+      customScalarAdaptersBuilder.addAll(customScalarAdapters)
     }
 
     /**
@@ -288,7 +289,7 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
     return Builder(
         _networkTransport = networkTransport,
         subscriptionNetworkTransport = subscriptionNetworkTransport,
-        customScalarAdaptersBuilder = CustomScalarAdapters.Builder().addAll(customScalarAdapters),
+        customScalarAdaptersBuilder = customScalarAdapters.newBuilder(),
         interceptors = interceptors.toMutableList(),
         flowDecorators = flowDecorators.toMutableList(),
         requestedDispatcher = requestedDispatcher,

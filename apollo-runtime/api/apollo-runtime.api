@@ -36,7 +36,7 @@ public final class com/apollographql/apollo3/ApolloClient$Builder : com/apollogr
 	public final fun addFlowDecorator (Lkotlin/jvm/functions/Function1;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun addInterceptor (Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun build ()Lcom/apollographql/apollo3/ApolloClient;
-	public final fun customScalarAdapter (Lcom/apollographql/apollo3/api/CustomScalarAdapters;)V
+	public final fun customScalarAdapters (Lcom/apollographql/apollo3/api/CustomScalarAdapters;)V
 	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
 	public final fun getNetworkTransport ()Lcom/apollographql/apollo3/network/NetworkTransport;
 	public final fun networkTransport (Lcom/apollographql/apollo3/network/NetworkTransport;)Lcom/apollographql/apollo3/ApolloClient$Builder;
