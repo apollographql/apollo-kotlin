@@ -10,6 +10,7 @@ import codegen.models.test.BirthdateQuery_TestBuilder.Data
 import codegen.models.test.EpisodeQuery_TestBuilder.Data
 import codegen.models.test.HeroAndFriendsWithTypenameQuery_TestBuilder.Data
 import codegen.models.test.MergedFieldWithSameShapeQuery_TestBuilder.Data
+import codegen.models.type.Date
 import codegen.models.type.Episode
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledListType
@@ -90,7 +91,7 @@ class TestBuildersTest {
       }
 
     }
-    val data = BirthdateQuery.Data(customScalarAdapters = CustomScalarAdapters(mapOf("Date" to adapter))) {
+    val data = BirthdateQuery.Data(customScalarAdapters = CustomScalarAdapters.Builder().add(Date.type, adapter).build()) {
       hero = hero {
         birthDate = "12345"
       }
