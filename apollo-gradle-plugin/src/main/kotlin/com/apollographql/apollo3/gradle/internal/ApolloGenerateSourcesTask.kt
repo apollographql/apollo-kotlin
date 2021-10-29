@@ -295,7 +295,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       "1.5" -> TargetLanguage.KOTLIN_1_5
       null -> {
         // User didn't specify a version: defaults to the Kotlin plugin's version
-        val majorMinor = project.getKotlinPluginVersion().take(3)
+        val majorMinor = project.getKotlinPluginVersion()!!.take(3)
         if (majorMinor == "1.4") {
           TargetLanguage.KOTLIN_1_4
         } else {

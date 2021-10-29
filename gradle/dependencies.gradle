@@ -10,6 +10,7 @@ def versions = [
     jetbrainsAnnotations: '13.0',
     junit               : '4.13.2',
     kotlin              : '1.5.31',
+    kotlinPluginMin     : '1.4.0',
     kotlinCoroutines    : '1.5.1',
     moshi               : '1.12.0',
     moshix              : '0.13.0',
@@ -58,7 +59,6 @@ ext.dep = [
     junit                    : "junit:junit:$versions.junit",
     kotlinJunit              : "org.jetbrains.kotlin:kotlin-test", // the Kotlin plugin resolves the version
     kotlin                   : [
-        plugin            : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
         coroutines        : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.kotlinCoroutines",
         coroutinesRx2     : "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:$versions.kotlinCoroutines",
         coroutinesRx3     : "org.jetbrains.kotlinx:kotlinx-coroutines-rx3:$versions.kotlinCoroutines",
@@ -122,7 +122,9 @@ ext.dep = [
     minGradleApi             : "dev.gradleplugins:gradle-api:5.6",
     graphqlKotlin            : "com.expediagroup:graphql-kotlin-spring-server:4.1.0",
     testParameterInjector    : "com.google.testparameterinjector:test-parameter-injector:1.4",
-    binaryCompatibilityValidator: "org.jetbrains.kotlinx:binary-compatibility-validator:0.8.0-RC"
+    binaryCompatibilityValidator: "org.jetbrains.kotlinx:binary-compatibility-validator:0.8.0-RC",
+    kotlinPluginMin: "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlinPluginMin",
+    kotlinPlugin: "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
 ]
 ext.androidConfig = [
     compileSdkVersion: 30,
