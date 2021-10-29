@@ -15,7 +15,7 @@ def versions = [
     moshix              : '0.13.0',
     okHttp4             : '4.9.1',
     okHttp              : '3.12.11', // Keep this to keep supporting older Android devices
-    okio                : '3.0.0-alpha.10', // Needed for JS IR. Hopefully Okio 3.x goes stable before we want to release 3.0
+    okio                : '3.0.0',
     rxjava              : '2.2.21',
     rxjava3             : '3.1.0',
     rxandroid           : '2.0.1',
