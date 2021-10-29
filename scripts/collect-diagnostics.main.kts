@@ -10,7 +10,7 @@
  *      - uses: actions/upload-artifact@v2.2.4
  *        if: always()
  *        with:
- *          name: crashes
+ *          name: diagnostics
  *          path: diagnostics.zip
  */
 
