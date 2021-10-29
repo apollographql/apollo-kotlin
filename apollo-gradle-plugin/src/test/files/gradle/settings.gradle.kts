@@ -14,7 +14,7 @@ pluginManagement {
   resolutionStrategy {
     eachPlugin {
       if (requested.id.id == "org.jetbrains.kotlin.jvm") {
-        useModule(groovy.util.Eval.x(extra, "x.dep.kotlin.plugin"))
+        useModule(groovy.util.Eval.x(extra, "x.dep.kotlinPlugin"))
       }
 
       if (requested.id.id == "com.apollographql.apollo3") {

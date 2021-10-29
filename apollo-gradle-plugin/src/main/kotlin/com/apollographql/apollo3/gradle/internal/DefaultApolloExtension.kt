@@ -26,7 +26,9 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.plugin.KotlinBasePluginWrapper
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
+import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
 import java.io.File
 
@@ -47,6 +49,24 @@ abstract class DefaultApolloExtension(
       "apollo-android requires Gradle version $MIN_GRADLE_VERSION or greater"
     }
 
+    project.plugins.all {
+      if (it is KotlinBasePluginWrapper) {
+        val version = project.getKotlinPluginVersion()!!
+            .split(".")
+            .take(2)
+            .map { it.toInt() }
+
+        val isKotlinSupported = when {
+          version[0] > 1 -> true
+          version[0] == 1 -> version[1] >= 4
+          else -> false
+        }
+        require(isKotlinSupported) {
+          "Apollo Android requires Kotlin plugin version 1.4 or more (found '${project.getKotlinPluginVersion()}')"
+        }
+      }
+    }
+    KotlinVersion.CURRENT
     apolloConfiguration = project.configurations.create(ModelNames.apolloConfiguration()) {
       it.isCanBeConsumed = false
       it.isCanBeResolved = false

@@ -106,7 +106,7 @@ Here's the current matrix of supported features per platform:
 
 ## Requirements
 
-Apollo Android runs on the following platforms:
+Some platforms have specific requirements:
 
 * Android API level 15+
 * JDK 8+

@@ -10,7 +10,7 @@ pluginManagement {
   resolutionStrategy {
     eachPlugin {
       if (requested.id.id.startsWith("org.jetbrains.kotlin.jvm")) {
-        useModule(groovy.util.Eval.x(settings, "x.dep.kotlin.plugin"))
+        useModule(groovy.util.Eval.x(settings, "x.dep.kotlinPlugin"))
       }
     }
   }
