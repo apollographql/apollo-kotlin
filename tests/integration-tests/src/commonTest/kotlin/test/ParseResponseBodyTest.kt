@@ -101,6 +101,30 @@ class ParseResponseBodyTest {
 
   @Test
   @Throws(Exception::class)
+  fun errorWithNonStandardFields() {
+    val response = AllPlanetsQuery().parseJsonResponse(readResource("ResponseErrorWithNonStandardFields.json"))
+    assertTrue(response.hasErrors())
+    val nonStandardFields = response.errors!![0].nonStandardFields!!
+    assertEquals(3, nonStandardFields.size)
+    assertEquals("INTERNAL_ERROR", nonStandardFields["type"])
+    assertNull(nonStandardFields["retry"])
+
+    @Suppress("UNCHECKED_CAST")
+    val moreInfo = nonStandardFields["moreInfo"] as Map<String, Any?>
+    assertEquals(500, moreInfo["code"])
+    assertEquals("Internal Error", moreInfo["status"])
+    assertEquals(true, moreInfo["fatal"])
+
+    @Suppress("UNCHECKED_CAST")
+    val listOfValues = moreInfo["listOfValues"] as List<Any>
+    assertEquals(0, listOfValues[0])
+    assertEquals("a", listOfValues[1])
+    assertEquals(true, listOfValues[2])
+    assertEquals(2.4, listOfValues[3])
+  }
+
+  @Test
+  @Throws(Exception::class)
   fun errorResponse_with_data() {
     val response = EpisodeHeroNameQuery(Episode.JEDI).parseJsonResponse(readResource("ResponseErrorWithData.json"))
     val data = response.data
