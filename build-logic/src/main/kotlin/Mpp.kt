@@ -2,7 +2,7 @@ import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 fun Project.configureMppDefaults(withJs: Boolean = true) {
-  val kotlinExtension = extensions.findByName("kotlin") as? org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+  val kotlinExtension = extensions.findByName("kotlin") as? KotlinMultiplatformExtension
   check(kotlinExtension != null) {
     "No multiplatform extension found"
   }
@@ -30,6 +30,10 @@ fun Project.configureMppDefaults(withJs: Boolean = true) {
         compilations.getByName("test").source(appleTest)
       }
       iosArm64().apply {
+        compilations.getByName("main").source(appleMain)
+        compilations.getByName("test").source(appleTest)
+      }
+      iosSimulatorArm64().apply {
         compilations.getByName("main").source(appleMain)
         compilations.getByName("test").source(appleTest)
       }
@@ -61,7 +65,7 @@ fun Project.configureMppDefaults(withJs: Boolean = true) {
  * Tests only run on the JVM, JS and MacOS
  */
 fun Project.configureMppTestsDefaults(withJs: Boolean = true) {
-  val kotlinExtension = extensions.findByName("kotlin") as? org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+  val kotlinExtension = extensions.findByName("kotlin") as? KotlinMultiplatformExtension
   check(kotlinExtension != null) {
     "No multiplatform extension found"
   }
