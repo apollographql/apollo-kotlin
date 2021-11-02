@@ -1,0 +1,18 @@
+{
+  "data": {
+    "launchByDate": {
+      "id": "109",
+      "site": "CCAFS SLC 40",
+      "mission": {
+        "name": "Starlink-15 (v1.0)",
+        "missionPatch": "https://images2.imgbox.com/d2/3b/bQaWiil0_o.png"
+      },
+      "rocket": {
+        "name": "Falcon 9",
+        "type": "FT"
+      },
+      "isBooked": false,
+      "date": "1978-04-27"
+    }
+  }
+}

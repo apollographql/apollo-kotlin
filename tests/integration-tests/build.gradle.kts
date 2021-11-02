@@ -69,6 +69,11 @@ fun configureApollo(generateKotlinModels: Boolean) {
                     "Date" to "kotlinx.datetime.LocalDate"
                 ))
               }
+              "fullstack" -> {
+                customScalarsMapping.set(mapOf(
+                    "Date" to "com.example.MyDate"
+                ))
+              }
             }
 
             srcDir(file("src/main/graphql/com/apollographql/apollo3/integration/${it.name}/"))

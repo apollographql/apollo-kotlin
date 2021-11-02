@@ -37,6 +37,9 @@ public final class com/apollographql/apollo3/api/AnyAdapter : com/apollographql/
 	public final fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;)V
 }
 
+public abstract interface annotation class com/apollographql/apollo3/api/ApolloInternal : java/lang/annotation/Annotation {
+}
+
 public final class com/apollographql/apollo3/api/ApolloRequest : com/apollographql/apollo3/api/HasExecutionContext {
 	public fun <init> (Lcom/apollographql/apollo3/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo3/api/ExecutionContext;)V
 	public final fun copy (Lcom/apollographql/apollo3/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ApolloRequest;
@@ -339,6 +342,7 @@ public final class com/apollographql/apollo3/api/CustomScalarAdapters : com/apol
 public final class com/apollographql/apollo3/api/CustomScalarAdapters$Builder {
 	public fun <init> ()V
 	public final fun add (Lcom/apollographql/apollo3/api/CustomScalarType;Lcom/apollographql/apollo3/api/Adapter;)Lcom/apollographql/apollo3/api/CustomScalarAdapters$Builder;
+	public final fun add (Lcom/apollographql/apollo3/api/CustomScalarType;Lcom/apollographql/apollo3/api/CustomTypeAdapter;)Lcom/apollographql/apollo3/api/CustomScalarAdapters$Builder;
 	public final fun addAll (Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/api/CustomScalarAdapters$Builder;
 	public final fun build ()Lcom/apollographql/apollo3/api/CustomScalarAdapters;
 	public final fun clear ()V
@@ -350,6 +354,46 @@ public final class com/apollographql/apollo3/api/CustomScalarAdapters$Key : com/
 public final class com/apollographql/apollo3/api/CustomScalarType : com/apollographql/apollo3/api/CompiledNamedType {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public final fun getClassName ()Ljava/lang/String;
+}
+
+public abstract interface class com/apollographql/apollo3/api/CustomTypeAdapter {
+	public abstract fun decode (Lcom/apollographql/apollo3/api/CustomTypeValue;)Ljava/lang/Object;
+	public abstract fun encode (Ljava/lang/Object;)Lcom/apollographql/apollo3/api/CustomTypeValue;
+}
+
+public class com/apollographql/apollo3/api/CustomTypeValue {
+	public static final field Companion Lcom/apollographql/apollo3/api/CustomTypeValue$Companion;
+	public fun <init> (Ljava/lang/Object;)V
+	public static final fun fromRawValue (Ljava/lang/Object;)Lcom/apollographql/apollo3/api/CustomTypeValue;
+	public final fun getValue ()Ljava/lang/Object;
+}
+
+public final class com/apollographql/apollo3/api/CustomTypeValue$Companion {
+	public final fun fromRawValue (Ljava/lang/Object;)Lcom/apollographql/apollo3/api/CustomTypeValue;
+}
+
+public final class com/apollographql/apollo3/api/CustomTypeValue$GraphQLBoolean : com/apollographql/apollo3/api/CustomTypeValue {
+	public fun <init> (Z)V
+}
+
+public final class com/apollographql/apollo3/api/CustomTypeValue$GraphQLJsonList : com/apollographql/apollo3/api/CustomTypeValue {
+	public fun <init> (Ljava/util/List;)V
+}
+
+public final class com/apollographql/apollo3/api/CustomTypeValue$GraphQLJsonObject : com/apollographql/apollo3/api/CustomTypeValue {
+	public fun <init> (Ljava/util/Map;)V
+}
+
+public final class com/apollographql/apollo3/api/CustomTypeValue$GraphQLNull : com/apollographql/apollo3/api/CustomTypeValue {
+	public static final field INSTANCE Lcom/apollographql/apollo3/api/CustomTypeValue$GraphQLNull;
+}
+
+public final class com/apollographql/apollo3/api/CustomTypeValue$GraphQLNumber : com/apollographql/apollo3/api/CustomTypeValue {
+	public fun <init> (Ljava/lang/Number;)V
+}
+
+public final class com/apollographql/apollo3/api/CustomTypeValue$GraphQLString : com/apollographql/apollo3/api/CustomTypeValue {
+	public fun <init> (Ljava/lang/String;)V
 }
 
 public final class com/apollographql/apollo3/api/DoubleAdapter : com/apollographql/apollo3/api/Adapter {

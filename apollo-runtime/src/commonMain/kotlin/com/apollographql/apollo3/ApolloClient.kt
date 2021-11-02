@@ -1,10 +1,12 @@
 package com.apollographql.apollo3
 
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.CustomScalarType
+import com.apollographql.apollo3.api.CustomTypeAdapter
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.HasExecutionContext
 import com.apollographql.apollo3.api.HasMutableExecutionContext
@@ -19,6 +21,7 @@ import com.apollographql.apollo3.api.http.httpHeaders
 import com.apollographql.apollo3.api.http.httpMethod
 import com.apollographql.apollo3.api.http.sendApqExtensions
 import com.apollographql.apollo3.api.http.sendDocument
+import com.apollographql.apollo3.api.internal.Version2CustomTypeAdapterToAdapter
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.interceptor.DefaultInterceptorChain
@@ -217,7 +220,9 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
     /**
      * Registers the given [customScalarAdapter]
      *
-     * @param customScalarType a generated [CustomScalarType] from the [Types] generated object
+     * @param customScalarType a generated [CustomScalarType]. Every GraphQL custom scalar has a
+     * generated class with a static `type` property. For an example, for a `Date` custom scalar,
+     * you can use `com.example.Date.type`
      * @param customScalarAdapter the [Adapter] to use for this custom scalar
      */
     fun <T> addCustomScalarAdapter(customScalarType: CustomScalarType, customScalarAdapter: Adapter<T>) = apply {
@@ -229,6 +234,13 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
         customScalarType: CustomScalarType,
         customScalarAdapter: Adapter<T>,
     ) = addCustomScalarAdapter(customScalarType, customScalarAdapter)
+
+    @OptIn(ApolloInternal::class)
+    @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("addCustomScalarAdapter"))
+    fun <T> addCustomTypeAdapter(
+        customScalarType: CustomScalarType,
+        customTypeAdapter: CustomTypeAdapter<T>,
+    ) = addCustomScalarAdapter(customScalarType, Version2CustomTypeAdapterToAdapter(customTypeAdapter))
 
     fun addInterceptor(interceptor: ApolloInterceptor) = apply {
       interceptors += interceptor
