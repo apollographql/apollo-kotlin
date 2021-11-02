@@ -37,6 +37,9 @@ public final class com/apollographql/apollo3/api/AnyAdapter : com/apollographql/
 	public final fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;)V
 }
 
+public abstract interface annotation class com/apollographql/apollo3/api/ApolloInternal : java/lang/annotation/Annotation {
+}
+
 public final class com/apollographql/apollo3/api/ApolloRequest : com/apollographql/apollo3/api/HasExecutionContext {
 	public fun <init> (Lcom/apollographql/apollo3/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo3/api/ExecutionContext;)V
 	public final fun copy (Lcom/apollographql/apollo3/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ApolloRequest;
@@ -727,12 +730,6 @@ public final class com/apollographql/apollo3/api/UploadAdapter : com/apollograph
 	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Ljava/lang/Object;
 	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/api/Upload;)V
 	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/Object;)V
-}
-
-public final class com/apollographql/apollo3/api/Version2CustomTypeAdapterToAdapter : com/apollographql/apollo3/api/Adapter {
-	public fun <init> (Lcom/apollographql/apollo3/api/CustomTypeAdapter;)V
-	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Ljava/lang/Object;
-	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/Object;)V
 }
 
 public final class com/apollographql/apollo3/api/http/DefaultHttpRequestComposer : com/apollographql/apollo3/api/http/HttpRequestComposer {
