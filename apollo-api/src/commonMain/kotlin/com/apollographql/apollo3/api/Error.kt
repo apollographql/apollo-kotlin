@@ -27,10 +27,15 @@ class Error(
      * Extensions if any.
      */
     val extensions: Map<String, Any?>? = null,
+
+    /**
+     * Other non-standard fields (discouraged but allowed in the spec), if any.
+     */
+    val nonStandardFields: Map<String, Any?>? = null,
 ) {
 
   override fun toString(): String {
-    return "Error(message = $message, locations = $locations, path=$path, extensions = $extensions)"
+    return "Error(message = $message, locations = $locations, path=$path, extensions = $extensions, nonStandardFields = $nonStandardFields)"
   }
 
   /**

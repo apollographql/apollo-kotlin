@@ -5,9 +5,9 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
-import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
 import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.json.use
 import com.apollographql.apollo3.api.nullable
 import com.benasher44.uuid.uuid4
@@ -96,9 +96,10 @@ object ResponseBodyParser {
     var locations: List<Error.Location>? = null
     var path: List<Any>? = null
     var extensions: Map<String, Any?>? = null
+    var nonStandardFields: MutableMap<String, Any?>? = null
     beginObject()
     while (hasNext()) {
-      when (nextName()) {
+      when (val name = nextName()) {
         "message" -> message = nextString() ?: ""
         "locations" -> {
           locations = readErrorLocations()
@@ -109,12 +110,15 @@ object ResponseBodyParser {
         "extensions" -> {
           extensions = readRecursively() as? Map<String, Any?>?
         }
-        else -> skipValue()
+        else -> {
+          if (nonStandardFields == null) nonStandardFields = mutableMapOf()
+          nonStandardFields[name] = readRecursively()
+        }
       }
     }
     endObject()
 
-    return Error(message, locations, path, extensions)
+    return Error(message, locations, path, extensions, nonStandardFields)
   }
 
   private fun JsonReader.readPath(): List<Any>? {
