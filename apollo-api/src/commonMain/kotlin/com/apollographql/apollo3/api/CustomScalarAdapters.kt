@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.api.internal.Version2CustomTypeAdapterToAdapter
 import kotlin.jvm.JvmField
 
 /**
@@ -51,6 +52,7 @@ class CustomScalarAdapters
       adaptersMap[customScalarType.name] = customScalarAdapter
     }
 
+    @OptIn(ApolloInternal::class)
     @Deprecated("Used for backward compatibility with 2.x")
     fun <T> add(
         customScalarType: CustomScalarType,

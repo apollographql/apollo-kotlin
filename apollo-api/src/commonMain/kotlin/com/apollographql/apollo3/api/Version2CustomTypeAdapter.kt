@@ -1,38 +1,12 @@
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.jvm.JvmStatic
-
-/**
- * An [Adapter] that wraps an Apollo Android v2 style [CustomTypeAdapter], to ease migration from v2 to v3.
- */
-@Deprecated("Used for backward compatibility with 2.x, use Adapter instead")
-class Version2CustomTypeAdapterToAdapter<T>(
-    private val v2CustomTypeAdapter: CustomTypeAdapter<T>,
-) : Adapter<T> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
-    val value: Any? = if (reader.peek() == JsonReader.Token.NULL) null else AnyAdapter.fromJson(reader)
-    return v2CustomTypeAdapter.decode(CustomTypeValue(value))
-  }
-
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T) {
-    val encoded: Any? = v2CustomTypeAdapter.encode(value).value
-    if (encoded == null) {
-      writer.nullValue()
-    } else {
-      AnyAdapter.toJson(writer, encoded)
-    }
-  }
-}
 
 /**
  * A replica of Apollo Android v2's CustomTypeAdapter, to ease migration from v2 to v3.
  *
  * Make your CustomTypeAdapters implement this interface by updating the imports
- * from `com.apollographql.apollo.api` to `com.apollographql.apollo3.api`
- * and wrap them in [Version2CustomTypeAdapterToAdapter]s, which you can add to
- * `ApolloClient.Builder` or [CustomScalarAdapters].
+ * from `com.apollographql.apollo.api` to `com.apollographql.apollo3.api`.
  */
 @Deprecated("Used for backward compatibility with 2.x, use Adapter instead")
 interface CustomTypeAdapter<T> {
