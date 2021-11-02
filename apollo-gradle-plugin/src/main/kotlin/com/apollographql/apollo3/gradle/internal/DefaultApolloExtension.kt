@@ -454,13 +454,19 @@ abstract class DefaultApolloExtension(
       task.metadataFiles.from(consumerConfiguration)
 
       check(!(service.packageName.isPresent && service.packageNameGenerator.isPresent)) {
-        "ApolloGraphQL: it is an error to specify both 'packageName' and 'packageNameGenerator'"
+        "ApolloGraphQL: it is an error to specify both 'packageName' and 'packageNameGenerator' " +
+            "(either directly or indirectly through useVersion2Compat())"
       }
       var packageNameGenerator = service.packageNameGenerator.orNull
       if (packageNameGenerator == null) {
-        packageNameGenerator = PackageNameGenerator.Flat(service.packageName.orNull ?: error("""ApolloGraphQL: specify 'packageName':
+        packageNameGenerator = PackageNameGenerator.Flat(service.packageName.orNull ?: error("""
+            |ApolloGraphQL: specify 'packageName':
             |apollo {
             |  packageName.set("com.example")
+            |  
+            |  // Alternatively, if you're migrating from 2.x, you can keep the 2.x   
+            |  // behaviour with `packageNamesFromFilePaths()`: 
+            |  packageNamesFromFilePaths()
             |}
           """.trimMargin()))
       }
