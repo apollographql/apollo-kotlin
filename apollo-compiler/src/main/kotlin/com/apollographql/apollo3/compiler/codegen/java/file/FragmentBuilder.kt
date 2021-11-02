@@ -22,7 +22,6 @@ class FragmentBuilder(
     private val context: JavaContext,
     private val fragment: IrNamedFragment,
     flatten: Boolean,
-    flattenNamesInOrder: Boolean,
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.fragmentPackageName(fragment.filePath)
@@ -31,7 +30,6 @@ class FragmentBuilder(
   private val modelBuilders = if (fragment.interfaceModelGroup != null) {
     fragment.dataModelGroup.maybeFlatten(
         flatten = flatten,
-        flattenNamesInOrder = flattenNamesInOrder,
         excludeNames = setOf(simpleName)
     ).flatMap { it.models }.map {
       ModelBuilder(

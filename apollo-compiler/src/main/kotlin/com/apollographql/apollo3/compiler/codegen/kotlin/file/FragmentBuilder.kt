@@ -1,16 +1,15 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.api.Fragment
-import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClass
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClass
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toParameterSpec
-import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.codegen.kotlin.model.ModelBuilder
+import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.ir.IrNamedFragment
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
@@ -25,14 +24,13 @@ class FragmentBuilder(
     private val generateFilterNotNull: Boolean,
     private val fragment: IrNamedFragment,
     flatten: Boolean,
-    flattenNamesInOrder: Boolean,
 ) : CgOutputFileBuilder {
   private val layout = context.layout
   private val packageName = layout.fragmentPackageName(fragment.filePath)
   private val simpleName = layout.fragmentName(fragment.name)
 
   private val modelBuilders = if (fragment.interfaceModelGroup != null) {
-    fragment.dataModelGroup.maybeFlatten(flatten, flattenNamesInOrder).flatMap { it.models }.map {
+    fragment.dataModelGroup.maybeFlatten(flatten).flatMap { it.models }.map {
       ModelBuilder(
           context = context,
           model = it,

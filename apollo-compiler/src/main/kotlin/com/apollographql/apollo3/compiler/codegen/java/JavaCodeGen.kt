@@ -51,7 +51,6 @@ class JavaCodeGen(
      * depth 0
      */
     private val flatten: Boolean,
-    private val flattenNamesInOrder: Boolean,
 ) {
   /**
    * @param outputDir: the directory where to write the Kotlin files
@@ -116,14 +115,13 @@ class JavaCodeGen(
                   (fragment.interfaceModelGroup ?: fragment.dataModelGroup),
                   fragment.interfaceModelGroup == null,
                   flatten,
-                  flattenNamesInOrder
               )
           )
 
           builders.add(FragmentSelectionsBuilder(context, fragment, ir.schema, ir.allFragmentDefinitions))
 
           if (generateFragmentImplementations || fragment.interfaceModelGroup == null) {
-            builders.add(FragmentDataAdapterBuilder(context, fragment, flatten, flattenNamesInOrder))
+            builders.add(FragmentDataAdapterBuilder(context, fragment, flatten))
           }
 
           if (generateFragmentImplementations) {
@@ -132,7 +130,6 @@ class JavaCodeGen(
                     context,
                     fragment,
                     flatten,
-                    flattenNamesInOrder
                 )
             )
             if (fragment.variables.isNotEmpty()) {
@@ -148,7 +145,7 @@ class JavaCodeGen(
           }
 
           builders.add(OperationSelectionsBuilder(context, operation, ir.schema, ir.allFragmentDefinitions))
-          builders.add(OperationResponseAdapterBuilder(context, operation, flatten, flattenNamesInOrder))
+          builders.add(OperationResponseAdapterBuilder(context, operation, flatten))
 
           builders.add(
               OperationBuilder(
@@ -157,7 +154,6 @@ class JavaCodeGen(
                   generateQueryDocument,
                   operation,
                   flatten,
-                  flattenNamesInOrder
               )
           )
         }

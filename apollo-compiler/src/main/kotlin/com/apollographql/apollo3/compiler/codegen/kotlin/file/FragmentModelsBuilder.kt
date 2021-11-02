@@ -1,12 +1,11 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.api.Fragment
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
-import com.apollographql.apollo3.compiler.codegen.maybeFlatten
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.model.ModelBuilder
+import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.ir.IrModelGroup
 import com.apollographql.apollo3.compiler.ir.IrNamedFragment
 import com.squareup.kotlinpoet.asClassName
@@ -17,7 +16,6 @@ class FragmentModelsBuilder(
     modelGroup: IrModelGroup,
     private val addSuperInterface: Boolean,
     flatten: Boolean,
-    flattenNamesInOrder: Boolean
 ) : CgOutputFileBuilder {
 
   private val packageName = context.layout.fragmentPackageName(fragment.filePath)
@@ -25,7 +23,7 @@ class FragmentModelsBuilder(
   /**
    * Fragments need to be flattened at depth 1 to avoid having all classes poluting the fragments package name
    */
-  private val modelBuilders = modelGroup.maybeFlatten(flatten, flattenNamesInOrder, 1).flatMap { it.models }
+  private val modelBuilders = modelGroup.maybeFlatten(flatten, 1).flatMap { it.models }
       .map {
         ModelBuilder(
             context = context,

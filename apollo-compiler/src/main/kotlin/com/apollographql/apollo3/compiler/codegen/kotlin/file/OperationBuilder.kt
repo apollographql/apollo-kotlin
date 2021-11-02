@@ -5,23 +5,21 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.QueryDocumentMinifier
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.compiler.applyIf
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_DOCUMENT
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_ID
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_NAME
 import com.apollographql.apollo3.compiler.codegen.Identifier.document
 import com.apollographql.apollo3.compiler.codegen.Identifier.id
 import com.apollographql.apollo3.compiler.codegen.Identifier.name
-import com.apollographql.apollo3.compiler.codegen.java.L
+import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClass
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toParameterSpec
-import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.codegen.kotlin.model.ModelBuilder
+import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.apollographql.apollo3.compiler.ir.IrOperationType
 import com.squareup.kotlinpoet.ClassName
@@ -41,7 +39,6 @@ class OperationBuilder(
     private val generateQueryDocument: Boolean,
     private val operation: IrOperation,
     flatten: Boolean,
-    flattenNamesInOrder: Boolean
 ): CgOutputFileBuilder {
   private val layout = context.layout
   private val packageName = layout.operationPackageName(operation.filePath)
@@ -53,7 +50,7 @@ class OperationBuilder(
     IrOperationType.Subscription -> Subscription.Data::class
   }.asClassName()
 
-  private val modelBuilders = operation.dataModelGroup.maybeFlatten(flatten, flattenNamesInOrder).flatMap {
+  private val modelBuilders = operation.dataModelGroup.maybeFlatten(flatten).flatMap {
     it.models
   }.map {
     ModelBuilder(

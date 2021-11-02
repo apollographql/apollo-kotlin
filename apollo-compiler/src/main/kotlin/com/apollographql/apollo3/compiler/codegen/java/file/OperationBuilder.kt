@@ -36,7 +36,6 @@ class OperationBuilder(
     private val generateQueryDocument: Boolean,
     private val operation: IrOperation,
     flatten: Boolean,
-    flattenNamesInOrder: Boolean,
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.operationPackageName(operation.filePath)
@@ -50,7 +49,6 @@ class OperationBuilder(
 
   private val modelBuilders = operation.dataModelGroup.maybeFlatten(
       flatten = flatten,
-      flattenNamesInOrder = flattenNamesInOrder,
       excludeNames = setOf(simpleName)
   ).flatMap {
     it.models

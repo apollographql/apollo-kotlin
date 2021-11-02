@@ -174,7 +174,6 @@ object GraphQLCompiler {
             generateQueryDocument = options.generateQueryDocument,
             generateSchema = options.generateSchema,
             flatten = options.flattenModels,
-            flattenNamesInOrder = true
         ).write(outputDir = outputDir)
       }
       else -> {
@@ -192,7 +191,6 @@ object GraphQLCompiler {
             generateSchema = options.generateSchema,
             generateTestBuilders = options.generateTestBuilders,
             flatten = options.flattenModels,
-            flattenNamesInOrder = options.codegenModels != MODELS_COMPAT,
             sealedClassesForEnumsMatching = options.sealedClassesForEnumsMatching,
             targetLanguageVersion = options.targetLanguage,
         ).write(outputDir = outputDir, testDir = testDir)
