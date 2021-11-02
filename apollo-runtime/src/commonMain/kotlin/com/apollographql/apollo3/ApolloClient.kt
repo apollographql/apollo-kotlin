@@ -219,7 +219,9 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
     /**
      * Registers the given [customScalarAdapter]
      *
-     * @param customScalarType a generated [CustomScalarType] from the [Types] generated object
+     * @param customScalarType a generated [CustomScalarType]. Every GraphQL custom scalar has a
+     * generated class with a static `type` property. For an example, for a `Date` custom scalar,
+     * you can use `com.example.Date.type`
      * @param customScalarAdapter the [Adapter] to use for this custom scalar
      */
     fun <T> addCustomScalarAdapter(customScalarType: CustomScalarType, customScalarAdapter: Adapter<T>) = apply {
