@@ -41,23 +41,23 @@ public class GetPage() : Query<GetPage.Data> {
 
   public data class Collection(
     public val __typename: String,
-    public val items: List<Item>,
+    public val items: List<Item1>,
     /**
      * Synthetic field for inline fragment on ParticularCollection
      */
     public val asParticularCollection: AsParticularCollection?
   )
 
-  public data class Item(
+  public data class Item1(
     public val title: String
   )
 
   public data class AsParticularCollection(
     public val __typename: String,
-    public val items: List<Item1>
+    public val items: List<Item>
   )
 
-  public data class Item1(
+  public data class Item(
     public val title: String,
     public val __typename: String,
     /**

@@ -15,7 +15,6 @@ class FragmentModelsBuilder(
     modelGroup: IrModelGroup,
     private val addSuperInterface: Boolean,
     flatten: Boolean,
-    flattenNamesInOrder: Boolean
 ) : JavaClassBuilder {
 
   private val packageName = context.layout.fragmentPackageName(fragment.filePath)
@@ -23,7 +22,7 @@ class FragmentModelsBuilder(
   /**
    * Fragments need to be flattened at depth 1 to avoid having all classes polluting the fragments package name
    */
-  private val modelBuilders = modelGroup.maybeFlatten(flatten, flattenNamesInOrder, 1).flatMap { it.models }
+  private val modelBuilders = modelGroup.maybeFlatten(flatten, 1).flatMap { it.models }
       .map {
         ModelBuilder(
             context = context,

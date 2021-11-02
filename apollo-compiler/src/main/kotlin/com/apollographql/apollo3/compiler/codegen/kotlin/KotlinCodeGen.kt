@@ -58,8 +58,6 @@ class KotlinCodeGen(
      */
     private val flatten: Boolean,
     @Deprecated("Used for backward compatibility with 2.x")
-    private val flattenNamesInOrder: Boolean,
-    @Deprecated("Used for backward compatibility with 2.x")
     private val sealedClassesForEnumsMatching: List<String>,
     private val targetLanguageVersion: TargetLanguage,
 ) {
@@ -131,14 +129,13 @@ class KotlinCodeGen(
                   (fragment.interfaceModelGroup ?: fragment.dataModelGroup),
                   fragment.interfaceModelGroup == null,
                   flatten,
-                  flattenNamesInOrder
               )
           )
 
           builders.add(FragmentSelectionsBuilder(context, fragment, ir.schema, ir.allFragmentDefinitions))
 
           if (generateFragmentImplementations || fragment.interfaceModelGroup == null) {
-            builders.add(FragmentResponseAdapterBuilder(context, fragment, flatten, flattenNamesInOrder))
+            builders.add(FragmentResponseAdapterBuilder(context, fragment, flatten))
           }
 
           if (generateFragmentImplementations) {
@@ -148,7 +145,6 @@ class KotlinCodeGen(
                     generateFilterNotNull,
                     fragment,
                     flatten,
-                    flattenNamesInOrder
                 )
             )
             if (fragment.variables.isNotEmpty()) {
@@ -164,7 +160,7 @@ class KotlinCodeGen(
           }
 
           builders.add(OperationSelectionsBuilder(context, operation, ir.schema, ir.allFragmentDefinitions))
-          builders.add(OperationResponseAdapterBuilder(context, operation, flatten, flattenNamesInOrder))
+          builders.add(OperationResponseAdapterBuilder(context, operation, flatten,))
 
           builders.add(
               OperationBuilder(
@@ -174,7 +170,6 @@ class KotlinCodeGen(
                   generateQueryDocument,
                   operation,
                   flatten,
-                  flattenNamesInOrder
               )
           )
 

@@ -4,6 +4,7 @@ package com.apollographql.apollo3.compiler.codegen
 
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
+import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo3.compiler.ir.IrFieldInfo
 import com.apollographql.apollo3.compiler.ir.IrListType
@@ -108,6 +109,11 @@ class CodegenLayout(
     fun upperCamelCaseIgnoringNonLetters(strings: Collection<String>): String {
       return strings.map {
         it.capitalizeFirstLetter()
+      }.joinToString("")
+    }
+    fun lowerCamelCaseIgnoringNonLetters(strings: Collection<String>): String {
+      return strings.map {
+        it.decapitalizeFirstLetter()
       }.joinToString("")
     }
 

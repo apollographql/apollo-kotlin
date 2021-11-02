@@ -53,14 +53,14 @@ public data class TestQuery(
     /**
      * Synthetic field for inline fragment on Human
      */
-    public val asHuman: AsHuman1?,
+    public val asHuman: AsHuman?,
     /**
      * Synthetic field for inline fragment on Droid
      */
     public val asDroid: AsDroid?
   )
 
-  public data class AsHuman1(
+  public data class AsHuman(
     public val __typename: String,
     /**
      * The name of the character
@@ -83,10 +83,10 @@ public data class TestQuery(
     /**
      * Synthetic field for inline fragment on Human
      */
-    public val asHuman: AsHuman?
+    public val asHuman1: AsHuman1?
   )
 
-  public data class AsHuman(
+  public data class AsHuman1(
     public val __typename: String,
     /**
      * The name of the character
@@ -121,7 +121,7 @@ public data class TestQuery(
     /**
      * Synthetic field for inline fragment on Human
      */
-    public val asHuman: AsHuman2?
+    public val asHuman2: AsHuman2?
   )
 
   public data class AsHuman2(

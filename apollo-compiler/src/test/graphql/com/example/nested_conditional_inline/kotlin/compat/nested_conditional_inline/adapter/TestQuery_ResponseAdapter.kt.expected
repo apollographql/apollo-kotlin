@@ -73,9 +73,9 @@ public object TestQuery_ResponseAdapter {
       }
 
       reader.rewind()
-      var asHuman: TestQuery.AsHuman1? = null
+      var asHuman: TestQuery.AsHuman? = null
       if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
-        asHuman = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.AsHuman1.fromJson(reader,
+        asHuman = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.AsHuman.fromJson(reader,
             customScalarAdapters)
       }
 
@@ -106,7 +106,7 @@ public object TestQuery_ResponseAdapter {
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
       if (value.asHuman != null) {
-        com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.AsHuman1.toJson(writer,
+        com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.AsHuman.toJson(writer,
             customScalarAdapters, value.asHuman)
       }
 
@@ -117,11 +117,11 @@ public object TestQuery_ResponseAdapter {
     }
   }
 
-  public object AsHuman1 : Adapter<TestQuery.AsHuman1> {
+  public object AsHuman : Adapter<TestQuery.AsHuman> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friends")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.AsHuman1 {
+        TestQuery.AsHuman {
       var __typename: String? = null
       var name: String? = null
       var friends: List<TestQuery.Friend?>? = null
@@ -136,7 +136,7 @@ public object TestQuery_ResponseAdapter {
         }
       }
 
-      return TestQuery.AsHuman1(
+      return TestQuery.AsHuman(
         __typename = __typename!!,
         name = name!!,
         friends = friends
@@ -146,7 +146,7 @@ public object TestQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: TestQuery.AsHuman1
+      `value`: TestQuery.AsHuman
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -181,16 +181,16 @@ public object TestQuery_ResponseAdapter {
       }
 
       reader.rewind()
-      var asHuman: TestQuery.AsHuman? = null
+      var asHuman1: TestQuery.AsHuman1? = null
       if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
-        asHuman = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.AsHuman.fromJson(reader,
+        asHuman1 = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.AsHuman1.fromJson(reader,
             customScalarAdapters)
       }
 
       return TestQuery.Friend(
         __typename = __typename,
         name = name!!,
-        asHuman = asHuman
+        asHuman1 = asHuman1
       )
     }
 
@@ -205,18 +205,18 @@ public object TestQuery_ResponseAdapter {
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
-      if (value.asHuman != null) {
-        com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.AsHuman.toJson(writer,
-            customScalarAdapters, value.asHuman)
+      if (value.asHuman1 != null) {
+        com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.AsHuman1.toJson(writer,
+            customScalarAdapters, value.asHuman1)
       }
     }
   }
 
-  public object AsHuman : Adapter<TestQuery.AsHuman> {
+  public object AsHuman1 : Adapter<TestQuery.AsHuman1> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "height")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.AsHuman {
+        TestQuery.AsHuman1 {
       var __typename: String? = null
       var name: String? = null
       var height: Double? = null
@@ -230,7 +230,7 @@ public object TestQuery_ResponseAdapter {
         }
       }
 
-      return TestQuery.AsHuman(
+      return TestQuery.AsHuman1(
         __typename = __typename!!,
         name = name!!,
         height = height
@@ -240,7 +240,7 @@ public object TestQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: TestQuery.AsHuman
+      `value`: TestQuery.AsHuman1
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -317,16 +317,16 @@ public object TestQuery_ResponseAdapter {
       }
 
       reader.rewind()
-      var asHuman: TestQuery.AsHuman2? = null
+      var asHuman2: TestQuery.AsHuman2? = null
       if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
-        asHuman = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.AsHuman2.fromJson(reader,
+        asHuman2 = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.AsHuman2.fromJson(reader,
             customScalarAdapters)
       }
 
       return TestQuery.Friend1(
         __typename = __typename,
         name = name!!,
-        asHuman = asHuman
+        asHuman2 = asHuman2
       )
     }
 
@@ -341,9 +341,9 @@ public object TestQuery_ResponseAdapter {
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
-      if (value.asHuman != null) {
+      if (value.asHuman2 != null) {
         com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.AsHuman2.toJson(writer,
-            customScalarAdapters, value.asHuman)
+            customScalarAdapters, value.asHuman2)
       }
     }
   }

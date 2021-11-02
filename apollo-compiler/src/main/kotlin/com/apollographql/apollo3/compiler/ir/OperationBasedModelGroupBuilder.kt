@@ -5,8 +5,6 @@ import com.apollographql.apollo3.api.BTerm
 import com.apollographql.apollo3.api.BVariable
 import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.api.and
-import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.modelName
-import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLFragmentSpread
@@ -16,15 +14,34 @@ import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.transformation.mergeTrivialInlineFragments
+import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.lowerCamelCaseIgnoringNonLetters
+import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.modelName
+import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 
 internal class OperationBasedModelGroupBuilder(
     private val schema: Schema,
     private val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val fieldMerger: FieldMerger,
-    private val insertFragmentSyntheticField: Boolean,
-    private val collectAllInlineFragmentFields: Boolean,
-    private val mergeTrivialInlineFragments: Boolean,
+    private val compat: Boolean
 ) : ModelGroupBuilder {
+  private val insertFragmentSyntheticField = compat
+  private val collectAllInlineFragmentFields = compat
+  private val mergeTrivialInlineFragments = compat
+
+  private fun resolveNameClashes(usedNames: MutableSet<String>, modelName: String): String {
+    if (!compat) {
+      return modelName
+    }
+
+    var i = 0
+    var name = modelName
+    while (usedNames.contains(name)) {
+      i++
+      name = "$modelName$i"
+    }
+    usedNames.add(name)
+    return name
+  }
 
   override fun buildOperationData(selections: List<GQLSelection>, rawTypeName: String, operationName: String): IrModelGroup {
     val info = IrFieldInfo(
@@ -40,11 +57,13 @@ internal class OperationBasedModelGroupBuilder(
     } else {
       selections
     }
+    val usedNames = mutableSetOf<String>()
     return buildField(
         path = "${MODEL_OPERATION_DATA}.$operationName",
         info = info,
         selections = mergedSelections.map { SelectionWithParent(it, rawTypeName) },
         condition = BooleanExpression.True,
+        usedNames = usedNames,
     ).toModelGroup()!!
   }
 
@@ -75,11 +94,14 @@ internal class OperationBasedModelGroupBuilder(
       fragmentDefinition.selectionSet.selections
     }
 
+    val usedNames = mutableSetOf<String>()
+
     return buildField(
         path = "${MODEL_FRAGMENT_DATA}.$fragmentName",
         info = info,
         selections = mergedSelections.map { SelectionWithParent(it, fragmentDefinition.typeCondition.name) },
         condition = BooleanExpression.True,
+        usedNames = usedNames,
     ).toModelGroup()!!
   }
 
@@ -115,12 +137,15 @@ internal class OperationBasedModelGroupBuilder(
    * @param selections the sub-selections of this fields. If [collectAllInlineFragmentFields] is true, might contain parent fields that
    * might not all be on the same parent type. Hence [SelectionWithParent]
    * @param condition the condition for this field. Might be a mix of include directives and type conditions
+   * @param usedNames the used names for 2.x compat name conflicts resolution
+   * @param modelName the modelName to use for this field
    */
   private fun buildField(
       path: String,
       info: IrFieldInfo,
       selections: List<SelectionWithParent>,
       condition: BooleanExpression<BTerm>,
+      usedNames: MutableSet<String>,
   ): OperationField {
     if (selections.isEmpty()) {
       return OperationField(
@@ -133,26 +158,6 @@ internal class OperationBasedModelGroupBuilder(
 
     val selfPath = path + "." + info.responseName
 
-    /**
-     * Merge fields with the same response name in the selectionSet
-     */
-    val fieldsWithParent = selections.mapNotNull {
-      if (it.selection is GQLField) {
-        FieldWithParent(it.selection, it.parent)
-      } else {
-        null
-      }
-    }
-    val fields = fieldMerger.merge(fieldsWithParent).map { mergedField ->
-      val childInfo = mergedField.info.maybeNullable(mergedField.condition != BooleanExpression.True)
-
-      buildField(
-          path = selfPath,
-          info = childInfo,
-          selections = mergedField.selections.map { SelectionWithParent(it, mergedField.rawTypeName) },
-          condition = BooleanExpression.True,
-      )
-    }
 
     /**
      * Merge fragments with the same type condition and include directive to avoid name clashes
@@ -224,6 +229,7 @@ internal class OperationBasedModelGroupBuilder(
                 if (childCondition == BooleanExpression.True) {
                   type = IrNonNullType(type)
                 }
+
                 val childInfo = IrFieldInfo(
                     responseName = "$prefix$name",
                     description = "Synthetic field for inline fragment on $typeCondition",
@@ -245,6 +251,7 @@ internal class OperationBasedModelGroupBuilder(
                     info = childInfo,
                     selections = childSelections,
                     condition = childCondition,
+                    usedNames = usedNames,
                 )
               }
         }
@@ -310,23 +317,29 @@ internal class OperationBasedModelGroupBuilder(
               info = childInfo,
               selections = emptyList(), // Don't create a model for fragments spreads
               condition = childCondition,
+              usedNames = usedNames,
           )
         }
 
+    /**
+     * Add the "Fragments" synthetic field for compat codegen
+     */
     val fragmentsFields = if (insertFragmentSyntheticField && fragmentSpreadFields.isNotEmpty()) {
       val childPath = "$selfPath.$FRAGMENTS_SYNTHETIC_FIELD"
-
-      val fragmentsFieldSet = OperationFieldSet(
-          id = childPath,
-          fields = listOf(hiddenTypenameField) + fragmentSpreadFields
-      )
 
       val fragmentsFieldInfo = IrFieldInfo(
           responseName = FRAGMENTS_SYNTHETIC_FIELD,
           description = "Synthetic field for grouping fragments",
           deprecationReason = null,
-          type = IrNonNullType(IrModelType(fragmentsFieldSet.id)),
+          type = IrNonNullType(IrModelType(childPath)),
           gqlType = null
+      )
+
+      val fragmentsFieldSet = OperationFieldSet(
+          id = childPath,
+          // No need to resolve the nameclashes here, "Fragments" are never flattened
+          modelName = modelName(fragmentsFieldInfo),
+          fields = listOf(hiddenTypenameField) + fragmentSpreadFields
       )
 
       listOf(
@@ -340,12 +353,46 @@ internal class OperationBasedModelGroupBuilder(
     } else {
       fragmentSpreadFields
     }
+
+    val modelName = resolveNameClashes(usedNames, modelName(info))
+
+    /**
+     * Merge fields with the same response name in the selectionSet
+     * This comes last so that it mimics the 2.x behaviour of nameclash resolution
+     */
+    val fieldsWithParent = selections.mapNotNull {
+      if (it.selection is GQLField) {
+        FieldWithParent(it.selection, it.parent)
+      } else {
+        null
+      }
+    }
+    val fields = fieldMerger.merge(fieldsWithParent).map { mergedField ->
+      val childInfo = mergedField.info.maybeNullable(mergedField.condition != BooleanExpression.True)
+
+      buildField(
+          path = selfPath,
+          info = childInfo,
+          selections = mergedField.selections.map { SelectionWithParent(it, mergedField.rawTypeName) },
+          condition = BooleanExpression.True,
+          usedNames = usedNames,
+      )
+    }
+
     val fieldSet = OperationFieldSet(
         id = selfPath,
+        modelName = modelName,
         fields = fields + inlineFragmentsFields + fragmentsFields
     )
 
-    val patchedInfo = info.copy(type = info.type.replacePlaceholder(fieldSet.id))
+    val patchedInfo = info.copy(
+        type = info.type.replacePlaceholder(fieldSet.id),
+        responseName = if (info.gqlType == null) {
+          lowerCamelCaseIgnoringNonLetters(setOf(modelName))
+        } else {
+          info.responseName
+        }
+    )
 
     return OperationField(
         info = patchedInfo,
@@ -390,6 +437,7 @@ private class OperationField(
 
 private data class OperationFieldSet(
     val id: String,
+    val modelName: String,
     val fields: List<OperationField>,
 )
 
@@ -407,7 +455,7 @@ private fun OperationField.toModelGroup(): IrModelGroup? {
 
 private fun OperationFieldSet.toModel(info: IrFieldInfo): IrModel {
   return IrModel(
-      modelName = modelName(info),
+      modelName = modelName,
       id = id,
       properties = fields.map { it.toProperty() },
       accessors = emptyList(),

@@ -56,12 +56,12 @@ public object TestQuery_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Iface1 {
       var __typename: String? = null
-      var iface2: TestQuery.Iface2? = null
+      var iface2: TestQuery.Iface21? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> iface2 = Iface2.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          1 -> iface2 = Iface21.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -93,7 +93,7 @@ public object TestQuery_ResponseAdapter {
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       writer.name("iface2")
-      Iface2.obj(true).nullable().toJson(writer, customScalarAdapters, value.iface2)
+      Iface21.obj(true).nullable().toJson(writer, customScalarAdapters, value.iface2)
 
       if (value.asImpl1 != null) {
         com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.AsImpl1.toJson(writer,
@@ -102,11 +102,11 @@ public object TestQuery_ResponseAdapter {
     }
   }
 
-  public object Iface2 : Adapter<TestQuery.Iface2> {
+  public object Iface21 : Adapter<TestQuery.Iface21> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "scalar1")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Iface2 {
+        TestQuery.Iface21 {
       var __typename: String? = null
       var scalar1: String? = null
 
@@ -123,23 +123,23 @@ public object TestQuery_ResponseAdapter {
       }
 
       reader.rewind()
-      var asImpl2: TestQuery.AsImpl2? = null
+      var asImpl21: TestQuery.AsImpl21? = null
       if (possibleTypes("Impl2").evaluate(emptySet(), __typename)) {
-        asImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.AsImpl2.fromJson(reader,
+        asImpl21 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.AsImpl21.fromJson(reader,
             customScalarAdapters)
       }
 
-      return TestQuery.Iface2(
+      return TestQuery.Iface21(
         __typename = __typename,
         scalar1 = scalar1,
-        asImpl2 = asImpl2
+        asImpl21 = asImpl21
       )
     }
 
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: TestQuery.Iface2
+      `value`: TestQuery.Iface21
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -147,18 +147,18 @@ public object TestQuery_ResponseAdapter {
       writer.name("scalar1")
       NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar1)
 
-      if (value.asImpl2 != null) {
-        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.AsImpl2.toJson(writer,
-            customScalarAdapters, value.asImpl2)
+      if (value.asImpl21 != null) {
+        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.AsImpl21.toJson(writer,
+            customScalarAdapters, value.asImpl21)
       }
     }
   }
 
-  public object AsImpl2 : Adapter<TestQuery.AsImpl2> {
+  public object AsImpl21 : Adapter<TestQuery.AsImpl21> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "scalar1", "scalar2")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.AsImpl2 {
+        TestQuery.AsImpl21 {
       var __typename: String? = null
       var scalar1: String? = null
       var scalar2: String? = null
@@ -172,7 +172,7 @@ public object TestQuery_ResponseAdapter {
         }
       }
 
-      return TestQuery.AsImpl2(
+      return TestQuery.AsImpl21(
         __typename = __typename!!,
         scalar1 = scalar1,
         scalar2 = scalar2
@@ -182,7 +182,7 @@ public object TestQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: TestQuery.AsImpl2
+      `value`: TestQuery.AsImpl21
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -201,12 +201,12 @@ public object TestQuery_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.AsImpl1 {
       var __typename: String? = null
-      var iface2: TestQuery.Iface21? = null
+      var iface2: TestQuery.Iface2? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> iface2 = Iface21.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          1 -> iface2 = Iface2.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -226,15 +226,15 @@ public object TestQuery_ResponseAdapter {
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       writer.name("iface2")
-      Iface21.obj(true).nullable().toJson(writer, customScalarAdapters, value.iface2)
+      Iface2.obj(true).nullable().toJson(writer, customScalarAdapters, value.iface2)
     }
   }
 
-  public object Iface21 : Adapter<TestQuery.Iface21> {
+  public object Iface2 : Adapter<TestQuery.Iface2> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "scalar1", "scalar3")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Iface21 {
+        TestQuery.Iface2 {
       var __typename: String? = null
       var scalar1: String? = null
       var scalar3: String? = null
@@ -253,13 +253,13 @@ public object TestQuery_ResponseAdapter {
       }
 
       reader.rewind()
-      var asImpl2: TestQuery.AsImpl21? = null
+      var asImpl2: TestQuery.AsImpl2? = null
       if (possibleTypes("Impl2").evaluate(emptySet(), __typename)) {
-        asImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.AsImpl21.fromJson(reader,
+        asImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.AsImpl2.fromJson(reader,
             customScalarAdapters)
       }
 
-      return TestQuery.Iface21(
+      return TestQuery.Iface2(
         __typename = __typename,
         scalar1 = scalar1,
         scalar3 = scalar3,
@@ -270,7 +270,7 @@ public object TestQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: TestQuery.Iface21
+      `value`: TestQuery.Iface2
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -282,18 +282,18 @@ public object TestQuery_ResponseAdapter {
       NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar3)
 
       if (value.asImpl2 != null) {
-        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.AsImpl21.toJson(writer,
+        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.AsImpl2.toJson(writer,
             customScalarAdapters, value.asImpl2)
       }
     }
   }
 
-  public object AsImpl21 : Adapter<TestQuery.AsImpl21> {
+  public object AsImpl2 : Adapter<TestQuery.AsImpl2> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "scalar1", "scalar3", "scalar2",
         "scalar4")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.AsImpl21 {
+        TestQuery.AsImpl2 {
       var __typename: String? = null
       var scalar1: String? = null
       var scalar3: String? = null
@@ -311,7 +311,7 @@ public object TestQuery_ResponseAdapter {
         }
       }
 
-      return TestQuery.AsImpl21(
+      return TestQuery.AsImpl2(
         __typename = __typename!!,
         scalar1 = scalar1,
         scalar3 = scalar3,
@@ -323,7 +323,7 @@ public object TestQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: TestQuery.AsImpl21
+      `value`: TestQuery.AsImpl2
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

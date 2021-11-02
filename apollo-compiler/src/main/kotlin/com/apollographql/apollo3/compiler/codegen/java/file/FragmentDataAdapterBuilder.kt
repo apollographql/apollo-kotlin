@@ -13,13 +13,11 @@ class FragmentDataAdapterBuilder(
     val context: JavaContext,
     val fragment: IrNamedFragment,
     val flatten: Boolean,
-    val flattenNamesInOrder: Boolean
-
 ) : JavaClassBuilder {
   private val packageName = context.layout.fragmentPackageName(fragment.filePath)
   private val simpleName = context.layout.fragmentResponseAdapterWrapperName(fragment.name)
 
-  private val responseAdapterBuilders = fragment.dataModelGroup.maybeFlatten(flatten, flattenNamesInOrder).map {
+  private val responseAdapterBuilders = fragment.dataModelGroup.maybeFlatten(flatten).map {
     ResponseAdapterBuilder.create(
         context = context,
         modelGroup = it,

@@ -55,12 +55,12 @@ public object GetPage_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetPage.Collection {
       var __typename: String? = null
-      var items: List<GetPage.Item>? = null
+      var items: List<GetPage.Item1>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> items = Item.obj().list().fromJson(reader, customScalarAdapters)
+          1 -> items = Item1.obj().list().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -92,7 +92,7 @@ public object GetPage_ResponseAdapter {
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       writer.name("items")
-      Item.obj().list().toJson(writer, customScalarAdapters, value.items)
+      Item1.obj().list().toJson(writer, customScalarAdapters, value.items)
 
       if (value.asParticularCollection != null) {
         com.example.test_inline.adapter.GetPage_ResponseAdapter.AsParticularCollection.toJson(writer,
@@ -101,11 +101,11 @@ public object GetPage_ResponseAdapter {
     }
   }
 
-  public object Item : Adapter<GetPage.Item> {
+  public object Item1 : Adapter<GetPage.Item1> {
     public val RESPONSE_NAMES: List<String> = listOf("title")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        GetPage.Item {
+        GetPage.Item1 {
       var title: String? = null
 
       while(true) {
@@ -115,7 +115,7 @@ public object GetPage_ResponseAdapter {
         }
       }
 
-      return GetPage.Item(
+      return GetPage.Item1(
         title = title!!
       )
     }
@@ -123,7 +123,7 @@ public object GetPage_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: GetPage.Item
+      `value`: GetPage.Item1
     ): Unit {
       writer.name("title")
       StringAdapter.toJson(writer, customScalarAdapters, value.title)
@@ -136,12 +136,12 @@ public object GetPage_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetPage.AsParticularCollection {
       var __typename: String? = null
-      var items: List<GetPage.Item1>? = null
+      var items: List<GetPage.Item>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> items = Item1.obj(true).list().fromJson(reader, customScalarAdapters)
+          1 -> items = Item.obj(true).list().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -161,15 +161,15 @@ public object GetPage_ResponseAdapter {
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
       writer.name("items")
-      Item1.obj(true).list().toJson(writer, customScalarAdapters, value.items)
+      Item.obj(true).list().toJson(writer, customScalarAdapters, value.items)
     }
   }
 
-  public object Item1 : Adapter<GetPage.Item1> {
+  public object Item : Adapter<GetPage.Item> {
     public val RESPONSE_NAMES: List<String> = listOf("title", "__typename")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        GetPage.Item1 {
+        GetPage.Item {
       var title: String? = null
       var __typename: String? = null
 
@@ -192,7 +192,7 @@ public object GetPage_ResponseAdapter {
             customScalarAdapters)
       }
 
-      return GetPage.Item1(
+      return GetPage.Item(
         title = title!!,
         __typename = __typename,
         asParticularItem = asParticularItem
@@ -202,7 +202,7 @@ public object GetPage_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: GetPage.Item1
+      `value`: GetPage.Item
     ): Unit {
       writer.name("title")
       StringAdapter.toJson(writer, customScalarAdapters, value.title)
