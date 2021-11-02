@@ -93,14 +93,14 @@ Apollo Android is a [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplat
 
 Here's the current matrix of supported features per platform:
 
-|  | `jvm` | Apple¹ | `js` |
-| --- | :---: | :---: | :---: |
-| `apollo-api` (models)|✅|✅|✅|
-| `apollo-runtime` (network, query batching, apq, ...) |✅|✅|✅²|
-| `apollo-normalized-cache` |✅|✅|✅|
-| `apollo-normalized-cache-sqlite` |✅|✅|🚫|
-| `apollo-adapters` |✅|✅|✅|
-| `apollo-http-cache` |✅|🚫|🚫|
+|  | `jvm` | Apple¹ | `js` | `linuxX64`
+| --- | :---: | :---: | :---: | :---: |
+| `apollo-api` (models)|✅|✅|✅|✅|
+| `apollo-runtime` (network, query batching, apq, ...) |✅|✅|✅²|🚫|
+| `apollo-normalized-cache` |✅|✅|✅|🚫|
+| `apollo-normalized-cache-sqlite` |✅|✅|🚫|🚫|
+| `apollo-adapters` |✅|✅|✅|🚫|
+| `apollo-http-cache` |✅|🚫|🚫|🚫|
 
 ¹: Apple currently includes:
 

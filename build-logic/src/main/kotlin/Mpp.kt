@@ -1,7 +1,7 @@
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
-fun Project.configureMppDefaults(withJs: Boolean = true) {
+fun Project.configureMppDefaults(withJs: Boolean = true, withLinux: Boolean = true) {
   // See https://kotlinlang.org/docs/mpp-dsl-reference.html#targets
 
   val kotlinExtension = extensions.findByName("kotlin") as? KotlinMultiplatformExtension
@@ -73,6 +73,10 @@ fun Project.configureMppDefaults(withJs: Boolean = true) {
       macosX64("apple")
     }
 
+    if (withLinux) {
+      linuxX64("linux")
+    }
+
     addTestDependencies(withJs)
 
     if (System.getProperty("idea.sync.active") == null) {
@@ -91,7 +95,7 @@ fun Project.configureMppDefaults(withJs: Boolean = true) {
 }
 
 /**
- * Same as [configureMppDefaults] but without iOS targets.
+ * Same as [configureMppDefaults] but without iOS or Linux targets.
  * Tests only run on the JVM, JS and MacOS
  */
 fun Project.configureMppTestsDefaults(withJs: Boolean = true) {
