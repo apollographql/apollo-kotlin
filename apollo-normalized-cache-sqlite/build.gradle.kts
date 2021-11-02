@@ -12,7 +12,7 @@ configure<com.squareup.sqldelight.gradle.SqlDelightExtension> {
 }
 
 // https://github.com/cashapp/sqldelight/pull/1486
-configureMppDefaults(withJs = false)
+configureMppDefaults(withJs = false, withLinux = false)
 
 configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
   if (System.getProperty("idea.sync.active") == null) {

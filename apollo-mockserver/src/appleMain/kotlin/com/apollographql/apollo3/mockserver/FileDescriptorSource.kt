@@ -18,7 +18,7 @@ class FileDescriptorSource(val fd: Int) : Source {
 
   override fun read(
       sink: Buffer,
-      byteCount: Long
+      byteCount: Long,
   ): Long {
     require(byteCount >= 0L) { "byteCount < 0: $byteCount" }
     check(!closed) { "closed" }
@@ -33,7 +33,7 @@ class FileDescriptorSource(val fd: Int) : Source {
       var read = 0L
       while (read < byteCount) {
         val toRead = minOf(bufSize.toLong(), byteCount - read)
-        val len = platform.posix.read(fd, buf, toRead.convert())
+        val len: Long = platform.posix.read(fd, buf, toRead.convert()).convert()
         if (len < 0) {
           throw IOException("Cannot read $fd (errno = $errno)")
         }

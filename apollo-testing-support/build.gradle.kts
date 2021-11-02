@@ -2,7 +2,7 @@ plugins {
   kotlin("multiplatform")
 }
 
-configureMppDefaults(withJs = true)
+configureMppDefaults(withLinux = false)
 
 kotlin {
   sourceSets {

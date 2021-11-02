@@ -93,16 +93,29 @@ Apollo Android is a [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplat
 
 Here's the current matrix of supported features per platform:
 
-|  | `jvm` | `iosX64`, `iosArm64` | `macosX64` | `js` |
+|  | `jvm` | Apple¹ | `js` | `linuxX64`
 | --- | :---: | :---: | :---: | :---: |
 | `apollo-api` (models)|✅|✅|✅|✅|
-| `apollo-runtime` (network, query batching, apq, ...) |✅|✅|✅|✅¹|
-| `apollo-normalized-cache` |✅|✅|✅|✅|
-| `apollo-normalized-cache-sqlite` |✅|✅|✅|🚫|
-| `apollo-adapters` |✅|✅|✅|✅|
+| `apollo-runtime` (network, query batching, apq, ...) |✅|✅|✅²|🚫|
+| `apollo-normalized-cache` |✅|✅|✅|🚫|
+| `apollo-normalized-cache-sqlite` |✅|✅|🚫|🚫|
+| `apollo-adapters` |✅|✅|✅|🚫|
 | `apollo-http-cache` |✅|🚫|🚫|🚫|
 
-¹: WebSockets are currently not supported on `js`
+¹: Apple currently includes:
+
+- `macosX64`
+- `macosArm64`
+- `iosArm64`
+- `iosX64`
+- `iosSimulatorArm64`
+- `watchosArm64`
+- `watchosSimulatorArm64`
+- `tvosArm64`
+- `tvosX64`
+- `tvosSimulatorArm64`
+
+²: WebSockets are currently not supported on `js`
 
 ## Requirements
 

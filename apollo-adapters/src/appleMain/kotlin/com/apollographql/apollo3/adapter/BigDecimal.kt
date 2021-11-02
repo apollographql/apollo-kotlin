@@ -8,9 +8,9 @@ actual class BigDecimal internal constructor(private val raw: NSDecimalNumber) :
 
   actual constructor(doubleVal: Double) : this(NSDecimalNumber(doubleVal))
 
-  actual constructor(intVal: Int) : this(NSDecimalNumber(intVal))
+  actual constructor(intVal: Int) : this(NSDecimalNumber(int = intVal))
 
-  actual constructor(longVal: Long) : this(NSDecimalNumber(long = longVal))
+  actual constructor(longVal: Long) : this(NSDecimalNumber(longLong = longVal))
 
   actual fun add(augend: BigDecimal): BigDecimal = BigDecimal(raw.decimalNumberByAdding(augend.raw))
 
@@ -20,10 +20,10 @@ actual class BigDecimal internal constructor(private val raw: NSDecimalNumber) :
 
   actual fun divide(divisor: BigDecimal): BigDecimal = BigDecimal(raw.decimalNumberByDividingBy(divisor.raw))
 
-  actual fun negate(): BigDecimal = BigDecimal(NSDecimalNumber(0).decimalNumberBySubtracting(raw))
+  actual fun negate(): BigDecimal = BigDecimal(NSDecimalNumber(int = 0).decimalNumberBySubtracting(raw))
 
   actual fun signum(): Int {
-    val result = raw.compare(NSDecimalNumber(0)).toInt()
+    val result = raw.compare(NSDecimalNumber(int = 0)).toInt()
     return when {
       result < 0 -> -1
       result > 0 -> 1
@@ -36,7 +36,7 @@ actual class BigDecimal internal constructor(private val raw: NSDecimalNumber) :
   }
 
   override fun toLong(): Long {
-    return raw.longValue
+    return raw.longLongValue
   }
 
   override fun toShort(): Short {
