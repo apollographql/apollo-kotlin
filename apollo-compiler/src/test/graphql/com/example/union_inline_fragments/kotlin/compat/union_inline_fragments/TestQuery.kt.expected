@@ -67,12 +67,12 @@ public class TestQuery() : Query<TestQuery.Data> {
     /**
      * The friends of the character, or an empty list if they have none
      */
-    public val friends: List<Friend?>?
+    public val friends: List<Friend2?>?
   ) {
-    public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
+    public fun friendsFilterNotNull(): List<Friend2>? = friends?.filterNotNull()
   }
 
-  public data class Friend(
+  public data class Friend2(
     public val __typename: String,
     /**
      * The name of the character
@@ -101,12 +101,12 @@ public class TestQuery() : Query<TestQuery.Data> {
     /**
      * This human's friends, or an empty list if they have none
      */
-    public val friends: List<Friend1?>?
+    public val friends: List<Friend?>?
   ) {
-    public fun friendsFilterNotNull(): List<Friend1>? = friends?.filterNotNull()
+    public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
   }
 
-  public data class Friend1(
+  public data class Friend(
     public val __typename: String,
     /**
      * The movie this character first appears in
@@ -127,12 +127,12 @@ public class TestQuery() : Query<TestQuery.Data> {
     /**
      * This droid's friends, or an empty list if they have none
      */
-    public val friends: List<Friend2?>?
+    public val friends: List<Friend1?>?
   ) {
-    public fun friendsFilterNotNull(): List<Friend2>? = friends?.filterNotNull()
+    public fun friendsFilterNotNull(): List<Friend1>? = friends?.filterNotNull()
   }
 
-  public data class Friend2(
+  public data class Friend1(
     /**
      * The ID of the character
      */

@@ -122,14 +122,14 @@ public object TestQuery_ResponseAdapter {
       var __typename: String? = null
       var id: String? = null
       var name: String? = null
-      var friends: List<TestQuery.Friend?>? = null
+      var friends: List<TestQuery.Friend2?>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
           2 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          3 -> friends = Friend.obj(true).nullable().list().nullable().fromJson(reader,
+          3 -> friends = Friend2.obj(true).nullable().list().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
@@ -158,16 +158,16 @@ public object TestQuery_ResponseAdapter {
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
       writer.name("friends")
-      Friend.obj(true).nullable().list().nullable().toJson(writer, customScalarAdapters,
+      Friend2.obj(true).nullable().list().nullable().toJson(writer, customScalarAdapters,
           value.friends)
     }
   }
 
-  public object Friend : Adapter<TestQuery.Friend> {
+  public object Friend2 : Adapter<TestQuery.Friend2> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Friend {
+        TestQuery.Friend2 {
       var __typename: String? = null
       var name: String? = null
 
@@ -197,7 +197,7 @@ public object TestQuery_ResponseAdapter {
             customScalarAdapters)
       }
 
-      return TestQuery.Friend(
+      return TestQuery.Friend2(
         __typename = __typename,
         name = name!!,
         asHuman = asHuman,
@@ -208,7 +208,7 @@ public object TestQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: TestQuery.Friend
+      `value`: TestQuery.Friend2
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -236,14 +236,14 @@ public object TestQuery_ResponseAdapter {
       var __typename: String? = null
       var name: String? = null
       var homePlanet: String? = null
-      var friends: List<TestQuery.Friend1?>? = null
+      var friends: List<TestQuery.Friend?>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
           2 -> homePlanet = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          3 -> friends = Friend1.obj().nullable().list().nullable().fromJson(reader,
+          3 -> friends = Friend.obj().nullable().list().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
@@ -272,15 +272,15 @@ public object TestQuery_ResponseAdapter {
       NullableStringAdapter.toJson(writer, customScalarAdapters, value.homePlanet)
 
       writer.name("friends")
-      Friend1.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
+      Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
     }
   }
 
-  public object Friend1 : Adapter<TestQuery.Friend1> {
+  public object Friend : Adapter<TestQuery.Friend> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "firstAppearsIn")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Friend1 {
+        TestQuery.Friend {
       var __typename: String? = null
       var firstAppearsIn: Episode? = null
 
@@ -292,7 +292,7 @@ public object TestQuery_ResponseAdapter {
         }
       }
 
-      return TestQuery.Friend1(
+      return TestQuery.Friend(
         __typename = __typename!!,
         firstAppearsIn = firstAppearsIn!!
       )
@@ -301,7 +301,7 @@ public object TestQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: TestQuery.Friend1
+      `value`: TestQuery.Friend
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -320,14 +320,14 @@ public object TestQuery_ResponseAdapter {
       var __typename: String? = null
       var name: String? = null
       var primaryFunction: String? = null
-      var friends: List<TestQuery.Friend2?>? = null
+      var friends: List<TestQuery.Friend1?>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
           2 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          3 -> friends = Friend2.obj().nullable().list().nullable().fromJson(reader,
+          3 -> friends = Friend1.obj().nullable().list().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
@@ -356,15 +356,15 @@ public object TestQuery_ResponseAdapter {
       NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
 
       writer.name("friends")
-      Friend2.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
+      Friend1.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
     }
   }
 
-  public object Friend2 : Adapter<TestQuery.Friend2> {
+  public object Friend1 : Adapter<TestQuery.Friend1> {
     public val RESPONSE_NAMES: List<String> = listOf("id")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Friend2 {
+        TestQuery.Friend1 {
       var id: String? = null
 
       while(true) {
@@ -374,7 +374,7 @@ public object TestQuery_ResponseAdapter {
         }
       }
 
-      return TestQuery.Friend2(
+      return TestQuery.Friend1(
         id = id!!
       )
     }
@@ -382,7 +382,7 @@ public object TestQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: TestQuery.Friend2
+      `value`: TestQuery.Friend1
     ): Unit {
       writer.name("id")
       StringAdapter.toJson(writer, customScalarAdapters, value.id)
