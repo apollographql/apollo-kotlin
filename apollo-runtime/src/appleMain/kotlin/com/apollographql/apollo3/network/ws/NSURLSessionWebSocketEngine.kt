@@ -6,14 +6,12 @@ import com.apollographql.apollo3.network.toNSData
 import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.StableRef
 import kotlinx.cinterop.asStableRef
+import kotlinx.cinterop.convert
 import kotlinx.cinterop.staticCFunction
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import okio.ByteString
-import okio.ByteString.Companion.toByteString
-import okio.IOException
-import okio.internal.commonAsUtf8ToByteArray
 import okio.toByteString
 import platform.Foundation.NSData
 import platform.Foundation.NSError
@@ -35,7 +33,6 @@ import platform.Foundation.setValue
 import platform.darwin.NSObject
 import platform.darwin.dispatch_async_f
 import platform.darwin.dispatch_get_main_queue
-import kotlin.native.concurrent.ensureNeverFrozen
 import kotlin.native.concurrent.freeze
 
 interface WebSocketConnectionListener {
@@ -113,7 +110,7 @@ private class WebSocketConnectionImpl(
   init {
     messageChannel.invokeOnClose {
       webSocket.cancelWithCloseCode(
-          closeCode = CLOSE_NORMAL.toLong(),
+          closeCode = CLOSE_NORMAL.convert(),
           reason = null
       )
     }
