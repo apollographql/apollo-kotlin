@@ -51,16 +51,16 @@ public class HeroDetailQuery() : Query<HeroDetailQuery.Data> {
     /**
      * The friends of the character, or an empty list if they have none
      */
-    public val friends: List<Friend?>?,
+    public val friends: List<Friend2?>?,
     /**
      * Synthetic field for inline fragment on Human
      */
     public val asHuman: AsHuman?
   ) {
-    public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
+    public fun friendsFilterNotNull(): List<Friend2>? = friends?.filterNotNull()
   }
 
-  public data class Friend(
+  public data class Friend2(
     /**
      * The name of the character
      */
@@ -77,16 +77,16 @@ public class HeroDetailQuery() : Query<HeroDetailQuery.Data> {
      * Merged field with multiple descriptions. See parentTypes: 'Character, Human' for more
      * information
      */
-    public val friends: List<Friend2?>?,
+    public val friends: List<Friend?>?,
     /**
      * Height in the preferred unit, default is meters
      */
     public val height: Double?
   ) {
-    public fun friendsFilterNotNull(): List<Friend2>? = friends?.filterNotNull()
+    public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
   }
 
-  public data class Friend2(
+  public data class Friend(
     /**
      * The name of the character
      */

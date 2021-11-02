@@ -36,6 +36,7 @@ private fun IrModelGroup.walk2(
         val nestedModelGroups = mutableListOf<IrModelGroup>()
         model.modelGroups.forEach { modelGroup ->
           if (modelGroup.models.singleOrNull()?.modelName == "Fragments") {
+            // Special case, "Fragments" are always nested
             nestedModelGroups.add(modelGroup)
           } else {
             /**

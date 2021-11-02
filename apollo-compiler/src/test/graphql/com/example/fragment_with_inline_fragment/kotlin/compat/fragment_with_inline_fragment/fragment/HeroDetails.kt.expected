@@ -19,7 +19,7 @@ public data class HeroDetails(
   /**
    * The friends of the character exposed as a connection with edges
    */
-  public val friendsConnection: FriendsConnection,
+  public val friendsConnection: FriendsConnection1,
   /**
    * Synthetic field for inline fragment on Droid
    */
@@ -29,7 +29,7 @@ public data class HeroDetails(
    */
   public val fragments: Fragments
 ) : Fragment.Data {
-  public data class FriendsConnection(
+  public data class FriendsConnection1(
     /**
      * The total number of friends
      */
@@ -37,7 +37,7 @@ public data class HeroDetails(
     /**
      * The edges for each of the character's friends.
      */
-    public val edges: List<Edge?>?
+    public val edges: List<Edge1?>?
   )
 
   public data class AsDroid(
@@ -49,7 +49,7 @@ public data class HeroDetails(
     /**
      * The friends of the character exposed as a connection with edges
      */
-    public val friendsConnection: FriendsConnection1,
+    public val friendsConnection: FriendsConnection,
     /**
      * Synthetic field for grouping fragments
      */
@@ -70,31 +70,6 @@ public data class HeroDetails(
     public val humanDetails: HumanDetails?
   )
 
-  public data class Edge(
-    /**
-     * The character represented by this friendship edge
-     */
-    public val node: Node?
-  )
-
-  public data class Node(
-    /**
-     * The name of the character
-     */
-    public val name: String
-  )
-
-  public data class FriendsConnection1(
-    /**
-     * The total number of friends
-     */
-    public val totalCount: Int?,
-    /**
-     * The edges for each of the character's friends.
-     */
-    public val edges: List<Edge1?>?
-  )
-
   public data class Edge1(
     /**
      * The character represented by this friendship edge
@@ -103,6 +78,31 @@ public data class HeroDetails(
   )
 
   public data class Node1(
+    /**
+     * The name of the character
+     */
+    public val name: String
+  )
+
+  public data class FriendsConnection(
+    /**
+     * The total number of friends
+     */
+    public val totalCount: Int?,
+    /**
+     * The edges for each of the character's friends.
+     */
+    public val edges: List<Edge?>?
+  )
+
+  public data class Edge(
+    /**
+     * The character represented by this friendship edge
+     */
+    public val node: Node?
+  )
+
+  public data class Node(
     /**
      * The name of the character
      */

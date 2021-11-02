@@ -62,7 +62,7 @@ class BasicTest {
     assertEquals(hero.name, "R2-D2")
     assertEquals(hero.friends?.get(0)?.name, "Luke Skywalker")
     assertEquals(hero.friends?.get(0)?.name, "Luke Skywalker")
-    assertEquals((hero.friends?.get(0)?.asHuman)?.height, 1.72)
+    assertEquals((hero.friends?.get(0)?.asHuman2)?.height, 1.72)
   }
 
 

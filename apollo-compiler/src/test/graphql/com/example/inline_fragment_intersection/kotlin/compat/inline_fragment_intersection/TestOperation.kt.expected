@@ -51,29 +51,29 @@ public class TestOperation() : Query<TestOperation.Data> {
     /**
      * Synthetic field for inline fragment on Wookie
      */
-    public val asWookie: AsWookie2?
+    public val asWookie2: AsWookie2?
   )
 
   public data class AsBeing(
     public val __typename: String,
     public val name: String,
-    public val friends: List<Friend>,
+    public val friends: List<Friend1>,
     /**
      * Synthetic field for inline fragment on Human
      */
     public val asHuman: AsHuman?
   )
 
-  public data class Friend(
+  public data class Friend1(
     public val __typename: String,
     public val name: String,
     /**
      * Synthetic field for inline fragment on Wookie
      */
-    public val asWookie: AsWookie?
+    public val asWookie1: AsWookie1?
   )
 
-  public data class AsWookie(
+  public data class AsWookie1(
     public val __typename: String,
     public val name: String,
     public val lifeExpectancy: Double?
@@ -82,21 +82,21 @@ public class TestOperation() : Query<TestOperation.Data> {
   public data class AsHuman(
     public val __typename: String,
     public val name: String,
-    public val friends: List<Friend1>,
+    public val friends: List<Friend>,
     public val profilePictureUrl: String?
   )
 
-  public data class Friend1(
+  public data class Friend(
     public val __typename: String,
     public val name: String,
     public val isFamous: Boolean?,
     /**
      * Synthetic field for inline fragment on Wookie
      */
-    public val asWookie: AsWookie1?
+    public val asWookie: AsWookie?
   )
 
-  public data class AsWookie1(
+  public data class AsWookie(
     public val __typename: String,
     public val name: String,
     public val isFamous: Boolean?,

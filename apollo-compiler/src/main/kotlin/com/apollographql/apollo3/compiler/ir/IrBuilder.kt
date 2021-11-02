@@ -33,6 +33,8 @@ import com.apollographql.apollo3.ast.GQLVariableDefinition
 import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.VariableReference
+import com.apollographql.apollo3.ast.coerceInExecutableContextOrThrow
+import com.apollographql.apollo3.ast.coerceInSchemaContextOrThrow
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.findDeprecationReason
 import com.apollographql.apollo3.ast.findNonnull
@@ -46,8 +48,6 @@ import com.apollographql.apollo3.ast.responseName
 import com.apollographql.apollo3.ast.rootTypeDefinition
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.transform
-import com.apollographql.apollo3.ast.coerceInExecutableContextOrThrow
-import com.apollographql.apollo3.ast.coerceInSchemaContextOrThrow
 import com.apollographql.apollo3.compiler.MODELS_COMPAT
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
@@ -76,17 +76,13 @@ internal class IrBuilder(
         schema = schema,
         allFragmentDefinitions = allFragmentDefinitions,
         fieldMerger = this,
-        insertFragmentSyntheticField = true,
-        collectAllInlineFragmentFields = true,
-        mergeTrivialInlineFragments = true
+        compat = true,
     )
     MODELS_OPERATION_BASED -> OperationBasedModelGroupBuilder(
         schema = schema,
         allFragmentDefinitions = allFragmentDefinitions,
         fieldMerger = this,
-        insertFragmentSyntheticField = false,
-        collectAllInlineFragmentFields = false,
-        mergeTrivialInlineFragments = false,
+        compat = false,
     )
     MODELS_RESPONSE_BASED -> responseBasedBuilder
     else -> error("codegenModels='$codegenModels' is not supported")
