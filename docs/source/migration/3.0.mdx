@@ -351,6 +351,10 @@ val apolloClient = apolloClientBuilder.addCustomScalarAdapter(Types.Date, dateAd
 
 This method takes a type-safe generated class from `Types`, along with its corresponding adapter.
 
+#### 2.x compatibility adapter
+
+As a convenience and to ease the transition, you can also use the `ApolloClient.Builder.addCustomTypeAdapter` method to register a
+`CustomTypeAdapter` that will convert between the old and the new APIs.
 
 ## Caching
 
