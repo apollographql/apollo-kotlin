@@ -50,7 +50,7 @@ apply plugin: "com.apollographql.apollo3"
 
 The plugin is hosted on both the Gradle plugin portal and Maven Central.
 
-By default, the plugin generates models in the root package name. You can configure this in the `apollo {}` block:
+The package in which the generated code will reside must be configured in the `apollo {}` block:
 
 ```kotlin:title=build.gradle[.kts]
 apollo {

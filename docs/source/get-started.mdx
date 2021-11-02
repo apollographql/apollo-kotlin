@@ -63,7 +63,7 @@ Now you can execute your defined query with `ApolloClient` like so:
 // or any other coroutine scope builder
 runBlocking {
   val response = try {
-    apolloClient.query(LaunchDetailsQuery(id = "83"))
+    apolloClient.query(LaunchDetailsQuery(id = "83")).execute()
   } catch (e: ApolloException) {
     // handle network errors
     return@runBlocking
