@@ -16,7 +16,52 @@ Although most of the library's concepts are the same, many APIs have changed to 
 
 This page describes the most important changes, along with how to migrate an existing project from Apollo Android 2.x to Apollo Android 3.x.
 
-## Package name / group id / plugin id
+## The quick route 🚀
+
+Apollo Android 3.0 provides a few shortcuts and compatibility modes to ease the migration from 2.x.  To quickly arrive at a working state, follow these steps:
+
+1. Update your dependencies and imports (`com.apollographql.apollo` → `com.apollographql.apollo3`, see [section below](#package-name--group-id--plugin-id)).  
+  Remove `apollo-coroutines-support` and `apollo-android-support` if applicable.
+2. Gradle configuration:
+```kotlin
+apollo {
+  // Remove this
+  generateKotlinModels.set(true)
+  
+  // Add this
+  useVersion2Compat("com.example")
+}
+```
+3. Apollo Client configuration:
+```kotlin
+val client = ApolloClient.builder()
+  .serverUrl(...)
+
+  // Replace:
+  .addCustomTypeAdapter(CustomType.YOURTYPE, ...)
+
+  // With:
+  .addCustomTypeAdapter(YourType.type, ...)
+
+  .build()
+
+```
+4. Queries and other operations:
+```kotlin
+// Replace:
+val response = apolloClient
+  .query(MyQuery())
+  .await()
+
+// With:
+val response = apolloClient
+  .query(MyQuery())
+  .execute()
+```
+
+## All changes
+
+### Package name / group id / plugin id
 
 Apollo Android 3.0 uses a new identifier for its package name, Gradle plugin id, and maven group id: **`com.apollographql.apollo3`**.
 
@@ -66,9 +111,9 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo3.ApolloClient
 ```
 
-## Gradle configuration
+### Gradle configuration
 
-### `generateKotlinModels`
+#### `generateKotlinModels`
 
 Apollo Android 3.0 generates Kotlin models by default. You can safely remove this behavior:
 
@@ -79,7 +124,7 @@ apollo {
 }
 ```
 
-### `apollo-coroutines-support` is removed
+#### `apollo-coroutines-support` is removed
 
 Apollo Android 3.x is kotlin first and exposes suspend functions by default. `apollo-coroutines-support` is not needed anymore:
 
@@ -88,7 +133,7 @@ Apollo Android 3.x is kotlin first and exposes suspend functions by default. `ap
 implementation("com.apollographql.apollo:apollo-coroutines-support:$version")
 ```
 
-### `apollo-android-support` is removed
+#### `apollo-android-support` is removed
 
 Apollo Android 2.x publishes a small artifact to support running callbacks on a specific Handler and write logs to logcat.
 
@@ -100,7 +145,7 @@ Apollo Android 3.x uses coroutines and exposes more information in its API so th
 implementation("com.apollographql.apollo:apollo-android-support:$version")
 ```
 
-### `customScalarMappings`
+#### `customScalarMappings`
 
 In order to make it explicit that custom mappings only apply to custom scalars and not arbitrary types, `customTypeMapping` has been renamed to `customScalarsMapping`
 
@@ -134,7 +179,7 @@ apollo {
 
 </MultiCodeBlock>
 
-### Specifying schema and .graphql files
+#### Specifying schema and .graphql files
 
 Apollo Android 2.x has a complex logic to determine what files to use as input. For example, it resolves `sourceFolder` relative to multiple Android variants or kotlin sourceSets, tries to get the .graphql files from the schema location and the other way around too. This logic works in most cases but makes troubleshooting more complicated, especially in more complex scenarios. Also, this runs the GraphQL compiler multiple times for different source sets even if in the vast majority of cases, the same .graphql files are used.
 
@@ -179,7 +224,7 @@ apollo {
 If you need different GraphQL operations for different variants, you can create multiple services for each Android variant using [apollo.createAllAndroidVariantServices](https://apollographql.github.io/apollo-android/kdoc/apollo-gradle-plugin/com.apollographql.apollo3.gradle.api/-apollo-extension/create-all-android-variant-services.html).
 
 
-### Package name
+#### Package name
 
 Apollo Android 2.x computes its target package name based on a combination of the path of GraphQL operation and schema files, and the `packageName` and `rootPackageName` options. While this is very flexible, it's not easy to anticipate the final package name that is going to be used.
 
@@ -217,7 +262,7 @@ apollo {
 }
 ```
 
-## Builders
+### Builders
 
 On Apollo Android 2.x you would use the `ApolloClient.builder()` method to instantiate a new Builder. With 3.x, use the `ApolloClient.Builder()` constructor instead (notice the capital `B`).
 
@@ -255,7 +300,7 @@ val apolloClient = ApolloClient.Builder()
     .build()
 ```
 
-## Coroutines APIs
+### Coroutines APIs
 
 Apollo Android 2.x has callback APIs that can become verbose and require explicitly handling cancellation.
 
@@ -265,15 +310,15 @@ Apollo Android 3.x exposes more concise coroutines APIs that handle cancellation
 // Replace
 apolloClient.query(query).await()
 // With
-apolloClient.query(query)
+apolloClient.query(query).execute()
 
 // Replace
 apolloClient.subscribe(subscription).toFlow()
 // With
-apolloClient.subscribe(subscription)
+apolloClient.subscribe(subscription).execute()
 ```
 
-## Custom Scalar adapters
+### Custom Scalar adapters
 
 Apollo Android 3 ships an optional [apollo-adapters](https://apollographql.github.io/apollo-android/kdoc/apollo-adapters/com.apollographql.apollo3.adapter/index.html) artifact that includes adapters for common scalar types like:
 
@@ -351,28 +396,23 @@ val apolloClient = apolloClientBuilder.addCustomScalarAdapter(Types.Date, dateAd
 
 This method takes a type-safe generated class from `Types`, along with its corresponding adapter.
 
-#### 2.x compatibility adapter
+### Caching
 
-As a convenience and to ease the transition, you can also use the `ApolloClient.Builder.addCustomTypeAdapter` method to register a
-`CustomTypeAdapter` that will convert between the old and the new APIs.
-
-## Caching
-
-### Normalized cache
+#### Normalized cache
 
 The Apollo Android 2.x runtime has a dependency on the normalized cache APIs, and it's possible to call cache methods even if no cache implementation is in the classpath.
 
-The Apollo Android 3.x runtime is more modular and doesn't know anything about normalized cache by default. To add normalized cache support, include `apollo-normalized-cache` in the classpath:
+The Apollo Android 3.x runtime is more modular and doesn't know anything about normalized cache by default. To add normalized cache support, add the dependencies to your gradle file:
 
 ```kotlin
 dependencies {
   // Replace
-  implementation("com.apollographql.apollo:apollo-normalized-cache") // for memory cache
-  implementation("com.apollographql.apollo:apollo-normalized-cache-sqlite") // for SQL cache
+  implementation("com.apollographql.apollo:apollo-normalized-cache:$version") // for memory cache
+  implementation("com.apollographql.apollo:apollo-normalized-cache-sqlite:$version") // for SQL cache
 
   // With
-  implementation("com.apollographql.apollo3:apollo-normalized-cache") // for memory cache
-  implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite") // for SQL cache
+  implementation("com.apollographql.apollo3:apollo-normalized-cache:$version") // for memory cache
+  implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite:$version") // for SQL cache
 }
 ```
 
@@ -395,7 +435,7 @@ val apolloClient = ApolloClient.Builder()
   .build()
 ```
 
-Configuring the fetch policy is now made on an `ApolloRequest` instance:
+Configuring the fetch policy is now made on an `ApolloCall` instance:
 
 ```kotlin
 // Replace
@@ -406,11 +446,12 @@ val response = apolloClient.query(query)
                       .await()
 
 // With
-val request = ApolloRequest.Builder(query).fetchPolicy(CacheFirst).build()
 val response = apolloClient.query(request)
+                      .fetchPolicy(CacheFirst)
+                      .execute()
 ```
 
-### HTTP cache
+#### HTTP cache
 
 Similarly, the HTTP cache is configurable through extension functions:
 
@@ -429,7 +470,7 @@ val apolloClient = ApolloClient.Builder()
     .build()
 ```
 
-Configuring the HTTP fetch policy is now made on an `ApolloRequest` instance:
+Configuring the HTTP fetch policy is now made on an `ApolloCall` instance:
 
 ```kotlin
 // Replace
@@ -440,11 +481,12 @@ val response = apolloClient.query(query)
                       .await()
 
 // With
-val request = ApolloRequest.Builder(query).httpFetchPolicy(CacheFirst).build()
 val response = apolloClient.query(request)
+                      .httpFetchPolicy(CacheFirst)
+                      .execute()
 ```
 
-### `CacheKeyResolver`
+#### `CacheKeyResolver`
 
 The `CacheKeyResolver` API has been split in two different APIs:
 
@@ -500,9 +542,9 @@ val apolloClient = ApolloClient("https://").withNormalizedCache(
 )
 ```
 
-## Optional values
+### Optional values
 
-### The `Optional` class
+#### The `Optional` class
 
 Apollo Android distinguishes between `null` values and absent values.
 
@@ -530,7 +572,7 @@ Input.optional(value)
 Optional.presentIfNotNull(value)
 ```
 
-### Non-optional variables by default
+#### Non-optional variables by default
 
 By default, Apollo Android 3.x represents operation variables that _don't_ have a default value as non-optional Kotlin constructor parameters.
 
@@ -566,7 +608,7 @@ query GetHero($id: String @optional) {
 }
 ```
 
-## Enums
+### Enums
 
 By default, Apollo Android 2.x generates GraphQL enums as Kotlin enums, with an option to generate them as sealed classes to access the raw name of the enum.
 
