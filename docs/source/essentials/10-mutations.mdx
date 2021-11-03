@@ -66,7 +66,7 @@ Similar to queries, mutations are represented by instances of generated classes,
 val upvotePostMutation = UpvotePostMutation(votes = 3)
 
 val response = try {
-  apolloClient.mutate(upvotePostMutation)
+  apolloClient.mutate(upvotePostMutation).execute()
 } catch(e: ApolloException) {
   // handle error
 }
@@ -105,7 +105,7 @@ mutation CreateReviewForEpisode($episode: Episode!, $review: ReviewInput!) {
 val reviewInput = ReviewInput(stars = 5, commentary = "This is a great movie!")
 
 try {
-  val response = apolloClient.mutate(CreateReviewForEpisodeMutation(episode = Episode.NEWHOPE, review = reviewInput))
+  val response = apolloClient.mutate(CreateReviewForEpisodeMutation(episode = Episode.NEWHOPE, review = reviewInput)).execute()
 } catch(e: ApolloException) {
   // handle exception
 }
