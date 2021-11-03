@@ -19,19 +19,9 @@ import kotlinx.coroutines.flow.flow
 
 enum class FetchPolicy {
   /**
-   * Try network first, then cache
+   * Try cache first, then network
    *
    * This is the default behaviour
-   */
-  NetworkFirst,
-
-  /**
-   * Only try network
-   */
-  NetworkOnly,
-
-  /**
-   * Try cache first, then network
    */
   CacheFirst,
 
@@ -39,6 +29,16 @@ enum class FetchPolicy {
    * Only try cache
    */
   CacheOnly,
+
+  /**
+   * Try network first, then cache
+   */
+  NetworkFirst,
+
+  /**
+   * Only try network
+   */
+  NetworkOnly,
 }
 
 /**
