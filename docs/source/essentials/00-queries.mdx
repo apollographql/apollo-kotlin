@@ -44,7 +44,7 @@ To execute the query we [just defined](#defining), we pass a `HeroQuery` instanc
 
 ```kotlin{2}
 val apolloClient = ApolloClient.Builder().serverUrl("https://your.domain/graphql").build()
-val response = apolloClient.query(HeroQuery(id = "12"))
+val response = apolloClient.query(HeroQuery(id = "12")).execute()
 ```
 
 By default, Apollo Android offloads I/O work like this to a background thread, which means it's safe to execute GraphQL operations on the main thread. The result is also dispatched to the main thread, and you can use the response directly to update your data.

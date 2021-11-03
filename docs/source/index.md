@@ -4,7 +4,7 @@ description: A strongly-typed, caching GraphQL client for Java and Kotlin multip
 sidebar_title: Introduction
 ---
 
-[Apollo Android](https://github.com/apollographql/apollo-android) is a strongly-typed, caching GraphQL client for Android and Kotlin multiplatform apps, written in Kotlin. Despite its name, **you can use Apollo Android in any Java/Kotlin app.**
+[Apollo Android](https://github.com/apollographql/apollo-android) is a strongly-typed, caching GraphQL client for Android and Kotlin multiplatform apps, written in Kotlin. Despite its name, **you can use Apollo Android in any Java/Kotlin project.**
 
 Apollo Android executes queries and mutations against a GraphQL server and returns results as query-specific Kotlin types. This means you don't have to deal with parsing JSON, or passing around `Map`s and making clients cast values to the right type manually. You also don't have to write model types yourself, because these are generated from the GraphQL definitions your UI uses.
 
@@ -13,6 +13,7 @@ Because generated types are query-specific, you can only access data that you ac
 ## Features
 
 * Kotlin code generation
+* Supports Multiplatform projects
 * Queries, Mutations and Subscriptions
 * Reflection-free parsing of responses
 * Normalized cache
@@ -22,7 +23,7 @@ Because generated types are query-specific, you can only access data that you ac
 
 ## Requirements
 
-Apollo Android runs on the following platforms:
+Some platforms have specific requirements:
 
 * Android API level 15+
 * JDK 8+

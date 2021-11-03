@@ -160,19 +160,19 @@ Apollo Android has no concept of "Atomic request". Launching the same request tw
 ```kotlin
 val response1 = launch {
     // Since "hero" is not in cache, this will go to the network
-    apolloClient.query(HeroQuery()).first()
+    apolloClient.query(HeroQuery()).execute()
 }
 val response2 = launch {
     // This will most likely go to the network even though it's the same request as above
     // If another request is modifying the cache, what is returned depends the timings of the different request
-    apolloClient.query(HeroQuery()).first()
+    apolloClient.query(HeroQuery()).execute()
 }
 ```
 
 On the other hand, waiting for one query to complete before launching the next one is guaranteed to have a predictable cache state. Especially if asynchronous cache write is implemented, the second query should wait until the write is written by the first one to read the cache:
 
 ```kotlin
-val response1 = apolloClient.query(HeroQuery()).first()
+val response1 = apolloClient.query(HeroQuery()).execute()
 // If no other request is executing and the first one was cached, response2 will return the cached result
-val response2 = apolloClient.query(HeroQuery()).first()
+val response2 = apolloClient.query(HeroQuery()).execute()
 ```

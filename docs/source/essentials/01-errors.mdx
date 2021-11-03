@@ -15,7 +15,7 @@ Network errors throw an `ApolloException`. To handle them, wrap your query in a 
 
 ```kotlin
 try {
-  val response = apolloClient.query(query)
+  val response = apolloClient.query(query).execute()
 } catch(exception: ApolloException) {
   // handle exception here
 }
@@ -84,7 +84,7 @@ Apollo Android gives you access to both the data and the errors in the `Response
 
 ```kotlin
 val response = try {
-  apolloClient.query(query)
+  apolloClient.query(query).execute()
 } catch(exception: ApolloException) {
   // Network error, not much to do
   throw exception
@@ -107,7 +107,7 @@ If you don't want to handle partial responses, you can use `dataOrThrow()`. This
 
 ```
 val data = try {
-  apolloClient.query(query).dataOrThrow
+  apolloClient.query(query).execute().dataOrThrow
 } catch(exception: ApolloException) {
   // All network or GraphQL errors are handled here
   throw exception

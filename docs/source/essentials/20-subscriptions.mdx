@@ -46,6 +46,7 @@ After you configure the `NetworkTransport`, use `ApolloClient.subscribe` to open
 
 ```kotlin
 apolloClient.subscribe(TripsBookedSubscription())
+  .execute()
   .collect {
     println("trips booked: ${it.data?.tripsBooked}")
   }
