@@ -46,7 +46,7 @@ runCommand("git", "tag", "v$tagVersion")
 setCurrentVersion(nextSnapshot)
 runCommand("git", "commit", "-a", "-m", "version is now $nextSnapshot")
 
-println("Everything is done. Verify everything is ok and type `git push origin main` to trigger the new version.")
+println("Everything is done. Verify everything is ok and push upstream to trigger the new version.")
 
 fun runCommand(vararg args: String): String {
   val builder = ProcessBuilder(*args)
