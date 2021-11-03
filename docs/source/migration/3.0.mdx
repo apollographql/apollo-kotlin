@@ -346,7 +346,7 @@ After you define your adapters, you need to register them with your `ApolloClien
 val apolloClient = apolloClientBuilder.addCustomTypeAdapter(CustomType.DATE, dateAdapter).build()
 
 // With
-val apolloClient = apolloClientBuilder.addCustomScalarAdapter(Types.Date, dateAdapter).build()
+val apolloClient = apolloClientBuilder.addCustomScalarAdapter(Date.type, dateAdapter).build()
 ```
 
 This method takes a type-safe generated class from `Types`, along with its corresponding adapter.
