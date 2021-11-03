@@ -52,6 +52,7 @@ module.exports = {
             'advanced/persisted-queries',
             'advanced/upload',
             'advanced/using-aliases',
+            'advanced/response-based-codegen',
           ],
         }
       }
