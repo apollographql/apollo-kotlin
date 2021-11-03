@@ -9,6 +9,8 @@ To execute your first query, you need to create an instance of `ApolloClient` an
 Create a new file named Apollo.kt in the `com.example.rocketreserver` package and create an instance of `ApolloClient` in it:
 
 ```kotlin:title=app/src/main/java/com/example/rocketreserver/Apollo.kt
+import com.apollographql.apollo3.ApolloClient
+
 val apolloClient = ApolloClient.Builder()
     .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com")
     .build()
@@ -27,7 +29,7 @@ Open `LaunchListFragment.kt`, override `onViewCreated` and launch a new coroutin
         super.onViewCreated(view, savedInstanceState)
 
         lifecycleScope.launchWhenResumed {
-            val response = apolloClient.query(LaunchListQuery()).await()
+            val response = apolloClient.query(LaunchListQuery())
 
             Log.d("LaunchList", "Success ${response.data}")
         }
