@@ -7,7 +7,7 @@ class JavaOnly {
   @Test
   fun javaOnlyProject() {
     TestUtils.withTestProject("java-only") { dir ->
-      TestUtils.executeTaskAndAssertSuccess( "generateApolloSources", dir)
+      TestUtils.executeTaskAndAssertSuccess(":generateApolloSources", dir)
     }
   }
 }

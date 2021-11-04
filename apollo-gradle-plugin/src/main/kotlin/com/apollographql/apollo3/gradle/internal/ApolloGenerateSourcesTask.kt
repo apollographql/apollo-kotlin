@@ -46,7 +46,6 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
-import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import javax.inject.Inject
 
 @CacheableTask
@@ -189,7 +188,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
     var outputCommonMetadata: CommonMetadata? = null
 
     val targetLanguage = if (generateKotlinModels.getOrElse(project.kotlinProjectExtension != null)) {
-      getKotlinTargetLanguage(languageVersion.getOrNull())
+      getKotlinTargetLanguage(project, languageVersion.orNull)
     } else {
       TargetLanguage.JAVA
     }
@@ -287,24 +286,5 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
           moduleName = project.name
       ).writeTo(metadataOutputFile)
     }
-  }
-
-  private fun getKotlinTargetLanguage(userSpecified: String?): TargetLanguage {
-    return when (userSpecified) {
-      "1.4" -> TargetLanguage.KOTLIN_1_4
-      "1.5" -> TargetLanguage.KOTLIN_1_5
-      null -> {
-        // User didn't specify a version: defaults to the Kotlin plugin's version
-        val majorMinor = project.getKotlinPluginVersion()!!.take(3)
-        if (majorMinor == "1.4") {
-          TargetLanguage.KOTLIN_1_4
-        } else {
-          // For "1.5" *and* unknown (must be higher) versions use "1.5"
-          TargetLanguage.KOTLIN_1_5
-        }
-      }
-      else -> error("ApolloGraphQL: languageVersion '$userSpecified' is not supported, must be either '1.4' or '1.5'")
-    }
-
   }
 }

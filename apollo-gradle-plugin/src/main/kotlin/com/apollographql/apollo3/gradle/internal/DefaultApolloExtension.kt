@@ -29,7 +29,6 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinBasePluginWrapper
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
 import java.io.File
 
 abstract class DefaultApolloExtension(
@@ -160,13 +159,7 @@ abstract class DefaultApolloExtension(
     }
 
     if (doLink) {
-      val extension = project.kotlinMultiplatformExtension ?: return
-      extension.targets
-          .flatMap { it.compilations }
-          .filterIsInstance<KotlinNativeCompilation>()
-          .forEach { compilationUnit ->
-            compilationUnit.kotlinOptions.freeCompilerArgs += arrayOf("-linker-options", "-lsqlite3")
-          }
+      linkSqlite(project)
     }
   }
 

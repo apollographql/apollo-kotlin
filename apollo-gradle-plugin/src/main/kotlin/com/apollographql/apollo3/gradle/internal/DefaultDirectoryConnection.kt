@@ -4,7 +4,6 @@ import com.android.build.gradle.AppExtension
 import com.android.build.gradle.FeatureExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.TestedExtension
-import com.android.build.gradle.api.AndroidSourceSet
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.TestVariant
 import com.android.build.gradle.api.UnitTestVariant
@@ -16,13 +15,8 @@ import com.apollographql.apollo3.gradle.api.kotlinProjectExtensionOrThrow
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.Directory
-import org.gradle.api.file.SourceDirectorySet
-import org.gradle.api.internal.HasConvention
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskProvider
-import org.jetbrains.kotlin.gradle.plugin.KOTLIN_DSL_NAME
-import org.jetbrains.kotlin.gradle.plugin.KOTLIN_JS_DSL_NAME
-import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 
 internal class DefaultDirectoryConnection(
     private val project: Project,
@@ -40,19 +34,6 @@ internal class DefaultDirectoryConnection(
         .java
         .srcDir(outputDir)
   }
-
-  private fun Any.getConvention(name: String): Any? =
-      (this as HasConvention).convention.plugins[name]
-
-  // Copied from kotlin plugin
-  private val AndroidSourceSet.kotlinSourceSet: SourceDirectorySet?
-    get() {
-      val convention = (getConvention(KOTLIN_DSL_NAME) ?: getConvention(KOTLIN_JS_DSL_NAME)) ?: return null
-      val kotlinSourceSetIface =
-          convention.javaClass.interfaces.find { it.name == KotlinSourceSet::class.qualifiedName }
-      val getKotlin = kotlinSourceSetIface?.methods?.find { it.name == "getKotlin" } ?: return null
-      return getKotlin(convention) as? SourceDirectorySet
-    }
 
   override fun connectToAndroidVariant(variant: BaseVariant) {
     /**
@@ -116,7 +97,7 @@ internal class DefaultDirectoryConnection(
     project.androidExtensionOrThrow
         .sourceSets
         .getByName(name)
-        .kotlinSourceSet!!
+        .kotlinSourceSet()!!
         .srcDir(outputDir)
   }
 }
