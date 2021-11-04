@@ -6,7 +6,7 @@ import java.io.File
  * You need kotlin 1.3.70+ installed on your machine
  */
 
-check(File("settings.gradle.kts").readText().contains("rootProject.name = \"apollo-android\"")) {
+check(File("settings.gradle.kts").let { it.exists() && it.readText().contains("rootProject.name = \"apollo-android\"") }) {
   "This script needs to be called from the root of the project"
 }
 
