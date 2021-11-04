@@ -31,7 +31,7 @@ query LaunchList {
 
 When you recompile, if you look in `LaunchListQuery.kt`, you'll see a new nested type, `Mission`, with the two properties you requested.
 
-Any GraphQL field can take arguments like `missionPatch` above, and arguments can be of scalar or complex types. In this case, `SMALL` is an enum in the GraphQL schema. It can take a finite list of values. If you look at the Schema section in Sandbox, you can see a list of the enums. You can then click in to see that `PatchSize` that can only take two values: `SMALL` and `LARGE`
+Any GraphQL field can take arguments like `missionPatch` above, and arguments can be of scalar or complex types. In this case, `SMALL` is an enum in the GraphQL schema. It can take a finite list of values. If you look at the Schema section in Sandbox, you can see a list of the enums. You can then click in to see that `PatchSize` can only take two values: `SMALL` and `LARGE`
 
 <img src="images/sandbox_patch_size_docs.png" alt="The patch size enum in Sandbox's Schema tab" class="screenshot"/>
 
