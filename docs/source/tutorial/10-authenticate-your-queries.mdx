@@ -64,19 +64,19 @@ Replace all usages of `apolloClient` with `apolloClient(context)`. There is one 
 
 ```kotlin
 // LaunchListFragment
-apolloClient(requireContext()).query(LaunchListQuery(cursor)).await()
+apolloClient(requireContext()).query(LaunchListQuery(cursor))
 
 // LaunchDetailsFragment
-apolloClient(requireContext()).query(LaunchDetailsQuery(id = args.launchId)).await()
+apolloClient(requireContext()).query(LaunchDetailsQuery(id = args.launchId))
 
 // LoginFragment
-apolloClient(requireContext()).mutate(LoginMutation(email)).await()
+apolloClient(requireContext()).mutate(LoginMutation(email))
 
 ```
 
-There is no need to create a new instance of the apolloClient for each GraphQL request. You can reuse a single instance like so:
+There is no need to create a new instance of the apolloClient for each GraphQL request. You can reuse a single instance by updating `Apollo.kt` to use a singleton under the hood:
 
-```
+```kotlin:title=app/src/main/kotlin/com/example/rocketreserver/Apollo.kt
 private var instance: ApolloClient? = null
 
 fun apolloClient(context: Context): ApolloClient {
@@ -101,7 +101,7 @@ fun apolloClient(context: Context): ApolloClient {
 }
 ```
 
-**Note**: The singleton is handled here manually for sample purposes. In a real-life application, you would certainly use a dependency injection framework such as `Dagger` or `Koin`.
+**Note**: The singleton is handled here manually for sample purposes. In a real-life application, you would want to use a dependency injection framework such as `Dagger` or `Koin`.
 
 ## Add the BookTrip and CancelTrip mutations
 
@@ -172,6 +172,6 @@ This sends the appropriate mutation based on whether the launch is booked.
 
 ## Book your trip!
 
-Compile and run your app. You can now book and cancel your trips!
+Compile and run your app. You can now book and cancel your trips! The button will change based on whether a trip has been booked or not. 
 
 In the next section, you will [write your first subscription](11-subscriptions) and be notified in real time when someone books a flight.
