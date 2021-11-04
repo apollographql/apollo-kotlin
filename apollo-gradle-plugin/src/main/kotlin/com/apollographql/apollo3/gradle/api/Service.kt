@@ -471,7 +471,7 @@ interface Service {
      * look up the most specific source set used by this variant. For an example, "demoDebug"
      *
      * @param variant: the [BaseVariant] to connect to. It is of type [Any] because [DirectoryConnection]
-     * might be used in non-Android projects and we don't want the class to fail during loading because
+     * can be used in non-Android projects, and we don't want the class to fail during loading because
      * of a missing symbol in that case
      */
     fun connectToAndroidVariant(variant: Any)

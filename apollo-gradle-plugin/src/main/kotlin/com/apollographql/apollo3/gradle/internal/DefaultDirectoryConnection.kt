@@ -1,9 +1,5 @@
 package com.apollographql.apollo3.gradle.internal
 
-import com.android.build.gradle.api.BaseVariant
-import com.android.build.gradle.api.TestVariant
-import com.android.build.gradle.api.UnitTestVariant
-import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.gradle.api.Service
 import com.apollographql.apollo3.gradle.api.javaConventionOrThrow
 import com.apollographql.apollo3.gradle.api.kotlinProjectExtensionOrThrow
