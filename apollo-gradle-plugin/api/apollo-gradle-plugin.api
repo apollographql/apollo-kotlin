@@ -25,15 +25,18 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Introspecti
 	public abstract fun getSchemaFile ()Lorg/gradle/api/file/RegularFileProperty;
 }
 
+public final class com/apollographql/apollo3/gradle/api/KotlinProjectKt {
+	public static final fun getKotlinMultiplatformExtension (Lorg/gradle/api/Project;)Lorg/jetbrains/kotlin/gradle/dsl/KotlinMultiplatformExtension;
+	public static final fun getKotlinProjectExtension (Lorg/gradle/api/Project;)Lorg/jetbrains/kotlin/gradle/dsl/KotlinProjectExtension;
+	public static final fun getKotlinProjectExtensionOrThrow (Lorg/gradle/api/Project;)Lorg/jetbrains/kotlin/gradle/dsl/KotlinProjectExtension;
+}
+
 public final class com/apollographql/apollo3/gradle/api/ProjectKt {
 	public static final fun getAndroidExtension (Lorg/gradle/api/Project;)Lcom/android/build/gradle/BaseExtension;
 	public static final fun getAndroidExtensionOrThrow (Lorg/gradle/api/Project;)Lcom/android/build/gradle/BaseExtension;
 	public static final fun getApplicationVariants (Lorg/gradle/api/Project;)Lorg/gradle/api/DomainObjectSet;
 	public static final fun getJavaConvention (Lorg/gradle/api/Project;)Lorg/gradle/api/plugins/JavaPluginConvention;
 	public static final fun getJavaConventionOrThrow (Lorg/gradle/api/Project;)Lorg/gradle/api/plugins/JavaPluginConvention;
-	public static final fun getKotlinMultiplatformExtension (Lorg/gradle/api/Project;)Lorg/jetbrains/kotlin/gradle/dsl/KotlinMultiplatformExtension;
-	public static final fun getKotlinProjectExtension (Lorg/gradle/api/Project;)Lorg/jetbrains/kotlin/gradle/dsl/KotlinProjectExtension;
-	public static final fun getKotlinProjectExtensionOrThrow (Lorg/gradle/api/Project;)Lorg/jetbrains/kotlin/gradle/dsl/KotlinProjectExtension;
 	public static final fun getLibraryVariants (Lorg/gradle/api/Project;)Lorg/gradle/api/DomainObjectSet;
 	public static final fun getTestVariants (Lorg/gradle/api/Project;)Lorg/gradle/api/DomainObjectSet;
 	public static final fun getUnitTestVariants (Lorg/gradle/api/Project;)Lorg/gradle/api/DomainObjectSet;
