@@ -5,30 +5,38 @@ import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.TestedExtension
 import com.android.build.gradle.api.ApplicationVariant
+import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.api.LibraryVariant
 import com.android.build.gradle.api.TestVariant
 import com.android.build.gradle.api.UnitTestVariant
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
-import org.gradle.api.plugins.JavaPluginConvention
 
-val Project.javaConventionOrThrow
-  get() = convention.getPlugin(JavaPluginConvention::class.java)
+object AndroidProject {
+  fun onEachVariant(project: Project, withTestVariants: Boolean = false, block: (BaseVariant) -> Unit) {
+    project.applicationVariants?.all {
+      block(it)
+    }
+    project.libraryVariants?.all {
+      block(it)
+    }
 
-val Project.javaConvention
-  get() = try {
-    javaConventionOrThrow
-  } catch (e: Exception) {
-    null
+    if (withTestVariants) {
+      project.testVariants?.all {
+        block(it)
+      }
+      project.unitTestVariants?.all {
+        block(it)
+      }
+    }
   }
+}
 
 val Project.androidExtension
   get() = extensions.findByName("android") as? BaseExtension
 
 val Project.androidExtensionOrThrow
   get() = androidExtension ?: throw IllegalStateException("ApolloGraphQL: no 'android' extension found. Did you apply the Android plugin?")
-
-val Project.isKotlinMultiplatform get() = pluginManager.hasPlugin("org.jetbrains.kotlin.multiplatform")
 
 val Project.libraryVariants: DomainObjectSet<LibraryVariant>?
   get() {

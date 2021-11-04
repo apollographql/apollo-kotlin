@@ -1,5 +1,5 @@
 /**
- * Helpers for Kotlin project
+ * Helpers for Kotlin projects
  *
  * They are in a separate file so that the corresponding class is not loaded
  * if the Kotlin plugin is not present
@@ -10,6 +10,7 @@ import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 
+val Project.isKotlinMultiplatform get() = pluginManager.hasPlugin("org.jetbrains.kotlin.multiplatform")
 
 val Project.kotlinMultiplatformExtension
   get() = extensions.findByName("kotlin") as? KotlinMultiplatformExtension
