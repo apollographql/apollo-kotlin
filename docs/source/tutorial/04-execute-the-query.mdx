@@ -12,13 +12,13 @@ Create a new file named Apollo.kt in the `com.example.rocketreserver` package an
 import com.apollographql.apollo3.ApolloClient
 
 val apolloClient = ApolloClient.Builder()
-    .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com")
+    .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
     .build()
 ```
 
 **Note**: `apolloClient` is a top-level variable so that it can be reused from other parts of the app later on for better performance. Reusing the `apolloClient` allows to reuse the underlying OkHttp instance and the associated threadpools and connections.
 
-Creating the ApolloClient is as simple as giving it the endpoint of your GraphQL backend. It is `https://apollo-fullstack-tutorial.herokuapp.com` in our case.
+Creating the ApolloClient is as simple as giving it the endpoint of your GraphQL backend. It is `https://apollo-fullstack-tutorial.herokuapp.com/graphql` in our case.
 
 ## Execute the query
 
