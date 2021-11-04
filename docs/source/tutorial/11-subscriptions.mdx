@@ -7,51 +7,49 @@ In this section, you will use subscriptions to get notified whenever someone boo
 
 ## Write your subscription
 
-Open [GraphQL Playground](https://apollo-fullstack-tutorial.herokuapp.com/) and open the docs tab on the right. In addition to `queries` and `mutations`, you will see a third type of operations, `subscriptions`. Click the `tripsBooked` subscription:
+Open your [Sandbox](https://studio.apollographql.com/sandbox/explorer?endpoint=https%3A%2F%2Fapollo-fullstack-tutorial.herokuapp.com) back up, click on the Schema tab at the far left. In addition to `queries` and `mutations`, you will see a third type of operations, `subscriptions`. Click on subscriptions to see the `tripsBooked` subscription:
 
 <img alt="The definition of tripsBooked in the schema" class="screenshot" src="images/schema_tripsBooked_definition.png"/>
 
-This subscription doesn't take any argument and returns a single scalar named `tripsBooked`. Since you can book multiple trips at once, `tripsBooked` is an Int. It will contain the number of trips booked at once or -1 if a trip has been cancelled.
+This subscription doesn't take any argument and returns a single scalar named `tripsBooked`. Since you can book multiple trips at once, `tripsBooked` is an `Int`. It will contain the number of trips booked at once or -1 if a trip has been cancelled.
 
-Type the following subscription in the left panel:
+Click the play button to the left of `tripsBooked` to open the subscription in Explorer. Open a new tab, then check the `tripsBooked` button to have the subscription added: 
+
+<img alt="The initial definition of the TripsBooked subscription" class="screenshot" src="images/explorer_tripsbooked_initial.png"/>
+
+Again, rename your subscription so it's easier to find: 
+
+<img alt="The subscription after rename" class="screenshot" src="images/explorer_tripsbooked_renamed.png"/>
+
+Click the Submit Operation button, and your subscription will start listening to events. You can tell it's up and running because a panel will pop up at the lower left where subscription data will come in: 
+
+<img alt="The UI showing that it's listening for subscription updates" class="screenshot" src="images/explorer_subscriptions_listening.png"/>
+
+## Test your subscription 
+
+Open a new tab in Explorer. In this new tab, add code to book a trip like on [step 9](09-write-your-first-mutation), but with a hard-coded ID:
 
 ```graphql
-subscription {
-  tripsBooked
-}
-```
-
-Click the Play button, your subscription will start listening to events.
-
-## Test your subscription with GraphQL Playground
-
-Leave this tab open and open [GraphQL Playground](https://apollo-fullstack-tutorial.herokuapp.com/) in a new one. In this new tab, book a trip like on [step 9](09-write-your-first-mutation):
-
-```graphql
-mutation {
-  bookTrips(launchIds: ["83"]){
+mutation BookTrip {
+  bookTrips(launchIds: ["93"]){
     message
   }
 }
 ```
 
-Do not forget to include the authentication header:
+Do not forget to include the authentication header. At the bottom of the Sandbox Explorer pane where you add operations, there's a `Headers` section:
 
-```json
-{
-  "Authorization": "The header you got from the login mutation"
-}
-```
+<img alt="Adding a login token to explorer" class="screenshot" src="images/explorer_authentication_header.png"/>
 
-Click the Play button. If everything went well, you just booked a trip. Go back to your subscription tab and you should see an event in the right panel:
+Click the Submit Operation button. If everything went well, you just booked a trip! At the top of the right panel, you'll see the success JSON for your your `BookTrip` mutation, and below it, updated JSON for the `TripsBooked` subscription:
 
-<img alt="Your first subscription" class="screenshot" src="images/subscription.png"/>
+<img alt="Subscription success in Explorer" class="screenshot" src="images/explorer_subscription_success.png"/>
 
-Continue booking and/or canceling trips, you will see events coming in the subscription tab in real time. After some time, the server might close the connection and you'll have to restart your subscription to keep receiving events.
+Continue booking and/or canceling trips, you will see events coming in the subscription panel in real time. After some time, the server might close the connection and you'll have to restart your subscription to keep receiving events.
 
 ## Add the subscription to the project
 
-Now that your subscription is working, add it to your project. Create a file named `TripsBooked.graphql` next to `schema.json` and your other GraphQL files and paste the contents of the subscription. The process is similar to what you did for queries and mutations:
+Now that your subscription is working, add it to your project. Create a file named `TripsBooked.graphql` next to `schema.graphqls` and your other GraphQL files and paste the contents of the subscription. The process is similar to what you did for queries and mutations:
 
 ```graphql:title=app/src/main/graphql/com/example/rocketreserver/TripsBooked.graphql
 subscription TripsBooked {
@@ -110,11 +108,13 @@ In `MainActivity`, register your subscription and start listening to events usin
     }
 ```
 
+> NOTE: You may need to `import kotlinx.coroutines.flow.collect` if you see an error about internal use for `collect`. 
+
 ## Handle errors
 
 Like for queries and mutations, the subscription will throw an error if the connection is lost or any other protocol error happens. To handle these situations, you can use [Flow.retry](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/retry.html):
 
-```MainActivity.kt
+```kotlin:title=MainActivity.kt
     apolloClient(this@MainActivity).subscribe(TripsBookedSubscription()).toFlow()
         .retryWhen { _, attempt ->
             delay(attempt * 1000)
@@ -126,7 +126,7 @@ Like for queries and mutations, the subscription will throw an error if the conn
 
 ## Test your code
 
-Build and run your app and go back to your second [GraphQL Playground](https://apollo-fullstack-tutorial.herokuapp.com/) tab. Book a new trip while your app is open, you should see a SnackBar 🚀:
+Build and run your app and go back to Sandbox Explorer, and select the tab where you set up the `BookTrip` mutation. Book a new trip while your app is open, you should see a SnackBar 🚀:
 
 <img alt="A trip has been booked" class="screenshot" src="images/snackbar.png"/>
 
