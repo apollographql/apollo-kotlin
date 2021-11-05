@@ -53,6 +53,7 @@ module.exports = {
             'advanced/upload',
             'advanced/using-aliases',
             'advanced/response-based-codegen',
+            'advanced/java-rxjava'
           ],
         }
       }

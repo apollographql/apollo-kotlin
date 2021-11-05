@@ -1,0 +1,214 @@
+---
+title: 'Java and RxJava support'
+---
+
+import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
+
+
+Because Apollo Android is written in Kotlin, it can be used in Java projects. This guide will show you how to do that.
+
+## Use the Java codegen
+
+Apollo Android generates Kotlin code by default, but you can configure it to use the Java codegen instead:
+
+```kotlin:title=build.gradle[.kts]
+apollo {
+  generateKotlinModels.set(false)
+}
+```
+
+## Use RxJava adapters
+
+Apollo Android has a coroutines / Flow based API which isn't well adapted to be used with Java. Or maybe you use RxJava in your Kotlin project. In both cases, you may use Apollo's RxJava adapters.
+
+To do so, add the `apollo-rx2-support` or `apollo-rx3-support` dependency to your project:
+
+```kotlin:title=build.gradle[.kts]
+dependencies {
+  // ...
+
+  // For RxJava 2
+  implementation("com.apollographql.apollo3:apollo-rx2-support:$version")
+
+  // For RxJava 3
+  implementation("com.apollographql.apollo3:apollo-rx3-support:$version")
+}
+```
+
+### Queries, Mutations, Subscriptions
+
+Use the `rxSingle` / `rxFlowable` extensions to execute your operations and get RxJava observables:
+
+<MultiCodeBlock>
+
+```java
+// A query
+ApolloQueryCall<MyQuery.Data> queryCall = client.query(new MyQuery());
+Single<ApolloResponse<MyQuery.Data>> queryResponse = rxSingle(queryCall);
+queryResponse.subscribe( /* ... */ );
+
+// A mutation
+ApolloMutationCall<MyMutation.Data> mutationCall = client.mutate(new MyMutation("my-parameter"));
+Single<ApolloResponse<MyMutation.Data>> mutationResponse = rxSingle(mutationCall);
+mutationResponse.subscribe( /* ... */ );
+
+// A subscription
+ApolloSubscriptionCall<MySubscription.Data> subscriptionCall = client.subscribe(new MySubscription());
+Flowable<ApolloResponse<MySubscription.Data>> subscriptionResponse = rxFlowable(subscriptionCall);
+subscriptionResponse.subscribe( /* ... */ );
+```
+
+```kotlin
+// A query
+val queryCall: ApolloQueryCall<MyQuery.Data> = client.query(MyQuery())
+val queryResponse: Single<ApolloResponse<MyQuery.Data>> = queryCall.rxSingle()
+queryResponse.subscribe(/* ... */)
+
+// A mutation
+val mutationCall = client.mutate(MyMutation("my-parameter"))
+val mutationResponse: Single<ApolloResponse<MyMutation.Data>> = mutationCall.rxSingle()
+mutationResponse.subscribe(/* ... */)
+
+// A subscription
+val subscriptionCall = client.subscribe(MySubscription())
+val subscriptionResponse: Flowable<ApolloResponse<MySubscription.Data>> = subscriptionCall.rxFlowable()
+subscriptionResponse.subscribe(/* ... */)
+```
+</MultiCodeBlock>
+
+### ApolloInterceptor
+
+To set an `ApolloInterceptor` on your `ApolloClient`, you can define an `Rx2ApolloInterceptor` or `Rx3ApolloInterceptor`:
+
+<MultiCodeBlock>
+
+```java
+    private static Rx2ApolloInterceptor rx2ApolloInterceptor = new Rx2ApolloInterceptor() {
+        @NotNull
+        @Override
+        public <D extends Operation.Data> Flowable<ApolloResponse<D>> intercept(
+                @NotNull ApolloRequest<D> request,
+                @NotNull Rx2ApolloInterceptorChain chain
+        ) {
+            ApolloRequest<D> modifiedRequest = request.newBuilder() /* ... */.build();
+            return chain.proceed(modifiedRequest);
+        }
+    };
+```
+
+```kotlin
+private val rx2ApolloInterceptor = object : Rx2ApolloInterceptor {
+    override fun <D : Operation.Data> intercept(
+        request: ApolloRequest<D>,
+        chain: Rx2ApolloInterceptorChain
+    ): Flowable<ApolloResponse<D>> {
+        val modifiedRequest = request.newBuilder() /* ... */ .build()
+        return chain.proceed(modifiedRequest)
+    }
+}
+```
+</MultiCodeBlock>
+
+
+Then use the `toApolloInterceptor` extension to convert it to an `ApolloInterceptor` and add it to your `ApolloClient.Builder`:
+
+<MultiCodeBlock>
+
+```java{3}
+ApolloClient client = new ApolloClient.Builder()
+        .serverUrl("http://localhost:4000/graphql")
+        .addInterceptor(toApolloInterceptor(rx2ApolloInterceptor))
+        .build();
+```
+```kotlin{3}
+val client = ApolloClient.Builder()
+    .serverUrl("http://localhost:4000/graphql")
+    .addInterceptor(rx2ApolloInterceptor.toApolloInterceptor())
+    .build()
+```
+
+</MultiCodeBlock>
+
+
+### HttpInterceptor
+
+Similarly, to use [HttpInterceptors](interceptors-http), you can define an `Rx2HttpInterceptor` or `Rx3HttpInterceptor` like so:
+
+<MultiCodeBlock>
+
+```java
+public static Rx2HttpInterceptor rx2HttpInterceptor = new Rx2HttpInterceptor() {
+    @NotNull
+    @Override
+    public Single<HttpResponse> intercept(
+        @NotNull HttpRequest request,
+        @NotNull Rx2HttpInterceptorChain chain
+    ) {
+        HttpRequest modifiedRequest = request.newBuilder() /* ... */.build();
+        return chain.proceed(modifiedRequest);
+    }
+};
+
+```
+
+```kotlin
+private val rx2HttpInterceptor = object : Rx2HttpInterceptor {
+  override fun intercept(request: HttpRequest, chain: Rx2HttpInterceptorChain): Single<HttpResponse> {
+    val modifiedRequest = request.newBuilder() /* ... */.build()
+    return chain.proceed(modifiedRequest)
+  }
+}
+```
+</MultiCodeBlock>
+
+Then use the `toHttpInterceptor` extension to add it to your `ApolloClient.Builder` like so:
+
+<MultiCodeBlock>
+
+```java
+ApolloClient client = new ApolloClient.Builder()
+    .networkTransport(
+        new HttpNetworkTransport(
+            "http://localhost:4000/graphql",
+            10_000,
+            10_000,
+            List.of(toHttpInterceptor(rx2HttpInterceptor))
+        )
+    )
+.build();
+```
+
+```kotlin
+val client = ApolloClient.Builder()
+    .networkTransport(
+        HttpNetworkTransport(
+            serverUrl = "http://localhost:4000/graphql",
+            interceptors = listOf(rx2HttpInterceptor.toHttpInterceptor())
+        )
+    )
+    .build()
+```
+
+</MultiCodeBlock>
+
+### Using the ApolloStore
+
+`ApolloStore` is the class allowing to interact with the [normalized cache](../../caching/normalized-cache). You can obtain an Rx version of it with the `toRx2ApolloStore` or `toRx3ApolloStore` extension:
+
+<MultiCodeBlock>
+
+```java{2}
+ApolloStore apolloStore = getApolloStore(client);
+Rx2ApolloStore rxApolloStore = toRx2ApolloStore(apolloStore, Schedulers.io());
+Single<MyFragment> data = rxApolloStore.rxReadFragment(new MyFragmentImpl(), new CacheKey("..."), CustomScalarAdapters.Empty, CacheHeaders.NONE);
+data.subscribe( /* ... */);
+```
+
+```kotlin{2}
+val apolloStore = client.apolloStore
+val rxApolloStore = apolloStore.toRx2ApolloStore()
+val data: Single<MyFragment> = rxApolloStore.rxReadFragment(MyFragmentImpl(), CacheKey("..."))
+data.subscribe( /* ... */)
+```
+
+</MultiCodeBlock>
