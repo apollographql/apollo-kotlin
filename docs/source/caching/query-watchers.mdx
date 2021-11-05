@@ -1,34 +1,120 @@
+---
+title: Watch your queries
+---
 
+Because the normalized cache deduplicates all your data, you can use it a the source of truth for your UI and be automatically notified when some data changes. For this you can use `ApolloQueryCall.watch`
 
-## Using the cache with your queries
+## Watching a query
 
-You control how the cache is used with [`fetchPolicy`](https://github.com/apollographql/apollo-android/blob/main/apollo-normalized-cache/src/commonMain/kotlin/com/apollographql/apollo3/cache/normalized/ClientCacheExtensions.kt):
+Assuming you have the following queries for a collaborative todo list app:
 
-<MultiCodeBlock>
-
-```kotlin
-// Get a response from the cache if possible. Else, get a response from the network
-// This is the default behavior
-val query = ApolloRequest.Builder(BookWithAuthorName())
-  .fetchPolicy(FetchPolicy.CacheFirst)
-  .build()
-val response = apolloClient.query(query)
-```
-
-</MultiCodeBlock>
-
-Other possibilities are `CacheOnly`, `NetworkOnly`, `CacheFirst` and `NetworkFirst`. See the [`FetchPolicy` enum](https://github.com/apollographql/apollo-android/blob/main/apollo-normalized-cache/src/commonMain/kotlin/com/apollographql/apollo3/cache/normalized/ClientCacheExtensions.kt) for more details.
-
-## Reacting to changes in the cache
-
-One big advantage of using a normalized cache is that your UI can now react to changes in your cache data. If you want to be notified every time something changes in `book1`, you can _watch_ a query:
-
-<MultiCodeBlock>
-
-```kotlin
-  apolloClient.watch(BookWithAuthorName()).collect { response ->
-      // This will be called every time the book or author changes
+```graphql
+query AllTodos {
+  items {
+    id
+    checked
+    title
   }
+}
 ```
 
-</MultiCodeBlock>
+```graphql
+query TodoDetails($id: String!) {
+  item(id: $id) {
+    id
+    checked
+    title
+    content
+  }
+}
+```
+
+The `AllTodos` returns a list of all Item along with their title and checked status:
+
+```json
+{
+  "data": {
+    "items": [
+      {
+        "id": "0",
+        "title": "Write code for Apollo Android 3",
+        "checked": true,
+      },
+      {
+        "id": "1",
+        "title": "Write documentation for Apollo Android 3",
+        "checked": false,
+      }
+    ]
+  }
+}
+```
+
+If someone clicks on item "1", it opens the details of the todo. Because it's a collaborative todo list, someone might have changed the content on the server. Maybe someone else wrote the documentation for Apollo Android 3 and set the 'checked' field to 'true'. In this case, the TodoDetails query will return something like this:
+
+```json{6}
+{
+  "data": {
+    "item": {
+      "id": "1",
+      "title": "Write documentation for Apollo Android 3",
+      "checked": true,
+      "content": "Do not forget documentation about the normalized cache!"
+    }
+  }
+}
+```
+
+With a regular query, you'd have to update the data when going back to the main list screen. Using `watch()` instead, your main screen can be updated automatically without any additional logic:
+
+```kotlin
+apolloClient.query(TodoDetailsQuery())
+            .watch()
+            .collect { response ->
+              // update the UI every time the data changes
+            }
+```
+
+## Updating the cache after a mutation
+
+Most of the times, the data changes do not come from the backend but are triggered by the user themselves using a mutation. For an example, the user could change the status from the app:
+
+```graphql
+mutation SetTodoChecked($id: String!, $checked: Boolean!) {
+  setTodoChecked(id: $id, checked: $checked) {
+    # this returns an item
+    id
+  }
+}
+```
+
+The above mutation will change the 'checked' status on the server but not in the cache because the response does not contain the 'checked' field. If you want the cache to be automatically updated, you need to include all the changed fields in the response:
+
+ ```graphql
+ mutation SetTodoChecked($id: String!, $checked: Boolean!) {
+   setTodoChecked(id: $id, checked: $checked) {
+     id
+     # ask for checked to update the cache
+     checked
+   }
+ }
+ ```
+
+> Note: For this to work, it's important that your schema returns all potentially modified fields.
+
+Because `setTodoChecked` above is of `Item` type and contains an "id" field and the "checked" field, the result of the mutation is going to update the cache automatically when the network response is received. Any watcher listening to `"Item:1.checked"` will be automatically notified.
+
+## Optimistic updates
+
+Sometimes you want to update the cache without waiting for the network response. In that case, you can use optimistic updates:
+
+```kotlin
+apolloClient.mutate(SetTodoCheckedMutation(id = "1", checked = true))
+            .optimisticResponse(
+              SetTodoCheckedMutation.Data(
+                id = "1",
+                checked = true,
+              )
+            )
+            .execute()
+```

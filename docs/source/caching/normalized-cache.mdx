@@ -48,15 +48,17 @@ dependencies {
 And add it to your `ApolloClient`:
 
 ```kotlin
+// Create a 10MB MemoryCacheFactory
+val cacheFactory = MemoryCacheFactory(maxSizeBytes = 10 * 1024 * 1024)
 // Build the ApolloClient
 val apolloClient = ApolloClient.Builder()
   .serverUrl("https://...")
-  // Create a 10MB MemoryCacheFactory
-  .normalizedCache(MemoryCacheFactory(maxSizeBytes = 10 * 1024 * 1024))
+  // normalizedCache() is an extension function on ApolloClient.Builder
+  .normalizedCache(cacheFactory)
   .build()
 ```
 
-`normalizedCache()` takes a `NormalizedCacheFactory` as a parameter so that it can create the cache in the background. This is not a big issue for a memory cache but it could be for a SQLite cache.
+Because the normalized cache is optional, `normalizedCache()` is an extension function on `ApolloClient.Builder()` that's defined in the `apollo-normalized-cache` artifact. It takes a `NormalizedCacheFactory` as a parameter so that it can create the cache in the background if needed.
 
 A `MemoryCache` is least recently used (LRU) cache. It keeps entries in memory based on two conditions:
 
@@ -106,6 +108,26 @@ val memoryFirstThenSqlCacheFactory = MemoryCacheFactory(10 * 1024 * 1024)
 ```
 
 Reads will read from the first cache hit in the chain. Writes will propagate down the entire chain.
+
+## Getting data from the cache
+
+Once your cache setup is complete, the cache will be used by default by all your queries. By default, queries will try to find a result in the cache and go the network if it's not there. This is the `CacheFirst` `FetchPolicy`. You can customize that behaviour with `fetchPolicy(FetchPolicy)`:
+
+```kotlin
+val response = apolloClient.query(query)
+                 // Don't use the cache
+                 .fetchPolicy(FetchPolicy.NetworkOnly)
+
+                 // Or only use the cache
+                 .fetchPolicy(FetchPolicy.CacheOnly)
+
+                 // Finally, execute your query
+                 .execute()
+```
+
+Like for `normalizedCache(NormalizedCacheFactory)`, `fetchPolicy(FetchPolicy)` is an extension function on `ApolloClient.Builder()` so you will need `apollo-cache-fetch-policy` in your classpath for this to work.
+
+Because the normalized cache deduplicates all your data, it allows to react to cache changes. This is done with `watchers` that listen to cache changes. You can learn more about them [in this page](query-watchers)
 
 ## Specifying your object IDs
 
