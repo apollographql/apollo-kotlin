@@ -81,7 +81,7 @@ This time, display a progressBar while the query executes:
             binding.progressBar.visibility = View.VISIBLE
             binding.error.visibility = View.GONE
 
-            val response = apolloClient.query(LaunchDetailsQuery(id = args.launchId))
+            val response = apolloClient.query(LaunchDetailsQuery(id = args.launchId)).execute()
         }
     }
 ```
@@ -97,7 +97,7 @@ For protocol errors, Apollo Android will throw an `ApolloException`, so you'll n
 
 ```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchDetailsFragment.kt
             val response = try {
-                apolloClient.query(LaunchDetailsQuery(id = args.launchId))
+                apolloClient.query(LaunchDetailsQuery(id = args.launchId)).execute()
             } catch (e: ApolloException) {
                 binding.progressBar.visibility = View.GONE
                 binding.error.text = "Oh no... A protocol error happened"

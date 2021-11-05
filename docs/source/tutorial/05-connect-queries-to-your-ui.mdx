@@ -38,7 +38,7 @@ In **LaunchListFragment.kt**, update what happens within your `lifecycleScope` i
 ```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchListFragment.kt
         lifecycleScope.launchWhenResumed {
             val response = try {
-                apolloClient.query(LaunchListQuery())
+                apolloClient.query(LaunchListQuery()).execute()
             } catch (e: ApolloException) {
                 Log.d("LaunchList", "Failure", e)
                 null
