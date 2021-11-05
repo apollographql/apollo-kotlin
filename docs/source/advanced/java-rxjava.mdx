@@ -17,7 +17,7 @@ apollo {
 }
 ```
 
-## Use RxJava adapters
+## Use RxJava extensions
 
 Apollo Android has a coroutines / Flow based API which isn't well adapted to be used with Java. Or maybe you use RxJava in your Kotlin project. In both cases, you may use Apollo's RxJava adapters.
 
@@ -42,19 +42,23 @@ Use the `rxSingle` / `rxFlowable` extensions to execute your operations and get 
 <MultiCodeBlock>
 
 ```java
+import com.apollographql.apollo3.rx2.Rx2Apollo;
+
+// (...)
+
 // A query
 ApolloQueryCall<MyQuery.Data> queryCall = client.query(new MyQuery());
-Single<ApolloResponse<MyQuery.Data>> queryResponse = rxSingle(queryCall);
+Single<ApolloResponse<MyQuery.Data>> queryResponse = Rx2Apollo.rxSingle(queryCall);
 queryResponse.subscribe( /* ... */ );
 
 // A mutation
 ApolloMutationCall<MyMutation.Data> mutationCall = client.mutate(new MyMutation("my-parameter"));
-Single<ApolloResponse<MyMutation.Data>> mutationResponse = rxSingle(mutationCall);
+Single<ApolloResponse<MyMutation.Data>> mutationResponse = Rx2Apollo.rxSingle(mutationCall);
 mutationResponse.subscribe( /* ... */ );
 
 // A subscription
 ApolloSubscriptionCall<MySubscription.Data> subscriptionCall = client.subscribe(new MySubscription());
-Flowable<ApolloResponse<MySubscription.Data>> subscriptionResponse = rxFlowable(subscriptionCall);
+Flowable<ApolloResponse<MySubscription.Data>> subscriptionResponse = Rx2Apollo.rxFlowable(subscriptionCall);
 subscriptionResponse.subscribe( /* ... */ );
 ```
 
@@ -114,10 +118,13 @@ Then use the `toApolloInterceptor` extension to convert it to an `ApolloIntercep
 
 <MultiCodeBlock>
 
-```java{3}
+```java{6}
+import com.apollographql.apollo3.rx2.Rx2Conversion;
+// (...)
+
 ApolloClient client = new ApolloClient.Builder()
         .serverUrl("http://localhost:4000/graphql")
-        .addInterceptor(toApolloInterceptor(rx2ApolloInterceptor))
+        .addInterceptor(Rx2Conversion.toApolloInterceptor(rx2ApolloInterceptor))
         .build();
 ```
 ```kotlin{3}
@@ -165,14 +172,17 @@ Then use the `toHttpInterceptor` extension to add it to your `ApolloClient.Build
 
 <MultiCodeBlock>
 
-```java
+```java{10}
+import com.apollographql.apollo3.rx2.Rx2Conversion;
+// (...)
+
 ApolloClient client = new ApolloClient.Builder()
     .networkTransport(
         new HttpNetworkTransport(
             "http://localhost:4000/graphql",
             10_000,
             10_000,
-            List.of(toHttpInterceptor(rx2HttpInterceptor))
+            List.of(Rx2Conversion.toHttpInterceptor(rx2HttpInterceptor))
         )
     )
 .build();
@@ -193,13 +203,15 @@ val client = ApolloClient.Builder()
 
 ### Using the ApolloStore
 
+> 💡 Note: the APIs in this section are experimental and subject to change.
+
 `ApolloStore` is the class allowing to interact with the [normalized cache](../../caching/normalized-cache). You can obtain an Rx version of it with the `toRx2ApolloStore` or `toRx3ApolloStore` extension:
 
 <MultiCodeBlock>
 
 ```java{2}
 ApolloStore apolloStore = getApolloStore(client);
-Rx2ApolloStore rxApolloStore = toRx2ApolloStore(apolloStore, Schedulers.io());
+Rx2ApolloStore rxApolloStore = Rx2Apollo.toRx2ApolloStore(apolloStore, Schedulers.io());
 Single<MyFragment> data = rxApolloStore.rxReadFragment(new MyFragmentImpl(), new CacheKey("..."), CustomScalarAdapters.Empty, CacheHeaders.NONE);
 data.subscribe( /* ... */);
 ```
