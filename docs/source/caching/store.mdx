@@ -82,33 +82,26 @@ apollo {
 
 Because fragments are not rooted, you need to specify the root cache id of the fragment:
 
-```
-val data = apolloClient.apolloStore.readFragment(BookDetailsFragment(), CacheKey("42")
+```kotlin
+val data = apolloClient.apolloStore.readFragment(BookDetailsImpl(), CacheKey("42")
 
 println("Title=${data.title}")
 println("Author Name=${data.author.name}")
 ```
 
-In this example, the fragment doesn't use any variables so
-```
+Fragments can contain variables. Different fragments with different variables can return different data. In that case the fragment `Impl` class will require variables as constructor parameters:
 
+```graphql
+fragment BookDetails on Book {
+  id
+  title(locale: $locale)
+}
 ```
-
-To manipulate the cache directly, `ApolloStore` exposes `readOperation`/`readFragment` and `writeOperation`/`writeFragment` methods:
 
 ```kotlin
-  // Reading data from the store
-  val data = apolloClient.apolloStore.readOperation(BookWithAuthorName())
+val data = apolloClient.apolloStore.readFragment(BookDetailsImpl(locale = "en-US"), CacheKey("42")
 
-  // Create data to write
-  val data = BookWithAuthorName.Data(
-    id = "book1",
-    title = "Les guerriers du silence",
-    author = BookWithAuthorName.Author(
-      id = "author1",
-      name = "Pierre Bordage"
-    )
-  )
-  // Write to the store. All watchers will be notified
-  apolloClient.apolloStore.writeOperation(BookWithAuthorName(), data)
+println("Title=${data.title}")
 ```
+
+
