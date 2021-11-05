@@ -1,8 +1,8 @@
 public final class com/apollographql/apollo3/mpp/Guard {
 	public fun <init> (Ljava/lang/String;Lkotlin/jvm/functions/Function0;)V
-	public final fun access (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun blockingAccess (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public final fun dispose ()V
+	public final fun readAccess (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun writeAccess (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun writeAndForget (Lkotlin/jvm/functions/Function1;)V
 }
 

@@ -59,7 +59,7 @@ class DefaultApolloStore(
       cacheKey: CacheKey,
       cascade: Boolean,
   ): Boolean {
-    return cacheHolder.access {
+    return cacheHolder.writeAccess {
       it.remove(cacheKey, cascade)
     }
   }
@@ -68,7 +68,7 @@ class DefaultApolloStore(
       cacheKeys: List<CacheKey>,
       cascade: Boolean,
   ): Int {
-    return cacheHolder.access {
+    return cacheHolder.writeAccess {
       var count = 0
       for (cacheKey in cacheKeys) {
         if (it.remove(cacheKey, cascade = cascade)) {
@@ -100,7 +100,7 @@ class DefaultApolloStore(
     val cacheResolver = cacheResolver
 
 
-    return cacheHolder.access { cache ->
+    return cacheHolder.readAccess { cache ->
       operation.readDataFromCache(
           customScalarAdapters = customScalarAdapters,
           cache = cache,
@@ -119,7 +119,7 @@ class DefaultApolloStore(
     // Capture a local reference so as not to freeze "this"
     val cacheResolver = cacheResolver
 
-    return cacheHolder.access { cache ->
+    return cacheHolder.readAccess { cache ->
       fragment.readDataFromCache(
           customScalarAdapters = customScalarAdapters,
           cache = cache,
@@ -131,7 +131,10 @@ class DefaultApolloStore(
   }
 
   override suspend fun <R> accessCache(block: (NormalizedCache) -> R): R {
-    return cacheHolder.access(block)
+    /**
+     * We don't know how the cache is going to be used, assume write access
+     */
+    return cacheHolder.writeAccess(block)
   }
 
   override suspend fun <D : Operation.Data> writeOperation(
@@ -161,7 +164,7 @@ class DefaultApolloStore(
     // Capture a local reference so as not to freeze "this"
     val objectIdGenerator = objectIdGenerator
 
-    val changedKeys =  cacheHolder.access { cache ->
+    val changedKeys =  cacheHolder.writeAccess { cache ->
       val records = fragment.normalize(
           data = fragmentData,
           customScalarAdapters = customScalarAdapters,
@@ -190,7 +193,7 @@ class DefaultApolloStore(
     // Capture a local reference so as not to freeze "this"
     val objectIdGenerator = objectIdGenerator
 
-    val (records, changedKeys) = cacheHolder.access { cache ->
+    val (records, changedKeys) = cacheHolder.writeAccess { cache ->
       val records = operation.normalize(
           data = operationData,
           customScalarAdapters = customScalarAdapters,
@@ -217,7 +220,7 @@ class DefaultApolloStore(
     // Capture a local reference so as not to freeze "this"
     val objectIdGenerator = objectIdGenerator
 
-    val changedKeys = cacheHolder.access { cache ->
+    val changedKeys = cacheHolder.writeAccess { cache ->
       val records = operation.normalize(
           data = operationData,
           customScalarAdapters = customScalarAdapters,
@@ -247,7 +250,7 @@ class DefaultApolloStore(
       mutationId: Uuid,
       publish: Boolean,
   ): Set<String> {
-    val changedKeys = cacheHolder.access { cache ->
+    val changedKeys = cacheHolder.writeAccess { cache ->
       cache.removeOptimisticUpdates(mutationId)
     }
 
@@ -259,13 +262,13 @@ class DefaultApolloStore(
   }
 
   suspend fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
-    return cacheHolder.access { cache ->
+    return cacheHolder.writeAccess { cache ->
       cache.merge(record, cacheHeaders)
     }
   }
 
   override suspend fun dump(): Map<KClass<*>, Map<String, Record>> {
-    return cacheHolder.access { cache ->
+    return cacheHolder.readAccess { cache ->
       cache.dump()
     }
   }
