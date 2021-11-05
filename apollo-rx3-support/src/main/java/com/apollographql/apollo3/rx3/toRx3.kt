@@ -1,6 +1,8 @@
 /*
  * This file is auto generated from apollo-rx2-support by rxjava3.main.kts, do not edit manually.
  */
+@file:JvmName("Rx3Apollo")
+
 package com.apollographql.apollo3.rx3
 
 import com.apollographql.apollo3.ApolloMutationCall
@@ -152,10 +154,15 @@ class Rx3ApolloStore(
   }
 }
 
-fun <D: Query.Data> ApolloQueryCall<D>.rxSingle(scheduler: Scheduler) = rxSingle(scheduler.asCoroutineDispatcher()) {
+@JvmOverloads
+fun <D: Query.Data> ApolloQueryCall<D>.rxSingle(scheduler: Scheduler = Schedulers.io()) = rxSingle(scheduler.asCoroutineDispatcher()) {
   execute()
 }
-fun <D: Mutation.Data> ApolloMutationCall<D>.rxSingle(scheduler: Scheduler) = rxSingle(scheduler.asCoroutineDispatcher()) {
+
+@JvmOverloads
+fun <D: Mutation.Data> ApolloMutationCall<D>.rxSingle(scheduler: Scheduler = Schedulers.io()) = rxSingle(scheduler.asCoroutineDispatcher()) {
   execute()
 }
-fun <D: Subscription.Data> ApolloSubscriptionCall<D>.rxFlowable(scheduler: Scheduler) = execute().asFlowable(scheduler.asCoroutineDispatcher())
+
+@JvmOverloads
+fun <D: Subscription.Data> ApolloSubscriptionCall<D>.rxFlowable(scheduler: Scheduler = Schedulers.io()) = execute().asFlowable(scheduler.asCoroutineDispatcher())
