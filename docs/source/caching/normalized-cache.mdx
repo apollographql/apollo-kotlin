@@ -8,7 +8,7 @@ title: Normalized cache
 
 ## Data Normalization
 
-A normalized cache stores objects by ID. Instead of caching the whole response, the normalized cache can deduplicate common parts:
+A normalized cache stores objects by ID. Instead of caching the whole response, the normalized cache can deduplicate common parts. For an example, take these two queries:
 
 ```graphql
 query BookWithAuthorName {
@@ -37,9 +37,9 @@ Using a normalized cache as several advantages. The main one is to avoid storing
 
 ## Memory cache
 
-Apollo Android comes with a `MemoryCache` that will store your data in memory. To use it, add it to your dependencies in your `build.gradle[.kts]` script:
+Apollo Android comes with a `MemoryCache` that will store your data in memory. To use it, add the `apollo-normalized-cache` artifact to your dependencies in your `build.gradle[.kts]` file:
 
-```kotlin
+```kotlin:title=build.gradle[.kts]
 dependencies {
   implementation("com.apollographql.apollo3:apollo-normalized-cache:x.y.z")
 }
@@ -65,11 +65,13 @@ A `MemoryCache` is least recently used (LRU) cache. It keeps entries in memory b
 * `maxSizeBytes`: the maximum size in bytes the cache may occupy
 * `expireAfterMillis` - after what timeout each entry in the cache treated as expired. By default there is no timeout.
 
-When your app is stopped, data in the `MemoryCache` is lost forever. If you need to persist data, Apollo Android also supports a SQLite cache
+When your app is stopped, data in the `MemoryCache` is lost forever. If you need to persist data, you can use the SQLite cache.
 
 ## SQLite cache
 
-If the amount of data you store becomes too big to fit in memory or if you want your data to persist between app restarts, you can also use a `SqlNormalizedCacheFactory`. A `SqlNormalizedCacheFactory` will store your data in a [SQLDelight](https://github.com/cashapp/sqldelight) database and is defined in a separate dependency:
+The SQLite cache uses [SQLDelight](https://github.com/cashapp/sqldelight) to store data persistently if you need to to persist data accross app restarts or simply if the data becomes too big to fit in memory.
+
+To enable SQLite cache support, add the `apollo-normalized-cache-sqlite` dependency to your project's `build.gradle` file:
 
 ```kotlin:title=build.gradle.kts
 dependencies {
@@ -77,7 +79,7 @@ dependencies {
 }
 ```
 
-And add the SQLite cache to your `ApolloClient`:
+And add the SQLite cache to your `ApolloClient`. Because different platform use different drivers, you'll need to call the platform specific constructor:
 
 ```kotlin
 // Android
@@ -94,7 +96,6 @@ val apolloClient = ApolloClient.Builder()
   .build()
 ```
 
-Because different platform use different drivers, you'll need to call the platform specific constructor.
 
 ## Chaining caches
 
@@ -111,7 +112,7 @@ Reads will read from the first cache hit in the chain. Writes will propagate dow
 
 ## Getting data from the cache
 
-Once your cache setup is complete, the cache will be used by default by all your queries. By default, queries will try to find a result in the cache and go the network if it's not there. This is the `CacheFirst` `FetchPolicy`. You can customize that behaviour with `fetchPolicy(FetchPolicy)`:
+Once your cache setup is complete, the cache will be used by default by all your queries. By default, queries will try to find a result in the cache first and go the network if it's not there. This is the `FetchPolicy.CacheFirst`. You can customize that behaviour with `fetchPolicy(FetchPolicy)`:
 
 ```kotlin
 val response = apolloClient.query(query)
@@ -156,22 +157,28 @@ query AuthorById($id: String!) {
 
 This will store the following records:
 
-* `"favoriteBook"`: `{"id": "book1", "title": "Les guerriers du silence", "author": "ApolloCacheReference{favoriteBook.author}"}`
-* `"favoriteBook.author"`: `{"id": "author1", name": "Pierre Bordage"}`
-* `"author("id": "author1")"`: `{"id": "author1", "name": "Pierre Bordage"}`
-* `"QUERY_ROOT"`: `{"favoriteBook": "ApolloCacheReference{favoriteBook}", "author(\"id\": \"author1\")": "ApolloCacheReference{author(\"id\": \"author1\")}"}`
+```
+* "favoriteBook": {"id": "book1", "title": "Les guerriers du silence", "author": "ApolloCacheReference{favoriteBook.author}"}
+* "favoriteBook.author": {"id": "author1", name": "Pierre Bordage"}
+* "author("id": "author1")": {"id": "author1", "name": "Pierre Bordage"}
+* "QUERY_ROOT": {"favoriteBook": "ApolloCacheReference{favoriteBook}", "author(\"id\": \"author1\")": "ApolloCacheReference{author(\"id\": \"author1\")}"}
+```
 
 This is undesirable, both because it takes more space, and because modifying one of those objects will not notify the watchers of the other. What you want instead is this:
 
-* `"book1"`: `{"id": "book1", "title": "Les guerriers du silence", "author": "ApolloCacheReference{author1}"}`
-* `"author1"`: `{"id": "author1", name": "Pierre Bordage"}`
-* `"QUERY_ROOT"`: `{"favoriteBook": "book1", "author(\"id\": \"author1\")": "author1"}`
+```
+* "book1"`: `{"id": "book1", "title": "Les guerriers du silence", "author": "ApolloCacheReference{author1}"}
+* "author1"`: `{"id": "author1", name": "Pierre Bordage"}
+* "QUERY_ROOT"`: `{"favoriteBook": "book1", "author(\"id\": \"author1\")": "author1"}
+```
 
 The good news is that all your objects have an `id` field that we can use for that purpose. If each `id` is unique across the whole graph, you can use it directly. If it's unique per object type, you can prefix it with the type name. For an example: `"Book:$id"`.
 
-Note how `id` can be used in two places:
-1. As an object field (`author.id`)
-2. As a field argument (`author(id)`)
+Note how `id` can be computed from two sources:
+
+1. From the object fields (`author.id`)
+2. From a field arguments (`author(id)`)
+
 
 1. is happening **after** a network request and is important to merge the network response with existing data. This is the most usual case.
 2. is happening **before** a network request and is important to avoid a network round trip if all the data is in the cache already. This is an optimization that can avoid some cache misses.

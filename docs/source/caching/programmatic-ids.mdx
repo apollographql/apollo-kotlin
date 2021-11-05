@@ -6,10 +6,11 @@ title: Programmatic cache ids
 
 As explained in [the normalized cache page](normalized-cache), defining unique cache ids is important to avoid duplication and make sure your watchers get notified whenever a relevant change in the store happens.
 
-Cache ids are needed in two places:
+Cache ids are computed from two sources:
 
-1. As an object field (`author.id`)
-2. As a field argument (`author(id)`)
+1. From the object fields (`author.id`)
+2. From a field arguments (`author(id)`)
+
 
 1. is happening **after** a network request and is important to merge the network response with existing data. This is the most usual case.
 2. is happening **before** a network request and is important to avoid a network round trip if all the data is in the cache already. This is an optimization that can avoid some cache misses.

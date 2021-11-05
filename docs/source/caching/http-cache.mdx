@@ -9,7 +9,7 @@ title: HTTP cache
 
 To enable HTTP cache support, add the dependency to your project's `build.gradle` file:
 
-```kotlin:title=build.gradle
+```kotlin:title=build.gradle[.kts]
 dependencies {
   implementation("com.apollographql.apollo3:apollo-http-cache:x.y.z")
 }
@@ -33,9 +33,9 @@ apolloClient = ApolloClient.Builder()
     .build()
 ```
 
-The HTTP cache uses a least recently used algorithm with a configurable max size.
+The HTTP cache is a least recently used (LRU) cache with a configurable max size.
 
-Once your cache setup is complete, the cache will be used by default by all your queries. By default, queries will try to find a result in the cache and go the network if it's not there. This is the `CacheFirst` `HttpFetchPolicy`. You can customize that behaviour with `httpFetchPolicy(HttpFetchPolicy)`:
+Once your cache setup is complete, the cache will be used by default by all your queries. By default, queries will try to find a result in the cache first and go the network if it's not there. This is the `HttpFetchPolicy.CacheFirst`. You can customize that behaviour with `httpFetchPolicy(HttpFetchPolicy)`:
 
 ```kotlin
 val response = apolloClient.query(query)
