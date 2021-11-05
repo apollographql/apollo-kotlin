@@ -2,13 +2,13 @@
 title: Normalized cache
 ---
 
-import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
+> This page focuses on the normalized cache. If you're looking for a simpler albeit coarser cache, take a look at the [HTTP cache](http-cache).
 
-Apollo Android provides two different kinds of caches: an HTTP cache and a normalized cache. The HTTP cache is easier to set up but also has more limitations. This page focuses on the normalized cache. If you're looking for a simpler albeit coarser cache, take a look at the [HTTP cache](http-cache).
 
-## Data Normalization:
 
-The normalized cache stores objects by ID.
+## Data Normalization
+
+A normalized cache stores objects by ID. Instead of caching the whole response, the normalized cache can deduplicate common parts:
 
 ```graphql
 query BookWithAuthorName {
@@ -33,28 +33,39 @@ query AuthorById($id: String!) {
 
 In the above example, requesting the author of your favorite book with the `AuthorById` query will return a result from the cache if you requested your favorite book before. This works because the author is stored only once in the cache and all the fields were retrieved in the initial `BookWithAuthorName` query. If you were to request more fields, like `birthdate` for example, that wouldn't work anymore.
 
-To learn more about the process of normalization, check this [blog post](https://www.apollographql.com/blog/the-concepts-of-graphql-bc68bd819be3)
+Using a normalized cache as several advantages. The main one is to avoid storing duplicate data and save some space. Another big one is that you can use the cache as a single source of truth for your UI and react to changes in the cache. To learn more about the process of normalization, check this [blog post about cache normalization](https://www.apollographql.com/blog/apollo-client/caching/demystifying-cache-normalization/).
 
-## Storing your data in memory
+## Memory cache
 
-Apollo Android comes with a `MemoryCache` that will store your data in memory:
-
-<MultiCodeBlock>
+Apollo Android comes with a `MemoryCache` that will store your data in memory. To use it, add it to your dependencies in your `build.gradle[.kts]` script:
 
 ```kotlin
-// Create a 10MB MemoryCacheFactory
-val cacheFactory = MemoryCacheFactory(maxSizeBytes = 10 * 1024 * 1024)
+dependencies {
+  implementation("com.apollographql.apollo3:apollo-normalized-cache:x.y.z")
+}
+```
 
+And add it to your `ApolloClient`:
+
+```kotlin
 // Build the ApolloClient
 val apolloClient = ApolloClient.Builder()
   .serverUrl("https://...")
-  .normalizedCache(cacheFactory)
+  // Create a 10MB MemoryCacheFactory
+  .normalizedCache(MemoryCacheFactory(maxSizeBytes = 10 * 1024 * 1024))
   .build()
 ```
 
-</MultiCodeBlock>
+`normalizedCache()` takes a `NormalizedCacheFactory` as a parameter so that it can create the cache in the background. This is not a big issue for a memory cache but it could be for a SQLite cache.
 
-## Persisting your data in a SQLite database
+A `MemoryCache` is least recently used (LRU) cache. It keeps entries in memory based on two conditions:
+
+* `maxSizeBytes`: the maximum size in bytes the cache may occupy
+* `expireAfterMillis` - after what timeout each entry in the cache treated as expired. By default there is no timeout.
+
+When your app is stopped, data in the `MemoryCache` is lost forever. If you need to persist data, Apollo Android also supports a SQLite cache
+
+## SQLite cache
 
 If the amount of data you store becomes too big to fit in memory or if you want your data to persist between app restarts, you can also use a `SqlNormalizedCacheFactory`. A `SqlNormalizedCacheFactory` will store your data in a [SQLDelight](https://github.com/cashapp/sqldelight) database and is defined in a separate dependency:
 
@@ -64,37 +75,7 @@ dependencies {
 }
 ```
 
-**Note:** The `apollo-normalized-cache-sqlite` dependency has Kotlin multiplatform support and has multiple variants (`-jvm`, `-android`, `-ios-arm64`,...). If you are targeting Android and using custom `buildTypes`, you will need to help Gradle resolve the correct artifact by defining [matchingFallbacks](https://developer.android.com/studio/build/dependencies?authuser=2#resolve_matching_errors):
-
-<MultiCodeBlock>
-
-```kotlin:title=build.gradle
-android {
-  buildTypes {
-    create("custom") {
-      // your code...
-      matchingFallbacks = listOf("debug")
-    }
-  }
-}
-```
-
-```groovy:title=build.gradle
-android {
-  buildTypes {
-    custom {
-      // your code...
-      matchingFallbacks = ["debug"]
-    }
-  }
-}
-```
-
-</MultiCodeBlock>
-
-Once the dependency is added, create the `SqlNormalizedCacheFactory`:
-
-<MultiCodeBlock>
+And add the SQLite cache to your `ApolloClient`:
 
 ```kotlin
 // Android
@@ -111,24 +92,18 @@ val apolloClient = ApolloClient.Builder()
   .build()
 ```
 
-
-</MultiCodeBlock>
+Because different platform use different drivers, you'll need to call the platform specific constructor.
 
 ## Chaining caches
 
 To get the best of both caches, you can chain an `MemoryCacheFactory` with a `SqlNormalizedCacheFactory`:
 
-<MultiCodeBlock>
-
 ```kotlin
 
-val sqlCacheFactory = SqlNormalizedCacheFactory(context, "db_name")
 val memoryFirstThenSqlCacheFactory = MemoryCacheFactory(10 * 1024 * 1024)
-  .chain(sqlCacheFactory)
+  .chain(SqlNormalizedCacheFactory(context, "db_name"))
 
 ```
-
-</MultiCodeBlock>
 
 Reads will read from the first cache hit in the chain. Writes will propagate down the entire chain.
 
@@ -170,113 +145,16 @@ This is undesirable, both because it takes more space, and because modifying one
 * `"author1"`: `{"id": "author1", name": "Pierre Bordage"}`
 * `"QUERY_ROOT"`: `{"favoriteBook": "book1", "author(\"id\": \"author1\")": "author1"}`
 
-To do this, specify an `ObjectIdGenerator` and a `CacheResolver` when configuring your `NormalizedCacheFactory`:
+The good news is that all your objects have an `id` field that we can use for that purpose. If each `id` is unique across the whole graph, you can use it directly. If it's unique per object type, you can prefix it with the type name. For an example: `"Book:$id"`.
 
-<MultiCodeBlock>
+Note how `id` can be used in two places:
+1. As an object field (`author.id`)
+2. As a field argument (`author(id)`)
 
-```kotlin
+1. is happening **after** a network request and is important to merge the network response with existing data. This is the most usual case.
+2. is happening **before** a network request and is important to avoid a network round trip if all the data is in the cache already. This is an optimization that can avoid some cache misses.
 
-val objectIdGenerator = object : ObjectIdGenerator {
-  override fun cacheKeyForObject(obj: Map<String, Any?>, context: ObjectIdGeneratorContext): CacheKey? {
-    // Retrieve the id from the object itself
-    return CacheKey(obj["id"] as String)
-  }
-}
+To instruct the cache how to compute the `id` field in both cases, you have two solutions:
 
-val resolver: CacheResolver = object : CacheKeyResolver() {
-  override fun cacheKeyForField(field: CompiledField, variables: Executable.Variables): CacheKey? {
-    // Retrieve the id from the field arguments.
-    // In the example, this allows to know that `author(id: "author1")` will retrieve `author1`
-    // That sounds straightforward but without this, the cache would have no way of finding the id before executing the request on the
-    // network which is what we want to avoid
-    return CacheKey(field.resolveArgument("id", variables) as String)
-  }
-}
-
-val apolloClient = ApolloClient.Builder()
-    .serverUrl("https://...")
-    .normalizedCache(
-        normalizedCacheFactory = cacheFactory,
-        objectIdGenerator = objectIdGenerator,
-        cacheResolver = resolver,
-    )
-    .build()
-```
-
-</MultiCodeBlock>
-
-For this resolver to work, every object in your graph needs to have a globally unique ID. If some of them don't have one, you can fall back to using the path as cache key by returning `null`.
-
-## Using the cache with your queries
-
-You control how the cache is used with [`fetchPolicy`](https://github.com/apollographql/apollo-android/blob/main/apollo-normalized-cache/src/commonMain/kotlin/com/apollographql/apollo3/cache/normalized/ClientCacheExtensions.kt):
-
-<MultiCodeBlock>
-
-```kotlin
-// Get a response from the cache if possible. Else, get a response from the network
-// This is the default behavior
-val query = ApolloRequest.Builder(BookWithAuthorName())
-  .fetchPolicy(FetchPolicy.CacheFirst)
-  .build()
-val response = apolloClient.query(query)
-```
-
-</MultiCodeBlock>
-
-Other possibilities are `CacheOnly`, `NetworkOnly`, `CacheFirst` and `NetworkFirst`. See the [`FetchPolicy` enum](https://github.com/apollographql/apollo-android/blob/main/apollo-normalized-cache/src/commonMain/kotlin/com/apollographql/apollo3/cache/normalized/ClientCacheExtensions.kt) for more details.
-
-## Reacting to changes in the cache
-
-One big advantage of using a normalized cache is that your UI can now react to changes in your cache data. If you want to be notified every time something changes in `book1`, you can _watch_ a query:
-
-<MultiCodeBlock>
-
-```kotlin
-  apolloClient.watch(BookWithAuthorName()).collect { response ->
-      // This will be called every time the book or author changes
-  }
-```
-
-</MultiCodeBlock>
-
-## Interacting with the cache
-
-To manipulate the cache directly, `ApolloStore` exposes `readOperation`/`readFragment` and `writeOperation`/`writeFragment` methods:
-
-```kotlin
-  // Reading data from the store
-  val data = apolloClient.apolloStore.readOperation(BookWithAuthorName())
-
-  // Create data to write
-  val data = BookWithAuthorName.Data(
-    id = "book1",
-    title = "Les guerriers du silence",
-    author = BookWithAuthorName.Author(
-      id = "author1",
-      name = "Pierre Bordage"
-    )
-  )
-  // Write to the store. All watchers will be notified
-  apolloClient.apolloStore.writeOperation(BookWithAuthorName(), data)
-```
-
-## Troubleshooting
-
-If you are experiencing cache misses, check your cache size and eviction policy. Some records might have been removed from the cache. Increasing the cache size and/or retention period will help hitting your cache more consistently. 
-
-If you are still experiencing cache misses, you can dump the contents of the cache:
-
-<MultiCodeBlock>
-
-```kotlin
-val dump = apolloClient.apolloStore().dump()
-NormalizedCache.prettifyDump(dump)
-```
-
-</MultiCodeBlock>
-
-Make sure that no data is duplicated in the dump. If it is the case, it probably means that some objects have a wrong `CacheKey`. Make sure to provide a `CacheKeyResolver` that can work with your graph. All objects should have a unique and stable ID. That means that the ID should be the same no matter what path the object is in the graph. That also mean you have to include the identifier field in your queries to be able to use in from the `CacheKeyResolver`.
-
-Finally, make sure to design your queries so that you can reuse fields. A single missing field in the cache for a query will trigger a network fetch. Sometimes it might be useful to query an extra field early on so that it can be reused by other later queries.
-
+* [The declarative way](declarative-ids) (preferred): you can specify schema extensions that tell the codegen where to find the id and make sure at compile time that all the `id` fields are requested so that all objects can be identified. Declarative ids will also prefix each id with the typename to ensure globally unique ids.
+* [The programmatic way](programmatic-ids): you can implement APIs that will retrieve the id for an object. Because you can execute arbitrary code, this solution is more flexible but it's also more error prone and requires that you manually request `id` fields .

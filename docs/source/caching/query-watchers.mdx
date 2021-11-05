@@ -1,0 +1,34 @@
+
+
+## Using the cache with your queries
+
+You control how the cache is used with [`fetchPolicy`](https://github.com/apollographql/apollo-android/blob/main/apollo-normalized-cache/src/commonMain/kotlin/com/apollographql/apollo3/cache/normalized/ClientCacheExtensions.kt):
+
+<MultiCodeBlock>
+
+```kotlin
+// Get a response from the cache if possible. Else, get a response from the network
+// This is the default behavior
+val query = ApolloRequest.Builder(BookWithAuthorName())
+  .fetchPolicy(FetchPolicy.CacheFirst)
+  .build()
+val response = apolloClient.query(query)
+```
+
+</MultiCodeBlock>
+
+Other possibilities are `CacheOnly`, `NetworkOnly`, `CacheFirst` and `NetworkFirst`. See the [`FetchPolicy` enum](https://github.com/apollographql/apollo-android/blob/main/apollo-normalized-cache/src/commonMain/kotlin/com/apollographql/apollo3/cache/normalized/ClientCacheExtensions.kt) for more details.
+
+## Reacting to changes in the cache
+
+One big advantage of using a normalized cache is that your UI can now react to changes in your cache data. If you want to be notified every time something changes in `book1`, you can _watch_ a query:
+
+<MultiCodeBlock>
+
+```kotlin
+  apolloClient.watch(BookWithAuthorName()).collect { response ->
+      // This will be called every time the book or author changes
+  }
+```
+
+</MultiCodeBlock>
