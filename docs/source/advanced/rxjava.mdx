@@ -1,25 +1,11 @@
 ---
-title: 'Java and RxJava support'
+title: 'RxJava support'
 ---
 
 import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
-
-Because Apollo Android is written in Kotlin, it can be used in Java projects. This guide will show you how to do that.
-
-## Use the Java codegen
-
-Apollo Android generates Kotlin code by default, but you can configure it to use the Java codegen instead:
-
-```kotlin:title=build.gradle[.kts]
-apollo {
-  generateKotlinModels.set(false)
-}
-```
-
-## Use RxJava extensions
-
-Apollo Android has a coroutines / Flow based API which isn't well adapted to be used with Java. Or maybe you use RxJava in your Kotlin project. In both cases, you may use Apollo's RxJava adapters.
+If you are using Apollo Android in a [Java project](java) or a Kotlin project that uses
+RxJava, you can use Apollo's RxJava extensions.
 
 To do so, add the `apollo-rx2-support` or `apollo-rx3-support` dependency to your project:
 
@@ -203,14 +189,18 @@ val client = ApolloClient.Builder()
 
 ### Using the ApolloStore
 
-> 💡 Note: the APIs in this section are experimental and subject to change.
+> ⚠️ Note: the APIs in this section are experimental and subject to change.
 
 `ApolloStore` is the class allowing to interact with the [normalized cache](../../caching/normalized-cache). You can obtain an Rx version of it with the `toRx2ApolloStore` or `toRx3ApolloStore` extension:
 
 <MultiCodeBlock>
 
-```java{2}
-ApolloStore apolloStore = getApolloStore(client);
+```java{6}
+import com.apollographql.apollo3.cache.normalized.ClientCacheExtensionsKt;
+import com.apollographql.apollo3.rx2.Rx2Apollo;
+// (...)
+
+ApolloStore apolloStore = ClientCacheExtensionsKt.getApolloStore(client);
 Rx2ApolloStore rxApolloStore = Rx2Apollo.toRx2ApolloStore(apolloStore, Schedulers.io());
 Single<MyFragment> data = rxApolloStore.rxReadFragment(new MyFragmentImpl(), new CacheKey("..."), CustomScalarAdapters.Empty, CacheHeaders.NONE);
 data.subscribe( /* ... */);
