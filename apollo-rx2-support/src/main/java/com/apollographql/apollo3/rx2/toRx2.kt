@@ -5,6 +5,7 @@ package com.apollographql.apollo3.rx2
 import com.apollographql.apollo3.ApolloMutationCall
 import com.apollographql.apollo3.ApolloQueryCall
 import com.apollographql.apollo3.ApolloSubscriptionCall
+import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -67,14 +68,17 @@ fun ApolloInterceptor.toRx2ApolloInterceptor(scheduler: Scheduler = Schedulers.i
   }
 }
 
+@ApolloExperimental
 fun ApolloStore.toRx2ApolloStore(scheduler: Scheduler = Schedulers.io()) = Rx2ApolloStore(this, scheduler)
 
+@ApolloExperimental
 class Rx2ApolloStore(
     private val delegate: ApolloStore,
     private val scheduler: Scheduler,
 ) {
   private val dispatcher = scheduler.asCoroutineDispatcher()
 
+  @ApolloExperimental
   fun <D : Operation.Data> rxReadOperation(
       operation: Operation<D>,
       customScalarAdapters: CustomScalarAdapters,
@@ -83,6 +87,7 @@ class Rx2ApolloStore(
     delegate.readOperation(operation, customScalarAdapters, cacheHeaders)
   }
 
+  @ApolloExperimental
   fun <D : Fragment.Data> rxReadFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
@@ -92,6 +97,7 @@ class Rx2ApolloStore(
     delegate.readFragment(fragment, cacheKey, customScalarAdapters, cacheHeaders)
   }
 
+  @ApolloExperimental
   fun <D : Operation.Data> rxWriteOperation(
       operation: Operation<D>,
       operationData: D,
@@ -102,6 +108,7 @@ class Rx2ApolloStore(
     delegate.writeOperation(operation, operationData, customScalarAdapters, cacheHeaders, publish)
   }
 
+  @ApolloExperimental
   fun <D : Fragment.Data> rxWriteFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
@@ -113,6 +120,7 @@ class Rx2ApolloStore(
     delegate.writeFragment(fragment, cacheKey, fragmentData, customScalarAdapters, cacheHeaders, publish)
   }
 
+  @ApolloExperimental
   fun <D : Operation.Data> rxWriteOptimisticUpdates(
       operation: Operation<D>,
       operationData: D,
@@ -123,6 +131,7 @@ class Rx2ApolloStore(
     delegate.writeOptimisticUpdates(operation, operationData, mutationId, customScalarAdapters, publish)
   }
 
+  @ApolloExperimental
   fun rxRollbackOptimisticUpdates(
       mutationId: Uuid,
       publish: Boolean = true,
@@ -130,22 +139,27 @@ class Rx2ApolloStore(
     delegate.rollbackOptimisticUpdates(mutationId, publish)
   }
 
+  @ApolloExperimental
   fun rxRemove(cacheKey: CacheKey, cascade: Boolean = true) = rxSingle(dispatcher) {
     delegate.remove(cacheKey, cascade)
   }
 
+  @ApolloExperimental
   fun rxRemove(cacheKeys: List<CacheKey>, cascade: Boolean = true) = rxSingle(dispatcher) {
     delegate.remove(cacheKeys, cascade)
   }
 
+  @ApolloExperimental
   fun rxPublish(keys: Set<String>) = rxCompletable(dispatcher) {
     delegate.publish(keys)
   }
 
+  @ApolloExperimental
   fun <R : Any> rxAccessCache(block: (NormalizedCache) -> R) = rxSingle(dispatcher) {
     delegate.accessCache(block)
   }
 
+  @ApolloExperimental
   fun rxDump() = rxSingle(dispatcher) {
     delegate.dump()
   }

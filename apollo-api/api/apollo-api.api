@@ -37,6 +37,9 @@ public final class com/apollographql/apollo3/api/AnyAdapter : com/apollographql/
 	public final fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;)V
 }
 
+public abstract interface annotation class com/apollographql/apollo3/api/ApolloExperimental : java/lang/annotation/Annotation {
+}
+
 public abstract interface annotation class com/apollographql/apollo3/api/ApolloInternal : java/lang/annotation/Annotation {
 }
 

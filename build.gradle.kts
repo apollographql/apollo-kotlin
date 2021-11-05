@@ -197,4 +197,10 @@ configure<kotlinx.validation.ApiValidationExtension> {
           "apollo-testing-support"
       )
   )
+  nonPublicMarkers.addAll(
+      listOf(
+          "com.apollographql.apollo3.api.ApolloInternal",
+          "com.apollographql.apollo3.api.ApolloExperimental",
+      )
+  )
 }
