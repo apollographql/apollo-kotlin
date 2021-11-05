@@ -66,11 +66,13 @@ fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: B
   return addInterceptor(ApolloCacheInterceptor(store)).writeToCacheAsynchronously(writeToCacheAsynchronously)
 }
 
-
+/***
+ * Gets the result from the network, then observes the cache for any changes.
+ * Overriding the [FetchPolicy] will change how the result is first queried.
+ */
 fun <D : Query.Data> ApolloQueryCall<D>.watch(): Flow<ApolloResponse<D>> {
   return copy().addExecutionContext(WatchContext(true)).executeAsFlow()
 }
-
 
 /**
  * Gets the result from the cache first and always fetch from the network. Use this to get an early
