@@ -4,6 +4,15 @@ public final class com/apollographql/apollo3/gradle/api/AndroidProject {
 	public static synthetic fun onEachVariant$default (Lcom/apollographql/apollo3/gradle/api/AndroidProject;Lorg/gradle/api/Project;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 }
 
+public final class com/apollographql/apollo3/gradle/api/AndroidProjectKt {
+	public static final fun getAndroidExtension (Lorg/gradle/api/Project;)Lcom/android/build/gradle/BaseExtension;
+	public static final fun getAndroidExtensionOrThrow (Lorg/gradle/api/Project;)Lcom/android/build/gradle/BaseExtension;
+	public static final fun getApplicationVariants (Lorg/gradle/api/Project;)Lorg/gradle/api/DomainObjectSet;
+	public static final fun getLibraryVariants (Lorg/gradle/api/Project;)Lorg/gradle/api/DomainObjectSet;
+	public static final fun getTestVariants (Lorg/gradle/api/Project;)Lorg/gradle/api/DomainObjectSet;
+	public static final fun getUnitTestVariants (Lorg/gradle/api/Project;)Lorg/gradle/api/DomainObjectSet;
+}
+
 public final class com/apollographql/apollo3/gradle/api/ApolloAttributes {
 	public static final field INSTANCE Lcom/apollographql/apollo3/gradle/api/ApolloAttributes;
 	public final fun getAPOLLO_SERVICE_ATTRIBUTE ()Lorg/gradle/api/attributes/Attribute;
@@ -25,18 +34,15 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Introspecti
 	public abstract fun getSchemaFile ()Lorg/gradle/api/file/RegularFileProperty;
 }
 
-public final class com/apollographql/apollo3/gradle/api/ProjectKt {
-	public static final fun getAndroidExtension (Lorg/gradle/api/Project;)Lcom/android/build/gradle/BaseExtension;
-	public static final fun getAndroidExtensionOrThrow (Lorg/gradle/api/Project;)Lcom/android/build/gradle/BaseExtension;
-	public static final fun getApplicationVariants (Lorg/gradle/api/Project;)Lorg/gradle/api/DomainObjectSet;
+public final class com/apollographql/apollo3/gradle/api/JavaProjectKt {
 	public static final fun getJavaConvention (Lorg/gradle/api/Project;)Lorg/gradle/api/plugins/JavaPluginConvention;
 	public static final fun getJavaConventionOrThrow (Lorg/gradle/api/Project;)Lorg/gradle/api/plugins/JavaPluginConvention;
+}
+
+public final class com/apollographql/apollo3/gradle/api/KotlinProjectKt {
 	public static final fun getKotlinMultiplatformExtension (Lorg/gradle/api/Project;)Lorg/jetbrains/kotlin/gradle/dsl/KotlinMultiplatformExtension;
 	public static final fun getKotlinProjectExtension (Lorg/gradle/api/Project;)Lorg/jetbrains/kotlin/gradle/dsl/KotlinProjectExtension;
 	public static final fun getKotlinProjectExtensionOrThrow (Lorg/gradle/api/Project;)Lorg/jetbrains/kotlin/gradle/dsl/KotlinProjectExtension;
-	public static final fun getLibraryVariants (Lorg/gradle/api/Project;)Lorg/gradle/api/DomainObjectSet;
-	public static final fun getTestVariants (Lorg/gradle/api/Project;)Lorg/gradle/api/DomainObjectSet;
-	public static final fun getUnitTestVariants (Lorg/gradle/api/Project;)Lorg/gradle/api/DomainObjectSet;
 	public static final fun isKotlinMultiplatform (Lorg/gradle/api/Project;)Z
 }
 
@@ -98,7 +104,7 @@ public final class com/apollographql/apollo3/gradle/api/Service$DefaultImpls {
 
 public abstract interface class com/apollographql/apollo3/gradle/api/Service$DirectoryConnection {
 	public abstract fun connectToAndroidSourceSet (Ljava/lang/String;)V
-	public abstract fun connectToAndroidVariant (Lcom/android/build/gradle/api/BaseVariant;)V
+	public abstract fun connectToAndroidVariant (Ljava/lang/Object;)V
 	public abstract fun connectToJavaSourceSet (Ljava/lang/String;)V
 	public abstract fun connectToKotlinSourceSet (Ljava/lang/String;)V
 	public abstract fun getOutputDir ()Lorg/gradle/api/provider/Provider;

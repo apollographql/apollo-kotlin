@@ -11,39 +11,32 @@ import com.android.build.gradle.api.TestVariant
 import com.android.build.gradle.api.UnitTestVariant
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
-import org.gradle.api.internal.DefaultDomainObjectSet
-import org.gradle.api.plugins.JavaPluginConvention
-import org.gradle.api.plugins.JavaPluginExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 
-val Project.kotlinMultiplatformExtension
-  get() = extensions.findByName("kotlin") as? KotlinMultiplatformExtension
+object AndroidProject {
+  fun onEachVariant(project: Project, withTestVariants: Boolean = false, block: (BaseVariant) -> Unit) {
+    project.applicationVariants?.all {
+      block(it)
+    }
+    project.libraryVariants?.all {
+      block(it)
+    }
 
-val Project.kotlinProjectExtension
-  get() = extensions.findByName("kotlin") as? KotlinProjectExtension
-
-val Project.javaConventionOrThrow
-  get() = convention.getPlugin(JavaPluginConvention::class.java)
-
-val Project.javaConvention
-  get() = try {
-    javaConventionOrThrow
-  } catch (e: Exception) {
-    null
+    if (withTestVariants) {
+      project.testVariants?.all {
+        block(it)
+      }
+      project.unitTestVariants?.all {
+        block(it)
+      }
+    }
   }
+}
 
 val Project.androidExtension
   get() = extensions.findByName("android") as? BaseExtension
 
-val Project.kotlinProjectExtensionOrThrow
-  get() = kotlinProjectExtension
-      ?: throw IllegalStateException("ApolloGraphQL: no 'kotlin' extension found. Did you apply the Kotlin jvm plugin?")
-
 val Project.androidExtensionOrThrow
   get() = androidExtension ?: throw IllegalStateException("ApolloGraphQL: no 'android' extension found. Did you apply the Android plugin?")
-
-val Project.isKotlinMultiplatform get() = pluginManager.hasPlugin("org.jetbrains.kotlin.multiplatform")
 
 val Project.libraryVariants: DomainObjectSet<LibraryVariant>?
   get() {

@@ -2,10 +2,6 @@ package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.fromJson
 import com.apollographql.apollo3.gradle.internal.SchemaDownloader.cast
-import java.net.InetAddress
-import java.nio.charset.StandardCharsets
-import java.security.MessageDigest
-import java.util.UUID
 
 object SchemaUploader {
   fun uploadSchema(key: String, graph: String, variant: String, sdl: String) {

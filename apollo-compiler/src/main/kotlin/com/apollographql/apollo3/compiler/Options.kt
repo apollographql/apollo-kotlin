@@ -134,7 +134,7 @@ class Options(
      *
      * Default: listOf(".*")
      */
-    @Deprecated("Kotlin sealed classes are more flexible than Kotlin enums to represent GraphQL enums because they can expose the" +
+    @Deprecated("Kotlin sealed classes are more flexible than Kotlin enums to represent GraphQL enums because they can expose the " +
         "rawValue of the unknown enums.")
     val sealedClassesForEnumsMatching: List<String> = defaultSealedClassesForEnumsMatching,
 
