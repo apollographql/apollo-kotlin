@@ -42,18 +42,6 @@ abstract class CacheKeyResolver : CacheResolver {
 
   final override fun resolveField(field: CompiledField, variables: Executable.Variables, parent: Map<String, Any?>, parentId: String): Any? {
     var type = field.type
-    var listDepth = 0
-    while (true) {
-      when (type) {
-        is CompiledNotNullType -> type = type.ofType
-        is CompiledListType -> {
-          listDepth++
-          type = type.ofType
-        }
-        else -> break
-      }
-    }
-    {
     if (type is CompiledNotNullType) {
       type = type.ofType
     }
