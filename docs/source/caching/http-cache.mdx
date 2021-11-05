@@ -2,15 +2,12 @@
 title: HTTP cache
 ---
 
-import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
 > This page focuses on the HTTP cache. If you want to deduplicate the storage of your objects and/or notify your UI when your data changes, take a look at the [normalized cache](./normalized-cache) instead.
 
+> ℹ️ The HTTP cache is only available on the JVM.
 
-## HTTP cache
-
-To enable HTTP cache support, add the dependency to your project's `build.gradle file. The latest version is
-[![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.apollo3/apollo-api)](https://repo1.maven.org/maven2/com/apollographql/apollo3/)
+To enable HTTP cache support, add the dependency to your project's `build.gradle` file:
 
 ```kotlin:title=build.gradle
 dependencies {
@@ -18,66 +15,36 @@ dependencies {
 }
 ```
 
-### Raw HTTP response cache
+Then configure your HTTP cache:
 
-<MultiCodeBlock>
+```
+val dir = File(pathToCacheDirectory)
 
-```kotlin:title=Kotlin
-// Directory where cached responses will be stored
-val directory = File(cacheDir, "apolloCache")
+// Configure a max size of 100MB
+val maxSize = 100 * 1024 * 1024
 
-// Size in bytes of the cache
-val maxSize: Long = 1024 * 1024
-
-// Build the ApolloClient
-val apolloClient = ApolloClient.Builder()
-    .serverUrl("/")
-    .httpCache(directory = directory, maxSize = maxSize)
+apolloClient = ApolloClient.Builder()
+    .networkTransport(
+        HttpNetworkTransport(
+            httpRequestComposer = DefaultHttpRequestComposer(mockServer.url()),
+            engine = CachingHttpEngine(dir, maxSize)
+        )
+    )
     .build()
-                   
-// Control the fetch policy  
-val query = ApolloRequest.Builder(FeedQuery(limit = 10, type = FeedType.HOT))
-    .httpFetchPolicy(HttpFetchPolicy.CacheFirst)
-    .build()
-val dataResponse = apolloClient.query(query)
 ```
 
-```java:title=Java
-// Directory where cached responses will be stored
-File directory = new File(cacheDir, "apolloCache");
+The HTTP cache uses a least recently used algorithm with a configurable max size.
 
-// Size in bytes of the cache
-long maxSize = 1024 * 1024;
+Once your cache setup is complete, the cache will be used by default by all your queries. By default, queries will try to find a result in the cache and go the network if it's not there. This is the `CacheFirst` `HttpFetchPolicy`. You can customize that behaviour with `httpFetchPolicy(HttpFetchPolicy)`:
 
-// Build the ApolloClient
-ApolloClient apolloClient = HttpCacheExtensionsKt.httpCache(
-    new ApolloClient.Builder().serverUrl("/"),
-    directory,
-    maxSize
-  )
-  .build();
-Rx2ApolloClient rx2ApolloClient = new Rx2ApolloClient(apolloClient, Schedulers.io());
+```kotlin
+val response = apolloClient.query(query)
+                 // Don't use the cache
+                 .httpFetchPolicy(HttpFetchPolicy.NetworkOnly)
 
-// Control the fetch policy
-ApolloRequest<FeedQuery.Data> query = HttpCacheExtensionsKt.httpFetchPolicy(
-    new ApolloRequest.Builder<>(new FeedQuery(10, FeedType.HOT)),
-    HttpFetchPolicy.CacheFirst
-  )
-  .build();
+                 // Or only use the cache
+                 .httpFetchPolicy(HttpFetchPolicy.CacheOnly)
 
-ApolloResponse<FeedQuery.Data> response = rx2ApolloClient.query(query).blockingGet();
+                 // Finally, execute your query
+                 .execute()
 ```
-
-</MultiCodeBlock>
-
-**IMPORTANT:** Caching is provided only for `query` operations. It isn't available for `mutation` operations.
-
-There are four available cache policies in `HttpFetchPolicy`:
-
-- `NetworkOnly` - Fetch a response from the network only, ignoring any cached responses. This is the default.
-- `CacheOnly` - Fetch a response from the cache only, ignoring the network. If the cached response doesn't exist or is expired, then return
-  an error.
-- `CacheFirst` - Fetch a response from the cache first. If the response doesn't exist or is expired, then fetch a response from the network.
-- `NetworkFirst` - Fetch a response from the network first. If the network fails and the cached response isn't expired, then return cached
-  data instead.
-
