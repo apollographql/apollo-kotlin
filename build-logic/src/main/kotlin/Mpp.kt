@@ -25,7 +25,15 @@ fun Project.configureMppDefaults(withJs: Boolean = true) {
         compilations.getByName("main").source(appleMain)
         compilations.getByName("test").source(appleTest)
       }
+      macosArm64().apply {
+        compilations.getByName("main").source(appleMain)
+        compilations.getByName("test").source(appleTest)
+      }
       iosX64().apply {
+        compilations.getByName("main").source(appleMain)
+        compilations.getByName("test").source(appleTest)
+      }
+      iosSimulatorArm64().apply {
         compilations.getByName("main").source(appleMain)
         compilations.getByName("test").source(appleTest)
       }
