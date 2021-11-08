@@ -52,20 +52,6 @@ class HttpRequest
     addHeaders(headers)
   }
 
-  fun copy(
-      method: HttpMethod = this.method,
-      url: String = this.url,
-      headers: List<HttpHeader> = this.headers,
-      body: HttpBody? = this.body,
-  ): HttpRequest {
-    return HttpRequest(
-        method = method,
-        url = url,
-        headers = headers,
-        body = body
-    )
-  }
-
   class Builder(
       private val method: HttpMethod,
       private val url: String,
@@ -85,6 +71,12 @@ class HttpRequest
       this.headers.addAll(headers)
     }
 
+    fun headers(headers: List<HttpHeader>) = apply {
+      this.headers.clear()
+      this.headers.addAll(headers)
+    }
+
+    @Suppress("DEPRECATION")
     fun build() = HttpRequest(
         method = method,
         url = url,
@@ -160,7 +152,13 @@ class HttpResponse
       this.headers.addAll(headers)
     }
 
+    fun headers(headers: List<HttpHeader>) = apply {
+      this.headers.clear()
+      this.headers.addAll(headers)
+    }
+
     fun build(): HttpResponse {
+      @Suppress("DEPRECATION")
       return HttpResponse(
           statusCode = statusCode,
           headers = headers,

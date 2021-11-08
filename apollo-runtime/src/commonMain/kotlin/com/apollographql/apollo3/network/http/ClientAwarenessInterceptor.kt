@@ -14,7 +14,7 @@ class ApolloClientAwarenessInterceptor(clientName: String, clientVersion: String
   )
 
   override suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse {
-     return chain.proceed(request.copy(headers = request.headers + extraHeaders))
+     return chain.proceed(request.newBuilder().addHeaders(extraHeaders).build())
   }
 }
 

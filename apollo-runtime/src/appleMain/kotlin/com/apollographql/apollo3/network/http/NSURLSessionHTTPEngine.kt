@@ -33,29 +33,10 @@ fun interface DataTaskFactory {
   fun dataTask(request: NSURLRequest, completionHandler: UrlSessionDataTaskCompletionHandler): NSURLSessionDataTask
 }
 
-actual class MultiplatformHttpEngine(
+class NSURLSessionHttpEngine(
     private val dataTaskFactory: DataTaskFactory,
     private val connectTimeoutMillis: Long = 60_000,
 ) : HttpEngine {
-
-  actual constructor(
-      connectTimeoutMillis: Long,
-      readTimeoutMillis: Long,
-  ) : this(
-      dataTaskFactory = DefaultDataTaskFactory(readTimeoutMillis),
-      connectTimeoutMillis = connectTimeoutMillis,
-  )
-
-  private class DefaultDataTaskFactory(readTimeoutMillis: Long) : DataTaskFactory {
-    private val nsurlSession = NSURLSession.sessionWithConfiguration(NSURLSessionConfiguration.defaultSessionConfiguration().apply {
-      timeoutIntervalForRequest = readTimeoutMillis.toDouble() / 1000
-    })
-
-    override fun dataTask(request: NSURLRequest, completionHandler: UrlSessionDataTaskCompletionHandler): NSURLSessionDataTask {
-      return nsurlSession.dataTaskWithRequest(request, completionHandler)
-    }
-  }
-
   @Suppress("UNCHECKED_CAST")
   override suspend fun execute(request: HttpRequest) = suspendAndResumeOnMain<HttpResponse> { mainContinuation, invokeOnCancellation ->
     assertMainThreadOnNative()
@@ -153,12 +134,37 @@ private fun buildHttpResponse(
   }
 
   return Result.success(
-      HttpResponse(
+      HttpResponse.Builder(
           statusCode = statusCode,
-          headers = httpHeaders,
-          bodyString = bodyString,
-          bodySource = null
-      )
+      ).headers(
+          httpHeaders,
+      ).apply {
+        if (bodyString != null) {
+          body(
+              bodyString = bodyString,
+          )
+        }
+      }.build()
   )
 }
 
+private class DefaultDataTaskFactory(readTimeoutMillis: Long) : DataTaskFactory {
+  private val nsurlSession = NSURLSession.sessionWithConfiguration(NSURLSessionConfiguration.defaultSessionConfiguration().apply {
+    timeoutIntervalForRequest = readTimeoutMillis.toDouble() / 1000
+  })
+
+  override fun dataTask(request: NSURLRequest, completionHandler: UrlSessionDataTaskCompletionHandler): NSURLSessionDataTask {
+    return nsurlSession.dataTaskWithRequest(request, completionHandler)
+  }
+}
+
+@Suppress("FunctionName")
+actual fun MultiplatformHttpEngine(
+    connectTimeoutMillis: Long,
+    readTimeoutMillis: Long,
+): HttpEngine {
+  return NSURLSessionHttpEngine(
+      dataTaskFactory = DefaultDataTaskFactory(readTimeoutMillis),
+      connectTimeoutMillis = connectTimeoutMillis
+  )
+}

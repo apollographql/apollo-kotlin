@@ -39,6 +39,7 @@ class HttpNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder instead
    * - on iOS, it is used to set [NSURLSessionConfiguration.timeoutIntervalForRequest]
    * - on Android, it is used to set  [OkHttpClient.readTimeout]
    */
+  @Suppress("DEPRECATION", "DEPRECATION")
   @Deprecated("Use HttpNetworkTransport.Builder instead. This will be removed in v3.0.0.") constructor(
       serverUrl: String,
       connectTimeoutMillis: Long = 60_000,
@@ -63,6 +64,7 @@ class HttpNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder instead
    * - on iOS, it is used to set [NSURLSessionConfiguration.timeoutIntervalForRequest]
    * - on Android, it is used to set  [OkHttpClient.readTimeout]
    */
+  @Suppress("DEPRECATION")
   @Deprecated("Use HttpNetworkTransport.Builder instead. This will be removed in v3.0.0.") constructor(
       serverUrl: String,
       engine: HttpEngine,
@@ -191,6 +193,7 @@ class HttpNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder instead
     }
 
     fun build(): HttpNetworkTransport {
+      @Suppress("DEPRECATION")
       return HttpNetworkTransport(
           httpRequestComposer = httpRequestComposer ?: error("No HttpRequestComposer found. Use 'httpRequestComposer' or 'serverUrl'"),
           engine = engine ?: MultiplatformHttpEngine(),

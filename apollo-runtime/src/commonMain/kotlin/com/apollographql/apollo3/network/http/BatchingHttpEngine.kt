@@ -87,7 +87,7 @@ class BatchingHttpEngine(
 
     if (!canBeBatched) {
       // Remove the CAN_BE_BATCHED header and forward directly
-      return delegate.execute(request.copy(headers = request.headers.filter { it.name != CAN_BE_BATCHED }))
+      return delegate.execute(request.newBuilder().addHeaders(headers = request.headers.filter { it.name != CAN_BE_BATCHED }).build())
     }
 
     val pendingRequest = PendingRequest(request)
@@ -142,12 +142,13 @@ class BatchingHttpEngine(
       }
     }
 
-    val request = HttpRequest(
+    val request = HttpRequest.Builder(
         method = HttpMethod.Post,
         url = firstRequest.url,
-        headers = emptyList(),
+    ).body(
         body = body,
-    )
+    ).build()
+
     freeze(request)
 
     var exception: ApolloException? = null

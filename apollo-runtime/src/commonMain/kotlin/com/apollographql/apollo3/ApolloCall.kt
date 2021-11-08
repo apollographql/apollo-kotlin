@@ -1,3 +1,5 @@
+
+
 package com.apollographql.apollo3
 
 import com.apollographql.apollo3.api.ApolloRequest
@@ -18,6 +20,7 @@ abstract class ApolloCall<D: Operation.Data, E: HasMutableExecutionContext<E>>
 
   override fun addExecutionContext(executionContext: ExecutionContext): E {
     this.executionContext += executionContext
+    @Suppress("UNCHECKED_CAST")
     return this as E
   }
 

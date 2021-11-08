@@ -43,13 +43,13 @@ fun ApolloClient.Builder.httpCache(
   check(networkTransport is HttpNetworkTransport) {
     "withHttpCache requires a HttpNetworkTransport"
   }
-  return networkTransport(networkTransport.copy(
-          engine = CachingHttpEngine(
+  return networkTransport(networkTransport.newBuilder().httpEngine(
+          httpEngine = CachingHttpEngine(
               directory = directory,
               maxSize = maxSize,
               delegate = networkTransport.engine
           )
-      )
+      ).build()
   )
 }
 

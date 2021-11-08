@@ -9,6 +9,7 @@ import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.internal.BackgroundDispatcher
 import com.apollographql.apollo3.network.NetworkTransport
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.BufferOverflow
@@ -41,6 +42,7 @@ class WebSocketNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder in
     private val protocolFactory: WsProtocol.Factory = SubscriptionWsProtocol.Factory(),
 ) : NetworkTransport, WsProtocol.Listener {
 
+  @Suppress("DEPRECATION")
   @Deprecated("Use HttpNetworkTransport.Builder instead. This will be removed in v3.0.0.")
   constructor(
       serverUrl: String,
@@ -160,6 +162,7 @@ class WebSocketNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder in
     }
   }
 
+  @OptIn(ExperimentalCoroutinesApi::class)
   override fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
   ): Flow<ApolloResponse<D>> {
@@ -242,6 +245,7 @@ class WebSocketNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder in
       return this
     }
 
+    @Suppress("DEPRECATION")
     fun webSocketEngine(webSocketEngine: WebSocketEngine): Builder {
       this.webSocketEngine = webSocketEngine
       return this
@@ -258,6 +262,7 @@ class WebSocketNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder in
     }
 
     fun build(): WebSocketNetworkTransport {
+      @Suppress("DEPRECATION")
       return WebSocketNetworkTransport(
           serverUrl ?: error("No serverUrl specified"),
           webSocketEngine ?: DefaultWebSocketEngine(),

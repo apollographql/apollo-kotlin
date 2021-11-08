@@ -107,6 +107,7 @@ abstract class DefaultApolloExtension(
       if (registerDefaultService) {
         registerService(defaultService)
       } else {
+        @Suppress("DEPRECATION")
         check(defaultService.graphqlSourceDirectorySet.isEmpty
             && defaultService.schemaFile.isPresent.not()
             && defaultService.schemaFiles.isEmpty
@@ -418,6 +419,7 @@ abstract class DefaultApolloExtension(
       task.generateKotlinModels.set(service.generateKotlinModels)
       task.warnOnDeprecatedUsages.set(service.warnOnDeprecatedUsages)
       task.failOnWarnings.set(service.failOnWarnings)
+      @Suppress("DEPRECATION")
       task.customScalarsMapping.set(service.customScalarsMapping.orElse(service.customTypeMapping))
       task.outputDir.apply {
         set(service.outputDir.orElse(BuildDirLayout.outputDir(project, service)).get())
@@ -474,6 +476,7 @@ abstract class DefaultApolloExtension(
       task.codegenModels.set(service.codegenModels)
       task.flattenModels.set(service.flattenModels)
       task.generateTestBuilders.set(service.generateTestBuilders)
+      @Suppress("DEPRECATION")
       task.sealedClassesForEnumsMatching.set(service.sealedClassesForEnumsMatching)
       task.generateOptionalOperationVariables.set(service.generateOptionalOperationVariables)
       task.languageVersion.set(service.languageVersion)
@@ -608,8 +611,8 @@ abstract class DefaultApolloExtension(
     private fun mainSourceSet(project: Project): String {
       val kotlinExtension = project.extensions.findByName("kotlin")
 
-      return when {
-        kotlinExtension is KotlinMultiplatformExtension -> "commonMain"
+      return when (kotlinExtension) {
+        is KotlinMultiplatformExtension -> "commonMain"
         else -> "main"
       }
     }

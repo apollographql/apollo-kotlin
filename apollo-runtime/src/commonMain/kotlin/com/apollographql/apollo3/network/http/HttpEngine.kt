@@ -25,7 +25,8 @@ interface HttpEngine {
   fun dispose()
 }
 
-expect class MultiplatformHttpEngine(
+@Suppress("FunctionName")
+expect fun MultiplatformHttpEngine(
     /**
      * The timeout interval to use when connecting
      *
