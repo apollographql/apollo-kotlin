@@ -321,7 +321,7 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
           networkTransport
         } else {
           WebSocketNetworkTransport.Builder()
-              .serverUrl(httpServerUrl!!)
+              .serverUrl(webSocketServerUrl!!)
               .webSocketEngine(webSocketEngine ?: MultiplatformWebSocketEngine())
               .build()
         }
