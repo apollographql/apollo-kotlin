@@ -3,8 +3,33 @@ package com.apollographql.apollo3.cache.normalized
 import kotlin.jvm.JvmStatic
 
 /**
+ * A [CacheKey] identifies an object in the cache.
+ *
+ * @param key The key of the object in the cache. The key must be globally unique.
  */
-class CacheKey(val key: String) {
+class CacheKey constructor(val key: String) {
+
+  /**
+   * Builds a [CacheKey] from a typename and a list of Strings.
+   *
+   * This can be used for the common case where [CacheKey] use [typename] as a namespace and [values] as a path.
+   */
+  constructor(typename: String, values: List<String>): this(
+      buildString {
+        append(typename)
+        append(":")
+        values.forEach {
+          append(it)
+        }
+      }
+  )
+
+  /**
+   * Builds a [CacheKey] from a typename and a list of Strings.
+   *
+   * This can be used for the common case where [CacheKey] use [typename] as a namespace and [values] as a path.
+   */
+  constructor(typename: String, vararg values: String) : this(typename, values.toList())
 
   override fun hashCode() = key.hashCode()
   override fun equals(other: Any?): Boolean {
@@ -48,21 +73,13 @@ class CacheKey(val key: String) {
     /**
      * Helper function to build a cache key from a list of strings
      */
-    fun from(typename: String, values: List<String>): CacheKey {
-      return CacheKey(
-          buildString {
-            append(typename)
-            append(":")
-            values.forEach {
-              append(it)
-            }
-          }
-      )
-    }
+    @Deprecated("Use the constructor instead", ReplaceWith("CacheKey(typename, values)"))
+    fun from(typename: String, values: List<String>) = CacheKey(typename, values)
 
     /**
      * Helper function to build a cache key from a list of strings
      */
-    fun from(typename: String, vararg values: String) = from(typename, values.toList())
+    @Deprecated("Use the constructor instead", ReplaceWith("CacheKey(typename, values)"))
+    fun from(typename: String, vararg values: String) = CacheKey(typename, values.toList())
   }
 }

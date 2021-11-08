@@ -1,0 +1,18 @@
+---
+title: Troubleshooting
+---
+
+If you are experiencing cache misses, check your cache size and eviction policy. Some records might have been removed from the cache. Increasing the cache size and/or retention period will help hitting your cache more consistently.
+
+If you are still experiencing cache misses, you can dump the contents of the cache:
+
+
+```kotlin
+val dump = apolloClient.apolloStore.dump()
+NormalizedCache.prettifyDump(dump)
+```
+
+Make sure that no data is duplicated in the dump. If it is the case, it probably means that some objects have a wrong `CacheKey`. Make sure to provide a `CacheKeyResolver` that can work with your graph. All objects should have a unique and stable ID. That means that the ID should be the same no matter what path the object is in the graph. That also mean you have to include the identifier field in your queries to be able to use in from the `CacheKeyResolver`.
+
+Finally, make sure to design your queries so that you can reuse fields. A single missing field in the cache for a query will trigger a network fetch. Sometimes it might be useful to query an extra field early on so that it can be reused by other later queries.
+

@@ -42,6 +42,15 @@ module.exports = {
             'essentials/50-named-fragments',
             'essentials/60-plugin-configuration',
           ],
+          Caching: [
+            'caching/normalized-cache',
+            'caching/declarative-ids',
+            'caching/programmatic-ids',
+            'caching/query-watchers',
+            'caching/store',
+            'caching/troubleshooting',
+            'caching/http-cache',
+          ],
           Advanced: [
             'advanced/client-awareness',
             'advanced/interceptors-http',

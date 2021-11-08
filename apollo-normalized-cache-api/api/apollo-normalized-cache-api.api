@@ -27,6 +27,8 @@ public final class com/apollographql/apollo3/cache/CacheHeaders$Companion {
 public final class com/apollographql/apollo3/cache/normalized/CacheKey {
 	public static final field Companion Lcom/apollographql/apollo3/cache/normalized/CacheKey$Companion;
 	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/util/List;)V
+	public fun <init> (Ljava/lang/String;[Ljava/lang/String;)V
 	public static final fun canDeserialize (Ljava/lang/String;)Z
 	public static final fun deserialize (Ljava/lang/String;)Lcom/apollographql/apollo3/cache/normalized/CacheKey;
 	public fun equals (Ljava/lang/Object;)Z
