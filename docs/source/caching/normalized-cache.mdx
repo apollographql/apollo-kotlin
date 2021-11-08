@@ -58,7 +58,7 @@ val apolloClient = ApolloClient.Builder()
   .build()
 ```
 
-Because the normalized cache is optional, `normalizedCache()` is an extension function on `ApolloClient.Builder()` that's defined in the `apollo-normalized-cache` artifact. It takes a `NormalizedCacheFactory` as a parameter so that it can create the cache in the background if needed.
+Because the normalized cache is optional, `normalizedCache()` is an extension function on `ApolloClient.Builder()` that's defined in the `apollo-normalized-cache` artifact. It takes a `NormalizedCacheFactory` as a parameter so that it can create the cache outside the main thread if needed.
 
 A `MemoryCache` is a least recently used (LRU) cache. It keeps entries in memory based on two conditions:
 
