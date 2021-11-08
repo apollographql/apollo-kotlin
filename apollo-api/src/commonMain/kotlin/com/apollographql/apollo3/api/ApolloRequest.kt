@@ -30,11 +30,11 @@ class ApolloRequest<D : Operation.Data> @Deprecated("Please use ApolloRequest.Bu
       operation: Operation<D> = this.operation,
       requestUuid: Uuid = this.requestUuid,
       executionContext: ExecutionContext = this.executionContext,
-  ) = ApolloRequest(
-      operation,
-      requestUuid,
-      executionContext
-  )
+  ) = Builder(
+      operation
+  ).requestUuid(requestUuid)
+      .addExecutionContext(executionContext)
+      .build()
 
   class Builder<D : Operation.Data>(
       private var operation: Operation<D>,
@@ -51,6 +51,7 @@ class ApolloRequest<D : Operation.Data> @Deprecated("Please use ApolloRequest.Bu
     }
 
     fun build(): ApolloRequest<D> {
+      @Suppress("DEPRECATION")
       return ApolloRequest(
           operation = operation,
           requestUuid = requestUuid,

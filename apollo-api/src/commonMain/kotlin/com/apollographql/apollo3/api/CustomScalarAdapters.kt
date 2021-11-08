@@ -37,7 +37,7 @@ class CustomScalarAdapters
      * An empty [CustomScalarAdapters]. If the models were generated with some custom scalars, parsing will fail
      */
     @JvmField
-    val Empty = CustomScalarAdapters(emptyMap())
+    val Empty = Builder().build()
   }
 
   fun newBuilder() = Builder().addAll(this)
@@ -52,6 +52,7 @@ class CustomScalarAdapters
       adaptersMap[customScalarType.name] = customScalarAdapter
     }
 
+    @Suppress("DEPRECATION")
     @OptIn(ApolloInternal::class)
     @Deprecated("Used for backward compatibility with 2.x")
     fun <T> add(
@@ -69,6 +70,7 @@ class CustomScalarAdapters
       adaptersMap.clear()
     }
 
+    @Suppress("DEPRECATION")
     fun build() = CustomScalarAdapters(adaptersMap)
   }
 }

@@ -252,7 +252,7 @@ class WebSocketNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder in
       return this
     }
 
-    fun protocolFactory(protocolFactory: WsProtocol.Factory): Builder {
+    fun protocol(protocolFactory: WsProtocol.Factory): Builder {
       this.protocolFactory = protocolFactory
       return this
     }

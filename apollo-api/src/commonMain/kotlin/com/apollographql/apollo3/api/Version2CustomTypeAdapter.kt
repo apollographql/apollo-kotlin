@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.apollographql.apollo3.api
 
 import kotlin.jvm.JvmStatic
