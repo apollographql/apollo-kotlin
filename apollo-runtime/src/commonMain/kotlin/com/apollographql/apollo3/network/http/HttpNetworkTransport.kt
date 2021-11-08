@@ -147,7 +147,7 @@ class HttpNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder instead
 
 
   /**
-   * Creates a newBuilder that shares the underlying resources
+   * Creates a new Builder that shares the underlying resources
    *
    * Calling [dispose] on the original instance or the new one will terminate the [engine] for both instances
    */

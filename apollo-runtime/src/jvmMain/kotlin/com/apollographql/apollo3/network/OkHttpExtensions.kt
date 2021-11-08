@@ -10,6 +10,9 @@ import okhttp3.OkHttpClient
 
 /**
  * Configures the [ApolloClient] to use the [OkHttpEngine] for network requests.
+ * The [OkHttpClient] will be used for both HTTP and WebSocket requests.
+ *
+ * See also [ApolloClient.Builder.httpEngine] and [ApolloClient.Builder.webSocketEngine]
  */
 fun ApolloClient.Builder.okHttpClient(okHttpClient: OkHttpClient) = apply {
   httpEngine(OkHttpEngine(okHttpClient))
