@@ -43,6 +43,10 @@ jobs:
       - name: Build with Gradle
         run: |
           ulimit -c unlimited
+          # Workaround an issue where kotlinNpmInstall outputs
+          # 'Resolving NPM dependencies using yarn' returns 137
+          ./gradlew compileKotlinJsIr compileKotlinJsLegacy
+          ./gradlew --stop
           ./gradlew ciTestsNoGradle
       - name: Collect Diagnostics
         if: always()
@@ -63,6 +67,10 @@ jobs:
       - name: Build with Gradle
         run: |
           ulimit -c unlimited
+          # Workaround an issue where kotlinNpmInstall outputs
+          # 'Resolving NPM dependencies using yarn' returns 137
+          ./gradlew compileKotlinJsIr compileKotlinJsLegacy
+          ./gradlew --stop
           ./gradlew -p tests ciTestsIntegration
       - name: Collect Diagnostics
         if: always()
