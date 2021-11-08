@@ -1,6 +1,19 @@
 package com.apollographql.apollo3
 
-import com.apollographql.apollo3.api.*
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloInternal
+import com.apollographql.apollo3.api.ApolloRequest
+import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.CustomScalarType
+import com.apollographql.apollo3.api.CustomTypeAdapter
+import com.apollographql.apollo3.api.ExecutionContext
+import com.apollographql.apollo3.api.HasExecutionContext
+import com.apollographql.apollo3.api.HasMutableExecutionContext
+import com.apollographql.apollo3.api.Mutation
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.httpHeader
@@ -16,7 +29,11 @@ import com.apollographql.apollo3.interceptor.NetworkInterceptor
 import com.apollographql.apollo3.internal.defaultDispatcher
 import com.apollographql.apollo3.mpp.assertMainThreadOnNative
 import com.apollographql.apollo3.network.NetworkTransport
+import com.apollographql.apollo3.network.http.HttpEngine
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
+import com.apollographql.apollo3.network.http.MultiplatformHttpEngine
+import com.apollographql.apollo3.network.ws.MultiplatformWebSocketEngine
+import com.apollographql.apollo3.network.ws.WebSocketEngine
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -141,32 +158,66 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
     }
   }
 
-  class Builder internal constructor(
-      private var _networkTransport: NetworkTransport?,
-      private var subscriptionNetworkTransport: NetworkTransport?,
-      private val customScalarAdaptersBuilder: CustomScalarAdapters.Builder,
-      private val interceptors: MutableList<ApolloInterceptor>,
-      private val flowDecorators: MutableList<FlowDecorator>,
-      private var requestedDispatcher: CoroutineDispatcher?,
-      override var executionContext: ExecutionContext,
-  ) : HasMutableExecutionContext<Builder> {
+  /**
+   * A Builder used to create instances of [ApolloClient]
+   */
+  class Builder : HasMutableExecutionContext<Builder> {
+    private var _networkTransport: NetworkTransport? = null
+    private var subscriptionNetworkTransport: NetworkTransport? = null
+    private val customScalarAdaptersBuilder = CustomScalarAdapters.Builder()
+    private val interceptors: MutableList<ApolloInterceptor> = mutableListOf()
+    private val flowDecorators: MutableList<FlowDecorator> = mutableListOf()
+    private var requestedDispatcher: CoroutineDispatcher? = null
+    override var executionContext: ExecutionContext = ExecutionContext.Empty
+    private var httpServerUrl: String? = null
+    private var webSocketServerUrl: String? = null
+    private var httpEngine: HttpEngine? = null
+    private var webSocketEngine: WebSocketEngine? = null
 
+    /**
+     * The [NetworkTransport] this Builder uses
+     */
     val networkTransport: NetworkTransport?
       get() = _networkTransport
 
-    constructor() : this(
-        _networkTransport = null,
-        subscriptionNetworkTransport = null,
-        customScalarAdaptersBuilder = CustomScalarAdapters.Builder(),
-        interceptors = mutableListOf(),
-        flowDecorators = mutableListOf(),
-        requestedDispatcher = null,
-        executionContext = ExecutionContext.Empty,
-    )
-
+    /**
+     * The url of the GraphQL server used for both HTTP and WebSockets
+     */
     fun serverUrl(serverUrl: String) = apply {
-      _networkTransport = HttpNetworkTransport.Builder().serverUrl(serverUrl = serverUrl).build()
-      subscriptionNetworkTransport = WebSocketNetworkTransport.Builder().serverUrl(serverUrl = serverUrl).build()
+      httpServerUrl = serverUrl
+      webSocketServerUrl = serverUrl
+    }
+
+    /**
+     * The url of the GraphQL server used for HTTP
+     */
+    fun httpServerUrl(httpServerUrl: String) = apply {
+      this.httpServerUrl = httpServerUrl
+    }
+
+    /**
+     * The url of the GraphQL server used for WebSockets
+     */
+    fun webSocketServerUrl(webSocketServerUrl: String) = apply {
+      this.webSocketServerUrl = webSocketServerUrl
+    }
+
+    /**
+     * The [HttpEngine] to use for HTTP requests
+     *
+     * For more customization, see also [networkTransport]
+     */
+    fun httpEngine(httpEngine: HttpEngine) {
+      this.httpEngine = httpEngine
+    }
+
+    /**
+     * The [WebSocketEngine] to use for WebSocket requests
+     *
+     * For more customization, see also [subscriptionNetworkTransport]
+     */
+    fun webSocketEngine(webSocketEngine: WebSocketEngine) {
+      this.webSocketEngine = webSocketEngine
     }
 
     fun networkTransport(networkTransport: NetworkTransport) = apply {
@@ -211,8 +262,12 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
       interceptors += interceptor
     }
 
-    @Suppress("DEPRECATION")
     fun addInterceptors(interceptors: List<ApolloInterceptor>) = apply {
+      this.interceptors += interceptors
+    }
+
+    fun interceptors(interceptors: List<ApolloInterceptor>) = apply {
+      this.interceptors.clear()
       this.interceptors += interceptors
     }
 
@@ -220,7 +275,12 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
       flowDecorators += flowDecorators + flowDecorator
     }
 
-    fun requestedDispatcher(requestedDispatcher: CoroutineDispatcher) = apply {
+    fun flowDecorators(flowDecorators: List<FlowDecorator>) = apply {
+      this.flowDecorators.clear()
+      this.flowDecorators += flowDecorators
+    }
+
+    fun requestedDispatcher(requestedDispatcher: CoroutineDispatcher?) = apply {
       this.requestedDispatcher = requestedDispatcher
     }
 
@@ -228,14 +288,53 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
       this.executionContext = this.executionContext + executionContext
     }
 
+    fun executionContext(executionContext: ExecutionContext) = apply {
+      this.executionContext = executionContext
+    }
+
     fun build(): ApolloClient {
-      check(_networkTransport != null) {
-        "NetworkTransport not set, please call either serverUrl() or networkTransport()"
+      val networkTransport = if (_networkTransport != null) {
+        check(httpServerUrl ==  null) {
+          "ApolloGraphQL: 'httpServerUrl' has no effect if 'networkTransport' is set"
+        }
+        check(httpEngine ==  null) {
+          "ApolloGraphQL: 'httpEngine' has no effect if 'networkTransport' is set"
+        }
+        _networkTransport!!
+      } else {
+        check(httpServerUrl != null) {
+          "ApolloGraphQL: 'serverUrl' is required"
+        }
+        HttpNetworkTransport.Builder()
+            .serverUrl(httpServerUrl!!)
+            .httpEngine(httpEngine ?: MultiplatformHttpEngine())
+            .build()
       }
+
+      val subscriptionNetworkTransport = if (subscriptionNetworkTransport != null) {
+        check(webSocketServerUrl ==  null) {
+          "ApolloGraphQL: 'webSocketServerUrl' has no effect if 'subscriptionNetworkTransport' is set"
+        }
+        check(webSocketEngine ==  null) {
+          "ApolloGraphQL: 'webSocketEngine' has no effect if 'subscriptionNetworkTransport' is set"
+        }
+        subscriptionNetworkTransport!!
+      } else {
+        val url = webSocketServerUrl ?: httpServerUrl
+        check(url != null) {
+          "ApolloGraphQL: 'webSocketServerUrl' is required"
+        }
+
+        WebSocketNetworkTransport.Builder()
+            .serverUrl(httpServerUrl!!)
+            .webSocketEngine(webSocketEngine ?: MultiplatformWebSocketEngine())
+            .build()
+      }
+
       @Suppress("DEPRECATION")
       return ApolloClient(
-          networkTransport = _networkTransport!!,
-          subscriptionNetworkTransport = subscriptionNetworkTransport ?: _networkTransport!!,
+          networkTransport = networkTransport,
+          subscriptionNetworkTransport = subscriptionNetworkTransport,
           customScalarAdapters = customScalarAdaptersBuilder.build(),
           interceptors = interceptors,
           flowDecorators = flowDecorators,
@@ -246,15 +345,14 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
   }
 
   fun newBuilder(): Builder {
-    return Builder(
-        _networkTransport = networkTransport,
-        subscriptionNetworkTransport = subscriptionNetworkTransport,
-        customScalarAdaptersBuilder = customScalarAdapters.newBuilder(),
-        interceptors = interceptors.toMutableList(),
-        flowDecorators = flowDecorators.toMutableList(),
-        requestedDispatcher = requestedDispatcher,
-        executionContext = executionContext,
-    )
+    return Builder()
+        .networkTransport(networkTransport)
+        .subscriptionNetworkTransport(subscriptionNetworkTransport)
+        .customScalarAdapters(customScalarAdapters)
+        .interceptors(interceptors)
+        .flowDecorators(flowDecorators)
+        .requestedDispatcher(requestedDispatcher)
+        .executionContext(executionContext)
   }
 
   companion object {

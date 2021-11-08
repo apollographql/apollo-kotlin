@@ -10,7 +10,6 @@ import com.apollographql.apollo3.network.http.HttpInfo
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import java.io.File
 
-
 enum class HttpFetchPolicy {
   /**
    * Try cache first, then network
@@ -35,6 +34,12 @@ enum class HttpFetchPolicy {
   NetworkOnly,
 }
 
+/**
+ * Configures a persistent LRU HTTP cache for the ApolloClient.
+ *
+ * @param directory: the directory where the cache will be persisted
+ * @param maxSize: the maxSize in bytes that the cache acn occupy
+ */
 fun ApolloClient.Builder.httpCache(
     directory: File,
     maxSize: Long,
@@ -59,7 +64,9 @@ val <D : Operation.Data> ApolloResponse<D>.isFromHttpCache
     it.name == CachingHttpEngine.FROM_CACHE
   } ?: false
 
-
+/**
+ * Configures the [HttpFetchPolicy]
+ */
 fun <T> HasMutableExecutionContext<T>.httpFetchPolicy(httpFetchPolicy: HttpFetchPolicy): T where T : HasMutableExecutionContext<T> {
   val policyStr = when (httpFetchPolicy) {
     HttpFetchPolicy.CacheFirst -> CachingHttpEngine.CACHE_FIRST
@@ -73,16 +80,25 @@ fun <T> HasMutableExecutionContext<T>.httpFetchPolicy(httpFetchPolicy: HttpFetch
   )
 }
 
-fun <T> HasMutableExecutionContext<T>.httpExpireTimeout(millis: Long) where T : HasMutableExecutionContext<T> = httpHeader(
-    CachingHttpEngine.CACHE_EXPIRE_TIMEOUT_HEADER, millis.toString()
+/**
+ * Configures httpExpireTimeout. Entries will be removed from the cache after this timeout.
+ */
+fun <T> HasMutableExecutionContext<T>.httpExpireTimeout(httpExpireTimeout: Long) where T : HasMutableExecutionContext<T> = httpHeader(
+    CachingHttpEngine.CACHE_EXPIRE_TIMEOUT_HEADER, httpExpireTimeout.toString()
 )
 
-fun <T> HasMutableExecutionContext<T>.httpExpireAfterRead(expireAfterRead: Boolean) where T : HasMutableExecutionContext<T> = httpHeader(
-    CachingHttpEngine.CACHE_EXPIRE_AFTER_READ_HEADER, expireAfterRead.toString()
+/**
+ * Configures httpExpireAfterRead. Entries will be removed from the cache after read if set to true.
+ */
+fun <T> HasMutableExecutionContext<T>.httpExpireAfterRead(httpExpireAfterRead: Boolean) where T : HasMutableExecutionContext<T> = httpHeader(
+    CachingHttpEngine.CACHE_EXPIRE_AFTER_READ_HEADER, httpExpireAfterRead.toString()
 )
 
-fun <T> HasMutableExecutionContext<T>.httpDoNotStore(doNotStore: Boolean) where T : HasMutableExecutionContext<T> = httpHeader(
-    CachingHttpEngine.CACHE_DO_NOT_STORE, doNotStore.toString()
+/**
+ * Configures httpDoNotStore. Entries will never be stored if set to true.
+ */
+fun <T> HasMutableExecutionContext<T>.httpDoNotStore(httpDoNotStore: Boolean) where T : HasMutableExecutionContext<T> = httpHeader(
+    CachingHttpEngine.CACHE_DO_NOT_STORE, httpDoNotStore.toString()
 )
 
 @Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
