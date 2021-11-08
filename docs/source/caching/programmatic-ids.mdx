@@ -51,7 +51,7 @@ If you need the object typename, you can access it through `context`:
 ```kotlin
 val objectIdGenerator = object : ObjectIdGenerator {
   override fun cacheKeyForObject(obj: Map<String, Any?>, context: ObjectIdGeneratorContext): CacheKey? {
-    val typename = field.type.leafType().name
+    val typename = context.field.type.leafType().name
     val id = obj["id"] as String
 
     return CacheKey(typename, id)
