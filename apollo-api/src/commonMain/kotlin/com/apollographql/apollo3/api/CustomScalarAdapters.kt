@@ -7,7 +7,7 @@ import kotlin.jvm.JvmField
  * A wrapper around a Map<String, [Adapter]> used to retrieve custom scalar adapters at runtime
  */
 class CustomScalarAdapters
-@Deprecated("Please use CustomScalarAdapters.Builder instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use CustomScalarAdapters.Builder instead. This will be removed in v3.0.0.")
 /* private */ constructor(
     customScalarAdapters: Map<String, Adapter<*>>,
 ) : ExecutionContext.Element {

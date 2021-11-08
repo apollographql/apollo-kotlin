@@ -112,6 +112,9 @@ val ApolloClient.apolloStore: ApolloStore
     } ?: error("no cache configured")
   }
 
+@Deprecated("Used for backward compatibility with 2.x.", ReplaceWith("apolloStore"))
+fun ApolloClient.apolloStore(): ApolloStore = apolloStore
+
 @Deprecated(
     message = "Use apolloStore directly",
     replaceWith = ReplaceWith("apolloStore.clearAll()")
@@ -261,7 +264,7 @@ internal class WatchContext(val value: Boolean) : ExecutionContext.Element {
   companion object Key : ExecutionContext.Key<WatchContext>
 }
 
-@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
 fun ApolloClient.withNormalizedCache(
     normalizedCacheFactory: NormalizedCacheFactory,
     objectIdGenerator: ObjectIdGenerator = TypePolicyObjectIdGenerator,
@@ -275,47 +278,47 @@ fun ApolloClient.withNormalizedCache(
 )
     .build()
 
-@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
 fun ApolloClient.withStore(
     store: ApolloStore,
     writeToCacheAsynchronously: Boolean = false,
 ) = newBuilder().store(store, writeToCacheAsynchronously).build()
 
-@Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloRequest.Builder methods instead. This will be removed in v3.0.0.")
 fun <D : Query.Data> ApolloRequest<D>.withFetchPolicy(fetchPolicy: FetchPolicy) = newBuilder().fetchPolicy(fetchPolicy).build()
 
-@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
 fun ApolloClient.withFetchPolicy(fetchPolicy: FetchPolicy) = newBuilder().fetchPolicy(fetchPolicy).build()
 
-@Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloRequest.Builder methods instead. This will be removed in v3.0.0.")
 fun <D : Query.Data> ApolloRequest<D>.withRefetchPolicy(refetchPolicy: FetchPolicy) = newBuilder().refetchPolicy(refetchPolicy).build()
 
-@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
 fun ApolloClient.withRefetchPolicy(refetchPolicy: FetchPolicy) = newBuilder().refetchPolicy(refetchPolicy).build()
 
-@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
 fun ApolloClient.withDoNotStore(doNotStore: Boolean) = newBuilder().doNotStore(doNotStore).build()
 
-@Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloRequest.Builder methods instead. This will be removed in v3.0.0.")
 fun <D : Operation.Data> ApolloRequest<D>.withDoNotStore(doNotStore: Boolean) = newBuilder().doNotStore(doNotStore).build()
 
-@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
 fun ApolloClient.withStorePartialResponses(storePartialResponses: Boolean) = newBuilder().storePartialResponses(storePartialResponses).build()
 
-@Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloRequest.Builder methods instead. This will be removed in v3.0.0.")
 fun <D : Operation.Data> ApolloRequest<D>.withStorePartialResponses(storePartialResponses: Boolean) = newBuilder().storePartialResponses(storePartialResponses).build()
 
-@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
 fun ApolloClient.withCacheHeaders(cacheHeaders: CacheHeaders) = newBuilder().cacheHeaders(cacheHeaders).build()
 
-@Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloRequest.Builder methods instead. This will be removed in v3.0.0.")
 fun <D : Operation.Data> ApolloRequest<D>.withCacheHeaders(cacheHeaders: CacheHeaders) = newBuilder().cacheHeaders(cacheHeaders).build()
 
-@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
 fun ApolloClient.withWriteToCacheAsynchronously(writeToCacheAsynchronously: Boolean) = newBuilder().writeToCacheAsynchronously(writeToCacheAsynchronously).build()
 
-@Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloRequest.Builder methods instead. This will be removed in v3.0.0.")
 fun <D : Operation.Data> ApolloRequest<D>.withWriteToCacheAsynchronously(writeToCacheAsynchronously: Boolean) = newBuilder().writeToCacheAsynchronously(writeToCacheAsynchronously).build()
 
-@Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloRequest.Builder methods instead. This will be removed in v3.0.0.")
 fun <D : Mutation.Data> ApolloRequest<D>.withOptimisticUpdates(data: D) = newBuilder().optimisticUpdates(data).build()

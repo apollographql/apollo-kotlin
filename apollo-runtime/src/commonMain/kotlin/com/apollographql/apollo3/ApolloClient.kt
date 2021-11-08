@@ -44,7 +44,7 @@ typealias FlowDecorator = (Flow<ApolloResponse<*>>) -> Flow<ApolloResponse<*>>
 /**
  * The main entry point for the Apollo runtime. An [ApolloClient] is responsible for executing queries, mutations and subscriptions
  */
-class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder instead.  This will be removed in v3.0.0.") constructor(
+class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder instead. This will be removed in v3.0.0.") constructor(
     private val networkTransport: NetworkTransport,
     private val customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
     private val subscriptionNetworkTransport: NetworkTransport = networkTransport,
@@ -60,7 +60,7 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
   /**
    * A short-hand constructor
    */
-  @Deprecated("Please use ApolloClient.Builder instead.  This will be removed in v3.0.0.")
+  @Deprecated("Please use ApolloClient.Builder instead. This will be removed in v3.0.0.", ReplaceWith("ApolloClient.Builder().serverUrl(serverUrl)"))
   constructor(
       serverUrl: String,
   ) : this(
@@ -95,7 +95,7 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
     subscriptionNetworkTransport.dispose()
   }
 
-  @Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+  @Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
   fun <T> withCustomScalarAdapter(customScalarType: CustomScalarType, customScalarAdapter: Adapter<T>): ApolloClient {
     return copy(
         customScalarAdapters = CustomScalarAdapters.Builder()
@@ -105,21 +105,21 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
     )
   }
 
-  @Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+  @Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
   fun withInterceptor(interceptor: ApolloInterceptor): ApolloClient {
     return copy(
         interceptors = interceptors + interceptor
     )
   }
 
-  @Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+  @Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
   fun withFlowDecorator(flowDecorator: FlowDecorator): ApolloClient {
     return copy(
         flowDecorators = flowDecorators + flowDecorator
     )
   }
 
-  @Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+  @Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
   fun withExecutionContext(executionContext: ExecutionContext): ApolloClient {
     return copy(
         executionContext = this.executionContext + executionContext
@@ -323,7 +323,7 @@ fun ApolloClient.Builder.autoPersistedQueries(
   }
 }
 
-@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
 fun ApolloClient.withAutoPersistedQueries(
     httpMethodForHashedQueries: HttpMethod = HttpMethod.Get,
     httpMethodForDocumentQueries: HttpMethod = HttpMethod.Post,
@@ -332,20 +332,20 @@ fun ApolloClient.withAutoPersistedQueries(
   return this.newBuilder().autoPersistedQueries(httpMethodForHashedQueries, httpMethodForDocumentQueries, hashByDefault).build()
 }
 
-@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
 fun ApolloClient.withHttpMethod(httpMethod: HttpMethod) = newBuilder().httpMethod(httpMethod).build()
 
-@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
 fun ApolloClient.withHttpHeaders(httpHeaders: List<HttpHeader>) = newBuilder().httpHeaders(httpHeaders).build()
 
-@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
 fun ApolloClient.withHttpHeader(httpHeader: HttpHeader) = newBuilder().httpHeader(httpHeader).build()
 
-@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
 fun ApolloClient.withHttpHeader(name: String, value: String) = newBuilder().httpHeader(name, value).build()
 
-@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
 fun ApolloClient.withSendApqExtensions(sendApqExtensions: Boolean) = newBuilder().sendApqExtensions(sendApqExtensions).build()
 
-@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
 fun ApolloClient.withSendDocument(sendDocument: Boolean) = newBuilder().sendDocument(sendDocument).build()

@@ -208,8 +208,8 @@ fun <T> HasMutableExecutionContext<T>.canBeBatched(canBeBatched: Boolean) where 
     CAN_BE_BATCHED, canBeBatched.toString()
 )
 
-@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
 fun ApolloClient.withCanBeBatched(canBeBatched: Boolean) = newBuilder().canBeBatched(canBeBatched).build()
 
-@Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloRequest.Builder methods instead. This will be removed in v3.0.0.")
 fun <D : Operation.Data> ApolloRequest<D>.withCanBeBatched(canBeBatched: Boolean) = newBuilder().canBeBatched(canBeBatched).build()
