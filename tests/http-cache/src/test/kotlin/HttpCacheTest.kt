@@ -1,6 +1,6 @@
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
+import com.apollographql.apollo3.api.http.ApolloHttpRequestComposer
 import com.apollographql.apollo3.cache.http.CachingHttpEngine
 import com.apollographql.apollo3.cache.http.HttpFetchPolicy
 import com.apollographql.apollo3.cache.http.httpExpireTimeout
@@ -49,7 +49,7 @@ class HttpCacheTest {
     apolloClient = ApolloClient.Builder()
         .networkTransport(
             HttpNetworkTransport(
-                httpRequestComposer = DefaultHttpRequestComposer(mockServer.url()),
+                httpRequestComposer = ApolloHttpRequestComposer(mockServer.url()),
                 engine = CachingHttpEngine(dir, Long.MAX_VALUE)
             )
         )

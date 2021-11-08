@@ -22,7 +22,7 @@ import okio.ByteString
  * - Automatic Persisted Queries
  * - Adding the default Apollo headers
  */
-class DefaultHttpRequestComposer(
+class ApolloHttpRequestComposer(
     private val serverUrl: String,
 ) : HttpRequestComposer {
 

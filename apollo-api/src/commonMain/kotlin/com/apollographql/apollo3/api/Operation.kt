@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
+import com.apollographql.apollo3.api.http.ApolloHttpRequestComposer
 import com.apollographql.apollo3.api.internal.ResponseBodyParser
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.writeObject
@@ -200,7 +200,7 @@ fun <D : Operation.Data> Operation<D>.composeJsonRequest(
     sink: BufferedSink,
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
 ) {
-  val composer = DefaultHttpRequestComposer("unused")
+  val composer = ApolloHttpRequestComposer("unused")
 
   val request = composer.compose(
       ApolloRequest.Builder(operation = this)

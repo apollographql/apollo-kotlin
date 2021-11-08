@@ -4,7 +4,7 @@ import batching.GetLaunch2Query
 import batching.GetLaunchQuery
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
+import com.apollographql.apollo3.api.http.ApolloHttpRequestComposer
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
@@ -67,7 +67,7 @@ class QueryBatchingTest {
     apolloClient = ApolloClient.Builder()
         .networkTransport(
             HttpNetworkTransport(
-                httpRequestComposer = DefaultHttpRequestComposer(mockServer.url()),
+                httpRequestComposer = ApolloHttpRequestComposer(mockServer.url()),
                 engine = BatchingHttpEngine(
                     batchIntervalMillis = 300
                 ),
@@ -109,7 +109,7 @@ class QueryBatchingTest {
     apolloClient = ApolloClient.Builder()
         .networkTransport(
             HttpNetworkTransport(
-                httpRequestComposer = DefaultHttpRequestComposer(mockServer.url()),
+                httpRequestComposer = ApolloHttpRequestComposer(mockServer.url()),
                 engine = BatchingHttpEngine(
                     batchIntervalMillis = 10
                 ),
@@ -140,7 +140,7 @@ class QueryBatchingTest {
     apolloClient = ApolloClient.Builder()
         .networkTransport(
             HttpNetworkTransport(
-                httpRequestComposer = DefaultHttpRequestComposer(mockServer.url()),
+                httpRequestComposer = ApolloHttpRequestComposer(mockServer.url()),
                 engine = BatchingHttpEngine(
                     batchIntervalMillis = 300
                 ),

@@ -2,7 +2,7 @@ package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
+import com.apollographql.apollo3.api.http.ApolloHttpRequestComposer
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import kotlinx.coroutines.withTimeout
 
@@ -60,7 +60,7 @@ class SubscriptionWsProtocol(
         mapOf(
             "type" to "start",
             "id" to request.requestUuid.toString(),
-            "payload" to DefaultHttpRequestComposer.composePayload(request)
+            "payload" to ApolloHttpRequestComposer.composePayload(request)
         )
     )
   }
