@@ -181,11 +181,11 @@ public abstract interface class com/apollographql/apollo3/network/NetworkTranspo
 }
 
 public final class com/apollographql/apollo3/network/OkHttpExtensionsKt {
-	public static final fun okHttpCallFactory (Lcom/apollographql/apollo3/ApolloClient$Builder;Lokhttp3/Call$Factory;)V
-	public static final fun okHttpCallFactory (Lcom/apollographql/apollo3/network/http/HttpNetworkTransport$Builder;Lokhttp3/Call$Factory;)V
-	public static final fun okHttpClient (Lcom/apollographql/apollo3/ApolloClient$Builder;Lokhttp3/OkHttpClient;)V
-	public static final fun okHttpClient (Lcom/apollographql/apollo3/network/http/HttpNetworkTransport$Builder;Lokhttp3/OkHttpClient;)V
-	public static final fun okHttpClient (Lcom/apollographql/apollo3/network/ws/WebSocketNetworkTransport$Builder;Lokhttp3/OkHttpClient;)V
+	public static final fun okHttpCallFactory (Lcom/apollographql/apollo3/ApolloClient$Builder;Lokhttp3/Call$Factory;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public static final fun okHttpCallFactory (Lcom/apollographql/apollo3/network/http/HttpNetworkTransport$Builder;Lokhttp3/Call$Factory;)Lcom/apollographql/apollo3/network/http/HttpNetworkTransport$Builder;
+	public static final fun okHttpClient (Lcom/apollographql/apollo3/ApolloClient$Builder;Lokhttp3/OkHttpClient;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public static final fun okHttpClient (Lcom/apollographql/apollo3/network/http/HttpNetworkTransport$Builder;Lokhttp3/OkHttpClient;)Lcom/apollographql/apollo3/network/http/HttpNetworkTransport$Builder;
+	public static final fun okHttpClient (Lcom/apollographql/apollo3/network/ws/WebSocketNetworkTransport$Builder;Lokhttp3/OkHttpClient;)Lcom/apollographql/apollo3/network/ws/WebSocketNetworkTransport$Builder;
 }
 
 public final class com/apollographql/apollo3/network/http/ApolloClientAwarenessInterceptor : com/apollographql/apollo3/network/http/HttpInterceptor {
