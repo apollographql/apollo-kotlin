@@ -44,11 +44,7 @@ class SampleServerTest {
   @Test
   fun simple() {
     val apolloClient = ApolloClient.Builder()
-        .networkTransport(
-            WebSocketNetworkTransport(
-                serverUrl = "http://localhost:8080/subscriptions"
-            )
-        )
+        .serverUrl("http://localhost:8080/subscriptions")
         .build()
 
     runBlocking {
@@ -63,11 +59,7 @@ class SampleServerTest {
   @Test
   fun interleavedSubscriptions() {
     val apolloClient = ApolloClient.Builder()
-        .networkTransport(
-            WebSocketNetworkTransport(
-                serverUrl = "http://localhost:8080/subscriptions"
-            )
-        )
+        .serverUrl("http://localhost:8080/subscriptions")
         .build()
 
     runBlocking {
@@ -91,10 +83,12 @@ class SampleServerTest {
 
   @Test
   fun idleTimeout() {
-    val transport = WebSocketNetworkTransport(
+    val transport = WebSocketNetworkTransport.Builder().serverUrl(
         serverUrl = "http://localhost:8080/subscriptions",
+    ).idleTimeoutMillis(
         idleTimeoutMillis = 1000
-    )
+    ).build()
+
     val apolloClient = ApolloClient.Builder()
         .networkTransport(transport)
         .build()
@@ -139,10 +133,12 @@ class SampleServerTest {
 
   @Test
   fun serverTermination() {
-    val transport = WebSocketNetworkTransport(
+    val transport = WebSocketNetworkTransport.Builder().serverUrl(
         serverUrl = "http://localhost:8080/subscriptions",
+    ).idleTimeoutMillis(
         idleTimeoutMillis = 1000
-    )
+    ).build()
+
     val apolloClient = ApolloClient.Builder()
         .networkTransport(transport)
         .build()
@@ -164,11 +160,7 @@ class SampleServerTest {
   @Test
   fun operationError() {
     val apolloClient = ApolloClient.Builder()
-        .networkTransport(
-            WebSocketNetworkTransport(
-                serverUrl = "http://localhost:8080/subscriptions"
-            )
-        )
+        .serverUrl("http://localhost:8080/subscriptions")
         .build()
 
     runBlocking {
