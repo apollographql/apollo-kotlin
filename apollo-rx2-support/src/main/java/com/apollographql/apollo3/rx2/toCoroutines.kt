@@ -1,3 +1,5 @@
+@file:JvmName("Rx2Conversion")
+
 package com.apollographql.apollo3.rx2
 
 import com.apollographql.apollo3.api.ApolloRequest

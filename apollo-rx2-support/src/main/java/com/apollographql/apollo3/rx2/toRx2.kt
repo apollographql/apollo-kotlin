@@ -5,6 +5,7 @@ package com.apollographql.apollo3.rx2
 import com.apollographql.apollo3.ApolloMutationCall
 import com.apollographql.apollo3.ApolloQueryCall
 import com.apollographql.apollo3.ApolloSubscriptionCall
+import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -67,8 +68,10 @@ fun ApolloInterceptor.toRx2ApolloInterceptor(scheduler: Scheduler = Schedulers.i
   }
 }
 
+@ApolloExperimental
 fun ApolloStore.toRx2ApolloStore(scheduler: Scheduler = Schedulers.io()) = Rx2ApolloStore(this, scheduler)
 
+@ApolloExperimental
 class Rx2ApolloStore(
     private val delegate: ApolloStore,
     private val scheduler: Scheduler,

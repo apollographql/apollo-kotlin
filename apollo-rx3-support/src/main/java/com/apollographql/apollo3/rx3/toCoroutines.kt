@@ -1,6 +1,8 @@
 /*
  * This file is auto generated from apollo-rx2-support by rxjava3.main.kts, do not edit manually.
  */
+@file:JvmName("Rx3Conversion")
+
 package com.apollographql.apollo3.rx3
 
 import com.apollographql.apollo3.api.ApolloRequest

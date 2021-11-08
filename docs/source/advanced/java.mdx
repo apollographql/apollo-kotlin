@@ -1,0 +1,46 @@
+---
+title: 'Usage from Java'
+---
+
+import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
+
+
+Because Apollo Android is written in Kotlin, it can be used in Java projects. This guide will show you how to do that.
+
+## Use the Java codegen
+
+Apollo Android generates Kotlin code by default, but you can configure it to use the Java codegen instead:
+
+```kotlin:title=build.gradle[.kts]
+apollo {
+  generateKotlinModels.set(false)
+}
+```
+
+## Build the client
+
+Here's how to build an Apollo client from Java:
+
+```java
+        ApolloClient.Builder builder = new ApolloClient.Builder()
+                .serverUrl("http://localhost:4000/graphql")
+
+        // Optionally, set an http cache
+        builder = HttpCacheExtensionsKt.httpCache(builder, cacheDirectory, cacheMaxSize);
+
+        // Optionally, set a normalized cache
+        builder = ClientCacheExtensionsKt.normalizedCache(
+                builder,
+                new MemoryCacheFactory(10 * 1024 * 1024, -1),
+                TypePolicyObjectIdGenerator.INSTANCE,
+                FieldPolicyCacheResolver.INSTANCE,
+                false
+        );
+
+        ApolloClient client = builder.build();
+```
+
+## Use RxJava extensions
+
+Apollo Android has a coroutines / Flow based API which isn't well adapted to be used with Java. To that effect, you can
+use Apollo's RxJava extensions: please refer to [this page](rxjava) for the details of how to do that.

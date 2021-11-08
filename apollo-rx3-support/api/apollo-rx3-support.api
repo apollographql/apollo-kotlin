@@ -12,7 +12,6 @@ public final class com/apollographql/apollo3/rx3/Rx3Apollo {
 	public static synthetic fun toRx3ApolloInterceptor$default (Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;Lio/reactivex/rxjava3/core/Scheduler;ILjava/lang/Object;)Lcom/apollographql/apollo3/rx3/Rx3ApolloInterceptor;
 	public static final fun toRx3ApolloInterceptorChain (Lcom/apollographql/apollo3/interceptor/ApolloInterceptorChain;Lio/reactivex/rxjava3/core/Scheduler;)Lcom/apollographql/apollo3/rx3/Rx3ApolloInterceptorChain;
 	public static synthetic fun toRx3ApolloInterceptorChain$default (Lcom/apollographql/apollo3/interceptor/ApolloInterceptorChain;Lio/reactivex/rxjava3/core/Scheduler;ILjava/lang/Object;)Lcom/apollographql/apollo3/rx3/Rx3ApolloInterceptorChain;
-	public static final fun toRx3ApolloStore (Lcom/apollographql/apollo3/cache/normalized/ApolloStore;Lio/reactivex/rxjava3/core/Scheduler;)Lcom/apollographql/apollo3/rx3/Rx3ApolloStore;
 	public static synthetic fun toRx3ApolloStore$default (Lcom/apollographql/apollo3/cache/normalized/ApolloStore;Lio/reactivex/rxjava3/core/Scheduler;ILjava/lang/Object;)Lcom/apollographql/apollo3/rx3/Rx3ApolloStore;
 	public static final fun toRx3HttpInterceptor (Lcom/apollographql/apollo3/network/http/HttpInterceptor;Lio/reactivex/rxjava3/core/Scheduler;)Lcom/apollographql/apollo3/rx3/Rx3HttpInterceptor;
 	public static synthetic fun toRx3HttpInterceptor$default (Lcom/apollographql/apollo3/network/http/HttpInterceptor;Lio/reactivex/rxjava3/core/Scheduler;ILjava/lang/Object;)Lcom/apollographql/apollo3/rx3/Rx3HttpInterceptor;
@@ -30,27 +29,12 @@ public abstract interface class com/apollographql/apollo3/rx3/Rx3ApolloIntercept
 	public abstract fun proceed (Lcom/apollographql/apollo3/api/ApolloRequest;)Lio/reactivex/rxjava3/core/Flowable;
 }
 
-public final class com/apollographql/apollo3/rx3/Rx3ApolloStore {
-	public fun <init> (Lcom/apollographql/apollo3/cache/normalized/ApolloStore;Lio/reactivex/rxjava3/core/Scheduler;)V
-	public final fun rxAccessCache (Lkotlin/jvm/functions/Function1;)Lio/reactivex/rxjava3/core/Single;
-	public final fun rxDump ()Lio/reactivex/rxjava3/core/Single;
-	public final fun rxPublish (Ljava/util/Set;)Lio/reactivex/rxjava3/core/Completable;
-	public final fun rxReadFragment (Lcom/apollographql/apollo3/api/Fragment;Lcom/apollographql/apollo3/cache/normalized/CacheKey;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/cache/CacheHeaders;)Lio/reactivex/rxjava3/core/Single;
-	public static synthetic fun rxReadFragment$default (Lcom/apollographql/apollo3/rx3/Rx3ApolloStore;Lcom/apollographql/apollo3/api/Fragment;Lcom/apollographql/apollo3/cache/normalized/CacheKey;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/cache/CacheHeaders;ILjava/lang/Object;)Lio/reactivex/rxjava3/core/Single;
-	public final fun rxReadOperation (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/cache/CacheHeaders;)Lio/reactivex/rxjava3/core/Single;
-	public static synthetic fun rxReadOperation$default (Lcom/apollographql/apollo3/rx3/Rx3ApolloStore;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/cache/CacheHeaders;ILjava/lang/Object;)Lio/reactivex/rxjava3/core/Single;
-	public final fun rxRemove (Lcom/apollographql/apollo3/cache/normalized/CacheKey;Z)Lio/reactivex/rxjava3/core/Single;
-	public final fun rxRemove (Ljava/util/List;Z)Lio/reactivex/rxjava3/core/Single;
-	public static synthetic fun rxRemove$default (Lcom/apollographql/apollo3/rx3/Rx3ApolloStore;Lcom/apollographql/apollo3/cache/normalized/CacheKey;ZILjava/lang/Object;)Lio/reactivex/rxjava3/core/Single;
-	public static synthetic fun rxRemove$default (Lcom/apollographql/apollo3/rx3/Rx3ApolloStore;Ljava/util/List;ZILjava/lang/Object;)Lio/reactivex/rxjava3/core/Single;
-	public final fun rxRollbackOptimisticUpdates (Ljava/util/UUID;Z)Lio/reactivex/rxjava3/core/Single;
-	public static synthetic fun rxRollbackOptimisticUpdates$default (Lcom/apollographql/apollo3/rx3/Rx3ApolloStore;Ljava/util/UUID;ZILjava/lang/Object;)Lio/reactivex/rxjava3/core/Single;
-	public final fun rxWriteFragment (Lcom/apollographql/apollo3/api/Fragment;Lcom/apollographql/apollo3/cache/normalized/CacheKey;Lcom/apollographql/apollo3/api/Fragment$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/cache/CacheHeaders;Z)Lio/reactivex/rxjava3/core/Single;
-	public static synthetic fun rxWriteFragment$default (Lcom/apollographql/apollo3/rx3/Rx3ApolloStore;Lcom/apollographql/apollo3/api/Fragment;Lcom/apollographql/apollo3/cache/normalized/CacheKey;Lcom/apollographql/apollo3/api/Fragment$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/cache/CacheHeaders;ZILjava/lang/Object;)Lio/reactivex/rxjava3/core/Single;
-	public final fun rxWriteOperation (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/cache/CacheHeaders;Z)Lio/reactivex/rxjava3/core/Single;
-	public static synthetic fun rxWriteOperation$default (Lcom/apollographql/apollo3/rx3/Rx3ApolloStore;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/cache/CacheHeaders;ZILjava/lang/Object;)Lio/reactivex/rxjava3/core/Single;
-	public final fun rxWriteOptimisticUpdates (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Ljava/util/UUID;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Z)Lio/reactivex/rxjava3/core/Single;
-	public static synthetic fun rxWriteOptimisticUpdates$default (Lcom/apollographql/apollo3/rx3/Rx3ApolloStore;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Ljava/util/UUID;Lcom/apollographql/apollo3/api/CustomScalarAdapters;ZILjava/lang/Object;)Lio/reactivex/rxjava3/core/Single;
+public final class com/apollographql/apollo3/rx3/Rx3Conversion {
+	public static final fun toApolloInterceptor (Lcom/apollographql/apollo3/rx3/Rx3ApolloInterceptor;)Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;
+	public static final fun toApolloInterceptorChain (Lcom/apollographql/apollo3/rx3/Rx3ApolloInterceptorChain;)Lcom/apollographql/apollo3/interceptor/ApolloInterceptorChain;
+	public static final fun toHttpInterceptor (Lcom/apollographql/apollo3/rx3/Rx3HttpInterceptor;)Lcom/apollographql/apollo3/network/http/HttpInterceptor;
+	public static final fun toHttpInterceptorChain (Lcom/apollographql/apollo3/rx3/Rx3HttpInterceptorChain;)Lcom/apollographql/apollo3/network/http/HttpInterceptorChain;
+	public static final fun toNetworkTransport (Lcom/apollographql/apollo3/rx3/Rx3NetworkTransport;)Lcom/apollographql/apollo3/network/NetworkTransport;
 }
 
 public abstract interface class com/apollographql/apollo3/rx3/Rx3HttpInterceptor {
@@ -64,13 +48,5 @@ public abstract interface class com/apollographql/apollo3/rx3/Rx3HttpInterceptor
 public abstract interface class com/apollographql/apollo3/rx3/Rx3NetworkTransport {
 	public abstract fun dispose ()V
 	public abstract fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;)Lio/reactivex/rxjava3/core/Flowable;
-}
-
-public final class com/apollographql/apollo3/rx3/ToCoroutinesKt {
-	public static final fun toApolloInterceptor (Lcom/apollographql/apollo3/rx3/Rx3ApolloInterceptor;)Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;
-	public static final fun toApolloInterceptorChain (Lcom/apollographql/apollo3/rx3/Rx3ApolloInterceptorChain;)Lcom/apollographql/apollo3/interceptor/ApolloInterceptorChain;
-	public static final fun toHttpInterceptor (Lcom/apollographql/apollo3/rx3/Rx3HttpInterceptor;)Lcom/apollographql/apollo3/network/http/HttpInterceptor;
-	public static final fun toHttpInterceptorChain (Lcom/apollographql/apollo3/rx3/Rx3HttpInterceptorChain;)Lcom/apollographql/apollo3/network/http/HttpInterceptorChain;
-	public static final fun toNetworkTransport (Lcom/apollographql/apollo3/rx3/Rx3NetworkTransport;)Lcom/apollographql/apollo3/network/NetworkTransport;
 }
 
