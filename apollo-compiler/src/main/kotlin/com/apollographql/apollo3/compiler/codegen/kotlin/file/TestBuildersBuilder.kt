@@ -8,12 +8,10 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.block
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.testResolver
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgTestFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinMemberNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.test.TBuilderBuilder
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
@@ -25,6 +23,7 @@ import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.apollographql.apollo3.compiler.ir.IrProperty
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.PossibleTypes
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.LambdaTypeName
@@ -64,6 +63,8 @@ class TestBuildersBuilder(
 
   private fun typeSpec(): TypeSpec {
     return TypeSpec.objectBuilder(simpleName)
+        // Note: the compiler forbids referencing ApolloExperimental::class directly, except in an @OptIn context
+        .addAnnotation(ClassName("com.apollographql.apollo3.api", "ApolloExperimental"))
         .addTypes(
             testBuildersBuilder.map { it.build() }
         )
