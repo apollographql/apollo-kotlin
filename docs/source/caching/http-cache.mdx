@@ -18,17 +18,12 @@ dependencies {
 Then configure your HTTP cache:
 
 ```
-val dir = File(pathToCacheDirectory)
-
-// Configure a max size of 100MB
-val maxSize = 100 * 1024 * 1024
-
 apolloClient = ApolloClient.Builder()
-    .networkTransport(
-        HttpNetworkTransport(
-            httpRequestComposer = DefaultHttpRequestComposer(mockServer.url()),
-            engine = CachingHttpEngine(dir, maxSize)
-        )
+    .httpCache(
+      // Use a dedicated directory for the cache
+      directory = File(pathToCacheDirectory),
+      // Configure a max size of 100MB
+      maxSize = 100 * 1024 * 1024
     )
     .build()
 ```

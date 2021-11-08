@@ -2,7 +2,7 @@
 title: Programmatic cache ids
 ---
 
-> Using programmatic cache ids is the more flexible option but comes at the price of a complex API. For a compile-time type-safe (and simpler) to define your cache ids, you also use [declarative cache ids](declarative-ids).
+> Using programmatic cache ids is the more flexible option but comes at the price of a complex API. For a compile-time, type-safe and simpler way to define your cache ids, you also use [declarative cache ids](declarative-ids).
 
 As explained in [the normalized cache page](normalized-cache), defining unique cache ids is important to avoid duplication and make sure your watchers get notified whenever a relevant change in the store happens.
 
@@ -23,7 +23,7 @@ With programmatic cache ids:
 
 ## ObjectIdGenerator
 
-To customize how cache ids are built from object fields, create a new instance of `ObjectIdGenerator`::
+To customize how cache ids are built from object fields, create a new instance of `ObjectIdGenerator`:
 
 ```kotlin
 val objectIdGenerator = object : ObjectIdGenerator {
@@ -59,7 +59,7 @@ val objectIdGenerator = object : ObjectIdGenerator {
 }
 ```
 
-Note how this requires `id` to be present in the response. If a query does not return this field, the [CacheKey] will be inconsistent and duplication will happen.
+Note how this requires `id` to be present in the response. If a query does not return this field, the `CacheKey` will be inconsistent and duplication will happen.
 
 ## CacheKeyResolver
 
@@ -104,7 +104,7 @@ query GetBooks($ids: [String!]!) {
 
 To have the cache lookup all books from `ids`, uou'll need to override `listOfCacheKeysForField`:
 
-```
+```kotlin
   override fun listOfCacheKeysForField(field: CompiledField, variables: Executable.Variables): List<CacheKey?>? {
     // note how field can be of list type here
     val typename = field.type.leafType().name
@@ -125,6 +125,7 @@ To have the cache lookup all books from `ids`, uou'll need to override `listOfCa
 
 For the sake of simplicity, only one level of list is supported. If you need more nested lists, you can implement `CacheResolver`. `CacheResolver` is a generalization of `CacheKeyResolver` and can be used to return any value from the cache, even scalar values:
 
+```kotlin
 val cacheResolver = object: CacheResolver {
   override fun resolveField(
       field: CompiledField,
@@ -160,3 +161,4 @@ val cacheResolver = object: CacheResolver {
     return DefaultCacheResolver.resolveField(field, variables, parent, parentId)
   }
 }
+```

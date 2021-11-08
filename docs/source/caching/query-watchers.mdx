@@ -2,7 +2,7 @@
 title: Query watchers
 ---
 
-Because the normalized cache deduplicates all your data, you can use it a the source of truth for your UI and be automatically notified when some data changes. For this you can use `ApolloQueryCall.watch`
+Because the normalized cache deduplicates all your data, and if you defined your cache ids, you can the cache it a the source of truth for your UI and be automatically notified when some data changes. For this you can use `ApolloQueryCall.watch`
 
 ## Watching a query
 
@@ -50,9 +50,9 @@ The `AllTodos` returns a list of all Item along with their title and checked sta
 }
 ```
 
-If someone clicks on item "1", it opens the details of the todo. Because it's a collaborative todo list, someone might have changed the content on the server. Maybe someone else wrote the documentation for Apollo Android 3 and set the 'checked' field to 'true'. In this case, the TodoDetails query will return something like this:
+If someone clicks on item "1", it opens the details of the todo. Because it's a collaborative todo list, someone might have changed the content on the server. Maybe someone else wrote the documentation for `Apollo Android 3` and set the 'checked' field to 'true'. In this case, the TodoDetails query will return something like this:
 
-```json{6}
+```json{6-7}
 {
   "data": {
     "item": {

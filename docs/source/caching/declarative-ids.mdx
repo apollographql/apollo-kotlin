@@ -26,17 +26,18 @@ With declarative cache ids:
 
 `@typePolicy` allows to specify the id from object fields returned **after** a network request.
 
-Its definition is:
+It's a client-only directive defined by:
 
-```graphql
-# Marks fields as key fields. Key fields are used to compute the cache key of an object
-# `keyFields` should contain a selection set. Composite fields are not supported yet.
+```graphql:title=apollo.graphqls
+# Marks fields as key fields. Key fields are used to compute the cache key
+# of an object `keyFields` should contain a selection set. Composite fields
+# are not supported yet.
 directive @typePolicy(keyFields: String!) on OBJECT
 ```
 
-With the following schema type in your `schema.graphqls` file:
+Assuming the following schema type in your `schema.graphqls` file:
 
-```graphql
+```graphql:title=schema.graphqls
 # we're in schema.graphqls
 type Book {
   id: String!
@@ -47,14 +48,14 @@ type Book {
 
 You can extend the `Book` type by adding a `extra.graphqls` file next to your `schema.graphqls`:
 
-```graphql
+```graphql:title=extra.graphqls
 # we're in extra.graphqls
 extend type Book @typePolicy(keyFields: "id")
 ```
 
 You can specify any combination of scalar fields in `keyFields`. For an example, you could identify an `Author` with their `firstName-lastName` pair:
 
-```graphql
+```graphql:title=extra.graphqls
 # we're in extra.graphqls
 extend type Author @typePolicy(keyFields: "firstName lastName")
 ```
@@ -65,16 +66,16 @@ The codegen will recognize the id field and generate the correct cache id every 
 
 `@fieldPolicy` allows to specify the id from field arguments **before** going to the network.
 
-Its definition is:
+It's a client-only directive defined by:
 
-```graphql
+```graphql:title=apollo.graphqls
 # Indicates how to compute a key from a field arguments.
 directive @fieldPolicy(forField: String!, keyArgs: String!) on OBJECT
 ```
 
 With the following schema type in your `schema.graphqls` file:
 
-```graphql
+```graphql:title=schema.graphqls
 # we're in schema.graphqls
 type Query {
   book(id: String!)
@@ -83,16 +84,16 @@ type Query {
 
 You can tell the cache to use the `id` argument to lookup the requested book in the cache.
 
-```graphql
+```graphql:title=extra.graphqls
 # we're in extra.graphqls
 extend type Query @fieldPolicy(forField: "book", keyArgs: "id")
 ```
 
 Because this happens at the field level and there are no field extensions in the GraphQL language, you'll need to specify `forField` in the directive.
 
-Similarly to `@typePolicy`, you can use and selection set of scalar fields to identify an object from its arguments:
+Similarly to `@typePolicy`, you can use any selection set of scalar fields to identify an object from its arguments:
 
-```
+```graphql:title=extra.graphqls
 extend type Query @fieldPolicy(forField: "author", keyArgs: "firstName lastName")
 ```
 
