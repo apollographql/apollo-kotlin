@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   tests-gradle:
-    runs-on: ubuntu-20.04
+    runs-on: macos-11
     steps:
       - uses: actions/checkout@v2
       - name: set up JDK 1.8
