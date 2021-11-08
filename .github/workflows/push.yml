@@ -1,4 +1,4 @@
-name: full
+name: push
 
 on:
   push:
