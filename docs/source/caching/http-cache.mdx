@@ -43,3 +43,5 @@ val response = apolloClient.query(query)
                  // Finally, execute your query
                  .execute()
 ```
+
+If the query is present in cache, it will be used to return `response.data`. If not, a `HttpCacheMissException` will be thrown.
