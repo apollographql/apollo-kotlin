@@ -42,16 +42,18 @@ subprojects {
   }
 }
 
-tasks.register("fullCheck") {
-  dependsOn(gradle.includedBuild("apollo-android").task(":fullCheck"))
+tasks.register("ciTestsIntegration") {
+  description = """Execute the 'build' task in each subproject"""
   subprojects {
-    tasks.all {
-      if (this.name == "build") {
-        this@register.dependsOn(this)
-      }
-    }
+    this@register.dependsOn(tasks.matching { it.name == "build" })
   }
 }
+
+tasks.register("ciFull") {
+  dependsOn(gradle.includedBuild("apollo-android").task(":ciFull"))
+  dependsOn("ciTestsIntegration")
+}
+
 
 /**
  * A task to do (relatively) fast checks when iterating
@@ -60,14 +62,14 @@ tasks.register("fullCheck") {
 tasks.register("quickCheck") {
   dependsOn(gradle.includedBuild("apollo-android").task(":quickCheck"))
   subprojects {
-    tasks.all {
+    tasks.configureEach {
       if (this@subprojects.name in listOf("kmp-lib-sample", "java-sample", "kotlin-sample", "kmp-android-app")) {
         // These are super long to execute, keep them for the full check
-        return@all
+        return@configureEach
       }
       if (this is org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest) {
         // Native is slow, keep the for the full check
-        return@all
+        return@configureEach
       }
       if (this is Test) {
         // run all tests
