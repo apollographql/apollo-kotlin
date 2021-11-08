@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.http.valueOf
 import com.apollographql.apollo3.cache.http.internal.FileSystem
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.HttpCacheMissException
-import com.apollographql.apollo3.network.http.DefaultHttpEngine
+import com.apollographql.apollo3.network.http.MultiplatformHttpEngine
 import com.apollographql.apollo3.network.http.HttpEngine
 import okio.Buffer
 import okio.ByteString.Companion.toByteString
@@ -21,7 +21,7 @@ class CachingHttpEngine(
     directory: File,
     maxSize: Long,
     fileSystem: FileSystem = FileSystem.SYSTEM,
-    private val delegate: HttpEngine = DefaultHttpEngine(),
+    private val delegate: HttpEngine = MultiplatformHttpEngine(),
 ) : HttpEngine {
   private val store = DiskLruHttpCache(fileSystem, directory, maxSize)
 

@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-actual class DefaultHttpEngine(
+actual class MultiplatformHttpEngine(
     private val httpCallFactory: Call.Factory,
 ) : HttpEngine {
 
@@ -114,7 +114,7 @@ fun HttpNetworkTransport(
 ): HttpNetworkTransport {
   return HttpNetworkTransport(
       serverUrl = serverUrl,
-      engine = DefaultHttpEngine(callFactory)
+      engine = MultiplatformHttpEngine(callFactory)
   )
 }
 
@@ -124,6 +124,6 @@ fun HttpNetworkTransport(
 ): HttpNetworkTransport {
   return HttpNetworkTransport(
       serverUrl = serverUrl,
-      engine = DefaultHttpEngine(okHttpClient)
+      engine = MultiplatformHttpEngine(okHttpClient)
   )
 }

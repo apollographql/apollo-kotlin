@@ -52,7 +52,7 @@ import okio.BufferedSink
  * @param batchByDefault whether batching is opt-in or opt-out at the request level. See also [canBeBatched]
  */
 class BatchingHttpEngine(
-    val delegate: HttpEngine = DefaultHttpEngine(),
+    val delegate: HttpEngine = MultiplatformHttpEngine(),
     val batchIntervalMillis: Long = 10,
     val maxBatchSize: Int = 10,
     val batchByDefault: Boolean = true,

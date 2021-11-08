@@ -33,7 +33,7 @@ fun interface DataTaskFactory {
   fun dataTask(request: NSURLRequest, completionHandler: UrlSessionDataTaskCompletionHandler): NSURLSessionDataTask
 }
 
-actual class DefaultHttpEngine(
+actual class MultiplatformHttpEngine(
     private val dataTaskFactory: DataTaskFactory,
     private val connectTimeoutMillis: Long = 60_000,
 ) : HttpEngine {
