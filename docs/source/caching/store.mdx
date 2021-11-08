@@ -2,7 +2,7 @@
 title: ApolloStore
 ---
 
-Apollo Android exposes a `ApolloStore` API to read and write from the normalized cache programmatically. The `ApolloStore` sits on top of `NormalizedCache`, exposes a thread safe API as well as methods that make it easier to read and write fragments and operations.
+Apollo Android exposes the `ApolloStore` API to read and write from the normalized cache programmatically. The `ApolloStore` sits on top of `NormalizedCache`, exposes a thread safe API as well as methods that make it easier to read and write fragments and operations.
 
 The store is accessible with the `ApolloClient.apolloStore` extension:
 
@@ -43,7 +43,7 @@ println("Author Name=${data.author.name}")
 
 In the event of cache miss, `readOperation` will throw:
 
-```
+```kotlin
 try {
   apolloClient.apolloStore.readOperation(GetBookQuery(id = "42"))
 } catch(e: CacheMissException) {
@@ -55,8 +55,10 @@ try {
 Writing operation data is similar to reading:
 
 ```kotlin
-apolloClient.apolloStore.writeOperation(GetBookQuery(id = "42"))
+apolloClient.apolloStore.writeOperation(GetBookQuery(id = "42"), data)
 ```
+
+Note how you'll need to pass the data allong the operation. 
 
 ## Reading and Writing fragments
 

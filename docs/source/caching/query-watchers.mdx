@@ -77,12 +77,11 @@ apolloClient.query(TodoDetailsQuery())
 
 ## Updating the cache after a mutation
 
-Most of the times, the data changes do not come from the backend but are triggered by the user themselves using a mutation. For an example, the user could change the status from the app:
+Most of the times, the data changes do not come from the backend but are triggered by the users themselves using a mutation. For an example, the user could change the status from the app:
 
 ```graphql
 mutation SetTodoChecked($id: String!, $checked: Boolean!) {
-  setTodoChecked(id: $id, checked: $checked) {
-    # this returns an item
+  setTodoChecked(id: $id, checked: $checked) { # this returns an item
     id
   }
 }
@@ -100,7 +99,7 @@ The above mutation will change the 'checked' status on the server but not in the
  }
  ```
 
-> Note: For this to work, it's important that your schema returns all potentially modified fields.
+> Note: For this to work, it's important that your schema allows to returns all potentially modified fields.
 
 Because `setTodoChecked` above is of `Item` type and contains an "id" field and the "checked" field, the result of the mutation is going to update the cache automatically when the network response is received. Any watcher listening to `"Item:1.checked"` will be automatically notified.
 
