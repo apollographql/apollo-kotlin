@@ -133,19 +133,16 @@ tasks.register("ciTestsNoGradle") {
     | - the Gradle ones
     | - most of the apple tests where it executes only macosX64
   """.trimMargin()
+
+
   subprojects {
-    tasks.configureEach {
-      when (name) {
-        "test" -> {
-          if (this@subprojects.name != "apollo-gradle-plugin") {
-            this@register.dependsOn(this)
-          }
-        }
-        "jvmTest", "jsIrTest", "macosX64Test", "apiCheck" -> {
-          this@register.dependsOn(this)
-        }
-      }
+    if (name != "apollo-gradle-plugin") {
+      dependsOn(tasks.matching { it.name == "test" })
     }
+    dependsOn(tasks.matching { it.name == "jvmTest" })
+    dependsOn(tasks.matching { it.name == "jsIrTest" })
+    dependsOn(tasks.matching { it.name == "macosX64Test" })
+    dependsOn(tasks.matching { it.name == "apiCheck" })
   }
 }
 
