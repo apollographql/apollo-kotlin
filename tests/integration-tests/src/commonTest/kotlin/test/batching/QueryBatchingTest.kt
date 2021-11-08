@@ -25,7 +25,7 @@ class QueryBatchingTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
 
-      private suspend fun setUp() {
+  private fun setUp() {
     mockServer = MockServer()
   }
 
@@ -40,10 +40,11 @@ class QueryBatchingTest {
   fun testAgainstARealServer() = runTest(before = { setUp() }, after = { tearDown() }) {
     apolloClient = ApolloClient.Builder()
         .networkTransport(
-            HttpNetworkTransport(
+            HttpNetworkTransport.Builder().serverUrl(
                 serverUrl = "https://apollo-fullstack-tutorial.herokuapp.com/graphql",
-                engine = BatchingHttpEngine(),
-            )
+            ).httpEngine(
+                httpEngine = BatchingHttpEngine(),
+            ).build()
         )
         .build()
 
@@ -66,12 +67,13 @@ class QueryBatchingTest {
     mockServer.enqueue(response)
     apolloClient = ApolloClient.Builder()
         .networkTransport(
-            HttpNetworkTransport(
+            HttpNetworkTransport.Builder().httpRequestComposer(
                 httpRequestComposer = ApolloHttpRequestComposer(mockServer.url()),
-                engine = BatchingHttpEngine(
+            ).httpEngine(
+                BatchingHttpEngine(
                     batchIntervalMillis = 300
                 ),
-            )
+            ).build()
         )
         .build()
 
@@ -108,12 +110,13 @@ class QueryBatchingTest {
     mockServer.enqueue("""[{"data":{"launch":{"id":"84"}}}]""")
     apolloClient = ApolloClient.Builder()
         .networkTransport(
-            HttpNetworkTransport(
+            HttpNetworkTransport.Builder().httpRequestComposer(
                 httpRequestComposer = ApolloHttpRequestComposer(mockServer.url()),
-                engine = BatchingHttpEngine(
+            ).httpEngine(
+                BatchingHttpEngine(
                     batchIntervalMillis = 10
                 ),
-            )
+            ).build()
         )
         .build()
 
@@ -139,12 +142,13 @@ class QueryBatchingTest {
     mockServer.enqueue("""[{"data":{"launch":{"id":"84"}}}]""")
     apolloClient = ApolloClient.Builder()
         .networkTransport(
-            HttpNetworkTransport(
+            HttpNetworkTransport.Builder().httpRequestComposer(
                 httpRequestComposer = ApolloHttpRequestComposer(mockServer.url()),
-                engine = BatchingHttpEngine(
+            ).httpEngine(
+                BatchingHttpEngine(
                     batchIntervalMillis = 300
                 ),
-            )
+            ).build()
         )
         .build()
 

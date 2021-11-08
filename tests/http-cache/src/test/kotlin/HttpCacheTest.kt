@@ -48,10 +48,10 @@ class HttpCacheTest {
     dir.deleteRecursively()
     apolloClient = ApolloClient.Builder()
         .networkTransport(
-            HttpNetworkTransport(
-                httpRequestComposer = ApolloHttpRequestComposer(mockServer.url()),
-                engine = CachingHttpEngine(dir, Long.MAX_VALUE)
-            )
+            HttpNetworkTransport.Builder()
+                .httpRequestComposer(ApolloHttpRequestComposer(mockServer.url()))
+                .httpEngine(CachingHttpEngine(dir, Long.MAX_VALUE))
+                .build()
         )
         .build()
   }

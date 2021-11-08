@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package test
 
 import com.apollographql.apollo3.ApolloClient
