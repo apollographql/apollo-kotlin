@@ -40,21 +40,20 @@ class ApolloHttpRequestComposer(
 
     return when (apolloRequest.httpMethod) {
       HttpMethod.Get -> {
-        HttpRequest(
+        HttpRequest.Builder(
             method = HttpMethod.Get,
             url = buildGetUrl(serverUrl, operation, customScalarAdapters, sendApqExtensions, sendDocument),
-            headers = requestHeaders,
-            body = null
-        )
+        ).addHeaders(requestHeaders)
+            .build()
       }
       HttpMethod.Post -> {
         val query = if (sendDocument) operation.document() else null
-        HttpRequest(
+        HttpRequest.Builder(
             method = HttpMethod.Post,
             url = serverUrl,
-            headers = requestHeaders,
-            body = buildPostBody(operation, customScalarAdapters, sendApqExtensions, query),
-        )
+        ).addHeaders(requestHeaders)
+            .body(buildPostBody(operation, customScalarAdapters, sendApqExtensions, query))
+            .build()
       }
     }
   }

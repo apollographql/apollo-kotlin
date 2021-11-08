@@ -73,7 +73,7 @@ class HttpRequest
     private var body: HttpBody? = null
     private val headers = mutableListOf<HttpHeader>()
 
-    fun body(body: HttpBody) {
+    fun body(body: HttpBody) = apply {
       this.body = body
     }
 
