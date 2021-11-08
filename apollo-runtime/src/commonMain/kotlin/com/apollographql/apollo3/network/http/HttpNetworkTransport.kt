@@ -40,7 +40,8 @@ class HttpNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder instead
    * - on Android, it is used to set  [OkHttpClient.readTimeout]
    */
   @Suppress("DEPRECATION", "DEPRECATION")
-  @Deprecated("Use HttpNetworkTransport.Builder instead. This will be removed in v3.0.0.") constructor(
+  @Deprecated("Use HttpNetworkTransport.Builder instead. This will be removed in v3.0.0.")
+  constructor(
       serverUrl: String,
       connectTimeoutMillis: Long = 60_000,
       readTimeoutMillis: Long = 60_000,
@@ -65,7 +66,8 @@ class HttpNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder instead
    * - on Android, it is used to set  [OkHttpClient.readTimeout]
    */
   @Suppress("DEPRECATION")
-  @Deprecated("Use HttpNetworkTransport.Builder instead. This will be removed in v3.0.0.") constructor(
+  @Deprecated("Use HttpNetworkTransport.Builder instead. This will be removed in v3.0.0.")
+  constructor(
       serverUrl: String,
       engine: HttpEngine,
       interceptors: List<HttpInterceptor> = emptyList(),
@@ -161,35 +163,29 @@ class HttpNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder instead
     private var engine: HttpEngine? = null
     private val interceptors: MutableList<HttpInterceptor> = mutableListOf()
 
-    fun httpRequestComposer(httpRequestComposer: HttpRequestComposer): Builder {
+    fun httpRequestComposer(httpRequestComposer: HttpRequestComposer) = apply {
       this.httpRequestComposer = httpRequestComposer
-      return this
     }
 
-    fun serverUrl(serverUrl: String): Builder {
+    fun serverUrl(serverUrl: String) = apply {
       this.httpRequestComposer = ApolloHttpRequestComposer(serverUrl)
-      return this
     }
 
-    fun httpHeaders(headers: List<HttpHeader>): Builder {
+    fun httpHeaders(headers: List<HttpHeader>) = apply {
       interceptors.add(HeadersInterceptor(headers))
-      return this
     }
 
-    fun httpEngine(httpEngine: HttpEngine): Builder {
+    fun httpEngine(httpEngine: HttpEngine) = apply {
       this.engine = httpEngine
-      return this
     }
 
-    fun interceptors(interceptors: List<HttpInterceptor>): Builder {
+    fun interceptors(interceptors: List<HttpInterceptor>) = apply {
       this.interceptors.clear()
       this.interceptors.addAll(interceptors)
-      return this
     }
 
-    fun addInterceptor(interceptor: HttpInterceptor): Builder {
+    fun addInterceptor(interceptor: HttpInterceptor) = apply {
       this.interceptors.add(interceptor)
-      return this
     }
 
     fun build(): HttpNetworkTransport {

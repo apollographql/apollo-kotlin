@@ -240,25 +240,21 @@ class WebSocketNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder in
     private var idleTimeoutMillis: Long? = null
     private var protocolFactory: WsProtocol.Factory? = null
 
-    fun serverUrl(serverUrl: String): Builder {
+    fun serverUrl(serverUrl: String) = apply {
       this.serverUrl = serverUrl
-      return this
     }
 
     @Suppress("DEPRECATION")
-    fun webSocketEngine(webSocketEngine: WebSocketEngine): Builder {
+    fun webSocketEngine(webSocketEngine: WebSocketEngine) = apply {
       this.webSocketEngine = webSocketEngine
-      return this
     }
 
-    fun idleTimeoutMillis(idleTimeoutMillis: Long): Builder {
+    fun idleTimeoutMillis(idleTimeoutMillis: Long) = apply {
       this.idleTimeoutMillis = idleTimeoutMillis
-      return this
     }
 
-    fun protocol(protocolFactory: WsProtocol.Factory): Builder {
+    fun protocol(protocolFactory: WsProtocol.Factory) = apply {
       this.protocolFactory = protocolFactory
-      return this
     }
 
     fun build(): WebSocketNetworkTransport {
