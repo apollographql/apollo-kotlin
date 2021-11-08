@@ -87,6 +87,19 @@ val cacheKeyResolver = object: CacheKeyResolver() {
 }
 ```
 
+And pass it when configuring the normalized cache:
+
+```kotlin
+val apolloClient = ApolloClient.Builder()
+    .serverUrl("https://...")
+    .normalizedCache(
+        normalizedCacheFactory = cacheFactory,
+        objectIdGenerator = objectIdGenerator,
+        cacheResolver = cacheKeyResolver
+    )
+    .build()
+```
+
 There's a lot going on up there.
 
 The first thing to be aware of is that this function will be called for every composite field in your operation so it's important to return `null` if you don't want to handle this field.
