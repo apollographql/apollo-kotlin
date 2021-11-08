@@ -7,7 +7,7 @@ on:
       - '*.md'
 
 jobs:
-  test-gradle:
+  tests-gradle:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -27,7 +27,7 @@ jobs:
         with:
           name: tests-gradle.zip
           path: tests-gradle.zip
-  test-no-gradle:
+  tests-no-gradle:
     runs-on: macos-11
     steps:
       - uses: actions/checkout@v2
@@ -47,7 +47,7 @@ jobs:
         with:
           name: tests-no-gradle.zip
           path: tests-no-gradle.zip
-  test-integration:
+  tests-integration:
     runs-on: macos-11
     steps:
       - uses: actions/checkout@v2
