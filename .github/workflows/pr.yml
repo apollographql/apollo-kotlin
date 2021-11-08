@@ -31,7 +31,7 @@ jobs:
         if: always()
         with:
           name: tests-gradle.zip
-          path: tests-gradle.zip
+          path: diagnostics.zip
   tests-no-gradle:
     runs-on: macos-11
     steps:
@@ -51,7 +51,7 @@ jobs:
         if: always()
         with:
           name: tests-no-gradle.zip
-          path: tests-no-gradle.zip
+          path: diagnostics.zip
   tests-integration:
     runs-on: macos-11
     steps:
@@ -71,4 +71,4 @@ jobs:
         if: always()
         with:
           name: tests-integration.zip
-          path: tests-integration.zip
+          path: diagnostics.zip
