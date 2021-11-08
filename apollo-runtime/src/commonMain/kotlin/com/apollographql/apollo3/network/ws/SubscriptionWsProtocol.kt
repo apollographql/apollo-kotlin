@@ -76,7 +76,7 @@ class SubscriptionWsProtocol(
 
   class Factory(
       private val connectionAcknowledgeTimeoutMs: Long = 10_000,
-      private val connectionPayload: suspend () -> Map<String, Any?>?,
+      private val connectionPayload: suspend () -> Map<String, Any?>? = { null },
   ) : WsProtocol.Factory {
     override val name: String
       get() = "graphql-ws"

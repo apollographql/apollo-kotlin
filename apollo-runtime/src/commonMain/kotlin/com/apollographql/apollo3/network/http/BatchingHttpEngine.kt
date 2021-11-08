@@ -25,6 +25,7 @@ import com.apollographql.apollo3.network.http.BatchingHttpEngine.Companion.CAN_B
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -39,7 +40,7 @@ import okio.BufferedSink
  * of n queries compared to resolving the n queries separately.
  *
  * Because [ApolloClient.query] suspends, it only makes sense to use query batching when queries are
- * executed from different coroutines. Use [kotlinx.coroutines.async] to create a new coroutine if needed
+ * executed from different coroutines. Use [async] to create a new coroutine if needed
  *
  * [BatchingHttpEngine] buffers the whole response so it might additionally introduce some
  * client-side latency as it cannot amortize parsing/building the models during network I/O.
@@ -59,6 +60,7 @@ class BatchingHttpEngine(
   private val dispatcher = BackgroundDispatcher()
   private val scope = CoroutineScope(dispatcher.coroutineDispatcher)
   private val mutex = DefaultMutex()
+  private var disposed = false
 
   private val job: Job
 
@@ -195,8 +197,11 @@ class BatchingHttpEngine(
   }
 
   override fun dispose() {
-    scope.cancel()
-    dispatcher.dispose()
+    if (!disposed) {
+      delegate.dispose()
+      scope.cancel()
+      dispatcher.dispose()
+    }
   }
 
   companion object {

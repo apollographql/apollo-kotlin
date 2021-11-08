@@ -20,7 +20,7 @@ interface HttpEngine {
   /**
    * Disposes any resources used by the [HttpEngine]
    *
-   * Use this to dispose a connection pool for an example
+   * Use this to dispose a connection pool for an example. Must be idemptotent
    */
   fun dispose()
 }

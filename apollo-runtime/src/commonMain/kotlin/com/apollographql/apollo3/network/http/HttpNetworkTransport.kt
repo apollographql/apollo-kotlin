@@ -2,24 +2,24 @@ package com.apollographql.apollo3.network.http
 
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpHeader
+import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.parseJsonResponse
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloParseException
-import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.internal.NonMainWorker
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.network.NetworkTransport
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class HttpNetworkTransport(
+class HttpNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder instead. This will be removed in v3.0.0.") constructor(
     private val httpRequestComposer: HttpRequestComposer,
     val engine: HttpEngine = DefaultHttpEngine(),
     val interceptors: List<HttpInterceptor> = emptyList(),
@@ -39,7 +39,7 @@ class HttpNetworkTransport(
    * - on iOS, it is used to set [NSURLSessionConfiguration.timeoutIntervalForRequest]
    * - on Android, it is used to set  [OkHttpClient.readTimeout]
    */
-  constructor(
+  @Deprecated("Use HttpNetworkTransport.Builder instead. This will be removed in v3.0.0.") constructor(
       serverUrl: String,
       connectTimeoutMillis: Long = 60_000,
       readTimeoutMillis: Long = 60_000,
@@ -63,7 +63,7 @@ class HttpNetworkTransport(
    * - on iOS, it is used to set [NSURLSessionConfiguration.timeoutIntervalForRequest]
    * - on Android, it is used to set  [OkHttpClient.readTimeout]
    */
-  constructor(
+  @Deprecated("Use HttpNetworkTransport.Builder instead. This will be removed in v3.0.0.") constructor(
       serverUrl: String,
       engine: HttpEngine,
       interceptors: List<HttpInterceptor> = emptyList(),
@@ -141,21 +141,62 @@ class HttpNetworkTransport(
     engine.dispose()
   }
 
+
   /**
-   * Creates a copy of the [HttpNetworkTransport]
+   * Creates a newBuilder that shares the underlying resources
    *
-   * The copy will own the [engine]. It is an error to call [dispose] after [copy] on the original instance
+   * Calling [dispose] on the original instance or the new one will terminate the [engine] for both instances
    */
-  fun copy(
-      httpRequestComposer: HttpRequestComposer = this.httpRequestComposer,
-      engine: HttpEngine = this.engine,
-      interceptors: List<HttpInterceptor> = this.interceptors,
-  ): HttpNetworkTransport {
-    return HttpNetworkTransport(
-        httpRequestComposer = httpRequestComposer,
-        engine = engine,
-        interceptors = interceptors
-    )
+  fun newBuilder(): Builder {
+    return Builder()
+        .httpEngine(engine)
+        .interceptors(interceptors)
+        .httpRequestComposer(httpRequestComposer)
+  }
+
+  class Builder {
+    private var httpRequestComposer: HttpRequestComposer? = null
+    private var engine: HttpEngine? = null
+    private val interceptors: MutableList<HttpInterceptor> = mutableListOf()
+
+    fun httpRequestComposer(httpRequestComposer: HttpRequestComposer): Builder {
+      this.httpRequestComposer = httpRequestComposer
+      return this
+    }
+
+    fun serverUrl(serverUrl: String): Builder {
+      this.httpRequestComposer = DefaultHttpRequestComposer(serverUrl)
+      return this
+    }
+
+    fun httpHeaders(headers: List<HttpHeader>): Builder {
+      interceptors.add(HeadersInterceptor(headers))
+      return this
+    }
+
+    fun httpEngine(httpEngine: HttpEngine): Builder {
+      this.engine = httpEngine
+      return this
+    }
+
+    fun interceptors(interceptors: List<HttpInterceptor>): Builder {
+      this.interceptors.clear()
+      this.interceptors.addAll(interceptors)
+      return this
+    }
+
+    fun addInterceptor(interceptor: HttpInterceptor): Builder {
+      this.interceptors.add(interceptor)
+      return this
+    }
+
+    fun build(): HttpNetworkTransport {
+      return HttpNetworkTransport(
+          httpRequestComposer = httpRequestComposer ?: error("No HttpRequestComposer found. Use 'httpRequestComposer' or 'serverUrl'"),
+          engine = engine ?: DefaultHttpEngine(),
+          interceptors = interceptors
+      )
+    }
   }
 
   companion object {
@@ -176,4 +217,5 @@ class HttpNetworkTransport(
 /**
  * Adds a new [HeadersInterceptor] that will add [headers] to each [HttpRequest]
  */
-fun HttpNetworkTransport.withDefaultHeaders(headers: List<HttpHeader>) = copy(interceptors = this.interceptors + HeadersInterceptor(headers))
+@Deprecated("Use HttpNetworkTransport.Builder instead. This will be removed in v3.0.0.")
+fun HttpNetworkTransport.withDefaultHeaders(headers: List<HttpHeader>) = newBuilder().addInterceptor(HeadersInterceptor(headers))
