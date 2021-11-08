@@ -110,7 +110,7 @@ val memoryFirstThenSqlCacheFactory = MemoryCacheFactory(10 * 1024 * 1024)
 
 ```
 
-Reads will read from the first cache hit in the chain. Writes will propagate down the entire chain.
+Reads will return the first cache hit in the chain. Writes will propagate down the entire chain.
 
 ## Getting data from the cache
 
