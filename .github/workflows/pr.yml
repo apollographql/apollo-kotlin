@@ -6,6 +6,11 @@ on:
       - 'docs/**'
       - '*.md'
 
+# Cancel any current or previous job from the same PR
+concurrency:
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
+
 jobs:
   tests-gradle:
     runs-on: ubuntu-20.04
