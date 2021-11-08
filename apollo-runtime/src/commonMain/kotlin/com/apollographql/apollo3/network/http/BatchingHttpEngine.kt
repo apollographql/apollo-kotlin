@@ -202,6 +202,7 @@ class BatchingHttpEngine(
       delegate.dispose()
       scope.cancel()
       dispatcher.dispose()
+      disposed = true
     }
   }
 
