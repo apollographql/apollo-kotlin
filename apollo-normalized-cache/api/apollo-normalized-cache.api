@@ -17,6 +17,7 @@ public final class com/apollographql/apollo3/cache/normalized/CacheInfo$Key : co
 }
 
 public final class com/apollographql/apollo3/cache/normalized/ClientCacheExtensionsKt {
+	public static final fun apolloStore (Lcom/apollographql/apollo3/ApolloClient;)Lcom/apollographql/apollo3/cache/normalized/ApolloStore;
 	public static final fun cacheHeaders (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Lcom/apollographql/apollo3/cache/CacheHeaders;)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
 	public static final fun clearNormalizedCache (Lcom/apollographql/apollo3/ApolloClient;)Z
 	public static final fun doNotStore (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Z)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;

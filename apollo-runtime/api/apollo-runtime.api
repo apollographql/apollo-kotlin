@@ -23,6 +23,7 @@ public final class com/apollographql/apollo3/ApolloClient : com/apollographql/ap
 	public final fun executeAsFlow (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
 	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
 	public final fun getInterceptors ()Ljava/util/List;
+	public final fun getNetworkTransport ()Lcom/apollographql/apollo3/network/NetworkTransport;
 	public final fun mutate (Lcom/apollographql/apollo3/api/Mutation;)Lcom/apollographql/apollo3/ApolloMutationCall;
 	public final fun newBuilder ()Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun query (Lcom/apollographql/apollo3/api/Query;)Lcom/apollographql/apollo3/ApolloQueryCall;
@@ -42,15 +43,22 @@ public final class com/apollographql/apollo3/ApolloClient$Builder : com/apollogr
 	public synthetic fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
 	public final fun addFlowDecorator (Lkotlin/jvm/functions/Function1;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun addInterceptor (Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public final fun addInterceptors (Ljava/util/List;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun build ()Lcom/apollographql/apollo3/ApolloClient;
-	public final fun customScalarAdapters (Lcom/apollographql/apollo3/api/CustomScalarAdapters;)V
+	public final fun customScalarAdapters (Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public final fun executionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public final fun flowDecorators (Ljava/util/List;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
-	public final fun getNetworkTransport ()Lcom/apollographql/apollo3/network/NetworkTransport;
+	public final fun httpEngine (Lcom/apollographql/apollo3/network/http/HttpEngine;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public final fun httpServerUrl (Ljava/lang/String;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public final fun interceptors (Ljava/util/List;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun networkTransport (Lcom/apollographql/apollo3/network/NetworkTransport;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun requestedDispatcher (Lkotlinx/coroutines/CoroutineDispatcher;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun serverUrl (Ljava/lang/String;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public fun setExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)V
 	public final fun subscriptionNetworkTransport (Lcom/apollographql/apollo3/network/NetworkTransport;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public final fun webSocketEngine (Lcom/apollographql/apollo3/network/ws/WebSocketEngine;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public final fun webSocketServerUrl (Ljava/lang/String;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 }
 
 public final class com/apollographql/apollo3/ApolloClient$Companion {
@@ -172,6 +180,14 @@ public abstract interface class com/apollographql/apollo3/network/NetworkTranspo
 	public abstract fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
 }
 
+public final class com/apollographql/apollo3/network/OkHttpExtensionsKt {
+	public static final fun okHttpCallFactory (Lcom/apollographql/apollo3/ApolloClient$Builder;Lokhttp3/Call$Factory;)V
+	public static final fun okHttpCallFactory (Lcom/apollographql/apollo3/network/http/HttpNetworkTransport$Builder;Lokhttp3/Call$Factory;)V
+	public static final fun okHttpClient (Lcom/apollographql/apollo3/ApolloClient$Builder;Lokhttp3/OkHttpClient;)V
+	public static final fun okHttpClient (Lcom/apollographql/apollo3/network/http/HttpNetworkTransport$Builder;Lokhttp3/OkHttpClient;)V
+	public static final fun okHttpClient (Lcom/apollographql/apollo3/network/ws/WebSocketNetworkTransport$Builder;Lokhttp3/OkHttpClient;)V
+}
+
 public final class com/apollographql/apollo3/network/http/ApolloClientAwarenessInterceptor : com/apollographql/apollo3/network/http/HttpInterceptor {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public fun intercept (Lcom/apollographql/apollo3/api/http/HttpRequest;Lcom/apollographql/apollo3/network/http/HttpInterceptorChain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -209,15 +225,6 @@ public final class com/apollographql/apollo3/network/http/BatchingHttpEngineKt {
 public final class com/apollographql/apollo3/network/http/BearerTokenInterceptor : com/apollographql/apollo3/network/http/HttpInterceptor {
 	public fun <init> (Lcom/apollographql/apollo3/network/http/TokenProvider;)V
 	public fun intercept (Lcom/apollographql/apollo3/api/http/HttpRequest;Lcom/apollographql/apollo3/network/http/HttpInterceptorChain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class com/apollographql/apollo3/network/http/DefaultHttpEngine : com/apollographql/apollo3/network/http/HttpEngine {
-	public fun <init> (JJ)V
-	public synthetic fun <init> (JJILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun <init> (Lokhttp3/Call$Factory;)V
-	public fun <init> (Lokhttp3/OkHttpClient;)V
-	public fun dispose ()V
-	public fun execute (Lcom/apollographql/apollo3/api/http/HttpRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/apollographql/apollo3/network/http/HeadersInterceptor : com/apollographql/apollo3/network/http/HttpInterceptor {
@@ -263,13 +270,23 @@ public final class com/apollographql/apollo3/network/http/HttpNetworkTransport :
 	public synthetic fun <init> (Ljava/lang/String;JJLjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/network/http/HttpEngine;Ljava/util/List;)V
 	public synthetic fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/network/http/HttpEngine;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun copy (Lcom/apollographql/apollo3/api/http/HttpRequestComposer;Lcom/apollographql/apollo3/network/http/HttpEngine;Ljava/util/List;)Lcom/apollographql/apollo3/network/http/HttpNetworkTransport;
-	public static synthetic fun copy$default (Lcom/apollographql/apollo3/network/http/HttpNetworkTransport;Lcom/apollographql/apollo3/api/http/HttpRequestComposer;Lcom/apollographql/apollo3/network/http/HttpEngine;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo3/network/http/HttpNetworkTransport;
 	public fun dispose ()V
 	public fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
 	public final fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/api/http/HttpRequest;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lkotlinx/coroutines/flow/Flow;
 	public final fun getEngine ()Lcom/apollographql/apollo3/network/http/HttpEngine;
 	public final fun getInterceptors ()Ljava/util/List;
+	public final fun newBuilder ()Lcom/apollographql/apollo3/network/http/HttpNetworkTransport$Builder;
+}
+
+public final class com/apollographql/apollo3/network/http/HttpNetworkTransport$Builder {
+	public fun <init> ()V
+	public final fun addInterceptor (Lcom/apollographql/apollo3/network/http/HttpInterceptor;)Lcom/apollographql/apollo3/network/http/HttpNetworkTransport$Builder;
+	public final fun build ()Lcom/apollographql/apollo3/network/http/HttpNetworkTransport;
+	public final fun httpEngine (Lcom/apollographql/apollo3/network/http/HttpEngine;)Lcom/apollographql/apollo3/network/http/HttpNetworkTransport$Builder;
+	public final fun httpHeaders (Ljava/util/List;)Lcom/apollographql/apollo3/network/http/HttpNetworkTransport$Builder;
+	public final fun httpRequestComposer (Lcom/apollographql/apollo3/api/http/HttpRequestComposer;)Lcom/apollographql/apollo3/network/http/HttpNetworkTransport$Builder;
+	public final fun interceptors (Ljava/util/List;)Lcom/apollographql/apollo3/network/http/HttpNetworkTransport$Builder;
+	public final fun serverUrl (Ljava/lang/String;)Lcom/apollographql/apollo3/network/http/HttpNetworkTransport$Builder;
 }
 
 public final class com/apollographql/apollo3/network/http/HttpNetworkTransport$Companion {
@@ -281,7 +298,7 @@ public final class com/apollographql/apollo3/network/http/HttpNetworkTransport$E
 }
 
 public final class com/apollographql/apollo3/network/http/HttpNetworkTransportKt {
-	public static final fun withDefaultHeaders (Lcom/apollographql/apollo3/network/http/HttpNetworkTransport;Ljava/util/List;)Lcom/apollographql/apollo3/network/http/HttpNetworkTransport;
+	public static final fun withDefaultHeaders (Lcom/apollographql/apollo3/network/http/HttpNetworkTransport;Ljava/util/List;)Lcom/apollographql/apollo3/network/http/HttpNetworkTransport$Builder;
 }
 
 public final class com/apollographql/apollo3/network/http/LoggingInterceptor : com/apollographql/apollo3/network/http/HttpInterceptor {
@@ -291,9 +308,16 @@ public final class com/apollographql/apollo3/network/http/LoggingInterceptor : c
 	public fun intercept (Lcom/apollographql/apollo3/api/http/HttpRequest;Lcom/apollographql/apollo3/network/http/HttpInterceptorChain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public final class com/apollographql/apollo3/network/http/OkHttpEngine : com/apollographql/apollo3/network/http/HttpEngine {
+	public fun <init> (Lokhttp3/Call$Factory;)V
+	public fun <init> (Lokhttp3/OkHttpClient;)V
+	public fun dispose ()V
+	public fun execute (Lcom/apollographql/apollo3/api/http/HttpRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
 public final class com/apollographql/apollo3/network/http/OkHttpEngineKt {
-	public static final fun HttpNetworkTransport (Ljava/lang/String;Lokhttp3/Call$Factory;)Lcom/apollographql/apollo3/network/http/HttpNetworkTransport;
-	public static final fun HttpNetworkTransport (Ljava/lang/String;Lokhttp3/OkHttpClient;)Lcom/apollographql/apollo3/network/http/HttpNetworkTransport;
+	public static final fun MultiplatformHttpEngine (JJ)Lcom/apollographql/apollo3/network/http/HttpEngine;
+	public static synthetic fun MultiplatformHttpEngine$default (JJILjava/lang/Object;)Lcom/apollographql/apollo3/network/http/HttpEngine;
 }
 
 public abstract interface class com/apollographql/apollo3/network/http/TokenProvider {
@@ -322,12 +346,6 @@ public final class com/apollographql/apollo3/network/ws/AppSyncWsProtocol$Factor
 	public fun getName ()Ljava/lang/String;
 }
 
-public final class com/apollographql/apollo3/network/ws/DefaultWebSocketEngine : com/apollographql/apollo3/network/ws/WebSocketEngine {
-	public fun <init> ()V
-	public fun <init> (Lokhttp3/WebSocket$Factory;)V
-	public fun open (Ljava/lang/String;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public final class com/apollographql/apollo3/network/ws/GraphQLWsProtocol : com/apollographql/apollo3/network/ws/WsProtocol {
 	public fun <init> (Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;JJLcom/apollographql/apollo3/network/ws/WsFrameType;Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;)V
 	public synthetic fun <init> (Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;JJLcom/apollographql/apollo3/network/ws/WsFrameType;Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -346,6 +364,16 @@ public final class com/apollographql/apollo3/network/ws/GraphQLWsProtocol$Factor
 	public fun getName ()Ljava/lang/String;
 }
 
+public final class com/apollographql/apollo3/network/ws/OkHttpWebSocketEngine : com/apollographql/apollo3/network/ws/WebSocketEngine {
+	public fun <init> ()V
+	public fun <init> (Lokhttp3/WebSocket$Factory;)V
+	public fun open (Ljava/lang/String;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/apollographql/apollo3/network/ws/OkHttpWebSocketEngineKt {
+	public static final fun MultiplatformWebSocketEngine ()Lcom/apollographql/apollo3/network/ws/WebSocketEngine;
+}
+
 public final class com/apollographql/apollo3/network/ws/SubscriptionWsProtocol : com/apollographql/apollo3/network/ws/WsProtocol {
 	public fun <init> (Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;JLkotlin/jvm/functions/Function1;)V
 	public synthetic fun <init> (Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;JLkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -356,6 +384,7 @@ public final class com/apollographql/apollo3/network/ws/SubscriptionWsProtocol :
 }
 
 public final class com/apollographql/apollo3/network/ws/SubscriptionWsProtocol$Factory : com/apollographql/apollo3/network/ws/WsProtocol$Factory {
+	public fun <init> ()V
 	public fun <init> (JLkotlin/jvm/functions/Function1;)V
 	public synthetic fun <init> (JLkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun create (Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;)Lcom/apollographql/apollo3/network/ws/WsProtocol;
@@ -395,6 +424,15 @@ public final class com/apollographql/apollo3/network/ws/WebSocketNetworkTranspor
 	public fun operationComplete (Ljava/lang/String;)V
 	public fun operationError (Ljava/lang/String;Ljava/util/Map;)V
 	public fun operationResponse (Ljava/lang/String;Ljava/util/Map;)V
+}
+
+public final class com/apollographql/apollo3/network/ws/WebSocketNetworkTransport$Builder {
+	public fun <init> ()V
+	public final fun build ()Lcom/apollographql/apollo3/network/ws/WebSocketNetworkTransport;
+	public final fun idleTimeoutMillis (J)Lcom/apollographql/apollo3/network/ws/WebSocketNetworkTransport$Builder;
+	public final fun protocol (Lcom/apollographql/apollo3/network/ws/WsProtocol$Factory;)Lcom/apollographql/apollo3/network/ws/WebSocketNetworkTransport$Builder;
+	public final fun serverUrl (Ljava/lang/String;)Lcom/apollographql/apollo3/network/ws/WebSocketNetworkTransport$Builder;
+	public final fun webSocketEngine (Lcom/apollographql/apollo3/network/ws/WebSocketEngine;)Lcom/apollographql/apollo3/network/ws/WebSocketNetworkTransport$Builder;
 }
 
 public final class com/apollographql/apollo3/network/ws/WebSocketNetworkTransport$StartOperation : com/apollographql/apollo3/network/ws/WebSocketNetworkTransport$Command {
