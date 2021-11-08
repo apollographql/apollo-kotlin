@@ -1,8 +1,7 @@
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.http.ApolloHttpRequestComposer
-import com.apollographql.apollo3.cache.http.CachingHttpEngine
 import com.apollographql.apollo3.cache.http.HttpFetchPolicy
+import com.apollographql.apollo3.cache.http.httpCache
 import com.apollographql.apollo3.cache.http.httpExpireTimeout
 import com.apollographql.apollo3.cache.http.httpFetchPolicy
 import com.apollographql.apollo3.cache.http.isFromHttpCache
@@ -10,7 +9,6 @@ import com.apollographql.apollo3.exception.HttpCacheMissException
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.testing.runTest
 import httpcache.GetRandom2Query
 import httpcache.GetRandomQuery
@@ -47,12 +45,8 @@ class HttpCacheTest {
     val dir = File("build/httpCache")
     dir.deleteRecursively()
     apolloClient = ApolloClient.Builder()
-        .networkTransport(
-            HttpNetworkTransport.Builder()
-                .httpRequestComposer(ApolloHttpRequestComposer(mockServer.url()))
-                .httpEngine(CachingHttpEngine(dir, Long.MAX_VALUE))
-                .build()
-        )
+        .serverUrl(mockServer.url())
+        .httpCache(dir, Long.MAX_VALUE)
         .build()
   }
 

@@ -7,7 +7,7 @@ import com.apollographql.apollo3.api.HasMutableExecutionContext
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.httpHeader
 import com.apollographql.apollo3.network.http.HttpInfo
-import com.apollographql.apollo3.network.http.HttpNetworkTransport
+import com.apollographql.apollo3.network.http.MultiplatformHttpEngine
 import java.io.File
 
 enum class HttpFetchPolicy {
@@ -39,22 +39,20 @@ enum class HttpFetchPolicy {
  *
  * @param directory: the directory where the cache will be persisted
  * @param maxSize: the maxSize in bytes that the cache acn occupy
+ *
+ * See also [ApolloClient.Builder.httpEngine] and [ApolloClient.Builder.networkTransport]
  */
 fun ApolloClient.Builder.httpCache(
     directory: File,
     maxSize: Long,
 ): ApolloClient.Builder {
-  val networkTransport = networkTransport
-  check(networkTransport is HttpNetworkTransport) {
-    "withHttpCache requires a HttpNetworkTransport"
-  }
-  return networkTransport(networkTransport.newBuilder().httpEngine(
-          httpEngine = CachingHttpEngine(
-              directory = directory,
-              maxSize = maxSize,
-              delegate = networkTransport.engine
-          )
-      ).build()
+
+  return httpEngine(
+      httpEngine = CachingHttpEngine(
+          directory = directory,
+          maxSize = maxSize,
+          delegate = MultiplatformHttpEngine()
+      )
   )
 }
 

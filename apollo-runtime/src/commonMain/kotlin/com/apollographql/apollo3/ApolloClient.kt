@@ -49,7 +49,7 @@ typealias FlowDecorator = (Flow<ApolloResponse<*>>) -> Flow<ApolloResponse<*>>
  * The main entry point for the Apollo runtime. An [ApolloClient] is responsible for executing queries, mutations and subscriptions
  */
 class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder instead. This will be removed in v3.0.0.") constructor(
-    private val networkTransport: NetworkTransport,
+    val networkTransport: NetworkTransport,
     private val customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
     private val subscriptionNetworkTransport: NetworkTransport = networkTransport,
     val interceptors: List<ApolloInterceptor> = emptyList(),
@@ -175,12 +175,6 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
     private var webSocketEngine: WebSocketEngine? = null
 
     /**
-     * The [NetworkTransport] this Builder uses
-     */
-    val networkTransport: NetworkTransport?
-      get() = _networkTransport
-
-    /**
      * The url of the GraphQL server used for both HTTP and WebSockets
      */
     fun serverUrl(serverUrl: String) = apply {
@@ -207,7 +201,7 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
      *
      * For more customization, see also [networkTransport]
      */
-    fun httpEngine(httpEngine: HttpEngine) {
+    fun httpEngine(httpEngine: HttpEngine) = apply {
       this.httpEngine = httpEngine
     }
 
@@ -216,7 +210,7 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
      *
      * For more customization, see also [subscriptionNetworkTransport]
      */
-    fun webSocketEngine(webSocketEngine: WebSocketEngine) {
+    fun webSocketEngine(webSocketEngine: WebSocketEngine) = apply {
       this.webSocketEngine = webSocketEngine
     }
 
@@ -294,10 +288,10 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
 
     fun build(): ApolloClient {
       val networkTransport = if (_networkTransport != null) {
-        check(httpServerUrl ==  null) {
+        check(httpServerUrl == null) {
           "ApolloGraphQL: 'httpServerUrl' has no effect if 'networkTransport' is set"
         }
-        check(httpEngine ==  null) {
+        check(httpEngine == null) {
           "ApolloGraphQL: 'httpEngine' has no effect if 'networkTransport' is set"
         }
         _networkTransport!!
@@ -312,23 +306,25 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
       }
 
       val subscriptionNetworkTransport = if (subscriptionNetworkTransport != null) {
-        check(webSocketServerUrl ==  null) {
+        check(webSocketServerUrl == null) {
           "ApolloGraphQL: 'webSocketServerUrl' has no effect if 'subscriptionNetworkTransport' is set"
         }
-        check(webSocketEngine ==  null) {
+        check(webSocketEngine == null) {
           "ApolloGraphQL: 'webSocketEngine' has no effect if 'subscriptionNetworkTransport' is set"
         }
         subscriptionNetworkTransport!!
       } else {
         val url = webSocketServerUrl ?: httpServerUrl
-        check(url != null) {
-          "ApolloGraphQL: 'webSocketServerUrl' is required"
+        if (url == null) {
+          // Fallback to the regular [NetworkTransport]. This is unlikely to work but chances are
+          // that the user is not going to use subscription so it's better than failing
+          networkTransport
+        } else {
+          WebSocketNetworkTransport.Builder()
+              .serverUrl(httpServerUrl!!)
+              .webSocketEngine(webSocketEngine ?: MultiplatformWebSocketEngine())
+              .build()
         }
-
-        WebSocketNetworkTransport.Builder()
-            .serverUrl(httpServerUrl!!)
-            .webSocketEngine(webSocketEngine ?: MultiplatformWebSocketEngine())
-            .build()
       }
 
       @Suppress("DEPRECATION")
