@@ -64,13 +64,13 @@ Replace all usages of `apolloClient` with `apolloClient(context)`. There is one 
 
 ```kotlin
 // LaunchListFragment
-apolloClient(requireContext()).query(LaunchListQuery(cursor))
+apolloClient(requireContext()).query(LaunchListQuery(cursor)).execute()
 
 // LaunchDetailsFragment
-apolloClient(requireContext()).query(LaunchDetailsQuery(id = args.launchId))
+apolloClient(requireContext()).query(LaunchDetailsQuery(id = args.launchId)).execute()
 
 // LoginFragment
-apolloClient(requireContext()).mutate(LoginMutation(email))
+apolloClient(requireContext()).mutate(LoginMutation(email)).execute()
 
 ```
 
@@ -153,7 +153,7 @@ lifecycleScope.launchWhenResumed {
     }
 
     val response = try {
-        apolloClient(requireContext()).mutate(mutation)
+        apolloClient(requireContext()).mutate(mutation).execute()
     } catch (e: ApolloException) {
         configureButton(isBooked)
         return@launchWhenResumed
