@@ -2,7 +2,7 @@
 title: Normalized cache
 ---
 
-> This page focuses on the normalized cache. If you're looking for a simpler albeit coarser cache, take a look at the [HTTP cache](http-cache).
+> This page focuses on the normalized cache. A normalized cache has several advantages like deduplication and watchers. If you're looking for a simpler albeit coarser cache, take a look at the [HTTP cache](http-cache).
 
 
 
@@ -60,10 +60,10 @@ val apolloClient = ApolloClient.Builder()
 
 Because the normalized cache is optional, `normalizedCache()` is an extension function on `ApolloClient.Builder()` that's defined in the `apollo-normalized-cache` artifact. It takes a `NormalizedCacheFactory` as a parameter so that it can create the cache in the background if needed.
 
-A `MemoryCache` is least recently used (LRU) cache. It keeps entries in memory based on two conditions:
+A `MemoryCache` is a least recently used (LRU) cache. It keeps entries in memory based on two conditions:
 
 * `maxSizeBytes`: the maximum size in bytes the cache may occupy
-* `expireAfterMillis` - after what timeout each entry in the cache treated as expired. By default there is no timeout.
+* `expireAfterMillis`: after what timeout each entry in the cache treated as expired. By default there is no timeout.
 
 When your app is stopped, data in the `MemoryCache` is lost forever. If you need to persist data, you can use the SQLite cache.
 
@@ -79,7 +79,7 @@ dependencies {
 }
 ```
 
-And add the SQLite cache to your `ApolloClient`. Because different platform use different drivers, you'll need to call the platform specific constructor:
+And add the SQLite cache to your `ApolloClient`. Because different platforms use different drivers, you'll need to call the platform specific constructor:
 
 ```kotlin
 // Android
@@ -95,6 +95,8 @@ val apolloClient = ApolloClient.Builder()
   .normalizedCache(sqlNormalizedCacheFactory)
   .build()
 ```
+
+You can then use it like the `MemoryCache
 
 
 ## Chaining caches
@@ -116,19 +118,25 @@ Once your cache setup is complete, the cache will be used by default by all your
 
 ```kotlin
 val response = apolloClient.query(query)
-                 // Don't use the cache
+                 // Don't use the cache at all
                  .fetchPolicy(FetchPolicy.NetworkOnly)
 
-                 // Or only use the cache
+                 // Or use only the cache
                  .fetchPolicy(FetchPolicy.CacheOnly)
 
-                 // Finally, execute your query
+                 // Or use the cache only if the network fails
+                 .fetchPolicy(FetchPolicy.NetworkFirst)
+
+                 // Or use the network only if the cache fails (default)
+                 .fetchPolicy(FetchPolicy.CacheFirst)
+
+                 // In all cases, execute your query
                  .execute()
 ```
 
-Like for `normalizedCache(NormalizedCacheFactory)`, `fetchPolicy(FetchPolicy)` is an extension function on `ApolloClient.Builder()` so you will need `apollo-cache-fetch-policy` in your classpath for this to work.
+Like for `normalizedCache(NormalizedCacheFactory)`, `fetchPolicy(FetchPolicy)` is an extension function on `ApolloClient.Builder()` so you will need `apollo-normalized-cache` in your classpath for this to work.
 
-Because the normalized cache deduplicates all your data, it allows to react to cache changes. This is done with `watchers` that listen to cache changes. You can learn more about them [in this page](query-watchers)
+Because the normalized cache deduplicates all your data, it allows to react to cache changes. This is done with `watchers` that listen to cache changes. You can learn more about them [in this page](query-watchers). Using watchers requires deduplicating your objects by specifying their object ids.
 
 ## Specifying your object IDs
 
@@ -158,18 +166,18 @@ query AuthorById($id: String!) {
 This will store the following records:
 
 ```
-* "favoriteBook": {"id": "book1", "title": "Les guerriers du silence", "author": "ApolloCacheReference{favoriteBook.author}"}
+* "favoriteBook": {"id": "book1", "title": "Les guerriers du silence", "author": "CacheKey{favoriteBook.author}"}
 * "favoriteBook.author": {"id": "author1", name": "Pierre Bordage"}
 * "author("id": "author1")": {"id": "author1", "name": "Pierre Bordage"}
-* "QUERY_ROOT": {"favoriteBook": "ApolloCacheReference{favoriteBook}", "author(\"id\": \"author1\")": "ApolloCacheReference{author(\"id\": \"author1\")}"}
+* "QUERY_ROOT": {"favoriteBook": "CacheKey{favoriteBook}", "author(\"id\": \"author1\")": "CacheKey{author(\"id\": \"author1\")}"}
 ```
 
 This is undesirable, both because it takes more space, and because modifying one of those objects will not notify the watchers of the other. What you want instead is this:
 
 ```
-* "book1"`: `{"id": "book1", "title": "Les guerriers du silence", "author": "ApolloCacheReference{author1}"}
+* "book1"`: `{"id": "book1", "title": "Les guerriers du silence", "author": "CacheKey{author1}"}
 * "author1"`: `{"id": "author1", name": "Pierre Bordage"}
-* "QUERY_ROOT"`: `{"favoriteBook": "book1", "author(\"id\": \"author1\")": "author1"}
+* "QUERY_ROOT"`: `{"favoriteBook": "CacheKey(book1)", "author(\"id\": \"author1\")": "CacheKey(author1)"}
 ```
 
 The good news is that all your objects have an `id` field that we can use for that purpose. If each `id` is unique across the whole graph, you can use it directly. If it's unique per object type, you can prefix it with the type name. For an example: `"Book:$id"`.
