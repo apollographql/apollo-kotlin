@@ -50,19 +50,13 @@ subscriptionResponse.subscribe( /* ... */ );
 
 ```kotlin
 // A query
-val queryCall: ApolloQueryCall<MyQuery.Data> = client.query(MyQuery())
-val queryResponse: Single<ApolloResponse<MyQuery.Data>> = queryCall.rxSingle()
-queryResponse.subscribe(/* ... */)
+client.query(MyQuery()).rxSingle().subscribe(/* ... */)
 
 // A mutation
-val mutationCall = client.mutate(MyMutation("my-parameter"))
-val mutationResponse: Single<ApolloResponse<MyMutation.Data>> = mutationCall.rxSingle()
-mutationResponse.subscribe(/* ... */)
+client.mutate(MyMutation("my-parameter")).rxSingle().subscribe(/* ... */)
 
 // A subscription
-val subscriptionCall = client.subscribe(MySubscription())
-val subscriptionResponse: Flowable<ApolloResponse<MySubscription.Data>> = subscriptionCall.rxFlowable()
-subscriptionResponse.subscribe(/* ... */)
+client.subscribe(MySubscription()).rxFlowable().subscribe(/* ... */)
 ```
 </MultiCodeBlock>
 
