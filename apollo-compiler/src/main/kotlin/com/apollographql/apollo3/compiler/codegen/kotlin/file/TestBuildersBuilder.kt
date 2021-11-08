@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.ast.GQLType
+import com.apollographql.apollo3.compiler.codegen.ClassNames
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.Data
@@ -23,7 +24,6 @@ import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.apollographql.apollo3.compiler.ir.IrProperty
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.PossibleTypes
-import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.LambdaTypeName
@@ -63,8 +63,7 @@ class TestBuildersBuilder(
 
   private fun typeSpec(): TypeSpec {
     return TypeSpec.objectBuilder(simpleName)
-        // Note: the compiler forbids referencing ApolloExperimental::class directly, except in an @OptIn context
-        .addAnnotation(ClassName("com.apollographql.apollo3.api", "ApolloExperimental"))
+        .addAnnotation(ClassNames.ApolloExperimental)
         .addTypes(
             testBuildersBuilder.map { it.build() }
         )
