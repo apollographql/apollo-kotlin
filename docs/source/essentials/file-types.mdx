@@ -19,7 +19,8 @@ Introspection schemas are downloadable through [introspection](https://graphql.o
 You can also download it with Apollo Android with the `downloadApolloSchema` Gradle task:
 
 ```
-./gradlew :app:downloadApolloSchema --endpoint "https://example.com/graphql" --schema schema.json
+./gradlew :app:downloadApolloSchema --endpoint "https://example.com/graphql"
+ --schema schema.json
 ```
 
 Introspection schemas are the result of an introspection query and should look like below:
@@ -55,7 +56,8 @@ Unlike introspection, there's no way to download a SDL schema from your endpoint
 
 
 ```
-./gradlew :app:downloadApolloSchema --endpoint "https://example.com/graphql" --schema schema.graphqls
+./gradlew :app:downloadApolloSchema --endpoint "https://example.com/graphql"
+--schema schema.graphqls
 ```
 
 The file will look like:
@@ -88,3 +90,4 @@ query MyQuery {
 }
 ```
 
+Apollo Android will compile these queries into type-safe models that you can use at runtime.
