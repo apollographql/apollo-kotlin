@@ -69,9 +69,7 @@ class Socket(private val socketFd: Int, private val acceptDelayMillis: Long) {
         }
 
         if (acceptDelayMillis > 0) {
-          println("sleep now")
           usleep((acceptDelayMillis * 1000).convert())
-          println("sleep now done ")
         }
 
         // wait for a new incoming connection
