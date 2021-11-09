@@ -536,7 +536,7 @@ val cacheKeyResolver = object : CacheKeyResolver() {
   }
 }
 
-val apolloClient = ApolloClient("https://").withNormalizedCache(
+val apolloClient = ApolloClient("https://").normalizedCache(
     normalizedCacheFactory = cacheFactory,
     objectIdGenerator = objectIdGenerator,
     cacheResolver = cacheKeyResolver
