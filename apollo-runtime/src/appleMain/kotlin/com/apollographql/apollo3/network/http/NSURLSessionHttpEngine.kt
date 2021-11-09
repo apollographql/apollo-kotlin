@@ -34,17 +34,10 @@ fun interface DataTaskFactory {
 }
 
 class NSURLSessionHttpEngine(
-    private val dataTaskFactory: DataTaskFactory,
     private val timeoutMillis: Long = 60_000,
+    private val dataTaskFactory: DataTaskFactory = DefaultDataTaskFactory(),
 ) : HttpEngine {
-
-  constructor(
-      timeoutMillis: Long,
-  ) : this(
-      dataTaskFactory = DefaultDataTaskFactory(),
-      timeoutMillis = timeoutMillis
-  )
-
+  
   @Suppress("UNCHECKED_CAST")
   override suspend fun execute(request: HttpRequest) = suspendAndResumeOnMain<HttpResponse> { mainContinuation, invokeOnCancellation ->
     assertMainThreadOnNative()
