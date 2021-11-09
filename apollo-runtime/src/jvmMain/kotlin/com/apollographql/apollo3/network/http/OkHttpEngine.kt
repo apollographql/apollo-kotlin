@@ -25,7 +25,6 @@ class OkHttpEngine(
   // an overload that takes an OkHttpClient for easier discovery
   constructor(okHttpClient: OkHttpClient) : this(okHttpClient as Call.Factory)
 
-  // an overload that takes an OkHttpClient for easier discovery
   constructor(connectTimeout: Long, readTimeout: Long) : this(
       OkHttpClient.Builder()
           .connectTimeout(connectTimeout, TimeUnit.MILLISECONDS)
