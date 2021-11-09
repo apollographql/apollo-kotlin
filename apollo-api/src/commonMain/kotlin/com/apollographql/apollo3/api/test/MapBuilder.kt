@@ -15,6 +15,7 @@ abstract class MapBuilder {
 
   fun <T> resolve(responseName: String, type: CompiledType, vararg ctors: () -> Map<String, Any?>): T {
     return if (__map.contains(responseName)) {
+      @Suppress("UNCHECKED_CAST")
       __map[responseName] as T
     } else {
       val resolver = currentTestResolver ?: error("No TestResolver found, wrap with withTestResolver() {}")
@@ -33,6 +34,7 @@ class StubbedProperty<T>(private val map: MutableMap<String, Any?>, private val 
     check(map.contains(responseName)) {
       "Property $responseName is not set"
     }
+    @Suppress("UNCHECKED_CAST")
     return map[responseName] as T
   }
 

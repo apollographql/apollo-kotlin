@@ -47,5 +47,5 @@ fun ApolloClient.Builder.idlingResource(idlingResource: ApolloIdlingResource): A
   }
 }
 
-@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
 fun ApolloClient.withIdlingResource(idlingResource: ApolloIdlingResource) = newBuilder().idlingResource(idlingResource).build()

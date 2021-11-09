@@ -14,7 +14,9 @@ import io.ktor.http.HttpHeaders
 import io.ktor.util.flattenEntries
 import okio.Buffer
 
-actual class DefaultHttpEngine actual constructor(connectTimeoutMillis: Long, readTimeoutMillis: Long) : HttpEngine {
+class KtorHttpEngine(connectTimeoutMillis: Long, readTimeoutMillis: Long) : HttpEngine {
+  var disposed = false
+
   private val client = HttpClient(Js) {
     expectSuccess = false
   }
@@ -49,6 +51,19 @@ actual class DefaultHttpEngine actual constructor(connectTimeoutMillis: Long, re
   }
 
   override fun dispose() {
-    client.close()
+    if (!disposed) {
+      client.close()
+      disposed = true
+    }
   }
+}
+
+actual fun MultiplatformHttpEngine(
+    connectTimeoutMillis: Long,
+    readTimeoutMillis: Long,
+): HttpEngine {
+  return KtorHttpEngine(
+      connectTimeoutMillis = connectTimeoutMillis,
+      readTimeoutMillis = readTimeoutMillis
+  )
 }

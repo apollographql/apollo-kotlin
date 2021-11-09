@@ -7,9 +7,8 @@ import com.apollographql.apollo3.api.HasMutableExecutionContext
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.httpHeader
 import com.apollographql.apollo3.network.http.HttpInfo
-import com.apollographql.apollo3.network.http.HttpNetworkTransport
+import com.apollographql.apollo3.network.http.MultiplatformHttpEngine
 import java.io.File
-
 
 enum class HttpFetchPolicy {
   /**
@@ -35,20 +34,24 @@ enum class HttpFetchPolicy {
   NetworkOnly,
 }
 
+/**
+ * Configures a persistent LRU HTTP cache for the ApolloClient.
+ *
+ * @param directory: the directory where the cache will be persisted
+ * @param maxSize: the maxSize in bytes that the cache acn occupy
+ *
+ * See also [ApolloClient.Builder.httpEngine] and [ApolloClient.Builder.networkTransport]
+ */
 fun ApolloClient.Builder.httpCache(
     directory: File,
     maxSize: Long,
 ): ApolloClient.Builder {
-  val networkTransport = networkTransport
-  check(networkTransport is HttpNetworkTransport) {
-    "withHttpCache requires a HttpNetworkTransport"
-  }
-  return networkTransport(networkTransport.copy(
-          engine = CachingHttpEngine(
-              directory = directory,
-              maxSize = maxSize,
-              delegate = networkTransport.engine
-          )
+
+  return httpEngine(
+      httpEngine = CachingHttpEngine(
+          directory = directory,
+          maxSize = maxSize,
+          delegate = MultiplatformHttpEngine()
       )
   )
 }
@@ -59,7 +62,9 @@ val <D : Operation.Data> ApolloResponse<D>.isFromHttpCache
     it.name == CachingHttpEngine.FROM_CACHE
   } ?: false
 
-
+/**
+ * Configures the [HttpFetchPolicy]
+ */
 fun <T> HasMutableExecutionContext<T>.httpFetchPolicy(httpFetchPolicy: HttpFetchPolicy): T where T : HasMutableExecutionContext<T> {
   val policyStr = when (httpFetchPolicy) {
     HttpFetchPolicy.CacheFirst -> CachingHttpEngine.CACHE_FIRST
@@ -73,44 +78,53 @@ fun <T> HasMutableExecutionContext<T>.httpFetchPolicy(httpFetchPolicy: HttpFetch
   )
 }
 
-fun <T> HasMutableExecutionContext<T>.httpExpireTimeout(millis: Long) where T : HasMutableExecutionContext<T> = httpHeader(
-    CachingHttpEngine.CACHE_EXPIRE_TIMEOUT_HEADER, millis.toString()
+/**
+ * Configures httpExpireTimeout. Entries will be removed from the cache after this timeout.
+ */
+fun <T> HasMutableExecutionContext<T>.httpExpireTimeout(httpExpireTimeout: Long) where T : HasMutableExecutionContext<T> = httpHeader(
+    CachingHttpEngine.CACHE_EXPIRE_TIMEOUT_HEADER, httpExpireTimeout.toString()
 )
 
-fun <T> HasMutableExecutionContext<T>.httpExpireAfterRead(expireAfterRead: Boolean) where T : HasMutableExecutionContext<T> = httpHeader(
-    CachingHttpEngine.CACHE_EXPIRE_AFTER_READ_HEADER, expireAfterRead.toString()
+/**
+ * Configures httpExpireAfterRead. Entries will be removed from the cache after read if set to true.
+ */
+fun <T> HasMutableExecutionContext<T>.httpExpireAfterRead(httpExpireAfterRead: Boolean) where T : HasMutableExecutionContext<T> = httpHeader(
+    CachingHttpEngine.CACHE_EXPIRE_AFTER_READ_HEADER, httpExpireAfterRead.toString()
 )
 
-fun <T> HasMutableExecutionContext<T>.httpDoNotStore(doNotStore: Boolean) where T : HasMutableExecutionContext<T> = httpHeader(
-    CachingHttpEngine.CACHE_DO_NOT_STORE, doNotStore.toString()
+/**
+ * Configures httpDoNotStore. Entries will never be stored if set to true.
+ */
+fun <T> HasMutableExecutionContext<T>.httpDoNotStore(httpDoNotStore: Boolean) where T : HasMutableExecutionContext<T> = httpHeader(
+    CachingHttpEngine.CACHE_DO_NOT_STORE, httpDoNotStore.toString()
 )
 
-@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
 fun ApolloClient.withHttpCache(
     directory: File,
     maxSize: Long,
 ): ApolloClient = newBuilder().httpCache(directory, maxSize).build()
 
-@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
 fun ApolloClient.withHttpFetchPolicy(httpFetchPolicy: HttpFetchPolicy) = newBuilder().httpFetchPolicy(httpFetchPolicy).build()
 
-@Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloRequest.Builder methods instead. This will be removed in v3.0.0.")
 fun <D : Operation.Data> ApolloRequest<D>.withHttpFetchPolicy(httpFetchPolicy: HttpFetchPolicy) = newBuilder().httpFetchPolicy(httpFetchPolicy).build()
 
-@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
 fun ApolloClient.withHttpExpireTimeout(millis: Long) = newBuilder().httpExpireTimeout(millis).build()
 
-@Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloRequest.Builder methods instead. This will be removed in v3.0.0.")
 fun <D : Operation.Data> ApolloRequest<D>.withHttpExpireTimeout(millis: Long) = newBuilder().httpExpireTimeout(millis).build()
 
-@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
 fun ApolloClient.withHttpExpireAfterRead(expireAfterRead: Boolean) = newBuilder().httpExpireAfterRead(expireAfterRead).build()
 
-@Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloRequest.Builder methods instead. This will be removed in v3.0.0.")
 fun <D : Operation.Data> ApolloRequest<D>.withHttpExpireAfterRead(expireAfterRead: Boolean) = newBuilder().httpExpireAfterRead(expireAfterRead).build()
 
-@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
 fun ApolloClient.withHttpDoNotStore(doNotStore: Boolean) = newBuilder().httpDoNotStore(doNotStore).build()
 
-@Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloRequest.Builder methods instead. This will be removed in v3.0.0.")
 fun <D : Operation.Data> ApolloRequest<D>.withHttpDoNotStore(doNotStore: Boolean) = newBuilder().httpDoNotStore(doNotStore).build()

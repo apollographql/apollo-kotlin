@@ -1,11 +1,10 @@
+
 import com.apollographql.apollo.sample.server.DefaultApplication
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.cache.normalized.watch
-import com.apollographql.apollo3.network.http.HttpNetworkTransport
-import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.consumeAsFlow
@@ -48,8 +47,8 @@ class CachedSubscriptionTest {
     )
 
     val apolloClient = ApolloClient.Builder()
-        .networkTransport(HttpNetworkTransport(serverUrl = "http://localhost:8080/graphql"))
-        .subscriptionNetworkTransport(WebSocketNetworkTransport(serverUrl = "http://localhost:8080/subscriptions"))
+        .httpServerUrl("http://localhost:8080/graphql")
+        .webSocketServerUrl("http://localhost:8080/subscriptions")
         .store(store)
         .build()
 

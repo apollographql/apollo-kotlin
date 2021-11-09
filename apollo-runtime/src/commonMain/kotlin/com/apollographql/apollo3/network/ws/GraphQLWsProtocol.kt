@@ -2,7 +2,7 @@ package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
+import com.apollographql.apollo3.api.http.ApolloHttpRequestComposer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -51,7 +51,7 @@ class GraphQLWsProtocol(
         mapOf(
             "type" to "subscribe",
             "id" to request.requestUuid.toString(),
-            "payload" to DefaultHttpRequestComposer.composePayload(request)
+            "payload" to ApolloHttpRequestComposer.composePayload(request)
         ),
         frameType
     )

@@ -21,12 +21,8 @@ import okio.ByteString
  * - FileUpload by intercepting the Upload custom scalars and sending them as multipart if needed
  * - Automatic Persisted Queries
  * - Adding the default Apollo headers
- *
- * @param headers: headers to add in addition to Apollo headers and before request-specific headers.
- * Headers can be added multiple times. It is the responsibility of the caller to deduplicate headers if needed. This can be done
- * using a [HttpInterceptor] if needed
  */
-class DefaultHttpRequestComposer(
+class ApolloHttpRequestComposer(
     private val serverUrl: String,
 ) : HttpRequestComposer {
 
@@ -44,21 +40,20 @@ class DefaultHttpRequestComposer(
 
     return when (apolloRequest.httpMethod) {
       HttpMethod.Get -> {
-        HttpRequest(
+        HttpRequest.Builder(
             method = HttpMethod.Get,
             url = buildGetUrl(serverUrl, operation, customScalarAdapters, sendApqExtensions, sendDocument),
-            headers = requestHeaders,
-            body = null
-        )
+        ).addHeaders(requestHeaders)
+            .build()
       }
       HttpMethod.Post -> {
         val query = if (sendDocument) operation.document() else null
-        HttpRequest(
+        HttpRequest.Builder(
             method = HttpMethod.Post,
             url = serverUrl,
-            headers = requestHeaders,
-            body = buildPostBody(operation, customScalarAdapters, sendApqExtensions, query),
-        )
+        ).addHeaders(requestHeaders)
+            .body(buildPostBody(operation, customScalarAdapters, sendApqExtensions, query))
+            .build()
       }
     }
   }

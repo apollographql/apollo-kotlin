@@ -25,6 +25,7 @@ import com.apollographql.apollo3.network.http.BatchingHttpEngine.Companion.CAN_B
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -39,7 +40,7 @@ import okio.BufferedSink
  * of n queries compared to resolving the n queries separately.
  *
  * Because [ApolloClient.query] suspends, it only makes sense to use query batching when queries are
- * executed from different coroutines. Use [kotlinx.coroutines.async] to create a new coroutine if needed
+ * executed from different coroutines. Use [async] to create a new coroutine if needed
  *
  * [BatchingHttpEngine] buffers the whole response so it might additionally introduce some
  * client-side latency as it cannot amortize parsing/building the models during network I/O.
@@ -51,7 +52,7 @@ import okio.BufferedSink
  * @param batchByDefault whether batching is opt-in or opt-out at the request level. See also [canBeBatched]
  */
 class BatchingHttpEngine(
-    val delegate: HttpEngine = DefaultHttpEngine(),
+    val delegate: HttpEngine = MultiplatformHttpEngine(),
     val batchIntervalMillis: Long = 10,
     val maxBatchSize: Int = 10,
     val batchByDefault: Boolean = true,
@@ -59,6 +60,7 @@ class BatchingHttpEngine(
   private val dispatcher = BackgroundDispatcher()
   private val scope = CoroutineScope(dispatcher.coroutineDispatcher)
   private val mutex = DefaultMutex()
+  private var disposed = false
 
   private val job: Job
 
@@ -85,7 +87,7 @@ class BatchingHttpEngine(
 
     if (!canBeBatched) {
       // Remove the CAN_BE_BATCHED header and forward directly
-      return delegate.execute(request.copy(headers = request.headers.filter { it.name != CAN_BE_BATCHED }))
+      return delegate.execute(request.newBuilder().addHeaders(headers = request.headers.filter { it.name != CAN_BE_BATCHED }).build())
     }
 
     val pendingRequest = PendingRequest(request)
@@ -140,12 +142,13 @@ class BatchingHttpEngine(
       }
     }
 
-    val request = HttpRequest(
+    val request = HttpRequest.Builder(
         method = HttpMethod.Post,
         url = firstRequest.url,
-        headers = emptyList(),
+    ).body(
         body = body,
-    )
+    ).build()
+
     freeze(request)
 
     var exception: ApolloException? = null
@@ -195,8 +198,12 @@ class BatchingHttpEngine(
   }
 
   override fun dispose() {
-    scope.cancel()
-    dispatcher.dispose()
+    if (!disposed) {
+      delegate.dispose()
+      scope.cancel()
+      dispatcher.dispose()
+      disposed = true
+    }
   }
 
   companion object {
@@ -208,8 +215,8 @@ fun <T> HasMutableExecutionContext<T>.canBeBatched(canBeBatched: Boolean) where 
     CAN_BE_BATCHED, canBeBatched.toString()
 )
 
-@Deprecated("Please use ApolloClient.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
 fun ApolloClient.withCanBeBatched(canBeBatched: Boolean) = newBuilder().canBeBatched(canBeBatched).build()
 
-@Deprecated("Please use ApolloRequest.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use ApolloRequest.Builder methods instead. This will be removed in v3.0.0.")
 fun <D : Operation.Data> ApolloRequest<D>.withCanBeBatched(canBeBatched: Boolean) = newBuilder().canBeBatched(canBeBatched).build()

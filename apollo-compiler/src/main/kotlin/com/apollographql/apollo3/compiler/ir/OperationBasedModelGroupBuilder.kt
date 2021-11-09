@@ -446,14 +446,14 @@ private fun OperationField.toModelGroup(): IrModelGroup? {
     return null
   }
 
-  val model = fieldSet.toModel(info)
+  val model = fieldSet.toModel()
   return IrModelGroup(
       models = listOf(model),
       baseModelId = model.id
   )
 }
 
-private fun OperationFieldSet.toModel(info: IrFieldInfo): IrModel {
+private fun OperationFieldSet.toModel(): IrModel {
   return IrModel(
       modelName = modelName,
       id = id,

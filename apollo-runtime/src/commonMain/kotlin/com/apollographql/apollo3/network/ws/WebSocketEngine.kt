@@ -50,7 +50,7 @@ interface WebSocketConnection {
   fun close()
 }
 
-expect class DefaultWebSocketEngine() : WebSocketEngine
+expect fun MultiplatformWebSocketEngine() : WebSocketEngine
 
 const val CLOSE_NORMAL = 1000
 const val CLOSE_GOING_AWAY = 1001

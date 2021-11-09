@@ -9,6 +9,7 @@ import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.internal.BackgroundDispatcher
 import com.apollographql.apollo3.network.NetworkTransport
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.BufferOverflow
@@ -25,7 +26,6 @@ import kotlinx.coroutines.flow.onSubscription
 import kotlinx.coroutines.flow.transformWhile
 import kotlinx.coroutines.launch
 
-
 /**
  * A [NetworkTransport] that works with WebSockets. Usually it is used with subscriptions but some [WsProtocol]s like [GraphQLWsProtocol]
  * also support queries and mutations.
@@ -35,20 +35,22 @@ import kotlinx.coroutines.launch
  * @param webSocketEngine a [WebSocketEngine] that can handle the WebSocket
  *
  */
-class WebSocketNetworkTransport(
+class WebSocketNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder instead. This will be removed in v3.0.0.") constructor(
     private val serverUrl: String,
-    private val webSocketEngine: WebSocketEngine = DefaultWebSocketEngine(),
+    private val webSocketEngine: WebSocketEngine = MultiplatformWebSocketEngine(),
     private val idleTimeoutMillis: Long = 60_000,
-    private val protocolFactory: WsProtocol.Factory = SubscriptionWsProtocol.Factory { null },
+    private val protocolFactory: WsProtocol.Factory = SubscriptionWsProtocol.Factory(),
 ) : NetworkTransport, WsProtocol.Listener {
 
+  @Suppress("DEPRECATION")
+  @Deprecated("Use HttpNetworkTransport.Builder instead. This will be removed in v3.0.0.")
   constructor(
       serverUrl: String,
       idleTimeoutMillis: Long = 60_000,
-      protocolFactory: WsProtocol.Factory = SubscriptionWsProtocol.Factory { null },
+      protocolFactory: WsProtocol.Factory = SubscriptionWsProtocol.Factory(),
   ) : this(
       serverUrl,
-      DefaultWebSocketEngine(),
+      MultiplatformWebSocketEngine(),
       idleTimeoutMillis,
       protocolFactory
   )
@@ -73,7 +75,7 @@ class WebSocketNetworkTransport(
   }
 
   /**
-   * Use unlimited buffers so that we never have to suspend when writing a command or an event
+   * Use unlimited buffers so that we never have to suspend when writing a command or an event,
    * and we avoid deadlocks. This might be overkill but is most likely never going to be a problem in practice.
    */
   private val commands = Channel<Command>(UNLIMITED)
@@ -160,6 +162,7 @@ class WebSocketNetworkTransport(
     }
   }
 
+  @OptIn(ExperimentalCoroutinesApi::class)
   override fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
   ): Flow<ApolloResponse<D>> {
@@ -229,6 +232,40 @@ class WebSocketNetworkTransport(
 
   override fun networkError(cause: Throwable) {
     mutableEvents.tryEmit(NetworkError(cause))
+  }
+
+  class Builder {
+    private var serverUrl: String? = null
+    private var webSocketEngine: WebSocketEngine? = null
+    private var idleTimeoutMillis: Long? = null
+    private var protocolFactory: WsProtocol.Factory? = null
+
+    fun serverUrl(serverUrl: String) = apply {
+      this.serverUrl = serverUrl
+    }
+
+    @Suppress("DEPRECATION")
+    fun webSocketEngine(webSocketEngine: WebSocketEngine) = apply {
+      this.webSocketEngine = webSocketEngine
+    }
+
+    fun idleTimeoutMillis(idleTimeoutMillis: Long) = apply {
+      this.idleTimeoutMillis = idleTimeoutMillis
+    }
+
+    fun protocol(protocolFactory: WsProtocol.Factory) = apply {
+      this.protocolFactory = protocolFactory
+    }
+
+    fun build(): WebSocketNetworkTransport {
+      @Suppress("DEPRECATION")
+      return WebSocketNetworkTransport(
+          serverUrl ?: error("No serverUrl specified"),
+          webSocketEngine ?: MultiplatformWebSocketEngine(),
+          idleTimeoutMillis ?: 60_000,
+          protocolFactory ?: SubscriptionWsProtocol.Factory()
+      )
+    }
   }
 }
 

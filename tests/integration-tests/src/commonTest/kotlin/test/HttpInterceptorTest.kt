@@ -13,7 +13,7 @@ import kotlin.test.Test
 class HttpInterceptorTest {
   private lateinit var mockServer: MockServer
 
-  private suspend fun setUp() {
+  private fun setUp() {
     mockServer = MockServer()
   }
 
@@ -25,10 +25,12 @@ class HttpInterceptorTest {
   fun testLoggingInterceptor() = runTest(before = { setUp() }, after = { tearDown() }) {
     val client = ApolloClient.Builder()
         .networkTransport(
-            HttpNetworkTransport(
-                serverUrl = mockServer.url(),
-                interceptors = listOf(LoggingInterceptor())
-            )
+            HttpNetworkTransport.Builder()
+                .serverUrl(
+                    mockServer.url(),
+                ).interceptors(
+                    listOf(LoggingInterceptor())
+                ).build()
         )
         .build()
 

@@ -18,22 +18,12 @@ import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-actual class DefaultHttpEngine(
+class OkHttpEngine(
     private val httpCallFactory: Call.Factory,
 ) : HttpEngine {
 
   // an overload that takes an OkHttpClient for easier discovery
   constructor(okHttpClient: OkHttpClient) : this(okHttpClient as Call.Factory)
-
-  actual constructor(
-      connectTimeoutMillis: Long,
-      readTimeoutMillis: Long,
-  ) : this(
-      httpCallFactory = OkHttpClient.Builder()
-          .connectTimeout(connectTimeoutMillis, TimeUnit.MILLISECONDS)
-          .readTimeout(readTimeoutMillis, TimeUnit.MILLISECONDS)
-          .build(),
-  )
 
   override suspend fun execute(request: HttpRequest): HttpResponse = suspendCancellableCoroutine { continuation ->
     val httpRequest = Request.Builder()
@@ -108,22 +98,16 @@ actual class DefaultHttpEngine(
   }
 }
 
-fun HttpNetworkTransport(
-    serverUrl: String,
-    callFactory: Call.Factory,
-): HttpNetworkTransport {
-  return HttpNetworkTransport(
-      serverUrl = serverUrl,
-      engine = DefaultHttpEngine(callFactory)
+actual fun MultiplatformHttpEngine(
+    connectTimeoutMillis: Long,
+    readTimeoutMillis: Long,
+): HttpEngine {
+  return OkHttpEngine(
+      OkHttpClient.Builder()
+          .connectTimeout(connectTimeoutMillis, TimeUnit.MILLISECONDS)
+          .readTimeout(readTimeoutMillis, TimeUnit.MILLISECONDS)
+          .build()
   )
 }
 
-fun HttpNetworkTransport(
-    serverUrl: String,
-    okHttpClient: OkHttpClient,
-): HttpNetworkTransport {
-  return HttpNetworkTransport(
-      serverUrl = serverUrl,
-      engine = DefaultHttpEngine(okHttpClient)
-  )
-}
+

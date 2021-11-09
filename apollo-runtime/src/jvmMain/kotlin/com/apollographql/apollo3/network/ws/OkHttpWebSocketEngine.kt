@@ -4,8 +4,6 @@ import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import okhttp3.Headers
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -13,14 +11,13 @@ import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import okio.ByteString
-import okio.ByteString.Companion.toByteString
 
 @OptIn(ExperimentalCoroutinesApi::class)
-actual class DefaultWebSocketEngine(
+class OkHttpWebSocketEngine(
     private val webSocketFactory: WebSocket.Factory
 ) : WebSocketEngine {
 
-  actual constructor() : this(
+  constructor() : this(
       webSocketFactory = OkHttpClient()
   )
 
@@ -105,3 +102,6 @@ actual class DefaultWebSocketEngine(
     }
   }
 }
+
+@Suppress("FunctionName")
+actual fun MultiplatformWebSocketEngine(): WebSocketEngine = OkHttpWebSocketEngine()

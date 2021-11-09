@@ -1,3 +1,4 @@
+
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.network.ws.GraphQLWsProtocol
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
@@ -18,10 +19,11 @@ class GraphQLWsTest {
   fun queryOverWebSocket() = runTest {
     val apolloClient = ApolloClient.Builder()
         .networkTransport(
-            WebSocketNetworkTransport(
+            WebSocketNetworkTransport.Builder().serverUrl(
                 serverUrl = "http://localhost:9090/graphql",
+            ).protocol(
                 protocolFactory = GraphQLWsProtocol.Factory()
-            )
+            ).build()
         )
         .build()
 
@@ -32,10 +34,11 @@ class GraphQLWsTest {
   fun mutationOverWebSocket() = runTest {
     val apolloClient = ApolloClient.Builder()
         .networkTransport(
-            WebSocketNetworkTransport(
+            WebSocketNetworkTransport.Builder().serverUrl(
                 serverUrl = "http://localhost:9090/graphql",
+            ).protocol(
                 protocolFactory = GraphQLWsProtocol.Factory()
-            )
+            ).build()
         )
         .build()
 
@@ -47,10 +50,11 @@ class GraphQLWsTest {
   fun subscriptionOverWebSocket() = runTest {
     val apolloClient = ApolloClient.Builder()
         .networkTransport(
-            WebSocketNetworkTransport(
+            WebSocketNetworkTransport.Builder().serverUrl(
                 serverUrl = "http://localhost:9090/graphql",
+            ).protocol(
                 protocolFactory = GraphQLWsProtocol.Factory()
-            )
+            ).build()
         )
         .build()
 
@@ -58,5 +62,7 @@ class GraphQLWsTest {
         .execute()
         .toList()
     assertEquals(listOf("Hi", "Bonjour", "Hola", "Ciao", "Zdravo"), list.map { it.data?.greetings })
+
+    apolloClient.dispose()
   }
 }

@@ -22,7 +22,7 @@ class BearerTokenInterceptorTest {
   private var token1 = "token1"
   private var token2 = "token2"
 
-  private suspend fun setUp() {
+  private fun setUp() {
     tokenProvider = TestTokenProvider(token1, token2)
     mockServer = MockServer()
     mockServer.enqueue(MockResponse(statusCode = 401))
@@ -37,10 +37,10 @@ class BearerTokenInterceptorTest {
   fun succeedsWithInterceptor() = runTest(before = { setUp() }, after = { tearDown() }) {
     apolloClient = ApolloClient.Builder()
         .networkTransport(
-            HttpNetworkTransport(
-                serverUrl = mockServer.url(),
-                interceptors = listOf(BearerTokenInterceptor(tokenProvider))
-            )
+            HttpNetworkTransport.Builder()
+                .serverUrl(mockServer.url())
+                .interceptors(listOf(BearerTokenInterceptor(tokenProvider)))
+                .build()
         )
         .build()
 
@@ -55,9 +55,7 @@ class BearerTokenInterceptorTest {
   fun failsWithoutInterceptor() = runTest(before = { setUp() }, after = { tearDown() }) {
     apolloClient = ApolloClient.Builder()
         .networkTransport(
-            HttpNetworkTransport(
-                serverUrl = mockServer.url(),
-            )
+            HttpNetworkTransport.Builder().serverUrl(mockServer.url()).build()
         )
         .build()
 

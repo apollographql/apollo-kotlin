@@ -6,7 +6,7 @@ import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.network.http.HttpNetworkTransport
+import com.apollographql.apollo3.network.okHttpClient
 import com.apollographql.apollo3.testing.runTest
 import okhttp3.Cookie
 import okhttp3.CookieJar
@@ -43,12 +43,8 @@ class CookiesTest {
         .build()
 
     val apolloClient = ApolloClient.Builder()
-        .networkTransport(
-            HttpNetworkTransport(
-                serverUrl = mockServer.url(),
-                okHttpClient = okHttpClient
-            )
-        )
+        .serverUrl(mockServer.url())
+        .okHttpClient(okHttpClient)
         .build()
 
     val json = HeroNameQuery().composeJsonData(HeroNameQuery.Data(hero = HeroNameQuery.Hero(name = "Luke")))

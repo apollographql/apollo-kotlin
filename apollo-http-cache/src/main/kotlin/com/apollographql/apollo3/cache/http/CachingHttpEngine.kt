@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.cache.http
 
-import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
+import com.apollographql.apollo3.api.http.ApolloHttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.http.valueOf
 import com.apollographql.apollo3.cache.http.internal.FileSystem
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.HttpCacheMissException
-import com.apollographql.apollo3.network.http.DefaultHttpEngine
+import com.apollographql.apollo3.network.http.MultiplatformHttpEngine
 import com.apollographql.apollo3.network.http.HttpEngine
 import okio.Buffer
 import okio.ByteString.Companion.toByteString
@@ -21,7 +21,7 @@ class CachingHttpEngine(
     directory: File,
     maxSize: Long,
     fileSystem: FileSystem = FileSystem.SYSTEM,
-    private val delegate: HttpEngine = DefaultHttpEngine(),
+    private val delegate: HttpEngine = MultiplatformHttpEngine(),
 ) : HttpEngine {
   private val store = DiskLruHttpCache(fileSystem, directory, maxSize)
 
@@ -91,7 +91,7 @@ class CachingHttpEngine(
   }
 
   private fun cacheMightThrow(request: HttpRequest, cacheKey: String): HttpResponse {
-    val operationName = request.headers.valueOf(DefaultHttpRequestComposer.HEADER_APOLLO_OPERATION_NAME)
+    val operationName = request.headers.valueOf(ApolloHttpRequestComposer.HEADER_APOLLO_OPERATION_NAME)
     val response = try {
       store.read(cacheKey)
           .newBuilder()

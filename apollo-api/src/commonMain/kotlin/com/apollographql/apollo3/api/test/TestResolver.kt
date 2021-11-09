@@ -79,6 +79,7 @@ open class DefaultTestResolver : TestResolver {
 
   private fun <T> resolveInternal(responseName: String, compiledType: CompiledType, ctors: Array<out () -> Map<String, Any?>>?): T {
     val path = stack.take(stackSize).toList()
+    @Suppress("UNCHECKED_CAST")
     return when (compiledType) {
       is CompiledNotNullType -> resolve(responseName, compiledType.ofType, ctors)
       is CompiledListType -> {

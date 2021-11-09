@@ -36,7 +36,7 @@ fun List<HttpHeader>.valueOf(name: String): String? = firstOrNull { it.name.equa
  * a HTTP request to be sent
  */
 class HttpRequest
-@Deprecated("Please use HttpRequest.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use HttpRequest.Builder methods instead. This will be removed in v3.0.0.")
 /* private */ constructor(
     val method: HttpMethod,
     val url: String,
@@ -52,20 +52,6 @@ class HttpRequest
     addHeaders(headers)
   }
 
-  fun copy(
-      method: HttpMethod = this.method,
-      url: String = this.url,
-      headers: List<HttpHeader> = this.headers,
-      body: HttpBody? = this.body,
-  ): HttpRequest {
-    return HttpRequest(
-        method = method,
-        url = url,
-        headers = headers,
-        body = body
-    )
-  }
-
   class Builder(
       private val method: HttpMethod,
       private val url: String,
@@ -73,7 +59,7 @@ class HttpRequest
     private var body: HttpBody? = null
     private val headers = mutableListOf<HttpHeader>()
 
-    fun body(body: HttpBody) {
+    fun body(body: HttpBody) = apply {
       this.body = body
     }
 
@@ -85,6 +71,12 @@ class HttpRequest
       this.headers.addAll(headers)
     }
 
+    fun headers(headers: List<HttpHeader>) = apply {
+      this.headers.clear()
+      this.headers.addAll(headers)
+    }
+
+    @Suppress("DEPRECATION")
     fun build() = HttpRequest(
         method = method,
         url = url,
@@ -102,7 +94,7 @@ class HttpRequest
  * The [body] of a [HttpResponse] must always be closed if non null
  */
 class HttpResponse
-@Deprecated("Please use HttpResponse.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use HttpResponse.Builder methods instead. This will be removed in v3.0.0.")
 /* private */ constructor(
     val statusCode: Int,
     val headers: List<HttpHeader>,
@@ -160,7 +152,13 @@ class HttpResponse
       this.headers.addAll(headers)
     }
 
+    fun headers(headers: List<HttpHeader>) = apply {
+      this.headers.clear()
+      this.headers.addAll(headers)
+    }
+
     fun build(): HttpResponse {
+      @Suppress("DEPRECATION")
       return HttpResponse(
           statusCode = statusCode,
           headers = headers,
@@ -193,11 +191,11 @@ fun HttpBody(
     string: String,
 ): HttpBody = HttpBody(contentType, string.encodeUtf8())
 
-@Deprecated("Please use HttpRequest.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use HttpRequest.Builder methods instead. This will be removed in v3.0.0.")
 fun HttpRequest.withHeader(name: String, value: String) = newBuilder().addHeader(name, value).build()
 
-@Deprecated("Please use HttpRequest.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use HttpRequest.Builder methods instead. This will be removed in v3.0.0.")
 fun HttpRequest.withHeaders(headers: List<HttpHeader>) = newBuilder().addHeaders(headers).build()
 
-@Deprecated("Please use HttpResponse.Builder methods instead.  This will be removed in v3.0.0.")
+@Deprecated("Please use HttpResponse.Builder methods instead. This will be removed in v3.0.0.")
 fun HttpResponse.withHeaders(headers: List<HttpHeader>) = newBuilder().addHeaders(headers).build()
