@@ -1,4 +1,4 @@
-# Contributing to Apollo Android GraphQL
+# Contributing to Apollo Android
 
 The Apollo team welcomes contributions of all kinds, including bug reports, documentation, test cases, bug fixes, and features.
 
