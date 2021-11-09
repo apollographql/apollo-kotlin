@@ -22,18 +22,29 @@ public final class com/apollographql/apollo3/mockserver/MockResponse {
 	public final fun getStatusCode ()I
 }
 
-public final class com/apollographql/apollo3/mockserver/MockServer {
-	public fun <init> ()V
-	public final fun enqueue (Lcom/apollographql/apollo3/mockserver/MockResponse;)V
-	public final fun stop (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun takeRequest ()Lcom/apollographql/apollo3/mockserver/MockRecordedRequest;
-	public final fun url (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+public abstract interface class com/apollographql/apollo3/mockserver/MockServer {
+	public abstract fun enqueue (Lcom/apollographql/apollo3/mockserver/MockResponse;)V
+	public abstract fun stop (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun takeRequest ()Lcom/apollographql/apollo3/mockserver/MockRecordedRequest;
+	public abstract fun url (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/apollographql/apollo3/mockserver/MockServerCommonKt {
 	public static final fun parseHeader (Ljava/lang/String;)Lkotlin/Pair;
 	public static final fun parseRequestLine (Ljava/lang/String;)Lkotlin/Triple;
 	public static final fun writeResponse (Lokio/BufferedSink;Lcom/apollographql/apollo3/mockserver/MockResponse;Ljava/lang/String;)V
+}
+
+public final class com/apollographql/apollo3/mockserver/MockServerKt {
+	public static final fun MockServer ()Lcom/apollographql/apollo3/mockserver/MockServer;
+}
+
+public final class com/apollographql/apollo3/mockserver/OkHttpMockServer : com/apollographql/apollo3/mockserver/MockServer {
+	public fun <init> ()V
+	public fun enqueue (Lcom/apollographql/apollo3/mockserver/MockResponse;)V
+	public fun stop (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun takeRequest ()Lcom/apollographql/apollo3/mockserver/MockRecordedRequest;
+	public fun url (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/apollographql/apollo3/mockserver/_MockServerExtensionsKt {
