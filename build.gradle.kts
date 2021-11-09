@@ -146,7 +146,7 @@ tasks.register("ciTestsNoGradle") {
   }
 }
 
-tasks.register("ciFull") {
+tasks.register("ciTestsAll") {
   description = "Execute the 'build' task in each subproject"
   dependsOn(subprojectTasks("build"))
 }
