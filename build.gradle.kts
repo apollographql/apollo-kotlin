@@ -76,7 +76,6 @@ subprojects {
   }
 }
 
-
 fun subprojectTasks(name: String): List<Task> {
   return subprojects.flatMap { subproject ->
     subproject.tasks.matching { it.name == name }
@@ -96,55 +95,60 @@ fun shouldPublishSnapshots(): Boolean {
   return eventName == "push" && (ref == "refs/heads/main" || ref == "refs/heads/dev-3.x")
 }
 
-tasks.register("publishSnapshotsIfNeeded") {
+tasks.register("ciPublishSnapshot") {
+  description = "Publishes a SNAPSHOT"
+
   if (shouldPublishSnapshots()) {
-    project.logger.log(LogLevel.LIFECYCLE, "Deploying snapshot to OSS Snapshots...")
     dependsOn(subprojectTasks("publishAllPublicationsToOssSnapshotsRepository"))
+  } else {
+    doFirst {
+      error("We are not on a branch, fail snapshots publishing")
+    }
   }
 }
 
-tasks.register("publishToOssStagingIfNeeded") {
+
+tasks.register("ciPublishRelease") {
+  description = "Publishes all artifacts to OSSRH and the Gradle Plugin Portal"
+
   if (isTag()) {
-    project.logger.log(LogLevel.LIFECYCLE, "Deploying release to OSS staging...")
     dependsOn(subprojectTasks("publishAllPublicationsToOssStagingRepository"))
-  }
-}
-
-tasks.register("publishToGradlePortalIfNeeded") {
-  if (isTag()) {
-    project.logger.log(LogLevel.LIFECYCLE, "Deploying release to Gradle Portal...")
-    dependsOn(":apollo-gradle-plugin:publishPlugins")
-  }
-}
-
-tasks.register("fullCheck") {
-  subprojects {
-    tasks.all {
-      if (this.name == "build") {
-        this@register.dependsOn(this)
-      }
+    // Only publish plugins to the Gradle portal if everything else succeeded
+    finalizedBy(":apollo-gradle-plugin:publishPlugins")
+  } else {
+    doFirst {
+      error("We are not on a tag, fail release publishing")
     }
   }
+
 }
 
-/**
- * A task to do (relatively) fast checks when iterating
- */
-tasks.register("quickCheck") {
+tasks.register("ciTestsGradle") {
+  description = "Execute the Gradle tests (slow)"
+  dependsOn(":apollo-gradle-plugin:test")
+}
+
+tasks.register("ciTestsNoGradle") {
+  description = """Execute all tests from the root project except: 
+    | - the Gradle ones
+    | - most of the apple tests where it executes only macosX64
+  """.trimMargin()
+
+
   subprojects {
-    tasks.all {
-      if (this@subprojects.name in listOf("apollo-compiler", "apollo-gradle-plugin")) {
-        if (this.name == "jar") {
-          // build the jar but do not test
-          this@register.dependsOn(this)
-        }
-      } else {
-        if (this.name == "test" || this.name == "jvmTest") {
-          this@register.dependsOn(this)
-        }
-      }
+    if (name != "apollo-gradle-plugin") {
+      dependsOn(tasks.matching { it.name == "test" })
     }
+    dependsOn(tasks.matching { it.name == "jvmTest" })
+    dependsOn(tasks.matching { it.name == "jsIrTest" })
+    dependsOn(tasks.matching { it.name == "macosX64Test" })
+    dependsOn(tasks.matching { it.name == "apiCheck" })
   }
+}
+
+tasks.register("ciFull") {
+  description = "Execute the 'build' task in each subproject"
+  dependsOn(subprojectTasks("build"))
 }
 
 repositories {
@@ -164,8 +168,7 @@ tasks.named("dependencyUpdates").configure {
 }
 
 
-tasks.withType(org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask::class.java)
-    .all {
+tasks.withType(org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask::class.java).configureEach {
       args.addAll(
           listOf(
               "--network-concurrency",
