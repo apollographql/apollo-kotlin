@@ -6,11 +6,13 @@ import codegen.models.MergedFieldWithSameShapeQuery
 import codegen.models.test.AllPlanetsQuery_TestBuilder.Data
 import codegen.models.test.HeroAndFriendsWithTypenameQuery_TestBuilder.Data
 import codegen.models.test.MergedFieldWithSameShapeQuery_TestBuilder.Data
+import com.apollographql.apollo3.api.ApolloExperimental
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.fail
 
+@OptIn(ApolloExperimental::class)
 class TestBuildersTest {
   @Test
   fun allPlanets() {

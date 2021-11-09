@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.ast.GQLType
+import com.apollographql.apollo3.compiler.codegen.ClassNames
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.Data
@@ -8,12 +9,10 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.block
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.testResolver
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgTestFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinMemberNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.test.TBuilderBuilder
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
@@ -64,6 +63,7 @@ class TestBuildersBuilder(
 
   private fun typeSpec(): TypeSpec {
     return TypeSpec.objectBuilder(simpleName)
+        .addAnnotation(ClassNames.ApolloExperimental)
         .addTypes(
             testBuildersBuilder.map { it.build() }
         )
