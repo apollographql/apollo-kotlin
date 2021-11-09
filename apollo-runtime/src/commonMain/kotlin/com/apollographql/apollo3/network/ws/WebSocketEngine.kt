@@ -1,8 +1,5 @@
 package com.apollographql.apollo3.network.ws
 
-import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.internal.json.buildJsonByteString
-import com.apollographql.apollo3.api.internal.json.buildJsonString
 import okio.ByteString
 
 /**
@@ -50,7 +47,7 @@ interface WebSocketConnection {
   fun close()
 }
 
-expect fun MultiplatformWebSocketEngine() : WebSocketEngine
+expect fun WebSocketEngine() : WebSocketEngine
 
 const val CLOSE_NORMAL = 1000
 const val CLOSE_GOING_AWAY = 1001

@@ -4,6 +4,7 @@ import com.apollographql.apollo3.ApolloClient;
 import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.mockserver.MockResponse;
 import com.apollographql.apollo3.mockserver.MockServer;
+import com.apollographql.apollo3.mockserver.MockServerKt;
 import com.apollographql.apollo3.rx2.Rx2Apollo;
 import com.google.common.truth.Truth;
 import javatest.GetRandomQuery;
@@ -20,7 +21,7 @@ public class ClientTest {
 
   @Before
   public void before() {
-    mockServer = new MockServer();
+    mockServer = MockServerKt.MockServer();
 
     /**
      * Because url doesn't suspend on the JVM, we can just use the return value

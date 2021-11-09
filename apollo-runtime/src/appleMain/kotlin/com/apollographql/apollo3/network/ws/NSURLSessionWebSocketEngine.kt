@@ -259,4 +259,4 @@ private class NSURLSessionWebSocketDelegate(
 }
 
 @Suppress("FunctionName")
-actual fun MultiplatformWebSocketEngine(): WebSocketEngine = NSURLSessionWebSocketEngine()
+actual fun WebSocketEngine(): WebSocketEngine = NSURLSessionWebSocketEngine()

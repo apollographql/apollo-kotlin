@@ -7,7 +7,7 @@ import com.apollographql.apollo3.api.HasMutableExecutionContext
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.httpHeader
 import com.apollographql.apollo3.network.http.HttpInfo
-import com.apollographql.apollo3.network.http.MultiplatformHttpEngine
+import com.apollographql.apollo3.network.http.HttpEngine
 import java.io.File
 
 enum class HttpFetchPolicy {
@@ -51,7 +51,7 @@ fun ApolloClient.Builder.httpCache(
       httpEngine = CachingHttpEngine(
           directory = directory,
           maxSize = maxSize,
-          delegate = MultiplatformHttpEngine()
+          delegate = HttpEngine()
       )
   )
 }

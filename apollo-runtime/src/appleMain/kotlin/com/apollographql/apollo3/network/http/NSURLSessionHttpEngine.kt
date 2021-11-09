@@ -35,8 +35,16 @@ fun interface DataTaskFactory {
 
 class NSURLSessionHttpEngine(
     private val dataTaskFactory: DataTaskFactory,
-    private val connectTimeoutMillis: Long = 60_000,
+    private val timeoutMillis: Long = 60_000,
 ) : HttpEngine {
+
+  constructor(
+      timeoutMillis: Long,
+  ) : this(
+      dataTaskFactory = DefaultDataTaskFactory(),
+      timeoutMillis = timeoutMillis
+  )
+
   @Suppress("UNCHECKED_CAST")
   override suspend fun execute(request: HttpRequest) = suspendAndResumeOnMain<HttpResponse> { mainContinuation, invokeOnCancellation ->
     assertMainThreadOnNative()
@@ -58,7 +66,7 @@ class NSURLSessionHttpEngine(
     val nsMutableURLRequest = NSMutableURLRequest.requestWithURL(
         URL = NSURL(string = request.url)
     ).apply {
-      setTimeoutInterval(connectTimeoutMillis.toDouble() / 1000)
+      setTimeoutInterval(timeoutMillis.toDouble() / 1000)
 
       request.headers.forEach {
         setValue(it.value, forHTTPHeaderField = it.name)
@@ -148,10 +156,8 @@ private fun buildHttpResponse(
   )
 }
 
-private class DefaultDataTaskFactory(readTimeoutMillis: Long) : DataTaskFactory {
-  private val nsurlSession = NSURLSession.sessionWithConfiguration(NSURLSessionConfiguration.defaultSessionConfiguration().apply {
-    timeoutIntervalForRequest = readTimeoutMillis.toDouble() / 1000
-  })
+private class DefaultDataTaskFactory() : DataTaskFactory {
+  private val nsurlSession = NSURLSession.sessionWithConfiguration(NSURLSessionConfiguration.defaultSessionConfiguration())
 
   override fun dataTask(request: NSURLRequest, completionHandler: UrlSessionDataTaskCompletionHandler): NSURLSessionDataTask {
     return nsurlSession.dataTaskWithRequest(request, completionHandler)
@@ -159,12 +165,8 @@ private class DefaultDataTaskFactory(readTimeoutMillis: Long) : DataTaskFactory 
 }
 
 @Suppress("FunctionName")
-actual fun MultiplatformHttpEngine(
-    connectTimeoutMillis: Long,
-    readTimeoutMillis: Long,
+actual fun HttpEngine(
+    timeoutMillis: Long,
 ): HttpEngine {
-  return NSURLSessionHttpEngine(
-      dataTaskFactory = DefaultDataTaskFactory(readTimeoutMillis),
-      connectTimeoutMillis = connectTimeoutMillis
-  )
+  return NSURLSessionHttpEngine(timeoutMillis)
 }

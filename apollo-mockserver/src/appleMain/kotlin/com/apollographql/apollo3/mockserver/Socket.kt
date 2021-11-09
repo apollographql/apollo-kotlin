@@ -10,7 +10,6 @@ import kotlinx.cinterop.convert
 import kotlinx.cinterop.get
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.nativeHeap
-import kotlinx.cinterop.nativeHeap.free
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.value
 import okio.IOException
@@ -30,10 +29,9 @@ import platform.posix.usleep
 import platform.posix.write
 import kotlin.experimental.and
 import kotlin.native.concurrent.AtomicInt
-import kotlin.native.concurrent.AtomicReference
 import kotlin.native.concurrent.freeze
 
-class Socket(private val socketFd: Int) {
+class Socket(private val socketFd: Int, private val acceptDelayMillis: Long) {
   private val pipeFd = nativeHeap.allocArray<IntVar>(2)
   private val running = AtomicInt(1)
   private val lock = reentrantLock()
@@ -68,6 +66,12 @@ class Socket(private val socketFd: Int) {
 
         if (fdSet[0].revents.and(POLLIN.convert()).toInt() == 0) {
           return@memScoped
+        }
+
+        if (acceptDelayMillis > 0) {
+          println("sleep now")
+          usleep((acceptDelayMillis * 1000).convert())
+          println("sleep now done ")
         }
 
         // wait for a new incoming connection

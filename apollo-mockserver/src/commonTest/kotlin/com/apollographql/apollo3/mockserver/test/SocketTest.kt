@@ -4,7 +4,7 @@ import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.network.http.MultiplatformHttpEngine
+import com.apollographql.apollo3.network.http.HttpEngine
 import com.apollographql.apollo3.testing.runTest
 import okio.ByteString.Companion.encodeUtf8
 import kotlin.random.Random
@@ -23,7 +23,7 @@ class SocketTest {
 
     mockServer.enqueue(MockResponse(body = builder.toString().encodeUtf8()))
     val str = builder.toString()
-    val engine = MultiplatformHttpEngine()
+    val engine = HttpEngine()
     val response = engine.execute(HttpRequest(HttpMethod.Get, mockServer.url(), emptyList(), null))
 
     assertEquals(response.body!!.readUtf8(), str)

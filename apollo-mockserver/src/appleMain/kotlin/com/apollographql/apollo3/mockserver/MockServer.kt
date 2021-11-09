@@ -26,8 +26,14 @@ import platform.posix.sockaddr_in
 import platform.posix.socket
 import kotlin.native.concurrent.freeze
 
+/**
+ * @param acceptDelayMillis: an artificial delay introduced before each `accept()`
+ * call. Can be used to simulate slow connections.
+ */
 @OptIn(ExperimentalUnsignedTypes::class)
-class NativeMockServer: MockServer {
+class NativeMockServer(
+    private val acceptDelayMillis: Long = 0
+): MockServer {
   private val pthreadT: pthread_tVar
   private val port: Int
   private var socket: Socket? = null
@@ -62,7 +68,7 @@ class NativeMockServer: MockServer {
 
     pthreadT = nativeHeap.alloc()
 
-    socket = Socket(socketFd)
+    socket = Socket(socketFd, acceptDelayMillis)
 
     val stableRef = StableRef.create(socket!!.freeze())
 
