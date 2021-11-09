@@ -1,12 +1,10 @@
 package com.apollographql.apollo3.mockserver
 
-import okio.ByteString.Companion.encodeUtf8
-
-expect class MockServer() {
+interface MockServer {
   /**
    * Returns the root url for this server
    *
-   * It will block until a port is found to listen to
+   * It will suspend until a port is found to listen to
    */
   suspend fun url(): String
 
@@ -26,3 +24,6 @@ expect class MockServer() {
   fun takeRequest(): MockRecordedRequest
 }
 
+
+@Suppress("FunctionName")
+expect fun MockServer(): MockServer

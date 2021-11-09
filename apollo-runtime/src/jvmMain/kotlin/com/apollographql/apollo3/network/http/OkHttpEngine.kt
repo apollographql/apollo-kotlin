@@ -25,6 +25,13 @@ class OkHttpEngine(
   // an overload that takes an OkHttpClient for easier discovery
   constructor(okHttpClient: OkHttpClient) : this(okHttpClient as Call.Factory)
 
+  constructor(connectTimeout: Long, readTimeout: Long) : this(
+      OkHttpClient.Builder()
+          .connectTimeout(connectTimeout, TimeUnit.MILLISECONDS)
+          .readTimeout(readTimeout, TimeUnit.MILLISECONDS)
+          .build()
+  )
+
   override suspend fun execute(request: HttpRequest): HttpResponse = suspendCancellableCoroutine { continuation ->
     val httpRequest = Request.Builder()
         .url(request.url)
@@ -98,16 +105,10 @@ class OkHttpEngine(
   }
 }
 
-actual fun MultiplatformHttpEngine(
-    connectTimeoutMillis: Long,
-    readTimeoutMillis: Long,
+actual fun HttpEngine(
+    timeoutMillis: Long,
 ): HttpEngine {
-  return OkHttpEngine(
-      OkHttpClient.Builder()
-          .connectTimeout(connectTimeoutMillis, TimeUnit.MILLISECONDS)
-          .readTimeout(readTimeoutMillis, TimeUnit.MILLISECONDS)
-          .build()
-  )
+  return OkHttpEngine(timeoutMillis, timeoutMillis)
 }
 
 

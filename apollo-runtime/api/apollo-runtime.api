@@ -232,9 +232,23 @@ public final class com/apollographql/apollo3/network/http/HeadersInterceptor : c
 	public fun intercept (Lcom/apollographql/apollo3/api/http/HttpRequest;Lcom/apollographql/apollo3/network/http/HttpInterceptorChain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public final class com/apollographql/apollo3/network/http/HttpCall {
+	public fun <init> (Lcom/apollographql/apollo3/network/http/HttpEngine;Lcom/apollographql/apollo3/api/http/HttpMethod;Ljava/lang/String;)V
+	public final fun addHeader (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/network/http/HttpCall;
+	public final fun addHeaders (Ljava/util/List;)Lcom/apollographql/apollo3/network/http/HttpCall;
+	public final fun body (Lcom/apollographql/apollo3/api/http/HttpBody;)Lcom/apollographql/apollo3/network/http/HttpCall;
+	public final fun execute (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun headers (Ljava/util/List;)Lcom/apollographql/apollo3/network/http/HttpCall;
+}
+
 public abstract interface class com/apollographql/apollo3/network/http/HttpEngine {
 	public abstract fun dispose ()V
 	public abstract fun execute (Lcom/apollographql/apollo3/api/http/HttpRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/apollographql/apollo3/network/http/HttpEngineKt {
+	public static final fun get (Lcom/apollographql/apollo3/network/http/HttpEngine;Ljava/lang/String;)Lcom/apollographql/apollo3/network/http/HttpCall;
+	public static final fun post (Lcom/apollographql/apollo3/network/http/HttpEngine;Ljava/lang/String;)Lcom/apollographql/apollo3/network/http/HttpCall;
 }
 
 public final class com/apollographql/apollo3/network/http/HttpInfo : com/apollographql/apollo3/api/ExecutionContext$Element {
@@ -266,8 +280,8 @@ public final class com/apollographql/apollo3/network/http/HttpNetworkTransport :
 	public static final field Companion Lcom/apollographql/apollo3/network/http/HttpNetworkTransport$Companion;
 	public fun <init> (Lcom/apollographql/apollo3/api/http/HttpRequestComposer;Lcom/apollographql/apollo3/network/http/HttpEngine;Ljava/util/List;)V
 	public synthetic fun <init> (Lcom/apollographql/apollo3/api/http/HttpRequestComposer;Lcom/apollographql/apollo3/network/http/HttpEngine;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun <init> (Ljava/lang/String;JJLjava/util/List;)V
-	public synthetic fun <init> (Ljava/lang/String;JJLjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;JLjava/util/List;)V
+	public synthetic fun <init> (Ljava/lang/String;JLjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/network/http/HttpEngine;Ljava/util/List;)V
 	public synthetic fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/network/http/HttpEngine;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun dispose ()V
@@ -309,6 +323,7 @@ public final class com/apollographql/apollo3/network/http/LoggingInterceptor : c
 }
 
 public final class com/apollographql/apollo3/network/http/OkHttpEngine : com/apollographql/apollo3/network/http/HttpEngine {
+	public fun <init> (JJ)V
 	public fun <init> (Lokhttp3/Call$Factory;)V
 	public fun <init> (Lokhttp3/OkHttpClient;)V
 	public fun dispose ()V
@@ -316,8 +331,8 @@ public final class com/apollographql/apollo3/network/http/OkHttpEngine : com/apo
 }
 
 public final class com/apollographql/apollo3/network/http/OkHttpEngineKt {
-	public static final fun MultiplatformHttpEngine (JJ)Lcom/apollographql/apollo3/network/http/HttpEngine;
-	public static synthetic fun MultiplatformHttpEngine$default (JJILjava/lang/Object;)Lcom/apollographql/apollo3/network/http/HttpEngine;
+	public static final fun HttpEngine (J)Lcom/apollographql/apollo3/network/http/HttpEngine;
+	public static synthetic fun HttpEngine$default (JILjava/lang/Object;)Lcom/apollographql/apollo3/network/http/HttpEngine;
 }
 
 public abstract interface class com/apollographql/apollo3/network/http/TokenProvider {
@@ -371,7 +386,7 @@ public final class com/apollographql/apollo3/network/ws/OkHttpWebSocketEngine : 
 }
 
 public final class com/apollographql/apollo3/network/ws/OkHttpWebSocketEngineKt {
-	public static final fun MultiplatformWebSocketEngine ()Lcom/apollographql/apollo3/network/ws/WebSocketEngine;
+	public static final fun WebSocketEngine ()Lcom/apollographql/apollo3/network/ws/WebSocketEngine;
 }
 
 public final class com/apollographql/apollo3/network/ws/SubscriptionWsProtocol : com/apollographql/apollo3/network/ws/WsProtocol {

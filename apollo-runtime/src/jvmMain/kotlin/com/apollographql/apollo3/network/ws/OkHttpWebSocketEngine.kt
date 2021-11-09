@@ -104,4 +104,4 @@ class OkHttpWebSocketEngine(
 }
 
 @Suppress("FunctionName")
-actual fun MultiplatformWebSocketEngine(): WebSocketEngine = OkHttpWebSocketEngine()
+actual fun WebSocketEngine(): WebSocketEngine = OkHttpWebSocketEngine()

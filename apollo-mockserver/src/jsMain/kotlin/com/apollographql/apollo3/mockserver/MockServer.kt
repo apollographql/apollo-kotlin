@@ -6,8 +6,7 @@ import okio.ByteString.Companion.toByteString
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-actual class MockServer {
-
+class JsMockServer : MockServer {
   private val responseQueue = mutableListOf<MockResponse>()
   private val requests = mutableListOf<MockRecordedRequest>()
 
@@ -40,23 +39,26 @@ actual class MockServer {
     res.end(mockResponse.body.utf8())
   }.listen()
 
-  actual suspend fun url() = suspendCoroutine<String> { cont ->
+  override suspend fun url() = suspendCoroutine<String> { cont ->
     server.on("listening") { _ ->
       cont.resume("http://localhost:${server.address().unsafeCast<AddressInfo>().port}")
     }
   }
 
-  actual fun enqueue(mockResponse: MockResponse) {
+  override fun enqueue(mockResponse: MockResponse) {
     responseQueue.add(mockResponse)
   }
 
-  actual fun takeRequest(): MockRecordedRequest {
+  override fun takeRequest(): MockRecordedRequest {
     return requests.removeFirst()
   }
 
-  actual suspend fun stop() = suspendCoroutine<Unit> { cont ->
+  override suspend fun stop() = suspendCoroutine<Unit> { cont ->
     server.close {
       cont.resume(Unit)
     }
   }
 }
+
+@Suppress("FunctionName")
+actual fun MockServer(): MockServer = JsMockServer()

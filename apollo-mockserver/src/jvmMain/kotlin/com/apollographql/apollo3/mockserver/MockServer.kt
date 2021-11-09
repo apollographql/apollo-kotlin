@@ -5,10 +5,10 @@ import okhttp3.mockwebserver.MockWebServer
 import okio.Buffer
 import java.util.concurrent.TimeUnit
 
-actual class MockServer {
+class OkHttpMockServer : MockServer {
   private val mockWebServer = MockWebServer()
 
-  actual fun enqueue(mockResponse: MockResponse) {
+  override fun enqueue(mockResponse: MockResponse) {
     mockWebServer.enqueue(
         okhttp3.mockwebserver.MockResponse()
             .setResponseCode(mockResponse.statusCode)
@@ -21,7 +21,7 @@ actual class MockServer {
     )
   }
 
-  actual fun takeRequest(): MockRecordedRequest {
+  override fun takeRequest(): MockRecordedRequest {
     return mockWebServer.takeRequest(10, TimeUnit.MILLISECONDS)?.let {
       MockRecordedRequest(
           method = it.method!!,
@@ -37,11 +37,14 @@ actual class MockServer {
     name(it) to get(name(it))!!
   }.toMap()
 
-  actual suspend fun url(): String {
+  override suspend fun url(): String {
     return mockWebServer.url("/").toString()
   }
 
-  actual suspend fun stop() {
+  override suspend fun stop() {
     mockWebServer.shutdown()
   }
 }
+
+@Suppress("FunctionName")
+actual fun MockServer(): MockServer = OkHttpMockServer()

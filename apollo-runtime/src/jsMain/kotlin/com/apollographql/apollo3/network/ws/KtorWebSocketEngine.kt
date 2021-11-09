@@ -7,4 +7,4 @@ class KtorWebSocketEngine : WebSocketEngine {
 }
 
 @Suppress("FunctionName")
-actual fun MultiplatformWebSocketEngine(): WebSocketEngine = KtorWebSocketEngine()
+actual fun WebSocketEngine(): WebSocketEngine = KtorWebSocketEngine()

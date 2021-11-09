@@ -8,17 +8,22 @@ import com.apollographql.apollo3.exception.ApolloNetworkException
 import io.ktor.client.HttpClient
 import io.ktor.client.call.receive
 import io.ktor.client.engine.js.Js
+import io.ktor.client.features.HttpTimeout
 import io.ktor.client.request.header
 import io.ktor.client.request.request
 import io.ktor.http.HttpHeaders
 import io.ktor.util.flattenEntries
 import okio.Buffer
 
-class KtorHttpEngine(connectTimeoutMillis: Long, readTimeoutMillis: Long) : HttpEngine {
+class KtorHttpEngine(private val connectTimeoutMillis: Long, private val readTimeoutMillis: Long) : HttpEngine {
   var disposed = false
 
   private val client = HttpClient(Js) {
     expectSuccess = false
+    install(HttpTimeout) {
+      this.connectTimeoutMillis = this@KtorHttpEngine.connectTimeoutMillis
+      this.socketTimeoutMillis = this@KtorHttpEngine.readTimeoutMillis
+    }
   }
 
   override suspend fun execute(request: HttpRequest): HttpResponse {
@@ -58,12 +63,11 @@ class KtorHttpEngine(connectTimeoutMillis: Long, readTimeoutMillis: Long) : Http
   }
 }
 
-actual fun MultiplatformHttpEngine(
-    connectTimeoutMillis: Long,
-    readTimeoutMillis: Long,
+actual fun HttpEngine(
+    timeoutMillis: Long,
 ): HttpEngine {
   return KtorHttpEngine(
-      connectTimeoutMillis = connectTimeoutMillis,
-      readTimeoutMillis = readTimeoutMillis
+      connectTimeoutMillis = timeoutMillis,
+      readTimeoutMillis = timeoutMillis
   )
 }

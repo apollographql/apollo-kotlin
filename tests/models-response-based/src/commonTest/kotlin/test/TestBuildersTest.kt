@@ -218,5 +218,4 @@ class TestBuildersTest {
 
     assertEquals(Episode.JEDI, data.hero?.appearsIn?.single())
   }
-
 }

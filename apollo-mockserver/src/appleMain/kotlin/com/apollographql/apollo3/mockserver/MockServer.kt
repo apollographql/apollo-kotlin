@@ -26,8 +26,14 @@ import platform.posix.sockaddr_in
 import platform.posix.socket
 import kotlin.native.concurrent.freeze
 
+/**
+ * @param acceptDelayMillis: an artificial delay introduced before each `accept()`
+ * call. Can be used to simulate slow connections.
+ */
 @OptIn(ExperimentalUnsignedTypes::class)
-actual class MockServer {
+class NativeMockServer(
+    private val acceptDelayMillis: Long = 0
+): MockServer {
   private val pthreadT: pthread_tVar
   private val port: Int
   private var socket: Socket? = null
@@ -62,7 +68,7 @@ actual class MockServer {
 
     pthreadT = nativeHeap.alloc()
 
-    socket = Socket(socketFd)
+    socket = Socket(socketFd, acceptDelayMillis)
 
     val stableRef = StableRef.create(socket!!.freeze())
 
@@ -79,11 +85,11 @@ actual class MockServer {
     }, stableRef.asCPointer())
   }
 
-  actual suspend fun url(): String {
+  override suspend fun url(): String {
     return "http://localhost:$port"
   }
 
-  actual fun enqueue(mockResponse: MockResponse) {
+  override fun enqueue(mockResponse: MockResponse) {
     check(socket != null) {
       "Cannot enqueue a response to a stopped MockServer"
     }
@@ -95,7 +101,7 @@ actual class MockServer {
    * If stop() is called while we're reading a request, this might wait forever
    * Revisit once okio has native Timeout
    */
-  actual suspend fun stop() {
+  override suspend fun stop() {
     if (socket == null) {
       return
     }
@@ -108,10 +114,13 @@ actual class MockServer {
     socket = null
   }
 
-  actual fun takeRequest(): MockRecordedRequest {
+  override fun takeRequest(): MockRecordedRequest {
     check(socket != null) {
       "Cannot take a request from a stopped MockServer"
     }
     return socket!!.takeRequest()
   }
 }
+
+@Suppress("FunctionName")
+actual fun MockServer(): MockServer = NativeMockServer()
