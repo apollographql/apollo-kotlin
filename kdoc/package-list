@@ -1,9 +1,6 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
 $dokka.location:com.apollographql.apollo3.internal/DefaultMutex/lock/#kotlin.Function0[TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/apollo-runtime/com.apollographql.apollo3.internal/-default-mutex/[jvm]lock.html
-$dokka.location:com.apollographql.apollo3.network.http/DefaultHttpEngine/dispose/#/PointingToDeclaration/apollo-runtime/com.apollographql.apollo3.network.http/-default-http-engine/[jvm]dispose.html
-$dokka.location:com.apollographql.apollo3.network.http/DefaultHttpEngine/execute/#com.apollographql.apollo3.api.http.HttpRequest/PointingToDeclaration/apollo-runtime/com.apollographql.apollo3.network.http/-default-http-engine/[jvm]execute.html
-$dokka.location:com.apollographql.apollo3.network.ws/DefaultWebSocketEngine/open/#kotlin.String#kotlin.collections.Map[kotlin.String,kotlin.String]/PointingToDeclaration/apollo-runtime/com.apollographql.apollo3.network.ws/-default-web-socket-engine/[jvm]open.html
 module:apollo-adapters
 com.apollographql.apollo3.adapter
 module:apollo-api
