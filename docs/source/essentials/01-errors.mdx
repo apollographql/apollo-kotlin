@@ -105,11 +105,11 @@ if (person != null) {
 
 ## Ignoring partial data
 
-If you don't want to handle partial responses, you can simplify your error handling logic.`ApolloResponse.dataAssertNoErrors` will return a non-nullable `data` and throws if there are any errors so that you can handle all eroors in a single `catch {}` block. :
+If you don't want to handle partial responses, you can simplify your error handling logic.`ApolloResponse.dataOrThrow` will return a non-nullable `data` and throws if there are any errors so that you can handle all eroors in a single `catch {}` block. :
 
 ```
 val data = try {
-  apolloClient.query(query).execute().dataAssertNoErrors
+  apolloClient.query(query).execute().dataOrThrow
 } catch(exception: ApolloException) {
   // All network or GraphQL errors are handled here
   throw exception
