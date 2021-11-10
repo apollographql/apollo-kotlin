@@ -35,7 +35,7 @@ class MainTest {
             .build()
             .query(GetRandomQuery())
             .execute()
-        check(response.dataOrThrow.random == 42)
+        check(response.dataAssertNoErrors.random == 42)
       }
     }
   }
@@ -60,7 +60,7 @@ class MainTest {
     withContext(Dispatchers.Default) {
       withContext(Dispatchers.Main) {
         val response = client.query(GetRandomQuery()).execute()
-        check(response.dataOrThrow.random == 42)
+        check(response.dataAssertNoErrors.random == 42)
       }
     }
   }
