@@ -46,7 +46,7 @@ jobs:
           java-version: 1.8
       - name: Publish Snapshot
         run: |
-          ./gradlew -p tests ciPublishSnapshot
+          ./gradlew ciPublishSnapshot
         env:
           SONATYPE_NEXUS_PASSWORD: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
           SONATYPE_NEXUS_USERNAME: ${{ secrets.SONATYPE_NEXUS_USERNAME }}

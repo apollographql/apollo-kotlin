@@ -49,8 +49,8 @@ tasks.register("ciTestsIntegration") {
   }
 }
 
-tasks.register("ciFull") {
-  dependsOn(gradle.includedBuild("apollo-android").task(":ciFull"))
+tasks.register("ciTestsAll") {
+  dependsOn(gradle.includedBuild("apollo-android").task(":ciTestsAll"))
   dependsOn("ciTestsIntegration")
 }
 
