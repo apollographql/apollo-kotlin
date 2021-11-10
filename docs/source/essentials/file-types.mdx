@@ -1,0 +1,94 @@
+---
+title: File types
+---
+
+> To learn more about SDL schemas, you can also read the [blog post](https://www.apollographql.com/blog/frontend/sdl-support-in-apollo-android/) about SDL support in Apollo Android
+
+Apollo Android supports the following file types:
+
+* `.json` for introspection schemas
+* `.graphqls` for SDL schemas
+* `.graphql` for operations (queries, mutations and subscriptions)
+
+Schemas describe the data types and relationships between them. Operations describe how to request or modify the data.
+
+## Introspection schemas (.json)
+
+Introspection schemas are downloadable through [introspection](https://graphql.org/learn/introspection/). If you have a GraphQL endpoint and introspection wasn't disabled, it's an easy way to get the schema. Tools like [Studio](https://www.apollographql.com/docs/studio/) will allow you to download the schema in json format.
+
+You can also download it with Apollo Android with the `downloadApolloSchema` Gradle task:
+
+```
+./gradlew :app:downloadApolloSchema --endpoint "https://example.com/graphql"
+ --schema schema.json
+```
+
+Introspection schemas are the result of an introspection query and should look like below:
+
+```json:title=schema.json
+{
+  "data": {
+    "__schema": {
+      "queryType": {
+        "name": "Query"
+      },
+      "mutationType": {
+        "name": "Mutation"
+      },
+      "types": [...]
+    }
+  }
+}
+```
+
+You might come accross some `schema.json` files that skip the `"data"` field, that's OK too, Apollo Android supports that.
+
+If you unfold the `"types"` field, you will find a big list of types. They describe all types in the schema with all their fields. It's a very verbose format, not easy to read or modify. For a more compact format, you can use SDL schemas.
+
+
+## SDL Schemas (.graphqls)
+
+SDL (Schema Definition Language) is a more expressive syntax for describing schemas. In fact SDL, in merely a subset of the [GraphQL language](https://spec.graphql.org/draft/#sec-Appendix-Grammar-Summary). The GraphQL language contains [Type System Sefinitions](https://spec.graphql.org/draft/#TypeSystemDefinitionOrExtension) and [Executable Definitions](https://spec.graphql.org/draft/#ExecutableDefinition).
+
+> Note: Apollo Android also supports `.sdl` file extensions for SDL schemas but very few other tools use `.sdl` and `.graphqls` is the preferred file extension moving forward.
+
+A file that only contains Type System Definitions is a schema. You can get one from some tools like [Studio](https://www.apollographql.com/docs/studio/) or from your backend team directly.
+
+Unlike introspection, there's no way to download a SDL schema from your endpoint directly but Apollo Android will convert your introspection schema to a SDL schema automatically if you specify the `.graphqls` extension:
+
+```
+./gradlew :app:downloadApolloSchema --endpoint "https://example.com/graphql"
+--schema schema.graphqls
+```
+
+The file will look like:
+
+```graphql:title=schema.graphqls
+type schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  field: String
+  ...
+}
+```
+
+This format is more compact and easier to read and modify. Another advantage is that the SDL format carries GraphQL directives, which the Json format doesn't (see [this issue](https://github.com/graphql/graphql-spec/issues/300))
+
+## Operations (.graphql)
+
+Operation files use the `.graphql` (without `'s'`) extension and only contain [Executable Definitions](https://spec.graphql.org/draft/#ExecutableDefinition) (queries, mutations, subscriptions or fragments).
+
+These are the files where you define your queries and mutations. They usually look like:
+
+```
+query MyQuery {
+  field1
+  field2
+  ...
+}
+```
+
+Apollo Android will compile these queries into type-safe models that you can use at runtime.

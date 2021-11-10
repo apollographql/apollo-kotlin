@@ -41,6 +41,7 @@ module.exports = {
             'essentials/40-inline-fragments',
             'essentials/50-named-fragments',
             'essentials/60-plugin-configuration',
+            'essentials/file-types'
           ],
           Caching: [
             'caching/normalized-cache',
