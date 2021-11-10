@@ -28,7 +28,7 @@ apollo {
 }
 ```
 
-This will generate a set of builder DSLs for each model used by your operations. These DSLs are based on the model's
+This will generate a builder DSL for each model used by your operations. These DSLs are based on the model's
 fields, and allow you to set the values of the fields you care about for your specific tests, while default values will
 automatically be set for the other fields.
 
@@ -71,14 +71,14 @@ fun test() {
 ```
 
 In this example we create a Human Hero with specific values for `firstName` and `age`, and the values for `lastName`
-and `height` are automatically filled with dummy values.
+and `height` are automatically filled with mock values.
 
 ### Advanced usage
 
 To automatically assign values to the fields for which you don't explicit set a value, the builder uses a `TestResolver`
 which is by default `DefaultTestResolver`.
 
-`DefaultTestResolver` will give String fields the fields' name as their value, increment a counter for Int values, etc.
+`DefaultTestResolver` will give String fields the field's name as their value, increment a counter for Int values, etc.
 
 You can instead pass your own `TestResolver` implementation (extend `DefaultTestResolver` for a head start) as a
 parameter to the `Data` function, like so:
