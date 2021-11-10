@@ -109,7 +109,7 @@ If you don't want to handle partial responses, you can simplify your error handl
 
 ```
 val data = try {
-  apolloClient.query(query).execute().dataOrThrow
+  apolloClient.query(query).execute().dataAssertNoErrors
 } catch(exception: ApolloException) {
   // All network or GraphQL errors are handled here
   throw exception
