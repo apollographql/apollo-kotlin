@@ -97,7 +97,7 @@ following events:
 
 **Workflow:** [`pr.yml`](https://github.com/apollographql/apollo-android/blob/dev-3.x/.github/workflows/pr.yml)
 
-**Jobs:**
+**Jobs (run in parallel):**
 
 - `tests-gradle`
     - Slow gradle tests
@@ -113,22 +113,20 @@ _(Will be replaced to "on pushes to `main` branch" after v3 is released.)_
 
 **Workflow:** [`push.yml`](https://github.com/apollographql/apollo-android/blob/dev-3.x/.github/workflows/push.yml)
 
-**Jobs:**
+**Job:**
 
-- `tests-all`
+- `push`
     - Runs on macOS
     - Slow
     - Run all tests
-- `gh-pages`
-    - Publish KDoc
-- `snapshot`
     - Publish Snapshot to Sonatype
+    - Publish KDoc
 
 ### On new tags
 
 **Workflow:** [`tag.yml`](https://github.com/apollographql/apollo-android/blob/dev-3.x/.github/workflows/tag.yml)
 
-**Jobs:**
+**Job:**
 
 - `publish`
     - Publish to Maven Central
