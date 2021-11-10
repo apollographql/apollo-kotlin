@@ -1,6 +1,5 @@
 ---
-title: Error handling in Apollo Android
-sidebar_title: Errors
+title: Error handling
 ---
 
 Whenever you execute a GraphQL operation with Apollo Android (or any other GraphQL client), two high-level types of errors can occur:
@@ -21,7 +20,7 @@ try {
 }
 ```
 
-### Possible causes
+**Non-exhaustive list of possible causes:**
 
 * The app is offline or doesn't have access to the network.
 * A DNS error occurred, making it impossible to look up the host.
@@ -31,6 +30,7 @@ try {
 * The server didn't respond with valid JSON.
 * The response JSON doesn't satisfy the schema and cannot be parsed.
 * A request was specified as CacheOnly but the data wasn't cached.
+* ...
 
 Examine the exception to get more detailed information about the actual error happening.
 
@@ -103,11 +103,13 @@ if (person != null) {
 }
 ```
 
-If you don't want to handle partial responses, you can use `dataOrThrow()`. This returns a non-nullable `data` and throws if there are any errors:
+## Ignoring partial data
+
+If you don't want to handle partial responses, you can simplify your error handling logic.`ApolloResponse.dataAssertNoErrors` will return a non-nullable `data` and throws if there are any errors so that you can handle all eroors in a single `catch {}` block. :
 
 ```
 val data = try {
-  apolloClient.query(query).execute().dataOrThrow
+  apolloClient.query(query).execute().dataAssertNoErrors
 } catch(exception: ApolloException) {
   // All network or GraphQL errors are handled here
   throw exception
@@ -117,4 +119,4 @@ val data = try {
 val title = data.film?.title
 ```
 
-Note that the safe call is still required on `film` because this field has a nullable type in the GraphQL schema. There are ways to override this in codegen. For details, see [@nonnull](../advanced/nonnull).
+Note that the safe call is still required on `film` because this field has a nullable type in the GraphQL schema. There are ways to override this in codegen. For more details, see [@nonnull](../advanced/nonnull).

@@ -67,7 +67,7 @@ class ScalarAdapterTest {
     val request = mockServer.takeRequest()
     assertTrue(request.body.utf8().contains(""""variables":{"date":"2001-6-23"}"""))
 
-    assertEquals(MyDate(1978, 4, 27), response.dataOrThrow.launchByDate?.date)
+    assertEquals(MyDate(1978, 4, 27), response.dataAssertNoErrors.launchByDate?.date)
   }
 
   @Test
@@ -84,6 +84,6 @@ class ScalarAdapterTest {
     val request = mockServer.takeRequest()
     assertTrue(request.body.utf8().contains(""""variables":{"date":"2001-6-23"}"""))
 
-    assertEquals(MyDate(1978, 4, 27), response.dataOrThrow.launchByDate?.date)
+    assertEquals(MyDate(1978, 4, 27), response.dataAssertNoErrors.launchByDate?.date)
   }
 }
