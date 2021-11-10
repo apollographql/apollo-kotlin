@@ -38,10 +38,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
 import kotlin.jvm.JvmOverloads
-
-typealias FlowDecorator = (Flow<ApolloResponse<*>>) -> Flow<ApolloResponse<*>>
 
 /**
  * The main entry point for the Apollo runtime. An [ApolloClient] is responsible for executing queries, mutations and subscriptions
@@ -53,11 +50,16 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
     val interceptors: List<ApolloInterceptor> = emptyList(),
     override val executionContext: ExecutionContext = ExecutionContext.Empty,
     private val requestedDispatcher: CoroutineDispatcher? = null,
-    private val flowDecorators: List<FlowDecorator> = emptyList(),
 ) : HasExecutionContext {
+  private val concurrencyInfo: ConcurrencyInfo
 
-  private val dispatcher = defaultDispatcher(requestedDispatcher)
-  private val clientScope = ClientScope(CoroutineScope(dispatcher))
+  init {
+    val dispatcher = defaultDispatcher(requestedDispatcher)
+    concurrencyInfo = ConcurrencyInfo(
+        dispatcher,
+        CoroutineScope(dispatcher))
+
+  }
 
   /**
    * A short-hand constructor
@@ -93,7 +95,7 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
   }
 
   fun dispose() {
-    clientScope.coroutineScope.cancel()
+    concurrencyInfo.coroutineScope.cancel()
     networkTransport.dispose()
     subscriptionNetworkTransport.dispose()
   }
@@ -116,15 +118,15 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
   }
 
   @Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
-  fun withFlowDecorator(flowDecorator: FlowDecorator): ApolloClient {
-    return newBuilder().addFlowDecorator(flowDecorator).build()
-  }
-
-  @Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
   fun withExecutionContext(executionContext: ExecutionContext): ApolloClient {
     return newBuilder().addExecutionContext(executionContext).build()
   }
 
+  private val networkInterceptor = NetworkInterceptor(
+      networkTransport = networkTransport,
+      subscriptionNetworkTransport = subscriptionNetworkTransport,
+      dispatcher = concurrencyInfo.dispatcher
+  )
 
   /**
    * Low level API to execute the given [apolloRequest] and return a [Flow].
@@ -134,26 +136,16 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
    * For simple queries, the returned [Flow] will contain only one element.
    * For more advanced use cases like watchers or subscriptions, it may contain any number of elements and never
    * finish. You can cancel the corresponding coroutine to terminate the [Flow] in this case.
-   *
-   *
    */
   @OptIn(ExperimentalCoroutinesApi::class, kotlinx.coroutines.FlowPreview::class)
   fun <D : Operation.Data> executeAsFlow(apolloRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
     assertMainThreadOnNative()
-    val executionContext = clientScope + customScalarAdapters + executionContext + apolloRequest.executionContext
+    val executionContext = concurrencyInfo + customScalarAdapters + executionContext + apolloRequest.executionContext
 
     val request = apolloRequest.newBuilder().addExecutionContext(executionContext).build()
     // ensureNeverFrozen(request)
-    val interceptors = interceptors + NetworkInterceptor(
-        networkTransport = networkTransport,
-        subscriptionNetworkTransport = subscriptionNetworkTransport,
-    )
 
-    val interceptorChain = DefaultInterceptorChain(interceptors, 0)
-    return flowDecorators.fold(interceptorChain.proceed(request).flowOn(dispatcher)) { flow, decorator ->
-      @Suppress("UNCHECKED_CAST")
-      decorator.invoke(flow) as Flow<ApolloResponse<D>>
-    }
+    return DefaultInterceptorChain(interceptors + networkInterceptor, 0).proceed(request)
   }
 
   /**
@@ -164,7 +156,6 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
     private var subscriptionNetworkTransport: NetworkTransport? = null
     private val customScalarAdaptersBuilder = CustomScalarAdapters.Builder()
     private val interceptors: MutableList<ApolloInterceptor> = mutableListOf()
-    private val flowDecorators: MutableList<FlowDecorator> = mutableListOf()
     private var requestedDispatcher: CoroutineDispatcher? = null
     override var executionContext: ExecutionContext = ExecutionContext.Empty
     private var httpServerUrl: String? = null
@@ -263,15 +254,6 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
       this.interceptors += interceptors
     }
 
-    fun addFlowDecorator(flowDecorator: FlowDecorator) = apply {
-      flowDecorators += flowDecorators + flowDecorator
-    }
-
-    fun flowDecorators(flowDecorators: List<FlowDecorator>) = apply {
-      this.flowDecorators.clear()
-      this.flowDecorators += flowDecorators
-    }
-
     fun requestedDispatcher(requestedDispatcher: CoroutineDispatcher?) = apply {
       this.requestedDispatcher = requestedDispatcher
     }
@@ -331,7 +313,6 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
           subscriptionNetworkTransport = subscriptionNetworkTransport,
           customScalarAdapters = customScalarAdaptersBuilder.build(),
           interceptors = interceptors,
-          flowDecorators = flowDecorators,
           requestedDispatcher = requestedDispatcher,
           executionContext = executionContext,
       )
@@ -344,7 +325,6 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
         .subscriptionNetworkTransport(subscriptionNetworkTransport)
         .customScalarAdapters(customScalarAdapters)
         .interceptors(interceptors)
-        .flowDecorators(flowDecorators)
         .requestedDispatcher(requestedDispatcher)
         .executionContext(executionContext)
   }

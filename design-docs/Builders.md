@@ -40,7 +40,6 @@ constructor(
     interceptors: List<ApolloInterceptor> = emptyList(),
     executionContext: ExecutionContext = ExecutionContext.Empty,
     requestedDispatcher: CoroutineDispatcher? = null,
-    flowDecorators: List<FlowDecorator> = emptyList(),
 )
 ```
 
@@ -57,7 +56,6 @@ val apolloClient = ApolloClient(
         interceptors = ...,
         executionContext = ...,
         requestedDispatcher = ... ,
-        flowDecorators = ...
     )
 ```
 
@@ -67,10 +65,9 @@ Current list of existing `with` methods:
 
 - `withCustomScalarAdapter`
 - `withInterceptor`
-- `withFlowDecorator`
 - `withExecutionContext`
 
-Minor detail: `customScalarAdapters`, `interceptors`, `executionContext` and `flowDecorators` can both be passed to the constructor and using the With-ers. I propose we don't keep this duality with the Builder: having one way to do things is easier to grasp.
+Minor detail: `customScalarAdapters`, `interceptors` and `executionContext` can both be passed to the constructor and using the With-ers. I propose we don't keep this duality with the Builder: having one way to do things is easier to grasp.
 
 ### Extensions
 
@@ -95,7 +92,6 @@ val apolloClient = ApolloClient.Builder()
         .requestedDispatcher(...)
         .addCustomScalarAdapter(...)
         .addInterceptor(...)
-        .addFlowDecorator(...)
         .addExecutionContext(...)
         
         // Extensions
@@ -125,7 +121,6 @@ class Builder private constructor(
     private var subscriptionNetworkTransport: NetworkTransport?,
     private var customScalarAdapters: MutableMap<String, Adapter<*>>,
     private val interceptors: MutableList<ApolloInterceptor>,
-    private val flowDecorators: MutableList<FlowDecorator>,
     private var requestedDispatcher: CoroutineDispatcher?,
     override var executionContext: ExecutionContext,
 ) : ExecutionParameters<Builder> {
@@ -135,7 +130,6 @@ class Builder private constructor(
     subscriptionNetworkTransport = null,
     customScalarAdapters = mutableMapOf(),
     interceptors = mutableListOf(),
-    flowDecorators = mutableListOf(),
     requestedDispatcher = null,
     executionContext = ExecutionContext.Empty,
   )
@@ -166,9 +160,7 @@ class Builder private constructor(
     interceptors += interceptor
     return this
   }
-
-  fun addFlowDecorator(flowDecorator: FlowDecorator): Builder { ... }
-
+  
   fun requestedDispatcher(requestedDispatcher: CoroutineDispatcher): Builder { ... }
 
   override fun withExecutionContext(executionContext: ExecutionContext): Builder {
@@ -200,7 +192,6 @@ Note: the private constructor exists solely to be called by the `newBuilder()` m
 - Delete with-ers:
     - `withCustomScalarAdapter`
     - `withInterceptor`
-    - `withFlowDecorator`
     - `withExecutionContext`
 - Make the `copy` fun `private`
     - Note: `withExecutionContext` is using `copy` which is why we can't just delete it. We could instead make `executionContext` a var with a `private set`, and get rid of `copy`?

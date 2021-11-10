@@ -30,7 +30,6 @@ public final class com/apollographql/apollo3/ApolloClient : com/apollographql/ap
 	public final fun subscribe (Lcom/apollographql/apollo3/api/Subscription;)Lcom/apollographql/apollo3/ApolloSubscriptionCall;
 	public final fun withCustomScalarAdapter (Lcom/apollographql/apollo3/api/CustomScalarType;Lcom/apollographql/apollo3/api/Adapter;)Lcom/apollographql/apollo3/ApolloClient;
 	public final fun withExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/ApolloClient;
-	public final fun withFlowDecorator (Lkotlin/jvm/functions/Function1;)Lcom/apollographql/apollo3/ApolloClient;
 	public final fun withInterceptor (Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;)Lcom/apollographql/apollo3/ApolloClient;
 }
 
@@ -41,13 +40,11 @@ public final class com/apollographql/apollo3/ApolloClient$Builder : com/apollogr
 	public final fun addCustomTypeAdapter (Lcom/apollographql/apollo3/api/CustomScalarType;Lcom/apollographql/apollo3/api/CustomTypeAdapter;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public synthetic fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
-	public final fun addFlowDecorator (Lkotlin/jvm/functions/Function1;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun addInterceptor (Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun addInterceptors (Ljava/util/List;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun build ()Lcom/apollographql/apollo3/ApolloClient;
 	public final fun customScalarAdapters (Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun executionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/ApolloClient$Builder;
-	public final fun flowDecorators (Ljava/util/List;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
 	public final fun httpEngine (Lcom/apollographql/apollo3/network/http/HttpEngine;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun httpServerUrl (Ljava/lang/String;)Lcom/apollographql/apollo3/ApolloClient$Builder;

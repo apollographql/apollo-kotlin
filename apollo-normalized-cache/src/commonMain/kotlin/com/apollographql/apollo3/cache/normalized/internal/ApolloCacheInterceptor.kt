@@ -1,10 +1,9 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
-import com.apollographql.apollo3.ClientScope
+import com.apollographql.apollo3.ConcurrencyInfo
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.HasExecutionContext
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
@@ -29,10 +28,10 @@ import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.mpp.currentTimeMillis
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
@@ -46,12 +45,11 @@ internal class ApolloCacheInterceptor(
     // ensureNeverFrozen(store)
   }
 
-  private val HasExecutionContext.clientScope: CoroutineScope
-    get() = executionContext[ClientScope]!!.coroutineScope
 
   private suspend fun <D : Operation.Data> maybeAsync(request: ApolloRequest<D>, block: suspend () -> Unit) {
     if (request.writeToCacheAsynchronously) {
-      request.clientScope.launch { block() }
+      val scope = request.executionContext[ConcurrencyInfo]!!.coroutineScope
+      scope.launch { block() }
     } else {
       block()
     }
@@ -146,7 +144,7 @@ internal class ApolloCacheInterceptor(
 
       maybeWriteToCache(request, response, customScalarAdapters, optimisticKeys)
       emit(response)
-    }
+    }.flowOn(request.executionContext[ConcurrencyInfo]!!.dispatcher)
   }
 
 
