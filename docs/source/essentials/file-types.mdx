@@ -50,10 +50,11 @@ If you unfold the `"types"` field, you will find a big list of types. They descr
 
 SDL (Schema Definition Language) is a more expressive syntax for describing schemas. In fact SDL, in merely a subset of the [GraphQL language](https://spec.graphql.org/draft/#sec-Appendix-Grammar-Summary). The GraphQL language contains [Type System Sefinitions](https://spec.graphql.org/draft/#TypeSystemDefinitionOrExtension) and [Executable Definitions](https://spec.graphql.org/draft/#ExecutableDefinition).
 
+> Note: Apollo Android also supports `.sdl` file extensions for SDL schemas but very few other tools use `.sdl` and `.graphqls` is the preferred file extension moving forward.
+
 A file that only contains Type System Definitions is a schema. You can get one from some tools like [Studio](https://www.apollographql.com/docs/studio/) or from your backend team directly.
 
 Unlike introspection, there's no way to download a SDL schema from your endpoint directly but Apollo Android will convert your introspection schema to a SDL schema automatically if you specify the `.graphqls` extension:
-
 
 ```
 ./gradlew :app:downloadApolloSchema --endpoint "https://example.com/graphql"
