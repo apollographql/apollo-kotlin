@@ -47,7 +47,7 @@ class ApolloResponse<out D : Operation.Data>(
 ) {
 
   /**
-   * A shorthand property to get a non-nullable if handling partial data is not important
+   * A shorthand property to get a non-nullable `data` if handling partial data is not important
    */
   @Deprecated("Please use dataAssertNoErrors methods instead. This will be removed in v3.0.0.",
   ReplaceWith("dataAssertNoErrors"))
@@ -62,7 +62,7 @@ class ApolloResponse<out D : Operation.Data>(
     }
 
   /**
-   * A shorthand property to get a non-nullable if handling partial data is **not** important
+   * A shorthand property to get a non-nullable `data` if handling partial data is **not** important
    *
    * Note: A future version could use [Definitely non nullable types](https://github.com/Kotlin/KEEP/pull/269)
    * to implement something like `ApolloResponse<D>.assertNoErrors(): ApolloResponse<D & Any>`
