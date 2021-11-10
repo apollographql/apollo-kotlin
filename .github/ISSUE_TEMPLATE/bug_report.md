@@ -16,6 +16,6 @@ Make sure the bug is still happening on the latest version. Enter this version h
 **Description**
 Add context about the problem here. How it happened and how to reproduce it:  
 * If your project is open source, a link to the project is greatly appreciated. 
-* If not, please share as many information as possible to help understanding the problem: schema, queries, sample code, etc...
+* If not, please share as much information as possible to help to understand the problem: schema, queries, sample code, etc...
 * Add things that you already tried.  
 
