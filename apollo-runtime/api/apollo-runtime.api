@@ -16,8 +16,7 @@ public final class com/apollographql/apollo3/ApolloClient : com/apollographql/ap
 	public fun <init> (Lcom/apollographql/apollo3/network/NetworkTransport;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/network/NetworkTransport;Ljava/util/List;)V
 	public fun <init> (Lcom/apollographql/apollo3/network/NetworkTransport;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/network/NetworkTransport;Ljava/util/List;Lcom/apollographql/apollo3/api/ExecutionContext;)V
 	public fun <init> (Lcom/apollographql/apollo3/network/NetworkTransport;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/network/NetworkTransport;Ljava/util/List;Lcom/apollographql/apollo3/api/ExecutionContext;Lkotlinx/coroutines/CoroutineDispatcher;)V
-	public fun <init> (Lcom/apollographql/apollo3/network/NetworkTransport;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/network/NetworkTransport;Ljava/util/List;Lcom/apollographql/apollo3/api/ExecutionContext;Lkotlinx/coroutines/CoroutineDispatcher;Ljava/util/List;)V
-	public synthetic fun <init> (Lcom/apollographql/apollo3/network/NetworkTransport;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/network/NetworkTransport;Ljava/util/List;Lcom/apollographql/apollo3/api/ExecutionContext;Lkotlinx/coroutines/CoroutineDispatcher;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo3/network/NetworkTransport;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/network/NetworkTransport;Ljava/util/List;Lcom/apollographql/apollo3/api/ExecutionContext;Lkotlinx/coroutines/CoroutineDispatcher;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun <init> (Ljava/lang/String;)V
 	public final fun dispose ()V
 	public final fun executeAsFlow (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
@@ -115,18 +114,19 @@ public final class com/apollographql/apollo3/AutoPersistedQueryInfoKt {
 	public static final fun withHashedQuery (Lcom/apollographql/apollo3/api/ApolloRequest;Z)Lcom/apollographql/apollo3/api/ApolloRequest;
 }
 
-public final class com/apollographql/apollo3/ClientScope : com/apollographql/apollo3/api/ExecutionContext$Element {
-	public static final field Key Lcom/apollographql/apollo3/ClientScope$Key;
-	public fun <init> (Lkotlinx/coroutines/CoroutineScope;)V
+public final class com/apollographql/apollo3/ConcurrencyInfo : com/apollographql/apollo3/api/ExecutionContext$Element {
+	public static final field Key Lcom/apollographql/apollo3/ConcurrencyInfo$Key;
+	public fun <init> (Lkotlinx/coroutines/CoroutineDispatcher;Lkotlinx/coroutines/CoroutineScope;)V
 	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
 	public fun get (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext$Element;
 	public final fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
+	public final fun getDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
 	public fun getKey ()Lcom/apollographql/apollo3/api/ExecutionContext$Key;
 	public fun minusKey (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext;
 	public fun plus (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ExecutionContext;
 }
 
-public final class com/apollographql/apollo3/ClientScope$Key : com/apollographql/apollo3/api/ExecutionContext$Key {
+public final class com/apollographql/apollo3/ConcurrencyInfo$Key : com/apollographql/apollo3/api/ExecutionContext$Key {
 }
 
 public abstract interface class com/apollographql/apollo3/interceptor/ApolloInterceptor {
@@ -138,7 +138,7 @@ public abstract interface class com/apollographql/apollo3/interceptor/ApolloInte
 }
 
 public final class com/apollographql/apollo3/interceptor/NetworkInterceptor : com/apollographql/apollo3/interceptor/ApolloInterceptor {
-	public fun <init> (Lcom/apollographql/apollo3/network/NetworkTransport;Lcom/apollographql/apollo3/network/NetworkTransport;)V
+	public fun <init> (Lcom/apollographql/apollo3/network/NetworkTransport;Lcom/apollographql/apollo3/network/NetworkTransport;Lkotlinx/coroutines/CoroutineDispatcher;)V
 	public fun intercept (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/interceptor/ApolloInterceptorChain;)Lkotlinx/coroutines/flow/Flow;
 }
 
