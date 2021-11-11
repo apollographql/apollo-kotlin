@@ -14,7 +14,6 @@ build
 
 # Place where the Android SDK path is set
 local.properties
-generated
 
 # Secret used by sample apps
 github_token

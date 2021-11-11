@@ -10,7 +10,7 @@ repositories {
   gradlePluginPortal()
 }
 
-group = "com.apollographql.apollo"
+group = "com.apollographql.apollo3"
 
 dependencies {
   compileOnly(groovy.util.Eval.x(project, "x.dep.gradleApi"))
@@ -32,7 +32,7 @@ dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.gradlePublishPlugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.benManesVersions"))
   implementation(groovy.util.Eval.x(project, "x.dep.vespene"))
-  implementation(groovy.util.Eval.x(project, "x.dep.shadow"))
+  implementation(groovy.util.Eval.x(project, "x.dep.gr8"))
   implementation(groovy.util.Eval.x(project, "x.dep.kspGradlePlugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.dokka"))
   implementation(groovy.util.Eval.x(project, "x.dep.binaryCompatibilityValidator"))

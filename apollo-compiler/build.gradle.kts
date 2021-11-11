@@ -11,7 +11,10 @@ dependencies {
   implementation(projects.apolloNormalizedCacheApi) {
     because("To generate the CacheResolver")
   }
-  implementation(groovy.util.Eval.x(project, "x.dep.poet.kotlin"))
+  implementation(groovy.util.Eval.x(project, "x.dep.poet.kotlin").toString()) {
+    // We don't use any of the KotlinPoet kotlin-reflect features
+    exclude(module = "kotlin-reflect")
+  }
   implementation(groovy.util.Eval.x(project, "x.dep.poet.java"))
 
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.adapters"))
@@ -60,14 +63,6 @@ tasks.withType(KotlinCompile::class.java) {
   // Fixes the warning below:
   // "Task ':apollo-android:apollo-compiler:kaptGenerateStubsKotlin' uses the output of task ':apollo-android:apollo-compiler:pluginVersion', without declaring an explicit dependency"
   dependsOn(pluginVersionTaskProvider)
-}
-
-tasks.withType(KotlinCompile::class.java) {
-  kotlinOptions {
-    // Gradle forces 1.3.72 for the time being so compile against 1.3 stdlib for the time being
-    // See https://issuetracker.google.com/issues/166582569
-    apiVersion = "1.3"
-  }
 }
 
 // since test/graphql is not an input to Test tasks, they're not run with the changes made in there.

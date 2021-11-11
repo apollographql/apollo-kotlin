@@ -1,52 +1,39 @@
-import com.android.build.gradle.internal.tasks.factory.dependsOn
-
 plugins {
   kotlin("jvm")
   id("java-gradle-plugin")
   id("com.gradle.plugin-publish")
-  id("com.github.johnrengelman.shadow")
+  id("com.gradleup.gr8")
 }
 
-/**
- * Special configuration to be included in resulting shadowed jar, but not added to the generated pom and gradle
- * metadata files.
- * Largely inspired by Ktlint https://github.com/JLLeitschuh/ktlint-gradle/blob/530aa9829abea01e4c91e8798fb7341c438aac3b/plugin/build.gradle.kts
- */
-val shadowImplementation by configurations.creating
-configurations["compileOnly"].extendsFrom(shadowImplementation)
-configurations["testImplementation"].extendsFrom(shadowImplementation)
 
-fun addShadowImplementation(dependency: Dependency) {
-  dependency as ModuleDependency
-  /**
-   * Exclude the kotlin-stdlib from the fatjar because:
-   * 1. it's less bytes to download and load as the stdlib should be on the classpath already
-   * 2. there's a weird bug where trying to relocate the stdlib will also rename the "kotlin"
-   * strings inside the plugin so something like `extensions.findByName("kotlin")` becomes
-   * `extensions.findByName("com.apollographql.relocated.kotlin")
-   * See https://github.com/johnrengelman/shadow/issues/232 for more details
-   */
-  dependency.exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib")
-  dependency.exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-jdk7")
-  dependency.exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-jdk8")
-  dependency.exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-common")
-  dependency.exclude(group = "org.jetbrains.kotlin", module = "kotlin-reflect")
+// Configuration for extra jar to pass to R8 to give it more context about what can be relocated
+configurations.create("gr8Classpath")
+// Configuration dependencies that will be shadowed
+val shadeConfiguration = configurations.create("shade")
 
-  dependencies.add("shadowImplementation", dependency)
-}
 dependencies {
   compileOnly(groovy.util.Eval.x(project, "x.dep.minGradleApi"))
   //compileOnly(groovy.util.Eval.x(project, "x.dep.gradleApi"))
   compileOnly(groovy.util.Eval.x(project, "x.dep.kotlinPluginMin"))
   compileOnly(groovy.util.Eval.x(project, "x.dep.android.minPlugin"))
 
-  addShadowImplementation(projects.apolloCompiler)
-  addShadowImplementation(projects.apolloAst)
-  addShadowImplementation(projects.apolloApi)
+  /**
+   * OkHttp has some bytecode that checks for Conscrypt at runtime (https://github.com/square/okhttp/blob/71427d373bfd449f80178792fe231f60e4c972db/okhttp/src/main/kotlin/okhttp3/internal/platform/ConscryptPlatform.kt#L59)
+   * Put this in the classpath so that R8 knows it can relocate DisabledHostnameVerifier as the superclass is not package-private
+   *
+   * Keep in sync with https://github.com/square/okhttp/blob/71427d373bfd449f80178792fe231f60e4c972db/buildSrc/src/main/kotlin/deps.kt#L24
+   */
+  add("gr8Classpath", "org.conscrypt:conscrypt-openjdk-uber:2.5.2")
 
-  addShadowImplementation(create(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4")))
-  // Needed for manual Json construction in `SchemaDownloader`
-  addShadowImplementation(create(groovy.util.Eval.x(project, "x.dep.moshi.moshi")))
+  add("shade", "org.jetbrains.kotlin:kotlin-stdlib")
+  add("shade", projects.apolloApi)
+  add("shade", projects.apolloCompiler)
+  add("shade", projects.apolloAst)
+
+  add("shade", groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4"))
+  add("shade", groovy.util.Eval.x(project, "x.dep.moshi.moshi").toString()) {
+    because("Needed for manual Json construction in `SchemaDownloader`")
+  }
 
   testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
@@ -54,61 +41,33 @@ dependencies {
   testImplementation(groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer4"))
 }
 
-val shadowJarTask = tasks.named("shadowJar", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java)
-val shadowPrefix = "com.apollographql.relocated"
+if (true) {
+  gr8 {
+    val shadowedJar = create("shadow") {
+      proguardFile("rules.pro")
+      configuration("shade")
+      classPathConfiguration("gr8Classpath")
 
-shadowJarTask.configure {
-  configurations = listOf(shadowImplementation)
+      exclude(".*MANIFEST.MF")
+      exclude("META-INF/versions/9/module-info\\.class")
+      exclude("META-INF/kotlin-stdlib.*\\.kotlin_module")
 
-  /**
-   * This list is built by unzipping the fatjar and looking at .class files inside with something like:
-   *
-   * val dir  = args[0]
-   * val classPaths = File(dir).walk().filter { it.isFile }.map {
-   *   it.parentFile.relativeTo(File(dir)).path.replace("/", ".")
-   * }.distinct().sorted()
-   *
-   * Things to consider:
-   * - We do not ship kotlin-stdlib in the fat jar as it should be provided by Gradle already (see [addShadowImplementation])
-   * - I'm hoping kotlin-reflect is also provided by Gradle. In the tests I've made, it looks like it is and relocating it fails
-   * with java.lang.NoSuchMethodError: 'com.apollographql.relocated.kotlin.reflect.KClass kotlin.jvm.internal.Reflection.getOrCreateKotlinClass(java.lang.Class)
-   * - We do not relocate "com.apollographql.apollo.*" as the codegen has a lot of hardcoded strings inside that shouldn't be relocated
-   * as they are used at runtime
-   * - If we relocate a deep dependency (such as okio), we must relocate all intermediate dependencies (such as moshi/okhttp) or else
-   * this will clash with any other version in the classpath
-   * - When there are multiple subpackages, we usually include a shared prefx package to avoid this list being huge... But we don't
-   * want these packages to be too short either as it increases the risk of a string being renamed
-   */
-  listOf(
-      "com.benasher44.uuid",
-      "com.squareup.kotlinpoet",
-      "com.squareup.moshi",
-      "okhttp3",
-      "okio",
-      "org.antlr",
-  ).forEach { packageName ->
-    relocate(packageName, "com.apollographql.relocated.$packageName")
-  }
-}
-
-tasks.getByName("jar").enabled = false
-tasks.getByName("jar").dependsOn(shadowJarTask)
-
-configurations {
-  configureEach {
-    outgoing {
-      val removed = artifacts.removeIf { it.classifier.isNullOrEmpty() }
-      if (removed) {
-        artifact(tasks.shadowJar) {
-          // Pom and maven consumers do not like the `-all` default classifier
-          classifier = ""
-        }
-      }
+      // Remove proguard rules from dependencies, we'll manage them ourselves
+      exclude("META-INF/proguard/.*")
     }
+    removeGradleApiFromApi()
+
+    configurations.named("compileOnly").configure {
+      extendsFrom(shadeConfiguration)
+    }
+    configurations.named("testImplementation").configure {
+      extendsFrom(shadeConfiguration)
+    }
+    replaceOutgoingJar(shadowedJar)
   }
-  // used by plugin-publish plugin
-  archives {
-    extendsFrom(signatures.get())
+} else {
+  configurations.named("implementation").configure {
+    extendsFrom(shadeConfiguration)
   }
 }
 
@@ -137,15 +96,6 @@ gradlePlugin {
     }
   }
 }
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
-  kotlinOptions {
-    // Gradle forces 1.3.72 for the time being so compile against 1.3 stdlib for the time being
-    // See https://issuetracker.google.com/issues/166582569
-    apiVersion = "1.3"
-  }
-}
-
 
 /**
  * This is so that the plugin marker pom contains a <scm> tag

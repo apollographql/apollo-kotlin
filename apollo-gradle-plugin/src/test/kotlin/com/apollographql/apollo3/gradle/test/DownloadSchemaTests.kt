@@ -38,7 +38,6 @@ class DownloadSchemaTests {
 
   @Test
   fun `schema is downloaded correctly`() {
-
     withSimpleProject(apolloConfiguration = apolloConfiguration) { dir ->
       val mockResponse = MockResponse().setBody(schemaString1)
       mockServer.enqueue(mockResponse)

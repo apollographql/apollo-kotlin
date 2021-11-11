@@ -117,7 +117,7 @@ class EnumBuilder(
   private fun IrEnum.safeValueOfFunSpec(): FunSpec {
     return FunSpec.builder(safeValueOf)
         .addKdoc("Returns the [%T] that represents the specified [rawValue].\n", className())
-        .addParameter("rawValue", String::class)
+        .addParameter("rawValue", KotlinClassNames.String)
         .returns(className())
         .beginControlFlow("return·when(rawValue)")
         .addCode(
@@ -168,18 +168,18 @@ class EnumBuilder(
   private val primaryConstructorSpec =
       FunSpec
           .constructorBuilder()
-          .addParameter("rawValue", String::class)
+          .addParameter("rawValue", KotlinClassNames.String)
           .build()
 
   private val primaryConstructorWithOverriddenParamSpec =
       FunSpec
           .constructorBuilder()
-          .addParameter("rawValue", String::class)
+          .addParameter("rawValue", KotlinClassNames.String)
           .build()
 
   private val rawValuePropertySpec =
       PropertySpec
-          .builder("rawValue", String::class)
+          .builder("rawValue", KotlinClassNames.String)
           .initializer("rawValue")
           .build()
 

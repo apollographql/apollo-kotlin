@@ -11,7 +11,7 @@ buildscript {
     from(rootProject.file("gradle/dependencies.gradle"))
   }
   dependencies {
-    classpath("com.apollographql.apollo:build-logic")
+    classpath("com.apollographql.apollo3:build-logic")
   }
 }
 

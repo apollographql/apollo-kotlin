@@ -3,6 +3,7 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.file
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.model.ModelBuilder
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
@@ -28,7 +29,7 @@ class FragmentModelsBuilder(
         ModelBuilder(
             context = context,
             model = it,
-            superClassName = if (addSuperInterface && it.id == fragment.dataModelGroup.baseModelId) Fragment.Data::class.asClassName() else null,
+            superClassName = if (addSuperInterface && it.id == fragment.dataModelGroup.baseModelId) KotlinClassNames.FragmentData else null,
             path = listOf(packageName),
             hasSubclassesInSamePackage = false,
         )

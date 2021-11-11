@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.ast.internal
 
-import com.apollographql.apollo3.compiler.parser.antlr.GraphQLParser
+import com.apollographql.apollo3.generated.antlr.GraphQLParser
 import org.antlr.v4.runtime.Token
 
 import com.apollographql.apollo3.ast.*

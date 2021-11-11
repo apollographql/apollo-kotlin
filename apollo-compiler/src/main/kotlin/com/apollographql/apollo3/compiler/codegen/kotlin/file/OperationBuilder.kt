@@ -1,9 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
-import com.apollographql.apollo3.api.Mutation
-import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.QueryDocumentMinifier
-import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_DOCUMENT
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_ID
@@ -13,6 +10,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.id
 import com.apollographql.apollo3.compiler.codegen.Identifier.name
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClass
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
@@ -29,8 +27,6 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asClassName
-import com.squareup.kotlinpoet.asTypeName
 
 class OperationBuilder(
     private val context: KotlinContext,
@@ -39,16 +35,16 @@ class OperationBuilder(
     private val generateQueryDocument: Boolean,
     private val operation: IrOperation,
     flatten: Boolean,
-): CgOutputFileBuilder {
+) : CgOutputFileBuilder {
   private val layout = context.layout
   private val packageName = layout.operationPackageName(operation.filePath)
   private val simpleName = layout.operationName(operation)
 
   private val dataSuperClassName = when (operation.operationType) {
-    IrOperationType.Query -> Query.Data::class
-    IrOperationType.Mutation -> Mutation.Data::class
-    IrOperationType.Subscription -> Subscription.Data::class
-  }.asClassName()
+    IrOperationType.Query -> KotlinClassNames.QueryData
+    IrOperationType.Mutation -> KotlinClassNames.MutationData
+    IrOperationType.Subscription -> KotlinClassNames.SubscriptionData
+  }
 
   private val modelBuilders = operation.dataModelGroup.maybeFlatten(flatten).flatMap {
     it.models
@@ -61,7 +57,7 @@ class OperationBuilder(
         hasSubclassesInSamePackage = true,
     )
   }
-  
+
   override fun prepare() {
     context.resolver.registerOperation(
         operation.name,
@@ -115,9 +111,9 @@ class OperationBuilder(
 
   private fun superInterfaceType(): TypeName {
     return when (operation.operationType) {
-      IrOperationType.Query -> Query::class.asTypeName()
-      IrOperationType.Mutation -> Mutation::class.asTypeName()
-      IrOperationType.Subscription -> Subscription::class.asTypeName()
+      IrOperationType.Query -> KotlinClassNames.Query
+      IrOperationType.Mutation -> KotlinClassNames.Mutation
+      IrOperationType.Subscription -> KotlinClassNames.Subscription
     }.parameterizedBy(
         context.resolver.resolveModel(operation.dataModelGroup.baseModelId)
     )
@@ -125,13 +121,13 @@ class OperationBuilder(
 
   private fun operationIdFunSpec() = FunSpec.builder(id)
       .addModifiers(KModifier.OVERRIDE)
-      .returns(String::class)
+      .returns(KotlinClassNames.String)
       .addStatement("return $OPERATION_ID")
       .build()
 
   private fun queryDocumentFunSpec(generateQueryDocument: Boolean) = FunSpec.builder(document)
       .addModifiers(KModifier.OVERRIDE)
-      .returns(String::class)
+      .returns(KotlinClassNames.String)
       .apply {
         if (generateQueryDocument) {
           addStatement("return $OPERATION_DOCUMENT")
@@ -143,19 +139,19 @@ class OperationBuilder(
 
   private fun nameFunSpec() = FunSpec.builder(name)
       .addModifiers(KModifier.OVERRIDE)
-      .returns(String::class)
+      .returns(KotlinClassNames.String)
       .addStatement("return OPERATION_NAME")
       .build()
 
   private fun companionTypeSpec(): TypeSpec {
     return TypeSpec.companionObjectBuilder()
-        .addProperty(PropertySpec.builder(OPERATION_ID, String::class)
+        .addProperty(PropertySpec.builder(OPERATION_ID, KotlinClassNames.String)
             .addModifiers(KModifier.CONST)
             .initializer("%S", operationId)
             .build()
         )
         .applyIf(generateQueryDocument) {
-          addProperty(PropertySpec.builder(OPERATION_DOCUMENT, String::class)
+          addProperty(PropertySpec.builder(OPERATION_DOCUMENT, KotlinClassNames.String)
               .addModifiers(KModifier.CONST)
               .initializer("%S", QueryDocumentMinifier.minify(operation.sourceWithFragments))
               .addKdoc("%L", """
@@ -169,7 +165,7 @@ class OperationBuilder(
           )
         }
         .addProperty(PropertySpec
-            .builder(OPERATION_NAME, String::class)
+            .builder(OPERATION_NAME, KotlinClassNames.String)
             .addModifiers(KModifier.CONST)
             .initializer("%S", operation.name)
             .build()

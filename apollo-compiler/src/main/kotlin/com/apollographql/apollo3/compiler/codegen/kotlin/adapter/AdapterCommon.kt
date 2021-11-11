@@ -1,10 +1,8 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
 import com.apollographql.apollo3.api.BooleanExpression
-import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.Identifier.RESPONSE_NAMES
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
@@ -13,6 +11,8 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.reader
 import com.apollographql.apollo3.compiler.codegen.Identifier.typename
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.codeBlock
 import com.apollographql.apollo3.compiler.ir.IrModel
 import com.apollographql.apollo3.compiler.ir.IrModelType
@@ -26,7 +26,6 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.joinToCode
 
 internal fun responseNamesPropertySpec(model: IrModel): PropertySpec {
@@ -34,7 +33,7 @@ internal fun responseNamesPropertySpec(model: IrModel): PropertySpec {
     CodeBlock.of("%S", it.info.responseName)
   }.joinToCode(prefix = "listOf(", separator = ", ", suffix = ")")
 
-  return PropertySpec.builder(Identifier.RESPONSE_NAMES, List::class.parameterizedBy(String::class))
+  return PropertySpec.builder(Identifier.RESPONSE_NAMES, KotlinClassNames.List.parameterizedBy(KotlinClassNames.String))
       .initializer(initializer)
       .build()
 }
@@ -48,7 +47,7 @@ internal fun readFromResponseCodeBlock(
   val prefix = regularProperties.map { property ->
     val variableInitializer = when {
       hasTypenameArgument && property.info.responseName == "__typename" -> CodeBlock.of(typename)
-      (property.info.type is IrNonNullType && property.info.type.ofType is IrOptionalType) -> CodeBlock.of("%T", Optional.Absent::class.asClassName())
+      (property.info.type is IrNonNullType && property.info.type.ofType is IrOptionalType) -> CodeBlock.of("%T", KotlinClassNames.Absent)
       else -> CodeBlock.of("null")
     }
 
@@ -102,7 +101,7 @@ internal fun readFromResponseCodeBlock(
     CodeBlock.builder()
         .add("$reader.rewind()\n")
         .apply {
-          if(property.condition != BooleanExpression.True) {
+          if (property.condition != BooleanExpression.True) {
             add(
                 "var·%L:·%T·=·null\n",
                 context.layout.variableName(property.info.responseName),

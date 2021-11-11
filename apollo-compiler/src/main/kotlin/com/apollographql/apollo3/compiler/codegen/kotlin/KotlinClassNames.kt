@@ -61,6 +61,7 @@ internal object KotlinClassNames {
   val String = ClassName("kotlin", "String")
   val Double = ClassName("kotlin", "Double")
   val Any = ClassName("kotlin", "Any")
+  val Deprecated = ClassName("kotlin", "Deprecated")
   val Unit = ClassName("kotlin", "Unit")
 
   val List = ClassName("kotlin.collections", "List")

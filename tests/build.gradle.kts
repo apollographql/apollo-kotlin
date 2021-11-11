@@ -11,7 +11,7 @@ buildscript {
 
   dependencies {
     classpath("com.apollographql.apollo3:apollo-gradle-plugin")
-    classpath("com.apollographql.apollo:build-logic")
+    classpath("com.apollographql.apollo3:build-logic")
     classpath(groovy.util.Eval.x(project, "x.dep.kotlin.springPlugin"))
   }
 }

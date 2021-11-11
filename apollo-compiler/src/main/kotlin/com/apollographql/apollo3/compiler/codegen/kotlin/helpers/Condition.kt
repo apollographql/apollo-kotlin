@@ -4,15 +4,15 @@ import com.apollographql.apollo3.api.BPossibleTypes
 import com.apollographql.apollo3.api.BTerm
 import com.apollographql.apollo3.api.BVariable
 import com.apollographql.apollo3.api.BooleanExpression
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.MemberName
-import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 
 internal fun BooleanExpression<BTerm>.codeBlock(): CodeBlock {
-  return when(this) {
-    is BooleanExpression.False -> CodeBlock.of("%T", BooleanExpression.False::class.asTypeName())
-    is BooleanExpression.True -> CodeBlock.of("%T", BooleanExpression.True::class.asTypeName())
+  return when (this) {
+    is BooleanExpression.False -> CodeBlock.of("%T", KotlinClassNames.False)
+    is BooleanExpression.True -> CodeBlock.of("%T", KotlinClassNames.True)
     is BooleanExpression.And -> {
       val parameters = operands.map {
         it.codeBlock()
@@ -40,7 +40,7 @@ internal fun BooleanExpression<BTerm>.codeBlock(): CodeBlock {
         operand.codeBlock()
     )
     is BooleanExpression.Element -> {
-      when(val v = value) {
+      when (val v = value) {
         is BVariable -> {
           CodeBlock.of(
               "%M(%S)",

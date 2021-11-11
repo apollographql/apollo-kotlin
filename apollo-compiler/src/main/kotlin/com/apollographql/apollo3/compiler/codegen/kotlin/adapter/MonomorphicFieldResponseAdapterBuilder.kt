@@ -1,11 +1,8 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.ir.IrModel
 import com.squareup.kotlinpoet.ClassName
@@ -13,7 +10,6 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asTypeName
 
 class MonomorphicFieldResponseAdapterBuilder(
     val context: KotlinContext,
@@ -51,7 +47,7 @@ class MonomorphicFieldResponseAdapterBuilder(
   private fun typeSpec(): TypeSpec {
     return TypeSpec.objectBuilder(adapterName)
         .addSuperinterface(
-            Adapter::class.asTypeName().parameterizedBy(
+            KotlinClassNames.Adapter.parameterizedBy(
                 context.resolver.resolveModel(model.id)
             )
         )
@@ -68,8 +64,8 @@ class MonomorphicFieldResponseAdapterBuilder(
   private fun readFromResponseFunSpec(): FunSpec {
     return FunSpec.builder(Identifier.fromJson)
         .returns(adaptedClassName)
-        .addParameter(Identifier.reader, JsonReader::class)
-        .addParameter(Identifier.customScalarAdapters, CustomScalarAdapters::class)
+        .addParameter(Identifier.reader, KotlinClassNames.JsonReader)
+        .addParameter(Identifier.customScalarAdapters, KotlinClassNames.CustomScalarAdapters)
         .addModifiers(KModifier.OVERRIDE)
         .addCode(readFromResponseCodeBlock(model, context, false))
         .build()
@@ -78,8 +74,8 @@ class MonomorphicFieldResponseAdapterBuilder(
   private fun writeToResponseFunSpec(): FunSpec {
     return FunSpec.builder(Identifier.toJson)
         .addModifiers(KModifier.OVERRIDE)
-        .addParameter(Identifier.writer, JsonWriter::class.asTypeName())
-        .addParameter(Identifier.customScalarAdapters, CustomScalarAdapters::class)
+        .addParameter(Identifier.writer, KotlinClassNames.JsonWriter)
+        .addParameter(Identifier.customScalarAdapters, KotlinClassNames.CustomScalarAdapters)
         .addParameter(Identifier.value, adaptedClassName)
         .addCode(writeToResponseCodeBlock(model, context))
         .build()
