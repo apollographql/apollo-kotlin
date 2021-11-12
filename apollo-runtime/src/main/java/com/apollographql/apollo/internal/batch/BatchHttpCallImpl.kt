@@ -93,6 +93,8 @@ class BatchHttpCallImpl(
             val message = "Failed to parse batch http response for operation '${it.request.operation.name().name()}'"
             it.callback.onFailure(ApolloException(message, exception))
           }
+        } finally {
+          response.close()
         }
       }
 
