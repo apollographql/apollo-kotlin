@@ -3,19 +3,17 @@ title: Apollo AST
 ---
 
 In order to generate code, Apollo Android reads your schema and operations written in the GraphQL language. To do this,
-we built a GraphQL parser: a tool that can read, interpret, and expose GraphQL language constructs in a way that can be
-used by the library.
+it parses your GraphQL files in an Abstract Syntax Tree ([AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree)). The AST represents your GraphQL document in a type-safe, machine-readable way.
 
-Since this parser is not tied to the rest of the library, and as it may be useful for other purposes, we made it
-available as its own artifact that you can use in your projects.
+This parser is in its own module and you can use independently of apollo-runtime or apollo-api. 
 
 Features:
 
 - Parses Schema and Operations
 - Returns an Abstract Syntax Tree (AST)
 - AST can easily be manipulated (`transform` API)
-- AST can be translated back to valid GraphQL syntax
-- Validation of schema and operations exposing warnings (e.g. use of deprecated fields) and errors
+- AST can be printed back to valid, indented GraphQL document
+- Validation rules for operations (See [GraphQL spec](https://spec.graphql.org/draft/#sec-Validation))
 
 ## Add the dependency
 
