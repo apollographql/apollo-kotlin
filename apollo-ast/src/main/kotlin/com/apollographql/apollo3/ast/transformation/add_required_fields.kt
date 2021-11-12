@@ -1,7 +1,20 @@
 package com.apollographql.apollo3.ast.transformation
 
-import com.apollographql.apollo3.ast.*
+import com.apollographql.apollo3.ast.GQLField
+import com.apollographql.apollo3.ast.GQLFragmentDefinition
+import com.apollographql.apollo3.ast.GQLFragmentSpread
+import com.apollographql.apollo3.ast.GQLInlineFragment
+import com.apollographql.apollo3.ast.GQLNode
+import com.apollographql.apollo3.ast.GQLOperationDefinition
+import com.apollographql.apollo3.ast.GQLSelectionSet
 import com.apollographql.apollo3.ast.NodeTransformer
+import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.ast.SourceLocation
+import com.apollographql.apollo3.ast.TransformResult
+import com.apollographql.apollo3.ast.definitionFromScope
+import com.apollographql.apollo3.ast.leafType
+import com.apollographql.apollo3.ast.rootTypeDefinition
+import com.apollographql.apollo3.ast.transform
 
 fun addRequiredFields(operation: GQLOperationDefinition, schema: Schema): GQLOperationDefinition {
   val parentType = operation.rootTypeDefinition(schema)!!.name
@@ -63,7 +76,7 @@ private class AddRequiredFieldsTransformer(
               AddRequiredFieldsTransformer(
                   schema,
                   typeDefinition.type.leafType().name,
-                  fieldNames + requiredFieldNames
+                  emptySet()
               )
           ) as GQLSelectionSet?
           it.copy(
