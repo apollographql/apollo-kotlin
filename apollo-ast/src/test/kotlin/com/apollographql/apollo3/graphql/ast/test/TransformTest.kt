@@ -2,7 +2,9 @@ package com.apollographql.apollo3.ast.test
 
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLIntValue
+import com.apollographql.apollo3.ast.TransformResult
 import com.apollographql.apollo3.ast.parseAsGQLDocument
+import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.transform
 import org.junit.Test
@@ -27,9 +29,9 @@ class TransformTest {
     val currentVersion = 4
     val transformed = document.transform {
       if (it is GQLField && (it.minVersion() ?: 0) > currentVersion) {
-        null
+        TransformResult.Delete
       } else {
-        it
+        TransformResult.Continue
       }
     }
 
@@ -65,5 +67,50 @@ class TransformTest {
     }
 
     return value.value
+  }
+
+  @Test
+  fun addField() {
+    val query = """
+      query TestQuery {
+        objectType {
+          field
+        }
+      }
+    """.trimIndent()
+
+    val transformed = query.toGQLDocument().transform {
+      if (it is GQLField && it.name == "objectType") {
+        val newField = GQLField(
+            alias = null,
+            name = "newField",
+            arguments = null,
+            directives = emptyList(),
+            selectionSet = null,
+        )
+        TransformResult.Replace(
+            it.copy(
+                selectionSet = it.selectionSet!!.copy(
+                    selections = it.selectionSet!!.children + newField
+                )
+            )
+        )
+      } else {
+        TransformResult.Continue
+      }
+    }
+
+    val expected = """
+        |query TestQuery {
+        |  objectType {
+        |    field
+        |    newField
+        |  }
+        |}
+        |
+      """.trimMargin()
+    val actual = transformed!!.toUtf8()
+
+    assertEquals(expected, actual)
   }
 }
