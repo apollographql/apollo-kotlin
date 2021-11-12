@@ -45,20 +45,23 @@ class ApolloIdlingResource(
 }
 
 fun ApolloClient.Builder.idlingResource(idlingResource: ApolloIdlingResource): ApolloClient.Builder {
-  return addInterceptor(object : ApolloInterceptor {
-    override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-      // Do not update the idling resource on subscriptions as they will never terminate
-      return if (request.operation !is Subscription) {
-        chain.proceed(request).onStart {
-          idlingResource.operationStart()
-        }.onCompletion {
-          idlingResource.operationEnd()
-        }
-      } else {
-        chain.proceed(request)
+  check (!interceptors.any { it is IdlingResourceInterceptor }) { "idlingResource was already set, can only be set once" }
+  return addInterceptor(IdlingResourceInterceptor(idlingResource))
+}
+
+private class IdlingResourceInterceptor(private val idlingResource: ApolloIdlingResource): ApolloInterceptor {
+  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+    // Do not update the idling resource on subscriptions as they will never terminate
+    return if (request.operation !is Subscription) {
+      chain.proceed(request).onStart {
+        idlingResource.operationStart()
+      }.onCompletion {
+        idlingResource.operationEnd()
       }
+    } else {
+      chain.proceed(request)
     }
-  })
+  }
 }
 
 @Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
