@@ -65,6 +65,7 @@ module.exports = {
             'advanced/response-based-codegen',
             'advanced/java',
             'advanced/rxjava',
+            'advanced/apollo-ast',
           ],
         }
       }
