@@ -155,7 +155,8 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
     private var _networkTransport: NetworkTransport? = null
     private var subscriptionNetworkTransport: NetworkTransport? = null
     private val customScalarAdaptersBuilder = CustomScalarAdapters.Builder()
-    private val interceptors: MutableList<ApolloInterceptor> = mutableListOf()
+    private val _interceptors: MutableList<ApolloInterceptor> = mutableListOf()
+    val interceptors: List<ApolloInterceptor> = _interceptors
     private var requestedDispatcher: CoroutineDispatcher? = null
     override var executionContext: ExecutionContext = ExecutionContext.Empty
     private var httpServerUrl: String? = null
@@ -242,16 +243,16 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
     ) = addCustomScalarAdapter(customScalarType, Version2CustomTypeAdapterToAdapter(customTypeAdapter))
 
     fun addInterceptor(interceptor: ApolloInterceptor) = apply {
-      interceptors += interceptor
+      _interceptors += interceptor
     }
 
     fun addInterceptors(interceptors: List<ApolloInterceptor>) = apply {
-      this.interceptors += interceptors
+      this._interceptors += interceptors
     }
 
     fun interceptors(interceptors: List<ApolloInterceptor>) = apply {
-      this.interceptors.clear()
-      this.interceptors += interceptors
+      this._interceptors.clear()
+      this._interceptors += interceptors
     }
 
     fun requestedDispatcher(requestedDispatcher: CoroutineDispatcher?) = apply {
@@ -312,7 +313,7 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
           networkTransport = networkTransport,
           subscriptionNetworkTransport = subscriptionNetworkTransport,
           customScalarAdapters = customScalarAdaptersBuilder.build(),
-          interceptors = interceptors,
+          interceptors = _interceptors,
           requestedDispatcher = requestedDispatcher,
           executionContext = executionContext,
       )
