@@ -45,6 +45,7 @@ public final class com/apollographql/apollo3/ApolloClient$Builder : com/apollogr
 	public final fun customScalarAdapters (Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun executionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
+	public final fun getInterceptors ()Ljava/util/List;
 	public final fun httpEngine (Lcom/apollographql/apollo3/network/http/HttpEngine;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun httpServerUrl (Ljava/lang/String;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun interceptors (Ljava/util/List;)Lcom/apollographql/apollo3/ApolloClient$Builder;
