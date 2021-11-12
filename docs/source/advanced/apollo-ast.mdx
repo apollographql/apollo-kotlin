@@ -3,9 +3,10 @@ title: Apollo AST
 ---
 
 In order to generate code, Apollo Android reads your schema and operations written in the GraphQL language. To do this,
-it parses your GraphQL files in an Abstract Syntax Tree ([AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree)). The AST represents your GraphQL document in a type-safe, machine-readable way.
+it parses your GraphQL files in an Abstract Syntax Tree ([AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree)). The
+AST represents your GraphQL document in a type-safe, machine-readable way.
 
-This parser is in its own module and you can use independently of apollo-runtime or apollo-api. 
+This parser is in its own module and you can use independently of apollo-runtime or apollo-api.
 
 Features:
 
@@ -154,19 +155,25 @@ ERROR: Can't query 'foobar' on type 'Character']`
 
 The library also offers an API to manipulate the AST: the `transform` method on `GQLDocument`.
 
-This method takes as a parameter a lambda that provides a `GQLNode` and returns the transformed node (or `null` to
-remove the node). It will then visit all nodes in the AST, apply the lambda to each one, and replace the node with the
-result.
+This method takes an implementation of the `NodeTransformer` interface defining the `transform` method. It will be
+called with the visited `GQLNode` as a parameter and should return instructions to manipulate the AST:
+
+- `Continue`: keep the node as-is and continue visiting the children
+- `Delete`: delete the node
+- `Replace(GQLNode)`: replace the node with the given one
+
+Note that with `Delete` and `Replace`, the node's children are not visited automatically, so you should call `transform`
+recursively if that is needed.
 
 For instance, here's how to remove any field named `foobar` from the selections:
 
 ```kotlin
-val transformedQuery = queryGqlDocument.transform{ node ->
-    if (node is GQLField && node.name == "foobar") {
-        null
-    } else {
-        node
-    }
+val transformedQuery = queryGqlDocument.transform { node ->
+  if (node is GQLField && node.name == "foobar") {
+    TransformResult.Delete
+  } else {
+    TransformResult.Continue
+  }
 }
 println(transformedQuery!!.toUtf8())
 ```
