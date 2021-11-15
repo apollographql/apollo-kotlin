@@ -135,9 +135,9 @@ Build your project, this will generate a `HeroQuery` class that you can use with
 
 **To learn more about other Apollo Android APIs:**
 
-* Execute your first [mutation](https://www.apollographql.com/docs/android/v3/essentials/10-mutations/)
-* Handle [custom scalar types](https://www.apollographql.com/docs/android/v3/essentials/30-custom-scalars/)
-* Factor common patterns using [fragments](https://www.apollographql.com/docs/android/v3/essentials/40-inline-fragments)
+* Execute your first [mutation](https://www.apollographql.com/docs/android/v3/essentials/mutations/)
+* Handle [custom scalar types](https://www.apollographql.com/docs/android/v3/essentials/custom-scalars/)
+* Factor common patterns using [fragments](https://www.apollographql.com/docs/android/v3/essentials/inline-fragments)
 
 ## IntelliJ Plugin
 
