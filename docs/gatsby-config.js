@@ -66,6 +66,7 @@ module.exports = {
             'advanced/java',
             'advanced/rxjava',
             'advanced/apollo-ast',
+            'advanced/test-builders',
           ],
         }
       }
