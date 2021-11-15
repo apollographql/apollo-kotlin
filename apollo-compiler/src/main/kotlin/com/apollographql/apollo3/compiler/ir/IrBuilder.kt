@@ -32,6 +32,7 @@ import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo3.ast.GQLVariableDefinition
 import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.ast.TransformResult
 import com.apollographql.apollo3.ast.VariableReference
 import com.apollographql.apollo3.ast.coerceInExecutableContextOrThrow
 import com.apollographql.apollo3.ast.coerceInSchemaContextOrThrow
@@ -244,9 +245,9 @@ internal class IrBuilder(
   private fun GQLNode.formatToString(): String {
     return transform {
       if (it is GQLDirective && it.isApollo()) {
-        null
+        TransformResult.Delete
       } else {
-        it
+        TransformResult.Continue
       }
     }!!.toUtf8()
   }

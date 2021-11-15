@@ -43,18 +43,28 @@ interface GQLNode {
   fun copyWithNewChildren(container: NodeContainer): GQLNode
 }
 
-fun GQLNode.transform(block: (GQLNode) -> GQLNode?): GQLNode? {
+sealed interface TransformResult {
+  object Delete: TransformResult
+  object Continue: TransformResult
+  class Replace(val newNode: GQLNode): TransformResult
+}
 
-  val newChildren = children.mapNotNull {
-    it.transform(block)
-  }
+fun interface NodeTransformer {
+  fun transform(node: GQLNode): TransformResult
+}
 
-  return block(this)?.run {
-    val container = NodeContainer(newChildren)
-    copyWithNewChildren(container).also {
-      container.assert()
-    }
-  }
+fun GQLNode.transform(transformer: NodeTransformer): GQLNode? {
+  return when(val result = transformer.transform(this)) {
+     is TransformResult.Delete -> null
+     is TransformResult.Replace -> result.newNode
+     is TransformResult.Continue -> {
+       val newChildren = children.mapNotNull { it.transform(transformer) }
+       val nodeContainer = NodeContainer(newChildren)
+       copyWithNewChildren(nodeContainer).also {
+         nodeContainer.assert()
+       }
+     }
+   }
 }
 
 /**

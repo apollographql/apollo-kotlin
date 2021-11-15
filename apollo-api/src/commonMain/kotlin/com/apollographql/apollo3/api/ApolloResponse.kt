@@ -47,10 +47,28 @@ class ApolloResponse<out D : Operation.Data>(
 ) {
 
   /**
-   * A shorthand property to get a non-nullable if handling partial data is not important
+   * A shorthand property to get a non-nullable `data` if handling partial data is not important
    */
+  @Deprecated("Please use dataAssertNoErrors methods instead. This will be removed in v3.0.0.",
+  ReplaceWith("dataAssertNoErrors"))
   @get:JvmName("dataOrThrow")
   val dataOrThrow: D
+    get() {
+      return if (hasErrors()) {
+        throw ApolloException("The response has errors: $errors")
+      } else {
+        data ?: throw  ApolloException("The server did not return any data")
+      }
+    }
+
+  /**
+   * A shorthand property to get a non-nullable `data` if handling partial data is **not** important
+   *
+   * Note: A future version could use [Definitely non nullable types](https://github.com/Kotlin/KEEP/pull/269)
+   * to implement something like `ApolloResponse<D>.assertNoErrors(): ApolloResponse<D & Any>`
+   */
+  @get:JvmName("dataAssertNoErrors")
+  val dataAssertNoErrors: D
     get() {
       return if (hasErrors()) {
         throw ApolloException("The response has errors: $errors")

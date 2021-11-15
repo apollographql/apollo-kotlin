@@ -43,6 +43,6 @@ public class ClientTest {
     mockServer.enqueue(new MockResponse("{\"data\": {\"random\": 42}}"));
 
     ApolloResponse<GetRandomQuery.Data> response = Rx2Apollo.rxSingle(apolloClient.query(new GetRandomQuery())).blockingGet();
-    Truth.assertThat(response.dataOrThrow().random).isEqualTo(42);
+    Truth.assertThat(response.dataAssertNoErrors().random).isEqualTo(42);
   }
 }
