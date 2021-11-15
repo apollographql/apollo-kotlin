@@ -73,6 +73,8 @@ if (true) {
 
 tasks.withType<Test> {
   dependsOn(":apollo-api:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-ast:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-normalized-cache-api:publishJvmPublicationsToPluginTestRepository")
   dependsOn(":apollo-compiler:publishAllPublicationsToPluginTestRepository")
   dependsOn("publishAllPublicationsToPluginTestRepository")
 
