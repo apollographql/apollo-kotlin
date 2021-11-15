@@ -13,8 +13,7 @@ module.exports = {
         githubRepo: 'apollographql/apollo-android',
         sidebarCategories: {
           null: [
-            'index',
-            'get-started',
+            'introduction',
             'migration/3.0',
             '[Kdoc](https://apollographql.github.io/apollo-android/kdoc/)',
           ],
