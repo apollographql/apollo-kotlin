@@ -6,62 +6,27 @@
 package com.example.enum_field.type
 
 import com.apollographql.apollo3.api.EnumType
-import kotlin.Any
-import kotlin.Array
-import kotlin.Boolean
 import kotlin.Deprecated
-import kotlin.Int
 import kotlin.String
 
-public sealed class Gravity(
+public enum class Gravity(
   public val rawValue: String
 ) {
+  TOP("TOP"),
+  CENTER("CENTER"),
+  BOTTOM("BOTTOM"),
+  @Deprecated(message = "use BOTTOM instead")
+  bottom("bottom"),
+  /**
+   * Auto generated constant for unknown enum values
+   */
+  UNKNOWN__("UNKNOWN__"),
+  ;
+
   public companion object {
     public val type: EnumType = EnumType("Gravity")
 
-    /**
-     * Returns the [Gravity] that represents the specified [rawValue].
-     */
-    public fun safeValueOf(rawValue: String): Gravity = when(rawValue) {
-      "TOP" -> TOP
-      "CENTER" -> CENTER
-      "BOTTOM" -> BOTTOM
-      "bottom" -> bottom
-      else -> UNKNOWN__(rawValue)
-    }
-
-    /**
-     * Returns all [Gravity] known at compile time
-     */
-    public fun knownValues(): Array<Gravity> = arrayOf(
-      TOP,
-      CENTER,
-      BOTTOM,
-      bottom)
-  }
-
-  public object TOP : Gravity(rawValue = "TOP")
-
-  public object CENTER : Gravity(rawValue = "CENTER")
-
-  public object BOTTOM : Gravity(rawValue = "BOTTOM")
-
-  @Deprecated(message = "use BOTTOM instead")
-  public object bottom : Gravity(rawValue = "bottom")
-
-  /**
-   * An enum value that wasn't known at compile time.
-   */
-  public class UNKNOWN__(
-    rawValue: String
-  ) : Gravity(rawValue = rawValue) {
-    public override fun equals(other: Any?): Boolean {
-      if (other !is UNKNOWN__) return false
-      return this.rawValue == other.rawValue
-    }
-
-    public override fun hashCode(): Int = this.rawValue.hashCode()
-
-    public override fun toString(): String = "UNKNOWN__($rawValue)"
+    public fun safeValueOf(rawValue: String): Gravity = values().find { it.rawValue == rawValue } ?:
+        UNKNOWN__
   }
 }
