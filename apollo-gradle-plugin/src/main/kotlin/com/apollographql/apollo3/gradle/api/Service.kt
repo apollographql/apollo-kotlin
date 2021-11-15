@@ -349,10 +349,8 @@ interface Service {
    * Use this if you want your client to have access to the rawValue of the enum. This can be useful if new GraphQL enums are added but
    * the client was compiled against an older schema that doesn't have knowledge of the new enums.
    *
-   * Default: listOf(".*")
+   * Default: emptyList()
    */
-  @Deprecated("Kotlin sealed classes are more flexible than Kotlin enums to represent GraphQL enums because they can expose the " +
-      "rawValue of the unknown enums.")
   val sealedClassesForEnumsMatching: ListProperty<String>
 
   /**
@@ -363,7 +361,6 @@ interface Service {
    * ```
    * packageNamesFromFilePaths(rootPackageName)
    * codegenModels.set(MODELS_COMPAT)
-   * sealedClassesForEnumsMatching.set(emptyList())
    * generateOptionalOperationVariables.set(true)
    * ```
    *
