@@ -32,7 +32,7 @@ module.exports = {
             'tutorial/11-subscriptions',
           ],
           'Essentials': [
-            'essentials/file-types'
+            'essentials/file-types',
             'essentials/queries',
             'essentials/mutations',
             'essentials/subscriptions',
