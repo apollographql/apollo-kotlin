@@ -93,7 +93,7 @@ Apollo Android supports three types of files:
 - `.json` schema files: describes the types in your backend using the Json syntax.
 - `.graphql` executable files: describes your queries and operations in the GraphQL syntax.
 
-By default, Apollo Android requires a schema in your module `src/main/graphql` directory. You can download a schema using introspection with the `./gradlew downloadApolloSchema` task. Sometimes introspection is disabled and you will have to ask your backend team to provide a schema. Copy this schema to your module:
+By default, Apollo Android requires a schema in your module's `src/main/graphql` directory. You can download a schema using introspection with the `./gradlew downloadApolloSchema` task. Sometimes introspection is disabled and you will have to ask your backend team to provide a schema. Copy this schema to your module:
 
 ```
 cp ${schema} ${module}/src/main/graphql/
