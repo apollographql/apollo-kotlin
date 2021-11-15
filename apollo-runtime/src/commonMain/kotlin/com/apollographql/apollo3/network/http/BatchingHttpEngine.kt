@@ -33,13 +33,13 @@ import okio.Buffer
 import okio.BufferedSink
 
 /**
- * An [HttpEngine] that wraps another one and batches HTTP queries to execute mutiple
- * at once. This reduces the number of HTTP roundtrips at the price of increased latency as
+ * An [HttpEngine] that wraps another one and batches HTTP queries to execute multiple
+ * at once. This reduces the number of HTTP round trips at the price of increased latency as
  * every request in the batch is now as slow as the slowest one.
  * Some servers might have a per-HTTP-call cache making it faster to resolve 1 big array
  * of n queries compared to resolving the n queries separately.
  *
- * Because [ApolloClient.query] suspends, it only makes sense to use query batching when queries are
+ * Because [ApolloCall.execute] suspends, it only makes sense to use query batching when queries are
  * executed from different coroutines. Use [async] to create a new coroutine if needed
  *
  * [BatchingHttpEngine] buffers the whole response so it might additionally introduce some

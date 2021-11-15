@@ -1,0 +1,51 @@
+---
+title: Query batching
+---
+
+Apollo Android supports batching queries as a means to reduce the number of HTTP round trips. When enabled, operations
+executed consecutively in a short period of time will be sent to the server together in a single HTTP request.
+
+Note that this network optimization comes at the price of increased latency as every request in the batch is now as slow
+as the slowest one.
+
+Here is how to enable batching:
+
+```kotlin{5}
+val apolloClient = ApolloClient.Builder()
+    .networkTransport(
+        HttpNetworkTransport.Builder()
+            .serverUrl("https://...")
+            .httpEngine(BatchingHttpEngine())
+            .build()
+    )
+    .build()
+```
+
+By default, batched operations will be sent after 10 ms, or when 10 of them have been accumulated, but this can be
+configured:
+
+```kotlin
+BatchingHttpEngine(
+    batchIntervalMillis = 1000,
+    maxBatchSize = 20
+)
+```
+
+## Opting in/out
+
+If you need to disable batching for a specific operation, you can do so by using the `canBeBatched` extension:
+
+```kotlin
+apolloClient.query(MyQuery()).canBeBatched(false).execute()
+```
+
+The default behavior is to have batching enabled for all operations, unless opting-out. If instead you want it to be
+disabled by default and enable it only for specific operations, you can do so by using the `batchByDefault` parameter:
+
+```kotlin
+BatchingHttpEngine(
+    batchByDefault = false
+)
+```
+
+With this, only operations executed with `canBeBatched(true)` will be batched.
