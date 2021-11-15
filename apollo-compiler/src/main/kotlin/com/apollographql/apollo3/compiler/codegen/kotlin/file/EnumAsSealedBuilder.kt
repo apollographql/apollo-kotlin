@@ -21,7 +21,7 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.joinToCode
 
-class EnumBuilder(
+class EnumAsSealedBuilder(
     private val context: KotlinContext,
     private val enum: IrEnum,
 ) : CgOutputFileBuilder {
