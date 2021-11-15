@@ -1,8 +1,8 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
-import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClass
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
@@ -16,8 +16,6 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asClassName
-import com.squareup.kotlinpoet.asTypeName
 
 class FragmentBuilder(
     private val context: KotlinContext,
@@ -34,7 +32,7 @@ class FragmentBuilder(
       ModelBuilder(
           context = context,
           model = it,
-          superClassName = if (it.id == fragment.dataModelGroup.baseModelId) Fragment.Data::class.asClassName() else null,
+          superClassName = if (it.id == fragment.dataModelGroup.baseModelId) KotlinClassNames.FragmentData else null,
           path = listOf(packageName, simpleName),
           hasSubclassesInSamePackage = false,
       )
@@ -99,7 +97,7 @@ class FragmentBuilder(
   }
 
   private fun superInterfaceType(): TypeName {
-    return Fragment::class.asTypeName().parameterizedBy(
+    return  KotlinClassNames.Fragment.parameterizedBy(
         context.resolver.resolveModel(fragment.dataModelGroup.baseModelId)
     )
   }

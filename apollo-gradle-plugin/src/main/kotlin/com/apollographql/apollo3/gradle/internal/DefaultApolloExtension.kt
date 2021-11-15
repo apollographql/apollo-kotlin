@@ -31,6 +31,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinBasePluginWrapper
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import java.io.File
+import java.util.concurrent.Callable
 
 abstract class DefaultApolloExtension(
     private val project: Project,
@@ -183,14 +184,14 @@ abstract class DefaultApolloExtension(
     return project.tasks.register(ModelNames.checkApolloVersions()) {
       val outputFile = BuildDirLayout.versionCheck(project)
 
-      it.inputs.property("allVersions") {
+      it.inputs.property("allVersions", Callable {
         val allDeps = (
             getDeps(project.rootProject.buildscript.configurations) +
                 getDeps(project.buildscript.configurations) +
                 getDeps(project.configurations)
             )
         allDeps.mapNotNull { it.version }.distinct().sorted()
-      }
+      })
       it.outputs.file(outputFile)
 
       it.doLast(object : Action<Task> {

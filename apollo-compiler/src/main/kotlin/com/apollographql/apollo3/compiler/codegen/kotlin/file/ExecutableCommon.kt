@@ -9,6 +9,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.selections
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.obj
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.patchKotlinNativeOptionalArrayProperties
@@ -39,8 +40,8 @@ fun serializeVariablesFunSpec(
   }
   return FunSpec.builder(serializeVariables)
       .addModifiers(KModifier.OVERRIDE)
-      .addParameter(writer, JsonWriter::class)
-      .addParameter(customScalarAdapters, CustomScalarAdapters::class.asTypeName())
+      .addParameter(writer, KotlinClassNames.JsonWriter)
+      .addParameter(customScalarAdapters, KotlinClassNames.CustomScalarAdapters)
       .addCode(body)
       .build()
 }
@@ -51,7 +52,7 @@ fun adapterFunSpec(
 ): FunSpec {
   return FunSpec.builder("adapter")
       .addModifiers(KModifier.OVERRIDE)
-      .returns(Adapter::class.asClassName().parameterizedBy(adaptedTypeName))
+      .returns(KotlinClassNames.Adapter.parameterizedBy(adaptedTypeName))
       .addCode(CodeBlock.of("return·%T", adapterTypeName).obj(false))
       .build()
 }
@@ -59,7 +60,7 @@ fun adapterFunSpec(
 fun selectionsFunSpec(context: KotlinContext, className: ClassName): FunSpec {
   return FunSpec.builder(selections)
       .addModifiers(KModifier.OVERRIDE)
-      .returns(List::class.parameterizedBy(CompiledSelection::class))
+      .returns(KotlinClassNames.List.parameterizedBy(KotlinClassNames.CompiledSelection))
       .addCode("return %T.%L\n", className, context.layout.rootSelectionsPropertyName())
       .build()
 }

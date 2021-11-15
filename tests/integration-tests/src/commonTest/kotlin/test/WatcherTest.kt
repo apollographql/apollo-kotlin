@@ -234,7 +234,6 @@ class WatcherTest {
   fun nothingReceivedWhenCancelled() = runTest(before = { setUp() }, after = { tearDown() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
-    // The first query should get a "R2-D2" name
     mockServer.enqueue(readResource("EpisodeHeroNameResponseWithId.json"))
     val job = launch {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))

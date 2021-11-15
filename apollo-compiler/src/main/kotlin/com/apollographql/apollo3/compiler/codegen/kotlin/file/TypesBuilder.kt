@@ -1,12 +1,8 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
-import com.apollographql.apollo3.api.CustomScalarType
-import com.apollographql.apollo3.api.EnumType
-import com.apollographql.apollo3.api.InterfaceType
-import com.apollographql.apollo3.api.ObjectType
-import com.apollographql.apollo3.api.UnionType
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.type
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinResolver
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
@@ -17,7 +13,6 @@ import com.apollographql.apollo3.compiler.ir.IrObject
 import com.apollographql.apollo3.compiler.ir.IrUnion
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 
 internal fun IrCustomScalar.typePropertySpec(): PropertySpec {
@@ -28,15 +23,15 @@ internal fun IrCustomScalar.typePropertySpec(): PropertySpec {
    */
   val kotlinName = kotlinName ?: "kotlin.Any"
   return PropertySpec
-      .builder(Identifier.type, CustomScalarType::class)
-      .initializer("%T(%S, %S)", CustomScalarType::class.asTypeName(), name, kotlinName)
+      .builder(Identifier.type, KotlinClassNames.CustomScalarType)
+      .initializer("%T(%S, %S)", KotlinClassNames.CustomScalarType, name, kotlinName)
       .build()
 }
 
 internal fun IrEnum.typePropertySpec(): PropertySpec {
   return PropertySpec
-      .builder(Identifier.type, EnumType::class)
-      .initializer("%T(%S)", EnumType::class.asTypeName(), name)
+      .builder(Identifier.type, KotlinClassNames.EnumType)
+      .initializer("%T(%S)", KotlinClassNames.EnumType, name)
       .build()
 }
 
@@ -60,7 +55,7 @@ private fun List<String>.implementsToCode(resolver: KotlinResolver): CodeBlock {
 
 internal fun IrObject.typePropertySpec(resolver: KotlinResolver): PropertySpec {
   val builder = CodeBlock.builder()
-  builder.add("%T(name = %S", ObjectType::class.asTypeName(), name)
+  builder.add("%T(name = %S", KotlinClassNames.ObjectType, name)
   if (keyFields.isNotEmpty()) {
     builder.add(", ")
     builder.add("keyFields = %L", keyFields.toCode())
@@ -72,14 +67,14 @@ internal fun IrObject.typePropertySpec(resolver: KotlinResolver): PropertySpec {
   builder.add(")")
 
   return PropertySpec
-      .builder(type, ObjectType::class)
+      .builder(type, KotlinClassNames.ObjectType)
       .initializer(builder.build())
       .build()
 }
 
 internal fun IrInterface.typePropertySpec(resolver: KotlinResolver): PropertySpec {
   val builder = CodeBlock.builder()
-  builder.add("%T(name = %S", InterfaceType::class.asTypeName(), name)
+  builder.add("%T(name = %S", KotlinClassNames.InterfaceType, name)
   if (keyFields.isNotEmpty()) {
     builder.add(", ")
     builder.add("keyFields = %L", keyFields.toCode())
@@ -91,7 +86,7 @@ internal fun IrInterface.typePropertySpec(resolver: KotlinResolver): PropertySpe
   builder.add(")")
 
   return PropertySpec
-      .builder(type, InterfaceType::class)
+      .builder(type, KotlinClassNames.InterfaceType)
       .initializer(builder.build())
       .build()
 }
@@ -104,9 +99,9 @@ internal fun IrUnion.typePropertySpec(resolver: KotlinResolver): PropertySpec {
   }.joinToCode(", "))
 
   return PropertySpec
-      .builder(type, UnionType::class)
+      .builder(type, KotlinClassNames.UnionType)
       .maybeAddDescription(description)
       .maybeAddDeprecation(deprecationReason)
-      .initializer("%T(%S, %L)", UnionType::class.asTypeName(), name, builder.build())
+      .initializer("%T(%S, %L)", KotlinClassNames.UnionType, name, builder.build())
       .build()
 }

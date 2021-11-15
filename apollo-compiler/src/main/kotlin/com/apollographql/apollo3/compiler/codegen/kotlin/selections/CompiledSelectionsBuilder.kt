@@ -2,10 +2,6 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.selections
 
 import com.apollographql.apollo3.api.BVariable
 import com.apollographql.apollo3.api.BooleanExpression
-import com.apollographql.apollo3.api.CompiledArgument
-import com.apollographql.apollo3.api.CompiledCondition
-import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.ast.GQLArgument
 import com.apollographql.apollo3.ast.GQLBooleanValue
 import com.apollographql.apollo3.ast.GQLEnumValue
@@ -43,7 +39,6 @@ import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 
 class CompiledSelectionsBuilder(
@@ -81,7 +76,7 @@ class CompiledSelectionsBuilder(
     builder.unindent()
     builder.add(")")
 
-    val property = PropertySpec.builder(propertyName, List::class.parameterizedBy(CompiledSelection::class))
+    val property = PropertySpec.builder(propertyName, KotlinClassNames.List.parameterizedBy(KotlinClassNames.CompiledSelection))
         .initializer(builder.build())
         .applyIf(private) {
           addModifiers(KModifier.PRIVATE)
@@ -124,7 +119,7 @@ class CompiledSelectionsBuilder(
 
     check(expression is BooleanExpression.Element)
 
-    return CodeBlock.of("%T(%S,·%L)", CompiledCondition::class.asTypeName(), expression.value.name, inverted.toString())
+    return CodeBlock.of("%T(%S,·%L)", KotlinClassNames.CompiledCondition, expression.value.name, inverted.toString())
   }
 
   private fun GQLField.walk(private: Boolean, parentType: String): SelectionResult? {
@@ -285,7 +280,7 @@ class CompiledSelectionsBuilder(
       is GQLFloatValue -> CodeBlock.of("%L", value)
       is GQLBooleanValue -> CodeBlock.of("%L", value)
       is GQLStringValue -> CodeBlock.of("%S", value)
-      is GQLVariableValue -> CodeBlock.of("%T(%S)", CompiledVariable::class, name)
+      is GQLVariableValue -> CodeBlock.of("%T(%S)", KotlinClassNames.CompiledVariable, name)
       is GQLNullValue -> CodeBlock.of("null")
     }
   }
@@ -305,7 +300,7 @@ class CompiledSelectionsBuilder(
       val argumentBuilder = CodeBlock.builder()
       argumentBuilder.add(
           "%T(%S,·%L",
-          CompiledArgument::class,
+          KotlinClassNames.CompiledArgument,
           it.name,
           it.value.codeBlock()
       )

@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
 
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
@@ -23,12 +24,12 @@ internal fun TypeSpec.patchKotlinNativeOptionalArrayProperties(): TypeSpec {
       .filter { propertySpec ->
         val propertyType = propertySpec.type
         propertyType is ParameterizedTypeName &&
-            propertyType.rawType == List::class.asClassName() &&
+            propertyType.rawType == KotlinClassNames.List &&
             propertyType.typeArguments.single().isNullable
       }
       .map { propertySpec ->
         val listItemType = (propertySpec.type as ParameterizedTypeName).typeArguments.single().copy(nullable = false)
-        val nonOptionalListType = List::class.asClassName().parameterizedBy(listItemType).copy(nullable = propertySpec.type.isNullable)
+        val nonOptionalListType = KotlinClassNames.List.parameterizedBy(listItemType).copy(nullable = propertySpec.type.isNullable)
         FunSpec
             .builder("${propertySpec.name}FilterNotNull")
             .returns(nonOptionalListType)

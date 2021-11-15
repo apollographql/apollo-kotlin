@@ -284,7 +284,7 @@ private fun Project.createJavaSourcesTask(): TaskProvider<Jar> {
 private fun Project.createAndroidSourcesTask(): TaskProvider<Jar> {
   return tasks.register("javaSourcesJar", Jar::class.java) { jar ->
     val android = extensions.findByName("android") as BaseExtension
-    jar.archiveClassifier.set("sources")
     jar.from(android.sourceSets.getByName("main").java.getSourceFiles())
+    jar.archiveClassifier.set("sources")
   }
 }

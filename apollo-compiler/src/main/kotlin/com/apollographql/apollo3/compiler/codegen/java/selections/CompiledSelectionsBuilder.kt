@@ -2,9 +2,6 @@ package com.apollographql.apollo3.compiler.codegen.java.selections
 
 import com.apollographql.apollo3.api.BVariable
 import com.apollographql.apollo3.api.BooleanExpression
-import com.apollographql.apollo3.api.CompiledArgument
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.ast.GQLArgument
 import com.apollographql.apollo3.ast.GQLBooleanValue
 import com.apollographql.apollo3.ast.GQLEnumValue
@@ -173,7 +170,7 @@ class CompiledSelectionsBuilder(
     val selections = selectionSet.selections
     if (selections.isNotEmpty()) {
       nestededFieldSpecs = selections.walk(name, private, typeCondition.name)
-      builder.add(".selections($L)",  nestededFieldSpecs.last().name)
+      builder.add(".selections($L)", nestededFieldSpecs.last().name)
     }
     builder.unindent()
     builder.add(".build()")

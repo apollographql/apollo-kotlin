@@ -8,7 +8,7 @@ package com.apollographql.apollo3.ast.internal
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.ParseResult
 import com.apollographql.apollo3.ast.SourceLocation
-import com.apollographql.apollo3.compiler.parser.antlr.GraphQLLexer
+import com.apollographql.apollo3.generated.antlr.GraphQLLexer
 import okio.BufferedSource
 import org.antlr.v4.runtime.BaseErrorListener
 import org.antlr.v4.runtime.CharStreams
@@ -18,7 +18,7 @@ import org.antlr.v4.runtime.Recognizer
 import org.antlr.v4.runtime.RuleContext
 import org.antlr.v4.runtime.Token
 import org.antlr.v4.runtime.atn.PredictionMode
-import com.apollographql.apollo3.compiler.parser.antlr.GraphQLParser as AntlrGraphQLParser
+import com.apollographql.apollo3.generated.antlr.GraphQLParser as AntlrGraphQLParser
 
 /**
  * Sets up a parser

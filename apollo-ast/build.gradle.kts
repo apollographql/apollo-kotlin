@@ -20,11 +20,6 @@ configurations[JavaPlugin.API_CONFIGURATION_NAME].let { apiConfiguration ->
 }
 
 tasks.withType(KotlinCompile::class.java) {
-  kotlinOptions {
-    // Gradle forces 1.3.72 for the time being so compile against 1.3 stdlib for the time being
-    // See https://issuetracker.google.com/issues/166582569
-    apiVersion = "1.3"
-  }
   // This used to work and fails now. Strangely enough, it fails on both `dev-3.x` and `main` as of writing while both these branches have
   // compiled successfully before...
   dependsOn("generateGrammarSource")

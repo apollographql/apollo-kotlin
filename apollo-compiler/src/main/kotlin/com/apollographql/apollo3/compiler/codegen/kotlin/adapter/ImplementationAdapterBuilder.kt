@@ -1,14 +1,11 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.compiler.codegen.Identifier
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.ir.IrModel
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asTypeName
 
 /**
  * For responseBased codegen, generates an adapter for an implementation
@@ -16,7 +13,7 @@ import com.squareup.kotlinpoet.asTypeName
 class ImplementationAdapterBuilder(
     val context: KotlinContext,
     val model: IrModel,
-    val path: List<String>
+    val path: List<String>,
 ) {
   private val adapterName = model.modelName
   private val adaptedClassName by lazy {
@@ -49,17 +46,17 @@ class ImplementationAdapterBuilder(
   private fun readFromResponseFunSpec(): FunSpec {
     return FunSpec.builder(Identifier.fromJson)
         .returns(adaptedClassName)
-        .addParameter(Identifier.reader, JsonReader::class)
-        .addParameter(Identifier.customScalarAdapters, CustomScalarAdapters::class)
-        .addParameter(Identifier.typename, String::class)
+        .addParameter(Identifier.reader, KotlinClassNames.JsonReader)
+        .addParameter(Identifier.customScalarAdapters, KotlinClassNames.CustomScalarAdapters)
+        .addParameter(Identifier.typename, KotlinClassNames.String)
         .addCode(readFromResponseCodeBlock(model, context, true))
         .build()
   }
 
   private fun writeToResponseFunSpec(): FunSpec {
     return FunSpec.builder(Identifier.toJson)
-        .addParameter(Identifier.writer, JsonWriter::class.asTypeName())
-        .addParameter(Identifier.customScalarAdapters, CustomScalarAdapters::class)
+        .addParameter(Identifier.writer, KotlinClassNames.JsonWriter)
+        .addParameter(Identifier.customScalarAdapters, KotlinClassNames.CustomScalarAdapters)
         .addParameter(Identifier.value, adaptedClassName)
         .addCode(writeToResponseCodeBlock(model, context))
         .build()
