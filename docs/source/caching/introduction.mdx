@@ -16,7 +16,7 @@ Apollo Android supports different kind of caches for different purposes. At a hi
 
 **Client side** caches can work without doing a network request and enable offline scenarios. They require the client to handle the lifecyle of the data.
 
-The [**Normalized cache**](normalized-cache) deduplicates data and makes it easy to react to cache changes, making sure your app state always stays consistent. It supports both Memory and SQLite caches (for persistent data) and a combination of both to have the speed of the Memory cache and the persistent of SQLite at the same time.
+The [**Normalized cache**](normalized-cache) deduplicates data and makes it easy to react to cache changes, making sure your app state always stays consistent. It supports both Memory and SQLite caches (for persistent data) and a combination of both to have the speed of the Memory cache and the persistence of SQLite at the same time.
 
 The [**HTTP cache**](http-cache) is a simpler cache that will cache at the HTTP level. It is easier to setup but will duplicate data. In most cases, the Normalized cache is a better alternative.
 
