@@ -1,6 +1,13 @@
 package com.apollographql.apollo3.android
 import androidx.test.espresso.IdlingResource
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.ApolloRequest
+import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.interceptor.ApolloInterceptor
+import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 
@@ -38,11 +45,21 @@ class ApolloIdlingResource(
 }
 
 fun ApolloClient.Builder.idlingResource(idlingResource: ApolloIdlingResource): ApolloClient.Builder {
-  return addFlowDecorator {
-    it.onStart {
-      idlingResource.operationStart()
-    }.onCompletion {
-      idlingResource.operationEnd()
+  check (!interceptors.any { it is IdlingResourceInterceptor }) { "idlingResource was already set, can only be set once" }
+  return addInterceptor(IdlingResourceInterceptor(idlingResource))
+}
+
+private class IdlingResourceInterceptor(private val idlingResource: ApolloIdlingResource): ApolloInterceptor {
+  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+    // Do not update the idling resource on subscriptions as they will never terminate
+    return if (request.operation !is Subscription) {
+      chain.proceed(request).onStart {
+        idlingResource.operationStart()
+      }.onCompletion {
+        idlingResource.operationEnd()
+      }
+    } else {
+      chain.proceed(request)
     }
   }
 }
