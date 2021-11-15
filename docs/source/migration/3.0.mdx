@@ -611,6 +611,6 @@ query GetHero($id: String @optional) {
 
 ### Enums
 
-By default, Apollo Android 2.x generates GraphQL enums as Kotlin enums, with an option to generate them as sealed classes to access the raw name of the enum.
-
-Apollo Android 3.x drops Kotlin enums and always generates sealed classes. In addition, Apollo Android 3.x uses the same case for enum names as their GraphQL definition, instead of converting them to uppercase. This enables you to define different enums with different cases, which is valid in GraphQL.
+Apollo Android 2.x converts enum names to uppercase. This is no longer the case with Apollo Android 3.x, which uses the
+same case for enum names as their GraphQL definition. This enables you to define different enums with different cases,
+which is valid in GraphQL.
