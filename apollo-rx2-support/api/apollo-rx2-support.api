@@ -12,7 +12,7 @@ public final class com/apollographql/apollo3/rx2/Rx2Apollo {
 	public static synthetic fun toRx2ApolloInterceptor$default (Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;Lio/reactivex/Scheduler;ILjava/lang/Object;)Lcom/apollographql/apollo3/rx2/Rx2ApolloInterceptor;
 	public static final fun toRx2ApolloInterceptorChain (Lcom/apollographql/apollo3/interceptor/ApolloInterceptorChain;Lio/reactivex/Scheduler;)Lcom/apollographql/apollo3/rx2/Rx2ApolloInterceptorChain;
 	public static synthetic fun toRx2ApolloInterceptorChain$default (Lcom/apollographql/apollo3/interceptor/ApolloInterceptorChain;Lio/reactivex/Scheduler;ILjava/lang/Object;)Lcom/apollographql/apollo3/rx2/Rx2ApolloInterceptorChain;
-	public static synthetic fun toRx2ApolloStore$default (Lcom/apollographql/apollo3/normalized/ApolloStore;Lio/reactivex/Scheduler;ILjava/lang/Object;)Lcom/apollographql/apollo3/rx2/Rx2ApolloStore;
+	public static synthetic fun toRx2ApolloStore$default (Lcom/apollographql/apollo3/cache/normalized/ApolloStore;Lio/reactivex/Scheduler;ILjava/lang/Object;)Lcom/apollographql/apollo3/rx2/Rx2ApolloStore;
 	public static final fun toRx2HttpInterceptor (Lcom/apollographql/apollo3/network/http/HttpInterceptor;Lio/reactivex/Scheduler;)Lcom/apollographql/apollo3/rx2/Rx2HttpInterceptor;
 	public static synthetic fun toRx2HttpInterceptor$default (Lcom/apollographql/apollo3/network/http/HttpInterceptor;Lio/reactivex/Scheduler;ILjava/lang/Object;)Lcom/apollographql/apollo3/rx2/Rx2HttpInterceptor;
 	public static final fun toRx2HttpInterceptorChain (Lcom/apollographql/apollo3/network/http/HttpInterceptorChain;Lio/reactivex/Scheduler;)Lcom/apollographql/apollo3/rx2/Rx2HttpInterceptorChain;
