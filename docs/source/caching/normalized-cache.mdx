@@ -5,7 +5,6 @@ title: Normalized cache
 > This page focuses on the normalized cache. A normalized cache has several advantages like deduplication and watchers. If you're looking for a simpler albeit coarser cache, take a look at the [HTTP cache](http-cache).
 
 
-
 ## Data Normalization
 
 A normalized cache stores objects by ID. Instead of caching the whole response, the normalized cache can deduplicate common parts. For an example, take these two queries:
@@ -142,7 +141,7 @@ Because the normalized cache deduplicates all your data, it allows to react to c
 
 By default, Apollo Android uses the field path as key to store data. Back to the original example:
 
-```graphl
+```graphql
 query BookWithAuthorName {
   favoriteBook {
     id

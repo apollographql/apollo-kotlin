@@ -21,7 +21,7 @@ query HeroForEpisode($ep: Episode!) {
 }
 ```
 
-> Inline fragments are not to be confused with [named fragments](./50-named-fragments/), which are used to reuse fields across multiple operations.
+> Inline fragments are not to be confused with [named fragments](./named-fragments/), which are used to reuse fields across multiple operations.
 
 When an operation includes the fragments above, the generated `Hero` class will contain `OnDroid` and `OnHuman` nested classes and `onDroid` / `onHuman` fields, which enable you to access fields that are specific to `Droid` and `Human`:
 

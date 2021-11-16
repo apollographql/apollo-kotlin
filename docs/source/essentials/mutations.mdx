@@ -5,7 +5,7 @@ sidebar_title: Mutations
 
 import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
-**Mutations** are GraphQL operations that _modify_ back-end data. As a convention in GraphQL, [queries](./00-queries/) are read operations and mutations are write operations.
+**Mutations** are GraphQL operations that _modify_ back-end data. As a convention in GraphQL, [queries](./queries/) are read operations and mutations are write operations.
 
 ## Defining a mutation
 
@@ -76,7 +76,7 @@ val response = try {
 
 ## Using fragments in mutation results
 
-In many cases, you'll want to use mutation results to update your UI. [Fragments](./50-named-fragments) are a great way to share result handling between queries and mutations:
+In many cases, you'll want to use mutation results to update your UI. [Fragments](./named-fragments) are a great way to share result handling between queries and mutations:
 
 ```graphql
 mutation UpvotePost($postId: Int!) {
