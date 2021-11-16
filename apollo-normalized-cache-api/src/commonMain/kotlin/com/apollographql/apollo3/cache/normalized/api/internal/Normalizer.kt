@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.cache.normalized.internal
+package com.apollographql.apollo3.cache.normalized.api.internal
 
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
@@ -9,10 +9,10 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CompiledType
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.isComposite
-import com.apollographql.apollo3.cache.normalized.CacheKey
-import com.apollographql.apollo3.cache.normalized.ObjectIdGenerator
-import com.apollographql.apollo3.cache.normalized.ObjectIdGeneratorContext
-import com.apollographql.apollo3.cache.normalized.Record
+import com.apollographql.apollo3.cache.normalized.api.CacheKey
+import com.apollographql.apollo3.cache.normalized.api.ObjectIdGenerator
+import com.apollographql.apollo3.cache.normalized.api.ObjectIdGeneratorContext
+import com.apollographql.apollo3.cache.normalized.api.Record
 
 /**
  * A [Normalizer] takes a [Map]<String, Any?> and turns them into a flat list of [Record]

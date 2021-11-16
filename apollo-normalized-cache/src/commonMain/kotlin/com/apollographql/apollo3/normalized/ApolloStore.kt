@@ -1,9 +1,18 @@
-package com.apollographql.apollo3.cache.normalized
+package com.apollographql.apollo3.normalized
 
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.cache.normalized.internal.DefaultApolloStore
+import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.api.CacheKey
+import com.apollographql.apollo3.cache.normalized.api.CacheResolver
+import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
+import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
+import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
+import com.apollographql.apollo3.cache.normalized.api.ObjectIdGenerator
+import com.apollographql.apollo3.cache.normalized.api.Record
+import com.apollographql.apollo3.cache.normalized.api.TypePolicyObjectIdGenerator
+import com.apollographql.apollo3.normalized.internal.DefaultApolloStore
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.SharedFlow
 import kotlin.reflect.KClass

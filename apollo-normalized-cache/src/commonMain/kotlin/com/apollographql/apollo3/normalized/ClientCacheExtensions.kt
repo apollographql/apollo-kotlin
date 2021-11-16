@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.cache.normalized
+package com.apollographql.apollo3.normalized
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.ApolloMutationCall
@@ -10,7 +10,13 @@ import com.apollographql.apollo3.api.HasMutableExecutionContext
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.cache.normalized.internal.ApolloCacheInterceptor
+import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.api.CacheResolver
+import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
+import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
+import com.apollographql.apollo3.cache.normalized.api.ObjectIdGenerator
+import com.apollographql.apollo3.cache.normalized.api.TypePolicyObjectIdGenerator
+import com.apollographql.apollo3.normalized.internal.ApolloCacheInterceptor
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
 import kotlinx.coroutines.flow.Flow

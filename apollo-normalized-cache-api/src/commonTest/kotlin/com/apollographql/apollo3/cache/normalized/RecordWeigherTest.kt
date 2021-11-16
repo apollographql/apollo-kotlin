@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.cache.normalized
 
+import com.apollographql.apollo3.cache.normalized.api.CacheKey
+import com.apollographql.apollo3.cache.normalized.api.Record
 import kotlin.test.Test
 import kotlin.test.assertTrue
 

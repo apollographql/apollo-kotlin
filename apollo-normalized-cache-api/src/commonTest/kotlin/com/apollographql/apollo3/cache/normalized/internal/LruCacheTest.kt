@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
+import com.apollographql.apollo3.cache.normalized.api.internal.LruCache
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

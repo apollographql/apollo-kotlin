@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.cache.normalized.internal
+package com.apollographql.apollo3.cache.normalized.api.internal
 
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Executable

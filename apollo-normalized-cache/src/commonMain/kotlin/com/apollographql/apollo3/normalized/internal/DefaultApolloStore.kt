@@ -1,18 +1,19 @@
-package com.apollographql.apollo3.cache.normalized.internal
+package com.apollographql.apollo3.normalized.internal
 
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.CacheHeaders
-import com.apollographql.apollo3.cache.normalized.CacheKey
-import com.apollographql.apollo3.cache.normalized.CacheResolver
-import com.apollographql.apollo3.cache.normalized.NormalizedCache
-import com.apollographql.apollo3.cache.normalized.NormalizedCacheFactory
-import com.apollographql.apollo3.cache.normalized.ObjectIdGenerator
-import com.apollographql.apollo3.cache.normalized.Record
-import com.apollographql.apollo3.cache.normalized.normalize
-import com.apollographql.apollo3.cache.normalized.readDataFromCache
+import com.apollographql.apollo3.normalized.ApolloStore
+import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.api.CacheKey
+import com.apollographql.apollo3.cache.normalized.api.CacheResolver
+import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
+import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
+import com.apollographql.apollo3.cache.normalized.api.ObjectIdGenerator
+import com.apollographql.apollo3.cache.normalized.api.Record
+import com.apollographql.apollo3.cache.normalized.api.internal.OptimisticCache
+import com.apollographql.apollo3.cache.normalized.api.normalize
+import com.apollographql.apollo3.cache.normalized.api.readDataFromCache
 import com.apollographql.apollo3.mpp.Guard
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.channels.BufferOverflow
@@ -20,7 +21,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlin.reflect.KClass
 
-class DefaultApolloStore(
+internal class DefaultApolloStore(
     normalizedCacheFactory: NormalizedCacheFactory,
     private val objectIdGenerator: ObjectIdGenerator,
     private val cacheResolver: CacheResolver,

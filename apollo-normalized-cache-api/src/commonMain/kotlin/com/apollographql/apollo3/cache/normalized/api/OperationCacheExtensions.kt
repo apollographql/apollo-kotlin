@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.cache.normalized
+package com.apollographql.apollo3.cache.normalized.api
 
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Executable
@@ -7,8 +7,8 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.internal.json.MapJsonWriter
 import com.apollographql.apollo3.api.variables
-import com.apollographql.apollo3.cache.normalized.internal.CacheBatchReader
-import com.apollographql.apollo3.cache.normalized.internal.Normalizer
+import com.apollographql.apollo3.cache.normalized.api.internal.CacheBatchReader
+import com.apollographql.apollo3.cache.normalized.api.internal.Normalizer
 
 
 fun <D : Operation.Data> Operation<D>.normalize(

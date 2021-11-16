@@ -1,14 +1,14 @@
-package com.apollographql.apollo3.cache.normalized.internal
+package com.apollographql.apollo3.cache.normalized.api.internal
 
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.cache.normalized.CacheHeaders
-import com.apollographql.apollo3.cache.normalized.CacheKey
-import com.apollographql.apollo3.cache.normalized.CacheResolver
-import com.apollographql.apollo3.cache.normalized.ReadOnlyNormalizedCache
-import com.apollographql.apollo3.cache.normalized.Record
+import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.api.CacheKey
+import com.apollographql.apollo3.cache.normalized.api.CacheResolver
+import com.apollographql.apollo3.cache.normalized.api.ReadOnlyNormalizedCache
+import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.exception.CacheMissException
 
 /**

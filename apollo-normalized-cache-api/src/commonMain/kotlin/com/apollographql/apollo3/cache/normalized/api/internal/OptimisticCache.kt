@@ -1,9 +1,9 @@
-package com.apollographql.apollo3.cache.normalized.internal
+package com.apollographql.apollo3.cache.normalized.api.internal
 
-import com.apollographql.apollo3.cache.normalized.CacheHeaders
-import com.apollographql.apollo3.cache.normalized.CacheKey
-import com.apollographql.apollo3.cache.normalized.NormalizedCache
-import com.apollographql.apollo3.cache.normalized.Record
+import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.api.CacheKey
+import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
+import com.apollographql.apollo3.cache.normalized.api.Record
 import com.benasher44.uuid.Uuid
 import kotlin.reflect.KClass
 

@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.cache.normalized
+package com.apollographql.apollo3.cache.normalized.api
 
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledListType

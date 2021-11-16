@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.cache.normalized
+package com.apollographql.apollo3.cache.normalized.api
 
-import com.apollographql.apollo3.cache.normalized.internal.RecordWeigher.calculateBytes
+import com.apollographql.apollo3.cache.normalized.api.internal.RecordWeigher.calculateBytes
 import com.benasher44.uuid.Uuid
 
 /**

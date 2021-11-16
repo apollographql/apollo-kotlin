@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.cache.normalized.internal
+package com.apollographql.apollo3.cache.normalized.api.internal
 
 internal typealias Weigher<Key, Value> = (Key, Value?) -> Int
 
