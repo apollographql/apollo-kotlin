@@ -13,7 +13,7 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 
-class EnumCompatBuilder(
+class EnumAsEnumBuilder(
     private val context: KotlinContext,
     private val enum: IrEnum,
 ) : CgOutputFileBuilder {

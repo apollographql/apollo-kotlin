@@ -132,10 +132,8 @@ class Options(
      * Use this if you want your client to have access to the rawValue of the enum. This can be useful if new GraphQL enums are added but
      * the client was compiled against an older schema that doesn't have knowledge of the new enums.
      *
-     * Default: listOf(".*")
+     * Default: emptyList()
      */
-    @Deprecated("Kotlin sealed classes are more flexible than Kotlin enums to represent GraphQL enums because they can expose the " +
-        "rawValue of the unknown enums.")
     val sealedClassesForEnumsMatching: List<String> = defaultSealedClassesForEnumsMatching,
 
     /**
@@ -251,7 +249,7 @@ class Options(
     val defaultTargetLanguage = TargetLanguage.KOTLIN_1_5
     const val defaultGenerateSchema = false
     const val defaultGenerateTestBuilders = false
-    val defaultSealedClassesForEnumsMatching = listOf(".*")
+    val defaultSealedClassesForEnumsMatching = emptyList<String>()
     const val defaultGenerateOptionalOperationVariables = false
   }
 }

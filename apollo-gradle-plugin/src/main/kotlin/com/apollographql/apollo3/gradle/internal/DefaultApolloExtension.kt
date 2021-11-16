@@ -479,7 +479,6 @@ abstract class DefaultApolloExtension(
       task.flattenModels.set(service.flattenModels)
       @OptIn(ApolloExperimental::class)
       task.generateTestBuilders.set(service.generateTestBuilders)
-      @Suppress("DEPRECATION")
       task.sealedClassesForEnumsMatching.set(service.sealedClassesForEnumsMatching)
       task.generateOptionalOperationVariables.set(service.generateOptionalOperationVariables)
       task.languageVersion.set(service.languageVersion)

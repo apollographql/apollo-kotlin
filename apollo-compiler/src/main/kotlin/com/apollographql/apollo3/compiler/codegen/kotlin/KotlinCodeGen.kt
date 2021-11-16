@@ -6,8 +6,8 @@ import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.CustomScalarBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumCompatBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumAsEnumBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumAsSealedBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.FragmentBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.FragmentModelsBuilder
@@ -57,7 +57,6 @@ class KotlinCodeGen(
      * depth 0
      */
     private val flatten: Boolean,
-    @Deprecated("Used for backward compatibility with 2.x")
     private val sealedClassesForEnumsMatching: List<String>,
     private val targetLanguageVersion: TargetLanguage,
 ) {
@@ -93,9 +92,9 @@ class KotlinCodeGen(
         .filter { !context.resolver.canResolveSchemaType(it.name) }
         .forEach { enum ->
           if (sealedClassesForEnumsMatching.any { Regex(it).matches(enum.name) }) {
-            builders.add(EnumBuilder(context, enum))
+            builders.add(EnumAsSealedBuilder(context, enum))
           } else {
-            builders.add(EnumCompatBuilder(context, enum))
+            builders.add(EnumAsEnumBuilder(context, enum))
           }
           builders.add(EnumResponseAdapterBuilder(context, enum))
         }

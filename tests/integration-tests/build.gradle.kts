@@ -68,6 +68,7 @@ fun configureApollo(generateKotlinModels: Boolean) {
                 customScalarsMapping.set(mapOf(
                     "Date" to "kotlinx.datetime.LocalDate"
                 ))
+                sealedClassesForEnumsMatching.set(listOf("Episode"))
               }
               "fullstack" -> {
                 customScalarsMapping.set(mapOf(

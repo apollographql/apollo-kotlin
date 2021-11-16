@@ -6,61 +6,32 @@
 package com.example.__schema.type
 
 import com.apollographql.apollo3.api.EnumType
-import kotlin.Any
-import kotlin.Array
-import kotlin.Boolean
-import kotlin.Int
 import kotlin.String
 
 /**
  * Units of height
  */
-public sealed class LengthUnit(
+public enum class LengthUnit(
   public val rawValue: String
 ) {
-  public companion object {
-    public val type: EnumType = EnumType("LengthUnit")
-
-    /**
-     * Returns the [LengthUnit] that represents the specified [rawValue].
-     */
-    public fun safeValueOf(rawValue: String): LengthUnit = when(rawValue) {
-      "METER" -> METER
-      "FOOT" -> FOOT
-      else -> UNKNOWN__(rawValue)
-    }
-
-    /**
-     * Returns all [LengthUnit] known at compile time
-     */
-    public fun knownValues(): Array<LengthUnit> = arrayOf(
-      METER,
-      FOOT)
-  }
-
   /**
    * The standard unit around the world
    */
-  public object METER : LengthUnit(rawValue = "METER")
-
+  METER("METER"),
   /**
    * Primarily used in the United States
    */
-  public object FOOT : LengthUnit(rawValue = "FOOT")
-
+  FOOT("FOOT"),
   /**
-   * An enum value that wasn't known at compile time.
+   * Auto generated constant for unknown enum values
    */
-  public class UNKNOWN__(
-    rawValue: String
-  ) : LengthUnit(rawValue = rawValue) {
-    public override fun equals(other: Any?): Boolean {
-      if (other !is UNKNOWN__) return false
-      return this.rawValue == other.rawValue
-    }
+  UNKNOWN__("UNKNOWN__"),
+  ;
 
-    public override fun hashCode(): Int = this.rawValue.hashCode()
+  public companion object {
+    public val type: EnumType = EnumType("LengthUnit")
 
-    public override fun toString(): String = "UNKNOWN__($rawValue)"
+    public fun safeValueOf(rawValue: String): LengthUnit = values().find { it.rawValue == rawValue }
+        ?: UNKNOWN__
   }
 }

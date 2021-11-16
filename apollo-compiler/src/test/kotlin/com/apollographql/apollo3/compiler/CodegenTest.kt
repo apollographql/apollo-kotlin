@@ -121,6 +121,7 @@ class CodegenTest() {
               "arguments_complex",
               "arguments_simple",
               "case_sensitive_enum",
+              "enums_as_sealed",
               "custom_scalar_type",
               "deprecated_merged_field",
               "deprecation",
@@ -300,6 +301,11 @@ class CodegenTest() {
         else -> true
       }
 
+      val sealedClassesForEnumsMatching = when (folder.name) {
+        "enums_as_sealed" -> listOf(".*")
+        else -> emptyList()
+      }
+
       val generateSchema = folder.name == "__schema"
 
       val schemaFile = folder.listFiles()!!.find { it.isFile && (it.name == "schema.sdl" || it.name == "schema.json" || it.name == "schema.graphqls") }
@@ -332,6 +338,7 @@ class CodegenTest() {
           generateSchema = generateSchema,
           moduleName = folder.name,
           targetLanguage = targetLanguage,
+          sealedClassesForEnumsMatching = sealedClassesForEnumsMatching,
       )
     }
 
