@@ -1,7 +1,11 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.TargetLanguage
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
+import com.apollographql.apollo3.gradle.api.Service
 import com.apollographql.apollo3.gradle.api.kotlinMultiplatformExtension
+import com.apollographql.apollo3.gradle.api.kotlinProjectExtensionOrThrow
+import org.gradle.api.Action
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
@@ -37,4 +41,43 @@ internal fun linkSqlite(project: Project) {
       .forEach { compilationUnit ->
         compilationUnit.kotlinOptions.freeCompilerArgs += arrayOf("-linker-options", "-lsqlite3")
       }
+}
+
+internal fun checkKotlinPluginVersion(project: Project) {
+  val version = project.getKotlinPluginVersion()!!
+      .split(".")
+      .take(2)
+      .map { it.toInt() }
+
+  val isKotlinSupported = when {
+    version[0] > 1 -> true
+    version[0] == 1 -> version[1] >= 4
+    else -> false
+  }
+  require(isKotlinSupported) {
+    "Apollo Android requires Kotlin plugin version 1.4 or more (found '${project.getKotlinPluginVersion()}')"
+  }
+}
+
+fun createAllKotlinSourceSetServices(
+    apolloExtension: DefaultApolloExtension,
+    project: Project,
+    sourceFolder: String,
+    nameSuffix: String,
+    action: Action<Service>,
+) {
+  project.kotlinProjectExtensionOrThrow.sourceSets.forEach { kotlinSourceSet ->
+    val name = "${kotlinSourceSet.name}${nameSuffix.capitalizeFirstLetter()}"
+
+    apolloExtension.service(name) { service ->
+      action.execute(service)
+      check(!service.sourceFolder.isPresent) {
+        "ApolloGraphQL: service.sourceFolder is not used when calling createAllKotlinJvmSourceSetServices. Use the parameter instead"
+      }
+      service.srcDir("src/${kotlinSourceSet.name}/graphql/$sourceFolder")
+      (service as DefaultService).outputDirAction = Action<Service.DirectoryConnection> { connection ->
+        kotlinSourceSet.kotlin.srcDir(connection.outputDir)
+      }
+    }
+  }
 }
