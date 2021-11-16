@@ -5,6 +5,7 @@ import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.internal.LruCache
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import okio.internal.commonAsUtf8ToByteArray
+import kotlin.jvm.JvmOverloads
 import kotlin.reflect.KClass
 
 /**
@@ -139,7 +140,7 @@ class MemoryCache(
   }
 }
 
-class MemoryCacheFactory(
+class MemoryCacheFactory @JvmOverloads constructor(
     private val maxSizeBytes: Int = Int.MAX_VALUE,
     private val expireAfterMillis: Long = -1,
 ) : NormalizedCacheFactory() {
