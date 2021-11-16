@@ -17,7 +17,7 @@ import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
-import com.apollographql.apollo3.normalized.ApolloStore
+import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo3.interceptor.ApolloInterceptor

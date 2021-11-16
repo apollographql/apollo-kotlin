@@ -1,7 +1,7 @@
-import com.apollographql.apollo3.cache.normalized.CacheKey
-import com.apollographql.apollo3.cache.normalized.ObjectIdGenerator
-import com.apollographql.apollo3.cache.normalized.ObjectIdGeneratorContext
-import com.apollographql.apollo3.cache.normalized.TypePolicyObjectIdGenerator
+import com.apollographql.apollo3.cache.normalized.api.CacheKey
+import com.apollographql.apollo3.cache.normalized.api.ObjectIdGenerator
+import com.apollographql.apollo3.cache.normalized.api.ObjectIdGeneratorContext
+import com.apollographql.apollo3.cache.normalized.api.TypePolicyObjectIdGenerator
 import com.apollographql.apollo3.testing.readFile
 
 fun readJson(name: String) = readFile("../models-fixtures/json/$name")

@@ -4,8 +4,8 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledListType
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.ObjectType
-import com.apollographql.apollo3.cache.normalized.CacheKeyResolverTest.Fixtures.TEST_LIST_FIELD
-import com.apollographql.apollo3.cache.normalized.CacheKeyResolverTest.Fixtures.TEST_SIMPLE_FIELD
+import com.apollographql.apollo3.cache.normalized.api.CacheKeyResolverTest.Fixtures.TEST_LIST_FIELD
+import com.apollographql.apollo3.cache.normalized.api.CacheKeyResolverTest.Fixtures.TEST_SIMPLE_FIELD
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyResolver
 import com.apollographql.apollo3.exception.CacheMissException

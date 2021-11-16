@@ -1,11 +1,11 @@
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.cache.normalized.CacheKey
-import com.apollographql.apollo3.cache.normalized.CacheResolver
-import com.apollographql.apollo3.cache.normalized.FieldPolicyCacheResolver
-import com.apollographql.apollo3.cache.normalized.ObjectIdGenerator
-import com.apollographql.apollo3.cache.normalized.ObjectIdGeneratorContext
-import com.apollographql.apollo3.cache.normalized.TypePolicyObjectIdGenerator
+import com.apollographql.apollo3.cache.normalized.api.CacheKey
+import com.apollographql.apollo3.cache.normalized.api.CacheResolver
+import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
+import com.apollographql.apollo3.cache.normalized.api.ObjectIdGenerator
+import com.apollographql.apollo3.cache.normalized.api.ObjectIdGeneratorContext
+import com.apollographql.apollo3.cache.normalized.api.TypePolicyObjectIdGenerator
 import com.apollographql.apollo3.testing.checkFile
 import com.apollographql.apollo3.testing.readFile
 import kotlin.test.assertEquals

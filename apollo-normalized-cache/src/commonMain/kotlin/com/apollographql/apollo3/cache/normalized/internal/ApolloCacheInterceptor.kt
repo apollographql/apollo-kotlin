@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.normalized.internal
+package com.apollographql.apollo3.cache.normalized.internal
 
 import com.apollographql.apollo3.ConcurrencyInfo
 import com.apollographql.apollo3.api.ApolloRequest
@@ -9,19 +9,19 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.internal.customScalarAdapters
-import com.apollographql.apollo3.normalized.ApolloStore
-import com.apollographql.apollo3.normalized.CacheInfo
-import com.apollographql.apollo3.normalized.FetchPolicy
-import com.apollographql.apollo3.normalized.cacheHeaders
+import com.apollographql.apollo3.cache.normalized.ApolloStore
+import com.apollographql.apollo3.cache.normalized.CacheInfo
+import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.dependentKeys
-import com.apollographql.apollo3.normalized.doNotStore
-import com.apollographql.apollo3.normalized.fetchPolicy
-import com.apollographql.apollo3.normalized.optimisticData
-import com.apollographql.apollo3.normalized.refetchPolicy
-import com.apollographql.apollo3.normalized.storePartialResponses
-import com.apollographql.apollo3.normalized.watch
-import com.apollographql.apollo3.normalized.withCacheInfo
-import com.apollographql.apollo3.normalized.writeToCacheAsynchronously
+import com.apollographql.apollo3.cache.normalized.cacheHeaders
+import com.apollographql.apollo3.cache.normalized.doNotStore
+import com.apollographql.apollo3.cache.normalized.fetchPolicy
+import com.apollographql.apollo3.cache.normalized.optimisticData
+import com.apollographql.apollo3.cache.normalized.refetchPolicy
+import com.apollographql.apollo3.cache.normalized.storePartialResponses
+import com.apollographql.apollo3.cache.normalized.watch
+import com.apollographql.apollo3.cache.normalized.withCacheInfo
+import com.apollographql.apollo3.cache.normalized.writeToCacheAsynchronously
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.CacheMissException
