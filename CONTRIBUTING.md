@@ -105,7 +105,9 @@ following events:
     - All root tests but not the Gradle ones and not the "exotic" apple ones (tvos, watchos)
     - All apiCheck
 - `tests-integration`
-    - All integration tests
+    - All integration tests (except Java 9+ ones)
+- `tests-java9`
+    - Java 9+ specific tests
 
 ### On pushes to `dev-3.x` branch
 
