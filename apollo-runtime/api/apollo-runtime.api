@@ -195,11 +195,10 @@ public final class com/apollographql/apollo3/network/http/BatchingHttpEngine : c
 	public static final field CAN_BE_BATCHED Ljava/lang/String;
 	public static final field Companion Lcom/apollographql/apollo3/network/http/BatchingHttpEngine$Companion;
 	public fun <init> ()V
-	public fun <init> (Lcom/apollographql/apollo3/network/http/HttpEngine;JIZ)V
-	public synthetic fun <init> (Lcom/apollographql/apollo3/network/http/HttpEngine;JIZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lcom/apollographql/apollo3/network/http/HttpEngine;JI)V
+	public synthetic fun <init> (Lcom/apollographql/apollo3/network/http/HttpEngine;JIILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun dispose ()V
 	public fun execute (Lcom/apollographql/apollo3/api/http/HttpRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun getBatchByDefault ()Z
 	public final fun getBatchIntervalMillis ()J
 	public final fun getDelegate ()Lcom/apollographql/apollo3/network/http/HttpEngine;
 	public final fun getMaxBatchSize ()I

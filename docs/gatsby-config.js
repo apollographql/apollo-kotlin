@@ -60,6 +60,7 @@ module.exports = {
             'advanced/client-awareness',
             'advanced/interceptors-http',
             'advanced/http-engine',
+            'advanced/query-batching',
             'advanced/upload',
             'advanced/no-runtime',
             'advanced/nonnull',
