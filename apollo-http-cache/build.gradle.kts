@@ -14,3 +14,8 @@ dependencies {
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
 }
 
+val jar by tasks.getting(Jar::class) {
+  manifest {
+    attributes("Automatic-Module-Name" to "com.apollographql.apollo3.cache.http")
+  }
+}

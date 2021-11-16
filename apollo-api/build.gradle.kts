@@ -14,3 +14,9 @@ kotlin {
     }
   }
 }
+
+val jvmJar by tasks.getting(Jar::class) {
+  manifest {
+    attributes("Automatic-Module-Name" to "com.apollographql.apollo3.api")
+  }
+}

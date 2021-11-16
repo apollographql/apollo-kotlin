@@ -73,3 +73,9 @@ tasks.withType<Test>().configureEach {
   inputs.dir("src/test/usedtypes")
   inputs.dir("src/test/validation")
 }
+
+val jar by tasks.getting(Jar::class) {
+  manifest {
+    attributes("Automatic-Module-Name" to "com.apollographql.apollo3.compiler")
+  }
+}
