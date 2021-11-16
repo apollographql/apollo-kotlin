@@ -1,7 +1,5 @@
 package com.apollographql.apollo3.cache.normalized
 
-import com.apollographql.apollo3.cache.ApolloCacheHeaders
-import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.internal.LruCache
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import okio.internal.commonAsUtf8ToByteArray

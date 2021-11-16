@@ -1,6 +1,4 @@
-package com.apollographql.apollo3.cache
-
-import com.apollographql.apollo3.cache.normalized.NormalizedCache
+package com.apollographql.apollo3.cache.normalized
 
 /**
  * A collection of cache headers that Apollo's implementations of [NormalizedCache] respect.

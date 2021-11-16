@@ -1,8 +1,8 @@
 package com.apollographql.apollo3.cache.normalized.sql
 
-import com.apollographql.apollo3.cache.ApolloCacheHeaders
-import com.apollographql.apollo3.cache.ApolloCacheHeaders.EVICT_AFTER_READ
-import com.apollographql.apollo3.cache.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.ApolloCacheHeaders
+import com.apollographql.apollo3.cache.normalized.ApolloCacheHeaders.EVICT_AFTER_READ
+import com.apollographql.apollo3.cache.normalized.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.Record

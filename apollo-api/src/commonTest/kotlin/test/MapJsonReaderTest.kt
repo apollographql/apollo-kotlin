@@ -1,10 +1,10 @@
-package com.apollographql.apollo3.cache
+package test
 
 import com.apollographql.apollo3.api.json.MapJsonReader
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class MapJsonReaderTest {
+class NormalizedCacheCoMapJsonReaderTest {
   @Test
   fun canReadMap() {
     val map = mapOf(

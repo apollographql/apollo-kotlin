@@ -1,6 +1,6 @@
 package test
 
-import com.apollographql.apollo3.cache.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.MemoryCache
 import com.apollographql.apollo3.cache.normalized.Record
 import com.apollographql.apollo3.testing.runTest

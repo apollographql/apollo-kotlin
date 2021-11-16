@@ -3,8 +3,8 @@ package com.apollographql.apollo3.cache.normalized.internal
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
+import com.apollographql.apollo3.cache.normalized.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheResolver
 import com.apollographql.apollo3.cache.normalized.NormalizedCache

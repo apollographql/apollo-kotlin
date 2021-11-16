@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.cache.normalized
 
-import com.apollographql.apollo3.cache.CacheHeaders
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSuppressWildcards
 import kotlin.reflect.KClass

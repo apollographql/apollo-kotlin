@@ -4,12 +4,12 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.exception.CacheMissException
-import com.apollographql.apollo3.cache.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheResolver
 import com.apollographql.apollo3.cache.normalized.ReadOnlyNormalizedCache
 import com.apollographql.apollo3.cache.normalized.Record
+import com.apollographql.apollo3.exception.CacheMissException
 
 /**
  * A resolver that solves the "N+1" problem by batching all SQL queries at a given depth

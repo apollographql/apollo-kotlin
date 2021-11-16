@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
-import com.apollographql.apollo3.cache.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.Record

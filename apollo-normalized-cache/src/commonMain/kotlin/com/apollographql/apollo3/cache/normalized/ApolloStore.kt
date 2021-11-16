@@ -1,9 +1,8 @@
 package com.apollographql.apollo3.cache.normalized
 
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.internal.DefaultApolloStore
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.SharedFlow
