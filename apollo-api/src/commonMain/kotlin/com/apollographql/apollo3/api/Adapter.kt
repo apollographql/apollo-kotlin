@@ -18,13 +18,7 @@ import okio.BufferedSource
  * - normalize models into records that can be stored in cache
  * - deserialize records
  *
- * For an example, a `Hero` GraphQL type can be represented as:
- *
- * ```
- * {
- *   "name": "Luke Skywalker",
- *   "homeworld": "Tatooine"
- * }
+ * **Note**: [Adapter]s are called from multiple threads and implementations must be thread safe.
  * ```
  */
 interface Adapter<T> {
