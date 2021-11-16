@@ -46,7 +46,7 @@ class ApolloQueryCall<D: Query.Data>(apolloClient: ApolloClient, query: Query<D>
    * Example:
    * ```
    * val response = apolloClient.query(HeroQuery())
-   *                  .httpHeader("Authorization", myToken)
+   *                  .addHttpHeader("Authorization", myToken)
    *                  .fetchPolicy(FetchPolicy.NetworkOnly)
    *                  .execute()
    * ```
@@ -74,7 +74,7 @@ class ApolloMutationCall<D: Mutation.Data>(apolloClient: ApolloClient, mutation:
    * Example:
    * ```
    * val response = apolloClient.mutate(SetHeroName("Luke"))
-   *                  .httpHeader("Authorization", myToken)
+   *                  .addHttpHeader("Authorization", myToken)
    *                  .optimisticData(data)
    *                  .execute()
    * ```

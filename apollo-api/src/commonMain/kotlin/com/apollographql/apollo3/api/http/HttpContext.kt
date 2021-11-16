@@ -20,17 +20,23 @@ val HasExecutionContext.sendDocument get() = executionContext[SendDocumentContex
 fun <T> HasMutableExecutionContext<T>.httpMethod(httpMethod: HttpMethod) where T : HasMutableExecutionContext<T> = addExecutionContext(executionContext + HttpMethodContext(httpMethod))
 
 /**
- *
+ * Add HTTP headers to be sent with the request.
  */
-fun <T> HasMutableExecutionContext<T>.httpHeaders(httpHeaders: List<HttpHeader>) where T : HasMutableExecutionContext<T> = addExecutionContext(
-    executionContext + HttpHeadersContext(this@httpHeaders.httpHeaders + httpHeaders)
+fun <T> HasMutableExecutionContext<T>.addHttpHeaders(httpHeaders: List<HttpHeader>) where T : HasMutableExecutionContext<T> = addExecutionContext(
+    executionContext + HttpHeadersContext(this.httpHeaders + httpHeaders)
 )
 
-fun <T> HasMutableExecutionContext<T>.httpHeader(httpHeader: HttpHeader) where T : HasMutableExecutionContext<T> = addExecutionContext(
+/**
+ * Add an HTTP header to be sent with the request.
+ */
+fun <T> HasMutableExecutionContext<T>.addHttpHeader(httpHeader: HttpHeader) where T : HasMutableExecutionContext<T> = addExecutionContext(
     executionContext + HttpHeadersContext(httpHeaders + httpHeader)
 )
 
-fun <T> HasMutableExecutionContext<T>.httpHeader(name: String, value: String) where T : HasMutableExecutionContext<T> = httpHeader(
+/**
+ * Add an HTTP header to be sent with the request.
+ */
+fun <T> HasMutableExecutionContext<T>.addHttpHeader(name: String, value: String) where T : HasMutableExecutionContext<T> = addHttpHeader(
     HttpHeader(name, value)
 )
 
@@ -69,3 +75,16 @@ internal class HttpHeadersContext(val value: List<HttpHeader>) : ExecutionContex
 
   companion object Key : ExecutionContext.Key<HttpHeadersContext>
 }
+
+
+@Deprecated("Please use addHttpHeaders instead. This will be removed in v3.0.0.", ReplaceWith("addHttpHeaders(httpHeaders)"))
+fun <T> HasMutableExecutionContext<T>.httpHeaders(httpHeaders: List<HttpHeader>) where T : HasMutableExecutionContext<T> = addHttpHeaders(httpHeaders)
+
+@Deprecated("Please use addHttpHeader instead. This will be removed in v3.0.0.", ReplaceWith("addHttpHeader(httpHeader)"))
+fun <T> HasMutableExecutionContext<T>.httpHeader(httpHeader: HttpHeader) where T : HasMutableExecutionContext<T> = addHttpHeader(httpHeader)
+
+@Deprecated("Please use addHttpHeader instead. This will be removed in v3.0.0.", ReplaceWith("addHttpHeader(name, value)"))
+fun <T> HasMutableExecutionContext<T>.httpHeader(
+    name: String,
+    value: String,
+) where T : HasMutableExecutionContext<T> = addHttpHeader(name, value)

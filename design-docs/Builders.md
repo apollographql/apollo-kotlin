@@ -235,7 +235,7 @@ class MyInterceptor : ApolloInterceptor {
     chain.proceed(
       request
         .newBuilder()
-        .httpHeader("myHeader", "value")
+        .addHttpHeader("myHeader", "value")
         .build()
     )
   }

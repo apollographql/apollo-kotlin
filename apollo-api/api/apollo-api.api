@@ -759,6 +759,9 @@ public abstract interface class com/apollographql/apollo3/api/http/HttpBody {
 }
 
 public final class com/apollographql/apollo3/api/http/HttpContextKt {
+	public static final fun addHttpHeader (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Lcom/apollographql/apollo3/api/http/HttpHeader;)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
+	public static final fun addHttpHeader (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
+	public static final fun addHttpHeaders (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Ljava/util/List;)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
 	public static final fun getHttpHeaders (Lcom/apollographql/apollo3/api/HasExecutionContext;)Ljava/util/List;
 	public static final fun getHttpMethod (Lcom/apollographql/apollo3/api/HasExecutionContext;)Lcom/apollographql/apollo3/api/http/HttpMethod;
 	public static final fun getSendApqExtensions (Lcom/apollographql/apollo3/api/HasExecutionContext;)Z

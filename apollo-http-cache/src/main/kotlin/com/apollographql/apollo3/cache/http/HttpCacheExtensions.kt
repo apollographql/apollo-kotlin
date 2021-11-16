@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.HasMutableExecutionContext
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.http.httpHeader
+import com.apollographql.apollo3.api.http.addHttpHeader
 import com.apollographql.apollo3.network.http.HttpInfo
 import com.apollographql.apollo3.network.http.HttpEngine
 import java.io.File
@@ -73,7 +73,7 @@ fun <T> HasMutableExecutionContext<T>.httpFetchPolicy(httpFetchPolicy: HttpFetch
     HttpFetchPolicy.NetworkOnly -> CachingHttpEngine.NETWORK_ONLY
   }
 
-  return httpHeader(
+  return addHttpHeader(
       CachingHttpEngine.CACHE_FETCH_POLICY_HEADER, policyStr
   )
 }
@@ -81,21 +81,21 @@ fun <T> HasMutableExecutionContext<T>.httpFetchPolicy(httpFetchPolicy: HttpFetch
 /**
  * Configures httpExpireTimeout. Entries will be removed from the cache after this timeout.
  */
-fun <T> HasMutableExecutionContext<T>.httpExpireTimeout(httpExpireTimeout: Long) where T : HasMutableExecutionContext<T> = httpHeader(
+fun <T> HasMutableExecutionContext<T>.httpExpireTimeout(httpExpireTimeout: Long) where T : HasMutableExecutionContext<T> = addHttpHeader(
     CachingHttpEngine.CACHE_EXPIRE_TIMEOUT_HEADER, httpExpireTimeout.toString()
 )
 
 /**
  * Configures httpExpireAfterRead. Entries will be removed from the cache after read if set to true.
  */
-fun <T> HasMutableExecutionContext<T>.httpExpireAfterRead(httpExpireAfterRead: Boolean) where T : HasMutableExecutionContext<T> = httpHeader(
+fun <T> HasMutableExecutionContext<T>.httpExpireAfterRead(httpExpireAfterRead: Boolean) where T : HasMutableExecutionContext<T> = addHttpHeader(
     CachingHttpEngine.CACHE_EXPIRE_AFTER_READ_HEADER, httpExpireAfterRead.toString()
 )
 
 /**
  * Configures httpDoNotStore. Entries will never be stored if set to true.
  */
-fun <T> HasMutableExecutionContext<T>.httpDoNotStore(httpDoNotStore: Boolean) where T : HasMutableExecutionContext<T> = httpHeader(
+fun <T> HasMutableExecutionContext<T>.httpDoNotStore(httpDoNotStore: Boolean) where T : HasMutableExecutionContext<T> = addHttpHeader(
     CachingHttpEngine.CACHE_DO_NOT_STORE, httpDoNotStore.toString()
 )
 
