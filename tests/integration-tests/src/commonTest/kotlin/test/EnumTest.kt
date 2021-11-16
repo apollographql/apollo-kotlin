@@ -6,8 +6,11 @@ import kotlin.test.assertEquals
 
 class EnumTest {
   @Test
-  fun valueOf() {
+  fun safeValueOf() {
     assertEquals(Episode.EMPIRE, Episode.safeValueOf("EMPIRE"))
-    assertEquals(Episode.UNKNOWN__, Episode.safeValueOf("NEW_EPISODE"))
+
+    // Note: Episode is generated as a sealed class (sealedClassesForEnumsMatching) for this
+    // to work both with Kotlin and Java codegens
+    assertEquals(Episode.UNKNOWN__("NEW_EPISODE"), Episode.safeValueOf("NEW_EPISODE"))
   }
 }
