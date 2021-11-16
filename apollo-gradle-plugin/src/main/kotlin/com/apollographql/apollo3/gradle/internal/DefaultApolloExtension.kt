@@ -399,7 +399,11 @@ abstract class DefaultApolloExtension(
           )
       )
 
-      var generateKotlinModels: Boolean
+      if (project.hasKotlinPlugin()) {
+        checkKotlinPluginVersion(project)
+      }
+      
+      val generateKotlinModels: Boolean
       when {
         service.generateKotlinModels.isPresent -> {
           generateKotlinModels = service.generateKotlinModels.get()

@@ -20,7 +20,7 @@ class KotlinPluginVersionTests {
       dir.setKotlinPluginVersion("1.3.0")
       // Kotlin 1.3 uses DefaultSourceDirectorySet() which is removed in recent Gradle versions
       try {
-        TestUtils.executeGradleWithVersion(dir, "5.6", "help")
+        TestUtils.executeGradleWithVersion(dir, "5.6", "generateApolloSources")
         fail("An exception was expected")
       } catch (e: UnexpectedBuildFailure) {
         Truth.assertThat(e.message).contains("Apollo Android requires Kotlin plugin version 1.4")
