@@ -49,13 +49,11 @@ import okio.BufferedSink
  *
  * @param batchIntervalMillis the interval between two batches
  * @param maxBatchSize always send the batch when this threshold is reached
- * @param batchByDefault whether batching is opt-in or opt-out at the request level. See also [canBeBatched]
  */
 class BatchingHttpEngine(
     val delegate: HttpEngine = HttpEngine(),
     val batchIntervalMillis: Long = 10,
     val maxBatchSize: Int = 10,
-    val batchByDefault: Boolean = true,
 ) : HttpEngine {
   private val dispatcher = BackgroundDispatcher()
   private val scope = CoroutineScope(dispatcher.coroutineDispatcher)
@@ -83,7 +81,8 @@ class BatchingHttpEngine(
   private val pendingRequests = mutableListOf<PendingRequest>()
 
   override suspend fun execute(request: HttpRequest): HttpResponse {
-    val canBeBatched = request.headers.valueOf(CAN_BE_BATCHED)?.toBoolean() ?: batchByDefault
+    // Batching is enabled by default, unless explicitly disabled
+    val canBeBatched = request.headers.valueOf(CAN_BE_BATCHED)?.toBoolean() ?: true
 
     if (!canBeBatched) {
       // Remove the CAN_BE_BATCHED header and forward directly

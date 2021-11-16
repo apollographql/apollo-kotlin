@@ -36,12 +36,15 @@ apolloClient.query(MyQuery()).canBeBatched(false).execute()
 ```
 
 The default behavior is to have batching enabled for all operations, unless opting-out. If instead you want it to be
-disabled by default and enable it only for specific operations, you can do so by using the `batchByDefault` parameter:
+disabled by default and enable it only for specific operations, you can do so by setting `canBeBatched(false)` on
+the `ApolloClient`:
 
-```kotlin
-BatchingHttpEngine(
-    batchByDefault = false
-)
+```kotlin{4}
+val apolloClient = ApolloClient.Builder()
+    .serverUrl("https://...")
+    .httpEngine(BatchingHttpEngine())
+    .canBeBatched(false)
+    .build()
 ```
 
 With this, only operations executed with `canBeBatched(true)` will be batched.
