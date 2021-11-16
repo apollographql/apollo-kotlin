@@ -10,14 +10,10 @@ as the slowest one.
 
 Here is how to enable batching:
 
-```kotlin{5}
+```kotlin{3}
 val apolloClient = ApolloClient.Builder()
-    .networkTransport(
-        HttpNetworkTransport.Builder()
-            .serverUrl("https://...")
-            .httpEngine(BatchingHttpEngine())
-            .build()
-    )
+    .serverUrl("https://...")
+    .httpEngine(BatchingHttpEngine())
     .build()
 ```
 
@@ -26,7 +22,7 @@ configured:
 
 ```kotlin
 BatchingHttpEngine(
-    batchIntervalMillis = 1000,
+    batchIntervalMillis = 50,
     maxBatchSize = 20
 )
 ```
