@@ -6,7 +6,7 @@ import com.apollographql.apollo3.api.keyFields
 import com.apollographql.apollo3.api.leafType
 
 /**
- * An [ObjectIdGenerator] is responsible for finding an id for a given object
+ * An [CacheKeyGenerator] is responsible for finding an id for a given object
  * - takes Json data as input and returns a unique id for an object
  * - is used after a network request
  * - is used during normalization when writing to the cache
@@ -14,7 +14,7 @@ import com.apollographql.apollo3.api.leafType
  * See also `@typePolicy`
  * See also [CacheResolver]
  */
-interface ObjectIdGenerator {
+interface CacheKeyGenerator {
   /**
    * Returns a [CacheKey] for the given object or null if the object doesn't have an id
    *
@@ -41,9 +41,9 @@ class ObjectIdGeneratorContext(
 )
 
 /**
- * A [ObjectIdGenerator] that uses annotations to compute the id
+ * A [CacheKeyGenerator] that uses annotations to compute the id
  */
-object TypePolicyObjectIdGenerator : ObjectIdGenerator {
+object TypePolicyCacheKeyGenerator : CacheKeyGenerator {
   override fun cacheKeyForObject(obj: Map<String, Any?>, context: ObjectIdGeneratorContext): CacheKey? {
     val keyFields = context.field.type.leafType().keyFields()
 

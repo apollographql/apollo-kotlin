@@ -10,9 +10,9 @@ import com.apollographql.apollo3.cache.normalized.api.CacheResolver
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
-import com.apollographql.apollo3.cache.normalized.api.ObjectIdGenerator
+import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.Record
-import com.apollographql.apollo3.cache.normalized.api.TypePolicyObjectIdGenerator
+import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.SharedFlow
 import kotlin.reflect.KClass
@@ -184,6 +184,6 @@ interface ApolloStore {
 
 fun ApolloStore(
     normalizedCacheFactory: NormalizedCacheFactory,
-    objectIdGenerator: ObjectIdGenerator = TypePolicyObjectIdGenerator,
+    cacheKeyGenerator: CacheKeyGenerator = TypePolicyCacheKeyGenerator,
     cacheResolver: CacheResolver = FieldPolicyCacheResolver,
-): ApolloStore = DefaultApolloStore(normalizedCacheFactory, objectIdGenerator, cacheResolver)
+): ApolloStore = DefaultApolloStore(normalizedCacheFactory, cacheKeyGenerator, cacheResolver)

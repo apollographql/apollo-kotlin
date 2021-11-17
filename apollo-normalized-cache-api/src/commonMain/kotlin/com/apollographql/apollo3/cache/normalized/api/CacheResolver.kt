@@ -59,7 +59,7 @@ interface CacheResolver {
    * ```
    *
    * See also @fieldPolicy
-   * See also [ObjectIdGenerator]
+   * See also [CacheKeyGenerator]
    *
    * @param field the field to resolve
    * @param variables the variables of the current operation

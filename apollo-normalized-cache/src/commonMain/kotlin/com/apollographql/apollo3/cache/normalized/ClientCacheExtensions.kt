@@ -15,8 +15,8 @@ import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheResolver
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
-import com.apollographql.apollo3.cache.normalized.api.ObjectIdGenerator
-import com.apollographql.apollo3.cache.normalized.api.TypePolicyObjectIdGenerator
+import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
+import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
 import kotlinx.coroutines.flow.Flow
@@ -60,11 +60,11 @@ enum class FetchPolicy {
  */
 fun ApolloClient.Builder.normalizedCache(
     normalizedCacheFactory: NormalizedCacheFactory,
-    objectIdGenerator: ObjectIdGenerator = TypePolicyObjectIdGenerator,
+    cacheKeyGenerator: CacheKeyGenerator = TypePolicyCacheKeyGenerator,
     cacheResolver: CacheResolver = FieldPolicyCacheResolver,
     writeToCacheAsynchronously: Boolean = false,
 ): ApolloClient.Builder {
-  return store(ApolloStore(normalizedCacheFactory, objectIdGenerator, cacheResolver), writeToCacheAsynchronously)
+  return store(ApolloStore(normalizedCacheFactory, cacheKeyGenerator, cacheResolver), writeToCacheAsynchronously)
 }
 
 fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: Boolean = false): ApolloClient.Builder {
@@ -272,12 +272,12 @@ internal class WatchContext(val value: Boolean) : ExecutionContext.Element {
 @Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
 fun ApolloClient.withNormalizedCache(
     normalizedCacheFactory: NormalizedCacheFactory,
-    objectIdGenerator: ObjectIdGenerator = TypePolicyObjectIdGenerator,
+    cacheKeyGenerator: CacheKeyGenerator = TypePolicyCacheKeyGenerator,
     cacheResolver: CacheResolver = FieldPolicyCacheResolver,
     writeToCacheAsynchronously: Boolean = false,
 ) = newBuilder().normalizedCache(
     normalizedCacheFactory = normalizedCacheFactory,
-    objectIdGenerator = objectIdGenerator,
+    cacheKeyGenerator = cacheKeyGenerator,
     cacheResolver = cacheResolver,
     writeToCacheAsynchronously = writeToCacheAsynchronously,
 )

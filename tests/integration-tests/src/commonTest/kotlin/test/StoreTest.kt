@@ -1,7 +1,7 @@
 package test
 
 import IdCacheResolver
-import IdObjectIdGenerator
+import IdCacheKeyGenerator
 import assertEquals2
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.cache.normalized.ApolloStore
@@ -34,7 +34,7 @@ class StoreTest {
   private lateinit var store: ApolloStore
 
   private suspend fun setUp() {
-    store = ApolloStore(MemoryCacheFactory(), objectIdGenerator = IdObjectIdGenerator, cacheResolver = IdCacheResolver)
+    store = ApolloStore(MemoryCacheFactory(), cacheKeyGenerator = IdCacheKeyGenerator, cacheResolver = IdCacheResolver)
     mockServer = MockServer()
     apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store).build()
   }
