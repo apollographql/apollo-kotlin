@@ -11,6 +11,8 @@ fun Project.configureJavaAndKotlinCompilers() {
     tasks.withType(KotlinCompile::class.java) {
       it.kotlinOptions {
         freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
+        apiVersion = "1.5"
+        languageVersion = "1.5"
       }
     }
 
