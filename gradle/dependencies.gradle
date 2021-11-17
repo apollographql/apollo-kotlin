@@ -48,7 +48,7 @@ ext.dep = [
         runtime: "com.apollographql.apollo3:apollo-runtime:$versions.apollo",
         api    : "com.apollographql.apollo3:apollo-api:$versions.apollo",
     ],
-    kotlinCompileTesting     : "com.github.tschuchortdev:kotlin-compile-testing:1.4.3",
+    kotlinCompileTesting     : "com.github.tschuchortdev:kotlin-compile-testing:1.4.6",
     javaCompileTesting       : "com.google.testing.compile:compile-testing:0.19",
     gradleJapiCmpPlugin      : "me.champeau.gradle:japicmp-gradle-plugin:0.2.8",
     gradleMetalavaPlugin     : "me.tylerbwong.gradle:metalava-gradle:0.1.5",
