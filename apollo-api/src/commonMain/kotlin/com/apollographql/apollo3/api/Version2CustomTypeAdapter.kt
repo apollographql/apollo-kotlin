@@ -9,6 +9,8 @@ import kotlin.jvm.JvmStatic
  *
  * Make your CustomTypeAdapters implement this interface by updating the imports
  * from `com.apollographql.apollo.api` to `com.apollographql.apollo3.api`.
+ *
+ * **Note**: [Adapter]s are called from multiple threads and implementations must be thread safe.
  */
 @Deprecated("Used for backward compatibility with 2.x, use Adapter instead")
 interface CustomTypeAdapter<T> {
