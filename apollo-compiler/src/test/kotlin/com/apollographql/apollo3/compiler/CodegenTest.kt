@@ -21,6 +21,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
 @RunWith(TestParameterInjector::class)
+@OptIn(ExperimentalTime::class)
 class CodegenTest {
   private class Measurement(
       val name: String,
@@ -48,7 +49,6 @@ class CodegenTest {
     )
     options.outputDir.deleteRecursively()
 
-    @OptIn(ExperimentalTime::class)
     val codegenDuration = measureTime {
       GraphQLCompiler.write(options)
     }
@@ -108,7 +108,6 @@ class CodegenTest {
     /**
      * Check that generated sources compile
      */
-    @OptIn(ExperimentalTime::class)
     val compileDuration = measureTime {
       when (options.targetLanguage) {
         JAVA -> JavaCompiler.assertCompiles(actualFiles.toSet())
