@@ -16,8 +16,8 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.api.http.httpHeader
-import com.apollographql.apollo3.api.http.httpHeaders
+import com.apollographql.apollo3.api.http.addHttpHeader
+import com.apollographql.apollo3.api.http.addHttpHeaders
 import com.apollographql.apollo3.api.http.httpMethod
 import com.apollographql.apollo3.api.http.sendApqExtensions
 import com.apollographql.apollo3.api.http.sendDocument
@@ -380,13 +380,13 @@ fun ApolloClient.withAutoPersistedQueries(
 fun ApolloClient.withHttpMethod(httpMethod: HttpMethod) = newBuilder().httpMethod(httpMethod).build()
 
 @Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
-fun ApolloClient.withHttpHeaders(httpHeaders: List<HttpHeader>) = newBuilder().httpHeaders(httpHeaders).build()
+fun ApolloClient.withHttpHeaders(httpHeaders: List<HttpHeader>) = newBuilder().addHttpHeaders(httpHeaders).build()
 
 @Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
-fun ApolloClient.withHttpHeader(httpHeader: HttpHeader) = newBuilder().httpHeader(httpHeader).build()
+fun ApolloClient.withHttpHeader(httpHeader: HttpHeader) = newBuilder().addHttpHeader(httpHeader).build()
 
 @Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
-fun ApolloClient.withHttpHeader(name: String, value: String) = newBuilder().httpHeader(name, value).build()
+fun ApolloClient.withHttpHeader(name: String, value: String) = newBuilder().addHttpHeader(name, value).build()
 
 @Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
 fun ApolloClient.withSendApqExtensions(sendApqExtensions: Boolean) = newBuilder().sendApqExtensions(sendApqExtensions).build()

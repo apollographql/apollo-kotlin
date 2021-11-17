@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.http.HttpBody
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
-import com.apollographql.apollo3.api.http.httpHeader
+import com.apollographql.apollo3.api.http.addHttpHeader
 import com.apollographql.apollo3.api.http.valueOf
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
@@ -210,7 +210,7 @@ class BatchingHttpEngine(
   }
 }
 
-fun <T> HasMutableExecutionContext<T>.canBeBatched(canBeBatched: Boolean) where T : HasMutableExecutionContext<T> = httpHeader(
+fun <T> HasMutableExecutionContext<T>.canBeBatched(canBeBatched: Boolean) where T : HasMutableExecutionContext<T> = addHttpHeader(
     CAN_BE_BATCHED, canBeBatched.toString()
 )
 
