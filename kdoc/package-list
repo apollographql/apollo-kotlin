@@ -47,8 +47,12 @@ com.apollographql.apollo3.mpp
 module:apollo-normalized-cache
 com.apollographql.apollo3.cache.normalized
 module:apollo-normalized-cache-api
-com.apollographql.apollo3.cache.normalized.api
-com.apollographql.apollo3.cache.normalized.api.internal
+com.apollographql.apollo3.cache
+com.apollographql.apollo3.cache.normalized
+com.apollographql.apollo3.cache.normalized.internal
+module:apollo-normalized-cache-common
+com.apollographql.apollo3.cache.normalized
+com.apollographql.apollo3.cache.normalized.internal
 module:apollo-normalized-cache-sqlite
 com.apollographql.apollo3.cache.normalized.sql
 module:apollo-runtime
