@@ -9,10 +9,11 @@ jobs:
     runs-on: macos-11
     steps:
       - uses: actions/checkout@v2
-      - name: set up JDK 1.8
-        uses: actions/setup-java@v1
+      - name: set up JDK 11
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.8
+          distribution: 'temurin'
+          java-version: '11'
       - name: Build with Gradle
         run: |
           ulimit -c unlimited
@@ -20,7 +21,9 @@ jobs:
           # 'Resolving NPM dependencies using yarn' returns 137
           ./gradlew compileKotlinJsIr compileKotlinJsLegacy
           ./gradlew --stop
-          ./gradlew -p tests ciTestsAll
+          ./gradlew ciBuild
+          ./gradlew --stop
+          ./gradlew -p tests ciBuild
           ./gradlew dokkaHtmlMultiModule
           ./gradlew ciPublishSnapshot
         env:

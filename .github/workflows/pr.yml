@@ -75,7 +75,32 @@ jobs:
           # 'Resolving NPM dependencies using yarn' returns 137
           ./gradlew compileKotlinJsIr compileKotlinJsLegacy
           ./gradlew --stop
-          ./gradlew -p tests ciTestsIntegration
+          ./gradlew -p tests ciBuildJava8
+      - name: Collect Diagnostics
+        if: always()
+        run: ./scripts/collect-diagnostics.main.kts
+      - uses: actions/upload-artifact@v2.2.4
+        if: always()
+        with:
+          name: tests-integration.zip
+          path: diagnostics.zip
+  tests-java9:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      - name: Build with Gradle
+        run: |
+          ulimit -c unlimited
+          # Workaround an issue where kotlinNpmInstall outputs
+          # 'Resolving NPM dependencies using yarn' returns 137
+          ./gradlew compileKotlinJsIr compileKotlinJsLegacy
+          ./gradlew --stop
+          ./gradlew -p tests ciBuildJava9
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts

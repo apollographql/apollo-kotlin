@@ -1,5 +1,8 @@
 package com.apollographql.apollo3.cache.normalized
 
+import com.apollographql.apollo3.cache.normalized.api.CacheKey
+import com.apollographql.apollo3.cache.normalized.api.Record
+import com.apollographql.apollo3.cache.normalized.api.RecordFieldJsonAdapter
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull

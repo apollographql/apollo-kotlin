@@ -9,10 +9,10 @@ import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.benchmark.moshi.Query
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
+import com.apollographql.apollo3.cache.normalized.api.CacheKeyResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCache
-import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.Record
+import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.internal.ApolloStore
 import com.apollographql.apollo3.cache.normalized.internal.normalize
 import com.apollographql.apollo3.cache.normalized.internal.readDataFromCache

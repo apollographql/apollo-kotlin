@@ -24,3 +24,9 @@ tasks.withType(KotlinCompile::class.java) {
   // compiled successfully before...
   dependsOn("generateGrammarSource")
 }
+
+val jar by tasks.getting(Jar::class) {
+  manifest {
+    attributes("Automatic-Module-Name" to "com.apollographql.apollo3.ast")
+  }
+}

@@ -14,4 +14,11 @@ dependencies {
   api(projects.apolloNormalizedCache)
 }
 
+val jar by tasks.getting(Jar::class) {
+  manifest {
+    attributes("Automatic-Module-Name" to "com.apollographql.apollo3.rx3")
+  }
+}
+
+
 

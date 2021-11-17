@@ -1,9 +1,9 @@
 package com.apollographql.apollo3.cache.normalized.sql
 
-import com.apollographql.apollo3.cache.ApolloCacheHeaders
-import com.apollographql.apollo3.cache.CacheHeaders
-import com.apollographql.apollo3.cache.normalized.CacheKey
-import com.apollographql.apollo3.cache.normalized.Record
+import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders
+import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.api.CacheKey
+import com.apollographql.apollo3.cache.normalized.api.Record
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

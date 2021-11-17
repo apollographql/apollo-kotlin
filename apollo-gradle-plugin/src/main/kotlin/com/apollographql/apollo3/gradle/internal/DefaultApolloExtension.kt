@@ -14,7 +14,6 @@ import com.apollographql.apollo3.gradle.api.isKotlinMultiplatform
 import com.apollographql.apollo3.gradle.api.javaConvention
 import com.apollographql.apollo3.gradle.api.kotlinMultiplatformExtension
 import com.apollographql.apollo3.gradle.api.kotlinProjectExtension
-import com.apollographql.apollo3.gradle.api.kotlinProjectExtensionOrThrow
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -27,9 +26,6 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.KotlinBasePluginWrapper
-import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
-import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import java.io.File
 import java.util.concurrent.Callable
 
@@ -50,23 +46,6 @@ abstract class DefaultApolloExtension(
       "apollo-android requires Gradle version $MIN_GRADLE_VERSION or greater"
     }
 
-    project.plugins.all {
-      if (it is KotlinBasePluginWrapper) {
-        val version = project.getKotlinPluginVersion()!!
-            .split(".")
-            .take(2)
-            .map { it.toInt() }
-
-        val isKotlinSupported = when {
-          version[0] > 1 -> true
-          version[0] == 1 -> version[1] >= 4
-          else -> false
-        }
-        require(isKotlinSupported) {
-          "Apollo Android requires Kotlin plugin version 1.4 or more (found '${project.getKotlinPluginVersion()}')"
-        }
-      }
-    }
     apolloConfiguration = project.configurations.create(ModelNames.apolloConfiguration()) {
       it.isCanBeConsumed = false
       it.isCanBeResolved = false
@@ -328,7 +307,7 @@ abstract class DefaultApolloExtension(
   private val defaultOutputDirAction = Action<Service.DirectoryConnection> { connection ->
     when {
       project.kotlinMultiplatformExtension != null -> {
-        connection.connectToKotlinSourceSet(KotlinSourceSet.COMMON_MAIN_SOURCE_SET_NAME)
+        connection.connectToKotlinSourceSet("commonMain")
       }
       project.androidExtension != null -> {
         connection.connectToAndroidSourceSet("main")
@@ -346,7 +325,7 @@ abstract class DefaultApolloExtension(
   private val defaultTestDirAction = Action<Service.DirectoryConnection> { connection ->
     when {
       project.kotlinMultiplatformExtension != null -> {
-        connection.connectToKotlinSourceSet(KotlinSourceSet.COMMON_TEST_SOURCE_SET_NAME)
+        connection.connectToKotlinSourceSet("commonTest")
       }
       project.androidExtension != null -> {
         connection.connectToAndroidSourceSet("test")
@@ -385,6 +364,9 @@ abstract class DefaultApolloExtension(
     }
   }
 
+  private fun Project.hasJavaPlugin() = project.extensions.findByName("java") != null
+  private fun Project.hasKotlinPlugin() = project.extensions.findByName("kotlin") != null
+
   private fun registerCodeGenTask(
       project: Project,
       service: DefaultService,
@@ -417,8 +399,37 @@ abstract class DefaultApolloExtension(
           )
       )
 
+      if (project.hasKotlinPlugin()) {
+        checkKotlinPluginVersion(project)
+      }
+      
+      val generateKotlinModels: Boolean
+      when {
+        service.generateKotlinModels.isPresent -> {
+          generateKotlinModels = service.generateKotlinModels.get()
+          if (generateKotlinModels) {
+            check(project.hasKotlinPlugin()) {
+              "ApolloGraphQL: generateKotlinModels.set(true) requires to apply a Kotlin plugin"
+            }
+          } else {
+            check(project.hasJavaPlugin()) {
+              "ApolloGraphQL: generateKotlinModels.set(false) requires to apply the Java plugin"
+            }
+          }
+        }
+        project.hasKotlinPlugin() -> {
+          generateKotlinModels = true
+        }
+        project.hasJavaPlugin() -> {
+          generateKotlinModels = false
+        }
+        else -> {
+          error("ApolloGraphQL: No Java or Kotlin plugin found")
+        }
+      }
+
       task.useSemanticNaming.set(service.useSemanticNaming)
-      task.generateKotlinModels.set(service.generateKotlinModels)
+      task.generateKotlinModels.set(generateKotlinModels)
       task.warnOnDeprecatedUsages.set(service.warnOnDeprecatedUsages)
       task.failOnWarnings.set(service.failOnWarnings)
       @Suppress("DEPRECATION")
@@ -569,20 +580,7 @@ abstract class DefaultApolloExtension(
           """.trimMargin()
     }
 
-    project.kotlinProjectExtensionOrThrow.sourceSets.forEach { kotlinSourceSet ->
-      val name = "${kotlinSourceSet.name}${nameSuffix.capitalizeFirstLetter()}"
-
-      service(name) { service ->
-        action.execute(service)
-        check(!service.sourceFolder.isPresent) {
-          "ApolloGraphQL: service.sourceFolder is not used when calling createAllKotlinJvmSourceSetServices. Use the parameter instead"
-        }
-        service.srcDir("src/${kotlinSourceSet.name}/graphql/$sourceFolder")
-        (service as DefaultService).outputDirAction = Action<Service.DirectoryConnection> { connection ->
-          kotlinSourceSet.kotlin.srcDir(connection.outputDir)
-        }
-      }
-    }
+    createAllKotlinSourceSetServices(this, project, sourceFolder, nameSuffix, action)
   }
 
   abstract override val linkSqlite: Property<Boolean>

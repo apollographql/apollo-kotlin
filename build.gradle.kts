@@ -131,7 +131,7 @@ tasks.register("ciTestsGradle") {
 tasks.register("ciTestsNoGradle") {
   description = """Execute all tests from the root project except: 
     | - the Gradle ones
-    | - most of the apple tests where it executes only macosX64
+    | - most of the Apple tests. Instead it just executes macosX64 tests to save time
   """.trimMargin()
 
 
@@ -146,7 +146,7 @@ tasks.register("ciTestsNoGradle") {
   }
 }
 
-tasks.register("ciTestsAll") {
+tasks.register("ciBuild") {
   description = "Execute the 'build' task in each subproject"
   dependsOn(subprojectTasks("build"))
 }

@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.cache.normalized.sql.internal
 
-import com.apollographql.apollo3.cache.normalized.Record
-import com.apollographql.apollo3.cache.normalized.RecordFieldJsonAdapter
+import com.apollographql.apollo3.cache.normalized.api.Record
+import com.apollographql.apollo3.cache.normalized.api.RecordFieldJsonAdapter
 import com.apollographql.apollo3.cache.normalized.sql.CacheQueries
 
 internal object CacheQueriesHelpers {

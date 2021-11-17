@@ -42,15 +42,27 @@ subprojects {
   }
 }
 
-tasks.register("ciTestsIntegration") {
-  description = """Execute the 'build' task in each subproject"""
+fun Project.requiresJava9() = name in listOf("jpms")
+
+tasks.register("ciBuildJava8") {
+  description = """Execute the 'build' task in Java8 subprojects"""
   subprojects {
-    this@register.dependsOn(tasks.matching { it.name == "build" })
+    if (!requiresJava9()) {
+      this@register.dependsOn(tasks.matching { it.name == "build" })
+    }
   }
 }
 
-tasks.register("ciTestsAll") {
-  dependsOn(gradle.includedBuild("apollo-android").task(":ciTestsAll"))
-  dependsOn("ciTestsIntegration")
+tasks.register("ciBuildJava9") {
+  description = """Execute the 'build' task in Java9 subprojects"""
+  subprojects {
+    if (requiresJava9()) {
+      this@register.dependsOn(tasks.matching { it.name == "build" })
+    }
+  }
 }
 
+tasks.register("ciBuild") {
+  dependsOn("ciBuildJava8")
+  dependsOn("ciBuildJava9")
+}

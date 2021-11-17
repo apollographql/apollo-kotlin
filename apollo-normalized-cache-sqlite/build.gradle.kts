@@ -81,3 +81,8 @@ if (System.getProperty("idea.sync.active") == null) {
   }
 }
 
+val jvmJar by tasks.getting(Jar::class) {
+  manifest {
+    attributes("Automatic-Module-Name" to "com.apollographql.apollo3.cache.normalized.sql")
+  }
+}

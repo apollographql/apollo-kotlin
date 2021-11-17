@@ -1,11 +1,11 @@
 package macos.app
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.normalizedCache
+import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.mpp.currentThreadId
+import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.testing.runTest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

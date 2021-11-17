@@ -26,7 +26,6 @@ import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSemanticNa
 import com.apollographql.apollo3.compiler.Options.Companion.defaultWarnOnDeprecatedUsages
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.TargetLanguage
-import com.apollographql.apollo3.gradle.api.kotlinProjectExtension
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
@@ -187,7 +186,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
     val commonMetadata = commonMetadatas.singleOrNull()
     var outputCommonMetadata: CommonMetadata? = null
 
-    val targetLanguage = if (generateKotlinModels.getOrElse(project.kotlinProjectExtension != null)) {
+    val targetLanguage = if (generateKotlinModels.get()) {
       getKotlinTargetLanguage(project, languageVersion.orNull)
     } else {
       TargetLanguage.JAVA
