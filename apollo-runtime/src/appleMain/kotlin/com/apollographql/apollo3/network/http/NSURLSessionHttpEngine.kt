@@ -95,7 +95,6 @@ class NSURLSessionHttpEngine(
   }
 }
 
-@OptIn(ExperimentalUnsignedTypes::class)
 private fun buildHttpResponse(
     data: NSData?,
     httpResponse: NSHTTPURLResponse?,
@@ -149,7 +148,7 @@ private fun buildHttpResponse(
   )
 }
 
-private class DefaultDataTaskFactory() : DataTaskFactory {
+private class DefaultDataTaskFactory : DataTaskFactory {
   private val nsurlSession = NSURLSession.sessionWithConfiguration(NSURLSessionConfiguration.defaultSessionConfiguration())
 
   override fun dataTask(request: NSURLRequest, completionHandler: UrlSessionDataTaskCompletionHandler): NSURLSessionDataTask {

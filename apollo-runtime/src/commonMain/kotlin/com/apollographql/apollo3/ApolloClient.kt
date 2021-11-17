@@ -35,7 +35,6 @@ import com.apollographql.apollo3.network.ws.WebSocketEngine
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlin.jvm.JvmOverloads
@@ -138,7 +137,6 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
    * For more advanced use cases like watchers or subscriptions, it may contain any number of elements and never
    * finish. You can cancel the corresponding coroutine to terminate the [Flow] in this case.
    */
-  @OptIn(ExperimentalCoroutinesApi::class, kotlinx.coroutines.FlowPreview::class)
   fun <D : Operation.Data> executeAsFlow(apolloRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
     assertMainThreadOnNative()
     val executionContext = concurrencyInfo + customScalarAdapters + executionContext + apolloRequest.executionContext
