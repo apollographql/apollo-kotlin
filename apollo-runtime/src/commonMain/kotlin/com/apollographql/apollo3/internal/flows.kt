@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.internal
 
-import com.apollographql.apollo3.api.ApolloInternal
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +14,6 @@ import kotlinx.coroutines.flow.flow
  *
  * TODO: remove when kotlinx.coroutines.flow.Flow.transformWhile is no longer marked ExperimentalCoroutinesApi.
  */
-@ApolloInternal
 internal fun <T, R> Flow<T>.transformWhile(
     transform: suspend FlowCollector<R>.(value: T) -> Boolean,
 ): Flow<R> =

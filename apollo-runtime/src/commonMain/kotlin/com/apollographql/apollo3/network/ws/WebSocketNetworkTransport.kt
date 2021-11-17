@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.network.ws
 
-import com.apollographql.apollo3.api.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -162,7 +161,6 @@ class WebSocketNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder in
     }
   }
 
-  @OptIn(ApolloInternal::class)
   override fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
   ): Flow<ApolloResponse<D>> {

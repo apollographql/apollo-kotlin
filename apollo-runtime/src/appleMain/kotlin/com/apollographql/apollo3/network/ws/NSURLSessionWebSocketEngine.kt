@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.internal.ChannelWrapper
 import com.apollographql.apollo3.mpp.assertMainThreadOnNative
 import com.apollographql.apollo3.network.toNSData
 import kotlinx.cinterop.COpaquePointer
@@ -9,7 +10,6 @@ import kotlinx.cinterop.asStableRef
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.staticCFunction
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import okio.ByteString
 import okio.toByteString
@@ -42,8 +42,9 @@ interface WebSocketConnectionListener {
 }
 
 typealias NSWebSocketFactory = (NSURLRequest, WebSocketConnectionListener) -> NSURLSessionWebSocketTask
- class NSURLSessionWebSocketEngine(
-    private val webSocketFactory: NSWebSocketFactory
+
+class NSURLSessionWebSocketEngine(
+    private val webSocketFactory: NSWebSocketFactory,
 ) : WebSocketEngine {
 
   constructor() : this(
@@ -69,7 +70,7 @@ typealias NSWebSocketFactory = (NSURLRequest, WebSocketConnectionListener) -> NS
       setHTTPMethod("GET")
     }
 
-    val messageChannel = Channel<String>(Channel.UNLIMITED)
+    val messageChannel = ChannelWrapper(Channel<String>(Channel.UNLIMITED))
     val isOpen = CompletableDeferred<Boolean>()
 
     val connectionListener = object : WebSocketConnectionListener {
@@ -101,13 +102,12 @@ typealias NSWebSocketFactory = (NSURLRequest, WebSocketConnectionListener) -> NS
   }
 }
 
-@OptIn(ExperimentalCoroutinesApi::class)
 private class WebSocketConnectionImpl(
     val webSocket: NSURLSessionWebSocketTask,
-    val messageChannel: Channel<String>
+    val messageChannel: ChannelWrapper<String>,
 ) : WebSocketConnection {
   init {
-    messageChannel.invokeOnClose {
+    messageChannel.setInvokeOnClose {
       webSocket.cancelWithCloseCode(
           closeCode = CLOSE_NORMAL.convert(),
           reason = null
@@ -122,7 +122,7 @@ private class WebSocketConnectionImpl(
 
   override fun send(data: ByteString) {
     assertMainThreadOnNative()
-    if (!messageChannel.isClosedForReceive) {
+    if (!messageChannel.isClosed) {
       val message = NSURLSessionWebSocketMessage(data.toByteArray().toNSData())
       val webSocketConnectionPtr = StableRef.create(this).asCPointer()
       val completionHandler = { error: NSError? ->
@@ -135,7 +135,7 @@ private class WebSocketConnectionImpl(
 
   override fun send(string: String) {
     assertMainThreadOnNative()
-    if (!messageChannel.isClosedForReceive) {
+    if (!messageChannel.isClosed) {
       val message = NSURLSessionWebSocketMessage(string)
       val webSocketConnectionPtr = StableRef.create(this).asCPointer()
       val completionHandler = { error: NSError? ->
@@ -246,14 +246,19 @@ private fun NSURLSessionWebSocketMessage.dispatchAndRequestNext(webSocketConnect
 
 
 private class NSURLSessionWebSocketDelegate(
-    val webSocketConnectionListener: WebSocketConnectionListener
+    val webSocketConnectionListener: WebSocketConnectionListener,
 ) : NSObject(), NSURLSessionWebSocketDelegateProtocol {
 
   override fun URLSession(session: NSURLSession, webSocketTask: NSURLSessionWebSocketTask, didOpenWithProtocol: String?) {
     webSocketConnectionListener.onOpen(webSocketTask)
   }
 
-  override fun URLSession(session: NSURLSession, webSocketTask: NSURLSessionWebSocketTask, didCloseWithCode: NSURLSessionWebSocketCloseCode, reason: NSData?) {
+  override fun URLSession(
+      session: NSURLSession,
+      webSocketTask: NSURLSessionWebSocketTask,
+      didCloseWithCode: NSURLSessionWebSocketCloseCode,
+      reason: NSData?,
+  ) {
     webSocketConnectionListener.onClose(webSocket = webSocketTask, code = didCloseWithCode)
   }
 }

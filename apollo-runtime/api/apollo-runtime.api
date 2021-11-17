@@ -377,12 +377,6 @@ public final class com/apollographql/apollo3/network/ws/GraphQLWsProtocol$Factor
 	public fun getName ()Ljava/lang/String;
 }
 
-public final class com/apollographql/apollo3/network/ws/OkHttpWebSocketEngine : com/apollographql/apollo3/network/ws/WebSocketEngine {
-	public fun <init> ()V
-	public fun <init> (Lokhttp3/WebSocket$Factory;)V
-	public fun open (Ljava/lang/String;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public final class com/apollographql/apollo3/network/ws/OkHttpWebSocketEngineKt {
 	public static final fun WebSocketEngine ()Lcom/apollographql/apollo3/network/ws/WebSocketEngine;
 }
