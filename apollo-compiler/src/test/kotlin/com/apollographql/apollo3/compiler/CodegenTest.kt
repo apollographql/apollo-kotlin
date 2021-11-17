@@ -15,14 +15,13 @@ import org.junit.AfterClass
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
-import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
+import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
 @RunWith(TestParameterInjector::class)
-@OptIn(ExperimentalTime::class)
-class CodegenTest() {
+class CodegenTest {
   private class Measurement(
       val name: String,
       val linesOfCode: Int,
@@ -49,6 +48,7 @@ class CodegenTest() {
     )
     options.outputDir.deleteRecursively()
 
+    @OptIn(ExperimentalTime::class)
     val codegenDuration = measureTime {
       GraphQLCompiler.write(options)
     }
@@ -108,6 +108,7 @@ class CodegenTest() {
     /**
      * Check that generated sources compile
      */
+    @OptIn(ExperimentalTime::class)
     val compileDuration = measureTime {
       when (options.targetLanguage) {
         JAVA -> JavaCompiler.assertCompiles(actualFiles.toSet())
@@ -255,7 +256,7 @@ class CodegenTest() {
                         "%-50s %20s %20s %20s",
                         measurement.name,
                         measurement.linesOfCode.toString(),
-                        measurement.codegenDuration.toLong(TimeUnit.MILLISECONDS).toString(),
+                        measurement.codegenDuration.toLong(DurationUnit.MILLISECONDS).toString(),
                         measurement.compileDuration.toString(),
                     )
                   }
