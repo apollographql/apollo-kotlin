@@ -2,20 +2,18 @@
 title: Apollo AST
 ---
 
-In order to generate code, Apollo Android reads your schema and operations written in the GraphQL language. To do this,
-it parses your GraphQL files in an Abstract Syntax Tree ([AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree)). The AST represents your GraphQL document in a type-safe, machine-readable way.
+To generate client code, Apollo Android parses both your GraphQL schema _and_ each operation you write against it into an **Abstract Syntax Tree** ([AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree)). An AST represents a GraphQL document in a type-safe, machine-readable format.
 
-This parser is in its own module and you can use independently of apollo-runtime or apollo-api. 
+Apollo Android's parser has its own module (`apollo-ast`), which you can use independently of `apollo-runtime` or `apollo-api`.
 
-Features:
+Features of `apollo-ast` include:
 
-- Parses Schema and Operations
-- Returns an Abstract Syntax Tree (AST)
-- AST can easily be manipulated (`transform` API)
-- AST can be printed back to valid, indented GraphQL document
-- Validation rules for operations (See [GraphQL spec](https://spec.graphql.org/draft/#sec-Validation))
+- [Parsing schema and operation documents](#parsing-a-document) into abstract syntax trees (ASTs)
+- Providing [input validation](#validating-input) to raise warnings and errors (See the [GraphQL spec](https://spec.graphql.org/draft/#sec-Validation))
+- Support for [outputting ASTs](#outputting-sdl) as valid, indented GraphQL documents
+- Support for manipulation of ASTs via the [`transform` API](#transforming-an-ast)
 
-## Add the dependency
+## Installation
 
 Add the `apollo-ast` dependency to your project:
 
@@ -27,10 +25,9 @@ dependencies {
 }
 ```
 
-## Parse a document
+## Parsing a document
 
-Use the `parseAsGQLDocument` method to parse a document from a File, a String, or an
-Okio [`BufferedSource`](https://square.github.io/okio/3.x/okio/okio/okio/-buffered-source/index.html).
+Use the `parseAsGQLDocument` method to parse a document from a `File`, a `String`, or an Okio [`BufferedSource`](https://square.github.io/okio/3.x/okio/okio/okio/-buffered-source/index.html).
 
 ```kotlin{12}
 val graphQLText = """
@@ -48,7 +45,7 @@ val graphQLText = """
 val parseResult = graphQLText.parseAsGQLDocument()
 ```
 
-This will return a `ParseResult<GQLDocument>` which is a sealed class that can either be a `Success` or `Error`:
+This method returns a `ParseResult<GQLDocument>`, which is a sealed class that can either be a `Success` or an `Error`:
 
 ```kotlin
 val queryGqlDocument: GQLDocument = when (parseResult) {
@@ -57,7 +54,7 @@ val queryGqlDocument: GQLDocument = when (parseResult) {
 }
 ```
 
-If parsing errors are encountered, their detail can be found in `issues`.
+If parse errors are encountered, their details are included in `issues`.
 
 If you don't expect errors, the `toGQLDocument` convenience method returns the AST directly:
 
@@ -65,12 +62,13 @@ If you don't expect errors, the `toGQLDocument` convenience method returns the A
 val queryGqlDocument: GQLDocument = graphQLText.toGQLDocument()
 ```
 
-`GQLDocument` is the root of the AST. It contains a list of `GQLDefinition` which represent the GraphQL document.
+`GQLDocument` is the root of the AST. It contains a list of `GQLDefinition`s that together represent the GraphQL document.
 
-Generally speaking, all nodes in the AST are subclasses of `GQLNode` (all named with the `GQL` prefix), which expose
-specific properties and methods relevant to that node type.
+All nodes in an AST are subclasses of `GQLNode` (all named with the `GQL` prefix). Each subclass exposes specific properties and methods relevant to the corresponding node type.
 
-In the example above, here's the AST returned by the parser:
+### Example AST structure
+
+In the `HeroForEpisode` example [above](#parsing-a-document), here's the structure of the AST returned by the parser:
 
 ```
 GQLDocument
@@ -89,12 +87,67 @@ GQLDocument
                         └─GQLVariableValue "ep"
 ```
 
-Note that the structure and names of the nodes match closely
-the [GraphQL specification](https://spec.graphql.org/June2018/#sec-Appendix-Grammar-Summary.Document).
+Note that this structure and its node names closely follow the [GraphQL specification](https://spec.graphql.org/June2018/#sec-Appendix-Grammar-Summary.Document).
 
-## Output GraphQL
+## Validating input
 
-You can output the AST as GraphQL syntax by using the `toUtf8` extensions:
+In addition to parsing, the `apollo-ast` library provides methods to perform higher-level validation of GraphQL documents.
+
+To validate a parsed `GQLDocument`:
+
+* **If the document represents a schema,** call the `validateAsSchema` method.
+* **If the document represents one or more operations,** call the `validateAsExecutable` method.
+
+Both of these methods return a list of `Issue`s, each of which can have a severity of either `WARNING` or `ERROR`.
+
+### `validateAsSchema`
+
+The following snippet parses and validates a short invalid schema that uses an undefined directive (`@private`):
+
+```kotlin{11,19}
+val schemaText = """
+    type Query {
+      hero(episode: Episode): Character
+    }
+
+    enum Episode {
+      NEWHOPE
+      EMPIRE
+    }
+
+    type Character @private {
+      name: String
+      height: Int @deprecated
+      friends: [Character]
+    }
+""".trimIndent()
+
+val schemaGQLDocument = schemaText.toGQLDocument()
+val schemaIssues = schemaGQLDocument.validateAsSchema()
+println(schemaIssues.map { it.severity.name + ": " + it.message })
+```
+
+When excuted, this snippet prints `[WARNING: Unknown directive 'private']`.
+
+### `validateAsExecutable`
+
+The `validateAsExecutable` method checks whether a document's defined operations are valid against a particular provided `Schema`. You can obtain this `Schema` parameter by calling `toSchema()` on the `GQLDocument` that represents the schema:
+
+```kotlin
+val schema = schemaGQLDocument.toSchema()
+val executableIssues = queryGqlDocument.validateAsExecutable(schema)
+println(executableIssues.map { it.severity.name + ": " + it.message })
+```
+
+If the `queryGqlDocument` queries a deprecated field and misspells another, this snippet might print the following:
+
+```
+[WARNING: Use of deprecated field 'height', ERROR: Can't query 'frends' on type 'Character']
+```
+
+## Outputting SDL
+
+You can output a `GQLDocument` to standard GraphQL SDL with the `toUtf8` extensions:
 
 ```kotlin
 // Returns a string
@@ -107,79 +160,21 @@ queryGqlDocument.toUtf8(file)
 queryGqlDocument.toUtf8(sink)
 ```
 
-## Validate
+## Transforming an AST
 
-In addition to parsing, the library offers methods to perform higher level validation on documents. This is done by
-calling the `validateAsSchema` or `validateAsExecutable` methods on the `GQLDocument` returned by the parser. These
-methods return a list of `Issue` which can have a Warning or Error severity:
+You can use the `transform` method of `GQLDocument` to modify an existing AST.
 
-```kotlin{19}
-val schemaText = """
-    type Query {
-      hero(episode: Episode): Character
-    }
-    
-    enum Episode {
-      NEWHOPE
-      EMPIRE
-    }
-    
-    type Character @FooBar {
-      name: String
-      height: Int @deprecated
-      friends: [Character]
-    }
-""".trimIndent()
+You pass `transform` a lambda that accepts a `GQLNode` and also _returns_ a `GQLNode` (or `null` to remove a node from the AST entirely). The `transform` method traverses the AST and excutes the lambda for each node, replacing the node with the lambda's return value.
 
-val schemaGQLDocument = schemaText.toGQLDocument()
-val schemaIssues = schemaGQLDocument.validateAsSchema()
-println(schemaIssues.map { it.severity.name + ": " + it.message })
-```
-
-This will print `[WARNING: Unknown directive 'FooBar']`.
-
-The `validateAsExecutable` method ensures the operations are consistent with a schema, that is why it takes an instance
-of `Schema` as a parameter. This `Schema` can be obtained by calling the `GQLDocument.toSchema()` extension:
-
-```kotlin
-val schema = schemaGQLDocument.toSchema()
-val executableIssues = queryGqlDocument.validateAsExecutable(schema)
-println(executableIssues.map { it.severity.name + ": " + it.message })
-```
-
-This will print `[WARNING: Use of deprecated field 'height', 
-ERROR: Can't query 'foobar' on type 'Character']`
-
-## Transform the AST
-
-The library also offers an API to manipulate the AST: the `transform` method on `GQLDocument`.
-
-This method takes as a parameter a lambda that provides a `GQLNode` and returns the transformed node (or `null` to
-remove the node). It will then visit all nodes in the AST, apply the lambda to each one, and replace the node with the
-result.
-
-For instance, here's how to remove any field named `foobar` from the selections:
+For example, this snippet removes all fields named `restrictedField` from operations defined in `queryGqlDocument` and prints the result:
 
 ```kotlin
 val transformedQuery = queryGqlDocument.transform{ node ->
-    if (node is GQLField && node.name == "foobar") {
-        null
-    } else {
-        node
-    }
-}
-println(transformedQuery!!.toUtf8())
-```
-
-will output:
-
-```graphql
-query HeroForEpisode($ep: Episode) {
-  hero(episode: $ep) {
-    name
-    friends {
-      height
-    }
+  if (node is GQLField && node.name == "restrictedField") {
+    null
+  } else {
+    node
   }
 }
+println(transformedQuery!!.toUtf8())
 ```
