@@ -26,8 +26,10 @@ import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory;
 import com.apollographql.apollo3.mockserver.MockResponse;
 import com.apollographql.apollo3.mockserver.MockServer;
 import com.apollographql.apollo3.mockserver.MockServerKt;
+import com.apollographql.apollo3.network.http.ApolloClientAwarenessInterceptor;
 import com.apollographql.apollo3.network.http.BatchingHttpEngine;
 import com.apollographql.apollo3.network.http.BatchingHttpEngineKt;
+import com.apollographql.apollo3.network.http.HttpNetworkTransport;
 import com.apollographql.apollo3.network.http.OkHttpEngineKt;
 import com.apollographql.apollo3.rx2.Rx2Apollo;
 import com.google.common.truth.Truth;
@@ -219,6 +221,17 @@ public class ClientTest {
     apolloClient = new ApolloClient.Builder()
         .serverUrl("https://localhost")
         .addCustomScalarAdapter(javatest.type.GeoPoint.type, geoPointAdapter)
+        .build();
+  }
+
+  private void clientAwareness() {
+    apolloClient = new ApolloClient.Builder()
+        .networkTransport(
+            new HttpNetworkTransport.Builder()
+                .serverUrl("https://localhost")
+                .addInterceptor(new ApolloClientAwarenessInterceptor("clientName", "clientVersion"))
+                .build()
+        )
         .build();
   }
 }
