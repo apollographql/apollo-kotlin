@@ -1,14 +1,12 @@
 package test;
 
 import com.apollographql.apollo3.ApolloClient;
-import com.apollographql.apollo3.ApolloClientKt;
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CompiledGraphQL;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Executable;
-import com.apollographql.apollo3.api.http.HttpMethod;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.apollographql.apollo3.cache.http.HttpCacheExtensionsKt;
@@ -92,12 +90,10 @@ public class ClientTest {
   }
 
   private void autoPersistedQueries() {
-    apolloClient = ApolloClientKt.autoPersistedQueries(
-        new ApolloClient.Builder().serverUrl("https://localhost"),
-        HttpMethod.Get,
-        HttpMethod.Post,
-        true
-    ).build();
+    apolloClient = new ApolloClient.Builder()
+        .serverUrl("https://localhost")
+        .autoPersistedQueries()
+        .build();
   }
 
   private void queryBatching() {

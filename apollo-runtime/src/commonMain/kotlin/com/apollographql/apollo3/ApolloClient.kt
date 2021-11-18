@@ -266,6 +266,35 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
       this.executionContext = executionContext
     }
 
+    /**
+     * Configures auto persisted queries.
+     *
+     * @param httpMethodForHashedQueries: the [HttpMethod] to use for the initial hashed query that does not send the actual Graphql document.
+     * [HttpMethod.Get] allows to use caching when available while [HttpMethod.Post] usually allows bigger document sizes.
+     * Only used if [hashByDefault] is true
+     * Default: [HttpMethod.Get]
+     *
+     * @param httpMethodForDocumentQueries: the [HttpMethod] to use for the follow up query that sends the full document if the initial
+     * hashed query was not found.
+     * Default: [HttpMethod.Post]
+     *
+     * @param hashByDefault: whether to enable Auto Persisted Queries by default. If true, it will set httpMethodForHashedQueries,
+     * sendApqExtensions=true and sendDocument=false.
+     * If false it will leave them untouched. You can later use [hashedQuery] to enable them
+     */
+    @JvmOverloads
+    fun autoPersistedQueries(
+        httpMethodForHashedQueries: HttpMethod = HttpMethod.Get,
+        httpMethodForDocumentQueries: HttpMethod = HttpMethod.Post,
+        hashByDefault: Boolean = true,
+    ) = apply {
+      addInterceptor(AutoPersistedQueryInterceptor(httpMethodForDocumentQueries))
+      if (hashByDefault) {
+        httpMethod(httpMethodForHashedQueries)
+        hashedQuery(true)
+      }
+    }
+
     fun build(): ApolloClient {
       val networkTransport = if (_networkTransport != null) {
         check(httpServerUrl == null) {
@@ -333,37 +362,6 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
     @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("ApolloClient.Builder()"))
     @JvmStatic
     fun builder() = Builder()
-  }
-}
-
-
-/**
- * Configures the given [ApolloClient] to try auto persisted queries.
- *
- * @param httpMethodForHashedQueries: the [HttpMethod] to use for the initial hashed query that does not send the actual Graphql document.
- * [HttpMethod.Get] allows to use caching when available while [HttpMethod.Post] usually allows bigger document sizes.
- * Only used if [hashByDefault] is true
- * Default: [HttpMethod.Get]
- *
- * @param httpMethodForDocumentQueries: the [HttpMethod] to use for the follow up query that sends the full document if the initial
- * hashed query was not found.
- * Default: [HttpMethod.Post]
- *
- * @param hashByDefault: whether to enable Auto Persisted Queries by default. If true, it will set httpMethodForHashedQueries,
- * sendApqExtensions=true and sendDocument=false.
- * If false it will leave them untouched. You can later use [hashedQuery] to enable them
- */
-fun ApolloClient.Builder.autoPersistedQueries(
-    httpMethodForHashedQueries: HttpMethod = HttpMethod.Get,
-    httpMethodForDocumentQueries: HttpMethod = HttpMethod.Post,
-    hashByDefault: Boolean = true,
-): ApolloClient.Builder {
-  return addInterceptor(AutoPersistedQueryInterceptor(httpMethodForDocumentQueries)).let {
-    if (hashByDefault) {
-      it.httpMethod(httpMethodForHashedQueries).hashedQuery(true)
-    } else {
-      it
-    }
   }
 }
 
