@@ -139,8 +139,8 @@ class Socket(private val socketFd: Int, private val acceptDelayMillis: Long) {
 
         debug("Write response: ${mockResponse.statusCode}")
 
-        if (mockResponse.delayMs > 0) {
-          usleep((mockResponse.delayMs * 1000).convert())
+        if (mockResponse.delayMillis > 0) {
+          usleep((mockResponse.delayMillis * 1000).convert())
         }
 
         try {

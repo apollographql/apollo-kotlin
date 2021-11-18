@@ -1,0 +1,28 @@
+query GetAnimal($id: String!) {
+  animal(id: $id) {
+    id
+    name
+    species
+  }
+}
+
+mutation UpdateAnimalName($input: AnimalInput!) {
+  updateAnimal(input: $input) {
+    success
+    animal {
+      id
+      name
+    }
+  }
+}
+
+mutation UpdateAnimalSpecies($input: AnimalInput!) {
+  updateAnimal(input: $input) {
+    success
+    animal {
+      id
+      species
+    }
+  }
+}
+

@@ -1,0 +1,24 @@
+type Query {
+  animal(id: String!): Animal!
+}
+
+type Mutation {
+  updateAnimal(input: AnimalInput!): AnimalResult!
+}
+
+type Animal @typePolicy(keyFields: "id") {
+  id: String!
+  name: String
+  species: String
+}
+
+type AnimalResult {
+  success: Boolean!
+  animal: Animal
+}
+
+input AnimalInput {
+  id: String!
+  name: String
+  species: String
+}

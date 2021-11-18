@@ -8,6 +8,6 @@ fun MockServer.enqueue(string: String, delayMs: Long = 0) {
       statusCode = 200,
       headers = mapOf("Content-Length" to byteString.size.toString()),
       body = byteString,
-      delayMs = delayMs
+      delayMillis = delayMs
   ))
 }
