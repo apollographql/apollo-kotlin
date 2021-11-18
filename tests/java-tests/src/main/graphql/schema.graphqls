@@ -1,6 +1,7 @@
 type Query {
   random: Int!
   animal: Animal
+  location: GeoPoint
 }
 
 type Mutation {
@@ -42,3 +43,5 @@ enum AnimalClass {
   BIRD
   INSECT
 }
+
+scalar GeoPoint

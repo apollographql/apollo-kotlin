@@ -2,11 +2,15 @@ package test;
 
 import com.apollographql.apollo3.ApolloClient;
 import com.apollographql.apollo3.ApolloClientKt;
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CompiledGraphQL;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Executable;
 import com.apollographql.apollo3.api.http.HttpMethod;
+import com.apollographql.apollo3.api.json.JsonReader;
+import com.apollographql.apollo3.api.json.JsonWriter;
 import com.apollographql.apollo3.cache.http.HttpCacheExtensionsKt;
 import com.apollographql.apollo3.cache.http.HttpFetchPolicy;
 import com.apollographql.apollo3.cache.normalized.ClientCacheExtensionsKt;
@@ -169,5 +173,52 @@ public class ClientTest {
         cacheKeyResolver,
         false
     ).build();
+  }
+
+  private void customScalars() {
+    class GeoPoint {
+      public final double latitude;
+      public final double longitude;
+
+      GeoPoint(double latitude, double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+      }
+    }
+
+    Adapter<GeoPoint> geoPointAdapter = new Adapter<GeoPoint>() {
+      @Override public GeoPoint fromJson(@NotNull JsonReader reader, @NotNull CustomScalarAdapters customScalarAdapters) {
+        Double latitude = null;
+        Double longitude = null;
+        reader.beginObject();
+        while (reader.hasNext()) {
+          switch (reader.nextName()) {
+            case "latitude":
+              latitude = reader.nextDouble();
+              break;
+            case "longitude":
+              longitude = reader.nextDouble();
+              break;
+          }
+        }
+        reader.endObject();
+        if (latitude != null && longitude != null) {
+          return new GeoPoint(latitude, longitude);
+        }
+        throw new RuntimeException("Invalid GeoPoint");
+      }
+
+      @Override public void toJson(@NotNull JsonWriter writer, @NotNull CustomScalarAdapters customScalarAdapters, GeoPoint value) {
+        writer.beginObject();
+        writer.name("latitude").value(value.latitude);
+        writer.name("longitude").value(value.longitude);
+        writer.endObject();
+      }
+    };
+
+    apolloClient = new ApolloClient.Builder()
+        .serverUrl("https://localhost")
+        .addCustomScalarAdapter(javatest.type.GeoPoint.type, geoPointAdapter)
+        .build();
   }
 }

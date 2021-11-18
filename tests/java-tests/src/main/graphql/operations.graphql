@@ -35,3 +35,7 @@ subscription AnimalCreated {
     ...catFragment
   }
 }
+
+query Location {
+  location
+}
