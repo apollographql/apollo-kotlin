@@ -4,6 +4,8 @@ import com.apollographql.apollo3.ApolloClient;
 import com.apollographql.apollo3.ApolloClientKt;
 import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.api.http.HttpMethod;
+import com.apollographql.apollo3.cache.http.HttpCacheExtensionsKt;
+import com.apollographql.apollo3.cache.http.HttpFetchPolicy;
 import com.apollographql.apollo3.mockserver.MockResponse;
 import com.apollographql.apollo3.mockserver.MockServer;
 import com.apollographql.apollo3.mockserver.MockServerKt;
@@ -22,6 +24,8 @@ import kotlin.coroutines.EmptyCoroutineContext;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.File;
 
 public class ClientTest {
   MockServer mockServer;
@@ -93,6 +97,21 @@ public class ClientTest {
     ApolloResponse<GetRandomQuery.Data> result = Rx2Apollo.rxSingle(BatchingHttpEngineKt.canBeBatched(
         apolloClient.query(new GetRandomQuery()),
         true
+    )).blockingGet();
+  }
+
+  private void httpCache() {
+    File cacheDir = new File("/tmp/apollo-cache");
+    long cacheSize = 10_000_000;
+    apolloClient = HttpCacheExtensionsKt.httpCache(
+        new ApolloClient.Builder().serverUrl("https://localhost"),
+        cacheDir,
+        cacheSize
+    ).build();
+
+    ApolloResponse<GetRandomQuery.Data> result = Rx2Apollo.rxSingle(HttpCacheExtensionsKt.httpFetchPolicy(
+        apolloClient.query(new GetRandomQuery()),
+        HttpFetchPolicy.NetworkOnly
     )).blockingGet();
   }
 }
