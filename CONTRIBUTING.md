@@ -66,7 +66,7 @@ files.
 ## Experimental / internal APIs
 
 Using Kotlin's (or other dependencies') experimental or internal APIs, such as the ones marked
-with `@ExperimentalCoroutinesApi` should be avoided as much as possible (exceptions can be made when no other option is
+with `@ExperimentalCoroutinesApi` should be avoided as much as possible (exceptions can be made for native/JS targets only when no other option is
 available). Indeed, applications using a certain version of Apollo Android could use a more up-to-date version of these
 APIs than the one used when building the library, causing crashes or other issues.
 
