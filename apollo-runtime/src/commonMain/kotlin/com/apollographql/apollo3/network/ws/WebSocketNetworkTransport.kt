@@ -7,9 +7,9 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.internal.ResponseBodyParser
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.internal.BackgroundDispatcher
+import com.apollographql.apollo3.internal.transformWhile
 import com.apollographql.apollo3.network.NetworkTransport
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.BufferOverflow
@@ -23,7 +23,6 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onSubscription
-import kotlinx.coroutines.flow.transformWhile
 import kotlinx.coroutines.launch
 
 /**
@@ -162,7 +161,6 @@ class WebSocketNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder in
     }
   }
 
-  @OptIn(ExperimentalCoroutinesApi::class)
   override fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
   ): Flow<ApolloResponse<D>> {
@@ -170,7 +168,7 @@ class WebSocketNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder in
       commands.send(StartOperation(request))
     }.filter {
       it.id == request.requestUuid.toString() || it.id == null
-    }.transformWhile {
+    }.transformWhile<Event, Event> {
       when (it) {
         is OperationComplete -> {
           false
@@ -268,4 +266,3 @@ class WebSocketNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder in
     }
   }
 }
-

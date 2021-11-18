@@ -63,6 +63,17 @@ allowed and any public API change will fail the build.
 If that happens, you will need to run `./gradlew apiDump` and check for any incompatible changes before commiting these
 files.
 
+## Experimental / internal APIs
+
+Using Kotlin's (or other dependencies') experimental or internal APIs, such as the ones marked
+with `@ExperimentalCoroutinesApi` should be avoided as much as possible (exceptions can be made for native/JS targets only when no other option is
+available). Indeed, applications using a certain version of Apollo Android could use a more up-to-date version of these
+APIs than the one used when building the library, causing crashes or other issues.
+
+We also have the `@ApolloExperimental` annotation which can be used to mark APIs as experimental, for instance when
+feedback is wanted from the community on new APIs. This can also be used as a warning that APIs are using experimental
+features of Kotlin/Coroutines/etc. and therefore may break in certain situations.
+
 ## Releasing
 
 Releasing is done using Github Actions. The CI contains credentials to upload artifacts to Sonatype and the Gradle
