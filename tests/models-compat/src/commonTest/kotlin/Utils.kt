@@ -1,6 +1,6 @@
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.api.ObjectIdGeneratorContext
+import com.apollographql.apollo3.cache.normalized.api.CacheKeyGeneratorContext
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.testing.readFile
 
@@ -12,7 +12,7 @@ fun readJson(name: String) = readFile("../models-fixtures/json/$name")
  * It will coerce Int, Floats and other types to String using [toString]
  */
 object IdCacheKeyGenerator : CacheKeyGenerator {
-  override fun cacheKeyForObject(obj: Map<String, Any?>, context: ObjectIdGeneratorContext): CacheKey? {
+  override fun cacheKeyForObject(obj: Map<String, Any?>, context: CacheKeyGeneratorContext): CacheKey? {
     return obj["id"]?.toString()?.let { CacheKey(it) } ?: TypePolicyCacheKeyGenerator.cacheKeyForObject(obj, context)
   }
 }

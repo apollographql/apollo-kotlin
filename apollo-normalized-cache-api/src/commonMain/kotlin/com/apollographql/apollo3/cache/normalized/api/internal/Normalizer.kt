@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.isComposite
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.api.ObjectIdGeneratorContext
+import com.apollographql.apollo3.cache.normalized.api.CacheKeyGeneratorContext
 import com.apollographql.apollo3.cache.normalized.api.Record
 
 /**
@@ -138,7 +138,7 @@ class Normalizer(
         @Suppress("UNCHECKED_CAST")
         val key = cacheKeyGenerator.cacheKeyForObject(
             value as Map<String, Any?>,
-            ObjectIdGeneratorContext(field, variables),
+            CacheKeyGeneratorContext(field, variables),
         )?.key ?: path
         buildRecord(value, key, field.selections)
       }
