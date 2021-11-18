@@ -1,7 +1,9 @@
 package test;
 
 import com.apollographql.apollo3.ApolloClient;
+import com.apollographql.apollo3.ApolloClientKt;
 import com.apollographql.apollo3.api.ApolloResponse;
+import com.apollographql.apollo3.api.http.HttpMethod;
 import com.apollographql.apollo3.mockserver.MockResponse;
 import com.apollographql.apollo3.mockserver.MockServer;
 import com.apollographql.apollo3.mockserver.MockServerKt;
@@ -62,4 +64,12 @@ public class ClientTest {
     });
   }
 
+  private void autoPersistedQueries() {
+    apolloClient = ApolloClientKt.autoPersistedQueries(
+        new ApolloClient.Builder().serverUrl("https://localhost"),
+        HttpMethod.Get,
+        HttpMethod.Post,
+        true
+    ).build();
+  }
 }
