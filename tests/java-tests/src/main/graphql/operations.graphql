@@ -18,3 +18,20 @@ fragment catFragment on Cat {
     temperature
   }
 }
+
+mutation CreateCat {
+  createAnimal(
+    input: {
+      class: MAMMAL
+      name: "cat"
+    }
+  ) {
+    ...catFragment
+  }
+}
+
+subscription AnimalCreated {
+  animalCreated {
+    ...catFragment
+  }
+}

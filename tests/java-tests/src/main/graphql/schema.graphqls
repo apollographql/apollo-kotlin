@@ -3,6 +3,14 @@ type Query {
   animal: Animal
 }
 
+type Mutation {
+  createAnimal(input: AnimalInput!): Animal
+}
+
+type Subscription {
+  animalCreated: Animal
+}
+
 interface Animal {
   species: String
   habitat: Habitat
@@ -21,4 +29,16 @@ type Dog implements Animal {
 type Cat implements Animal {
   species: String
   habitat: Habitat
+}
+
+input AnimalInput {
+  class: AnimalClass!
+  name: String!
+}
+
+enum AnimalClass {
+  MAMMAL
+  FISH
+  BIRD
+  INSECT
 }

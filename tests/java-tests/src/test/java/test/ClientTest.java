@@ -7,6 +7,9 @@ import com.apollographql.apollo3.mockserver.MockServer;
 import com.apollographql.apollo3.mockserver.MockServerKt;
 import com.apollographql.apollo3.rx2.Rx2Apollo;
 import com.google.common.truth.Truth;
+import io.reactivex.disposables.Disposable;
+import javatest.AnimalCreatedSubscription;
+import javatest.CreateCatMutation;
 import javatest.GetRandomQuery;
 import kotlin.coroutines.Continuation;
 import kotlin.coroutines.CoroutineContext;
@@ -26,7 +29,7 @@ public class ClientTest {
     /**
      * Because url doesn't suspend on the JVM, we can just use the return value
      */
-    String url = (String)mockServer.url(new Continuation<String>() {
+    String url = (String) mockServer.url(new Continuation<String>() {
       @NotNull @Override public CoroutineContext getContext() {
         return EmptyCoroutineContext.INSTANCE;
       }
@@ -41,8 +44,22 @@ public class ClientTest {
   @Test
   public void simple() {
     mockServer.enqueue(new MockResponse("{\"data\": {\"random\": 42}}"));
+    ApolloResponse<GetRandomQuery.Data> queryResponse = Rx2Apollo.rxSingle(
+        apolloClient.query(new GetRandomQuery())
+    ).blockingGet();
+    Truth.assertThat(queryResponse.dataAssertNoErrors().random).isEqualTo(42);
 
-    ApolloResponse<GetRandomQuery.Data> response = Rx2Apollo.rxSingle(apolloClient.query(new GetRandomQuery())).blockingGet();
-    Truth.assertThat(response.dataAssertNoErrors().random).isEqualTo(42);
+    mockServer.enqueue(new MockResponse("{\"data\": {\"createAnimal\": {\"__typename\": \"Cat\", \"species\": \"cat\", \"habitat\": {\"temperature\": 10.5}}}}"));
+    ApolloResponse<CreateCatMutation.Data> mutationResponse = Rx2Apollo.rxSingle(
+        apolloClient.mutate(new CreateCatMutation())
+    ).blockingGet();
+    Truth.assertThat(mutationResponse.dataAssertNoErrors().createAnimal.catFragment.species).isEqualTo("cat");
+
+    Disposable disposable = Rx2Apollo.rxFlowable(
+        apolloClient.subscribe(new AnimalCreatedSubscription())
+    ).subscribe(result -> {
+      String species = result.dataAssertNoErrors().animalCreated.catFragment.species;
+    });
   }
+
 }
