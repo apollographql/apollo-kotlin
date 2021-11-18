@@ -9,8 +9,10 @@ import kotlinx.coroutines.flow.flow
 
 /**
  * This is copied from [Flow], which is marked [ExperimentalCoroutinesApi].
- * There is a risk this API will be removed or changed in the future, which could break consumers of this library
- * - that is why we use our own copy.
+ * There is a risk this API will be removed or changed in the future, which could break consumers of this library - that is why we use our
+ * own copy.
+ *
+ * [Original source](https://github.com/Kotlin/kotlinx.coroutines/blob/version-1.5.2/kotlinx-coroutines-core/common/src/flow/operators/Limit.kt#L116)
  *
  * TODO: remove when kotlinx.coroutines.flow.Flow.transformWhile is no longer marked ExperimentalCoroutinesApi.
  */

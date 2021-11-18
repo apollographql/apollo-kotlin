@@ -12,7 +12,7 @@ import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import okio.ByteString
 
-internal class OkHttpWebSocketEngine(
+class OkHttpWebSocketEngine(
     private val webSocketFactory: WebSocket.Factory,
 ) : WebSocketEngine {
 

@@ -5,8 +5,10 @@ import kotlinx.coroutines.channels.Channel
 
 /**
  * A wrapper for [Channel] that adds a method equivalent to [invokeOnClose], which is marked [ExperimentalCoroutinesApi].
- * There is a risk this API will be removed or changed in the future, which could break consumers of this library
- * - that is why we use our own method.
+ * There is a risk this API will be removed or changed in the future, which could break consumers of this library - that is why we use our
+ * own method.
+ *
+ * [Original source](https://github.com/Kotlin/kotlinx.coroutines/blob/version-1.5.2/kotlinx-coroutines-core/common/src/channels/AbstractChannel.kt#L286)
  *
  * TODO: remove when Channel.invokeOnClose is no longer marked ExperimentalCoroutinesApi.
  */
