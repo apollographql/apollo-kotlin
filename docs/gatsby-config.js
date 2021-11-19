@@ -57,6 +57,7 @@ module.exports = {
             'advanced/plugin-configuration',
             'advanced/multi-modules',
             'advanced/persisted-queries',
+            'advanced/operation-safelisting',
             'advanced/using-aliases',
             'advanced/response-based-codegen',
             'advanced/client-awareness',
