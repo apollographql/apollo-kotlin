@@ -41,7 +41,7 @@ dependencies {
   testImplementation(groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer4"))
 }
 
-if (false) {
+if (true) {
   gr8 {
     val shadowedJar = create("shadow") {
       proguardFile("rules.pro")
@@ -75,6 +75,7 @@ tasks.withType<Test> {
   dependsOn(":apollo-api:publishAllPublicationsToPluginTestRepository")
   dependsOn(":apollo-ast:publishAllPublicationsToPluginTestRepository")
   dependsOn(":apollo-normalized-cache-api:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-mpp-utils:publishAllPublicationsToPluginTestRepository")
   dependsOn(":apollo-compiler:publishAllPublicationsToPluginTestRepository")
   dependsOn("publishAllPublicationsToPluginTestRepository")
 
