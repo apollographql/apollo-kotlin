@@ -95,7 +95,7 @@ class OptimisticDataTest {
           }
 
           server.enqueue(MockResponse(statusCode = 501, delayMillis = 10_000))
-          launch {
+          val job = launch {
             delay(100)
             val mutation = UpdateAnimalSpeciesMutation(AnimalInput("Irrelevant"))
             apolloClient.mutate(mutation)
@@ -118,6 +118,9 @@ class OptimisticDataTest {
             assertEquals("Noushka", it.name)
             assertEquals("Dog", it.species)
           }
+
+          // No need to wait for the 10s job to finish
+          job.cancel()
 
           cancelAndIgnoreRemainingEvents()
         }

@@ -74,4 +74,21 @@ class Record (
     }
     return result
   }
+
+  companion object {
+    internal fun changedKeys(record1: Record, record2: Record): Set<String> {
+      check(record1.key == record2.key) {
+        "Cannot compute changed keys on record with different keys: '${record1.key}' - '${record2.key}'"
+      }
+      val keys1 = record1.fields.keys
+      val keys2 = record2.fields.keys
+      val intersection = keys1.intersect(keys2)
+
+      val changed = (keys1 - intersection) + (keys2 - intersection) + intersection.filter {
+        record1.fields[it] != record2.fields[it]
+      }
+
+      return changed.map { "${record1.key}.$it" }.toSet()
+    }
+  }
 }

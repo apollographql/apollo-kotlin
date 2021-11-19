@@ -237,7 +237,7 @@ internal class DefaultApolloStore(
       /**
        * TODO: should we forward the cache headers to the optimistic store?
        */
-      cache.mergeOptimisticUpdates(records)
+      cache.addOptimisticUpdates(records)
     }
 
     if (publish) {
