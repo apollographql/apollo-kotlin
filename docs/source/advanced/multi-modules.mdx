@@ -65,6 +65,33 @@ dependencies {
 
 ```
 
+## Multiplatform
+
+For multiplatform projects, put `apolloMetadata` in the top level `dependencies {}` block:
+
+```kotlin
+// feature/build.gradle.kts
+// This module must not have a schema
+// This module can use fragments and types from 'shared' and 'root'
+dependencies {
+    apolloMetadata(project(":shared"))
+}
+
+kotlin {
+    jvm()
+
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation("com.apollographql.apollo:apollo-api:x.y.z")
+                api("com.apollographql.apollo:apollo-runtime-kotlin:x.y.z")
+            }
+        }
+    }
+}
+```
+
+
 Summary of different constraints:
 
 * All modules must apply the same version of the Apollo Gradle Plugin
