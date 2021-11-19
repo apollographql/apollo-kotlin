@@ -1,4 +1,4 @@
-package test.outofbounds
+package test.customscalars
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.mockserver.MockServer
