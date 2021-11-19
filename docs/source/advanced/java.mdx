@@ -32,7 +32,7 @@ Here's how to build an Apollo client from Java:
         builder = ClientCacheExtensionsKt.normalizedCache(
                 builder,
                 new MemoryCacheFactory(10 * 1024 * 1024, -1),
-                TypePolicyObjectIdGenerator.INSTANCE,
+                TypePolicyCacheKeyGenerator.INSTANCE,
                 FieldPolicyCacheResolver.INSTANCE,
                 false
         );

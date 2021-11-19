@@ -491,7 +491,7 @@ val response = apolloClient.query(request)
 
 The `CacheKeyResolver` API has been split in two different APIs:
 
-* `ObjectIdGenerator.cacheKeyForObject`
+* `CacheKeyGenerator.cacheKeyForObject`
   * takes Json data as input and returns a unique id for an object.
   * is used **after** a network request
   * is used during normalization when **writing** to the cache
@@ -503,7 +503,7 @@ The `CacheKeyResolver` API has been split in two different APIs:
 Previously, both methods were in `CacheResolver` even if under the hood, the code path were very different. By separating them, it makes it explicit and also makes it possible to only implement one of them.
 
 At a high level,
-* `fromFieldRecordSet` is renamed to `ObjectIdGenerator.cacheKeyForObject`.
+* `fromFieldRecordSet` is renamed to `CacheKeyGenerator.cacheKeyForObject`.
 * `fromFieldArguments` is renamed to `CacheKeyResolver.cacheKeyForField`.
 * The `CacheKey` return value is now nullable, and `CacheKey.NONE` is replaced with `null`.
 
@@ -524,9 +524,9 @@ val apolloClient = ApolloClient.builder()
 
 
 // With
-val objectIdGenerator = object : ObjectIdGenerator {
-  override fun cacheKeyForObject(obj: Map<String, Any?>, context: ObjectIdGeneratorContext): CacheKey? {
-    return obj["id"]?.toString()?.let { CacheKey(it) } ?: TypePolicyObjectIdGenerator.cacheKeyForObject(obj, context)
+val objectIdGenerator = object : CacheKeyGenerator {
+  override fun cacheKeyForObject(obj: Map<String, Any?>, context: CacheKeyGeneratorContext): CacheKey? {
+    return obj["id"]?.toString()?.let { CacheKey(it) } ?: TypePolicyCacheKeyGenerator.cacheKeyForObject(obj, context)
   }
 }
 
