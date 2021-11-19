@@ -2,6 +2,7 @@
 
 package com.apollographql.apollo3.network.http
 
+import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.ApolloRequest
@@ -35,6 +36,7 @@ import okio.Buffer
 import okio.BufferedSink
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
+import kotlin.jvm.JvmStatic
 
 /**
  * An [HttpEngine] that wraps another one and batches HTTP queries to execute multiple
@@ -211,6 +213,19 @@ class BatchingHttpEngine @JvmOverloads constructor(
 
   companion object {
     const val CAN_BE_BATCHED = "X-APOLLO-CAN-BE-BATCHED"
+
+    @JvmStatic
+    fun configureApolloClientBuilder(apolloClientBuilder: ApolloClient.Builder, canBeBatched: Boolean) = apolloClientBuilder.apply {
+      apolloClientBuilder.canBeBatched(canBeBatched)
+    }
+
+    @JvmStatic
+    fun <D : Operation.Data, E : HasMutableExecutionContext<E>, C : ApolloCall<D, E>> configureApolloCall(
+        apolloCall: C,
+        canBeBatched: Boolean,
+    ) = apolloCall.apply {
+      apolloCall.canBeBatched(canBeBatched)
+    }
   }
 }
 

@@ -1,4 +1,4 @@
-@file:JvmName("HttpCacheExtensions")
+@file:JvmName("HttpCache")
 
 package com.apollographql.apollo3.cache.http
 
@@ -44,6 +44,7 @@ enum class HttpFetchPolicy {
  *
  * See also [ApolloClient.Builder.httpEngine] and [ApolloClient.Builder.networkTransport]
  */
+@JvmName("configureApolloClientBuilder")
 fun ApolloClient.Builder.httpCache(
     directory: File,
     maxSize: Long,

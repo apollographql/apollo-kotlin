@@ -1,4 +1,4 @@
-@file:JvmName("NormalizedCacheExtensions")
+@file:JvmName("NormalizedCache")
 
 package com.apollographql.apollo3.cache.normalized
 
@@ -63,6 +63,7 @@ enum class FetchPolicy {
  * This allows to display results faster
  */
 @JvmOverloads
+@JvmName("configureApolloClientBuilder")
 fun ApolloClient.Builder.normalizedCache(
     normalizedCacheFactory: NormalizedCacheFactory,
     cacheKeyGenerator: CacheKeyGenerator = TypePolicyCacheKeyGenerator,

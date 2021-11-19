@@ -2,7 +2,7 @@ package com.example.app;
 
 import com.apollographql.apollo3.ApolloClient;
 import com.apollographql.apollo3.api.Query;
-import com.apollographql.apollo3.cache.normalized.NormalizedCacheExtensions;
+import com.apollographql.apollo3.cache.normalized.NormalizedCache;
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver;
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory;
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator;
@@ -16,7 +16,7 @@ public class Main {
         ApolloClient.Builder apolloClientBuilder = ApolloClient.builder()
                 .serverUrl("https://example.com");
 
-      NormalizedCacheExtensions.normalizedCache(
+      NormalizedCache.configureApolloClientBuilder(
           apolloClientBuilder,
           new MemoryCacheFactory(),
           TypePolicyCacheKeyGenerator.INSTANCE,

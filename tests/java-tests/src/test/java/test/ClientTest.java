@@ -1,6 +1,7 @@
 package test;
 
 import com.apollographql.apollo3.ApolloClient;
+import com.apollographql.apollo3.ApolloQueryCall;
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.api.CompiledField;
@@ -8,9 +9,9 @@ import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Executable;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
-import com.apollographql.apollo3.cache.http.HttpCacheExtensions;
+import com.apollographql.apollo3.cache.http.HttpCache;
 import com.apollographql.apollo3.cache.http.HttpFetchPolicy;
-import com.apollographql.apollo3.cache.normalized.NormalizedCacheExtensions;
+import com.apollographql.apollo3.cache.normalized.NormalizedCache;
 import com.apollographql.apollo3.cache.normalized.api.CacheKey;
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyResolver;
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory;
@@ -23,7 +24,6 @@ import com.apollographql.apollo3.mockserver.MockServer;
 import com.apollographql.apollo3.mockserver.MockServerKt;
 import com.apollographql.apollo3.network.http.ApolloClientAwarenessInterceptor;
 import com.apollographql.apollo3.network.http.BatchingHttpEngine;
-import com.apollographql.apollo3.network.http.BatchingHttpEngineExtensions;
 import com.apollographql.apollo3.network.http.HttpNetworkTransport;
 import com.apollographql.apollo3.rx2.Rx2Apollo;
 import com.google.common.truth.Truth;
@@ -93,44 +93,38 @@ public class ClientTest {
   }
 
   private void queryBatching() {
-    apolloClient = BatchingHttpEngineExtensions.canBeBatched(
-        new ApolloClient.Builder()
-            .serverUrl("https://localhost")
-            .httpEngine(new BatchingHttpEngine()),
-        false
-    ).build();
+    ApolloClient.Builder apolloClientBuilder = new ApolloClient.Builder()
+        .serverUrl("https://localhost")
+        .httpEngine(new BatchingHttpEngine());
+    BatchingHttpEngine.configureApolloClientBuilder(apolloClientBuilder, false);
+    apolloClient = apolloClientBuilder.build();
 
-    ApolloResponse<GetRandomQuery.Data> result = Rx2Apollo.single(BatchingHttpEngineExtensions.canBeBatched(
-        apolloClient.query(new GetRandomQuery()),
-        true
-    )).blockingGet();
+    ApolloQueryCall<GetRandomQuery.Data> call = apolloClient.query(new GetRandomQuery());
+    BatchingHttpEngine.configureApolloCall(call, true);
+    ApolloResponse<GetRandomQuery.Data> result = Rx2Apollo.single(call).blockingGet();
   }
 
   private void httpCache() {
+    ApolloClient.Builder apolloClientBuilder = new ApolloClient.Builder().serverUrl("https://localhost");
     File cacheDir = new File("/tmp/apollo-cache");
     long cacheSize = 10_000_000;
-    apolloClient = HttpCacheExtensions.httpCache(
-        new ApolloClient.Builder().serverUrl("https://localhost"),
-        cacheDir,
-        cacheSize
-    ).build();
+    HttpCache.configureApolloClientBuilder(apolloClientBuilder, cacheDir, cacheSize);
+    apolloClient = apolloClientBuilder.build();
 
-    ApolloResponse<GetRandomQuery.Data> result = Rx2Apollo.single(HttpCacheExtensions.httpFetchPolicy(
-        apolloClient.query(new GetRandomQuery()),
-        HttpFetchPolicy.NetworkOnly
-    )).blockingGet();
+    ApolloQueryCall<GetRandomQuery.Data> call = apolloClient.query(new GetRandomQuery());
+    HttpCache.httpFetchPolicy(call, HttpFetchPolicy.NetworkOnly);
+    ApolloResponse<GetRandomQuery.Data> result = Rx2Apollo.single(call).blockingGet();
   }
 
   private void normalizedCache() {
+    ApolloClient.Builder apolloClientBuilder = new ApolloClient.Builder().serverUrl("https://localhost");
+
     NormalizedCacheFactory cacheFactory = new MemoryCacheFactory().chain(
         new SqlNormalizedCacheFactory("jdbc:sqlite:apollo.db")
     );
 
     // Using default objectIdGenerator/cacheResolver
-    apolloClient = NormalizedCacheExtensions.normalizedCache(
-        new ApolloClient.Builder().serverUrl("https://localhost"),
-        cacheFactory
-    ).build();
+    NormalizedCache.configureApolloClientBuilder(apolloClientBuilder, cacheFactory);
 
     // Using custom objectIdGenerator/cacheResolver
 
@@ -151,12 +145,9 @@ public class ClientTest {
       }
     };
 
-    apolloClient = NormalizedCacheExtensions.normalizedCache(
-        new ApolloClient.Builder().serverUrl("https://localhost"),
-        cacheFactory,
-        objectIdGenerator,
-        cacheKeyResolver
-    ).build();
+    NormalizedCache.configureApolloClientBuilder(apolloClientBuilder, cacheFactory, objectIdGenerator, cacheKeyResolver);
+
+    apolloClient = apolloClientBuilder.build();
   }
 
   private void customScalars() {
