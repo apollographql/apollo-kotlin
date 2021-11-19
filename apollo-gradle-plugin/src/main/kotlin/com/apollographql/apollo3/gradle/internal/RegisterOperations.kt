@@ -16,18 +16,17 @@ import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.GQLSelectionSet
 import com.apollographql.apollo3.ast.GQLStringValue
 import com.apollographql.apollo3.ast.GQLVariableDefinition
+import com.apollographql.apollo3.ast.SDLWriter
 import com.apollographql.apollo3.ast.TransformResult
 import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.transform
+import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.fromJson
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.gradle.internal.SchemaDownloader.cast
-
-import java.lang.reflect.InvocationHandler
-import java.lang.reflect.Proxy
-import java.math.BigInteger
+import okio.Buffer
 
 private fun GQLDefinition.score(): String {
   // Fragments always go first
@@ -59,105 +58,64 @@ private fun isEmpty(s: String?): Boolean {
   return s == null || s.trim { it <= ' ' }.length == 0
 }
 
-private fun wrap(start: String, maybeString: String?, end: String): String {
-  return if (isEmpty(maybeString)) {
-    if (start == "\"" && end == "\"") {
-      "\"\""
-    } else ""
-  } else start + maybeString + if (!isEmpty(end)) end else ""
-}
-
-private fun <T : Node<*>> join(
-    nodes: List<T>,
-    delim: String,
-    nodeMethod: (Node<*>) -> String,
+private fun <T : GQLNode> List<T>.join(
+    writer: SDLWriter,
+    separator: String = " ",
     prefix: String = "",
-    suffix: String = "",
-): String {
-  val joined = StringBuilder()
-  joined.append(prefix)
-  var first = true
-  for (node in nodes) {
-    if (first) {
-      first = false
-    } else {
-      joined.append(delim)
+    postfix: String = "",
+    block: (T) -> Unit = { writer.write(it) },
+) {
+  writer.write(prefix)
+  forEachIndexed { index, t ->
+    block(t)
+    if (index < size - 1) {
+      writer.write(separator)
     }
-    joined.append(nodeMethod(node))
   }
-  joined.append(suffix)
-  return joined.toString()
+  writer.write(postfix)
 }
 
 /**
  * A document printer that can use " " as a separator for field arguments when the line becomes bigger than 80 chars
  * as in graphql-js: https://github.com/graphql/graphql-js/blob/6453612a6c40a1f8ad06845f1516c5f0dafa666c/src/language/printer.ts#L62
  */
-private fun printDocument(node: GQLNode): String {
-  node.toUtf8()
-  val printerCtor = AstPrinter::class.java.getDeclaredConstructor(Boolean::class.java).apply {
-    isAccessible = true
-  }
-  val printer = printerCtor.newInstance(false)
+private fun printDocument(gqlNode: GQLNode): String {
+  val buffer = Buffer()
 
-  val nodePrinterClass = Class.forName("graphql.language.AstPrinter${'$'}NodePrinter")
-  val printers = AstPrinter::class.java.getDeclaredField("printers").apply {
-    isAccessible = true
-  }.get(printer) as LinkedHashMap<Class<*>, Any>
-
-  val directivesMethod = AstPrinter::class.java.getDeclaredMethod("directives", List::class.java).apply {
-    isAccessible = true
-  }
-  val nodeMethod = AstPrinter::class.java.getDeclaredMethod("node", Node::class.java).apply {
-    isAccessible = true
-  }
-  val fieldPrinter = Proxy.newProxyInstance(
-      AstPrinter::class.java.classLoader,
-      arrayOf(nodePrinterClass),
-      InvocationHandler { proxy, method, args ->
-        check(method.name == "print")
-        val out = args[0] as StringBuilder
-        val node = args[1] as Field
-
-        /**
-         * This code is a copy/paste from graphql-java. It could be simplified but keeping it
-         * closer to graphql-java will make it easier to follow changes if any
-         */
-        val compactMode = false
-        val argSep = if (compactMode) "," else ", "
-        val aliasSuffix = if (compactMode) ":" else ": "
-
-        val alias: String = wrap("", node.alias, aliasSuffix)
-        val name: String = node.name
-        var arguments: String = wrap("(", join<Argument>(node.arguments, argSep, { nodeMethod.invoke(printer, it) as String }), ")")
-        if (arguments.length > 80) {
-          arguments = wrap("(", join<Argument>(node.arguments, " ", { nodeMethod.invoke(printer, it) as String }), ")")
+  val writer = object : SDLWriter(buffer, "  ") {
+    override fun write(gqlNode: GQLNode) {
+      when (gqlNode) {
+        is GQLField -> {
+          /**
+           * Compute the size of "$alias: $name(arg1: value1, arg2: value2, etc...)"
+           *
+           * If it's bigger than 80, replace ', ' with ' '
+           */
+          val lineString = gqlNode.copy(directives = emptyList(), selectionSet = null).toUtf8()
+          if (lineString.length > 80) {
+            write(lineString.replace(", ", " "))
+          } else {
+            write(lineString)
+          }
+          if (gqlNode.directives.isNotEmpty()) {
+            write(" ")
+            gqlNode.directives.join(this)
+          }
+          if (gqlNode.selectionSet != null) {
+            write(" ")
+            write(gqlNode.selectionSet!!)
+          } else {
+            write("\n")
+          }
         }
-        val directives: String = directivesMethod.invoke(printer, node.directives) as String
-        val selectionSet: String = nodeMethod.invoke(printer, node.selectionSet) as String
-
-        out.append(
-            alias + name + arguments,
-            directives,
-            selectionSet
-        )
-
-        Unit
+        else -> super.write(gqlNode)
       }
-  )
+    }
+  }
 
-  printers[Field::class.java] = fieldPrinter
+  writer.write(gqlNode)
 
-  val documentPrinter = AstPrinter::class.java.getDeclaredMethod("_findPrinter", Node::class.java).apply {
-    isAccessible = true
-  }.invoke(printer, document)
-
-  val builder = StringBuilder()
-  nodePrinterClass.getDeclaredMethod("print", StringBuilder::class.java, Node::class.java).apply {
-    isAccessible = true
-  }.invoke(documentPrinter, builder, document)
-
-  return builder.toString()
+  return buffer.readUtf8()
 }
 
 object RegisterOperations {
@@ -295,7 +253,7 @@ object RegisterOperations {
       }
     }
 
-    val minimized = printDocument(sortedDocument)
+    val minimized = printDocument(sortedDocument!!)
         .replace(Regex("\\s+"), " ")
         .replace(Regex("([^_a-zA-Z0-9]) ")) { it.groupValues[1] }
         .replace(Regex(" ([^_a-zA-Z0-9])")) { it.groupValues[1] }
@@ -318,7 +276,7 @@ object RegisterOperations {
         "clientIdentity" to mapOf(
             "name" to "apollo-android",
             "identifier" to "apollo-android",
-            "version" to com.apollographql.apollo.compiler.VERSION,
+            "version" to APOLLO_VERSION,
         ),
         "operations" to operationOutput.entries.map {
           val document = it.value.source

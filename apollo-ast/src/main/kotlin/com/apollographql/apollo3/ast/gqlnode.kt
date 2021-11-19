@@ -8,7 +8,7 @@ import java.io.File
 
 fun GQLNode.toUtf8(sink: BufferedSink, indent: String = "  ") {
   val writer = SDLWriter(sink, indent)
-  write(writer)
+  writer.write(this)
 }
 
 fun GQLNode.toUtf8(file: File, indent: String = "  ") = file.outputStream().sink().buffer().use {

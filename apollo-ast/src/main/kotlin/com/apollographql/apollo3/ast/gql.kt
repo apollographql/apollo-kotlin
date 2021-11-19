@@ -28,25 +28,27 @@ interface GQLNode {
   val children: List<GQLNode>
 
   /**
-   * Write the node to the given writer
+   * Internal-only. Copies this code using the given children
+   *
+   *  Write the node to the given writer
    *
    * The general convention is that [GQLNode] should output their trailing line if they know
    * they will need one
    */
-  fun write(writer: SDLWriter)
+  fun writeInternal(writer: SDLWriter)
 
   /**
    * Internal-only. Copies this code using the given children
    *
    * To transform an AST, use [GQLNode.transform] instead
    */
-  fun copyWithNewChildren(container: NodeContainer): GQLNode
+  fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode
 }
 
 sealed interface TransformResult {
-  object Delete: TransformResult
-  object Continue: TransformResult
-  class Replace(val newNode: GQLNode): TransformResult
+  object Delete : TransformResult
+  object Continue : TransformResult
+  class Replace(val newNode: GQLNode) : TransformResult
 }
 
 fun interface NodeTransformer {
@@ -54,17 +56,17 @@ fun interface NodeTransformer {
 }
 
 fun GQLNode.transform(transformer: NodeTransformer): GQLNode? {
-  return when(val result = transformer.transform(this)) {
-     is TransformResult.Delete -> null
-     is TransformResult.Replace -> result.newNode
-     is TransformResult.Continue -> {
-       val newChildren = children.mapNotNull { it.transform(transformer) }
-       val nodeContainer = NodeContainer(newChildren)
-       copyWithNewChildren(nodeContainer).also {
-         nodeContainer.assert()
-       }
-     }
-   }
+  return when (val result = transformer.transform(this)) {
+    is TransformResult.Delete -> null
+    is TransformResult.Replace -> result.newNode
+    is TransformResult.Continue -> {
+      val newChildren = children.mapNotNull { it.transform(transformer) }
+      val nodeContainer = NodeContainer(newChildren)
+      copyWithNewChildrenInternal(nodeContainer).also {
+        nodeContainer.assert()
+      }
+    }
+  }
 }
 
 /**
@@ -100,11 +102,11 @@ data class GQLDocument(
   override val sourceLocation: SourceLocation = SourceLocation(0, 0, filePath)
   override val children = definitions
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     definitions.join(writer = writer, separator = "\n")
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return GQLDocument(
         definitions = container.take(),
         filePath = filePath
@@ -125,7 +127,7 @@ data class GQLOperationDefinition(
 ) : GQLDefinition, GQLDescribed {
   override val children = variableDefinitions + directives + selectionSet
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       write(operationType)
       if (name != null) {
@@ -141,12 +143,12 @@ data class GQLOperationDefinition(
       }
       if (selectionSet.selections.isNotEmpty()) {
         write(" ")
-        selectionSet.write(writer)
+        writer.write(selectionSet)
       }
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         variableDefinitions = container.take(),
         directives = container.take(),
@@ -166,7 +168,7 @@ data class GQLFragmentDefinition(
 
   override val children = directives + selectionSet + typeCondition
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       write("fragment $name on ${typeCondition.name}")
       if (directives.isNotEmpty()) {
@@ -175,12 +177,12 @@ data class GQLFragmentDefinition(
       }
       if (selectionSet.selections.isNotEmpty()) {
         write(" ")
-        selectionSet.write(writer)
+        writer.write(selectionSet)
       }
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
         typeCondition = container.take<GQLNamedType>().single(),
@@ -198,7 +200,7 @@ data class GQLSchemaDefinition(
 
   override val children = directives + rootOperationTypeDefinitions
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       writeDescription(description)
       if (directives.isNotEmpty()) {
@@ -208,13 +210,13 @@ data class GQLSchemaDefinition(
       write("schema ")
       write("{\n")
       indent()
-      rootOperationTypeDefinitions.join(writer,  separator = "",)
+      rootOperationTypeDefinitions.join(writer, separator = "")
       unindent()
       write("}\n")
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
         rootOperationTypeDefinitions = container.take()
@@ -258,7 +260,7 @@ data class GQLInterfaceTypeDefinition(
 
   override val children: List<GQLNode> = directives + fields
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       writeDescription(description)
       write("interface $name")
@@ -281,7 +283,7 @@ data class GQLInterfaceTypeDefinition(
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
         fields = container.take()
@@ -300,7 +302,7 @@ data class GQLObjectTypeDefinition(
 
   override val children: List<GQLNode> = directives + fields
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       writeDescription(description)
       write("type $name")
@@ -323,7 +325,7 @@ data class GQLObjectTypeDefinition(
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
         fields = container.take()
@@ -341,7 +343,7 @@ data class GQLInputObjectTypeDefinition(
 
   override val children: List<GQLNode> = directives + inputFields
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       writeDescription(description)
       write("input $name")
@@ -360,7 +362,7 @@ data class GQLInputObjectTypeDefinition(
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
         inputFields = container.take()
@@ -377,7 +379,7 @@ data class GQLScalarTypeDefinition(
 
   override val children = directives
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       writeDescription(description)
       write("scalar $name")
@@ -389,7 +391,7 @@ data class GQLScalarTypeDefinition(
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take()
     )
@@ -406,7 +408,7 @@ data class GQLEnumTypeDefinition(
 
   override val children: List<GQLNode> = directives + enumValues
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       writeDescription(description)
       write("enum $name")
@@ -418,14 +420,14 @@ data class GQLEnumTypeDefinition(
         write(" ")
         write("{\n")
         indent()
-        enumValues.join(writer, separator = "\n",)
+        enumValues.join(writer, separator = "\n")
         unindent()
         write("}\n")
       }
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
         enumValues = container.take()
@@ -443,7 +445,7 @@ data class GQLUnionTypeDefinition(
 
   override val children: List<GQLNode> = directives + memberTypes
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       writeDescription(description)
       write("union $name")
@@ -457,7 +459,7 @@ data class GQLUnionTypeDefinition(
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
         memberTypes = container.take()
@@ -476,7 +478,7 @@ data class GQLDirectiveDefinition(
 
   override val children: List<GQLNode> = arguments
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       writeDescription(description)
       write("directive @$name")
@@ -494,7 +496,7 @@ data class GQLDirectiveDefinition(
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         arguments = container.take(),
     )
@@ -519,11 +521,11 @@ data class GQLSchemaExtension(
 
   override val children = directives + operationTypesDefinition
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     TODO("Not yet implemented")
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
         operationTypesDefinition = container.take()
@@ -540,11 +542,11 @@ data class GQLEnumTypeExtension(
 
   override val children: List<GQLNode> = directives + enumValues
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     TODO("Not yet implemented")
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
         enumValues = container.take()
@@ -562,11 +564,11 @@ data class GQLObjectTypeExtension(
 
   override val children: List<GQLNode> = directives + fields
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     TODO("Not yet implemented")
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
         fields = container.take()
@@ -583,11 +585,11 @@ data class GQLInputObjectTypeExtension(
 
   override val children: List<GQLNode> = directives + inputFields
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     TODO("Not yet implemented")
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
         inputFields = container.take()
@@ -603,11 +605,11 @@ data class GQLScalarTypeExtension(
 
   override val children = directives
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     TODO("Not yet implemented")
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take()
     )
@@ -623,11 +625,11 @@ data class GQLInterfaceTypeExtension(
 
   override val children = fields
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     TODO("Not yet implemented")
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         fields = container.take()
     )
@@ -643,11 +645,11 @@ data class GQLUnionTypeExtension(
 
   override val children: List<GQLNode> = directives + memberTypes
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     TODO("Not yet implemented")
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
         memberTypes = container.take()
@@ -664,7 +666,7 @@ data class GQLEnumValueDefinition(
 
   override val children = directives
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       writeDescription(description)
       write(name)
@@ -676,7 +678,7 @@ data class GQLEnumValueDefinition(
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take()
     )
@@ -694,7 +696,7 @@ data class GQLFieldDefinition(
 
   override val children: List<GQLNode> = directives + arguments
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       writeDescription(description)
       write(name)
@@ -704,7 +706,7 @@ data class GQLFieldDefinition(
         }
       }
       write(": ")
-      type.write(writer)
+      writer.write(type)
       if (directives.isNotEmpty()) {
         write(" ")
         directives.join(writer)
@@ -712,7 +714,7 @@ data class GQLFieldDefinition(
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
         arguments = container.take()
@@ -746,10 +748,10 @@ data class GQLInputValueDefinition(
         writeDescription(description)
       }
       write("$name: ")
-      type.write(writer)
+      writer.write(type)
       if (defaultValue != null) {
         write(" = ")
-        defaultValue.write(writer)
+        writer.write(defaultValue)
       }
       if (directives.isNotEmpty()) {
         write(" ")
@@ -760,12 +762,12 @@ data class GQLInputValueDefinition(
       }
     }
   }
-  
-  override fun write(writer: SDLWriter) {
+
+  override fun writeInternal(writer: SDLWriter) {
     write(writer, false)
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take()
     )
@@ -786,13 +788,13 @@ data class GQLVariableDefinition(
 
   override val children = listOfNotNull(defaultValue) + directives
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       write("${'$'}$name: ")
-      type.write(writer)
+      writer.write(type)
       if (defaultValue != null) {
         write(" = ")
-        defaultValue.write(writer)
+        writer.write(defaultValue)
         write(" ")
       }
       // TODO("support variable directives")
@@ -800,7 +802,7 @@ data class GQLVariableDefinition(
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
         defaultValue = container.takeSingle()
@@ -816,13 +818,13 @@ data class GQLOperationTypeDefinition(
 
   override val children = emptyList<GQLNode>()
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       write("$operationType: $namedType\n")
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return this
   }
 }
@@ -835,14 +837,16 @@ data class GQLDirective(
 
   override val children = listOfNotNull(arguments)
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       write("@$name")
-      arguments?.write(writer)
+      if (arguments != null) {
+        writer.write(arguments)
+      }
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         arguments = container.takeSingle()
     )
@@ -857,14 +861,14 @@ data class GQLObjectField(
 
   override val children = listOf(value)
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       write("$name: ")
-      value.write(writer)
+      writer.write(value)
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         value = container.takeSingle()!!
     )
@@ -879,14 +883,14 @@ data class GQLArgument(
 
   override val children = listOf(value)
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       write("$name: ")
-      value.write(writer)
+      writer.write(value)
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         value = container.takeSingle()!!
     )
@@ -899,7 +903,7 @@ data class GQLSelectionSet(
 ) : GQLNode {
   override val children = selections
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       write("{\n")
       indent()
@@ -909,7 +913,7 @@ data class GQLSelectionSet(
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         selections = container.take()
     )
@@ -922,11 +926,11 @@ data class GQLArguments(
 ) : GQLNode {
   override val children: List<GQLNode> = arguments
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     arguments.join(writer, prefix = "(", separator = ", ", postfix = ")")
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         arguments = container.take()
     )
@@ -944,27 +948,29 @@ data class GQLField(
 
   override val children: List<GQLNode> = listOfNotNull(selectionSet) + listOfNotNull(arguments) + directives
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       if (alias != null) {
         write("$alias: ")
       }
       write(name)
-      arguments?.write(writer)
+      if (arguments != null) {
+        writer.write(arguments)
+      }
       if (directives.isNotEmpty()) {
         write(" ")
         directives.join(writer)
       }
       if (selectionSet != null) {
         write(" ")
-        selectionSet.write(writer)
+        writer.write(selectionSet)
       } else {
         write("\n")
       }
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         selectionSet = container.takeSingle(),
         arguments = container.takeSingle(),
@@ -982,7 +988,7 @@ data class GQLInlineFragment(
 
   override val children = directives + selectionSet + typeCondition
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       write("... on ${typeCondition.name}")
       if (directives.isNotEmpty()) {
@@ -991,12 +997,12 @@ data class GQLInlineFragment(
       }
       if (selectionSet.selections.isNotEmpty()) {
         write(" ")
-        selectionSet.write(writer)
+        writer.write(selectionSet)
       }
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
         selectionSet = container.takeSingle()!!,
@@ -1014,7 +1020,7 @@ data class GQLFragmentSpread(
 
   override val children = directives
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       write("...${name}")
       if (directives.isNotEmpty()) {
@@ -1025,7 +1031,7 @@ data class GQLFragmentSpread(
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take()
     )
@@ -1041,13 +1047,13 @@ data class GQLNamedType(
 
   override val children = emptyList<GQLNode>()
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       write(name)
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return this
   }
 }
@@ -1059,14 +1065,14 @@ data class GQLNonNullType(
 
   override val children = listOf(type)
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
-      type.write(writer)
+      writer.write(type)
       write("!")
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         type = container.takeSingle()!!
     )
@@ -1080,15 +1086,15 @@ data class GQLListType(
 
   override val children = listOf(type)
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       write("[")
-      type.write(writer)
+      writer.write(type)
       write("]")
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         type = container.takeSingle()!!
     )
@@ -1104,13 +1110,13 @@ data class GQLVariableValue(
 
   override val children = emptyList<GQLNode>()
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       write("${'$'}$name")
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return this
   }
 }
@@ -1122,13 +1128,13 @@ data class GQLIntValue(
 
   override val children = emptyList<GQLNode>()
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       write(value.toString())
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return this
   }
 }
@@ -1140,13 +1146,13 @@ data class GQLFloatValue(
 
   override val children = emptyList<GQLNode>()
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       write(value.toString())
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return this
   }
 }
@@ -1158,13 +1164,13 @@ data class GQLStringValue(
 
   override val children = emptyList<GQLNode>()
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       write("\"${value.encodeToGraphQLSingleQuoted()}\"")
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return this
   }
 }
@@ -1176,13 +1182,13 @@ data class GQLBooleanValue(
 
   override val children = emptyList<GQLNode>()
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       write(value.toString())
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return this
   }
 }
@@ -1194,13 +1200,13 @@ data class GQLEnumValue(
 
   override val children = emptyList<GQLNode>()
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       write(value)
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return this
   }
 }
@@ -1212,7 +1218,7 @@ data class GQLListValue(
 
   override val children = values
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       write("[")
       values.join(writer, ",")
@@ -1220,7 +1226,7 @@ data class GQLListValue(
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         values = container.take()
     )
@@ -1234,7 +1240,7 @@ data class GQLObjectValue(
 
   override val children = fields
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       write("{\n")
       indent()
@@ -1244,7 +1250,7 @@ data class GQLObjectValue(
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         fields = container.take()
     )
@@ -1255,13 +1261,13 @@ data class GQLNullValue(override val sourceLocation: SourceLocation = SourceLoca
 
   override val children = emptyList<GQLNode>()
 
-  override fun write(writer: SDLWriter) {
+  override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       write("null")
     }
   }
 
-  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return this
   }
 }
@@ -1271,7 +1277,7 @@ private fun <T : GQLNode> List<T>.join(
     separator: String = " ",
     prefix: String = "",
     postfix: String = "",
-    block: (T) -> Unit = {it.write(writer)}
+    block: (T) -> Unit = { writer.write(it) },
 ) {
   writer.write(prefix)
   forEachIndexed { index, t ->

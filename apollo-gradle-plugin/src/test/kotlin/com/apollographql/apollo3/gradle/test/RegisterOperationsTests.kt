@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.gradle.test
 
-import com.apollographql.apollo.gradle.internal.RegisterOperations.safelistingHash
+import com.apollographql.apollo3.gradle.internal.RegisterOperations.safelistingHash
 import com.google.common.truth.Truth
 import org.junit.Test
 
