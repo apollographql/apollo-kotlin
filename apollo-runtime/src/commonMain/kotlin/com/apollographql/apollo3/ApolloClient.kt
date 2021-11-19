@@ -393,3 +393,15 @@ fun ApolloClient.withSendApqExtensions(sendApqExtensions: Boolean) = newBuilder(
 
 @Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
 fun ApolloClient.withSendDocument(sendDocument: Boolean) = newBuilder().sendDocument(sendDocument).build()
+
+@Deprecated("Used for backward compatibility with 2.x", ReplaceWith("httpMethod(HttpMethod.Get)", "com.apollographql.apollo3.api.http.httpMethod", "com.apollographql.apollo3.api.http.HttpMethod"))
+fun ApolloClient.Builder.useHttpGetMethodForQueries(
+    useHttpGetMethodForQueries: Boolean,
+) = httpMethod(if (useHttpGetMethodForQueries) HttpMethod.Get else HttpMethod.Post)
+
+@Deprecated("Used for backward compatibility with 2.x. This method throws immediately", ReplaceWith("autoPersistedQueries(httpMethodForHashedQueries = HttpMethod.Get)", "com.apollographql.apollo3.api.http.HttpMethod", "com.apollographql.apollo3.api.http.HttpMethod"))
+fun ApolloClient.Builder.useHttpGetMethodForPersistedQueries(
+    useHttpGetMethodForQueries: Boolean,
+) = apply {
+  throw NotImplementedError("useHttpGetMethodForPersistedQueries is now configured at the same time as auto persisted queries. Use autoPersistedQueries(httpMethodForHashedQueries = HttpMethod.GET) instead.")
+}
