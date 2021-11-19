@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Executable;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
-import com.apollographql.apollo3.cache.http.HttpCacheExtensionsKt;
+import com.apollographql.apollo3.cache.http.HttpCacheExtensions;
 import com.apollographql.apollo3.cache.http.HttpFetchPolicy;
 import com.apollographql.apollo3.cache.normalized.ClientCacheExtensionsKt;
 import com.apollographql.apollo3.cache.normalized.api.CacheKey;
@@ -112,13 +112,13 @@ public class ClientTest {
   private void httpCache() {
     File cacheDir = new File("/tmp/apollo-cache");
     long cacheSize = 10_000_000;
-    apolloClient = HttpCacheExtensionsKt.httpCache(
+    apolloClient = HttpCacheExtensions.httpCache(
         new ApolloClient.Builder().serverUrl("https://localhost"),
         cacheDir,
         cacheSize
     ).build();
 
-    ApolloResponse<GetRandomQuery.Data> result = Rx2Apollo.rxSingle(HttpCacheExtensionsKt.httpFetchPolicy(
+    ApolloResponse<GetRandomQuery.Data> result = Rx2Apollo.rxSingle(HttpCacheExtensions.httpFetchPolicy(
         apolloClient.query(new GetRandomQuery()),
         HttpFetchPolicy.NetworkOnly
     )).blockingGet();

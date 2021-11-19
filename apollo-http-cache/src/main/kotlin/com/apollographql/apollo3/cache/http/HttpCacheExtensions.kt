@@ -1,3 +1,5 @@
+@file:JvmName("HttpCacheExtensions")
+
 package com.apollographql.apollo3.cache.http
 
 import com.apollographql.apollo3.ApolloClient
@@ -6,8 +8,8 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.HasMutableExecutionContext
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.addHttpHeader
-import com.apollographql.apollo3.network.http.HttpInfo
 import com.apollographql.apollo3.network.http.HttpEngine
+import com.apollographql.apollo3.network.http.HttpInfo
 import java.io.File
 
 enum class HttpFetchPolicy {
