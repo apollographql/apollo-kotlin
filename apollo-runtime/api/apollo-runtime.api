@@ -42,6 +42,11 @@ public final class com/apollographql/apollo3/ApolloClient$Builder : com/apollogr
 	public synthetic fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
 	public final fun addInterceptor (Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun addInterceptors (Ljava/util/List;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public final fun autoPersistedQueries ()Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public final fun autoPersistedQueries (Lcom/apollographql/apollo3/api/http/HttpMethod;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public final fun autoPersistedQueries (Lcom/apollographql/apollo3/api/http/HttpMethod;Lcom/apollographql/apollo3/api/http/HttpMethod;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public final fun autoPersistedQueries (Lcom/apollographql/apollo3/api/http/HttpMethod;Lcom/apollographql/apollo3/api/http/HttpMethod;Z)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public static synthetic fun autoPersistedQueries$default (Lcom/apollographql/apollo3/ApolloClient$Builder;Lcom/apollographql/apollo3/api/http/HttpMethod;Lcom/apollographql/apollo3/api/http/HttpMethod;ZILjava/lang/Object;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun build ()Lcom/apollographql/apollo3/ApolloClient;
 	public final fun customScalarAdapters (Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun executionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/ApolloClient$Builder;
@@ -64,8 +69,6 @@ public final class com/apollographql/apollo3/ApolloClient$Companion {
 }
 
 public final class com/apollographql/apollo3/ApolloClientKt {
-	public static final fun autoPersistedQueries (Lcom/apollographql/apollo3/ApolloClient$Builder;Lcom/apollographql/apollo3/api/http/HttpMethod;Lcom/apollographql/apollo3/api/http/HttpMethod;Z)Lcom/apollographql/apollo3/ApolloClient$Builder;
-	public static synthetic fun autoPersistedQueries$default (Lcom/apollographql/apollo3/ApolloClient$Builder;Lcom/apollographql/apollo3/api/http/HttpMethod;Lcom/apollographql/apollo3/api/http/HttpMethod;ZILjava/lang/Object;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public static final fun useHttpGetMethodForPersistedQueries (Lcom/apollographql/apollo3/ApolloClient$Builder;Z)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public static final fun useHttpGetMethodForQueries (Lcom/apollographql/apollo3/ApolloClient$Builder;Z)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public static final fun withAutoPersistedQueries (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/http/HttpMethod;Lcom/apollographql/apollo3/api/http/HttpMethod;Z)Lcom/apollographql/apollo3/ApolloClient;

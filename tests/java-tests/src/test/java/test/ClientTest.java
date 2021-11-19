@@ -13,11 +13,11 @@ import com.apollographql.apollo3.cache.http.HttpCache;
 import com.apollographql.apollo3.cache.http.HttpFetchPolicy;
 import com.apollographql.apollo3.cache.normalized.NormalizedCache;
 import com.apollographql.apollo3.cache.normalized.api.CacheKey;
+import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator;
+import com.apollographql.apollo3.cache.normalized.api.CacheKeyGeneratorContext;
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyResolver;
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory;
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory;
-import com.apollographql.apollo3.cache.normalized.api.ObjectIdGenerator;
-import com.apollographql.apollo3.cache.normalized.api.ObjectIdGeneratorContext;
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory;
 import com.apollographql.apollo3.mockserver.MockResponse;
 import com.apollographql.apollo3.mockserver.MockServer;
@@ -123,13 +123,13 @@ public class ClientTest {
         new SqlNormalizedCacheFactory("jdbc:sqlite:apollo.db")
     );
 
-    // Using default objectIdGenerator/cacheResolver
+    // Using default cacheKeyGenerator/cacheResolver
     NormalizedCache.configureApolloClientBuilder(apolloClientBuilder, cacheFactory);
 
-    // Using custom objectIdGenerator/cacheResolver
+    // Using custom cacheKeyGenerator/cacheResolver
 
-    ObjectIdGenerator objectIdGenerator = new ObjectIdGenerator() {
-      @Override public CacheKey cacheKeyForObject(@NotNull Map<String, ?> obj, @NotNull ObjectIdGeneratorContext context) {
+    CacheKeyGenerator cacheKeyGenerator = new CacheKeyGenerator() {
+      @Override public CacheKey cacheKeyForObject(@NotNull Map<String, ?> obj, @NotNull CacheKeyGeneratorContext context) {
         return new CacheKey(obj.get("id").toString());
       }
     };
@@ -145,7 +145,7 @@ public class ClientTest {
       }
     };
 
-    NormalizedCache.configureApolloClientBuilder(apolloClientBuilder, cacheFactory, objectIdGenerator, cacheKeyResolver);
+    NormalizedCache.configureApolloClientBuilder(apolloClientBuilder, cacheFactory, cacheKeyGenerator, cacheKeyResolver);
 
     apolloClient = apolloClientBuilder.build();
   }
