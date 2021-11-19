@@ -4,6 +4,7 @@ import com.apollographql.apollo3.compiler.MODELS_COMPAT
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.Roots
 import com.apollographql.apollo3.gradle.api.Introspection
+import com.apollographql.apollo3.gradle.api.RegisterOperationsConfig
 import com.apollographql.apollo3.gradle.api.Registry
 import com.apollographql.apollo3.gradle.api.Service
 import org.gradle.api.Action
@@ -79,6 +80,22 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     }
 
     this.registry = registry
+  }
+
+  var registerOperationsConfig: DefaultRegisterOperationsConfig? = null
+
+  override fun registerOperations(configure: Action<in RegisterOperationsConfig>) {
+    generateOperationOutput.set(true)
+
+    val registerOperationsConfig = objects.newInstance(DefaultRegisterOperationsConfig::class.java)
+
+    if (this.registerOperationsConfig != null) {
+      throw IllegalArgumentException("there must be only one registerOperations block")
+    }
+
+    configure.execute(registerOperationsConfig)
+
+    this.registerOperationsConfig = registerOperationsConfig
   }
 
   var operationOutputAction: Action<in Service.OperationOutputConnection>? = null

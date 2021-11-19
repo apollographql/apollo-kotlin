@@ -288,6 +288,21 @@ abstract class DefaultApolloExtension(
     }
 
     registerDownloadSchemaTasks(service)
+    maybeRegisterRegisterOperationsTasks(project, service, codegenProvider)
+  }
+
+  private fun maybeRegisterRegisterOperationsTasks(project: Project, service: DefaultService, codegenProvider: TaskProvider<ApolloGenerateSourcesTask>) {
+    val registerOperationsConfig = service.registerOperationsConfig
+    if (registerOperationsConfig != null) {
+      project.tasks.register(ModelNames.registerApolloOperations(service), ApolloRegisterOperationsTask::class.java) { task ->
+        task.group = TASK_GROUP
+
+        task.graph.set(registerOperationsConfig.graph)
+        task.graphVariant.set(registerOperationsConfig.graphVariant)
+        task.key.set(registerOperationsConfig.key)
+        task.operationOutput.set(codegenProvider.flatMap { it.operationOutputFile })
+      }
+    }
   }
 
   /**
