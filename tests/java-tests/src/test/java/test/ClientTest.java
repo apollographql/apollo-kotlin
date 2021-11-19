@@ -26,9 +26,8 @@ import com.apollographql.apollo3.mockserver.MockServer;
 import com.apollographql.apollo3.mockserver.MockServerKt;
 import com.apollographql.apollo3.network.http.ApolloClientAwarenessInterceptor;
 import com.apollographql.apollo3.network.http.BatchingHttpEngine;
-import com.apollographql.apollo3.network.http.BatchingHttpEngineKt;
+import com.apollographql.apollo3.network.http.BatchingHttpEngineExtensions;
 import com.apollographql.apollo3.network.http.HttpNetworkTransport;
-import com.apollographql.apollo3.network.http.OkHttpEngineKt;
 import com.apollographql.apollo3.rx2.Rx2Apollo;
 import com.google.common.truth.Truth;
 import io.reactivex.disposables.Disposable;
@@ -97,20 +96,14 @@ public class ClientTest {
   }
 
   private void queryBatching() {
-    apolloClient = BatchingHttpEngineKt.canBeBatched(
+    apolloClient = BatchingHttpEngineExtensions.canBeBatched(
         new ApolloClient.Builder()
             .serverUrl("https://localhost")
-            .httpEngine(
-                new BatchingHttpEngine(
-                    OkHttpEngineKt.HttpEngine(60_000),
-                    10,
-                    10
-                )
-            ),
+            .httpEngine(new BatchingHttpEngine()),
         false
     ).build();
 
-    ApolloResponse<GetRandomQuery.Data> result = Rx2Apollo.rxSingle(BatchingHttpEngineKt.canBeBatched(
+    ApolloResponse<GetRandomQuery.Data> result = Rx2Apollo.rxSingle(BatchingHttpEngineExtensions.canBeBatched(
         apolloClient.query(new GetRandomQuery()),
         true
     )).blockingGet();

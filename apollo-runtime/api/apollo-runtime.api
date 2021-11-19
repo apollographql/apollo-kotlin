@@ -198,6 +198,8 @@ public final class com/apollographql/apollo3/network/http/BatchingHttpEngine : c
 	public static final field CAN_BE_BATCHED Ljava/lang/String;
 	public static final field Companion Lcom/apollographql/apollo3/network/http/BatchingHttpEngine$Companion;
 	public fun <init> ()V
+	public fun <init> (Lcom/apollographql/apollo3/network/http/HttpEngine;)V
+	public fun <init> (Lcom/apollographql/apollo3/network/http/HttpEngine;J)V
 	public fun <init> (Lcom/apollographql/apollo3/network/http/HttpEngine;JI)V
 	public synthetic fun <init> (Lcom/apollographql/apollo3/network/http/HttpEngine;JIILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun dispose ()V
@@ -216,7 +218,7 @@ public final class com/apollographql/apollo3/network/http/BatchingHttpEngine$Pen
 	public final fun getRequest ()Lcom/apollographql/apollo3/api/http/HttpRequest;
 }
 
-public final class com/apollographql/apollo3/network/http/BatchingHttpEngineKt {
+public final class com/apollographql/apollo3/network/http/BatchingHttpEngineExtensions {
 	public static final fun canBeBatched (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Z)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
 	public static final fun withCanBeBatched (Lcom/apollographql/apollo3/ApolloClient;Z)Lcom/apollographql/apollo3/ApolloClient;
 	public static final fun withCanBeBatched (Lcom/apollographql/apollo3/api/ApolloRequest;Z)Lcom/apollographql/apollo3/api/ApolloRequest;
@@ -331,6 +333,7 @@ public final class com/apollographql/apollo3/network/http/OkHttpEngine : com/apo
 }
 
 public final class com/apollographql/apollo3/network/http/OkHttpEngineKt {
+	public static final fun HttpEngine ()Lcom/apollographql/apollo3/network/http/HttpEngine;
 	public static final fun HttpEngine (J)Lcom/apollographql/apollo3/network/http/HttpEngine;
 	public static synthetic fun HttpEngine$default (JILjava/lang/Object;)Lcom/apollographql/apollo3/network/http/HttpEngine;
 }

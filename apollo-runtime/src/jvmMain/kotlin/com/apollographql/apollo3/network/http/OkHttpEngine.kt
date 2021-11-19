@@ -105,6 +105,7 @@ class OkHttpEngine(
   }
 }
 
+@JvmOverloads
 actual fun HttpEngine(
     timeoutMillis: Long,
 ): HttpEngine {
