@@ -142,6 +142,7 @@ public abstract interface class com/apollographql/apollo3/cache/normalized/api/R
 }
 
 public final class com/apollographql/apollo3/cache/normalized/api/Record : java/util/Map, kotlin/jvm/internal/markers/KMappedMarker {
+	public static final field Companion Lcom/apollographql/apollo3/cache/normalized/api/Record$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/util/Map;Ljava/util/UUID;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/util/Map;Ljava/util/UUID;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun clear ()V
@@ -188,6 +189,9 @@ public final class com/apollographql/apollo3/cache/normalized/api/Record : java/
 	public final fun values ()Ljava/util/Collection;
 }
 
+public final class com/apollographql/apollo3/cache/normalized/api/Record$Companion {
+}
+
 public final class com/apollographql/apollo3/cache/normalized/api/RecordFieldJsonAdapter {
 	public static final field INSTANCE Lcom/apollographql/apollo3/cache/normalized/api/RecordFieldJsonAdapter;
 	public final fun fromJson (Ljava/lang/String;)Ljava/util/Map;
@@ -218,14 +222,14 @@ public final class com/apollographql/apollo3/cache/normalized/api/internal/Norma
 
 public final class com/apollographql/apollo3/cache/normalized/api/internal/OptimisticCache : com/apollographql/apollo3/cache/normalized/api/NormalizedCache {
 	public fun <init> ()V
+	public final fun addOptimisticUpdate (Lcom/apollographql/apollo3/cache/normalized/api/Record;)Ljava/util/Set;
+	public final fun addOptimisticUpdates (Ljava/util/Collection;)Ljava/util/Set;
 	public fun clearAll ()V
 	public fun dump ()Ljava/util/Map;
 	public fun loadRecord (Ljava/lang/String;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;)Lcom/apollographql/apollo3/cache/normalized/api/Record;
 	public fun loadRecords (Ljava/util/Collection;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;)Ljava/util/Collection;
 	public fun merge (Lcom/apollographql/apollo3/cache/normalized/api/Record;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;)Ljava/util/Set;
 	public fun merge (Ljava/util/Collection;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;)Ljava/util/Set;
-	public final fun mergeOptimisticUpdate (Lcom/apollographql/apollo3/cache/normalized/api/Record;)Ljava/util/Set;
-	public final fun mergeOptimisticUpdates (Ljava/util/Collection;)Ljava/util/Set;
 	public fun remove (Lcom/apollographql/apollo3/cache/normalized/api/CacheKey;Z)Z
 	public fun remove (Ljava/lang/String;)I
 	public final fun removeOptimisticUpdates (Ljava/util/UUID;)Ljava/util/Set;
