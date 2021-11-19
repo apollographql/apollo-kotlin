@@ -41,7 +41,7 @@ dependencies {
   testImplementation(groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer4"))
 }
 
-if (true) {
+if (false) {
   gr8 {
     val shadowedJar = create("shadow") {
       proguardFile("rules.pro")

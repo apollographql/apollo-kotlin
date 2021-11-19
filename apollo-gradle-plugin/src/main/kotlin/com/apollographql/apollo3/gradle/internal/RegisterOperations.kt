@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.ast.GQLArgument
+import com.apollographql.apollo3.ast.GQLArguments
 import com.apollographql.apollo3.ast.GQLDefinition
 import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLDocument
@@ -16,6 +17,7 @@ import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.GQLSelectionSet
 import com.apollographql.apollo3.ast.GQLStringValue
 import com.apollographql.apollo3.ast.GQLVariableDefinition
+import com.apollographql.apollo3.ast.NodeTransformer
 import com.apollographql.apollo3.ast.SDLWriter
 import com.apollographql.apollo3.ast.TransformResult
 import com.apollographql.apollo3.ast.toGQLDocument
@@ -118,6 +120,80 @@ private fun printDocument(gqlNode: GQLNode): String {
   return buffer.readUtf8()
 }
 
+private class Sorter : NodeTransformer {
+  private fun <T : GQLNode> T.transform2() = this.transform(this@Sorter) as T
+
+  override fun transform(gqlNode: GQLNode): TransformResult {
+    return when (gqlNode) {
+      is GQLDocument -> {
+        TransformResult.Replace(
+            gqlNode.copyWithNewChildrenInternal(
+                definitions = gqlNode.definitions.sortedBy { it.score() }
+            )
+        )
+      }
+      is GQLOperationDefinition -> {
+        TransformResult.Replace(
+            gqlNode.copy(
+                variableDefinitions = gqlNode.variableDefinitions.sortedBy { it.score() }
+            )
+        )
+      }
+      is GQLSelectionSet -> {
+        TransformResult.Replace(
+            gqlNode.copy(
+                selections = gqlNode.selections.sortedBy { it.score() }
+            )
+        )
+      }
+      is GQLField -> {
+        TransformResult.Replace(
+            gqlNode.copy(
+                arguments = gqlNode.arguments?.transform2()
+            )
+        )
+      }
+      is GQLFragmentSpread -> {
+        TransformResult.Replace(
+            gqlNode.copy(
+                directives = gqlNode.directives.sortedBy { it.score() }
+            )
+        )
+      }
+      is GQLInlineFragment -> {
+        TransformResult.Replace(
+            gqlNode.copy(
+                directives = gqlNode.directives.sortedBy { it.score() }
+            )
+        )
+      }
+      is GQLFragmentDefinition -> {
+        TransformResult.Replace(
+            gqlNode.copy(
+                directives = gqlNode.directives.sortedBy { it.score() }
+            )
+        )
+      }
+      is GQLDirective -> {
+        TransformResult.Replace(
+            gqlNode.copy(
+                arguments = gqlNode.arguments?.transform2()
+            )
+        )
+      }
+      is GQLArguments -> {
+        TransformResult.Replace(
+            gqlNode.copy(
+                arguments = gqlNode.arguments.sortedBy { it.score() }
+            )
+        )
+      }
+      else -> TransformResult.Continue
+    }
+
+  }
+}
+
 object RegisterOperations {
   private val mutation = """
       mutation RegisterOperations(
@@ -191,67 +267,7 @@ object RegisterOperations {
      * - it doesn't sort inline fragment
      * - it doesn't sort field directives
      */
-    val sortedDocument = hiddenLiterals!!.transform { gqlNode ->
-      when (gqlNode) {
-        is GQLDocument -> {
-          TransformResult.Replace(
-              gqlNode.copy(
-                  definitions = gqlNode.definitions.sortedBy { it.score() }
-              )
-          )
-        }
-        is GQLOperationDefinition -> {
-          TransformResult.Replace(
-              gqlNode.copy(
-                  variableDefinitions = gqlNode.variableDefinitions.sortedBy { it.score() }
-              )
-          )
-        }
-        is GQLSelectionSet -> {
-          TransformResult.Replace(
-              gqlNode.copy(
-                  selections = gqlNode.selections.sortedBy { it.score() }
-              )
-          )
-        }
-        is GQLField -> {
-          TransformResult.Replace(
-              gqlNode.copy(
-                  arguments = gqlNode.arguments?.copy(gqlNode.arguments!!.arguments.sortedBy { it.score() })
-              )
-          )
-        }
-        is GQLFragmentSpread -> {
-          TransformResult.Replace(
-              gqlNode.copy(
-                  directives = gqlNode.directives.sortedBy { it.score() }
-              )
-          )
-        }
-        is GQLInlineFragment -> {
-          TransformResult.Replace(
-              gqlNode.copy(
-                  directives = gqlNode.directives.sortedBy { it.score() }
-              )
-          )
-        }
-        is GQLFragmentDefinition -> {
-          TransformResult.Replace(
-              gqlNode.copy(
-                  directives = gqlNode.directives.sortedBy { it.score() }
-              )
-          )
-        }
-        is GQLDirective -> {
-          TransformResult.Replace(
-              gqlNode.copy(
-                  arguments = gqlNode.arguments?.copy(gqlNode.arguments!!.arguments.sortedBy { it.score() })
-              )
-          )
-        }
-        else -> TransformResult.Continue
-      }
-    }
+    val sortedDocument = hiddenLiterals!!.transform(Sorter())
 
     val minimized = printDocument(sortedDocument!!)
         .replace(Regex("\\s+"), " ")
