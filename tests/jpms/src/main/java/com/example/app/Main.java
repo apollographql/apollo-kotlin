@@ -25,13 +25,13 @@ public class Main {
       );
         ApolloClient apolloClient = apolloClientBuilder.build();
 
-        Rx2Apollo.rxSingle(apolloClient.query(new GetHelloQuery())).subscribe(
-                response -> {
-                    System.out.println(response.data.hello);
-                },
-                throwable -> {
-                    System.out.println(throwable.getMessage());
-                }
+        Rx2Apollo.single(apolloClient.query(new GetHelloQuery())).subscribe(
+            response -> {
+              System.out.println(response.data.hello);
+            },
+            throwable -> {
+              System.out.println(throwable.getMessage());
+            }
         );
 
         apolloClient.dispose();

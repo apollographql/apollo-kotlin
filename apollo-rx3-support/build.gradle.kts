@@ -19,6 +19,3 @@ val jar by tasks.getting(Jar::class) {
     attributes("Automatic-Module-Name" to "com.apollographql.apollo3.rx3")
   }
 }
-
-
-
