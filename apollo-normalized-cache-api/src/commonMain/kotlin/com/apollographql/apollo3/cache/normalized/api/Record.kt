@@ -12,11 +12,12 @@ class Record (
     /**
      * a list of fields. Values can be
      * - Int
+     * - Long
      * - Double
      * - Boolean
-     * - String (
-     * - CacheKey (for composite types)
+     * - String
      * - List
+     * - CacheKey (for composite types)
      * - Map (for custom scalars)
      * - null
      */

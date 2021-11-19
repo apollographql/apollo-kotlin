@@ -1,6 +1,6 @@
 package test
 
-import IdObjectIdGenerator
+import IdCacheKeyGenerator
 import codegen.models.HeroAndFriendsWithFragmentsQuery
 import codegen.models.HeroAndFriendsWithTypenameQuery
 import codegen.models.fragment.HeroWithFriendsFragment
@@ -27,7 +27,7 @@ class StoreTest {
   private suspend fun setUp() {
     store = ApolloStore(
         normalizedCacheFactory = MemoryCacheFactory(),
-        objectIdGenerator = IdObjectIdGenerator
+        cacheKeyGenerator = IdCacheKeyGenerator
     )
     mockServer = MockServer()
     apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store).build()

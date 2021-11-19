@@ -3,9 +3,9 @@ import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheResolver
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
-import com.apollographql.apollo3.cache.normalized.api.ObjectIdGenerator
-import com.apollographql.apollo3.cache.normalized.api.ObjectIdGeneratorContext
-import com.apollographql.apollo3.cache.normalized.api.TypePolicyObjectIdGenerator
+import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
+import com.apollographql.apollo3.cache.normalized.api.CacheKeyGeneratorContext
+import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.testing.checkFile
 import com.apollographql.apollo3.testing.readFile
 import kotlin.test.assertEquals
@@ -37,12 +37,12 @@ object IdCacheResolver: CacheResolver {
 }
 
 /**
- * A [ObjectIdGenerator] that always uses the "id" field if it exists and delegates to [TypePolicyObjectIdGenerator] else
+ * A [CacheKeyGenerator] that always uses the "id" field if it exists and delegates to [TypePolicyCacheKeyGenerator] else
  *
  * It will coerce Int, Floats and other types to String using [toString]
  */
-object IdObjectIdGenerator : ObjectIdGenerator {
-  override fun cacheKeyForObject(obj: Map<String, Any?>, context: ObjectIdGeneratorContext): CacheKey? {
-    return obj["id"]?.toString()?.let { CacheKey(it) } ?: TypePolicyObjectIdGenerator.cacheKeyForObject(obj, context)
+object IdCacheKeyGenerator : CacheKeyGenerator {
+  override fun cacheKeyForObject(obj: Map<String, Any?>, context: CacheKeyGeneratorContext): CacheKey? {
+    return obj["id"]?.toString()?.let { CacheKey(it) } ?: TypePolicyCacheKeyGenerator.cacheKeyForObject(obj, context)
   }
 }

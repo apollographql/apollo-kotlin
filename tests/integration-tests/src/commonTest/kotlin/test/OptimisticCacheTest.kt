@@ -1,6 +1,6 @@
 package test
 
-import IdObjectIdGenerator
+import IdCacheKeyGenerator
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.cache.normalized.ApolloStore
@@ -37,7 +37,7 @@ class OptimisticCacheTest {
   private lateinit var store: ApolloStore
 
   private suspend fun setUp() {
-    store = ApolloStore(MemoryCacheFactory(), objectIdGenerator = IdObjectIdGenerator)
+    store = ApolloStore(MemoryCacheFactory(), cacheKeyGenerator = IdCacheKeyGenerator)
     mockServer = MockServer()
     apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store).build()
   }

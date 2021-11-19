@@ -1,6 +1,6 @@
 package test
 
-import IdObjectIdGenerator
+import IdCacheKeyGenerator
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
@@ -36,7 +36,7 @@ class WatcherTest {
   private lateinit var store: ApolloStore
 
   private suspend fun setUp() {
-    store = ApolloStore(MemoryCacheFactory(), objectIdGenerator = IdObjectIdGenerator)
+    store = ApolloStore(MemoryCacheFactory(), cacheKeyGenerator = IdCacheKeyGenerator)
     mockServer = MockServer()
     apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store).build()
   }

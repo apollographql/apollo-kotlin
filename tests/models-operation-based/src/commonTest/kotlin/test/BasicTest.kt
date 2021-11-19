@@ -1,6 +1,6 @@
 package test
 
-import IdObjectIdGenerator
+import IdCacheKeyGenerator
 import codegen.models.HeroParentTypeDependentFieldQuery
 import codegen.models.MergedFieldWithSameShapeQuery
 import codegen.models.type.Episode
@@ -29,7 +29,7 @@ class BasicTest {
   private suspend fun setUp() {
     store = ApolloStore(
         normalizedCacheFactory = MemoryCacheFactory(),
-        objectIdGenerator = IdObjectIdGenerator
+        cacheKeyGenerator = IdCacheKeyGenerator
     )
     mockServer = MockServer()
     apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store).build()

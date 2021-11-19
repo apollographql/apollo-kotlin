@@ -10,18 +10,18 @@ import com.apollographql.apollo3.api.CompiledType
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.isComposite
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
-import com.apollographql.apollo3.cache.normalized.api.ObjectIdGenerator
-import com.apollographql.apollo3.cache.normalized.api.ObjectIdGeneratorContext
+import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
+import com.apollographql.apollo3.cache.normalized.api.CacheKeyGeneratorContext
 import com.apollographql.apollo3.cache.normalized.api.Record
 
 /**
  * A [Normalizer] takes a [Map]<String, Any?> and turns them into a flat list of [Record]
- * The key of each [Record] is given by [objectIdGenerator] or defaults to using the path
+ * The key of each [Record] is given by [cacheKeyGenerator] or defaults to using the path
  */
 class Normalizer(
     private val variables: Executable.Variables,
     private val rootKey: String,
-    private val objectIdGenerator: ObjectIdGenerator,
+    private val cacheKeyGenerator: CacheKeyGenerator,
 ) {
   private val records = mutableMapOf<String, Record>()
 
@@ -136,9 +136,9 @@ class Normalizer(
       type is CompiledNamedType && type.isComposite() -> {
         check(value is Map<*, *>)
         @Suppress("UNCHECKED_CAST")
-        val key = objectIdGenerator.cacheKeyForObject(
+        val key = cacheKeyGenerator.cacheKeyForObject(
             value as Map<String, Any?>,
-            ObjectIdGeneratorContext(field, variables),
+            CacheKeyGeneratorContext(field, variables),
         )?.key ?: path
         buildRecord(value, key, field.selections)
       }

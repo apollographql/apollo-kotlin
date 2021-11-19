@@ -1,6 +1,6 @@
 package test
 
-import IdObjectIdGenerator
+import IdCacheKeyGenerator
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Query
@@ -42,7 +42,7 @@ class BasicTest {
   private suspend fun setUp() {
     store = ApolloStore(
         normalizedCacheFactory = MemoryCacheFactory(),
-        objectIdGenerator = IdObjectIdGenerator
+        cacheKeyGenerator = IdCacheKeyGenerator
     )
     mockServer = MockServer()
     apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store).build()

@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.Query;
 import com.apollographql.apollo3.cache.normalized.ClientCacheExtensionsKt;
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver;
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory;
-import com.apollographql.apollo3.cache.normalized.api.TypePolicyObjectIdGenerator;
+import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator;
 import com.apollographql.apollo3.rx2.Rx2Apollo;
 import com.example.GetHelloQuery;
 
@@ -19,7 +19,7 @@ public class Main {
         ClientCacheExtensionsKt.normalizedCache(
                 apolloClientBuilder,
                 new MemoryCacheFactory(),
-                TypePolicyObjectIdGenerator.INSTANCE,
+                TypePolicyCacheKeyGenerator.INSTANCE,
                 FieldPolicyCacheResolver.INSTANCE,
                 false
         );
