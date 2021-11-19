@@ -299,7 +299,6 @@ public final class com/apollographql/apollo3/api/CompiledGraphQL {
 	public static final field CompiledTypeType Lcom/apollographql/apollo3/api/ObjectType;
 	public static final fun isComposite (Lcom/apollographql/apollo3/api/CompiledNamedType;)Z
 	public static final fun keyFields (Lcom/apollographql/apollo3/api/CompiledNamedType;)Ljava/util/List;
-	public static final fun leafType (Lcom/apollographql/apollo3/api/CompiledType;)Lcom/apollographql/apollo3/api/CompiledNamedType;
 	public static final fun list (Lcom/apollographql/apollo3/api/CompiledType;)Lcom/apollographql/apollo3/api/CompiledListType;
 	public static final fun notNull (Lcom/apollographql/apollo3/api/CompiledType;)Lcom/apollographql/apollo3/api/CompiledNotNullType;
 }
@@ -307,22 +306,26 @@ public final class com/apollographql/apollo3/api/CompiledGraphQL {
 public final class com/apollographql/apollo3/api/CompiledListType : com/apollographql/apollo3/api/CompiledType {
 	public fun <init> (Lcom/apollographql/apollo3/api/CompiledType;)V
 	public final fun getOfType ()Lcom/apollographql/apollo3/api/CompiledType;
+	public fun leafType ()Lcom/apollographql/apollo3/api/CompiledNamedType;
 }
 
 public abstract class com/apollographql/apollo3/api/CompiledNamedType : com/apollographql/apollo3/api/CompiledType {
 	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getName ()Ljava/lang/String;
+	public fun leafType ()Lcom/apollographql/apollo3/api/CompiledNamedType;
 }
 
 public final class com/apollographql/apollo3/api/CompiledNotNullType : com/apollographql/apollo3/api/CompiledType {
 	public fun <init> (Lcom/apollographql/apollo3/api/CompiledType;)V
 	public final fun getOfType ()Lcom/apollographql/apollo3/api/CompiledType;
+	public fun leafType ()Lcom/apollographql/apollo3/api/CompiledNamedType;
 }
 
 public abstract class com/apollographql/apollo3/api/CompiledSelection {
 }
 
 public abstract class com/apollographql/apollo3/api/CompiledType {
+	public abstract fun leafType ()Lcom/apollographql/apollo3/api/CompiledNamedType;
 }
 
 public final class com/apollographql/apollo3/api/CompiledVariable {

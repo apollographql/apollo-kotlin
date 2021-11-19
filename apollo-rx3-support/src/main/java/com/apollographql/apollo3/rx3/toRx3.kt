@@ -19,8 +19,8 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
-import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
+import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
@@ -81,7 +81,6 @@ class Rx3ApolloStore(
 ) {
   private val dispatcher = scheduler.asCoroutineDispatcher()
 
-  @ApolloExperimental
   fun <D : Operation.Data> rxReadOperation(
       operation: Operation<D>,
       customScalarAdapters: CustomScalarAdapters,
@@ -90,7 +89,6 @@ class Rx3ApolloStore(
     delegate.readOperation(operation, customScalarAdapters, cacheHeaders)
   }
 
-  @ApolloExperimental
   fun <D : Fragment.Data> rxReadFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
@@ -100,7 +98,6 @@ class Rx3ApolloStore(
     delegate.readFragment(fragment, cacheKey, customScalarAdapters, cacheHeaders)
   }
 
-  @ApolloExperimental
   fun <D : Operation.Data> rxWriteOperation(
       operation: Operation<D>,
       operationData: D,
@@ -111,7 +108,6 @@ class Rx3ApolloStore(
     delegate.writeOperation(operation, operationData, customScalarAdapters, cacheHeaders, publish)
   }
 
-  @ApolloExperimental
   fun <D : Fragment.Data> rxWriteFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
@@ -123,7 +119,6 @@ class Rx3ApolloStore(
     delegate.writeFragment(fragment, cacheKey, fragmentData, customScalarAdapters, cacheHeaders, publish)
   }
 
-  @ApolloExperimental
   fun <D : Operation.Data> rxWriteOptimisticUpdates(
       operation: Operation<D>,
       operationData: D,
@@ -134,7 +129,6 @@ class Rx3ApolloStore(
     delegate.writeOptimisticUpdates(operation, operationData, mutationId, customScalarAdapters, publish)
   }
 
-  @ApolloExperimental
   fun rxRollbackOptimisticUpdates(
       mutationId: Uuid,
       publish: Boolean = true,
@@ -142,41 +136,39 @@ class Rx3ApolloStore(
     delegate.rollbackOptimisticUpdates(mutationId, publish)
   }
 
-  @ApolloExperimental
   fun rxRemove(cacheKey: CacheKey, cascade: Boolean = true) = rxSingle(dispatcher) {
     delegate.remove(cacheKey, cascade)
   }
 
-  @ApolloExperimental
   fun rxRemove(cacheKeys: List<CacheKey>, cascade: Boolean = true) = rxSingle(dispatcher) {
     delegate.remove(cacheKeys, cascade)
   }
 
-  @ApolloExperimental
   fun rxPublish(keys: Set<String>) = rxCompletable(dispatcher) {
     delegate.publish(keys)
   }
 
-  @ApolloExperimental
   fun <R : Any> rxAccessCache(block: (NormalizedCache) -> R) = rxSingle(dispatcher) {
     delegate.accessCache(block)
   }
 
-  @ApolloExperimental
   fun rxDump() = rxSingle(dispatcher) {
     delegate.dump()
   }
 }
 
 @JvmOverloads
+@JvmName("single")
 fun <D: Query.Data> ApolloQueryCall<D>.rxSingle(scheduler: Scheduler = Schedulers.io()) = rxSingle(scheduler.asCoroutineDispatcher()) {
   execute()
 }
 
 @JvmOverloads
+@JvmName("single")
 fun <D: Mutation.Data> ApolloMutationCall<D>.rxSingle(scheduler: Scheduler = Schedulers.io()) = rxSingle(scheduler.asCoroutineDispatcher()) {
   execute()
 }
 
 @JvmOverloads
+@JvmName("flowable")
 fun <D: Subscription.Data> ApolloSubscriptionCall<D>.rxFlowable(scheduler: Scheduler = Schedulers.io()) = execute().asFlowable(scheduler.asCoroutineDispatcher())

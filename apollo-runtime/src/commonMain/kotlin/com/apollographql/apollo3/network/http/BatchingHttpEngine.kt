@@ -1,5 +1,8 @@
+@file:JvmName("BatchingHttpEngineExtensions")
+
 package com.apollographql.apollo3.network.http
 
+import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.ApolloRequest
@@ -31,6 +34,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okio.Buffer
 import okio.BufferedSink
+import kotlin.jvm.JvmName
+import kotlin.jvm.JvmOverloads
+import kotlin.jvm.JvmStatic
 
 /**
  * An [HttpEngine] that wraps another one and batches HTTP queries to execute multiple
@@ -50,7 +56,7 @@ import okio.BufferedSink
  * @param batchIntervalMillis the interval between two batches
  * @param maxBatchSize always send the batch when this threshold is reached
  */
-class BatchingHttpEngine(
+class BatchingHttpEngine @JvmOverloads constructor(
     val delegate: HttpEngine = HttpEngine(),
     val batchIntervalMillis: Long = 10,
     val maxBatchSize: Int = 10,
@@ -207,6 +213,16 @@ class BatchingHttpEngine(
 
   companion object {
     const val CAN_BE_BATCHED = "X-APOLLO-CAN-BE-BATCHED"
+
+    @JvmStatic
+    fun configureApolloClientBuilder(apolloClientBuilder: ApolloClient.Builder, canBeBatched: Boolean) {
+      apolloClientBuilder.canBeBatched(canBeBatched)
+    }
+
+    @JvmStatic
+    fun configureApolloCall(apolloCall: ApolloCall<*, *>, canBeBatched: Boolean) {
+      apolloCall.canBeBatched(canBeBatched)
+    }
   }
 }
 

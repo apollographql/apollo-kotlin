@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.CompiledNamedType
 import com.apollographql.apollo3.api.CompiledNotNullType
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.isComposite
+import kotlin.jvm.JvmSuppressWildcards
 
 /**
  * A [CacheResolver] that resolves objects and list of objects and fallbacks to the default resolver for scalar fields.
@@ -40,7 +41,12 @@ abstract class CacheKeyResolver : CacheResolver {
    */
   open fun listOfCacheKeysForField(field: CompiledField, variables: Executable.Variables): List<CacheKey?>? = null
 
-  final override fun resolveField(field: CompiledField, variables: Executable.Variables, parent: Map<String, Any?>, parentId: String): Any? {
+  final override fun resolveField(
+      field: CompiledField,
+      variables: Executable.Variables,
+      parent: Map<String, @JvmSuppressWildcards Any?>,
+      parentId: String,
+  ): Any? {
     var type = field.type
     if (type is CompiledNotNullType) {
       type = type.ofType

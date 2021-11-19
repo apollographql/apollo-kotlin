@@ -44,7 +44,8 @@ The coding style employed here is fairly conventional Kotlin - indentations are 
 identifiers and methods are camelCased.
 
 * Use primary constructors when there is at most one optional parameter.
-* Use the `Builder` pattern else.
+* Use the `Builder` pattern because it's a well recognized pattern that interops well with Java (see https://github.com/apollographql/apollo-android/issues/3301).
+* Functions with optional parameters are nice. Use `@JvmOverloads` for better Java interop.
 * Parameters using milliseconds should have the "Millis" suffix.
 * Else use [kotlin.time.Duration]
 

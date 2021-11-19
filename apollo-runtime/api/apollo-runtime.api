@@ -42,6 +42,11 @@ public final class com/apollographql/apollo3/ApolloClient$Builder : com/apollogr
 	public synthetic fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
 	public final fun addInterceptor (Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun addInterceptors (Ljava/util/List;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public final fun autoPersistedQueries ()Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public final fun autoPersistedQueries (Lcom/apollographql/apollo3/api/http/HttpMethod;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public final fun autoPersistedQueries (Lcom/apollographql/apollo3/api/http/HttpMethod;Lcom/apollographql/apollo3/api/http/HttpMethod;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public final fun autoPersistedQueries (Lcom/apollographql/apollo3/api/http/HttpMethod;Lcom/apollographql/apollo3/api/http/HttpMethod;Z)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public static synthetic fun autoPersistedQueries$default (Lcom/apollographql/apollo3/ApolloClient$Builder;Lcom/apollographql/apollo3/api/http/HttpMethod;Lcom/apollographql/apollo3/api/http/HttpMethod;ZILjava/lang/Object;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun build ()Lcom/apollographql/apollo3/ApolloClient;
 	public final fun customScalarAdapters (Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun executionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/ApolloClient$Builder;
@@ -64,8 +69,6 @@ public final class com/apollographql/apollo3/ApolloClient$Companion {
 }
 
 public final class com/apollographql/apollo3/ApolloClientKt {
-	public static final fun autoPersistedQueries (Lcom/apollographql/apollo3/ApolloClient$Builder;Lcom/apollographql/apollo3/api/http/HttpMethod;Lcom/apollographql/apollo3/api/http/HttpMethod;Z)Lcom/apollographql/apollo3/ApolloClient$Builder;
-	public static synthetic fun autoPersistedQueries$default (Lcom/apollographql/apollo3/ApolloClient$Builder;Lcom/apollographql/apollo3/api/http/HttpMethod;Lcom/apollographql/apollo3/api/http/HttpMethod;ZILjava/lang/Object;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public static final fun useHttpGetMethodForPersistedQueries (Lcom/apollographql/apollo3/ApolloClient$Builder;Z)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public static final fun useHttpGetMethodForQueries (Lcom/apollographql/apollo3/ApolloClient$Builder;Z)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public static final fun withAutoPersistedQueries (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/http/HttpMethod;Lcom/apollographql/apollo3/api/http/HttpMethod;Z)Lcom/apollographql/apollo3/ApolloClient;
@@ -198,8 +201,12 @@ public final class com/apollographql/apollo3/network/http/BatchingHttpEngine : c
 	public static final field CAN_BE_BATCHED Ljava/lang/String;
 	public static final field Companion Lcom/apollographql/apollo3/network/http/BatchingHttpEngine$Companion;
 	public fun <init> ()V
+	public fun <init> (Lcom/apollographql/apollo3/network/http/HttpEngine;)V
+	public fun <init> (Lcom/apollographql/apollo3/network/http/HttpEngine;J)V
 	public fun <init> (Lcom/apollographql/apollo3/network/http/HttpEngine;JI)V
 	public synthetic fun <init> (Lcom/apollographql/apollo3/network/http/HttpEngine;JIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public static final fun configureApolloCall (Lcom/apollographql/apollo3/ApolloCall;Z)V
+	public static final fun configureApolloClientBuilder (Lcom/apollographql/apollo3/ApolloClient$Builder;Z)V
 	public fun dispose ()V
 	public fun execute (Lcom/apollographql/apollo3/api/http/HttpRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getBatchIntervalMillis ()J
@@ -208,6 +215,8 @@ public final class com/apollographql/apollo3/network/http/BatchingHttpEngine : c
 }
 
 public final class com/apollographql/apollo3/network/http/BatchingHttpEngine$Companion {
+	public final fun configureApolloCall (Lcom/apollographql/apollo3/ApolloCall;Z)V
+	public final fun configureApolloClientBuilder (Lcom/apollographql/apollo3/ApolloClient$Builder;Z)V
 }
 
 public final class com/apollographql/apollo3/network/http/BatchingHttpEngine$PendingRequest {
@@ -216,7 +225,7 @@ public final class com/apollographql/apollo3/network/http/BatchingHttpEngine$Pen
 	public final fun getRequest ()Lcom/apollographql/apollo3/api/http/HttpRequest;
 }
 
-public final class com/apollographql/apollo3/network/http/BatchingHttpEngineKt {
+public final class com/apollographql/apollo3/network/http/BatchingHttpEngineExtensions {
 	public static final fun canBeBatched (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Z)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
 	public static final fun withCanBeBatched (Lcom/apollographql/apollo3/ApolloClient;Z)Lcom/apollographql/apollo3/ApolloClient;
 	public static final fun withCanBeBatched (Lcom/apollographql/apollo3/api/ApolloRequest;Z)Lcom/apollographql/apollo3/api/ApolloRequest;
@@ -331,6 +340,7 @@ public final class com/apollographql/apollo3/network/http/OkHttpEngine : com/apo
 }
 
 public final class com/apollographql/apollo3/network/http/OkHttpEngineKt {
+	public static final fun HttpEngine ()Lcom/apollographql/apollo3/network/http/HttpEngine;
 	public static final fun HttpEngine (J)Lcom/apollographql/apollo3/network/http/HttpEngine;
 	public static synthetic fun HttpEngine$default (JILjava/lang/Object;)Lcom/apollographql/apollo3/network/http/HttpEngine;
 }

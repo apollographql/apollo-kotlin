@@ -2,7 +2,7 @@ package com.example.app;
 
 import com.apollographql.apollo3.ApolloClient;
 import com.apollographql.apollo3.api.Query;
-import com.apollographql.apollo3.cache.normalized.ClientCacheExtensionsKt;
+import com.apollographql.apollo3.cache.normalized.NormalizedCache;
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver;
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory;
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator;
@@ -16,22 +16,22 @@ public class Main {
         ApolloClient.Builder apolloClientBuilder = ApolloClient.builder()
                 .serverUrl("https://example.com");
 
-        ClientCacheExtensionsKt.normalizedCache(
-                apolloClientBuilder,
-                new MemoryCacheFactory(),
-                TypePolicyCacheKeyGenerator.INSTANCE,
-                FieldPolicyCacheResolver.INSTANCE,
-                false
-        );
+      NormalizedCache.configureApolloClientBuilder(
+          apolloClientBuilder,
+          new MemoryCacheFactory(),
+          TypePolicyCacheKeyGenerator.INSTANCE,
+          FieldPolicyCacheResolver.INSTANCE,
+          false
+      );
         ApolloClient apolloClient = apolloClientBuilder.build();
 
-        Rx2Apollo.rxSingle(apolloClient.query(new GetHelloQuery())).subscribe(
-                response -> {
-                    System.out.println(response.data.hello);
-                },
-                throwable -> {
-                    System.out.println(throwable.getMessage());
-                }
+        Rx2Apollo.single(apolloClient.query(new GetHelloQuery())).subscribe(
+            response -> {
+              System.out.println(response.data.hello);
+            },
+            throwable -> {
+              System.out.println(throwable.getMessage());
+            }
         );
 
         apolloClient.dispose();

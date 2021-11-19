@@ -3,7 +3,6 @@ package com.apollographql.apollo3.cache.normalized.api
 import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.leafType
 import com.apollographql.apollo3.exception.CacheMissException
 import kotlin.jvm.JvmSuppressWildcards
 

@@ -11,10 +11,10 @@ Enable it by adding an `ApolloClientAwarenessInterceptor` to your `OkHttpClient`
 ```kotlin
 val apolloClient = ApolloClient.Builder()
     .networkTransport(
-        HttpNetworkTransport(
-            serverUrl = "https://",
-            interceptors = listOf(ApolloClientAwarenessInterceptor(BuildConfig.APPLICATION_ID, BuildConfig.VERSION_NAME))
-        )
+        HttpNetworkTransport.Builder()
+            .serverUrl("https://")
+            .addInterceptor(ApolloClientAwarenessInterceptor(BuildConfig.APPLICATION_ID, BuildConfig.VERSION_NAME))
+            .build()
     )
     .build()
 ```
