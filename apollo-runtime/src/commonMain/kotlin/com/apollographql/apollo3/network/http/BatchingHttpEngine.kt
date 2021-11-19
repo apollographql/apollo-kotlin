@@ -215,15 +215,12 @@ class BatchingHttpEngine @JvmOverloads constructor(
     const val CAN_BE_BATCHED = "X-APOLLO-CAN-BE-BATCHED"
 
     @JvmStatic
-    fun configureApolloClientBuilder(apolloClientBuilder: ApolloClient.Builder, canBeBatched: Boolean) = apolloClientBuilder.apply {
+    fun configureApolloClientBuilder(apolloClientBuilder: ApolloClient.Builder, canBeBatched: Boolean) {
       apolloClientBuilder.canBeBatched(canBeBatched)
     }
 
     @JvmStatic
-    fun <D : Operation.Data, E : HasMutableExecutionContext<E>, C : ApolloCall<D, E>> configureApolloCall(
-        apolloCall: C,
-        canBeBatched: Boolean,
-    ) = apolloCall.apply {
+    fun configureApolloCall(apolloCall: ApolloCall<*, *>, canBeBatched: Boolean) {
       apolloCall.canBeBatched(canBeBatched)
     }
   }

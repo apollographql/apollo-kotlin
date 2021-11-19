@@ -202,8 +202,8 @@ public final class com/apollographql/apollo3/network/http/BatchingHttpEngine : c
 	public fun <init> (Lcom/apollographql/apollo3/network/http/HttpEngine;J)V
 	public fun <init> (Lcom/apollographql/apollo3/network/http/HttpEngine;JI)V
 	public synthetic fun <init> (Lcom/apollographql/apollo3/network/http/HttpEngine;JIILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public static final fun configureApolloCall (Lcom/apollographql/apollo3/ApolloCall;Z)Lcom/apollographql/apollo3/ApolloCall;
-	public static final fun configureApolloClientBuilder (Lcom/apollographql/apollo3/ApolloClient$Builder;Z)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public static final fun configureApolloCall (Lcom/apollographql/apollo3/ApolloCall;Z)V
+	public static final fun configureApolloClientBuilder (Lcom/apollographql/apollo3/ApolloClient$Builder;Z)V
 	public fun dispose ()V
 	public fun execute (Lcom/apollographql/apollo3/api/http/HttpRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getBatchIntervalMillis ()J
@@ -212,8 +212,8 @@ public final class com/apollographql/apollo3/network/http/BatchingHttpEngine : c
 }
 
 public final class com/apollographql/apollo3/network/http/BatchingHttpEngine$Companion {
-	public final fun configureApolloCall (Lcom/apollographql/apollo3/ApolloCall;Z)Lcom/apollographql/apollo3/ApolloCall;
-	public final fun configureApolloClientBuilder (Lcom/apollographql/apollo3/ApolloClient$Builder;Z)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public final fun configureApolloCall (Lcom/apollographql/apollo3/ApolloCall;Z)V
+	public final fun configureApolloClientBuilder (Lcom/apollographql/apollo3/ApolloClient$Builder;Z)V
 }
 
 public final class com/apollographql/apollo3/network/http/BatchingHttpEngine$PendingRequest {
