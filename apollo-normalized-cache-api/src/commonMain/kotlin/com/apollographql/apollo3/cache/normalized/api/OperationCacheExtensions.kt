@@ -82,6 +82,6 @@ private fun <D : Executable.Data> Executable<D>.readInternal(
 
 fun Collection<Record>?.dependentKeys(): Set<String> {
   return this?.flatMap {
-    it.fieldKeys() + it.key
+    it.fieldKeys()
   }?.toSet() ?: emptySet()
 }

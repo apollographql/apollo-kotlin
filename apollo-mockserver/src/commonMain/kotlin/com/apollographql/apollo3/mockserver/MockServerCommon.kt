@@ -45,7 +45,7 @@ class MockResponse(
     val statusCode: Int = 200,
     val body: ByteString = ByteString.EMPTY,
     val headers: Map<String, String> = emptyMap(),
-    val delayMs: Long = 0,
+    val delayMillis: Long = 0,
 ) {
   @JvmOverloads
   constructor(

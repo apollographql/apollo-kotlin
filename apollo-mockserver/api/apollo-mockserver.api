@@ -17,7 +17,7 @@ public final class com/apollographql/apollo3/mockserver/MockResponse {
 	public fun <init> (Ljava/lang/String;ILjava/util/Map;)V
 	public synthetic fun <init> (Ljava/lang/String;ILjava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getBody ()Lokio/ByteString;
-	public final fun getDelayMs ()J
+	public final fun getDelayMillis ()J
 	public final fun getHeaders ()Ljava/util/Map;
 	public final fun getStatusCode ()I
 }

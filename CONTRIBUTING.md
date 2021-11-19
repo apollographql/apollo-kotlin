@@ -45,6 +45,8 @@ identifiers and methods are camelCased.
 
 * Use primary constructors when there is at most one optional parameter.
 * Use the `Builder` pattern else.
+* Parameters using milliseconds should have the "Millis" suffix.
+* Else use [kotlin.time.Duration]
 
 ## Workflow
 

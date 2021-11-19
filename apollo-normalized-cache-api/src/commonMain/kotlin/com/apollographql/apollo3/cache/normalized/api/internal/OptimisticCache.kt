@@ -4,11 +4,13 @@ import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.Record
+import com.apollographql.apollo3.cache.normalized.api.Record.Companion.changedKeys
 import com.benasher44.uuid.Uuid
+import kotlin.math.max
 import kotlin.reflect.KClass
 
 class OptimisticCache : NormalizedCache() {
-  private val lruCache = LruCache<String, RecordJournal>(maxSize = Int.MAX_VALUE)
+  private val recordJournals = mutableMapOf<String, RecordJournal>()
 
   override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
     return try {
@@ -35,19 +37,19 @@ class OptimisticCache : NormalizedCache() {
   }
 
   override fun clearAll() {
-    lruCache.clear()
+    recordJournals.clear()
     nextCache?.clearAll()
   }
 
   override fun remove(cacheKey: CacheKey, cascade: Boolean): Boolean {
     var result: Boolean = nextCache?.remove(cacheKey, cascade) ?: false
 
-    val recordJournal = lruCache[cacheKey.key]
+    val recordJournal = recordJournals[cacheKey.key]
     if (recordJournal != null) {
-      lruCache.remove(cacheKey.key)
+      recordJournals.remove(cacheKey.key)
       result = true
       if (cascade) {
-        for (cacheReference in recordJournal.snapshot.referencedFields()) {
+        for (cacheReference in recordJournal.current.referencedFields()) {
           result = result && remove(CacheKey(cacheReference.key), true)
         }
       }
@@ -58,9 +60,11 @@ class OptimisticCache : NormalizedCache() {
   override fun remove(pattern: String): Int {
     val regex = patternToRegex(pattern)
     var total = 0
-    lruCache.keys().forEach {
-      if (regex.matches(it)){
-        lruCache.remove(it)
+    val iterator = recordJournals.iterator()
+    while(iterator.hasNext()) {
+      val entry = iterator.next()
+      if (regex.matches(entry.key)) {
+        iterator.remove()
         total++
       }
     }
@@ -69,89 +73,118 @@ class OptimisticCache : NormalizedCache() {
     return total + chainRemoved
   }
 
-  fun mergeOptimisticUpdates(recordSet: Collection<Record>): Set<String> {
+  fun addOptimisticUpdates(recordSet: Collection<Record>): Set<String> {
     return recordSet.flatMap {
-      mergeOptimisticUpdate(it)
+      addOptimisticUpdate(it)
     }.toSet()
   }
 
-  fun mergeOptimisticUpdate(record: Record): Set<String> {
-    val journal = lruCache[record.key]
+  fun addOptimisticUpdate(record: Record): Set<String> {
+    val journal = recordJournals[record.key]
     return if (journal == null) {
-      lruCache[record.key] = RecordJournal(record)
-      setOf(record.key)
+      recordJournals[record.key] = RecordJournal(record)
+      record.fieldKeys()
     } else {
-      journal.commit(record)
+      journal.addPatch(record)
     }
   }
 
   fun removeOptimisticUpdates(mutationId: Uuid): Set<String> {
     val changedCacheKeys = mutableSetOf<String>()
-    val removedKeys = mutableSetOf<String>()
-    lruCache.dump().forEach { (cacheKey, journal) ->
-      changedCacheKeys.addAll(journal.revert(mutationId))
-      if (journal.history.isEmpty()) {
-        removedKeys.add(cacheKey)
+
+    val iterator = recordJournals.iterator()
+    while(iterator.hasNext()) {
+      val entry = iterator.next()
+      val result = entry.value.removePatch(mutationId)
+      changedCacheKeys.addAll(result.changedKeys)
+      if (result.isEmpty) {
+        iterator.remove()
       }
     }
-    lruCache.remove(removedKeys)
+
     return changedCacheKeys
   }
 
   override fun dump(): Map<KClass<*>, Map<String, Record>> {
     return mapOf(
-        this::class to lruCache.dump().mapValues { (_, journal) -> journal.snapshot }
+        this::class to recordJournals.mapValues { (_, journal) -> journal.current }
     ) + nextCache?.dump().orEmpty()
   }
 
   private fun Record?.mergeJournalRecord(key: String): Record? {
-    val journal = lruCache[key]
+    val journal = recordJournals[key]
     return if (journal != null) {
-      this?.mergeWith(journal.snapshot)?.first ?: journal.snapshot
+      this?.mergeWith(journal.current)?.first ?: journal.current
     } else {
       this
     }
   }
 
-  private class RecordJournal(mutationRecord: Record) {
-    var snapshot: Record = mutationRecord
-    val history = mutableListOf(mutationRecord)
+  private class RemovalResult(
+      val changedKeys: Set<String>,
+      val isEmpty: Boolean
+  )
+  private class RecordJournal(record: Record) {
+    /**
+     * The latest value of the record made by applying all the patches.
+     */
+    var current: Record = record
 
     /**
-     * Commits new version of record to the history and invalidate snapshot version.
+     * A list of chronological patches applied to the record.
      */
-    fun commit(record: Record): Set<String> {
-      val (mergedRecord, changedKeys) = snapshot.mergeWith(record)
-      snapshot = mergedRecord
-      history.add(history.size, mergedRecord)
+    private val patches = mutableListOf(record)
+
+    /**
+     * Adds a new patch on top of all the previous ones.
+     */
+    fun addPatch(record: Record): Set<String> {
+      val (mergedRecord, changedKeys) = current.mergeWith(record)
+      current = mergedRecord
+      patches.add(record)
       return changedKeys
     }
 
     /**
-     * Lookups record by mutation id, if it's found removes it from the history and invalidates snapshot record. Snapshot record is
-     * superposition of all record versions in the history.
+     * Lookup record by mutation id, if it's found removes it from the history and
+     * computes the new current record.
+     *
+     * @return the changed keys or null if
      */
-    fun revert(mutationId: Uuid): Set<String> {
-      val recordIndex = history.indexOfFirst { mutationId == it.mutationId }
+    fun removePatch(mutationId: Uuid): RemovalResult {
+      val recordIndex = patches.indexOfFirst { mutationId == it.mutationId }
       if (recordIndex == -1) {
-        return emptySet()
+        // The mutation did not impact this Record
+        return RemovalResult(emptySet(), false)
       }
 
-      val result = HashSet<String>()
-      result.add(history.removeAt(recordIndex).key)
+      if (patches.size == 1) {
+        // The mutation impacted this Record and it was the only one in the history
+        return RemovalResult(current.fieldKeys(), true)
+      }
 
-      for (i in kotlin.math.max(0, recordIndex - 1) until history.size) {
-        val record = history[i]
-        if (i == kotlin.math.max(0, recordIndex - 1)) {
-          snapshot = record
+      /**
+       * There are multiple patches, go over them and compute the new current value
+       * Remember the oldRecord so that we can compute the changed keys
+       */
+      val oldRecord = current
+
+      patches.removeAt(recordIndex).key
+
+      var cur: Record? = null
+      val start = max(0, recordIndex - 1)
+      for (i in start until patches.size) {
+        val record = patches[i]
+        if (cur == null) {
+          cur = record
         } else {
-          val (mergedRecord, changedKeys) = snapshot.mergeWith(record)
-          snapshot = mergedRecord
-          result.addAll(changedKeys)
+          val (mergedRecord, _) = cur.mergeWith(record)
+          cur = mergedRecord
         }
       }
+      current = cur!!
 
-      return result
+      return RemovalResult(changedKeys(oldRecord, current), false)
     }
   }
 }

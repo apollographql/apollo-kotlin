@@ -17,7 +17,7 @@ class IdlingResourceTest {
     mockServer.enqueue(
         MockResponse(
             statusCode = 500,
-            delayMs = 500,
+            delayMillis = 500,
         )
     )
 

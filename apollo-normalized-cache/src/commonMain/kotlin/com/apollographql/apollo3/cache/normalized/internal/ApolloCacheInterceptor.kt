@@ -45,7 +45,6 @@ internal class ApolloCacheInterceptor(
     // ensureNeverFrozen(store)
   }
 
-
   private suspend fun <D : Operation.Data> maybeAsync(request: ApolloRequest<D>, block: suspend () -> Unit) {
     if (request.writeToCacheAsynchronously) {
       val scope = request.executionContext[ConcurrencyInfo]!!.coroutineScope
@@ -134,7 +133,13 @@ internal class ApolloCacheInterceptor(
       /**
        * This doesn't use [readFromNetwork] so that we can publish all keys all at once after the keys have been rolled back
        */
-      val response = chain.proceed(request).single()
+      var response: ApolloResponse<D>? = null
+      var exception: ApolloException? = null
+      try {
+        response = chain.proceed(request).single()
+      } catch (e: ApolloException) {
+        exception = e
+      }
 
       val optimisticKeys = if (optimisticData != null) {
         store.rollbackOptimisticUpdates(request.requestUuid, publish = false)
@@ -142,8 +147,13 @@ internal class ApolloCacheInterceptor(
         emptySet()
       }
 
-      maybeWriteToCache(request, response, customScalarAdapters, optimisticKeys)
-      emit(response)
+      if (response != null) {
+        maybeWriteToCache(request, response, customScalarAdapters, optimisticKeys)
+        emit(response)
+      } else {
+        store.publish(optimisticKeys)
+        throw exception!!
+      }
     }.flowOn(request.executionContext[ConcurrencyInfo]!!.dispatcher)
   }
 

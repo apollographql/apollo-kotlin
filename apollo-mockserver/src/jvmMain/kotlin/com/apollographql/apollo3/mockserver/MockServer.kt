@@ -17,7 +17,7 @@ class OkHttpMockServer : MockServer {
                 addHeader(it.key, it.value)
               }
             }.setBody(Buffer().apply { write(mockResponse.body) })
-            .setHeadersDelay(mockResponse.delayMs, TimeUnit.MILLISECONDS)
+            .setHeadersDelay(mockResponse.delayMillis, TimeUnit.MILLISECONDS)
     )
   }
 

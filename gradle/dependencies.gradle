@@ -124,7 +124,8 @@ ext.dep = [
     testParameterInjector    : "com.google.testparameterinjector:test-parameter-injector:1.4",
     binaryCompatibilityValidator: "org.jetbrains.kotlinx:binary-compatibility-validator:0.8.0-RC",
     kotlinPluginMin: "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlinPluginMin",
-    kotlinPlugin: "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
+    kotlinPlugin: "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
+    turbine: "app.cash.turbine:turbine:0.7.0"
 ]
 ext.androidConfig = [
     compileSdkVersion: 30,
