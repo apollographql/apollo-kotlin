@@ -4,22 +4,19 @@ import com.apollographql.apollo3.ApolloClient;
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompiledGraphQL;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Executable;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.apollographql.apollo3.cache.http.HttpCacheExtensions;
 import com.apollographql.apollo3.cache.http.HttpFetchPolicy;
-import com.apollographql.apollo3.cache.normalized.ClientCacheExtensionsKt;
+import com.apollographql.apollo3.cache.normalized.NormalizedCacheExtensions;
 import com.apollographql.apollo3.cache.normalized.api.CacheKey;
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyResolver;
-import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver;
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory;
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory;
 import com.apollographql.apollo3.cache.normalized.api.ObjectIdGenerator;
 import com.apollographql.apollo3.cache.normalized.api.ObjectIdGeneratorContext;
-import com.apollographql.apollo3.cache.normalized.api.TypePolicyObjectIdGenerator;
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory;
 import com.apollographql.apollo3.mockserver.MockResponse;
 import com.apollographql.apollo3.mockserver.MockServer;
@@ -130,12 +127,9 @@ public class ClientTest {
     );
 
     // Using default objectIdGenerator/cacheResolver
-    apolloClient = ClientCacheExtensionsKt.normalizedCache(
+    apolloClient = NormalizedCacheExtensions.normalizedCache(
         new ApolloClient.Builder().serverUrl("https://localhost"),
-        cacheFactory,
-        TypePolicyObjectIdGenerator.INSTANCE,
-        FieldPolicyCacheResolver.INSTANCE,
-        false
+        cacheFactory
     ).build();
 
     // Using custom objectIdGenerator/cacheResolver
@@ -148,7 +142,7 @@ public class ClientTest {
 
     CacheKeyResolver cacheKeyResolver = new CacheKeyResolver() {
       @Override public CacheKey cacheKeyForField(@NotNull CompiledField field, @NotNull Executable.Variables variables) {
-        String typename = CompiledGraphQL.leafType(field.getType()).getName();
+        String typename = field.getType().leafType().getName();
         Object id = field.resolveArgument("id", variables);
         if (id instanceof String) {
           return new CacheKey(typename, id.toString());
@@ -157,12 +151,11 @@ public class ClientTest {
       }
     };
 
-    apolloClient = ClientCacheExtensionsKt.normalizedCache(
+    apolloClient = NormalizedCacheExtensions.normalizedCache(
         new ApolloClient.Builder().serverUrl("https://localhost"),
         cacheFactory,
         objectIdGenerator,
-        cacheKeyResolver,
-        false
+        cacheKeyResolver
     ).build();
   }
 

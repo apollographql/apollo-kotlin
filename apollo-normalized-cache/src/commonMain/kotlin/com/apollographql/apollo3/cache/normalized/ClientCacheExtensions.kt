@@ -1,3 +1,5 @@
+@file:JvmName("NormalizedCacheExtensions")
+
 package com.apollographql.apollo3.cache.normalized
 
 import com.apollographql.apollo3.ApolloClient
@@ -10,17 +12,19 @@ import com.apollographql.apollo3.api.HasMutableExecutionContext
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.cache.normalized.internal.ApolloCacheInterceptor
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.CacheResolver
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
-import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
+import com.apollographql.apollo3.cache.normalized.internal.ApolloCacheInterceptor
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlin.jvm.JvmName
+import kotlin.jvm.JvmOverloads
 
 enum class FetchPolicy {
   /**
@@ -58,6 +62,7 @@ enum class FetchPolicy {
  * @param writeToCacheAsynchronously set to true to write to the cache after the response has been emitted.
  * This allows to display results faster
  */
+@JvmOverloads
 fun ApolloClient.Builder.normalizedCache(
     normalizedCacheFactory: NormalizedCacheFactory,
     cacheKeyGenerator: CacheKeyGenerator = TypePolicyCacheKeyGenerator,
@@ -163,6 +168,7 @@ fun <T : HasMutableExecutionContext<T>> HasMutableExecutionContext<T>.writeToCac
 fun <D : Mutation.Data> ApolloRequest.Builder<D>.optimisticUpdates(data: D) = addExecutionContext(
     OptimisticUpdatesContext(data)
 )
+
 fun <D : Mutation.Data> ApolloMutationCall<D>.optimisticUpdates(data: D) = addExecutionContext(
     OptimisticUpdatesContext(data)
 )

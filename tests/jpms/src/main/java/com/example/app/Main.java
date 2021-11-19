@@ -2,7 +2,7 @@ package com.example.app;
 
 import com.apollographql.apollo3.ApolloClient;
 import com.apollographql.apollo3.api.Query;
-import com.apollographql.apollo3.cache.normalized.ClientCacheExtensionsKt;
+import com.apollographql.apollo3.cache.normalized.NormalizedCacheExtensions;
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver;
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory;
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator;
@@ -16,13 +16,13 @@ public class Main {
         ApolloClient.Builder apolloClientBuilder = ApolloClient.builder()
                 .serverUrl("https://example.com");
 
-        ClientCacheExtensionsKt.normalizedCache(
-                apolloClientBuilder,
-                new MemoryCacheFactory(),
-                TypePolicyCacheKeyGenerator.INSTANCE,
-                FieldPolicyCacheResolver.INSTANCE,
-                false
-        );
+      NormalizedCacheExtensions.normalizedCache(
+          apolloClientBuilder,
+          new MemoryCacheFactory(),
+          TypePolicyCacheKeyGenerator.INSTANCE,
+          FieldPolicyCacheResolver.INSTANCE,
+          false
+      );
         ApolloClient apolloClient = apolloClientBuilder.build();
 
         Rx2Apollo.rxSingle(apolloClient.query(new GetHelloQuery())).subscribe(

@@ -142,12 +142,21 @@ class CompiledFragment internal constructor(
 
 data class CompiledCondition(val name: String, val inverted: Boolean)
 
-sealed class CompiledType
+sealed class CompiledType {
+  abstract fun leafType(): CompiledNamedType
+}
 
-class CompiledNotNullType(val ofType: CompiledType) : CompiledType()
-class CompiledListType(val ofType: CompiledType) : CompiledType()
+class CompiledNotNullType(val ofType: CompiledType) : CompiledType() {
+  override fun leafType() = ofType.leafType()
+}
 
-sealed class CompiledNamedType(val name: String) : CompiledType()
+class CompiledListType(val ofType: CompiledType) : CompiledType() {
+  override fun leafType() = ofType.leafType()
+}
+
+sealed class CompiledNamedType(val name: String) : CompiledType() {
+  override fun leafType() = this
+}
 
 class CustomScalarType(
     /**
@@ -240,14 +249,6 @@ class CompiledArgument(val name: String, val value: Any?, val isKey: Boolean = f
         else -> value
       }
     }
-  }
-}
-
-fun CompiledType.leafType(): CompiledNamedType {
-  return when (this) {
-    is CompiledNotNullType -> ofType.leafType()
-    is CompiledListType -> ofType.leafType()
-    is CompiledNamedType -> this
   }
 }
 

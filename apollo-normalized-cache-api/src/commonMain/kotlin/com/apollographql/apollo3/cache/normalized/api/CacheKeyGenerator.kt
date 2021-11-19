@@ -3,7 +3,6 @@ package com.apollographql.apollo3.cache.normalized.api
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.keyFields
-import com.apollographql.apollo3.api.leafType
 
 /**
  * An [CacheKeyGenerator] is responsible for finding an id for a given object
