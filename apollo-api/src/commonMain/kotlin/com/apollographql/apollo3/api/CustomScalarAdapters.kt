@@ -15,18 +15,40 @@ class CustomScalarAdapters
   private val adaptersMap: Map<String, Adapter<*>> = customScalarAdapters
 
   fun <T : Any> responseAdapterFor(customScalar: CustomScalarType): Adapter<T> {
+    @Suppress("UNCHECKED_CAST")
     return when {
       adaptersMap[customScalar.name] != null -> {
-        @Suppress("UNCHECKED_CAST")
-        adaptersMap[customScalar.name] as Adapter<T>
+        adaptersMap[customScalar.name]
       }
+      /**
+       * Below are shortcuts to save the users a call to `registerCustomScalarAdapter`
+       */
       customScalar.className == "com.apollographql.apollo3.api.Upload" -> {
-        // Shortcut to save users a call to `registerCustomScalarAdapter`
-        @Suppress("UNCHECKED_CAST")
-        UploadAdapter as Adapter<T>
+        UploadAdapter
+      }
+      customScalar.className in listOf("kotlin.String", "java.lang.String") -> {
+        StringAdapter
+      }
+      customScalar.className in listOf("kotlin.Boolean", "java.lang.Boolean") -> {
+        BooleanAdapter
+      }
+      customScalar.className in listOf("kotlin.Int", "java.lang.Int")  -> {
+        IntAdapter
+      }
+      customScalar.className in listOf("kotlin.Double", "java.lang.Double") -> {
+        DoubleAdapter
+      }
+      customScalar.className in listOf("kotlin.Long", "java.lang.Long") -> {
+        LongAdapter
+      }
+      customScalar.className in listOf("kotlin.Float", "java.lang.Float")  -> {
+        FloatAdapter
+      }
+      customScalar.className in listOf("kotlin.Any", "java.lang.Object")  -> {
+        AnyAdapter
       }
       else -> error("Can't map GraphQL type: `${customScalar.name}` to: `${customScalar.className}`. Did you forget to add a CustomScalarAdapter?")
-    }
+    } as Adapter<T>
   }
 
   override val key: ExecutionContext.Key<*>
