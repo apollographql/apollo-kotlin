@@ -81,7 +81,7 @@ fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: B
  * Gets the result from the network, then observes the cache for any changes.
  * Overriding the [FetchPolicy] will change how the result is first queried.
  */
-fun <D : Query.Data> ApolloQueryCall<D>.ctIwatch(): Flow<ApolloResponse<D>> {
+fun <D : Query.Data> ApolloQueryCall<D>.watch(): Flow<ApolloResponse<D>> {
   return copy().addExecutionContext(WatchContext(true)).toFlow()
 }
 
