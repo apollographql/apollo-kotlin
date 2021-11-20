@@ -21,7 +21,7 @@ Because subscriptions usually use WebSocket instead of HTTP, you need to customi
 
 ```kotlin
 val apolloClient = ApolloClient.Builder()
-  .networkTransport(WebSocketNetworkTransport(
+  .subscriptionNetworkTransport(WebSocketNetworkTransport(
     serverUrl = "https://apollo-fullstack-tutorial.herokuapp.com/graphql"
   ))
   .build()
@@ -33,7 +33,7 @@ For example, you can configure a `graphql-ws` transport like so:
 
 ```kotlin
 val apolloClient = ApolloClient.Builder()
-    .networkTransport(WebSocketNetworkTransport(
+    .subscriptionNetworkTransport(WebSocketNetworkTransport(
         serverUrl = "http://localhost:9090/graphql",
         protocol = GraphQLWsProtocol()
     ))
