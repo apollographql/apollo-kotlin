@@ -102,12 +102,8 @@ public final class com/apollographql/apollo3/ApolloSubscriptionCall : com/apollo
 public final class com/apollographql/apollo3/AutoPersistedQueryInfo : com/apollographql/apollo3/api/ExecutionContext$Element {
 	public static final field Key Lcom/apollographql/apollo3/AutoPersistedQueryInfo$Key;
 	public fun <init> (Z)V
-	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
-	public fun get (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext$Element;
 	public final fun getHit ()Z
 	public fun getKey ()Lcom/apollographql/apollo3/api/ExecutionContext$Key;
-	public fun minusKey (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext;
-	public fun plus (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ExecutionContext;
 }
 
 public final class com/apollographql/apollo3/AutoPersistedQueryInfo$Key : com/apollographql/apollo3/api/ExecutionContext$Key {
@@ -124,13 +120,9 @@ public final class com/apollographql/apollo3/AutoPersistedQueryInfoKt {
 public final class com/apollographql/apollo3/ConcurrencyInfo : com/apollographql/apollo3/api/ExecutionContext$Element {
 	public static final field Key Lcom/apollographql/apollo3/ConcurrencyInfo$Key;
 	public fun <init> (Lkotlinx/coroutines/CoroutineDispatcher;Lkotlinx/coroutines/CoroutineScope;)V
-	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
-	public fun get (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext$Element;
 	public final fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
 	public final fun getDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
 	public fun getKey ()Lcom/apollographql/apollo3/api/ExecutionContext$Key;
-	public fun minusKey (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext;
-	public fun plus (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ExecutionContext;
 }
 
 public final class com/apollographql/apollo3/ConcurrencyInfo$Key : com/apollographql/apollo3/api/ExecutionContext$Key {
@@ -263,15 +255,11 @@ public final class com/apollographql/apollo3/network/http/HttpEngineKt {
 public final class com/apollographql/apollo3/network/http/HttpInfo : com/apollographql/apollo3/api/ExecutionContext$Element {
 	public static final field Key Lcom/apollographql/apollo3/network/http/HttpInfo$Key;
 	public fun <init> (JJILjava/util/List;)V
-	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
-	public fun get (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext$Element;
 	public final fun getHeaders ()Ljava/util/List;
 	public fun getKey ()Lcom/apollographql/apollo3/api/ExecutionContext$Key;
 	public final fun getMillisEnd ()J
 	public final fun getMillisStart ()J
 	public final fun getStatusCode ()I
-	public fun minusKey (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext;
-	public fun plus (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ExecutionContext;
 }
 
 public final class com/apollographql/apollo3/network/http/HttpInfo$Key : com/apollographql/apollo3/api/ExecutionContext$Key {
@@ -425,9 +413,6 @@ public abstract interface class com/apollographql/apollo3/network/ws/WebSocketCo
 
 public abstract interface class com/apollographql/apollo3/network/ws/WebSocketEngine {
 	public abstract fun open (Ljava/lang/String;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class com/apollographql/apollo3/network/ws/WebSocketEngine$DefaultImpls {
 	public static synthetic fun open$default (Lcom/apollographql/apollo3/network/ws/WebSocketEngine;Ljava/lang/String;Ljava/util/Map;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 

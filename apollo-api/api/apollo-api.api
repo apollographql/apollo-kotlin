@@ -337,12 +337,8 @@ public final class com/apollographql/apollo3/api/CustomScalarAdapters : com/apol
 	public static final field Empty Lcom/apollographql/apollo3/api/CustomScalarAdapters;
 	public static final field Key Lcom/apollographql/apollo3/api/CustomScalarAdapters$Key;
 	public fun <init> (Ljava/util/Map;)V
-	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
-	public fun get (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext$Element;
 	public fun getKey ()Lcom/apollographql/apollo3/api/ExecutionContext$Key;
-	public fun minusKey (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext;
 	public final fun newBuilder ()Lcom/apollographql/apollo3/api/CustomScalarAdapters$Builder;
-	public fun plus (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ExecutionContext;
 	public final fun responseAdapterFor (Lcom/apollographql/apollo3/api/CustomScalarType;)Lcom/apollographql/apollo3/api/Adapter;
 }
 
@@ -458,28 +454,17 @@ public abstract interface class com/apollographql/apollo3/api/ExecutionContext {
 	public abstract fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
 	public abstract fun get (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext$Element;
 	public abstract fun minusKey (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext;
-	public abstract fun plus (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ExecutionContext;
+	public fun plus (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ExecutionContext;
 }
 
 public final class com/apollographql/apollo3/api/ExecutionContext$Companion {
 }
 
-public final class com/apollographql/apollo3/api/ExecutionContext$DefaultImpls {
-	public static fun plus (Lcom/apollographql/apollo3/api/ExecutionContext;Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ExecutionContext;
-}
-
 public abstract interface class com/apollographql/apollo3/api/ExecutionContext$Element : com/apollographql/apollo3/api/ExecutionContext {
-	public abstract fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
-	public abstract fun get (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext$Element;
+	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public fun get (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext$Element;
 	public abstract fun getKey ()Lcom/apollographql/apollo3/api/ExecutionContext$Key;
-	public abstract fun minusKey (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext;
-}
-
-public final class com/apollographql/apollo3/api/ExecutionContext$Element$DefaultImpls {
-	public static fun fold (Lcom/apollographql/apollo3/api/ExecutionContext$Element;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
-	public static fun get (Lcom/apollographql/apollo3/api/ExecutionContext$Element;Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext$Element;
-	public static fun minusKey (Lcom/apollographql/apollo3/api/ExecutionContext$Element;Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext;
-	public static fun plus (Lcom/apollographql/apollo3/api/ExecutionContext$Element;Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ExecutionContext;
+	public fun minusKey (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext;
 }
 
 public abstract interface class com/apollographql/apollo3/api/ExecutionContext$Key {
@@ -615,41 +600,39 @@ public final class com/apollographql/apollo3/api/ObjectType : com/apollographql/
 
 public abstract interface class com/apollographql/apollo3/api/Operation : com/apollographql/apollo3/api/Executable {
 	public abstract fun adapter ()Lcom/apollographql/apollo3/api/Adapter;
+	public fun composeJsonData (Lcom/apollographql/apollo3/api/Operation$Data;)Ljava/lang/String;
+	public fun composeJsonData (Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/String;)Ljava/lang/String;
+	public fun composeJsonData (Lokio/BufferedSink;Lcom/apollographql/apollo3/api/Operation$Data;)V
+	public fun composeJsonData (Lokio/BufferedSink;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/String;)V
+	public fun composeJsonRequest ()Ljava/lang/String;
+	public fun composeJsonRequest (Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Ljava/lang/String;
+	public fun composeJsonRequest (Lokio/BufferedSink;)V
+	public fun composeJsonRequest (Lokio/BufferedSink;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)V
+	public static synthetic fun composeJsonRequest$default (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/CustomScalarAdapters;ILjava/lang/Object;)Ljava/lang/String;
+	public fun composeJsonResponse (Lcom/apollographql/apollo3/api/Operation$Data;)Ljava/lang/String;
+	public fun composeJsonResponse (Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/String;)Ljava/lang/String;
+	public fun composeJsonResponse (Lokio/BufferedSink;Lcom/apollographql/apollo3/api/Operation$Data;)V
+	public fun composeJsonResponse (Lokio/BufferedSink;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/String;)V
 	public abstract fun document ()Ljava/lang/String;
 	public abstract fun id ()Ljava/lang/String;
 	public abstract fun name ()Ljava/lang/String;
+	public fun parseJsonData (Ljava/lang/String;)Lcom/apollographql/apollo3/api/Operation$Data;
+	public fun parseJsonData (Ljava/lang/String;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/api/Operation$Data;
+	public fun parseJsonData (Lokio/BufferedSource;)Lcom/apollographql/apollo3/api/Operation$Data;
+	public fun parseJsonData (Lokio/BufferedSource;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/api/Operation$Data;
+	public fun parseJsonData (Lokio/ByteString;)Lcom/apollographql/apollo3/api/Operation$Data;
+	public fun parseJsonData (Lokio/ByteString;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/api/Operation$Data;
+	public fun parseJsonResponse (Ljava/lang/String;)Lcom/apollographql/apollo3/api/ApolloResponse;
+	public fun parseJsonResponse (Ljava/lang/String;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/api/ApolloResponse;
+	public fun parseJsonResponse (Lokio/BufferedSource;)Lcom/apollographql/apollo3/api/ApolloResponse;
+	public fun parseJsonResponse (Lokio/BufferedSource;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/api/ApolloResponse;
+	public fun parseJsonResponse (Lokio/ByteString;)Lcom/apollographql/apollo3/api/ApolloResponse;
+	public fun parseJsonResponse (Lokio/ByteString;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/api/ApolloResponse;
 	public abstract fun selections ()Ljava/util/List;
 	public abstract fun serializeVariables (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)V
 }
 
 public abstract interface class com/apollographql/apollo3/api/Operation$Data : com/apollographql/apollo3/api/Executable$Data {
-}
-
-public final class com/apollographql/apollo3/api/OperationKt {
-	public static final fun composeJsonData (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/String;)Ljava/lang/String;
-	public static final fun composeJsonData (Lcom/apollographql/apollo3/api/Operation;Lokio/BufferedSink;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/String;)V
-	public static synthetic fun composeJsonData$default (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/String;ILjava/lang/Object;)Ljava/lang/String;
-	public static synthetic fun composeJsonData$default (Lcom/apollographql/apollo3/api/Operation;Lokio/BufferedSink;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/String;ILjava/lang/Object;)V
-	public static final fun composeJsonRequest (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Ljava/lang/String;
-	public static final fun composeJsonRequest (Lcom/apollographql/apollo3/api/Operation;Lokio/BufferedSink;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)V
-	public static synthetic fun composeJsonRequest$default (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/CustomScalarAdapters;ILjava/lang/Object;)Ljava/lang/String;
-	public static synthetic fun composeJsonRequest$default (Lcom/apollographql/apollo3/api/Operation;Lokio/BufferedSink;Lcom/apollographql/apollo3/api/CustomScalarAdapters;ILjava/lang/Object;)V
-	public static final fun composeJsonResponse (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/String;)Ljava/lang/String;
-	public static final fun composeJsonResponse (Lcom/apollographql/apollo3/api/Operation;Lokio/BufferedSink;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/String;)V
-	public static synthetic fun composeJsonResponse$default (Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/String;ILjava/lang/Object;)Ljava/lang/String;
-	public static synthetic fun composeJsonResponse$default (Lcom/apollographql/apollo3/api/Operation;Lokio/BufferedSink;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/String;ILjava/lang/Object;)V
-	public static final fun parseJsonData (Lcom/apollographql/apollo3/api/Operation;Ljava/lang/String;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/api/Operation$Data;
-	public static final fun parseJsonData (Lcom/apollographql/apollo3/api/Operation;Lokio/BufferedSource;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/api/Operation$Data;
-	public static final fun parseJsonData (Lcom/apollographql/apollo3/api/Operation;Lokio/ByteString;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/api/Operation$Data;
-	public static synthetic fun parseJsonData$default (Lcom/apollographql/apollo3/api/Operation;Ljava/lang/String;Lcom/apollographql/apollo3/api/CustomScalarAdapters;ILjava/lang/Object;)Lcom/apollographql/apollo3/api/Operation$Data;
-	public static synthetic fun parseJsonData$default (Lcom/apollographql/apollo3/api/Operation;Lokio/BufferedSource;Lcom/apollographql/apollo3/api/CustomScalarAdapters;ILjava/lang/Object;)Lcom/apollographql/apollo3/api/Operation$Data;
-	public static synthetic fun parseJsonData$default (Lcom/apollographql/apollo3/api/Operation;Lokio/ByteString;Lcom/apollographql/apollo3/api/CustomScalarAdapters;ILjava/lang/Object;)Lcom/apollographql/apollo3/api/Operation$Data;
-	public static final fun parseJsonResponse (Lcom/apollographql/apollo3/api/Operation;Ljava/lang/String;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/api/ApolloResponse;
-	public static final fun parseJsonResponse (Lcom/apollographql/apollo3/api/Operation;Lokio/BufferedSource;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/api/ApolloResponse;
-	public static final fun parseJsonResponse (Lcom/apollographql/apollo3/api/Operation;Lokio/ByteString;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/api/ApolloResponse;
-	public static synthetic fun parseJsonResponse$default (Lcom/apollographql/apollo3/api/Operation;Ljava/lang/String;Lcom/apollographql/apollo3/api/CustomScalarAdapters;ILjava/lang/Object;)Lcom/apollographql/apollo3/api/ApolloResponse;
-	public static synthetic fun parseJsonResponse$default (Lcom/apollographql/apollo3/api/Operation;Lokio/BufferedSource;Lcom/apollographql/apollo3/api/CustomScalarAdapters;ILjava/lang/Object;)Lcom/apollographql/apollo3/api/ApolloResponse;
-	public static synthetic fun parseJsonResponse$default (Lcom/apollographql/apollo3/api/Operation;Lokio/ByteString;Lcom/apollographql/apollo3/api/CustomScalarAdapters;ILjava/lang/Object;)Lcom/apollographql/apollo3/api/ApolloResponse;
 }
 
 public abstract class com/apollographql/apollo3/api/Optional {

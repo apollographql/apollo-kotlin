@@ -97,15 +97,12 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Service {
 	public abstract fun operationOutputConnection (Lorg/gradle/api/Action;)V
 	public abstract fun outputDirConnection (Lorg/gradle/api/Action;)V
 	public abstract fun packageNamesFromFilePaths (Ljava/lang/String;)V
+	public static synthetic fun packageNamesFromFilePaths$default (Lcom/apollographql/apollo3/gradle/api/Service;Ljava/lang/String;ILjava/lang/Object;)V
 	public abstract fun registerOperations (Lorg/gradle/api/Action;)V
 	public abstract fun registry (Lorg/gradle/api/Action;)V
 	public abstract fun srcDir (Ljava/lang/Object;)V
 	public abstract fun testDirConnection (Lorg/gradle/api/Action;)V
 	public abstract fun useVersion2Compat (Ljava/lang/String;)V
-}
-
-public final class com/apollographql/apollo3/gradle/api/Service$DefaultImpls {
-	public static synthetic fun packageNamesFromFilePaths$default (Lcom/apollographql/apollo3/gradle/api/Service;Ljava/lang/String;ILjava/lang/Object;)V
 	public static synthetic fun useVersion2Compat$default (Lcom/apollographql/apollo3/gradle/api/Service;Ljava/lang/String;ILjava/lang/Object;)V
 }
 

@@ -7,7 +7,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.use
-import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.integration.httpcache.AllFilmsQuery

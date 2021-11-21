@@ -44,8 +44,12 @@ The coding style employed here is fairly conventional Kotlin - indentations are 
 identifiers and methods are camelCased.
 
 * Use primary constructors when there is at most one optional parameter.
-* Use the `Builder` pattern because it's a well recognized pattern that interops well with Java (see https://github.com/apollographql/apollo-android/issues/3301).
+* Use the `Builder` pattern in other places because it's a well recognized pattern that interops well with Java and doesn't copy too much (see https://github.com/apollographql/apollo-android/issues/3301).
 * Functions with optional parameters are nice. Use `@JvmOverloads` for better Java interop.
+* Interface default function don't support `@JvmOverloads`. (See https://youtrack.jetbrains.com/issue/KT-36102) Try to limit the number of optional parameters when possible.
+* Avoid extension functions when possible because they are awkward to use in Java.
+* The exception to the above rule is when adding function in other modules. `ApolloClient.Builder` extensions are a good example of that.
+* If some extensions do not make sense in Java, mark them with `@JvmName("-$methodName")` to hide them from Java
 * Parameters using milliseconds should have the "Millis" suffix.
 * Else use [kotlin.time.Duration]
 

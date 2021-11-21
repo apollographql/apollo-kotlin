@@ -1,6 +1,5 @@
 package test.nonnull
 
-import com.apollographql.apollo3.api.parseJsonData
 import nonnull.NonNullField1Query
 import nonnull.NonNullField2Query
 import nonnull.NullableField1Query
