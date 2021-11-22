@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.NullableAnyAdapter
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.ApolloHttpRequestComposer
 import com.apollographql.apollo3.api.http.ApolloHttpRequestComposer.Companion.appendQueryParameters
-import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
+import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils
 import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.exception.ApolloNetworkException

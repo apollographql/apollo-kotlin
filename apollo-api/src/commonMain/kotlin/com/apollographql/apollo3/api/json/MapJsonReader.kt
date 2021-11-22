@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.api.json
 
-import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader.Companion.MAX_STACK_SIZE
+import com.apollographql.apollo3.api.json.BufferedSourceJsonReader.Companion.MAX_STACK_SIZE
 import com.apollographql.apollo3.api.internal.json.Utils.readRecursivelyFast
 import com.apollographql.apollo3.api.internal.json.toDoubleExact
 import com.apollographql.apollo3.api.internal.json.toIntExact

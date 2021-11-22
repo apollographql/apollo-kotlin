@@ -3,7 +3,7 @@ package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.http.ApolloHttpRequestComposer
 import com.apollographql.apollo3.api.internal.ResponseBodyParser
-import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
+import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.writeObject
 import okio.Buffer
 import okio.BufferedSink

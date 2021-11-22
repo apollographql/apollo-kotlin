@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.api.internal.json
 
+import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.JsonWriter
 import okio.Buffer
 import okio.ByteString

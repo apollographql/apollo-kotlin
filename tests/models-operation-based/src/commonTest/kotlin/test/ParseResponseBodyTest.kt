@@ -3,7 +3,7 @@ package test
 import codegen.models.AllPlanetsQuery
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.composeJsonResponse
-import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
+import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
 import okio.Buffer
 import readJson
