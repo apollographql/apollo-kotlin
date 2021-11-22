@@ -1,5 +1,6 @@
 ---
-title: '@nonnull'
+title: 'Enforcing non-nullability'
+description: Using the @nonnull directive
 ---
 
 Because GraphQL allows very granular error handling and resolver may return errors on different fields during execution, many GraphQL schemas expose nullable fields even though these fields should never be null in the absence of errors.
@@ -48,7 +49,3 @@ Create a `extensions.graphqls` file next to your `schema.[graphqls|sdl|json]`:
 # Make the 'film' field always non-nullable
 extend type FilmConnection @nonnull(fields: "films")
 ```
-
-
-
-
