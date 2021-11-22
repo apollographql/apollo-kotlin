@@ -18,7 +18,7 @@ import com.apollographql.apollo3.cache.normalized.api.Record
  * A [Normalizer] takes a [Map]<String, Any?> and turns them into a flat list of [Record]
  * The key of each [Record] is given by [cacheKeyGenerator] or defaults to using the path
  */
-class Normalizer(
+internal class Normalizer(
     private val variables: Executable.Variables,
     private val rootKey: String,
     private val cacheKeyGenerator: CacheKeyGenerator,

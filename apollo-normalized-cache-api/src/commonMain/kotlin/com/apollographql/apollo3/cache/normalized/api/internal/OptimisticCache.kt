@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.cache.normalized.api.internal
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
@@ -9,6 +10,7 @@ import com.benasher44.uuid.Uuid
 import kotlin.math.max
 import kotlin.reflect.KClass
 
+@ApolloInternal
 class OptimisticCache : NormalizedCache() {
   private val recordJournals = mutableMapOf<String, RecordJournal>()
 
@@ -124,6 +126,7 @@ class OptimisticCache : NormalizedCache() {
       val changedKeys: Set<String>,
       val isEmpty: Boolean
   )
+
   private class RecordJournal(record: Record) {
     /**
      * The latest value of the record made by applying all the patches.
