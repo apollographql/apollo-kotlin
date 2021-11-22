@@ -1,16 +1,14 @@
-package com.apollographql.apollo3.mpp
+package com.apollographql.apollo3.internal
 
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.nativeHeap
 import kotlinx.cinterop.ptr
-import kotlinx.cinterop.value
 import platform.Foundation.NSMutableArray
 import platform.posix.pthread_cond_broadcast
 import platform.posix.pthread_cond_destroy
 import platform.posix.pthread_cond_init
 import platform.posix.pthread_cond_t
 import platform.posix.pthread_cond_wait
-import platform.posix.pthread_join
 import platform.posix.pthread_mutex_destroy
 import platform.posix.pthread_mutex_init
 import platform.posix.pthread_mutex_lock

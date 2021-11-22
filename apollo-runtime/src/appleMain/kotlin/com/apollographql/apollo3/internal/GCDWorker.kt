@@ -1,11 +1,9 @@
-package com.apollographql.apollo3.mpp
+package com.apollographql.apollo3.internal
 
 import kotlinx.cinterop.convert
-import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.darwin.dispatch_async
 import platform.darwin.dispatch_get_global_queue
 import platform.posix.QOS_CLASS_BACKGROUND
-import platform.posix.intptr_t
 import kotlin.native.concurrent.freeze
 
 class GCDWorker(qos: UInt = QOS_CLASS_BACKGROUND) {

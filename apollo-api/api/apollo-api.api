@@ -566,20 +566,6 @@ public final class com/apollographql/apollo3/api/ListAdapter : com/apollographql
 	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/util/List;)V
 }
 
-public abstract interface class com/apollographql/apollo3/api/Logger {
-	public static final field Companion Lcom/apollographql/apollo3/api/Logger$Companion;
-	public static final field DEBUG I
-	public static final field ERROR I
-	public static final field WARN I
-	public abstract fun log (ILjava/lang/String;Ljava/lang/Throwable;[Ljava/lang/Object;)V
-}
-
-public final class com/apollographql/apollo3/api/Logger$Companion {
-	public static final field DEBUG I
-	public static final field ERROR I
-	public static final field WARN I
-}
-
 public final class com/apollographql/apollo3/api/LongAdapter : com/apollographql/apollo3/api/Adapter {
 	public static final field INSTANCE Lcom/apollographql/apollo3/api/LongAdapter;
 	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Ljava/lang/Long;

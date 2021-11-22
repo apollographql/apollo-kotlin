@@ -1,5 +1,6 @@
-package com.apollographql.apollo3.mpp
+package com.apollographql.apollo3.internal
 
+import com.apollographql.apollo3.mpp.assertMainThreadOnNative
 import kotlinx.cinterop.StableRef
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.CompletionHandler

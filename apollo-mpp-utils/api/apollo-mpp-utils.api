@@ -1,11 +1,3 @@
-public final class com/apollographql/apollo3/mpp/Guard {
-	public fun <init> (Ljava/lang/String;Lkotlin/jvm/functions/Function0;)V
-	public final fun dispose ()V
-	public final fun readAccess (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun writeAccess (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun writeAndForget (Lkotlin/jvm/functions/Function1;)V
-}
-
 public final class com/apollographql/apollo3/mpp/Platform : java/lang/Enum {
 	public static final field Js Lcom/apollographql/apollo3/mpp/Platform;
 	public static final field Jvm Lcom/apollographql/apollo3/mpp/Platform;
