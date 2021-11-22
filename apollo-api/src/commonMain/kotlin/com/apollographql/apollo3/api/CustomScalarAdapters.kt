@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.internal.Version2CustomTypeAdapterToAdapter
+import com.apollographql.apollo3.annotations.ApolloInternal
 import kotlin.jvm.JvmField
 
 /**

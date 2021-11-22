@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.gradle.api
 
 import com.android.build.gradle.api.BaseVariant
-import com.apollographql.apollo3.api.ApolloExperimental
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.PackageNameGenerator

@@ -5,7 +5,7 @@ package com.apollographql.apollo3.rx2
 import com.apollographql.apollo3.ApolloMutationCall
 import com.apollographql.apollo3.ApolloQueryCall
 import com.apollographql.apollo3.ApolloSubscriptionCall
-import com.apollographql.apollo3.api.ApolloExperimental
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters

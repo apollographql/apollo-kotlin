@@ -1,7 +1,7 @@
 package com.apollographql.apollo3
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.ApolloInternal
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
