@@ -16,7 +16,7 @@
 package com.apollographql.apollo3.api.internal.json
 
 /** Lexical scoping elements within a JSON reader or writer.  */
-object JsonScope {
+internal object JsonScope {
   /** An array with no elements requires no separators or newlines before it is closed.  */
   const val EMPTY_ARRAY = 1
   /** A array with at least one value requires a comma and newline before the next element.  */

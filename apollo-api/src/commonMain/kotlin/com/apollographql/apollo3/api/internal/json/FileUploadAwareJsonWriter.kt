@@ -8,7 +8,7 @@ import com.apollographql.apollo3.api.json.JsonWriter
  * A [JsonWriter] that can wrap a [JsonWriter] and intercept [Upload] writes. This is used to send
  * upload variables out of band in a multipart/form-data HTTP request
  */
-class FileUploadAwareJsonWriter(private val wrappedWriter: JsonWriter): JsonWriter {
+internal class FileUploadAwareJsonWriter(private val wrappedWriter: JsonWriter): JsonWriter {
   private val uploads = mutableMapOf<String, Upload>()
 
   fun collectedUploads(): Map<String, Upload> = uploads
