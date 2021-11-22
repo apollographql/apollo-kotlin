@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.mpp
+package com.apollographql.apollo3.internal
 
 actual class Guard<R: Any> actual constructor(name: String, producer: () -> R) {
   private val resource = producer()

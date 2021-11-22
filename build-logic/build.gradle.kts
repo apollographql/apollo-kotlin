@@ -27,7 +27,6 @@ dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.gradleJapiCmpPlugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.gradleMetalavaPlugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.kotlinPlugin"))
-  implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
   implementation(groovy.util.Eval.x(project, "x.dep.sqldelight.plugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.gradlePublishPlugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.benManesVersions"))

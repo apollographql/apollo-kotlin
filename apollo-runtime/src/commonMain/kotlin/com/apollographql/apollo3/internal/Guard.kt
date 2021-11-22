@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.mpp
+package com.apollographql.apollo3.internal
 
 expect class Guard<R: Any>(name: String, producer: () -> R) {
   /**

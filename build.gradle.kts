@@ -189,7 +189,10 @@ configure<kotlinx.validation.ApiValidationExtension> {
   ignoredPackages.addAll(
       listOf(
           "com.apollographql.apollo3.api.internal",
+          "com.apollographql.apollo3.internal",
           "com.apollographql.apollo3.gradle.internal",
+          "com.apollographql.apollo3.cache.http.internal",
+          "com.apollographql.apollo3.cache.normalized.api.internal",
           "com.apollographql.apollo3.cache.normalized.internal",
       )
   )

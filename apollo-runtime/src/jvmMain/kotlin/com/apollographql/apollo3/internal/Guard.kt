@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.mpp
+package com.apollographql.apollo3.internal
 
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read

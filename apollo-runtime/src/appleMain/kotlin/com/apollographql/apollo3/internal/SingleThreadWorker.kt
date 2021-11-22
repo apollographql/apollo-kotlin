@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.mpp
+package com.apollographql.apollo3.internal
 
 import kotlinx.cinterop.StableRef
 import kotlinx.cinterop.alloc

@@ -26,7 +26,6 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
       dependencies {
         api(projects.apolloApi)
         api(projects.apolloNormalizedCacheApi)
-        implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
       }
     }
 
