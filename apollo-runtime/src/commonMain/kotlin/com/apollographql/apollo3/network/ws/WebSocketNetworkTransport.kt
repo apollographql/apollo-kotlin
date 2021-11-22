@@ -4,7 +4,7 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.internal.ResponseBodyParser
+import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.internal.BackgroundDispatcher
 import com.apollographql.apollo3.internal.transformWhile
@@ -191,9 +191,8 @@ class WebSocketNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder in
       }
     }.map {
       when (it) {
-        is OperationResponse -> ResponseBodyParser.parse(
+        is OperationResponse -> request.operation.parseJsonResponse(
             it.payload,
-            request.operation,
             request.executionContext[CustomScalarAdapters]!!
         ).copy(requestUuid = request.requestUuid)
         is OperationError -> throw ApolloNetworkException("Cannot start operation ${request.operation.name()}: ${it.payload}")

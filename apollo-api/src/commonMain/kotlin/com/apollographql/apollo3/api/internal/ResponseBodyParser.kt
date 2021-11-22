@@ -16,7 +16,7 @@ import okio.BufferedSource
 /**
  * [ResponseBodyParser] parses network responses, including data, errors and extensions from a [JsonReader]
  */
-object ResponseBodyParser {
+internal object ResponseBodyParser {
   fun <D : Operation.Data> parse(
       jsonReader: JsonReader,
       operation: Operation<D>,

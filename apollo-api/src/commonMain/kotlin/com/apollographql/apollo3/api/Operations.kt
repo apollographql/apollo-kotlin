@@ -75,6 +75,25 @@ fun <D : Operation.Data> Operation<D>.parseJsonResponse(
 }
 
 /**
+ * See [parseJsonResponse]
+ */
+fun <D : Operation.Data> Operation<D>.parseJsonResponse(
+    map: Map<String, Any?>,
+    customScalarAdapters: CustomScalarAdapters,
+): ApolloResponse<D> {
+  return ResponseBodyParser.parse(map, this, customScalarAdapters)
+}
+
+/**
+ * See [parseJsonResponse]
+ */
+fun <D : Operation.Data> Operation<D>.parseJsonResponse(
+    map: Map<String, Any?>,
+): ApolloResponse<D> {
+  return ResponseBodyParser.parse(map, this, CustomScalarAdapters.Empty)
+}
+
+/**
  * Reads only the "data" part of a GraphQL Json response
  */
 fun <D : Operation.Data> Operation<D>.parseJsonData(
