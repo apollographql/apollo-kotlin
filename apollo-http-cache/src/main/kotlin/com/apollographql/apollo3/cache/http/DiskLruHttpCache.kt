@@ -3,7 +3,6 @@ package com.apollographql.apollo3.cache.http
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.cache.http.internal.DiskLruCache
-import com.apollographql.apollo3.cache.http.internal.FileSystem
 import com.squareup.moshi.Moshi
 import okio.buffer
 import java.io.File

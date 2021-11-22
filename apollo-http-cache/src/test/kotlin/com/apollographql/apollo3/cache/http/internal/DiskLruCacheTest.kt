@@ -15,6 +15,7 @@
  */
 package com.apollographql.apollo3.cache.http.internal
 
+import com.apollographql.apollo3.cache.http.FileSystem
 import com.apollographql.apollo3.cache.http.internal.DiskLruCache.Companion.create
 import com.google.common.truth.Truth
 import okio.Source
@@ -29,10 +30,7 @@ import org.junit.rules.Timeout
 import java.io.File
 import java.io.IOException
 import java.util.ArrayDeque
-import java.util.ArrayList
-import java.util.Arrays
 import java.util.Deque
-import java.util.NoSuchElementException
 import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 

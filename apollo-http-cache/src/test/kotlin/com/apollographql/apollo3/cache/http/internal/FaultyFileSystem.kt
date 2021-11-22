@@ -15,6 +15,7 @@
  */
 package com.apollographql.apollo3.cache.http.internal
 
+import com.apollographql.apollo3.cache.http.FileSystem
 import okio.Buffer
 import okio.ForwardingSink
 import okio.Sink
@@ -22,7 +23,6 @@ import okio.Source
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
-import java.util.LinkedHashSet
 
 /**
  * Copied from OkHttp 3.14.2:

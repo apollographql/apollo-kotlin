@@ -15,6 +15,7 @@
  */
 package com.apollographql.apollo3.cache.http.internal
 
+import com.apollographql.apollo3.cache.http.FileSystem
 import com.apollographql.apollo3.cache.http.internal.DiskLruCache.Editor
 import okio.BufferedSink
 import okio.Sink
@@ -27,10 +28,6 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.Flushable
 import java.io.IOException
-import java.util.ArrayList
-import java.util.Arrays
-import java.util.LinkedHashMap
-import java.util.NoSuchElementException
 import java.util.concurrent.Executor
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.ThreadPoolExecutor
@@ -86,7 +83,9 @@ import java.util.regex.Pattern
  * b8b6ee831c65208940c741f8e091ff02425566d5/
  * okhttp/src/main/java/okhttp3/internal/cache/DiskLruCache.java
  */
-class DiskLruCache internal constructor(/*
+
+internal class DiskLruCache(
+/*
      * This cache uses a journal file named "journal". A typical journal file
      * looks like this:
      *     libcore.io.DiskLruCache
@@ -127,8 +126,10 @@ class DiskLruCache internal constructor(/*
      */
     val fileSystem: FileSystem,
     /** Returns the directory where this cache stores its data.  */
-    val directory: File, private val appVersion: Int, valueCount: Int, maxSize: Long,
-    executor: Executor) : Closeable, Flushable {
+    val directory: File,
+    private val appVersion: Int, valueCount: Int, maxSize: Long,
+    executor: Executor,
+) : Closeable, Flushable {
   private val journalFile: File = File(directory, JOURNAL_FILE)
   private val journalFileTmp: File
   private val journalFileBackup: File
