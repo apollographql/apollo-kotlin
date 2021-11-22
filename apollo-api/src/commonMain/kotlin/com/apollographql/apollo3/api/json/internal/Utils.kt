@@ -1,5 +1,6 @@
-package com.apollographql.apollo3.api.internal.json
+package com.apollographql.apollo3.api.json.internal
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.json.JsonNumber
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -7,6 +8,7 @@ import com.apollographql.apollo3.api.json.JsonWriter
 /**
  * Helper methods to read and write generic Json values
  */
+@ApolloInternal
 object Utils {
   fun writeToJson(value: Any?, jsonWriter: JsonWriter) {
     when (value) {

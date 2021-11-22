@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apollographql.apollo3.api.internal.json
+package com.apollographql.apollo3.api.json.internal
 
 /** Lexical scoping elements within a JSON reader or writer.  */
 internal object JsonScope {

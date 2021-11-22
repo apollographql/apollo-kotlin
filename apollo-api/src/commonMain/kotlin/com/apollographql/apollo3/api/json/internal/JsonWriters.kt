@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.api.internal.json
+package com.apollographql.apollo3.api.json.internal
 
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter

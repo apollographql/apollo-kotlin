@@ -1,14 +1,15 @@
+@file:JvmName("HttpContext")
 package com.apollographql.apollo3.api.http
 
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.HasExecutionContext
 import com.apollographql.apollo3.api.HasMutableExecutionContext
+import kotlin.jvm.JvmName
 
 
 val HasExecutionContext.httpMethod get() = executionContext[HttpMethodContext]?.value ?: HttpMethod.Post
 val HasExecutionContext.httpHeaders get() = executionContext[HttpHeadersContext]?.value ?: emptyList()
 val HasExecutionContext.sendApqExtensions get() = executionContext[SendApqExtensionsContext]?.value ?: false
-
 val HasExecutionContext.sendDocument get() = executionContext[SendDocumentContext]?.value ?: true
 
 /**

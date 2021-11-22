@@ -1,11 +1,14 @@
+
 package com.apollographql.apollo3.api.http
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Upload
-import com.apollographql.apollo3.api.internal.json.FileUploadAwareJsonWriter
-import com.apollographql.apollo3.api.internal.json.Utils
+import com.apollographql.apollo3.api.http.internal.urlEncode
+import com.apollographql.apollo3.api.json.internal.FileUploadAwareJsonWriter
+import com.apollographql.apollo3.api.json.internal.Utils
 import com.apollographql.apollo3.api.internal.json.buildJsonByteString
 import com.apollographql.apollo3.api.internal.json.buildJsonMap
 import com.apollographql.apollo3.api.internal.json.buildJsonString
@@ -22,6 +25,7 @@ import okio.ByteString
  * - Automatic Persisted Queries
  * - Adding the default Apollo headers
  */
+@OptIn(ApolloInternal::class)
 class ApolloHttpRequestComposer(
     private val serverUrl: String,
 ) : HttpRequestComposer {

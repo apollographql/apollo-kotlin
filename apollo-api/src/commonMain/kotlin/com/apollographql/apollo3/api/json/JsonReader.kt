@@ -16,6 +16,7 @@
 package com.apollographql.apollo3.api.json
 
 import com.apollographql.apollo3.exception.JsonDataException
+import okio.Closeable
 
 /**
  * Reads a JSON [RFC 7159](http://www.ietf.org/rfc/rfc7159.txt) encoded value as a stream of tokens.

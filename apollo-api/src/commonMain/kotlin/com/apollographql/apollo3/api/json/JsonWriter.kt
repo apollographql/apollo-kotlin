@@ -15,9 +15,8 @@
  */
 package com.apollographql.apollo3.api.json
 
-import com.apollographql.apollo3.api.Throws
 import com.apollographql.apollo3.api.Upload
-import okio.IOException
+import okio.Closeable
 
 /**
  * Writes a JSON [RFC 7159](http://www.ietf.org/rfc/rfc7159.txt) encoded value to a stream, one token at a time.

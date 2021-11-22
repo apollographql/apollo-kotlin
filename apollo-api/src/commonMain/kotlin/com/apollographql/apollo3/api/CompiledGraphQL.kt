@@ -4,7 +4,7 @@ package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.CompiledArgument.Companion.resolveVariables
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
-import com.apollographql.apollo3.api.internal.json.Utils
+import com.apollographql.apollo3.api.json.internal.Utils
 import okio.Buffer
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName

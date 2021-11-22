@@ -17,7 +17,7 @@ package com.apollographql.apollo3.api.json
 
 import com.apollographql.apollo3.api.Throws
 import com.apollographql.apollo3.api.Upload
-import com.apollographql.apollo3.api.internal.json.JsonScope
+import com.apollographql.apollo3.api.json.internal.JsonScope
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader.Companion.MAX_STACK_SIZE
 import com.apollographql.apollo3.exception.JsonDataException
 import okio.BufferedSink

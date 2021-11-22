@@ -3,9 +3,9 @@
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.json.MapJsonReader.Companion.buffer
-import com.apollographql.apollo3.api.internal.json.MapJsonWriter
-import com.apollographql.apollo3.api.internal.json.Utils
-import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
+import com.apollographql.apollo3.api.json.internal.MapJsonWriter
+import com.apollographql.apollo3.api.json.internal.Utils
+import com.apollographql.apollo3.api.json.internal.Utils.readRecursively
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.jvm.JvmField
