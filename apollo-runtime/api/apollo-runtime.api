@@ -149,6 +149,44 @@ public final class com/apollographql/apollo3/interceptor/NetworkInterceptor : co
 	public fun intercept (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/interceptor/ApolloInterceptorChain;)Lkotlinx/coroutines/flow/Flow;
 }
 
+public final class com/apollographql/apollo3/internal/BackgroundDispatcher {
+	public fun <init> ()V
+	public final fun dispose ()V
+	public final fun getCoroutineDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
+}
+
+public final class com/apollographql/apollo3/internal/DefaultMutex : com/apollographql/apollo3/internal/Mutex {
+	public fun <init> ()V
+	public final fun getLock ()Ljava/lang/Object;
+	public fun lock (Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+}
+
+public final class com/apollographql/apollo3/internal/DispatchersKt {
+	public static final fun defaultDispatcher (Lkotlinx/coroutines/CoroutineDispatcher;)Lkotlinx/coroutines/CoroutineDispatcher;
+}
+
+public final class com/apollographql/apollo3/internal/Guard {
+	public fun <init> (Ljava/lang/String;Lkotlin/jvm/functions/Function0;)V
+	public final fun dispose ()V
+	public final fun readAccess (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun writeAccess (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun writeAndForget (Lkotlin/jvm/functions/Function1;)V
+}
+
+public abstract interface class com/apollographql/apollo3/internal/Mutex {
+	public abstract fun lock (Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+}
+
+public final class com/apollographql/apollo3/internal/NoOpMutex : com/apollographql/apollo3/internal/Mutex {
+	public static final field INSTANCE Lcom/apollographql/apollo3/internal/NoOpMutex;
+	public fun lock (Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+}
+
+public final class com/apollographql/apollo3/internal/NonMainWorker {
+	public fun <init> ()V
+	public final fun doWork (Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
 public abstract interface class com/apollographql/apollo3/network/NetworkTransport {
 	public abstract fun dispose ()V
 	public abstract fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
