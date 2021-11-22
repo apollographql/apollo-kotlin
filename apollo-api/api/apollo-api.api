@@ -37,12 +37,6 @@ public final class com/apollographql/apollo3/api/AnyAdapter : com/apollographql/
 	public final fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;)V
 }
 
-public abstract interface annotation class com/apollographql/apollo3/api/ApolloExperimental : java/lang/annotation/Annotation {
-}
-
-public abstract interface annotation class com/apollographql/apollo3/api/ApolloInternal : java/lang/annotation/Annotation {
-}
-
 public final class com/apollographql/apollo3/api/ApolloRequest : com/apollographql/apollo3/api/HasExecutionContext {
 	public fun <init> (Lcom/apollographql/apollo3/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo3/api/ExecutionContext;)V
 	public final fun copy (Lcom/apollographql/apollo3/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ApolloRequest;
@@ -832,6 +826,181 @@ public final class com/apollographql/apollo3/api/http/HttpResponse$Builder {
 	public final fun build ()Lcom/apollographql/apollo3/api/http/HttpResponse;
 	public final fun getStatusCode ()I
 	public final fun headers (Ljava/util/List;)Lcom/apollographql/apollo3/api/http/HttpResponse$Builder;
+}
+
+public final class com/apollographql/apollo3/api/internal/ApolloRequestExtensionsKt {
+	public static final fun getCustomScalarAdapters (Lcom/apollographql/apollo3/api/HasExecutionContext;)Lcom/apollographql/apollo3/api/CustomScalarAdapters;
+}
+
+public final class com/apollographql/apollo3/api/internal/ResponseBodyParser {
+	public static final field INSTANCE Lcom/apollographql/apollo3/api/internal/ResponseBodyParser;
+	public final fun parse (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/api/ApolloResponse;
+	public final fun parse (Ljava/util/Map;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/api/ApolloResponse;
+	public final fun parse (Lokio/BufferedSource;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/api/ApolloResponse;
+	public final fun parseError (Ljava/util/Map;)Lcom/apollographql/apollo3/api/Error;
+}
+
+public final class com/apollographql/apollo3/api/internal/json/BufferedSinkJsonWriter : com/apollographql/apollo3/api/json/JsonWriter {
+	public static final field Companion Lcom/apollographql/apollo3/api/internal/json/BufferedSinkJsonWriter$Companion;
+	public fun <init> (Lokio/BufferedSink;)V
+	public fun beginArray ()Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun beginObject ()Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun close ()V
+	public fun endArray ()Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun endObject ()Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun flush ()V
+	public final fun getIndent ()Ljava/lang/String;
+	public fun getPath ()Ljava/lang/String;
+	public final fun getSeparator ()Ljava/lang/String;
+	public final fun jsonValue (Ljava/lang/String;)Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun name (Ljava/lang/String;)Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun nullValue ()Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public final fun setIndent (Ljava/lang/String;)V
+	public fun value (D)Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun value (I)Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun value (J)Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun value (Lcom/apollographql/apollo3/api/Upload;)Lcom/apollographql/apollo3/api/internal/json/BufferedSinkJsonWriter;
+	public synthetic fun value (Lcom/apollographql/apollo3/api/Upload;)Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun value (Lcom/apollographql/apollo3/api/json/JsonNumber;)Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun value (Ljava/lang/String;)Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun value (Z)Lcom/apollographql/apollo3/api/json/JsonWriter;
+}
+
+public final class com/apollographql/apollo3/api/internal/json/BufferedSinkJsonWriter$Companion {
+	public final fun string (Lokio/BufferedSink;Ljava/lang/String;)V
+}
+
+public final class com/apollographql/apollo3/api/internal/json/BufferedSourceJsonReader : com/apollographql/apollo3/api/json/JsonReader {
+	public static final field Companion Lcom/apollographql/apollo3/api/internal/json/BufferedSourceJsonReader$Companion;
+	public static final field MAX_STACK_SIZE I
+	public fun <init> (Lokio/BufferedSource;)V
+	public fun beginArray ()Lcom/apollographql/apollo3/api/json/JsonReader;
+	public fun beginObject ()Lcom/apollographql/apollo3/api/json/JsonReader;
+	public fun close ()V
+	public fun endArray ()Lcom/apollographql/apollo3/api/json/JsonReader;
+	public fun endObject ()Lcom/apollographql/apollo3/api/json/JsonReader;
+	public fun hasNext ()Z
+	public fun nextBoolean ()Z
+	public fun nextDouble ()D
+	public fun nextInt ()I
+	public fun nextLong ()J
+	public fun nextName ()Ljava/lang/String;
+	public fun nextNull ()Ljava/lang/Void;
+	public fun nextNumber ()Lcom/apollographql/apollo3/api/json/JsonNumber;
+	public fun nextString ()Ljava/lang/String;
+	public fun peek ()Lcom/apollographql/apollo3/api/json/JsonReader$Token;
+	public fun rewind ()V
+	public fun selectName (Ljava/util/List;)I
+	public fun skipValue ()V
+}
+
+public final class com/apollographql/apollo3/api/internal/json/BufferedSourceJsonReader$Companion {
+}
+
+public final class com/apollographql/apollo3/api/internal/json/FileUploadAwareJsonWriter : com/apollographql/apollo3/api/json/JsonWriter {
+	public fun <init> (Lcom/apollographql/apollo3/api/json/JsonWriter;)V
+	public fun beginArray ()Lcom/apollographql/apollo3/api/internal/json/FileUploadAwareJsonWriter;
+	public synthetic fun beginArray ()Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun beginObject ()Lcom/apollographql/apollo3/api/internal/json/FileUploadAwareJsonWriter;
+	public synthetic fun beginObject ()Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun close ()V
+	public final fun collectedUploads ()Ljava/util/Map;
+	public fun endArray ()Lcom/apollographql/apollo3/api/internal/json/FileUploadAwareJsonWriter;
+	public synthetic fun endArray ()Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun endObject ()Lcom/apollographql/apollo3/api/internal/json/FileUploadAwareJsonWriter;
+	public synthetic fun endObject ()Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun flush ()V
+	public fun getPath ()Ljava/lang/String;
+	public fun name (Ljava/lang/String;)Lcom/apollographql/apollo3/api/internal/json/FileUploadAwareJsonWriter;
+	public synthetic fun name (Ljava/lang/String;)Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun nullValue ()Lcom/apollographql/apollo3/api/internal/json/FileUploadAwareJsonWriter;
+	public synthetic fun nullValue ()Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun value (D)Lcom/apollographql/apollo3/api/internal/json/FileUploadAwareJsonWriter;
+	public synthetic fun value (D)Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun value (I)Lcom/apollographql/apollo3/api/internal/json/FileUploadAwareJsonWriter;
+	public synthetic fun value (I)Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun value (J)Lcom/apollographql/apollo3/api/internal/json/FileUploadAwareJsonWriter;
+	public synthetic fun value (J)Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun value (Lcom/apollographql/apollo3/api/Upload;)Lcom/apollographql/apollo3/api/internal/json/FileUploadAwareJsonWriter;
+	public synthetic fun value (Lcom/apollographql/apollo3/api/Upload;)Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun value (Lcom/apollographql/apollo3/api/json/JsonNumber;)Lcom/apollographql/apollo3/api/internal/json/FileUploadAwareJsonWriter;
+	public synthetic fun value (Lcom/apollographql/apollo3/api/json/JsonNumber;)Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun value (Ljava/lang/String;)Lcom/apollographql/apollo3/api/internal/json/FileUploadAwareJsonWriter;
+	public synthetic fun value (Ljava/lang/String;)Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun value (Z)Lcom/apollographql/apollo3/api/internal/json/FileUploadAwareJsonWriter;
+	public synthetic fun value (Z)Lcom/apollographql/apollo3/api/json/JsonWriter;
+}
+
+public final class com/apollographql/apollo3/api/internal/json/JsonScope {
+	public static final field CLOSED I
+	public static final field DANGLING_NAME I
+	public static final field EMPTY_ARRAY I
+	public static final field EMPTY_DOCUMENT I
+	public static final field EMPTY_OBJECT I
+	public static final field INSTANCE Lcom/apollographql/apollo3/api/internal/json/JsonScope;
+	public static final field NONEMPTY_ARRAY I
+	public static final field NONEMPTY_DOCUMENT I
+	public static final field NONEMPTY_OBJECT I
+	public final fun getPath (I[I[Ljava/lang/String;[I)Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/api/internal/json/JsonWritersKt {
+	public static final fun buildJsonByteString (Lkotlin/jvm/functions/Function1;)Lokio/ByteString;
+	public static final fun buildJsonMap (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun buildJsonString (Lkotlin/jvm/functions/Function1;)Ljava/lang/String;
+	public static final fun writeArray (Lcom/apollographql/apollo3/api/json/JsonWriter;Lkotlin/jvm/functions/Function1;)V
+	public static final fun writeObject (Lcom/apollographql/apollo3/api/json/JsonWriter;Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class com/apollographql/apollo3/api/internal/json/MapJsonWriter : com/apollographql/apollo3/api/json/JsonWriter {
+	public fun <init> ()V
+	public fun beginArray ()Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun beginObject ()Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun close ()V
+	public fun endArray ()Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun endObject ()Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun flush ()V
+	public fun getPath ()Ljava/lang/String;
+	public fun name (Ljava/lang/String;)Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun nullValue ()Lcom/apollographql/apollo3/api/internal/json/MapJsonWriter;
+	public synthetic fun nullValue ()Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public final fun root ()Ljava/lang/Object;
+	public fun value (D)Lcom/apollographql/apollo3/api/internal/json/MapJsonWriter;
+	public synthetic fun value (D)Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun value (I)Lcom/apollographql/apollo3/api/internal/json/MapJsonWriter;
+	public synthetic fun value (I)Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun value (J)Lcom/apollographql/apollo3/api/internal/json/MapJsonWriter;
+	public synthetic fun value (J)Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun value (Lcom/apollographql/apollo3/api/Upload;)Lcom/apollographql/apollo3/api/internal/json/MapJsonWriter;
+	public synthetic fun value (Lcom/apollographql/apollo3/api/Upload;)Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun value (Lcom/apollographql/apollo3/api/json/JsonNumber;)Lcom/apollographql/apollo3/api/internal/json/MapJsonWriter;
+	public synthetic fun value (Lcom/apollographql/apollo3/api/json/JsonNumber;)Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun value (Ljava/lang/String;)Lcom/apollographql/apollo3/api/internal/json/MapJsonWriter;
+	public synthetic fun value (Ljava/lang/String;)Lcom/apollographql/apollo3/api/json/JsonWriter;
+	public fun value (Z)Lcom/apollographql/apollo3/api/internal/json/MapJsonWriter;
+	public synthetic fun value (Z)Lcom/apollographql/apollo3/api/json/JsonWriter;
+}
+
+public abstract class com/apollographql/apollo3/api/internal/json/MapJsonWriter$State {
+}
+
+public final class com/apollographql/apollo3/api/internal/json/MapJsonWriter$State$List : com/apollographql/apollo3/api/internal/json/MapJsonWriter$State {
+	public fun <init> (Ljava/util/List;)V
+	public final fun getList ()Ljava/util/List;
+}
+
+public final class com/apollographql/apollo3/api/internal/json/MapJsonWriter$State$Map : com/apollographql/apollo3/api/internal/json/MapJsonWriter$State {
+	public fun <init> (Ljava/util/Map;Ljava/lang/String;)V
+	public final fun getMap ()Ljava/util/Map;
+	public final fun getName ()Ljava/lang/String;
+	public final fun setName (Ljava/lang/String;)V
+}
+
+public final class com/apollographql/apollo3/api/internal/json/Utils {
+	public static final field INSTANCE Lcom/apollographql/apollo3/api/internal/json/Utils;
+	public final fun readRecursively (Lcom/apollographql/apollo3/api/json/JsonReader;)Ljava/lang/Object;
+	public final fun readRecursivelyFast (Lcom/apollographql/apollo3/api/json/JsonReader;)Ljava/lang/Object;
+	public final fun writeToJson (Ljava/lang/Object;Lcom/apollographql/apollo3/api/json/JsonWriter;)V
 }
 
 public final class com/apollographql/apollo3/api/json/JsonNumber {

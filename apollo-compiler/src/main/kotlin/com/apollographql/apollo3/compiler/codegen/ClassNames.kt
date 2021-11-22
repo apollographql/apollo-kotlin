@@ -7,6 +7,8 @@ import com.squareup.kotlinpoet.ClassName
  */
 internal object ClassNames {
   const val apolloApiPackageName = "com.apollographql.apollo3.api"
+  const val apolloAnnotationsPackageName = "com.apollographql.apollo3.annotations"
+
   const val apolloApiJsonPackageName = "$apolloApiPackageName.json"
   const val apolloApiTestPackageName = "$apolloApiPackageName.test"
 
@@ -53,5 +55,5 @@ internal object ClassNames {
   val StubbedProperty = ResolverClassName(apolloApiTestPackageName, "StubbedProperty")
   val MandatoryTypenameProperty = ResolverClassName(apolloApiTestPackageName, "MandatoryTypenameProperty")
 
-  val ApolloExperimental = ClassName(apolloApiPackageName, "ApolloExperimental")
+  val ApolloExperimental = ClassName(apolloAnnotationsPackageName, "ApolloExperimental")
 }

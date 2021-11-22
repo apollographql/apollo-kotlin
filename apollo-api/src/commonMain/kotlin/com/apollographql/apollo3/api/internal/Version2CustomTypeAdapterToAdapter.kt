@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.api.internal
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.ApolloInternal
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.*
 import com.apollographql.apollo3.api.NullableAnyAdapter
 import com.apollographql.apollo3.api.json.JsonReader

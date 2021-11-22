@@ -186,16 +186,6 @@ plugins.withType<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin> {
 rootProject.configureJapiCmp()
 
 configure<kotlinx.validation.ApiValidationExtension> {
-  ignoredPackages.addAll(
-      listOf(
-          "com.apollographql.apollo3.api.internal",
-          "com.apollographql.apollo3.internal",
-          "com.apollographql.apollo3.gradle.internal",
-          "com.apollographql.apollo3.cache.http.internal",
-          "com.apollographql.apollo3.cache.normalized.api.internal",
-          "com.apollographql.apollo3.cache.normalized.internal",
-      )
-  )
   ignoredProjects.addAll(
       listOf(
           "apollo-compiler",
@@ -205,8 +195,8 @@ configure<kotlinx.validation.ApiValidationExtension> {
   )
   nonPublicMarkers.addAll(
       listOf(
-          "com.apollographql.apollo3.api.ApolloInternal",
-          "com.apollographql.apollo3.api.ApolloExperimental",
+          "com.apollographql.apollo3.annotations.ApolloInternal",
+          "com.apollographql.apollo3.annotations.ApolloExperimental",
       )
   )
 }

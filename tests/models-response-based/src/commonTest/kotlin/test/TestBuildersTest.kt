@@ -13,7 +13,7 @@ import codegen.models.test.MergedFieldWithSameShapeQuery_TestBuilder.Data
 import codegen.models.type.Date
 import codegen.models.type.Episode
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.ApolloExperimental
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.CompiledListType
 import com.apollographql.apollo3.api.CompiledNamedType
 import com.apollographql.apollo3.api.CompiledNotNullType
