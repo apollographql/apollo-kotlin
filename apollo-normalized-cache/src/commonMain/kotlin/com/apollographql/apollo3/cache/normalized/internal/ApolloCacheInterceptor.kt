@@ -8,7 +8,6 @@ import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
-import com.apollographql.apollo3.api.internal.customScalarAdapters
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheInfo
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
@@ -55,7 +54,7 @@ internal class ApolloCacheInterceptor(
   }
 
   /**
-   * @param extraKeys extra keys to publish in case we has optimistic data
+   * @param extraKeys extra keys to publish in case there is optimistic data
    */
   private suspend fun <D : Operation.Data> maybeWriteToCache(
       request: ApolloRequest<D>,
@@ -110,6 +109,9 @@ internal class ApolloCacheInterceptor(
   ): Flow<ApolloResponse<D>> {
     return readFromNetwork(request, chain, request.customScalarAdapters)
   }
+
+  val <D: Operation.Data> ApolloRequest<D>.customScalarAdapters: CustomScalarAdapters
+    get() = executionContext[CustomScalarAdapters]!!
 
   /**
    * Mutations always go to the network and support optimistic data
@@ -221,7 +223,7 @@ internal class ApolloCacheInterceptor(
           return cacheResult.response.withCacheInfo(cacheResult.cacheInfo)
         }
 
-        var networkException: ApolloException? = null
+        val networkException: ApolloException?
         try {
           return readOneFromNetwork(request, chain, customScalarAdapters)
               .withCacheInfo(cacheResult.cacheInfo)
@@ -235,7 +237,7 @@ internal class ApolloCacheInterceptor(
         )
       }
       FetchPolicy.NetworkFirst -> {
-        var networkException: ApolloException? = null
+        val networkException: ApolloException?
         try {
           return readOneFromNetwork(request, chain, customScalarAdapters)
         } catch (e: ApolloException) {
