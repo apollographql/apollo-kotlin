@@ -2,7 +2,7 @@ package  com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.Executable.Variables
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
-import com.apollographql.apollo3.api.json.internal.MapJsonWriter
+import com.apollographql.apollo3.api.json.MapJsonWriter
 import com.apollographql.apollo3.api.json.JsonWriter
 import okio.Buffer
 

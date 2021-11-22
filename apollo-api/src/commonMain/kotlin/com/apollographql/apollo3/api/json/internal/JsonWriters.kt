@@ -3,6 +3,7 @@ package com.apollographql.apollo3.api.json.internal
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.json.MapJsonWriter
 import okio.Buffer
 import okio.ByteString
 import kotlin.contracts.ExperimentalContracts

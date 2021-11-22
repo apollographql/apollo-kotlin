@@ -3,7 +3,7 @@ package test
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.LongAdapter
-import com.apollographql.apollo3.api.json.internal.MapJsonWriter
+import com.apollographql.apollo3.api.json.MapJsonWriter
 import com.apollographql.apollo3.api.internal.json.buildJsonString
 import kotlin.test.Test
 import kotlin.test.assertEquals

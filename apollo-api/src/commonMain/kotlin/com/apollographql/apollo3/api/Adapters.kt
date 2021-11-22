@@ -2,8 +2,10 @@
 
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.json.MapJsonReader.Companion.buffer
-import com.apollographql.apollo3.api.json.internal.MapJsonWriter
+import com.apollographql.apollo3.api.json.MapJsonWriter
 import com.apollographql.apollo3.api.json.internal.Utils
 import com.apollographql.apollo3.api.json.internal.Utils.readRecursively
 import com.apollographql.apollo3.api.json.JsonReader
@@ -154,6 +156,7 @@ object AnyAdapter : Adapter<Any> {
   }
 
   fun toJson(writer: JsonWriter, value: Any) {
+    @OptIn(ApolloInternal::class)
     Utils.writeToJson(value, writer)
   }
 
@@ -205,6 +208,7 @@ class ObjectAdapter<T>(
       /**
        * And write to the original writer
        */
+      @OptIn(ApolloInternal::class)
       Utils.writeToJson(mapWriter.root()!!, writer)
     } else {
       writer.beginObject()

@@ -1,9 +1,7 @@
-package com.apollographql.apollo3.api.json.internal
+package com.apollographql.apollo3.api.json
 
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.Upload
-import com.apollographql.apollo3.api.json.JsonNumber
-import com.apollographql.apollo3.api.json.JsonWriter
 
 /**
  * A [JsonWriter] that writes data to a [Map<String, Any?>]
@@ -22,7 +20,7 @@ import com.apollographql.apollo3.api.json.JsonWriter
  *
  * To write to a [okio.BufferedSink], see also [BufferedSinkJsonWriter]
  */
-@ApolloInternal
+@OptIn(ApolloInternal::class)
 class MapJsonWriter : JsonWriter {
   sealed class State {
     class List(val list: MutableList<Any?>) : State()
