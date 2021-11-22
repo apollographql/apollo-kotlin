@@ -46,7 +46,7 @@ class ParseResponseBodyTest {
     val expected = readJson("OperationJsonWriter.json")
     val query = AllPlanetsQuery()
     val data = query.parseJsonResponse(expected).data
-    val actual = query.composeJsonResponse(data!!, indent = "  ")
+    val actual = query.composeJsonResponse(data!!)
 
     /**
      * operationBased models do not respect the order of fields

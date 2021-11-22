@@ -12,7 +12,7 @@ fun <D : Operation.Data> MockServer.enqueue(
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
     delayMs: Long = 0
 ) {
-  val json = operation.composeJsonResponse(data, customScalarAdapters = customScalarAdapters)
+  val json = operation.composeJsonResponse(data, customScalarAdapters = customScalarAdapters, indent = "  ")
   enqueue(json, delayMs)
 }
 
