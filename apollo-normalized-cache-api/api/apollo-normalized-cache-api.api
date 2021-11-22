@@ -203,3 +203,45 @@ public final class com/apollographql/apollo3/cache/normalized/api/TypePolicyCach
 	public fun cacheKeyForObject (Ljava/util/Map;Lcom/apollographql/apollo3/cache/normalized/api/CacheKeyGeneratorContext;)Lcom/apollographql/apollo3/cache/normalized/api/CacheKey;
 }
 
+public final class com/apollographql/apollo3/cache/normalized/api/internal/CacheBatchReader {
+	public fun <init> (Lcom/apollographql/apollo3/cache/normalized/api/ReadOnlyNormalizedCache;Ljava/lang/String;Lcom/apollographql/apollo3/api/Executable$Variables;Lcom/apollographql/apollo3/cache/normalized/api/CacheResolver;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;Ljava/util/List;)V
+	public final fun toMap ()Ljava/util/Map;
+}
+
+public final class com/apollographql/apollo3/cache/normalized/api/internal/CacheBatchReader$PendingReference {
+	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/util/List;)V
+	public final fun getKey ()Ljava/lang/String;
+	public final fun getPath ()Ljava/util/List;
+	public final fun getSelections ()Ljava/util/List;
+}
+
+public final class com/apollographql/apollo3/cache/normalized/api/internal/Normalizer {
+	public fun <init> (Lcom/apollographql/apollo3/api/Executable$Variables;Ljava/lang/String;Lcom/apollographql/apollo3/cache/normalized/api/CacheKeyGenerator;)V
+	public final fun normalize (Ljava/util/Map;Ljava/util/List;)Ljava/util/Map;
+}
+
+public final class com/apollographql/apollo3/cache/normalized/api/internal/OptimisticCache : com/apollographql/apollo3/cache/normalized/api/NormalizedCache {
+	public fun <init> ()V
+	public final fun addOptimisticUpdate (Lcom/apollographql/apollo3/cache/normalized/api/Record;)Ljava/util/Set;
+	public final fun addOptimisticUpdates (Ljava/util/Collection;)Ljava/util/Set;
+	public fun clearAll ()V
+	public fun dump ()Ljava/util/Map;
+	public fun loadRecord (Ljava/lang/String;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;)Lcom/apollographql/apollo3/cache/normalized/api/Record;
+	public fun loadRecords (Ljava/util/Collection;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;)Ljava/util/Collection;
+	public fun merge (Lcom/apollographql/apollo3/cache/normalized/api/Record;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;)Ljava/util/Set;
+	public fun merge (Ljava/util/Collection;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;)Ljava/util/Set;
+	public fun remove (Lcom/apollographql/apollo3/cache/normalized/api/CacheKey;Z)Z
+	public fun remove (Ljava/lang/String;)I
+	public final fun removeOptimisticUpdates (Ljava/util/UUID;)Ljava/util/Set;
+}
+
+public final class com/apollographql/apollo3/cache/normalized/api/internal/RecordWeigher {
+	public static final field INSTANCE Lcom/apollographql/apollo3/cache/normalized/api/internal/RecordWeigher;
+	public static final fun byteChange (Ljava/lang/Object;Ljava/lang/Object;)I
+	public static final fun calculateBytes (Lcom/apollographql/apollo3/cache/normalized/api/Record;)I
+}
+
+public final class com/apollographql/apollo3/cache/normalized/api/internal/ShouldSkipKt {
+	public static final fun shouldSkip (Lcom/apollographql/apollo3/api/CompiledField;Ljava/util/Map;)Z
+}
+
