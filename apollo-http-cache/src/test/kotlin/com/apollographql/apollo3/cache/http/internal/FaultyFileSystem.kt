@@ -15,25 +15,26 @@
  */
 package com.apollographql.apollo3.cache.http.internal
 
-import com.apollographql.apollo3.cache.http.FileSystem
 import okio.Buffer
+import okio.FileSystem
+import okio.ForwardingFileSystem
 import okio.ForwardingSink
+import okio.Path
+import okio.Path.Companion.toOkioPath
 import okio.Sink
-import okio.Source
 import java.io.File
-import java.io.FileNotFoundException
 import java.io.IOException
 
 /**
- * Copied from OkHttp 3.14.2:
- * ttps://github.com/square/okhttp/blob/b8b6ee831c65208940c741f8e091ff02425566d5/okhttp-tests
- * /src/test/java/okhttp3/internal/io/FaultyFileSystem.java
+ * Copied from OkHttp:
+ * https://github.com/square/okhttp/blob/1ed9863131c87420381d8a6be48b96157a9bb764/okhttp/src/test/java/okhttp3/internal/io/FaultyFileSystem.kt
  */
-class FaultyFileSystem(private val delegate: FileSystem) : FileSystem {
-  private val writeFaults: MutableSet<File?> = LinkedHashSet()
-  private val deleteFaults: MutableSet<File?> = LinkedHashSet()
-  private val renameFaults: MutableSet<File> = LinkedHashSet()
-  fun setFaultyWrite(file: File?, faulty: Boolean) {
+class FaultyFileSystem constructor(delegate: FileSystem?) : ForwardingFileSystem(delegate!!) {
+  private val writeFaults: MutableSet<Path> = LinkedHashSet()
+  private val deleteFaults: MutableSet<Path> = LinkedHashSet()
+  private val renameFaults: MutableSet<Path> = LinkedHashSet()
+
+  fun setFaultyWrite(file: Path, faulty: Boolean) {
     if (faulty) {
       writeFaults.add(file)
     } else {
@@ -41,7 +42,7 @@ class FaultyFileSystem(private val delegate: FileSystem) : FileSystem {
     }
   }
 
-  fun setFaultyDelete(file: File?, faulty: Boolean) {
+  fun setFaultyDelete(file: Path, faulty: Boolean) {
     if (faulty) {
       deleteFaults.add(file)
     } else {
@@ -49,7 +50,7 @@ class FaultyFileSystem(private val delegate: FileSystem) : FileSystem {
     }
   }
 
-  fun setFaultyRename(file: File, faulty: Boolean) {
+  fun setFaultyRename(file: Path, faulty: Boolean) {
     if (faulty) {
       renameFaults.add(file)
     } else {
@@ -57,52 +58,55 @@ class FaultyFileSystem(private val delegate: FileSystem) : FileSystem {
     }
   }
 
-  @Throws(FileNotFoundException::class)
-  override fun source(file: File): Source {
-    return delegate.source(file)
-  }
-
-  @Throws(FileNotFoundException::class)
-  override fun sink(file: File): Sink {
-    return FaultySink(delegate.sink(file), file)
-  }
-
-  @Throws(FileNotFoundException::class)
-  override fun appendingSink(file: File): Sink {
-    return FaultySink(delegate.appendingSink(file), file)
+  @Throws(IOException::class)
+  override fun atomicMove(source: Path, target: Path) {
+    if (renameFaults.contains(source) || renameFaults.contains(target)) throw IOException("boom!")
+    super.atomicMove(source, target)
   }
 
   @Throws(IOException::class)
-  override fun delete(file: File) {
-    if (deleteFaults.contains(file)) throw IOException("boom!")
-    delegate.delete(file)
-  }
-
-  override fun exists(file: File): Boolean {
-    return delegate.exists(file)
-  }
-
-  override fun size(file: File): Long {
-    return delegate.size(file)
+  override fun delete(path: Path, mustExist: Boolean) {
+    if (deleteFaults.contains(path)) throw IOException("boom!")
+    super.delete(path, mustExist)
   }
 
   @Throws(IOException::class)
-  override fun rename(from: File, to: File) {
-    if (renameFaults.contains(from) || renameFaults.contains(to)) throw IOException("boom!")
-    delegate.rename(from, to)
+  override fun deleteRecursively(fileOrDirectory: Path, mustExist: Boolean) {
+    if (deleteFaults.contains(fileOrDirectory)) throw IOException("boom!")
+    super.deleteRecursively(fileOrDirectory, mustExist)
   }
 
-  @Throws(IOException::class)
-  override fun deleteContents(directory: File) {
-    if (deleteFaults.contains(directory)) throw IOException("boom!")
-    delegate.deleteContents(directory)
-  }
+  override fun appendingSink(file: Path, mustExist: Boolean): Sink =
+      FaultySink(super.appendingSink(file, mustExist), file)
 
-  private inner class FaultySink internal constructor(delegate: Sink?, private val file: File) : ForwardingSink(delegate!!) {
-    @Throws(IOException::class)
+  override fun sink(file: Path, mustCreate: Boolean): Sink =
+      FaultySink(super.sink(file, mustCreate), file)
+
+  inner class FaultySink(sink: Sink, private val file: Path) : ForwardingSink(sink) {
     override fun write(source: Buffer, byteCount: Long) {
-      if (writeFaults.contains(file)) throw IOException("boom!")
-      super.write(source, byteCount)
+      if (writeFaults.contains(file)) {
+        throw IOException("boom!")
+      } else {
+        super.write(source, byteCount)
+      }
     }
   }
 }
+
+fun FaultyFileSystem.setFaultyDelete(file: File, faulty: Boolean) = setFaultyDelete(file.toOkioPath(), faulty)
+fun FaultyFileSystem.setFaultyRename(file: File, faulty: Boolean) = setFaultyRename(file.toOkioPath(), faulty)
+fun FaultyFileSystem.setFaultyWrite(file: File, faulty: Boolean) = setFaultyWrite(file.toOkioPath(), faulty)
+fun FaultyFileSystem.exists(file: File) = exists(file.toOkioPath())
+fun FaultyFileSystem.sink(file: File): Sink {
+  if (!file.exists()) {
+    file.parentFile.mkdirs()
+    file.createNewFile()
+  }
+  return sink(file.toOkioPath())
+}
+
+fun FaultyFileSystem.rename(from: File, to: File) = atomicMove(from.toOkioPath(), to.toOkioPath())
+fun FaultyFileSystem.delete(file: File) = delete(file.toOkioPath())
+fun FaultyFileSystem.deleteRecursively(file: File) = deleteRecursively(file.toOkioPath())
+fun FaultyFileSystem.source(file: File) = source(file.toOkioPath())
+

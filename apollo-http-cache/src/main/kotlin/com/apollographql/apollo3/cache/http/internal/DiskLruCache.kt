@@ -15,9 +15,10 @@
  */
 package com.apollographql.apollo3.cache.http.internal
 
-import com.apollographql.apollo3.cache.http.FileSystem
 import com.apollographql.apollo3.cache.http.internal.DiskLruCache.Editor
 import okio.BufferedSink
+import okio.FileSystem
+import okio.Path.Companion.toOkioPath
 import okio.Sink
 import okio.Source
 import okio.blackholeSink
@@ -620,7 +621,7 @@ internal class DiskLruCache(
   @Throws(IOException::class)
   fun delete() {
     close()
-    fileSystem.deleteContents(directory)
+    fileSystem.deleteRecursively(directory)
   }
 
   /**
@@ -1013,3 +1014,19 @@ internal class DiskLruCache(
     this.executor = executor
   }
 }
+
+private fun FileSystem.exists(file: File) = exists(file.toOkioPath())
+private fun FileSystem.delete(file: File) = delete(file.toOkioPath())
+private fun FileSystem.rename(from: File, to: File) = atomicMove(from.toOkioPath(), to.toOkioPath())
+private fun FileSystem.source(file: File) = source(file.toOkioPath())
+private fun FileSystem.appendingSink(file: File) = appendingSink(file.toOkioPath())
+private fun FileSystem.sink(file: File): Sink {
+  if (!file.exists()) {
+    file.parentFile.mkdirs()
+    file.createNewFile()
+  }
+  return sink(file.toOkioPath())
+}
+
+private fun FileSystem.deleteRecursively(file: File) = deleteRecursively(file.toOkioPath())
+private fun FileSystem.size(file: File) = metadata(file.toOkioPath()).size ?: 0
