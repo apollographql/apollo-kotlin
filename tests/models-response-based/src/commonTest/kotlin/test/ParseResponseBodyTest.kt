@@ -48,7 +48,7 @@ class ParseResponseBodyTest {
     val expected = readJson("OperationJsonWriter.json")
     val query = AllPlanetsQuery()
     val data = query.parseJsonResponse(expected).data
-    val actual = query.composeJsonResponse(data!!, indent = "  ")
+    val actual = query.composeJsonResponse(data!!)
     if (platform() != Platform.Js) {
       // Do not check strings on JS because of https://youtrack.jetbrains.com/issue/KT-33358#focus=Comments-27-3656643.0-0
       assertEquals(expected, actual)
