@@ -125,9 +125,9 @@ internal class DiskLruCache(
      * "journal.tmp" will be used during compaction; that file should be deleted if
      * it exists when the cache is opened.
      */
-    val fileSystem: FileSystem,
+    private val fileSystem: FileSystem,
     /** Returns the directory where this cache stores its data.  */
-    val directory: File,
+    private val directory: File,
     private val appVersion: Int, valueCount: Int, maxSize: Long,
     executor: Executor,
 ) : Closeable, Flushable {
