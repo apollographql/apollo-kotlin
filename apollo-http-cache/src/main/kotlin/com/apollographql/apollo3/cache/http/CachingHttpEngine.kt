@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.cache.http
 
-import com.apollographql.apollo3.api.http.ApolloHttpRequestComposer
+import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
@@ -90,7 +90,7 @@ class CachingHttpEngine(
   }
 
   private fun cacheMightThrow(request: HttpRequest, cacheKey: String): HttpResponse {
-    val operationName = request.headers.valueOf(ApolloHttpRequestComposer.HEADER_APOLLO_OPERATION_NAME)
+    val operationName = request.headers.valueOf(DefaultHttpRequestComposer.HEADER_APOLLO_OPERATION_NAME)
     val response = try {
       store.read(cacheKey)
           .newBuilder()

@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.api.test
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.CompiledListType
 import com.apollographql.apollo3.api.CompiledNamedType
 import com.apollographql.apollo3.api.CompiledNotNullType
@@ -10,6 +12,7 @@ import kotlin.native.concurrent.ThreadLocal
 /**
  * Implement [TestResolver] to generate fake data during tests.
  */
+@ApolloExperimental
 interface TestResolver {
   /**
    * Resolve the given field
@@ -24,6 +27,7 @@ interface TestResolver {
   fun <T> resolve(responseName: String, compiledType: CompiledType, ctors: Array<out () -> Map<String, Any?>>?): T
 }
 
+@ApolloExperimental
 open class DefaultTestResolver : TestResolver {
   private val MAX_STACK_SIZE = 256
 
@@ -117,7 +121,7 @@ open class DefaultTestResolver : TestResolver {
 }
 
 @ThreadLocal
-var currentTestResolver: TestResolver? = null
+internal var currentTestResolver: TestResolver? = null
 
 fun <T> withTestResolver(testResolver: TestResolver, block: () -> T): T {
   currentTestResolver = testResolver

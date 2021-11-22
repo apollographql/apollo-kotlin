@@ -1012,6 +1012,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     private const val NUMBER_CHAR_EXP_SIGN = 6
     private const val NUMBER_CHAR_EXP_DIGIT = 7
 
-    const val MAX_STACK_SIZE = 256
+    internal const val MAX_STACK_SIZE = 256
   }
 }

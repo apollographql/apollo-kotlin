@@ -2,6 +2,7 @@
 
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.CompiledArgument.Companion.resolveVariables
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.internal.Utils
@@ -51,6 +52,7 @@ class CompiledField internal constructor(
     return try {
       val buffer = Buffer()
       val jsonWriter = BufferedSinkJsonWriter(buffer)
+      @OptIn(ApolloInternal::class)
       Utils.writeToJson(resolvedArguments, jsonWriter)
       jsonWriter.close()
       "${name}(${buffer.readUtf8()})"
@@ -200,7 +202,9 @@ class ScalarType(
 ) : CompiledNamedType(name)
 
 
+@JvmName("-notNull")
 fun CompiledType.notNull() = CompiledNotNullType(this)
+@JvmName("-list")
 fun CompiledType.list() = CompiledListType(this)
 
 /**

@@ -3,8 +3,8 @@ package com.apollographql.apollo3.network.ws
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.NullableAnyAdapter
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.http.ApolloHttpRequestComposer
-import com.apollographql.apollo3.api.http.ApolloHttpRequestComposer.Companion.appendQueryParameters
+import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
+import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer.Companion.appendQueryParameters
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.internal.Utils
 import com.apollographql.apollo3.api.toJson
@@ -42,7 +42,7 @@ class AppSyncWsProtocol(
 
   override fun <D : Operation.Data> startOperation(request: ApolloRequest<D>) {
     // AppSync encodes the data as a String
-    val data = NullableAnyAdapter.toJson(ApolloHttpRequestComposer.composePayload(request))
+    val data = NullableAnyAdapter.toJson(DefaultHttpRequestComposer.composePayload(request))
     sendMessageMapText(
         mapOf(
             "type" to "start",

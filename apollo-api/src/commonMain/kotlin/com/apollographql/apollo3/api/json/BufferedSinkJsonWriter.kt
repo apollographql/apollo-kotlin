@@ -22,6 +22,7 @@ import com.apollographql.apollo3.api.json.BufferedSourceJsonReader.Companion.MAX
 import com.apollographql.apollo3.exception.JsonDataException
 import okio.BufferedSink
 import okio.IOException
+import kotlin.jvm.JvmOverloads
 
 /**
  * A [JsonWriter] that writes json to an okio [BufferedSink]
@@ -30,19 +31,21 @@ import okio.IOException
  * (see [JsonWriter] and [path]).
  *
  * To writer to a [Map], see also [MapJsonWriter]
+ *
+ *
+ * @param indent: A string containing a full set of spaces for a single level of indentation, or null for no pretty printing.
  */
-class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter {
+
+class BufferedSinkJsonWriter @JvmOverloads constructor(
+    private val sink: BufferedSink,
+    private val indent: String? = null,
+) : JsonWriter {
   // The nesting stack. Using a manual array rather than an ArrayList saves 20%. This stack permits  up to MAX_STACK_SIZE levels of nesting including
   // the top-level document. Deeper nesting is prone to trigger StackOverflowErrors.
   private var stackSize = 0
   private val scopes = IntArray(MAX_STACK_SIZE)
   private val pathNames = arrayOfNulls<String>(MAX_STACK_SIZE)
   private val pathIndices = IntArray(MAX_STACK_SIZE)
-
-  /**
-   * A string containing a full set of spaces for a single level of indentation, or null for no pretty printing.
-   */
-  var indent: String? = null
 
   /**
    * Configure this writer to relax its syntax rules.
@@ -52,7 +55,7 @@ class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter {
   private var isLenient = false
 
   /** The name/value separator; either ":" or ": ".  */
-  val separator: String
+  private val separator: String
     get() = if (indent.isNullOrEmpty()) ":" else ": "
 
   private var deferredName: String? = null

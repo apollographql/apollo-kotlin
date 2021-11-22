@@ -3,7 +3,7 @@ package test
 import checkTestFixture
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.http.ApolloHttpRequestComposer
+import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.http.addHttpHeader
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo3.mockserver.MockServer
@@ -26,7 +26,7 @@ class HttpRequestComposerTest {
 
   @Test
   fun requestPostBodyContainsOperationQueryAndVariablesByDefault() {
-    val composer = ApolloHttpRequestComposer("/")
+    val composer = DefaultHttpRequestComposer("/")
     val apolloRequest = ApolloRequest.Builder(AllPlanetsQuery()).build()
     val httpRequest = composer.compose(apolloRequest)
 
