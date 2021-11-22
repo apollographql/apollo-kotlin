@@ -5,11 +5,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asCoroutineDispatcher
 import java.util.concurrent.Executors
 
-actual fun defaultDispatcher(requested: CoroutineDispatcher?): CoroutineDispatcher {
+internal actual fun defaultDispatcher(requested: CoroutineDispatcher?): CoroutineDispatcher {
   return requested ?: Dispatchers.IO
 }
 
-actual class BackgroundDispatcher actual constructor() {
+internal actual class BackgroundDispatcher actual constructor() {
   private var disposed = false
   private val _dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
 
@@ -17,13 +17,13 @@ actual class BackgroundDispatcher actual constructor() {
     get() = _dispatcher
 
   actual fun dispose() {
-    if(!disposed) {
+    if (!disposed) {
       _dispatcher.close()
     }
   }
 }
 
-actual class DefaultMutex : Mutex {
+internal actual class DefaultMutex : Mutex {
   val lock = Object()
 
   override fun <T> lock(block: () -> T): T {

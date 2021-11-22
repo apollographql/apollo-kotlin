@@ -15,24 +15,25 @@ import platform.darwin.dispatch_get_main_queue
 import platform.darwin.dispatch_time
 import kotlin.coroutines.CoroutineContext
 
-actual fun defaultDispatcher(requested: CoroutineDispatcher?): CoroutineDispatcher {
+internal actual fun defaultDispatcher(requested: CoroutineDispatcher?): CoroutineDispatcher {
   check(requested == null || requested is DefaultDispatcher) {
     "Changing the dispatcher is not supported on Apple targets"
   }
   check(NSThread.isMainThread) {
     "defaultDispatcher must be called from the main thread"
   }
-  
+
   return DefaultDispatcher
 }
 
 
-actual class BackgroundDispatcher actual constructor() {
+internal actual class BackgroundDispatcher actual constructor() {
   init {
     check(NSThread.isMainThread) {
       "BackgroundDispatcher must be called from the main thread"
     }
   }
+
   actual val coroutineDispatcher: CoroutineDispatcher
     get() = DefaultDispatcher
 
@@ -77,7 +78,7 @@ private object DefaultDispatcher: CoroutineDispatcher(), Delay {
   }
 }
 
-actual class DefaultMutex actual constructor(): Mutex {
+internal actual class DefaultMutex actual constructor() : Mutex {
   override fun <T> lock(block: () -> T): T {
     return block()
   }
