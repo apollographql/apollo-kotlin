@@ -489,6 +489,14 @@ public final class com/apollographql/apollo3/api/FileUploadKt {
 	public static final fun fromFile (Lcom/apollographql/apollo3/api/Upload$Companion;Ljava/io/File;Ljava/lang/String;)Lcom/apollographql/apollo3/api/Upload;
 }
 
+public final class com/apollographql/apollo3/api/FloatAdapter : com/apollographql/apollo3/api/Adapter {
+	public static final field INSTANCE Lcom/apollographql/apollo3/api/FloatAdapter;
+	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Ljava/lang/Float;
+	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Ljava/lang/Object;
+	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;F)V
+	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/Object;)V
+}
+
 public abstract interface class com/apollographql/apollo3/api/Fragment : com/apollographql/apollo3/api/Executable {
 	public abstract fun adapter ()Lcom/apollographql/apollo3/api/Adapter;
 	public abstract fun selections ()Ljava/util/List;

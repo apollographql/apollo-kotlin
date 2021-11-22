@@ -1,0 +1,12 @@
+scalar CustomFloat
+scalar Long
+scalar Any
+scalar GeoPoint
+
+type Query {
+  float: CustomFloat
+  long: Long
+  any: Any
+  geoPoints: [GeoPoint]
+}
+

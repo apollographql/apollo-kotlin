@@ -1,0 +1,6 @@
+query GetAll {
+  long
+  float
+  any
+  geoPoints
+}

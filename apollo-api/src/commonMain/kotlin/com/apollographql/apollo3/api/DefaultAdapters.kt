@@ -109,7 +109,22 @@ object DoubleAdapter : Adapter<Double> {
 }
 
 /**
+ * An [Adapter] that converts to/from a [Float]
+ * Floats are not part of the GraphQL spec but this can be used in custom scalars
+ */
+object FloatAdapter : Adapter<Float> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Float {
+    return reader.nextDouble().toFloat()
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Float) {
+    writer.value(value.toDouble())
+  }
+}
+
+/**
  * An [Adapter] that converts to/from a [Long]
+ * Longs are not part of the GraphQL spec but this can be used in custom scalars
  *
  * If the Json number does not fit in a [Long], an exception will be thrown
  */
