@@ -1,20 +1,21 @@
 ---
-title: Use your own HTTP client
+title: Using a custom HTTP library
+sidebar_title: Custom HTTP libraries
 ---
 
-By default, Apollo Android uses [OkHttp](https://square.github.io/okhttp/) on Android, [Ktor](https://ktor.io/) on JavaScript and [NSURLSesssion](https://developer.apple.com/documentation/foundation/nsurlsession) on iOS/MacOS to execute your HTTP queries.
+By default, Apollo Android uses the following HTTP libraries for different platforms/languages:
 
-In order to customize your HTTP requests, Apollo Android offers several solutions:
+| Platform | HTTP Client |
+|----------|-------------|
+| Android  | [OkHttp](https://square.github.io/okhttp/) |
+| JavaScript | [Ktor](https://ktor.io/) |
+| iOS/MacOS | [NSURLSesssion](https://developer.apple.com/documentation/foundation/nsurlsession) |
 
-1. [No runtime](no-runtime): You can opt-out the runtime completely and only use generated models and parsers. Use this option if you don't need any of the runtime features (caching, batching, automatic persisted queries, etc)
-2. [HTTP interceptors](interceptors-http): If you're looking at adding extra HTTP headers and/or logging to your requests, [HTTP interceptors](interceptors-http) are an easy way to customize the HTTP execution with minimal code.
-3. HTTP engine (this page): If you want to continue using the runtime features while customizing some aspects of the clients that are not possible with HTTP interceptors (like threading or connection pooling for an example), you can replace the default HTTP engine with a custom one.
+You can use a different HTTP library with Apollo Android by creating a custom class that implements the `HttpEngine` interface.
 
-This page is about option 3. and shows how to use your own HTTP client.
+## The `HttpEngine` interface
 
-## Implementing HttpEngine
-
-To use your own HTTP client, implement the [HttpEngine](https://apollographql.github.io/apollo-android/kdoc/apollo-runtime/com.apollographql.apollo3.network.http/-http-engine/index.html) interface. The details will depend on your actual client but it can look like below:
+The [HttpEngine interface](https://apollographql.github.io/apollo-android/kdoc/apollo-runtime/com.apollographql.apollo3.network.http/-http-engine/index.html) defines two functions: `execute` and `dispose`. Here's an example implementation that also includes a couple of helper methods:
 
 ```kotlin
 class MyHttpEngine(val wrappedClient: MyClient) : HttpEngine {
@@ -59,25 +60,29 @@ class MyHttpEngine(val wrappedClient: MyClient) : HttpEngine {
 }
 ```
 
-This example shows an asynchronous wrappedClient that runs the network request from a separate thread but since `HttpEngine.execute` is called from a background thread itself, it is also ok to block in `execute()`.
+This example uses an asynchronous `wrappedClient` that runs the network request in a separate thread. Note that because `HttpEngine.execute` itself is called from a background thread, you can safely block in `execute()`.
 
-## Use your HttpEngine
+## Using your `HttpEngine`
 
-Once you have implemented your HttpEngine, you can register it in your [ApolloClient](https://apollographql.github.io/apollo-android/kdoc/apollo-runtime/com.apollographql.apollo3/-apollo-client/index.html) using [HttpNetworkTransport](https://apollographql.github.io/apollo-android/kdoc/apollo-runtime/com.apollographql.apollo3.network.http/-http-network-transport/index.html):
+After you create your `HttpEngine` implementation, you can register it with your [`ApolloClient`](https://apollographql.github.io/apollo-android/kdoc/apollo-runtime/com.apollographql.apollo3/-apollo-client/index.html) instance using [`HttpNetworkTransport`](https://apollographql.github.io/apollo-android/kdoc/apollo-runtime/com.apollographql.apollo3.network.http/-http-network-transport/index.html):
 
 ```kotlin
 // Use your HttpEngine
 val client = ApolloClient.Builder()
-    .networkTransport(
-        HttpNetworkTransport(
-            serverUrl = "https://com.example/graphql",
-            engine = MyHttpEngine(wrappedClient)
-        )
+  .networkTransport(
+    HttpNetworkTransport(
+      serverUrl = "https://com.example/graphql",
+      engine = MyHttpEngine(wrappedClient)
     )
-    .build()
+  )
+  .build()
 ```
 
-This is everything needed. Your GraphQL queries will then use `MyHttpEngine` to execute the HTTP requests.
+With this configuration, Apollo Android sends all of its GraphQL operation requests with `MyHttpEngine`.
 
+## Other HTTP customizations
 
+Besides implementing `HttpEngine`, Apollo Android also supports other methods for customizing HTTP behavior:
 
+* [No runtime](no-runtime): You can opt out of the Apollo Android runtime completely and only use generated models and parsers. Use this option if you don't need any of the runtime features (caching, batching, automatic persisted queries, etc.).
+* [HTTP interceptors](interceptors-http): If you want to add HTTP headers and/or logging to your requests, [HTTP interceptors](interceptors-http) enable you to do this with minimal code.
