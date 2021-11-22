@@ -13,8 +13,10 @@ public class OperationTest {
     GetRandomQuery.Data data = new GetRandomQuery.Data(42);
 
     String json = Operations.composeJsonData(query, data);
-    // We don't want to test indentation here so we replace newlines
-    Truth.assertThat(json.replace("\n", ""))
-        .isEqualTo("{\"random\":42}");
+    // We don't want to test indentation here so we replace whitespace
+    Truth.assertThat(
+        json.replace("\n", "")
+            .replace(" ", "")
+    ).isEqualTo("{\"random\":42}");
   }
 }
