@@ -29,7 +29,7 @@ apollo {
 The `responseBased` codegen differs from the `operationBased` codegen in the following ways:
 
 * Generated models have a **1:1 mapping** with the JSON structure received in an operation's response.
-* Polymorphism is handled by generating **interfaces**. Possible shapes are then defined as different classes that implement a particular interface.
+* Polymorphism is handled by generating **interfaces**. Possible shapes are then defined as different classes that implement the corresponding interfaces.
 * Fragments are also generated as **interfaces**.
 * Any merged fields appear _once_ in generated models.
 
@@ -75,7 +75,7 @@ when (hero) {
 
 #### Accessors
 
-As a convenience, the `responseBased` codegen generates methods with the name pattern `as<Typename>` (e.g., `asDroid` or `asHuman`) that enable you to avoid manual casting:
+As a convenience, the `responseBased` codegen generates methods with the name pattern `as<ShapeName>` (e.g., `asDroid` or `asHuman`) that enable you to avoid manual casting:
 
 ```kotlin
 val primaryFunction = hero1.asDroid().primaryFunction
@@ -150,9 +150,7 @@ when (hero) {
 
 #### Accessors
 
-As a convenience, the `responseBased` codegen generates methods with the name pattern `<typename>Fields` (e.g., `droidFields` or `humanFields`) that enable you to avoid manual casting.
-
-In our example, these accessors can be used like so:
+As a convenience, the `responseBased` codegen generates methods with the name pattern `<fragmentName>` (e.g., `droidFields` for a fragment named `DroidFields`). This enables you to chain calls together, like so:
 
 ```kotlin
 val primaryFunction = hero1.droidFields().primaryFunction

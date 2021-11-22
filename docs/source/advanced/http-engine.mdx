@@ -1,9 +1,9 @@
 ---
-title: Using a custom HTTP library
-sidebar_title: Custom HTTP libraries
+title: Using a custom HTTP client
+sidebar_title: Custom HTTP clients
 ---
 
-By default, Apollo Android uses the following HTTP libraries for different platforms/languages:
+By default, Apollo Android uses the following HTTP clients for different platforms/languages:
 
 | Platform | HTTP Client |
 |----------|-------------|
@@ -11,7 +11,7 @@ By default, Apollo Android uses the following HTTP libraries for different platf
 | JavaScript | [Ktor](https://ktor.io/) |
 | iOS/MacOS | [NSURLSesssion](https://developer.apple.com/documentation/foundation/nsurlsession) |
 
-You can use a different HTTP library with Apollo Android by creating a custom class that implements the `HttpEngine` interface.
+You can use a different HTTP client with Apollo Android by creating a custom class that implements the `HttpEngine` interface.
 
 ## The `HttpEngine` interface
 
@@ -64,17 +64,13 @@ This example uses an asynchronous `wrappedClient` that runs the network request 
 
 ## Using your `HttpEngine`
 
-After you create your `HttpEngine` implementation, you can register it with your [`ApolloClient`](https://apollographql.github.io/apollo-android/kdoc/apollo-runtime/com.apollographql.apollo3/-apollo-client/index.html) instance using [`HttpNetworkTransport`](https://apollographql.github.io/apollo-android/kdoc/apollo-runtime/com.apollographql.apollo3.network.http/-http-network-transport/index.html):
+After you create your `HttpEngine` implementation, you can register it with your [`ApolloClient`](https://apollographql.github.io/apollo-android/kdoc/apollo-runtime/com.apollographql.apollo3/-apollo-client/index.html) instance using [`ApolloClient.Builder.httpEngine`](https://apollographql.github.io/apollo-android/kdoc/apollo-runtime/com.apollographql.apollo3/-apollo-client/-builder/http-engine.html):
 
 ```kotlin
 // Use your HttpEngine
 val client = ApolloClient.Builder()
-  .networkTransport(
-    HttpNetworkTransport(
-      serverUrl = "https://com.example/graphql",
-      engine = MyHttpEngine(wrappedClient)
-    )
-  )
+  .serverUrl(serverUrl = "https://com.example/graphql")
+  .httpEngine(httpEngine = MyHttpEngine(wrappedClient))
   .build()
 ```
 

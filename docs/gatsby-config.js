@@ -43,12 +43,6 @@ module.exports = {
             'essentials/inline-fragments',
             'essentials/named-fragments',
           ],
-          'Advanced Operations': [
-            'advanced/query-batching',
-            'advanced/upload',
-            'advanced/persisted-queries',
-            'advanced/nonnull',
-          ],
           Caching: [
             'caching/introduction',
             'caching/normalized-cache',
@@ -64,7 +58,11 @@ module.exports = {
             'advanced/http-engine',
             'advanced/no-runtime',
           ],
-          'Advanced Config': [
+          Advanced: [
+            'advanced/query-batching',
+            'advanced/upload',
+            'advanced/persisted-queries',
+            'advanced/nonnull',
             'advanced/plugin-configuration',
             'advanced/multi-modules',
             'advanced/operation-safelisting',
