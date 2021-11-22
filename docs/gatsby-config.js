@@ -1,14 +1,16 @@
 const themeOptions = require('gatsby-theme-apollo-docs/theme-options');
 
 module.exports = {
-  pathPrefix: '/docs/android',
   plugins: [
     {
       resolve: 'gatsby-theme-apollo-docs',
       options: {
         ...themeOptions,
         root: __dirname,
-        subtitle: 'Client (Kotlin / Android)',
+        pathPrefix: '/docs/android',
+        algoliaIndexName: 'android',
+        algoliaFilters: ['docset:android'],
+        subtitle: 'Client (Android / Kotlin)',
         description: 'A guide to using Apollo with Kotlin and Android',
         githubRepo: 'apollographql/apollo-android',
         sidebarCategories: {
@@ -55,6 +57,7 @@ module.exports = {
             'advanced/plugin-configuration',
             'advanced/multi-modules',
             'advanced/persisted-queries',
+            'advanced/operation-safelisting',
             'advanced/using-aliases',
             'advanced/response-based-codegen',
             'advanced/client-awareness',
@@ -67,6 +70,7 @@ module.exports = {
             'advanced/java',
             'advanced/rxjava',
             'advanced/ui-tests',
+            'advanced/kotlin-native',
             'advanced/apollo-ast',
             'advanced/test-builders',
           ],

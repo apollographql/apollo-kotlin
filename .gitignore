@@ -40,3 +40,6 @@ package-lock.json
 .vscode/**
 **/bin
 .sqldelight
+
+# Local Netlify folder
+.netlify

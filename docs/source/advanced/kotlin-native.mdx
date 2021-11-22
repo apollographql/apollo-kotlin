@@ -1,0 +1,26 @@
+---
+title: 'Kotlin native'
+---
+
+Apollo Android is built for multiplatform and therefore supports iOS, MacOS and other Darwin targets.
+
+Due to the fact that the current Kotlin memory model requires freezing objects that are accessed from multiple threads ([docs](https://kotlinlang.org/docs/kmm-concurrency-overview.html), there are some limitations.
+
+In particular, you must create your `ApolloClient` and call `query` and other operations from the main thread. Apollo Android will execute the work on a background thread and return the result to the main thread.
+
+## Multithreaded coroutines
+If using the x.y.z-native-mt branch of coroutines, gradle will replace the -native-mt version with the non-mt version as outlined [here](https://kotlinlang.org/docs/mobile/concurrency-and-coroutines.html#multithreaded-coroutines). To prevent this happening add the following to your root `build.gradle.kts`:
+
+```kotlin
+allprojects {
+    configurations {
+        all {
+            resolutionStrategy {
+                force("org.jetbrains.kotlinx:kotlinx-coroutines-core:x.y.z-native-mt")
+            }
+        }
+    }
+}
+```
+
+This ensures that the same version is used everywhere and that Gradle doesn't fail because `-native-mt` is a pre-release version [(`1.5.1-native-mt < 1.5.1`)](https://docs.gradle.org/current/userguide/dependency_resolution.html#sub:resolution-strategy)

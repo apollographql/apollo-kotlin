@@ -384,6 +384,11 @@ interface Service {
   fun registry(configure: Action<in Registry>)
 
   /**
+   * Configures the [Introspection]
+   */
+  fun registerOperations(configure: Action<in RegisterOperationsConfig>)
+
+  /**
    * overrides the way operationOutput is connected.
    * Use this if you want to connect the generated operationOutput. For an example
    * you can use this to send the modified queries to your backend for whitelisting
