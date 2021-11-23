@@ -1,10 +1,12 @@
 @file:JvmName("Operations")
+
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.internal.ResponseBodyParser
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
+import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.internal.writeObject
 import okio.Buffer
 import okio.BufferedSink
@@ -35,7 +37,7 @@ fun <D : Operation.Data> Operation<D>.parseJsonResponse(
  */
 fun <D : Operation.Data> Operation<D>.parseJsonResponse(
     source: BufferedSource,
-): ApolloResponse<D>  = parseJsonResponse(source, CustomScalarAdapters.Empty)
+): ApolloResponse<D> = parseJsonResponse(source, CustomScalarAdapters.Empty)
 
 /**
  * See [parseJsonResponse]
@@ -72,7 +74,7 @@ fun <D : Operation.Data> Operation<D>.parseJsonResponse(
 fun <D : Operation.Data> Operation<D>.parseJsonResponse(
     string: String,
 ): ApolloResponse<D> {
-  return parseJsonResponse(Buffer().writeUtf8(string), CustomScalarAdapters.Empty)
+  return parseJsonResponse(string, CustomScalarAdapters.Empty)
 }
 
 /**
@@ -91,7 +93,7 @@ fun <D : Operation.Data> Operation<D>.parseJsonResponse(
 fun <D : Operation.Data> Operation<D>.parseJsonResponse(
     map: Map<String, Any?>,
 ): ApolloResponse<D> {
-  return ResponseBodyParser.parse(map, this, CustomScalarAdapters.Empty)
+  return parseJsonResponse(map, CustomScalarAdapters.Empty)
 }
 
 /**
@@ -101,7 +103,10 @@ fun <D : Operation.Data> Operation<D>.parseJsonData(
     source: BufferedSource,
     customScalarAdapters: CustomScalarAdapters,
 ): D {
-  return adapter().fromJson(source, customScalarAdapters)
+  return adapter().fromJson(
+      BufferedSourceJsonReader(source),
+      customScalarAdapters
+  )
 }
 
 /**
@@ -110,7 +115,7 @@ fun <D : Operation.Data> Operation<D>.parseJsonData(
 fun <D : Operation.Data> Operation<D>.parseJsonData(
     source: BufferedSource,
 ): D {
-  return adapter().fromJson(source, CustomScalarAdapters.Empty)
+  return parseJsonData(source, CustomScalarAdapters.Empty)
 }
 
 /**
@@ -120,7 +125,10 @@ fun <D : Operation.Data> Operation<D>.parseJsonData(
     byteString: ByteString,
     customScalarAdapters: CustomScalarAdapters,
 ): D {
-  return adapter().fromJson(Buffer().write(byteString), customScalarAdapters)
+  return adapter().fromJson(
+      BufferedSourceJsonReader(Buffer().write(byteString)),
+      customScalarAdapters
+  )
 }
 
 /**
@@ -129,7 +137,7 @@ fun <D : Operation.Data> Operation<D>.parseJsonData(
 fun <D : Operation.Data> Operation<D>.parseJsonData(
     byteString: ByteString,
 ): D {
-  return adapter().fromJson(Buffer().write(byteString), CustomScalarAdapters.Empty)
+  return parseJsonData(byteString, CustomScalarAdapters.Empty)
 }
 
 /**
@@ -139,7 +147,10 @@ fun <D : Operation.Data> Operation<D>.parseJsonData(
     string: String,
     customScalarAdapters: CustomScalarAdapters,
 ): D {
-  return adapter().fromJson(string, customScalarAdapters)
+  return adapter().fromJson(
+      BufferedSourceJsonReader(Buffer().writeUtf8(string)),
+      customScalarAdapters
+  )
 }
 
 /**
@@ -148,7 +159,7 @@ fun <D : Operation.Data> Operation<D>.parseJsonData(
 fun <D : Operation.Data> Operation<D>.parseJsonData(
     string: String,
 ): D {
-  return adapter().fromJson(string, CustomScalarAdapters.Empty)
+  return parseJsonData(string, CustomScalarAdapters.Empty)
 }
 
 /**
@@ -205,7 +216,7 @@ fun <D : Operation.Data> Operation<D>.composeJsonResponse(
 fun <D : Operation.Data> Operation<D>.composeJsonResponse(
     data: D,
 
-): String = composeJsonResponse(data, CustomScalarAdapters.Empty, "  ")
+    ): String = composeJsonResponse(data, CustomScalarAdapters.Empty, "  ")
 
 /**
  * writes operation data to the given sink
