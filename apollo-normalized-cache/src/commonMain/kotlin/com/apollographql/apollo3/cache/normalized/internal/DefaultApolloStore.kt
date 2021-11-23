@@ -15,7 +15,6 @@ import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.internal.OptimisticCache
 import com.apollographql.apollo3.cache.normalized.api.normalize
 import com.apollographql.apollo3.cache.normalized.api.readDataFromCache
-import com.apollographql.apollo3.internal.Guard
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow

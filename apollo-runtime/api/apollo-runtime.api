@@ -154,19 +154,6 @@ public final class com/apollographql/apollo3/interceptor/NetworkInterceptor : co
 	public fun intercept (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/interceptor/ApolloInterceptorChain;)Lkotlinx/coroutines/flow/Flow;
 }
 
-public final class com/apollographql/apollo3/internal/Guard {
-	public fun <init> (Ljava/lang/String;Lkotlin/jvm/functions/Function0;)V
-	public final fun dispose ()V
-	public final fun readAccess (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun writeAccess (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun writeAndForget (Lkotlin/jvm/functions/Function1;)V
-}
-
-public final class com/apollographql/apollo3/internal/NonMainWorker {
-	public fun <init> ()V
-	public final fun doWork (Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public abstract interface class com/apollographql/apollo3/network/NetworkTransport {
 	public abstract fun dispose ()V
 	public abstract fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
