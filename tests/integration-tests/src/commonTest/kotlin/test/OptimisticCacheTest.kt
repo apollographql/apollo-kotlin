@@ -246,7 +246,7 @@ class OptimisticCacheTest {
             )
         )
     )
-    apolloClient.mutate(updateReviewMutation).optimisticUpdates(
+    apolloClient.mutation(updateReviewMutation).optimisticUpdates(
         UpdateReviewMutation.Data(
             UpdateReviewMutation.UpdateReview(
                 "empireReview2",

@@ -2,9 +2,7 @@ package test
 
 import app.cash.turbine.test
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.cache.normalized.optimisticUpdates
 import com.apollographql.apollo3.cache.normalized.watch
@@ -86,7 +84,7 @@ class OptimisticDataTest {
           launch {
             val mutation = UpdateAnimalNameMutation(AnimalInput("Irrelevant"))
             try {
-              apolloClient.mutate(mutation)
+              apolloClient.mutation(mutation)
                   .optimisticUpdates(optimisticNameData("Medor"))
                   .execute()
             } catch (e: Exception) {
@@ -98,7 +96,7 @@ class OptimisticDataTest {
           val job = launch {
             delay(100)
             val mutation = UpdateAnimalSpeciesMutation(AnimalInput("Irrelevant"))
-            apolloClient.mutate(mutation)
+            apolloClient.mutation(mutation)
                 .optimisticUpdates(optimisticSpeciesData("Dog"))
                 .execute()
           }

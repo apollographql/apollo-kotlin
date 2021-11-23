@@ -82,7 +82,7 @@ fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: B
  * Overriding the [FetchPolicy] will change how the result is first queried.
  */
 fun <D : Query.Data> ApolloQueryCall<D>.watch(): Flow<ApolloResponse<D>> {
-  return copy().addExecutionContext(WatchContext(true)).executeAsFlow()
+  return copy().addExecutionContext(WatchContext(true)).toFlow()
 }
 
 /**

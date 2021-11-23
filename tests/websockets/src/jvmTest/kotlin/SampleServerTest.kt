@@ -48,7 +48,7 @@ class SampleServerTest {
         .build()
 
     runBlocking {
-      val list = apolloClient.subscribe(CountSubscription(5, 0))
+      val list = apolloClient.subscription(CountSubscription(5, 0))
           .execute()
           .map { it.data!!.count }
           .toList()
@@ -65,14 +65,14 @@ class SampleServerTest {
     runBlocking {
       val items = mutableListOf<Int>()
       launch {
-        apolloClient.subscribe(CountSubscription(5, 1000))
+        apolloClient.subscription(CountSubscription(5, 1000))
             .execute()
             .collect {
               items.add(it.data!!.count * 2)
             }
       }
       delay(500)
-      apolloClient.subscribe(CountSubscription(5, 1000))
+      apolloClient.subscription(CountSubscription(5, 1000))
           .execute()
           .collect {
             items.add(2 * it.data!!.count + 1)
@@ -94,14 +94,14 @@ class SampleServerTest {
         .build()
 
     runBlocking {
-      apolloClient.subscribe(CountSubscription(50, 1000)).execute().first()
+      apolloClient.subscription(CountSubscription(50, 1000)).execute().first()
 
       withTimeout(500) {
         transport.subscriptionCount.first { it == 0 }
       }
 
       delay(1500)
-      val number = apolloClient.subscribe(CountSubscription(50, 0)).execute().drop(3).first().data?.count
+      val number = apolloClient.subscription(CountSubscription(50, 0)).execute().drop(3).first().data?.count
       assertEquals(3, number)
     }
   }
@@ -116,7 +116,7 @@ class SampleServerTest {
        * During that time, the server should continue sending. Then resume reading as fast as we can
        * (which is still probably slower than the server) and make sure we didn't drop any items
        */
-      val number = apolloClient.subscribe(CountSubscription(1000, 0))
+      val number = apolloClient.subscription(CountSubscription(1000, 0))
           .execute()
           .map { it.data!!.count }
           .onEach {
@@ -146,7 +146,7 @@ class SampleServerTest {
       /**
        * Collect all items the server sends us
        */
-      apolloClient.subscribe(CountSubscription(50, 0)).execute().toList()
+      apolloClient.subscription(CountSubscription(50, 0)).execute().toList()
 
       /**
        * Make sure we're unsubscribed
@@ -165,7 +165,7 @@ class SampleServerTest {
 
     runBlocking {
       var caught: Throwable? = null
-      apolloClient.subscribe(OperationErrorSubscription())
+      apolloClient.subscription(OperationErrorSubscription())
           .execute()
           .catch {
             caught = it
