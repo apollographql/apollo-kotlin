@@ -70,7 +70,7 @@ apolloClient(requireContext()).query(LaunchListQuery(cursor)).execute()
 apolloClient(requireContext()).query(LaunchDetailsQuery(id = args.launchId)).execute()
 
 // LoginFragment
-apolloClient(requireContext()).mutate(LoginMutation(email)).execute()
+apolloClient(requireContext()).mutation(LoginMutation(email)).execute()
 
 ```
 
@@ -153,7 +153,7 @@ lifecycleScope.launchWhenResumed {
     }
 
     val response = try {
-        apolloClient(requireContext()).mutate(mutation).execute()
+        apolloClient(requireContext()).mutation(mutation).execute()
     } catch (e: ApolloException) {
         configureButton(isBooked)
         return@launchWhenResumed

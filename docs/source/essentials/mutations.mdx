@@ -58,7 +58,9 @@ For more information on mutation return types, see [Designing mutations](https:/
 
 ## Generating mutation classes
 
-Similar to queries, mutations are represented by instances of generated classes, conforming to the `Mutation` interface. Constructor arguments are used to define mutation variables. You pass a mutation object to `ApolloClient#mutate(mutation)` to send the mutation to the server, execute it, and receive typed results:
+Similar to queries, mutations are represented by instances of generated classes, conforming to the `Mutation` interface.
+Constructor arguments are used to define mutation variables. You pass a mutation object
+to `ApolloClient#mutation(mutation)` to send the mutation to the server, execute it, and receive typed results:
 
 <MultiCodeBlock>
 
@@ -66,7 +68,7 @@ Similar to queries, mutations are represented by instances of generated classes,
 val upvotePostMutation = UpvotePostMutation(votes = 3)
 
 val response = try {
-  apolloClient.mutate(upvotePostMutation).execute()
+  apolloClient.mutation(upvotePostMutation).execute()
 } catch(e: ApolloException) {
   // handle error
 }
@@ -105,8 +107,8 @@ mutation CreateReviewForEpisode($episode: Episode!, $review: ReviewInput!) {
 val reviewInput = ReviewInput(stars = 5, commentary = "This is a great movie!")
 
 try {
-  val response = apolloClient.mutate(CreateReviewForEpisodeMutation(episode = Episode.NEWHOPE, review = reviewInput)).execute()
-} catch(e: ApolloException) {
+  val response = apolloClient.mutation(CreateReviewForEpisodeMutation(episode = Episode.NEWHOPE, review = reviewInput)).execute()
+} catch (e: ApolloException) {
   // handle exception
 }
 ```

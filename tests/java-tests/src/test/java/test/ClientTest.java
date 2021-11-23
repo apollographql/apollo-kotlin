@@ -74,12 +74,12 @@ public class ClientTest {
 
     mockServer.enqueue(new MockResponse("{\"data\": {\"createAnimal\": {\"__typename\": \"Cat\", \"species\": \"cat\", \"habitat\": {\"temperature\": 10.5}}}}"));
     ApolloResponse<CreateCatMutation.Data> mutationResponse = Rx2Apollo.single(
-        apolloClient.mutate(new CreateCatMutation())
+        apolloClient.mutation(new CreateCatMutation())
     ).blockingGet();
     Truth.assertThat(mutationResponse.dataAssertNoErrors().createAnimal.catFragment.species).isEqualTo("cat");
 
     Disposable disposable = Rx2Apollo.flowable(
-        apolloClient.subscribe(new AnimalCreatedSubscription())
+        apolloClient.subscription(new AnimalCreatedSubscription())
     ).subscribe(result -> {
       String species = result.dataAssertNoErrors().animalCreated.catFragment.species;
     });

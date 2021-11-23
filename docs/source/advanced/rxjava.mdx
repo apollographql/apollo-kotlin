@@ -38,12 +38,12 @@ Single<ApolloResponse<MyQuery.Data>> queryResponse = Rx2Apollo.single(queryCall)
 queryResponse.subscribe( /* ... */ );
 
 // A mutation
-ApolloMutationCall<MyMutation.Data> mutationCall = client.mutate(new MyMutation("my-parameter"));
+ApolloMutationCall<MyMutation.Data> mutationCall = client.mutation(new MyMutation("my-parameter"));
 Single<ApolloResponse<MyMutation.Data>> mutationResponse = Rx2Apollo.single(mutationCall);
 mutationResponse.subscribe( /* ... */ );
 
 // A subscription
-ApolloSubscriptionCall<MySubscription.Data> subscriptionCall = client.subscribe(new MySubscription());
+ApolloSubscriptionCall<MySubscription.Data> subscriptionCall = client.subscription(new MySubscription());
 Flowable<ApolloResponse<MySubscription.Data>> subscriptionResponse = Rx2Apollo.flowable(subscriptionCall);
 subscriptionResponse.subscribe( /* ... */ );
 ```
@@ -53,10 +53,10 @@ subscriptionResponse.subscribe( /* ... */ );
 client.query(MyQuery()).rxSingle().subscribe(/* ... */)
 
 // A mutation
-client.mutate(MyMutation("my-parameter")).rxSingle().subscribe(/* ... */)
+client.mutation(MyMutation("my-parameter")).rxSingle().subscribe(/* ... */)
 
 // A subscription
-client.subscribe(MySubscription()).rxFlowable().subscribe(/* ... */)
+client.subscription(MySubscription()).rxFlowable().subscribe(/* ... */)
 ```
 </MultiCodeBlock>
 

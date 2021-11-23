@@ -9,7 +9,7 @@ import okhttp3.Call
 import okhttp3.OkHttpClient
 
 /**
- * Configures the [ApolloClient] to use the [OkHttpEngine] for network requests.
+ * Configures the [ApolloClient] to use the [OkHttpClient] for network requests.
  * The [OkHttpClient] will be used for both HTTP and WebSocket requests.
  *
  * See also [ApolloClient.Builder.httpEngine] and [ApolloClient.Builder.webSocketEngine]

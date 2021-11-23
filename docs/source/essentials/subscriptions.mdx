@@ -45,11 +45,11 @@ val apolloClient = ApolloClient.Builder()
 After you configure the `NetworkTransport`, use `ApolloClient.subscribe` to open the connection and listen for changes:
 
 ```kotlin
-apolloClient.subscribe(TripsBookedSubscription())
-  .execute()
-  .collect {
-    println("trips booked: ${it.data?.tripsBooked}")
-  }
+apolloClient.subscription(TripsBookedSubscription())
+    .toFlow()
+    .collect {
+      println("trips booked: ${it.data?.tripsBooked}")
+    }
 ```
 
 Because subscriptions are long-lasting operations, they return a `Flow<Response>` instead of a single `Response`.
