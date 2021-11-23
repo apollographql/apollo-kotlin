@@ -23,7 +23,7 @@ abstract class ApolloCall<D : Operation.Data, E : HasMutableExecutionContext<E>>
   }
 
   /**
-   * Returns a Flow with the results of this [ApolloCall].
+   * Returns a cold Flow that produces [ApolloResponse]s for this [ApolloCall].
    * Note that the execution happens when collecting the Flow.
    * This method can be called several times to execute a call again.
    *
