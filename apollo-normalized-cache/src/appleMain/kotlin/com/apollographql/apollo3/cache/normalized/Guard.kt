@@ -1,6 +1,8 @@
-package com.apollographql.apollo3.internal
+package com.apollographql.apollo3.cache.normalized.internal
 
-actual class Guard<R: Any> actual constructor(name: String, private val producer: () -> R) {
+import com.apollographql.apollo3.internal.SingleThreadWorker
+
+internal actual class Guard<R: Any> actual constructor(name: String, private val producer: () -> R) {
   private val worker = SingleThreadWorker(producer = producer)
 
   actual fun dispose() {

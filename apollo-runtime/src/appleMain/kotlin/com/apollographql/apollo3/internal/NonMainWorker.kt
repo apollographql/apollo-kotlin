@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.internal
 
-actual class NonMainWorker actual constructor() {
+internal actual class NonMainWorker actual constructor() {
   private val gcdWorker = GCDWorker()
   actual suspend fun <R> doWork(block: () -> R): R {
     return gcdWorker.execute(block)

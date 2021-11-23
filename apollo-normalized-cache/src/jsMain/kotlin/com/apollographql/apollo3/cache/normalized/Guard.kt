@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.internal
+package com.apollographql.apollo3.cache.normalized.internal
 
-actual class Guard<R: Any> actual constructor(name: String, producer: () -> R) {
+internal actual class Guard<R: Any> actual constructor(name: String, producer: () -> R) {
   private val resource = producer()
 
   actual suspend fun <T> readAccess(block: (R) -> T): T {

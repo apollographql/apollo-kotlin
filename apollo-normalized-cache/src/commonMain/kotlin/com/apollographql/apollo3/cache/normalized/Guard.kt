@@ -1,6 +1,6 @@
-package com.apollographql.apollo3.internal
+package com.apollographql.apollo3.cache.normalized.internal
 
-expect class Guard<R: Any>(name: String, producer: () -> R) {
+internal expect class Guard<R: Any>(name: String, producer: () -> R) {
   /**
    * Accesses the underlying resource with 'read' semantics. Several threads can read the resource simultaneously.
    */
