@@ -1,6 +1,6 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
-$dokka.location:com.apollographql.apollo3.internal/DefaultMutex/lock/#kotlin.Function0[TypeParam(bounds=[kotlin.Any?])]/PointingToDeclaration/apollo-runtime/com.apollographql.apollo3.internal/-default-mutex/[jvm]lock.html
+
 module:apollo-adapters
 com.apollographql.apollo3.adapter
 module:apollo-annotations
