@@ -24,7 +24,7 @@
           </div>
           <div class="cover ">
             <h1 class="cover"><span>Json</span><wbr><span>Reader</span></h1>
-            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace">interface <a href="index.html">JsonReader</a> : <a href="../-closeable/index.html">Closeable</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Reads a JSON <a href="http://www.ietf.org/rfc/rfc7159.txt">RFC 7159</a> encoded value as a stream of tokens.</p><p class="paragraph">This stream includes both literal values (strings, numbers, booleans, and nulls) as well as the begin and end delimiters of objects and arrays.</p><p class="paragraph">The tokens are traversed in depth-first order, the same order that they appear in the JSON document. Within JSON objects, name/value pairs are represented by a single token.</p><p class="paragraph">Each {@code JsonReader} may be used to read a single JSON stream. Instances of this class are not thread safe.</p><p class="paragraph">Json doesn't have int, long, double values. Only string and number. That means nextInt(), nextDouble(), nextLong() and nextNumber() will coerce the Json value into the expected type or throw if the conversion is not possible or loses precision.</p><p class="paragraph"><a href="../../com.apollographql.apollo3.api.internal.json/-buffered-source-json-reader/index.html">BufferedSourceJsonReader</a> can parse longs without having to buffer so when possible, prefer nextLong() over nextInt()</p><p class="paragraph">Note: This interface was originally from Moshi and has been tweaked to better match the GraphQL use cases</p></div></div>
+            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace">interface <a href="index.html">JsonReader</a> : <span data-unresolved-link="okio/Closeable///PointingToDeclaration/">Closeable</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Reads a JSON <a href="http://www.ietf.org/rfc/rfc7159.txt">RFC 7159</a> encoded value as a stream of tokens.</p><p class="paragraph">This stream includes both literal values (strings, numbers, booleans, and nulls) as well as the begin and end delimiters of objects and arrays.</p><p class="paragraph">The tokens are traversed in depth-first order, the same order that they appear in the JSON document. Within JSON objects, name/value pairs are represented by a single token.</p><p class="paragraph">Each {@code JsonReader} may be used to read a single JSON stream. Instances of this class are not thread safe.</p><p class="paragraph">Json doesn't have int, long, double values. Only string and number. That means nextInt(), nextDouble(), nextLong() and nextNumber() will coerce the Json value into the expected type or throw if the conversion is not possible or loses precision.</p><p class="paragraph"><a href="../-buffered-source-json-reader/index.html">BufferedSourceJsonReader</a> can parse longs without having to buffer so when possible, prefer nextLong() over nextInt()</p><p class="paragraph">Note: This interface was originally from Moshi and has been tweaked to better match the GraphQL use cases</p></div></div>
           </div>
           <div class="tabbedcontent">
             <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Extensions">Extensions</button><button class="section-tab" data-togglable="Inheritors">Inheritors</button></div>
@@ -92,10 +92,10 @@
                     </div>
                   </div>
                 </div>
-<a data-name="-1876819606%2FFunctions%2F301449719" anchor-label="close" id="-1876819606%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+<a data-name="238694063%2FFunctions%2F301449719" anchor-label="close" id="238694063%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../-closeable/close.html">close</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1876819606%2FFunctions%2F301449719"></span>
+                    <div class=""><span class="inline-flex"><a href="../-json-writer/index.html#238694063%2FFunctions%2F301449719">close</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="238694063%2FFunctions%2F301449719"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -105,7 +105,7 @@
                       <div class="title"><div class="divergent-group" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
 
   <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace">abstract fun <a href="../-closeable/close.html">close</a>()<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace">abstract fun <a href="../-json-writer/index.html#238694063%2FFunctions%2F301449719">close</a>()<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
 </div>
 </div>
@@ -414,19 +414,19 @@
                 </div>
               </div>
               <h2 class="">Inheritors</h2>
-              <div class="table" data-togglable="Inheritors"><a data-name="1639884306%2FInheritors%2F301449719" anchor-label="MapJsonReader" id="1639884306%2FInheritors%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+              <div class="table" data-togglable="Inheritors"><a data-name="-183155900%2FInheritors%2F301449719" anchor-label="BufferedSourceJsonReader" id="-183155900%2FInheritors%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../-map-json-reader/index.html">MapJsonReader</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1639884306%2FInheritors%2F301449719"></span>
+                    <div class=""><span class="inline-flex"><a href="../-buffered-source-json-reader/index.html">BufferedSourceJsonReader</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-183155900%2FInheritors%2F301449719"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div></div>
                   </div>
                 </div>
-<a data-name="669293559%2FInheritors%2F301449719" anchor-label="BufferedSourceJsonReader" id="669293559%2FInheritors%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+<a data-name="1639884306%2FInheritors%2F301449719" anchor-label="MapJsonReader" id="1639884306%2FInheritors%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../../com.apollographql.apollo3.api.internal.json/-buffered-source-json-reader/index.html">BufferedSourceJsonReader</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="669293559%2FInheritors%2F301449719"></span>
+                    <div class=""><span class="inline-flex"><a href="../-map-json-reader/index.html">MapJsonReader</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1639884306%2FInheritors%2F301449719"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div></div>
@@ -454,10 +454,10 @@
                     </div>
                   </div>
                 </div>
-<a data-name="1511174887%2FExtensions%2F301449719" anchor-label="readRecursively" id="1511174887%2FExtensions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+<a data-name="-1051733135%2FExtensions%2F301449719" anchor-label="readRecursively" id="-1051733135%2FExtensions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../../com.apollographql.apollo3.api.internal.json/-utils/read-recursively.html">readRecursively</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1511174887%2FExtensions%2F301449719"></span>
+                    <div class=""><span class="inline-flex"><a href="../../com.apollographql.apollo3.api.json.internal/-utils/read-recursively.html">readRecursively</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1051733135%2FExtensions%2F301449719"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -467,17 +467,17 @@
                       <div class="title"><div class="divergent-group" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
 
   <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace">fun <a href="index.html">JsonReader</a>.<a href="../../com.apollographql.apollo3.api.internal.json/-utils/read-recursively.html">readRecursively</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace">fun <a href="index.html">JsonReader</a>.<a href="../../com.apollographql.apollo3.api.json.internal/-utils/read-recursively.html">readRecursively</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="1511174887%2FExtensions%2F301449719" anchor-label="readRecursively" id="1511174887%2FExtensions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="1511174887%2FExtensions%2F301449719" anchor-label="readRecursively" id="1511174887%2FExtensions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>Reads the reader and maps numbers to the closest representation possible in that order:<ul><li><p class="paragraph">Int</p></li><li><p class="paragraph">Long</p></li><li><p class="paragraph">Double</p></li><li><p class="paragraph">JsonNumber</p></li></ul></div></div>
+<a data-name="-1051733135%2FExtensions%2F301449719" anchor-label="readRecursively" id="-1051733135%2FExtensions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-1051733135%2FExtensions%2F301449719" anchor-label="readRecursively" id="-1051733135%2FExtensions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>Reads the reader and maps numbers to the closest representation possible in that order:<ul><li><p class="paragraph">Int</p></li><li><p class="paragraph">Long</p></li><li><p class="paragraph">Double</p></li><li><p class="paragraph">JsonNumber</p></li></ul></div></div>
 </div>
                     </div>
                   </div>
                 </div>
-<a data-name="-247924893%2FExtensions%2F301449719" anchor-label="readRecursivelyFast" id="-247924893%2FExtensions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+<a data-name="1014940397%2FExtensions%2F301449719" anchor-label="readRecursivelyFast" id="1014940397%2FExtensions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../../com.apollographql.apollo3.api.internal.json/-utils/read-recursively-fast.html">readRecursivelyFast</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-247924893%2FExtensions%2F301449719"></span>
+                    <div class=""><span class="inline-flex"><a href="../../com.apollographql.apollo3.api.json.internal/-utils/read-recursively-fast.html">readRecursivelyFast</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1014940397%2FExtensions%2F301449719"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -487,7 +487,7 @@
                       <div class="title"><div class="divergent-group" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
 
   <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace">fun <a href="index.html">JsonReader</a>.<a href="../../com.apollographql.apollo3.api.internal.json/-utils/read-recursively-fast.html">readRecursivelyFast</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace">fun <a href="index.html">JsonReader</a>.<a href="../../com.apollographql.apollo3.api.json.internal/-utils/read-recursively-fast.html">readRecursivelyFast</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
 </div>
 </div>

@@ -24,7 +24,7 @@
           </div>
           <div class="cover ">
             <h1 class="cover"><span>Json</span><wbr><span>Writer</span></h1>
-            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace">interface <a href="index.html">JsonWriter</a> : <a href="../-closeable/index.html">Closeable</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Writes a JSON <a href="http://www.ietf.org/rfc/rfc7159.txt">RFC 7159</a> encoded value to a stream, one token at a time.</p><p class="paragraph">The stream includes both literal values (strings, numbers, booleans and nulls) as well as the begin and end delimiters of objects and arrays.</p><p class="paragraph">Encoding JSON</p><p class="paragraph">To encode your data as JSON, create a new <code>JsonWriter</code>. Each JSON document must contain one top-level array or object. Call methods on the writer as you walk the structure's contents, nesting arrays and objects as necessary:</p><ul><li><p class="paragraph">To write <code>arrays</code>, first call <a href="begin-array.html">beginArray</a>. Write each of the array's elements with the appropriate <a href="value.html">value</a>. Finally close the array using <a href="end-array.html">endArray</a>.</p></li><li><p class="paragraph">To write <code>objects</code>, first call <a href="begin-object.html">beginObject</a>. Write each of the object's properties by alternating calls to <a href="name.html">name</a> with the property's value. Write property values with the appropriate <a href="value.html">value</a> method or by nesting other objects or arrays. Finally close the object using <a href="end-object.html">endObject</a>.</p></li></ul><p class="paragraph">Each <code>JsonWriter</code> may be used to write a single JSON stream. Instances of this class are not thread safe. Calls that would result in a malformed JSON string will fail with an <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-illegal-state-exception/index.html">IllegalStateException</a>.</p><p class="paragraph">Note: This interface was originally from Moshi and has been tweaked to better match the GraphQL use cases such as the absence of arbitrary precision and the presence of the <a href="../../com.apollographql.apollo3.api/-upload/index.html">Upload</a></p></div></div>
+            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace">interface <a href="index.html">JsonWriter</a> : <span data-unresolved-link="okio/Closeable///PointingToDeclaration/">Closeable</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Writes a JSON <a href="http://www.ietf.org/rfc/rfc7159.txt">RFC 7159</a> encoded value to a stream, one token at a time.</p><p class="paragraph">The stream includes both literal values (strings, numbers, booleans and nulls) as well as the begin and end delimiters of objects and arrays.</p><p class="paragraph">Encoding JSON</p><p class="paragraph">To encode your data as JSON, create a new <code>JsonWriter</code>. Each JSON document must contain one top-level array or object. Call methods on the writer as you walk the structure's contents, nesting arrays and objects as necessary:</p><ul><li><p class="paragraph">To write <code>arrays</code>, first call <a href="begin-array.html">beginArray</a>. Write each of the array's elements with the appropriate <a href="value.html">value</a>. Finally close the array using <a href="end-array.html">endArray</a>.</p></li><li><p class="paragraph">To write <code>objects</code>, first call <a href="begin-object.html">beginObject</a>. Write each of the object's properties by alternating calls to <a href="name.html">name</a> with the property's value. Write property values with the appropriate <a href="value.html">value</a> method or by nesting other objects or arrays. Finally close the object using <a href="end-object.html">endObject</a>.</p></li></ul><p class="paragraph">Each <code>JsonWriter</code> may be used to write a single JSON stream. Instances of this class are not thread safe. Calls that would result in a malformed JSON string will fail with an <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-illegal-state-exception/index.html">IllegalStateException</a>.</p><p class="paragraph">Note: This interface was originally from Moshi and has been tweaked to better match the GraphQL use cases such as the absence of arbitrary precision and the presence of the <a href="../../com.apollographql.apollo3.api/-upload/index.html">Upload</a></p></div></div>
           </div>
           <div class="tabbedcontent">
             <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button><button class="section-tab" data-togglable="Extensions">Extensions</button><button class="section-tab" data-togglable="Inheritors">Inheritors</button></div>
@@ -70,10 +70,10 @@
                     </div>
                   </div>
                 </div>
-<a data-name="-1876819606%2FFunctions%2F301449719" anchor-label="close" id="-1876819606%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+<a data-name="238694063%2FFunctions%2F301449719" anchor-label="close" id="238694063%2FFunctions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../-closeable/close.html">close</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1876819606%2FFunctions%2F301449719"></span>
+                    <div class=""><span class="inline-flex"><a href="index.html#238694063%2FFunctions%2F301449719">close</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="238694063%2FFunctions%2F301449719"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -83,7 +83,7 @@
                       <div class="title"><div class="divergent-group" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
 
   <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace">abstract fun <a href="../-closeable/close.html">close</a>()<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace">abstract fun <a href="index.html#238694063%2FFunctions%2F301449719">close</a>()<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
 </div>
 </div>
@@ -266,28 +266,19 @@
                 </div>
               </div>
               <h2 class="">Inheritors</h2>
-              <div class="table" data-togglable="Inheritors"><a data-name="-697765937%2FInheritors%2F301449719" anchor-label="BufferedSinkJsonWriter" id="-697765937%2FInheritors%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+              <div class="table" data-togglable="Inheritors"><a data-name="709166684%2FInheritors%2F301449719" anchor-label="BufferedSinkJsonWriter" id="709166684%2FInheritors%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../../com.apollographql.apollo3.api.internal.json/-buffered-sink-json-writer/index.html">BufferedSinkJsonWriter</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-697765937%2FInheritors%2F301449719"></span>
+                    <div class=""><span class="inline-flex"><a href="../-buffered-sink-json-writer/index.html">BufferedSinkJsonWriter</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="709166684%2FInheritors%2F301449719"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div></div>
                   </div>
                 </div>
-<a data-name="-1082387574%2FInheritors%2F301449719" anchor-label="FileUploadAwareJsonWriter" id="-1082387574%2FInheritors%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+<a data-name="715055202%2FInheritors%2F301449719" anchor-label="MapJsonWriter" id="715055202%2FInheritors%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../../com.apollographql.apollo3.api.internal.json/-file-upload-aware-json-writer/index.html">FileUploadAwareJsonWriter</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1082387574%2FInheritors%2F301449719"></span>
-                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                        </span></span></div>
-                    <div></div>
-                  </div>
-                </div>
-<a data-name="-91227761%2FInheritors%2F301449719" anchor-label="MapJsonWriter" id="-91227761%2FInheritors%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
-                <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
-                  <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../../com.apollographql.apollo3.api.internal.json/-map-json-writer/index.html">MapJsonWriter</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-91227761%2FInheritors%2F301449719"></span>
+                    <div class=""><span class="inline-flex"><a href="../-map-json-writer/index.html">MapJsonWriter</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="715055202%2FInheritors%2F301449719"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div></div>
@@ -295,10 +286,10 @@
                 </div>
               </div>
               <h2 class="tabbedcontent">Extensions</h2>
-              <div class="table" data-togglable="Extensions"><a data-name="310890568%2FExtensions%2F301449719" anchor-label="writeArray" id="310890568%2FExtensions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+              <div class="table" data-togglable="Extensions"><a data-name="697176318%2FExtensions%2F301449719" anchor-label="writeArray" id="697176318%2FExtensions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../../com.apollographql.apollo3.api.internal.json/write-array.html">writeArray</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="310890568%2FExtensions%2F301449719"></span>
+                    <div class=""><span class="inline-flex"><a href="../../com.apollographql.apollo3.api.json.internal/write-array.html">writeArray</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="697176318%2FExtensions%2F301449719"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -308,17 +299,17 @@
                       <div class="title"><div class="divergent-group" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
 
   <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun <a href="index.html">JsonWriter</a>.<a href="../../com.apollographql.apollo3.api.internal.json/write-array.html">writeArray</a>(crossinline block: <a href="index.html">JsonWriter</a>.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun <a href="index.html">JsonWriter</a>.<a href="../../com.apollographql.apollo3.api.json.internal/write-array.html">writeArray</a>(crossinline block: <a href="index.html">JsonWriter</a>.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
 </div>
 </div>
                     </div>
                   </div>
                 </div>
-<a data-name="1773639480%2FExtensions%2F301449719" anchor-label="writeObject" id="1773639480%2FExtensions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
+<a data-name="863595842%2FExtensions%2F301449719" anchor-label="writeObject" id="863595842%2FExtensions%2F301449719" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../../com.apollographql.apollo3.api.internal.json/write-object.html">writeObject</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1773639480%2FExtensions%2F301449719"></span>
+                    <div class=""><span class="inline-flex"><a href="../../com.apollographql.apollo3.api.json.internal/write-object.html">writeObject</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="863595842%2FExtensions%2F301449719"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -328,7 +319,7 @@
                       <div class="title"><div class="divergent-group" data-filterable-current=":apollo-api:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-api:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
 
   <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun <a href="index.html">JsonWriter</a>.<a href="../../com.apollographql.apollo3.api.internal.json/write-object.html">writeObject</a>(crossinline block: <a href="index.html">JsonWriter</a>.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-api:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun <a href="index.html">JsonWriter</a>.<a href="../../com.apollographql.apollo3.api.json.internal/write-object.html">writeObject</a>(crossinline block: <a href="index.html">JsonWriter</a>.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
 </div>
 </div>
