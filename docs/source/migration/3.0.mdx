@@ -47,18 +47,6 @@ val client = ApolloClient.builder()
   .build()
 
 ```
-4. Queries and other operations:
-```kotlin
-// Replace:
-val response = apolloClient
-  .query(MyQuery())
-  .await()
-
-// With:
-val response = apolloClient
-  .query(MyQuery())
-  .execute()
-```
 
 ## All details
 
@@ -277,35 +265,18 @@ val apolloClient = ApolloClient.builder()
 // With
 val apolloClient = ApolloClient.Builder()
     .serverUrl(serverUrl)
-    // ...other Builder methods
-    .build()
+        // ...other Builder methods
+        .build()
 ```
 
-Using a custom HttpClient on Apollo Android 3.x is different from doing so on 2.x due to the more platform-agnostic nature of the API:
-
-```kotlin
-// Replace
-val apolloClient = ApolloClient.builder()
-    .serverUrl(serverUrl)
-    .okHttpClient(okHttpClient)
-    .build()
-
-// With
-val apolloClient = ApolloClient.Builder()
-    .networkTransport(
-        HttpNetworkTransport(
-            serverUrl = serverUrl,
-            engine = DefaultHttpEngine(okHttpClient)
-        )
-    )
-    .build()
-```
-
-### Coroutines APIs
+### Operation APIs
 
 Apollo Android 2.x has callback APIs that can become verbose and require explicitly handling cancellation.
 
-Apollo Android 3.x exposes more concise coroutines APIs that handle cancellation automatically through the coroutine scope.
+Apollo Android 3.x exposes more concise coroutines APIs that handle cancellation automatically through the coroutine
+scope.
+
+Also, `mutate` has been renamed to `mutation` and `subscribe` has been renamed to `subscription` for consistency.
 
 ```kotlin
 // Replace
@@ -314,9 +285,14 @@ apolloClient.query(query).await()
 apolloClient.query(query).execute()
 
 // Replace
-apolloClient.subscribe(subscription).toFlow()
+apolloClient.mutate(query).await()
 // With
-apolloClient.subscribe(subscription).execute()
+apolloClient.mutation(query).execute()
+
+// Replace
+apolloClient.subscribe(query).toFlow()
+// With
+apolloClient.subscription(query).toFlow()
 ```
 
 ### Custom Scalar adapters
