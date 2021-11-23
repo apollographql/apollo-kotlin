@@ -22,13 +22,3 @@ internal actual class BackgroundDispatcher actual constructor() {
     }
   }
 }
-
-internal actual class DefaultMutex : Mutex {
-  val lock = Object()
-
-  override fun <T> lock(block: () -> T): T {
-    return synchronized(lock) {
-      block()
-    }
-  }
-}

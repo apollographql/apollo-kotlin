@@ -14,9 +14,3 @@ internal actual class BackgroundDispatcher {
   actual fun dispose() {
   }
 }
-
-internal actual class DefaultMutex : Mutex {
-  override fun <T> lock(block: () -> T): T {
-    return block()
-  }
-}

@@ -77,10 +77,3 @@ private object DefaultDispatcher: CoroutineDispatcher(), Delay {
     return handle
   }
 }
-
-internal actual class DefaultMutex actual constructor() : Mutex {
-  override fun <T> lock(block: () -> T): T {
-    return block()
-  }
-
-}
