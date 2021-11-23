@@ -6,8 +6,8 @@
 package com.example.hero_name_query_long_name.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.hero_name_query_long_name.TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName;
@@ -28,6 +28,6 @@ public enum TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVery
   public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
       TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName value) {
     writer.name("episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName");
-    Adapters.nullable(Episode_ResponseAdapter.INSTANCE).toJson(writer, customScalarAdapters, value.episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName);
+    new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE).toJson(writer, customScalarAdapters, value.episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName);
   }
 }

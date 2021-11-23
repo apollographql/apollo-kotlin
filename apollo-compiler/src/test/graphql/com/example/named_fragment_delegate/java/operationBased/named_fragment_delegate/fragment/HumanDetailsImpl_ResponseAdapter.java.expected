@@ -6,10 +6,11 @@
 package com.example.named_fragment_delegate.fragment;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.AnyAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ListAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -81,7 +82,7 @@ public class HumanDetailsImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: edges = Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Edge>(Edge.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
+          case 0: edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Edge>(Edge.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -95,7 +96,7 @@ public class HumanDetailsImpl_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection value) {
       writer.name("edges");
-      Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Edge>(Edge.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.edges);
+      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Edge>(Edge.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.edges);
     }
   }
 
@@ -112,7 +113,7 @@ public class HumanDetailsImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: node = Adapters.nullable(new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Node>(Node.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: node = new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Node>(Node.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -126,7 +127,7 @@ public class HumanDetailsImpl_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         com.example.named_fragment_delegate.fragment.HumanDetails.Edge value) {
       writer.name("node");
-      Adapters.nullable(new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Node>(Node.INSTANCE, false)).toJson(writer, customScalarAdapters, value.node);
+      new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Node>(Node.INSTANCE, false)).toJson(writer, customScalarAdapters, value.node);
     }
   }
 

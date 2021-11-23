@@ -6,10 +6,11 @@
 package com.example.custom_scalar_type.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.AnyAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ListAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -36,7 +37,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: hero = Adapters.nullable(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: hero = new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -50,7 +51,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Data value) {
       writer.name("hero");
-      Adapters.nullable(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, false)).toJson(writer, customScalarAdapters, value.hero);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, false)).toJson(writer, customScalarAdapters, value.hero);
     }
   }
 
@@ -73,10 +74,10 @@ public class TestQuery_ResponseAdapter {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: name = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
           case 1: birthDate = (customScalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type)).fromJson(reader, customScalarAdapters); break;
-          case 2: appearanceDates = Adapters.list((customScalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type))).fromJson(reader, customScalarAdapters); break;
+          case 2: appearanceDates = new ListAdapter<>((customScalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type))).fromJson(reader, customScalarAdapters); break;
           case 3: fieldWithUnsupportedType = AnyAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
           case 4: profileLink = (customScalarAdapters.<String>responseAdapterFor(URL.type)).fromJson(reader, customScalarAdapters); break;
-          case 5: links = Adapters.list((customScalarAdapters.<String>responseAdapterFor(URL.type))).fromJson(reader, customScalarAdapters); break;
+          case 5: links = new ListAdapter<>((customScalarAdapters.<String>responseAdapterFor(URL.type))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -108,7 +109,7 @@ public class TestQuery_ResponseAdapter {
       (customScalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type)).toJson(writer, customScalarAdapters, value.birthDate);
 
       writer.name("appearanceDates");
-      Adapters.list((customScalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type))).toJson(writer, customScalarAdapters, value.appearanceDates);
+      new ListAdapter<>((customScalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type))).toJson(writer, customScalarAdapters, value.appearanceDates);
 
       writer.name("fieldWithUnsupportedType");
       AnyAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.fieldWithUnsupportedType);
@@ -117,7 +118,7 @@ public class TestQuery_ResponseAdapter {
       (customScalarAdapters.<String>responseAdapterFor(URL.type)).toJson(writer, customScalarAdapters, value.profileLink);
 
       writer.name("links");
-      Adapters.list((customScalarAdapters.<String>responseAdapterFor(URL.type))).toJson(writer, customScalarAdapters, value.links);
+      new ListAdapter<>((customScalarAdapters.<String>responseAdapterFor(URL.type))).toJson(writer, customScalarAdapters, value.links);
     }
   }
 }

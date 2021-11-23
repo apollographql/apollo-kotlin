@@ -6,9 +6,9 @@
 package com.example.two_heroes_unique.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -33,8 +33,8 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: r2 = Adapters.nullable(new ObjectAdapter<TestQuery.R2>(R2.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
-          case 1: luke = Adapters.nullable(new ObjectAdapter<TestQuery.Luke>(Luke.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: r2 = new NullableAdapter<>(new ObjectAdapter<TestQuery.R2>(R2.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 1: luke = new NullableAdapter<>(new ObjectAdapter<TestQuery.Luke>(Luke.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -49,10 +49,10 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Data value) {
       writer.name("r2");
-      Adapters.nullable(new ObjectAdapter<TestQuery.R2>(R2.INSTANCE, false)).toJson(writer, customScalarAdapters, value.r2);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.R2>(R2.INSTANCE, false)).toJson(writer, customScalarAdapters, value.r2);
 
       writer.name("luke");
-      Adapters.nullable(new ObjectAdapter<TestQuery.Luke>(Luke.INSTANCE, false)).toJson(writer, customScalarAdapters, value.luke);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Luke>(Luke.INSTANCE, false)).toJson(writer, customScalarAdapters, value.luke);
     }
   }
 

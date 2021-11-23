@@ -85,7 +85,7 @@ class OptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optio
   }
 }
 
-val StringAdapter = object : Adapter<String> {
+object StringAdapter : Adapter<String> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): String {
     return reader.nextString()!!
   }
@@ -95,7 +95,7 @@ val StringAdapter = object : Adapter<String> {
   }
 }
 
-val IntAdapter = object : Adapter<Int> {
+object IntAdapter : Adapter<Int> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Int {
     return reader.nextInt()
   }
@@ -105,7 +105,7 @@ val IntAdapter = object : Adapter<Int> {
   }
 }
 
-val DoubleAdapter = object : Adapter<Double> {
+object DoubleAdapter : Adapter<Double> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Double {
     return reader.nextDouble()
   }
@@ -119,7 +119,7 @@ val DoubleAdapter = object : Adapter<Double> {
  * An [Adapter] that converts to/from a [Float]
  * Floats are not part of the GraphQL spec but this can be used in custom scalars
  */
-val FloatAdapter = object : Adapter<Float> {
+object FloatAdapter : Adapter<Float> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Float {
     return reader.nextDouble().toFloat()
   }
@@ -135,7 +135,7 @@ val FloatAdapter = object : Adapter<Float> {
  *
  * If the Json number does not fit in a [Long], an exception will be thrown
  */
-val LongAdapter = object : Adapter<Long>  {
+object LongAdapter: Adapter<Long>  {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Long {
     return reader.nextLong()
   }
@@ -144,7 +144,8 @@ val LongAdapter = object : Adapter<Long>  {
     writer.value(value)
   }
 }
-val BooleanAdapter = object : Adapter<Boolean> {
+
+object BooleanAdapter : Adapter<Boolean> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Boolean {
     return reader.nextBoolean()
   }
@@ -154,7 +155,7 @@ val BooleanAdapter = object : Adapter<Boolean> {
   }
 }
 
-val AnyAdapter = object : Adapter<Any> {
+object AnyAdapter : Adapter<Any> {
   fun fromJson(reader: JsonReader): Any {
     return reader.readRecursively()!!
   }
@@ -173,7 +174,7 @@ val AnyAdapter = object : Adapter<Any> {
   }
 }
 
-val UploadAdapter = object : Adapter<Upload> {
+object UploadAdapter : Adapter<Upload> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Upload {
     error("File Upload used in output position")
   }

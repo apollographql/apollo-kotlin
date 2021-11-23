@@ -8,6 +8,7 @@ package com.example.antlr_tokens.adapter;
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -30,7 +31,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: typeWithGraphQLKeywords = Adapters.nullable(new ObjectAdapter<TestQuery.TypeWithGraphQLKeywords>(TypeWithGraphQLKeywords.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: typeWithGraphQLKeywords = new NullableAdapter<>(new ObjectAdapter<TestQuery.TypeWithGraphQLKeywords>(TypeWithGraphQLKeywords.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -44,7 +45,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Data value) {
       writer.name("typeWithGraphQLKeywords");
-      Adapters.nullable(new ObjectAdapter<TestQuery.TypeWithGraphQLKeywords>(TypeWithGraphQLKeywords.INSTANCE, false)).toJson(writer, customScalarAdapters, value.typeWithGraphQLKeywords);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.TypeWithGraphQLKeywords>(TypeWithGraphQLKeywords.INSTANCE, false)).toJson(writer, customScalarAdapters, value.typeWithGraphQLKeywords);
     }
   }
 

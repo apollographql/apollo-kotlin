@@ -13,6 +13,8 @@ import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ListAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -40,7 +42,7 @@ public class HeroDetailsImpl_ResponseAdapter {
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: name = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
-          case 1: friends = Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend>(Friend.INSTANCE, true)))).fromJson(reader, customScalarAdapters); break;
+          case 1: friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend>(Friend.INSTANCE, true)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -60,7 +62,7 @@ public class HeroDetailsImpl_ResponseAdapter {
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.name);
 
       writer.name("friends");
-      Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend>(Friend.INSTANCE, true)))).toJson(writer, customScalarAdapters, value.friends);
+      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend>(Friend.INSTANCE, true)))).toJson(writer, customScalarAdapters, value.friends);
     }
   }
 

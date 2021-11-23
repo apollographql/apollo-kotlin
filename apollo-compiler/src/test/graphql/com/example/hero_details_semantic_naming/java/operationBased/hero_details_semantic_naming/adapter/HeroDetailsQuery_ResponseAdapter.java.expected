@@ -9,6 +9,8 @@ import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ListAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -34,7 +36,7 @@ public class HeroDetailsQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: hero = Adapters.nullable(new ObjectAdapter<HeroDetailsQuery.Hero>(Hero.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: hero = new NullableAdapter<>(new ObjectAdapter<HeroDetailsQuery.Hero>(Hero.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -48,7 +50,7 @@ public class HeroDetailsQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         HeroDetailsQuery.Data value) {
       writer.name("hero");
-      Adapters.nullable(new ObjectAdapter<HeroDetailsQuery.Hero>(Hero.INSTANCE, false)).toJson(writer, customScalarAdapters, value.hero);
+      new NullableAdapter<>(new ObjectAdapter<HeroDetailsQuery.Hero>(Hero.INSTANCE, false)).toJson(writer, customScalarAdapters, value.hero);
     }
   }
 
@@ -107,7 +109,7 @@ public class HeroDetailsQuery_ResponseAdapter {
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: totalCount = Adapters.NullableIntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: edges = Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<HeroDetailsQuery.Edge>(Edge.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
+          case 1: edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<HeroDetailsQuery.Edge>(Edge.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -125,7 +127,7 @@ public class HeroDetailsQuery_ResponseAdapter {
       Adapters.NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount);
 
       writer.name("edges");
-      Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<HeroDetailsQuery.Edge>(Edge.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.edges);
+      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<HeroDetailsQuery.Edge>(Edge.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.edges);
     }
   }
 
@@ -142,7 +144,7 @@ public class HeroDetailsQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: node = Adapters.nullable(new ObjectAdapter<HeroDetailsQuery.Node>(Node.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: node = new NullableAdapter<>(new ObjectAdapter<HeroDetailsQuery.Node>(Node.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -156,7 +158,7 @@ public class HeroDetailsQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         HeroDetailsQuery.Edge value) {
       writer.name("node");
-      Adapters.nullable(new ObjectAdapter<HeroDetailsQuery.Node>(Node.INSTANCE, false)).toJson(writer, customScalarAdapters, value.node);
+      new NullableAdapter<>(new ObjectAdapter<HeroDetailsQuery.Node>(Node.INSTANCE, false)).toJson(writer, customScalarAdapters, value.node);
     }
   }
 

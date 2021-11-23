@@ -6,13 +6,14 @@
 package com.example.reserved_kotlin_keywords.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ListAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -38,8 +39,8 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: yield_ = Adapters.nullable(new ObjectAdapter<TestQuery.Yield>(Yield.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
-          case 1: objects = Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<TestQuery.Object>(Object.INSTANCE, true)))).fromJson(reader, customScalarAdapters); break;
+          case 0: yield_ = new NullableAdapter<>(new ObjectAdapter<TestQuery.Yield>(Yield.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 1: objects = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Object>(Object.INSTANCE, true)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -54,10 +55,10 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Data value) {
       writer.name("yield");
-      Adapters.nullable(new ObjectAdapter<TestQuery.Yield>(Yield.INSTANCE, false)).toJson(writer, customScalarAdapters, value.yield_);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Yield>(Yield.INSTANCE, false)).toJson(writer, customScalarAdapters, value.yield_);
 
       writer.name("objects");
-      Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<TestQuery.Object>(Object.INSTANCE, true)))).toJson(writer, customScalarAdapters, value.objects);
+      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Object>(Object.INSTANCE, true)))).toJson(writer, customScalarAdapters, value.objects);
     }
   }
 

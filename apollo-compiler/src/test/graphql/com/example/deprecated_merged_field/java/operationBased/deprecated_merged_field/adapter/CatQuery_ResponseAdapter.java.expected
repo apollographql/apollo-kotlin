@@ -6,13 +6,13 @@
 package com.example.deprecated_merged_field.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -38,7 +38,7 @@ public class CatQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: cat = Adapters.nullable(new ObjectAdapter<CatQuery.Cat>(Cat.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: cat = new NullableAdapter<>(new ObjectAdapter<CatQuery.Cat>(Cat.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -52,7 +52,7 @@ public class CatQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         CatQuery.Data value) {
       writer.name("cat");
-      Adapters.nullable(new ObjectAdapter<CatQuery.Cat>(Cat.INSTANCE, true)).toJson(writer, customScalarAdapters, value.cat);
+      new NullableAdapter<>(new ObjectAdapter<CatQuery.Cat>(Cat.INSTANCE, true)).toJson(writer, customScalarAdapters, value.cat);
     }
   }
 

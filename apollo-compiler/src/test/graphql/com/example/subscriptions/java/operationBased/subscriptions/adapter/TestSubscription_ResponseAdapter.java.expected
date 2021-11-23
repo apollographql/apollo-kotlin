@@ -6,10 +6,10 @@
 package com.example.subscriptions.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.IntAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -35,7 +35,7 @@ public class TestSubscription_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: commentAdded = Adapters.nullable(new ObjectAdapter<TestSubscription.CommentAdded>(CommentAdded.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: commentAdded = new NullableAdapter<>(new ObjectAdapter<TestSubscription.CommentAdded>(CommentAdded.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -49,7 +49,7 @@ public class TestSubscription_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestSubscription.Data value) {
       writer.name("commentAdded");
-      Adapters.nullable(new ObjectAdapter<TestSubscription.CommentAdded>(CommentAdded.INSTANCE, false)).toJson(writer, customScalarAdapters, value.commentAdded);
+      new NullableAdapter<>(new ObjectAdapter<TestSubscription.CommentAdded>(CommentAdded.INSTANCE, false)).toJson(writer, customScalarAdapters, value.commentAdded);
     }
   }
 

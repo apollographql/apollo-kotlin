@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -133,7 +134,7 @@ public class TestOperation_ResponseAdapter {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
           case 1: name = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
-          case 2: friends = Adapters.list(new ObjectAdapter<TestOperation.Friend>(Friend.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 2: friends = new ListAdapter<>(new ObjectAdapter<TestOperation.Friend>(Friend.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -166,7 +167,7 @@ public class TestOperation_ResponseAdapter {
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.name);
 
       writer.name("friends");
-      Adapters.list(new ObjectAdapter<TestOperation.Friend>(Friend.INSTANCE, true)).toJson(writer, customScalarAdapters, value.friends);
+      new ListAdapter<>(new ObjectAdapter<TestOperation.Friend>(Friend.INSTANCE, true)).toJson(writer, customScalarAdapters, value.friends);
 
       if (value.onHuman != null) {
         com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnHuman.INSTANCE.toJson(writer, customScalarAdapters, value.onHuman);
@@ -271,7 +272,7 @@ public class TestOperation_ResponseAdapter {
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: profilePictureUrl = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: friends = Adapters.list(new ObjectAdapter<TestOperation.Friend1>(Friend1.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 1: friends = new ListAdapter<>(new ObjectAdapter<TestOperation.Friend1>(Friend1.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -291,7 +292,7 @@ public class TestOperation_ResponseAdapter {
       Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.profilePictureUrl);
 
       writer.name("friends");
-      Adapters.list(new ObjectAdapter<TestOperation.Friend1>(Friend1.INSTANCE, true)).toJson(writer, customScalarAdapters, value.friends);
+      new ListAdapter<>(new ObjectAdapter<TestOperation.Friend1>(Friend1.INSTANCE, true)).toJson(writer, customScalarAdapters, value.friends);
     }
   }
 
@@ -392,7 +393,7 @@ public class TestOperation_ResponseAdapter {
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: race = Race_ResponseAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
-          case 1: friends = Adapters.list(new ObjectAdapter<TestOperation.Friend2>(Friend2.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 1: friends = new ListAdapter<>(new ObjectAdapter<TestOperation.Friend2>(Friend2.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -413,7 +414,7 @@ public class TestOperation_ResponseAdapter {
       Race_ResponseAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.race);
 
       writer.name("friends");
-      Adapters.list(new ObjectAdapter<TestOperation.Friend2>(Friend2.INSTANCE, false)).toJson(writer, customScalarAdapters, value.friends);
+      new ListAdapter<>(new ObjectAdapter<TestOperation.Friend2>(Friend2.INSTANCE, false)).toJson(writer, customScalarAdapters, value.friends);
     }
   }
 

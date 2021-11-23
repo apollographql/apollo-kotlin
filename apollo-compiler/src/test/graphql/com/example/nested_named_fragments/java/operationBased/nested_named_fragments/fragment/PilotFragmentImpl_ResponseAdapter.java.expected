@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -34,7 +35,7 @@ public class PilotFragmentImpl_ResponseAdapter {
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: name = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: homeworld = Adapters.nullable(new ObjectAdapter<com.example.nested_named_fragments.fragment.PilotFragment.Homeworld>(Homeworld.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 1: homeworld = new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.fragment.PilotFragment.Homeworld>(Homeworld.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -52,7 +53,7 @@ public class PilotFragmentImpl_ResponseAdapter {
       Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.name);
 
       writer.name("homeworld");
-      Adapters.nullable(new ObjectAdapter<com.example.nested_named_fragments.fragment.PilotFragment.Homeworld>(Homeworld.INSTANCE, true)).toJson(writer, customScalarAdapters, value.homeworld);
+      new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.fragment.PilotFragment.Homeworld>(Homeworld.INSTANCE, true)).toJson(writer, customScalarAdapters, value.homeworld);
     }
   }
 

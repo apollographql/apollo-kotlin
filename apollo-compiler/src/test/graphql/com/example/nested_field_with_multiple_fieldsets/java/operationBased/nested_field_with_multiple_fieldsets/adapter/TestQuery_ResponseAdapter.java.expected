@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -37,7 +38,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: iface1 = Adapters.nullable(new ObjectAdapter<TestQuery.Iface1>(Iface1.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: iface1 = new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface1>(Iface1.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -51,7 +52,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Data value) {
       writer.name("iface1");
-      Adapters.nullable(new ObjectAdapter<TestQuery.Iface1>(Iface1.INSTANCE, true)).toJson(writer, customScalarAdapters, value.iface1);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface1>(Iface1.INSTANCE, true)).toJson(writer, customScalarAdapters, value.iface1);
     }
   }
 
@@ -116,7 +117,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: iface2 = Adapters.nullable(new ObjectAdapter<TestQuery.Iface2>(Iface2.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: iface2 = new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface2>(Iface2.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -130,7 +131,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.OnIface1 value) {
       writer.name("iface2");
-      Adapters.nullable(new ObjectAdapter<TestQuery.Iface2>(Iface2.INSTANCE, true)).toJson(writer, customScalarAdapters, value.iface2);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface2>(Iface2.INSTANCE, true)).toJson(writer, customScalarAdapters, value.iface2);
     }
   }
 
@@ -257,7 +258,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: iface2 = Adapters.nullable(new ObjectAdapter<TestQuery.Iface21>(Iface21.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: iface2 = new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface21>(Iface21.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -271,7 +272,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.OnImpl1 value) {
       writer.name("iface2");
-      Adapters.nullable(new ObjectAdapter<TestQuery.Iface21>(Iface21.INSTANCE, true)).toJson(writer, customScalarAdapters, value.iface2);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface21>(Iface21.INSTANCE, true)).toJson(writer, customScalarAdapters, value.iface2);
     }
   }
 

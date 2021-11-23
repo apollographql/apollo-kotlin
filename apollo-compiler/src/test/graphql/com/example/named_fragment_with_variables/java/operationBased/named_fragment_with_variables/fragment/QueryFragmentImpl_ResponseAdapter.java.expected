@@ -6,9 +6,10 @@
 package com.example.named_fragment_with_variables.fragment;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ListAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -32,7 +33,7 @@ public class QueryFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: organization = Adapters.nullable(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization>(Organization.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: organization = new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization>(Organization.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -46,7 +47,7 @@ public class QueryFragmentImpl_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         com.example.named_fragment_with_variables.fragment.QueryFragment value) {
       writer.name("organization");
-      Adapters.nullable(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization>(Organization.INSTANCE, false)).toJson(writer, customScalarAdapters, value.organization);
+      new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization>(Organization.INSTANCE, false)).toJson(writer, customScalarAdapters, value.organization);
     }
   }
 
@@ -65,7 +66,7 @@ public class QueryFragmentImpl_ResponseAdapter {
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: id = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
-          case 1: user = Adapters.list(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User>(User.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 1: user = new ListAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User>(User.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -86,7 +87,7 @@ public class QueryFragmentImpl_ResponseAdapter {
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.id);
 
       writer.name("user");
-      Adapters.list(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User>(User.INSTANCE, true)).toJson(writer, customScalarAdapters, value.user);
+      new ListAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User>(User.INSTANCE, true)).toJson(writer, customScalarAdapters, value.user);
     }
   }
 

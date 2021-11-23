@@ -6,8 +6,8 @@
 package com.example.enum_field.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.enum_field.TestQuery;
@@ -31,7 +31,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: gravity = Adapters.nullable(Gravity_ResponseAdapter.INSTANCE).fromJson(reader, customScalarAdapters); break;
+          case 0: gravity = new NullableAdapter<>(Gravity_ResponseAdapter.INSTANCE).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -45,7 +45,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Data value) {
       writer.name("gravity");
-      Adapters.nullable(Gravity_ResponseAdapter.INSTANCE).toJson(writer, customScalarAdapters, value.gravity);
+      new NullableAdapter<>(Gravity_ResponseAdapter.INSTANCE).toJson(writer, customScalarAdapters, value.gravity);
     }
   }
 }

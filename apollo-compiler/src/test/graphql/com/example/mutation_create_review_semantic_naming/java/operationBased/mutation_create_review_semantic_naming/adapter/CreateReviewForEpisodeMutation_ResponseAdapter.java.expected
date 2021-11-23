@@ -10,6 +10,7 @@ import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.IntAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -34,7 +35,7 @@ public class CreateReviewForEpisodeMutation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: createReview = Adapters.nullable(new ObjectAdapter<CreateReviewForEpisodeMutation.CreateReview>(CreateReview.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: createReview = new NullableAdapter<>(new ObjectAdapter<CreateReviewForEpisodeMutation.CreateReview>(CreateReview.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -48,7 +49,7 @@ public class CreateReviewForEpisodeMutation_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         CreateReviewForEpisodeMutation.Data value) {
       writer.name("createReview");
-      Adapters.nullable(new ObjectAdapter<CreateReviewForEpisodeMutation.CreateReview>(CreateReview.INSTANCE, false)).toJson(writer, customScalarAdapters, value.createReview);
+      new NullableAdapter<>(new ObjectAdapter<CreateReviewForEpisodeMutation.CreateReview>(CreateReview.INSTANCE, false)).toJson(writer, customScalarAdapters, value.createReview);
     }
   }
 

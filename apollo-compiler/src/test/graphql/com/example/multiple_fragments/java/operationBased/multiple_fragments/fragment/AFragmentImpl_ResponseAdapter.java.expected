@@ -6,13 +6,13 @@
 package com.example.multiple_fragments.fragment;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -37,7 +37,7 @@ public class AFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: node = Adapters.nullable(new ObjectAdapter<com.example.multiple_fragments.fragment.AFragment.Node>(Node.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: node = new NullableAdapter<>(new ObjectAdapter<com.example.multiple_fragments.fragment.AFragment.Node>(Node.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -51,7 +51,7 @@ public class AFragmentImpl_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         com.example.multiple_fragments.fragment.AFragment value) {
       writer.name("node");
-      Adapters.nullable(new ObjectAdapter<com.example.multiple_fragments.fragment.AFragment.Node>(Node.INSTANCE, true)).toJson(writer, customScalarAdapters, value.node);
+      new NullableAdapter<>(new ObjectAdapter<com.example.multiple_fragments.fragment.AFragment.Node>(Node.INSTANCE, true)).toJson(writer, customScalarAdapters, value.node);
     }
   }
 

@@ -9,6 +9,8 @@ import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ListAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -36,7 +38,7 @@ public class DroidDetailsImpl_ResponseAdapter {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: name = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
           case 1: primaryFunction = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: friends = Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend>(Friend.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
+          case 2: friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend>(Friend.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -60,7 +62,7 @@ public class DroidDetailsImpl_ResponseAdapter {
       Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction);
 
       writer.name("friends");
-      Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend>(Friend.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.friends);
+      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend>(Friend.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.friends);
     }
   }
 

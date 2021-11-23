@@ -61,6 +61,9 @@ internal object JavaClassNames {
   val BVariable = ClassName.get(apolloApiPackageName, "BVariable")
   val BPossibleTypes = ClassName.get(apolloApiPackageName, "BPossibleTypes")
   val ImmutableMapBuilder = ClassName.get(apolloApiPackageName, "ImmutableMapBuilder")
+  val NullableAdapter = ClassName.get(apolloApiPackageName, "NullableAdapter")
+  val ListAdapter = ClassName.get(apolloApiPackageName, "ListAdapter")
+  val OptionalAdapter = ClassName.get(apolloApiPackageName, "OptionalAdapter")
 
   /**
    * ClassNames for kotlin files turned into java classes
