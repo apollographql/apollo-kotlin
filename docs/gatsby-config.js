@@ -58,6 +58,10 @@ module.exports = {
             'advanced/http-engine',
             'advanced/no-runtime',
           ],
+          Testing: [
+            'advanced/ui-tests',
+            'advanced/test-builders',
+          ],
           Advanced: [
             'advanced/query-batching',
             'advanced/upload',
@@ -71,10 +75,8 @@ module.exports = {
             'advanced/response-based-codegen',
             'advanced/java',
             'advanced/rxjava',
-            'advanced/ui-tests',
             'advanced/kotlin-native',
             'advanced/apollo-ast',
-            'advanced/test-builders',
           ],
         }
       }

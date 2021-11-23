@@ -1,20 +1,14 @@
 ---
-title: 'Test Builders'
+title: Test builders
 ---
 
-> Note: Test Builders are experimental and subject to change. We'd love to have your feedback on them. Things that worked well, things that can be improved, etc.. Feel free to reach out either through [Github issues](https://github.com/apollographql/apollo-android/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md&title=[Test Builders]) or the [Kotlinlang slack channel](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ).
+> ⚠️ **Test builders are experimental and subject to change.** If you have feedback on them, please let us know via [GitHub issues](https://github.com/apollographql/apollo-android/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md&title=[Test%20Builders]) or in the [Kotlin Slack community](https://slack.kotl.in/).
 
-Apollo Android generates model classes based on your operations. You can then use these classes in your
-project, which means you will probably need to instantiate them in your tests.
+Apollo Android provides **test builders** that enable you to instantiate your GraphQL model classes with default values. Test builders are especially helpful for testing models with a large number of fields or a deeply nested hierarchy. They automatically populate the `__typename` field and deduplicate merged fields whenever possible.
 
-However, if your models have many fields or their hierarchy is deep, you may find it tedious to instantiate them
-manually - as a value must be set for each field.
+## Enabling test builders
 
-To make it easier, Apollo Android provides Test Builders: an optional mechanism that helps to build these models, with default values.
-Additionally, Test Builders will populate `__typename` for you and deduplicate merged fields when possible.
-
-As it may not be useful to all users and it generates more code, test builder generation is not enabled by default. To
-enable it, set the `generateTestBuilders` option to `true`:
+Test builders are _not_ enabled by default, because they aren't useful for every application and they generate additional code. To enable them, set the `generateTestBuilders` option to `true`:
 
 ```kotlin:title=build.gradle[.kts]
 apollo {
@@ -22,17 +16,14 @@ apollo {
 
   // Enable test builder generation
   generateTestBuilders.set(true)
-  
-  // Optionally, you may customize the output path
-  testDir.set(file("test-builders"))
 }
 ```
 
-This will generate a builder DSL for each model used by your operations. These DSLs are based on the model's
-fields, and allow you to set the values of the fields you care about for your specific tests, while default values will
-automatically be set for the other fields.
+This generates a builder DSL for each model used by your operations. These DSLs are based on each model's fields. Using the DSLs, you can set the values of fields you require for a particular test, and mocked values are set automatically for _other_ fields.
 
-For example, given this query:
+## Example usage
+
+Let's say we're building a test that uses a mocked result of the following query:
 
 ```graphql
 query HeroForEpisode($ep: Episode!) {
@@ -51,14 +42,16 @@ query HeroForEpisode($ep: Episode!) {
 }
 ```
 
-Here is how you would use the corresponding test builder:
+Here's how we can use the corresponding test builder for that mocked result:
 
 ```kotlin
+// Import the query's test builder
 import com.example.test.HeroForEpisodeQuery_TestBuilder.Data
 
 @Test
 fun test() {
   val data = HeroForEpisodeQuery.Data {
+    // Set values for particular fields of the query
     hero = humanHero {
       firstName = "John"
       age = 42
@@ -70,21 +63,20 @@ fun test() {
 }
 ```
 
-In this example we create a Human Hero with specific values for `firstName` and `age`, and the values for `lastName`
-and `height` are automatically filled with mock values.
+In this example, the `hero` field is a `Human` object with specified values for `firstName` and `age`. The values for `lastName`and `height` are automatically populated with mock values.
 
-### Advanced usage
+> You can replace `humanHero` above with `droidHero` to create a `Droid` object instead, or specify `otherHero` to create an object that is neither a `Human` nor a `Droid`.
 
-To automatically assign values to the fields for which you don't explicit set a value, the builder uses a `TestResolver`
-which is by default `DefaultTestResolver`.
+## Configuring default field values
 
-`DefaultTestResolver` will give String fields the field's name as their value, increment a counter for Int values, etc.
+To assign default values to fields, test builders use an implementation of the `TestResolver` interface. By default, they use an instance of `DefaultTestResolver`.
 
-You can instead pass your own `TestResolver` implementation (extend `DefaultTestResolver` for a head start) as a
-parameter to the `Data` function, like so:
+The `DefaultTestResolver` gives each `String` field the field's name as its default value, and it increments a counter as it assigns default values for `Int` fields. It defines similar default behavior for other types.
 
-```kotlin
-// A TestResolver that assign -1 to Int fields
+You can create your _own_ `TestResolver` implementation (optionally extending `DefaultTestResolver` for a head start). You then pass this implementation as a parameter to the `Data` function, like so:
+
+```kotlin{10}
+// A TestResolver implementation that assigns -1 to all Int fields
 val myTestResolver = object : DefaultTestResolver() {
   override fun resolveInt(path: List<Any>): Int {
     return -1
