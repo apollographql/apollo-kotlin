@@ -38,13 +38,13 @@ Single<ApolloResponse<MyQuery.Data>> queryResponse = Rx2Apollo.single(queryCall)
 queryResponse.subscribe( /* ... */ );
 
 // A mutation
-    ApolloMutationCall<MyMutation.Data>mutationCall=client.mutation(new MyMutation("my-parameter"));
-    Single<ApolloResponse<MyMutation.Data>>mutationResponse=Rx2Apollo.single(mutationCall);
+ApolloMutationCall<MyMutation.Data> mutationCall = client.mutation(new MyMutation("my-parameter"));
+Single<ApolloResponse<MyMutation.Data>> mutationResponse = Rx2Apollo.single(mutationCall);
 mutationResponse.subscribe( /* ... */ );
 
 // A subscription
-    ApolloSubscriptionCall<MySubscription.Data>subscriptionCall=client.subscription(new MySubscription());
-    Flowable<ApolloResponse<MySubscription.Data>>subscriptionResponse=Rx2Apollo.flowable(subscriptionCall);
+ApolloSubscriptionCall<MySubscription.Data> subscriptionCall = client.subscription(new MySubscription());
+Flowable<ApolloResponse<MySubscription.Data>> subscriptionResponse = Rx2Apollo.flowable(subscriptionCall);
 subscriptionResponse.subscribe( /* ... */ );
 ```
 
