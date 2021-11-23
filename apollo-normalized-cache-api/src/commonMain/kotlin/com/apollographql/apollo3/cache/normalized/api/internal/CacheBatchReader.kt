@@ -17,7 +17,7 @@ import com.apollographql.apollo3.exception.CacheMissException
  *
  * Returns the data in [toMap]
  */
-class CacheBatchReader(
+internal class CacheBatchReader(
     private val cache: ReadOnlyNormalizedCache,
     private val rootKey: String,
     private val variables: Executable.Variables,

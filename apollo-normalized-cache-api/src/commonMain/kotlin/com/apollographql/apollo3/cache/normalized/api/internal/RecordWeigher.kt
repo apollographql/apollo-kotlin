@@ -5,7 +5,7 @@ import com.apollographql.apollo3.cache.normalized.api.Record
 import okio.internal.commonAsUtf8ToByteArray
 import kotlin.jvm.JvmStatic
 
-object RecordWeigher {
+internal object RecordWeigher {
   private const val SIZE_OF_BOOLEAN = 16
   private const val SIZE_OF_INT = 4
   private const val SIZE_OF_LONG = 8
