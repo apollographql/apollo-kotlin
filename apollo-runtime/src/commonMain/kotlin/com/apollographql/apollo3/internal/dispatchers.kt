@@ -2,14 +2,14 @@ package com.apollographql.apollo3.internal
 
 import kotlinx.coroutines.CoroutineDispatcher
 
-expect fun defaultDispatcher(requested: CoroutineDispatcher?): CoroutineDispatcher
+internal expect fun defaultDispatcher(requested: CoroutineDispatcher?): CoroutineDispatcher
 
 /**
  * A mutex implementation for code that runs in the defaultDispatcher
  *
  * On native, this is a no-op because the defaultDispatcher is always the main loop
  */
-expect class DefaultMutex(): Mutex
+internal expect class DefaultMutex() : Mutex
 
 /**
  * A coroutine dispatcher that can continue to run in the background. Typically,
@@ -18,7 +18,7 @@ expect class DefaultMutex(): Mutex
  * On the JVM, it uses a background thread
  * On native, it uses the main thread
  */
-expect class BackgroundDispatcher() {
+internal expect class BackgroundDispatcher() {
   val coroutineDispatcher: CoroutineDispatcher
   fun dispose()
 }
