@@ -20,9 +20,7 @@ import okio.FileSystem
 import okio.ForwardingFileSystem
 import okio.ForwardingSink
 import okio.Path
-import okio.Path.Companion.toOkioPath
 import okio.Sink
-import java.io.File
 import java.io.IOException
 
 /**
@@ -92,21 +90,4 @@ class FaultyFileSystem constructor(delegate: FileSystem?) : ForwardingFileSystem
     }
   }
 }
-
-fun FaultyFileSystem.setFaultyDelete(file: File, faulty: Boolean) = setFaultyDelete(file.toOkioPath(), faulty)
-fun FaultyFileSystem.setFaultyRename(file: File, faulty: Boolean) = setFaultyRename(file.toOkioPath(), faulty)
-fun FaultyFileSystem.setFaultyWrite(file: File, faulty: Boolean) = setFaultyWrite(file.toOkioPath(), faulty)
-fun FaultyFileSystem.exists(file: File) = exists(file.toOkioPath())
-fun FaultyFileSystem.sink(file: File): Sink {
-  if (!file.exists()) {
-    file.parentFile.mkdirs()
-    file.createNewFile()
-  }
-  return sink(file.toOkioPath())
-}
-
-fun FaultyFileSystem.rename(from: File, to: File) = atomicMove(from.toOkioPath(), to.toOkioPath())
-fun FaultyFileSystem.delete(file: File) = delete(file.toOkioPath())
-fun FaultyFileSystem.deleteRecursively(file: File) = deleteRecursively(file.toOkioPath())
-fun FaultyFileSystem.source(file: File) = source(file.toOkioPath())
 

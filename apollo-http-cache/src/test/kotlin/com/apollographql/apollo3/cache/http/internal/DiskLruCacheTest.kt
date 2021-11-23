@@ -18,6 +18,8 @@ package com.apollographql.apollo3.cache.http.internal
 import com.apollographql.apollo3.cache.http.internal.DiskLruCache.Companion.create
 import com.google.common.truth.Truth
 import okio.FileSystem
+import okio.Path.Companion.toOkioPath
+import okio.Sink
 import okio.Source
 import okio.buffer
 import org.junit.After
@@ -1990,3 +1992,20 @@ class DiskLruCacheTest {
     }
   }
 }
+
+private fun FaultyFileSystem.setFaultyDelete(file: File, faulty: Boolean) = setFaultyDelete(file.toOkioPath(), faulty)
+private fun FaultyFileSystem.setFaultyRename(file: File, faulty: Boolean) = setFaultyRename(file.toOkioPath(), faulty)
+private fun FaultyFileSystem.setFaultyWrite(file: File, faulty: Boolean) = setFaultyWrite(file.toOkioPath(), faulty)
+private fun FaultyFileSystem.exists(file: File) = exists(file.toOkioPath())
+private fun FaultyFileSystem.sink(file: File): Sink {
+  if (!file.exists()) {
+    file.parentFile.mkdirs()
+    file.createNewFile()
+  }
+  return sink(file.toOkioPath())
+}
+
+private fun FaultyFileSystem.rename(from: File, to: File) = atomicMove(from.toOkioPath(), to.toOkioPath())
+private fun FaultyFileSystem.delete(file: File) = delete(file.toOkioPath())
+private fun FaultyFileSystem.deleteRecursively(file: File) = deleteRecursively(file.toOkioPath())
+private fun FaultyFileSystem.source(file: File) = source(file.toOkioPath())
