@@ -26,13 +26,6 @@ interface HttpBody {
 class HttpHeader(val name: String, val value: String)
 
 /**
- * Get the value of the "name" header. HTTP header names are case insensitive, see https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2
- *
- * @param name: the name of the header
- */
-fun List<HttpHeader>.valueOf(name: String): String? = firstOrNull { it.name.equals(name, true) }?.value
-
-/**
  * a HTTP request to be sent
  */
 class HttpRequest
@@ -168,28 +161,6 @@ class HttpResponse
     }
   }
 }
-
-fun HttpBody(
-    contentType: String,
-    byteString: ByteString,
-) = object : HttpBody {
-  override val contentType
-    get() = contentType
-  override val contentLength
-    get() = byteString.size.toLong()
-
-  override fun writeTo(bufferedSink: BufferedSink) {
-    bufferedSink.write(byteString)
-  }
-}
-
-/**
- * Creates a new [HttpBody] from a [String]
- */
-fun HttpBody(
-    contentType: String,
-    string: String,
-): HttpBody = HttpBody(contentType, string.encodeUtf8())
 
 @Deprecated("Please use HttpRequest.Builder methods instead. This will be removed in v3.0.0.")
 fun HttpRequest.withHeader(name: String, value: String) = newBuilder().addHeader(name, value).build()

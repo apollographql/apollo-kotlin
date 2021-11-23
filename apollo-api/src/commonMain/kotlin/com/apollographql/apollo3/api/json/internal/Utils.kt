@@ -1,12 +1,15 @@
-package com.apollographql.apollo3.api.internal.json
+package com.apollographql.apollo3.api.json.internal
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.json.JsonNumber
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import kotlin.jvm.JvmName
 
 /**
  * Helper methods to read and write generic Json values
  */
+@ApolloInternal
 object Utils {
   fun writeToJson(value: Any?, jsonWriter: JsonWriter) {
     when (value) {
@@ -132,6 +135,7 @@ object Utils {
 }
 
 
+@JvmName("-LongToIntExact")
 internal fun Long.toIntExact(): Int {
   val result = toInt()
   check (result.toLong() == this) {
@@ -140,6 +144,7 @@ internal fun Long.toIntExact(): Int {
   return result
 }
 
+@JvmName("-DoubleToIntExact")
 internal fun Double.toIntExact(): Int {
   val result = toInt()
   check (result.toDouble() == this) {
@@ -149,6 +154,7 @@ internal fun Double.toIntExact(): Int {
 }
 
 
+@JvmName("-LongToDoubleExact")
 internal fun Long.toDoubleExact(): Double {
   val result = toDouble()
   check (result.toLong() == this) {
@@ -157,6 +163,7 @@ internal fun Long.toDoubleExact(): Double {
   return result
 }
 
+@JvmName("-DoubleToLongExact")
 internal fun Double.toLongExact(): Long {
   val result = toLong()
   check (result.toDouble() == this) {

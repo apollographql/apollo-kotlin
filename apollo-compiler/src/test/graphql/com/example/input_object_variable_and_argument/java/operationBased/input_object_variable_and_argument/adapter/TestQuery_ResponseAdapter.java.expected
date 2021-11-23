@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -33,7 +34,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: heroWithReview = Adapters.nullable(new ObjectAdapter<TestQuery.HeroWithReview>(HeroWithReview.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: heroWithReview = new NullableAdapter<>(new ObjectAdapter<TestQuery.HeroWithReview>(HeroWithReview.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -47,7 +48,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Data value) {
       writer.name("heroWithReview");
-      Adapters.nullable(new ObjectAdapter<TestQuery.HeroWithReview>(HeroWithReview.INSTANCE, false)).toJson(writer, customScalarAdapters, value.heroWithReview);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.HeroWithReview>(HeroWithReview.INSTANCE, false)).toJson(writer, customScalarAdapters, value.heroWithReview);
     }
   }
 

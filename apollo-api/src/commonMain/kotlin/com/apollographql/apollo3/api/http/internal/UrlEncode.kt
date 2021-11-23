@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.api.http
+package com.apollographql.apollo3.api.http.internal
 
 import kotlin.native.concurrent.SharedImmutable
 

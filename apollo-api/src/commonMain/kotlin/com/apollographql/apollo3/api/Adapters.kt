@@ -2,12 +2,19 @@
 
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.api.json.MapJsonReader.Companion.buffer
-import com.apollographql.apollo3.api.internal.json.MapJsonWriter
-import com.apollographql.apollo3.api.internal.json.Utils
-import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
+import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
+import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.json.MapJsonReader
+import com.apollographql.apollo3.api.json.MapJsonReader.Companion.buffer
+import com.apollographql.apollo3.api.json.MapJsonWriter
+import com.apollographql.apollo3.api.json.internal.Utils
+import com.apollographql.apollo3.api.json.internal.Utils.readRecursively
+import okio.Buffer
+import okio.BufferedSink
+import okio.BufferedSource
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmSuppressWildcards
@@ -154,6 +161,7 @@ object AnyAdapter : Adapter<Any> {
   }
 
   fun toJson(writer: JsonWriter, value: Any) {
+    @OptIn(ApolloInternal::class)
     Utils.writeToJson(value, writer)
   }
 
@@ -205,6 +213,7 @@ class ObjectAdapter<T>(
       /**
        * And write to the original writer
        */
+      @OptIn(ApolloInternal::class)
       Utils.writeToJson(mapWriter.root()!!, writer)
     } else {
       writer.beginObject()
@@ -214,9 +223,13 @@ class ObjectAdapter<T>(
   }
 }
 
+@JvmName("-nullable")
 fun <T : Any> Adapter<T>.nullable() = NullableAdapter(this)
+@JvmName("-list")
 fun <T> Adapter<T>.list() = ListAdapter(this)
+@JvmName("-obj")
 fun <T> Adapter<T>.obj(buffered: Boolean = false) = ObjectAdapter(this, buffered)
+@JvmName("-optional")
 fun <T> Adapter<T>.optional() = OptionalAdapter(this)
 
 /**
@@ -238,3 +251,99 @@ val NullableBooleanAdapter = BooleanAdapter.nullable()
 @JvmField
 val NullableAnyAdapter = AnyAdapter.nullable()
 
+/**
+ * Converts the given value to a Json String
+ */
+fun <T> Adapter<T>.toJson(
+    value: T,
+    customScalarAdapters: CustomScalarAdapters,
+    indent: String,
+): String {
+  val buffer = Buffer()
+
+  toJson(buffer, value, customScalarAdapters, indent)
+  return buffer.readUtf8()
+}
+
+/**
+ * See [toJson]
+ */
+fun <T> Adapter<T>.toJson(
+    value: T,
+): String = toJson(value, CustomScalarAdapters.Empty, "  ")
+
+/**
+ * See [toJson]
+ */
+fun <T> Adapter<T>.toJson(
+    sink: BufferedSink,
+    value: T,
+    customScalarAdapters: CustomScalarAdapters,
+    indent: String,
+) {
+  val writer = BufferedSinkJsonWriter(sink, indent)
+  toJson(writer, customScalarAdapters, value)
+}
+
+/**
+ * See [toJson]
+ */
+fun <T> Adapter<T>.toJson(
+    sink: BufferedSink,
+    value: T,
+): Unit = toJson(sink, value, CustomScalarAdapters.Empty, "  ")
+
+/**
+ * Converts the given [bufferedSource] to a [T]
+ */
+fun <T> Adapter<T>.fromJson(
+    bufferedSource: BufferedSource,
+    customScalarAdapters: CustomScalarAdapters,
+): T {
+  return fromJson(BufferedSourceJsonReader(bufferedSource), customScalarAdapters)
+}
+
+/**
+ * See [fromJson]
+ */
+fun <T> Adapter<T>.fromJson(
+    bufferedSource: BufferedSource,
+): T  = fromJson(bufferedSource, CustomScalarAdapters.Empty)
+
+/**
+ * See [fromJson]
+ */
+fun <T> Adapter<T>.fromJson(
+    string: String,
+    customScalarAdapters: CustomScalarAdapters,
+): T {
+  return fromJson(Buffer().apply { writeUtf8(string) }, customScalarAdapters)
+}
+
+/**
+ * See [fromJson]
+ */
+fun <T> Adapter<T>.fromJson(
+    string: String,
+): T {
+  return fromJson(Buffer().apply { writeUtf8(string) }, CustomScalarAdapters.Empty)
+}
+
+/**
+ * Converts the given Map to a [T]
+ */
+fun <T, M : Map<String, Any?>> Adapter<T>.fromMap(
+    map: M,
+    customScalarAdapters: CustomScalarAdapters,
+): T {
+  return fromJson(MapJsonReader(map), customScalarAdapters)
+}
+
+/**
+ * See [fromMap]
+ */
+fun <T, M : Map<String, Any?>> Adapter<T>.fromMap(
+    map: M,
+): T {
+  return fromJson(MapJsonReader(map), CustomScalarAdapters.Empty)
+}

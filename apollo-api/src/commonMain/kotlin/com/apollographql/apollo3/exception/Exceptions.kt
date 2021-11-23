@@ -5,6 +5,8 @@ import com.apollographql.apollo3.api.http.HttpHeader
 
 /**
  * The base class for all exceptions
+ *
+ * This inherits from [RuntimeException]. Java callers will have to explicitly catch all [ApolloException]s.
  */
 open class ApolloException(message: String? = null, cause: Throwable? = null) : RuntimeException(message, cause)
 

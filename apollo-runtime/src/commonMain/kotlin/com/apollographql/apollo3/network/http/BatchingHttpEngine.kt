@@ -4,8 +4,10 @@ package com.apollographql.apollo3.network.http
 
 import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.ApolloRequest
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.HasMutableExecutionContext
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.HttpBody
@@ -14,10 +16,10 @@ import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.http.addHttpHeader
 import com.apollographql.apollo3.api.http.valueOf
-import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
-import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
-import com.apollographql.apollo3.api.internal.json.buildJsonByteString
-import com.apollographql.apollo3.api.internal.json.writeArray
+import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
+import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
+import com.apollographql.apollo3.api.json.internal.buildJsonByteString
+import com.apollographql.apollo3.api.json.internal.writeArray
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.internal.BackgroundDispatcher
@@ -137,6 +139,7 @@ class BatchingHttpEngine @JvmOverloads constructor(
       override val contentLength = contentLength
       override fun writeTo(bufferedSink: BufferedSink) {
         val writer = BufferedSinkJsonWriter(bufferedSink)
+        @OptIn(ApolloInternal::class)
         writer.writeArray {
           this as BufferedSinkJsonWriter
           allBodies.forEach { body ->
@@ -166,7 +169,7 @@ class BatchingHttpEngine @JvmOverloads constructor(
       val responseBody = response.body ?: throw ApolloException("null body when executing batched query")
 
       // TODO: this is most likely going to transform BigNumbers into strings, not sure how much of an issue that is
-      val list = AnyAdapter.fromJson(BufferedSourceJsonReader(responseBody))
+      val list = AnyAdapter.fromJson(BufferedSourceJsonReader(responseBody), CustomScalarAdapters.Empty)
       if (list !is List<*>) throw ApolloException("batched query response is not a list when executing batched query")
 
       if (list.size != pending.size) {
@@ -177,8 +180,9 @@ class BatchingHttpEngine @JvmOverloads constructor(
         if (it == null) {
           throw ApolloException("batched query response contains a null item")
         }
+        @OptIn(ApolloInternal::class)
         buildJsonByteString {
-          AnyAdapter.toJson(this, it)
+          AnyAdapter.toJson(this, CustomScalarAdapters.Empty, it)
         }
       }
     } catch (e: ApolloException) {

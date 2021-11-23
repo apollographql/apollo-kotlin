@@ -13,6 +13,8 @@ import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ListAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -38,7 +40,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: hero = Adapters.nullable(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: hero = new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -52,7 +54,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Data value) {
       writer.name("hero");
-      Adapters.nullable(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).toJson(writer, customScalarAdapters, value.hero);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).toJson(writer, customScalarAdapters, value.hero);
     }
   }
 
@@ -130,7 +132,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: friends = Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<TestQuery.Friend>(Friend.INSTANCE, true)))).fromJson(reader, customScalarAdapters); break;
+          case 0: friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Friend>(Friend.INSTANCE, true)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -144,7 +146,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.OnHuman value) {
       writer.name("friends");
-      Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<TestQuery.Friend>(Friend.INSTANCE, true)))).toJson(writer, customScalarAdapters, value.friends);
+      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Friend>(Friend.INSTANCE, true)))).toJson(writer, customScalarAdapters, value.friends);
     }
   }
 
@@ -242,7 +244,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: friends = Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<TestQuery.Friend1>(Friend1.INSTANCE, true)))).fromJson(reader, customScalarAdapters); break;
+          case 0: friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Friend1>(Friend1.INSTANCE, true)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -256,7 +258,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.OnDroid value) {
       writer.name("friends");
-      Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<TestQuery.Friend1>(Friend1.INSTANCE, true)))).toJson(writer, customScalarAdapters, value.friends);
+      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Friend1>(Friend1.INSTANCE, true)))).toJson(writer, customScalarAdapters, value.friends);
     }
   }
 

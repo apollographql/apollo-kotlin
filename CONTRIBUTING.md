@@ -52,6 +52,7 @@ identifiers and methods are camelCased.
 * If some extensions do not make sense in Java, mark them with `@JvmName("-$methodName")` to hide them from Java
 * Parameters using milliseconds should have the "Millis" suffix.
 * Else use [kotlin.time.Duration]
+* `ExperimentalContracts` is ok to use. Since kotlin-stdlib does it, we can too. See https://github.com/Kotlin/KEEP/blob/master/proposals/kotlin-contracts.md#compatibility-notice
 
 
 ## Workflow

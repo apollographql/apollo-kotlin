@@ -6,10 +6,11 @@
 package com.example.mutation_create_review_semantic_naming.type.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Optional;
+import com.apollographql.apollo3.api.OptionalAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.mutation_create_review_semantic_naming.type.ReviewInput;
@@ -30,7 +31,7 @@ public enum ReviewRefInput_InputAdapter implements Adapter<ReviewRefInput> {
       ReviewRefInput value) {
     if (value.reviewInput instanceof Optional.Present) {
       writer.name("reviewInput");
-      Adapters.optional(Adapters.nullable(new ObjectAdapter<ReviewInput>(ReviewInput_InputAdapter.INSTANCE, false))).toJson(writer, customScalarAdapters, (Optional.Present<ReviewInput>)value.reviewInput);
+      new OptionalAdapter<>(new NullableAdapter<>(new ObjectAdapter<ReviewInput>(ReviewInput_InputAdapter.INSTANCE, false))).toJson(writer, customScalarAdapters, (Optional.Present<ReviewInput>)value.reviewInput);
     }
   }
 }

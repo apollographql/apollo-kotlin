@@ -9,6 +9,8 @@ import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ListAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -75,7 +77,7 @@ public class HeroDetailsImpl_ResponseAdapter {
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: totalCount = Adapters.NullableIntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: edges = Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Edge>(Edge.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
+          case 1: edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Edge>(Edge.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -93,7 +95,7 @@ public class HeroDetailsImpl_ResponseAdapter {
       Adapters.NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount);
 
       writer.name("edges");
-      Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Edge>(Edge.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.edges);
+      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Edge>(Edge.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.edges);
     }
   }
 
@@ -110,7 +112,7 @@ public class HeroDetailsImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: node = Adapters.nullable(new ObjectAdapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Node>(Node.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: node = new NullableAdapter<>(new ObjectAdapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Node>(Node.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -124,7 +126,7 @@ public class HeroDetailsImpl_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Edge value) {
       writer.name("node");
-      Adapters.nullable(new ObjectAdapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Node>(Node.INSTANCE, false)).toJson(writer, customScalarAdapters, value.node);
+      new NullableAdapter<>(new ObjectAdapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Node>(Node.INSTANCE, false)).toJson(writer, customScalarAdapters, value.node);
     }
   }
 

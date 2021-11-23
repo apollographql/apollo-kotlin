@@ -9,8 +9,11 @@ import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.IntAdapter;
+import com.apollographql.apollo3.api.ListAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Optional;
+import com.apollographql.apollo3.api.OptionalAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -40,83 +43,83 @@ public enum ReviewInput_InputAdapter implements Adapter<ReviewInput> {
     IntAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.stars);
     if (value.nullableIntFieldWithDefaultValue instanceof Optional.Present) {
       writer.name("nullableIntFieldWithDefaultValue");
-      Adapters.optional(Adapters.NullableIntAdapter).toJson(writer, customScalarAdapters, (Optional.Present<Integer>)value.nullableIntFieldWithDefaultValue);
+      new OptionalAdapter<>(Adapters.NullableIntAdapter).toJson(writer, customScalarAdapters, (Optional.Present<Integer>)value.nullableIntFieldWithDefaultValue);
     }
     if (value.commentary instanceof Optional.Present) {
       writer.name("commentary");
-      Adapters.optional(Adapters.NullableStringAdapter).toJson(writer, customScalarAdapters, (Optional.Present<String>)value.commentary);
+      new OptionalAdapter<>(Adapters.NullableStringAdapter).toJson(writer, customScalarAdapters, (Optional.Present<String>)value.commentary);
     }
     writer.name("favoriteColor");
     new ObjectAdapter<ColorInput>(ColorInput_InputAdapter.INSTANCE, false).toJson(writer, customScalarAdapters, value.favoriteColor);
     if (value.enumWithDefaultValue instanceof Optional.Present) {
       writer.name("enumWithDefaultValue");
-      Adapters.optional(Adapters.nullable(Episode_ResponseAdapter.INSTANCE)).toJson(writer, customScalarAdapters, (Optional.Present<Episode>)value.enumWithDefaultValue);
+      new OptionalAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, customScalarAdapters, (Optional.Present<Episode>)value.enumWithDefaultValue);
     }
     if (value.nonNullableEnumWithDefaultValue instanceof Optional.Present) {
       writer.name("nonNullableEnumWithDefaultValue");
-      Adapters.optional(Episode_ResponseAdapter.INSTANCE).toJson(writer, customScalarAdapters, (Optional.Present<Episode>)value.nonNullableEnumWithDefaultValue);
+      new OptionalAdapter<>(Episode_ResponseAdapter.INSTANCE).toJson(writer, customScalarAdapters, (Optional.Present<Episode>)value.nonNullableEnumWithDefaultValue);
     }
     if (value.nullableEnum instanceof Optional.Present) {
       writer.name("nullableEnum");
-      Adapters.optional(Adapters.nullable(Episode_ResponseAdapter.INSTANCE)).toJson(writer, customScalarAdapters, (Optional.Present<Episode>)value.nullableEnum);
+      new OptionalAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, customScalarAdapters, (Optional.Present<Episode>)value.nullableEnum);
     }
     if (value.listOfCustomScalar instanceof Optional.Present) {
       writer.name("listOfCustomScalar");
-      Adapters.optional(Adapters.nullable(Adapters.list(Adapters.nullable((customScalarAdapters.<Date>responseAdapterFor(com.example.input_object_type.type.Date.type)))))).toJson(writer, customScalarAdapters, (Optional.Present<List<Date>>)value.listOfCustomScalar);
+      new OptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>((customScalarAdapters.<Date>responseAdapterFor(com.example.input_object_type.type.Date.type)))))).toJson(writer, customScalarAdapters, (Optional.Present<List<Date>>)value.listOfCustomScalar);
     }
     if (value.customScalar instanceof Optional.Present) {
       writer.name("customScalar");
-      Adapters.optional(Adapters.nullable((customScalarAdapters.<Date>responseAdapterFor(com.example.input_object_type.type.Date.type)))).toJson(writer, customScalarAdapters, (Optional.Present<Date>)value.customScalar);
+      new OptionalAdapter<>(new NullableAdapter<>((customScalarAdapters.<Date>responseAdapterFor(com.example.input_object_type.type.Date.type)))).toJson(writer, customScalarAdapters, (Optional.Present<Date>)value.customScalar);
     }
     if (value.listOfEnums instanceof Optional.Present) {
       writer.name("listOfEnums");
-      Adapters.optional(Adapters.nullable(Adapters.list(Adapters.nullable(Episode_ResponseAdapter.INSTANCE)))).toJson(writer, customScalarAdapters, (Optional.Present<List<Episode>>)value.listOfEnums);
+      new OptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)))).toJson(writer, customScalarAdapters, (Optional.Present<List<Episode>>)value.listOfEnums);
     }
     if (value.listOfInt instanceof Optional.Present) {
       writer.name("listOfInt");
-      Adapters.optional(Adapters.nullable(Adapters.list(Adapters.NullableIntAdapter))).toJson(writer, customScalarAdapters, (Optional.Present<List<Integer>>)value.listOfInt);
+      new OptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(Adapters.NullableIntAdapter))).toJson(writer, customScalarAdapters, (Optional.Present<List<Integer>>)value.listOfInt);
     }
     if (value.listOfString instanceof Optional.Present) {
       writer.name("listOfString");
-      Adapters.optional(Adapters.nullable(Adapters.list(Adapters.NullableStringAdapter))).toJson(writer, customScalarAdapters, (Optional.Present<List<String>>)value.listOfString);
+      new OptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(Adapters.NullableStringAdapter))).toJson(writer, customScalarAdapters, (Optional.Present<List<String>>)value.listOfString);
     }
     writer.name("listOfStringNonOptional");
-    Adapters.list(Adapters.NullableStringAdapter).toJson(writer, customScalarAdapters, value.listOfStringNonOptional);
+    new ListAdapter<>(Adapters.NullableStringAdapter).toJson(writer, customScalarAdapters, value.listOfStringNonOptional);
     if (value.listOfInputTypes instanceof Optional.Present) {
       writer.name("listOfInputTypes");
-      Adapters.optional(Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<ColorInput>(ColorInput_InputAdapter.INSTANCE, false))))).toJson(writer, customScalarAdapters, (Optional.Present<List<ColorInput>>)value.listOfInputTypes);
+      new OptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<ColorInput>(ColorInput_InputAdapter.INSTANCE, false))))).toJson(writer, customScalarAdapters, (Optional.Present<List<ColorInput>>)value.listOfInputTypes);
     }
     if (value.booleanWithDefaultValue instanceof Optional.Present) {
       writer.name("booleanWithDefaultValue");
-      Adapters.optional(Adapters.NullableBooleanAdapter).toJson(writer, customScalarAdapters, (Optional.Present<Boolean>)value.booleanWithDefaultValue);
+      new OptionalAdapter<>(Adapters.NullableBooleanAdapter).toJson(writer, customScalarAdapters, (Optional.Present<Boolean>)value.booleanWithDefaultValue);
     }
     if (value.booleanNonOptional instanceof Optional.Present) {
       writer.name("booleanNonOptional");
-      Adapters.optional(Adapters.NullableBooleanAdapter).toJson(writer, customScalarAdapters, (Optional.Present<Boolean>)value.booleanNonOptional);
+      new OptionalAdapter<>(Adapters.NullableBooleanAdapter).toJson(writer, customScalarAdapters, (Optional.Present<Boolean>)value.booleanNonOptional);
     }
     if (value.listOfListOfString instanceof Optional.Present) {
       writer.name("listOfListOfString");
-      Adapters.optional(Adapters.nullable(Adapters.list(Adapters.list(StringAdapter.INSTANCE)))).toJson(writer, customScalarAdapters, (Optional.Present<List<List<String>>>)value.listOfListOfString);
+      new OptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(StringAdapter.INSTANCE)))).toJson(writer, customScalarAdapters, (Optional.Present<List<List<String>>>)value.listOfListOfString);
     }
     if (value.listOfListOfEnum instanceof Optional.Present) {
       writer.name("listOfListOfEnum");
-      Adapters.optional(Adapters.nullable(Adapters.list(Adapters.list(Episode_ResponseAdapter.INSTANCE)))).toJson(writer, customScalarAdapters, (Optional.Present<List<List<Episode>>>)value.listOfListOfEnum);
+      new OptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(Episode_ResponseAdapter.INSTANCE)))).toJson(writer, customScalarAdapters, (Optional.Present<List<List<Episode>>>)value.listOfListOfEnum);
     }
     if (value.listOfListOfCustom instanceof Optional.Present) {
       writer.name("listOfListOfCustom");
-      Adapters.optional(Adapters.nullable(Adapters.list(Adapters.list((customScalarAdapters.<Date>responseAdapterFor(com.example.input_object_type.type.Date.type)))))).toJson(writer, customScalarAdapters, (Optional.Present<List<List<Date>>>)value.listOfListOfCustom);
+      new OptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>((customScalarAdapters.<Date>responseAdapterFor(com.example.input_object_type.type.Date.type)))))).toJson(writer, customScalarAdapters, (Optional.Present<List<List<Date>>>)value.listOfListOfCustom);
     }
     if (value.listOfListOfObject instanceof Optional.Present) {
       writer.name("listOfListOfObject");
-      Adapters.optional(Adapters.nullable(Adapters.list(Adapters.list(new ObjectAdapter<ColorInput>(ColorInput_InputAdapter.INSTANCE, false))))).toJson(writer, customScalarAdapters, (Optional.Present<List<List<ColorInput>>>)value.listOfListOfObject);
+      new OptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(new ObjectAdapter<ColorInput>(ColorInput_InputAdapter.INSTANCE, false))))).toJson(writer, customScalarAdapters, (Optional.Present<List<List<ColorInput>>>)value.listOfListOfObject);
     }
     if (value.CapitalizedField instanceof Optional.Present) {
       writer.name("CapitalizedField");
-      Adapters.optional(Adapters.NullableStringAdapter).toJson(writer, customScalarAdapters, (Optional.Present<String>)value.CapitalizedField);
+      new OptionalAdapter<>(Adapters.NullableStringAdapter).toJson(writer, customScalarAdapters, (Optional.Present<String>)value.CapitalizedField);
     }
     if (value.CapitalizedInt instanceof Optional.Present) {
       writer.name("CapitalizedInt");
-      Adapters.optional(Adapters.NullableIntAdapter).toJson(writer, customScalarAdapters, (Optional.Present<Integer>)value.CapitalizedInt);
+      new OptionalAdapter<>(Adapters.NullableIntAdapter).toJson(writer, customScalarAdapters, (Optional.Present<Integer>)value.CapitalizedInt);
     }
   }
 }

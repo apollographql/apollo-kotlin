@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apollographql.apollo3.api.internal.json
+package com.apollographql.apollo3.api.json
 
 import com.apollographql.apollo3.api.Throws
-import com.apollographql.apollo3.api.json.JsonNumber
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.json.internal.JsonScope
 import com.apollographql.apollo3.exception.JsonDataException
 import com.apollographql.apollo3.exception.JsonEncodingException
 import okio.Buffer
@@ -1014,6 +1012,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     private const val NUMBER_CHAR_EXP_SIGN = 6
     private const val NUMBER_CHAR_EXP_DIGIT = 7
 
-    const val MAX_STACK_SIZE = 256
+    internal const val MAX_STACK_SIZE = 256
   }
 }

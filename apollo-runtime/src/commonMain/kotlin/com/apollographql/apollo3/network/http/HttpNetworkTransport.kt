@@ -4,7 +4,7 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.http.ApolloHttpRequestComposer
+import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpRequestComposer
@@ -46,7 +46,7 @@ class HttpNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder instead
       timeoutMillis: Long = 60_000,
       interceptors: List<HttpInterceptor> = emptyList(),
   ) : this(
-      ApolloHttpRequestComposer(serverUrl),
+      DefaultHttpRequestComposer(serverUrl),
       HttpEngine(timeoutMillis),
       interceptors
   )
@@ -71,7 +71,7 @@ class HttpNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder instead
       engine: HttpEngine,
       interceptors: List<HttpInterceptor> = emptyList(),
   ) : this(
-      ApolloHttpRequestComposer(serverUrl),
+      DefaultHttpRequestComposer(serverUrl),
       engine,
       interceptors
   )
@@ -167,7 +167,7 @@ class HttpNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder instead
     }
 
     fun serverUrl(serverUrl: String) = apply {
-      this.httpRequestComposer = ApolloHttpRequestComposer(serverUrl)
+      this.httpRequestComposer = DefaultHttpRequestComposer(serverUrl)
     }
 
     fun httpHeaders(headers: List<HttpHeader>) = apply {

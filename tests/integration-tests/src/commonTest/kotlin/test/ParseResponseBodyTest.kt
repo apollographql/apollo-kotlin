@@ -5,8 +5,7 @@ import com.apollographql.apollo3.adapter.KotlinxLocalDateAdapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.fromJson
-import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
-import com.apollographql.apollo3.api.json.use
+import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.exception.ApolloException
@@ -20,6 +19,7 @@ import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import kotlinx.datetime.LocalDate
 import okio.Buffer
+import okio.use
 import readResource
 import kotlin.test.Test
 import kotlin.test.assertEquals

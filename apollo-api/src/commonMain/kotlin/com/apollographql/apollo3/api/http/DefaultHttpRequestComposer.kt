@@ -1,16 +1,18 @@
 package com.apollographql.apollo3.api.http
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Upload
-import com.apollographql.apollo3.api.internal.json.FileUploadAwareJsonWriter
-import com.apollographql.apollo3.api.internal.json.Utils
-import com.apollographql.apollo3.api.internal.json.buildJsonByteString
-import com.apollographql.apollo3.api.internal.json.buildJsonMap
-import com.apollographql.apollo3.api.internal.json.buildJsonString
-import com.apollographql.apollo3.api.internal.json.writeObject
+import com.apollographql.apollo3.api.http.internal.urlEncode
+import com.apollographql.apollo3.api.json.internal.FileUploadAwareJsonWriter
+import com.apollographql.apollo3.api.json.internal.Utils
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.json.internal.buildJsonByteString
+import com.apollographql.apollo3.api.json.internal.buildJsonMap
+import com.apollographql.apollo3.api.json.internal.buildJsonString
+import com.apollographql.apollo3.api.json.internal.writeObject
 import com.benasher44.uuid.uuid4
 import okio.BufferedSink
 import okio.ByteString
@@ -22,7 +24,7 @@ import okio.ByteString
  * - Automatic Persisted Queries
  * - Adding the default Apollo headers
  */
-class ApolloHttpRequestComposer(
+class DefaultHttpRequestComposer(
     private val serverUrl: String,
 ) : HttpRequestComposer {
 
@@ -82,6 +84,7 @@ class ApolloHttpRequestComposer(
         query: String?,
     ): Map<String, Upload> {
       val uploads: Map<String, Upload>
+      @OptIn(ApolloInternal::class)
       writer.writeObject {
         name("operationName")
         value(operation.name())
@@ -128,6 +131,7 @@ class ApolloHttpRequestComposer(
 
       queryParams.put("operationName", operation.name())
 
+      @OptIn(ApolloInternal::class)
       val variables = buildJsonString {
         val uploadAwareWriter = FileUploadAwareJsonWriter(this)
         uploadAwareWriter.writeObject {
@@ -145,6 +149,7 @@ class ApolloHttpRequestComposer(
       }
 
       if (autoPersistQueries) {
+        @OptIn(ApolloInternal::class)
         val extensions = buildJsonString {
           writeObject {
             name("persistedQuery")
@@ -186,6 +191,8 @@ class ApolloHttpRequestComposer(
         query: String?,
     ): HttpBody {
       val uploads: Map<String, Upload>
+
+      @OptIn(ApolloInternal::class)
       val operationByteString = buildJsonByteString {
         uploads = composePostParams(
             this,
@@ -251,6 +258,7 @@ class ApolloHttpRequestComposer(
       }
     }
 
+    @OptIn(ApolloInternal::class)
     private fun buildUploadMap(uploads: Map<String, Upload>) = buildJsonByteString {
       Utils.writeToJson(uploads.entries.mapIndexed { index, entry ->
         index.toString() to listOf(entry.key)
@@ -263,9 +271,12 @@ class ApolloHttpRequestComposer(
         customScalarAdapters: CustomScalarAdapters,
         autoPersistQueries: Boolean,
         sendDocument: Boolean,
-    ): ByteString = buildJsonByteString {
-      val query = if (sendDocument) operation.document() else null
-      composePostParams(this, operation, customScalarAdapters, autoPersistQueries, query)
+    ): ByteString {
+      @OptIn(ApolloInternal::class)
+      return buildJsonByteString {
+        val query = if (sendDocument) operation.document() else null
+        composePostParams(this, operation, customScalarAdapters, autoPersistQueries, query)
+      }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -278,6 +289,7 @@ class ApolloHttpRequestComposer(
       val customScalarAdapters = apolloRequest.executionContext[CustomScalarAdapters] ?: error("Cannot find a ResponseAdapterCache")
 
       val query = if (sendDocument) operation.document() else null
+      @OptIn(ApolloInternal::class)
       return buildJsonMap {
         composePostParams(this, operation, customScalarAdapters, sendApqExtensions, query)
       } as Map<String, Any?>

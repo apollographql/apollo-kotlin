@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
-import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
+import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
+import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.MapJsonReader
@@ -80,48 +80,4 @@ interface Adapter<T> {
    * ```
    */
   fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T)
-}
-
-fun <T> Adapter<T>.toJson(
-    value: T,
-    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-    indent: String = "",
-): String {
-  val buffer = Buffer()
-
-  toJson(buffer, value, customScalarAdapters, indent)
-  return buffer.readUtf8()
-}
-
-fun <T> Adapter<T>.toJson(
-    sink: BufferedSink,
-    value: T,
-    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-    indent: String = "",
-) {
-  val writer = BufferedSinkJsonWriter(sink)
-  writer.indent = indent
-
-  toJson(writer, customScalarAdapters, value)
-}
-
-fun <T> Adapter<T>.fromJson(
-    bufferedSource: BufferedSource,
-    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-): T {
-  return fromJson(BufferedSourceJsonReader(bufferedSource), customScalarAdapters)
-}
-
-fun <T> Adapter<T>.fromJson(
-    string: String,
-    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-): T {
-  return fromJson(Buffer().apply { writeUtf8(string) }, customScalarAdapters)
-}
-
-fun <T, M : Map<String, Any?>> Adapter<T>.fromMap(
-    map: M,
-    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-): T {
-  return fromJson(MapJsonReader(map), customScalarAdapters)
 }

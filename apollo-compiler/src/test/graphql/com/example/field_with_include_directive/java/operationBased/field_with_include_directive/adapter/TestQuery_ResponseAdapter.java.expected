@@ -8,6 +8,7 @@ package com.example.field_with_include_directive.adapter;
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -31,7 +32,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: hero = Adapters.nullable(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: hero = new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -45,7 +46,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Data value) {
       writer.name("hero");
-      Adapters.nullable(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, false)).toJson(writer, customScalarAdapters, value.hero);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, false)).toJson(writer, customScalarAdapters, value.hero);
     }
   }
 
@@ -63,7 +64,7 @@ public class TestQuery_ResponseAdapter {
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: name = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: friendsConnection = Adapters.nullable(new ObjectAdapter<TestQuery.FriendsConnection>(FriendsConnection.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 1: friendsConnection = new NullableAdapter<>(new ObjectAdapter<TestQuery.FriendsConnection>(FriendsConnection.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -81,7 +82,7 @@ public class TestQuery_ResponseAdapter {
       Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.name);
 
       writer.name("friendsConnection");
-      Adapters.nullable(new ObjectAdapter<TestQuery.FriendsConnection>(FriendsConnection.INSTANCE, false)).toJson(writer, customScalarAdapters, value.friendsConnection);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.FriendsConnection>(FriendsConnection.INSTANCE, false)).toJson(writer, customScalarAdapters, value.friendsConnection);
     }
   }
 

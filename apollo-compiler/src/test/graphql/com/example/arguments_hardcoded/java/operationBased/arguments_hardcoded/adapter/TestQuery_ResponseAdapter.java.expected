@@ -10,6 +10,8 @@ import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.IntAdapter;
+import com.apollographql.apollo3.api.ListAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -34,7 +36,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: reviews = Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<TestQuery.Review>(Review.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
+          case 0: reviews = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Review>(Review.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
           case 1: testNullableArguments = IntAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
@@ -52,7 +54,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Data value) {
       writer.name("reviews");
-      Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<TestQuery.Review>(Review.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.reviews);
+      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Review>(Review.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.reviews);
 
       writer.name("testNullableArguments");
       IntAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.testNullableArguments);

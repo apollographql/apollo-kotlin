@@ -6,9 +6,9 @@
 package com.example.named_fragment_inside_inline_fragment.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -34,7 +34,7 @@ public class GetHero_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: hero = Adapters.nullable(new ObjectAdapter<GetHero.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: hero = new NullableAdapter<>(new ObjectAdapter<GetHero.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -48,7 +48,7 @@ public class GetHero_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         GetHero.Data value) {
       writer.name("hero");
-      Adapters.nullable(new ObjectAdapter<GetHero.Hero>(Hero.INSTANCE, true)).toJson(writer, customScalarAdapters, value.hero);
+      new NullableAdapter<>(new ObjectAdapter<GetHero.Hero>(Hero.INSTANCE, true)).toJson(writer, customScalarAdapters, value.hero);
     }
   }
 

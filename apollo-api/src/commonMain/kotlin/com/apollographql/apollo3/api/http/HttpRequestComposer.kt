@@ -10,7 +10,7 @@ import com.apollographql.apollo3.api.Operation
  * - to skip sending the "query" if the server has support for query whitelisting
  * - to add extensions to the Post payload
  *
- * See [ApolloHttpRequestComposer]
+ * See [DefaultHttpRequestComposer]
  */
 interface HttpRequestComposer {
   fun <D : Operation.Data> compose(apolloRequest: ApolloRequest<D>): HttpRequest

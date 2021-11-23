@@ -14,8 +14,8 @@ import com.squareup.javapoet.ParameterizedTypeName
 
 internal fun BooleanExpression<BTerm>.codeBlock(): CodeBlock {
   return when(this) {
-    is BooleanExpression.False -> CodeBlock.of("new $T.INSTANCE", JavaClassNames.False)
-    is BooleanExpression.True -> CodeBlock.of("new $T.INSTANCE", JavaClassNames.True)
+    is BooleanExpression.False -> CodeBlock.of("$T.INSTANCE", JavaClassNames.False)
+    is BooleanExpression.True -> CodeBlock.of("$T.INSTANCE", JavaClassNames.True)
     is BooleanExpression.And -> {
       val parameters = operands.map {
         it.codeBlock()

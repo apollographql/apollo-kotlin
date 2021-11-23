@@ -1,11 +1,13 @@
 package com.apollographql.apollo3.api.test
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.CompiledType
 import kotlin.reflect.KProperty
 
 /**
  * Base class for test builders that define a DSL to build type safe operation data
  */
+@ApolloExperimental
 abstract class MapBuilder {
   /**
    * __map is public and therefore visible by callers. We prefix it with "__" to avoid the risk of mistaking it
@@ -26,6 +28,7 @@ abstract class MapBuilder {
   abstract fun build(): Map<String, Any?>
 }
 
+@ApolloExperimental
 class StubbedProperty<T>(private val map: MutableMap<String, Any?>, private val responseName: String) {
   operator fun getValue(
       mapBuilder: MapBuilder,
@@ -47,6 +50,7 @@ class StubbedProperty<T>(private val map: MutableMap<String, Any?>, private val 
   }
 }
 
+@ApolloExperimental
 class MandatoryTypenameProperty {
   private var typename: String? = null
 

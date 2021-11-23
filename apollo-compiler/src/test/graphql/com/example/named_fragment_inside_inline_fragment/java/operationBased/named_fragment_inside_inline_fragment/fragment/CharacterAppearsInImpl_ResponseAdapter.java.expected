@@ -6,9 +6,10 @@
 package com.example.named_fragment_inside_inline_fragment.fragment;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ListAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.named_fragment_inside_inline_fragment.type.Episode;
@@ -32,7 +33,7 @@ public class CharacterAppearsInImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: appearsIn = Adapters.list(Adapters.nullable(Episode_ResponseAdapter.INSTANCE)).fromJson(reader, customScalarAdapters); break;
+          case 0: appearsIn = new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -48,7 +49,7 @@ public class CharacterAppearsInImpl_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn value) {
       writer.name("appearsIn");
-      Adapters.list(Adapters.nullable(Episode_ResponseAdapter.INSTANCE)).toJson(writer, customScalarAdapters, value.appearsIn);
+      new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, customScalarAdapters, value.appearsIn);
     }
   }
 }

@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -37,7 +38,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: c = Adapters.nullable(new ObjectAdapter<TestQuery.C>(C.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: c = new NullableAdapter<>(new ObjectAdapter<TestQuery.C>(C.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -51,7 +52,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Data value) {
       writer.name("c");
-      Adapters.nullable(new ObjectAdapter<TestQuery.C>(C.INSTANCE, true)).toJson(writer, customScalarAdapters, value.c);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.C>(C.INSTANCE, true)).toJson(writer, customScalarAdapters, value.c);
     }
   }
 

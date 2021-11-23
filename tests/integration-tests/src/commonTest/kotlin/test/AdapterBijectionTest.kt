@@ -147,7 +147,7 @@ class AdapterBijectionTest {
 
   private fun <D : Operation.Data> bijection(operation: Operation<D>, data: D) {
     val customScalarAdapters = CustomScalarAdapters.Builder().add(Date.type, KotlinxLocalDateAdapter).build()
-    val json = operation.adapter().toJson(value = data, customScalarAdapters = customScalarAdapters)
+    val json = operation.adapter().toJson(value = data, customScalarAdapters = customScalarAdapters, indent = "  ")
     val data2 = operation.adapter().fromJson(Buffer().apply { writeUtf8(json) }, customScalarAdapters)
 
     assertEquals(data, data2)

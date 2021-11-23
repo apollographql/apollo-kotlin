@@ -9,6 +9,8 @@ import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ListAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -34,8 +36,8 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: r2 = Adapters.nullable(new ObjectAdapter<TestQuery.R2>(R2.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
-          case 1: luke = Adapters.nullable(new ObjectAdapter<TestQuery.Luke>(Luke.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: r2 = new NullableAdapter<>(new ObjectAdapter<TestQuery.R2>(R2.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 1: luke = new NullableAdapter<>(new ObjectAdapter<TestQuery.Luke>(Luke.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -50,10 +52,10 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Data value) {
       writer.name("r2");
-      Adapters.nullable(new ObjectAdapter<TestQuery.R2>(R2.INSTANCE, false)).toJson(writer, customScalarAdapters, value.r2);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.R2>(R2.INSTANCE, false)).toJson(writer, customScalarAdapters, value.r2);
 
       writer.name("luke");
-      Adapters.nullable(new ObjectAdapter<TestQuery.Luke>(Luke.INSTANCE, false)).toJson(writer, customScalarAdapters, value.luke);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Luke>(Luke.INSTANCE, false)).toJson(writer, customScalarAdapters, value.luke);
     }
   }
 
@@ -111,7 +113,7 @@ public class TestQuery_ResponseAdapter {
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: totalCount = Adapters.NullableIntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: edges = Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<TestQuery.Edge>(Edge.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
+          case 1: edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Edge>(Edge.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -129,7 +131,7 @@ public class TestQuery_ResponseAdapter {
       Adapters.NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount);
 
       writer.name("edges");
-      Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<TestQuery.Edge>(Edge.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.edges);
+      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Edge>(Edge.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.edges);
     }
   }
 
@@ -145,7 +147,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: node = Adapters.nullable(new ObjectAdapter<TestQuery.Node>(Node.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: node = new NullableAdapter<>(new ObjectAdapter<TestQuery.Node>(Node.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -159,7 +161,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Edge value) {
       writer.name("node");
-      Adapters.nullable(new ObjectAdapter<TestQuery.Node>(Node.INSTANCE, false)).toJson(writer, customScalarAdapters, value.node);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Node>(Node.INSTANCE, false)).toJson(writer, customScalarAdapters, value.node);
     }
   }
 
@@ -256,7 +258,7 @@ public class TestQuery_ResponseAdapter {
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: totalCount = Adapters.NullableIntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: edges = Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<TestQuery.Edge1>(Edge1.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
+          case 1: edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Edge1>(Edge1.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -274,7 +276,7 @@ public class TestQuery_ResponseAdapter {
       Adapters.NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount);
 
       writer.name("edges");
-      Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<TestQuery.Edge1>(Edge1.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.edges);
+      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Edge1>(Edge1.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.edges);
     }
   }
 
@@ -290,7 +292,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: node = Adapters.nullable(new ObjectAdapter<TestQuery.Node1>(Node1.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: node = new NullableAdapter<>(new ObjectAdapter<TestQuery.Node1>(Node1.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -304,7 +306,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Edge1 value) {
       writer.name("node");
-      Adapters.nullable(new ObjectAdapter<TestQuery.Node1>(Node1.INSTANCE, false)).toJson(writer, customScalarAdapters, value.node);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Node1>(Node1.INSTANCE, false)).toJson(writer, customScalarAdapters, value.node);
     }
   }
 

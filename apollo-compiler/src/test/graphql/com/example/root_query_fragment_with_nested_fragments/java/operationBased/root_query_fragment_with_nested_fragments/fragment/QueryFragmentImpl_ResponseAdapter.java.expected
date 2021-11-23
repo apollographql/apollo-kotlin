@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -36,9 +37,9 @@ public class QueryFragmentImpl_ResponseAdapter {
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
-          case 1: hero = Adapters.nullable(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
-          case 2: droid = Adapters.nullable(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid>(Droid.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
-          case 3: human = Adapters.nullable(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human>(Human.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 1: hero = new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 2: droid = new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid>(Droid.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 3: human = new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human>(Human.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -60,13 +61,13 @@ public class QueryFragmentImpl_ResponseAdapter {
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 
       writer.name("hero");
-      Adapters.nullable(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero>(Hero.INSTANCE, true)).toJson(writer, customScalarAdapters, value.hero);
+      new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero>(Hero.INSTANCE, true)).toJson(writer, customScalarAdapters, value.hero);
 
       writer.name("droid");
-      Adapters.nullable(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid>(Droid.INSTANCE, true)).toJson(writer, customScalarAdapters, value.droid);
+      new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid>(Droid.INSTANCE, true)).toJson(writer, customScalarAdapters, value.droid);
 
       writer.name("human");
-      Adapters.nullable(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human>(Human.INSTANCE, true)).toJson(writer, customScalarAdapters, value.human);
+      new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human>(Human.INSTANCE, true)).toJson(writer, customScalarAdapters, value.human);
     }
   }
 

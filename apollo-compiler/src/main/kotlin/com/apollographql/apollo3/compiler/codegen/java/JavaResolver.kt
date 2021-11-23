@@ -87,7 +87,7 @@ class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?) {
           nullableScalarAdapter("NullableAnyAdapter")
         }
         else -> {
-          CodeBlock.of("$T.$nullable($L)", JavaClassNames.Adapters, adapterInitializer(IrNonNullType(type), requiresBuffering))
+          CodeBlock.of("new $T<>($L)", JavaClassNames.NullableAdapter, adapterInitializer(IrNonNullType(type), requiresBuffering))
         }
       }
     }
@@ -121,7 +121,7 @@ class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?) {
     return when {
       type is IrNonNullType -> error("")
       type is IrListType -> {
-        CodeBlock.of("$T.$list($L)", JavaClassNames.Adapters, adapterInitializer(type.ofType, requiresBuffering))
+        CodeBlock.of("new $T<>($L)", JavaClassNames.ListAdapter, adapterInitializer(type.ofType, requiresBuffering))
       }
       type is IrScalarType && type.name == "Boolean" -> nonNullableScalarAdapter(JavaClassNames.BooleanAdapter)
       type is IrScalarType && type.name == "ID" -> nonNullableScalarAdapter(JavaClassNames.StringAdapter)
@@ -158,7 +158,7 @@ class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?) {
         )
       }
       type is IrOptionalType -> {
-        CodeBlock.of("$T.${Identifier.optional}($L)", JavaClassNames.Adapters, adapterInitializer(type.ofType, requiresBuffering))
+        CodeBlock.of("new $T<>($L)", JavaClassNames.OptionalAdapter, adapterInitializer(type.ofType, requiresBuffering))
       }
       else -> error("Cannot create an adapter for $type")
     }

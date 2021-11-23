@@ -4,19 +4,19 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
-import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
+import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.MapJsonReader
-import com.apollographql.apollo3.api.json.use
+import com.apollographql.apollo3.api.json.internal.Utils.readRecursively
 import com.apollographql.apollo3.api.nullable
 import com.benasher44.uuid.uuid4
 import okio.BufferedSource
+import okio.use
 
 /**
  * [ResponseBodyParser] parses network responses, including data, errors and extensions from a [JsonReader]
  */
-object ResponseBodyParser {
+internal object ResponseBodyParser {
   fun <D : Operation.Data> parse(
       jsonReader: JsonReader,
       operation: Operation<D>,

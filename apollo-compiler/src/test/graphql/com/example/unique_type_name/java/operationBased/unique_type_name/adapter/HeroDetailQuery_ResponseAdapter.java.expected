@@ -13,6 +13,8 @@ import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ListAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -41,7 +43,7 @@ public class HeroDetailQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: heroDetailQuery = Adapters.nullable(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1>(HeroDetailQuery.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: heroDetailQuery = new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1>(HeroDetailQuery.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -55,7 +57,7 @@ public class HeroDetailQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         com.example.unique_type_name.HeroDetailQuery.Data value) {
       writer.name("heroDetailQuery");
-      Adapters.nullable(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1>(HeroDetailQuery.INSTANCE, true)).toJson(writer, customScalarAdapters, value.heroDetailQuery);
+      new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1>(HeroDetailQuery.INSTANCE, true)).toJson(writer, customScalarAdapters, value.heroDetailQuery);
     }
   }
 
@@ -76,7 +78,7 @@ public class HeroDetailQuery_ResponseAdapter {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
           case 1: name = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
-          case 2: friends = Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.Friend>(Friend.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
+          case 2: friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.Friend>(Friend.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -108,7 +110,7 @@ public class HeroDetailQuery_ResponseAdapter {
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.name);
 
       writer.name("friends");
-      Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.Friend>(Friend.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.friends);
+      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.Friend>(Friend.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.friends);
 
       if (value.onHuman != null) {
         com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.OnHuman.INSTANCE.toJson(writer, customScalarAdapters, value.onHuman);
@@ -164,7 +166,7 @@ public class HeroDetailQuery_ResponseAdapter {
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: height = Adapters.NullableDoubleAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: friends = Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.Friend1>(Friend1.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
+          case 1: friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.Friend1>(Friend1.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -182,7 +184,7 @@ public class HeroDetailQuery_ResponseAdapter {
       Adapters.NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height);
 
       writer.name("friends");
-      Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.Friend1>(Friend1.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.friends);
+      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.Friend1>(Friend1.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.friends);
     }
   }
 
@@ -200,8 +202,8 @@ public class HeroDetailQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: appearsIn = Adapters.list(Adapters.nullable(Episode_ResponseAdapter.INSTANCE)).fromJson(reader, customScalarAdapters); break;
-          case 1: friends = Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.Friend2>(Friend2.INSTANCE, true)))).fromJson(reader, customScalarAdapters); break;
+          case 0: appearsIn = new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).fromJson(reader, customScalarAdapters); break;
+          case 1: friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.Friend2>(Friend2.INSTANCE, true)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -218,10 +220,10 @@ public class HeroDetailQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         com.example.unique_type_name.HeroDetailQuery.Friend1 value) {
       writer.name("appearsIn");
-      Adapters.list(Adapters.nullable(Episode_ResponseAdapter.INSTANCE)).toJson(writer, customScalarAdapters, value.appearsIn);
+      new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, customScalarAdapters, value.appearsIn);
 
       writer.name("friends");
-      Adapters.nullable(Adapters.list(Adapters.nullable(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.Friend2>(Friend2.INSTANCE, true)))).toJson(writer, customScalarAdapters, value.friends);
+      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.Friend2>(Friend2.INSTANCE, true)))).toJson(writer, customScalarAdapters, value.friends);
     }
   }
 

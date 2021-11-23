@@ -6,13 +6,13 @@
 package com.example.test_inline.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -72,7 +72,7 @@ public class GetPage_ResponseAdapter {
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
-          case 1: items = Adapters.list(new ObjectAdapter<GetPage.Item>(Item.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 1: items = new ListAdapter<>(new ObjectAdapter<GetPage.Item>(Item.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -100,7 +100,7 @@ public class GetPage_ResponseAdapter {
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 
       writer.name("items");
-      Adapters.list(new ObjectAdapter<GetPage.Item>(Item.INSTANCE, false)).toJson(writer, customScalarAdapters, value.items);
+      new ListAdapter<>(new ObjectAdapter<GetPage.Item>(Item.INSTANCE, false)).toJson(writer, customScalarAdapters, value.items);
 
       if (value.onParticularCollection != null) {
         com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularCollection.INSTANCE.toJson(writer, customScalarAdapters, value.onParticularCollection);
@@ -153,7 +153,7 @@ public class GetPage_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: items = Adapters.list(new ObjectAdapter<GetPage.Item1>(Item1.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: items = new ListAdapter<>(new ObjectAdapter<GetPage.Item1>(Item1.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -169,7 +169,7 @@ public class GetPage_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         GetPage.OnParticularCollection value) {
       writer.name("items");
-      Adapters.list(new ObjectAdapter<GetPage.Item1>(Item1.INSTANCE, true)).toJson(writer, customScalarAdapters, value.items);
+      new ListAdapter<>(new ObjectAdapter<GetPage.Item1>(Item1.INSTANCE, true)).toJson(writer, customScalarAdapters, value.items);
     }
   }
 

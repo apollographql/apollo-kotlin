@@ -1,10 +1,11 @@
 @file:JvmName("Operations")
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.api.http.ApolloHttpRequestComposer
+import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.internal.ResponseBodyParser
-import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
-import com.apollographql.apollo3.api.internal.json.writeObject
+import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
+import com.apollographql.apollo3.api.json.internal.writeObject
 import okio.Buffer
 import okio.BufferedSink
 import okio.BufferedSource
@@ -75,6 +76,25 @@ fun <D : Operation.Data> Operation<D>.parseJsonResponse(
 }
 
 /**
+ * See [parseJsonResponse]
+ */
+fun <D : Operation.Data> Operation<D>.parseJsonResponse(
+    map: Map<String, Any?>,
+    customScalarAdapters: CustomScalarAdapters,
+): ApolloResponse<D> {
+  return ResponseBodyParser.parse(map, this, customScalarAdapters)
+}
+
+/**
+ * See [parseJsonResponse]
+ */
+fun <D : Operation.Data> Operation<D>.parseJsonResponse(
+    map: Map<String, Any?>,
+): ApolloResponse<D> {
+  return ResponseBodyParser.parse(map, this, CustomScalarAdapters.Empty)
+}
+
+/**
  * Reads only the "data" part of a GraphQL Json response
  */
 fun <D : Operation.Data> Operation<D>.parseJsonData(
@@ -142,8 +162,8 @@ fun <D : Operation.Data> Operation<D>.composeJsonResponse(
     customScalarAdapters: CustomScalarAdapters,
     indent: String,
 ) {
-  val writer = BufferedSinkJsonWriter(sink)
-  writer.indent = indent
+  val writer = BufferedSinkJsonWriter(sink, indent)
+  @OptIn(ApolloInternal::class)
   writer.writeObject {
     name("data")
     adapter().toJson(this, customScalarAdapters, data)
@@ -198,8 +218,7 @@ fun <D : Operation.Data> Operation<D>.composeJsonData(
     customScalarAdapters: CustomScalarAdapters,
     indent: String,
 ) {
-  val writer = BufferedSinkJsonWriter(sink)
-  writer.indent = indent
+  val writer = BufferedSinkJsonWriter(sink, indent)
   adapter().toJson(writer, customScalarAdapters, data)
 }
 
@@ -246,7 +265,7 @@ fun <D : Operation.Data> Operation<D>.composeJsonRequest(
     sink: BufferedSink,
     customScalarAdapters: CustomScalarAdapters,
 ) {
-  val composer = ApolloHttpRequestComposer("unused")
+  val composer = DefaultHttpRequestComposer("unused")
 
   val request = composer.compose(
       ApolloRequest.Builder(operation = this)

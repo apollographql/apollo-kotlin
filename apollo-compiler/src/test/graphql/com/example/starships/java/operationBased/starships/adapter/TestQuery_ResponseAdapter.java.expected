@@ -6,10 +6,11 @@
 package com.example.starships.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DoubleAdapter;
+import com.apollographql.apollo3.api.ListAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -34,7 +35,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: starship = Adapters.nullable(new ObjectAdapter<TestQuery.Starship>(Starship.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: starship = new NullableAdapter<>(new ObjectAdapter<TestQuery.Starship>(Starship.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -48,7 +49,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Data value) {
       writer.name("starship");
-      Adapters.nullable(new ObjectAdapter<TestQuery.Starship>(Starship.INSTANCE, false)).toJson(writer, customScalarAdapters, value.starship);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Starship>(Starship.INSTANCE, false)).toJson(writer, customScalarAdapters, value.starship);
     }
   }
 
@@ -69,7 +70,7 @@ public class TestQuery_ResponseAdapter {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: id = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
           case 1: name = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
-          case 2: coordinates = Adapters.nullable(Adapters.list(Adapters.list(DoubleAdapter.INSTANCE))).fromJson(reader, customScalarAdapters); break;
+          case 2: coordinates = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(DoubleAdapter.INSTANCE))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -94,7 +95,7 @@ public class TestQuery_ResponseAdapter {
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.name);
 
       writer.name("coordinates");
-      Adapters.nullable(Adapters.list(Adapters.list(DoubleAdapter.INSTANCE))).toJson(writer, customScalarAdapters, value.coordinates);
+      new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(DoubleAdapter.INSTANCE))).toJson(writer, customScalarAdapters, value.coordinates);
     }
   }
 }

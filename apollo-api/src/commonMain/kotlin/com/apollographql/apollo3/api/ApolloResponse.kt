@@ -45,7 +45,6 @@ class ApolloResponse<out D : Operation.Data>(
     @JvmField
     val executionContext: ExecutionContext = ExecutionContext.Empty,
 ) {
-
   /**
    * A shorthand property to get a non-nullable `data` if handling partial data is not important
    */
