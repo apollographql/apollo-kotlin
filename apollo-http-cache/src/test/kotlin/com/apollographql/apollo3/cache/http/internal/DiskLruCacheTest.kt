@@ -17,6 +17,9 @@ package com.apollographql.apollo3.cache.http.internal
 
 import com.apollographql.apollo3.cache.http.internal.DiskLruCache.Companion.create
 import com.google.common.truth.Truth
+import okio.FileSystem
+import okio.Path.Companion.toOkioPath
+import okio.Sink
 import okio.Source
 import okio.buffer
 import org.junit.After
@@ -29,10 +32,7 @@ import org.junit.rules.Timeout
 import java.io.File
 import java.io.IOException
 import java.util.ArrayDeque
-import java.util.ArrayList
-import java.util.Arrays
 import java.util.Deque
-import java.util.NoSuchElementException
 import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 
@@ -56,6 +56,7 @@ class DiskLruCacheTest {
   private val executor = TestExecutor()
   private var cache: DiskLruCache? = null
   private val toClose: Deque<DiskLruCache> = ArrayDeque()
+
   @Throws(IOException::class)
   private fun createNewCache() {
     createNewCacheWithSize(Int.MAX_VALUE)
@@ -105,7 +106,7 @@ class DiskLruCacheTest {
 
     // Simulate a severe filesystem failure on the first initialization.
     fileSystem.setFaultyDelete(File(cacheDir, "k1.0.tmp"), true)
-    fileSystem.setFaultyDelete(cacheDir, true)
+    fileSystem.setFaultyDelete(cacheDir!!, true)
     cache = DiskLruCache(fileSystem, cacheDir!!, appVersion, 2, Int.MAX_VALUE.toLong(), executor)
     toClose.add(cache)
     try {
@@ -116,7 +117,7 @@ class DiskLruCacheTest {
 
     // Now let it operate normally.
     fileSystem.setFaultyDelete(File(cacheDir, "k1.0.tmp"), false)
-    fileSystem.setFaultyDelete(cacheDir, false)
+    fileSystem.setFaultyDelete(cacheDir!!, false)
     val snapshot = cache!!["k1"]
     Truth.assertThat(snapshot).isNull()
   }
@@ -1139,7 +1140,7 @@ class DiskLruCacheTest {
   @Test
   @Throws(Exception::class)
   fun aggressiveClearingHandlesWrite() {
-    fileSystem.deleteContents(tempDir.root)
+    fileSystem.deleteRecursively(tempDir.root)
     set("a", "a", "a")
     assertValue("a", "a", "a")
   }
@@ -1151,7 +1152,7 @@ class DiskLruCacheTest {
   fun aggressiveClearingHandlesEdit() {
     set("a", "a", "a")
     val a = cache!!["a"]!!.edit()
-    fileSystem.deleteContents(tempDir.root)
+    fileSystem.deleteRecursively(tempDir.root)
     setString(a, 1, "a2")
     a!!.commit()
   }
@@ -1173,7 +1174,7 @@ class DiskLruCacheTest {
     set("b", "b", "b")
     val a = cache!!["a"]!!.edit()
     setString(a, 0, "a1")
-    fileSystem.deleteContents(tempDir.root)
+    fileSystem.deleteRecursively(tempDir.root)
     setString(a, 1, "a2")
     a!!.commit()
     Truth.assertThat(cache!!["a"]).isNull()
@@ -1184,7 +1185,7 @@ class DiskLruCacheTest {
   @Test
   @Throws(Exception::class)
   fun aggressiveClearingHandlesRead() {
-    fileSystem.deleteContents(tempDir.root)
+    fileSystem.deleteRecursively(tempDir.root)
     Truth.assertThat(cache!!["a"]).isNull()
   }
 
@@ -1401,12 +1402,12 @@ class DiskLruCacheTest {
   @Throws(Exception::class)
   @Test
   fun isClosedUninitializedCache() {
-      // Create an uninitialized cache.
-      cache = DiskLruCache(fileSystem, cacheDir!!, appVersion, 2, Int.MAX_VALUE.toLong(), executor)
-      toClose.add(cache)
-      Truth.assertThat(cache!!.isClosed).isFalse()
-      cache!!.close()
-      Truth.assertThat(cache!!.isClosed).isTrue()
+    // Create an uninitialized cache.
+    cache = DiskLruCache(fileSystem, cacheDir!!, appVersion, 2, Int.MAX_VALUE.toLong(), executor)
+    toClose.add(cache)
+    Truth.assertThat(cache!!.isClosed).isFalse()
+    cache!!.close()
+    Truth.assertThat(cache!!.isClosed).isTrue()
   }
 
   @Test
@@ -1416,11 +1417,11 @@ class DiskLruCacheTest {
     set("b", "b", "b")
 
     // We can't begin the edit if writing 'DIRTY' fails.
-    fileSystem.setFaultyWrite(journalFile, true)
+    fileSystem.setFaultyWrite(journalFile!!, true)
     Truth.assertThat(cache!!.edit("c")).isNull()
 
     // Once the journal has a failure, subsequent writes aren't permitted.
-    fileSystem.setFaultyWrite(journalFile, false)
+    fileSystem.setFaultyWrite(journalFile!!, false)
     Truth.assertThat(cache!!.edit("d")).isNull()
 
     // Confirm that the fault didn't corrupt entries stored before the fault was introduced.
@@ -1446,11 +1447,11 @@ class DiskLruCacheTest {
     val editor = cache!!.edit("c")
     setString(editor, 0, "c")
     setString(editor, 1, "c")
-    fileSystem.setFaultyWrite(journalFile, true)
+    fileSystem.setFaultyWrite(journalFile!!, true)
     editor!!.commit()
 
     // Once the journal has a failure, subsequent writes aren't permitted.
-    fileSystem.setFaultyWrite(journalFile, false)
+    fileSystem.setFaultyWrite(journalFile!!, false)
     Truth.assertThat(cache!!.edit("d")).isNull()
 
     // Confirm that the fault didn't corrupt entries stored before the fault was introduced.
@@ -1472,11 +1473,11 @@ class DiskLruCacheTest {
     val editor = cache!!.edit("c")
     setString(editor, 0, "c")
     setString(editor, 1, "c")
-    fileSystem.setFaultyWrite(journalFile, true)
+    fileSystem.setFaultyWrite(journalFile!!, true)
     editor!!.abort()
 
     // Once the journal has a failure, subsequent writes aren't permitted.
-    fileSystem.setFaultyWrite(journalFile, false)
+    fileSystem.setFaultyWrite(journalFile!!, false)
     Truth.assertThat(cache!!.edit("d")).isNull()
 
     // Confirm that the fault didn't corrupt entries stored before the fault was introduced.
@@ -1495,11 +1496,11 @@ class DiskLruCacheTest {
     set("b", "b", "b")
 
     // Remove, but the journal write will fail.
-    fileSystem.setFaultyWrite(journalFile, true)
+    fileSystem.setFaultyWrite(journalFile!!, true)
     Truth.assertThat(cache!!.remove("a")).isTrue()
 
     // Confirm that the entry was still removed.
-    fileSystem.setFaultyWrite(journalFile, false)
+    fileSystem.setFaultyWrite(journalFile!!, false)
     cache!!.close()
     cache = DiskLruCache(fileSystem, cacheDir!!, appVersion, 2, Int.MAX_VALUE.toLong(), executor)
     assertAbsent("a")
@@ -1806,8 +1807,10 @@ class DiskLruCacheTest {
   }
 
   @Throws(Exception::class)
-  private fun createJournalWithHeader(magic: String, version: String, appVersion: String,
-                                      valueCount: String, blank: String, vararg bodyLines: String) {
+  private fun createJournalWithHeader(
+      magic: String, version: String, appVersion: String,
+      valueCount: String, blank: String, vararg bodyLines: String,
+  ) {
     val sink = fileSystem.sink(journalFile!!).buffer()
     sink.writeUtf8("""
   $magic
@@ -1982,10 +1985,27 @@ class DiskLruCacheTest {
     }
 
     @Throws(IOException::class)
-    fun setString(editor: DiskLruCache.Editor?, index: Int, value: String?) {
+    private fun setString(editor: DiskLruCache.Editor?, index: Int, value: String?) {
       val writer = editor!!.newSink(index).buffer()
       writer.writeUtf8(value!!)
       writer.close()
     }
   }
 }
+
+private fun FaultyFileSystem.setFaultyDelete(file: File, faulty: Boolean) = setFaultyDelete(file.toOkioPath(), faulty)
+private fun FaultyFileSystem.setFaultyRename(file: File, faulty: Boolean) = setFaultyRename(file.toOkioPath(), faulty)
+private fun FaultyFileSystem.setFaultyWrite(file: File, faulty: Boolean) = setFaultyWrite(file.toOkioPath(), faulty)
+private fun FaultyFileSystem.exists(file: File) = exists(file.toOkioPath())
+private fun FaultyFileSystem.sink(file: File): Sink {
+  if (!file.exists()) {
+    file.parentFile.mkdirs()
+    file.createNewFile()
+  }
+  return sink(file.toOkioPath())
+}
+
+private fun FaultyFileSystem.rename(from: File, to: File) = atomicMove(from.toOkioPath(), to.toOkioPath())
+private fun FaultyFileSystem.delete(file: File) = delete(file.toOkioPath())
+private fun FaultyFileSystem.deleteRecursively(file: File) = deleteRecursively(file.toOkioPath())
+private fun FaultyFileSystem.source(file: File) = source(file.toOkioPath())

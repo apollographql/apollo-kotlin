@@ -6,12 +6,12 @@ import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.http.valueOf
-import com.apollographql.apollo3.cache.http.internal.FileSystem
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.HttpCacheMissException
 import com.apollographql.apollo3.network.http.HttpEngine
 import okio.Buffer
 import okio.ByteString.Companion.toByteString
+import okio.FileSystem
 import java.io.File
 import java.time.Instant
 import java.time.format.DateTimeParseException
