@@ -87,7 +87,7 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
     return ApolloMutationCall(this, mutation)
   }
 
-  @Deprecated("Please use mutation instead. This will be removed in v3.0.0.", ReplaceWith("mutation(mutation)"))
+  @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("mutation(mutation)"))
   fun <D : Mutation.Data> mutate(mutation: Mutation<D>): ApolloMutationCall<D> = mutation(mutation)
 
   /**
@@ -97,7 +97,7 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
     return ApolloSubscriptionCall(this, subscription)
   }
 
-  @Deprecated("Please use subscription instead. This will be removed in v3.0.0.", ReplaceWith("subscription(subscription)"))
+  @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("subscription(subscription)"))
   fun <D : Subscription.Data> subscribe(subscription: Subscription<D>): ApolloSubscriptionCall<D> = subscription(subscription)
 
   fun dispose() {

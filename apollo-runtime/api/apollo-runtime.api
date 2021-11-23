@@ -86,12 +86,14 @@ public final class com/apollographql/apollo3/ApolloClientKt {
 
 public final class com/apollographql/apollo3/ApolloMutationCall : com/apollographql/apollo3/ApolloCall {
 	public fun <init> (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/Mutation;)V
+	public final fun await (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun copy ()Lcom/apollographql/apollo3/ApolloMutationCall;
 	public final fun execute (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/apollographql/apollo3/ApolloQueryCall : com/apollographql/apollo3/ApolloCall {
 	public fun <init> (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/Query;)V
+	public final fun await (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun copy ()Lcom/apollographql/apollo3/ApolloQueryCall;
 	public final fun execute (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }

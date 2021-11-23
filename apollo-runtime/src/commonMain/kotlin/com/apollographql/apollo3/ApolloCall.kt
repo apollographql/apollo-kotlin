@@ -70,6 +70,9 @@ class ApolloQueryCall<D : Query.Data>(apolloClient: ApolloClient, query: Query<D
     return toFlow().single()
   }
 
+  @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("execute()"))
+  suspend fun await(): ApolloResponse<D> = execute()
+
   fun copy(): ApolloQueryCall<D> {
     return ApolloQueryCall(apolloClient, operation as Query<D>).addExecutionContext(executionContext)
   }
@@ -97,6 +100,9 @@ class ApolloMutationCall<D : Mutation.Data>(apolloClient: ApolloClient, mutation
   suspend fun execute(): ApolloResponse<D> {
     return toFlow().single()
   }
+
+  @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("execute()"))
+  suspend fun await(): ApolloResponse<D> = execute()
 
   fun copy(): ApolloMutationCall<D> {
     return ApolloMutationCall(apolloClient, operation as Mutation<D>).addExecutionContext(executionContext)
