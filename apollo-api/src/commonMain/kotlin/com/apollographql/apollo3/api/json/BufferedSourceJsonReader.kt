@@ -72,7 +72,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   }
   private var indexStackSize = 1
 
-  @Throws(IOException::class)
   override fun beginArray(): JsonReader = apply {
     val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
     if (p == PEEKED_BEGIN_ARRAY) {
@@ -84,7 +83,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     }
   }
 
-  @Throws(IOException::class)
   override fun endArray(): JsonReader = apply {
     val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
     if (p == PEEKED_END_ARRAY) {
@@ -96,7 +94,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     }
   }
 
-  @Throws(IOException::class)
   override fun beginObject(): JsonReader = apply {
     val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
     if (p == PEEKED_BEGIN_OBJECT) {
@@ -110,7 +107,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     }
   }
 
-  @Throws(IOException::class)
   override fun endObject(): JsonReader = apply {
     val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
     if (p == PEEKED_END_OBJECT) {
@@ -125,13 +121,11 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     }
   }
 
-  @Throws(IOException::class)
   override fun hasNext(): Boolean {
     val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
     return p != PEEKED_END_OBJECT && p != PEEKED_END_ARRAY
   }
 
-  @Throws(IOException::class)
   override fun peek(): JsonReader.Token {
     return when (peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()) {
       PEEKED_BEGIN_OBJECT -> JsonReader.Token.BEGIN_OBJECT
@@ -149,7 +143,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     }
   }
 
-  @Throws(IOException::class)
   private fun doPeek(): Int {
     val peekStack = stack[stackSize - 1]
 
@@ -304,7 +297,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     return PEEKED_UNQUOTED.also { peeked = it }
   }
 
-  @Throws(IOException::class)
   private fun peekKeyword(): Int { // Figure out which keyword we're matching against by its first character.
     val keyword: String
     val keywordUpper: String
@@ -350,7 +342,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     return peeking.also { peeked = it }
   }
 
-  @Throws(IOException::class)
   private fun peekNumber(): Int {
     var value: Long = 0 // Negative to accommodate Long.MIN_VALUE more easily.
     var negative = false
@@ -445,7 +436,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     }
   }
 
-  @Throws(IOException::class)
   private fun isLiteral(c: Char): Boolean {
     return when (c) {
       '/', '\\', ';', '#', '=' -> {
@@ -457,7 +447,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     }
   }
 
-  @Throws(IOException::class)
   override fun nextName(): String {
     val result = when (peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()) {
       PEEKED_UNQUOTED_NAME -> nextUnquotedValue()
@@ -470,7 +459,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     return result
   }
 
-  @Throws(IOException::class)
   override fun nextString(): String? {
     val result = when (peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()) {
       PEEKED_UNQUOTED -> nextUnquotedValue()
@@ -486,7 +474,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     return result
   }
 
-  @Throws(IOException::class)
   override fun nextBoolean(): Boolean {
     return when (peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()) {
       PEEKED_TRUE -> {
@@ -505,7 +492,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     }
   }
 
-  @Throws(IOException::class)
   override fun nextNull(): Nothing? {
     return when (peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()) {
       PEEKED_NULL -> {
@@ -518,7 +504,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     }
   }
 
-  @Throws(IOException::class)
   override fun nextDouble(): Double {
     val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
     when {
@@ -560,7 +545,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     return result
   }
 
-  @Throws(IOException::class)
   override fun nextLong(): Long {
     val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
     when {
@@ -603,7 +587,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     return result
   }
 
-  @Throws(IOException::class)
   override fun nextNumber(): JsonNumber {
     return JsonNumber(nextString()!!)
   }
@@ -615,7 +598,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
    *
    * @throws okio.IOException if any unicode escape sequences are malformed.
    */
-  @Throws(IOException::class)
   private fun nextQuotedValue(runTerminator: ByteString): String {
     var builder: StringBuilder? = null
     while (true) {
@@ -643,13 +625,11 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   }
 
   /** Returns an unquoted value as a string.  */
-  @Throws(IOException::class)
   private fun nextUnquotedValue(): String {
     val i = source.indexOfElement(UNQUOTED_STRING_TERMINALS)
     return if (i != -1L) buffer.readUtf8(i) else buffer.readUtf8()
   }
 
-  @Throws(IOException::class)
   private fun skipQuotedValue(runTerminator: ByteString) {
     while (true) {
       val index = source.indexOfElement(runTerminator)
@@ -664,13 +644,11 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     }
   }
 
-  @Throws(IOException::class)
   private fun skipUnquotedValue() {
     val i = source.indexOfElement(UNQUOTED_STRING_TERMINALS)
     buffer.skip(if (i != -1L) i else buffer.size)
   }
 
-  @Throws(IOException::class)
   override fun nextInt(): Int {
     val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
     when {
@@ -721,7 +699,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     return result
   }
 
-  @Throws(IOException::class)
   override fun close() {
     peeked = PEEKED_NONE
     stack[0] = JsonScope.CLOSED
@@ -730,7 +707,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     source.close()
   }
 
-  @Throws(IOException::class)
   override fun skipValue() {
     var count = 0
     do {
@@ -822,7 +798,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
    * When this returns, the returned character is always at `buffer[pos-1]`; this means the caller can always push back the returned
    * character by decrementing `pos`.
    */
-  @Throws(IOException::class)
   private fun nextNonWhitespace(throwOnEof: Boolean): Int {
     /**
      * This code uses ugly local variables 'p' and 'l' representing the 'pos' and 'limit' fields respectively. Using locals rather than
@@ -882,7 +857,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     }
   }
 
-  @Throws(IOException::class)
   private fun checkLenient() {
     if (!lenient) throw syntaxError("Use JsonReader.setLenient(true) to accept malformed JSON")
   }
@@ -892,7 +866,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
    * is terminated by "\r\n", the '\n' must be consumed as whitespace by the
    * caller.
    */
-  @Throws(IOException::class)
   private fun skipToEndOfLine() {
     val index = source.indexOfElement(LINEFEED_OR_CARRIAGE_RETURN)
     buffer.skip(if (index != -1L) index + 1 else buffer.size)
@@ -901,7 +874,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   /**
    * @param toFind a string to search for. Must not contain a newline.
    */
-  @Throws(IOException::class)
   private fun skipTo(toFind: String): Boolean {
     outer@ while (source.request(toFind.length.toLong())) {
       for (c in toFind.indices) {
@@ -923,7 +895,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
    *
    * @throws okio.IOException if any unicode escape sequences are malformed.
    */
-  @Throws(IOException::class)
   private fun readEscapeCharacter(): Char {
     if (!source.request(1)) throw syntaxError("Unterminated escape sequence")
 
@@ -966,6 +937,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   override fun rewind() {
     error("BufferedSourceJsonReader cannot rewind.")
   }
+
   /**
    * Returns a new exception with the given message and a context snippet with this reader's content.
    */
