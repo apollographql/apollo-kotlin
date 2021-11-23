@@ -16,7 +16,7 @@ class FullStackTest {
         .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
         .build()
 
-    apolloClient.subscribe(TripsBookedSubscription())
+    apolloClient.subscription(TripsBookedSubscription())
         .execute()
         .collect {
           println("trips booked: ${it.data?.tripsBooked}")

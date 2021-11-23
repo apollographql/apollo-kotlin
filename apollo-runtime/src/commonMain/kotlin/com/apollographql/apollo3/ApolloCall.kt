@@ -29,7 +29,7 @@ abstract class ApolloCall<D : Operation.Data, E : HasMutableExecutionContext<E>>
    *
    * Example:
    * ```
-   * apolloClient.subscribe(NewOrders())
+   * apolloClient.subscription(NewOrders())
    *                  .toFlow()
    *                  .collect {
    *                    println("order received: ${it.data?.order?.id"})
@@ -88,7 +88,7 @@ class ApolloMutationCall<D : Mutation.Data>(apolloClient: ApolloClient, mutation
    *
    * Example:
    * ```
-   * val response = apolloClient.mutate(SetHeroName("Luke"))
+   * val response = apolloClient.mutation(SetHeroName("Luke"))
    *                  .addHttpHeader("Authorization", myToken)
    *                  .optimisticData(data)
    *                  .execute()

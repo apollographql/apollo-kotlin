@@ -1,7 +1,7 @@
 package com.apollographql.apollo3
 
-import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -83,16 +83,22 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
   /**
    * Creates a new [ApolloMutationCall] that you can customize and/or execute.
    */
-  fun <D : Mutation.Data> mutate(mutation: Mutation<D>): ApolloMutationCall<D> {
+  fun <D : Mutation.Data> mutation(mutation: Mutation<D>): ApolloMutationCall<D> {
     return ApolloMutationCall(this, mutation)
   }
+
+  @Deprecated("Please use mutation instead. This will be removed in v3.0.0.", ReplaceWith("mutation(mutation)"))
+  fun <D : Mutation.Data> mutate(mutation: Mutation<D>): ApolloMutationCall<D> = mutation(mutation)
 
   /**
    * Creates a new [ApolloSubscriptionCall] that you can customize and/or execute.
    */
-  fun <D : Subscription.Data> subscribe(subscription: Subscription<D>): ApolloSubscriptionCall<D> {
+  fun <D : Subscription.Data> subscription(subscription: Subscription<D>): ApolloSubscriptionCall<D> {
     return ApolloSubscriptionCall(this, subscription)
   }
+
+  @Deprecated("Please use subscription instead. This will be removed in v3.0.0.", ReplaceWith("subscription(subscription)"))
+  fun <D : Subscription.Data> subscribe(subscription: Subscription<D>): ApolloSubscriptionCall<D> = subscription(subscription)
 
   fun dispose() {
     concurrencyInfo.coroutineScope.cancel()
@@ -131,7 +137,7 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
   /**
    * Low level API to execute the given [apolloRequest] and return a [Flow].
    *
-   * Prefer [query], [mutate] or [subscribe] when possible.
+   * Prefer [query], [mutation] or [subscription] when possible.
    *
    * For simple queries, the returned [Flow] will contain only one element.
    * For more advanced use cases like watchers or subscriptions, it may contain any number of elements and never

@@ -67,7 +67,7 @@ class CachedSubscriptionTest {
       assertEquals(0, channel.receive())
 
       println("starting subscription")
-      apolloClient.subscribe(TimeSubscription())
+      apolloClient.subscription(TimeSubscription())
           .execute()
           .take(3)
           .map { it.data!!.time }
