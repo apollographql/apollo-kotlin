@@ -1,11 +1,13 @@
 package com.apollographql.apollo3.network.ws
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.ApolloRequest
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
-import com.apollographql.apollo3.api.internal.json.buildJsonByteString
-import com.apollographql.apollo3.api.internal.json.buildJsonString
+import com.apollographql.apollo3.api.json.internal.buildJsonByteString
+import com.apollographql.apollo3.api.json.internal.buildJsonString
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import okio.Buffer
@@ -78,15 +80,20 @@ abstract class WsProtocol(
    */
   abstract fun <D: Operation.Data> stopOperation(request: ApolloRequest<D>)
 
+  @OptIn(ApolloInternal::class)
   protected fun Map<String, Any?>.toByteString() = buildJsonByteString {
-    AnyAdapter.toJson(this, this@toByteString)
+    AnyAdapter.toJson(this, CustomScalarAdapters.Empty, this@toByteString)
   }
 
+  @OptIn(ApolloInternal::class)
   protected fun Map<String, Any?>.toUtf8() = buildJsonString {
-    AnyAdapter.toJson(this, this@toUtf8)
+    AnyAdapter.toJson(this, CustomScalarAdapters.Empty, this@toUtf8)
   }
 
-  protected fun String.toMessageMap() = AnyAdapter.fromJson(BufferedSourceJsonReader(Buffer().writeUtf8(this))) as Map<String, Any?>
+  protected fun String.toMessageMap() = AnyAdapter.fromJson(
+      BufferedSourceJsonReader(Buffer().writeUtf8(this)),
+      CustomScalarAdapters.Empty
+  ) as Map<String, Any?>
 
   protected fun sendMessageMapBinary(messageMap: Map<String, Any?>) {
     webSocketConnection.send(messageMap.toByteString())

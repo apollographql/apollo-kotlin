@@ -232,5 +232,10 @@ internal fun List<String>.toClassName() = ClassName.get(
 )
 
 fun singletonAdapterInitializer(wrappedTypeName: TypeName, adaptedTypeName: TypeName, buffered: Boolean = false): CodeBlock {
-  return CodeBlock.of("new $T($T.INSTANCE, $L)", ParameterizedTypeName.get(JavaClassNames.ObjectAdapter, adaptedTypeName), wrappedTypeName, if (buffered) "true" else "false")
+  return CodeBlock.of(
+      "new $T($T.INSTANCE, $L)",
+      ParameterizedTypeName.get(JavaClassNames.ObjectAdapter, adaptedTypeName),
+      wrappedTypeName,
+      if (buffered) "true" else "false"
+  )
 }

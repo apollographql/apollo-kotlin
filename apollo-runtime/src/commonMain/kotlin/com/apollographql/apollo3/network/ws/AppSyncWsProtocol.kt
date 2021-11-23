@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.network.ws
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.NullableAnyAdapter
 import com.apollographql.apollo3.api.Operation
@@ -145,6 +146,7 @@ class AppSyncWsProtocol(
 
     private fun Map<String, Any?>.base64Encode(): String {
       val buffer = Buffer()
+      @OptIn(ApolloInternal::class)
       Utils.writeToJson(this, BufferedSinkJsonWriter(buffer))
       return buffer.readByteString().base64()
     }

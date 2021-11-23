@@ -1,10 +1,11 @@
 @file:JvmName("Operations")
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.internal.ResponseBodyParser
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
-import com.apollographql.apollo3.api.internal.json.writeObject
+import com.apollographql.apollo3.api.json.internal.writeObject
 import okio.Buffer
 import okio.BufferedSink
 import okio.BufferedSource
@@ -161,8 +162,8 @@ fun <D : Operation.Data> Operation<D>.composeJsonResponse(
     customScalarAdapters: CustomScalarAdapters,
     indent: String,
 ) {
-  val writer = BufferedSinkJsonWriter(sink)
-  writer.indent = indent
+  val writer = BufferedSinkJsonWriter(sink, indent)
+  @OptIn(ApolloInternal::class)
   writer.writeObject {
     name("data")
     adapter().toJson(this, customScalarAdapters, data)
@@ -217,8 +218,7 @@ fun <D : Operation.Data> Operation<D>.composeJsonData(
     customScalarAdapters: CustomScalarAdapters,
     indent: String,
 ) {
-  val writer = BufferedSinkJsonWriter(sink)
-  writer.indent = indent
+  val writer = BufferedSinkJsonWriter(sink, indent)
   adapter().toJson(writer, customScalarAdapters, data)
 }
 
