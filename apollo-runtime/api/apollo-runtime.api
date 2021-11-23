@@ -6,6 +6,7 @@ public abstract class com/apollographql/apollo3/ApolloCall : com/apollographql/a
 	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
 	public final fun getOperation ()Lcom/apollographql/apollo3/api/Operation;
 	public fun setExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)V
+	public final fun toFlow ()Lkotlinx/coroutines/flow/Flow;
 }
 
 public final class com/apollographql/apollo3/ApolloClient : com/apollographql/apollo3/api/HasExecutionContext {

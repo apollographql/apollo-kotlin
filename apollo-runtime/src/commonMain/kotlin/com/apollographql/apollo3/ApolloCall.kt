@@ -1,5 +1,3 @@
-
-
 package com.apollographql.apollo3
 
 import com.apollographql.apollo3.api.ApolloRequest
@@ -14,8 +12,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.single
 
 
-abstract class ApolloCall<D: Operation.Data, E: HasMutableExecutionContext<E>>
-(val apolloClient: ApolloClient, val operation: Operation<D>): HasMutableExecutionContext<E> {
+abstract class ApolloCall<D : Operation.Data, E : HasMutableExecutionContext<E>>
+(val apolloClient: ApolloClient, val operation: Operation<D>) : HasMutableExecutionContext<E> {
   override var executionContext: ExecutionContext = ExecutionContext.Empty
 
   override fun addExecutionContext(executionContext: ExecutionContext): E {
@@ -24,12 +22,29 @@ abstract class ApolloCall<D: Operation.Data, E: HasMutableExecutionContext<E>>
     return this as E
   }
 
-  fun executeAsFlow(): Flow<ApolloResponse<D>> {
+  /**
+   * Returns a Flow with the results of this [ApolloCall].
+   * Note that the execution happens when collecting the Flow.
+   * This method can be called several times to execute a call again.
+   *
+   * Example:
+   * ```
+   * apolloClient.subscribe(NewOrders())
+   *                  .toFlow()
+   *                  .collect {
+   *                    println("order received: ${it.data?.order?.id"})
+   *                  }
+   * ```
+   */
+  fun toFlow(): Flow<ApolloResponse<D>> {
     val request = ApolloRequest.Builder(operation)
         .addExecutionContext(executionContext)
         .build()
     return apolloClient.executeAsFlow(request)
   }
+
+  @Deprecated("Please use toFlow instead. This will be removed in v3.0.0.", ReplaceWith("toFlow()"))
+  fun executeAsFlow(): Flow<ApolloResponse<D>> = toFlow()
 }
 
 /**
@@ -37,10 +52,10 @@ abstract class ApolloCall<D: Operation.Data, E: HasMutableExecutionContext<E>>
  *
  * [ApolloQueryCall] is mutable. You can customize it before calling [execute]
  */
-class ApolloQueryCall<D: Query.Data>(apolloClient: ApolloClient, query: Query<D>)
+class ApolloQueryCall<D : Query.Data>(apolloClient: ApolloClient, query: Query<D>)
   : ApolloCall<D, ApolloQueryCall<D>>(apolloClient, query) {
   /**
-   * Executes the [ApolloQueryCall]
+   * Executes the [ApolloQueryCall].
    * [ApolloQueryCall] can be executed several times
    *
    * Example:
@@ -52,7 +67,7 @@ class ApolloQueryCall<D: Query.Data>(apolloClient: ApolloClient, query: Query<D>
    * ```
    */
   suspend fun execute(): ApolloResponse<D> {
-    return executeAsFlow().single()
+    return toFlow().single()
   }
 
   fun copy(): ApolloQueryCall<D> {
@@ -65,10 +80,10 @@ class ApolloQueryCall<D: Query.Data>(apolloClient: ApolloClient, query: Query<D>
  *
  * [ApolloMutationCall] is mutable. You can customize it before calling [execute]
  */
-class ApolloMutationCall<D: Mutation.Data>(apolloClient: ApolloClient, mutation: Mutation<D>)
+class ApolloMutationCall<D : Mutation.Data>(apolloClient: ApolloClient, mutation: Mutation<D>)
   : ApolloCall<D, ApolloMutationCall<D>>(apolloClient, mutation) {
   /**
-   * Executes the [ApolloMutationCall]
+   * Executes the [ApolloMutationCall].
    * [ApolloMutationCall] can be executed several times
    *
    * Example:
@@ -80,7 +95,7 @@ class ApolloMutationCall<D: Mutation.Data>(apolloClient: ApolloClient, mutation:
    * ```
    */
   suspend fun execute(): ApolloResponse<D> {
-    return executeAsFlow().single()
+    return toFlow().single()
   }
 
   fun copy(): ApolloMutationCall<D> {
@@ -93,24 +108,11 @@ class ApolloMutationCall<D: Mutation.Data>(apolloClient: ApolloClient, mutation:
  *
  * [ApolloSubscriptionCall] is mutable. You can customize it before calling [execute]
  */
-class ApolloSubscriptionCall<D: Subscription.Data>(apolloClient: ApolloClient, subscription: Subscription<D>)
+class ApolloSubscriptionCall<D : Subscription.Data>(apolloClient: ApolloClient, subscription: Subscription<D>)
   : ApolloCall<D, ApolloSubscriptionCall<D>>(apolloClient, subscription) {
-  /**
-   * Executes the [ApolloSubscriptionCall]
-   * [ApolloSubscriptionCall] can be executed several times
-   *
-   * Example:
-   * ```
-   * apolloClient.subscribe(NewOrders())
-   *                  .execute()
-   *                  .collect {
-   *                    println("order received: ${it.data?.order?.id"})
-   *                  }
-   * ```
-   */
-  fun execute(): Flow<ApolloResponse<D>> {
-    return executeAsFlow()
-  }
+
+  @Deprecated("Please use toFlow instead. This will be removed in v3.0.0.", ReplaceWith("toFlow()"))
+  fun execute(): Flow<ApolloResponse<D>> = toFlow()
 
   fun copy(): ApolloSubscriptionCall<D> {
     return ApolloSubscriptionCall(apolloClient, operation as Subscription<D>).addExecutionContext(executionContext)
