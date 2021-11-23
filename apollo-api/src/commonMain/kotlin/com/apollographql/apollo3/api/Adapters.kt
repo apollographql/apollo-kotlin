@@ -250,3 +250,100 @@ val NullableBooleanAdapter = BooleanAdapter.nullable()
 @SharedImmutable
 @JvmField
 val NullableAnyAdapter = AnyAdapter.nullable()
+
+/**
+ * Converts the given value to a Json String
+ */
+fun <T> Adapter<T>.toJson(
+    value: T,
+    customScalarAdapters: CustomScalarAdapters,
+    indent: String,
+): String {
+  val buffer = Buffer()
+
+  toJson(buffer, value, customScalarAdapters, indent)
+  return buffer.readUtf8()
+}
+
+/**
+ * See [toJson]
+ */
+fun <T> Adapter<T>.toJson(
+    value: T,
+): String = toJson(value, CustomScalarAdapters.Empty, "  ")
+
+/**
+ * See [toJson]
+ */
+fun <T> Adapter<T>.toJson(
+    sink: BufferedSink,
+    value: T,
+    customScalarAdapters: CustomScalarAdapters,
+    indent: String,
+) {
+  val writer = BufferedSinkJsonWriter(sink, indent)
+  toJson(writer, customScalarAdapters, value)
+}
+
+/**
+ * See [toJson]
+ */
+fun <T> Adapter<T>.toJson(
+    sink: BufferedSink,
+    value: T,
+): Unit = toJson(sink, value, CustomScalarAdapters.Empty, "  ")
+
+/**
+ * Converts the given [bufferedSource] to a [T]
+ */
+fun <T> Adapter<T>.fromJson(
+    bufferedSource: BufferedSource,
+    customScalarAdapters: CustomScalarAdapters,
+): T {
+  return fromJson(BufferedSourceJsonReader(bufferedSource), customScalarAdapters)
+}
+
+/**
+ * See [fromJson]
+ */
+fun <T> Adapter<T>.fromJson(
+    bufferedSource: BufferedSource,
+): T  = fromJson(bufferedSource, CustomScalarAdapters.Empty)
+
+/**
+ * See [fromJson]
+ */
+fun <T> Adapter<T>.fromJson(
+    string: String,
+    customScalarAdapters: CustomScalarAdapters,
+): T {
+  return fromJson(Buffer().apply { writeUtf8(string) }, customScalarAdapters)
+}
+
+/**
+ * See [fromJson]
+ */
+fun <T> Adapter<T>.fromJson(
+    string: String,
+): T {
+  return fromJson(Buffer().apply { writeUtf8(string) }, CustomScalarAdapters.Empty)
+}
+
+/**
+ * Converts the given Map to a [T]
+ */
+fun <T, M : Map<String, Any?>> Adapter<T>.fromMap(
+    map: M,
+    customScalarAdapters: CustomScalarAdapters,
+): T {
+  return fromJson(MapJsonReader(map), customScalarAdapters)
+}
+
+/**
+ * See [fromMap]
+ */
+fun <T, M : Map<String, Any?>> Adapter<T>.fromMap(
+    map: M,
+): T {
+  return fromJson(MapJsonReader(map), CustomScalarAdapters.Empty)
+}

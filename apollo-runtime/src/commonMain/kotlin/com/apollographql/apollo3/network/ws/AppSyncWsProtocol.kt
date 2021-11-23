@@ -2,14 +2,13 @@ package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableAnyAdapter
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer.Companion.appendQueryParameters
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.internal.Utils
-import com.apollographql.apollo3.api.json.internal.buildJsonString
+import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import kotlinx.coroutines.withTimeout
 import okio.Buffer
@@ -44,14 +43,7 @@ class AppSyncWsProtocol(
 
   override fun <D : Operation.Data> startOperation(request: ApolloRequest<D>) {
     // AppSync encodes the data as a String
-    @OptIn(ApolloInternal::class)
-    val data = buildJsonString {
-      NullableAnyAdapter.toJson(
-          this,
-          CustomScalarAdapters.Empty,
-          DefaultHttpRequestComposer.composePayload(request)
-      )
-    }
+    val data = NullableAnyAdapter.toJson(DefaultHttpRequestComposer.composePayload(request))
     sendMessageMapText(
         mapOf(
             "type" to "start",
