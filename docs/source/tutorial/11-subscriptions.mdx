@@ -82,7 +82,7 @@ In `MainActivity`, register your subscription and start listening to events usin
         setContentView(R.layout.activity_main)
 
         lifecycleScope.launch {
-            apolloClient(this@MainActivity).subscribe(TripsBookedSubscription()).execute()
+            apolloClient(this@MainActivity).subscription(TripsBookedSubscription()).toFlow()
                 .collect {
                     val text = when (val trips = it.data?.tripsBooked) {
                         null -> getString(R.string.subscriptionError)
@@ -106,7 +106,7 @@ In `MainActivity`, register your subscription and start listening to events usin
 Like for queries and mutations, the subscription will throw an error if the connection is lost or any other protocol error happens. To handle these situations, you can use [Flow.retry](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/retry.html):
 
 ```kotlin:title=MainActivity.kt
-    apolloClient(this@MainActivity).subscribe(TripsBookedSubscription()).execute()
+    apolloClient(this@MainActivity).subscription(TripsBookedSubscription()).toFlow()
         .retryWhen { _, attempt ->
             delay(attempt * 1000)
             true

@@ -57,5 +57,5 @@ val upload = Upload.fromFile(file)
 And execute your mutation:
 
 ```kotlin
-val response = apolloClient.mutate(SingleUploadMutation(file = upload)).execute()
+val response = apolloClient.mutation(SingleUploadMutation(file = upload)).execute()
 ```
