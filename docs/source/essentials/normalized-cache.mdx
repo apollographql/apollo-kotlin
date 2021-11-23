@@ -233,7 +233,7 @@ CacheKeyResolver resolver = new CacheKeyResolver() {
    @NotNull @Override
    public CacheKey fromFieldRecordSet(@NotNull ResponseField field, @NotNull Map<String, Object> recordSet) {
      // Retrieve the id from the object itself
-     return CacheKey.from(((String) recordSet.get("id"));
+     return CacheKey.from((String) recordSet.get("id"));
    }
 
    @NotNull @Override
@@ -242,7 +242,7 @@ CacheKeyResolver resolver = new CacheKeyResolver() {
      // In the example, this allows to know that `author(id: "author1")` will retrive `author1`
      // That sounds straightforward but without this, the cache would have no way of finding the id before executing the request on the
      // network which is what we want to avoid
-     return CacheKey.from(((String) field.resolveArgument("id", variables));
+     return CacheKey.from((String) field.resolveArgument("id", variables));
    }
 };
 
