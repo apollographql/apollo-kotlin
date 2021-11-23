@@ -41,7 +41,6 @@ com.apollographql.apollo3.gradle.api
 com.apollographql.apollo3.gradle.internal
 module:apollo-http-cache
 com.apollographql.apollo3.cache.http
-com.apollographql.apollo3.cache.http.internal
 module:apollo-mockserver
 com.apollographql.apollo3.mockserver
 module:apollo-mpp-utils
