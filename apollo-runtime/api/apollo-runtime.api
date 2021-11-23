@@ -154,25 +154,6 @@ public final class com/apollographql/apollo3/interceptor/NetworkInterceptor : co
 	public fun intercept (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/interceptor/ApolloInterceptorChain;)Lkotlinx/coroutines/flow/Flow;
 }
 
-<<<<<<< HEAD
-=======
-public final class com/apollographql/apollo3/internal/BackgroundDispatcher {
-	public fun <init> ()V
-	public final fun dispose ()V
-	public final fun getCoroutineDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
-}
-
-public final class com/apollographql/apollo3/internal/DefaultMutex : com/apollographql/apollo3/internal/Mutex {
-	public fun <init> ()V
-	public final fun getLock ()Ljava/lang/Object;
-	public fun lock (Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
-}
-
-public final class com/apollographql/apollo3/internal/DispatchersKt {
-	public static final fun defaultDispatcher (Lkotlinx/coroutines/CoroutineDispatcher;)Lkotlinx/coroutines/CoroutineDispatcher;
-}
-
->>>>>>> a151fa52a (update apiDump)
 public final class com/apollographql/apollo3/internal/Guard {
 	public fun <init> (Ljava/lang/String;Lkotlin/jvm/functions/Function0;)V
 	public final fun dispose ()V
