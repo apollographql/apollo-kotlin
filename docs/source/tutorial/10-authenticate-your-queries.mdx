@@ -32,12 +32,8 @@ Create a custom `OkHttpClient` that will use this interceptor and pass it to the
         .build()
         
     val apolloClient = ApolloClient.Builder()
-        .networkTransport(
-            HttpNetworkTransport(
-                serverUrl = "https://apollo-fullstack-tutorial.herokuapp.com/graphql",
-                okHttpClient = okHttpClient
-            )
-        )
+        .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
+        .okHttpClient(okHttpClient)
         .build()
 ```
 
@@ -50,12 +46,8 @@ fun apolloClient(context: Context): ApolloClient {
         .build()
         
     return ApolloClient.Builder()
-        .networkTransport(
-            HttpNetworkTransport(
-                serverUrl = "https://apollo-fullstack-tutorial.herokuapp.com/graphql",
-                okHttpClient = okHttpClient
-            )
-        )
+        .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
+        .okHttpClient(okHttpClient)
         .build()
 }
 ```
@@ -89,12 +81,8 @@ fun apolloClient(context: Context): ApolloClient {
         .build()
         
     instance = ApolloClient.Builder()
-        .networkTransport(
-            HttpNetworkTransport(
-                serverUrl = "https://apollo-fullstack-tutorial.herokuapp.com/graphql",
-                okHttpClient = okHttpClient
-            )
-        )
+        .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
+        .okHttpClient(okHttpClient)
         .build()
 
     return instance!!
