@@ -1,3 +1,5 @@
+@file:JvmName("-JsonWriters")
+
 package com.apollographql.apollo3.api.json.internal
 
 import com.apollographql.apollo3.annotations.ApolloInternal
@@ -13,7 +15,6 @@ import kotlin.jvm.JvmName
 
 @OptIn(ExperimentalContracts::class)
 @ApolloInternal
-@JvmName("-writeObject")
 inline fun JsonWriter.writeObject(crossinline block: JsonWriter.() -> Unit) {
   contract {
     callsInPlace(block, InvocationKind.EXACTLY_ONCE)
@@ -26,7 +27,6 @@ inline fun JsonWriter.writeObject(crossinline block: JsonWriter.() -> Unit) {
 
 @OptIn(ExperimentalContracts::class)
 @ApolloInternal
-@JvmName("-writeArray")
 inline fun JsonWriter.writeArray(crossinline block: JsonWriter.() -> Unit) {
   contract {
     callsInPlace(block, InvocationKind.EXACTLY_ONCE)
@@ -39,7 +39,6 @@ inline fun JsonWriter.writeArray(crossinline block: JsonWriter.() -> Unit) {
 
 @OptIn(ExperimentalContracts::class)
 @ApolloInternal
-@JvmName("-buildJsonString")
 inline fun buildJsonString(crossinline block: JsonWriter.() -> Unit): String {
   contract {
     callsInPlace(block, InvocationKind.EXACTLY_ONCE)
@@ -52,7 +51,6 @@ inline fun buildJsonString(crossinline block: JsonWriter.() -> Unit): String {
 
 @OptIn(ExperimentalContracts::class)
 @ApolloInternal
-@JvmName("-buildJsonByteString")
 inline fun buildJsonByteString(crossinline block: JsonWriter.() -> Unit): ByteString {
   contract {
     callsInPlace(block, InvocationKind.EXACTLY_ONCE)
@@ -65,7 +63,6 @@ inline fun buildJsonByteString(crossinline block: JsonWriter.() -> Unit): ByteSt
 
 @OptIn(ExperimentalContracts::class)
 @ApolloInternal
-@JvmName("-buildJsonMap")
 inline fun buildJsonMap(crossinline block: JsonWriter.() -> Unit): Any? {
   contract {
     callsInPlace(block, InvocationKind.EXACTLY_ONCE)

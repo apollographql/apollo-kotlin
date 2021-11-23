@@ -1026,7 +1026,7 @@ public final class com/apollographql/apollo3/api/json/MapJsonWriter$State$Map : 
 	public final fun setName (Ljava/lang/String;)V
 }
 
-public final class com/apollographql/apollo3/api/json/internal/JsonWritersKt {
+public final class com/apollographql/apollo3/api/json/internal/-JsonWriters {
 }
 
 public final class com/apollographql/apollo3/api/test/TestResolverKt {
