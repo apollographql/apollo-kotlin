@@ -21,7 +21,6 @@ import com.apollographql.apollo3.api.internal.json.writeArray
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.internal.BackgroundDispatcher
-import com.apollographql.apollo3.internal.DefaultMutex
 import com.apollographql.apollo3.mpp.ensureNeverFrozen
 import com.apollographql.apollo3.mpp.freeze
 import com.apollographql.apollo3.network.http.BatchingHttpEngine.Companion.CAN_BE_BATCHED
@@ -32,6 +31,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import okio.Buffer
 import okio.BufferedSink
 import kotlin.jvm.JvmName
@@ -63,7 +64,7 @@ class BatchingHttpEngine @JvmOverloads constructor(
 ) : HttpEngine {
   private val dispatcher = BackgroundDispatcher()
   private val scope = CoroutineScope(dispatcher.coroutineDispatcher)
-  private val mutex = DefaultMutex()
+  private val mutex = Mutex()
   private var disposed = false
 
   private val job: Job
@@ -97,7 +98,7 @@ class BatchingHttpEngine @JvmOverloads constructor(
 
     val pendingRequest = PendingRequest(request)
 
-    val sendNow = mutex.lock {
+    val sendNow = mutex.withLock {
       // if there was an error, the previous job was already canceled, ignore that error
       pendingRequests.add(pendingRequest)
       pendingRequests.size >= maxBatchSize
@@ -110,7 +111,7 @@ class BatchingHttpEngine @JvmOverloads constructor(
   }
 
   private suspend fun executePendingRequests() {
-    val pending = mutex.lock {
+    val pending = mutex.withLock {
       val copy = pendingRequests.toList()
       pendingRequests.clear()
       copy
