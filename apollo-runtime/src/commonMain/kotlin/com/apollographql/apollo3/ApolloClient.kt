@@ -234,12 +234,6 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
       customScalarAdaptersBuilder.add(customScalarType, customScalarAdapter)
     }
 
-    @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("addCustomScalarAdapter"))
-    fun <T> addCustomTypeAdapter(
-        customScalarType: CustomScalarType,
-        customScalarAdapter: Adapter<T>,
-    ) = addCustomScalarAdapter(customScalarType, customScalarAdapter)
-
     @OptIn(ApolloInternal::class)
     @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("addCustomScalarAdapter"))
     fun <T> addCustomTypeAdapter(

@@ -15,4 +15,5 @@ apollo {
   customScalarsMapping.put("CustomFloat", "kotlin.Float")
   customScalarsMapping.put("Any", "kotlin.Any")
   customScalarsMapping.put("GeoPoint", "kotlin.Any")
+  customScalarsMapping.put("Address", "custom.scalars.Address")
 }
