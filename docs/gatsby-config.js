@@ -62,6 +62,11 @@ module.exports = {
             'advanced/ui-tests',
             'advanced/test-builders',
           ],
+          'Language Support': [
+            'advanced/kotlin-native',
+            'advanced/java',
+            'advanced/rxjava',
+          ],
           Advanced: [
             'advanced/query-batching',
             'advanced/upload',
@@ -73,9 +78,6 @@ module.exports = {
             'advanced/using-aliases',
             'advanced/client-awareness',
             'advanced/response-based-codegen',
-            'advanced/java',
-            'advanced/rxjava',
-            'advanced/kotlin-native',
             'advanced/apollo-ast',
             'advanced/operation-variables',
           ],
