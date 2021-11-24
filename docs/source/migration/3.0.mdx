@@ -47,18 +47,6 @@ val client = ApolloClient.builder()
   .build()
 
 ```
-4. Queries and other operations:
-```kotlin
-// Replace:
-val response = apolloClient
-  .query(MyQuery())
-  .await()
-
-// With:
-val response = apolloClient
-  .query(MyQuery())
-  .execute()
-```
 
 ## All details
 
@@ -277,35 +265,18 @@ val apolloClient = ApolloClient.builder()
 // With
 val apolloClient = ApolloClient.Builder()
     .serverUrl(serverUrl)
-    // ...other Builder methods
-    .build()
+        // ...other Builder methods
+        .build()
 ```
 
-Using a custom HttpClient on Apollo Android 3.x is different from doing so on 2.x due to the more platform-agnostic nature of the API:
-
-```kotlin
-// Replace
-val apolloClient = ApolloClient.builder()
-    .serverUrl(serverUrl)
-    .okHttpClient(okHttpClient)
-    .build()
-
-// With
-val apolloClient = ApolloClient.Builder()
-    .networkTransport(
-        HttpNetworkTransport(
-            serverUrl = serverUrl,
-            engine = DefaultHttpEngine(okHttpClient)
-        )
-    )
-    .build()
-```
-
-### Coroutines APIs
+### Operation APIs
 
 Apollo Android 2.x has callback APIs that can become verbose and require explicitly handling cancellation.
 
-Apollo Android 3.x exposes more concise coroutines APIs that handle cancellation automatically through the coroutine scope.
+Apollo Android 3.x exposes more concise coroutines APIs that handle cancellation automatically through the coroutine
+scope.
+
+Also, `mutate` has been renamed to `mutation` and `subscribe` has been renamed to `subscription` for consistency.
 
 ```kotlin
 // Replace
@@ -314,9 +285,14 @@ apolloClient.query(query).await()
 apolloClient.query(query).execute()
 
 // Replace
-apolloClient.subscribe(subscription).toFlow()
+apolloClient.mutate(query).await()
 // With
-apolloClient.subscribe(subscription).execute()
+apolloClient.mutation(query).execute()
+
+// Replace
+apolloClient.subscribe(query).toFlow()
+// With
+apolloClient.subscription(subscription).toFlow()
 ```
 
 ### Custom Scalar adapters
@@ -491,7 +467,7 @@ val response = apolloClient.query(request)
 
 The `CacheKeyResolver` API has been split in two different APIs:
 
-* `ObjectIdGenerator.cacheKeyForObject`
+* `CacheKeyGenerator.cacheKeyForObject`
   * takes Json data as input and returns a unique id for an object.
   * is used **after** a network request
   * is used during normalization when **writing** to the cache
@@ -503,7 +479,7 @@ The `CacheKeyResolver` API has been split in two different APIs:
 Previously, both methods were in `CacheResolver` even if under the hood, the code path were very different. By separating them, it makes it explicit and also makes it possible to only implement one of them.
 
 At a high level,
-* `fromFieldRecordSet` is renamed to `ObjectIdGenerator.cacheKeyForObject`.
+* `fromFieldRecordSet` is renamed to `CacheKeyGenerator.cacheKeyForObject`.
 * `fromFieldArguments` is renamed to `CacheKeyResolver.cacheKeyForField`.
 * The `CacheKey` return value is now nullable, and `CacheKey.NONE` is replaced with `null`.
 
@@ -524,9 +500,9 @@ val apolloClient = ApolloClient.builder()
 
 
 // With
-val objectIdGenerator = object : ObjectIdGenerator {
-  override fun cacheKeyForObject(obj: Map<String, Any?>, context: ObjectIdGeneratorContext): CacheKey? {
-    return obj["id"]?.toString()?.let { CacheKey(it) } ?: TypePolicyObjectIdGenerator.cacheKeyForObject(obj, context)
+val objectIdGenerator = object : CacheKeyGenerator {
+  override fun cacheKeyForObject(obj: Map<String, Any?>, context: CacheKeyGeneratorContext): CacheKey? {
+    return obj["id"]?.toString()?.let { CacheKey(it) } ?: TypePolicyCacheKeyGenerator.cacheKeyForObject(obj, context)
   }
 }
 
@@ -611,6 +587,6 @@ query GetHero($id: String @optional) {
 
 ### Enums
 
-By default, Apollo Android 2.x generates GraphQL enums as Kotlin enums, with an option to generate them as sealed classes to access the raw name of the enum.
-
-Apollo Android 3.x drops Kotlin enums and always generates sealed classes. In addition, Apollo Android 3.x uses the same case for enum names as their GraphQL definition, instead of converting them to uppercase. This enables you to define different enums with different cases, which is valid in GraphQL.
+Apollo Android 2.x converts enum names to uppercase. This is no longer the case with Apollo Android 3.x, which uses the
+same case for enum names as their GraphQL definition. This enables you to define different enums with different cases,
+which is valid in GraphQL.

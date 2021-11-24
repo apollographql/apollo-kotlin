@@ -17,17 +17,17 @@ Cache ids are computed from two sources:
 
 With programmatic cache ids:
 
-1. uses `ObjectIdGenerator`
+1. uses `CacheKeyGenerator`
 2. uses `CacheKeyResolver`
 
 
-## ObjectIdGenerator
+## CacheKeyGenerator
 
-To customize how cache ids are built from object fields, create a new instance of `ObjectIdGenerator`:
+To customize how cache ids are built from object fields, create a new instance of `CacheKeyGenerator`:
 
 ```kotlin
-val objectIdGenerator = object : ObjectIdGenerator {
-  override fun cacheKeyForObject(obj: Map<String, Any?>, context: ObjectIdGeneratorContext): CacheKey? {
+val objectIdGenerator = object : CacheKeyGenerator {
+  override fun cacheKeyForObject(obj: Map<String, Any?>, context: CacheKeyGeneratorContext): CacheKey? {
     // Retrieve the id from the object itself
     return CacheKey(obj["id"] as String)
   }
@@ -49,8 +49,8 @@ val apolloClient = ApolloClient.Builder()
 If you need the object typename, you can access it through `context`:
 
 ```kotlin
-val objectIdGenerator = object : ObjectIdGenerator {
-  override fun cacheKeyForObject(obj: Map<String, Any?>, context: ObjectIdGeneratorContext): CacheKey? {
+val objectIdGenerator = object : CacheKeyGenerator {
+  override fun cacheKeyForObject(obj: Map<String, Any?>, context: CacheKeyGeneratorContext): CacheKey? {
     val typename = context.field.type.leafType().name
     val id = obj["id"] as String
 

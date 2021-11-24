@@ -34,17 +34,17 @@ import com.apollographql.apollo3.rx2.Rx2Apollo;
 
 // A query
 ApolloQueryCall<MyQuery.Data> queryCall = client.query(new MyQuery());
-Single<ApolloResponse<MyQuery.Data>> queryResponse = Rx2Apollo.rxSingle(queryCall);
+Single<ApolloResponse<MyQuery.Data>> queryResponse = Rx2Apollo.single(queryCall);
 queryResponse.subscribe( /* ... */ );
 
 // A mutation
-ApolloMutationCall<MyMutation.Data> mutationCall = client.mutate(new MyMutation("my-parameter"));
-Single<ApolloResponse<MyMutation.Data>> mutationResponse = Rx2Apollo.rxSingle(mutationCall);
+ApolloMutationCall<MyMutation.Data> mutationCall = client.mutation(new MyMutation("my-parameter"));
+Single<ApolloResponse<MyMutation.Data>> mutationResponse = Rx2Apollo.single(mutationCall);
 mutationResponse.subscribe( /* ... */ );
 
 // A subscription
-ApolloSubscriptionCall<MySubscription.Data> subscriptionCall = client.subscribe(new MySubscription());
-Flowable<ApolloResponse<MySubscription.Data>> subscriptionResponse = Rx2Apollo.rxFlowable(subscriptionCall);
+ApolloSubscriptionCall<MySubscription.Data> subscriptionCall = client.subscription(new MySubscription());
+Flowable<ApolloResponse<MySubscription.Data>> subscriptionResponse = Rx2Apollo.flowable(subscriptionCall);
 subscriptionResponse.subscribe( /* ... */ );
 ```
 
@@ -53,10 +53,10 @@ subscriptionResponse.subscribe( /* ... */ );
 client.query(MyQuery()).rxSingle().subscribe(/* ... */)
 
 // A mutation
-client.mutate(MyMutation("my-parameter")).rxSingle().subscribe(/* ... */)
+client.mutation(MyMutation("my-parameter")).rxSingle().subscribe(/* ... */)
 
 // A subscription
-client.subscribe(MySubscription()).rxFlowable().subscribe(/* ... */)
+client.subscription(MySubscription()).rxFlowable().subscribe(/* ... */)
 ```
 </MultiCodeBlock>
 
@@ -190,11 +190,11 @@ val client = ApolloClient.Builder()
 <MultiCodeBlock>
 
 ```java{6}
-import com.apollographql.apollo3.cache.normalized.ClientCacheExtensionsKt;
+import com.apollographql.apollo3.cache.normalized.NormalizedCache;
 import com.apollographql.apollo3.rx2.Rx2Apollo;
 // (...)
 
-ApolloStore apolloStore = ClientCacheExtensionsKt.getApolloStore(client);
+ApolloStore apolloStore = NormalizedCache.getApolloStore(client);
 Rx2ApolloStore rxApolloStore = Rx2Apollo.toRx2ApolloStore(apolloStore, Schedulers.io());
 Single<MyFragment> data = rxApolloStore.rxReadFragment(new MyFragmentImpl(), new CacheKey("..."), CustomScalarAdapters.Empty, CacheHeaders.NONE);
 data.subscribe( /* ... */);

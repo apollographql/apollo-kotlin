@@ -22,17 +22,21 @@ apollo {
 Here's how to build an Apollo client from Java:
 
 ```java
+import com.apollographql.apollo3.cache.normalized.NormalizedCache;
+import com.apollographql.apollo3.cache.http.HttpCache;
+// (...)
+
         ApolloClient.Builder builder = new ApolloClient.Builder()
                 .serverUrl("http://localhost:4000/graphql")
 
         // Optionally, set an http cache
-        builder = HttpCacheExtensionsKt.httpCache(builder, cacheDirectory, cacheMaxSize);
+        HttpCache.configureApolloClientBuilder(builder, cacheDirectory, cacheMaxSize);
 
         // Optionally, set a normalized cache
-        builder = ClientCacheExtensionsKt.normalizedCache(
+        NormalizedCache.configureApolloClientBuilder(
                 builder,
                 new MemoryCacheFactory(10 * 1024 * 1024, -1),
-                TypePolicyObjectIdGenerator.INSTANCE,
+                TypePolicyCacheKeyGenerator.INSTANCE,
                 FieldPolicyCacheResolver.INSTANCE,
                 false
         );
