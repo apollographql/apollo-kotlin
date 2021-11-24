@@ -39,7 +39,6 @@ public final class com/apollographql/apollo3/ApolloClient : com/apollographql/ap
 public final class com/apollographql/apollo3/ApolloClient$Builder : com/apollographql/apollo3/api/HasMutableExecutionContext {
 	public fun <init> ()V
 	public final fun addCustomScalarAdapter (Lcom/apollographql/apollo3/api/CustomScalarType;Lcom/apollographql/apollo3/api/Adapter;)Lcom/apollographql/apollo3/ApolloClient$Builder;
-	public final fun addCustomTypeAdapter (Lcom/apollographql/apollo3/api/CustomScalarType;Lcom/apollographql/apollo3/api/Adapter;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun addCustomTypeAdapter (Lcom/apollographql/apollo3/api/CustomScalarType;Lcom/apollographql/apollo3/api/CustomTypeAdapter;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public synthetic fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
