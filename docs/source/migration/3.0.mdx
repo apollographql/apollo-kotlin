@@ -614,3 +614,32 @@ query GetHero($id: String @optional) {
 By default, Apollo Android 2.x generates GraphQL enums as Kotlin enums, with an option to generate them as sealed classes to access the raw name of the enum.
 
 Apollo Android 3.x drops Kotlin enums and always generates sealed classes. In addition, Apollo Android 3.x uses the same case for enum names as their GraphQL definition, instead of converting them to uppercase. This enables you to define different enums with different cases, which is valid in GraphQL.
+
+### BigDecimal
+
+By default, Apollo Android 2.x internally maps all numbers to a custom `BigDecimal` value.
+
+For performance reasons, Apollo Android 3.x uses the primitive type when possible and moves `BigDecimal` to the `apollo-adapters` artifact. This change should be transparent for most users because the generated parsers will convert `BigDecimal` to `Int` or `Double`.
+
+If you're reading the internal `Maps`, you can still be exposed to this change. This happens for an example, if you have a `CustomTypeAdapter` that reads nested values. In that case, you can do as below:
+
+```kotlin
+    val customTypeAdapter = object: CustomTypeAdapter<Address> {
+      override fun decode(value: CustomTypeValue<*>): Address {
+        check (value is CustomTypeValue.GraphQLJsonObject)
+
+        val street = value.value["street"] as String
+
+        // BigDecimal is not exposed anymore
+        // Replace
+        // val number = value.value["number"] as BigDecimal
+
+        // With
+        val number = value.value["number"] as Int
+
+        return Address(street, number)
+      }
+    }
+```
+
+By default, numbers are mapped to `Int` or `Double` if they don't fit in an `Int`. If the number doesn't fit in a `Double` either, it will fallback to a `JsonNumber` containing the String representation of the number.
