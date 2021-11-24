@@ -609,6 +609,14 @@ query GetHero($id: String @optional) {
 }
 ```
 
+Or opt-in optional variables globally in your Gradle config:
+
+```kotlin
+apollo {
+  // ...
+  generateOptionalOperationVariables.set(true)
+}
+```
 ### Enums
 
 By default, Apollo Android 2.x generates GraphQL enums as Kotlin enums, with an option to generate them as sealed classes to access the raw name of the enum.
