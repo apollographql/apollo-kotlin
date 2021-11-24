@@ -15,6 +15,7 @@ import com.example.fragment_used_twice.adapter.TestQuery_ResponseAdapter;
 import com.example.fragment_used_twice.fragment.HeroDetails;
 import com.example.fragment_used_twice.fragment.HumanDetails;
 import com.example.fragment_used_twice.selections.TestQuerySelections;
+import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -111,7 +112,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters) {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     // This operation doesn't have any variable
   }
 

@@ -15,6 +15,7 @@ import com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter;
 import com.example.unique_type_name.fragment.HeroDetails;
 import com.example.unique_type_name.selections.HeroDetailQuerySelections;
 import com.example.unique_type_name.type.Episode;
+import java.io.IOException;
 import java.lang.Double;
 import java.lang.Object;
 import java.lang.Override;
@@ -119,7 +120,8 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters) {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     // This operation doesn't have any variable
   }
 

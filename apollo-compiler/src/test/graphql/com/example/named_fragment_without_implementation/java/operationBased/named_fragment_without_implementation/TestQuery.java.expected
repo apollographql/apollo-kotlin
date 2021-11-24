@@ -15,6 +15,7 @@ import com.example.named_fragment_without_implementation.adapter.TestQuery_Respo
 import com.example.named_fragment_without_implementation.fragment.DroidDetails;
 import com.example.named_fragment_without_implementation.fragment.HumanDetails;
 import com.example.named_fragment_without_implementation.selections.TestQuerySelections;
+import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -103,7 +104,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters) {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     // This operation doesn't have any variable
   }
 

@@ -21,6 +21,7 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.inline_fragment_intersection.TestOperation;
 import com.example.inline_fragment_intersection.type.Race;
 import com.example.inline_fragment_intersection.type.adapter.Race_ResponseAdapter;
+import java.io.IOException;
 import java.lang.Boolean;
 import java.lang.Double;
 import java.lang.Override;
@@ -36,8 +37,8 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("random");
 
     @Override
-    public TestOperation.Data fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+    public TestOperation.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestOperation.Random random = null;
 
       loop:
@@ -57,7 +58,7 @@ public class TestOperation_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestOperation.Data value) {
+        TestOperation.Data value) throws IOException {
       writer.name("random");
       new ObjectAdapter<TestOperation.Random>(Random.INSTANCE, true).toJson(writer, customScalarAdapters, value.random);
     }
@@ -70,7 +71,7 @@ public class TestOperation_ResponseAdapter {
 
     @Override
     public TestOperation.Random fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
 
       loop:
@@ -103,7 +104,7 @@ public class TestOperation_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestOperation.Random value) {
+        TestOperation.Random value) throws IOException {
       writer.name("__typename");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 
@@ -124,7 +125,7 @@ public class TestOperation_ResponseAdapter {
 
     @Override
     public TestOperation.OnBeing fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
       String name = null;
       List<TestOperation.Friend> friends = null;
@@ -159,7 +160,7 @@ public class TestOperation_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestOperation.OnBeing value) {
+        TestOperation.OnBeing value) throws IOException {
       writer.name("__typename");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 
@@ -182,7 +183,7 @@ public class TestOperation_ResponseAdapter {
 
     @Override
     public TestOperation.Friend fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
       String name = null;
 
@@ -213,7 +214,7 @@ public class TestOperation_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestOperation.Friend value) {
+        TestOperation.Friend value) throws IOException {
       writer.name("__typename");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 
@@ -233,7 +234,7 @@ public class TestOperation_ResponseAdapter {
 
     @Override
     public TestOperation.OnWookie fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       Double lifeExpectancy = null;
 
       loop:
@@ -251,7 +252,7 @@ public class TestOperation_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestOperation.OnWookie value) {
+        TestOperation.OnWookie value) throws IOException {
       writer.name("lifeExpectancy");
       Adapters.NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lifeExpectancy);
     }
@@ -264,7 +265,7 @@ public class TestOperation_ResponseAdapter {
 
     @Override
     public TestOperation.OnHuman fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String profilePictureUrl = null;
       List<TestOperation.Friend1> friends = null;
 
@@ -287,7 +288,7 @@ public class TestOperation_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestOperation.OnHuman value) {
+        TestOperation.OnHuman value) throws IOException {
       writer.name("profilePictureUrl");
       Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.profilePictureUrl);
 
@@ -303,7 +304,7 @@ public class TestOperation_ResponseAdapter {
 
     @Override
     public TestOperation.Friend1 fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
       Boolean isFamous = null;
 
@@ -332,7 +333,7 @@ public class TestOperation_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestOperation.Friend1 value) {
+        TestOperation.Friend1 value) throws IOException {
       writer.name("__typename");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 
@@ -352,7 +353,7 @@ public class TestOperation_ResponseAdapter {
 
     @Override
     public TestOperation.OnWookie1 fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       Race race = null;
 
       loop:
@@ -372,7 +373,7 @@ public class TestOperation_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestOperation.OnWookie1 value) {
+        TestOperation.OnWookie1 value) throws IOException {
       writer.name("race");
       Race_ResponseAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.race);
     }
@@ -385,7 +386,7 @@ public class TestOperation_ResponseAdapter {
 
     @Override
     public TestOperation.OnWookie2 fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       Race race = null;
       List<TestOperation.Friend2> friends = null;
 
@@ -409,7 +410,7 @@ public class TestOperation_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestOperation.OnWookie2 value) {
+        TestOperation.OnWookie2 value) throws IOException {
       writer.name("race");
       Race_ResponseAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.race);
 
@@ -425,7 +426,7 @@ public class TestOperation_ResponseAdapter {
 
     @Override
     public TestOperation.Friend2 fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       Double lifeExpectancy = null;
 
       loop:
@@ -443,7 +444,7 @@ public class TestOperation_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestOperation.Friend2 value) {
+        TestOperation.Friend2 value) throws IOException {
       writer.name("lifeExpectancy");
       Adapters.NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lifeExpectancy);
     }

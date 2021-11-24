@@ -18,6 +18,7 @@ import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.interface_on_interface.GetHuman;
+import java.io.IOException;
 import java.lang.Double;
 import java.lang.Override;
 import java.lang.String;
@@ -32,7 +33,8 @@ public class GetHuman_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("human", "node");
 
     @Override
-    public GetHuman.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public GetHuman.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       GetHuman.Human human = null;
       GetHuman.Node node = null;
 
@@ -56,7 +58,7 @@ public class GetHuman_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        GetHuman.Data value) {
+        GetHuman.Data value) throws IOException {
       writer.name("human");
       new ObjectAdapter<GetHuman.Human>(Human.INSTANCE, false).toJson(writer, customScalarAdapters, value.human);
 
@@ -71,7 +73,8 @@ public class GetHuman_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id", "name", "height");
 
     @Override
-    public GetHuman.Human fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public GetHuman.Human fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String id = null;
       String name = null;
       Double height = null;
@@ -99,7 +102,7 @@ public class GetHuman_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        GetHuman.Human value) {
+        GetHuman.Human value) throws IOException {
       writer.name("id");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.id);
 
@@ -117,7 +120,8 @@ public class GetHuman_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public GetHuman.Node fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public GetHuman.Node fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String __typename = null;
 
       loop:
@@ -143,7 +147,7 @@ public class GetHuman_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        GetHuman.Node value) {
+        GetHuman.Node value) throws IOException {
       writer.name("__typename");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 
@@ -159,7 +163,8 @@ public class GetHuman_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("height");
 
     @Override
-    public GetHuman.OnHuman fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public GetHuman.OnHuman fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       Double height = null;
 
       loop:
@@ -179,7 +184,7 @@ public class GetHuman_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        GetHuman.OnHuman value) {
+        GetHuman.OnHuman value) throws IOException {
       writer.name("height");
       DoubleAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.height);
     }

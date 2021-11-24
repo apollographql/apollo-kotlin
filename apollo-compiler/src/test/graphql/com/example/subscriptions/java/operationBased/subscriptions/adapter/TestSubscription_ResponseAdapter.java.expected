@@ -15,6 +15,7 @@ import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.subscriptions.TestSubscription;
+import java.io.IOException;
 import java.lang.Integer;
 import java.lang.Override;
 import java.lang.String;
@@ -29,7 +30,7 @@ public class TestSubscription_ResponseAdapter {
 
     @Override
     public TestSubscription.Data fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       TestSubscription.CommentAdded commentAdded = null;
 
       loop:
@@ -47,7 +48,7 @@ public class TestSubscription_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestSubscription.Data value) {
+        TestSubscription.Data value) throws IOException {
       writer.name("commentAdded");
       new NullableAdapter<>(new ObjectAdapter<TestSubscription.CommentAdded>(CommentAdded.INSTANCE, false)).toJson(writer, customScalarAdapters, value.commentAdded);
     }
@@ -60,7 +61,7 @@ public class TestSubscription_ResponseAdapter {
 
     @Override
     public TestSubscription.CommentAdded fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       Integer id = null;
       String content = null;
 
@@ -84,7 +85,7 @@ public class TestSubscription_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestSubscription.CommentAdded value) {
+        TestSubscription.CommentAdded value) throws IOException {
       writer.name("id");
       IntAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.id);
 

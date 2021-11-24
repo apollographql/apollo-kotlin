@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.inline_fragments_with_friends.adapter.TestQuery_ResponseAdapter;
 import com.example.inline_fragments_with_friends.selections.TestQuerySelections;
 import com.example.inline_fragments_with_friends.type.Episode;
+import java.io.IOException;
 import java.lang.Double;
 import java.lang.Object;
 import java.lang.Override;
@@ -105,7 +106,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters) {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     // This operation doesn't have any variable
   }
 

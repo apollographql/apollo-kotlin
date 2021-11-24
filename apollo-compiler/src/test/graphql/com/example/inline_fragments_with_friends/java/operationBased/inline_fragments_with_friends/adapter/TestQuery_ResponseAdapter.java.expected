@@ -22,6 +22,7 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.inline_fragments_with_friends.TestQuery;
 import com.example.inline_fragments_with_friends.type.Episode;
 import com.example.inline_fragments_with_friends.type.adapter.Episode_ResponseAdapter;
+import java.io.IOException;
 import java.lang.Double;
 import java.lang.Override;
 import java.lang.String;
@@ -36,7 +37,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("hero");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestQuery.Hero hero = null;
 
       loop:
@@ -54,7 +56,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) {
+        TestQuery.Data value) throws IOException {
       writer.name("hero");
       new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).toJson(writer, customScalarAdapters, value.hero);
     }
@@ -66,7 +68,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name");
 
     @Override
-    public TestQuery.Hero fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Hero fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String __typename = null;
       String name = null;
 
@@ -104,7 +107,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Hero value) {
+        TestQuery.Hero value) throws IOException {
       writer.name("__typename");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 
@@ -127,8 +130,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("height", "friends");
 
     @Override
-    public TestQuery.OnHuman fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.OnHuman fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       Double height = null;
       List<TestQuery.Friend> friends = null;
 
@@ -149,7 +152,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.OnHuman value) {
+        TestQuery.OnHuman value) throws IOException {
       writer.name("height");
       Adapters.NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height);
 
@@ -164,7 +167,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("appearsIn");
 
     @Override
-    public TestQuery.Friend fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Friend fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       List<Episode> appearsIn = null;
 
       loop:
@@ -184,7 +188,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Friend value) {
+        TestQuery.Friend value) throws IOException {
       writer.name("appearsIn");
       new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, customScalarAdapters, value.appearsIn);
     }
@@ -196,8 +200,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("primaryFunction", "friends");
 
     @Override
-    public TestQuery.OnDroid fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.OnDroid fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String primaryFunction = null;
       List<TestQuery.Friend1> friends = null;
 
@@ -218,7 +222,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.OnDroid value) {
+        TestQuery.OnDroid value) throws IOException {
       writer.name("primaryFunction");
       Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction);
 
@@ -233,8 +237,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id");
 
     @Override
-    public TestQuery.Friend1 fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Friend1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String id = null;
 
       loop:
@@ -254,7 +258,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Friend1 value) {
+        TestQuery.Friend1 value) throws IOException {
       writer.name("id");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.id);
     }

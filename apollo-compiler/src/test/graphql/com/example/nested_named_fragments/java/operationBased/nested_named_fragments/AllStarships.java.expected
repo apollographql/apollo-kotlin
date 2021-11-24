@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.nested_named_fragments.adapter.AllStarships_ResponseAdapter;
 import com.example.nested_named_fragments.fragment.StarshipFragment;
 import com.example.nested_named_fragments.selections.AllStarshipsSelections;
+import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -121,7 +122,8 @@ public class AllStarships implements Query<AllStarships.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters) {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     // This operation doesn't have any variable
   }
 

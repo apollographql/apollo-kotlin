@@ -14,6 +14,7 @@ import com.example.mutation_create_review_semantic_naming.CreateReviewForEpisode
 import com.example.mutation_create_review_semantic_naming.type.ReviewInput;
 import com.example.mutation_create_review_semantic_naming.type.adapter.Episode_ResponseAdapter;
 import com.example.mutation_create_review_semantic_naming.type.adapter.ReviewInput_InputAdapter;
+import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
@@ -22,13 +23,13 @@ public enum CreateReviewForEpisodeMutation_VariablesAdapter implements Adapter<C
 
   @Override
   public CreateReviewForEpisodeMutation fromJson(JsonReader reader,
-      CustomScalarAdapters customScalarAdapters) {
+      CustomScalarAdapters customScalarAdapters) throws IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
   public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      CreateReviewForEpisodeMutation value) {
+      CreateReviewForEpisodeMutation value) throws IOException {
     writer.name("ep");
     Episode_ResponseAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.ep);
     writer.name("review");

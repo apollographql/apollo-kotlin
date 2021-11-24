@@ -15,6 +15,7 @@ import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
+import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -29,7 +30,7 @@ public class HumanDetailsImpl_ResponseAdapter {
 
     @Override
     public com.example.named_fragment_delegate.fragment.HumanDetails fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String name = null;
       Object profileLink = null;
       com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection friendsConnection = null;
@@ -57,7 +58,7 @@ public class HumanDetailsImpl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.named_fragment_delegate.fragment.HumanDetails value) {
+        com.example.named_fragment_delegate.fragment.HumanDetails value) throws IOException {
       writer.name("name");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.name);
 
@@ -76,7 +77,7 @@ public class HumanDetailsImpl_ResponseAdapter {
 
     @Override
     public com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       List<com.example.named_fragment_delegate.fragment.HumanDetails.Edge> edges = null;
 
       loop:
@@ -94,7 +95,8 @@ public class HumanDetailsImpl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection value) {
+        com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection value) throws
+        IOException {
       writer.name("edges");
       new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Edge>(Edge.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.edges);
     }
@@ -107,7 +109,7 @@ public class HumanDetailsImpl_ResponseAdapter {
 
     @Override
     public com.example.named_fragment_delegate.fragment.HumanDetails.Edge fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       com.example.named_fragment_delegate.fragment.HumanDetails.Node node = null;
 
       loop:
@@ -125,7 +127,7 @@ public class HumanDetailsImpl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.named_fragment_delegate.fragment.HumanDetails.Edge value) {
+        com.example.named_fragment_delegate.fragment.HumanDetails.Edge value) throws IOException {
       writer.name("node");
       new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Node>(Node.INSTANCE, false)).toJson(writer, customScalarAdapters, value.node);
     }
@@ -138,7 +140,7 @@ public class HumanDetailsImpl_ResponseAdapter {
 
     @Override
     public com.example.named_fragment_delegate.fragment.HumanDetails.Node fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String name = null;
 
       loop:
@@ -158,7 +160,7 @@ public class HumanDetailsImpl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.named_fragment_delegate.fragment.HumanDetails.Node value) {
+        com.example.named_fragment_delegate.fragment.HumanDetails.Node value) throws IOException {
       writer.name("name");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.name);
     }

@@ -19,6 +19,7 @@ import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.typename_always_first.TestQuery;
+import java.io.IOException;
 import java.lang.Double;
 import java.lang.Override;
 import java.lang.String;
@@ -33,7 +34,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("hero", "__typename");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestQuery.Hero hero = null;
       String __typename = null;
 
@@ -56,7 +58,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) {
+        TestQuery.Data value) throws IOException {
       writer.name("hero");
       new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).toJson(writer, customScalarAdapters, value.hero);
 
@@ -71,7 +73,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Hero fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Hero fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String __typename = null;
 
       loop:
@@ -104,7 +107,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Hero value) {
+        TestQuery.Hero value) throws IOException {
       writer.name("__typename");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 
@@ -124,8 +127,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("height", "__typename");
 
     @Override
-    public TestQuery.OnHuman fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.OnHuman fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       Double height = null;
       String __typename = null;
 
@@ -148,7 +151,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.OnHuman value) {
+        TestQuery.OnHuman value) throws IOException {
       writer.name("height");
       Adapters.NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height);
 
@@ -163,8 +166,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "__typename", "primaryFunction");
 
     @Override
-    public TestQuery.OnDroid fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.OnDroid fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String name = null;
       String __typename = null;
       String primaryFunction = null;
@@ -191,7 +194,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.OnDroid value) {
+        TestQuery.OnDroid value) throws IOException {
       writer.name("name");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.name);
 

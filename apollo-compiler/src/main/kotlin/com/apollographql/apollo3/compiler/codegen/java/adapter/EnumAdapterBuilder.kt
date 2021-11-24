@@ -48,6 +48,7 @@ class EnumResponseAdapterBuilder(
     val adaptedTypeName = context.resolver.resolveSchemaType(enum.name)
     val fromResponseMethodSpec = MethodSpec.methodBuilder(Identifier.fromJson)
         .addModifiers(Modifier.PUBLIC)
+        .addException(JavaClassNames.IOException)
         .addAnnotation(JavaClassNames.Override)
         .addParameter(JavaClassNames.JsonReader, reader)
         .addParameter(JavaClassNames.CustomScalarAdapters, customScalarAdapters)
@@ -75,6 +76,7 @@ class EnumResponseAdapterBuilder(
 
 internal fun toResponseMethodSpecBuilder(typeName: TypeName) = MethodSpec.methodBuilder(toJson)
     .addModifiers(Modifier.PUBLIC)
+    .addException(JavaClassNames.IOException)
     .addAnnotation(JavaClassNames.Override)
     .addParameter(JavaClassNames.JsonWriter, writer)
     .addParameter(JavaClassNames.CustomScalarAdapters, customScalarAdapters)

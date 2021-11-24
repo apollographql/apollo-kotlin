@@ -15,6 +15,7 @@ import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.__schema.type.ReviewInput;
 import com.example.__schema.type.ReviewRefInput;
+import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
@@ -22,13 +23,14 @@ public enum ReviewRefInput_InputAdapter implements Adapter<ReviewRefInput> {
   INSTANCE;
 
   @Override
-  public ReviewRefInput fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+  public ReviewRefInput fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
   public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      ReviewRefInput value) {
+      ReviewRefInput value) throws IOException {
     if (value.reviewInput instanceof Optional.Present) {
       writer.name("reviewInput");
       new OptionalAdapter<>(new NullableAdapter<>(new ObjectAdapter<ReviewInput>(ReviewInput_InputAdapter.INSTANCE, false))).toJson(writer, customScalarAdapters, (Optional.Present<ReviewInput>)value.reviewInput);

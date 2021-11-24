@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
+import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -26,7 +27,7 @@ public class CharacterDetailsImpl_ResponseAdapter {
 
     @Override
     public com.example.fragment_used_twice.fragment.CharacterDetails fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String name = null;
       Object birthDate = null;
 
@@ -50,7 +51,7 @@ public class CharacterDetailsImpl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.fragment_used_twice.fragment.CharacterDetails value) {
+        com.example.fragment_used_twice.fragment.CharacterDetails value) throws IOException {
       writer.name("name");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.name);
 

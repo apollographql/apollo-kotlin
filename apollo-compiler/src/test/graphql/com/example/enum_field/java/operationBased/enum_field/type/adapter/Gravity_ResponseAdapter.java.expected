@@ -10,19 +10,22 @@ import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.enum_field.type.Gravity;
+import java.io.IOException;
 import java.lang.Override;
 
 public enum Gravity_ResponseAdapter implements Adapter<Gravity> {
   INSTANCE;
 
   @Override
-  public Gravity fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+  public Gravity fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
+      IOException {
     String rawValue = reader.nextString();
     return Gravity.safeValueOf(rawValue);
   }
 
   @Override
-  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters, Gravity value) {
+  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters, Gravity value)
+      throws IOException {
     writer.value(value.rawValue);
   }
 }

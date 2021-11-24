@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.named_fragment_inside_inline_fragment.type.Episode;
 import com.example.named_fragment_inside_inline_fragment.type.adapter.Episode_ResponseAdapter;
+import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
@@ -27,7 +28,7 @@ public class CharacterAppearsInImpl_ResponseAdapter {
 
     @Override
     public com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       List<Episode> appearsIn = null;
 
       loop:
@@ -47,7 +48,8 @@ public class CharacterAppearsInImpl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn value) {
+        com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn value) throws
+        IOException {
       writer.name("appearsIn");
       new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, customScalarAdapters, value.appearsIn);
     }

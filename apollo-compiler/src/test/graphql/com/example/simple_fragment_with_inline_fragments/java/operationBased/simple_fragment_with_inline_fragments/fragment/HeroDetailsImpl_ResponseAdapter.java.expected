@@ -19,6 +19,7 @@ import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
+import java.io.IOException;
 import java.lang.Double;
 import java.lang.Override;
 import java.lang.String;
@@ -34,7 +35,7 @@ public class HeroDetailsImpl_ResponseAdapter {
 
     @Override
     public com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String name = null;
       List<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend> friends = null;
 
@@ -57,7 +58,8 @@ public class HeroDetailsImpl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails value) {
+        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails value) throws
+        IOException {
       writer.name("name");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.name);
 
@@ -73,7 +75,7 @@ public class HeroDetailsImpl_ResponseAdapter {
 
     @Override
     public com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
       String name = null;
 
@@ -111,7 +113,8 @@ public class HeroDetailsImpl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend value) {
+        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend value) throws
+        IOException {
       writer.name("__typename");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 
@@ -135,7 +138,7 @@ public class HeroDetailsImpl_ResponseAdapter {
 
     @Override
     public com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnHuman fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       Double height = null;
 
       loop:
@@ -153,7 +156,8 @@ public class HeroDetailsImpl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnHuman value) {
+        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnHuman value) throws
+        IOException {
       writer.name("height");
       Adapters.NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height);
     }
@@ -166,7 +170,7 @@ public class HeroDetailsImpl_ResponseAdapter {
 
     @Override
     public com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnDroid fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String primaryFunction = null;
 
       loop:
@@ -184,7 +188,8 @@ public class HeroDetailsImpl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnDroid value) {
+        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnDroid value) throws
+        IOException {
       writer.name("primaryFunction");
       Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction);
     }

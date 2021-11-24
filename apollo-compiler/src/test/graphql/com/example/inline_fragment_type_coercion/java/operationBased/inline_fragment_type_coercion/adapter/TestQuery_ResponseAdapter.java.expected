@@ -18,6 +18,7 @@ import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.inline_fragment_type_coercion.TestQuery;
+import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
@@ -31,7 +32,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("foo");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestQuery.Foo foo = null;
 
       loop:
@@ -49,7 +51,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) {
+        TestQuery.Data value) throws IOException {
       writer.name("foo");
       new NullableAdapter<>(new ObjectAdapter<TestQuery.Foo>(Foo.INSTANCE, true)).toJson(writer, customScalarAdapters, value.foo);
     }
@@ -61,7 +63,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "foo");
 
     @Override
-    public TestQuery.Foo fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Foo fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String __typename = null;
       String foo = null;
 
@@ -92,7 +95,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Foo value) {
+        TestQuery.Foo value) throws IOException {
       writer.name("__typename");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 
@@ -111,7 +114,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("bar");
 
     @Override
-    public TestQuery.OnBar fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.OnBar fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String bar = null;
 
       loop:
@@ -131,7 +135,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.OnBar value) {
+        TestQuery.OnBar value) throws IOException {
       writer.name("bar");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.bar);
     }

@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.two_heroes_unique.TestQuery;
+import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
@@ -26,7 +27,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("r2", "luke");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestQuery.R2 r2 = null;
       TestQuery.Luke luke = null;
 
@@ -47,7 +49,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) {
+        TestQuery.Data value) throws IOException {
       writer.name("r2");
       new NullableAdapter<>(new ObjectAdapter<TestQuery.R2>(R2.INSTANCE, false)).toJson(writer, customScalarAdapters, value.r2);
 
@@ -62,7 +64,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public TestQuery.R2 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.R2 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String name = null;
 
       loop:
@@ -82,7 +85,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.R2 value) {
+        TestQuery.R2 value) throws IOException {
       writer.name("name");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.name);
     }
@@ -94,7 +97,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id", "name");
 
     @Override
-    public TestQuery.Luke fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Luke fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String id = null;
       String name = null;
 
@@ -118,7 +122,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Luke value) {
+        TestQuery.Luke value) throws IOException {
       writer.name("id");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.id);
 

@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.java8annotation.adapter.LoginBarber_ResponseAdapter;
 import com.example.java8annotation.adapter.LoginBarber_VariablesAdapter;
 import com.example.java8annotation.selections.LoginBarberSelections;
+import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -97,7 +98,8 @@ public class LoginBarber implements Mutation<LoginBarber.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters) {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     LoginBarber_VariablesAdapter.INSTANCE.toJson(writer, customScalarAdapters, this);
   }
 

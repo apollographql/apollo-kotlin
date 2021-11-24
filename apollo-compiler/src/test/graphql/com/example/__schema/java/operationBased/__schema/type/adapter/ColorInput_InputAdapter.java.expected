@@ -19,6 +19,7 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.__schema.type.ColorInput;
 import com.example.__schema.type.Episode;
 import com.example.__schema.type.ReviewRefInput;
+import java.io.IOException;
 import java.lang.Double;
 import java.lang.IllegalStateException;
 import java.lang.Integer;
@@ -28,13 +29,14 @@ public enum ColorInput_InputAdapter implements Adapter<ColorInput> {
   INSTANCE;
 
   @Override
-  public ColorInput fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+  public ColorInput fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
+      IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
-  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      ColorInput value) {
+  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters, ColorInput value)
+      throws IOException {
     if (value.red instanceof Optional.Present) {
       writer.name("red");
       new OptionalAdapter<>(IntAdapter.INSTANCE).toJson(writer, customScalarAdapters, (Optional.Present<Integer>)value.red);

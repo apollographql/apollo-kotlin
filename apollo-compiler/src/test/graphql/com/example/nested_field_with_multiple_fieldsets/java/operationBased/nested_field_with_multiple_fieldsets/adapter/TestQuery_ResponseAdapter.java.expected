@@ -19,6 +19,7 @@ import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.nested_field_with_multiple_fieldsets.TestQuery;
+import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
@@ -32,7 +33,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("iface1");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestQuery.Iface1 iface1 = null;
 
       loop:
@@ -50,7 +52,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) {
+        TestQuery.Data value) throws IOException {
       writer.name("iface1");
       new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface1>(Iface1.INSTANCE, true)).toJson(writer, customScalarAdapters, value.iface1);
     }
@@ -62,7 +64,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Iface1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Iface1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String __typename = null;
 
       loop:
@@ -92,7 +95,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Iface1 value) {
+        TestQuery.Iface1 value) throws IOException {
       writer.name("__typename");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 
@@ -110,8 +113,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("iface2");
 
     @Override
-    public TestQuery.OnIface1 fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.OnIface1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestQuery.Iface2 iface2 = null;
 
       loop:
@@ -129,7 +132,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.OnIface1 value) {
+        TestQuery.OnIface1 value) throws IOException {
       writer.name("iface2");
       new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface2>(Iface2.INSTANCE, true)).toJson(writer, customScalarAdapters, value.iface2);
     }
@@ -141,7 +144,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Iface2 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Iface2 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String __typename = null;
 
       loop:
@@ -171,7 +175,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Iface2 value) {
+        TestQuery.Iface2 value) throws IOException {
       writer.name("__typename");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 
@@ -189,8 +193,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("scalar1");
 
     @Override
-    public TestQuery.OnIface2 fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.OnIface2 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String scalar1 = null;
 
       loop:
@@ -208,7 +212,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.OnIface2 value) {
+        TestQuery.OnIface2 value) throws IOException {
       writer.name("scalar1");
       Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar1);
     }
@@ -220,8 +224,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("scalar2");
 
     @Override
-    public TestQuery.OnImpl2 fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.OnImpl2 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String scalar2 = null;
 
       loop:
@@ -239,7 +243,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.OnImpl2 value) {
+        TestQuery.OnImpl2 value) throws IOException {
       writer.name("scalar2");
       Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar2);
     }
@@ -251,8 +255,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("iface2");
 
     @Override
-    public TestQuery.OnImpl1 fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.OnImpl1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestQuery.Iface21 iface2 = null;
 
       loop:
@@ -270,7 +274,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.OnImpl1 value) {
+        TestQuery.OnImpl1 value) throws IOException {
       writer.name("iface2");
       new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface21>(Iface21.INSTANCE, true)).toJson(writer, customScalarAdapters, value.iface2);
     }
@@ -282,8 +286,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Iface21 fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Iface21 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String __typename = null;
 
       loop:
@@ -313,7 +317,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Iface21 value) {
+        TestQuery.Iface21 value) throws IOException {
       writer.name("__typename");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 
@@ -332,7 +336,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public TestQuery.OnIface21 fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String scalar3 = null;
 
       loop:
@@ -350,7 +354,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.OnIface21 value) {
+        TestQuery.OnIface21 value) throws IOException {
       writer.name("scalar3");
       Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar3);
     }
@@ -362,8 +366,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("scalar4");
 
     @Override
-    public TestQuery.OnImpl21 fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.OnImpl21 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String scalar4 = null;
 
       loop:
@@ -381,7 +385,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.OnImpl21 value) {
+        TestQuery.OnImpl21 value) throws IOException {
       writer.name("scalar4");
       Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar4);
     }

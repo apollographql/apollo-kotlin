@@ -10,6 +10,7 @@ import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
+import java.io.IOException;
 import java.lang.Double;
 import java.lang.Override;
 import java.lang.String;
@@ -24,7 +25,7 @@ public class HumanDetailsImpl_ResponseAdapter {
 
     @Override
     public com.example.named_fragment_without_implementation.fragment.HumanDetails fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       Double height = null;
 
       loop:
@@ -42,7 +43,8 @@ public class HumanDetailsImpl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.named_fragment_without_implementation.fragment.HumanDetails value) {
+        com.example.named_fragment_without_implementation.fragment.HumanDetails value) throws
+        IOException {
       writer.name("height");
       Adapters.NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height);
     }

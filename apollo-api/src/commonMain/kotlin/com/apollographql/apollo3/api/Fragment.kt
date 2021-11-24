@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.json.JsonWriter
+import okio.IOException
 
 /**
  * Base interface for a fragment implementation.
@@ -8,6 +9,7 @@ import com.apollographql.apollo3.api.json.JsonWriter
  * See https://github.com/graphql/graphql-spec/issues/204 for a proposal to add fragment arguments
  */
 interface Fragment<D : Fragment.Data> : Executable<D> {
+  @Throws(IOException::class)
   override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters)
 
   override fun adapter(): Adapter<D>

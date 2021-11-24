@@ -19,6 +19,7 @@ import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.deprecated_merged_field.CatQuery;
 import com.example.deprecated_merged_field.fragment.AnimalFragment;
+import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
@@ -32,7 +33,8 @@ public class CatQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("cat");
 
     @Override
-    public CatQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public CatQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       CatQuery.Cat cat = null;
 
       loop:
@@ -50,7 +52,7 @@ public class CatQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        CatQuery.Data value) {
+        CatQuery.Data value) throws IOException {
       writer.name("cat");
       new NullableAdapter<>(new ObjectAdapter<CatQuery.Cat>(Cat.INSTANCE, true)).toJson(writer, customScalarAdapters, value.cat);
     }
@@ -62,7 +64,8 @@ public class CatQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public CatQuery.Cat fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public CatQuery.Cat fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String __typename = null;
 
       loop:
@@ -88,7 +91,7 @@ public class CatQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        CatQuery.Cat value) {
+        CatQuery.Cat value) throws IOException {
       writer.name("__typename");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 

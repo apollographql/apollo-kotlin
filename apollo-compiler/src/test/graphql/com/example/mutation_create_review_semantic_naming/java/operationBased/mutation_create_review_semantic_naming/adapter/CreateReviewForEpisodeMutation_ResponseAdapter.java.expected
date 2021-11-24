@@ -15,6 +15,7 @@ import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.mutation_create_review_semantic_naming.CreateReviewForEpisodeMutation;
+import java.io.IOException;
 import java.lang.Integer;
 import java.lang.Override;
 import java.lang.String;
@@ -29,7 +30,7 @@ public class CreateReviewForEpisodeMutation_ResponseAdapter {
 
     @Override
     public CreateReviewForEpisodeMutation.Data fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       CreateReviewForEpisodeMutation.CreateReview createReview = null;
 
       loop:
@@ -47,7 +48,7 @@ public class CreateReviewForEpisodeMutation_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        CreateReviewForEpisodeMutation.Data value) {
+        CreateReviewForEpisodeMutation.Data value) throws IOException {
       writer.name("createReview");
       new NullableAdapter<>(new ObjectAdapter<CreateReviewForEpisodeMutation.CreateReview>(CreateReview.INSTANCE, false)).toJson(writer, customScalarAdapters, value.createReview);
     }
@@ -60,7 +61,7 @@ public class CreateReviewForEpisodeMutation_ResponseAdapter {
 
     @Override
     public CreateReviewForEpisodeMutation.CreateReview fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       Integer stars = null;
       String commentary = null;
 
@@ -83,7 +84,7 @@ public class CreateReviewForEpisodeMutation_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        CreateReviewForEpisodeMutation.CreateReview value) {
+        CreateReviewForEpisodeMutation.CreateReview value) throws IOException {
       writer.name("stars");
       IntAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.stars);
 

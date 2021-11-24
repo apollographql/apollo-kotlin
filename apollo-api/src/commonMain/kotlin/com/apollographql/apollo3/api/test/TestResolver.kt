@@ -121,8 +121,10 @@ open class DefaultTestResolver : TestResolver {
 }
 
 @ThreadLocal
+@ApolloExperimental
 internal var currentTestResolver: TestResolver? = null
 
+@ApolloExperimental
 fun <T> withTestResolver(testResolver: TestResolver, block: () -> T): T {
   currentTestResolver = testResolver
   return block().also {

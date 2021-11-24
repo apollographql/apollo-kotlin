@@ -15,6 +15,7 @@ import com.example.deprecation.adapter.TestQuery_ResponseAdapter;
 import com.example.deprecation.adapter.TestQuery_VariablesAdapter;
 import com.example.deprecation.selections.TestQuerySelections;
 import com.example.deprecation.type.Episode;
+import java.io.IOException;
 import java.lang.Boolean;
 import java.lang.Deprecated;
 import java.lang.Object;
@@ -102,7 +103,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters) {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     TestQuery_VariablesAdapter.INSTANCE.toJson(writer, customScalarAdapters, this);
   }
 

@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.introspection_query.TestQuery;
+import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
@@ -26,7 +27,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__schema", "__type");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestQuery.__Schema __schema = null;
       TestQuery.__Type __type = null;
 
@@ -50,7 +52,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) {
+        TestQuery.Data value) throws IOException {
       writer.name("__schema");
       new ObjectAdapter<TestQuery.__Schema>(__Schema.INSTANCE, false).toJson(writer, customScalarAdapters, value.__schema);
 
@@ -65,8 +67,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("queryType", "types");
 
     @Override
-    public TestQuery.__Schema fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.__Schema fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestQuery.QueryType queryType = null;
       List<TestQuery.Type> types = null;
 
@@ -90,7 +92,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.__Schema value) {
+        TestQuery.__Schema value) throws IOException {
       writer.name("queryType");
       new ObjectAdapter<TestQuery.QueryType>(QueryType.INSTANCE, false).toJson(writer, customScalarAdapters, value.queryType);
 
@@ -106,7 +108,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public TestQuery.QueryType fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String name = null;
 
       loop:
@@ -124,7 +126,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.QueryType value) {
+        TestQuery.QueryType value) throws IOException {
       writer.name("name");
       Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.name);
     }
@@ -136,7 +138,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public TestQuery.Type fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Type fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String name = null;
 
       loop:
@@ -154,7 +157,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Type value) {
+        TestQuery.Type value) throws IOException {
       writer.name("name");
       Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.name);
     }
@@ -166,7 +169,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public TestQuery.__Type fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.__Type fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String name = null;
 
       loop:
@@ -184,7 +188,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.__Type value) {
+        TestQuery.__Type value) throws IOException {
       writer.name("name");
       Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.name);
     }

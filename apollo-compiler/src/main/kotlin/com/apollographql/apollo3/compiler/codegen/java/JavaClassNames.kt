@@ -65,6 +65,8 @@ internal object JavaClassNames {
   val ListAdapter = ClassName.get(apolloApiPackageName, "ListAdapter")
   val OptionalAdapter = ClassName.get(apolloApiPackageName, "OptionalAdapter")
 
+  val IOException = ClassName.get("java.io", "IOException")
+
   /**
    * ClassNames for kotlin files turned into java classes
    */
