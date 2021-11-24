@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
+import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
@@ -24,7 +25,7 @@ public class DroidDetails1Impl_ResponseAdapter {
 
     @Override
     public com.example.fragments_same_type_condition.fragment.DroidDetails1 fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String name = null;
 
       loop:
@@ -44,7 +45,7 @@ public class DroidDetails1Impl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.fragments_same_type_condition.fragment.DroidDetails1 value) {
+        com.example.fragments_same_type_condition.fragment.DroidDetails1 value) throws IOException {
       writer.name("name");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.name);
     }

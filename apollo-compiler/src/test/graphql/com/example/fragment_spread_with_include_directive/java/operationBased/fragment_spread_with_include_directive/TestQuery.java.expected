@@ -16,6 +16,7 @@ import com.example.fragment_spread_with_include_directive.adapter.TestQuery_Vari
 import com.example.fragment_spread_with_include_directive.fragment.HeroDetails;
 import com.example.fragment_spread_with_include_directive.fragment.HumanDetails;
 import com.example.fragment_spread_with_include_directive.selections.TestQuerySelections;
+import java.io.IOException;
 import java.lang.Boolean;
 import java.lang.Object;
 import java.lang.Override;
@@ -118,7 +119,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters) {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     TestQuery_VariablesAdapter.INSTANCE.toJson(writer, customScalarAdapters, this);
   }
 

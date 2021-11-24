@@ -10,6 +10,7 @@ import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
+import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
@@ -23,7 +24,7 @@ public class Fragment1Impl_ResponseAdapter {
 
     @Override
     public com.example.multiple_fragments.fragment.Fragment1 fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String field1 = null;
 
       loop:
@@ -41,7 +42,7 @@ public class Fragment1Impl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.multiple_fragments.fragment.Fragment1 value) {
+        com.example.multiple_fragments.fragment.Fragment1 value) throws IOException {
       writer.name("field1");
       Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.field1);
     }

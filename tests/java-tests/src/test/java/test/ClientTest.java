@@ -39,6 +39,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 public class ClientTest {
@@ -162,7 +163,7 @@ public class ClientTest {
     }
 
     Adapter<GeoPoint> geoPointAdapter = new Adapter<GeoPoint>() {
-      @Override public GeoPoint fromJson(@NotNull JsonReader reader, @NotNull CustomScalarAdapters customScalarAdapters) {
+      @Override public GeoPoint fromJson(@NotNull JsonReader reader, @NotNull CustomScalarAdapters customScalarAdapters) throws IOException {
         Double latitude = null;
         Double longitude = null;
         reader.beginObject();
@@ -183,7 +184,7 @@ public class ClientTest {
         throw new RuntimeException("Invalid GeoPoint");
       }
 
-      @Override public void toJson(@NotNull JsonWriter writer, @NotNull CustomScalarAdapters customScalarAdapters, GeoPoint value) {
+      @Override public void toJson(@NotNull JsonWriter writer, @NotNull CustomScalarAdapters customScalarAdapters, GeoPoint value) throws IOException {
         writer.beginObject();
         writer.name("latitude").value(value.latitude);
         writer.name("longitude").value(value.longitude);

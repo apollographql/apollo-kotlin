@@ -14,6 +14,7 @@ import com.example.mutation_create_review.CreateReviewForEpisode;
 import com.example.mutation_create_review.type.ReviewInput;
 import com.example.mutation_create_review.type.adapter.Episode_ResponseAdapter;
 import com.example.mutation_create_review.type.adapter.ReviewInput_InputAdapter;
+import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
@@ -22,13 +23,13 @@ public enum CreateReviewForEpisode_VariablesAdapter implements Adapter<CreateRev
 
   @Override
   public CreateReviewForEpisode fromJson(JsonReader reader,
-      CustomScalarAdapters customScalarAdapters) {
+      CustomScalarAdapters customScalarAdapters) throws IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
   public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      CreateReviewForEpisode value) {
+      CreateReviewForEpisode value) throws IOException {
     writer.name("ep");
     Episode_ResponseAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.ep);
     writer.name("review");

@@ -16,6 +16,7 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.named_fragment_inside_inline_fragment.GetHero;
 import com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn;
 import com.example.named_fragment_inside_inline_fragment.fragment.CharacterName;
+import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
@@ -28,7 +29,8 @@ public class GetHero_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("hero");
 
     @Override
-    public GetHero.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public GetHero.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       GetHero.Hero hero = null;
 
       loop:
@@ -46,7 +48,7 @@ public class GetHero_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        GetHero.Data value) {
+        GetHero.Data value) throws IOException {
       writer.name("hero");
       new NullableAdapter<>(new ObjectAdapter<GetHero.Hero>(Hero.INSTANCE, true)).toJson(writer, customScalarAdapters, value.hero);
     }
@@ -58,7 +60,8 @@ public class GetHero_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public GetHero.Hero fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public GetHero.Hero fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String __typename = null;
 
       loop:
@@ -81,7 +84,7 @@ public class GetHero_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        GetHero.Hero value) {
+        GetHero.Hero value) throws IOException {
       writer.name("__typename");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 
@@ -96,7 +99,7 @@ public class GetHero_ResponseAdapter {
 
     @Override
     public GetHero.OnCharacter fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
 
       loop:
@@ -123,7 +126,7 @@ public class GetHero_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        GetHero.OnCharacter value) {
+        GetHero.OnCharacter value) throws IOException {
       writer.name("__typename");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 

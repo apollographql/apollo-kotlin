@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.case_sensitive_enum.TestQuery;
 import com.example.case_sensitive_enum.type.Enum;
 import com.example.case_sensitive_enum.type.adapter.Enum_ResponseAdapter;
+import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
@@ -25,7 +26,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("enum");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       Enum enum_ = null;
 
       loop:
@@ -43,7 +45,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) {
+        TestQuery.Data value) throws IOException {
       writer.name("enum");
       new NullableAdapter<>(Enum_ResponseAdapter.INSTANCE).toJson(writer, customScalarAdapters, value.enum_);
     }

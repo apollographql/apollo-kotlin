@@ -16,6 +16,7 @@ import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.arguments_hardcoded.TestQuery;
+import java.io.IOException;
 import java.lang.Integer;
 import java.lang.Override;
 import java.lang.String;
@@ -29,7 +30,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("reviews", "testNullableArguments");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       List<TestQuery.Review> reviews = null;
       Integer testNullableArguments = null;
 
@@ -52,7 +54,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) {
+        TestQuery.Data value) throws IOException {
       writer.name("reviews");
       new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Review>(Review.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.reviews);
 
@@ -67,7 +69,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("stars", "commentary");
 
     @Override
-    public TestQuery.Review fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Review fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       Integer stars = null;
       String commentary = null;
 
@@ -90,7 +93,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Review value) {
+        TestQuery.Review value) throws IOException {
       writer.name("stars");
       IntAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.stars);
 

@@ -15,6 +15,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
+import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
@@ -29,7 +30,7 @@ public class AnimalFragmentImpl_ResponseAdapter {
 
     @Override
     public com.example.deprecated_merged_field.fragment.AnimalFragment fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
 
       loop:
@@ -62,7 +63,7 @@ public class AnimalFragmentImpl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.deprecated_merged_field.fragment.AnimalFragment value) {
+        com.example.deprecated_merged_field.fragment.AnimalFragment value) throws IOException {
       writer.name("__typename");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 
@@ -83,7 +84,7 @@ public class AnimalFragmentImpl_ResponseAdapter {
 
     @Override
     public com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String name = null;
 
       loop:
@@ -103,7 +104,8 @@ public class AnimalFragmentImpl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat value) {
+        com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat value) throws
+        IOException {
       writer.name("name");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.name);
     }
@@ -116,7 +118,7 @@ public class AnimalFragmentImpl_ResponseAdapter {
 
     @Override
     public com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String name = null;
 
       loop:
@@ -136,7 +138,8 @@ public class AnimalFragmentImpl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog value) {
+        com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog value) throws
+        IOException {
       writer.name("name");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.name);
     }

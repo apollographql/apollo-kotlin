@@ -10,19 +10,22 @@ import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragment_with_inline_fragment.type.Episode;
+import java.io.IOException;
 import java.lang.Override;
 
 public enum Episode_ResponseAdapter implements Adapter<Episode> {
   INSTANCE;
 
   @Override
-  public Episode fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+  public Episode fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
+      IOException {
     String rawValue = reader.nextString();
     return Episode.safeValueOf(rawValue);
   }
 
   @Override
-  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters, Episode value) {
+  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters, Episode value)
+      throws IOException {
     writer.value(value.rawValue);
   }
 }

@@ -15,6 +15,7 @@ import com.example.fragments_same_type_condition.adapter.TestQuery_ResponseAdapt
 import com.example.fragments_same_type_condition.fragment.DroidDetails1;
 import com.example.fragments_same_type_condition.fragment.DroidDetails2;
 import com.example.fragments_same_type_condition.selections.TestQuerySelections;
+import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -102,7 +103,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters) {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     // This operation doesn't have any variable
   }
 

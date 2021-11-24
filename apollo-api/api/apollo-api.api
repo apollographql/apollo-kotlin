@@ -1030,7 +1030,6 @@ public final class com/apollographql/apollo3/api/json/internal/-JsonWriters {
 }
 
 public final class com/apollographql/apollo3/api/test/TestResolverKt {
-	public static final fun withTestResolver (Lcom/apollographql/apollo3/api/test/TestResolver;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
 }
 
 public final class com/apollographql/apollo3/exception/ApolloCanceledException : com/apollographql/apollo3/exception/ApolloException {

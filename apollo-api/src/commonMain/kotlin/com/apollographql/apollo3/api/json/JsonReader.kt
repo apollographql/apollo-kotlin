@@ -17,6 +17,7 @@ package com.apollographql.apollo3.api.json
 
 import com.apollographql.apollo3.exception.JsonDataException
 import okio.Closeable
+import okio.IOException
 
 /**
  * Reads a JSON [RFC 7159](http://www.ietf.org/rfc/rfc7159.txt) encoded value as a stream of tokens.
@@ -41,31 +42,37 @@ interface JsonReader : Closeable {
   /**
    * Returns the type of the next token without consuming it.
    */
+  @Throws(IOException::class)
   fun peek(): Token
 
   /**
    * Consumes the next token from the JSON stream and asserts that it is the beginning of a new array.
    */
+  @Throws(IOException::class)
   fun beginArray(): JsonReader
 
   /**
    * Consumes the next token from the JSON stream and asserts that it is the end of the current array.
    */
+  @Throws(IOException::class)
   fun endArray(): JsonReader
 
   /**
    * Consumes the next token from the JSON stream and asserts that it is the beginning of a new object.
    */
+  @Throws(IOException::class)
   fun beginObject(): JsonReader
 
   /**
    * Consumes the next token from the JSON stream and asserts that it is the end of the current object.
    */
+  @Throws(IOException::class)
   fun endObject(): JsonReader
 
   /**
    * Returns true if the current array or object has another element.
    */
+  @Throws(IOException::class)
   fun hasNext(): Boolean
 
   /**
@@ -73,6 +80,7 @@ interface JsonReader : Closeable {
    *
    * @throws JsonDataException if the next token in the stream is not a property name.
    */
+  @Throws(IOException::class)
   fun nextName(): String
 
   /**
@@ -82,6 +90,7 @@ interface JsonReader : Closeable {
    *
    * @throws JsonDataException if the next token is not a string or if this reader is closed.
    */
+  @Throws(IOException::class)
   fun nextString(): String?
 
   /**
@@ -89,6 +98,7 @@ interface JsonReader : Closeable {
    *
    * @throws JsonDataException if the next token is not a boolean or if this reader is closed.
    */
+  @Throws(IOException::class)
   fun nextBoolean(): Boolean
 
   /**
@@ -96,6 +106,7 @@ interface JsonReader : Closeable {
    *
    * @throws JsonDataException if the next token is not null or if this reader is closed.
    */
+  @Throws(IOException::class)
   fun nextNull(): Nothing?
 
   /**
@@ -107,6 +118,7 @@ interface JsonReader : Closeable {
    * @throws JsonDataException if the next token is not a literal value, if the next literal value cannot be parsed as a number, or
    * exactly represented as an int.
    */
+  @Throws(IOException::class)
   fun nextInt(): Int
 
   /**
@@ -117,6 +129,7 @@ interface JsonReader : Closeable {
    * @throws JsonDataException if the next token is not a literal value, or if the next literal value cannot be parsed as a double,
    * or is non-finite.
    */
+  @Throws(IOException::class)
   fun nextDouble(): Double
 
   /**
@@ -128,11 +141,13 @@ interface JsonReader : Closeable {
    * @throws JsonDataException if the next token is not a literal value, if the next literal value cannot be parsed as a number, or
    * exactly represented as a Long.
    */
+  @Throws(IOException::class)
   fun nextLong(): Long
 
   /**
    * Returns the [Token.NUMBER] value of the next token, consuming it.
    */
+  @Throws(IOException::class)
   fun nextNumber(): JsonNumber
 
   /**
@@ -140,6 +155,7 @@ interface JsonReader : Closeable {
    *
    * This method is intended for use when the JSON token stream contains unrecognized or unhandled values.
    */
+  @Throws(IOException::class)
   fun skipValue()
 
   /**
@@ -148,6 +164,7 @@ interface JsonReader : Closeable {
    *
    * @return the index of the next name or -1 if there is no next name
    */
+  @Throws(IOException::class)
   fun selectName(names: List<String>): Int
 
   /**

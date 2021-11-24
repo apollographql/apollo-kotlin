@@ -15,6 +15,7 @@ import com.example.simple_union.adapter.AnimalQuery_ResponseAdapter;
 import com.example.simple_union.fragment.CatFragment;
 import com.example.simple_union.fragment.DogFragment;
 import com.example.simple_union.selections.AnimalQuerySelections;
+import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -102,7 +103,8 @@ public class AnimalQuery implements Query<AnimalQuery.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters) {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     // This operation doesn't have any variable
   }
 

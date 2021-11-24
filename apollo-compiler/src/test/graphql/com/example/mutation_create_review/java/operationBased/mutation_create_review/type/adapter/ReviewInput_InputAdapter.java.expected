@@ -20,6 +20,7 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.mutation_create_review.type.ColorInput;
 import com.example.mutation_create_review.type.Episode;
 import com.example.mutation_create_review.type.ReviewInput;
+import java.io.IOException;
 import java.lang.Boolean;
 import java.lang.IllegalStateException;
 import java.lang.Integer;
@@ -32,13 +33,14 @@ public enum ReviewInput_InputAdapter implements Adapter<ReviewInput> {
   INSTANCE;
 
   @Override
-  public ReviewInput fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+  public ReviewInput fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
+      IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
   public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      ReviewInput value) {
+      ReviewInput value) throws IOException {
     writer.name("stars");
     IntAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.stars);
     if (value.nullableIntFieldWithDefaultValue instanceof Optional.Present) {

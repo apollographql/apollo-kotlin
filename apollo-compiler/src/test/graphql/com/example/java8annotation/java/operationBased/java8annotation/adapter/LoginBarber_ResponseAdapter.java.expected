@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.java8annotation.LoginBarber;
+import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
@@ -25,7 +26,8 @@ public class LoginBarber_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("login");
 
     @Override
-    public LoginBarber.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public LoginBarber.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       LoginBarber.Login login = null;
 
       loop:
@@ -45,7 +47,7 @@ public class LoginBarber_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        LoginBarber.Data value) {
+        LoginBarber.Data value) throws IOException {
       writer.name("login");
       new ObjectAdapter<LoginBarber.Login>(Login.INSTANCE, false).toJson(writer, customScalarAdapters, value.login);
     }
@@ -57,8 +59,8 @@ public class LoginBarber_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("response");
 
     @Override
-    public LoginBarber.Login fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+    public LoginBarber.Login fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String response = null;
 
       loop:
@@ -78,7 +80,7 @@ public class LoginBarber_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        LoginBarber.Login value) {
+        LoginBarber.Login value) throws IOException {
       writer.name("response");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.response);
     }

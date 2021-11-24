@@ -18,6 +18,7 @@ import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.test_inline.GetPage;
+import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
@@ -31,7 +32,8 @@ public class GetPage_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("collection");
 
     @Override
-    public GetPage.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public GetPage.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       GetPage.Collection collection = null;
 
       loop:
@@ -51,7 +53,7 @@ public class GetPage_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        GetPage.Data value) {
+        GetPage.Data value) throws IOException {
       writer.name("collection");
       new ObjectAdapter<GetPage.Collection>(Collection.INSTANCE, true).toJson(writer, customScalarAdapters, value.collection);
     }
@@ -63,8 +65,8 @@ public class GetPage_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "items");
 
     @Override
-    public GetPage.Collection fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+    public GetPage.Collection fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String __typename = null;
       List<GetPage.Item> items = null;
 
@@ -95,7 +97,7 @@ public class GetPage_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        GetPage.Collection value) {
+        GetPage.Collection value) throws IOException {
       writer.name("__typename");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 
@@ -114,7 +116,8 @@ public class GetPage_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("title");
 
     @Override
-    public GetPage.Item fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public GetPage.Item fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String title = null;
 
       loop:
@@ -134,7 +137,7 @@ public class GetPage_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        GetPage.Item value) {
+        GetPage.Item value) throws IOException {
       writer.name("title");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.title);
     }
@@ -147,7 +150,7 @@ public class GetPage_ResponseAdapter {
 
     @Override
     public GetPage.OnParticularCollection fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       List<GetPage.Item1> items = null;
 
       loop:
@@ -167,7 +170,7 @@ public class GetPage_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        GetPage.OnParticularCollection value) {
+        GetPage.OnParticularCollection value) throws IOException {
       writer.name("items");
       new ListAdapter<>(new ObjectAdapter<GetPage.Item1>(Item1.INSTANCE, true)).toJson(writer, customScalarAdapters, value.items);
     }
@@ -179,7 +182,8 @@ public class GetPage_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public GetPage.Item1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public GetPage.Item1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String __typename = null;
 
       loop:
@@ -205,7 +209,7 @@ public class GetPage_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        GetPage.Item1 value) {
+        GetPage.Item1 value) throws IOException {
       writer.name("__typename");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 
@@ -222,7 +226,7 @@ public class GetPage_ResponseAdapter {
 
     @Override
     public GetPage.OnParticularItem fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String image = null;
 
       loop:
@@ -242,7 +246,7 @@ public class GetPage_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        GetPage.OnParticularItem value) {
+        GetPage.OnParticularItem value) throws IOException {
       writer.name("image");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.image);
     }

@@ -15,6 +15,7 @@ import com.example.input_object_variable_and_argument.adapter.TestQuery_Response
 import com.example.input_object_variable_and_argument.adapter.TestQuery_VariablesAdapter;
 import com.example.input_object_variable_and_argument.selections.TestQuerySelections;
 import com.example.input_object_variable_and_argument.type.Episode;
+import java.io.IOException;
 import java.lang.Double;
 import java.lang.Integer;
 import java.lang.Object;
@@ -126,7 +127,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters) {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     TestQuery_VariablesAdapter.INSTANCE.toJson(writer, customScalarAdapters, this);
   }
 
