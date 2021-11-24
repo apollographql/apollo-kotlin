@@ -1,4 +1,4 @@
-package test.customscalars
+package test
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.CustomTypeAdapter
