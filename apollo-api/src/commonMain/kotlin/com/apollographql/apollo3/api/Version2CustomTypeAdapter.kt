@@ -2,6 +2,7 @@
 
 package com.apollographql.apollo3.api
 
+import kotlin.jvm.JvmField
 import kotlin.jvm.JvmStatic
 
 /**
@@ -25,7 +26,7 @@ interface CustomTypeAdapter<T> {
  * `com.apollographql.apollo3.api` to use this version.
  */
 @Deprecated("Used for backward compatibility with 2.x, use Adapter instead")
-open class CustomTypeValue<T>(val value: T) {
+sealed class CustomTypeValue<T>(@JvmField val value: T) {
   object GraphQLNull : CustomTypeValue<Unit>(Unit)
   class GraphQLString(value: String) : CustomTypeValue<String>(value)
   class GraphQLBoolean(value: Boolean) : CustomTypeValue<Boolean>(value)
@@ -36,7 +37,7 @@ open class CustomTypeValue<T>(val value: T) {
   companion object {
     @JvmStatic
     @Suppress("UNCHECKED_CAST")
-    fun fromRawValue(value: Any): CustomTypeValue<*> {
+    fun fromRawValue(value: Any?): CustomTypeValue<*> {
       return when (value) {
         is Map<*, *> -> GraphQLJsonObject(value as Map<String, Any>)
         is List<*> -> GraphQLJsonList(value as List<Any>)
@@ -44,6 +45,7 @@ open class CustomTypeValue<T>(val value: T) {
         // Not supported as we are in common code here
         /* is BigDecimal -> GraphQLNumber(value.toNumber()) */
         is Number -> GraphQLNumber(value)
+        null -> GraphQLNull
         else -> GraphQLString(value.toString())
       }
     }
