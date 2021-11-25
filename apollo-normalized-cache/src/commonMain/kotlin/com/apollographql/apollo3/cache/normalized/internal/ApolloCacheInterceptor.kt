@@ -293,12 +293,12 @@ internal class ApolloCacheInterceptor(
     }
 
     val response = if (data != null) {
-      ApolloResponse(
+      ApolloResponse.Builder(
           requestUuid = request.requestUuid,
           operation = operation,
           data = data,
-          executionContext = request.executionContext
-      )
+      ).addExecutionContext(request.executionContext)
+          .build()
     } else {
       null
     }
