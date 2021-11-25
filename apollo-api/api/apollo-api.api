@@ -70,12 +70,21 @@ public final class com/apollographql/apollo3/api/ApolloResponse {
 	public final field requestUuid Ljava/util/UUID;
 	public fun <init> (Ljava/util/UUID;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo3/api/ExecutionContext;)V
 	public synthetic fun <init> (Ljava/util/UUID;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo3/api/ExecutionContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun copy (Ljava/util/UUID;Lcom/apollographql/apollo3/api/Operation;Ljava/lang/Object;Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ApolloResponse;
-	public static synthetic fun copy$default (Lcom/apollographql/apollo3/api/ApolloResponse;Ljava/util/UUID;Lcom/apollographql/apollo3/api/Operation;Ljava/lang/Object;Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo3/api/ExecutionContext;ILjava/lang/Object;)Lcom/apollographql/apollo3/api/ApolloResponse;
 	public final fun dataAssertNoErrors ()Lcom/apollographql/apollo3/api/Operation$Data;
 	public final fun dataOrThrow ()Lcom/apollographql/apollo3/api/Operation$Data;
 	public final fun hasErrors ()Z
+	public final fun newBuilder ()Lcom/apollographql/apollo3/api/ApolloResponse$Builder;
 	public final fun withExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ApolloResponse;
+}
+
+public final class com/apollographql/apollo3/api/ApolloResponse$Builder {
+	public fun <init> (Lcom/apollographql/apollo3/api/Operation;)V
+	public final fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ApolloResponse$Builder;
+	public final fun build ()Lcom/apollographql/apollo3/api/ApolloResponse;
+	public final fun data (Lcom/apollographql/apollo3/api/Operation$Data;)Lcom/apollographql/apollo3/api/ApolloResponse$Builder;
+	public final fun errors (Ljava/util/List;)Lcom/apollographql/apollo3/api/ApolloResponse$Builder;
+	public final fun extensions (Ljava/util/Map;)Lcom/apollographql/apollo3/api/ApolloResponse$Builder;
+	public final fun requestUuid (Ljava/util/UUID;)Lcom/apollographql/apollo3/api/ApolloResponse$Builder;
 }
 
 public final class com/apollographql/apollo3/api/Assertions {

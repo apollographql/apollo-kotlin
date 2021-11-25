@@ -121,15 +121,17 @@ class HttpNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder instead
       }
 
       emit(
-          response.copy(
-              requestUuid = request.requestUuid,
-              executionContext = request.executionContext + HttpInfo(
-                  millisStart = millisStart,
-                  millisEnd = currentTimeMillis(),
-                  statusCode = httpResponse.statusCode,
-                  headers = httpResponse.headers
+          response.newBuilder()
+              .requestUuid(request.requestUuid)
+              .addExecutionContext(
+                  HttpInfo(
+                      millisStart = millisStart,
+                      millisEnd = currentTimeMillis(),
+                      statusCode = httpResponse.statusCode,
+                      headers = httpResponse.headers
+                  )
               )
-          )
+              .build()
       )
     }
   }

@@ -2,13 +2,14 @@ package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.exception.ApolloException
 import com.benasher44.uuid.Uuid
+import com.benasher44.uuid.uuid4
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 
 /**
  * Represents a GraphQL response. GraphQL responses can be be partial responses so it is valid to have both data != null and errors
  */
-class ApolloResponse<out D : Operation.Data>(
+class ApolloResponse<D : Operation.Data>(
     @JvmField
     val requestUuid: Uuid,
 
@@ -16,7 +17,7 @@ class ApolloResponse<out D : Operation.Data>(
      * The GraphQL operation this response represents
      */
     @JvmField
-    val operation: Operation<*>,
+    val operation: Operation<D>,
 
     /**
      * Parsed response of GraphQL [operation] execution.
@@ -49,7 +50,7 @@ class ApolloResponse<out D : Operation.Data>(
    * A shorthand property to get a non-nullable `data` if handling partial data is not important
    */
   @Deprecated("Please use dataAssertNoErrors methods instead. This will be removed in v3.0.0.",
-  ReplaceWith("dataAssertNoErrors"))
+      ReplaceWith("dataAssertNoErrors"))
   @get:JvmName("dataOrThrow")
   val dataOrThrow: D
     get() {
@@ -78,24 +79,57 @@ class ApolloResponse<out D : Operation.Data>(
 
   fun hasErrors(): Boolean = !errors.isNullOrEmpty()
 
-  fun copy(
-      requestUuid: Uuid = this.requestUuid,
-      operation: Operation<*> = this.operation,
-      data: Any? = this.data,
-      errors: List<Error>? = this.errors,
-      extensions: Map<String, Any?> = this.extensions,
-      executionContext: ExecutionContext = this.executionContext,
-  ): ApolloResponse<D> {
-    @Suppress("UNCHECKED_CAST")
-    return ApolloResponse(
-        requestUuid,
-        operation,
-        data as D?,
-        errors,
-        extensions,
-        executionContext
-    )
+  @Deprecated("Please use ApolloRequest.Builder methods instead. This will be removed in v3.0.0.")
+  fun withExecutionContext(executionContext: ExecutionContext) = newBuilder().addExecutionContext(executionContext).build()
+
+  fun newBuilder(): Builder<D> {
+    return Builder(operation)
+        .data(data)
+        .errors(errors)
+        .extensions(extensions)
+        .addExecutionContext(executionContext)
+        .requestUuid(requestUuid)
   }
 
-  fun withExecutionContext(executionContext: ExecutionContext) = copy(executionContext = executionContext)
+  class Builder<D : Operation.Data>(
+      private var operation: Operation<D>,
+  ) {
+    private var requestUuid: Uuid? = null
+    private var executionContext: ExecutionContext = ExecutionContext.Empty
+    private var errors: List<Error>? = null
+    private var extensions: Map<String, Any?>? = null
+    private var data: D? = null
+
+    fun data(data: D?) = apply {
+      this.data = data
+    }
+
+    fun addExecutionContext(executionContext: ExecutionContext) = apply {
+      this.executionContext = this.executionContext + executionContext
+    }
+
+    fun errors(errors: List<Error>?) = apply {
+      this.errors = errors
+    }
+
+    fun extensions(extensions: Map<String, Any?>) = apply {
+      this.extensions = extensions
+    }
+
+    fun requestUuid(requestUuid: Uuid) = apply {
+      this.requestUuid = requestUuid
+    }
+
+    fun build(): ApolloResponse<D> {
+      @Suppress("DEPRECATION")
+      return ApolloResponse(
+          operation = operation,
+          requestUuid = requestUuid ?: uuid4(),
+          executionContext = executionContext,
+          data = data,
+          errors = errors,
+          extensions = extensions ?: emptyMap()
+      )
+    }
+  }
 }

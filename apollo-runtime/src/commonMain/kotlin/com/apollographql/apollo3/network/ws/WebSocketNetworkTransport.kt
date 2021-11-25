@@ -191,10 +191,11 @@ class WebSocketNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder in
       }
     }.map {
       when (it) {
-        is OperationResponse -> request.operation.parseJsonResponse(
-            it.payload,
-            request.executionContext[CustomScalarAdapters]!!
-        ).copy(requestUuid = request.requestUuid)
+        is OperationResponse -> request.operation
+            .parseJsonResponse(it.payload, request.executionContext[CustomScalarAdapters]!!)
+            .newBuilder()
+            .requestUuid(request.requestUuid)
+            .build()
         is OperationError -> throw ApolloNetworkException("Cannot start operation ${request.operation.name()}: ${it.payload}")
         is NetworkError -> throw ApolloNetworkException("Network error while executing ${request.operation.name()}", it.cause)
 
