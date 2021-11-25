@@ -619,9 +619,9 @@ Apollo Android 3.x drops Kotlin enums and always generates sealed classes. In ad
 
 By default, Apollo Android 2.x internally maps all numbers to a custom `BigDecimal` value.
 
-For performance reasons, Apollo Android 3.x uses the primitive type when possible and moves `BigDecimal` to the `apollo-adapters` artifact. This change should be transparent for most users because the generated parsers will convert `BigDecimal` to `Int` or `Double`.
+For performance reasons, Apollo Android 3.x uses the primitive type when possible and moves `BigDecimal` to the `apollo-adapters` artifact. This change should be transparent for most users because the generated parsers will convert `BigDecimal` to `Int` or `Double` internally.
 
-If you're reading the internal `Maps`, you can still be exposed to this change. This happens for an example, if you have a `CustomTypeAdapter` that reads nested values. In that case, you can do as below:
+If you're reading the internal `Maps`, you can still be exposed to this change. This happens for an example, if you have a `CustomTypeAdapter` that reads nested values. In that case, be prepared to receive `Int`/`Double` instead of `BigDecimal`:
 
 ```kotlin
     val customTypeAdapter = object: CustomTypeAdapter<Address> {
