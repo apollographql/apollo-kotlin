@@ -39,6 +39,10 @@ class DefaultUpload internal constructor(
       this.bufferedSource = byteString.source().buffer()
     }
 
+    fun content(byteArray: ByteArray): Builder = apply {
+      this.bufferedSource = byteArray.source().buffer()
+    }
+
     fun contentType(contentType: String): Builder = apply {
       this.contentType = contentType
     }

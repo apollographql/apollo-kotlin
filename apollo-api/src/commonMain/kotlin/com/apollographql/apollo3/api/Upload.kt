@@ -15,7 +15,7 @@ import okio.ByteString.Companion.encodeUtf8
  *   "Upload" to "com.apollographql.apollo3.api.Upload"
  * ))
  *
- * If you have a JVM File at hand, see also [com.apollographql.apollo3.api.FileUpload]
+ * If you have a JVM File at hand, see also [com.apollographql.apollo3.api.DefaultUpload.Builder.content]
  */
 interface Upload {
   val contentType: String
@@ -37,39 +37,43 @@ interface Upload {
   fun writeTo(sink: BufferedSink)
 
   companion object {
+    @Deprecated("This will be removed in v3.0.0.")
     fun fromString(string: String, fileName: String? = null, contentType: String = "text/plain"): Upload {
-      val byteString = string.encodeUtf8()
-      return object : Upload {
-        override val contentType = contentType
-        override val contentLength = byteString.size.toLong()
-        override val fileName = fileName
-
-        override fun writeTo(sink: BufferedSink) {
-          sink.write(byteString)
-        }
-      }
+      return DefaultUpload.Builder()
+          .content(string)
+          .apply {
+            if (fileName != null) {
+              fileName(fileName)
+            }
+          }
+          .contentType(contentType)
+          .build()
     }
+
+    @Deprecated("This will be removed in v3.0.0.")
     fun fromByteArray(byteArray: ByteArray, fileName: String? = null, contentType: String = "text/plain"): Upload {
-      return object : Upload {
-        override val contentType = contentType
-        override val contentLength = byteArray.size.toLong()
-        override val fileName = fileName
-
-        override fun writeTo(sink: BufferedSink) {
-          sink.write(byteArray)
-        }
-      }
+      return DefaultUpload.Builder()
+          .content(byteArray)
+          .apply {
+            if (fileName != null) {
+              fileName(fileName)
+            }
+          }
+          .contentType(contentType)
+          .build()
     }
-    fun fromSource(source: BufferedSource, contentLength: Long = -1, fileName: String? = null, contentType: String = "text/plain"): Upload {
-      return object : Upload {
-        override val contentType = contentType
-        override val contentLength = contentLength
-        override val fileName = fileName
 
-        override fun writeTo(sink: BufferedSink) {
-          sink.writeAll(source)
-        }
-      }
+    @Deprecated("This will be removed in v3.0.0.")
+    fun fromSource(source: BufferedSource, contentLength: Long = -1, fileName: String? = null, contentType: String = "text/plain"): Upload {
+      return DefaultUpload.Builder()
+          .content(source)
+          .apply {
+            if (fileName != null) {
+              fileName(fileName)
+            }
+          }
+          .contentType(contentType)
+          .build()
     }
   }
 }
