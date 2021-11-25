@@ -30,7 +30,7 @@ import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.leafType
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.ir.toBooleanExpression
 import com.squareup.kotlinpoet.CodeBlock
@@ -76,7 +76,7 @@ class CompiledSelectionsBuilder(
     builder.unindent()
     builder.add(")")
 
-    val property = PropertySpec.builder(propertyName, KotlinClassNames.List.parameterizedBy(KotlinClassNames.CompiledSelection))
+    val property = PropertySpec.builder(propertyName, KotlinSymbols.List.parameterizedBy(KotlinSymbols.CompiledSelection))
         .initializer(builder.build())
         .applyIf(private) {
           addModifiers(KModifier.PRIVATE)
@@ -119,7 +119,7 @@ class CompiledSelectionsBuilder(
 
     check(expression is BooleanExpression.Element)
 
-    return CodeBlock.of("%T(%S,·%L)", KotlinClassNames.CompiledCondition, expression.value.name, inverted.toString())
+    return CodeBlock.of("%T(%S,·%L)", KotlinSymbols.CompiledCondition, expression.value.name, inverted.toString())
   }
 
   private fun GQLField.walk(private: Boolean, parentType: String): SelectionResult? {
@@ -130,7 +130,7 @@ class CompiledSelectionsBuilder(
 
 
     val builder = CodeBlock.builder()
-    builder.add("%T.builder(\n", KotlinClassNames.CompiledField)
+    builder.add("%T.builder(\n", KotlinSymbols.CompiledField)
     builder.indent()
     builder.add("name·=·%S,\n", name)
     val fieldDefinition = definitionFromScope(schema, parentType)!!
@@ -168,7 +168,7 @@ class CompiledSelectionsBuilder(
     }
 
     val builder = CodeBlock.builder()
-    builder.add("%T.builder(\n", KotlinClassNames.CompiledFragment)
+    builder.add("%T.builder(\n", KotlinSymbols.CompiledFragment)
     builder.indent()
     builder.add("possibleTypes·=·%L\n", possibleTypesCodeBlock(typeCondition.name))
     builder.unindent()
@@ -196,7 +196,7 @@ class CompiledSelectionsBuilder(
     }
 
     val builder = CodeBlock.builder()
-    builder.add("%T.builder(\n", KotlinClassNames.CompiledFragment)
+    builder.add("%T.builder(\n", KotlinSymbols.CompiledFragment)
     builder.indent()
     val fragmentDefinition = allFragmentDefinitions[name]!!
     builder.add("possibleTypes·=·(%L)\n", possibleTypesCodeBlock(fragmentDefinition.typeCondition.name))
@@ -280,7 +280,7 @@ class CompiledSelectionsBuilder(
       is GQLFloatValue -> CodeBlock.of("%L", value)
       is GQLBooleanValue -> CodeBlock.of("%L", value)
       is GQLStringValue -> CodeBlock.of("%S", value)
-      is GQLVariableValue -> CodeBlock.of("%T(%S)", KotlinClassNames.CompiledVariable, name)
+      is GQLVariableValue -> CodeBlock.of("%T(%S)", KotlinSymbols.CompiledVariable, name)
       is GQLNullValue -> CodeBlock.of("null")
     }
   }
@@ -300,7 +300,7 @@ class CompiledSelectionsBuilder(
       val argumentBuilder = CodeBlock.builder()
       argumentBuilder.add(
           "%T(%S,·%L",
-          KotlinClassNames.CompiledArgument,
+          KotlinSymbols.CompiledArgument,
           it.name,
           it.value.codeBlock()
       )

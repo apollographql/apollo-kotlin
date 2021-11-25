@@ -6,9 +6,9 @@
 package com.example.simple_union.fragment;
 
 import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -31,7 +31,7 @@ public class CatFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: meow = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
+          case 0: meow = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -47,7 +47,7 @@ public class CatFragmentImpl_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         com.example.simple_union.fragment.CatFragment value) throws IOException {
       writer.name("meow");
-      StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.meow);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.meow);
     }
   }
 }

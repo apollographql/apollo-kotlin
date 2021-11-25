@@ -8,8 +8,6 @@ package com.example.__schema.type.adapter;
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.DoubleAdapter;
-import com.apollographql.apollo3.api.IntAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Optional;
@@ -39,7 +37,7 @@ public enum ColorInput_InputAdapter implements Adapter<ColorInput> {
       throws IOException {
     if (value.red instanceof Optional.Present) {
       writer.name("red");
-      new OptionalAdapter<>(IntAdapter.INSTANCE).toJson(writer, customScalarAdapters, (Optional.Present<Integer>)value.red);
+      new OptionalAdapter<>(Adapters.IntAdapter).toJson(writer, customScalarAdapters, (Optional.Present<Integer>)value.red);
     }
     if (value.green instanceof Optional.Present) {
       writer.name("green");
@@ -47,7 +45,7 @@ public enum ColorInput_InputAdapter implements Adapter<ColorInput> {
     }
     if (value.blue instanceof Optional.Present) {
       writer.name("blue");
-      new OptionalAdapter<>(DoubleAdapter.INSTANCE).toJson(writer, customScalarAdapters, (Optional.Present<Double>)value.blue);
+      new OptionalAdapter<>(Adapters.DoubleAdapter).toJson(writer, customScalarAdapters, (Optional.Present<Double>)value.blue);
     }
     if (value.enumWithDefaultValue instanceof Optional.Present) {
       writer.name("enumWithDefaultValue");

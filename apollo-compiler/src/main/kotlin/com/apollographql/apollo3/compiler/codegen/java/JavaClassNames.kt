@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler.codegen.java
 
-import com.apollographql.apollo3.api.ImmutableMapBuilder
 import com.apollographql.apollo3.compiler.codegen.ClassNames
 import com.apollographql.apollo3.compiler.codegen.ClassNames.apolloApiPackageName
 import com.apollographql.apollo3.compiler.codegen.ResolverClassName
@@ -12,11 +11,7 @@ import com.squareup.javapoet.ClassName
 internal object JavaClassNames {
   val ObjectType = ClassNames.ObjectType.toJavaPoetClassName()
   val InterfaceType = ClassNames.InterfaceType.toJavaPoetClassName()
-  val BooleanAdapter = ClassNames.BooleanAdapter.toJavaPoetClassName()
-  val StringAdapter = ClassNames.StringAdapter.toJavaPoetClassName()
-  val IntAdapter = ClassNames.IntAdapter.toJavaPoetClassName()
-  val DoubleAdapter = ClassNames.DoubleAdapter.toJavaPoetClassName()
-  val AnyAdapter = ClassNames.AnyAdapter.toJavaPoetClassName()
+
   val JsonReader = ClassNames.JsonReader.toJavaPoetClassName()
   val JsonWriter = ClassNames.JsonWriter.toJavaPoetClassName()
   val CustomScalarAdapters = ClassNames.CustomScalarAdapters.toJavaPoetClassName()

@@ -1,9 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.java
 
-import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
-import com.apollographql.apollo3.compiler.codegen.Identifier.list
-import com.apollographql.apollo3.compiler.codegen.Identifier.nullable
 import com.apollographql.apollo3.compiler.codegen.Identifier.type
 import com.apollographql.apollo3.compiler.codegen.ResolverClassName
 import com.apollographql.apollo3.compiler.codegen.ResolverEntry
@@ -78,13 +75,13 @@ class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?) {
   fun adapterInitializer(type: IrType, requiresBuffering: Boolean): CodeBlock {
     if (type !is IrNonNullType) {
       return when {
-        type is IrScalarType && type.name == "String" -> nullableScalarAdapter("NullableStringAdapter")
-        type is IrScalarType && type.name == "ID" -> nullableScalarAdapter("NullableStringAdapter")
-        type is IrScalarType && type.name == "Boolean" -> nullableScalarAdapter("NullableBooleanAdapter")
-        type is IrScalarType && type.name == "Int" -> nullableScalarAdapter("NullableIntAdapter")
-        type is IrScalarType && type.name == "Float" -> nullableScalarAdapter("NullableDoubleAdapter")
+        type is IrScalarType && type.name == "String" -> adapterCodeBlock("NullableStringAdapter")
+        type is IrScalarType && type.name == "ID" -> adapterCodeBlock("NullableStringAdapter")
+        type is IrScalarType && type.name == "Boolean" -> adapterCodeBlock("NullableBooleanAdapter")
+        type is IrScalarType && type.name == "Int" -> adapterCodeBlock("NullableIntAdapter")
+        type is IrScalarType && type.name == "Float" -> adapterCodeBlock("NullableDoubleAdapter")
         type is IrScalarType && resolve(ResolverKeyKind.CustomScalarTarget, type.name) == null -> {
-          nullableScalarAdapter("NullableAnyAdapter")
+          adapterCodeBlock("NullableAnyAdapter")
         }
         else -> {
           CodeBlock.of("new $T<>($L)", JavaClassNames.NullableAdapter, adapterInitializer(IrNonNullType(type), requiresBuffering))
@@ -123,15 +120,15 @@ class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?) {
       type is IrListType -> {
         CodeBlock.of("new $T<>($L)", JavaClassNames.ListAdapter, adapterInitializer(type.ofType, requiresBuffering))
       }
-      type is IrScalarType && type.name == "Boolean" -> nonNullableScalarAdapter(JavaClassNames.BooleanAdapter)
-      type is IrScalarType && type.name == "ID" -> nonNullableScalarAdapter(JavaClassNames.StringAdapter)
-      type is IrScalarType && type.name == "String" -> nonNullableScalarAdapter(JavaClassNames.StringAdapter)
-      type is IrScalarType && type.name == "Int" -> nonNullableScalarAdapter(JavaClassNames.IntAdapter)
-      type is IrScalarType && type.name == "Float" -> nonNullableScalarAdapter(JavaClassNames.DoubleAdapter)
+      type is IrScalarType && type.name == "Boolean" -> adapterCodeBlock("BooleanAdapter")
+      type is IrScalarType && type.name == "ID" -> adapterCodeBlock("StringAdapter")
+      type is IrScalarType && type.name == "String" -> adapterCodeBlock("StringAdapter")
+      type is IrScalarType && type.name == "Int" -> adapterCodeBlock("IntAdapter")
+      type is IrScalarType && type.name == "Float" -> adapterCodeBlock("DoubleAdapter")
       type is IrScalarType -> {
         val target = resolve(ResolverKeyKind.CustomScalarTarget, type.name)
         if (target == null) {
-          nonNullableScalarAdapter(JavaClassNames.AnyAdapter)
+          adapterCodeBlock("AnyAdapter")
         } else {
           CodeBlock.of(
               "($customScalarAdapters.<$T>responseAdapterFor($L))",
@@ -167,13 +164,7 @@ class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?) {
   /**
    * Nullable adapters are @JvmField properties
    */
-  private fun nullableScalarAdapter(name: String) = CodeBlock.of("$T.$L", JavaClassNames.Adapters, name)
-
-  /**
-   * Non Nullable adapters are object INSTANCES
-   */
-  private fun nonNullableScalarAdapter(className: ClassName) = CodeBlock.of("$T.INSTANCE", className)
-
+  private fun adapterCodeBlock(name: String) = CodeBlock.of("$T.$L", JavaClassNames.Adapters, name)
 
   fun resolveModel(path: String) = resolveAndAssert(ResolverKeyKind.Model, path)
 

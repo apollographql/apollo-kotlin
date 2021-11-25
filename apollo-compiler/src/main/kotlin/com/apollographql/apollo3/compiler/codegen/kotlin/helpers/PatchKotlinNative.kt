@@ -1,11 +1,10 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
 
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asClassName
 
 internal fun TypeSpec.patchKotlinNativeOptionalArrayProperties(): TypeSpec {
   if (kind != TypeSpec.Kind.CLASS) {
@@ -24,12 +23,12 @@ internal fun TypeSpec.patchKotlinNativeOptionalArrayProperties(): TypeSpec {
       .filter { propertySpec ->
         val propertyType = propertySpec.type
         propertyType is ParameterizedTypeName &&
-            propertyType.rawType == KotlinClassNames.List &&
+            propertyType.rawType == KotlinSymbols.List &&
             propertyType.typeArguments.single().isNullable
       }
       .map { propertySpec ->
         val listItemType = (propertySpec.type as ParameterizedTypeName).typeArguments.single().copy(nullable = false)
-        val nonOptionalListType = KotlinClassNames.List.parameterizedBy(listItemType).copy(nullable = propertySpec.type.isNullable)
+        val nonOptionalListType = KotlinSymbols.List.parameterizedBy(listItemType).copy(nullable = propertySpec.type.isNullable)
         FunSpec
             .builder("${propertySpec.name}FilterNotNull")
             .returns(nonOptionalListType)

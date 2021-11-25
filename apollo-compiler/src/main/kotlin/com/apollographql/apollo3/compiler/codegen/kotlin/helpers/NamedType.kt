@@ -1,17 +1,15 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
 
-import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.ir.IrInputField
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.IrVariable
 import com.apollographql.apollo3.compiler.ir.isOptional
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.ParameterSpec
-import com.squareup.kotlinpoet.asClassName
 
 class NamedType(
     val graphQlName: String,
@@ -29,7 +27,7 @@ internal fun NamedType.toParameterSpec(context: KotlinContext): ParameterSpec {
           type = context.resolver.resolveIrType(type)
       )
       .applyIf(description?.isNotBlank() == true) { addKdoc("%L\n", description!!) }
-      .applyIf(type.isOptional()) { defaultValue("%T", KotlinClassNames.Absent) }
+      .applyIf(type.isOptional()) { defaultValue("%T", KotlinSymbols.Absent) }
       .build()
 }
 
@@ -63,7 +61,7 @@ internal fun NamedType.writeToResponseCodeBlock(context: KotlinContext): CodeBlo
   val propertyName = context.layout.propertyName(graphQlName)
 
   if (type.isOptional()) {
-    builder.beginControlFlow("if (${Identifier.value}.$propertyName is %T)", KotlinClassNames.Present)
+    builder.beginControlFlow("if (${Identifier.value}.$propertyName is %T)", KotlinSymbols.Present)
   }
   builder.addStatement("${Identifier.writer}.name(%S)", graphQlName)
   builder.addStatement(

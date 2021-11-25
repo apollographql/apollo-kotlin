@@ -2,7 +2,7 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClass
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
@@ -32,7 +32,7 @@ class FragmentBuilder(
       ModelBuilder(
           context = context,
           model = it,
-          superClassName = if (it.id == fragment.dataModelGroup.baseModelId) KotlinClassNames.FragmentData else null,
+          superClassName = if (it.id == fragment.dataModelGroup.baseModelId) KotlinSymbols.FragmentData else null,
           path = listOf(packageName, simpleName),
           hasSubclassesInSamePackage = false,
       )
@@ -97,7 +97,7 @@ class FragmentBuilder(
   }
 
   private fun superInterfaceType(): TypeName {
-    return  KotlinClassNames.Fragment.parameterizedBy(
+    return  KotlinSymbols.Fragment.parameterizedBy(
         context.resolver.resolveModel(fragment.dataModelGroup.baseModelId)
     )
   }

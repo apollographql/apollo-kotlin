@@ -6,12 +6,11 @@
 package com.example.deprecation.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.BooleanAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.deprecation.TestQuery;
@@ -69,9 +68,9 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
-          case 1: deprecated = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
-          case 2: deprecatedBool = BooleanAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
+          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: deprecated = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 2: deprecatedBool = Adapters.BooleanAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -91,13 +90,13 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Hero value) throws IOException {
       writer.name("name");
-      StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.name);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
 
       writer.name("deprecated");
-      StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.deprecated);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.deprecated);
 
       writer.name("deprecatedBool");
-      BooleanAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.deprecatedBool);
+      Adapters.BooleanAdapter.toJson(writer, customScalarAdapters, value.deprecatedBool);
     }
   }
 }

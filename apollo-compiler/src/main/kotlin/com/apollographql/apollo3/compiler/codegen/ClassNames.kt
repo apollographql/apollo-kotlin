@@ -13,11 +13,7 @@ internal object ClassNames {
 
   val ObjectType = ResolverClassName(apolloApiPackageName, "ObjectType")
   val InterfaceType = ResolverClassName(apolloApiPackageName, "InterfaceType")
-  val BooleanAdapter = ResolverClassName(apolloApiPackageName, "BooleanAdapter")
-  val StringAdapter = ResolverClassName(apolloApiPackageName, "StringAdapter")
-  val IntAdapter = ResolverClassName(apolloApiPackageName, "IntAdapter")
-  val DoubleAdapter = ResolverClassName(apolloApiPackageName, "DoubleAdapter")
-  val AnyAdapter = ResolverClassName(apolloApiPackageName, "AnyAdapter")
+
   val JsonReader = ResolverClassName(apolloApiJsonPackageName, "JsonReader")
   val JsonWriter = ResolverClassName(apolloApiJsonPackageName, "JsonWriter")
   val CustomScalarAdapters = ResolverClassName(apolloApiPackageName, "CustomScalarAdapters")

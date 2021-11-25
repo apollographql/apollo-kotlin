@@ -7,16 +7,15 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.MemberName
 
 /**
- * A list of constant [ResolverClassName] that don't use `class.name` and therefore survive proguard/R8
+ * A list of constant symbols from apollo-api referenced from codegen.
+ * We don't use reflection so that we can use R8 on the compiler.
+ *
+ * Symbols can be [ClassName] or [MemberName]
  */
-internal object KotlinClassNames {
+internal object KotlinSymbols {
   val ObjectType = ClassNames.ObjectType.toKotlinPoetClassName()
   val InterfaceType = ClassNames.InterfaceType.toKotlinPoetClassName()
-  val BooleanAdapter = ClassNames.BooleanAdapter.toKotlinPoetClassName()
-  val StringAdapter = ClassNames.StringAdapter.toKotlinPoetClassName()
-  val IntAdapter = ClassNames.IntAdapter.toKotlinPoetClassName()
-  val DoubleAdapter = ClassNames.DoubleAdapter.toKotlinPoetClassName()
-  val AnyAdapter = ClassNames.AnyAdapter.toKotlinPoetClassName()
+
   val JsonReader = ClassNames.JsonReader.toKotlinPoetClassName()
   val JsonWriter = ClassNames.JsonWriter.toKotlinPoetClassName()
   val CustomScalarAdapters = ClassNames.CustomScalarAdapters.toKotlinPoetClassName()
@@ -67,6 +66,20 @@ internal object KotlinClassNames {
   val List = ClassName("kotlin.collections", "List")
   val Map = ClassName("kotlin.collections", "Map")
   val Array = ClassName("kotlin", "Array")
+
+  /**
+   * Adapters
+   */
+  val AnyAdapter = MemberName(ClassNames.apolloApiPackageName, "AnyAdapter")
+  val BooleanAdapter = MemberName(ClassNames.apolloApiPackageName, "BooleanAdapter")
+  val DoubleAdapter = MemberName(ClassNames.apolloApiPackageName, "DoubleAdapter")
+  val IntAdapter = MemberName(ClassNames.apolloApiPackageName, "IntAdapter")
+  val StringAdapter = MemberName(ClassNames.apolloApiPackageName, "StringAdapter")
+  val NullableAnyAdapter = MemberName(ClassNames.apolloApiPackageName, "NullableAnyAdapter")
+  val NullableBooleanAdapter = MemberName(ClassNames.apolloApiPackageName, "NullableBooleanAdapter")
+  val NullableDoubleAdapter = MemberName(ClassNames.apolloApiPackageName, "NullableDoubleAdapter")
+  val NullableIntAdapter = MemberName(ClassNames.apolloApiPackageName, "NullableIntAdapter")
+  val NullableStringAdapter = MemberName(ClassNames.apolloApiPackageName, "NullableStringAdapter")
 }
 
 fun ResolverClassName.toKotlinPoetClassName(): ClassName = ClassName(packageName, simpleNames)

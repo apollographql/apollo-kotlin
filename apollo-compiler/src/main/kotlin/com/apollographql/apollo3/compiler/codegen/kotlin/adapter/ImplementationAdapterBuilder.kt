@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.ir.IrModel
 import com.squareup.kotlinpoet.FunSpec
@@ -46,17 +46,17 @@ class ImplementationAdapterBuilder(
   private fun readFromResponseFunSpec(): FunSpec {
     return FunSpec.builder(Identifier.fromJson)
         .returns(adaptedClassName)
-        .addParameter(Identifier.reader, KotlinClassNames.JsonReader)
-        .addParameter(Identifier.customScalarAdapters, KotlinClassNames.CustomScalarAdapters)
-        .addParameter(Identifier.typename, KotlinClassNames.String)
+        .addParameter(Identifier.reader, KotlinSymbols.JsonReader)
+        .addParameter(Identifier.customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
+        .addParameter(Identifier.typename, KotlinSymbols.String)
         .addCode(readFromResponseCodeBlock(model, context, true))
         .build()
   }
 
   private fun writeToResponseFunSpec(): FunSpec {
     return FunSpec.builder(Identifier.toJson)
-        .addParameter(Identifier.writer, KotlinClassNames.JsonWriter)
-        .addParameter(Identifier.customScalarAdapters, KotlinClassNames.CustomScalarAdapters)
+        .addParameter(Identifier.writer, KotlinSymbols.JsonWriter)
+        .addParameter(Identifier.customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
         .addParameter(Identifier.value, adaptedClassName)
         .addCode(writeToResponseCodeBlock(model, context))
         .build()

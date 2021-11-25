@@ -6,9 +6,8 @@
 package com.example.input_object_variable_and_argument.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.DoubleAdapter;
-import com.apollographql.apollo3.api.IntAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -33,8 +32,8 @@ public enum TestQuery_VariablesAdapter implements Adapter<TestQuery> {
     writer.name("episode");
     new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE).toJson(writer, customScalarAdapters, value.episode);
     writer.name("stars");
-    IntAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.stars);
+    Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.stars);
     writer.name("greenValue");
-    DoubleAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.greenValue);
+    Adapters.DoubleAdapter.toJson(writer, customScalarAdapters, value.greenValue);
   }
 }

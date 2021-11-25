@@ -9,7 +9,6 @@ import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.IntAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -68,7 +67,7 @@ public class CreateReviewForEpisodeMutation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: stars = IntAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
+          case 0: stars = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: commentary = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
@@ -86,7 +85,7 @@ public class CreateReviewForEpisodeMutation_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         CreateReviewForEpisodeMutation.CreateReview value) throws IOException {
       writer.name("stars");
-      IntAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.stars);
+      Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.stars);
 
       writer.name("commentary");
       Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.commentary);

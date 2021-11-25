@@ -9,7 +9,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.squareup.kotlinpoet.ClassName
@@ -47,8 +47,8 @@ class EnumResponseAdapterBuilder(
     val adaptedTypeName = context.resolver.resolveSchemaType(enum.name)
     val fromResponseFunSpec = FunSpec.builder(Identifier.fromJson)
         .addModifiers(KModifier.OVERRIDE)
-        .addParameter(reader, KotlinClassNames.JsonReader)
-        .addParameter(customScalarAdapters, KotlinClassNames.CustomScalarAdapters)
+        .addParameter(reader, KotlinSymbols.JsonReader)
+        .addParameter(customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
         .returns(adaptedTypeName)
         .addCode(
             CodeBlock.builder()
@@ -64,7 +64,7 @@ class EnumResponseAdapterBuilder(
 
     return TypeSpec
         .objectBuilder(layout.enumResponseAdapterName(name))
-        .addSuperinterface(KotlinClassNames.Adapter.parameterizedBy(adaptedTypeName))
+        .addSuperinterface(KotlinSymbols.Adapter.parameterizedBy(adaptedTypeName))
         .addFunction(fromResponseFunSpec)
         .addFunction(toResponseFunSpec)
         .build()
@@ -73,6 +73,6 @@ class EnumResponseAdapterBuilder(
 
 private fun toResponseFunSpecBuilder(typeName: TypeName) = FunSpec.builder(toJson)
     .addModifiers(KModifier.OVERRIDE)
-    .addParameter(name = writer, type = KotlinClassNames.JsonWriter)
-    .addParameter(name = customScalarAdapters, type = KotlinClassNames.CustomScalarAdapters)
+    .addParameter(name = writer, type = KotlinSymbols.JsonWriter)
+    .addParameter(name = customScalarAdapters, type = KotlinSymbols.CustomScalarAdapters)
     .addParameter(value, typeName)

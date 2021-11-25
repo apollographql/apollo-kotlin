@@ -1,15 +1,13 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
-import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.model.ModelBuilder
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.ir.IrModelGroup
 import com.apollographql.apollo3.compiler.ir.IrNamedFragment
-import com.squareup.kotlinpoet.asClassName
 
 class FragmentModelsBuilder(
     val context: KotlinContext,
@@ -29,7 +27,7 @@ class FragmentModelsBuilder(
         ModelBuilder(
             context = context,
             model = it,
-            superClassName = if (addSuperInterface && it.id == fragment.dataModelGroup.baseModelId) KotlinClassNames.FragmentData else null,
+            superClassName = if (addSuperInterface && it.id == fragment.dataModelGroup.baseModelId) KotlinSymbols.FragmentData else null,
             path = listOf(packageName),
             hasSubclassesInSamePackage = false,
         )

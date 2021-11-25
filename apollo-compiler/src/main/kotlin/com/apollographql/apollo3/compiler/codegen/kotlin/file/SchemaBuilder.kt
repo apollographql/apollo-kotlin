@@ -1,13 +1,9 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 
-import com.apollographql.apollo3.api.CompiledNamedType
-import com.apollographql.apollo3.api.CompiledType
-import com.apollographql.apollo3.api.ObjectType
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.ir.IrInterface
 import com.apollographql.apollo3.compiler.ir.IrObject
@@ -18,7 +14,6 @@ import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asClassName
 
 class SchemaBuilder(
     private val context: KotlinContext,
@@ -53,7 +48,7 @@ class SchemaBuilder(
     builder.unindent()
     builder.add(")\n")
 
-    return PropertySpec.builder("all", KotlinClassNames.List.parameterizedBy(KotlinClassNames.CompiledType))
+    return PropertySpec.builder("all", KotlinSymbols.List.parameterizedBy(KotlinSymbols.CompiledType))
         .initializer(builder.build())
         .build()
   }
@@ -69,8 +64,8 @@ class SchemaBuilder(
   private fun possibleTypesFunSpec(): FunSpec {
     val builder = FunSpec.builder("possibleTypes")
 
-    builder.addParameter("type", KotlinClassNames.CompiledNamedType)
-    builder.returns(KotlinClassNames.List.parameterizedBy(KotlinClassNames.ObjectType))
+    builder.addParameter("type", KotlinSymbols.CompiledNamedType)
+    builder.returns(KotlinSymbols.List.parameterizedBy(KotlinSymbols.ObjectType))
     builder.addCode("return %M(all, type)\n", MemberName("com.apollographql.apollo3.api", "possibleTypes"))
     return builder.build()
   }
