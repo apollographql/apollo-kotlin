@@ -359,11 +359,11 @@ public abstract interface class com/apollographql/apollo3/api/CustomTypeAdapter 
 	public abstract fun encode (Ljava/lang/Object;)Lcom/apollographql/apollo3/api/CustomTypeValue;
 }
 
-public class com/apollographql/apollo3/api/CustomTypeValue {
+public abstract class com/apollographql/apollo3/api/CustomTypeValue {
 	public static final field Companion Lcom/apollographql/apollo3/api/CustomTypeValue$Companion;
-	public fun <init> (Ljava/lang/Object;)V
+	public final field value Ljava/lang/Object;
+	public synthetic fun <init> (Ljava/lang/Object;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun fromRawValue (Ljava/lang/Object;)Lcom/apollographql/apollo3/api/CustomTypeValue;
-	public final fun getValue ()Ljava/lang/Object;
 }
 
 public final class com/apollographql/apollo3/api/CustomTypeValue$Companion {

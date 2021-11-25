@@ -4,3 +4,7 @@ query GetAll {
   any
   geoPoints
 }
+
+query GetAddress {
+  address
+}

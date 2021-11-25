@@ -17,7 +17,7 @@ class Version2CustomTypeAdapterToAdapter<T>(
 ) : Adapter<T> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
     val value: Any? = NullableAnyAdapter.fromJson(reader, customScalarAdapters)
-    return v2CustomTypeAdapter.decode(CustomTypeValue(value))
+    return v2CustomTypeAdapter.decode(CustomTypeValue.fromRawValue(value))
   }
 
   override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T) {
