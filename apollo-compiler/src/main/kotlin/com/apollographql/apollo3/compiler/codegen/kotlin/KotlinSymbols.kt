@@ -45,6 +45,7 @@ internal object KotlinSymbols {
   val CompiledField = ClassNames.CompiledField.toKotlinPoetClassName()
   val CompiledFieldBuilder = ClassNames.CompiledFieldBuilder.toKotlinPoetClassName()
   val CompiledFragment = ClassNames.CompiledFragment.toKotlinPoetClassName()
+  val CompiledFragmentBuilder = ClassNames.CompiledFragmentBuilder.toKotlinPoetClassName()
   val TestResolver = ClassNames.TestResolver.toKotlinPoetClassName()
   val DefaultTestResolver = ClassNames.DefaultTestResolver.toKotlinPoetClassName()
   val MapJsonReader = ClassNames.MapJsonReader.toKotlinPoetClassName()

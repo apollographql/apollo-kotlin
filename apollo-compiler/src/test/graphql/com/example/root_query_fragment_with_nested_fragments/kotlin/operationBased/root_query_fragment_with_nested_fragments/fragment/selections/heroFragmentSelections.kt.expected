@@ -13,7 +13,7 @@ import kotlin.collections.List
 
 public object heroFragmentSelections {
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build()

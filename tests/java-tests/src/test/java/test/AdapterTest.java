@@ -1,6 +1,7 @@
 package test;
 
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;

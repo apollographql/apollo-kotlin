@@ -14,11 +14,11 @@ import kotlin.collections.List
 
 internal object HeroDetailsSelections {
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = (listOf("Human"))
         ).selections(HumanDetailsSelections.root)
         .build()

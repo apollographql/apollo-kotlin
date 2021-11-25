@@ -13,11 +13,11 @@ import kotlin.collections.List
 
 public object droidFragmentSelections {
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "primaryFunction",
           type = CompiledStringType
         ).build()

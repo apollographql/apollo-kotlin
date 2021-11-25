@@ -19,18 +19,18 @@ import kotlin.collections.List
 
 public object starshipFragmentSelections {
   private val node: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = (listOf("Person"))
         ).selections(pilotFragmentSelections.root)
         .build()
       )
 
   private val edges: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "node",
           type = Person.type
         ).selections(node)
@@ -38,7 +38,7 @@ public object starshipFragmentSelections {
       )
 
   private val pilotConnection: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "edges",
           type = StarshipPilotsEdge.type.list()
         ).selections(edges)
@@ -46,15 +46,15 @@ public object starshipFragmentSelections {
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "id",
           type = CompiledIDType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "pilotConnection",
           type = StarshipPilotsConnection.type
         ).selections(pilotConnection)

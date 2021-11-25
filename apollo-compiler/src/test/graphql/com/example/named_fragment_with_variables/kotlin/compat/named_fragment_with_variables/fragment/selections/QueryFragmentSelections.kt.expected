@@ -19,22 +19,22 @@ import kotlin.collections.List
 
 public object QueryFragmentSelections {
   private val user: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = (listOf("User"))
         ).selections(UserFragmentSelections.root)
         .build()
       )
 
   private val organization: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "id",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "user",
           type = User.type.notNull().list().notNull()
         ).arguments(listOf(
@@ -45,7 +45,7 @@ public object QueryFragmentSelections {
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "organization",
           type = Organization.type
         ).arguments(listOf(

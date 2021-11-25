@@ -19,25 +19,25 @@ import kotlin.collections.List
 
 public object HeroDetailsSelections {
   private val onDroid: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = (listOf("Droid"))
         ).selections(DroidDetailsSelections.root)
         .build()
       )
 
   private val node: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build()
       )
 
   private val edges: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "node",
           type = Character.type
         ).selections(node)
@@ -45,11 +45,11 @@ public object HeroDetailsSelections {
       )
 
   private val friendsConnection: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "totalCount",
           type = CompiledIntType
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "edges",
           type = FriendsEdge.type.list()
         ).selections(edges)
@@ -57,23 +57,23 @@ public object HeroDetailsSelections {
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = (listOf("Human"))
         ).selections(HumanDetailsSelections.root)
         .build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("Droid")
         ).selections(onDroid)
         .build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "friendsConnection",
           type = FriendsConnection.type.notNull()
         ).selections(friendsConnection)

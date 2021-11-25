@@ -16,24 +16,24 @@ import java.util.List;
 
 public class TestQuerySelections {
   private static List<CompiledSelection> onHuman = Arrays.asList(
-    CompiledField.builder("height", CompiledGraphQL.CompiledFloatType).build(),
-    CompiledField.builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
+    new CompiledField.Builder("height", CompiledGraphQL.CompiledFloatType).build(),
+    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
   );
 
   private static List<CompiledSelection> onDroid = Arrays.asList(
-    CompiledField.builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledField.builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledField.builder("primaryFunction", CompiledGraphQL.CompiledStringType).build()
+    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("primaryFunction", CompiledGraphQL.CompiledStringType).build()
   );
 
   private static List<CompiledSelection> hero = Arrays.asList(
-    CompiledField.builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledFragment.builder(Arrays.asList("Human")).selections(onHuman).build(),
-    CompiledFragment.builder(Arrays.asList("Droid")).selections(onDroid).build()
+    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledFragment.Builder(Arrays.asList("Human")).selections(onHuman).build(),
+    new CompiledFragment.Builder(Arrays.asList("Droid")).selections(onDroid).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("hero", Character.type).selections(hero).build(),
-    CompiledField.builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
+    new CompiledField.Builder("hero", Character.type).selections(hero).build(),
+    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
   );
 }

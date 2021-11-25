@@ -16,8 +16,8 @@ import java.util.List;
 
 public class UserFragmentSelections {
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("firstName", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledField.builder("lastName", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledField.builder("avatar", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).arguments(Arrays.asList(new CompiledArgument("size", new CompiledVariable("size"), false))).build()
+    new CompiledField.Builder("firstName", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("lastName", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("avatar", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).arguments(Arrays.asList(new CompiledArgument("size", new CompiledVariable("size"), false))).build()
   );
 }

@@ -16,12 +16,12 @@ import java.util.List;
 
 public class DroidDetailsSelections {
   private static List<CompiledSelection> friends = Arrays.asList(
-    CompiledField.builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
+    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledField.builder("primaryFunction", CompiledGraphQL.CompiledStringType).build(),
-    CompiledField.builder("friends", new CompiledListType(Character.type)).selections(friends).build()
+    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("primaryFunction", CompiledGraphQL.CompiledStringType).build(),
+    new CompiledField.Builder("friends", new CompiledListType(Character.type)).selections(friends).build()
   );
 }

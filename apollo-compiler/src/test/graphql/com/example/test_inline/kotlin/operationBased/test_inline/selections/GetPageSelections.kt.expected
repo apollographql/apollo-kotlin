@@ -17,32 +17,32 @@ import kotlin.collections.List
 
 public object GetPageSelections {
   private val items: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "title",
           type = CompiledStringType.notNull()
         ).build()
       )
 
   private val onParticularItem: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "image",
           type = CompiledStringType.notNull()
         ).build()
       )
 
   private val items1: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("ParticularItem")
         ).selections(onParticularItem)
         .build()
       )
 
   private val onParticularCollection: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "items",
           type = Item.type.notNull().list().notNull()
         ).selections(items1)
@@ -50,23 +50,23 @@ public object GetPageSelections {
       )
 
   private val collection: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "items",
           type = Item.type.notNull().list().notNull()
         ).selections(items)
         .build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("ParticularCollection")
         ).selections(onParticularCollection)
         .build()
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "collection",
           type = Collection.type.notNull()
         ).selections(collection)

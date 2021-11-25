@@ -17,19 +17,19 @@ import kotlin.collections.List
 
 public object TestQuerySelections {
   private val friendsConnection: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "totalCount",
           type = CompiledIntType
         ).build()
       )
 
   private val hero: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).condition(listOf(CompiledCondition("includeName", false)))
         .build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "friendsConnection",
           type = FriendsConnection.type.notNull()
         ).condition(listOf(CompiledCondition("skipFriends", true)))
@@ -38,7 +38,7 @@ public object TestQuerySelections {
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "hero",
           type = Character.type
         ).selections(hero)

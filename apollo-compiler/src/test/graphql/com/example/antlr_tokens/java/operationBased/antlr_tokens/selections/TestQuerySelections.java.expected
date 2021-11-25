@@ -16,13 +16,13 @@ import java.util.List;
 
 public class TestQuerySelections {
   private static List<CompiledSelection> typeWithGraphQLKeywords = Arrays.asList(
-    CompiledField.builder("on", CompiledGraphQL.CompiledStringType).build(),
-    CompiledField.builder("null", CompiledGraphQL.CompiledStringType).arguments(Arrays.asList(new CompiledArgument("fragment", new CompiledVariable("operation"), false))).build(),
-    CompiledField.builder("null", CompiledGraphQL.CompiledStringType).alias("alias").arguments(Arrays.asList(new CompiledArgument("fragment", "A string\n"
+    new CompiledField.Builder("on", CompiledGraphQL.CompiledStringType).build(),
+    new CompiledField.Builder("null", CompiledGraphQL.CompiledStringType).arguments(Arrays.asList(new CompiledArgument("fragment", new CompiledVariable("operation"), false))).build(),
+    new CompiledField.Builder("null", CompiledGraphQL.CompiledStringType).alias("alias").arguments(Arrays.asList(new CompiledArgument("fragment", "A string\n"
             + "with a new line", false))).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("typeWithGraphQLKeywords", TypeWithGraphQLKeywords.type).selections(typeWithGraphQLKeywords).build()
+    new CompiledField.Builder("typeWithGraphQLKeywords", TypeWithGraphQLKeywords.type).selections(typeWithGraphQLKeywords).build()
   );
 }

@@ -14,7 +14,7 @@ import kotlin.collections.List
 
 public object characterAppearsInSelections {
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "appearsIn",
           type = Episode.type.list().notNull()
         ).build()

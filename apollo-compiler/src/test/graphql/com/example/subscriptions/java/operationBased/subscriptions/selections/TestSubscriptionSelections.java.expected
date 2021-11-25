@@ -17,11 +17,11 @@ import java.util.List;
 
 public class TestSubscriptionSelections {
   private static List<CompiledSelection> commentAdded = Arrays.asList(
-    CompiledField.builder("id", new CompiledNotNullType(CompiledGraphQL.CompiledIntType)).build(),
-    CompiledField.builder("content", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
+    new CompiledField.Builder("id", new CompiledNotNullType(CompiledGraphQL.CompiledIntType)).build(),
+    new CompiledField.Builder("content", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("commentAdded", Comment.type).arguments(Arrays.asList(new CompiledArgument("repoFullName", new CompiledVariable("repo"), false))).selections(commentAdded).build()
+    new CompiledField.Builder("commentAdded", Comment.type).arguments(Arrays.asList(new CompiledArgument("repoFullName", new CompiledVariable("repo"), false))).selections(commentAdded).build()
   );
 }

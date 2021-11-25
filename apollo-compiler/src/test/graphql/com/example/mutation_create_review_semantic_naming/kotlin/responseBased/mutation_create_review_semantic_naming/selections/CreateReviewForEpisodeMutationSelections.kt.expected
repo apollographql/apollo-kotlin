@@ -17,18 +17,18 @@ import kotlin.collections.List
 
 public object CreateReviewForEpisodeMutationSelections {
   private val createReview: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "stars",
           type = CompiledIntType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "commentary",
           type = CompiledStringType
         ).build()
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "createReview",
           type = Review.type
         ).arguments(listOf(

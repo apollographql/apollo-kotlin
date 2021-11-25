@@ -16,14 +16,14 @@ import kotlin.collections.List
 
 public object LoginBarberSelections {
   private val login: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "response",
           type = CompiledStringType.notNull()
         ).build()
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "login",
           type = User.type.notNull()
         ).arguments(listOf(

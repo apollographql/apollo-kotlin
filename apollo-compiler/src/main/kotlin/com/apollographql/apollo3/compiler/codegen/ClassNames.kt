@@ -43,6 +43,7 @@ internal object ClassNames {
   val CompiledField = ResolverClassName(apolloApiPackageName, "CompiledField")
   val CompiledFieldBuilder = ResolverClassName(apolloApiPackageName, "CompiledField", "Builder")
   val CompiledFragment = ResolverClassName(apolloApiPackageName, "CompiledFragment")
+  val CompiledFragmentBuilder = ResolverClassName(apolloApiPackageName, "CompiledFragment", "Builder")
   val TestResolver = ResolverClassName(apolloApiTestPackageName, "TestResolver")
   val DefaultTestResolver = ResolverClassName(apolloApiTestPackageName, "DefaultTestResolver")
   val MapJsonReader = ResolverClassName(apolloApiJsonPackageName, "MapJsonReader")

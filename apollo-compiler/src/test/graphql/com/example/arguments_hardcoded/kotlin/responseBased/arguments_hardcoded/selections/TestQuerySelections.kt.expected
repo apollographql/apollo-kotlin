@@ -17,18 +17,18 @@ import kotlin.collections.List
 
 public object TestQuerySelections {
   private val reviews: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "stars",
           type = CompiledIntType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "commentary",
           type = CompiledStringType
         ).build()
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "reviews",
           type = Review.type.list()
         ).arguments(listOf(
@@ -38,7 +38,7 @@ public object TestQuerySelections {
         ))
         .selections(reviews)
         .build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "testNullableArguments",
           type = CompiledIntType.notNull()
         ).arguments(listOf(

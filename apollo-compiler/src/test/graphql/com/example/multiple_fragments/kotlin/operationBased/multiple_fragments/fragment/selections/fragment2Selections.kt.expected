@@ -12,7 +12,7 @@ import kotlin.collections.List
 
 public object fragment2Selections {
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "field2",
           type = CompiledStringType
         ).build()

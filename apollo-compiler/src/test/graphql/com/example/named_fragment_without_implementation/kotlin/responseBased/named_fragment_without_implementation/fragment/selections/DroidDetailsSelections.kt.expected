@@ -12,7 +12,7 @@ import kotlin.collections.List
 
 public object DroidDetailsSelections {
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "primaryFunction",
           type = CompiledStringType
         ).build()

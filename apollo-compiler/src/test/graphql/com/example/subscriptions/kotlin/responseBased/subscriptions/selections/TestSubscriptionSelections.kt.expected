@@ -17,18 +17,18 @@ import kotlin.collections.List
 
 public object TestSubscriptionSelections {
   private val commentAdded: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "id",
           type = CompiledIntType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "content",
           type = CompiledStringType.notNull()
         ).build()
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "commentAdded",
           type = Comment.type
         ).arguments(listOf(

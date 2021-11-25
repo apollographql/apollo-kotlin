@@ -19,15 +19,15 @@ import java.util.List;
 
 public class TestQuerySelections {
   private static List<CompiledSelection> hero = Arrays.asList(
-    CompiledField.builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledField.builder("birthDate", new CompiledNotNullType(Date.type)).build(),
-    CompiledField.builder("appearanceDates", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Date.type)))).build(),
-    CompiledField.builder("fieldWithUnsupportedType", new CompiledNotNullType(UnsupportedType.type)).build(),
-    CompiledField.builder("profileLink", new CompiledNotNullType(URL.type)).build(),
-    CompiledField.builder("links", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(URL.type)))).build()
+    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("birthDate", new CompiledNotNullType(Date.type)).build(),
+    new CompiledField.Builder("appearanceDates", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Date.type)))).build(),
+    new CompiledField.Builder("fieldWithUnsupportedType", new CompiledNotNullType(UnsupportedType.type)).build(),
+    new CompiledField.Builder("profileLink", new CompiledNotNullType(URL.type)).build(),
+    new CompiledField.Builder("links", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(URL.type)))).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("hero", Character.type).selections(hero).build()
+    new CompiledField.Builder("hero", Character.type).selections(hero).build()
   );
 }

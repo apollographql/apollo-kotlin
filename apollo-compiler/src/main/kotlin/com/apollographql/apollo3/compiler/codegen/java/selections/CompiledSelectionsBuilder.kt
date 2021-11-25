@@ -120,12 +120,11 @@ class CompiledSelectionsBuilder(
       return null
     }
 
-
     val builder = CodeBlock.builder()
 
     val fieldDefinition = definitionFromScope(schema, parentType)!!
 
-    builder.add("$T.builder($S, $L)", JavaClassNames.CompiledField, name, fieldDefinition.type.codeBlock())
+    builder.add("new $T($S, $L)", JavaClassNames.CompiledFieldBuilder, name, fieldDefinition.type.codeBlock())
     builder.indent()
 
     if (alias != null) {
@@ -160,7 +159,7 @@ class CompiledSelectionsBuilder(
     val name = "on${typeCondition.name.capitalizeFirstLetter()}"
 
     val builder = CodeBlock.builder()
-    builder.add("$T.builder($L)", JavaClassNames.CompiledFragment, possibleTypesCodeBlock(typeCondition.name))
+    builder.add("new $T($L)", JavaClassNames.CompiledFragmentBuilder, possibleTypesCodeBlock(typeCondition.name))
     builder.indent()
     if (expression !is BooleanExpression.True) {
       builder.add(".condition($L)", expression.toCompiledConditionInitializer())
@@ -186,7 +185,7 @@ class CompiledSelectionsBuilder(
     val fragmentDefinition = allFragmentDefinitions[name]!!
 
     val builder = CodeBlock.builder()
-    builder.add("$T.builder($L)", JavaClassNames.CompiledFragment, possibleTypesCodeBlock(fragmentDefinition.typeCondition.name))
+    builder.add("new $T($L)", JavaClassNames.CompiledFragmentBuilder, possibleTypesCodeBlock(fragmentDefinition.typeCondition.name))
     builder.indent()
     if (expression !is BooleanExpression.True) {
       builder.add(".condition($L)", expression.toCompiledConditionInitializer())

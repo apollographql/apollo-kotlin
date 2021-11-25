@@ -15,22 +15,22 @@ import kotlin.collections.List
 
 public object DroidDetailsSelections {
   private val friends: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build()
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "primaryFunction",
           type = CompiledStringType
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "friends",
           type = Character.type.list()
         ).selections(friends)

@@ -16,18 +16,18 @@ import kotlin.collections.List
 
 public object TestQuerySelections {
   private val a: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = (listOf("A"))
         ).selections(aFragmentSelections.root)
         .build()
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "a",
           type = A.type
         ).selections(a)

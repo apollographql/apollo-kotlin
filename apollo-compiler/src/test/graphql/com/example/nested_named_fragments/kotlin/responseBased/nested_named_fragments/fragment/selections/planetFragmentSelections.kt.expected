@@ -12,7 +12,7 @@ import kotlin.collections.List
 
 public object planetFragmentSelections {
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType
         ).build()

@@ -17,10 +17,10 @@ import java.util.List;
 
 public class LoginBarberSelections {
   private static List<CompiledSelection> login = Arrays.asList(
-    CompiledField.builder("response", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
+    new CompiledField.Builder("response", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("login", new CompiledNotNullType(User.type)).arguments(Arrays.asList(new CompiledArgument("input", new CompiledVariable("input"), false))).selections(login).build()
+    new CompiledField.Builder("login", new CompiledNotNullType(User.type)).arguments(Arrays.asList(new CompiledArgument("input", new CompiledVariable("input"), false))).selections(login).build()
   );
 }

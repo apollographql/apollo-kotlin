@@ -19,25 +19,25 @@ import java.util.List;
 
 public class HeroDetailsSelections {
   private static List<CompiledSelection> node = Arrays.asList(
-    CompiledField.builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
+    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
   );
 
   private static List<CompiledSelection> edges = Arrays.asList(
-    CompiledField.builder("node", Character.type).selections(node).build()
+    new CompiledField.Builder("node", Character.type).selections(node).build()
   );
 
   private static List<CompiledSelection> friendsConnection = Arrays.asList(
-    CompiledField.builder("totalCount", CompiledGraphQL.CompiledIntType).build(),
-    CompiledField.builder("edges", new CompiledListType(FriendsEdge.type)).selections(edges).build()
+    new CompiledField.Builder("totalCount", CompiledGraphQL.CompiledIntType).build(),
+    new CompiledField.Builder("edges", new CompiledListType(FriendsEdge.type)).selections(edges).build()
   );
 
   private static List<CompiledSelection> hero = Arrays.asList(
-    CompiledField.builder("type", new CompiledNotNullType(hero_type.type)).build(),
-    CompiledField.builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledField.builder("friendsConnection", new CompiledNotNullType(FriendsConnection.type)).selections(friendsConnection).build()
+    new CompiledField.Builder("type", new CompiledNotNullType(hero_type.type)).build(),
+    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("friendsConnection", new CompiledNotNullType(FriendsConnection.type)).selections(friendsConnection).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("hero", Character.type).selections(hero).build()
+    new CompiledField.Builder("hero", Character.type).selections(hero).build()
   );
 }

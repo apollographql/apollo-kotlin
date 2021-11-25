@@ -1,8 +1,8 @@
 package com.apollographql.apollo3.cache.normalized.api
 
-import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Executable
+import com.apollographql.apollo3.api.resolveVariables
 import com.apollographql.apollo3.exception.CacheMissException
 import kotlin.jvm.JvmSuppressWildcards
 
@@ -108,7 +108,7 @@ object FieldPolicyCacheResolver: CacheResolver {
       parentId: String,
   ): Any? {
     val keyArgsValues = field.arguments.filter { it.isKey }.map {
-      CompiledArgument.resolveVariables(it.value, variables).toString()
+      resolveVariables(it.value, variables).toString()
     }
 
     if (keyArgsValues.isNotEmpty()) {

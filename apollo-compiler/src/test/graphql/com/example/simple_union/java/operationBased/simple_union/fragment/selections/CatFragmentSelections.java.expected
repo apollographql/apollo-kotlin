@@ -14,6 +14,6 @@ import java.util.List;
 
 public class CatFragmentSelections {
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("meow", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
+    new CompiledField.Builder("meow", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
   );
 }

@@ -17,11 +17,11 @@ import java.util.List;
 
 public class CatQuerySelections {
   private static List<CompiledSelection> cat = Arrays.asList(
-    CompiledField.builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledFragment.builder(Arrays.asList("Cat", "Dog")).selections(AnimalFragmentSelections.root).build()
+    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledFragment.Builder(Arrays.asList("Cat", "Dog")).selections(AnimalFragmentSelections.root).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("cat", Cat.type).selections(cat).build()
+    new CompiledField.Builder("cat", Cat.type).selections(cat).build()
   );
 }

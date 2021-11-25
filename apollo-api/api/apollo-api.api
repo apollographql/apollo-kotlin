@@ -195,16 +195,11 @@ public final class com/apollographql/apollo3/api/BooleanExpressions {
 }
 
 public final class com/apollographql/apollo3/api/CompiledArgument {
-	public static final field Companion Lcom/apollographql/apollo3/api/CompiledArgument$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/Object;Z)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Object;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getName ()Ljava/lang/String;
 	public final fun getValue ()Ljava/lang/Object;
 	public final fun isKey ()Z
-}
-
-public final class com/apollographql/apollo3/api/CompiledArgument$Companion {
-	public final fun resolveVariables (Ljava/lang/Object;Lcom/apollographql/apollo3/api/Executable$Variables;)Ljava/lang/Object;
 }
 
 public final class com/apollographql/apollo3/api/CompiledCondition {
@@ -221,8 +216,6 @@ public final class com/apollographql/apollo3/api/CompiledCondition {
 }
 
 public final class com/apollographql/apollo3/api/CompiledField : com/apollographql/apollo3/api/CompiledSelection {
-	public static final field Companion Lcom/apollographql/apollo3/api/CompiledField$Companion;
-	public static final fun builder (Ljava/lang/String;Lcom/apollographql/apollo3/api/CompiledType;)Lcom/apollographql/apollo3/api/CompiledField$Builder;
 	public final fun getAlias ()Ljava/lang/String;
 	public final fun getArguments ()Ljava/util/List;
 	public final fun getCondition ()Ljava/util/List;
@@ -237,6 +230,7 @@ public final class com/apollographql/apollo3/api/CompiledField : com/apollograph
 
 public final class com/apollographql/apollo3/api/CompiledField$Builder {
 	public fun <init> (Lcom/apollographql/apollo3/api/CompiledField;)V
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/api/CompiledType;)V
 	public final fun alias (Ljava/lang/String;)Lcom/apollographql/apollo3/api/CompiledField$Builder;
 	public final fun arguments (Ljava/util/List;)Lcom/apollographql/apollo3/api/CompiledField$Builder;
 	public final fun build ()Lcom/apollographql/apollo3/api/CompiledField;
@@ -246,19 +240,14 @@ public final class com/apollographql/apollo3/api/CompiledField$Builder {
 	public final fun selections (Ljava/util/List;)Lcom/apollographql/apollo3/api/CompiledField$Builder;
 }
 
-public final class com/apollographql/apollo3/api/CompiledField$Companion {
-	public final fun builder (Ljava/lang/String;Lcom/apollographql/apollo3/api/CompiledType;)Lcom/apollographql/apollo3/api/CompiledField$Builder;
-}
-
 public final class com/apollographql/apollo3/api/CompiledFragment : com/apollographql/apollo3/api/CompiledSelection {
-	public static final field Companion Lcom/apollographql/apollo3/api/CompiledFragment$Companion;
-	public static final fun builder (Ljava/util/List;)Lcom/apollographql/apollo3/api/CompiledFragment$Builder;
 	public final fun getCondition ()Ljava/util/List;
 	public final fun getPossibleTypes ()Ljava/util/List;
 	public final fun getSelections ()Ljava/util/List;
 }
 
 public final class com/apollographql/apollo3/api/CompiledFragment$Builder {
+	public fun <init> (Ljava/util/List;)V
 	public final fun build ()Lcom/apollographql/apollo3/api/CompiledFragment;
 	public final fun condition (Ljava/util/List;)Lcom/apollographql/apollo3/api/CompiledFragment$Builder;
 	public final fun getCondition ()Ljava/util/List;
@@ -267,10 +256,6 @@ public final class com/apollographql/apollo3/api/CompiledFragment$Builder {
 	public final fun selections (Ljava/util/List;)Lcom/apollographql/apollo3/api/CompiledFragment$Builder;
 	public final fun setCondition (Ljava/util/List;)V
 	public final fun setSelections (Ljava/util/List;)V
-}
-
-public final class com/apollographql/apollo3/api/CompiledFragment$Companion {
-	public final fun builder (Ljava/util/List;)Lcom/apollographql/apollo3/api/CompiledFragment$Builder;
 }
 
 public final class com/apollographql/apollo3/api/CompiledGraphQL {
@@ -289,6 +274,7 @@ public final class com/apollographql/apollo3/api/CompiledGraphQL {
 	public static final fun -notNull (Lcom/apollographql/apollo3/api/CompiledType;)Lcom/apollographql/apollo3/api/CompiledNotNullType;
 	public static final fun isComposite (Lcom/apollographql/apollo3/api/CompiledNamedType;)Z
 	public static final fun keyFields (Lcom/apollographql/apollo3/api/CompiledNamedType;)Ljava/util/List;
+	public static final fun resolveVariables (Ljava/lang/Object;Lcom/apollographql/apollo3/api/Executable$Variables;)Ljava/lang/Object;
 }
 
 public final class com/apollographql/apollo3/api/CompiledListType : com/apollographql/apollo3/api/CompiledType {

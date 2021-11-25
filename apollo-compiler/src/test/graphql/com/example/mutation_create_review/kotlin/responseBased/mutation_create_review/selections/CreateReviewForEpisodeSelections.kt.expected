@@ -21,34 +21,34 @@ import kotlin.collections.List
 
 internal object CreateReviewForEpisodeSelections {
   private val listOfListOfObject: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build()
       )
 
   private val createReview: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "stars",
           type = CompiledIntType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "commentary",
           type = CompiledStringType
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "listOfListOfString",
           type = CompiledStringType.notNull().list().notNull().list()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "listOfListOfEnum",
           type = Episode.type.notNull().list().notNull().list()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "listOfListOfCustom",
           type = Date.type.notNull().list().notNull().list()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "listOfListOfObject",
           type = Character.type.notNull().list().notNull().list()
         ).selections(listOfListOfObject)
@@ -56,7 +56,7 @@ internal object CreateReviewForEpisodeSelections {
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "createReview",
           type = Review.type
         ).arguments(listOf(

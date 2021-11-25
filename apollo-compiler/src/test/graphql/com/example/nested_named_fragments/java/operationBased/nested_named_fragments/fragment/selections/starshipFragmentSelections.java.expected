@@ -19,21 +19,21 @@ import java.util.List;
 
 public class starshipFragmentSelections {
   private static List<CompiledSelection> node = Arrays.asList(
-    CompiledField.builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledFragment.builder(Arrays.asList("Person")).selections(pilotFragmentSelections.root).build()
+    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledFragment.Builder(Arrays.asList("Person")).selections(pilotFragmentSelections.root).build()
   );
 
   private static List<CompiledSelection> edges = Arrays.asList(
-    CompiledField.builder("node", Person.type).selections(node).build()
+    new CompiledField.Builder("node", Person.type).selections(node).build()
   );
 
   private static List<CompiledSelection> pilotConnection = Arrays.asList(
-    CompiledField.builder("edges", new CompiledListType(StarshipPilotsEdge.type)).selections(edges).build()
+    new CompiledField.Builder("edges", new CompiledListType(StarshipPilotsEdge.type)).selections(edges).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("id", new CompiledNotNullType(CompiledGraphQL.CompiledIDType)).build(),
-    CompiledField.builder("name", CompiledGraphQL.CompiledStringType).build(),
-    CompiledField.builder("pilotConnection", StarshipPilotsConnection.type).selections(pilotConnection).build()
+    new CompiledField.Builder("id", new CompiledNotNullType(CompiledGraphQL.CompiledIDType)).build(),
+    new CompiledField.Builder("name", CompiledGraphQL.CompiledStringType).build(),
+    new CompiledField.Builder("pilotConnection", StarshipPilotsConnection.type).selections(pilotConnection).build()
   );
 }

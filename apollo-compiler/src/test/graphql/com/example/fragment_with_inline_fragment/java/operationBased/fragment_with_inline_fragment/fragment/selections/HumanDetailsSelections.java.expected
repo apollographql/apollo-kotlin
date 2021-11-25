@@ -14,6 +14,6 @@ import java.util.List;
 
 public class HumanDetailsSelections {
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
+    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
   );
 }

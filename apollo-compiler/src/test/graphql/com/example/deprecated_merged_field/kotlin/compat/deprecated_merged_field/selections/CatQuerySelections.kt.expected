@@ -16,18 +16,18 @@ import kotlin.collections.List
 
 public object CatQuerySelections {
   private val cat: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = (listOf("Cat", "Dog"))
         ).selections(AnimalFragmentSelections.root)
         .build()
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "cat",
           type = Cat.type
         ).selections(cat)

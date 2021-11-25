@@ -15,15 +15,15 @@ import kotlin.collections.List
 
 public object UserFragmentSelections {
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "firstName",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "lastName",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "avatar",
           type = CompiledStringType.notNull()
         ).arguments(listOf(

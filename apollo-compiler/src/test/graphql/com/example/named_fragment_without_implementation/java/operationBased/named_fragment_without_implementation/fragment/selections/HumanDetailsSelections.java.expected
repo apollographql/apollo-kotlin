@@ -13,6 +13,6 @@ import java.util.List;
 
 public class HumanDetailsSelections {
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("height", CompiledGraphQL.CompiledFloatType).build()
+    new CompiledField.Builder("height", CompiledGraphQL.CompiledFloatType).build()
   );
 }

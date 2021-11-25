@@ -15,18 +15,18 @@ import kotlin.collections.List
 
 public object TestQuerySelections {
   private val typeWithGraphQLKeywords: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "on",
           type = CompiledStringType
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "null",
           type = CompiledStringType
         ).arguments(listOf(
           CompiledArgument("fragment", CompiledVariable("operation"))
         ))
         .build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "null",
           type = CompiledStringType
         ).alias("alias")
@@ -40,7 +40,7 @@ public object TestQuerySelections {
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "typeWithGraphQLKeywords",
           type = TypeWithGraphQLKeywords.type
         ).selections(typeWithGraphQLKeywords)

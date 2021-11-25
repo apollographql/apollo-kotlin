@@ -13,6 +13,6 @@ import java.util.List;
 
 public class TestQuerySelections {
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("enum", Enum.type).build()
+    new CompiledField.Builder("enum", Enum.type).build()
   );
 }

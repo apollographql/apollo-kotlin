@@ -15,16 +15,16 @@ import java.util.List;
 
 public class AnimalFragmentSelections {
   private static List<CompiledSelection> onCat = Arrays.asList(
-    CompiledField.builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
+    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
   );
 
   private static List<CompiledSelection> onDog = Arrays.asList(
-    CompiledField.builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
+    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledFragment.builder(Arrays.asList("Cat")).selections(onCat).build(),
-    CompiledFragment.builder(Arrays.asList("Dog")).selections(onDog).build()
+    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledFragment.Builder(Arrays.asList("Cat")).selections(onCat).build(),
+    new CompiledFragment.Builder(Arrays.asList("Dog")).selections(onDog).build()
   );
 }

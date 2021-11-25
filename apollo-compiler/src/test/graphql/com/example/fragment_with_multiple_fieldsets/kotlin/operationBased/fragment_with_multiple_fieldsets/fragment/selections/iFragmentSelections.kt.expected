@@ -14,18 +14,18 @@ import kotlin.collections.List
 
 public object iFragmentSelections {
   private val onA: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "fieldA",
           type = CompiledStringType
         ).build()
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("A")
         ).selections(onA)
         .build()

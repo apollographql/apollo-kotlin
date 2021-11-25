@@ -19,32 +19,32 @@ import java.util.List;
 
 public class HeroDetailQuerySelections {
   private static List<CompiledSelection> friends = Arrays.asList(
-    CompiledField.builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
+    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
   );
 
   private static List<CompiledSelection> friends2 = Arrays.asList(
-    CompiledField.builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledFragment.builder(Arrays.asList("Droid", "Human")).selections(HeroDetailsSelections.root).build()
+    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledFragment.Builder(Arrays.asList("Droid", "Human")).selections(HeroDetailsSelections.root).build()
   );
 
   private static List<CompiledSelection> friends1 = Arrays.asList(
-    CompiledField.builder("appearsIn", new CompiledNotNullType(new CompiledListType(Episode.type))).build(),
-    CompiledField.builder("friends", new CompiledListType(Character.type)).selections(friends2).build()
+    new CompiledField.Builder("appearsIn", new CompiledNotNullType(new CompiledListType(Episode.type))).build(),
+    new CompiledField.Builder("friends", new CompiledListType(Character.type)).selections(friends2).build()
   );
 
   private static List<CompiledSelection> onHuman = Arrays.asList(
-    CompiledField.builder("height", CompiledGraphQL.CompiledFloatType).build(),
-    CompiledField.builder("friends", new CompiledListType(Character.type)).selections(friends1).build()
+    new CompiledField.Builder("height", CompiledGraphQL.CompiledFloatType).build(),
+    new CompiledField.Builder("friends", new CompiledListType(Character.type)).selections(friends1).build()
   );
 
   private static List<CompiledSelection> heroDetailQuery = Arrays.asList(
-    CompiledField.builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledField.builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledField.builder("friends", new CompiledListType(Character.type)).selections(friends).build(),
-    CompiledFragment.builder(Arrays.asList("Human")).selections(onHuman).build()
+    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("friends", new CompiledListType(Character.type)).selections(friends).build(),
+    new CompiledFragment.Builder(Arrays.asList("Human")).selections(onHuman).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("heroDetailQuery", Character.type).selections(heroDetailQuery).build()
+    new CompiledField.Builder("heroDetailQuery", Character.type).selections(heroDetailQuery).build()
   );
 }

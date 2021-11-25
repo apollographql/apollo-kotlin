@@ -16,16 +16,16 @@ import java.util.List;
 
 public class TestQuerySelections {
   private static List<CompiledSelection> r2 = Arrays.asList(
-    CompiledField.builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
+    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
   );
 
   private static List<CompiledSelection> luke = Arrays.asList(
-    CompiledField.builder("id", new CompiledNotNullType(CompiledGraphQL.CompiledIDType)).build(),
-    CompiledField.builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
+    new CompiledField.Builder("id", new CompiledNotNullType(CompiledGraphQL.CompiledIDType)).build(),
+    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("hero", Character.type).alias("r2").selections(r2).build(),
-    CompiledField.builder("hero", Character.type).alias("luke").arguments(Arrays.asList(new CompiledArgument("episode", "EMPIRE", false))).selections(luke).build()
+    new CompiledField.Builder("hero", Character.type).alias("r2").selections(r2).build(),
+    new CompiledField.Builder("hero", Character.type).alias("luke").arguments(Arrays.asList(new CompiledArgument("episode", "EMPIRE", false))).selections(luke).build()
   );
 }
