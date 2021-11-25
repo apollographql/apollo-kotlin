@@ -18,7 +18,7 @@ public object
     TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongNameSelections
     {
   private val heroAVeryAVeryAVeryAVeryAVeryAVeryAV: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).alias("nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")
@@ -26,7 +26,7 @@ public object
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "hero",
           type = Character.type
         ).alias("heroAVeryAVeryAVeryAVeryAVeryAVeryAV")

@@ -19,7 +19,7 @@ import kotlin.collections.List
 
 public object TestQuerySelections {
   private val onHuman1: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "height",
           type = CompiledFloatType
         ).arguments(listOf(
@@ -29,22 +29,22 @@ public object TestQuerySelections {
       )
 
   private val friends: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("Human")
         ).selections(onHuman1)
         .build()
       )
 
   private val onHuman: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "friends",
           type = Character.type.list()
         ).selections(friends)
@@ -52,7 +52,7 @@ public object TestQuerySelections {
       )
 
   private val onHuman2: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "height",
           type = CompiledFloatType
         ).arguments(listOf(
@@ -62,22 +62,22 @@ public object TestQuerySelections {
       )
 
   private val friends1: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("Human")
         ).selections(onHuman2)
         .build()
       )
 
   private val onDroid: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "friends",
           type = Character.type.list()
         ).selections(friends1)
@@ -85,26 +85,26 @@ public object TestQuerySelections {
       )
 
   private val hero: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("Human")
         ).selections(onHuman)
         .build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("Droid")
         ).selections(onDroid)
         .build()
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "hero",
           type = Character.type
         ).arguments(listOf(

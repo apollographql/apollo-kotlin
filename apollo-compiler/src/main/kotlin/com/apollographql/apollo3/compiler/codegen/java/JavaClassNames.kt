@@ -41,6 +41,7 @@ internal object JavaClassNames {
   val CompiledField = ClassNames.CompiledField.toJavaPoetClassName()
   val CompiledFieldBuilder = ClassNames.CompiledFieldBuilder.toJavaPoetClassName()
   val CompiledFragment = ClassNames.CompiledFragment.toJavaPoetClassName()
+  val CompiledFragmentBuilder = ClassNames.CompiledFragmentBuilder.toJavaPoetClassName()
 
   /**
    * ClassNames that we don't use in Kotlin because we use extension functions instead

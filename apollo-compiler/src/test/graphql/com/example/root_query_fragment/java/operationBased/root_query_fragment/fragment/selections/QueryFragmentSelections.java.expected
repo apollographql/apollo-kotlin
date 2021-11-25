@@ -15,11 +15,11 @@ import java.util.List;
 
 public class QueryFragmentSelections {
   private static List<CompiledSelection> hero = Arrays.asList(
-    CompiledField.builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
+    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledField.builder("hero", Character.type).selections(hero).build()
+    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("hero", Character.type).selections(hero).build()
   );
 }

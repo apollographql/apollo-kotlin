@@ -17,16 +17,16 @@ import java.util.List;
 
 public class TestQuerySelections {
   private static List<CompiledSelection> onHuman = Arrays.asList(
-    CompiledField.builder("height", CompiledGraphQL.CompiledFloatType).build()
+    new CompiledField.Builder("height", CompiledGraphQL.CompiledFloatType).build()
   );
 
   private static List<CompiledSelection> nonOptionalHero = Arrays.asList(
-    CompiledField.builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledField.builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledFragment.builder(Arrays.asList("Human")).selections(onHuman).build()
+    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledFragment.Builder(Arrays.asList("Human")).selections(onHuman).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("nonOptionalHero", new CompiledNotNullType(Character.type)).arguments(Arrays.asList(new CompiledArgument("episode", "EMPIRE", false))).selections(nonOptionalHero).build()
+    new CompiledField.Builder("nonOptionalHero", new CompiledNotNullType(Character.type)).arguments(Arrays.asList(new CompiledArgument("episode", "EMPIRE", false))).selections(nonOptionalHero).build()
   );
 }

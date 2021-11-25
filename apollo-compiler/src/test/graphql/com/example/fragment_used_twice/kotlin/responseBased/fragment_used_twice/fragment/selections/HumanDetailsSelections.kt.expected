@@ -14,15 +14,15 @@ import kotlin.collections.List
 
 public object HumanDetailsSelections {
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = (listOf("Droid", "Human"))
         ).selections(CharacterDetailsSelections.root)
         .build()

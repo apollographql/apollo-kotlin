@@ -12,7 +12,7 @@ import kotlin.collections.List
 
 public object HumanDetailsSelections {
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "height",
           type = CompiledFloatType
         ).build()

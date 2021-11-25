@@ -13,7 +13,7 @@ import kotlin.collections.List
 
 public object CatFragmentSelections {
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "meow",
           type = CompiledStringType.notNull()
         ).build()

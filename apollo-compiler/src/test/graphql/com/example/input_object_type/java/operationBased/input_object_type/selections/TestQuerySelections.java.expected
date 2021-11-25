@@ -17,11 +17,11 @@ import java.util.List;
 
 public class TestQuerySelections {
   private static List<CompiledSelection> createReview = Arrays.asList(
-    CompiledField.builder("stars", new CompiledNotNullType(CompiledGraphQL.CompiledIntType)).build(),
-    CompiledField.builder("commentary", CompiledGraphQL.CompiledStringType).build()
+    new CompiledField.Builder("stars", new CompiledNotNullType(CompiledGraphQL.CompiledIntType)).build(),
+    new CompiledField.Builder("commentary", CompiledGraphQL.CompiledStringType).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("createReview", Review.type).arguments(Arrays.asList(new CompiledArgument("episode", new CompiledVariable("ep"), false), new CompiledArgument("review", new CompiledVariable("review"), false))).selections(createReview).build()
+    new CompiledField.Builder("createReview", Review.type).arguments(Arrays.asList(new CompiledArgument("episode", new CompiledVariable("ep"), false), new CompiledArgument("review", new CompiledVariable("review"), false))).selections(createReview).build()
   );
 }

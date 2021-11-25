@@ -20,55 +20,55 @@ import kotlin.collections.List
 
 public object TestOperationSelections {
   private val onWookie: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "lifeExpectancy",
           type = CompiledFloatType
         ).build()
       )
 
   private val friends: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("Wookie")
         ).selections(onWookie)
         .build()
       )
 
   private val onWookie1: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "race",
           type = Race.type.notNull()
         ).build()
       )
 
   private val friends1: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "isFamous",
           type = CompiledBooleanType
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("Wookie")
         ).selections(onWookie1)
         .build()
       )
 
   private val onHuman: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "profilePictureUrl",
           type = CompiledStringType
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "friends",
           type = Being.type.notNull().list().notNull()
         ).selections(friends1)
@@ -76,38 +76,38 @@ public object TestOperationSelections {
       )
 
   private val onBeing: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "friends",
           type = Being.type.notNull().list().notNull()
         ).selections(friends)
         .build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("Human")
         ).selections(onHuman)
         .build()
       )
 
   private val friends2: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "lifeExpectancy",
           type = CompiledFloatType
         ).build()
       )
 
   private val onWookie2: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "race",
           type = Race.type.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "friends",
           type = Being.type.notNull().list().notNull()
         ).selections(friends2)
@@ -115,25 +115,25 @@ public object TestOperationSelections {
       )
 
   private val onWookie3: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "lifeExpectancy",
           type = CompiledFloatType
         ).build()
       )
 
   private val friends3: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("Wookie")
         ).selections(onWookie3)
         .build()
       )
 
   private val onBeing1: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "friends",
           type = Being.type.notNull().list().notNull()
         ).selections(friends3)
@@ -141,26 +141,26 @@ public object TestOperationSelections {
       )
 
   private val random: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("Human", "Wookie")
         ).selections(onBeing)
         .build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("Wookie")
         ).selections(onWookie2)
         .build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("Human", "Wookie")
         ).selections(onBeing1)
         .build()
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "random",
           type = Anything.type.notNull()
         ).selections(random)

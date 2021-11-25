@@ -14,29 +14,29 @@ import kotlin.collections.List
 
 public object AnimalFragmentSelections {
   private val onCat: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build()
       )
 
   private val onDog: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build()
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("Cat")
         ).selections(onCat)
         .build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("Dog")
         ).selections(onDog)
         .build()

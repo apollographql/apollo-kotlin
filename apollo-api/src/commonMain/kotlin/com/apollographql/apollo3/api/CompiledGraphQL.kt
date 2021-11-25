@@ -3,7 +3,6 @@
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.api.CompiledArgument.Companion.resolveVariables
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.internal.Utils
 import okio.Buffer
@@ -63,10 +62,7 @@ class CompiledField internal constructor(
 
   fun newBuilder(): Builder = Builder(this)
 
-  /**
-   * Builder is used from Java generated code. If you're using Kotlin, use the constructor and default values instead
-   */
-  class Builder internal constructor(val name: String, val type: CompiledType) {
+  class Builder(val name: String, val type: CompiledType) {
     internal var alias: String? = null
     internal var condition: List<CompiledCondition> = emptyList()
     internal var arguments: List<CompiledArgument> = emptyList()
@@ -104,11 +100,6 @@ class CompiledField internal constructor(
         selections = selections
     )
   }
-
-  companion object {
-    @JvmStatic
-    fun builder(name: String, type: CompiledType): Builder = Builder(name, type)
-  }
 }
 
 /**
@@ -120,7 +111,7 @@ class CompiledFragment internal constructor(
     val selections: List<CompiledSelection>,
 ) : CompiledSelection() {
 
-  class Builder internal constructor(val possibleTypes: List<String>) {
+  class Builder(val possibleTypes: List<String>) {
     var condition: List<CompiledCondition> = emptyList()
     var selections: List<CompiledSelection> = emptyList()
 
@@ -133,11 +124,6 @@ class CompiledFragment internal constructor(
     }
 
     fun build() = CompiledFragment(possibleTypes, condition, selections)
-  }
-
-  companion object {
-    @JvmStatic
-    fun builder(possibleTypes: List<String>): Builder = Builder(possibleTypes)
   }
 }
 
@@ -212,7 +198,6 @@ fun CompiledType.list() = CompiledListType(this)
  */
 class CompiledVariable(val name: String)
 
-
 /**
  * The Kotlin representation of a GraphQL argument
  *
@@ -225,34 +210,32 @@ class CompiledVariable(val name: String)
  *
  * Note: for now, enums are mapped to Strings
  */
-class CompiledArgument(val name: String, val value: Any?, val isKey: Boolean = false) {
-  companion object {
-    /**
-     * Resolve all variables that may be contained inside `value`
-     */
-    @Suppress("UNCHECKED_CAST")
-    fun resolveVariables(value: Any?, variables: Executable.Variables): Any? {
-      return when (value) {
-        null -> null
-        is CompiledVariable -> {
-          variables.valueMap[value.name]
-        }
-        is Map<*, *> -> {
-          value as Map<String, Any?>
-          value.mapValues {
-            resolveVariables(it.value, variables)
-          }.toList()
-              .sortedBy { it.first }
-              .toMap()
-        }
-        is List<*> -> {
-          value.map {
-            resolveVariables(it, variables)
-          }
-        }
-        else -> value
+class CompiledArgument(val name: String, val value: Any?, val isKey: Boolean = false)
+
+/**
+ * Resolve all variables that may be contained inside `value`
+ */
+@Suppress("UNCHECKED_CAST")
+fun resolveVariables(value: Any?, variables: Executable.Variables): Any? {
+  return when (value) {
+    null -> null
+    is CompiledVariable -> {
+      variables.valueMap[value.name]
+    }
+    is Map<*, *> -> {
+      value as Map<String, Any?>
+      value.mapValues {
+        resolveVariables(it.value, variables)
+      }.toList()
+          .sortedBy { it.first }
+          .toMap()
+    }
+    is List<*> -> {
+      value.map {
+        resolveVariables(it, variables)
       }
     }
+    else -> value
   }
 }
 

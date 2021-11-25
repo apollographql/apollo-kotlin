@@ -13,6 +13,6 @@ import java.util.List;
 
 public class TestQuerySelections {
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("gravity", Gravity.type).build()
+    new CompiledField.Builder("gravity", Gravity.type).build()
   );
 }

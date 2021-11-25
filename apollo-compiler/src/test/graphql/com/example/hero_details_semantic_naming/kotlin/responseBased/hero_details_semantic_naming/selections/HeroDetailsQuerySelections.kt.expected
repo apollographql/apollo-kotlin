@@ -18,14 +18,14 @@ import kotlin.collections.List
 
 public object HeroDetailsQuerySelections {
   private val node: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build()
       )
 
   private val edges: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "node",
           type = Character.type
         ).selections(node)
@@ -33,11 +33,11 @@ public object HeroDetailsQuerySelections {
       )
 
   private val friendsConnection: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "totalCount",
           type = CompiledIntType
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "edges",
           type = FriendsEdge.type.list()
         ).selections(edges)
@@ -45,11 +45,11 @@ public object HeroDetailsQuerySelections {
       )
 
   private val hero: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "friendsConnection",
           type = FriendsConnection.type.notNull()
         ).selections(friendsConnection)
@@ -57,7 +57,7 @@ public object HeroDetailsQuerySelections {
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "hero",
           type = Character.type
         ).selections(hero)

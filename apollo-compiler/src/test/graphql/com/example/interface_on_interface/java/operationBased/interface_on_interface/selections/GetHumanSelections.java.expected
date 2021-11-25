@@ -17,22 +17,22 @@ import java.util.List;
 
 public class GetHumanSelections {
   private static List<CompiledSelection> human = Arrays.asList(
-    CompiledField.builder("id", new CompiledNotNullType(CompiledGraphQL.CompiledIDType)).build(),
-    CompiledField.builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledField.builder("height", new CompiledNotNullType(CompiledGraphQL.CompiledFloatType)).build()
+    new CompiledField.Builder("id", new CompiledNotNullType(CompiledGraphQL.CompiledIDType)).build(),
+    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("height", new CompiledNotNullType(CompiledGraphQL.CompiledFloatType)).build()
   );
 
   private static List<CompiledSelection> onHuman = Arrays.asList(
-    CompiledField.builder("height", new CompiledNotNullType(CompiledGraphQL.CompiledFloatType)).build()
+    new CompiledField.Builder("height", new CompiledNotNullType(CompiledGraphQL.CompiledFloatType)).build()
   );
 
   private static List<CompiledSelection> node = Arrays.asList(
-    CompiledField.builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledFragment.builder(Arrays.asList("Human")).selections(onHuman).build()
+    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledFragment.Builder(Arrays.asList("Human")).selections(onHuman).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("human", new CompiledNotNullType(Human.type)).selections(human).build(),
-    CompiledField.builder("node", new CompiledNotNullType(Node.type)).selections(node).build()
+    new CompiledField.Builder("human", new CompiledNotNullType(Human.type)).selections(human).build(),
+    new CompiledField.Builder("node", new CompiledNotNullType(Node.type)).selections(node).build()
   );
 }

@@ -16,20 +16,20 @@ import java.util.List;
 
 public class TestQuerySelections {
   private static List<CompiledSelection> children = Arrays.asList(
-    CompiledField.builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
+    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
   );
 
   private static List<CompiledSelection> parent = Arrays.asList(
-    CompiledField.builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
+    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
   );
 
   private static List<CompiledSelection> tree = Arrays.asList(
-    CompiledField.builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledField.builder("children", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Tree.type)))).selections(children).build(),
-    CompiledField.builder("parent", Tree.type).selections(parent).build()
+    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("children", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Tree.type)))).selections(children).build(),
+    new CompiledField.Builder("parent", Tree.type).selections(parent).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("tree", Tree.type).selections(tree).build()
+    new CompiledField.Builder("tree", Tree.type).selections(tree).build()
   );
 }

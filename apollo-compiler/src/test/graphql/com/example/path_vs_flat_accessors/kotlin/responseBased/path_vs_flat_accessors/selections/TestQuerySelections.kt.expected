@@ -15,47 +15,47 @@ import kotlin.collections.List
 
 public object TestQuerySelections {
   private val onB: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "fieldB1",
           type = CompiledStringType
         ).build()
       )
 
   private val onA: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("ABC", "BC")
         ).selections(onB)
         .build()
       )
 
   private val onB1: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "fieldB2",
           type = CompiledStringType
         ).build()
       )
 
   private val root1: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("ABC", "AC")
         ).selections(onA)
         .build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("ABC", "BC")
         ).selections(onB1)
         .build()
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "root",
           type = C.type
         ).selections(root1)

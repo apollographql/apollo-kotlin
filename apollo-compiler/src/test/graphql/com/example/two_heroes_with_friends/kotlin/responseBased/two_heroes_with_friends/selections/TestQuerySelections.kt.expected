@@ -20,14 +20,14 @@ import kotlin.collections.List
 
 public object TestQuerySelections {
   private val node: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build()
       )
 
   private val edges: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "node",
           type = Character.type
         ).selections(node)
@@ -35,11 +35,11 @@ public object TestQuerySelections {
       )
 
   private val friendsConnection: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "totalCount",
           type = CompiledIntType
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "edges",
           type = FriendsEdge.type.list()
         ).selections(edges)
@@ -47,11 +47,11 @@ public object TestQuerySelections {
       )
 
   private val r2: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "friendsConnection",
           type = FriendsConnection.type.notNull()
         ).selections(friendsConnection)
@@ -59,14 +59,14 @@ public object TestQuerySelections {
       )
 
   private val node1: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build()
       )
 
   private val edges1: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "node",
           type = Character.type
         ).selections(node1)
@@ -74,11 +74,11 @@ public object TestQuerySelections {
       )
 
   private val friendsConnection1: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "totalCount",
           type = CompiledIntType
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "edges",
           type = FriendsEdge.type.list()
         ).selections(edges1)
@@ -86,15 +86,15 @@ public object TestQuerySelections {
       )
 
   private val luke: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "id",
           type = CompiledIDType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "friendsConnection",
           type = FriendsConnection.type.notNull()
         ).selections(friendsConnection1)
@@ -102,13 +102,13 @@ public object TestQuerySelections {
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "hero",
           type = Character.type
         ).alias("r2")
         .selections(r2)
         .build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "hero",
           type = Character.type
         ).alias("luke")

@@ -19,22 +19,22 @@ import kotlin.collections.List
 
 public object TestQuerySelections {
   private val starship: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "id",
           type = CompiledIDType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "coordinates",
           type = CompiledFloatType.notNull().list().notNull().list()
         ).build()
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "starship",
           type = Starship.type
         ).arguments(listOf(

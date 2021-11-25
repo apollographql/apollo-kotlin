@@ -18,45 +18,45 @@ import kotlin.collections.List
 
 public object GetHumanSelections {
   private val human: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "id",
           type = CompiledIDType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "height",
           type = CompiledFloatType.notNull()
         ).build()
       )
 
   private val onHuman: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "height",
           type = CompiledFloatType.notNull()
         ).build()
       )
 
   private val node: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("Human")
         ).selections(onHuman)
         .build()
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "human",
           type = Human.type.notNull()
         ).selections(human)
         .build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "node",
           type = Node.type.notNull()
         ).selections(node)

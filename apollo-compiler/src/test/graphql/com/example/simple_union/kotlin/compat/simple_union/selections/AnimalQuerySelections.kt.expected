@@ -17,22 +17,22 @@ import kotlin.collections.List
 
 public object AnimalQuerySelections {
   private val animal: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = (listOf("Cat"))
         ).selections(CatFragmentSelections.root)
         .build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = (listOf("Dog"))
         ).selections(DogFragmentSelections.root)
         .build()
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "animal",
           type = Animal.type
         ).selections(animal)

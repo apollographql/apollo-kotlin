@@ -17,43 +17,43 @@ import kotlin.collections.List
 
 public object TestQuerySelections {
   private val r2: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = (listOf("Human"))
         ).selections(HumanDetailsSelections.root)
         .build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = (listOf("Droid"))
         ).selections(DroidDetailsSelections.root)
         .build()
       )
 
   private val luke: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = (listOf("Human"))
         ).selections(HumanDetailsSelections.root)
         .build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = (listOf("Droid"))
         ).selections(DroidDetailsSelections.root)
         .build()
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "hero",
           type = Character.type
         ).alias("r2")
         .selections(r2)
         .build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "hero",
           type = Character.type
         ).alias("luke")

@@ -14,7 +14,7 @@ import java.util.List;
 
 public class DroidDetailsSelections {
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledField.builder("primaryFunction", CompiledGraphQL.CompiledStringType).build()
+    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("primaryFunction", CompiledGraphQL.CompiledStringType).build()
   );
 }

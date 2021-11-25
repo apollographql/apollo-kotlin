@@ -19,21 +19,21 @@ import java.util.List;
 
 public class TestQuerySelections {
   private static List<CompiledSelection> yield_ = Arrays.asList(
-    CompiledField.builder("id", new CompiledNotNullType(CompiledGraphQL.CompiledIDType)).alias("it").build(),
-    CompiledField.builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
+    new CompiledField.Builder("id", new CompiledNotNullType(CompiledGraphQL.CompiledIDType)).alias("it").build(),
+    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
   );
 
   private static List<CompiledSelection> onCharacter = Arrays.asList(
-    CompiledField.builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
+    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
   );
 
   private static List<CompiledSelection> objects = Arrays.asList(
-    CompiledField.builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledFragment.builder(Arrays.asList("Droid", "Human")).selections(onCharacter).build()
+    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledFragment.Builder(Arrays.asList("Droid", "Human")).selections(onCharacter).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("hero", Character.type).alias("yield").selections(yield_).build(),
-    CompiledField.builder("search", new CompiledListType(SearchResult.type)).alias("objects").arguments(Arrays.asList(new CompiledArgument("text", "abc", false))).selections(objects).build()
+    new CompiledField.Builder("hero", Character.type).alias("yield").selections(yield_).build(),
+    new CompiledField.Builder("search", new CompiledListType(SearchResult.type)).alias("objects").arguments(Arrays.asList(new CompiledArgument("text", "abc", false))).selections(objects).build()
   );
 }

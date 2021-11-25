@@ -13,6 +13,6 @@ import java.util.List;
 
 public class fragment2Selections {
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("field2", CompiledGraphQL.CompiledStringType).build()
+    new CompiledField.Builder("field2", CompiledGraphQL.CompiledStringType).build()
   );
 }

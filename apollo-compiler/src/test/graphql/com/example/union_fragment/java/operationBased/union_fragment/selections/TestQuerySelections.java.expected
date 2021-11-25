@@ -19,16 +19,16 @@ import java.util.List;
 
 public class TestQuerySelections {
   private static List<CompiledSelection> onStarship = Arrays.asList(
-    CompiledField.builder("id", new CompiledNotNullType(CompiledGraphQL.CompiledIDType)).build()
+    new CompiledField.Builder("id", new CompiledNotNullType(CompiledGraphQL.CompiledIDType)).build()
   );
 
   private static List<CompiledSelection> search = Arrays.asList(
-    CompiledField.builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledFragment.builder(Arrays.asList("Starship")).selections(onStarship).build(),
-    CompiledFragment.builder(Arrays.asList("Starship")).selections(StarshipSelections.root).build()
+    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledFragment.Builder(Arrays.asList("Starship")).selections(onStarship).build(),
+    new CompiledFragment.Builder(Arrays.asList("Starship")).selections(StarshipSelections.root).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("search", new CompiledListType(SearchResult.type)).arguments(Arrays.asList(new CompiledArgument("text", "test", false))).selections(search).build()
+    new CompiledField.Builder("search", new CompiledListType(SearchResult.type)).arguments(Arrays.asList(new CompiledArgument("text", "test", false))).selections(search).build()
   );
 }

@@ -130,7 +130,7 @@ class CompiledSelectionsBuilder(
 
 
     val builder = CodeBlock.builder()
-    builder.add("%T.builder(\n", KotlinSymbols.CompiledField)
+    builder.add("%T(\n", KotlinSymbols.CompiledFieldBuilder)
     builder.indent()
     builder.add("name·=·%S,\n", name)
     val fieldDefinition = definitionFromScope(schema, parentType)!!
@@ -168,7 +168,7 @@ class CompiledSelectionsBuilder(
     }
 
     val builder = CodeBlock.builder()
-    builder.add("%T.builder(\n", KotlinSymbols.CompiledFragment)
+    builder.add("%T(\n", KotlinSymbols.CompiledFragmentBuilder)
     builder.indent()
     builder.add("possibleTypes·=·%L\n", possibleTypesCodeBlock(typeCondition.name))
     builder.unindent()
@@ -196,7 +196,7 @@ class CompiledSelectionsBuilder(
     }
 
     val builder = CodeBlock.builder()
-    builder.add("%T.builder(\n", KotlinSymbols.CompiledFragment)
+    builder.add("%T(\n", KotlinSymbols.CompiledFragmentBuilder)
     builder.indent()
     val fragmentDefinition = allFragmentDefinitions[name]!!
     builder.add("possibleTypes·=·(%L)\n", possibleTypesCodeBlock(fragmentDefinition.typeCondition.name))

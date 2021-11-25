@@ -18,12 +18,12 @@ import java.util.List;
 
 public class TestQuerySelections {
   private static List<CompiledSelection> starship = Arrays.asList(
-    CompiledField.builder("id", new CompiledNotNullType(CompiledGraphQL.CompiledIDType)).build(),
-    CompiledField.builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledField.builder("coordinates", new CompiledListType(new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(CompiledGraphQL.CompiledFloatType))))).build()
+    new CompiledField.Builder("id", new CompiledNotNullType(CompiledGraphQL.CompiledIDType)).build(),
+    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("coordinates", new CompiledListType(new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(CompiledGraphQL.CompiledFloatType))))).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("starship", Starship.type).arguments(Arrays.asList(new CompiledArgument("id", new CompiledVariable("id"), false))).selections(starship).build()
+    new CompiledField.Builder("starship", Starship.type).arguments(Arrays.asList(new CompiledArgument("id", new CompiledVariable("id"), false))).selections(starship).build()
   );
 }

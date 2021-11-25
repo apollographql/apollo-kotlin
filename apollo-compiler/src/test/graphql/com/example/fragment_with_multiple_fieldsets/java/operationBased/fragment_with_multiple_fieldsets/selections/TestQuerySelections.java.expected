@@ -17,11 +17,11 @@ import java.util.List;
 
 public class TestQuerySelections {
   private static List<CompiledSelection> i = Arrays.asList(
-    CompiledField.builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledFragment.builder(Arrays.asList("A", "B")).selections(iFragmentSelections.root).build()
+    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledFragment.Builder(Arrays.asList("A", "B")).selections(iFragmentSelections.root).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("i", I.type).selections(i).build()
+    new CompiledField.Builder("i", I.type).selections(i).build()
   );
 }

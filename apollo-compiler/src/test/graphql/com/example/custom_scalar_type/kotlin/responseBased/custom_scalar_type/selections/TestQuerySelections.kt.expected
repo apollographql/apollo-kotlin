@@ -18,34 +18,34 @@ import kotlin.collections.List
 
 public object TestQuerySelections {
   private val hero: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "birthDate",
           type = Date.type.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "appearanceDates",
           type = Date.type.notNull().list().notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "fieldWithUnsupportedType",
           type = UnsupportedType.type.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "profileLink",
           type = URL.type.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "links",
           type = URL.type.notNull().list().notNull()
         ).build()
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "hero",
           type = Character.type
         ).selections(hero)

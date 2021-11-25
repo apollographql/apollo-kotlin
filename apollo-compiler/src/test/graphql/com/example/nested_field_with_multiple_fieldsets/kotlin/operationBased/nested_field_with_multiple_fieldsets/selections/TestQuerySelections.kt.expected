@@ -16,36 +16,36 @@ import kotlin.collections.List
 
 public object TestQuerySelections {
   private val onIface2: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "scalar1",
           type = CompiledStringType
         ).build()
       )
 
   private val onImpl2: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "scalar2",
           type = CompiledStringType
         ).build()
       )
 
   private val iface2: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("Impl2")
         ).selections(onIface2)
         .build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("Impl2")
         ).selections(onImpl2)
         .build()
       )
 
   private val onIface1: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "iface2",
           type = Iface2.type
         ).selections(iface2)
@@ -53,36 +53,36 @@ public object TestQuerySelections {
       )
 
   private val onIface21: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "scalar3",
           type = CompiledStringType
         ).build()
       )
 
   private val onImpl21: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "scalar4",
           type = CompiledStringType
         ).build()
       )
 
   private val iface21: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("Impl2")
         ).selections(onIface21)
         .build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("Impl2")
         ).selections(onImpl21)
         .build()
       )
 
   private val onImpl1: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "iface2",
           type = Iface2.type
         ).selections(iface21)
@@ -90,22 +90,22 @@ public object TestQuerySelections {
       )
 
   private val iface1: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("Impl1")
         ).selections(onIface1)
         .build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("Impl1")
         ).selections(onImpl1)
         .build()
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "iface1",
           type = Iface1.type
         ).selections(iface1)

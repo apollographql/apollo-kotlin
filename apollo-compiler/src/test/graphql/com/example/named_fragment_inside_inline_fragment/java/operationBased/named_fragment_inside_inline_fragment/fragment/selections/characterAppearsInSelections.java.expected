@@ -15,6 +15,6 @@ import java.util.List;
 
 public class characterAppearsInSelections {
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("appearsIn", new CompiledNotNullType(new CompiledListType(Episode.type))).build()
+    new CompiledField.Builder("appearsIn", new CompiledNotNullType(new CompiledListType(Episode.type))).build()
   );
 }

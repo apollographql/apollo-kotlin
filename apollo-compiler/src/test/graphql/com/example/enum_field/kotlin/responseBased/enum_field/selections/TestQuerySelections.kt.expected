@@ -12,7 +12,7 @@ import kotlin.collections.List
 
 public object TestQuerySelections {
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "gravity",
           type = Gravity.type
         ).build()

@@ -16,24 +16,24 @@ import java.util.List;
 
 public class TestQuerySelections {
   private static List<CompiledSelection> queryType = Arrays.asList(
-    CompiledField.builder("name", CompiledGraphQL.CompiledStringType).build()
+    new CompiledField.Builder("name", CompiledGraphQL.CompiledStringType).build()
   );
 
   private static List<CompiledSelection> types = Arrays.asList(
-    CompiledField.builder("name", CompiledGraphQL.CompiledStringType).build()
+    new CompiledField.Builder("name", CompiledGraphQL.CompiledStringType).build()
   );
 
   private static List<CompiledSelection> __schema = Arrays.asList(
-    CompiledField.builder("queryType", new CompiledNotNullType(CompiledGraphQL.CompiledTypeType)).selections(queryType).build(),
-    CompiledField.builder("types", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(CompiledGraphQL.CompiledTypeType)))).selections(types).build()
+    new CompiledField.Builder("queryType", new CompiledNotNullType(CompiledGraphQL.CompiledTypeType)).selections(queryType).build(),
+    new CompiledField.Builder("types", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(CompiledGraphQL.CompiledTypeType)))).selections(types).build()
   );
 
   private static List<CompiledSelection> __type = Arrays.asList(
-    CompiledField.builder("name", CompiledGraphQL.CompiledStringType).build()
+    new CompiledField.Builder("name", CompiledGraphQL.CompiledStringType).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("__schema", new CompiledNotNullType(CompiledGraphQL.CompiledSchemaType)).selections(__schema).build(),
-    CompiledField.builder("__type", new CompiledNotNullType(CompiledGraphQL.CompiledTypeType)).arguments(Arrays.asList(new CompiledArgument("name", "Vehicle", false))).selections(__type).build()
+    new CompiledField.Builder("__schema", new CompiledNotNullType(CompiledGraphQL.CompiledSchemaType)).selections(__schema).build(),
+    new CompiledField.Builder("__type", new CompiledNotNullType(CompiledGraphQL.CompiledTypeType)).arguments(Arrays.asList(new CompiledArgument("name", "Vehicle", false))).selections(__type).build()
   );
 }

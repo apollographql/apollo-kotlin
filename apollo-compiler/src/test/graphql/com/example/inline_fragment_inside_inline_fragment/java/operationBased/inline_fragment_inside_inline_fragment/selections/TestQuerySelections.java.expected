@@ -18,26 +18,26 @@ import java.util.List;
 
 public class TestQuerySelections {
   private static List<CompiledSelection> onHuman = Arrays.asList(
-    CompiledField.builder("homePlanet", CompiledGraphQL.CompiledStringType).build()
+    new CompiledField.Builder("homePlanet", CompiledGraphQL.CompiledStringType).build()
   );
 
   private static List<CompiledSelection> onDroid = Arrays.asList(
-    CompiledField.builder("primaryFunction", CompiledGraphQL.CompiledStringType).build()
+    new CompiledField.Builder("primaryFunction", CompiledGraphQL.CompiledStringType).build()
   );
 
   private static List<CompiledSelection> onCharacter = Arrays.asList(
-    CompiledField.builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledField.builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledFragment.builder(Arrays.asList("Human")).selections(onHuman).build(),
-    CompiledFragment.builder(Arrays.asList("Droid")).selections(onDroid).build()
+    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledFragment.Builder(Arrays.asList("Human")).selections(onHuman).build(),
+    new CompiledFragment.Builder(Arrays.asList("Droid")).selections(onDroid).build()
   );
 
   private static List<CompiledSelection> search = Arrays.asList(
-    CompiledField.builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    CompiledFragment.builder(Arrays.asList("Droid", "Human")).selections(onCharacter).build()
+    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledFragment.Builder(Arrays.asList("Droid", "Human")).selections(onCharacter).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("search", new CompiledListType(SearchResult.type)).arguments(Arrays.asList(new CompiledArgument("text", "bla-bla", false))).selections(search).build()
+    new CompiledField.Builder("search", new CompiledListType(SearchResult.type)).arguments(Arrays.asList(new CompiledArgument("text", "bla-bla", false))).selections(search).build()
   );
 }

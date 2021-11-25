@@ -15,29 +15,29 @@ import kotlin.collections.List
 
 public object TestQuerySelections {
   private val onBar: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "bar",
           type = CompiledStringType.notNull()
         ).build()
       )
 
   private val foo: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "foo",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = listOf("BarObject", "FooBar")
         ).selections(onBar)
         .build()
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "foo",
           type = Foo.type
         ).selections(foo)

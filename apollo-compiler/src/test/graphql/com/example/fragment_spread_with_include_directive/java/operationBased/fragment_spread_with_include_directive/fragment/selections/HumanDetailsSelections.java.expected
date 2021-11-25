@@ -13,6 +13,6 @@ import java.util.List;
 
 public class HumanDetailsSelections {
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("homePlanet", CompiledGraphQL.CompiledStringType).build()
+    new CompiledField.Builder("homePlanet", CompiledGraphQL.CompiledStringType).build()
   );
 }

@@ -13,6 +13,6 @@ import java.util.List;
 
 public class planetFragmentSelections {
   public static List<CompiledSelection> root = Arrays.asList(
-    CompiledField.builder("name", CompiledGraphQL.CompiledStringType).build()
+    new CompiledField.Builder("name", CompiledGraphQL.CompiledStringType).build()
   );
 }

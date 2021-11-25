@@ -15,30 +15,30 @@ import kotlin.collections.List
 
 public object TestQuerySelections {
   private val children: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build()
       )
 
   private val parent: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build()
       )
 
   private val tree: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "children",
           type = Tree.type.notNull().list().notNull()
         ).selections(children)
         .build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "parent",
           type = Tree.type
         ).selections(parent)
@@ -46,7 +46,7 @@ public object TestQuerySelections {
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "tree",
           type = Tree.type
         ).selections(tree)

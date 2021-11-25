@@ -15,22 +15,22 @@ import kotlin.collections.List
 
 public object pilotFragmentSelections {
   private val homeworld: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "__typename",
           type = CompiledStringType.notNull()
         ).build(),
-        CompiledFragment.builder(
+        CompiledFragment.Builder(
           possibleTypes = (listOf("Planet"))
         ).selections(planetFragmentSelections.root)
         .build()
       )
 
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "name",
           type = CompiledStringType
         ).build(),
-        CompiledField.builder(
+        CompiledField.Builder(
           name = "homeworld",
           type = Planet.type
         ).selections(homeworld)
