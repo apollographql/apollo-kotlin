@@ -3,6 +3,7 @@ package test
 import codegen.models.AllPlanetsQuery
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.composeJsonResponse
+import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
 import okio.Buffer
@@ -52,12 +53,9 @@ class ParseResponseBodyTest {
      * operationBased models do not respect the order of fields
      * when fragments are involved so just check for Map equivalence
      */
-    val expectedMap = AnyAdapter.fromJson(
-        BufferedSourceJsonReader(Buffer().writeUtf8(expected))
-    )
-    val actualMap = AnyAdapter.fromJson(
-        BufferedSourceJsonReader(Buffer().writeUtf8(actual))
-    )
+    val expectedMap = AnyAdapter.fromJson(Buffer().writeUtf8(expected))
+    val actualMap = AnyAdapter.fromJson(Buffer().writeUtf8(actual))
+
     assertEquals(expectedMap, actualMap)
   }
 }
