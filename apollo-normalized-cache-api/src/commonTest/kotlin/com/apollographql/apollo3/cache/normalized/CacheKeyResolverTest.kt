@@ -18,7 +18,7 @@ import kotlin.test.fail
 
 class CacheKeyResolverTest {
 
-  lateinit var subject: CacheKeyResolver
+  private lateinit var subject: CacheKeyResolver
   lateinit var onCacheKeyForField: (field: CompiledField, variables: Executable.Variables) -> CacheKey?
   lateinit var onListOfCacheKeysForField: (field: CompiledField, variables: Executable.Variables) -> List<CacheKey?>?
 
@@ -28,7 +28,7 @@ class CacheKeyResolverTest {
     onCacheKeyForField = { _, _ ->
       fail("Unexpected call to cacheKeyForField")
     }
-    onListOfCacheKeysForField = { _, _, ->
+    onListOfCacheKeysForField = { _, _ ->
       fail("Unexpected call to listOfCacheKeysForField")
     }
   }
@@ -94,8 +94,8 @@ class CacheKeyResolverTest {
 
     private val TEST_TYPE = ObjectType(name = "Test", keyFields = listOf("id"))
 
-    val TEST_SIMPLE_FIELD = CompiledField.builder(name = "test", type = TEST_TYPE).build()
+    val TEST_SIMPLE_FIELD = CompiledField.Builder(name = "test", type = TEST_TYPE).build()
 
-    val TEST_LIST_FIELD = CompiledField.builder(name = "testList", type = CompiledListType(ofType = TEST_TYPE)).build()
+    val TEST_LIST_FIELD = CompiledField.Builder(name = "testList", type = CompiledListType(ofType = TEST_TYPE)).build()
   }
 }
