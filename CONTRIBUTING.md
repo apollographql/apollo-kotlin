@@ -53,8 +53,8 @@ identifiers and methods are camelCased.
 * Parameters using milliseconds should have the "Millis" suffix.
 * Else use [kotlin.time.Duration]
 * `ExperimentalContracts` is ok to use. Since kotlin-stdlib does it, we can too. See https://github.com/Kotlin/KEEP/blob/master/proposals/kotlin-contracts.md#compatibility-notice
-
-
+* `Prefer` top level `val` to top level singleton `objects`. For an example, `Adapters.StringAdapter` reads better in java than `StringAdapter.INSTANCE`
+ 
 ## Workflow
 
 We love Github issues!  Before working on any new features, please open an issue so that we can agree on the direction,
@@ -103,8 +103,11 @@ This will publish to the Gradle Portal and upload to OSSRH. After a successful C
 to https://oss.sonatype.org/ and release the artifacts manually. This step is called "close, release and drop" in the
 Sonatype ecosystem.
 
-After a successful release, do not forget to add a changelog to
-the [releases page](https://github.com/apollographql/apollo-android/releases).
+After a successful release, do not forget to:
+* add the changelog to the [releases page](https://github.com/apollographql/apollo-android/releases).
+* merge pending documentation/tutorial updates
+* if it's a significant release, tweet about it 🐦
+ 
 
 ## Overview of the CI
 
