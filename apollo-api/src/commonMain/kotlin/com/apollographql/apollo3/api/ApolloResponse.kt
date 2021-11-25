@@ -78,7 +78,7 @@ class ApolloResponse<D : Operation.Data> @Deprecated("Please use ApolloRequest.B
 
   fun hasErrors(): Boolean = !errors.isNullOrEmpty()
 
-  @Deprecated("Please use ApolloRequest.Builder methods instead. This will be removed in v3.0.0.")
+  @Deprecated("Please use ApolloResponse.Builder methods instead. This will be removed in v3.0.0.")
   fun withExecutionContext(executionContext: ExecutionContext) = newBuilder().addExecutionContext(executionContext).build()
 
   fun newBuilder(): Builder<D> {
