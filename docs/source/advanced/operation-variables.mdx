@@ -5,7 +5,7 @@ sidebar_title: Operation variables
 
 GraphQL allows [passing arguments to your operations](https://graphql.org/graphql-js/passing-arguments/) with variables. This allows writing your query once and using different variables values at runtime.
 
-By default, non-nullable variables are mandatory and nullable variables are optional, i.e., it is valid to omit them. Because omitting variables is rarely used in practice, Apollo Android made the choice of making all variables mandatory.
+By default, non-nullable variables are mandatory and nullable variables are optional, i.e., it is valid to omit them. Because omitting variables is rarely used in practice, Apollo Android made the choice of making all variables mandatory. This allows the generated code to be simpler to call.
 
 The following query:
 
