@@ -26,7 +26,7 @@ class JsonTest {
 
     @OptIn(ApolloInternal::class)
     val json = buildJsonString {
-      AnyAdapter.toJson(this, mapWriter.root()!!)
+      AnyAdapter.toJson(this, CustomScalarAdapters.Empty, mapWriter.root()!!)
     }
     assertEquals("9223372036854775807", json)
   }

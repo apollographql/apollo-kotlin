@@ -36,8 +36,6 @@ public final class com/apollographql/apollo3/api/Adapters {
 
 public final class com/apollographql/apollo3/api/ApolloRequest : com/apollographql/apollo3/api/HasExecutionContext {
 	public fun <init> (Lcom/apollographql/apollo3/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo3/api/ExecutionContext;)V
-	public final fun copy (Lcom/apollographql/apollo3/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ApolloRequest;
-	public static synthetic fun copy$default (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo3/api/ExecutionContext;ILjava/lang/Object;)Lcom/apollographql/apollo3/api/ApolloRequest;
 	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
 	public final fun getOperation ()Lcom/apollographql/apollo3/api/Operation;
 	public final fun getRequestUuid ()Ljava/util/UUID;
