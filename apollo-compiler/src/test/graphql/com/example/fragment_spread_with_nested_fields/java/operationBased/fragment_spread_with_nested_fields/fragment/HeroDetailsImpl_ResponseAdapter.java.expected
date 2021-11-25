@@ -15,6 +15,7 @@ import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
+import java.io.IOException;
 import java.lang.Integer;
 import java.lang.Override;
 import java.lang.String;
@@ -29,7 +30,7 @@ public class HeroDetailsImpl_ResponseAdapter {
 
     @Override
     public com.example.fragment_spread_with_nested_fields.fragment.HeroDetails fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String name = null;
       com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection friendsConnection = null;
 
@@ -53,7 +54,8 @@ public class HeroDetailsImpl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.fragment_spread_with_nested_fields.fragment.HeroDetails value) {
+        com.example.fragment_spread_with_nested_fields.fragment.HeroDetails value) throws
+        IOException {
       writer.name("name");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.name);
 
@@ -69,7 +71,7 @@ public class HeroDetailsImpl_ResponseAdapter {
 
     @Override
     public com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       Integer totalCount = null;
       List<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Edge> edges = null;
 
@@ -90,7 +92,8 @@ public class HeroDetailsImpl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection value) {
+        com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.FriendsConnection value)
+        throws IOException {
       writer.name("totalCount");
       Adapters.NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount);
 
@@ -106,7 +109,7 @@ public class HeroDetailsImpl_ResponseAdapter {
 
     @Override
     public com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Edge fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Node node = null;
 
       loop:
@@ -124,7 +127,8 @@ public class HeroDetailsImpl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Edge value) {
+        com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Edge value) throws
+        IOException {
       writer.name("node");
       new NullableAdapter<>(new ObjectAdapter<com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Node>(Node.INSTANCE, false)).toJson(writer, customScalarAdapters, value.node);
     }
@@ -137,7 +141,7 @@ public class HeroDetailsImpl_ResponseAdapter {
 
     @Override
     public com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Node fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String name = null;
 
       loop:
@@ -157,7 +161,8 @@ public class HeroDetailsImpl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Node value) {
+        com.example.fragment_spread_with_nested_fields.fragment.HeroDetails.Node value) throws
+        IOException {
       writer.name("name");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.name);
     }

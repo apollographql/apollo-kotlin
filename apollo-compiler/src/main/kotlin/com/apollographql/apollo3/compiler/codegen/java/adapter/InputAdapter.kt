@@ -38,6 +38,7 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
 
 private fun notImplementedFromResponseMethodSpec(adaptedTypeName: TypeName) = MethodSpec.methodBuilder(fromJson)
     .addModifiers(Modifier.PUBLIC)
+    .addException(JavaClassNames.IOException)
     .addAnnotation(JavaClassNames.Override)
     .addParameter(JavaClassNames.JsonReader, Identifier.reader)
     .addParameter(JavaClassNames.CustomScalarAdapters, customScalarAdapters)
@@ -52,6 +53,7 @@ private fun List<NamedType>.writeToResponseMethodSpec(
 ): MethodSpec {
   return MethodSpec.methodBuilder(toJson)
       .addModifiers(Modifier.PUBLIC)
+      .addException(JavaClassNames.IOException)
       .addAnnotation(JavaClassNames.Override)
       .addParameter(JavaClassNames.JsonWriter, writer)
       .addParameter(JavaClassNames.CustomScalarAdapters, customScalarAdapters)

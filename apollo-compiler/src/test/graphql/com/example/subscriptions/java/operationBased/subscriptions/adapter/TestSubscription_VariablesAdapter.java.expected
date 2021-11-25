@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.subscriptions.TestSubscription;
+import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
@@ -18,13 +19,14 @@ public enum TestSubscription_VariablesAdapter implements Adapter<TestSubscriptio
   INSTANCE;
 
   @Override
-  public TestSubscription fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+  public TestSubscription fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
   public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      TestSubscription value) {
+      TestSubscription value) throws IOException {
     writer.name("repo");
     StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.repo);
   }

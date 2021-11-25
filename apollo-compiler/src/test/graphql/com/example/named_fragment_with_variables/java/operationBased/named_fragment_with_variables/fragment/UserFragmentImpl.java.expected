@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.named_fragment_with_variables.fragment.adapter.UserFragmentImpl_VariablesAdapter;
 import com.example.named_fragment_with_variables.fragment.selections.UserFragmentSelections;
+import java.io.IOException;
 import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
@@ -67,7 +68,8 @@ public class UserFragmentImpl implements Fragment<UserFragment> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters) {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     UserFragmentImpl_VariablesAdapter.INSTANCE.toJson(writer, customScalarAdapters, this);
   }
 

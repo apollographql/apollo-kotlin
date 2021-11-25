@@ -16,6 +16,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
+import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
@@ -30,7 +31,7 @@ public class IFragmentImpl_ResponseAdapter {
 
     @Override
     public com.example.fragment_with_multiple_fieldsets.fragment.IFragment fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
 
       loop:
@@ -56,7 +57,7 @@ public class IFragmentImpl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.fragment_with_multiple_fieldsets.fragment.IFragment value) {
+        com.example.fragment_with_multiple_fieldsets.fragment.IFragment value) throws IOException {
       writer.name("__typename");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 
@@ -73,7 +74,7 @@ public class IFragmentImpl_ResponseAdapter {
 
     @Override
     public com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String fieldA = null;
 
       loop:
@@ -91,7 +92,8 @@ public class IFragmentImpl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA value) {
+        com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA value) throws
+        IOException {
       writer.name("fieldA");
       Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldA);
     }

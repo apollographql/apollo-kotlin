@@ -17,6 +17,7 @@ package com.apollographql.apollo3.api.json
 
 import com.apollographql.apollo3.api.Upload
 import okio.Closeable
+import okio.IOException
 
 /**
  * Writes a JSON [RFC 7159](http://www.ietf.org/rfc/rfc7159.txt) encoded value to a stream, one token at a time.
@@ -45,41 +46,49 @@ interface JsonWriter : Closeable {
   /**
    * Begins encoding a new array. Each call to this method must be paired with a call to [endArray].
    */
+  @Throws(IOException::class)
   fun beginArray(): JsonWriter
 
   /**
    * Ends encoding the current array.
    */
+  @Throws(IOException::class)
   fun endArray(): JsonWriter
 
   /**
    * Begins encoding a new object. Each call to this method must be paired with a call to [endObject].
    */
+  @Throws(IOException::class)
   fun beginObject(): JsonWriter
 
   /**
    * Ends encoding the current object.
    */
+  @Throws(IOException::class)
   fun endObject(): JsonWriter
 
   /**
    * Encodes the property name.
    */
+  @Throws(IOException::class)
   fun name(name: String): JsonWriter
 
   /**
    * Encodes the literal string `value`, or null to encode a null literal.
    */
+  @Throws(IOException::class)
   fun value(value: String): JsonWriter
   
   /**
    * Encodes `null`.
    */
+  @Throws(IOException::class)
   fun nullValue(): JsonWriter
 
   /**
    * Encodes boolean `value`.
    */
+  @Throws(IOException::class)
   fun value(value: Boolean): JsonWriter
 
   /**
@@ -87,26 +96,31 @@ interface JsonWriter : Closeable {
    *
    * May not be [Double.isNaN] or [Double.isInfinite].
    */
+  @Throws(IOException::class)
   fun value(value: Double): JsonWriter
 
   /**
    * Encodes int `value`.
    */
+  @Throws(IOException::class)
   fun value(value: Int): JsonWriter
 
   /**
    * Encodes long `value`.
    */
+  @Throws(IOException::class)
   fun value(value: Long): JsonWriter
 
   /**
    * Encodes number `value`.
    */
+  @Throws(IOException::class)
   fun value(value: JsonNumber): JsonWriter
 
   /**
    * Encodes a [Upload].
    */
+  @Throws(IOException::class)
   fun value(value: Upload): JsonWriter
 
   val path: String
@@ -114,5 +128,6 @@ interface JsonWriter : Closeable {
   /**
    * Flushes the writer
    */
+  @Throws(IOException::class)
   fun flush()
 }

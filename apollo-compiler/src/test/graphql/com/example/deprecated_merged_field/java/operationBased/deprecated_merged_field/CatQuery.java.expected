@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.deprecated_merged_field.adapter.CatQuery_ResponseAdapter;
 import com.example.deprecated_merged_field.fragment.AnimalFragment;
 import com.example.deprecated_merged_field.selections.CatQuerySelections;
+import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -102,7 +103,8 @@ public class CatQuery implements Query<CatQuery.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters) {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     // This operation doesn't have any variable
   }
 

@@ -20,6 +20,7 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.simple_union.AnimalQuery;
 import com.example.simple_union.fragment.CatFragment;
 import com.example.simple_union.fragment.DogFragment;
+import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
@@ -33,7 +34,8 @@ public class AnimalQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("animal");
 
     @Override
-    public AnimalQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public AnimalQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       AnimalQuery.Animal animal = null;
 
       loop:
@@ -51,7 +53,7 @@ public class AnimalQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        AnimalQuery.Data value) {
+        AnimalQuery.Data value) throws IOException {
       writer.name("animal");
       new NullableAdapter<>(new ObjectAdapter<AnimalQuery.Animal>(Animal.INSTANCE, true)).toJson(writer, customScalarAdapters, value.animal);
     }
@@ -63,8 +65,8 @@ public class AnimalQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public AnimalQuery.Animal fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+    public AnimalQuery.Animal fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String __typename = null;
 
       loop:
@@ -97,7 +99,7 @@ public class AnimalQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        AnimalQuery.Animal value) {
+        AnimalQuery.Animal value) throws IOException {
       writer.name("__typename");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 

@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.IntAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.named_fragment_with_variables.fragment.UserFragmentImpl;
+import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
@@ -18,13 +19,14 @@ public enum UserFragmentImpl_VariablesAdapter implements Adapter<UserFragmentImp
   INSTANCE;
 
   @Override
-  public UserFragmentImpl fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+  public UserFragmentImpl fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
   public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      UserFragmentImpl value) {
+      UserFragmentImpl value) throws IOException {
     writer.name("size");
     IntAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.size);
   }

@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.Query;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter;
 import com.example.interface_on_interface.selections.GetHumanSelections;
+import java.io.IOException;
 import java.lang.Double;
 import java.lang.Object;
 import java.lang.Override;
@@ -99,7 +100,8 @@ public class GetHuman implements Query<GetHuman.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters) {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     // This operation doesn't have any variable
   }
 

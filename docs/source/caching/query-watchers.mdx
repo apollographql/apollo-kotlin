@@ -108,7 +108,7 @@ Because `setTodoChecked` above is of `Item` type and contains an "id" field and 
 Sometimes you want to update the cache without waiting for the network response. In that case, you can use optimistic updates:
 
 ```kotlin
-apolloClient.mutate(SetTodoCheckedMutation(id = "1", checked = true))
+apolloClient.mutation(SetTodoCheckedMutation(id = "1", checked = true))
             .optimisticResponse(
               SetTodoCheckedMutation.Data(
                 id = "1",

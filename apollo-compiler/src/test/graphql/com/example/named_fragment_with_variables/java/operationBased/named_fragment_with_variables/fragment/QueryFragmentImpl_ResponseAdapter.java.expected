@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
+import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
@@ -27,7 +28,7 @@ public class QueryFragmentImpl_ResponseAdapter {
 
     @Override
     public com.example.named_fragment_with_variables.fragment.QueryFragment fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       com.example.named_fragment_with_variables.fragment.QueryFragment.Organization organization = null;
 
       loop:
@@ -45,7 +46,7 @@ public class QueryFragmentImpl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.named_fragment_with_variables.fragment.QueryFragment value) {
+        com.example.named_fragment_with_variables.fragment.QueryFragment value) throws IOException {
       writer.name("organization");
       new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization>(Organization.INSTANCE, false)).toJson(writer, customScalarAdapters, value.organization);
     }
@@ -58,7 +59,7 @@ public class QueryFragmentImpl_ResponseAdapter {
 
     @Override
     public com.example.named_fragment_with_variables.fragment.QueryFragment.Organization fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String id = null;
       List<com.example.named_fragment_with_variables.fragment.QueryFragment.User> user = null;
 
@@ -82,7 +83,8 @@ public class QueryFragmentImpl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.named_fragment_with_variables.fragment.QueryFragment.Organization value) {
+        com.example.named_fragment_with_variables.fragment.QueryFragment.Organization value) throws
+        IOException {
       writer.name("id");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.id);
 
@@ -98,7 +100,7 @@ public class QueryFragmentImpl_ResponseAdapter {
 
     @Override
     public com.example.named_fragment_with_variables.fragment.QueryFragment.User fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
 
       loop:
@@ -121,7 +123,8 @@ public class QueryFragmentImpl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.named_fragment_with_variables.fragment.QueryFragment.User value) {
+        com.example.named_fragment_with_variables.fragment.QueryFragment.User value) throws
+        IOException {
       writer.name("__typename");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 

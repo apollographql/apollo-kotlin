@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter;
 import com.example.inline_fragment_intersection.selections.TestOperationSelections;
 import com.example.inline_fragment_intersection.type.Race;
+import java.io.IOException;
 import java.lang.Boolean;
 import java.lang.Double;
 import java.lang.Object;
@@ -128,7 +129,8 @@ public class TestOperation implements Query<TestOperation.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters) {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     // This operation doesn't have any variable
   }
 

@@ -19,6 +19,7 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.mutation_create_review.CreateReviewForEpisode;
 import com.example.mutation_create_review.type.Episode;
 import com.example.mutation_create_review.type.adapter.Episode_ResponseAdapter;
+import java.io.IOException;
 import java.lang.Integer;
 import java.lang.Override;
 import java.lang.String;
@@ -34,7 +35,7 @@ public class CreateReviewForEpisode_ResponseAdapter {
 
     @Override
     public CreateReviewForEpisode.Data fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       CreateReviewForEpisode.CreateReview createReview = null;
 
       loop:
@@ -52,7 +53,7 @@ public class CreateReviewForEpisode_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        CreateReviewForEpisode.Data value) {
+        CreateReviewForEpisode.Data value) throws IOException {
       writer.name("createReview");
       new NullableAdapter<>(new ObjectAdapter<CreateReviewForEpisode.CreateReview>(CreateReview.INSTANCE, false)).toJson(writer, customScalarAdapters, value.createReview);
     }
@@ -65,7 +66,7 @@ public class CreateReviewForEpisode_ResponseAdapter {
 
     @Override
     public CreateReviewForEpisode.CreateReview fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       Integer stars = null;
       String commentary = null;
       List<List<String>> listOfListOfString = null;
@@ -100,7 +101,7 @@ public class CreateReviewForEpisode_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        CreateReviewForEpisode.CreateReview value) {
+        CreateReviewForEpisode.CreateReview value) throws IOException {
       writer.name("stars");
       IntAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.stars);
 
@@ -128,7 +129,7 @@ public class CreateReviewForEpisode_ResponseAdapter {
 
     @Override
     public CreateReviewForEpisode.ListOfListOfObject fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String name = null;
 
       loop:
@@ -148,7 +149,7 @@ public class CreateReviewForEpisode_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        CreateReviewForEpisode.ListOfListOfObject value) {
+        CreateReviewForEpisode.ListOfListOfObject value) throws IOException {
       writer.name("name");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.name);
     }

@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.subscriptions.adapter.TestSubscription_ResponseAdapter;
 import com.example.subscriptions.adapter.TestSubscription_VariablesAdapter;
 import com.example.subscriptions.selections.TestSubscriptionSelections;
+import java.io.IOException;
 import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
@@ -99,7 +100,8 @@ public class TestSubscription implements Subscription<TestSubscription.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters) {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     TestSubscription_VariablesAdapter.INSTANCE.toJson(writer, customScalarAdapters, this);
   }
 

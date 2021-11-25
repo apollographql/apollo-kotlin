@@ -16,6 +16,7 @@ import com.example.mutation_create_review_semantic_naming.adapter.CreateReviewFo
 import com.example.mutation_create_review_semantic_naming.selections.CreateReviewForEpisodeMutationSelections;
 import com.example.mutation_create_review_semantic_naming.type.Episode;
 import com.example.mutation_create_review_semantic_naming.type.ReviewInput;
+import java.io.IOException;
 import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
@@ -108,7 +109,8 @@ public class CreateReviewForEpisodeMutation implements Mutation<CreateReviewForE
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters) {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     CreateReviewForEpisodeMutation_VariablesAdapter.INSTANCE.toJson(writer, customScalarAdapters, this);
   }
 

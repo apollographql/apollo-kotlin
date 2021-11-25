@@ -164,16 +164,25 @@ queryGqlDocument.toUtf8(sink)
 
 You can use the `transform` method of `GQLDocument` to modify an existing AST.
 
-You pass `transform` a lambda that accepts a `GQLNode` and also _returns_ a `GQLNode` (or `null` to remove a node from the AST entirely). The `transform` method traverses the AST and excutes the lambda for each node, replacing the node with the lambda's return value.
+You pass `transform` a lambda that accepts a `GQLNode` and also returns instructions to manipulate the AST:
+
+- `Continue`: keep the node as-is and continue visiting the children
+- `Delete`: delete the node
+- `Replace(GQLNode)`: replace the node with the given one
+
+The `transform` method traverses the AST and executes the lambda for each node, then acts on the AST according to the lambda's return value.
+
+Note that with `Delete` and `Replace`, the node's children are not visited automatically, so you should call `transform`
+recursively if that is needed.
 
 For example, this snippet removes all fields named `restrictedField` from operations defined in `queryGqlDocument` and prints the result:
 
 ```kotlin
 val transformedQuery = queryGqlDocument.transform{ node ->
   if (node is GQLField && node.name == "restrictedField") {
-    null
+    TransformResult.Delete
   } else {
-    node
+    TransformResult.Continue
   }
 }
 println(transformedQuery!!.toUtf8())

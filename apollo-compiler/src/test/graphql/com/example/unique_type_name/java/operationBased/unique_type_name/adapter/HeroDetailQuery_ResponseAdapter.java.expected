@@ -22,6 +22,7 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.unique_type_name.fragment.HeroDetails;
 import com.example.unique_type_name.type.Episode;
 import com.example.unique_type_name.type.adapter.Episode_ResponseAdapter;
+import java.io.IOException;
 import java.lang.Double;
 import java.lang.Override;
 import java.lang.String;
@@ -37,7 +38,7 @@ public class HeroDetailQuery_ResponseAdapter {
 
     @Override
     public com.example.unique_type_name.HeroDetailQuery.Data fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1 heroDetailQuery = null;
 
       loop:
@@ -55,7 +56,7 @@ public class HeroDetailQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.unique_type_name.HeroDetailQuery.Data value) {
+        com.example.unique_type_name.HeroDetailQuery.Data value) throws IOException {
       writer.name("heroDetailQuery");
       new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1>(HeroDetailQuery.INSTANCE, true)).toJson(writer, customScalarAdapters, value.heroDetailQuery);
     }
@@ -68,7 +69,7 @@ public class HeroDetailQuery_ResponseAdapter {
 
     @Override
     public com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1 fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
       String name = null;
       List<com.example.unique_type_name.HeroDetailQuery.Friend> friends = null;
@@ -102,7 +103,7 @@ public class HeroDetailQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1 value) {
+        com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1 value) throws IOException {
       writer.name("__typename");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 
@@ -125,7 +126,7 @@ public class HeroDetailQuery_ResponseAdapter {
 
     @Override
     public com.example.unique_type_name.HeroDetailQuery.Friend fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String name = null;
 
       loop:
@@ -145,7 +146,7 @@ public class HeroDetailQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.unique_type_name.HeroDetailQuery.Friend value) {
+        com.example.unique_type_name.HeroDetailQuery.Friend value) throws IOException {
       writer.name("name");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.name);
     }
@@ -158,7 +159,7 @@ public class HeroDetailQuery_ResponseAdapter {
 
     @Override
     public com.example.unique_type_name.HeroDetailQuery.OnHuman fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       Double height = null;
       List<com.example.unique_type_name.HeroDetailQuery.Friend1> friends = null;
 
@@ -179,7 +180,7 @@ public class HeroDetailQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.unique_type_name.HeroDetailQuery.OnHuman value) {
+        com.example.unique_type_name.HeroDetailQuery.OnHuman value) throws IOException {
       writer.name("height");
       Adapters.NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height);
 
@@ -195,7 +196,7 @@ public class HeroDetailQuery_ResponseAdapter {
 
     @Override
     public com.example.unique_type_name.HeroDetailQuery.Friend1 fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       List<Episode> appearsIn = null;
       List<com.example.unique_type_name.HeroDetailQuery.Friend2> friends = null;
 
@@ -218,7 +219,7 @@ public class HeroDetailQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.unique_type_name.HeroDetailQuery.Friend1 value) {
+        com.example.unique_type_name.HeroDetailQuery.Friend1 value) throws IOException {
       writer.name("appearsIn");
       new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, customScalarAdapters, value.appearsIn);
 
@@ -234,7 +235,7 @@ public class HeroDetailQuery_ResponseAdapter {
 
     @Override
     public com.example.unique_type_name.HeroDetailQuery.Friend2 fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
 
       loop:
@@ -257,7 +258,7 @@ public class HeroDetailQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.unique_type_name.HeroDetailQuery.Friend2 value) {
+        com.example.unique_type_name.HeroDetailQuery.Friend2 value) throws IOException {
       writer.name("__typename");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 

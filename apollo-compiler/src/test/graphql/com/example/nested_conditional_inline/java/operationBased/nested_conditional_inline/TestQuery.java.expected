@@ -15,6 +15,7 @@ import com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter;
 import com.example.nested_conditional_inline.adapter.TestQuery_VariablesAdapter;
 import com.example.nested_conditional_inline.selections.TestQuerySelections;
 import com.example.nested_conditional_inline.type.Episode;
+import java.io.IOException;
 import java.lang.Double;
 import java.lang.Object;
 import java.lang.Override;
@@ -118,7 +119,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters) {
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
     TestQuery_VariablesAdapter.INSTANCE.toJson(writer, customScalarAdapters, this);
   }
 

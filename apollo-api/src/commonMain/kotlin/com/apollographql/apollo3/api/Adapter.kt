@@ -8,6 +8,7 @@ import com.apollographql.apollo3.api.json.MapJsonReader
 import okio.Buffer
 import okio.BufferedSink
 import okio.BufferedSource
+import okio.IOException
 
 /**
  * An [Adapter] is responsible for adapting Kotlin-generated GraphQL types to/from their Json representation.
@@ -56,6 +57,7 @@ interface Adapter<T> {
    * }
    * ```
    */
+  @Throws(IOException::class)
   fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T
 
   /**
@@ -79,5 +81,6 @@ interface Adapter<T> {
    * }
    * ```
    */
+  @Throws(IOException::class)
   fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T)
 }

@@ -30,6 +30,7 @@ fun serializeVariablesMethodSpec(
   }
   return MethodSpec.methodBuilder(serializeVariables)
       .addModifiers(Modifier.PUBLIC)
+      .addException(JavaClassNames.IOException)
       .addAnnotation(JavaClassNames.Override)
       .addParameter(JavaClassNames.JsonWriter, writer)
       .addParameter(JavaClassNames.CustomScalarAdapters, customScalarAdapters)

@@ -17,6 +17,7 @@ import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
+import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
@@ -31,7 +32,7 @@ public class AFragmentImpl_ResponseAdapter {
 
     @Override
     public com.example.multiple_fragments.fragment.AFragment fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       com.example.multiple_fragments.fragment.AFragment.Node node = null;
 
       loop:
@@ -49,7 +50,7 @@ public class AFragmentImpl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.multiple_fragments.fragment.AFragment value) {
+        com.example.multiple_fragments.fragment.AFragment value) throws IOException {
       writer.name("node");
       new NullableAdapter<>(new ObjectAdapter<com.example.multiple_fragments.fragment.AFragment.Node>(Node.INSTANCE, true)).toJson(writer, customScalarAdapters, value.node);
     }
@@ -62,7 +63,7 @@ public class AFragmentImpl_ResponseAdapter {
 
     @Override
     public com.example.multiple_fragments.fragment.AFragment.Node fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
 
       loop:
@@ -95,7 +96,7 @@ public class AFragmentImpl_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.multiple_fragments.fragment.AFragment.Node value) {
+        com.example.multiple_fragments.fragment.AFragment.Node value) throws IOException {
       writer.name("__typename");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 

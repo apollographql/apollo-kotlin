@@ -16,6 +16,7 @@ import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.hero_details_semantic_naming.HeroDetailsQuery;
+import java.io.IOException;
 import java.lang.Integer;
 import java.lang.Override;
 import java.lang.String;
@@ -30,7 +31,7 @@ public class HeroDetailsQuery_ResponseAdapter {
 
     @Override
     public HeroDetailsQuery.Data fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       HeroDetailsQuery.Hero hero = null;
 
       loop:
@@ -48,7 +49,7 @@ public class HeroDetailsQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        HeroDetailsQuery.Data value) {
+        HeroDetailsQuery.Data value) throws IOException {
       writer.name("hero");
       new NullableAdapter<>(new ObjectAdapter<HeroDetailsQuery.Hero>(Hero.INSTANCE, false)).toJson(writer, customScalarAdapters, value.hero);
     }
@@ -61,7 +62,7 @@ public class HeroDetailsQuery_ResponseAdapter {
 
     @Override
     public HeroDetailsQuery.Hero fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String name = null;
       HeroDetailsQuery.FriendsConnection friendsConnection = null;
 
@@ -85,7 +86,7 @@ public class HeroDetailsQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        HeroDetailsQuery.Hero value) {
+        HeroDetailsQuery.Hero value) throws IOException {
       writer.name("name");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.name);
 
@@ -101,7 +102,7 @@ public class HeroDetailsQuery_ResponseAdapter {
 
     @Override
     public HeroDetailsQuery.FriendsConnection fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       Integer totalCount = null;
       List<HeroDetailsQuery.Edge> edges = null;
 
@@ -122,7 +123,7 @@ public class HeroDetailsQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        HeroDetailsQuery.FriendsConnection value) {
+        HeroDetailsQuery.FriendsConnection value) throws IOException {
       writer.name("totalCount");
       Adapters.NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount);
 
@@ -138,7 +139,7 @@ public class HeroDetailsQuery_ResponseAdapter {
 
     @Override
     public HeroDetailsQuery.Edge fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       HeroDetailsQuery.Node node = null;
 
       loop:
@@ -156,7 +157,7 @@ public class HeroDetailsQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        HeroDetailsQuery.Edge value) {
+        HeroDetailsQuery.Edge value) throws IOException {
       writer.name("node");
       new NullableAdapter<>(new ObjectAdapter<HeroDetailsQuery.Node>(Node.INSTANCE, false)).toJson(writer, customScalarAdapters, value.node);
     }
@@ -169,7 +170,7 @@ public class HeroDetailsQuery_ResponseAdapter {
 
     @Override
     public HeroDetailsQuery.Node fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String name = null;
 
       loop:
@@ -189,7 +190,7 @@ public class HeroDetailsQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        HeroDetailsQuery.Node value) {
+        HeroDetailsQuery.Node value) throws IOException {
       writer.name("name");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.name);
     }

@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.antlr_tokens.TestQuery;
+import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
@@ -25,7 +26,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("typeWithGraphQLKeywords");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestQuery.TypeWithGraphQLKeywords typeWithGraphQLKeywords = null;
 
       loop:
@@ -43,7 +45,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) {
+        TestQuery.Data value) throws IOException {
       writer.name("typeWithGraphQLKeywords");
       new NullableAdapter<>(new ObjectAdapter<TestQuery.TypeWithGraphQLKeywords>(TypeWithGraphQLKeywords.INSTANCE, false)).toJson(writer, customScalarAdapters, value.typeWithGraphQLKeywords);
     }
@@ -56,7 +58,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public TestQuery.TypeWithGraphQLKeywords fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       String on = null;
       String null_ = null;
       String alias = null;
@@ -80,7 +82,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.TypeWithGraphQLKeywords value) {
+        TestQuery.TypeWithGraphQLKeywords value) throws IOException {
       writer.name("on");
       Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.on);
 

@@ -16,6 +16,7 @@ import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.two_heroes_with_friends.TestQuery;
+import java.io.IOException;
 import java.lang.Integer;
 import java.lang.Override;
 import java.lang.String;
@@ -29,7 +30,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("r2", "luke");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestQuery.R2 r2 = null;
       TestQuery.Luke luke = null;
 
@@ -50,7 +52,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) {
+        TestQuery.Data value) throws IOException {
       writer.name("r2");
       new NullableAdapter<>(new ObjectAdapter<TestQuery.R2>(R2.INSTANCE, false)).toJson(writer, customScalarAdapters, value.r2);
 
@@ -65,7 +67,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "friendsConnection");
 
     @Override
-    public TestQuery.R2 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.R2 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String name = null;
       TestQuery.FriendsConnection friendsConnection = null;
 
@@ -89,7 +92,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.R2 value) {
+        TestQuery.R2 value) throws IOException {
       writer.name("name");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.name);
 
@@ -105,7 +108,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public TestQuery.FriendsConnection fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       Integer totalCount = null;
       List<TestQuery.Edge> edges = null;
 
@@ -126,7 +129,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.FriendsConnection value) {
+        TestQuery.FriendsConnection value) throws IOException {
       writer.name("totalCount");
       Adapters.NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount);
 
@@ -141,7 +144,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("node");
 
     @Override
-    public TestQuery.Edge fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Edge fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestQuery.Node node = null;
 
       loop:
@@ -159,7 +163,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Edge value) {
+        TestQuery.Edge value) throws IOException {
       writer.name("node");
       new NullableAdapter<>(new ObjectAdapter<TestQuery.Node>(Node.INSTANCE, false)).toJson(writer, customScalarAdapters, value.node);
     }
@@ -171,7 +175,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public TestQuery.Node fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Node fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String name = null;
 
       loop:
@@ -191,7 +196,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Node value) {
+        TestQuery.Node value) throws IOException {
       writer.name("name");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.name);
     }
@@ -203,7 +208,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id", "name", "friendsConnection");
 
     @Override
-    public TestQuery.Luke fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Luke fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String id = null;
       String name = null;
       TestQuery.FriendsConnection1 friendsConnection = null;
@@ -231,7 +237,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Luke value) {
+        TestQuery.Luke value) throws IOException {
       writer.name("id");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.id);
 
@@ -250,7 +256,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public TestQuery.FriendsConnection1 fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) {
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       Integer totalCount = null;
       List<TestQuery.Edge1> edges = null;
 
@@ -271,7 +277,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.FriendsConnection1 value) {
+        TestQuery.FriendsConnection1 value) throws IOException {
       writer.name("totalCount");
       Adapters.NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount);
 
@@ -286,7 +292,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("node");
 
     @Override
-    public TestQuery.Edge1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Edge1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestQuery.Node1 node = null;
 
       loop:
@@ -304,7 +311,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Edge1 value) {
+        TestQuery.Edge1 value) throws IOException {
       writer.name("node");
       new NullableAdapter<>(new ObjectAdapter<TestQuery.Node1>(Node1.INSTANCE, false)).toJson(writer, customScalarAdapters, value.node);
     }
@@ -316,7 +323,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public TestQuery.Node1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Node1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       String name = null;
 
       loop:
@@ -336,7 +344,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Node1 value) {
+        TestQuery.Node1 value) throws IOException {
       writer.name("name");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.name);
     }

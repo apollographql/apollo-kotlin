@@ -15,6 +15,7 @@ import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragment_with_multiple_fieldsets.TestQuery;
 import com.example.fragment_with_multiple_fieldsets.fragment.IFragment;
+import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
@@ -27,7 +28,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("i");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestQuery.I i = null;
 
       loop:
@@ -45,7 +47,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) {
+        TestQuery.Data value) throws IOException {
       writer.name("i");
       new NullableAdapter<>(new ObjectAdapter<TestQuery.I>(I.INSTANCE, true)).toJson(writer, customScalarAdapters, value.i);
     }
@@ -57,7 +59,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.I fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) {
+    public TestQuery.I fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
+        IOException {
       String __typename = null;
 
       loop:
@@ -80,7 +83,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.I value) {
+        TestQuery.I value) throws IOException {
       writer.name("__typename");
       StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
 
