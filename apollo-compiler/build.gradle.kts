@@ -6,7 +6,6 @@ plugins {
 }
 
 dependencies {
-  implementation(projects.apolloApi)
   implementation(projects.apolloAst)
   implementation(projects.apolloNormalizedCacheApi) {
     because("To generate the CacheResolver")
