@@ -585,6 +585,14 @@ query GetHero($id: String @optional) {
 }
 ```
 
+Or opt-in optional variables globally in your Gradle config:
+
+```kotlin
+apollo {
+  // ...
+  generateOptionalOperationVariables.set(true)
+}
+```
 ### Enums
 
 Apollo Android 2.x converts enums and enum values names to uppercase. 

@@ -77,6 +77,7 @@ module.exports = {
             'advanced/rxjava',
             'advanced/kotlin-native',
             'advanced/apollo-ast',
+            'advanced/operation-variables',
           ],
         }
       }
