@@ -20,7 +20,7 @@ internal object ResponseBodyParser {
   fun <D : Operation.Data> parse(
       jsonReader: JsonReader,
       operation: Operation<D>,
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: CustomScalarAdapters,
   ): ApolloResponse<D> {
     jsonReader.beginObject()
 
@@ -39,19 +39,15 @@ internal object ResponseBodyParser {
 
     jsonReader.endObject()
 
-    return ApolloResponse(
-        requestUuid = uuid4(),
-        operation = operation,
-        data = data,
-        errors = errors,
-        extensions = extensions.orEmpty()
-    )
+    return ApolloResponse.Builder(requestUuid = uuid4(), operation = operation, data = data).errors(errors)
+        .extensions(extensions)
+        .build()
   }
 
   fun <D : Operation.Data> parse(
       source: BufferedSource,
       operation: Operation<D>,
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: CustomScalarAdapters,
   ): ApolloResponse<D> {
     return BufferedSourceJsonReader(source).use { jsonReader ->
       parse(jsonReader, operation, customScalarAdapters)
@@ -83,7 +79,7 @@ internal object ResponseBodyParser {
 
     beginArray()
     val list = mutableListOf<Error>()
-    while(hasNext()) {
+    while (hasNext()) {
       list.add(readError())
     }
     endArray()
@@ -128,7 +124,7 @@ internal object ResponseBodyParser {
 
     val list = mutableListOf<Any>()
     beginArray()
-    while(hasNext()) {
+    while (hasNext()) {
       when (peek()) {
         JsonReader.Token.NUMBER, JsonReader.Token.LONG -> list.add(nextInt())
         else -> list.add(nextString()!!)
@@ -138,13 +134,14 @@ internal object ResponseBodyParser {
 
     return list
   }
+
   private fun JsonReader.readErrorLocations(): List<Error.Location>? {
     if (peek() == JsonReader.Token.NULL) {
       return nextNull()
     }
     val list = mutableListOf<Error.Location>()
     beginArray()
-    while(hasNext()) {
+    while (hasNext()) {
       list.add(readErrorLocation())
     }
     endArray()
@@ -156,7 +153,7 @@ internal object ResponseBodyParser {
     var line: Int = -1
     var column: Int = -1
     beginObject()
-    while(hasNext()) {
+    while (hasNext()) {
       when (nextName()) {
         "line" -> line = nextInt()
         "column" -> column = nextInt()

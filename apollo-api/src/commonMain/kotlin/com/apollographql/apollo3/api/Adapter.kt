@@ -1,13 +1,7 @@
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
-import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.json.MapJsonReader
-import okio.Buffer
-import okio.BufferedSink
-import okio.BufferedSource
 import okio.IOException
 
 /**

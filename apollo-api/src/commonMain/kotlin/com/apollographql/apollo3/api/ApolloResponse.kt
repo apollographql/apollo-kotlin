@@ -2,14 +2,13 @@ package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.exception.ApolloException
 import com.benasher44.uuid.Uuid
-import com.benasher44.uuid.uuid4
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 
 /**
  * Represents a GraphQL response. GraphQL responses can be be partial responses so it is valid to have both data != null and errors
  */
-class ApolloResponse<D : Operation.Data>(
+class ApolloResponse<D : Operation.Data> @Deprecated("Please use ApolloRequest.Builder methods instead. This will be removed in v3.0.0.") constructor(
     @JvmField
     val requestUuid: Uuid,
 
@@ -28,23 +27,23 @@ class ApolloResponse<D : Operation.Data>(
 
     /**
      * GraphQL [operation] execution errors returned by the server to let client know that something has gone wrong.
-     * This can either be null or empty depending what you server sends back
+     * This can either be null or empty depending on what your server sends back
      */
     @JvmField
-    val errors: List<Error>? = null,
+    val errors: List<Error>?,
 
     /**
      * Extensions of GraphQL protocol, arbitrary map of key [String] / value [Any] sent by server along with the response.
      */
     @JvmField
-    val extensions: Map<String, Any?> = emptyMap(),
+    val extensions: Map<String, Any?>,
 
     /**
      * The context of GraphQL [operation] execution.
      * This can contain additional data contributed by interceptors.
      */
     @JvmField
-    val executionContext: ExecutionContext = ExecutionContext.Empty,
+    val executionContext: ExecutionContext,
 ) {
   /**
    * A shorthand property to get a non-nullable `data` if handling partial data is not important
@@ -83,26 +82,20 @@ class ApolloResponse<D : Operation.Data>(
   fun withExecutionContext(executionContext: ExecutionContext) = newBuilder().addExecutionContext(executionContext).build()
 
   fun newBuilder(): Builder<D> {
-    return Builder(operation)
-        .data(data)
+    return Builder(operation, requestUuid, data)
         .errors(errors)
         .extensions(extensions)
         .addExecutionContext(executionContext)
-        .requestUuid(requestUuid)
   }
 
   class Builder<D : Operation.Data>(
-      private var operation: Operation<D>,
+      private val operation: Operation<D>,
+      private var requestUuid: Uuid,
+      private val data: D?,
   ) {
-    private var requestUuid: Uuid? = null
     private var executionContext: ExecutionContext = ExecutionContext.Empty
     private var errors: List<Error>? = null
     private var extensions: Map<String, Any?>? = null
-    private var data: D? = null
-
-    fun data(data: D?) = apply {
-      this.data = data
-    }
 
     fun addExecutionContext(executionContext: ExecutionContext) = apply {
       this.executionContext = this.executionContext + executionContext
@@ -112,7 +105,7 @@ class ApolloResponse<D : Operation.Data>(
       this.errors = errors
     }
 
-    fun extensions(extensions: Map<String, Any?>) = apply {
+    fun extensions(extensions: Map<String, Any?>?) = apply {
       this.extensions = extensions
     }
 
@@ -124,11 +117,11 @@ class ApolloResponse<D : Operation.Data>(
       @Suppress("DEPRECATION")
       return ApolloResponse(
           operation = operation,
-          requestUuid = requestUuid ?: uuid4(),
-          executionContext = executionContext,
+          requestUuid = requestUuid,
           data = data,
-          errors = errors,
-          extensions = extensions ?: emptyMap()
+          executionContext = executionContext,
+          extensions = extensions ?: emptyMap(),
+          errors = errors ,
       )
     }
   }
