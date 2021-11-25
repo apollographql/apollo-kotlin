@@ -383,7 +383,6 @@ public final class com/apollographql/apollo3/api/EnumType : com/apollographql/ap
 
 public final class com/apollographql/apollo3/api/Error {
 	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/Map;Ljava/util/Map;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/Map;Ljava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getExtensions ()Ljava/util/Map;
 	public final fun getLocations ()Ljava/util/List;
 	public final fun getMessage ()Ljava/lang/String;
@@ -413,7 +412,7 @@ public final class com/apollographql/apollo3/api/Executable$Variables {
 	public final fun getValueMap ()Ljava/util/Map;
 }
 
-public final class com/apollographql/apollo3/api/ExecutableKt {
+public final class com/apollographql/apollo3/api/Executables {
 	public static final fun variables (Lcom/apollographql/apollo3/api/Executable;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/api/Executable$Variables;
 	public static final fun variablesJson (Lcom/apollographql/apollo3/api/Executable;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Ljava/lang/String;
 }
@@ -451,8 +450,17 @@ public final class com/apollographql/apollo3/api/ExecutionContext$Element$Defaul
 public abstract interface class com/apollographql/apollo3/api/ExecutionContext$Key {
 }
 
-public final class com/apollographql/apollo3/api/FileUploadKt {
-	public static final fun fromFile (Lcom/apollographql/apollo3/api/Upload$Companion;Ljava/io/File;Ljava/lang/String;)Lcom/apollographql/apollo3/api/Upload;
+public final class com/apollographql/apollo3/api/FileUpload : com/apollographql/apollo3/api/Upload {
+	public static final field Companion Lcom/apollographql/apollo3/api/FileUpload$Companion;
+	public fun <init> (Ljava/io/File;Ljava/lang/String;)V
+	public fun getContentLength ()J
+	public fun getContentType ()Ljava/lang/String;
+	public fun getFileName ()Ljava/lang/String;
+	public fun writeTo (Lokio/BufferedSink;)V
+}
+
+public final class com/apollographql/apollo3/api/FileUpload$Companion {
+	public final fun create (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/api/FileUpload;
 }
 
 public abstract interface class com/apollographql/apollo3/api/Fragment : com/apollographql/apollo3/api/Executable {
@@ -493,8 +501,8 @@ public final class com/apollographql/apollo3/api/Input$Companion {
 }
 
 public final class com/apollographql/apollo3/api/InputKt {
-	public static final fun toInput (Ljava/lang/Object;)Lcom/apollographql/apollo3/api/Optional;
-	public static final fun toInputOrAbsent (Ljava/lang/Object;)Lcom/apollographql/apollo3/api/Optional;
+	public static final fun -toInput (Ljava/lang/Object;)Lcom/apollographql/apollo3/api/Optional;
+	public static final fun -toInputOrAbsent (Ljava/lang/Object;)Lcom/apollographql/apollo3/api/Optional;
 }
 
 public final class com/apollographql/apollo3/api/InputObjectType : com/apollographql/apollo3/api/CompiledNamedType {
@@ -632,6 +640,11 @@ public final class com/apollographql/apollo3/api/QueryDocumentMinifier {
 
 public final class com/apollographql/apollo3/api/ScalarType : com/apollographql/apollo3/api/CompiledNamedType {
 	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class com/apollographql/apollo3/api/ScalarTypeAdapters {
+	public fun <init> (Ljava/util/Map;)V
+	public final fun getCustomAdapters ()Ljava/util/Map;
 }
 
 public abstract interface class com/apollographql/apollo3/api/Subscription : com/apollographql/apollo3/api/Operation {

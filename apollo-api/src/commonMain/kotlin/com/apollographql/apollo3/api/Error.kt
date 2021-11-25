@@ -14,24 +14,24 @@ class Error(
      * Locations of the errors in the GraphQL operation
      * It may be null if the location cannot be determined
      */
-    val locations: List<Location>? = null,
+    val locations: List<Location>?,
 
     /**
      * If this error comes from a field, the path of the field where the error happened.
      * Values in the list can be either Strings or Int
      * Can be null if the error doesn't come from a field, like validation errors.
      */
-    val path: List<Any>? = null,
+    val path: List<Any>?,
 
     /**
      * Extensions if any.
      */
-    val extensions: Map<String, Any?>? = null,
+    val extensions: Map<String, Any?>?,
 
     /**
      * Other non-standard fields (discouraged but allowed in the spec), if any.
      */
-    val nonStandardFields: Map<String, Any?>? = null,
+    val nonStandardFields: Map<String, Any?>?,
 ) {
 
   override fun toString(): String {

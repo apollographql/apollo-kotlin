@@ -8,7 +8,6 @@ import com.apollographql.apollo3.api.json.internal.Utils
 import okio.Buffer
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
-import kotlin.jvm.JvmStatic
 import kotlin.native.concurrent.SharedImmutable
 
 sealed class CompiledSelection

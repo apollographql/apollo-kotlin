@@ -42,23 +42,3 @@ interface Executable<D: Executable.Data> {
    */
   class Variables(val valueMap: Map<String, Any?>)
 }
-
-@Suppress("UNCHECKED_CAST")
-fun <D : Executable.Data> Executable<D>.variables(customScalarAdapters: CustomScalarAdapters): Variables {
-  val valueMap = MapJsonWriter().apply {
-    beginObject()
-    serializeVariables(this, customScalarAdapters)
-    endObject()
-  }.root() as Map<String, Any?>
-  return Variables(valueMap)
-}
-
-fun <D : Executable.Data> Executable<D>.variablesJson(customScalarAdapters: CustomScalarAdapters): String {
-  val buffer = Buffer()
-  BufferedSinkJsonWriter(buffer).apply {
-    beginObject()
-    serializeVariables(this, customScalarAdapters)
-    endObject()
-  }
-  return buffer.readUtf8()
-}

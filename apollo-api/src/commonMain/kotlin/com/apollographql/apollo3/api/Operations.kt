@@ -12,7 +12,6 @@ import okio.BufferedSource
 import okio.ByteString
 import kotlin.jvm.JvmName
 
-
 /**
  * Reads a GraphQL Json response like below to a [ApolloResponse]
  * ```
