@@ -3,26 +3,38 @@ package com.apollographql.apollo3.api
 import okio.BufferedSink
 import okio.BufferedSource
 import okio.ByteString
-import okio.buffer
+import okio.ByteString.Companion.encodeUtf8
+import okio.ByteString.Companion.toByteString
 import okio.use
 
 /**
- * An [Upload] that writes data from the [bufferedSource]
+ * An [Upload] that writes data from the provided content
+ *
+ * If the content is a [bufferedSource], the [DefaultUpload] will close it once uploaded
+ * If the content is a [byteString], the [DefaultUpload] can be reused
  */
 class DefaultUpload internal constructor(
-    private val bufferedSource: BufferedSource,
+    private val bufferedSource: BufferedSource?,
+    private val byteString: ByteString?,
     override val contentType: String,
     override val contentLength: Long,
     override val fileName: String?,
 ) : Upload {
   override fun writeTo(sink: BufferedSink) {
-    bufferedSource.use {
-      sink.writeAll(it)
+    if (bufferedSource != null) {
+      bufferedSource.use {
+        sink.writeAll(it)
+      }
+    } else if (byteString != null) {
+      sink.write(byteString)
+    } else {
+      error("No upload content found")
     }
   }
 
   class Builder {
     private var bufferedSource: BufferedSource? = null
+    private var byteString: ByteString? = null
     private var contentType: String? = null
     private var contentLength: Long = -1
     private var fileName: String? = null
@@ -32,15 +44,18 @@ class DefaultUpload internal constructor(
     }
 
     fun content(content: String): Builder = apply {
-      this.bufferedSource = content.source().buffer()
+      this.byteString = content.encodeUtf8()
+      this.contentLength = content.length.toLong()
     }
 
     fun content(byteString: ByteString): Builder = apply {
-      this.bufferedSource = byteString.source().buffer()
+      this.byteString = byteString
+      this.contentLength = byteString.size.toLong()
     }
 
     fun content(byteArray: ByteArray): Builder = apply {
-      this.bufferedSource = byteArray.source().buffer()
+      this.byteString = byteArray.toByteString()
+      this.contentLength = byteArray.size.toLong()
     }
 
     fun contentType(contentType: String): Builder = apply {
@@ -57,7 +72,8 @@ class DefaultUpload internal constructor(
 
     fun build(): DefaultUpload {
       return DefaultUpload(
-          bufferedSource ?: error("No content found"),
+          bufferedSource,
+          byteString,
           contentType ?: "application/octet-stream",
           contentLength,
           fileName
