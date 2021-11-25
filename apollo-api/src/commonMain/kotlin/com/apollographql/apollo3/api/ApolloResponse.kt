@@ -8,7 +8,7 @@ import kotlin.jvm.JvmName
 /**
  * Represents a GraphQL response. GraphQL responses can be be partial responses so it is valid to have both data != null and errors
  */
-class ApolloResponse<D : Operation.Data> @Deprecated("Please use ApolloRequest.Builder methods instead. This will be removed in v3.0.0.") constructor(
+class ApolloResponse<D : Operation.Data> @Deprecated("Please use ApolloResponse.Builder methods instead. This will be removed in v3.0.0.") constructor(
     @JvmField
     val requestUuid: Uuid,
 
