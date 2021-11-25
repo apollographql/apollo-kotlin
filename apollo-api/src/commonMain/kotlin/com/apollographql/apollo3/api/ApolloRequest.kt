@@ -25,17 +25,7 @@ class ApolloRequest<D : Operation.Data> @Deprecated("Please use ApolloRequest.Bu
       it.executionContext = executionContext
     }
   }
-
-  fun copy(
-      operation: Operation<D> = this.operation,
-      requestUuid: Uuid = this.requestUuid,
-      executionContext: ExecutionContext = this.executionContext,
-  ) = Builder(
-      operation
-  ).requestUuid(requestUuid)
-      .addExecutionContext(executionContext)
-      .build()
-
+  
   class Builder<D : Operation.Data>(
       private var operation: Operation<D>,
   ) : HasMutableExecutionContext<Builder<D>> {

@@ -6,8 +6,8 @@
 package com.example.starships.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.starships.TestQuery;
@@ -28,6 +28,6 @@ public enum TestQuery_VariablesAdapter implements Adapter<TestQuery> {
   public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters, TestQuery value)
       throws IOException {
     writer.name("id");
-    StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.id);
+    Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.id);
   }
 }

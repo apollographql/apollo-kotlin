@@ -6,8 +6,8 @@
 package com.example.named_fragment_with_variables.fragment.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.IntAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.named_fragment_with_variables.fragment.UserFragmentImpl;
@@ -28,6 +28,6 @@ public enum UserFragmentImpl_VariablesAdapter implements Adapter<UserFragmentImp
   public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
       UserFragmentImpl value) throws IOException {
     writer.name("size");
-    IntAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.size);
+    Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.size);
   }
 }

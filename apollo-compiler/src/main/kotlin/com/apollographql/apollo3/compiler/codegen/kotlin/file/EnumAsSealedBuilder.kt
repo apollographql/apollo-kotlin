@@ -5,7 +5,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.knownValues
 import com.apollographql.apollo3.compiler.codegen.Identifier.safeValueOf
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.deprecatedAnnotation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
@@ -91,8 +91,8 @@ class EnumAsSealedBuilder(
         .addFunction(
             FunSpec.builder("equals")
                 .addModifiers(KModifier.OVERRIDE)
-                .addParameter(ParameterSpec("other", KotlinClassNames.Any.copy(nullable = true)))
-                .returns(KotlinClassNames.Boolean)
+                .addParameter(ParameterSpec("other", KotlinSymbols.Any.copy(nullable = true)))
+                .returns(KotlinSymbols.Boolean)
                 .addCode("if·(other·!is·%T) return false\n", unknownValueClassName())
                 .addCode("return·this.rawValue·==·other.rawValue")
                 .build()
@@ -100,14 +100,14 @@ class EnumAsSealedBuilder(
         .addFunction(
             FunSpec.builder("hashCode")
                 .addModifiers(KModifier.OVERRIDE)
-                .returns(KotlinClassNames.Int)
+                .returns(KotlinSymbols.Int)
                 .addCode("return·this.rawValue.hashCode()")
                 .build()
         )
         .addFunction(
             FunSpec.builder("toString")
                 .addModifiers(KModifier.OVERRIDE)
-                .returns(KotlinClassNames.String)
+                .returns(KotlinSymbols.String)
                 .addCode("return·\"UNKNOWN__(${'$'}rawValue)\"")
                 .build()
         )
@@ -117,7 +117,7 @@ class EnumAsSealedBuilder(
   private fun IrEnum.safeValueOfFunSpec(): FunSpec {
     return FunSpec.builder(safeValueOf)
         .addKdoc("Returns the [%T] that represents the specified [rawValue].\n", className())
-        .addParameter("rawValue", KotlinClassNames.String)
+        .addParameter("rawValue", KotlinSymbols.String)
         .returns(className())
         .beginControlFlow("return·when(rawValue)")
         .addCode(
@@ -133,7 +133,7 @@ class EnumAsSealedBuilder(
   private fun IrEnum.knownValuesFunSpec(): FunSpec {
     return FunSpec.builder(knownValues)
         .addKdoc("Returns all [%T] known at compile time", className())
-        .returns(KotlinClassNames.Array.parameterizedBy(className()))
+        .returns(KotlinSymbols.Array.parameterizedBy(className()))
         .addCode(
             CodeBlock.builder()
                 .add("return·arrayOf(\n")
@@ -168,18 +168,18 @@ class EnumAsSealedBuilder(
   private val primaryConstructorSpec =
       FunSpec
           .constructorBuilder()
-          .addParameter("rawValue", KotlinClassNames.String)
+          .addParameter("rawValue", KotlinSymbols.String)
           .build()
 
   private val primaryConstructorWithOverriddenParamSpec =
       FunSpec
           .constructorBuilder()
-          .addParameter("rawValue", KotlinClassNames.String)
+          .addParameter("rawValue", KotlinSymbols.String)
           .build()
 
   private val rawValuePropertySpec =
       PropertySpec
-          .builder("rawValue", KotlinClassNames.String)
+          .builder("rawValue", KotlinSymbols.String)
           .initializer("rawValue")
           .build()
 

@@ -6,12 +6,11 @@
 package com.example.subscriptions.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.IntAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.subscriptions.TestSubscription;
@@ -68,8 +67,8 @@ public class TestSubscription_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: id = IntAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
-          case 1: content = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
+          case 0: id = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: content = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -87,10 +86,10 @@ public class TestSubscription_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestSubscription.CommentAdded value) throws IOException {
       writer.name("id");
-      IntAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.id);
+      Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.id);
 
       writer.name("content");
-      StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.content);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.content);
     }
   }
 }

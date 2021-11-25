@@ -15,7 +15,6 @@ import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.typename_always_first.TestQuery;
@@ -43,7 +42,7 @@ public class TestQuery_ResponseAdapter {
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: hero = new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
-          case 1: __typename = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
+          case 1: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -63,7 +62,7 @@ public class TestQuery_ResponseAdapter {
       new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).toJson(writer, customScalarAdapters, value.hero);
 
       writer.name("__typename");
-      StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
     }
   }
 
@@ -80,7 +79,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -109,7 +108,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Hero value) throws IOException {
       writer.name("__typename");
-      StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
       if (value.onHuman != null) {
         com.example.typename_always_first.adapter.TestQuery_ResponseAdapter.OnHuman.INSTANCE.toJson(writer, customScalarAdapters, value.onHuman);
@@ -136,7 +135,7 @@ public class TestQuery_ResponseAdapter {
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: height = Adapters.NullableDoubleAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: __typename = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
+          case 1: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -156,7 +155,7 @@ public class TestQuery_ResponseAdapter {
       Adapters.NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height);
 
       writer.name("__typename");
-      StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
     }
   }
 
@@ -175,8 +174,8 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
-          case 1: __typename = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
+          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 2: primaryFunction = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
@@ -196,10 +195,10 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.OnDroid value) throws IOException {
       writer.name("name");
-      StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.name);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
 
       writer.name("__typename");
-      StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
       writer.name("primaryFunction");
       Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction);

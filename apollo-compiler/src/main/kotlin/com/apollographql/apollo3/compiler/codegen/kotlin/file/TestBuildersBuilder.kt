@@ -11,7 +11,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.testResolver
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgTestFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinMemberNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.test.TBuilderBuilder
@@ -77,13 +77,13 @@ class TestBuildersBuilder(
     return FunSpec.builder(Data)
         .receiver(context.resolver.resolveOperation(operation.name).nestedClass(Identifier.Companion))
         .addParameter(
-            ParameterSpec.builder(testResolver, KotlinClassNames.TestResolver)
-                .defaultValue(CodeBlock.of("%T()", KotlinClassNames.DefaultTestResolver))
+            ParameterSpec.builder(testResolver, KotlinSymbols.TestResolver)
+                .defaultValue(CodeBlock.of("%T()", KotlinSymbols.DefaultTestResolver))
                 .build()
         )
         .addParameter(
-            ParameterSpec.builder(customScalarAdapters, KotlinClassNames.CustomScalarAdapters)
-                .defaultValue(CodeBlock.of("%T.Empty", KotlinClassNames.CustomScalarAdapters))
+            ParameterSpec.builder(customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
+                .defaultValue(CodeBlock.of("%T.Empty", KotlinSymbols.CustomScalarAdapters))
                 .build()
         )
         .addParameter(
@@ -92,7 +92,7 @@ class TestBuildersBuilder(
                 LambdaTypeName.get(
                     receiver = context.resolver.resolveTestBuilder(dataModelGroup.baseModelId),
                     parameters = emptyArray<TypeName>(),
-                    returnType = KotlinClassNames.Unit
+                    returnType = KotlinSymbols.Unit
                 )
             )
                 .build()
@@ -131,7 +131,7 @@ class TestBuildersBuilder(
     )
     builder.indent()
     builder.add("%T(%T().apply($block).build()),\n",
-        KotlinClassNames.MapJsonReader,
+        KotlinSymbols.MapJsonReader,
         context.resolver.resolveTestBuilder(dataModelGroup.baseModelId)
     )
     builder.add("$customScalarAdapters,\n")

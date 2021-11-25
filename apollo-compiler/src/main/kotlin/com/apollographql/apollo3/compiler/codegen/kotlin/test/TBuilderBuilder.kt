@@ -5,7 +5,7 @@ import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier.__map
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
 import com.apollographql.apollo3.compiler.codegen.Identifier.block
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.from
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.TBuilder
@@ -59,7 +59,7 @@ internal class TBuilderBuilder(
         .applyIf(inner) {
           addModifiers(KModifier.INNER)
         }
-        .superclass(KotlinClassNames.MapBuilder)
+        .superclass(KotlinSymbols.MapBuilder)
         .addProperties(
             tbuilder.properties.map { it.propertySpec(tbuilder.possibleTypes) }
         )
@@ -118,7 +118,7 @@ internal class TBuilderBuilder(
                 LambdaTypeName.get(
                     receiver = context.resolver.resolveTestBuilder(id),
                     parameters = emptyList(),
-                    returnType = KotlinClassNames.Unit
+                    returnType = KotlinSymbols.Unit
                 )
             )
                 .defaultValue(CodeBlock.of("{}"))
@@ -131,17 +131,17 @@ internal class TBuilderBuilder(
         .build()
   }
 
-  private val anyMapClassName = KotlinClassNames.Map.parameterizedBy(KotlinClassNames.String, KotlinClassNames.Any.copy(nullable = true))
+  private val anyMapClassName = KotlinSymbols.Map.parameterizedBy(KotlinSymbols.String, KotlinSymbols.Any.copy(nullable = true))
 
   private fun TProperty.className(): TypeName {
     return context.resolver.resolveIrType(type) {
       when (it) {
-        is IrEnumType -> KotlinClassNames.String
+        is IrEnumType -> KotlinSymbols.String
         is IrModelType -> anyMapClassName
         is IrScalarType -> if (builtInTypes.contains(it.name)) {
           null
         } else {
-          KotlinClassNames.String
+          KotlinSymbols.String
         }
         else -> null
       }?.copy(nullable = true)
@@ -151,17 +151,17 @@ internal class TBuilderBuilder(
   private fun TProperty.propertySpec(possibleTypes: PossibleTypes): PropertySpec {
     if (responseName == "__typename") {
       return if (possibleTypes.size == 1) {
-        PropertySpec.builder(__typename, KotlinClassNames.String)
+        PropertySpec.builder(__typename, KotlinSymbols.String)
             .initializer("%S", possibleTypes.single())
             .mutable(true)
             .build()
       } else {
-        PropertySpec.builder(__typename, KotlinClassNames.String)
+        PropertySpec.builder(__typename, KotlinSymbols.String)
             .addKdoc(CodeBlock.of("%L", """
               The typename of this shape isn't known at compile time.
               Possible values: ${possibleTypes.joinToString(", ")}
             """.trimIndent()))
-            .delegate(CodeBlock.of("%T()", KotlinClassNames.MandatoryTypenameProperty))
+            .delegate(CodeBlock.of("%T()", KotlinSymbols.MandatoryTypenameProperty))
             .mutable(true)
             .build()
       }
@@ -171,7 +171,7 @@ internal class TBuilderBuilder(
         .mutable(true)
         .maybeAddDescription(description)
         .maybeAddDeprecation(deprecationReason)
-        .delegate(CodeBlock.of("%T($__map, %S)", KotlinClassNames.StubbedProperty, responseName))
+        .delegate(CodeBlock.of("%T($__map, %S)", KotlinSymbols.StubbedProperty, responseName))
         .build()
   }
 }

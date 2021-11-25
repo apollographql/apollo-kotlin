@@ -11,7 +11,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.reader
 import com.apollographql.apollo3.compiler.codegen.Identifier.typename
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.codeBlock
 import com.apollographql.apollo3.compiler.ir.IrModel
@@ -33,7 +33,7 @@ internal fun responseNamesPropertySpec(model: IrModel): PropertySpec {
     CodeBlock.of("%S", it.info.responseName)
   }.joinToCode(prefix = "listOf(", separator = ", ", suffix = ")")
 
-  return PropertySpec.builder(Identifier.RESPONSE_NAMES, KotlinClassNames.List.parameterizedBy(KotlinClassNames.String))
+  return PropertySpec.builder(Identifier.RESPONSE_NAMES, KotlinSymbols.List.parameterizedBy(KotlinSymbols.String))
       .initializer(initializer)
       .build()
 }
@@ -47,7 +47,7 @@ internal fun readFromResponseCodeBlock(
   val prefix = regularProperties.map { property ->
     val variableInitializer = when {
       hasTypenameArgument && property.info.responseName == "__typename" -> CodeBlock.of(typename)
-      (property.info.type is IrNonNullType && property.info.type.ofType is IrOptionalType) -> CodeBlock.of("%T", KotlinClassNames.Absent)
+      (property.info.type is IrNonNullType && property.info.type.ofType is IrOptionalType) -> CodeBlock.of("%T", KotlinSymbols.Absent)
       else -> CodeBlock.of("null")
     }
 

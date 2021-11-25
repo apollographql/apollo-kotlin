@@ -10,7 +10,6 @@ import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.OptionalAdapter;
-import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.named_fragment_with_variables.type.UserQuery;
@@ -32,7 +31,7 @@ public enum UserQuery_InputAdapter implements Adapter<UserQuery> {
   public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters, UserQuery value)
       throws IOException {
     writer.name("name");
-    StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.name);
+    Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
     if (value.isAdmin instanceof Optional.Present) {
       writer.name("isAdmin");
       new OptionalAdapter<>(Adapters.NullableBooleanAdapter).toJson(writer, customScalarAdapters, (Optional.Present<Boolean>)value.isAdmin);

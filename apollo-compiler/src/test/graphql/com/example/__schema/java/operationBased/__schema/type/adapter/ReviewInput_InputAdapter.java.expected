@@ -7,15 +7,12 @@ package com.example.__schema.type.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.AnyAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.IntAdapter;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.OptionalAdapter;
-import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.__schema.type.ColorInput;
@@ -43,7 +40,7 @@ public enum ReviewInput_InputAdapter implements Adapter<ReviewInput> {
   public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
       ReviewInput value) throws IOException {
     writer.name("stars");
-    IntAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.stars);
+    Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.stars);
     if (value.nullableIntFieldWithDefaultValue instanceof Optional.Present) {
       writer.name("nullableIntFieldWithDefaultValue");
       new OptionalAdapter<>(Adapters.NullableIntAdapter).toJson(writer, customScalarAdapters, (Optional.Present<Integer>)value.nullableIntFieldWithDefaultValue);
@@ -102,7 +99,7 @@ public enum ReviewInput_InputAdapter implements Adapter<ReviewInput> {
     }
     if (value.listOfListOfString instanceof Optional.Present) {
       writer.name("listOfListOfString");
-      new OptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(StringAdapter.INSTANCE)))).toJson(writer, customScalarAdapters, (Optional.Present<List<List<String>>>)value.listOfListOfString);
+      new OptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(Adapters.StringAdapter)))).toJson(writer, customScalarAdapters, (Optional.Present<List<List<String>>>)value.listOfListOfString);
     }
     if (value.listOfListOfEnum instanceof Optional.Present) {
       writer.name("listOfListOfEnum");
@@ -110,7 +107,7 @@ public enum ReviewInput_InputAdapter implements Adapter<ReviewInput> {
     }
     if (value.listOfListOfCustom instanceof Optional.Present) {
       writer.name("listOfListOfCustom");
-      new OptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(AnyAdapter.INSTANCE)))).toJson(writer, customScalarAdapters, (Optional.Present<List<List<Object>>>)value.listOfListOfCustom);
+      new OptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(Adapters.AnyAdapter)))).toJson(writer, customScalarAdapters, (Optional.Present<List<List<Object>>>)value.listOfListOfCustom);
     }
     if (value.listOfListOfObject instanceof Optional.Present) {
       writer.name("listOfListOfObject");

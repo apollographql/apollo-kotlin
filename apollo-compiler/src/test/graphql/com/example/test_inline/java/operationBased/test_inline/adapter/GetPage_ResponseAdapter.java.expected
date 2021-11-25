@@ -6,6 +6,7 @@
 package com.example.test_inline.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
@@ -14,7 +15,6 @@ import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.test_inline.GetPage;
@@ -73,7 +73,7 @@ public class GetPage_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: items = new ListAdapter<>(new ObjectAdapter<GetPage.Item>(Item.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
@@ -99,7 +99,7 @@ public class GetPage_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         GetPage.Collection value) throws IOException {
       writer.name("__typename");
-      StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
       writer.name("items");
       new ListAdapter<>(new ObjectAdapter<GetPage.Item>(Item.INSTANCE, false)).toJson(writer, customScalarAdapters, value.items);
@@ -123,7 +123,7 @@ public class GetPage_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: title = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
+          case 0: title = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -139,7 +139,7 @@ public class GetPage_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         GetPage.Item value) throws IOException {
       writer.name("title");
-      StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.title);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.title);
     }
   }
 
@@ -189,7 +189,7 @@ public class GetPage_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -211,7 +211,7 @@ public class GetPage_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         GetPage.Item1 value) throws IOException {
       writer.name("__typename");
-      StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
       if (value.onParticularItem != null) {
         com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularItem.INSTANCE.toJson(writer, customScalarAdapters, value.onParticularItem);
@@ -232,7 +232,7 @@ public class GetPage_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: image = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
+          case 0: image = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -248,7 +248,7 @@ public class GetPage_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         GetPage.OnParticularItem value) throws IOException {
       writer.name("image");
-      StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.image);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.image);
     }
   }
 }

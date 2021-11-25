@@ -6,13 +6,12 @@
 package com.example.custom_scalar_type.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.AnyAdapter;
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.custom_scalar_type.TestQuery;
@@ -75,10 +74,10 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
+          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: birthDate = (customScalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type)).fromJson(reader, customScalarAdapters); break;
           case 2: appearanceDates = new ListAdapter<>((customScalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type))).fromJson(reader, customScalarAdapters); break;
-          case 3: fieldWithUnsupportedType = AnyAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
+          case 3: fieldWithUnsupportedType = Adapters.AnyAdapter.fromJson(reader, customScalarAdapters); break;
           case 4: profileLink = (customScalarAdapters.<String>responseAdapterFor(URL.type)).fromJson(reader, customScalarAdapters); break;
           case 5: links = new ListAdapter<>((customScalarAdapters.<String>responseAdapterFor(URL.type))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -106,7 +105,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Hero value) throws IOException {
       writer.name("name");
-      StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.name);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
 
       writer.name("birthDate");
       (customScalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type)).toJson(writer, customScalarAdapters, value.birthDate);
@@ -115,7 +114,7 @@ public class TestQuery_ResponseAdapter {
       new ListAdapter<>((customScalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type))).toJson(writer, customScalarAdapters, value.appearanceDates);
 
       writer.name("fieldWithUnsupportedType");
-      AnyAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.fieldWithUnsupportedType);
+      Adapters.AnyAdapter.toJson(writer, customScalarAdapters, value.fieldWithUnsupportedType);
 
       writer.name("profileLink");
       (customScalarAdapters.<String>responseAdapterFor(URL.type)).toJson(writer, customScalarAdapters, value.profileLink);

@@ -9,7 +9,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.reader
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinClassNames
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.ir.IrModelGroup
 import com.squareup.kotlinpoet.ClassName
@@ -66,7 +66,7 @@ class PolymorphicFieldResponseAdapterBuilder(
   private fun typeSpec(): TypeSpec {
     return TypeSpec.objectBuilder(adapterName)
         .addSuperinterface(
-            KotlinClassNames.Adapter.parameterizedBy(adaptedClassName)
+            KotlinSymbols.Adapter.parameterizedBy(adaptedClassName)
         )
         .applyIf(!public) {
           addModifiers(KModifier.PRIVATE)
@@ -78,7 +78,7 @@ class PolymorphicFieldResponseAdapterBuilder(
   }
 
   private fun responseNamesPropertySpec(): PropertySpec {
-    return PropertySpec.builder(Identifier.RESPONSE_NAMES, KotlinClassNames.List.parameterizedBy(KotlinClassNames.String))
+    return PropertySpec.builder(Identifier.RESPONSE_NAMES, KotlinSymbols.List.parameterizedBy(KotlinSymbols.String))
         .initializer("listOf(%S)", "__typename")
         .build()
   }
@@ -86,8 +86,8 @@ class PolymorphicFieldResponseAdapterBuilder(
   private fun readFromResponseFunSpec(): FunSpec {
     return FunSpec.builder(fromJson)
         .returns(adaptedClassName)
-        .addParameter(reader, KotlinClassNames.JsonReader)
-        .addParameter(customScalarAdapters, KotlinClassNames.CustomScalarAdapters)
+        .addParameter(reader, KotlinSymbols.JsonReader)
+        .addParameter(customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
         .addModifiers(KModifier.OVERRIDE)
         .addCode(readFromResponseCodeBlock())
         .build()
@@ -125,8 +125,8 @@ class PolymorphicFieldResponseAdapterBuilder(
   private fun writeToResponseFunSpec(): FunSpec {
     return FunSpec.builder(toJson)
         .addModifiers(KModifier.OVERRIDE)
-        .addParameter(writer, KotlinClassNames.JsonWriter)
-        .addParameter(customScalarAdapters, KotlinClassNames.CustomScalarAdapters)
+        .addParameter(writer, KotlinSymbols.JsonWriter)
+        .addParameter(customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
         .addParameter(value, adaptedClassName)
         .addCode(writeToResponseCodeBlock())
         .build()

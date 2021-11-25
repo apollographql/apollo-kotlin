@@ -85,7 +85,9 @@ class OptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optio
   }
 }
 
-object StringAdapter : Adapter<String> {
+@SharedImmutable
+@JvmField
+val StringAdapter = object  : Adapter<String> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): String {
     return reader.nextString()!!
   }
@@ -95,7 +97,9 @@ object StringAdapter : Adapter<String> {
   }
 }
 
-object IntAdapter : Adapter<Int> {
+@SharedImmutable
+@JvmField
+val IntAdapter = object  : Adapter<Int> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Int {
     return reader.nextInt()
   }
@@ -105,7 +109,9 @@ object IntAdapter : Adapter<Int> {
   }
 }
 
-object DoubleAdapter : Adapter<Double> {
+@SharedImmutable
+@JvmField
+val DoubleAdapter = object  : Adapter<Double> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Double {
     return reader.nextDouble()
   }
@@ -119,7 +125,9 @@ object DoubleAdapter : Adapter<Double> {
  * An [Adapter] that converts to/from a [Float]
  * Floats are not part of the GraphQL spec but this can be used in custom scalars
  */
-object FloatAdapter : Adapter<Float> {
+@SharedImmutable
+@JvmField
+val FloatAdapter = object  : Adapter<Float> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Float {
     return reader.nextDouble().toFloat()
   }
@@ -135,7 +143,9 @@ object FloatAdapter : Adapter<Float> {
  *
  * If the Json number does not fit in a [Long], an exception will be thrown
  */
-object LongAdapter: Adapter<Long>  {
+@SharedImmutable
+@JvmField
+val LongAdapter = object : Adapter<Long>  {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Long {
     return reader.nextLong()
   }
@@ -145,7 +155,9 @@ object LongAdapter: Adapter<Long>  {
   }
 }
 
-object BooleanAdapter : Adapter<Boolean> {
+@SharedImmutable
+@JvmField
+val BooleanAdapter = object  : Adapter<Boolean> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Boolean {
     return reader.nextBoolean()
   }
@@ -155,7 +167,9 @@ object BooleanAdapter : Adapter<Boolean> {
   }
 }
 
-object AnyAdapter : Adapter<Any> {
+@SharedImmutable
+@JvmField
+val AnyAdapter = object : Adapter<Any> {
   fun fromJson(reader: JsonReader): Any {
     return reader.readRecursively()!!
   }
@@ -174,7 +188,9 @@ object AnyAdapter : Adapter<Any> {
   }
 }
 
-object UploadAdapter : Adapter<Upload> {
+@SharedImmutable
+@JvmField
+val UploadAdapter = object  : Adapter<Upload> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Upload {
     error("File Upload used in output position")
   }
@@ -183,6 +199,25 @@ object UploadAdapter : Adapter<Upload> {
     writer.value(value)
   }
 }
+
+/**
+ * Global instances of nullable adapters for built-in scalar types
+ */
+@SharedImmutable
+@JvmField
+val NullableStringAdapter = StringAdapter.nullable()
+@SharedImmutable
+@JvmField
+val NullableDoubleAdapter = DoubleAdapter.nullable()
+@SharedImmutable
+@JvmField
+val NullableIntAdapter = IntAdapter.nullable()
+@SharedImmutable
+@JvmField
+val NullableBooleanAdapter = BooleanAdapter.nullable()
+@SharedImmutable
+@JvmField
+val NullableAnyAdapter = AnyAdapter.nullable()
 
 class ObjectAdapter<T>(
     private val wrappedAdapter: Adapter<T>,
@@ -232,28 +267,11 @@ fun <T> Adapter<T>.obj(buffered: Boolean = false) = ObjectAdapter(this, buffered
 @JvmName("-optional")
 fun <T> Adapter<T>.optional() = OptionalAdapter(this)
 
-/**
- * Global instances of nullable adapters for built-in scalar types
- */
-@SharedImmutable
-@JvmField
-val NullableStringAdapter = StringAdapter.nullable()
-@SharedImmutable
-@JvmField
-val NullableDoubleAdapter = DoubleAdapter.nullable()
-@SharedImmutable
-@JvmField
-val NullableIntAdapter = IntAdapter.nullable()
-@SharedImmutable
-@JvmField
-val NullableBooleanAdapter = BooleanAdapter.nullable()
-@SharedImmutable
-@JvmField
-val NullableAnyAdapter = AnyAdapter.nullable()
 
 /**
  * Converts the given value to a Json String
  */
+@JvmName("-toJson")
 fun <T> Adapter<T>.toJson(
     value: T,
     customScalarAdapters: CustomScalarAdapters,
@@ -268,6 +286,7 @@ fun <T> Adapter<T>.toJson(
 /**
  * See [toJson]
  */
+@JvmName("-toJson")
 fun <T> Adapter<T>.toJson(
     value: T,
 ): String = toJson(value, CustomScalarAdapters.Empty, "  ")
@@ -275,6 +294,7 @@ fun <T> Adapter<T>.toJson(
 /**
  * See [toJson]
  */
+@JvmName("-toJson")
 fun <T> Adapter<T>.toJson(
     sink: BufferedSink,
     value: T,
@@ -288,6 +308,7 @@ fun <T> Adapter<T>.toJson(
 /**
  * See [toJson]
  */
+@JvmName("-toJson")
 fun <T> Adapter<T>.toJson(
     sink: BufferedSink,
     value: T,
@@ -296,6 +317,7 @@ fun <T> Adapter<T>.toJson(
 /**
  * Converts the given [bufferedSource] to a [T]
  */
+@JvmName("-fromJson")
 fun <T> Adapter<T>.fromJson(
     bufferedSource: BufferedSource,
     customScalarAdapters: CustomScalarAdapters,
@@ -306,6 +328,7 @@ fun <T> Adapter<T>.fromJson(
 /**
  * See [fromJson]
  */
+@JvmName("-fromJson")
 fun <T> Adapter<T>.fromJson(
     bufferedSource: BufferedSource,
 ): T  = fromJson(bufferedSource, CustomScalarAdapters.Empty)
@@ -313,6 +336,7 @@ fun <T> Adapter<T>.fromJson(
 /**
  * See [fromJson]
  */
+@JvmName("-fromJson")
 fun <T> Adapter<T>.fromJson(
     string: String,
     customScalarAdapters: CustomScalarAdapters,
@@ -323,6 +347,7 @@ fun <T> Adapter<T>.fromJson(
 /**
  * See [fromJson]
  */
+@JvmName("-fromJson")
 fun <T> Adapter<T>.fromJson(
     string: String,
 ): T {
@@ -332,6 +357,7 @@ fun <T> Adapter<T>.fromJson(
 /**
  * Converts the given Map to a [T]
  */
+@JvmName("-fromMap")
 fun <T, M : Map<String, Any?>> Adapter<T>.fromMap(
     map: M,
     customScalarAdapters: CustomScalarAdapters,
@@ -342,6 +368,7 @@ fun <T, M : Map<String, Any?>> Adapter<T>.fromMap(
 /**
  * See [fromMap]
  */
+@JvmName("-fromMap")
 fun <T, M : Map<String, Any?>> Adapter<T>.fromMap(
     map: M,
 ): T {

@@ -6,9 +6,9 @@
 package com.example.named_fragment_with_variables.fragment;
 
 import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.StringAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -33,9 +33,9 @@ public class UserFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: firstName = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
-          case 1: lastName = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
-          case 2: avatar = StringAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
+          case 0: firstName = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: lastName = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 2: avatar = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -55,13 +55,13 @@ public class UserFragmentImpl_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         com.example.named_fragment_with_variables.fragment.UserFragment value) throws IOException {
       writer.name("firstName");
-      StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.firstName);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.firstName);
 
       writer.name("lastName");
-      StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.lastName);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.lastName);
 
       writer.name("avatar");
-      StringAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.avatar);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.avatar);
     }
   }
 }
