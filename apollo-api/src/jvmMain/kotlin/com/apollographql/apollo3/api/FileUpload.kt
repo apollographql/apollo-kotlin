@@ -14,4 +14,10 @@ class FileUpload(private val file: File, override val contentType: String) : Upl
       sink.writeAll(it)
     }
   }
+
+  companion object {
+    @Deprecated("This is a helper function to help migrating to 3.x " +
+        "and will be removed in a future version", ReplaceWith("FileUpload(File(filePath), mimetype)"))
+    fun create(mimetype: String, filePath: String): FileUpload = FileUpload(File(filePath), mimetype)
+  }
 }
