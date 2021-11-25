@@ -126,3 +126,10 @@ class ApolloResponse<D : Operation.Data> @Deprecated("Please use ApolloResponse.
     }
   }
 }
+
+@Deprecated("This is a helper typealias to help migrating to 3.x " +
+    "and will be removed in a future version",
+    ReplaceWith("ApolloResponse"),
+    DeprecationLevel.ERROR
+)
+typealias Response<D> = ApolloResponse<D>

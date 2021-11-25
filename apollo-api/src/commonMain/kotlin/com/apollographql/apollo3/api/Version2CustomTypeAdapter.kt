@@ -2,6 +2,8 @@
 
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo3.api.internal.Version2CustomTypeAdapterToAdapter
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmStatic
 
@@ -49,5 +51,21 @@ sealed class CustomTypeValue<T>(@JvmField val value: T) {
         else -> GraphQLString(value.toString())
       }
     }
+  }
+}
+
+/**
+ * A replica of Apollo Android v2's ScalarTypeAdapters, to ease migration from v2 to v3.
+ *
+ * In your [CustomTypeAdapter], update the imports from `com.apollographql.apollo.api` to
+ * `com.apollographql.apollo3.api` to use this version.
+ */
+@Deprecated(
+    message = "Used for backward compatibility with 2.x, use Adapter instead",
+    level = DeprecationLevel.ERROR
+)
+class ScalarTypeAdapters(val customAdapters: Map<CustomScalarType, CustomTypeAdapter<*>>) {
+  init {
+    throw NotImplementedError("Use CustomScalarAdapters instead")
   }
 }
