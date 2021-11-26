@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.gradle.internal
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.MODELS_COMPAT
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.Roots
@@ -12,6 +13,7 @@ import org.gradle.api.Project
 import org.gradle.util.GradleVersion
 import javax.inject.Inject
 
+@OptIn(ApolloExperimental::class)
 abstract class DefaultService @Inject constructor(val project: Project, override val name: String)
   : Service {
 

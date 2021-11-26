@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.compiler.introspection.toGQLDocument
@@ -22,6 +23,7 @@ enum class TargetLanguage {
   KOTLIN_1_5,
 }
 
+@ApolloExperimental
 class Options(
     /**
      * The files containing the operations and fragments
@@ -81,7 +83,7 @@ class Options(
     val useSemanticNaming: Boolean = defaultUseSemanticNaming,
     val warnOnDeprecatedUsages: Boolean = defaultWarnOnDeprecatedUsages,
     val failOnWarnings: Boolean = defaultFailOnWarnings,
-    val logger: GraphQLCompiler.Logger = defaultLogger,
+    val logger: ApolloCompiler.Logger = defaultLogger,
     val generateAsInternal: Boolean = defaultGenerateAsInternal,
     /**
      * Kotlin native will generate [Any?] for optional types
@@ -185,7 +187,7 @@ class Options(
       useSemanticNaming: Boolean = this.useSemanticNaming,
       warnOnDeprecatedUsages: Boolean = this.warnOnDeprecatedUsages,
       failOnWarnings: Boolean = this.failOnWarnings,
-      logger: GraphQLCompiler.Logger = this.logger,
+      logger: ApolloCompiler.Logger = this.logger,
       generateAsInternal: Boolean = this.generateAsInternal,
       generateFilterNotNull: Boolean = this.generateFilterNotNull,
       generateFragmentImplementations: Boolean = this.generateFragmentImplementations,
@@ -233,7 +235,7 @@ class Options(
     val defaultAlwaysGenerateTypesMatching = emptySet<String>()
     val defaultOperationOutputGenerator = OperationOutputGenerator.Default(OperationIdGenerator.Sha256)
     val defaultCustomScalarsMapping = emptyMap<String, String>()
-    val defaultLogger = GraphQLCompiler.NoOpLogger
+    val defaultLogger = ApolloCompiler.NoOpLogger
     const val defaultUseSemanticNaming = true
     const val defaultWarnOnDeprecatedUsages = true
     const val defaultFailOnWarnings = false

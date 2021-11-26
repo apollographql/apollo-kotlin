@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.introspection
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.ConversionException
 import com.apollographql.apollo3.ast.GQLArgument
 import com.apollographql.apollo3.ast.GQLArguments
@@ -33,10 +34,10 @@ import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.parseAsGQLValue
 import com.apollographql.apollo3.ast.toSchema
-import com.apollographql.apollo3.ast.withBuiltinDefinitions
 import com.apollographql.apollo3.ast.withoutBuiltinDefinitions
 import java.io.File
 
+@OptIn(ApolloExperimental::class)
 private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionSchema, filePath: String?) {
   private val sourceLocation = SourceLocation(
       filePath = filePath,
@@ -280,6 +281,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
  *
  * See https://spec.graphql.org/draft/#sel-GAHXJHABuCB_Dn6F
  */
+@ApolloExperimental
 fun IntrospectionSchema.toGQLDocument(filePath: String? = null): GQLDocument = GQLDocumentBuilder(this, filePath)
     .toGQLDocument()
     /**
@@ -292,8 +294,10 @@ fun IntrospectionSchema.toGQLDocument(filePath: String? = null): GQLDocument = G
  *
  * In the process, the builtin definitions are removed and added again.
  */
+@ApolloExperimental
 fun IntrospectionSchema.toSchema(): Schema = toGQLDocument().toSchema()
 
+@ApolloExperimental
 fun File.toGQLDocument(): GQLDocument {
   return if (extension == "json") {
     toIntrospectionSchema().toGQLDocument(filePath = path)

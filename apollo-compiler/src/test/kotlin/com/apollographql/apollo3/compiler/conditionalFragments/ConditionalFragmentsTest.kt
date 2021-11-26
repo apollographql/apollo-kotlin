@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.compiler.conditionalFragments
 
-import com.apollographql.apollo3.compiler.GraphQLCompiler
+import com.apollographql.apollo3.compiler.ApolloCompiler
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 import com.apollographql.apollo3.compiler.Options
@@ -13,7 +13,7 @@ class ConditionalFragmentsTest {
   @Test
   fun `responseBased codegen fails with conditional fragments`() {
     val throwable = assertFails {
-      GraphQLCompiler.write(
+      ApolloCompiler.write(
           Options(
               executableFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/operations.graphql")),
               schemaFile = File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/schema.graphqls"),
@@ -32,7 +32,7 @@ class ConditionalFragmentsTest {
 
   @Test
   fun `operationBased codegen succeeds with conditional fragments`() {
-    GraphQLCompiler.write(
+    ApolloCompiler.write(
         Options(
             executableFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/operations.graphql")),
             schemaFile = File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/schema.graphqls"),

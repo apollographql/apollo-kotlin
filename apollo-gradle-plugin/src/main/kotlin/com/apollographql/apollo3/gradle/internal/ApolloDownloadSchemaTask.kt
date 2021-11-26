@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.gradle.internal
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toSchema
@@ -22,6 +23,7 @@ import java.util.Locale
  *
  * This task can either be configured from the command line or from the gradle scripts
  */
+@OptIn(ApolloExperimental::class)
 abstract class ApolloDownloadSchemaTask : DefaultTask() {
   @get:Optional
   @get:Input

@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.ast
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import okio.buffer
 import okio.source
 
@@ -34,6 +35,7 @@ fun builtinDefinitions() = definitionsFromResources("builtins.graphqls")
 fun apolloDefinitions() = definitionsFromResources("apollo.graphqls")
 
 
+@OptIn(ApolloExperimental::class)
 private fun definitionsFromResources(name: String): List<GQLDefinition> {
   return GQLDocument::class.java.getResourceAsStream("/$name")!!
       .source()

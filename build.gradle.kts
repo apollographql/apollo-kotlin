@@ -186,11 +186,23 @@ plugins.withType<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin> {
 rootProject.configureJapiCmp()
 
 configure<kotlinx.validation.ApiValidationExtension> {
+  ignoredPackages.addAll(
+      listOf(
+          /**
+           * We rely on annotations or "internal" visibility to hide the non-public APIs in general
+           *
+           * The Gradle plugin is an exception to this rule as tasks and other classes must be public in order for Gradle to instantiate
+           * and decorate them.
+           */
+          "com.apollographql.apollo3.gradle.internal"
+      )
+  )
   ignoredProjects.addAll(
       listOf(
           "apollo-compiler",
           "apollo-ast",
-          "apollo-testing-support"
+          "apollo-testing-support",
+          "apollo-mockserver"
       )
   )
   nonPublicMarkers.addAll(

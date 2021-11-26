@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.gradle.internal
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLArgument
 import com.apollographql.apollo3.ast.GQLArguments
 import com.apollographql.apollo3.ast.GQLDefinition
@@ -31,6 +32,7 @@ import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.gradle.internal.SchemaDownloader.cast
 import okio.Buffer
 
+
 private fun GQLDefinition.score(): String {
   // Fragments always go first
   return when (this) {
@@ -61,6 +63,7 @@ private fun isEmpty(s: String?): Boolean {
   return s == null || s.trim { it <= ' ' }.length == 0
 }
 
+@OptIn(ApolloExperimental::class)
 private fun <T : GQLNode> List<T>.join(
     writer: SDLWriter,
     separator: String = " ",
@@ -82,6 +85,7 @@ private fun <T : GQLNode> List<T>.join(
  * A document printer that can use " " as a separator for field arguments when the line becomes bigger than 80 chars
  * as in graphql-js: https://github.com/graphql/graphql-js/blob/6453612a6c40a1f8ad06845f1516c5f0dafa666c/src/language/printer.ts#L62
  */
+@OptIn(ApolloExperimental::class)
 private fun printDocument(gqlNode: GQLNode): String {
   val buffer = Buffer()
 
@@ -121,6 +125,7 @@ private fun printDocument(gqlNode: GQLNode): String {
   return buffer.readUtf8()
 }
 
+@OptIn(ApolloExperimental::class)
 fun GQLNode.copyWithSortedChildren(): GQLNode {
   return when (this) {
     is GQLDocument -> {
@@ -154,6 +159,7 @@ fun GQLNode.copyWithSortedChildren(): GQLNode {
   }
 }
 
+@OptIn(ApolloExperimental::class)
 fun GQLNode.sort(): GQLNode {
   val newChildren = children.mapNotNull { it.sort() }
   val nodeContainer = NodeContainer(newChildren)
@@ -162,6 +168,7 @@ fun GQLNode.sort(): GQLNode {
   }.copyWithSortedChildren()
 }
 
+@OptIn(ApolloExperimental::class)
 object RegisterOperations {
   private val mutation = """
       mutation RegisterOperations(

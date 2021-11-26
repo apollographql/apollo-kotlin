@@ -50,7 +50,7 @@ class CodegenTest {
     options.outputDir.deleteRecursively()
 
     val codegenDuration = measureTime {
-      GraphQLCompiler.write(options)
+      ApolloCompiler.write(options)
     }
     val targetLanguagePath = if (options.targetLanguage == JAVA) "java" else "kotlin"
 
