@@ -80,7 +80,7 @@ class OptimisticDataTest {
             assertEquals("Cat", it.species)
           }
 
-          server.enqueue(MockResponse(statusCode = 500, delayMillis = 200))
+          server.enqueue(MockResponse(statusCode = 500, delayMillis = 400))
           launch {
             val mutation = UpdateAnimalNameMutation(AnimalInput("Irrelevant"))
             try {
@@ -94,7 +94,7 @@ class OptimisticDataTest {
 
           server.enqueue(MockResponse(statusCode = 501, delayMillis = 10_000))
           val job = launch {
-            delay(100)
+            delay(200)
             val mutation = UpdateAnimalSpeciesMutation(AnimalInput("Irrelevant"))
             apolloClient.mutation(mutation)
                 .optimisticUpdates(optimisticSpeciesData("Dog"))
@@ -107,12 +107,12 @@ class OptimisticDataTest {
             assertEquals("Cat", it.species)
           }
           awaitItem().let {
-            // t + 100ms: Optimistic species change
+            // t + 200ms: Optimistic species change
             assertEquals("Medor", it.name)
             assertEquals("Dog", it.species)
           }
           awaitItem().let {
-            // t + 200ms: Failure, rollback name change
+            // t + 400ms: Failure, rollback name change
             assertEquals("Noushka", it.name)
             assertEquals("Dog", it.species)
           }
