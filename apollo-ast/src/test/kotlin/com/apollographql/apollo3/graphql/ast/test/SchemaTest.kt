@@ -1,8 +1,10 @@
 package com.apollographql.apollo3.graphql.ast.test
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.toSchema
 import org.junit.Test
 
+@OptIn(ApolloExperimental::class)
 class SchemaTest {
   @Test
   fun schemaMayContainBuiltinDirectives() {

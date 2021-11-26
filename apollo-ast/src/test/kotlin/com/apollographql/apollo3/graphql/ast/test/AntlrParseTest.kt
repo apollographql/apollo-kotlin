@@ -1,9 +1,11 @@
 package com.apollographql.apollo3.graphql.ast.test
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import org.junit.Test
 import kotlin.test.fail
 
+@OptIn(ApolloExperimental::class)
 class AntlrParseTest {
   @Test
   fun extraTokensAtEndOfFileAreDetected() {
