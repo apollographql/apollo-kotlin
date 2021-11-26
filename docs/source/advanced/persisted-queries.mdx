@@ -25,6 +25,12 @@ val apolloClient = ApolloClient.Builder()
     .build()
 ```
 
+## Disable persisted queries for some queries
+
+You may want to disable server side caching like for some users data that is updated often. In order to do that, set `hashedQuery` to false like:
+```kotlin
+apolloClient.query(myQuery).hashedQuery(false).toFlow()
+```
 
 ## operationOutput.json
 
