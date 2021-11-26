@@ -67,6 +67,7 @@ interface Upload {
     fun fromSource(source: BufferedSource, contentLength: Long = -1, fileName: String? = null, contentType: String = "text/plain"): Upload {
       return DefaultUpload.Builder()
           .content(source)
+          .contentLength(contentLength)
           .apply {
             if (fileName != null) {
               fileName(fileName)
