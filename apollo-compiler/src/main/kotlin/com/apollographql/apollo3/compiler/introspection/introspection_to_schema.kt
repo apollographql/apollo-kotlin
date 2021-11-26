@@ -34,7 +34,11 @@ import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.parseAsGQLValue
 import com.apollographql.apollo3.ast.toSchema
+import com.apollographql.apollo3.ast.validateAsSchema
 import com.apollographql.apollo3.ast.withoutBuiltinDefinitions
+import com.apollographql.apollo3.compiler.buffer
+import okio.buffer
+import okio.source
 import java.io.File
 
 @OptIn(ApolloExperimental::class)
@@ -143,7 +147,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     }
     try {
       if (this is String) {
-        return parseAsGQLValue().getOrThrow()
+        return buffer().parseAsGQLValue().valueAssertNoErrors()
       }
     } catch (e: Exception) {
       println("Wrongly encoded default value: $this: ${e.message}")
@@ -295,13 +299,19 @@ fun IntrospectionSchema.toGQLDocument(filePath: String? = null): GQLDocument = G
  * In the process, the builtin definitions are removed and added again.
  */
 @ApolloExperimental
-fun IntrospectionSchema.toSchema(): Schema = toGQLDocument().toSchema()
+fun IntrospectionSchema.toSchema(): Schema = toGQLDocument().validateAsSchema().valueAssertNoErrors()
 
+/**
+ * Transforms the given file to a [GQLDocument] without doing validation
+ */
 @ApolloExperimental
-fun File.toGQLDocument(): GQLDocument {
+fun File.toSchemaGQLDocument(): GQLDocument {
   return if (extension == "json") {
     toIntrospectionSchema().toGQLDocument(filePath = path)
   } else {
-    parseAsGQLDocument().getOrThrow()
+    source().buffer().parseAsGQLDocument(filePath = path).valueAssertNoErrors()
   }
 }
+
+@ApolloExperimental
+fun File.toSchema(): Schema = toSchemaGQLDocument().validateAsSchema().valueAssertNoErrors()

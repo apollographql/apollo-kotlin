@@ -1,6 +1,9 @@
-package test.outofbounds
+package test
 
+import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
+import okio.buffer
+import okio.source
 import org.junit.Test
 import outofbounds.GetAnimalQuery
 import java.io.File
@@ -8,8 +11,6 @@ import java.io.File
 class OutOfBoundsTest {
   @Test
   fun checkOutOfBounds() {
-    val data = GetAnimalQuery().parseJsonResponse(
-        string = File("src/main/json/response.json").readText(),
-    ).dataAssertNoErrors
+    GetAnimalQuery().parseJsonResponse(File("src/main/json/response.json").source().buffer().jsonReader()).dataAssertNoErrors
   }
 }

@@ -1,7 +1,5 @@
 package test.schema
 
-import com.apollographql.apollo3.integration.normalizer.type.Character
-import com.apollographql.apollo3.integration.normalizer.type.Starship
 import schema.type.Animal
 import schema.type.Cat
 import schema.type.Crocodile

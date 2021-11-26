@@ -6,8 +6,10 @@ import com.apollographql.apollo3.ast.GQLSchemaDefinition
 import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.apolloDefinitions
-import com.apollographql.apollo3.ast.toSchema
+import com.apollographql.apollo3.ast.validateAsSchema
 import com.apollographql.apollo3.compiler.introspection.toGQLDocument
+import com.apollographql.apollo3.compiler.introspection.toSchema
+import com.apollographql.apollo3.compiler.introspection.toSchemaGQLDocument
 import java.io.File
 
 
@@ -35,7 +37,7 @@ class IncomingOptions(
       }
 
       val schemaDocuments = schemaFiles.map {
-        it.toGQLDocument()
+        it.toSchemaGQLDocument()
       }
 
       // Locate the mainSchemaDocument. It's the one that contains the operation roots
@@ -56,7 +58,7 @@ class IncomingOptions(
           filePath = null
       )
 
-      return schemaDocument.toSchema() to mainSchemaDocument.filePath!!
+      return schemaDocument.validateAsSchema().valueAssertNoErrors() to mainSchemaDocument.filePath!!
     }
   }
 }

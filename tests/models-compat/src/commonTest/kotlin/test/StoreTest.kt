@@ -8,6 +8,7 @@ import codegen.models.fragment.HeroWithFriendsFragmentImpl
 import codegen.models.fragment.HumanWithIdFragment
 import codegen.models.fragment.HumanWithIdFragmentImpl
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
@@ -15,10 +16,11 @@ import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runTest
-import readJson
+import testFixtureToUtf8
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@OptIn(ApolloExperimental::class)
 class StoreTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
@@ -39,13 +41,13 @@ class StoreTest {
 
   @Test
   fun readFragmentFromStore() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(readJson("HeroAndFriendsWithTypename.json"))
+    mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsWithTypename.json"))
     apolloClient.query(HeroAndFriendsWithTypenameQuery()).execute()
 
     val heroWithFriendsFragment = store.readFragment(
         HeroWithFriendsFragmentImpl(),
         CacheKey("2001"),
-    )!!
+    )
     assertEquals(heroWithFriendsFragment.id, "2001")
     assertEquals(heroWithFriendsFragment.name, "R2-D2")
     assertEquals(heroWithFriendsFragment.friends?.size, 3)
@@ -59,7 +61,7 @@ class StoreTest {
     var fragment = store.readFragment(
         HumanWithIdFragmentImpl(),
         CacheKey("1000"),
-    )!!
+    )
 
     assertEquals(fragment.id, "1000")
     assertEquals(fragment.name, "Luke Skywalker")
@@ -67,14 +69,14 @@ class StoreTest {
     fragment = store.readFragment(
         HumanWithIdFragmentImpl(),
         CacheKey("1002"),
-    )!!
+    )
     assertEquals(fragment.id, "1002")
     assertEquals(fragment.name, "Han Solo")
 
     fragment = store.readFragment(
         HumanWithIdFragmentImpl(),
         CacheKey("1003"),
-    )!!
+    )
     assertEquals(fragment.id, "1003")
     assertEquals(fragment.name, "Leia Organa")
   }
@@ -84,7 +86,7 @@ class StoreTest {
    */
   @Test
   fun fragments() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(readJson("HeroAndFriendsNamesWithIDs.json"))
+    mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNamesWithIDs.json"))
     val query = HeroAndFriendsWithFragmentsQuery()
     var response = apolloClient.query(query).execute()
     assertEquals(response.data?.hero?.__typename, "Droid")

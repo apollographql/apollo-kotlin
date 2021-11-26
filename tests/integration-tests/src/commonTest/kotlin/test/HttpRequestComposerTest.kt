@@ -2,6 +2,7 @@ package test
 
 import checkTestFixture
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.http.addHttpHeader
@@ -13,10 +14,11 @@ import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@OptIn(ApolloExperimental::class)
 class HttpRequestComposerTest {
   private lateinit var mockServer: MockServer
 
-  private suspend fun setUp() {
+  private fun setUp() {
     mockServer = MockServer()
   }
 
@@ -32,7 +34,7 @@ class HttpRequestComposerTest {
 
     val bodyText = Buffer().also { httpRequest.body?.writeTo(it) }.readUtf8()
 
-    checkTestFixture(bodyText, "IntegrationTest/allPlanets.json")
+    checkTestFixture(bodyText, "allPlanets.json")
   }
 
   @Test

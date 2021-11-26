@@ -2,12 +2,14 @@ package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.Issue
-import com.apollographql.apollo3.ast.ParseResult
+import com.apollographql.apollo3.ast.GQLResult
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.validateAsExecutable
 import com.apollographql.apollo3.ast.validateAsSchema
 import com.apollographql.apollo3.compiler.TestUtils.checkExpected
 import com.apollographql.apollo3.compiler.TestUtils.testParametersForGraphQLFilesIn
+import okio.buffer
+import okio.source
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -22,22 +24,22 @@ class ValidationTest(name: String, private val graphQLFile: File) {
   private fun List<Issue>.serialize() = joinToString(separator) {
     "${it.severity}: ${it.javaClass.simpleName} (${it.sourceLocation.line}:${it.sourceLocation.position})\n${it.message}"
   }
-  
+
   @Test
   fun testValidation() = checkExpected(graphQLFile) { schema ->
-    val issues = if (graphQLFile.parentFile.name == "operation" || graphQLFile.parentFile.parentFile.name == "operation" ) {
-      val parseResult = graphQLFile.parseAsGQLDocument()
+    val parseResult = graphQLFile.source().buffer().parseAsGQLDocument()
 
-      when (parseResult) {
-        is ParseResult.Error -> parseResult.issues
-        is ParseResult.Success -> parseResult.value.validateAsExecutable(schema!!)
+    val issues = if (graphQLFile.parentFile.name == "operation" || graphQLFile.parentFile.parentFile.name == "operation") {
+      if (parseResult.issues.isNotEmpty()) {
+        parseResult.issues
+      } else {
+        parseResult.valueAssertNoErrors().validateAsExecutable(schema!!).issues
       }
     } else {
-      val parseResult = graphQLFile.parseAsGQLDocument()
-
-      when (parseResult) {
-        is ParseResult.Error -> parseResult.issues
-        is ParseResult.Success -> parseResult.value.validateAsSchema()
+      if (parseResult.issues.isNotEmpty()) {
+        parseResult.issues
+      } else {
+        parseResult.valueAssertNoErrors().validateAsSchema().issues
       }
     }
     issues.serialize()

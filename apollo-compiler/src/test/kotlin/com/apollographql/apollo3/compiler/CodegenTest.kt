@@ -12,6 +12,8 @@ import com.apollographql.apollo3.compiler.TestUtils.shouldUpdateMeasurements
 import com.apollographql.apollo3.compiler.TestUtils.shouldUpdateTestFixtures
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
+import okio.buffer
+import okio.source
 import org.junit.AfterClass
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -178,7 +180,7 @@ class CodegenTest {
           .sortedBy { it.name }
           .map { file ->
             val queryFile = checkNotNull(file.walk().find { it.extension == "graphql" })
-            val hasFragments = queryFile.parseAsGQLDocument().getOrThrow().hasFragments()
+            val hasFragments = queryFile.source().buffer().parseAsGQLDocument().valueAssertNoErrors().hasFragments()
 
             when {
               hasFragments -> {

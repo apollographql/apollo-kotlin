@@ -4,11 +4,13 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLOperationDefinition
-import com.apollographql.apollo3.ast.toExecutableGQLDefinitions
-import com.apollographql.apollo3.ast.toSchema
+import com.apollographql.apollo3.ast.toExecutableDefinitions
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.transformation.addRequiredFields
+import com.apollographql.apollo3.compiler.introspection.toSchema
 import com.google.common.truth.Truth.assertThat
+import okio.buffer
+import okio.source
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -24,7 +26,7 @@ class TypenameTest(val name: String, private val graphQLFile: File) {
     val schemaFile = File("src/test/graphql/schema.sdl")
     val schema = schemaFile.toSchema()
 
-    val definitions = graphQLFile.toExecutableGQLDefinitions(schema)
+    val definitions = graphQLFile.source().buffer().toExecutableDefinitions(schema)
 
     val documentWithTypename = GQLDocument(
         definitions = definitions.map {

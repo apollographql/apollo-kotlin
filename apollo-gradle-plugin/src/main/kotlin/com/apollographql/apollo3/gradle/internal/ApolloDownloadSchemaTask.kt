@@ -5,10 +5,12 @@ import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.ast.toUtf8
+import com.apollographql.apollo3.ast.validateAsSchema
 import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
 import com.apollographql.apollo3.compiler.introspection.toGQLDocument
 import com.apollographql.apollo3.compiler.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.compiler.toJson
+import okio.Buffer
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
@@ -16,7 +18,6 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
 import java.io.File
-import java.util.Locale
 
 /**
  * A task to download a schema either from introspection or from the registry.
@@ -109,7 +110,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
             key = key,
             variant = graphVariant ?: "current",
             endpoint = registryUrl.orNull ?: "https://graphql.api.apollographql.com/api/graphql"
-        ).parseAsGQLDocument().getOrThrow()
+        ).let { Buffer().writeUtf8(it) }.parseAsGQLDocument().valueAssertNoErrors()
       }
       else -> {
         throw IllegalArgumentException("Apollo: either --endpoint or --graph is required")
@@ -120,7 +121,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
 
     if (schema.extension.lowercase() == "json") {
       if (introspectionSchema == null) {
-        introspectionSchema = gqlSchema!!.toSchema().toIntrospectionSchema()
+        introspectionSchema = gqlSchema!!.validateAsSchema().valueAssertNoErrors().toIntrospectionSchema()
       }
       schema.writeText(introspectionSchema.toJson(indent = "  "))
     } else {

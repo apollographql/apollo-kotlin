@@ -5,6 +5,7 @@ import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.SourceAwareException
 import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.compiler.Options.Companion.defaultCustomScalarsMapping
+import com.apollographql.apollo3.compiler.introspection.toSchema
 import com.google.common.truth.Truth
 import org.junit.Assert.fail
 import org.junit.Before

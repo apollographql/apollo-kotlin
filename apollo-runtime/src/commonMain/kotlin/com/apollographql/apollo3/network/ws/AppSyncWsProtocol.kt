@@ -2,17 +2,16 @@ package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableAnyAdapter
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer.Companion.appendQueryParameters
-import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
-import com.apollographql.apollo3.api.json.internal.Utils
-import com.apollographql.apollo3.api.toJson
+import com.apollographql.apollo3.api.json.internal.buildJsonByteString
+import com.apollographql.apollo3.api.json.internal.writeAny
+import com.apollographql.apollo3.api.toJsonString
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import kotlinx.coroutines.withTimeout
-import okio.Buffer
-
 
 /**
  * A [WsProtocol] for https://docs.aws.amazon.com/appsync/latest/devguide/real-time-websocket-client.html
@@ -43,7 +42,8 @@ class AppSyncWsProtocol(
 
   override fun <D : Operation.Data> startOperation(request: ApolloRequest<D>) {
     // AppSync encodes the data as a String
-    val data = NullableAnyAdapter.toJson(DefaultHttpRequestComposer.composePayload(request))
+    val data = NullableAnyAdapter.toJsonString(DefaultHttpRequestComposer.composePayload(request), CustomScalarAdapters.Empty, )
+
     sendMessageMapText(
         mapOf(
             "type" to "start",
@@ -145,10 +145,10 @@ class AppSyncWsProtocol(
             ))
 
     private fun Map<String, Any?>.base64Encode(): String {
-      val buffer = Buffer()
       @OptIn(ApolloInternal::class)
-      Utils.writeToJson(this, BufferedSinkJsonWriter(buffer))
-      return buffer.readByteString().base64()
+      return buildJsonByteString {
+        writeAny(this@base64Encode)
+      }.base64()
     }
   }
 }

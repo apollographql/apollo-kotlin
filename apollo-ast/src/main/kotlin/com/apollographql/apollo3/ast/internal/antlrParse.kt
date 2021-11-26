@@ -6,8 +6,9 @@
 package com.apollographql.apollo3.ast.internal
 
 import com.apollographql.apollo3.ast.Issue
-import com.apollographql.apollo3.ast.ParseResult
+import com.apollographql.apollo3.ast.GQLResult
 import com.apollographql.apollo3.ast.SourceLocation
+import com.apollographql.apollo3.ast.containsError
 import com.apollographql.apollo3.generated.antlr.GraphQLLexer
 import okio.BufferedSource
 import org.antlr.v4.runtime.BaseErrorListener
@@ -33,7 +34,7 @@ internal fun <T : RuleContext, R: Any> antlrParse(
     filePath: String? = null,
     startRule: (AntlrGraphQLParser) -> T,
     convert: (T) -> R
-): ParseResult<R> {
+): GQLResult<R> {
   val parser = AntlrGraphQLParser(
       CommonTokenStream(
           GraphQLLexer(
@@ -78,9 +79,11 @@ internal fun <T : RuleContext, R: Any> antlrParse(
     )
   }
 
-  return if (issues.isNotEmpty()) {
-    ParseResult.Error(issues)
+  val value = if (issues.containsError()) {
+    // If there is any parsing error, we can't convert to our internal AST
+    null
   } else {
-    ParseResult.Success(convert(result))
+    convert(result)
   }
+  return GQLResult(value, issues)
 }

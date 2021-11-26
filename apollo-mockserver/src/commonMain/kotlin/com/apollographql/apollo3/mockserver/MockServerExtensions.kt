@@ -1,6 +1,8 @@
+@file:JvmName("-MockServers")
 package com.apollographql.apollo3.mockserver
 
 import okio.ByteString.Companion.encodeUtf8
+import kotlin.jvm.JvmName
 
 fun MockServer.enqueue(string: String, delayMs: Long = 0) {
   val byteString = string.encodeUtf8()

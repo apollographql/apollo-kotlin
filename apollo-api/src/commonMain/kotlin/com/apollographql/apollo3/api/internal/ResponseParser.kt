@@ -1,69 +1,50 @@
 package com.apollographql.apollo3.api.internal
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.MapJsonReader
-import com.apollographql.apollo3.api.json.internal.Utils.readRecursively
+import com.apollographql.apollo3.api.json.readAny
 import com.apollographql.apollo3.api.nullable
 import com.benasher44.uuid.uuid4
-import okio.BufferedSource
 import okio.use
 
 /**
- * [ResponseBodyParser] parses network responses, including data, errors and extensions from a [JsonReader]
+ * [ResponseParser] parses network responses, including data, errors and extensions from a [JsonReader]
  */
-internal object ResponseBodyParser {
+internal object ResponseParser {
   fun <D : Operation.Data> parse(
       jsonReader: JsonReader,
       operation: Operation<D>,
       customScalarAdapters: CustomScalarAdapters,
-  ): ApolloResponse<D> {
-    jsonReader.beginObject()
+  ): ApolloResponse<D>  {
+    @Suppress("NAME_SHADOWING")
+    return jsonReader.use { jsonReader ->
+      jsonReader.beginObject()
 
-    var data: D? = null
-    var errors: List<Error>? = null
-    var extensions: Map<String, Any?>? = null
-    while (jsonReader.hasNext()) {
-      @Suppress("UNCHECKED_CAST")
-      when (jsonReader.nextName()) {
-        "data" -> data = operation.adapter().nullable().fromJson(jsonReader, customScalarAdapters)
-        "errors" -> errors = jsonReader.readErrors()
-        "extensions" -> extensions = jsonReader.readRecursively() as? Map<String, Any?>
-        else -> jsonReader.skipValue()
+      var data: D? = null
+      var errors: List<Error>? = null
+      var extensions: Map<String, Any?>? = null
+      while (jsonReader.hasNext()) {
+        @Suppress("UNCHECKED_CAST")
+        @OptIn(ApolloInternal::class)
+        when (jsonReader.nextName()) {
+          "data" -> data = operation.adapter().nullable().fromJson(jsonReader, customScalarAdapters)
+          "errors" -> errors = jsonReader.readErrors()
+          "extensions" -> extensions = jsonReader.readAny() as? Map<String, Any?>
+          else -> jsonReader.skipValue()
+        }
       }
+
+      jsonReader.endObject()
+
+      ApolloResponse.Builder(requestUuid = uuid4(), operation = operation, data = data).errors(errors)
+          .extensions(extensions)
+          .build()
     }
-
-    jsonReader.endObject()
-
-    return ApolloResponse.Builder(requestUuid = uuid4(), operation = operation, data = data).errors(errors)
-        .extensions(extensions)
-        .build()
-  }
-
-  fun <D : Operation.Data> parse(
-      source: BufferedSource,
-      operation: Operation<D>,
-      customScalarAdapters: CustomScalarAdapters,
-  ): ApolloResponse<D> {
-    return BufferedSourceJsonReader(source).use { jsonReader ->
-      parse(jsonReader, operation, customScalarAdapters)
-    }
-  }
-
-  fun <D : Operation.Data> parse(
-      payload: Map<String, Any?>,
-      operation: Operation<D>,
-      customScalarAdapters: CustomScalarAdapters,
-  ): ApolloResponse<D> {
-    return parse(
-        MapJsonReader(payload),
-        operation = operation,
-        customScalarAdapters = customScalarAdapters
-    )
   }
 
   fun parseError(
@@ -104,11 +85,14 @@ internal object ResponseBodyParser {
           path = readPath()
         }
         "extensions" -> {
-          extensions = readRecursively() as? Map<String, Any?>?
+          @OptIn(ApolloInternal::class)
+
+          extensions = readAny() as? Map<String, Any?>?
         }
         else -> {
           if (nonStandardFields == null) nonStandardFields = mutableMapOf()
-          nonStandardFields[name] = readRecursively()
+          @OptIn(ApolloInternal::class)
+          nonStandardFields[name] = readAny()
         }
       }
     }

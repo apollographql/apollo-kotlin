@@ -3,18 +3,13 @@
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
-import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.MapJsonWriter
-import com.apollographql.apollo3.api.json.internal.Utils
-import com.apollographql.apollo3.api.json.internal.Utils.readRecursively
-import okio.Buffer
-import okio.BufferedSink
-import okio.BufferedSource
+import com.apollographql.apollo3.api.json.internal.buildJsonString
+import com.apollographql.apollo3.api.json.internal.writeAny
+import com.apollographql.apollo3.api.json.readAny
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmSuppressWildcards
@@ -171,12 +166,13 @@ val BooleanAdapter = object  : Adapter<Boolean> {
 @JvmField
 val AnyAdapter = object : Adapter<Any> {
   fun fromJson(reader: JsonReader): Any {
-    return reader.readRecursively()!!
+    @OptIn(ApolloInternal::class)
+    return reader.readAny()!!
   }
 
   fun toJson(writer: JsonWriter, value: Any) {
     @OptIn(ApolloInternal::class)
-    Utils.writeToJson(value, writer)
+    writer.writeAny(value)
   }
 
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Any {
@@ -249,7 +245,7 @@ class ObjectAdapter<T>(
        * And write to the original writer
        */
       @OptIn(ApolloInternal::class)
-      Utils.writeToJson(mapWriter.root()!!, writer)
+      writer.writeAny(mapWriter.root()!!)
     } else {
       writer.beginObject()
       wrappedAdapter.toJson(writer, customScalarAdapters, value)
@@ -268,109 +264,7 @@ fun <T> Adapter<T>.obj(buffered: Boolean = false) = ObjectAdapter(this, buffered
 fun <T> Adapter<T>.optional() = OptionalAdapter(this)
 
 
-/**
- * Converts the given value to a Json String
- */
 @JvmName("-toJson")
-fun <T> Adapter<T>.toJson(
-    value: T,
-    customScalarAdapters: CustomScalarAdapters,
-    indent: String,
-): String {
-  val buffer = Buffer()
-
-  toJson(buffer, value, customScalarAdapters, indent)
-  return buffer.readUtf8()
-}
-
-/**
- * See [toJson]
- */
-@JvmName("-toJson")
-fun <T> Adapter<T>.toJson(
-    value: T,
-): String = toJson(value, CustomScalarAdapters.Empty, "  ")
-
-/**
- * See [toJson]
- */
-@JvmName("-toJson")
-fun <T> Adapter<T>.toJson(
-    sink: BufferedSink,
-    value: T,
-    customScalarAdapters: CustomScalarAdapters,
-    indent: String,
-) {
-  val writer = BufferedSinkJsonWriter(sink, indent)
-  toJson(writer, customScalarAdapters, value)
-}
-
-/**
- * See [toJson]
- */
-@JvmName("-toJson")
-fun <T> Adapter<T>.toJson(
-    sink: BufferedSink,
-    value: T,
-): Unit = toJson(sink, value, CustomScalarAdapters.Empty, "  ")
-
-/**
- * Converts the given [bufferedSource] to a [T]
- */
-@JvmName("-fromJson")
-fun <T> Adapter<T>.fromJson(
-    bufferedSource: BufferedSource,
-    customScalarAdapters: CustomScalarAdapters,
-): T {
-  return fromJson(BufferedSourceJsonReader(bufferedSource), customScalarAdapters)
-}
-
-/**
- * See [fromJson]
- */
-@JvmName("-fromJson")
-fun <T> Adapter<T>.fromJson(
-    bufferedSource: BufferedSource,
-): T  = fromJson(bufferedSource, CustomScalarAdapters.Empty)
-
-/**
- * See [fromJson]
- */
-@JvmName("-fromJson")
-fun <T> Adapter<T>.fromJson(
-    string: String,
-    customScalarAdapters: CustomScalarAdapters,
-): T {
-  return fromJson(Buffer().apply { writeUtf8(string) }, customScalarAdapters)
-}
-
-/**
- * See [fromJson]
- */
-@JvmName("-fromJson")
-fun <T> Adapter<T>.fromJson(
-    string: String,
-): T {
-  return fromJson(Buffer().apply { writeUtf8(string) }, CustomScalarAdapters.Empty)
-}
-
-/**
- * Converts the given Map to a [T]
- */
-@JvmName("-fromMap")
-fun <T, M : Map<String, Any?>> Adapter<T>.fromMap(
-    map: M,
-    customScalarAdapters: CustomScalarAdapters,
-): T {
-  return fromJson(MapJsonReader(map), customScalarAdapters)
-}
-
-/**
- * See [fromMap]
- */
-@JvmName("-fromMap")
-fun <T, M : Map<String, Any?>> Adapter<T>.fromMap(
-    map: M,
-): T {
-  return fromJson(MapJsonReader(map), CustomScalarAdapters.Empty)
+fun <T> Adapter<T>.toJsonString(value: T, customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty, indent: String? = null): String = buildJsonString(indent) {
+  this@toJsonString.toJson(this, customScalarAdapters, value)
 }

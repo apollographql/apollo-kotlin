@@ -1,6 +1,8 @@
 package com.apollographql.apollo3.ast
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.ast.internal.buffer
+import okio.Buffer
 
 /**
  * A wrapper around a schema GQLDocument that:
@@ -146,9 +148,9 @@ class Schema(
     }
     @OptIn(ApolloExperimental::class)
     return directives.flatMap {
-      (it.arguments!!.arguments.first().value as GQLStringValue).value.parseAsGQLSelections().getOrThrow().map {
+      (it.arguments!!.arguments.first().value as GQLStringValue).value.buffer().parseAsGQLSelections().valueAssertNoErrors().map { gqlSelection ->
         // No need to check here, this should be done during validation
-        (it as GQLField).name
+        (gqlSelection as GQLField).name
       }
     }.toSet()
   }

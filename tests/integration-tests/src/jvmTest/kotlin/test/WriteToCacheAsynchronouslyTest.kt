@@ -12,7 +12,7 @@ import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runTest
 import kotlinx.coroutines.asCoroutineDispatcher
-import readResource
+import testFixtureToUtf8
 import java.util.concurrent.Executors
 import kotlin.test.Test
 import kotlin.test.assertNotNull
@@ -50,7 +50,7 @@ class WriteToCacheAsynchronouslyTest {
   fun writeToCacheAsynchronously() = runTest(dispatcher, { setUp() }, { tearDown() }) {
     val query = HeroAndFriendsNamesQuery(Episode.JEDI)
 
-    mockServer.enqueue(readResource("HeroAndFriendsNameResponse.json"))
+    mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNameResponse.json"))
     apolloClient.query(query)
         .writeToCacheAsynchronously(true)
         .execute()
@@ -67,7 +67,7 @@ class WriteToCacheAsynchronouslyTest {
   fun writeToCacheSynchronously() = runTest(dispatcher, { setUp() }, { tearDown() }) {
     val query = HeroAndFriendsNamesQuery(Episode.JEDI)
 
-    mockServer.enqueue(readResource("HeroAndFriendsNameResponse.json"))
+    mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNameResponse.json"))
     apolloClient.query(query)
         .writeToCacheAsynchronously(false)
         .execute()

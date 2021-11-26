@@ -1,7 +1,9 @@
 package com.apollographql.apollo3.graphql.ast.test
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.ast.toSchema
+import com.apollographql.apollo3.ast.internal.buffer
+import com.apollographql.apollo3.ast.parseAsGQLDocument
+import com.apollographql.apollo3.ast.validateAsSchema
 import org.junit.Test
 
 @OptIn(ApolloExperimental::class)
@@ -20,6 +22,6 @@ class SchemaTest {
       }
     """.trimIndent()
 
-    schemaString.toSchema()
+    schemaString.buffer().parseAsGQLDocument().valueAssertNoErrors().validateAsSchema().valueAssertNoErrors()
   }
 }

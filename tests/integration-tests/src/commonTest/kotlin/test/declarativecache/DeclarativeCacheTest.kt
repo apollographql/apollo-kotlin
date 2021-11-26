@@ -1,5 +1,6 @@
 package test.declarativecache
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Executable
@@ -18,6 +19,7 @@ import declarativecache.GetPromoLibraryQuery
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@OptIn(ApolloExperimental::class)
 class DeclarativeCacheTest {
 
   @Test

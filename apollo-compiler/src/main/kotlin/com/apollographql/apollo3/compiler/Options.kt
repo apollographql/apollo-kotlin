@@ -3,7 +3,9 @@ package com.apollographql.apollo3.compiler
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.toSchema
+import com.apollographql.apollo3.ast.validateAsSchema
 import com.apollographql.apollo3.compiler.introspection.toGQLDocument
+import com.apollographql.apollo3.compiler.introspection.toSchema
 import java.io.File
 
 
@@ -162,7 +164,7 @@ class Options(
       packageName: String = "",
   ) : this(
       executableFiles = executableFiles,
-      schema = schemaFile.toGQLDocument().toSchema(),
+      schema = schemaFile.toSchema(),
       outputDir = outputDir,
       testDir = testDir,
       schemaPackageName = packageName,

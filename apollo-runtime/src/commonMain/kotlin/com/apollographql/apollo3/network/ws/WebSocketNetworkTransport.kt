@@ -4,6 +4,7 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.internal.BackgroundDispatcher
@@ -101,7 +102,7 @@ class WebSocketNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder in
 
         if (protocol == null) {
           if (command !is StartOperation<*>) {
-            // A stop was received but we don't have a connection. Ignore it
+            // A stop was received, but we don't have a connection. Ignore it
             continue
           }
 
@@ -180,7 +181,7 @@ class WebSocketNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder in
         is GeneralError -> {
           // The server sends an error without an operation id. This happens when sending an unknown message type
           // to https://apollo-fullstack-tutorial.herokuapp.com/ for an example. In that case, this error is not fatal
-          // and the server will continue honouring other subscriptions so we just filter the error out and log it.
+          // and the server will continue honouring other subscriptions, so we just filter the error out and log it.
           println("Received general error while executing operation ${request.operation.name()}: ${it.payload}")
           true
         }
@@ -192,7 +193,7 @@ class WebSocketNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder in
     }.map {
       when (it) {
         is OperationResponse -> request.operation
-            .parseJsonResponse(it.payload, request.executionContext[CustomScalarAdapters]!!)
+            .parseJsonResponse(it.payload.jsonReader(), request.executionContext[CustomScalarAdapters]!!)
             .newBuilder()
             .requestUuid(request.requestUuid)
             .build()

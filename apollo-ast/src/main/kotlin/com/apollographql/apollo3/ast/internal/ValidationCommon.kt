@@ -39,6 +39,7 @@ import com.apollographql.apollo3.ast.VariableReference
 import com.apollographql.apollo3.ast.canInputValueBeAssignedTo
 import com.apollographql.apollo3.ast.parseAsGQLSelections
 import com.apollographql.apollo3.ast.pretty
+import okio.Buffer
 
 internal interface VariableReferencesScope {
   val variableReferences: MutableList<VariableReference>
@@ -184,7 +185,7 @@ internal fun ValidationScope.extraValidateNonNullDirective(directive: GQLDirecti
     )
     val stringValue = (directive.arguments!!.arguments.first().value as GQLStringValue).value
 
-    val selections = stringValue.parseAsGQLSelections().getOrNull() ?: error("'$stringValue' is not a valid selectionSet")
+    val selections = stringValue.buffer().parseAsGQLSelections().valueAssertNoErrors()
 
     val badSelection = selections.firstOrNull { it !is GQLField }
     check(badSelection == null) {
@@ -206,7 +207,7 @@ internal fun ValidationScope.extraValidateNonNullDirective(directive: GQLDirecti
  */
 @OptIn(ApolloExperimental::class)
 internal fun ValidationScope.extraValidateTypePolicyDirective(directive: GQLDirective) {
-  (directive.arguments!!.arguments.first().value as GQLStringValue).value.parseAsGQLSelections().getOrThrow().forEach {
+  (directive.arguments!!.arguments.first().value as GQLStringValue).value.buffer().parseAsGQLSelections().valueAssertNoErrors().forEach {
     if (it !is GQLField) {
       registerIssue("Fragments are not supported in @$TYPE_POLICY directives", it.sourceLocation)
     } else if (it.selectionSet != null){
@@ -215,6 +216,7 @@ internal fun ValidationScope.extraValidateTypePolicyDirective(directive: GQLDire
   }
 }
 
+internal fun String.buffer() = Buffer().writeUtf8(this)
 
 private fun ValidationScope.validateArgument(
     argument: GQLArgument,

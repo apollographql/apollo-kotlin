@@ -1,12 +1,13 @@
 package test
 
-import IdCacheResolver
 import IdCacheKeyGenerator
+import IdCacheResolver
 import assertEquals2
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
+import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.isFromCache
@@ -18,7 +19,7 @@ import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runTest
-import readResource
+import testFixtureToUtf8
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail
@@ -28,6 +29,7 @@ import kotlin.test.fail
  *
  * XXX: Do we need a client and mockServer for these tests?
  */
+@OptIn(ApolloExperimental::class)
 class StoreTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
@@ -128,7 +130,7 @@ class StoreTest {
   }
 
   private suspend fun storeAllFriends() {
-    mockServer.enqueue(readResource("HeroAndFriendsNameWithIdsResponse.json"))
+    mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNameWithIdsResponse.json"))
     val response = apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE))
         .fetchPolicy(FetchPolicy.NetworkOnly).execute()
 

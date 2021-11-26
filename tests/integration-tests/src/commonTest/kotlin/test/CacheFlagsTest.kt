@@ -1,12 +1,13 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.toJson
-import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders
-import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
+import com.apollographql.apollo3.api.toJsonString
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
+import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders
+import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.cacheHeaders
 import com.apollographql.apollo3.cache.normalized.doNotStore
@@ -24,6 +25,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 
+@OptIn(ApolloExperimental::class)
 class CacheFlagsTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
@@ -96,7 +98,7 @@ class CacheFlagsTest {
   @Test
   fun partialResponsesAreNotStored() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = HeroNameQuery()
-    mockServer.enqueue(AnyAdapter.toJson(partialResponse))
+    mockServer.enqueue(AnyAdapter.toJsonString(partialResponse))
 
     // this should not store the response
     apolloClient.query(query).execute()
@@ -109,7 +111,7 @@ class CacheFlagsTest {
   @Test
   fun storePartialResponse() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = HeroNameQuery()
-    mockServer.enqueue(AnyAdapter.toJson(partialResponse))
+    mockServer.enqueue(AnyAdapter.toJsonString(partialResponse))
 
     // this should not store the response
     apolloClient.query(query).storePartialResponses(true).execute()

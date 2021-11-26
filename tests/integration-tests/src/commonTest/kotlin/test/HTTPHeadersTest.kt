@@ -1,8 +1,10 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.composeJsonResponse
 import com.apollographql.apollo3.api.http.valueOf
+import com.apollographql.apollo3.api.json.internal.buildJsonString
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
@@ -14,6 +16,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 
+@OptIn(ApolloExperimental::class)
 class HTTPHeadersTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
@@ -49,7 +52,9 @@ class HTTPHeadersTest {
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
-    val json = query.composeJsonResponse(data)
+    val json = buildJsonString {
+      query.composeJsonResponse(this, data)
+    }
 
     mockServer.enqueue(
         MockResponse(

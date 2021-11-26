@@ -1,13 +1,15 @@
 package test
 
 import codegen.models.AllPlanetsQuery
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.composeJsonResponse
 import com.apollographql.apollo3.api.fromJson
-import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
+import com.apollographql.apollo3.api.json.internal.buildJsonString
 import com.apollographql.apollo3.api.parseJsonResponse
 import okio.Buffer
-import readJson
+import testFixtureToJsonReader
+import testFixtureToUtf8
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -17,7 +19,7 @@ class ParseResponseBodyTest {
    */
   @Test
   fun allPlanetQuery() {
-    val data = AllPlanetsQuery().parseJsonResponse(readJson("AllPlanets.json")).data
+    val data = AllPlanetsQuery().parseJsonResponse(testFixtureToJsonReader("AllPlanets.json")).data
 
     assertEquals(data!!.allPlanets?.planets?.size, 60)
     val planets = data.allPlanets?.planets?.mapNotNull {
@@ -41,13 +43,16 @@ class ParseResponseBodyTest {
     assertEquals(firstPlanet?.filmConnection?.films?.get(0)?.fragments?.filmFragment?.producers, listOf("Gary Kurtz", "Rick McCallum"))
   }
 
+  @OptIn(ApolloInternal::class)
   @Test
   @Throws(Exception::class)
   fun operationJsonWriter() {
-    val expected = readJson("OperationJsonWriter.json")
+    val expected = testFixtureToUtf8("OperationJsonWriter.json")
     val query = AllPlanetsQuery()
-    val data = query.parseJsonResponse(expected).data
-    val actual = query.composeJsonResponse(data!!)
+    val data = query.parseJsonResponse(testFixtureToJsonReader("OperationJsonWriter.json")).data
+    val actual = buildJsonString {
+      query.composeJsonResponse(this, data!!)
+    }
 
     /**
      * operationBased models do not respect the order of fields

@@ -1,11 +1,14 @@
 package com.apollographql.apollo3.testing
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import okio.FileSystem
 
 /**
  * reads a file in the testFixtures/ folder
  */
 @ApolloExperimental
-expect fun readFile(path: String): String
+expect val HostFileSystem: FileSystem
+
 @ApolloExperimental
-expect fun checkFile(actualText: String, path: String)
+expect fun shouldUpdateTestFixtures(): Boolean
+

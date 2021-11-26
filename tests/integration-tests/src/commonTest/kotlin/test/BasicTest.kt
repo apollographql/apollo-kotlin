@@ -2,6 +2,7 @@ package test
 
 import IdCacheKeyGenerator
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.cache.normalized.ApolloStore
@@ -21,7 +22,7 @@ import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runTest
-import readResource
+import testFixtureToUtf8
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
@@ -34,6 +35,7 @@ import assertEquals2 as assertEquals
  * The tests are simple and are most likely already covered by the other tests but it's kept here for consistency
  * and maybe they'll catch something one day?
  */
+@OptIn(ApolloExperimental::class)
 class BasicTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
@@ -57,7 +59,7 @@ class BasicTest {
       query: Query<D>,
       block: ApolloResponse<D>.() -> Unit,
   ) = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(readResource(resourceName))
+    mockServer.enqueue(testFixtureToUtf8(resourceName))
     var response = apolloClient.query(query)
         .fetchPolicy(FetchPolicy.NetworkOnly)
         .execute()
