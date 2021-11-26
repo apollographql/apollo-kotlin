@@ -24,6 +24,9 @@ tasks.withType(KotlinCompile::class.java) {
   // This used to work and fails now. Strangely enough, it fails on both `dev-3.x` and `main` as of writing while both these branches have
   // compiled successfully before...
   dependsOn("generateGrammarSource")
+  kotlinOptions {
+    allWarningsAsErrors = true
+  }
 }
 
 val jar by tasks.getting(Jar::class) {

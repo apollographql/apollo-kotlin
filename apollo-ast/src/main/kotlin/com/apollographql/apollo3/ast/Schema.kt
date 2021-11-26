@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.ast
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
+
 /**
  * A wrapper around a schema GQLDocument that:
  * - always contain builtin types contrary to introspection that will not contain directives and SDL that will not contain
@@ -142,6 +144,7 @@ class Schema(
     if (directives.isEmpty()) {
       return null
     }
+    @OptIn(ApolloExperimental::class)
     return directives.flatMap {
       (it.arguments!!.arguments.first().value as GQLStringValue).value.parseAsGQLSelections().getOrThrow().map {
         // No need to check here, this should be done during validation

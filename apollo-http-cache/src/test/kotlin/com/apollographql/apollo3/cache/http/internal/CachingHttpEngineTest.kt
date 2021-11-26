@@ -16,8 +16,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class CachingHttpEngineTest {
-  lateinit var mockServer: MockServer
-  lateinit var engine: CachingHttpEngine
+  private lateinit var mockServer: MockServer
+  private lateinit var engine: CachingHttpEngine
 
   @Before
   fun before() {
@@ -32,12 +32,11 @@ class CachingHttpEngineTest {
     mockServer.enqueue(MockResponse(statusCode = 200, body = "success"))
 
     runBlocking {
-      val request = HttpRequest(
+      val request = HttpRequest.Builder(
           method = HttpMethod.Get,
           url = mockServer.url(),
-          body = null,
-          headers = emptyList()
-      )
+      ).build()
+
       var response = engine.execute(request)
       assertEquals("success", response.body?.readUtf8())
 
@@ -53,12 +52,10 @@ class CachingHttpEngineTest {
     mockServer.enqueue(MockResponse(statusCode = 500, body = "error"))
 
     runBlocking {
-      val request = HttpRequest(
+      val request = HttpRequest.Builder(
           method = HttpMethod.Get,
           url = mockServer.url(),
-          body = null,
-          headers = emptyList()
-      )
+      ).build()
 
       // Warm the cache
       val response = engine.execute(request)
@@ -76,12 +73,10 @@ class CachingHttpEngineTest {
     mockServer.enqueue(MockResponse(statusCode = 200, body = "success"))
 
     runBlocking {
-      val request = HttpRequest(
+      val request = HttpRequest.Builder(
           method = HttpMethod.Get,
           url = mockServer.url(),
-          body = null,
-          headers = emptyList()
-      )
+      ).build()
 
       // Warm the cache
       var response = engine.execute(request)

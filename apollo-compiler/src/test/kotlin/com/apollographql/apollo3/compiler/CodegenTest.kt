@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLFragmentSpread
 import com.apollographql.apollo3.ast.GQLInlineFragment
 import com.apollographql.apollo3.ast.GQLNode
@@ -21,7 +22,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
 @RunWith(TestParameterInjector::class)
-@OptIn(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class, ApolloExperimental::class)
 class CodegenTest {
   private class Measurement(
       val name: String,
@@ -181,6 +182,7 @@ class CodegenTest {
 
             when {
               hasFragments -> {
+                @Suppress("DEPRECATION")
                 val list = listOf(
                     Parameters(file, MODELS_OPERATION_BASED, true),
                     Parameters(file, MODELS_COMPAT, true)
@@ -316,9 +318,12 @@ class CodegenTest {
 
       val targetLanguage = if (generateKotlinModels) KOTLIN_1_5 else JAVA
       val targetLanguagePath = if (generateKotlinModels) "kotlin" else "java"
-      val flattenModels = when {
-        targetLanguage == JAVA -> true
-        else -> codegenModels == MODELS_COMPAT
+      val flattenModels = when (targetLanguage) {
+        JAVA -> true
+        else -> {
+          @Suppress("DEPRECATION")
+          codegenModels == MODELS_COMPAT
+        }
       }
 
       return Options(

@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLOperationDefinition
@@ -15,6 +16,7 @@ import java.io.File
 
 @Suppress("UNUSED_PARAMETER")
 @RunWith(Parameterized::class)
+@OptIn(ApolloExperimental::class)
 class TypenameTest(val name: String, private val graphQLFile: File) {
 
   @Test

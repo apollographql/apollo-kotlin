@@ -10,12 +10,12 @@ import java.util.regex.Pattern
  */
 
 internal fun String.singularize(): String {
-  if (uncountable.contains(this.toLowerCase(Locale.US))) return this
+  if (uncountable.contains(this.lowercase())) return this
 
-  if (exclude.contains(this.toLowerCase(Locale.US))) return this
+  if (exclude.contains(this.lowercase())) return this
 
   val capitalized = first().isUpperCase()
-  val irregular = irregular.firstOrNull { this.toLowerCase(Locale.US) == it.component2() }
+  val irregular = irregular.firstOrNull { this.lowercase() == it.component2() }
   if (irregular != null) return irregular.component1().let {
     if (capitalized) it.capitalizeFirstLetter() else it
   }

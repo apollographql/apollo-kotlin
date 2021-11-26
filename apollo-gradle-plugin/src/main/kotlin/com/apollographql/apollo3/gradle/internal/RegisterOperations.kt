@@ -19,7 +19,6 @@ import com.apollographql.apollo3.ast.GQLSelectionSet
 import com.apollographql.apollo3.ast.GQLStringValue
 import com.apollographql.apollo3.ast.GQLVariableDefinition
 import com.apollographql.apollo3.ast.NodeContainer
-import com.apollographql.apollo3.ast.NodeTransformer
 import com.apollographql.apollo3.ast.SDLWriter
 import com.apollographql.apollo3.ast.TransformResult
 import com.apollographql.apollo3.ast.toGQLDocument
@@ -244,7 +243,7 @@ object RegisterOperations {
      */
     val sortedDocument = hiddenLiterals!!.sort()
 
-    val minimized = printDocument(sortedDocument!!)
+    val minimized = printDocument(sortedDocument)
         .replace(Regex("\\s+"), " ")
         .replace(Regex("([^_a-zA-Z0-9]) ")) { it.groupValues[1] }
         .replace(Regex(" ([^_a-zA-Z0-9])")) { it.groupValues[1] }

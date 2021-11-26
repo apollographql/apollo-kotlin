@@ -53,7 +53,8 @@ enum class FetchPolicy {
 /**
  * Configures an [ApolloClient] with a normalized cache.
  *
- * @param normalizedCacheFactory a factory that creates a [NormalizedCache]. It will only be called once.
+ * @param normalizedCacheFactory a factory that creates a [com.apollographql.apollo3.cache.normalized.api.NormalizedCache].
+ * It will only be called once.
  * The reason this is a factory is to enforce creating the cache from a non-main thread. For native the thread
  * where the cache is created will also be isolated so that the cache can be mutated.
  *
@@ -89,7 +90,7 @@ fun <D : Query.Data> ApolloQueryCall<D>.watch(): Flow<ApolloResponse<D>> {
  * Gets the result from the cache first and always fetch from the network. Use this to get an early
  * cached result while also updating the network values.
  *
- * Any [FetchPolicy] on [queryRequest] will be ignored
+ * Any [FetchPolicy] previously set will be ignored
  */
 fun <D : Query.Data> ApolloQueryCall<D>.executeCacheAndNetwork(): Flow<ApolloResponse<D>> {
   return flow {
@@ -218,7 +219,7 @@ val <D : Operation.Data> ApolloResponse<D>.isFromCache
 val <D : Operation.Data> ApolloResponse<D>.cacheInfo
   get() = executionContext[CacheInfo]
 
-internal fun <D : Operation.Data> ApolloResponse<D>.withCacheInfo(cacheInfo: CacheInfo) = withExecutionContext(cacheInfo)
+internal fun <D : Operation.Data> ApolloResponse<D>.withCacheInfo(cacheInfo: CacheInfo) = newBuilder().addExecutionContext(cacheInfo).build()
 
 internal class FetchPolicyContext(val value: FetchPolicy) : ExecutionContext.Element {
   override val key: ExecutionContext.Key<*>

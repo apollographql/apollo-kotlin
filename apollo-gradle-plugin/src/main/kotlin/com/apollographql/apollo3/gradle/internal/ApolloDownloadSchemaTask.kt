@@ -118,7 +118,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
 
     schema.parentFile?.mkdirs()
 
-    if (schema.extension.toLowerCase(Locale.US) == "json") {
+    if (schema.extension.lowercase() == "json") {
       if (introspectionSchema == null) {
         introspectionSchema = gqlSchema!!.toSchema().toIntrospectionSchema()
       }

@@ -16,3 +16,9 @@ val jvmJar by tasks.getting(Jar::class) {
     attributes("Automatic-Module-Name" to "com.apollographql.apollo3.annotations")
   }
 }
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
+  kotlinOptions {
+    allWarningsAsErrors = true
+  }
+}

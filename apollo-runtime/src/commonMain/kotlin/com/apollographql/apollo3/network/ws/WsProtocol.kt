@@ -90,6 +90,7 @@ abstract class WsProtocol(
     AnyAdapter.toJson(this, CustomScalarAdapters.Empty, this@toUtf8)
   }
 
+  @Suppress("UNCHECKED_CAST")
   protected fun String.toMessageMap() = AnyAdapter.fromJson(
       BufferedSourceJsonReader(Buffer().writeUtf8(this)),
       CustomScalarAdapters.Empty
