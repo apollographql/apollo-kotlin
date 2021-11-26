@@ -38,22 +38,28 @@ class DefaultUpload internal constructor(
     private var contentType: String? = null
     private var contentLength: Long = -1
     private var fileName: String? = null
+    private val hasContent: Boolean
+      get() = bufferedSource != null || byteString != null
 
     fun content(content: BufferedSource): Builder = apply {
+      check(!hasContent) { "content() can only be called once" }
       this.bufferedSource = content
     }
 
     fun content(content: String): Builder = apply {
+      check(!hasContent) { "content() can only be called once" }
       this.byteString = content.encodeUtf8()
       this.contentLength = content.length.toLong()
     }
 
     fun content(byteString: ByteString): Builder = apply {
+      check(!hasContent) { "content() can only be called once" }
       this.byteString = byteString
       this.contentLength = byteString.size.toLong()
     }
 
     fun content(byteArray: ByteArray): Builder = apply {
+      check(!hasContent) { "content() can only be called once" }
       this.byteString = byteArray.toByteString()
       this.contentLength = byteArray.size.toLong()
     }
