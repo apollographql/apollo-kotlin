@@ -3,10 +3,10 @@ package test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
-import com.apollographql.apollo3.mockserver.NativeMockServer
+import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.mpp.currentTimeMillis
-import com.apollographql.apollo3.network.http.NSURLSessionHttpEngine
+import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.network.http.get
 import com.apollographql.apollo3.testing.runTest
 import platform.CFNetwork.kCFErrorDomainCFNetwork
@@ -54,7 +54,7 @@ class HttpEngineTest {
 
   @Test
   fun connectTimeoutIsWorking() = runTest {
-    val mockServer = NativeMockServer(2_000)
+    val mockServer = MockServer(2_000)
     // Enqueue a trivial response to not crash in the mockServer
     mockServer.enqueue("")
 
@@ -63,15 +63,15 @@ class HttpEngineTest {
 
   @Test
   fun readTimeoutIsWorking() = runTest {
-    val mockServer = NativeMockServer(0)
+    val mockServer = MockServer(0)
     // Enqueue a response with a 2 seconds delay
     mockServer.enqueue("", 2_000)
 
     assertTimeout(mockServer)
   }
 
-  private suspend fun assertTimeout(mockServer: NativeMockServer) {
-    val engine = NSURLSessionHttpEngine(timeoutMillis = 1_000)
+  private suspend fun assertTimeout(mockServer: MockServer) {
+    val engine = DefaultHttpEngine(timeoutMillis = 1_000)
 
     val before = currentTimeMillis()
     try {
