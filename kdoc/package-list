@@ -1,6 +1,12 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
-
+$dokka.location:com.apollographql.apollo3.mockserver/MockServer/enqueue/#com.apollographql.apollo3.mockserver.MockResponse/PointingToDeclaration/apollo-mockserver/com.apollographql.apollo3.mockserver/-mock-server/[jvm]enqueue.html
+$dokka.location:com.apollographql.apollo3.mockserver/MockServer/stop/#/PointingToDeclaration/apollo-mockserver/com.apollographql.apollo3.mockserver/-mock-server/[jvm]stop.html
+$dokka.location:com.apollographql.apollo3.mockserver/MockServer/takeRequest/#/PointingToDeclaration/apollo-mockserver/com.apollographql.apollo3.mockserver/-mock-server/[jvm]take-request.html
+$dokka.location:com.apollographql.apollo3.mockserver/MockServer/url/#/PointingToDeclaration/apollo-mockserver/com.apollographql.apollo3.mockserver/-mock-server/[jvm]url.html
+$dokka.location:com.apollographql.apollo3.network.http/DefaultHttpEngine/dispose/#/PointingToDeclaration/apollo-runtime/com.apollographql.apollo3.network.http/-default-http-engine/[jvm]dispose.html
+$dokka.location:com.apollographql.apollo3.network.http/DefaultHttpEngine/execute/#com.apollographql.apollo3.api.http.HttpRequest/PointingToDeclaration/apollo-runtime/com.apollographql.apollo3.network.http/-default-http-engine/[jvm]execute.html
+$dokka.location:com.apollographql.apollo3.network.ws/DefaultWebSocketEngine/open/#kotlin.String#kotlin.collections.Map[kotlin.String,kotlin.String]/PointingToDeclaration/apollo-runtime/com.apollographql.apollo3.network.ws/-default-web-socket-engine/[jvm]open.html
 module:apollo-adapters
 com.apollographql.apollo3.adapter
 module:apollo-annotations
