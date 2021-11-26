@@ -292,7 +292,7 @@ data class IrEnumType(override val name: String) : IrType(), IrNamedType
  * @param path a unique path identifying the model.
  *
  * fragmentData.$fragmentName.hero.friend
- * fragmentIface.$fragmentName.hero.friend
+ * fragmentInterface.$fragmentName.hero.friend
  * operationData.$operationName.hero.friend
  * operationData.$operationName.hero.otherFriend
  * ?
@@ -301,7 +301,7 @@ data class IrModelType(val path: String) : IrType()
 
 const val MODEL_OPERATION_DATA = "operationData"
 const val MODEL_FRAGMENT_DATA = "fragmentData"
-const val MODEL_FRAGMENT_INTERFACE = "fragmentIface"
+const val MODEL_FRAGMENT_INTERFACE = "fragmentInterface"
 const val MODEL_UNKNOWN = "?"
 
 fun IrType.makeOptional(): IrType = IrNonNullType(IrOptionalType(this))

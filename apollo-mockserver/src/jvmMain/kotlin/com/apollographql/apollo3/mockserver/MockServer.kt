@@ -5,7 +5,7 @@ import okhttp3.mockwebserver.MockWebServer
 import okio.Buffer
 import java.util.concurrent.TimeUnit
 
-actual class MockServer : MockServerIface {
+actual class MockServer : MockServerInterface {
   private val mockWebServer = MockWebServer()
 
   override fun enqueue(mockResponse: MockResponse) {

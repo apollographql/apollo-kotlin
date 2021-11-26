@@ -14,9 +14,8 @@ private fun Any.getConvention(name: String): Any? =
 // Copied from kotlin plugin
 internal fun AndroidSourceSet.kotlinSourceSet(): SourceDirectorySet? {
   val convention = (getConvention(KOTLIN_DSL_NAME) ?: getConvention(KOTLIN_JS_DSL_NAME)) ?: return null
-  val kotlinSourceSetIface =
-      convention.javaClass.interfaces.find { it.name == KotlinSourceSet::class.qualifiedName }
-  val getKotlin = kotlinSourceSetIface?.methods?.find { it.name == "getKotlin" } ?: return null
+  val kotlinSourceSet = convention.javaClass.interfaces.find { it.name == KotlinSourceSet::class.qualifiedName }
+  val getKotlin = kotlinSourceSet?.methods?.find { it.name == "getKotlin" } ?: return null
   return getKotlin(convention) as? SourceDirectorySet
 }
 

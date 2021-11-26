@@ -46,10 +46,10 @@ identifiers and methods are camelCased.
 Builders/Constructors
 * Use primary constructors with `@JvmOverloads` when there is at most one optional parameter.
 * For classes, nest the builder directly under the class
-* For interfaces that are meant to be extended by the user but that also have a builtin implementation, you can use the `Default${Iface}` naming pattern (see DefaultUpload)
+* For interfaces that are meant to be extended by the user but that also have a builtin implementation, you can use the `Default${Interface}` naming pattern (see DefaultUpload)
 * If there are several builtin implementations, use a descriptive name (like AppSyncWsProtocol, ...)
 * Avoid top level constructor functions like `fun CoroutineScope(){}` because they are awkward to use in Java
-* For expect/actual, it's sometime convenient to expose an interface even if it's not intended to be used by callers like `MockerServerIface`. In that case, it's ok to use `FooIface` for the interface and `Foo()` for the implementation to avoid having "DefaultFoo" everywhere when there's only one "Foo". 
+* For expect/actual, it's sometime convenient to expose an interface even if it's not intended to be used by callers like `MockerServerInterface`. In that case, it's ok to use `FooInterface` for the interface and `Foo()` for the implementation to avoid having "DefaultFoo" everywhere when there's only one "Foo". 
 
 Java interop
 * In general, it's best to avoid extension functions when possible because they are awkward to use in Java.

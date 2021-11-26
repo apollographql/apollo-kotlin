@@ -32,7 +32,7 @@ import kotlin.native.concurrent.freeze
  */
 actual class MockServer(
     private val acceptDelayMillis: Long
-): MockServerIface {
+): MockServerInterface {
 
   actual constructor(): this(0)
 

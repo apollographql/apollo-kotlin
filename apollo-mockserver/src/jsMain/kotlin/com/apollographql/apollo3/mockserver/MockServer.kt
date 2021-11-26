@@ -6,7 +6,7 @@ import okio.ByteString.Companion.toByteString
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-actual class MockServer : MockServerIface {
+actual class MockServer : MockServerInterface {
   private val responseQueue = mutableListOf<MockResponse>()
   private val requests = mutableListOf<MockRecordedRequest>()
 
