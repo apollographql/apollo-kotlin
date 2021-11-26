@@ -298,15 +298,15 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
     fun build(): ApolloClient {
       val networkTransport = if (_networkTransport != null) {
         check(httpServerUrl == null) {
-          "ApolloGraphQL: 'httpServerUrl' has no effect if 'networkTransport' is set"
+          "Apollo: 'httpServerUrl' has no effect if 'networkTransport' is set"
         }
         check(httpEngine == null) {
-          "ApolloGraphQL: 'httpEngine' has no effect if 'networkTransport' is set"
+          "Apollo: 'httpEngine' has no effect if 'networkTransport' is set"
         }
         _networkTransport!!
       } else {
         check(httpServerUrl != null) {
-          "ApolloGraphQL: 'serverUrl' is required"
+          "Apollo: 'serverUrl' is required"
         }
         HttpNetworkTransport.Builder()
             .serverUrl(httpServerUrl!!)
@@ -316,10 +316,10 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
 
       val subscriptionNetworkTransport = if (subscriptionNetworkTransport != null) {
         check(webSocketServerUrl == null) {
-          "ApolloGraphQL: 'webSocketServerUrl' has no effect if 'subscriptionNetworkTransport' is set"
+          "Apollo: 'webSocketServerUrl' has no effect if 'subscriptionNetworkTransport' is set"
         }
         check(webSocketEngine == null) {
-          "ApolloGraphQL: 'webSocketEngine' has no effect if 'subscriptionNetworkTransport' is set"
+          "Apollo: 'webSocketEngine' has no effect if 'subscriptionNetworkTransport' is set"
         }
         subscriptionNetworkTransport!!
       } else {

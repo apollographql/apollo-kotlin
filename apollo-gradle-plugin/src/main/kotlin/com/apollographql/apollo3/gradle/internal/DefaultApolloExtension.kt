@@ -178,7 +178,7 @@ abstract class DefaultApolloExtension(
           val allVersions = it.inputs.properties["allVersions"] as List<*>
 
           check(allVersions.size <= 1) {
-            "ApolloGraphQL: All apollo versions should be the same. Found:\n$allVersions"
+            "Apollo: All apollo versions should be the same. Found:\n$allVersions"
           }
 
           val version = allVersions.firstOrNull()
@@ -424,11 +424,11 @@ abstract class DefaultApolloExtension(
           generateKotlinModels = service.generateKotlinModels.get()
           if (generateKotlinModels) {
             check(project.hasKotlinPlugin()) {
-              "ApolloGraphQL: generateKotlinModels.set(true) requires to apply a Kotlin plugin"
+              "Apollo: generateKotlinModels.set(true) requires to apply a Kotlin plugin"
             }
           } else {
             check(project.hasJavaPlugin()) {
-              "ApolloGraphQL: generateKotlinModels.set(false) requires to apply the Java plugin"
+              "Apollo: generateKotlinModels.set(false) requires to apply the Java plugin"
             }
           }
         }
@@ -439,7 +439,7 @@ abstract class DefaultApolloExtension(
           generateKotlinModels = false
         }
         else -> {
-          error("ApolloGraphQL: No Java or Kotlin plugin found")
+          error("Apollo: No Java or Kotlin plugin found")
         }
       }
 
@@ -477,13 +477,13 @@ abstract class DefaultApolloExtension(
       task.metadataFiles.from(consumerConfiguration)
 
       check(!(service.packageName.isPresent && service.packageNameGenerator.isPresent)) {
-        "ApolloGraphQL: it is an error to specify both 'packageName' and 'packageNameGenerator' " +
+        "Apollo: it is an error to specify both 'packageName' and 'packageNameGenerator' " +
             "(either directly or indirectly through useVersion2Compat())"
       }
       var packageNameGenerator = service.packageNameGenerator.orNull
       if (packageNameGenerator == null) {
         packageNameGenerator = PackageNameGenerator.Flat(service.packageName.orNull ?: error("""
-            |ApolloGraphQL: specify 'packageName':
+            |Apollo: specify 'packageName':
             |apollo {
             |  packageName.set("com.example")
             |  
@@ -564,7 +564,7 @@ abstract class DefaultApolloExtension(
 
     check(!File(sourceFolder).isRooted && !sourceFolder.startsWith("../..")) {
       """
-          ApolloGraphQL: using 'sourceFolder = "$sourceFolder"' makes no sense with Android variants as the same generated models will be used in all variants.
+          Apollo: using 'sourceFolder = "$sourceFolder"' makes no sense with Android variants as the same generated models will be used in all variants.
           """.trimIndent()
     }
 
@@ -575,7 +575,7 @@ abstract class DefaultApolloExtension(
         action.execute(service)
 
         check(!service.sourceFolder.isPresent) {
-          "ApolloGraphQL: service.sourceFolder is not used when calling createAllAndroidVariantServices. Use the parameter instead"
+          "Apollo: service.sourceFolder is not used when calling createAllAndroidVariantServices. Use the parameter instead"
         }
         variant.sourceSets.forEach { sourceProvider ->
           service.srcDir("src/${sourceProvider.name}/graphql/$sourceFolder")
@@ -591,7 +591,7 @@ abstract class DefaultApolloExtension(
     registerDefaultService = false
 
     check(!File(sourceFolder).isRooted && !sourceFolder.startsWith("../..")) {
-      """ApolloGraphQL: using 'sourceFolder = "$sourceFolder"' makes no sense with Kotlin source sets as the same generated models will be used in all source sets.
+      """Apollo: using 'sourceFolder = "$sourceFolder"' makes no sense with Kotlin source sets as the same generated models will be used in all source sets.
           """.trimMargin()
     }
 

@@ -15,8 +15,8 @@ class DeprecationTests {
     TestUtils.withTestProject("deprecationWarnings") { dir ->
       val result = TestUtils.executeTask("generateServiceApolloSources", dir)
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateServiceApolloSources")!!.outcome)
-      Truth.assertThat(result.output).contains("ApolloGraphQL: Use of deprecated field `name`")
-      Truth.assertThat(result.output).contains("ApolloGraphQL: Use of deprecated field `number`")
+      Truth.assertThat(result.output).contains("Apollo: Use of deprecated field `name`")
+      Truth.assertThat(result.output).contains("Apollo: Use of deprecated field `number`")
     }
   }
 
@@ -30,7 +30,7 @@ class DeprecationTests {
       """.trimIndent())
       val result = TestUtils.executeTask("generateServiceApolloSources", dir)
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateServiceApolloSources")!!.outcome)
-      Truth.assertThat(result.output).doesNotContain("ApolloGraphQL: Use of deprecated field")
+      Truth.assertThat(result.output).doesNotContain("Apollo: Use of deprecated field")
     }
   }
 

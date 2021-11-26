@@ -567,7 +567,7 @@ internal fun List<GQLDirective>.toBooleanExpression(): BooleanExpression<BVariab
     BooleanExpression.True
   } else {
     check(conditions.toSet().size == conditions.size) {
-      "ApolloGraphQL: duplicate @skip/@include directives are not allowed"
+      "Apollo: duplicate @skip/@include directives are not allowed"
     }
     // Having both @skip and @include is allowed
     // In that case, it's equivalent to a "And"
@@ -582,7 +582,7 @@ internal fun GQLDirective.toBooleanExpression(): BooleanExpression<BVariable>? {
     return null
   }
   if (arguments?.arguments?.size != 1) {
-    throw IllegalStateException("ApolloGraphQL: wrong number of arguments for '$name' directive: ${arguments?.arguments?.size}")
+    throw IllegalStateException("Apollo: wrong number of arguments for '$name' directive: ${arguments?.arguments?.size}")
   }
 
   val argument = arguments!!.arguments.first()
@@ -594,7 +594,7 @@ internal fun GQLDirective.toBooleanExpression(): BooleanExpression<BVariable>? {
     is GQLVariableValue -> BooleanExpression.Element(BVariable(name = value.name)).let {
       if (name == "skip") not(it) else it
     }
-    else -> throw IllegalStateException("ApolloGraphQL: cannot pass ${value.toUtf8()} to '$name' directive")
+    else -> throw IllegalStateException("Apollo: cannot pass ${value.toUtf8()} to '$name' directive")
   }
 }
 

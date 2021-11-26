@@ -37,7 +37,7 @@ sealed class BooleanExpression<out T : Any> {
 
     init {
       check(operands.isNotEmpty()) {
-        "ApolloGraphQL: cannot create a 'Or' condition from an empty list"
+        "Apollo: cannot create a 'Or' condition from an empty list"
       }
     }
 
@@ -63,7 +63,7 @@ sealed class BooleanExpression<out T : Any> {
 
     init {
       check(operands.isNotEmpty()) {
-        "ApolloGraphQL: cannot create a 'And' condition from an empty list"
+        "Apollo: cannot create a 'And' condition from an empty list"
       }
     }
 

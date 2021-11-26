@@ -89,10 +89,10 @@ object ApolloCompiler {
     }
     warnings.forEach {
       // Using this format, IntelliJ will parse the warning and display it in the 'run' panel
-      options.logger.warning("w: ${it.sourceLocation.pretty()}: ApolloGraphQL: ${it.message}")
+      options.logger.warning("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
     }
     if (options.failOnWarnings && warnings.isNotEmpty()) {
-      throw IllegalStateException("ApolloGraphQL: Warnings found and 'failOnWarnings' is true, aborting.")
+      throw IllegalStateException("Apollo: Warnings found and 'failOnWarnings' is true, aborting.")
     }
 
     /**
@@ -221,7 +221,7 @@ object ApolloCompiler {
         .toSet()
     val unknownScalars = customScalarsMapping.keys.subtract(schemaScalars)
     check(unknownScalars.isEmpty()) {
-      "ApolloGraphQL: unknown custom scalar(s) in customScalarsMapping: ${unknownScalars.joinToString(",")}"
+      "Apollo: unknown custom scalar(s) in customScalarsMapping: ${unknownScalars.joinToString(",")}"
     }
   }
 

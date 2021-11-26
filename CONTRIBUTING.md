@@ -43,17 +43,35 @@ possible to use `apollo-gradle-plugin` with dependency substitution.
 The coding style employed here is fairly conventional Kotlin - indentations are 2 spaces, class names are PascalCased,
 identifiers and methods are camelCased.
 
-* Use primary constructors when there is at most one optional parameter.
-* Use the `Builder` pattern in other places because it's a well recognized pattern that interops well with Java and doesn't copy too much (see https://github.com/apollographql/apollo-android/issues/3301).
-* Functions with optional parameters are nice. Use `@JvmOverloads` for better Java interop.
-* Interface default function don't support `@JvmOverloads`. (See https://youtrack.jetbrains.com/issue/KT-36102) Try to limit the number of optional parameters when possible.
-* Avoid extension functions when possible because they are awkward to use in Java.
+Builders/Constructors
+* Use primary constructors with `@JvmOverloads` when there is at most one optional parameter.
+* For classes, nest the builder directly under the class
+* For interfaces that are meant to be extended by the user but that also have a builtin implementation, you can use the `Default${Iface}` naming pattern (see DefaultUpload)
+* If there are several builtin implementations, use a descriptive name (like AppSyncWsProtocol, ...)
+* Avoid top level constructor functions like `fun CoroutineScope(){}` because they are awkward to use in Java
+
+Java interop
+* In general, it's best to avoid extension functions when possible because they are awkward to use in Java.
 * The exception to the above rule is when adding function in other modules. `ApolloClient.Builder` extensions are a good example of that.
+* If you have to use extension functions, tweak the `@file:JvmName()` annotation to make the Java callsite nicer
+* Avoid Interface default functions as they generate `DefaultImpl` bytecode (and `-Xjvm-default=enable` is not ready for showtime yet).
+  * Use abstract classes when possible.
+  * Else use extension functions.
+* Functions with optional parameters are nice. Use `@JvmOverloads` for better Java interop.
+* `Prefer` top level `val` to top level singleton `objects`. For an example, `Adapters.StringAdapter` reads better in java than `StringAdapter.INSTANCE`
 * If some extensions do not make sense in Java, mark them with `@JvmName("-$methodName")` to hide them from Java
+
+Logging & Error messages
+* Apollo Android must not log anything to System.out or System.err
+* Error messages are passed to the user through `Exception.message`
+* For debugging logs, APIs are provided to get diagnostics (like CacheMissException, HttpInfo, ...). APIs are better defined and allow more fine-grained diagnostics. 
+* There is one exception for the Gradle plugin. It is allowed to log information though the lifecycle() methods. 
+* Messages should contain "Apollo: " when it's not immediately clear that the message comes from Apollo.
+
+Misc
 * Parameters using milliseconds should have the "Millis" suffix.
 * Else use [kotlin.time.Duration]
 * `ExperimentalContracts` is ok to use. Since kotlin-stdlib does it, we can too. See https://github.com/Kotlin/KEEP/blob/master/proposals/kotlin-contracts.md#compatibility-notice
-* `Prefer` top level `val` to top level singleton `objects`. For an example, `Adapters.StringAdapter` reads better in java than `StringAdapter.INSTANCE`
  
 ## Workflow
 
