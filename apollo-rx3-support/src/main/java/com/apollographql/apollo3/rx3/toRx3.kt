@@ -171,4 +171,4 @@ fun <D: Mutation.Data> ApolloMutationCall<D>.rxSingle(scheduler: Scheduler = Sch
 
 @JvmOverloads
 @JvmName("flowable")
-fun <D: Subscription.Data> ApolloSubscriptionCall<D>.rxFlowable(scheduler: Scheduler = Schedulers.io()) = execute().asFlowable(scheduler.asCoroutineDispatcher())
+fun <D: Subscription.Data> ApolloSubscriptionCall<D>.rxFlowable(scheduler: Scheduler = Schedulers.io()) = toFlow().asFlowable(scheduler.asCoroutineDispatcher())

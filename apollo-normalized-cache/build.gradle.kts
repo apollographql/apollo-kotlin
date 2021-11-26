@@ -22,3 +22,8 @@ val jvmJar by tasks.getting(Jar::class) {
   }
 }
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
+  kotlinOptions {
+    allWarningsAsErrors = true
+  }
+}

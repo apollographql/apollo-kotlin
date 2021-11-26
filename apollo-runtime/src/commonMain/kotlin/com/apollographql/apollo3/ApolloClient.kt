@@ -6,7 +6,7 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.CustomScalarType
-import com.apollographql.apollo3.api.CustomTypeAdapter
+import com.apollographql.apollo3.api.*
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.HasExecutionContext
 import com.apollographql.apollo3.api.HasMutableExecutionContext
@@ -398,6 +398,7 @@ fun ApolloClient.Builder.useHttpGetMethodForQueries(
 ) = httpMethod(if (useHttpGetMethodForQueries) HttpMethod.Get else HttpMethod.Post)
 
 @Deprecated("Used for backward compatibility with 2.x. This method throws immediately", ReplaceWith("autoPersistedQueries(httpMethodForHashedQueries = HttpMethod.Get)", "com.apollographql.apollo3.api.http.HttpMethod", "com.apollographql.apollo3.api.http.HttpMethod"))
+@Suppress("UNUSED_PARAMETER")
 fun ApolloClient.Builder.useHttpGetMethodForPersistedQueries(
     useHttpGetMethodForQueries: Boolean,
 ) = apply {

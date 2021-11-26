@@ -26,7 +26,9 @@ class AutoPersistedQueryInfo(
 val <D : Operation.Data> ApolloResponse<D>.autoPersistedQueryInfo
   get() = executionContext[AutoPersistedQueryInfo]
 
-fun <D : Operation.Data> ApolloResponse<D>.withAutoPersistedQueryInfo(hit: Boolean) = withExecutionContext(AutoPersistedQueryInfo(hit))
+fun <D : Operation.Data> ApolloResponse<D>.withAutoPersistedQueryInfo(hit: Boolean) = newBuilder()
+    .addExecutionContext(AutoPersistedQueryInfo(hit))
+    .build()
 
 
 /**
