@@ -55,7 +55,7 @@ class MetadataTest {
       incomingCompilerMetadata = metadata.map { it.compilerMetadata }
     }
 
-    val compilerMetadata = GraphQLCompiler.write(
+    val compilerMetadata = ApolloCompiler.write(
         Options(
             executableFiles = operationFiles,
             outputDir = outputDir,

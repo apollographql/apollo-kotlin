@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.QueryDocumentMinifier
 import com.apollographql.apollo3.ast.GQLDefinition
 import com.apollographql.apollo3.ast.GQLDocument
@@ -21,7 +22,8 @@ import com.apollographql.apollo3.compiler.ir.dumpTo
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import java.io.File
 
-object GraphQLCompiler {
+@ApolloExperimental
+object ApolloCompiler {
 
   interface Logger {
     fun warning(message: String)

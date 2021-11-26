@@ -1,9 +1,10 @@
 package com.apollographql.apollo3.gradle.internal
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.ApolloMetadata
 import com.apollographql.apollo3.compiler.CommonMetadata
-import com.apollographql.apollo3.compiler.GraphQLCompiler
+import com.apollographql.apollo3.compiler.ApolloCompiler
 import com.apollographql.apollo3.compiler.IncomingOptions
 import com.apollographql.apollo3.compiler.IncomingOptions.Companion.resolveSchema
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
@@ -48,6 +49,7 @@ import org.gradle.api.tasks.TaskAction
 import javax.inject.Inject
 
 @CacheableTask
+@OptIn(ApolloExperimental::class)
 abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:OutputFile
   @get:Optional
@@ -217,7 +219,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       )
     }
 
-    val logger = object : GraphQLCompiler.Logger {
+    val logger = object : ApolloCompiler.Logger {
       override fun warning(message: String) {
         logger.lifecycle(message)
       }
@@ -275,7 +277,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         generateOptionalOperationVariables = generateOptionalOperationVariables.getOrElse(defaultGenerateOptionalOperationVariables)
     )
 
-    val outputCompilerMetadata = GraphQLCompiler.write(options)
+    val outputCompilerMetadata = ApolloCompiler.write(options)
 
     val metadataOutputFile = metadataOutputFile.asFile.orNull
     if (metadataOutputFile != null) {

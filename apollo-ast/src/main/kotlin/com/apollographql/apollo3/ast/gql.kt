@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.ast
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
+
 /**
  * The GraphQL AST definition
  *
@@ -17,6 +19,7 @@ package com.apollographql.apollo3.ast
  *
  * Whitespace tokens are not mapped to GQLNodes so some formatting will be lost during modification
  */
+@ApolloExperimental
 interface GQLNode {
   val sourceLocation: SourceLocation
 
