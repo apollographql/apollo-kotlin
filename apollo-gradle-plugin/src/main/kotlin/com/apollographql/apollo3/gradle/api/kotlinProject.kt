@@ -20,4 +20,4 @@ val Project.kotlinProjectExtension
 
 val Project.kotlinProjectExtensionOrThrow
   get() = kotlinProjectExtension
-      ?: throw IllegalStateException("ApolloGraphQL: no 'kotlin' extension found. Did you apply the Kotlin jvm plugin?")
+      ?: throw IllegalStateException("Apollo: no 'kotlin' extension found. Did you apply the Kotlin jvm plugin?")

@@ -76,7 +76,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
 
     val schema = schema.orNull?.let { File(it) } // commandline is resolved relative to cwd
     check(schema != null) {
-      "ApolloGraphQL: no schema property"
+      "Apollo: no schema property"
     }
     val headers = header.toMap()
 
@@ -102,7 +102,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
       }
       graph != null -> {
         check (key != null) {
-          "ApolloGraphQL: please define --key to download graph $graph"
+          "Apollo: please define --key to download graph $graph"
         }
         gqlSchema = SchemaDownloader.downloadRegistry(
             graph = graph,
@@ -112,7 +112,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
         ).parseAsGQLDocument().getOrThrow()
       }
       else -> {
-        throw IllegalArgumentException("ApolloGraphQL: either --endpoint or --graph is required")
+        throw IllegalArgumentException("Apollo: either --endpoint or --graph is required")
       }
     }
 

@@ -29,7 +29,7 @@ fun getKotlinTargetLanguage(project: Project, userSpecified: String?): TargetLan
         TargetLanguage.KOTLIN_1_5
       }
     }
-    else -> error("ApolloGraphQL: languageVersion '$userSpecified' is not supported, must be either '1.4' or '1.5'")
+    else -> error("Apollo: languageVersion '$userSpecified' is not supported, must be either '1.4' or '1.5'")
   }
 }
 
@@ -72,7 +72,7 @@ fun createAllKotlinSourceSetServices(
     apolloExtension.service(name) { service ->
       action.execute(service)
       check(!service.sourceFolder.isPresent) {
-        "ApolloGraphQL: service.sourceFolder is not used when calling createAllKotlinJvmSourceSetServices. Use the parameter instead"
+        "Apollo: service.sourceFolder is not used when calling createAllKotlinJvmSourceSetServices. Use the parameter instead"
       }
       service.srcDir("src/${kotlinSourceSet.name}/graphql/$sourceFolder")
       (service as DefaultService).outputDirAction = Action<Service.DirectoryConnection> { connection ->

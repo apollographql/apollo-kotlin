@@ -62,7 +62,7 @@ fun connectToAndroidSourceSet(project: Project, sourceSetName: String, outputDir
 
 fun connectToAndroidVariant(project: Project, variant: Any, outputDir: Provider<Directory>) {
   check(variant is BaseVariant) {
-    "ApolloGraphQL: 'variant' must be an instance of an Android [BaseVariant]"
+    "Apollo: 'variant' must be an instance of an Android [BaseVariant]"
   }
   /**
    * Heuristic to get the variant-specific sourceSet from the variant name

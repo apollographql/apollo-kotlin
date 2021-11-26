@@ -182,7 +182,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
     val commonMetadatas = metadata.mapNotNull { it.commonMetadata }
 
     check(commonMetadatas.size <= 1) {
-      "ApolloGraphQL: multiple schemas found in metadata"
+      "Apollo: multiple schemas found in metadata"
     }
 
     val commonMetadata = commonMetadatas.singleOrNull()

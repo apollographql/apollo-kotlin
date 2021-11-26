@@ -79,7 +79,7 @@ private fun GQLDocument.withDefinitions(definitions: List<GQLDefinition>): GQLDo
     }
     val existingDefinition = mergedDefinitions.firstOrNull { (it as? GQLNamed)?.name == builtInTypeDefinition.name }
     if (existingDefinition != null) {
-      println("ApolloGraphQL: definition '${builtInTypeDefinition.name}' is already in the schema at " +
+      println("Apollo: definition '${builtInTypeDefinition.name}' is already in the schema at " +
           "'${existingDefinition.sourceLocation.filePath}:${existingDefinition.sourceLocation}', skip it")
     } else {
       mergedDefinitions.add(builtInTypeDefinition)

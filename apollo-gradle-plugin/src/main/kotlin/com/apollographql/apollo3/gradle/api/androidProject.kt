@@ -36,7 +36,7 @@ val Project.androidExtension
   get() = extensions.findByName("android") as? BaseExtension
 
 val Project.androidExtensionOrThrow
-  get() = androidExtension ?: throw IllegalStateException("ApolloGraphQL: no 'android' extension found. Did you apply the Android plugin?")
+  get() = androidExtension ?: throw IllegalStateException("Apollo: no 'android' extension found. Did you apply the Android plugin?")
 
 val Project.libraryVariants: DomainObjectSet<LibraryVariant>?
   get() {
