@@ -29,11 +29,11 @@ fun String.decodeAsGraphQLSingleQuoted(): String {
         i += 1
       }
       'f' -> {
-        writer.append('\u000C'.toInt())
+        writer.append('\u000C'.code)
         i += 1
       }
       'n' -> {
-        writer.append('\n'.toInt())
+        writer.append('\n'.code)
         i += 1
       }
       'r' -> {

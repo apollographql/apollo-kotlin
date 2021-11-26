@@ -31,7 +31,7 @@ open class SDLWriter(
           sink.writeUtf8(indent)
         }
       }
-      sink.writeUtf8CodePoint(it.toInt())
+      sink.writeUtf8CodePoint(it.code)
     }
   }
 

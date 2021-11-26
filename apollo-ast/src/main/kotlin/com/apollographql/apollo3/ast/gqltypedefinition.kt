@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.ast
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
+
 // 5.5.2.3 Fragment spread is possible
 internal fun GQLTypeDefinition.sharesPossibleTypesWith(other: GQLTypeDefinition, schema: Schema): Boolean {
   return schema.possibleTypes(this).intersect(schema.possibleTypes(other)).isNotEmpty()
@@ -21,6 +23,7 @@ fun GQLTypeDefinition.isFieldNonNull(fieldName: String): Boolean {
 
   val stringValue = (directive.arguments!!.arguments.first().value as GQLStringValue).value
 
+  @OptIn(ApolloExperimental::class)
   val selections = stringValue.parseAsGQLSelections().getOrNull() ?: error("'$stringValue' is not a valid selectionSet")
 
   return selections.filterIsInstance<GQLField>()

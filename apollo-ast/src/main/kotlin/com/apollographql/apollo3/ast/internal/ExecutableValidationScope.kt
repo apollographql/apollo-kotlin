@@ -106,7 +106,7 @@ internal class ExecutableValidationScope(
     name.forEach {
       builder.append(if (!isDecapitalized && it.isLetter()) {
         isDecapitalized = true
-        it.toString().toLowerCase(Locale.US)
+        it.toString().lowercase()
       } else {
         it.toString()
       })
