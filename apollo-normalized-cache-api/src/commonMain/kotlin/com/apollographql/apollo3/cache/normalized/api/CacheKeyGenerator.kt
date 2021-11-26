@@ -48,7 +48,7 @@ object TypePolicyCacheKeyGenerator : CacheKeyGenerator {
     val keyFields = context.field.type.leafType().keyFields()
 
     return if (keyFields.isNotEmpty()) {
-      CacheKey.from(obj["__typename"].toString(), keyFields.map { obj[it].toString() })
+      CacheKey(obj["__typename"].toString(), keyFields.map { obj[it].toString() })
     } else {
       null
     }

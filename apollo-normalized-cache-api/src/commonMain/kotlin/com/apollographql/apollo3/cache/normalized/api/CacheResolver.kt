@@ -78,10 +78,12 @@ interface CacheResolver {
 }
 
 /**
- * A cache resolver that uses the parent to resolve fields. [parent] is a [Map] that
- * can contain the same values as [Record]
+ * A cache resolver that uses the parent to resolve fields.
  */
 object DefaultCacheResolver: CacheResolver {
+  /**
+   * @param parent a [Map] that represent the object containing this field. The map values can have the same types as the ones in  [Record]
+   */
   override fun resolveField(
       field: CompiledField,
       variables: Executable.Variables,
