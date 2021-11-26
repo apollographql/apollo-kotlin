@@ -1,13 +1,10 @@
 package com.apollographql.apollo3.compiler
 
-import java.util.Locale
-
-
 /**
  * A variation of [String.capitalize] that:
  * - skips initial underscore, especially found in introspection queries
- * - works with Kotlin 1.3 to be compatible with Gradle 6
- * - is Locale independent so that the compiler can
+ * - is Locale independent so that it works the same way on all machines, including in the turkish locale
+ * that uses a different 'I'
  */
 fun String.capitalizeFirstLetter(): String {
   val builder = StringBuilder(length)
@@ -15,7 +12,7 @@ fun String.capitalizeFirstLetter(): String {
   forEach {
     builder.append(if (!isCapitalized && it.isLetter()) {
       isCapitalized = true
-      it.toString().toUpperCase(Locale.US)
+      it.toString().uppercase()
     } else {
       it.toString()
     })
@@ -26,8 +23,8 @@ fun String.capitalizeFirstLetter(): String {
 /**
  * A variation of [String.decapitalize] that:
  * - skips initial underscore, especially found in introspection queries
- * - works with Kotlin 1.3 to be compatible with Gradle 6
- * - is Locale independent so that the compiler can
+ * - is Locale independent so that it works the same way on all machines, including in the turkish locale
+ * that uses a different 'I'
  */
 fun String.decapitalizeFirstLetter(): String {
   val builder = StringBuilder(length)
@@ -35,7 +32,7 @@ fun String.decapitalizeFirstLetter(): String {
   forEach {
     builder.append(if (!isDecapitalized && it.isLetter()) {
       isDecapitalized = true
-      it.toString().toLowerCase(Locale.US)
+      it.toString().lowercase()
     } else {
       it.toString()
     })

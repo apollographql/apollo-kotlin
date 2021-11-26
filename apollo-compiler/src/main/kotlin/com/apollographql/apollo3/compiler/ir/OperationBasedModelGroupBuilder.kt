@@ -14,8 +14,10 @@ import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.transformation.mergeTrivialInlineFragments
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.lowerCamelCaseIgnoringNonLetters
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.modelName
+import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 
 internal class OperationBasedModelGroupBuilder(
@@ -116,12 +118,12 @@ internal class OperationBasedModelGroupBuilder(
     is BooleanExpression.And -> this.operands.joinToString("And") { it.toName() }
     is BooleanExpression.Or -> this.operands.joinToString("Or") { it.toName() }
     is BooleanExpression.Not -> "Not${this.operand.toName()}"
-    is BooleanExpression.Element -> this.value.name.capitalize()
+    is BooleanExpression.Element -> this.value.name.capitalizeFirstLetter()
     else -> error("")
   }
 
   private fun InlineFragmentKey.toName(): String = buildString {
-    append(typeCondition.capitalize())
+    append(typeCondition.capitalizeFirstLetter())
     if (condition != BooleanExpression.True) {
       append("If")
       append(condition.toName())
@@ -300,7 +302,7 @@ internal class OperationBasedModelGroupBuilder(
           }
 
           val childInfo = IrFieldInfo(
-              responseName = first.name.decapitalize().escapeKotlinReservedWord(),
+              responseName = first.name.decapitalizeFirstLetter().escapeKotlinReservedWord(),
               description = "Synthetic field for '${first.name}'",
               deprecationReason = null,
               type = type,

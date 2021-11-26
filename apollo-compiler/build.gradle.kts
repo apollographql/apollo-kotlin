@@ -64,6 +64,12 @@ tasks.withType(KotlinCompile::class.java) {
   dependsOn(pluginVersionTaskProvider)
 }
 
+tasks.withType(KotlinCompile::class.java) {
+  kotlinOptions {
+    allWarningsAsErrors = true
+  }
+}
+
 // since test/graphql is not an input to Test tasks, they're not run with the changes made in there.
 tasks.withType<Test>().configureEach {
   inputs.dir("src/test/graphql")
