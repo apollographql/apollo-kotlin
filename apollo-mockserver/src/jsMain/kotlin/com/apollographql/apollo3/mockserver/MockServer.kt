@@ -6,7 +6,7 @@ import okio.ByteString.Companion.toByteString
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class JsMockServer : MockServer {
+actual class MockServer : MockServerIface {
   private val responseQueue = mutableListOf<MockResponse>()
   private val requests = mutableListOf<MockRecordedRequest>()
 
@@ -59,6 +59,3 @@ class JsMockServer : MockServer {
     }
   }
 }
-
-@Suppress("FunctionName")
-actual fun MockServer(): MockServer = JsMockServer()

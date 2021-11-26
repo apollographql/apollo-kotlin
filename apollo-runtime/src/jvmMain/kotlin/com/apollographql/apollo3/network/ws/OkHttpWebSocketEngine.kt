@@ -12,11 +12,11 @@ import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import okio.ByteString
 
-class OkHttpWebSocketEngine(
+actual class DefaultWebSocketEngine(
     private val webSocketFactory: WebSocket.Factory,
 ) : WebSocketEngine {
 
-  constructor() : this(
+  actual constructor() : this(
       webSocketFactory = OkHttpClient()
   )
 
@@ -101,6 +101,3 @@ class OkHttpWebSocketEngine(
     }
   }
 }
-
-@Suppress("FunctionName")
-actual fun WebSocketEngine(): WebSocketEngine = OkHttpWebSocketEngine()

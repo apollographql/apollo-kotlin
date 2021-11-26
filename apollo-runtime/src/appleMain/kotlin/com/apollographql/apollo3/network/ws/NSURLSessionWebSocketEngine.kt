@@ -43,11 +43,11 @@ interface WebSocketConnectionListener {
 
 typealias NSWebSocketFactory = (NSURLRequest, WebSocketConnectionListener) -> NSURLSessionWebSocketTask
 
-class NSURLSessionWebSocketEngine(
+actual class DefaultWebSocketEngine(
     private val webSocketFactory: NSWebSocketFactory,
 ) : WebSocketEngine {
 
-  constructor() : this(
+  actual constructor() : this(
       webSocketFactory = { request, connectionListener ->
         NSURLSession.sessionWithConfiguration(
             configuration = NSURLSessionConfiguration.defaultSessionConfiguration,
@@ -262,6 +262,3 @@ private class NSURLSessionWebSocketDelegate(
     webSocketConnectionListener.onClose(webSocket = webSocketTask, code = didCloseWithCode)
   }
 }
-
-@Suppress("FunctionName")
-actual fun WebSocketEngine(): WebSocketEngine = NSURLSessionWebSocketEngine()

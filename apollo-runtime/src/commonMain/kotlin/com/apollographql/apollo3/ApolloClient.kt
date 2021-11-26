@@ -29,8 +29,10 @@ import com.apollographql.apollo3.interceptor.NetworkInterceptor
 import com.apollographql.apollo3.internal.defaultDispatcher
 import com.apollographql.apollo3.mpp.assertMainThreadOnNative
 import com.apollographql.apollo3.network.NetworkTransport
+import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.network.http.HttpEngine
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
+import com.apollographql.apollo3.network.ws.DefaultWebSocketEngine
 import com.apollographql.apollo3.network.ws.WebSocketEngine
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import kotlinx.coroutines.CoroutineDispatcher
@@ -310,7 +312,7 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
         }
         HttpNetworkTransport.Builder()
             .serverUrl(httpServerUrl!!)
-            .httpEngine(httpEngine ?: HttpEngine())
+            .httpEngine(httpEngine ?: DefaultHttpEngine())
             .build()
       }
 
@@ -331,7 +333,7 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
         } else {
           WebSocketNetworkTransport.Builder()
               .serverUrl(webSocketServerUrl!!)
-              .webSocketEngine(webSocketEngine ?: WebSocketEngine())
+              .webSocketEngine(webSocketEngine ?: DefaultWebSocketEngine())
               .build()
         }
       }

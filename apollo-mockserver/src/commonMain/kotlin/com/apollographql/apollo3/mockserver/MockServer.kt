@@ -2,7 +2,7 @@ package com.apollographql.apollo3.mockserver
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
 
-interface MockServer {
+interface MockServerIface {
   /**
    * Returns the root url for this server
    *
@@ -29,4 +29,5 @@ interface MockServer {
 
 @Suppress("FunctionName")
 @ApolloExperimental
-expect fun MockServer(): MockServer
+expect class MockServer() : MockServerIface {
+}

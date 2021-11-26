@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.flow
 
 class HttpNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder instead. This will be removed in v3.0.0.") constructor(
     private val httpRequestComposer: HttpRequestComposer,
-    val engine: HttpEngine = HttpEngine(),
+    val engine: HttpEngine = DefaultHttpEngine(),
     val interceptors: List<HttpInterceptor> = emptyList(),
 ) : NetworkTransport {
   private val worker = NonMainWorker()
@@ -47,7 +47,7 @@ class HttpNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder instead
       interceptors: List<HttpInterceptor> = emptyList(),
   ) : this(
       DefaultHttpRequestComposer(serverUrl),
-      HttpEngine(timeoutMillis),
+      DefaultHttpEngine(timeoutMillis),
       interceptors
   )
 
@@ -193,7 +193,7 @@ class HttpNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder instead
       @Suppress("DEPRECATION")
       return HttpNetworkTransport(
           httpRequestComposer = httpRequestComposer ?: error("No HttpRequestComposer found. Use 'httpRequestComposer' or 'serverUrl'"),
-          engine = engine ?: HttpEngine(),
+          engine = engine ?: DefaultHttpEngine(),
           interceptors = interceptors
       )
     }
