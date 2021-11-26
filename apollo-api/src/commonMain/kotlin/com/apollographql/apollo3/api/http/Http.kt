@@ -119,12 +119,14 @@ class HttpResponse
     private var bodySource: BufferedSource? = null
     private var bodyString: ByteString? = null
     private val headers = mutableListOf<HttpHeader>()
+    private val hasBody: Boolean
+      get() = bodySource != null || bodyString != null
 
     /**
      * A streamable body.
      */
     fun body(bodySource: BufferedSource) = apply {
-      check(bodyString == null) { "body(ByteString) was already set, either body(BufferedSource) or body(ByteString) can be set" }
+      check(!hasBody) { "body() can only be called once" }
       this.bodySource = bodySource
     }
 
@@ -133,7 +135,7 @@ class HttpResponse
      * Prefer [bodySource] on non-native so that the response can be streamed.
      */
     fun body(bodyString: ByteString) = apply {
-      check(bodySource == null) { "body(BufferedSource) was already set, either body(BufferedSource) or body(ByteString) can be set" }
+      check(!hasBody) { "body() can only be called once" }
       this.bodyString = bodyString
     }
 

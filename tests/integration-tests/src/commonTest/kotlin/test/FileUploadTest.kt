@@ -2,6 +2,7 @@ package test
 
 import checkTestFixture
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.DefaultUpload
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.integration.upload.MultipleUploadMutation
@@ -19,9 +20,21 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class FileUploadTest {
-  private val upload0: Upload = Upload.fromString("content_file0", "file0.txt", "plain/txt")
-  private val upload1: Upload = Upload.fromString("content_file1", "file1.jpg", "image/jpeg")
-  private val upload2: Upload = Upload.fromString("content_file2", "file2.png", "image/png")
+  private val upload0: Upload = DefaultUpload.Builder()
+      .content("content_file0")
+      .fileName("file0.txt")
+      .contentType("plain/txt")
+      .build()
+  private val upload1: Upload = DefaultUpload.Builder()
+      .content("content_file1")
+      .fileName("file1.jpg")
+      .contentType("image/jpeg")
+      .build()
+  private val upload2: Upload = DefaultUpload.Builder()
+      .content("content_file2")
+      .fileName("file2.png")
+      .contentType("image/png")
+      .build()
 
   private val nestedObject0 = NestedObject(
       Optional.Absent,
