@@ -18,12 +18,14 @@ import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-class OkHttpEngine(
+actual class DefaultHttpEngine constructor(
     private val httpCallFactory: Call.Factory,
 ) : HttpEngine {
 
   // an overload that takes an OkHttpClient for easier discovery
   constructor(okHttpClient: OkHttpClient) : this(okHttpClient as Call.Factory)
+
+  actual constructor(timeoutMillis: Long): this(timeoutMillis, timeoutMillis)
 
   constructor(connectTimeout: Long, readTimeout: Long) : this(
       OkHttpClient.Builder()
@@ -103,13 +105,6 @@ class OkHttpEngine(
 
   override fun dispose() {
   }
-}
-
-@JvmOverloads
-actual fun HttpEngine(
-    timeoutMillis: Long,
-): HttpEngine {
-  return OkHttpEngine(timeoutMillis, timeoutMillis)
 }
 
 

@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
  */
 class WebSocketNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder instead. This will be removed in v3.0.0.") constructor(
     private val serverUrl: String,
-    private val webSocketEngine: WebSocketEngine = WebSocketEngine(),
+    private val webSocketEngine: WebSocketEngine = DefaultWebSocketEngine(),
     private val idleTimeoutMillis: Long = 60_000,
     private val protocolFactory: WsProtocol.Factory = SubscriptionWsProtocol.Factory(),
 ) : NetworkTransport, WsProtocol.Listener {
@@ -49,7 +49,7 @@ class WebSocketNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder in
       protocolFactory: WsProtocol.Factory = SubscriptionWsProtocol.Factory(),
   ) : this(
       serverUrl,
-      WebSocketEngine(),
+      DefaultWebSocketEngine(),
       idleTimeoutMillis,
       protocolFactory
   )
@@ -259,7 +259,7 @@ class WebSocketNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder in
       @Suppress("DEPRECATION")
       return WebSocketNetworkTransport(
           serverUrl ?: error("No serverUrl specified"),
-          webSocketEngine ?: WebSocketEngine(),
+          webSocketEngine ?: DefaultWebSocketEngine(),
           idleTimeoutMillis ?: 60_000,
           protocolFactory ?: SubscriptionWsProtocol.Factory()
       )

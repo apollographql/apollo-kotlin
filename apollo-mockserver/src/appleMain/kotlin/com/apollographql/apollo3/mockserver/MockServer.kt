@@ -30,9 +30,12 @@ import kotlin.native.concurrent.freeze
  * @param acceptDelayMillis: an artificial delay introduced before each `accept()`
  * call. Can be used to simulate slow connections.
  */
-class NativeMockServer(
-    private val acceptDelayMillis: Long = 0
-): MockServer {
+actual class MockServer(
+    private val acceptDelayMillis: Long
+): MockServerInterface {
+
+  actual constructor(): this(0)
+
   private val pthreadT: pthread_tVar
   private val port: Int
   private var socket: Socket? = null
@@ -120,6 +123,3 @@ class NativeMockServer(
     return socket!!.takeRequest()
   }
 }
-
-@Suppress("FunctionName")
-actual fun MockServer(): MockServer = NativeMockServer()

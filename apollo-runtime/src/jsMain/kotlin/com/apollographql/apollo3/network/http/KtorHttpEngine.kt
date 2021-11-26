@@ -15,14 +15,16 @@ import io.ktor.http.HttpHeaders
 import io.ktor.util.flattenEntries
 import okio.Buffer
 
-class KtorHttpEngine(private val connectTimeoutMillis: Long, private val readTimeoutMillis: Long) : HttpEngine {
+actual class DefaultHttpEngine constructor(private val connectTimeoutMillis: Long, private val readTimeoutMillis: Long) : HttpEngine {
   var disposed = false
+
+  actual constructor(timeoutMillis: Long): this(timeoutMillis, timeoutMillis)
 
   private val client = HttpClient(Js) {
     expectSuccess = false
     install(HttpTimeout) {
-      this.connectTimeoutMillis = this@KtorHttpEngine.connectTimeoutMillis
-      this.socketTimeoutMillis = this@KtorHttpEngine.readTimeoutMillis
+      this.connectTimeoutMillis = this@DefaultHttpEngine.connectTimeoutMillis
+      this.socketTimeoutMillis = this@DefaultHttpEngine.readTimeoutMillis
     }
   }
 
@@ -61,13 +63,4 @@ class KtorHttpEngine(private val connectTimeoutMillis: Long, private val readTim
       disposed = true
     }
   }
-}
-
-actual fun HttpEngine(
-    timeoutMillis: Long,
-): HttpEngine {
-  return KtorHttpEngine(
-      connectTimeoutMillis = timeoutMillis,
-      readTimeoutMillis = timeoutMillis
-  )
 }

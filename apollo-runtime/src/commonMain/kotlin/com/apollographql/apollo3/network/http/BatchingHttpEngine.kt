@@ -60,7 +60,7 @@ import kotlin.jvm.JvmStatic
  * @param maxBatchSize always send the batch when this threshold is reached
  */
 class BatchingHttpEngine @JvmOverloads constructor(
-    val delegate: HttpEngine = HttpEngine(),
+    val delegate: HttpEngine = DefaultHttpEngine(),
     val batchIntervalMillis: Long = 10,
     val maxBatchSize: Int = 10,
 ) : HttpEngine {

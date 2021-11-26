@@ -8,6 +8,7 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.HasMutableExecutionContext
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.addHttpHeader
+import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.network.http.HttpEngine
 import com.apollographql.apollo3.network.http.HttpInfo
 import java.io.File
@@ -54,7 +55,7 @@ fun ApolloClient.Builder.httpCache(
       httpEngine = CachingHttpEngine(
           directory = directory,
           maxSize = maxSize,
-          delegate = HttpEngine()
+          delegate = DefaultHttpEngine()
       )
   )
 }
