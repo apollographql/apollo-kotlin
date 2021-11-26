@@ -114,7 +114,7 @@ object FieldPolicyCacheResolver: CacheResolver {
     }
 
     if (keyArgsValues.isNotEmpty()) {
-      return CacheKey.from(field.type.leafType().name, keyArgsValues)
+      return CacheKey(field.type.leafType().name, keyArgsValues)
     }
 
     return DefaultCacheResolver.resolveField(field, variables, parent, parentId)
