@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.conditionalFragments
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.ApolloCompiler
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
@@ -9,6 +10,7 @@ import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 
+@OptIn(ApolloExperimental::class)
 class ConditionalFragmentsTest {
   @Test
   fun `responseBased codegen fails with conditional fragments`() {

@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.compiler.introspection.toSchema
 import com.apollographql.apollo3.ast.Schema
@@ -7,6 +8,7 @@ import com.apollographql.apollo3.ast.toSchema
 import com.google.common.truth.Truth.assertThat
 import java.io.File
 
+@OptIn(ApolloExperimental::class)
 internal object TestUtils {
   internal fun shouldUpdateTestFixtures(): Boolean {
     return when (System.getProperty("updateTestFixtures")?.trim()) {

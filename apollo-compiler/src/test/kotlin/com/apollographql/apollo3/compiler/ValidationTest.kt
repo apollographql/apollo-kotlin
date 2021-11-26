@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.ParseResult
 import com.apollographql.apollo3.ast.parseAsGQLDocument
@@ -14,6 +15,7 @@ import java.io.File
 
 @Suppress("UNUSED_PARAMETER")
 @RunWith(Parameterized::class)
+@OptIn(ApolloExperimental::class)
 class ValidationTest(name: String, private val graphQLFile: File) {
   private val separator = "\n------------\n"
 
