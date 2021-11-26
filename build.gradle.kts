@@ -189,7 +189,7 @@ configure<kotlinx.validation.ApiValidationExtension> {
   ignoredPackages.addAll(
       listOf(
           /**
-           * We rely on annotations on "internal" visibility to hide the non-public APIs in general
+           * We rely on annotations or "internal" visibility to hide the non-public APIs in general
            *
            * The Gradle plugin is an exception to this rule as tasks and other classes must be public in order for Gradle to instantiate
            * and decorate them.
