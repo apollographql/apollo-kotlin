@@ -1,5 +1,8 @@
 package com.apollographql.apollo3.interceptor
 
+import com.apollographql.apollo3.AutoPersistedQueryConfiguration
+import com.apollographql.apollo3.AutoPersistedQueryContext
+import com.apollographql.apollo3.AutoPersistedQueryInfo
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
@@ -9,16 +12,29 @@ import com.apollographql.apollo3.api.http.httpMethod
 import com.apollographql.apollo3.api.http.sendApqExtensions
 import com.apollographql.apollo3.api.http.sendDocument
 import com.apollographql.apollo3.exception.AutoPersistedQueriesNotSupported
-import com.apollographql.apollo3.withAutoPersistedQueryInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.single
 
-internal class AutoPersistedQueryInterceptor(val httpMethodForDocumentQueries: HttpMethod) : ApolloInterceptor {
+internal class AutoPersistedQueryInterceptor(private val httpMethodForDocumentQueries: HttpMethod) : ApolloInterceptor {
 
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-    return flow {
+    val enabled = request.executionContext[AutoPersistedQueryContext]?.enabled == true
 
+    if(!enabled) {
+      return chain.proceed(request)
+    }
+
+    val httpMethodForHashedQueries = request.executionContext[AutoPersistedQueryConfiguration]!!.httpMethodForHashedQueries
+
+    @Suppress("NAME_SHADOWING")
+    val request = request.newBuilder()
+        .httpMethod(httpMethodForHashedQueries)
+        .sendDocument(false)
+        .sendApqExtensions(true)
+        .build()
+
+    return flow {
       var response = chain.proceed(request).single()
 
       when {
@@ -43,6 +59,9 @@ internal class AutoPersistedQueryInterceptor(val httpMethodForDocumentQueries: H
     }
   }
 
+  private fun <D : Operation.Data> ApolloResponse<D>.withAutoPersistedQueryInfo(hit: Boolean) = newBuilder()
+      .addExecutionContext(AutoPersistedQueryInfo(hit))
+      .build()
   private fun isPersistedQueryNotFound(errors: List<Error>?):Boolean {
     return errors?.any { it.message.equals(PROTOCOL_NEGOTIATION_ERROR_QUERY_NOT_FOUND, ignoreCase = true) } == true
   }

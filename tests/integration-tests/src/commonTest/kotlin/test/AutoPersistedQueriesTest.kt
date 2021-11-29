@@ -3,6 +3,7 @@ package test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.http.HttpMethod
+import com.apollographql.apollo3.enableAutoPersistedQueries
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
@@ -35,6 +36,22 @@ class AutoPersistedQueriesTest {
     val request = mockServer.takeRequest()
 
     assertFalse(request.body.utf8().contains("query"))
+  }
+
+  @Test
+  fun canDisableApqsPerQuery() = runTest(before = { setUp() }, after = { tearDown() }) {
+    mockServer.enqueue(testFixtureToUtf8("HeroNameResponse.json"))
+
+    val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).autoPersistedQueries(httpMethodForHashedQueries = HttpMethod.Get).build()
+
+    apolloClient.query(HeroNameQuery())
+        .enableAutoPersistedQueries(false)
+        .execute()
+
+    val request = mockServer.takeRequest()
+
+    assertTrue(request.method.lowercase() == "post")
+    assertTrue(request.body.utf8().contains("query"))
   }
 
   @Test
