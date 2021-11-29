@@ -145,5 +145,20 @@ class HttpCacheTest {
       assertEquals(false, response2.isFromHttpCache)
     }
   }
+
+  @Test
+  fun HttpCacheDoesNotOverrideOkHttpClient() = runTest {
+    mockServer.enqueue(response)
+
+    runBlocking {
+      var response = apolloClient.query(GetRandomQuery()).execute()
+      assertEquals(42, response.data?.random)
+      assertEquals(false, response.isFromHttpCache)
+
+      response = apolloClient.query(GetRandomQuery()).execute()
+      assertEquals(42, response.data?.random)
+      assertEquals(true, response.isFromHttpCache)
+    }
+  }
 }
 
