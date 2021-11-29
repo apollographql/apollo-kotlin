@@ -1,11 +1,11 @@
 ---
-title: 'Usage from Java'
+title: 'Using with Java'
 ---
 
 import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
 
-Because Apollo Android is written in Kotlin, it can be used in Java projects. This guide will show you how to do that.
+Because Apollo Android is written in Kotlin, you can use it in Java projects. This article describes how.
 
 ## Use the Java codegen
 
@@ -19,32 +19,31 @@ apollo {
 
 ## Build the client
 
-Here's how to build an Apollo client from Java:
+This snippet demonstrates initializing an `ApolloClient` instance in Java:
 
 ```java
 import com.apollographql.apollo3.cache.normalized.NormalizedCache;
 import com.apollographql.apollo3.cache.http.HttpCache;
 // (...)
 
-        ApolloClient.Builder builder = new ApolloClient.Builder()
-                .serverUrl("http://localhost:4000/graphql")
+ApolloClient.Builder builder = new ApolloClient.Builder()
+  .serverUrl("http://localhost:4000/graphql")
 
-        // Optionally, set an http cache
-        HttpCache.configureApolloClientBuilder(builder, cacheDirectory, cacheMaxSize);
+// Optionally, set an http cache
+HttpCache.configureApolloClientBuilder(builder, cacheDirectory, cacheMaxSize);
 
-        // Optionally, set a normalized cache
-        NormalizedCache.configureApolloClientBuilder(
-                builder,
-                new MemoryCacheFactory(10 * 1024 * 1024, -1),
-                TypePolicyCacheKeyGenerator.INSTANCE,
-                FieldPolicyCacheResolver.INSTANCE,
-                false
-        );
+// Optionally, set a normalized cache
+NormalizedCache.configureApolloClientBuilder(
+  builder,
+  new MemoryCacheFactory(10 * 1024 * 1024, -1),
+  TypePolicyCacheKeyGenerator.INSTANCE,
+  FieldPolicyCacheResolver.INSTANCE,
+  false
+);
 
-        ApolloClient client = builder.build();
+ApolloClient client = builder.build();
 ```
 
 ## Use RxJava extensions
 
-Apollo Android has a coroutines / Flow based API which isn't well adapted to be used with Java. To that effect, you can
-use Apollo's RxJava extensions: please refer to [this page](rxjava) for the details of how to do that.
+Apollo Android has a coroutines / Flow-based API that isn't well suited to using with Java. To achieve a similar effect, you can use Apollo's [RxJava extensions](./rxjava/).

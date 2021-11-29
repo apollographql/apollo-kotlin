@@ -4,8 +4,7 @@ title: 'RxJava support'
 
 import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
-If you are using Apollo Android in a [Java project](java) or a Kotlin project that uses
-RxJava, you can use Apollo's RxJava extensions.
+If you're using Apollo Android in a [Java project](java) or a Kotlin project that uses RxJava, you can use Apollo's RxJava extensions.
 
 To do so, add the `apollo-rx2-support` or `apollo-rx3-support` dependency to your project:
 
@@ -21,9 +20,9 @@ dependencies {
 }
 ```
 
-### Queries, Mutations, Subscriptions
+## Executing operations
 
-Use the `rxSingle` / `rxFlowable` extensions to execute your operations and get RxJava observables:
+Use the `rxSingle` / `rxFlowable` extensions to execute GraphQL operations and get RxJava observables:
 
 <MultiCodeBlock>
 
@@ -32,63 +31,63 @@ import com.apollographql.apollo3.rx2.Rx2Apollo;
 
 // (...)
 
-// A query
+// Query
 ApolloQueryCall<MyQuery.Data> queryCall = client.query(new MyQuery());
 Single<ApolloResponse<MyQuery.Data>> queryResponse = Rx2Apollo.single(queryCall);
 queryResponse.subscribe( /* ... */ );
 
-// A mutation
+// Mutation
 ApolloMutationCall<MyMutation.Data> mutationCall = client.mutation(new MyMutation("my-parameter"));
 Single<ApolloResponse<MyMutation.Data>> mutationResponse = Rx2Apollo.single(mutationCall);
 mutationResponse.subscribe( /* ... */ );
 
-// A subscription
+// Subscription
 ApolloSubscriptionCall<MySubscription.Data> subscriptionCall = client.subscription(new MySubscription());
 Flowable<ApolloResponse<MySubscription.Data>> subscriptionResponse = Rx2Apollo.flowable(subscriptionCall);
 subscriptionResponse.subscribe( /* ... */ );
 ```
 
 ```kotlin
-// A query
+// Query
 client.query(MyQuery()).rxSingle().subscribe(/* ... */)
 
-// A mutation
+// Mutation
 client.mutation(MyMutation("my-parameter")).rxSingle().subscribe(/* ... */)
 
-// A subscription
+// Subscription
 client.subscription(MySubscription()).rxFlowable().subscribe(/* ... */)
 ```
 </MultiCodeBlock>
 
-### ApolloInterceptor
+## `ApolloInterceptor`
 
 To set an `ApolloInterceptor` on your `ApolloClient`, you can define an `Rx2ApolloInterceptor` or `Rx3ApolloInterceptor`:
 
 <MultiCodeBlock>
 
 ```java
-    private static Rx2ApolloInterceptor rx2ApolloInterceptor = new Rx2ApolloInterceptor() {
-        @NotNull
-        @Override
-        public <D extends Operation.Data> Flowable<ApolloResponse<D>> intercept(
-                @NotNull ApolloRequest<D> request,
-                @NotNull Rx2ApolloInterceptorChain chain
-        ) {
-            ApolloRequest<D> modifiedRequest = request.newBuilder() /* ... */.build();
-            return chain.proceed(modifiedRequest);
-        }
-    };
+private static Rx2ApolloInterceptor rx2ApolloInterceptor = new Rx2ApolloInterceptor() {
+  @NotNull
+  @Override
+  public <D extends Operation.Data> Flowable<ApolloResponse<D>> intercept(
+    @NotNull ApolloRequest<D> request,
+    @NotNull Rx2ApolloInterceptorChain chain
+  ) {
+    ApolloRequest<D> modifiedRequest = request.newBuilder() /* ... */.build();
+    return chain.proceed(modifiedRequest);
+  }
+};
 ```
 
 ```kotlin
 private val rx2ApolloInterceptor = object : Rx2ApolloInterceptor {
-    override fun <D : Operation.Data> intercept(
-        request: ApolloRequest<D>,
-        chain: Rx2ApolloInterceptorChain
-    ): Flowable<ApolloResponse<D>> {
-        val modifiedRequest = request.newBuilder() /* ... */ .build()
-        return chain.proceed(modifiedRequest)
-    }
+  override fun <D : Operation.Data> intercept(
+    request: ApolloRequest<D>,
+    chain: Rx2ApolloInterceptorChain
+  ): Flowable<ApolloResponse<D>> {
+    val modifiedRequest = request.newBuilder() /* ... */ .build()
+    return chain.proceed(modifiedRequest)
+  }
 }
 ```
 </MultiCodeBlock>
@@ -103,23 +102,23 @@ import com.apollographql.apollo3.rx2.Rx2Conversion;
 // (...)
 
 ApolloClient client = new ApolloClient.Builder()
-        .serverUrl("http://localhost:4000/graphql")
-        .addInterceptor(Rx2Conversion.toApolloInterceptor(rx2ApolloInterceptor))
-        .build();
+  .serverUrl("http://localhost:4000/graphql")
+  .addInterceptor(Rx2Conversion.toApolloInterceptor(rx2ApolloInterceptor))
+  .build();
 ```
 ```kotlin{3}
 val client = ApolloClient.Builder()
-    .serverUrl("http://localhost:4000/graphql")
-    .addInterceptor(rx2ApolloInterceptor.toApolloInterceptor())
-    .build()
+  .serverUrl("http://localhost:4000/graphql")
+  .addInterceptor(rx2ApolloInterceptor.toApolloInterceptor())
+  .build()
 ```
 
 </MultiCodeBlock>
 
 
-### HttpInterceptor
+## `HttpInterceptor`
 
-Similarly, to use [HttpInterceptors](interceptors-http), you can define an `Rx2HttpInterceptor` or `Rx3HttpInterceptor` like so:
+Similarly, to use [`HttpInterceptor`s](interceptors-http), you can define an `Rx2HttpInterceptor` or `Rx3HttpInterceptor` like so:
 
 <MultiCodeBlock>
 
@@ -157,35 +156,35 @@ import com.apollographql.apollo3.rx2.Rx2Conversion;
 // (...)
 
 ApolloClient client = new ApolloClient.Builder()
-    .networkTransport(
-        new HttpNetworkTransport(
-            "http://localhost:4000/graphql",
-            10_000,
-            10_000,
-            List.of(Rx2Conversion.toHttpInterceptor(rx2HttpInterceptor))
-        )
+  .networkTransport(
+    new HttpNetworkTransport(
+      "http://localhost:4000/graphql",
+      10_000,
+      10_000,
+      List.of(Rx2Conversion.toHttpInterceptor(rx2HttpInterceptor))
     )
+  )
 .build();
 ```
 
 ```kotlin
 val client = ApolloClient.Builder()
-    .networkTransport(
-        HttpNetworkTransport(
-            serverUrl = "http://localhost:4000/graphql",
-            interceptors = listOf(rx2HttpInterceptor.toHttpInterceptor())
-        )
+  .networkTransport(
+    HttpNetworkTransport(
+      serverUrl = "http://localhost:4000/graphql",
+      interceptors = listOf(rx2HttpInterceptor.toHttpInterceptor())
     )
-    .build()
+  )
+  .build()
 ```
 
 </MultiCodeBlock>
 
-### Using the ApolloStore
+## Using the `ApolloStore`
 
-> Note: the APIs in this section are experimental and subject to change. We'd love to have your feedback on it. Things that worked well, things that can be improved, etc.. Feel free to reach out either through [Github issues](https://github.com/apollographql/apollo-android/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md&title=[Rx Support]) or the [Kotlinlang slack channel](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ).
+> ⚠️ **The APIs in this section are experimental and subject to change.** If you have feedback on them, please let us know via [Github issues](https://github.com/apollographql/apollo-android/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md&title=[Rx%20Support]) or in the [Kotlin Slack community](https://slack.kotl.in/).
 
-`ApolloStore` is the class allowing to interact with the [normalized cache](../../caching/normalized-cache). You can obtain an Rx version of it with the `toRx2ApolloStore` or `toRx3ApolloStore` extension:
+The `ApolloStore` class enables you to interact with the [normalized cache](../../caching/normalized-cache). You can obtain an Rx version of it with the `toRx2ApolloStore` or `toRx3ApolloStore` extension:
 
 <MultiCodeBlock>
 
