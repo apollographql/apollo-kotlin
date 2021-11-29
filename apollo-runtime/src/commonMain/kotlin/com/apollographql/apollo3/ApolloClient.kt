@@ -281,7 +281,7 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
      *
      * @param enableByDefault: whether to enable Auto Persisted Queries by default. If true, it will set httpMethodForHashedQueries,
      * sendApqExtensions=true and sendDocument=false.
-     * If false it will leave them untouched. You can later use [hashedQuery] to enable them
+     * If false it will leave them untouched. You can later use [enableAutoPersistedQueries] to enable them
      */
     @JvmOverloads
     fun autoPersistedQueries(
