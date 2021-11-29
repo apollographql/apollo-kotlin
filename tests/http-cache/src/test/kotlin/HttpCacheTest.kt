@@ -1,4 +1,3 @@
-
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.cache.http.HttpFetchPolicy
 import com.apollographql.apollo3.cache.http.httpCache
@@ -9,11 +8,14 @@ import com.apollographql.apollo3.exception.HttpCacheMissException
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.network.okHttpClient
 import com.apollographql.apollo3.testing.runTest
 import httpcache.GetRandom2Query
 import httpcache.GetRandomQuery
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -148,17 +150,26 @@ class HttpCacheTest {
 
   @Test
   fun HttpCacheDoesNotOverrideOkHttpClient() = runTest {
-    mockServer.enqueue(response)
-
-    runBlocking {
-      var response = apolloClient.query(GetRandomQuery()).execute()
-      assertEquals(42, response.data?.random)
-      assertEquals(false, response.isFromHttpCache)
-
-      response = apolloClient.query(GetRandomQuery()).execute()
-      assertEquals(42, response.data?.random)
-      assertEquals(true, response.isFromHttpCache)
+    val interceptor = Interceptor {
+      it.proceed(it.request().newBuilder().header("Test-Header", "Test-Value").build())
     }
+    val okHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
+
+    val mockServer = MockServer()
+
+    val apolloClient = ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .okHttpClient(okHttpClient)
+        .httpCache(File("build/httpCache"), Long.MAX_VALUE)
+        .build()
+
+    kotlin.runCatching {
+      apolloClient.query(GetRandomQuery())
+          .httpFetchPolicy(HttpFetchPolicy.NetworkOnly)
+          .execute()
+    }
+
+    assertEquals("Test-Value", mockServer.takeRequest().headers["Test-Header"])
   }
 }
 
