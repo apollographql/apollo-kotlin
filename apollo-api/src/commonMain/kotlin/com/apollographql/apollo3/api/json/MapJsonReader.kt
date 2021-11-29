@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.api.json
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader.Companion.MAX_STACK_SIZE
-import com.apollographql.apollo3.api.json.internal.Utils.readRecursivelyFast
 import com.apollographql.apollo3.api.json.internal.toDoubleExact
 import com.apollographql.apollo3.api.json.internal.toIntExact
 import com.apollographql.apollo3.api.json.internal.toLongExact
@@ -297,7 +297,8 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
       }
 
       @Suppress("UNCHECKED_CAST")
-      val data = this.readRecursivelyFast() as Map<String, Any?>
+      @OptIn(ApolloInternal::class)
+      val data = this.readAny() as Map<String, Any?>
       return MapJsonReader(data)
     }
   }

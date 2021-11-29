@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.graphql.ast.test
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.ast.internal.buffer
 import com.apollographql.apollo3.ast.toSchema
 import org.junit.Test
 
@@ -20,6 +21,6 @@ class SchemaTest {
       }
     """.trimIndent()
 
-    schemaString.toSchema()
+    schemaString.buffer().toSchema()
   }
 }

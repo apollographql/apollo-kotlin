@@ -1,11 +1,10 @@
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.compiler.introspection.toIntrospectionSchema
-import com.apollographql.apollo3.compiler.introspection.toSchema
 import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.toSchema
+import com.apollographql.apollo3.compiler.introspection.toSchema
 import com.google.common.truth.Truth.assertThat
+import okio.Buffer
 import java.io.File
 
 @OptIn(ApolloExperimental::class)
@@ -70,11 +69,7 @@ internal object TestUtils {
     return listOf("graphqls", "sdl", "json").map { File(dir, "schema.$it") }
         .firstOrNull { it.exists() }
         ?.let {
-          if (it.extension == "json") {
-            it.toIntrospectionSchema().toSchema()
-          } else {
-            it.toSchema()
-          }
+          it.toSchema()
         }
   }
 
@@ -118,3 +113,5 @@ internal object TestUtils {
     }
   }
 }
+
+internal fun String.buffer() = Buffer().writeUtf8(this)

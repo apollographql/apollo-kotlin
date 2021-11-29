@@ -8,7 +8,6 @@ import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLOperationDefinition
 import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.Issue
-import com.apollographql.apollo3.ast.ParseResult
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.checkKeyFields
 import com.apollographql.apollo3.ast.checkNoErrors
@@ -20,6 +19,8 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinCodeGen
 import com.apollographql.apollo3.compiler.ir.IrBuilder
 import com.apollographql.apollo3.compiler.ir.dumpTo
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
+import okio.buffer
+import okio.source
 import java.io.File
 
 @ApolloExperimental
@@ -59,9 +60,13 @@ object ApolloCompiler {
     val definitions = mutableListOf<GQLDefinition>()
     val parseIssues = mutableListOf<Issue>()
     executableFiles.map { file ->
-      when (val parseResult = file.parseAsGQLDocument()) {
-        is ParseResult.Success -> definitions.addAll(parseResult.value.definitions)
-        is ParseResult.Error -> parseIssues.addAll(parseResult.issues)
+      val parseResult = file.source().buffer().parseAsGQLDocument(file.path)
+      if (parseResult.issues.isNotEmpty()) {
+        parseIssues.addAll(parseResult.issues)
+      } else {
+        // We can force cast here because we're guaranteed the parsing step will produce either issues
+        // or a value
+        definitions.addAll(parseResult.value!!.definitions)
       }
     }
 
@@ -73,20 +78,21 @@ object ApolloCompiler {
     /**
      * Step 2, GraphQL validation
      */
-    val validationIssues = GQLDocument(
+    val validationResult = GQLDocument(
         definitions = definitions + incomingFragments,
         filePath = null
     ).validateAsExecutable(options.schema)
 
-    validationIssues.checkNoErrors()
+    validationResult.issues.checkNoErrors()
 
     if (options.codegenModels == MODELS_RESPONSE_BASED) {
       findConditionalFragments(definitions).checkNoErrors()
     }
 
-    val warnings = validationIssues.filter {
+    val warnings = validationResult.issues.filter {
       it.severity == Issue.Severity.WARNING && (it !is Issue.DeprecatedUsage || options.warnOnDeprecatedUsages)
     }
+
     warnings.forEach {
       // Using this format, IntelliJ will parse the warning and display it in the 'run' panel
       options.logger.warning("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")

@@ -4,8 +4,8 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLIntValue
 import com.apollographql.apollo3.ast.TransformResult
+import com.apollographql.apollo3.ast.internal.buffer
 import com.apollographql.apollo3.ast.parseAsGQLDocument
-import com.apollographql.apollo3.ast.toGQLDocument
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.transform
 import org.junit.Test
@@ -26,7 +26,7 @@ class TransformTest {
   @Test
   fun stripFieldsWithDirective() {
 
-    val document = query.parseAsGQLDocument().getOrThrow()
+    val document = query.buffer().parseAsGQLDocument().valueAssertNoErrors()
 
     val currentVersion = 4
     val transformed = document.transform {
@@ -81,7 +81,7 @@ class TransformTest {
       }
     """.trimIndent()
 
-    val transformed = query.toGQLDocument().transform {
+    val transformed = query.buffer().parseAsGQLDocument().valueAssertNoErrors().transform {
       if (it is GQLField && it.name == "objectType") {
         val newField = GQLField(
             alias = null,

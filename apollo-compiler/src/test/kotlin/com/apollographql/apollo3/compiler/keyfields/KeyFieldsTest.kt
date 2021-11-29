@@ -2,10 +2,12 @@ package com.apollographql.apollo3.compiler.keyfields
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLOperationDefinition
-import com.apollographql.apollo3.ast.transformation.addRequiredFields
 import com.apollographql.apollo3.ast.checkKeyFields
-import com.apollographql.apollo3.ast.toGQLDocument
-import com.apollographql.apollo3.ast.toSchema
+import com.apollographql.apollo3.ast.parseAsGQLDocument
+import com.apollographql.apollo3.ast.transformation.addRequiredFields
+import com.apollographql.apollo3.compiler.introspection.toSchema
+import okio.buffer
+import okio.source
 import org.junit.Assert.fail
 import org.junit.Test
 import java.io.File
@@ -17,7 +19,10 @@ class KeyFieldsTest {
     val schema = File("src/test/kotlin/com/apollographql/apollo3/compiler/keyfields/schema.graphqls").toSchema()
 
     val operation = File("src/test/kotlin/com/apollographql/apollo3/compiler/keyfields/operations.graphql")
-        .toGQLDocument()
+        .source()
+        .buffer()
+        .parseAsGQLDocument()
+        .valueAssertNoErrors()
         .definitions
         .filterIsInstance<GQLOperationDefinition>()
         .first()

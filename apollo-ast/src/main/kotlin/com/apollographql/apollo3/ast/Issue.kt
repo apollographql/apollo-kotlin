@@ -63,6 +63,9 @@ fun List<Issue>.checkNoErrors() {
   }
 }
 
+fun List<Issue>.containsError(): Boolean = any { it.severity == Issue.Severity.ERROR }
+
+
 enum class ValidationDetails {
   /**
    * An unknown directive was found.

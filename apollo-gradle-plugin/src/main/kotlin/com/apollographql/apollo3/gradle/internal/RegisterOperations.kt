@@ -21,7 +21,7 @@ import com.apollographql.apollo3.ast.GQLVariableDefinition
 import com.apollographql.apollo3.ast.NodeContainer
 import com.apollographql.apollo3.ast.SDLWriter
 import com.apollographql.apollo3.ast.TransformResult
-import com.apollographql.apollo3.ast.toGQLDocument
+import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.transform
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
@@ -200,7 +200,7 @@ object RegisterOperations {
   """.trimIndent()
 
   private fun String.normalize(): String {
-    val gqlDocument = this.toGQLDocument()
+    val gqlDocument = Buffer().writeUtf8(this).parseAsGQLDocument().valueAssertNoErrors()
 
     // From https://github.com/apollographql/apollo-tooling/blob/6d69f226c2e2c54b4fc0de6394d813bddfb54694/packages/apollo-graphql/src/operationId.ts#L84
 

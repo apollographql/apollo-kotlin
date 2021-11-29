@@ -6,12 +6,12 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.http.internal.urlEncode
-import com.apollographql.apollo3.api.json.internal.FileUploadAwareJsonWriter
-import com.apollographql.apollo3.api.json.internal.Utils
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.json.internal.FileUploadAwareJsonWriter
 import com.apollographql.apollo3.api.json.internal.buildJsonByteString
 import com.apollographql.apollo3.api.json.internal.buildJsonMap
 import com.apollographql.apollo3.api.json.internal.buildJsonString
+import com.apollographql.apollo3.api.json.internal.writeAny
 import com.apollographql.apollo3.api.json.internal.writeObject
 import com.benasher44.uuid.uuid4
 import okio.BufferedSink
@@ -193,7 +193,7 @@ class DefaultHttpRequestComposer(
       val uploads: Map<String, Upload>
 
       @OptIn(ApolloInternal::class)
-      val operationByteString = buildJsonByteString {
+      val operationByteString = buildJsonByteString(indent = null) {
         uploads = composePostParams(
             this,
             operation,
@@ -259,10 +259,12 @@ class DefaultHttpRequestComposer(
     }
 
     @OptIn(ApolloInternal::class)
-    private fun buildUploadMap(uploads: Map<String, Upload>) = buildJsonByteString {
-      Utils.writeToJson(uploads.entries.mapIndexed { index, entry ->
-        index.toString() to listOf(entry.key)
-      }.toMap(), this)
+    private fun buildUploadMap(uploads: Map<String, Upload>) = buildJsonByteString(indent = null) {
+      this.writeAny(
+          uploads.entries.mapIndexed { index, entry ->
+            index.toString() to listOf(entry.key)
+          }.toMap(),
+      )
     }
 
 

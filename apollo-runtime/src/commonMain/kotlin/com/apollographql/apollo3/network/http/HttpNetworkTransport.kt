@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpResponse
+import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
@@ -29,15 +30,10 @@ class HttpNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder instead
   /**
    *
    * @param serverUrl
-   * @param connectTimeoutMillis The timeout interval to use when connecting
+   * @param timeoutMillis The timeout interval to use when connecting or when waiting for additional data.
    *
    * - on iOS, it is used to set [NSMutableURLRequest.timeoutInterval]
-   * - on Android, it is used to set [OkHttpClient.connectTimeout]
-   *
-   * @param readTimeoutMillis The timeout interval to use when waiting for additional data.
-   *
-   * - on iOS, it is used to set [NSURLSessionConfiguration.timeoutIntervalForRequest]
-   * - on Android, it is used to set  [OkHttpClient.readTimeout]
+   * - on Android, it is used to set [OkHttpClient.connectTimeout] and  [OkHttpClient.readTimeout]
    */
   @Suppress("DEPRECATION", "DEPRECATION")
   @Deprecated("Use HttpNetworkTransport.Builder instead. This will be removed in v3.0.0.")
@@ -51,19 +47,6 @@ class HttpNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder instead
       interceptors
   )
 
-  /**
-   *
-   * @param serverUrl
-   * @param connectTimeoutMillis The timeout interval to use when connecting
-   *
-   * - on iOS, it is used to set [NSMutableURLRequest.timeoutInterval]
-   * - on Android, it is used to set [OkHttpClient.connectTimeout]
-   *
-   * @param readTimeoutMillis The timeout interval to use when waiting for additional data.
-   *
-   * - on iOS, it is used to set [NSURLSessionConfiguration.timeoutIntervalForRequest]
-   * - on Android, it is used to set  [OkHttpClient.readTimeout]
-   */
   @Suppress("DEPRECATION")
   @Deprecated("Use HttpNetworkTransport.Builder instead. This will be removed in v3.0.0.")
   constructor(
@@ -112,7 +95,7 @@ class HttpNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder instead
       val response = worker.doWork {
         try {
           operation.parseJsonResponse(
-              source = httpResponse.body!!,
+              jsonReader = httpResponse.body!!.jsonReader(),
               customScalarAdapters = customScalarAdapters
           )
         } catch (e: Exception) {

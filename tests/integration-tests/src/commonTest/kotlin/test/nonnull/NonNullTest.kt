@@ -1,14 +1,19 @@
 package test.nonnull
 
-import com.apollographql.apollo3.api.parseJsonData
+import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.json.jsonReader
 import nonnull.NonNullField1Query
 import nonnull.NonNullField2Query
 import nonnull.NullableField1Query
+import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.fail
 
+@OptIn(ApolloExperimental::class)
 class NonNullTest {
   private val field1Response = """
       {
@@ -22,10 +27,13 @@ class NonNullTest {
       }
     """.trimIndent()
 
+  private fun <D: Operation.Data> Operation<D>.parseData(string: String) = adapter()
+      .fromJson(Buffer().writeUtf8(string).jsonReader(), CustomScalarAdapters.Empty)
+
   @Test
   fun failsWithAnnotationInQuery() {
     try {
-      NonNullField1Query().parseJsonData(field1Response)
+      NonNullField1Query().parseData(field1Response)
       fail("An exception was expected")
     } catch (e: Exception) {
       check(e.message?.contains("but was NULL at path field1") == true)
@@ -35,7 +43,7 @@ class NonNullTest {
   @Test
   fun failsWithAnnotationInSchema() {
     try {
-      NonNullField2Query().parseJsonData(field2Response)
+      NonNullField2Query().parseData(field2Response)
       fail("An exception was expected")
     } catch (e: Exception) {
       check(e.message?.contains("but was NULL at path field2") == true)
@@ -44,7 +52,7 @@ class NonNullTest {
 
   @Test
   fun succeedsWithoutAnnotationInQuery() {
-    val data = NullableField1Query().parseJsonData(field1Response)
+    val data = NullableField1Query().parseData(field1Response)
     assertEquals(null, data.field1)
   }
 

@@ -20,7 +20,7 @@ import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runTest
-import readJson
+import testFixtureToUtf8
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -45,7 +45,7 @@ class BasicTest {
   }
 
   private fun <D : Query.Data> basicTest(resourceName: String, query: Query<D>, block: ApolloResponse<D>.() -> Unit) = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(readJson(resourceName))
+    mockServer.enqueue(testFixtureToUtf8(resourceName))
     var response = apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
     response.block()
     response = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheOnly).execute()

@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.compiler
 
+import okio.Buffer
+
 /**
  * A variation of [String.capitalize] that:
  * - skips initial underscore, especially found in introspection queries
@@ -39,3 +41,5 @@ fun String.decapitalizeFirstLetter(): String {
   }
   return builder.toString()
 }
+
+internal fun String.buffer() = Buffer().writeUtf8(this)

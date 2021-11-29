@@ -1,5 +1,6 @@
 package test
 
+import IdCacheKeyGenerator
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.parseJsonResponse
@@ -8,7 +9,6 @@ import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.Record
-import IdCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.normalize
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
@@ -21,7 +21,7 @@ import com.apollographql.apollo3.integration.normalizer.HeroParentTypeDependentF
 import com.apollographql.apollo3.integration.normalizer.HeroTypeDependentAliasedFieldQuery
 import com.apollographql.apollo3.integration.normalizer.SameHeroTwiceQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
-import readResource
+import testFixtureToJsonReader
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -29,7 +29,7 @@ import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 /**
- * Tests for the normalization without an instance of [ApolloClient]
+ * Tests for the normalization without an instance of [com.apollographql.apollo3.ApolloClient]
  */
 class NormalizerTest {
   private lateinit var normalizedCache: NormalizedCache
@@ -248,7 +248,7 @@ class NormalizerTest {
 
   companion object {
     internal fun <D : Operation.Data> records(operation: Operation<D>, name: String): Map<String, Record> {
-      val response = operation.parseJsonResponse(readResource(name))
+      val response = operation.parseJsonResponse(testFixtureToJsonReader(name))
       return operation.normalize(data = response.data!!, CustomScalarAdapters.Empty, cacheKeyGenerator = IdCacheKeyGenerator)
     }
 

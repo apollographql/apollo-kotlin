@@ -2,6 +2,7 @@ package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.toSchema
+import com.apollographql.apollo3.compiler.introspection.toSchema
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.io.File

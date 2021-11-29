@@ -2,6 +2,7 @@ package test
 
 import checkTestFixture
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.DefaultUpload
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Upload
@@ -19,6 +20,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+@OptIn(ApolloExperimental::class)
 class FileUploadTest {
   private val upload0: Upload = DefaultUpload.Builder()
       .content("content_file0")
@@ -225,17 +227,13 @@ class FileUploadTest {
   private fun assertOperationsPart(part: Part, fixtureName: String) {
     assertEquals(part.contentDisposition, "form-data; name=\"operations\"")
     assertEquals(part.contentType, "application/json")
-    checkExpected(part.bytes.decodeToString(), fixtureName)
+    checkTestFixture(part.bytes.decodeToString(), fixtureName)
   }
 
   private fun assertMapPart(part: Part, fixtureName: String) {
     assertEquals(part.contentDisposition, "form-data; name=\"map\"")
     assertEquals(part.contentType, "application/json")
-    checkExpected(part.bytes.decodeToString(), fixtureName)
-  }
-
-  private fun checkExpected(actualText: String, name: String) {
-    checkTestFixture(actualText, "ApolloServerInterceptorFileUploadTest/$name")
+    checkTestFixture(part.bytes.decodeToString(), fixtureName)
   }
 
   private fun assertFileContentPart(

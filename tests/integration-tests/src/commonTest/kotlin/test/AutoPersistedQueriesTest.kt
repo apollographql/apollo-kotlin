@@ -1,20 +1,22 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runTest
-import readResource
+import testFixtureToUtf8
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+@OptIn(ApolloExperimental::class)
 class AutoPersistedQueriesTest {
   private lateinit var mockServer: MockServer
 
-  private suspend fun setUp() {
+  private fun setUp() {
     mockServer = MockServer()
   }
 
@@ -24,7 +26,7 @@ class AutoPersistedQueriesTest {
 
   @Test
   fun withApqsDoesntSendDocument() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(readResource("HeroNameResponse.json"))
+    mockServer.enqueue(testFixtureToUtf8("HeroNameResponse.json"))
 
     val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).autoPersistedQueries(httpMethodForHashedQueries = HttpMethod.Post).build()
 
@@ -48,7 +50,7 @@ class AutoPersistedQueriesTest {
     """.trimIndent()
     )
 
-    mockServer.enqueue(readResource("HeroNameResponse.json"))
+    mockServer.enqueue(testFixtureToUtf8("HeroNameResponse.json"))
 
     val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).autoPersistedQueries(httpMethodForHashedQueries = HttpMethod.Post).build()
 

@@ -1,6 +1,7 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockResponse
@@ -10,10 +11,11 @@ import com.apollographql.apollo3.network.http.BearerTokenInterceptor
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.testing.TestTokenProvider
 import com.apollographql.apollo3.testing.runTest
-import readResource
+import testFixtureToUtf8
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@OptIn(ApolloExperimental::class)
 class BearerTokenInterceptorTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
@@ -26,7 +28,7 @@ class BearerTokenInterceptorTest {
     tokenProvider = TestTokenProvider(token1, token2)
     mockServer = MockServer()
     mockServer.enqueue(MockResponse(statusCode = 401))
-    mockServer.enqueue(readResource("HeroNameResponse.json"))
+    mockServer.enqueue(testFixtureToUtf8("HeroNameResponse.json"))
   }
 
   private suspend fun tearDown() {

@@ -1,6 +1,7 @@
 package test.circular_cache_read
 
 import circular_cache_read.GetUserQuery
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
@@ -8,6 +9,7 @@ import com.apollographql.apollo3.testing.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@OptIn(ApolloExperimental::class)
 class CircularCacheReadTest {
   @Test
   fun circularReferenceDoesNotStackOverflow() = runTest {
