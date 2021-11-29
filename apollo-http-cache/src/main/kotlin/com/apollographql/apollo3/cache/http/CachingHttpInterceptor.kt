@@ -8,8 +8,8 @@ import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.http.valueOf
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.HttpCacheMissException
-import com.apollographql.apollo3.network.http.DefaultHttpEngine
-import com.apollographql.apollo3.network.http.HttpEngine
+import com.apollographql.apollo3.network.http.HttpInterceptor
+import com.apollographql.apollo3.network.http.HttpInterceptorChain
 import okio.Buffer
 import okio.ByteString.Companion.toByteString
 import okio.FileSystem
@@ -17,15 +17,14 @@ import java.io.File
 import java.time.Instant
 import java.time.format.DateTimeParseException
 
-class CachingHttpEngine(
+class CachingHttpInterceptor(
     directory: File,
     maxSize: Long,
     fileSystem: FileSystem = FileSystem.SYSTEM,
-    private val delegate: HttpEngine = DefaultHttpEngine(),
-) : HttpEngine {
+) : HttpInterceptor {
   private val store = DiskLruHttpCache(fileSystem, directory, maxSize)
 
-  override suspend fun execute(request: HttpRequest): HttpResponse {
+  override suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse {
     val policy = request.headers.valueOf(CACHE_FETCH_POLICY_HEADER) ?: CACHE_FIRST
     val cacheKey = cacheKey(request)
 
@@ -37,17 +36,17 @@ class CachingHttpEngine(
           //
         }
 
-        return networkMightThrow(request, cacheKey)
+        return networkMightThrow(request, chain, cacheKey)
       }
       CACHE_ONLY -> {
         return cacheMightThrow(request, cacheKey)
       }
       NETWORK_ONLY -> {
-        return networkMightThrow(request, cacheKey)
+        return networkMightThrow(request, chain, cacheKey)
       }
       NETWORK_FIRST -> {
         try {
-          val response = networkMightThrow(request, cacheKey)
+          val response = networkMightThrow(request, chain, cacheKey)
           if (response.statusCode in 200..299) {
             //  let HTTP errors through
             return response
@@ -64,11 +63,8 @@ class CachingHttpEngine(
     }
   }
 
-  override fun dispose() {
-  }
-
-  private suspend fun networkMightThrow(request: HttpRequest, cacheKey: String): HttpResponse {
-    val response = delegate.execute(request)
+  private suspend fun networkMightThrow(request: HttpRequest, chain: HttpInterceptorChain, cacheKey: String): HttpResponse {
+    val response = chain.proceed(request)
 
     val doNotStore = request.headers.valueOf(CACHE_DO_NOT_STORE)?.lowercase() == "true"
     if (response.statusCode in 200..299 && !doNotStore) {

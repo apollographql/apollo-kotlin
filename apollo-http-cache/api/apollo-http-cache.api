@@ -1,4 +1,4 @@
-public final class com/apollographql/apollo3/cache/http/CachingHttpEngine : com/apollographql/apollo3/network/http/HttpEngine {
+public final class com/apollographql/apollo3/cache/http/CachingHttpInterceptor : com/apollographql/apollo3/network/http/HttpInterceptor {
 	public static final field CACHE_DO_NOT_STORE Ljava/lang/String;
 	public static final field CACHE_EXPIRE_AFTER_READ_HEADER Ljava/lang/String;
 	public static final field CACHE_EXPIRE_TIMEOUT_HEADER Ljava/lang/String;
@@ -7,19 +7,18 @@ public final class com/apollographql/apollo3/cache/http/CachingHttpEngine : com/
 	public static final field CACHE_KEY_HEADER Ljava/lang/String;
 	public static final field CACHE_ONLY Ljava/lang/String;
 	public static final field CACHE_SERVED_DATE_HEADER Ljava/lang/String;
-	public static final field Companion Lcom/apollographql/apollo3/cache/http/CachingHttpEngine$Companion;
+	public static final field Companion Lcom/apollographql/apollo3/cache/http/CachingHttpInterceptor$Companion;
 	public static final field FROM_CACHE Ljava/lang/String;
 	public static final field NETWORK_FIRST Ljava/lang/String;
 	public static final field NETWORK_ONLY Ljava/lang/String;
-	public fun <init> (Ljava/io/File;JLokio/FileSystem;Lcom/apollographql/apollo3/network/http/HttpEngine;)V
-	public synthetic fun <init> (Ljava/io/File;JLokio/FileSystem;Lcom/apollographql/apollo3/network/http/HttpEngine;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/io/File;JLokio/FileSystem;)V
+	public synthetic fun <init> (Ljava/io/File;JLokio/FileSystem;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun delete ()V
-	public fun dispose ()V
-	public fun execute (Lcom/apollographql/apollo3/api/http/HttpRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun intercept (Lcom/apollographql/apollo3/api/http/HttpRequest;Lcom/apollographql/apollo3/network/http/HttpInterceptorChain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun remove (Ljava/lang/String;)V
 }
 
-public final class com/apollographql/apollo3/cache/http/CachingHttpEngine$Companion {
+public final class com/apollographql/apollo3/cache/http/CachingHttpInterceptor$Companion {
 	public final fun cacheKey (Lcom/apollographql/apollo3/api/http/HttpRequest;)Ljava/lang/String;
 }
 
