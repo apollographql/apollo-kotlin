@@ -50,7 +50,7 @@ class ParseResponseBodyTest {
     val expected = testFixtureToUtf8("OperationJsonWriter.json")
     val query = AllPlanetsQuery()
     val data = query.parseJsonResponse(testFixtureToJsonReader("OperationJsonWriter.json")).data
-    val actual = buildJsonString {
+    val actual = buildJsonString(indent = "  ") {
       query.composeJsonResponse(this, data!!)
     }
 

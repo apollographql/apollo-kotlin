@@ -15,3 +15,5 @@ actual fun shouldUpdateTestFixtures(): Boolean {
     else -> false
   }
 }
+
+actual val testsPath: String = "../"

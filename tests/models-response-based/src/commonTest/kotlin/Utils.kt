@@ -5,8 +5,8 @@ import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerato
 import com.apollographql.apollo3.testing.pathToJsonReader
 import com.apollographql.apollo3.testing.pathToUtf8
 
-fun testFixtureToUtf8(name: String) = pathToUtf8("../models-fixtures/json/$name")
-fun testFixtureToJsonReader(name: String) = pathToJsonReader("../models-fixtures/json/$name")
+fun testFixtureToUtf8(name: String) = pathToUtf8("models-fixtures/json/$name")
+fun testFixtureToJsonReader(name: String) = pathToJsonReader("models-fixtures/json/$name")
 
 /**
  * A [CacheKeyGenerator] that always uses the "id" field if it exists and delegates to [TypePolicyCacheKeyGenerator] else

@@ -13,12 +13,15 @@ import kotlin.jvm.JvmName
  * Checks that [actualText] matches the contents of the file at [path]
  *
  * If it doesn't and [shouldUpdateTestFixtures] is true, update the contents, else throw
+ *
+ * @param path: the path to the file, from the "tests" directory
  */
 @OptIn(ApolloExperimental::class)
 fun checkFile(actualText: String, path: String) {
   val updateTestFixtures = shouldUpdateTestFixtures()
+  val expected = path.toTestsPath()
   val expectedText = try {
-    HostFileSystem.openReadOnly(path.toPath()).source().buffer().readUtf8()
+    HostFileSystem.openReadOnly(expected).source().buffer().readUtf8()
   } catch (e: IOException) {
     if (updateTestFixtures) {
       // do not throw here as we can update the fixtures below
@@ -28,8 +31,6 @@ fun checkFile(actualText: String, path: String) {
       throw e
     }
   }
-
-  val expected = "testFixtures/$path".toPath()
 
   if (actualText != expectedText) {
     if (updateTestFixtures) {
@@ -44,10 +45,21 @@ fun checkFile(actualText: String, path: String) {
   }
 }
 
+@OptIn(ApolloExperimental::class)
+private fun String.toTestsPath() = testsPath.toPath().resolve(this.toPath())
+
+/**
+ * @param path: the path to the file, from the "tests" directory
+ */
+@OptIn(ApolloExperimental::class)
 fun pathToUtf8(path: String): String {
-  return HostFileSystem.openReadOnly(path.toPath()).source().buffer().readUtf8()
+  return HostFileSystem.openReadOnly(path.toTestsPath()).source().buffer().readUtf8()
 }
 
+/**
+ * @param path: the path to the file, from the "tests" directory
+ */
+@OptIn(ApolloExperimental::class)
 fun pathToJsonReader(path: String): JsonReader {
-  return HostFileSystem.openReadOnly(path.toPath()).source().buffer().jsonReader()
+  return HostFileSystem.openReadOnly(path.toTestsPath()).source().buffer().jsonReader()
 }

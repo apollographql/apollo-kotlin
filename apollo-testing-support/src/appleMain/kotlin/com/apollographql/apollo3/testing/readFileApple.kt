@@ -8,3 +8,5 @@ import kotlin.test.assertEquals
 actual val HostFileSystem: FileSystem = FileSystem.SYSTEM
 
 actual fun shouldUpdateTestFixtures(): Boolean = false
+
+actual val testsPath: String = "../"

@@ -12,9 +12,9 @@ import com.apollographql.apollo3.testing.pathToJsonReader
 import com.apollographql.apollo3.testing.pathToUtf8
 import kotlin.test.assertEquals
 
-fun checkTestFixture(actualText: String, name: String) = checkFile(actualText, "testFixtures/$name")
-fun testFixtureToUtf8(name: String) = pathToUtf8("testFixtures/$name")
-fun testFixtureToJsonReader(name: String) = pathToJsonReader("testFixtures/$name")
+fun checkTestFixture(actualText: String, name: String) = checkFile(actualText, "integration-tests/testFixtures/$name")
+fun testFixtureToUtf8(name: String) = pathToUtf8("integration-tests/testFixtures/$name")
+fun testFixtureToJsonReader(name: String) = pathToJsonReader("integration-tests/testFixtures/$name")
 
 /**
  * A helper function to reverse the order of the argument so that we can easily column edit the tests

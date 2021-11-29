@@ -2,6 +2,7 @@ package test
 
 import com.apollographql.apollo3.integration.httpcache.AllFilmsQuery
 import com.apollographql.apollo3.testing.HostFileSystem
+import com.apollographql.apollo3.testing.pathToUtf8
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -21,11 +22,7 @@ import kotlin.test.assertEquals
 class OperationOutputTest {
   @Test
   fun operationOutputMatchesTheModels() {
-    val operationOutput = HostFileSystem
-        .openReadOnly("build/generated/operationOutput/apollo/httpcache-kotlin/operationOutput.json".toPath())
-        .source()
-        .buffer()
-        .readUtf8()
+    val operationOutput = pathToUtf8("integration-tests/build/generated/operationOutput/apollo/httpcache-kotlin/operationOutput.json")
     val source = Json.parseToJsonElement(operationOutput).jsonObject.entries.mapNotNull {
       val descriptor = it.value.jsonObject
       if (descriptor.getValue("name").jsonPrimitive.content == "AllFilms") {
