@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.json.internal.writeAny
 import com.apollographql.apollo3.api.json.readAny
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
+import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmSuppressWildcards
 import kotlin.native.concurrent.SharedImmutable
 
@@ -265,6 +266,7 @@ fun <T> Adapter<T>.optional() = OptionalAdapter(this)
 
 
 @JvmName("-toJson")
+@JvmOverloads
 fun <T> Adapter<T>.toJsonString(value: T, customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty, indent: String? = null): String = buildJsonString(indent) {
   this@toJsonString.toJson(this, customScalarAdapters, value)
 }
