@@ -118,11 +118,10 @@ public final class com/apollographql/apollo3/AutoPersistedQueryInfo$Key : com/ap
 }
 
 public final class com/apollographql/apollo3/AutoPersistedQueryInfoKt {
+	public static final fun enableAutoPersistedQueries (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Z)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
 	public static final fun getAutoPersistedQueryInfo (Lcom/apollographql/apollo3/api/ApolloResponse;)Lcom/apollographql/apollo3/AutoPersistedQueryInfo;
-	public static final fun hashedQuery (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Z)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
-	public static final fun withAutoPersistedQueryInfo (Lcom/apollographql/apollo3/api/ApolloResponse;Z)Lcom/apollographql/apollo3/api/ApolloResponse;
-	public static final fun withHashedQuery (Lcom/apollographql/apollo3/ApolloClient;Z)Lcom/apollographql/apollo3/ApolloClient;
-	public static final fun withHashedQuery (Lcom/apollographql/apollo3/api/ApolloRequest;Z)Lcom/apollographql/apollo3/api/ApolloRequest;
+	public static final fun withHashedQuery (Lcom/apollographql/apollo3/ApolloClient;Z)Ljava/lang/Void;
+	public static final fun withHashedQuery (Lcom/apollographql/apollo3/api/ApolloRequest;Z)Ljava/lang/Void;
 }
 
 public final class com/apollographql/apollo3/ConcurrencyInfo : com/apollographql/apollo3/api/ExecutionContext$Element {
