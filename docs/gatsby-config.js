@@ -40,8 +40,7 @@ module.exports = {
             'essentials/subscriptions',
             'essentials/errors',
             'essentials/custom-scalars',
-            'essentials/inline-fragments',
-            'essentials/named-fragments',
+            'essentials/fragments',
           ],
           Caching: [
             'caching/introduction',
