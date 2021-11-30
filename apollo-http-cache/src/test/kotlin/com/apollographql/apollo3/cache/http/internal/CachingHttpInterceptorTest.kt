@@ -2,11 +2,17 @@ package com.apollographql.apollo3.cache.http.internal
 
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
+import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.http.valueOf
-import com.apollographql.apollo3.cache.http.CachingHttpEngine
+import com.apollographql.apollo3.cache.http.CachingHttpInterceptor
 import com.apollographql.apollo3.exception.HttpCacheMissException
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.network.NetworkTransport
+import com.apollographql.apollo3.network.http.DefaultHttpEngine
+import com.apollographql.apollo3.network.http.HttpInterceptor
+import com.apollographql.apollo3.network.http.HttpInterceptorChain
+import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -15,16 +21,18 @@ import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-class CachingHttpEngineTest {
+class CachingHttpInterceptorTest {
   private lateinit var mockServer: MockServer
-  private lateinit var engine: CachingHttpEngine
+  private lateinit var interceptor: CachingHttpInterceptor
+  private lateinit var chain: HttpInterceptorChain
 
   @Before
   fun before() {
     mockServer = MockServer()
     val dir = File("build/httpCache")
     dir.deleteRecursively()
-    engine = CachingHttpEngine(dir, Long.MAX_VALUE)
+    interceptor = CachingHttpInterceptor(dir, Long.MAX_VALUE)
+    chain = TestHttpInterceptorChain()
   }
 
   @Test
@@ -37,13 +45,18 @@ class CachingHttpEngineTest {
           url = mockServer.url(),
       ).build()
 
-      var response = engine.execute(request)
+      var response = interceptor.intercept(request, chain)
       assertEquals("success", response.body?.readUtf8())
 
       // 2nd request should hit the cache
-      response = engine.execute(request.newBuilder().addHeader(CachingHttpEngine.CACHE_FETCH_POLICY_HEADER, CachingHttpEngine.CACHE_ONLY).build())
+      response = interceptor.intercept(
+          request.newBuilder()
+              .addHeader(CachingHttpInterceptor.CACHE_FETCH_POLICY_HEADER, CachingHttpInterceptor.CACHE_ONLY)
+              .build(),
+          chain
+      )
       assertEquals("success", response.body?.readUtf8())
-      assertEquals("true", response.headers.valueOf(CachingHttpEngine.FROM_CACHE))
+      assertEquals("true", response.headers.valueOf(CachingHttpInterceptor.FROM_CACHE))
     }
   }
 
@@ -58,12 +71,17 @@ class CachingHttpEngineTest {
       ).build()
 
       // Warm the cache
-      val response = engine.execute(request)
+      val response = interceptor.intercept(request, chain)
       assertEquals("error", response.body?.readUtf8())
 
       // 2nd request should trigger a cache miss
       assertFailsWith(HttpCacheMissException::class) {
-        engine.execute(request.newBuilder().addHeader(CachingHttpEngine.CACHE_FETCH_POLICY_HEADER, CachingHttpEngine.CACHE_ONLY).build())
+        interceptor.intercept(
+            request.newBuilder()
+                .addHeader(CachingHttpInterceptor.CACHE_FETCH_POLICY_HEADER, CachingHttpInterceptor.CACHE_ONLY)
+                .build(),
+            chain
+        )
       }
     }
   }
@@ -79,23 +97,37 @@ class CachingHttpEngineTest {
       ).build()
 
       // Warm the cache
-      var response = engine.execute(request)
+      var response = interceptor.intercept(request, chain)
       assertEquals("success", response.body?.readUtf8())
 
       // 2nd request should hit the cache
-      response = engine.execute(request.newBuilder().addHeader(CachingHttpEngine.CACHE_FETCH_POLICY_HEADER, CachingHttpEngine.CACHE_ONLY).build())
+      response = interceptor.intercept(
+          request.newBuilder()
+              .addHeader(CachingHttpInterceptor.CACHE_FETCH_POLICY_HEADER, CachingHttpInterceptor.CACHE_ONLY)
+              .build(),
+          chain
+      )
       assertEquals("success", response.body?.readUtf8())
 
       delay(1000)
       // 3rd request with a 500ms timeout should miss
       assertFailsWith(HttpCacheMissException::class) {
-        engine.execute(
+        interceptor.intercept(
             request.newBuilder()
-                .addHeader(CachingHttpEngine.CACHE_FETCH_POLICY_HEADER, CachingHttpEngine.CACHE_ONLY)
-                .addHeader(CachingHttpEngine.CACHE_EXPIRE_TIMEOUT_HEADER, "500")
-                .build()
+                .addHeader(CachingHttpInterceptor.CACHE_FETCH_POLICY_HEADER, CachingHttpInterceptor.CACHE_ONLY)
+                .addHeader(CachingHttpInterceptor.CACHE_EXPIRE_TIMEOUT_HEADER, "500")
+                .build(),
+            chain
         )
       }
     }
+  }
+}
+
+private class TestHttpInterceptorChain : HttpInterceptorChain {
+  val engine = DefaultHttpEngine()
+
+  override suspend fun proceed(request: HttpRequest): HttpResponse {
+    return engine.execute(request)
   }
 }

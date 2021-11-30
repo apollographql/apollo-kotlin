@@ -31,6 +31,7 @@ import com.apollographql.apollo3.mpp.assertMainThreadOnNative
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.network.http.HttpEngine
+import com.apollographql.apollo3.network.http.HttpInterceptor
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.network.ws.DefaultWebSocketEngine
 import com.apollographql.apollo3.network.ws.WebSocketEngine
@@ -164,6 +165,7 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
     private val customScalarAdaptersBuilder = CustomScalarAdapters.Builder()
     private val _interceptors: MutableList<ApolloInterceptor> = mutableListOf()
     val interceptors: List<ApolloInterceptor> = _interceptors
+    private val httpInterceptors: MutableList<HttpInterceptor> = mutableListOf()
     private var requestedDispatcher: CoroutineDispatcher? = null
     override var executionContext: ExecutionContext = ExecutionContext.Empty
     private var httpServerUrl: String? = null
@@ -247,6 +249,10 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
       _interceptors += interceptor
     }
 
+    fun addHttpInterceptor(httpInterceptor: HttpInterceptor) = apply {
+      httpInterceptors += httpInterceptor
+    }
+
     fun addInterceptors(interceptors: List<ApolloInterceptor>) = apply {
       this._interceptors += interceptors
     }
@@ -302,6 +308,9 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
         check(httpEngine == null) {
           "Apollo: 'httpEngine' has no effect if 'networkTransport' is set"
         }
+        check (httpInterceptors.isEmpty()) {
+          "Apollo: 'addHttpInterceptor' has no effect if 'networkTransport' is set"
+        }
         _networkTransport!!
       } else {
         check(httpServerUrl != null) {
@@ -310,6 +319,7 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
         HttpNetworkTransport.Builder()
             .serverUrl(httpServerUrl!!)
             .httpEngine(httpEngine ?: DefaultHttpEngine())
+            .interceptors(httpInterceptors)
             .build()
       }
 
