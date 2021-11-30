@@ -1,5 +1,4 @@
 query GetEnums {
   direction
   gravity
-  reserved
 }

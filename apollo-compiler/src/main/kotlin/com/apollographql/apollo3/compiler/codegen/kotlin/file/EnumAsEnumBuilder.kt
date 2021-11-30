@@ -51,7 +51,7 @@ class EnumAsEnumBuilder(
         .addType(companionTypeSpec())
         .apply {
           values.forEach { value ->
-            addEnumConstant(layout.enumValueName(value.name).escapeKotlinReservedEnumValueNames(), value.enumConstTypeSpec())
+            addEnumConstant(layout.sealedClassValueName(value.name), value.enumConstTypeSpec())
           }
           addEnumConstant("UNKNOWN__", unknownValueTypeSpec())
         }
