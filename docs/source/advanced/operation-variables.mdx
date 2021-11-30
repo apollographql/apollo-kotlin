@@ -1,36 +1,38 @@
 ---
-title: Defining operation variables
-sidebar_title: Operation variables
+title: Using GraphQL variables in Apollo Android
+sidebar_title: GraphQL variables
 ---
 
-GraphQL allows [passing arguments to your operations](https://graphql.org/graphql-js/passing-arguments/) with variables. This allows writing your query once and using different variables values at runtime.
+GraphQL supports passing argument values to your operations with [variables](https://graphql.org/graphql-js/passing-arguments/). This enables you to write a single query that you can reuse with multiple variable values (this is a [recommended best practice](https://www.apollographql.com/docs/react/data/operation-best-practices/#use-variables-to-provide-graphql-arguments)).
 
-By default, non-nullable variables are mandatory and nullable variables are optional, i.e., it is valid to omit them. Because omitting variables is rarely used in practice, Apollo Android made the choice of making all variables mandatory. This allows the generated code to be simpler to call.
+In GraphQL, non-nullable variables are required, and nullable variables are optional. However, because variables are rarely omitted in practice, **Apollo Android requires values for all variables by default**. This makes the structure of generated code more straightforward.
 
-The following query:
+Consider the following GraphQL query with two nullable variables:
 
 ```graphql
 query GetTodos($first: Int, $offset: Int) {
-  todos(first: $first, $offset: Int) {
+  todos(first: $first, offset: $offset) {
     id
     text
   }
 }
 ```
 
-generates the following Kotlin code:
+Apollo Android generates the following Kotlin code for this query:
 
 ```kotlin
 class GetTodosQuery(val first: Int?, val offset: Int?)
 ```
 
-Note that if you pass `first = null`, `null` is going to be sent to your server as a variable.
+If you pass `null` as the value for either of these variables, Apollo Android sends `null` to the server _as the value of that variable_ instead of omitting it entirely.
 
-If you want to be able to omit a variable at the price of a more complex code, you can opt in to the `Optional` wrapper with the `@optional` directive:
+## Omitting nullable variables
 
-```graphql
+If you want to be able to omit a nullable variable entirely (while also generating more complex code), you can opt in to the `Optional` wrapper with the `@optional` directive:
+
+```graphql{1}
 query GetTodos($first: Int @optional, $offset: Int @optional) {
-  todos(first: $first, $offset: Int) {
+  todos(first: $first, offset: $offset) {
     id
     text
   }
@@ -43,18 +45,18 @@ The above query generates the following Kotlin code:
 class GetTodosQuery(val first: Optional<Int?>, val offset: Optional<Int?>)
 ```
 
-You can then decide to omit variables:
+You can then selectively provide or omit variable values:
 
 ```kotlin
-// Don't send variables
+// Omit values for both variables
 val query = GetTodosQuery(Optional.Absent, Optional.Absent)
-// Send null
+// Provide null for both variables
 val query = GetTodosQuery(Optional.Present(null), Optional.Present(null))
-// Send explicit values
+// Send explicit values for both variables
 val query = GetTodosQuery(Optional.Present(100), Optional.Present(0))
 ```
 
-You can also opt-in optional variables globally in your Gradle config:
+You can also opt in to optional variables globally in your Gradle config:
 
 ```kotlin
 apollo {
