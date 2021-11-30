@@ -60,7 +60,7 @@ class CodegenLayout(
 
   // We used to write upper case enum values but the server can define different values with different cases
   // See https://github.com/apollographql/apollo-android/issues/3035
-  internal fun enumValueName(name: String) = name.escapeKotlinReservedEnumValueNames()
+  internal fun enumValueName(name: String) = regularIdentifier(name)
   internal fun enumResponseAdapterName(name: String) = enumName(name) + "_ResponseAdapter"
 
   internal fun operationName(operation: IrOperation): String {

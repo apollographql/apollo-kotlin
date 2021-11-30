@@ -1,7 +1,0 @@
-# The generated enum class should contain all members
-query TestQuery {
-  enum
-  ... on Query {
-    enum
-  }
-}

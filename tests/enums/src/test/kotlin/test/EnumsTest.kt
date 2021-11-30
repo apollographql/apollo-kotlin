@@ -2,6 +2,7 @@ package test
 
 import enums.type.Direction
 import enums.type.Gravity
+import enums.type.Reserved
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -11,6 +12,8 @@ class EnumsTest {
     assertEquals(Direction.NORTH, Direction.safeValueOf("NORTH"))
     assertEquals(Direction.north, Direction.safeValueOf("north"))
     assertEquals(Direction.UNKNOWN__, Direction.safeValueOf("newDirection"))
+    assertEquals(Reserved.name_, Reserved.safeValueOf("name"))
+    assertEquals(Reserved.ordinal_, Reserved.safeValueOf("ordinal"))
   }
 
   @Test

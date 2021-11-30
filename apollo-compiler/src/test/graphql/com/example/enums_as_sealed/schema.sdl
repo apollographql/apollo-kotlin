@@ -7,6 +7,4 @@ enum Enum {
     North @deprecated
     NORTH
     SOUTH
-    name
-    ordinal
 }

@@ -1,6 +1,7 @@
 type Query {
   direction: Direction
   gravity: Gravity
+  reserved: Reserved
 }
 
 enum Direction {
@@ -11,7 +12,6 @@ enum Direction {
   WEST
 }
 
-
 enum Gravity {
   TOP,
   # fails with java.lang.AssertionError: Class with incorrect id found: expected enums/type/Gravity.TOP, actual enums/type/Gravity.top
@@ -21,4 +21,10 @@ enum Gravity {
   BOTTOM,
   LEFT,
   RIGHT
+}
+
+# Value names should be escaped with _ prefixes
+enum Reserved {
+  name,
+  ordinal,
 }

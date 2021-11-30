@@ -27,8 +27,6 @@ public sealed class Enum(
       "North" -> North
       "NORTH" -> NORTH
       "SOUTH" -> SOUTH
-      "name" -> name_
-      "ordinal" -> ordinal_
       else -> UNKNOWN__(rawValue)
     }
 
@@ -39,9 +37,7 @@ public sealed class Enum(
       north,
       North,
       NORTH,
-      SOUTH,
-      name_,
-      ordinal_)
+      SOUTH)
   }
 
   @Deprecated(message = "No longer supported")
@@ -53,10 +49,6 @@ public sealed class Enum(
   public object NORTH : Enum(rawValue = "NORTH")
 
   public object SOUTH : Enum(rawValue = "SOUTH")
-
-  public object name_ : Enum(rawValue = "name")
-
-  public object ordinal_ : Enum(rawValue = "ordinal")
 
   /**
    * An enum value that wasn't known at compile time.

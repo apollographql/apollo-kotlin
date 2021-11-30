@@ -6,8 +6,6 @@
 package com.example.enums_as_sealed.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -25,54 +23,10 @@ public class TestQuery_ResponseAdapter {
   public enum Data implements Adapter<TestQuery.Data> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "enum");
-
-    @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
-      String __typename = null;
-      Enum enum_ = null;
-
-      loop:
-      while(true) {
-        switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: enum_ = new NullableAdapter<>(Enum_ResponseAdapter.INSTANCE).fromJson(reader, customScalarAdapters); break;
-          default: break loop;
-        }
-      }
-
-      Assertions.checkFieldNotMissing(__typename, "__typename");
-      reader.rewind();
-      TestQuery.OnQuery onQuery = com.example.enums_as_sealed.adapter.TestQuery_ResponseAdapter.OnQuery.INSTANCE.fromJson(reader, customScalarAdapters);
-
-      return new TestQuery.Data(
-        __typename,
-        enum_,
-        onQuery
-      );
-    }
-
-    @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) throws IOException {
-      writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
-
-      writer.name("enum");
-      new NullableAdapter<>(Enum_ResponseAdapter.INSTANCE).toJson(writer, customScalarAdapters, value.enum_);
-
-      com.example.enums_as_sealed.adapter.TestQuery_ResponseAdapter.OnQuery.INSTANCE.toJson(writer, customScalarAdapters, value.onQuery);
-    }
-  }
-
-  public enum OnQuery implements Adapter<TestQuery.OnQuery> {
-    INSTANCE;
-
     private static final List<String> RESPONSE_NAMES = Arrays.asList("enum");
 
     @Override
-    public TestQuery.OnQuery fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
       Enum enum_ = null;
 
@@ -84,14 +38,14 @@ public class TestQuery_ResponseAdapter {
         }
       }
 
-      return new TestQuery.OnQuery(
+      return new TestQuery.Data(
         enum_
       );
     }
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.OnQuery value) throws IOException {
+        TestQuery.Data value) throws IOException {
       writer.name("enum");
       new NullableAdapter<>(Enum_ResponseAdapter.INSTANCE).toJson(writer, customScalarAdapters, value.enum_);
     }

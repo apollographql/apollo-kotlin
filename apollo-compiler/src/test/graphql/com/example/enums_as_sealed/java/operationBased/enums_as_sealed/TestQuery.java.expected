@@ -21,20 +21,16 @@ import java.lang.String;
 import java.util.List;
 
 public class TestQuery implements Query<TestQuery.Data> {
-  public static final String OPERATION_ID = "33b41b0a7e3f97ecae9f115fa7607a90307a163de35b565694ac586674080930";
+  public static final String OPERATION_ID = "1dbd1f94815f122a090e09d84dd17b0bf55e8c44671cba8fd89a7c7c9fa79d63";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
    * The un-minimized version is:
    *
    * query TestQuery {
-   *   __typename
    *   enum
-   *   ... on Query {
-   *     enum
-   *   }
    * } */
-  public static final String OPERATION_DOCUMENT = "query TestQuery { __typename enum ... on Query { enum } }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery { enum }";
 
   public static final String OPERATION_NAME = "TestQuery";
 
@@ -110,14 +106,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
-    public String __typename;
-
     public Enum enum_;
-
-    /**
-     * Synthetic field for inline fragment on Query
-     */
-    public OnQuery onQuery;
 
     private transient volatile int $hashCode;
 
@@ -125,10 +114,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(String __typename, Enum enum_, OnQuery onQuery) {
-      this.__typename = __typename;
+    public Data(Enum enum_) {
       this.enum_ = enum_;
-      this.onQuery = onQuery;
     }
 
     @Override
@@ -138,62 +125,6 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof Data) {
         Data that = (Data) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.enum_ == null) ? (that.enum_ == null) : this.enum_.equals(that.enum_))
-         &&((this.onQuery == null) ? (that.onQuery == null) : this.onQuery.equals(that.onQuery));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
-        h *= 1000003;
-        h ^= (enum_ == null) ? 0 : enum_.hashCode();
-        h *= 1000003;
-        h ^= (onQuery == null) ? 0 : onQuery.hashCode();
-        $hashCode = h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Data{"
-          + "__typename=" + __typename + ", "
-          + "enum_=" + enum_ + ", "
-          + "onQuery=" + onQuery
-          + "}";
-      }
-      return $toString;
-    }
-  }
-
-  public static class OnQuery {
-    public Enum enum_;
-
-    private transient volatile int $hashCode;
-
-    private transient volatile boolean $hashCodeMemoized;
-
-    private transient volatile String $toString;
-
-    public OnQuery(Enum enum_) {
-      this.enum_ = enum_;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof OnQuery) {
-        OnQuery that = (OnQuery) o;
         return ((this.enum_ == null) ? (that.enum_ == null) : this.enum_.equals(that.enum_));
       }
       return false;
@@ -214,7 +145,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "OnQuery{"
+        $toString = "Data{"
           + "enum_=" + enum_
           + "}";
       }
