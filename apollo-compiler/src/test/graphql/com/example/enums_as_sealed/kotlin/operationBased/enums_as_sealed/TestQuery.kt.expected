@@ -38,8 +38,16 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public data class Data(
     public val __typename: String,
-    public val enum_: Enum?
-  ) : Query.Data
+    public val enum_: Enum?,
+    /**
+     * Synthetic field for inline fragment on Query
+     */
+    public val onQuery: OnQuery
+  ) : Query.Data {
+    public data class OnQuery(
+      public val enum_: Enum?
+    )
+  }
 
   public companion object {
     public const val OPERATION_ID: String =

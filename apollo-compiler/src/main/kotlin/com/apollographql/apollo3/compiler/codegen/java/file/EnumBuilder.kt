@@ -64,7 +64,7 @@ class EnumBuilder(
         )
         .addFields(
             values.map { value ->
-              FieldSpec.builder(selfClassName, layout.enumName(value.name))
+              FieldSpec.builder(selfClassName, layout.enumValueName(value.name))
                   .addModifiers(Modifier.PUBLIC)
                   .addModifiers(Modifier.STATIC)
                   .initializer(CodeBlock.of("new $T($S)", selfClassName, value.name))

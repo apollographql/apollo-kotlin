@@ -5,6 +5,7 @@ package com.apollographql.apollo3.compiler.codegen
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
+import com.apollographql.apollo3.compiler.escapeKotlinReservedEnumValueNames
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo3.compiler.ir.IrFieldInfo
 import com.apollographql.apollo3.compiler.ir.IrListType
@@ -59,7 +60,7 @@ class CodegenLayout(
 
   // We used to write upper case enum values but the server can define different values with different cases
   // See https://github.com/apollographql/apollo-android/issues/3035
-  internal fun enumValueName(name: String) = regularIdentifier(name)
+  internal fun enumValueName(name: String) = name.escapeKotlinReservedEnumValueNames()
   internal fun enumResponseAdapterName(name: String) = enumName(name) + "_ResponseAdapter"
 
   internal fun operationName(operation: IrOperation): String {

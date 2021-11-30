@@ -35,9 +35,18 @@ public object TestQuery_ResponseAdapter {
         }
       }
 
+      check(__typename != null) {
+        "__typename was not found"
+      }
+
+      reader.rewind()
+      val onQuery = com.example.enums_as_sealed.adapter.TestQuery_ResponseAdapter.Data.OnQuery.fromJson(reader,
+          customScalarAdapters)
+
       return TestQuery.Data(
-        __typename = __typename!!,
-        enum_ = enum_
+        __typename = __typename,
+        enum_ = enum_,
+        onQuery = onQuery
       )
     }
 
@@ -51,6 +60,38 @@ public object TestQuery_ResponseAdapter {
 
       writer.name("enum")
       Enum_ResponseAdapter.nullable().toJson(writer, customScalarAdapters, value.enum_)
+
+      com.example.enums_as_sealed.adapter.TestQuery_ResponseAdapter.Data.OnQuery.toJson(writer,
+          customScalarAdapters, value.onQuery)
+    }
+
+    private object OnQuery : Adapter<TestQuery.Data.OnQuery> {
+      public val RESPONSE_NAMES: List<String> = listOf("enum")
+
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          TestQuery.Data.OnQuery {
+        var enum_: Enum? = null
+
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> enum_ = Enum_ResponseAdapter.nullable().fromJson(reader, customScalarAdapters)
+            else -> break
+          }
+        }
+
+        return TestQuery.Data.OnQuery(
+          enum_ = enum_
+        )
+      }
+
+      public override fun toJson(
+        writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
+        `value`: TestQuery.Data.OnQuery
+      ): Unit {
+        writer.name("enum")
+        Enum_ResponseAdapter.nullable().toJson(writer, customScalarAdapters, value.enum_)
+      }
     }
   }
 }

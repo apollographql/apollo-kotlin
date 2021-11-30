@@ -49,7 +49,7 @@ class EnumAsEnumBuilder(
         .addProperty(rawValuePropertySpec)
         .addType(companionTypeSpec())
         .apply {
-          values.forEach { value -> addEnumConstant(layout.enumName(value.name), value.enumConstTypeSpec()) }
+          values.forEach { value -> addEnumConstant(layout.enumValueName(value.name), value.enumConstTypeSpec()) }
           addEnumConstant("UNKNOWN__", unknownValueTypeSpec())
         }
         .build()
