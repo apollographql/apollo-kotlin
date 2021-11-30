@@ -35,20 +35,20 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      TestQuery.Yield yield_ = null;
+      TestQuery.Yield yield = null;
       List<TestQuery.Object> objects = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: yield_ = new NullableAdapter<>(new ObjectAdapter<TestQuery.Yield>(Yield.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: yield = new NullableAdapter<>(new ObjectAdapter<TestQuery.Yield>(Yield.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           case 1: objects = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Object>(Object.INSTANCE, true)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.Data(
-        yield_,
+        yield,
         objects
       );
     }
@@ -57,7 +57,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Data value) throws IOException {
       writer.name("yield");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Yield>(Yield.INSTANCE, false)).toJson(writer, customScalarAdapters, value.yield_);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Yield>(Yield.INSTANCE, false)).toJson(writer, customScalarAdapters, value.yield);
 
       writer.name("objects");
       new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Object>(Object.INSTANCE, true)))).toJson(writer, customScalarAdapters, value.objects);
@@ -72,23 +72,23 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Yield fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String it_ = null;
+      String it = null;
       String name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: it_ = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: it = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(it_, "it");
+      Assertions.checkFieldNotMissing(it, "it");
       Assertions.checkFieldNotMissing(name, "name");
 
       return new TestQuery.Yield(
-        it_,
+        it,
         name
       );
     }
@@ -97,7 +97,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Yield value) throws IOException {
       writer.name("it");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.it_);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.it);
 
       writer.name("name");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);

@@ -45,7 +45,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * The ID of the character
        */
-      public val it_: String,
+      public val it: String,
       /**
        * The name of the character
        */

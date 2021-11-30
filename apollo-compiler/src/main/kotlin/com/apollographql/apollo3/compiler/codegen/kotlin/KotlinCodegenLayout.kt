@@ -1,6 +1,4 @@
-
-
-package com.apollographql.apollo3.compiler.codegen
+package com.apollographql.apollo3.compiler.codegen.kotlin
 
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
@@ -19,10 +17,8 @@ import com.apollographql.apollo3.compiler.singularize
  * The central place where the names/packages of the different classes are decided and escape rules done.
  *
  * Inputs should always be GraphQL identifiers and outputs are valid Kotlin identifiers.
- *
  */
-
-class CodegenLayout(
+class KotlinCodegenLayout(
     private val packageNameGenerator: PackageNameGenerator,
     schemaPackageName: String,
     private val useSemanticNaming: Boolean,

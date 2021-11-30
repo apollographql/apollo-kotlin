@@ -2,7 +2,6 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.compiler.codegen.ClassNames
-import com.apollographql.apollo3.compiler.codegen.CodegenLayout
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.Data
 import com.apollographql.apollo3.compiler.codegen.Identifier.block
@@ -11,9 +10,10 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.testResolver
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgTestFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinCodegenLayout
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinMemberNames
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.test.TBuilderBuilder
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
 import com.apollographql.apollo3.compiler.ir.IrModel
@@ -206,7 +206,7 @@ private fun resolveNameClashes(usedNames: MutableSet<String>, modelName: String)
 }
 
 
-internal fun IrModel.toTBuilder(layout: CodegenLayout): TBuilder {
+internal fun IrModel.toTBuilder(layout: KotlinCodegenLayout): TBuilder {
   val nestedBuilders = modelGroups.flatMap { it.toTBuilders(layout) }
   return TBuilder(
       kotlinName = layout.testBuilder(modelName),
@@ -217,7 +217,7 @@ internal fun IrModel.toTBuilder(layout: CodegenLayout): TBuilder {
   )
 }
 
-internal fun IrModelGroup.toTBuilders(layout: CodegenLayout): List<TBuilder> {
+internal fun IrModelGroup.toTBuilders(layout: KotlinCodegenLayout): List<TBuilder> {
   return models.filter { !it.isInterface }.map {
     it.toTBuilder(layout)
   }

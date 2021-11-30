@@ -23,17 +23,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var enum_: Enum? = null
+      var enum: Enum? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> enum_ = Enum_ResponseAdapter.nullable().fromJson(reader, customScalarAdapters)
+          0 -> enum = Enum_ResponseAdapter.nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        enum_ = enum_
+        enum = enum
       )
     }
 
@@ -43,7 +43,7 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data
     ): Unit {
       writer.name("enum")
-      Enum_ResponseAdapter.nullable().toJson(writer, customScalarAdapters, value.enum_)
+      Enum_ResponseAdapter.nullable().toJson(writer, customScalarAdapters, value.enum)
     }
   }
 }

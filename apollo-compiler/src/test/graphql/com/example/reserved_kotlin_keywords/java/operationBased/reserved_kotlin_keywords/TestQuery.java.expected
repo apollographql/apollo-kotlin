@@ -113,7 +113,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
-    public Yield yield_;
+    public Yield yield;
 
     public List<Object> objects;
 
@@ -123,8 +123,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(Yield yield_, List<Object> objects) {
-      this.yield_ = yield_;
+    public Data(Yield yield, List<Object> objects) {
+      this.yield = yield;
       this.objects = objects;
     }
 
@@ -135,7 +135,7 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof Data) {
         Data that = (Data) o;
-        return ((this.yield_ == null) ? (that.yield_ == null) : this.yield_.equals(that.yield_))
+        return ((this.yield == null) ? (that.yield == null) : this.yield.equals(that.yield))
          &&((this.objects == null) ? (that.objects == null) : this.objects.equals(that.objects));
       }
       return false;
@@ -146,7 +146,7 @@ public class TestQuery implements Query<TestQuery.Data> {
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (yield_ == null) ? 0 : yield_.hashCode();
+        h ^= (yield == null) ? 0 : yield.hashCode();
         h *= 1000003;
         h ^= (objects == null) ? 0 : objects.hashCode();
         $hashCode = h;
@@ -159,7 +159,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Data{"
-          + "yield_=" + yield_ + ", "
+          + "yield=" + yield + ", "
           + "objects=" + objects
           + "}";
       }
@@ -171,7 +171,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The ID of the character
      */
-    public String it_;
+    public String it;
 
     /**
      * The name of the character
@@ -184,8 +184,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Yield(String it_, String name) {
-      this.it_ = it_;
+    public Yield(String it, String name) {
+      this.it = it;
       this.name = name;
     }
 
@@ -196,7 +196,7 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof Yield) {
         Yield that = (Yield) o;
-        return ((this.it_ == null) ? (that.it_ == null) : this.it_.equals(that.it_))
+        return ((this.it == null) ? (that.it == null) : this.it.equals(that.it))
          &&((this.name == null) ? (that.name == null) : this.name.equals(that.name));
       }
       return false;
@@ -207,7 +207,7 @@ public class TestQuery implements Query<TestQuery.Data> {
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (it_ == null) ? 0 : it_.hashCode();
+        h ^= (it == null) ? 0 : it.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         $hashCode = h;
@@ -220,7 +220,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Yield{"
-          + "it_=" + it_ + ", "
+          + "it=" + it + ", "
           + "name=" + name
           + "}";
       }

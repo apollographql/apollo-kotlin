@@ -62,19 +62,19 @@ public object TestQuery_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Yield {
-        var it_: String? = null
+        var it: String? = null
         var name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> it_ = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> it = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.Yield(
-          it_ = it_!!,
+          it = it!!,
           name = name!!
         )
       }
@@ -85,7 +85,7 @@ public object TestQuery_ResponseAdapter {
         `value`: TestQuery.Data.Yield
       ): Unit {
         writer.name("it")
-        StringAdapter.toJson(writer, customScalarAdapters, value.it_)
+        StringAdapter.toJson(writer, customScalarAdapters, value.it)
 
         writer.name("name")
         StringAdapter.toJson(writer, customScalarAdapters, value.name)

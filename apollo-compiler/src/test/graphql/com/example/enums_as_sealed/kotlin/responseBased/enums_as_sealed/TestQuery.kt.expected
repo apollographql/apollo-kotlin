@@ -37,7 +37,7 @@ public class TestQuery() : Query<TestQuery.Data> {
   public override fun selections(): List<CompiledSelection> = TestQuerySelections.root
 
   public data class Data(
-    public val enum_: Enum?
+    public val `enum`: Enum?
   ) : Query.Data
 
   public companion object {
