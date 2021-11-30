@@ -38,6 +38,7 @@ module.exports = {
             'essentials/queries',
             'essentials/mutations',
             'essentials/subscriptions',
+            'advanced/operation-variables',
             'essentials/errors',
             'essentials/custom-scalars',
             'essentials/inline-fragments',
@@ -77,7 +78,6 @@ module.exports = {
             'advanced/rxjava',
             'advanced/kotlin-native',
             'advanced/apollo-ast',
-            'advanced/operation-variables',
           ],
         }
       }
