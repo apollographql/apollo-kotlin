@@ -54,13 +54,13 @@ public object TestQuery_ResponseAdapter {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.TypeWithGraphQLKeywords {
         var on: String? = null
-        var null_: String? = null
+        var `null`: String? = null
         var alias: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> on = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> null_ = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> `null` = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             2 -> alias = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
@@ -68,7 +68,7 @@ public object TestQuery_ResponseAdapter {
 
         return TestQuery.Data.TypeWithGraphQLKeywords(
           on = on,
-          null_ = null_,
+          `null` = `null`,
           alias = alias
         )
       }
@@ -82,7 +82,7 @@ public object TestQuery_ResponseAdapter {
         NullableStringAdapter.toJson(writer, customScalarAdapters, value.on)
 
         writer.name("null")
-        NullableStringAdapter.toJson(writer, customScalarAdapters, value.null_)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.`null`)
 
         writer.name("alias")
         NullableStringAdapter.toJson(writer, customScalarAdapters, value.alias)

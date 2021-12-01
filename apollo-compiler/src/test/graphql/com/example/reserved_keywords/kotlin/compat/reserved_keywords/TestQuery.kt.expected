@@ -46,7 +46,7 @@ public class TestQuery() : Query<TestQuery.Data> {
     /**
      * The ID of the character
      */
-    public val while_: String,
+    public val `while`: String,
     /**
      * The name of the character
      */

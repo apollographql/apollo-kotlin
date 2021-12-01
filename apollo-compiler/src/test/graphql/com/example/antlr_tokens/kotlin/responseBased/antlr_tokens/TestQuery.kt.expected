@@ -43,7 +43,7 @@ public data class TestQuery(
   ) : Query.Data {
     public data class TypeWithGraphQLKeywords(
       public val on: String?,
-      public val null_: String?,
+      public val `null`: String?,
       public val alias: String?
     )
   }

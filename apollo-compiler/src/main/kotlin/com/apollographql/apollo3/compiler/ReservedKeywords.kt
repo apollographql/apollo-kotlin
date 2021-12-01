@@ -10,13 +10,9 @@ private val JAVA_RESERVED_WORDS = arrayOf(
     "transient", "try", "true", "void", "volatile", "while"
 )
 
-// Reference:
-// https://kotlinlang.org/docs/keyword-reference.html#operators-and-special-symbols
-// Note: "yield" is not in this reference, but is in fact reserved (https://github.com/apollographql/apollo-android/issues/1957)
-private val KOTLIN_RESERVED_WORDS = arrayOf(
-    "as", "break", "class", "continue", "do", "else", "false", "for", "fun", "if", "in", "interface", "is", "null", "object", "package",
-    "return", "super", "this", "throw", "true", "try", "typealias", "typeof", "val", "var", "when", "while", "yield"
-)
+// Note: reserved keywords escaping is handled by KotlinPoet, but "yield" is actually missing from its list,
+// so we handle it ourselves (see https://github.com/apollographql/apollo-android/issues/1957)
+private val KOTLIN_RESERVED_WORDS = arrayOf("yield")
 
 // Reference:
 // https://kotlinlang.org/docs/enum-classes.html#working-with-enum-constants:~:text=properties%20for%20obtaining%20its%20name%20and%20position
