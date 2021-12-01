@@ -49,7 +49,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * The name of the character
        */
-      public val name: String
+      public val it: String
     )
 
     public data class Object(
@@ -70,7 +70,7 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "6a337ab7c3e44de1799c5128f5722cffb334fb9f29f261f6d304231a98aadbd5"
+        "d2f555fdc0bd9ea0a928c39aa7818ac66b0c0a0870772b1fb57387c3c3cf8577"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -79,7 +79,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * query TestQuery {
      *   yield: hero {
      *     while: id
-     *     name
+     *     it: name
      *   }
      *   objects: search(text: "abc") {
      *     __typename
@@ -90,7 +90,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query TestQuery { yield: hero { while: id name } objects: search(text: \"abc\") { __typename ... on Character { name } } }"
+        "query TestQuery { yield: hero { while: id it: name } objects: search(text: \"abc\") { __typename ... on Character { name } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

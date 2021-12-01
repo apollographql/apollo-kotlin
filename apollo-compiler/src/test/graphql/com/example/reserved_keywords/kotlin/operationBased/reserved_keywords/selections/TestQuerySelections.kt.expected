@@ -27,7 +27,8 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "name",
           type = CompiledStringType.notNull()
-        ).build()
+        ).alias("it")
+        .build()
       )
 
   private val onCharacter: List<CompiledSelection> = listOf(

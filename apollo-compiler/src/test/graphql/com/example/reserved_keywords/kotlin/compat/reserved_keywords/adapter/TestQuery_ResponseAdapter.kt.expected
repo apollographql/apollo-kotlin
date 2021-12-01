@@ -59,24 +59,24 @@ public object TestQuery_ResponseAdapter {
   }
 
   public object Yield : Adapter<TestQuery.Yield> {
-    public val RESPONSE_NAMES: List<String> = listOf("while", "name")
+    public val RESPONSE_NAMES: List<String> = listOf("while", "it")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Yield {
       var `while`: String? = null
-      var name: String? = null
+      var it: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> `while` = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> it = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Yield(
         `while` = `while`!!,
-        name = name!!
+        it = it!!
       )
     }
 
@@ -88,8 +88,8 @@ public object TestQuery_ResponseAdapter {
       writer.name("while")
       StringAdapter.toJson(writer, customScalarAdapters, value.`while`)
 
-      writer.name("name")
-      StringAdapter.toJson(writer, customScalarAdapters, value.name)
+      writer.name("it")
+      StringAdapter.toJson(writer, customScalarAdapters, value.it)
     }
   }
 

@@ -67,29 +67,29 @@ public class TestQuery_ResponseAdapter {
   public enum Yield implements Adapter<TestQuery.Yield> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("while", "name");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("while", "it");
 
     @Override
     public TestQuery.Yield fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
       String while_ = null;
-      String name = null;
+      String it = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: while_ = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: it = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(while_, "while");
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(it, "it");
 
       return new TestQuery.Yield(
         while_,
-        name
+        it
       );
     }
 
@@ -99,8 +99,8 @@ public class TestQuery_ResponseAdapter {
       writer.name("while");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.while_);
 
-      writer.name("name");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
+      writer.name("it");
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.it);
     }
   }
 
