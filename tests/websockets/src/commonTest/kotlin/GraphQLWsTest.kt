@@ -59,7 +59,7 @@ class GraphQLWsTest {
         .build()
 
     val list = apolloClient.subscription(GreetingsSubscription())
-        .execute()
+        .toFlow()
         .toList()
     assertEquals(listOf("Hi", "Bonjour", "Hola", "Ciao", "Zdravo"), list.map { it.data?.greetings })
 
