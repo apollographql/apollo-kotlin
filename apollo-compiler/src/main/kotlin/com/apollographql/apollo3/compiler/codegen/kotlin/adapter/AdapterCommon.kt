@@ -52,7 +52,7 @@ internal fun readFromResponseCodeBlock(
     }
 
     CodeBlock.of(
-        "var·%L:·%T·=·%L",
+        "var·%N:·%T·=·%L",
         context.layout.variableName(property.info.responseName),
         context.resolver.resolveIrType(property.info.type).copy(nullable = !property.info.type.isOptional()),
         variableInitializer
@@ -68,7 +68,7 @@ internal fun readFromResponseCodeBlock(
       .add(
           regularProperties.mapIndexed { index, property ->
             CodeBlock.of(
-                "%L·->·%L·=·%L.$fromJson($reader, $customScalarAdapters)",
+                "%L·->·%N·=·%L.$fromJson($reader, $customScalarAdapters)",
                 index,
                 context.layout.variableName(property.info.responseName),
                 context.resolver.adapterInitializer(property.info.type, property.requiresBuffering)
@@ -103,7 +103,7 @@ internal fun readFromResponseCodeBlock(
         .apply {
           if (property.condition != BooleanExpression.True) {
             add(
-                "var·%L:·%T·=·null\n",
+                "var·%N:·%T·=·null\n",
                 context.layout.variableName(property.info.responseName),
                 context.resolver.resolveIrType(property.info.type).copy(nullable = !property.info.type.isOptional()),
             )
@@ -140,7 +140,7 @@ internal fun readFromResponseCodeBlock(
           ""
         }
         CodeBlock.of(
-            "%L·=·%L%L",
+            "%N·=·%N%L",
             context.layout.propertyName(property.info.responseName),
             context.layout.variableName(property.info.responseName),
             maybeAssertNotNull
@@ -183,8 +183,9 @@ private fun IrProperty.writeToResponseCodeBlock(context: KotlinContext): CodeBlo
     val adapterInitializer = context.resolver.adapterInitializer(info.type, requiresBuffering)
     builder.addStatement("${writer}.name(%S)", info.responseName)
     builder.addStatement(
-        "%L.${Identifier.toJson}($writer, $customScalarAdapters, $value.$propertyName)",
-        adapterInitializer
+        "%L.${Identifier.toJson}($writer, $customScalarAdapters, $value.%N)",
+        adapterInitializer,
+        propertyName,
     )
   } else {
     val adapterInitializer = context.resolver.resolveModelAdapter(info.type.modelPath())
@@ -193,11 +194,12 @@ private fun IrProperty.writeToResponseCodeBlock(context: KotlinContext): CodeBlo
      * Output types do not distinguish between null and absent
      */
     if (this.info.type !is IrNonNullType) {
-      builder.beginControlFlow("if·($value.$propertyName·!=·null)")
+      builder.beginControlFlow("if·($value.%N·!=·null)", propertyName)
     }
     builder.addStatement(
-        "%L.${Identifier.toJson}($writer, $customScalarAdapters, $value.$propertyName)",
-        adapterInitializer
+        "%L.${Identifier.toJson}($writer, $customScalarAdapters, $value.%N)",
+        adapterInitializer,
+        propertyName,
     )
     if (this.info.type !is IrNonNullType) {
       builder.endControlFlow()

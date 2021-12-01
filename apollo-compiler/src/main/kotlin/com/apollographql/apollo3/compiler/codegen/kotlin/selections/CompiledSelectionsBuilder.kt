@@ -30,8 +30,8 @@ import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.leafType
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.ir.toBooleanExpression
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.KModifier
@@ -154,7 +154,7 @@ class CompiledSelectionsBuilder(
     val selections = selectionSet?.selections ?: emptyList()
     if (selections.isNotEmpty()) {
       nestededPropertySpecs = selections.walk(alias ?: name, private, fieldDefinition.type.leafType().name)
-      builder.add(".selections(%L)\n", nestededPropertySpecs.last().name)
+      builder.add(".selections(%N)\n", nestededPropertySpecs.last().name)
     }
     builder.add(".build()")
 
@@ -182,7 +182,7 @@ class CompiledSelectionsBuilder(
     if (selections.isNotEmpty()) {
       val name = "on${typeCondition.name.capitalizeFirstLetter()}"
       nestedPropertySpecs = selections.walk(name, private, typeCondition.name)
-      builder.add(".selections(%L)\n", nestedPropertySpecs.last().name)
+      builder.add(".selections(%N)\n", nestedPropertySpecs.last().name)
     }
     builder.add(".build()")
 

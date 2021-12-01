@@ -35,8 +35,8 @@ class CustomScalarTest {
         .execute()
         .dataAssertNoErrors
 
-    assertEquals(10_000_000_000, data.long_)
-    assertEquals(1.4f, data.float_)
+    assertEquals(10_000_000_000, data.long)
+    assertEquals(1.4f, data.float)
     assertEquals(mapOf("key" to "value"), data.any)
     assertEquals(listOf(
         mapOf("lat" to 1, "lon" to 2),

@@ -2,7 +2,6 @@ package com.apollographql.apollo3.compiler.codegen.java
 
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.PackageNameGenerator
-import com.apollographql.apollo3.compiler.codegen.CodegenLayout
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.codegen.java.adapter.EnumResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.CustomScalarBuilder
@@ -20,12 +19,11 @@ import com.apollographql.apollo3.compiler.codegen.java.file.OperationBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.OperationResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.OperationSelectionsBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.OperationVariablesAdapterBuilder
-import com.apollographql.apollo3.compiler.codegen.java.file.UnionBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.SchemaBuilder
+import com.apollographql.apollo3.compiler.codegen.java.file.UnionBuilder
 import com.apollographql.apollo3.compiler.ir.Ir
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
-import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.JavaFile
 import java.io.File
@@ -61,7 +59,7 @@ class JavaCodeGen(
       JavaResolver(resolverInfo.entries, acc)
     }
 
-    val layout = CodegenLayout(
+    val layout = JavaCodegenLayout(
         useSemanticNaming = useSemanticNaming,
         packageNameGenerator = packageNameGenerator,
         schemaPackageName = schemaPackageName

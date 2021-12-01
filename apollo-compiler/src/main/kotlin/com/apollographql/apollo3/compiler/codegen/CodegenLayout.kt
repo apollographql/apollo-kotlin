@@ -1,12 +1,8 @@
-
-
 package com.apollographql.apollo3.compiler.codegen
 
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
-import com.apollographql.apollo3.compiler.escapeKotlinReservedEnumValueNames
-import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo3.compiler.ir.IrFieldInfo
 import com.apollographql.apollo3.compiler.ir.IrListType
 import com.apollographql.apollo3.compiler.ir.IrNonNullType
@@ -18,11 +14,9 @@ import com.apollographql.apollo3.compiler.singularize
 /**
  * The central place where the names/packages of the different classes are decided and escape rules done.
  *
- * Inputs should always be GraphQL identifiers and outputs are valid Kotlin identifiers.
- *
+ * Inputs should always be GraphQL identifiers and outputs are valid Kotlin/Java identifiers.
  */
-
-class CodegenLayout(
+abstract class CodegenLayout(
     private val packageNameGenerator: PackageNameGenerator,
     schemaPackageName: String,
     private val useSemanticNaming: Boolean,
@@ -58,10 +52,6 @@ class CodegenLayout(
 
   internal fun enumName(name: String) = regularIdentifier(name)
 
-  // We used to write upper case enum values but the server can define different values with different cases
-  // See https://github.com/apollographql/apollo-android/issues/3035
-  internal fun enumValueName(name: String) = regularIdentifier(name)
-  internal fun sealedClassValueName(name: String) = name.escapeKotlinReservedEnumValueNames()
   internal fun enumResponseAdapterName(name: String) = enumName(name) + "_ResponseAdapter"
 
   internal fun operationName(operation: IrOperation): String {
@@ -97,9 +87,12 @@ class CodegenLayout(
   internal fun schemaName() = "__Schema"
 
   // ------------------------ Helpers ---------------------------------
-  private fun regularIdentifier(name: String) = name.escapeKotlinReservedWord()
+
+  abstract fun escapeReservedWord(word: String): String
+
+  internal fun regularIdentifier(name: String) = escapeReservedWord(name)
   private fun capitalizedIdentifier(name: String): String {
-    return name.capitalizeFirstLetter().escapeKotlinReservedWord()
+    return escapeReservedWord(name.capitalizeFirstLetter())
   }
 
   fun rootSelectionsPropertyName() = "root"
@@ -113,6 +106,7 @@ class CodegenLayout(
         it.capitalizeFirstLetter()
       }.joinToString("")
     }
+
     fun lowerCamelCaseIgnoringNonLetters(strings: Collection<String>): String {
       return strings.map {
         it.decapitalizeFirstLetter()

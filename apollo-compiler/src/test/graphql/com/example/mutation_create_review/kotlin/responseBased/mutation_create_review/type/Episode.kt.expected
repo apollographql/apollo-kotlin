@@ -36,7 +36,7 @@ internal enum class Episode(
    * Test java reserved word
    */
   @Deprecated(message = "For test purpose only")
-  new_("new"),
+  new("new"),
   /**
    * Auto generated constant for unknown enum values
    */
