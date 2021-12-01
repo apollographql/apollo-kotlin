@@ -29,7 +29,7 @@ public final class com/apollographql/apollo3/api/Adapters {
 }
 
 public final class com/apollographql/apollo3/api/ApolloRequest : com/apollographql/apollo3/api/HasExecutionContext {
-	public fun <init> (Lcom/apollographql/apollo3/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo3/api/ExecutionContext;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo3/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo3/api/ExecutionContext;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
 	public final fun getOperation ()Lcom/apollographql/apollo3/api/Operation;
 	public final fun getRequestUuid ()Ljava/util/UUID;
@@ -46,15 +46,6 @@ public final class com/apollographql/apollo3/api/ApolloRequest$Builder : com/apo
 	public fun setExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)V
 }
 
-public final class com/apollographql/apollo3/api/ApolloRequestKt {
-	public static final fun withHttpHeader (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/api/http/HttpHeader;)Lcom/apollographql/apollo3/api/ApolloRequest;
-	public static final fun withHttpHeader (Lcom/apollographql/apollo3/api/ApolloRequest;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/api/ApolloRequest;
-	public static final fun withHttpHeaders (Lcom/apollographql/apollo3/api/ApolloRequest;Ljava/util/List;)Lcom/apollographql/apollo3/api/ApolloRequest;
-	public static final fun withHttpMethod (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/api/http/HttpMethod;)Lcom/apollographql/apollo3/api/ApolloRequest;
-	public static final fun withSendApqExtensions (Lcom/apollographql/apollo3/api/ApolloRequest;Z)Lcom/apollographql/apollo3/api/ApolloRequest;
-	public static final fun withSendDocument (Lcom/apollographql/apollo3/api/ApolloRequest;Z)Lcom/apollographql/apollo3/api/ApolloRequest;
-}
-
 public final class com/apollographql/apollo3/api/ApolloResponse {
 	public final field data Lcom/apollographql/apollo3/api/Operation$Data;
 	public final field errors Ljava/util/List;
@@ -62,12 +53,10 @@ public final class com/apollographql/apollo3/api/ApolloResponse {
 	public final field extensions Ljava/util/Map;
 	public final field operation Lcom/apollographql/apollo3/api/Operation;
 	public final field requestUuid Ljava/util/UUID;
-	public fun <init> (Ljava/util/UUID;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo3/api/ExecutionContext;)V
+	public synthetic fun <init> (Ljava/util/UUID;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo3/api/ExecutionContext;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun dataAssertNoErrors ()Lcom/apollographql/apollo3/api/Operation$Data;
-	public final fun dataOrThrow ()Lcom/apollographql/apollo3/api/Operation$Data;
 	public final fun hasErrors ()Z
 	public final fun newBuilder ()Lcom/apollographql/apollo3/api/ApolloResponse$Builder;
-	public final fun withExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ApolloResponse;
 }
 
 public final class com/apollographql/apollo3/api/ApolloResponse$Builder {
@@ -304,7 +293,7 @@ public final class com/apollographql/apollo3/api/CompiledVariable {
 public final class com/apollographql/apollo3/api/CustomScalarAdapters : com/apollographql/apollo3/api/ExecutionContext$Element {
 	public static final field Empty Lcom/apollographql/apollo3/api/CustomScalarAdapters;
 	public static final field Key Lcom/apollographql/apollo3/api/CustomScalarAdapters$Key;
-	public fun <init> (Ljava/util/Map;)V
+	public synthetic fun <init> (Ljava/util/Map;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
 	public fun get (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext$Element;
 	public fun getKey ()Lcom/apollographql/apollo3/api/ExecutionContext$Key;
@@ -644,20 +633,10 @@ public final class com/apollographql/apollo3/api/UnionType : com/apollographql/a
 }
 
 public abstract interface class com/apollographql/apollo3/api/Upload {
-	public static final field Companion Lcom/apollographql/apollo3/api/Upload$Companion;
 	public abstract fun getContentLength ()J
 	public abstract fun getContentType ()Ljava/lang/String;
 	public abstract fun getFileName ()Ljava/lang/String;
 	public abstract fun writeTo (Lokio/BufferedSink;)V
-}
-
-public final class com/apollographql/apollo3/api/Upload$Companion {
-	public final fun fromByteArray ([BLjava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/api/Upload;
-	public static synthetic fun fromByteArray$default (Lcom/apollographql/apollo3/api/Upload$Companion;[BLjava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/api/Upload;
-	public final fun fromSource (Lokio/BufferedSource;JLjava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/api/Upload;
-	public static synthetic fun fromSource$default (Lcom/apollographql/apollo3/api/Upload$Companion;Lokio/BufferedSource;JLjava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/api/Upload;
-	public final fun fromString (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/api/Upload;
-	public static synthetic fun fromString$default (Lcom/apollographql/apollo3/api/Upload$Companion;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/api/Upload;
 }
 
 public final class com/apollographql/apollo3/api/http/ByteStringHttpBody : com/apollographql/apollo3/api/http/HttpBody {
@@ -697,9 +676,6 @@ public final class com/apollographql/apollo3/api/http/HttpContext {
 	public static final fun getHttpMethod (Lcom/apollographql/apollo3/api/HasExecutionContext;)Lcom/apollographql/apollo3/api/http/HttpMethod;
 	public static final fun getSendApqExtensions (Lcom/apollographql/apollo3/api/HasExecutionContext;)Z
 	public static final fun getSendDocument (Lcom/apollographql/apollo3/api/HasExecutionContext;)Z
-	public static final fun httpHeader (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Lcom/apollographql/apollo3/api/http/HttpHeader;)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
-	public static final fun httpHeader (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
-	public static final fun httpHeaders (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Ljava/util/List;)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
 	public static final fun httpMethod (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Lcom/apollographql/apollo3/api/http/HttpMethod;)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
 	public static final fun sendApqExtensions (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Z)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
 	public static final fun sendDocument (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Z)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
@@ -715,12 +691,6 @@ public final class com/apollographql/apollo3/api/http/HttpHeaders {
 	public static final fun valueOf (Ljava/util/List;Ljava/lang/String;)Ljava/lang/String;
 }
 
-public final class com/apollographql/apollo3/api/http/HttpKt {
-	public static final fun withHeader (Lcom/apollographql/apollo3/api/http/HttpRequest;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/api/http/HttpRequest;
-	public static final fun withHeaders (Lcom/apollographql/apollo3/api/http/HttpRequest;Ljava/util/List;)Lcom/apollographql/apollo3/api/http/HttpRequest;
-	public static final fun withHeaders (Lcom/apollographql/apollo3/api/http/HttpResponse;Ljava/util/List;)Lcom/apollographql/apollo3/api/http/HttpResponse;
-}
-
 public final class com/apollographql/apollo3/api/http/HttpMethod : java/lang/Enum {
 	public static final field Get Lcom/apollographql/apollo3/api/http/HttpMethod;
 	public static final field Post Lcom/apollographql/apollo3/api/http/HttpMethod;
@@ -729,7 +699,7 @@ public final class com/apollographql/apollo3/api/http/HttpMethod : java/lang/Enu
 }
 
 public final class com/apollographql/apollo3/api/http/HttpRequest {
-	public fun <init> (Lcom/apollographql/apollo3/api/http/HttpMethod;Ljava/lang/String;Ljava/util/List;Lcom/apollographql/apollo3/api/http/HttpBody;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo3/api/http/HttpMethod;Ljava/lang/String;Ljava/util/List;Lcom/apollographql/apollo3/api/http/HttpBody;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getBody ()Lcom/apollographql/apollo3/api/http/HttpBody;
 	public final fun getHeaders ()Ljava/util/List;
 	public final fun getMethod ()Lcom/apollographql/apollo3/api/http/HttpMethod;
@@ -751,7 +721,7 @@ public abstract interface class com/apollographql/apollo3/api/http/HttpRequestCo
 }
 
 public final class com/apollographql/apollo3/api/http/HttpResponse {
-	public fun <init> (ILjava/util/List;Lokio/BufferedSource;Lokio/ByteString;)V
+	public synthetic fun <init> (ILjava/util/List;Lokio/BufferedSource;Lokio/ByteString;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getBody ()Lokio/BufferedSource;
 	public final fun getHeaders ()Ljava/util/List;
 	public final fun getStatusCode ()I

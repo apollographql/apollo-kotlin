@@ -4,7 +4,6 @@ import okio.Buffer
 import okio.BufferedSink
 import okio.BufferedSource
 import okio.ByteString
-import okio.ByteString.Companion.encodeUtf8
 
 enum class HttpMethod {
   Get, Post
@@ -29,8 +28,7 @@ class HttpHeader(val name: String, val value: String)
  * a HTTP request to be sent
  */
 class HttpRequest
-@Deprecated("Please use HttpRequest.Builder methods instead. This will be removed in v3.0.0.")
-/* private */ constructor(
+private constructor(
     val method: HttpMethod,
     val url: String,
     val headers: List<HttpHeader>,
@@ -87,8 +85,7 @@ class HttpRequest
  * The [body] of a [HttpResponse] must always be closed if non null
  */
 class HttpResponse
-@Deprecated("Please use HttpResponse.Builder methods instead. This will be removed in v3.0.0.")
-/* private */ constructor(
+private constructor(
     val statusCode: Int,
     val headers: List<HttpHeader>,
     /**
@@ -163,12 +160,3 @@ class HttpResponse
     }
   }
 }
-
-@Deprecated("Please use HttpRequest.Builder methods instead. This will be removed in v3.0.0.")
-fun HttpRequest.withHeader(name: String, value: String) = newBuilder().addHeader(name, value).build()
-
-@Deprecated("Please use HttpRequest.Builder methods instead. This will be removed in v3.0.0.")
-fun HttpRequest.withHeaders(headers: List<HttpHeader>) = newBuilder().addHeaders(headers).build()
-
-@Deprecated("Please use HttpResponse.Builder methods instead. This will be removed in v3.0.0.")
-fun HttpResponse.withHeaders(headers: List<HttpHeader>) = newBuilder().addHeaders(headers).build()

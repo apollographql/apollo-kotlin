@@ -1,15 +1,14 @@
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.api.internal.Version2CustomTypeAdapterToAdapter
 import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo3.api.internal.Version2CustomTypeAdapterToAdapter
 import kotlin.jvm.JvmField
 
 /**
  * A wrapper around a Map<String, [Adapter]> used to retrieve custom scalar adapters at runtime
  */
 class CustomScalarAdapters
-@Deprecated("Please use CustomScalarAdapters.Builder instead. This will be removed in v3.0.0.")
-/* private */ constructor(
+private constructor(
     customScalarAdapters: Map<String, Adapter<*>>,
 ) : ExecutionContext.Element {
 

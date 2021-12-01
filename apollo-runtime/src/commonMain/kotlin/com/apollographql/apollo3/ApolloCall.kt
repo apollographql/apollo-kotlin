@@ -42,9 +42,6 @@ abstract class ApolloCall<D : Operation.Data, E : HasMutableExecutionContext<E>>
         .build()
     return apolloClient.executeAsFlow(request)
   }
-
-  @Deprecated("Please use toFlow instead. This will be removed in v3.0.0.", ReplaceWith("toFlow()"))
-  fun executeAsFlow(): Flow<ApolloResponse<D>> = toFlow()
 }
 
 /**
@@ -116,9 +113,6 @@ class ApolloMutationCall<D : Mutation.Data>(apolloClient: ApolloClient, mutation
  */
 class ApolloSubscriptionCall<D : Subscription.Data>(apolloClient: ApolloClient, subscription: Subscription<D>)
   : ApolloCall<D, ApolloSubscriptionCall<D>>(apolloClient, subscription) {
-
-  @Deprecated("Please use toFlow instead. This will be removed in v3.0.0.", ReplaceWith("toFlow()"))
-  fun execute(): Flow<ApolloResponse<D>> = toFlow()
 
   fun copy(): ApolloSubscriptionCall<D> {
     return ApolloSubscriptionCall(apolloClient, operation as Subscription<D>).addExecutionContext(executionContext)

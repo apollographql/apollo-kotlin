@@ -41,15 +41,6 @@ public final class com/apollographql/apollo3/cache/http/HttpCache {
 	public static final fun httpExpireTimeout (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;J)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
 	public static final fun httpFetchPolicy (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Lcom/apollographql/apollo3/cache/http/HttpFetchPolicy;)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
 	public static final fun isFromHttpCache (Lcom/apollographql/apollo3/api/ApolloResponse;)Z
-	public static final fun withHttpCache (Lcom/apollographql/apollo3/ApolloClient;Ljava/io/File;J)Lcom/apollographql/apollo3/ApolloClient;
-	public static final fun withHttpDoNotStore (Lcom/apollographql/apollo3/ApolloClient;Z)Lcom/apollographql/apollo3/ApolloClient;
-	public static final fun withHttpDoNotStore (Lcom/apollographql/apollo3/api/ApolloRequest;Z)Lcom/apollographql/apollo3/api/ApolloRequest;
-	public static final fun withHttpExpireAfterRead (Lcom/apollographql/apollo3/ApolloClient;Z)Lcom/apollographql/apollo3/ApolloClient;
-	public static final fun withHttpExpireAfterRead (Lcom/apollographql/apollo3/api/ApolloRequest;Z)Lcom/apollographql/apollo3/api/ApolloRequest;
-	public static final fun withHttpExpireTimeout (Lcom/apollographql/apollo3/ApolloClient;J)Lcom/apollographql/apollo3/ApolloClient;
-	public static final fun withHttpExpireTimeout (Lcom/apollographql/apollo3/api/ApolloRequest;J)Lcom/apollographql/apollo3/api/ApolloRequest;
-	public static final fun withHttpFetchPolicy (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/cache/http/HttpFetchPolicy;)Lcom/apollographql/apollo3/ApolloClient;
-	public static final fun withHttpFetchPolicy (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/cache/http/HttpFetchPolicy;)Lcom/apollographql/apollo3/api/ApolloRequest;
 }
 
 public final class com/apollographql/apollo3/cache/http/HttpFetchPolicy : java/lang/Enum {

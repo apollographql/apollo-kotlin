@@ -1,13 +1,10 @@
 package com.apollographql.apollo3
 
-import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.HasMutableExecutionContext
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.api.http.sendApqExtensions
-import com.apollographql.apollo3.api.http.sendDocument
 
 internal class AutoPersistedQueryConfiguration(
     val httpMethodForHashedQueries: HttpMethod,
@@ -50,11 +47,3 @@ val <D : Operation.Data> ApolloResponse<D>.autoPersistedQueryInfo
 fun <T> HasMutableExecutionContext<T>.enableAutoPersistedQueries(enable: Boolean): T where T : HasMutableExecutionContext<T>  {
   return addExecutionContext(AutoPersistedQueryContext(enable))
 }
-
-@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.", level = DeprecationLevel.ERROR)
-@Suppress("UNUSED_PARAMETER")
-fun ApolloClient.withHashedQuery(hashed: Boolean): Nothing = throw NotImplementedError()
-
-@Deprecated("Please use ApolloRequest.Builder methods instead. This will be removed in v3.0.0.", level = DeprecationLevel.ERROR)
-@Suppress("UNUSED_PARAMETER")
-fun <D : Operation.Data> ApolloRequest<D>.withHashedQuery(hashed: Boolean): Nothing = throw NotImplementedError()

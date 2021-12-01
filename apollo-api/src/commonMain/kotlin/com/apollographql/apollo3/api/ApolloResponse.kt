@@ -8,7 +8,8 @@ import kotlin.jvm.JvmName
 /**
  * Represents a GraphQL response. GraphQL responses can be be partial responses so it is valid to have both data != null and errors
  */
-class ApolloResponse<D : Operation.Data> @Deprecated("Please use ApolloResponse.Builder methods instead. This will be removed in v3.0.0.") constructor(
+class ApolloResponse<D : Operation.Data>
+private constructor(
     @JvmField
     val requestUuid: Uuid,
 
@@ -45,20 +46,6 @@ class ApolloResponse<D : Operation.Data> @Deprecated("Please use ApolloResponse.
     @JvmField
     val executionContext: ExecutionContext,
 ) {
-  /**
-   * A shorthand property to get a non-nullable `data` if handling partial data is not important
-   */
-  @Deprecated("Please use dataAssertNoErrors methods instead. This will be removed in v3.0.0.",
-      ReplaceWith("dataAssertNoErrors"))
-  @get:JvmName("dataOrThrow")
-  val dataOrThrow: D
-    get() {
-      return if (hasErrors()) {
-        throw ApolloException("The response has errors: $errors")
-      } else {
-        data ?: throw  ApolloException("The server did not return any data")
-      }
-    }
 
   /**
    * A shorthand property to get a non-nullable `data` if handling partial data is **not** important
@@ -77,9 +64,6 @@ class ApolloResponse<D : Operation.Data> @Deprecated("Please use ApolloResponse.
     }
 
   fun hasErrors(): Boolean = !errors.isNullOrEmpty()
-
-  @Deprecated("Please use ApolloResponse.Builder methods instead. This will be removed in v3.0.0.")
-  fun withExecutionContext(executionContext: ExecutionContext) = newBuilder().addExecutionContext(executionContext).build()
 
   fun newBuilder(): Builder<D> {
     return Builder(operation, requestUuid, data)
