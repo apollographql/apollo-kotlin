@@ -52,15 +52,15 @@ This query returns a `Book` object, which in turn includes an `Author` object. A
 
 A normalized cache does _not_ store this response directly. Instead, it breaks it up into the following entries by default:
 
-```yaml:title=Cache
-"favoriteBook": {"id": "bk123", "title": "Les guerriers du silence", "author": "CacheKey{favoriteBook.author}"
-"favoriteBook.author": {"id": "au456", name": "Pierre Bordage"}
-"QUERY_ROOT": {"favoriteBook": "CacheKey(favoriteBook)"}
+```json:title=Cache
+"favoriteBook": {"id": "bk123", "title": "Les guerriers du silence", "author": "ApolloCacheReference{favoriteBook.author}"
+"favoriteBook.author": {"id": "au456", "name": "Pierre Bordage"}
+"QUERY_ROOT": {"favoriteBook": "ApolloCacheReference{favoriteBook}"}
 ```
 
 > ⚠️ These default generated cache IDs (`favoriteBook` and `favoriteBook.author`) are undesirable for data deduplication. See [Specifying cache IDs](#specifying-cache-ids).
 
-* Notice that the `author` field of the `Book` entry now contains the string `CacheKey{favoriteBook.author}`. This is a **reference** to the `Author` cache entry.
+* Notice that the `author` field of the `Book` entry now contains the string `ApolloCacheReference{favoriteBook.author}`. This is a **reference** to the `Author` cache entry.
 * Notice also the `QUERY_ROOT` entry, which is always present if you've cached results from at least one query. This entry contains a reference for each top-level field you've included in a query (e.g., `favoriteBook`).
 
 ## Provided caches
@@ -111,7 +111,7 @@ dependencies {
 }
 ```
 
-Then include the SQLite cache in in your `ApolloClient` initialization **according to your platform target** (different platforms use different drivers):
+Then include the SQLite cache in your `ApolloClient` initialization **according to your platform target** (different platforms use different drivers):
 
 ```kotlin
 // Android
@@ -171,7 +171,7 @@ val response = apolloClient.query(query)
 
 As with `normalizedCache(NormalizedCacheFactory)`, `fetchPolicy(FetchPolicy)` is an extension function on `ApolloClient.Builder()`, so you need `apollo-normalized-cache` in your classpath for this to work.
 
-Because the normalized cache deduplicates data, it enables you to react to cache changes. You do thiswith `watchers` that listen to cache changes. [Learn more about query watchers.](./query-watchers/)
+Because the normalized cache deduplicates data, it enables you to react to cache changes. You do this with `watchers` that listen for cache changes. [Learn more about query watchers.](./query-watchers/)
 
 ## Specifying cache IDs
 
@@ -190,10 +190,10 @@ query GetFavoriteBook {
 }
 ```
 
-```yaml:title=Cache
-"favoriteBook": {"id": "bk123", "title": "Les guerriers du silence", "author": "CacheKey{favoriteBook.author}"
-"favoriteBook.author": {"id": "au456", name": "Pierre Bordage"}
-"QUERY_ROOT": {"favoriteBook": "CacheKey(favoriteBook)"}
+```json:title=Cache
+"favoriteBook": {"id": "bk123", "title": "Les guerriers du silence", "author": "ApolloCacheReference{favoriteBook.author}"
+"favoriteBook.author": {"id": "au456", "name": "Pierre Bordage"}
+"QUERY_ROOT": {"favoriteBook": "ApolloCacheReference{favoriteBook}"}
 ```
 
 Now, what happens if we execute a _different_ query to fetch the _same_ `Author` object with `id` `au456`?
@@ -210,11 +210,11 @@ query AuthorById($id: String!) {
 
 After executing this query, our cache looks like this:
 
-```yaml{2-3}:title=Cache
-"favoriteBook": {"id": "bk123", "title": "Les guerriers du silence", "author": "CacheKey{favoriteBook.author}"
-"favoriteBook.author": {"id": "au456", name": "Pierre Bordage"}
+```json{2-3}:title=Cache
+"favoriteBook": {"id": "bk123", "title": "Les guerriers du silence", "author": "ApolloCacheReference{favoriteBook.author}"
+"favoriteBook.author": {"id": "au456", "name": "Pierre Bordage"}
 "author(\"id\": \"au456\")": {"id": "au456", "name": "Pierre Bordage"}
-"QUERY_ROOT": {"favoriteBook": "CacheKey(favoriteBook)", "author(\"id\": \"au456\")": "CacheKey{author(\"id\": \"au456\")}"}
+"QUERY_ROOT": {"favoriteBook": "ApolloCacheReference{favoriteBook}", "author(\"id\": \"au456\")": "ApolloCacheReference{author(\"id\": \"au456\")}"}
 ```
 
 We're now caching two identical entries for the same `Author` object! This is undesirable for a few reasons:
@@ -224,10 +224,10 @@ We're now caching two identical entries for the same `Author` object! This is un
 
 We want to deduplicate entries like these by making sure they're assigned the _same_ cache ID when they're written, resulting in a cache that looks more like this:
 
-```yaml:title=Cache
-"Book:bk123": {"id": "bk123", "title": "Les guerriers du silence", "author": "CacheKey{Author:au456}"
-"Author:au456": {"id": "au456", name": "Pierre Bordage"}
-"QUERY_ROOT": {"favoriteBook": "CacheKey(Book:bk123)", "author(\"id\": \"au456\")": "CacheKey{Author:au456}"}
+```json:title=Cache
+"Book:bk123": {"id": "bk123", "title": "Les guerriers du silence", "author": "ApolloCacheReference{Author:au456}"
+"Author:au456": {"id": "au456", "name": "Pierre Bordage"}
+"QUERY_ROOT": {"favoriteBook": "ApolloCacheReference(Book:bk123)", "author(\"id\": \"au456\")": "ApolloCacheReference{Author:au456}"}
 ```
 
 Fortunately, all of our objects have an `id` field that we can use for this purpose. If an `id` is unique across _all_ objects in your graph, you can use its value directly as a cache ID. Otherwise if it's unique _per object type_, you can prefix it with the type name (as shown above).
