@@ -17,7 +17,7 @@ class FullStackTest {
         .build()
 
     apolloClient.subscription(TripsBookedSubscription())
-        .execute()
+        .toFlow()
         .collect {
           println("trips booked: ${it.data?.tripsBooked}")
         }

@@ -9,7 +9,6 @@ public final class com/apollographql/apollo3/android/ApolloIdlingResource : andr
 
 public final class com/apollographql/apollo3/android/ApolloIdlingResourceKt {
 	public static final fun idlingResource (Lcom/apollographql/apollo3/ApolloClient$Builder;Lcom/apollographql/apollo3/android/ApolloIdlingResource;)Lcom/apollographql/apollo3/ApolloClient$Builder;
-	public static final fun withIdlingResource (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/android/ApolloIdlingResource;)Lcom/apollographql/apollo3/ApolloClient;
 }
 
 public final class com/apollographql/apollo3/android/BuildConfig {

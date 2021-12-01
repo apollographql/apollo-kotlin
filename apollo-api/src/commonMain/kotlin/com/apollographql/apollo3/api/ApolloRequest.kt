@@ -1,19 +1,13 @@
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.api.http.HttpHeader
-import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.api.http.addHttpHeader
-import com.apollographql.apollo3.api.http.addHttpHeaders
-import com.apollographql.apollo3.api.http.httpMethod
-import com.apollographql.apollo3.api.http.sendApqExtensions
-import com.apollographql.apollo3.api.http.sendDocument
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
 
 /**
  * A GraphQL request to execute. Execution can be customized with [executionContext]
  */
-class ApolloRequest<D : Operation.Data> @Deprecated("Please use ApolloRequest.Builder methods instead. This will be removed in v3.0.0.") constructor(
+class ApolloRequest<D : Operation.Data>
+private constructor(
     val operation: Operation<D>,
     val requestUuid: Uuid,
     override val executionContext: ExecutionContext,
@@ -25,7 +19,7 @@ class ApolloRequest<D : Operation.Data> @Deprecated("Please use ApolloRequest.Bu
       it.executionContext = executionContext
     }
   }
-  
+
   class Builder<D : Operation.Data>(
       private var operation: Operation<D>,
   ) : HasMutableExecutionContext<Builder<D>> {
@@ -50,21 +44,3 @@ class ApolloRequest<D : Operation.Data> @Deprecated("Please use ApolloRequest.Bu
     }
   }
 }
-
-@Deprecated("Please use ApolloRequest.Builder methods instead. This will be removed in v3.0.0.")
-fun <D : Operation.Data> ApolloRequest<D>.withHttpMethod(httpMethod: HttpMethod) = newBuilder().httpMethod(httpMethod).build()
-
-@Deprecated("Please use ApolloRequest.Builder methods instead. This will be removed in v3.0.0.")
-fun <D : Operation.Data> ApolloRequest<D>.withHttpHeaders(httpHeaders: List<HttpHeader>) = newBuilder().addHttpHeaders(httpHeaders).build()
-
-@Deprecated("Please use ApolloRequest.Builder methods instead. This will be removed in v3.0.0.")
-fun <D : Operation.Data> ApolloRequest<D>.withHttpHeader(httpHeader: HttpHeader) = newBuilder().addHttpHeader(httpHeader).build()
-
-@Deprecated("Please use ApolloRequest.Builder methods instead. This will be removed in v3.0.0.")
-fun <D : Operation.Data> ApolloRequest<D>.withHttpHeader(name: String, value: String) = newBuilder().addHttpHeader(name, value).build()
-
-@Deprecated("Please use ApolloRequest.Builder methods instead. This will be removed in v3.0.0.")
-fun <D : Operation.Data> ApolloRequest<D>.withSendApqExtensions(sendApqExtensions: Boolean) = newBuilder().sendApqExtensions(sendApqExtensions).build()
-
-@Deprecated("Please use ApolloRequest.Builder methods instead. This will be removed in v3.0.0.")
-fun <D : Operation.Data> ApolloRequest<D>.withSendDocument(sendDocument: Boolean) = newBuilder().sendDocument(sendDocument).build()

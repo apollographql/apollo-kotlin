@@ -6,10 +6,8 @@ import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.HasMutableExecutionContext
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.HttpBody
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
@@ -234,9 +232,3 @@ class BatchingHttpEngine @JvmOverloads constructor(
 fun <T> HasMutableExecutionContext<T>.canBeBatched(canBeBatched: Boolean) where T : HasMutableExecutionContext<T> = addHttpHeader(
     CAN_BE_BATCHED, canBeBatched.toString()
 )
-
-@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
-fun ApolloClient.withCanBeBatched(canBeBatched: Boolean) = newBuilder().canBeBatched(canBeBatched).build()
-
-@Deprecated("Please use ApolloRequest.Builder methods instead. This will be removed in v3.0.0.")
-fun <D : Operation.Data> ApolloRequest<D>.withCanBeBatched(canBeBatched: Boolean) = newBuilder().canBeBatched(canBeBatched).build()

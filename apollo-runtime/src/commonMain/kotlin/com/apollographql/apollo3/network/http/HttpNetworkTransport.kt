@@ -20,44 +20,13 @@ import com.apollographql.apollo3.network.NetworkTransport
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class HttpNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder instead. This will be removed in v3.0.0.") constructor(
+class HttpNetworkTransport
+private constructor(
     private val httpRequestComposer: HttpRequestComposer,
     val engine: HttpEngine = DefaultHttpEngine(),
     val interceptors: List<HttpInterceptor> = emptyList(),
 ) : NetworkTransport {
   private val worker = NonMainWorker()
-
-  /**
-   *
-   * @param serverUrl
-   * @param timeoutMillis The timeout interval to use when connecting or when waiting for additional data.
-   *
-   * - on iOS, it is used to set [NSMutableURLRequest.timeoutInterval]
-   * - on Android, it is used to set [OkHttpClient.connectTimeout] and  [OkHttpClient.readTimeout]
-   */
-  @Suppress("DEPRECATION", "DEPRECATION")
-  @Deprecated("Use HttpNetworkTransport.Builder instead. This will be removed in v3.0.0.")
-  constructor(
-      serverUrl: String,
-      timeoutMillis: Long = 60_000,
-      interceptors: List<HttpInterceptor> = emptyList(),
-  ) : this(
-      DefaultHttpRequestComposer(serverUrl),
-      DefaultHttpEngine(timeoutMillis),
-      interceptors
-  )
-
-  @Suppress("DEPRECATION")
-  @Deprecated("Use HttpNetworkTransport.Builder instead. This will be removed in v3.0.0.")
-  constructor(
-      serverUrl: String,
-      engine: HttpEngine,
-      interceptors: List<HttpInterceptor> = emptyList(),
-  ) : this(
-      DefaultHttpRequestComposer(serverUrl),
-      engine,
-      interceptors
-  )
 
   private val engineInterceptor = EngineInterceptor()
 
@@ -196,9 +165,3 @@ class HttpNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder instead
     }
   }
 }
-
-/**
- * Adds a new [HeadersInterceptor] that will add [headers] to each [HttpRequest]
- */
-@Deprecated("Use HttpNetworkTransport.Builder instead. This will be removed in v3.0.0.")
-fun HttpNetworkTransport.withDefaultHeaders(headers: List<HttpHeader>) = newBuilder().addInterceptor(HeadersInterceptor(headers))

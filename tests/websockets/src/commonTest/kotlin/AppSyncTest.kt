@@ -37,7 +37,7 @@ class AppSyncTest {
         ).build()
     ).build()
 
-    apolloClient.subscription(CommentsSubscription()).execute()
+    apolloClient.subscription(CommentsSubscription()).toFlow()
         .collect {
           println("comment: ${it.data?.subscribeToEventComments?.content}")
         }

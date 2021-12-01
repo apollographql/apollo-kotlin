@@ -68,7 +68,7 @@ class CachedSubscriptionTest {
 
       println("starting subscription")
       apolloClient.subscription(TimeSubscription())
-          .execute()
+          .toFlow()
           .take(3)
           .map { it.data!!.time }
           .collect {

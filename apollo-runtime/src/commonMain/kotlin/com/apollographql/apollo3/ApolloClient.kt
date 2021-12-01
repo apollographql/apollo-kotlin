@@ -6,7 +6,6 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.CustomScalarType
-import com.apollographql.apollo3.api.*
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.HasExecutionContext
 import com.apollographql.apollo3.api.HasMutableExecutionContext
@@ -14,13 +13,8 @@ import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
-import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.api.http.addHttpHeader
-import com.apollographql.apollo3.api.http.addHttpHeaders
 import com.apollographql.apollo3.api.http.httpMethod
-import com.apollographql.apollo3.api.http.sendApqExtensions
-import com.apollographql.apollo3.api.http.sendDocument
 import com.apollographql.apollo3.api.internal.Version2CustomTypeAdapterToAdapter
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
@@ -46,7 +40,8 @@ import kotlin.jvm.JvmStatic
 /**
  * The main entry point for the Apollo runtime. An [ApolloClient] is responsible for executing queries, mutations and subscriptions
  */
-class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder instead. This will be removed in v3.0.0.") constructor(
+class ApolloClient
+private constructor(
     val networkTransport: NetworkTransport,
     private val customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
     private val subscriptionNetworkTransport: NetworkTransport = networkTransport,
@@ -63,18 +58,6 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
         CoroutineScope(dispatcher))
 
   }
-
-  /**
-   * A short-hand constructor
-   */
-  @Suppress("DEPRECATION")
-  @Deprecated("Please use ApolloClient.Builder instead. This will be removed in v3.0.0.", ReplaceWith("ApolloClient.Builder().serverUrl(serverUrl)"))
-  constructor(
-      serverUrl: String,
-  ) : this(
-      networkTransport = HttpNetworkTransport(serverUrl = serverUrl),
-      subscriptionNetworkTransport = WebSocketNetworkTransport(serverUrl = serverUrl),
-  )
 
   /**
    * Creates a new [ApolloQueryCall] that you can customize and/or execute.
@@ -107,28 +90,6 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
     concurrencyInfo.coroutineScope.cancel()
     networkTransport.dispose()
     subscriptionNetworkTransport.dispose()
-  }
-
-  @Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
-  fun <T> withCustomScalarAdapter(customScalarType: CustomScalarType, customScalarAdapter: Adapter<T>): ApolloClient {
-    return newBuilder().customScalarAdapters(
-        customScalarAdapters = CustomScalarAdapters.Builder()
-            .addAll(customScalarAdapters)
-            .add(customScalarType, customScalarAdapter)
-            .build()
-    ).build()
-  }
-
-  @Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
-  fun withInterceptor(interceptor: ApolloInterceptor): ApolloClient {
-    return newBuilder().addInterceptor(
-        interceptor
-    ).build()
-  }
-
-  @Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
-  fun withExecutionContext(executionContext: ExecutionContext): ApolloClient {
-    return newBuilder().addExecutionContext(executionContext).build()
   }
 
   private val networkInterceptor = NetworkInterceptor(
@@ -242,7 +203,7 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
     @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("addCustomScalarAdapter"))
     fun <T> addCustomTypeAdapter(
         customScalarType: CustomScalarType,
-        @Suppress("DEPRECATION") customTypeAdapter: CustomTypeAdapter<T>,
+        @Suppress("DEPRECATION") customTypeAdapter: com.apollographql.apollo3.api.CustomTypeAdapter<T>,
     ) = addCustomScalarAdapter(customScalarType, Version2CustomTypeAdapterToAdapter(customTypeAdapter))
 
     fun addInterceptor(interceptor: ApolloInterceptor) = apply {
@@ -308,7 +269,7 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
         check(httpEngine == null) {
           "Apollo: 'httpEngine' has no effect if 'networkTransport' is set"
         }
-        check (httpInterceptors.isEmpty()) {
+        check(httpInterceptors.isEmpty()) {
           "Apollo: 'addHttpInterceptor' has no effect if 'networkTransport' is set"
         }
         _networkTransport!!
@@ -373,33 +334,6 @@ class ApolloClient @JvmOverloads @Deprecated("Please use ApolloClient.Builder in
     fun builder() = Builder()
   }
 }
-
-@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
-fun ApolloClient.withAutoPersistedQueries(
-    httpMethodForHashedQueries: HttpMethod = HttpMethod.Get,
-    httpMethodForDocumentQueries: HttpMethod = HttpMethod.Post,
-    hashByDefault: Boolean = true,
-): ApolloClient {
-  return this.newBuilder().autoPersistedQueries(httpMethodForHashedQueries, httpMethodForDocumentQueries, hashByDefault).build()
-}
-
-@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
-fun ApolloClient.withHttpMethod(httpMethod: HttpMethod) = newBuilder().httpMethod(httpMethod).build()
-
-@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
-fun ApolloClient.withHttpHeaders(httpHeaders: List<HttpHeader>) = newBuilder().addHttpHeaders(httpHeaders).build()
-
-@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
-fun ApolloClient.withHttpHeader(httpHeader: HttpHeader) = newBuilder().addHttpHeader(httpHeader).build()
-
-@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
-fun ApolloClient.withHttpHeader(name: String, value: String) = newBuilder().addHttpHeader(name, value).build()
-
-@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
-fun ApolloClient.withSendApqExtensions(sendApqExtensions: Boolean) = newBuilder().sendApqExtensions(sendApqExtensions).build()
-
-@Deprecated("Please use ApolloClient.Builder methods instead. This will be removed in v3.0.0.")
-fun ApolloClient.withSendDocument(sendDocument: Boolean) = newBuilder().sendDocument(sendDocument).build()
 
 @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("httpMethod(HttpMethod.Get)", "com.apollographql.apollo3.api.http.httpMethod", "com.apollographql.apollo3.api.http.HttpMethod"))
 fun ApolloClient.Builder.useHttpGetMethodForQueries(

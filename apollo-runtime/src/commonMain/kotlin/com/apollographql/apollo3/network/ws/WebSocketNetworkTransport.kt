@@ -35,25 +35,13 @@ import kotlinx.coroutines.launch
  * @param webSocketEngine a [WebSocketEngine] that can handle the WebSocket
  *
  */
-class WebSocketNetworkTransport @Deprecated("Use HttpNetworkTransport.Builder instead. This will be removed in v3.0.0.") constructor(
+class WebSocketNetworkTransport
+private constructor(
     private val serverUrl: String,
     private val webSocketEngine: WebSocketEngine = DefaultWebSocketEngine(),
     private val idleTimeoutMillis: Long = 60_000,
     private val protocolFactory: WsProtocol.Factory = SubscriptionWsProtocol.Factory(),
 ) : NetworkTransport, WsProtocol.Listener {
-
-  @Suppress("DEPRECATION")
-  @Deprecated("Use HttpNetworkTransport.Builder instead. This will be removed in v3.0.0.")
-  constructor(
-      serverUrl: String,
-      idleTimeoutMillis: Long = 60_000,
-      protocolFactory: WsProtocol.Factory = SubscriptionWsProtocol.Factory(),
-  ) : this(
-      serverUrl,
-      DefaultWebSocketEngine(),
-      idleTimeoutMillis,
-      protocolFactory
-  )
 
   private interface Command
   class StartOperation<D : Operation.Data>(val request: ApolloRequest<D>) : Command

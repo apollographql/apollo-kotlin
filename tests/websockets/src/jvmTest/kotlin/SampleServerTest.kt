@@ -49,7 +49,7 @@ class SampleServerTest {
 
     runBlocking {
       val list = apolloClient.subscription(CountSubscription(5, 0))
-          .execute()
+          .toFlow()
           .map { it.data!!.count }
           .toList()
       assertEquals(0.until(5).toList(), list)
@@ -66,14 +66,14 @@ class SampleServerTest {
       val items = mutableListOf<Int>()
       launch {
         apolloClient.subscription(CountSubscription(5, 1000))
-            .execute()
+            .toFlow()
             .collect {
               items.add(it.data!!.count * 2)
             }
       }
       delay(500)
       apolloClient.subscription(CountSubscription(5, 1000))
-          .execute()
+          .toFlow()
           .collect {
             items.add(2 * it.data!!.count + 1)
           }
@@ -94,14 +94,14 @@ class SampleServerTest {
         .build()
 
     runBlocking {
-      apolloClient.subscription(CountSubscription(50, 1000)).execute().first()
+      apolloClient.subscription(CountSubscription(50, 1000)).toFlow().first()
 
       withTimeout(500) {
         transport.subscriptionCount.first { it == 0 }
       }
 
       delay(1500)
-      val number = apolloClient.subscription(CountSubscription(50, 0)).execute().drop(3).first().data?.count
+      val number = apolloClient.subscription(CountSubscription(50, 0)).toFlow().drop(3).first().data?.count
       assertEquals(3, number)
     }
   }
@@ -117,7 +117,7 @@ class SampleServerTest {
        * (which is still probably slower than the server) and make sure we didn't drop any items
        */
       val number = apolloClient.subscription(CountSubscription(1000, 0))
-          .execute()
+          .toFlow()
           .map { it.data!!.count }
           .onEach {
             if (it < 3) {
@@ -146,7 +146,7 @@ class SampleServerTest {
       /**
        * Collect all items the server sends us
        */
-      apolloClient.subscription(CountSubscription(50, 0)).execute().toList()
+      apolloClient.subscription(CountSubscription(50, 0)).toFlow().toList()
 
       /**
        * Make sure we're unsubscribed
@@ -166,7 +166,7 @@ class SampleServerTest {
     runBlocking {
       var caught: Throwable? = null
       apolloClient.subscription(OperationErrorSubscription())
-          .execute()
+          .toFlow()
           .catch {
             caught = it
           }
