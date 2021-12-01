@@ -1,8 +1,8 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
 
 import com.apollographql.apollo3.compiler.applyIf
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.Identifier
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.ir.IrInputField
 import com.apollographql.apollo3.compiler.ir.IrType
@@ -61,12 +61,13 @@ internal fun NamedType.writeToResponseCodeBlock(context: KotlinContext): CodeBlo
   val propertyName = context.layout.propertyName(graphQlName)
 
   if (type.isOptional()) {
-    builder.beginControlFlow("if (${Identifier.value}.$propertyName is %T)", KotlinSymbols.Present)
+    builder.beginControlFlow("if (${Identifier.value}.%N is %T)", propertyName, KotlinSymbols.Present)
   }
   builder.addStatement("${Identifier.writer}.name(%S)", graphQlName)
   builder.addStatement(
-      "%L.${Identifier.toJson}(${Identifier.writer}, ${Identifier.customScalarAdapters}, ${Identifier.value}.$propertyName)",
-      adapterInitializer
+      "%L.${Identifier.toJson}(${Identifier.writer}, ${Identifier.customScalarAdapters}, ${Identifier.value}.%N)",
+      adapterInitializer,
+      propertyName,
   )
   if (type.isOptional()) {
     builder.endControlFlow()

@@ -1,0 +1,15 @@
+type Query {
+  while(return: val, for: do!): while
+}
+
+type while {
+  if: ID
+  yield: val
+}
+
+scalar val
+
+input do {
+  if: ID
+  yield: val
+}

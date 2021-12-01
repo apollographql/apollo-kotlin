@@ -1,0 +1,6 @@
+query while($return: val, $for: do!) {
+  while(return: $return, for: $for) {
+    if
+    yield
+  }
+}
