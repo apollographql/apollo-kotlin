@@ -13,5 +13,13 @@ class KotlinCodegenLayout(
 
   override fun escapeReservedWord(word: String): String = word.escapeKotlinReservedWord()
 
-  internal fun sealedClassValueName(name: String) = name.escapeKotlinReservedEnumValueNames()
+  /**
+   * Enum value name to use when generating enums as sealed classes
+   */
+  internal fun enumAsSealedClassValueName(name: String) = regularIdentifier(name)
+
+  /**
+   * Enum value name to use when generating enums as enums
+   */
+  internal fun enumAsEnumValueName(name: String) = name.escapeKotlinReservedEnumValueNames()
 }

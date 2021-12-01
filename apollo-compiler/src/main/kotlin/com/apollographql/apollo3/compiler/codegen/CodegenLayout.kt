@@ -52,9 +52,6 @@ abstract class CodegenLayout(
 
   internal fun enumName(name: String) = regularIdentifier(name)
 
-  // We used to write upper case enum values but the server can define different values with different cases
-  // See https://github.com/apollographql/apollo-android/issues/3035
-  internal fun enumValueName(name: String) = regularIdentifier(name)
   internal fun enumResponseAdapterName(name: String) = enumName(name) + "_ResponseAdapter"
 
   internal fun operationName(operation: IrOperation): String {
@@ -93,7 +90,7 @@ abstract class CodegenLayout(
 
   abstract fun escapeReservedWord(word: String): String
 
-  private fun regularIdentifier(name: String) = escapeReservedWord(name)
+  internal fun regularIdentifier(name: String) = escapeReservedWord(name)
   private fun capitalizedIdentifier(name: String): String {
     return escapeReservedWord(name.capitalizeFirstLetter())
   }
