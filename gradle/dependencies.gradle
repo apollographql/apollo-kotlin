@@ -85,7 +85,7 @@ ext.dep = [
     okioNodeJs: "com.squareup.okio:okio-nodefilesystem:$versions.okio",
     poet                     : [
         java  : "com.squareup:javapoet:$versions.javaPoet",
-        kotlin: "com.squareup:kotlinpoet:1.9.0",
+        kotlin: "com.squareup:kotlinpoet:1.10.2",
     ],
     rx2                      : "io.reactivex.rxjava2:rxjava:$versions.rxjava",
     rx3                      : "io.reactivex.rxjava3:rxjava:$versions.rxjava3",

@@ -18,7 +18,7 @@ import com.example.reserved_keywords.type.SearchResult
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val yield_: List<CompiledSelection> = listOf(
+  private val `yield`: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
           type = CompiledIDType.notNull()
@@ -54,7 +54,7 @@ public object TestQuerySelections {
           name = "hero",
           type = Character.type
         ).alias("yield")
-        .selections(yield_)
+        .selections(`yield`)
         .build(),
         CompiledField.Builder(
           name = "search",

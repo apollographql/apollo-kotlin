@@ -26,12 +26,12 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var yield_: TestQuery.Yield? = null
+      var `yield`: TestQuery.Yield? = null
       var objects: List<TestQuery.Object?>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> yield_ = Yield.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> `yield` = Yield.obj().nullable().fromJson(reader, customScalarAdapters)
           1 -> objects = Object.obj(true).nullable().list().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
@@ -39,7 +39,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       return TestQuery.Data(
-        yield_ = yield_,
+        `yield` = `yield`,
         objects = objects
       )
     }
@@ -50,7 +50,7 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data
     ): Unit {
       writer.name("yield")
-      Yield.obj().nullable().toJson(writer, customScalarAdapters, value.yield_)
+      Yield.obj().nullable().toJson(writer, customScalarAdapters, value.`yield`)
 
       writer.name("objects")
       Object.obj(true).nullable().list().nullable().toJson(writer, customScalarAdapters,

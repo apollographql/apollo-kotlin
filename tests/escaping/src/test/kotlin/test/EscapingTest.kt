@@ -13,7 +13,7 @@ class EscapingTest {
             `return` = "public",
             `for` = Do(
                 `if` = Optional.Absent,
-                yield_ = Optional.Absent,
+                yield = Optional.Absent,
             ),
         ))
         .execute()
