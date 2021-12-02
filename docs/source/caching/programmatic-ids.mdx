@@ -19,7 +19,7 @@ Apollo Android provides a class for generating cache keys from each of these sou
 The `CacheKeyGenerator` class enables you to generate custom cache IDs from an object's field values. This basic example generates _every_ object type's cache ID from its `id` field:
 
 ```kotlin
-val objectIdGenerator = object : CacheKeyGenerator {
+val cacheKeyGenerator = object : CacheKeyGenerator {
   override fun cacheKeyForObject(obj: Map<String, Any?>, context: CacheKeyGeneratorContext): CacheKey? {
     // Generate the cache ID based on the object's id field
     return CacheKey(obj["id"] as String)
@@ -34,7 +34,7 @@ val apolloClient = ApolloClient.Builder()
   .serverUrl("https://...")
   .normalizedCache(
     normalizedCacheFactory = cacheFactory,
-    objectIdGenerator = objectIdGenerator,
+    cacheKeyGenerator = cacheKeyGenerator,
   )
   .build()
 ```
@@ -42,7 +42,7 @@ val apolloClient = ApolloClient.Builder()
 You can get the current object's typename from the `context` object and include it in the generated ID, like so:
 
 ```kotlin
-val objectIdGenerator = object : CacheKeyGenerator {
+val cacheKeyGenerator = object : CacheKeyGenerator {
   override fun cacheKeyForObject(obj: Map<String, Any?>, context: CacheKeyGeneratorContext): CacheKey? {
     val typename = context.field.type.leafType().name
     val id = obj["id"] as String
@@ -89,7 +89,7 @@ val apolloClient = ApolloClient.Builder()
   .serverUrl("https://...")
   .normalizedCache(
     normalizedCacheFactory = cacheFactory,
-    objectIdGenerator = objectIdGenerator,
+    cacheKeyGenerator = cacheKeyGenerator,
     cacheResolver = cacheKeyResolver
   )
   .build()
