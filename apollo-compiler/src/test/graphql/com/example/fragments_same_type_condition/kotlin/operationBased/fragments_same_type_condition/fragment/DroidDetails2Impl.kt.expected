@@ -6,14 +6,14 @@
 package com.example.fragments_same_type_condition.fragment
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.fragments_same_type_condition.fragment.selections.DroidDetails2Selections
+import com.example.fragments_same_type_condition.type.Droid
 import kotlin.Unit
-import kotlin.collections.List
 
 public class DroidDetails2Impl() : Fragment<DroidDetails2> {
   public override fun serializeVariables(writer: JsonWriter,
@@ -25,5 +25,10 @@ public class DroidDetails2Impl() : Fragment<DroidDetails2> {
     return DroidDetails2Impl_ResponseAdapter.DroidDetails2.obj()
   }
 
-  public override fun selections(): List<CompiledSelection> = DroidDetails2Selections.root
+  public override fun rootField(): CompiledField = CompiledField.Builder(
+    name = "data",
+    type = Droid.type
+  )
+  .selections(selections = DroidDetails2Selections.root)
+  .build()
 }

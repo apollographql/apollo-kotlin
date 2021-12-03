@@ -6,7 +6,7 @@
 package com.example.java8annotation;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Mutation;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.util.List;
 
 public class LoginBarber implements Mutation<LoginBarber.Data> {
   public static final String OPERATION_ID = "1a8d9f5ee31f38a8c4095cabd35889a9cbb5b44c83c1302286f743fd8d838110";
@@ -109,8 +108,13 @@ public class LoginBarber implements Mutation<LoginBarber.Data> {
   }
 
   @Override
-  public List<CompiledSelection> selections() {
-    return LoginBarberSelections.root;
+  public CompiledField rootField() {
+    return new CompiledField.Builder(
+      "data",
+      com.example.java8annotation.type.Mutation.type
+    )
+    .selections(LoginBarberSelections.root)
+    .build();
   }
 
   public static class Data implements Mutation.Data {

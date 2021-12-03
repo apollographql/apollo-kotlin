@@ -23,7 +23,7 @@ public class TestQuerySelections {
   private static List<CompiledSelection> nonOptionalHero = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Human")).selections(onHuman).build()
+    new CompiledFragment.Builder("Human", Arrays.asList("Human")).selections(onHuman).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(

@@ -18,7 +18,7 @@ import java.util.List;
 public class TestQuerySelections {
   private static List<CompiledSelection> i = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("A", "B")).selections(iFragmentSelections.root).build()
+    new CompiledFragment.Builder("I", Arrays.asList("A", "B")).selections(iFragmentSelections.root).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(

@@ -27,7 +27,7 @@ public class GetPageSelections {
 
   private static List<CompiledSelection> items1 = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("ParticularItem")).selections(onParticularItem).build()
+    new CompiledFragment.Builder("ParticularItem", Arrays.asList("ParticularItem")).selections(onParticularItem).build()
   );
 
   private static List<CompiledSelection> onParticularCollection = Arrays.asList(
@@ -37,7 +37,7 @@ public class GetPageSelections {
   private static List<CompiledSelection> collection = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
     new CompiledField.Builder("items", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Item.type)))).selections(items).build(),
-    new CompiledFragment.Builder(Arrays.asList("ParticularCollection")).selections(onParticularCollection).build()
+    new CompiledFragment.Builder("ParticularCollection", Arrays.asList("ParticularCollection")).selections(onParticularCollection).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(

@@ -22,10 +22,12 @@ public object TestQuerySelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Human",
           possibleTypes = (listOf("Human"))
         ).selections(HumanDetailsSelections.root)
         .build(),
         CompiledFragment.Builder(
+          typeCondition = "Droid",
           possibleTypes = (listOf("Droid"))
         ).selections(DroidDetailsSelections.root)
         .build()
@@ -37,10 +39,12 @@ public object TestQuerySelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Human",
           possibleTypes = (listOf("Human"))
         ).selections(HumanDetailsSelections.root)
         .build(),
         CompiledFragment.Builder(
+          typeCondition = "Droid",
           possibleTypes = (listOf("Droid"))
         ).selections(DroidDetailsSelections.root)
         .build()

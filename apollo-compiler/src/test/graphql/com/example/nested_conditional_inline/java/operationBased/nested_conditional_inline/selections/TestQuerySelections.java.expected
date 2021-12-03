@@ -25,7 +25,7 @@ public class TestQuerySelections {
   private static List<CompiledSelection> friends = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Human")).selections(onHuman1).build()
+    new CompiledFragment.Builder("Human", Arrays.asList("Human")).selections(onHuman1).build()
   );
 
   private static List<CompiledSelection> onHuman = Arrays.asList(
@@ -39,7 +39,7 @@ public class TestQuerySelections {
   private static List<CompiledSelection> friends1 = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Human")).selections(onHuman2).build()
+    new CompiledFragment.Builder("Human", Arrays.asList("Human")).selections(onHuman2).build()
   );
 
   private static List<CompiledSelection> onDroid = Arrays.asList(
@@ -49,8 +49,8 @@ public class TestQuerySelections {
   private static List<CompiledSelection> hero = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Human")).selections(onHuman).build(),
-    new CompiledFragment.Builder(Arrays.asList("Droid")).selections(onDroid).build()
+    new CompiledFragment.Builder("Human", Arrays.asList("Human")).selections(onHuman).build(),
+    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(onDroid).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(

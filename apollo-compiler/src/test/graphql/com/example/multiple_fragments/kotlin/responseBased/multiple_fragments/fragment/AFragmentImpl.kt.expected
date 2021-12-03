@@ -6,15 +6,15 @@
 package com.example.multiple_fragments.fragment
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.multiple_fragments.fragment.selections.aFragmentSelections
+import com.example.multiple_fragments.type.A
 import kotlin.String
 import kotlin.Unit
-import kotlin.collections.List
 
 public class AFragmentImpl() : Fragment<AFragmentImpl.Data> {
   public override fun serializeVariables(writer: JsonWriter,
@@ -26,7 +26,12 @@ public class AFragmentImpl() : Fragment<AFragmentImpl.Data> {
     return AFragmentImpl_ResponseAdapter.Data.obj()
   }
 
-  public override fun selections(): List<CompiledSelection> = aFragmentSelections.root
+  public override fun rootField(): CompiledField = CompiledField.Builder(
+    name = "data",
+    type = A.type
+  )
+  .selections(selections = aFragmentSelections.root)
+  .build()
 
   public data class Data(
     public override val node: Node?

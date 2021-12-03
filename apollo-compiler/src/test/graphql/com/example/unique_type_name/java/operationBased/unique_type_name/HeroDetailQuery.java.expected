@@ -6,7 +6,7 @@
 package com.example.unique_type_name;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Query;
@@ -131,8 +131,13 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
   }
 
   @Override
-  public List<CompiledSelection> selections() {
-    return HeroDetailQuerySelections.root;
+  public CompiledField rootField() {
+    return new CompiledField.Builder(
+      "data",
+      com.example.unique_type_name.type.Query.type
+    )
+    .selections(HeroDetailQuerySelections.root)
+    .build();
   }
 
   public static class Data implements Query.Data {

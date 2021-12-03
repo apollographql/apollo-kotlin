@@ -6,7 +6,7 @@
 package com.example.inline_fragment_intersection
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -36,7 +36,12 @@ public class TestOperation() : Query<TestOperation.Data> {
     return TestOperation_ResponseAdapter.Data.obj()
   }
 
-  public override fun selections(): List<CompiledSelection> = TestOperationSelections.root
+  public override fun rootField(): CompiledField = CompiledField.Builder(
+    name = "data",
+    type = com.example.inline_fragment_intersection.type.Query.type
+  )
+  .selections(selections = TestOperationSelections.root)
+  .build()
 
   public data class Data(
     public val random: Random

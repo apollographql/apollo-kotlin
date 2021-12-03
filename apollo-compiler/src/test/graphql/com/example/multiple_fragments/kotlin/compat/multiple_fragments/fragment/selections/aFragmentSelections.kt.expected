@@ -20,10 +20,12 @@ public object aFragmentSelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "ANode",
           possibleTypes = (listOf("ANode"))
         ).selections(fragment1Selections.root)
         .build(),
         CompiledFragment.Builder(
+          typeCondition = "ANode",
           possibleTypes = (listOf("ANode"))
         ).selections(fragment2Selections.root)
         .build()

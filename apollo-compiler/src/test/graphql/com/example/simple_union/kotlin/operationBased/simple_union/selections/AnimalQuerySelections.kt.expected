@@ -22,10 +22,12 @@ public object AnimalQuerySelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Cat",
           possibleTypes = (listOf("Cat"))
         ).selections(CatFragmentSelections.root)
         .build(),
         CompiledFragment.Builder(
+          typeCondition = "Dog",
           possibleTypes = (listOf("Dog"))
         ).selections(DogFragmentSelections.root)
         .build()

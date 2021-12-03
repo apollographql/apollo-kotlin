@@ -24,7 +24,7 @@ public class TestQuerySelections {
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
     new CompiledField.Builder("birthDate", new CompiledNotNullType(Date.type)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Droid")).selections(onDroid).build()
+    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(onDroid).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(

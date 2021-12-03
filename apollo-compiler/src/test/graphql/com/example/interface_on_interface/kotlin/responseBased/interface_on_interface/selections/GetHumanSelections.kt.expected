@@ -45,6 +45,7 @@ public object GetHumanSelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Human",
           possibleTypes = listOf("Human")
         ).selections(onHuman)
         .build()

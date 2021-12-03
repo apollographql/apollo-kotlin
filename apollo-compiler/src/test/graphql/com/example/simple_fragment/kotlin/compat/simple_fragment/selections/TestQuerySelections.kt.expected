@@ -22,10 +22,12 @@ internal object TestQuerySelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Character",
           possibleTypes = (listOf("Droid", "Human"))
         ).selections(HeroDetailsSelections.root)
         .build(),
         CompiledFragment.Builder(
+          typeCondition = "Human",
           possibleTypes = (listOf("Human"))
         ).selections(HumanDetailsSelections.root)
         .build()

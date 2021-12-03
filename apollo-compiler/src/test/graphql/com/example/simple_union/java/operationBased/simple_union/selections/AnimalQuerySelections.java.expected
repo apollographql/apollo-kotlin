@@ -19,8 +19,8 @@ import java.util.List;
 public class AnimalQuerySelections {
   private static List<CompiledSelection> animal = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Cat")).selections(CatFragmentSelections.root).build(),
-    new CompiledFragment.Builder(Arrays.asList("Dog")).selections(DogFragmentSelections.root).build()
+    new CompiledFragment.Builder("Cat", Arrays.asList("Cat")).selections(CatFragmentSelections.root).build(),
+    new CompiledFragment.Builder("Dog", Arrays.asList("Dog")).selections(DogFragmentSelections.root).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(

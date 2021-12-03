@@ -6,17 +6,17 @@
 package com.example.named_fragment_with_variables.fragment
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_with_variables.fragment.adapter.UserFragmentImpl_VariablesAdapter
 import com.example.named_fragment_with_variables.fragment.selections.UserFragmentSelections
+import com.example.named_fragment_with_variables.type.User
 import kotlin.Int
 import kotlin.String
 import kotlin.Unit
-import kotlin.collections.List
 
 public data class UserFragmentImpl(
   public val size: Int
@@ -30,7 +30,12 @@ public data class UserFragmentImpl(
     return UserFragmentImpl_ResponseAdapter.Data.obj()
   }
 
-  public override fun selections(): List<CompiledSelection> = UserFragmentSelections.root
+  public override fun rootField(): CompiledField = CompiledField.Builder(
+    name = "data",
+    type = User.type
+  )
+  .selections(selections = UserFragmentSelections.root)
+  .build()
 
   public data class Data(
     public override val firstName: String,

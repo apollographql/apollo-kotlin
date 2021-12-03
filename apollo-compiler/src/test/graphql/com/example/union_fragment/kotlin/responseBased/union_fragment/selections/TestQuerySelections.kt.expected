@@ -31,10 +31,12 @@ public object TestQuerySelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Starship",
           possibleTypes = listOf("Starship")
         ).selections(onStarship)
         .build(),
         CompiledFragment.Builder(
+          typeCondition = "Starship",
           possibleTypes = (listOf("Starship"))
         ).selections(StarshipSelections.root)
         .build()

@@ -6,7 +6,7 @@
 package com.example.java8annotation
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -17,7 +17,6 @@ import com.example.java8annotation.selections.LoginBarberSelections
 import com.example.java8annotation.type.Login
 import kotlin.String
 import kotlin.Unit
-import kotlin.collections.List
 
 public data class LoginBarber(
   public val input: Login
@@ -37,7 +36,12 @@ public data class LoginBarber(
     return LoginBarber_ResponseAdapter.Data.obj()
   }
 
-  public override fun selections(): List<CompiledSelection> = LoginBarberSelections.root
+  public override fun rootField(): CompiledField = CompiledField.Builder(
+    name = "data",
+    type = com.example.java8annotation.type.Mutation.type
+  )
+  .selections(selections = LoginBarberSelections.root)
+  .build()
 
   public data class Data(
     public val login: Login

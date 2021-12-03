@@ -6,17 +6,17 @@
 package com.example.simple_union.fragment;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Fragment;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.simple_union.fragment.selections.DogFragmentSelections;
+import com.example.simple_union.type.Dog;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.util.List;
 
 public class DogFragmentImpl implements Fragment<DogFragment> {
   private transient volatile int $hashCode;
@@ -71,7 +71,12 @@ public class DogFragmentImpl implements Fragment<DogFragment> {
   }
 
   @Override
-  public List<CompiledSelection> selections() {
-    return DogFragmentSelections.root;
+  public CompiledField rootField() {
+    return new CompiledField.Builder(
+      "data",
+      Dog.type
+    )
+    .selections(DogFragmentSelections.root)
+    .build();
   }
 }

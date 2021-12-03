@@ -19,14 +19,14 @@ import java.util.List;
 public class TestQuerySelections {
   private static List<CompiledSelection> r2 = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Human")).selections(HumanDetailsSelections.root).build(),
-    new CompiledFragment.Builder(Arrays.asList("Droid")).selections(DroidDetailsSelections.root).build()
+    new CompiledFragment.Builder("Human", Arrays.asList("Human")).selections(HumanDetailsSelections.root).build(),
+    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(DroidDetailsSelections.root).build()
   );
 
   private static List<CompiledSelection> luke = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Human")).selections(HumanDetailsSelections.root).build(),
-    new CompiledFragment.Builder(Arrays.asList("Droid")).selections(DroidDetailsSelections.root).build()
+    new CompiledFragment.Builder("Human", Arrays.asList("Human")).selections(HumanDetailsSelections.root).build(),
+    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(DroidDetailsSelections.root).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(

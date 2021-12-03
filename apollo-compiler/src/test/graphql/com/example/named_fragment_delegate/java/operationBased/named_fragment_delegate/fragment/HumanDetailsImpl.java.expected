@@ -6,17 +6,17 @@
 package com.example.named_fragment_delegate.fragment;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Fragment;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.named_fragment_delegate.fragment.selections.HumanDetailsSelections;
+import com.example.named_fragment_delegate.type.Human;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.util.List;
 
 public class HumanDetailsImpl implements Fragment<HumanDetails> {
   private transient volatile int $hashCode;
@@ -71,7 +71,12 @@ public class HumanDetailsImpl implements Fragment<HumanDetails> {
   }
 
   @Override
-  public List<CompiledSelection> selections() {
-    return HumanDetailsSelections.root;
+  public CompiledField rootField() {
+    return new CompiledField.Builder(
+      "data",
+      Human.type
+    )
+    .selections(HumanDetailsSelections.root)
+    .build();
   }
 }

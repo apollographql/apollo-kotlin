@@ -29,7 +29,7 @@ public class TestQuerySelections {
 
   private static List<CompiledSelection> objects = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Droid", "Human")).selections(onCharacter).build()
+    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(onCharacter).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(

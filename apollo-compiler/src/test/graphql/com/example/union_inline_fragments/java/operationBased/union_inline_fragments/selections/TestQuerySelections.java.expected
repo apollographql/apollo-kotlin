@@ -29,7 +29,7 @@ public class TestQuerySelections {
 
   private static List<CompiledSelection> friends1 = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Droid", "Human")).selections(onCharacter2).build()
+    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(onCharacter2).build()
   );
 
   private static List<CompiledSelection> onHuman = Arrays.asList(
@@ -48,9 +48,9 @@ public class TestQuerySelections {
 
   private static List<CompiledSelection> friends = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Droid", "Human")).selections(onCharacter1).build(),
-    new CompiledFragment.Builder(Arrays.asList("Human")).selections(onHuman).build(),
-    new CompiledFragment.Builder(Arrays.asList("Droid")).selections(onDroid).build()
+    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(onCharacter1).build(),
+    new CompiledFragment.Builder("Human", Arrays.asList("Human")).selections(onHuman).build(),
+    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(onDroid).build()
   );
 
   private static List<CompiledSelection> onCharacter = Arrays.asList(
@@ -65,8 +65,8 @@ public class TestQuerySelections {
 
   private static List<CompiledSelection> search = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Droid", "Human")).selections(onCharacter).build(),
-    new CompiledFragment.Builder(Arrays.asList("Starship")).selections(onStarship).build()
+    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(onCharacter).build(),
+    new CompiledFragment.Builder("Starship", Arrays.asList("Starship")).selections(onStarship).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(

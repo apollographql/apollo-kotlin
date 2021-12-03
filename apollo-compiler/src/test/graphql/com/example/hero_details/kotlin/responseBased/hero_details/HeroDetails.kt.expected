@@ -6,7 +6,7 @@
 package com.example.hero_details
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -35,7 +35,12 @@ public class HeroDetails() : Query<HeroDetails.Data> {
     return HeroDetails_ResponseAdapter.Data.obj()
   }
 
-  public override fun selections(): List<CompiledSelection> = HeroDetailsSelections.root
+  public override fun rootField(): CompiledField = CompiledField.Builder(
+    name = "data",
+    type = com.example.hero_details.type.Query.type
+  )
+  .selections(selections = HeroDetailsSelections.root)
+  .build()
 
   public data class Data(
     public val hero: Hero?

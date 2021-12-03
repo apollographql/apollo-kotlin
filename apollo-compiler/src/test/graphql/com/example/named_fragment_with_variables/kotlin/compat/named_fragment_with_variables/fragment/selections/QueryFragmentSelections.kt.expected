@@ -24,6 +24,7 @@ public object QueryFragmentSelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "User",
           possibleTypes = (listOf("User"))
         ).selections(UserFragmentSelections.root)
         .build()

@@ -6,17 +6,17 @@
 package com.example.root_query_fragment_with_nested_fragments.fragment;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Fragment;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.root_query_fragment_with_nested_fragments.fragment.selections.droidFragmentSelections;
+import com.example.root_query_fragment_with_nested_fragments.type.Droid;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.util.List;
 
 public class DroidFragmentImpl implements Fragment<DroidFragment> {
   private transient volatile int $hashCode;
@@ -71,7 +71,12 @@ public class DroidFragmentImpl implements Fragment<DroidFragment> {
   }
 
   @Override
-  public List<CompiledSelection> selections() {
-    return droidFragmentSelections.root;
+  public CompiledField rootField() {
+    return new CompiledField.Builder(
+      "data",
+      Droid.type
+    )
+    .selections(droidFragmentSelections.root)
+    .build();
   }
 }

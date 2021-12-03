@@ -6,15 +6,15 @@
 package com.example.nested_named_fragments.fragment
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.nested_named_fragments.fragment.selections.planetFragmentSelections
+import com.example.nested_named_fragments.type.Planet
 import kotlin.String
 import kotlin.Unit
-import kotlin.collections.List
 
 public class PlanetFragmentImpl() : Fragment<PlanetFragmentImpl.Data> {
   public override fun serializeVariables(writer: JsonWriter,
@@ -26,7 +26,12 @@ public class PlanetFragmentImpl() : Fragment<PlanetFragmentImpl.Data> {
     return PlanetFragmentImpl_ResponseAdapter.Data.obj()
   }
 
-  public override fun selections(): List<CompiledSelection> = planetFragmentSelections.root
+  public override fun rootField(): CompiledField = CompiledField.Builder(
+    name = "data",
+    type = Planet.type
+  )
+  .selections(selections = planetFragmentSelections.root)
+  .build()
 
   public data class Data(
     /**

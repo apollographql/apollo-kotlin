@@ -6,7 +6,7 @@
 package com.example.input_object_type;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Mutation;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -21,7 +21,6 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.util.List;
 
 public class TestQuery implements Mutation<TestQuery.Data> {
   public static final String OPERATION_ID = "2a1de6af8435bb9169562d78714566aaf26a9741ef16b72f49955dc615237b09";
@@ -120,8 +119,13 @@ public class TestQuery implements Mutation<TestQuery.Data> {
   }
 
   @Override
-  public List<CompiledSelection> selections() {
-    return TestQuerySelections.root;
+  public CompiledField rootField() {
+    return new CompiledField.Builder(
+      "data",
+      com.example.input_object_type.type.Mutation.type
+    )
+    .selections(TestQuerySelections.root)
+    .build();
   }
 
   public static class Data implements Mutation.Data {

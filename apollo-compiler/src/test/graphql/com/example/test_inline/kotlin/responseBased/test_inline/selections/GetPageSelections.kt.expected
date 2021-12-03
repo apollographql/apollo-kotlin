@@ -36,6 +36,7 @@ public object GetPageSelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "ParticularItem",
           possibleTypes = listOf("ParticularItem")
         ).selections(onParticularItem)
         .build()
@@ -60,6 +61,7 @@ public object GetPageSelections {
         ).selections(items)
         .build(),
         CompiledFragment.Builder(
+          typeCondition = "ParticularCollection",
           possibleTypes = listOf("ParticularCollection")
         ).selections(onParticularCollection)
         .build()

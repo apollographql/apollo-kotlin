@@ -6,7 +6,7 @@
 package com.example.two_heroes_with_friends;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Query;
@@ -123,8 +123,13 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   @Override
-  public List<CompiledSelection> selections() {
-    return TestQuerySelections.root;
+  public CompiledField rootField() {
+    return new CompiledField.Builder(
+      "data",
+      com.example.two_heroes_with_friends.type.Query.type
+    )
+    .selections(TestQuerySelections.root)
+    .build();
   }
 
   public static class Data implements Query.Data {

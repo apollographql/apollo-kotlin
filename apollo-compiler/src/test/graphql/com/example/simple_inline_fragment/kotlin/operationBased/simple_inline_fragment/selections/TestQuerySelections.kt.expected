@@ -33,6 +33,7 @@ public object TestQuerySelections {
           type = CompiledIDType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Character",
           possibleTypes = listOf("Droid", "Human")
         ).selections(onCharacter1)
         .build()
@@ -58,14 +59,17 @@ public object TestQuerySelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Character",
           possibleTypes = listOf("Droid", "Human")
         ).selections(onCharacter)
         .build(),
         CompiledFragment.Builder(
+          typeCondition = "Human",
           possibleTypes = listOf("Human")
         ).selections(onHuman)
         .build(),
         CompiledFragment.Builder(
+          typeCondition = "Droid",
           possibleTypes = listOf("Droid")
         ).selections(onDroid)
         .build()

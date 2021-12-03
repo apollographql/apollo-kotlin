@@ -23,6 +23,7 @@ public object QueryFragmentSelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Character",
           possibleTypes = (listOf("Droid", "Human"))
         ).selections(heroFragmentSelections.root)
         .build()
@@ -34,6 +35,7 @@ public object QueryFragmentSelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Droid",
           possibleTypes = (listOf("Droid"))
         ).selections(droidFragmentSelections.root)
         .build()
@@ -56,6 +58,7 @@ public object QueryFragmentSelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Human",
           possibleTypes = listOf("Human")
         ).selections(onHuman)
         .build()

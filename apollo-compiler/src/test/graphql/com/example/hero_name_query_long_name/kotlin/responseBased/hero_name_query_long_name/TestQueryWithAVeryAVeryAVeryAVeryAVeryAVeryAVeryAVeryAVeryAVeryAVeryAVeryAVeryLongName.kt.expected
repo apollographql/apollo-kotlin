@@ -6,7 +6,7 @@
 package com.example.hero_name_query_long_name
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -17,7 +17,6 @@ import com.example.hero_name_query_long_name.selections.TestQueryWithAVeryAVeryA
 import com.example.hero_name_query_long_name.type.Episode
 import kotlin.String
 import kotlin.Unit
-import kotlin.collections.List
 
 public data class
     TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName(
@@ -43,8 +42,12 @@ public data class
     return TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_ResponseAdapter.Data.obj()
   }
 
-  public override fun selections(): List<CompiledSelection> =
-      TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongNameSelections.root
+  public override fun rootField(): CompiledField = CompiledField.Builder(
+    name = "data",
+    type = com.example.hero_name_query_long_name.type.Query.type
+  )
+  .selections(selections = TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongNameSelections.root)
+  .build()
 
   public data class Data(
     public val heroAVeryAVeryAVeryAVeryAVeryAVeryAV: HeroAVeryAVeryAVeryAVeryAVeryAVeryAV?

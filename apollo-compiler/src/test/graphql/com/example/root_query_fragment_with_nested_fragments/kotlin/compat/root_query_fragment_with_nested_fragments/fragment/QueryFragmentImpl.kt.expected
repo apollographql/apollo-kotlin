@@ -6,14 +6,14 @@
 package com.example.root_query_fragment_with_nested_fragments.fragment
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.root_query_fragment_with_nested_fragments.fragment.selections.QueryFragmentSelections
+import com.example.root_query_fragment_with_nested_fragments.type.Query
 import kotlin.Unit
-import kotlin.collections.List
 
 public class QueryFragmentImpl() : Fragment<QueryFragment> {
   public override fun serializeVariables(writer: JsonWriter,
@@ -25,5 +25,10 @@ public class QueryFragmentImpl() : Fragment<QueryFragment> {
     return QueryFragmentImpl_ResponseAdapter.QueryFragment.obj()
   }
 
-  public override fun selections(): List<CompiledSelection> = QueryFragmentSelections.root
+  public override fun rootField(): CompiledField = CompiledField.Builder(
+    name = "data",
+    type = Query.type
+  )
+  .selections(selections = QueryFragmentSelections.root)
+  .build()
 }

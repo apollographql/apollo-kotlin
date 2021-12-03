@@ -6,7 +6,7 @@
 package com.example.hero_details_semantic_naming;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Query;
@@ -111,8 +111,13 @@ public class HeroDetailsQuery implements Query<HeroDetailsQuery.Data> {
   }
 
   @Override
-  public List<CompiledSelection> selections() {
-    return HeroDetailsQuerySelections.root;
+  public CompiledField rootField() {
+    return new CompiledField.Builder(
+      "data",
+      com.example.hero_details_semantic_naming.type.Query.type
+    )
+    .selections(HeroDetailsQuerySelections.root)
+    .build();
   }
 
   public static class Data implements Query.Data {

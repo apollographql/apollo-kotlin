@@ -19,8 +19,8 @@ import java.util.List;
 public class TestQuerySelections {
   private static List<CompiledSelection> hero = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Droid")).selections(DroidDetails1Selections.root).build(),
-    new CompiledFragment.Builder(Arrays.asList("Droid")).selections(DroidDetails2Selections.root).build()
+    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(DroidDetails1Selections.root).build(),
+    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(DroidDetails2Selections.root).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(

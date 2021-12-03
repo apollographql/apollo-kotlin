@@ -26,6 +26,7 @@ public object iFragmentSelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "A",
           possibleTypes = listOf("A")
         ).selections(onA)
         .build()
