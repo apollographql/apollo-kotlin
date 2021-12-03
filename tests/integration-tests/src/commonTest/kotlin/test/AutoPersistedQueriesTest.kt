@@ -42,7 +42,7 @@ class AutoPersistedQueriesTest {
   fun canDisableApqsPerQuery() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(testFixtureToUtf8("HeroNameResponse.json"))
 
-    val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).autoPersistedQueries(httpMethodForHashedQueries = HttpMethod.Get).build()
+    val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).autoPersistedQueries().build()
 
     apolloClient.query(HeroNameQuery())
         .enableAutoPersistedQueries(false)
@@ -69,7 +69,7 @@ class AutoPersistedQueriesTest {
 
     mockServer.enqueue(testFixtureToUtf8("HeroNameResponse.json"))
 
-    val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).autoPersistedQueries(httpMethodForHashedQueries = HttpMethod.Post).build()
+    val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).autoPersistedQueries().build()
 
     apolloClient.query(HeroNameQuery()).execute()
 
