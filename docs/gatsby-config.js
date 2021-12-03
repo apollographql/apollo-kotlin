@@ -51,6 +51,7 @@ module.exports = {
             'caching/query-watchers',
             'caching/store',
             'caching/http-cache',
+            'advanced/persisted-queries',
             'caching/troubleshooting',
           ],
           Networking: [
@@ -65,7 +66,6 @@ module.exports = {
           Advanced: [
             'advanced/query-batching',
             'advanced/upload',
-            'advanced/persisted-queries',
             'advanced/nonnull',
             'advanced/plugin-configuration',
             'advanced/multi-modules',

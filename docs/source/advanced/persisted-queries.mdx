@@ -1,20 +1,21 @@
 ---
-title: Persisted queries
+title: Persisted queries in Apollo Android
+sidebar_title: Persisted queries
 ---
 
 import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
 ## Automatic persisted queries
 
-Apollo Android supports [Automatic Persisted Queries](https://www.apollographql.com/docs/apollo-server/performance/apq/).
-Your server needs to support it (apollo-server supports it out of the box).
-Enable the feature in apollo-android like so:
+Apollo Android supports [Automatic Persisted Queries](https://www.apollographql.com/docs/apollo-server/performance/apq/) (APQ). To take advantage of this support, your GraphQL server _also_ needs to support APQ (Apollo Server supports it out of the box).
+
+Enable the feature when you initialize your `ApolloClient` instance, like so:
 
 ```kotlin
 val apolloClient = ApolloClient.Builder()
-    .serverUrl("https://...")
-    .autoPersistedQueries()
-    .build()
+  .serverUrl("https://...")
+  .autoPersistedQueries()
+  .build()
 ```
 
 You can optionally configure apollo-android to send GET HTTP verbs for queries, to benefit from caching if your server uses a CDN:
