@@ -105,12 +105,13 @@ class CompiledField internal constructor(
  * A compiled inline fragment or fragment spread
  */
 class CompiledFragment internal constructor(
+    val typeCondition: String,
     val possibleTypes: List<String>,
     val condition: List<CompiledCondition>,
     val selections: List<CompiledSelection>,
 ) : CompiledSelection() {
 
-  class Builder(val possibleTypes: List<String>) {
+  class Builder(val typeCondition: String, val possibleTypes: List<String>) {
     var condition: List<CompiledCondition> = emptyList()
     var selections: List<CompiledSelection> = emptyList()
 
@@ -122,7 +123,7 @@ class CompiledFragment internal constructor(
       this.selections = selections
     }
 
-    fun build() = CompiledFragment(possibleTypes, condition, selections)
+    fun build() = CompiledFragment(typeCondition, possibleTypes, condition, selections)
   }
 }
 

@@ -28,7 +28,7 @@ fun <D : Executable.Data> Executable<D>.normalize(
   adapter().toJson(writer, customScalarAdapters, data)
   val variables = variables(customScalarAdapters)
   return Normalizer(variables, rootKey, cacheKeyGenerator)
-      .normalize(writer.root() as Map<String, Any?>, selections())
+      .normalize(writer.root() as Map<String, Any?>, rootField().selections, rootField().type.leafType().name)
 }
 
 fun <D : Executable.Data> Executable<D>.readDataFromCache(
@@ -71,7 +71,8 @@ private fun <D : Executable.Data> Executable<D>.readInternal(
       cacheResolver = cacheResolver,
       variables = variables(customScalarAdapters),
       rootKey = cacheKey.key,
-      rootSelections = selections()
+      rootSelections = rootField().selections,
+      rootTypename = rootField().type.leafType().name
   ).toMap()
 
   val reader = MapJsonReader(
