@@ -122,7 +122,7 @@ Because this is a warning and not an error, you can still use the returned `sche
 
 ### `validateAsExecutable`
 
-The `validateAsExecutable` method checks whether a document's defined operations are valid against a particular provided `Schema`. You can obtain this `Schema` parameter by calling teh [above](#validateAsSchema) `validateAsSchema` on the `GQLDocument` that represents the schema:
+The `validateAsExecutable` method checks whether a document's defined operations are valid against a particular provided `Schema`. You can obtain this `Schema` parameter by calling the [above](#validateAsSchema) `validateAsSchema` on the `GQLDocument` that represents the schema:
 
 ```kotlin
 val schema = schemaGQLDocument.validateAsSchema().valueAssertNoErrors()
