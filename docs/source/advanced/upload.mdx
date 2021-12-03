@@ -49,9 +49,14 @@ mutation SingleUpload($file: Upload!) {
 Create an instance of `Upload` using one of the factory methods:
 
 ```kotlin
-val upload = Upload.fromSource(okioSource)
+val upload = DefaultUpload.Builder()
+              .content(okioSource)
+              .build()
+
 // or if you're on the JVM
-val upload = Upload.fromFile(file)
+val upload = DefaultUpload.Builder()
+              .file(file)
+              .build()
 ```
 
 And execute your mutation:

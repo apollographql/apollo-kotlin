@@ -10,12 +10,8 @@ Enable it by adding an `ApolloClientAwarenessInterceptor` to your `OkHttpClient`
 
 ```kotlin
 val apolloClient = ApolloClient.Builder()
-    .networkTransport(
-        HttpNetworkTransport.Builder()
-            .serverUrl("https://")
-            .addInterceptor(ApolloClientAwarenessInterceptor(BuildConfig.APPLICATION_ID, BuildConfig.VERSION_NAME))
-            .build()
-    )
+    .serverUrl("https://example.com/graphql")
+    .addHttpInterceptor(ApolloClientAwarenessInterceptor(BuildConfig.APPLICATION_ID, BuildConfig.VERSION_NAME))
     .build()
 ```
 
