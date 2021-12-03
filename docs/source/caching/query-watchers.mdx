@@ -27,6 +27,8 @@ import { CodeColumns } from 'gatsby-theme-apollo-docs';
 <CodeColumns>
 
 ```graphql
+# AllTodos.graphql
+
 # Gets all todo items
 query AllTodos {
   items {
@@ -38,6 +40,8 @@ query AllTodos {
 ```
 
 ```graphql
+# TodoDetails.graphql
+
 # Gets one todo item's details
 query TodoDetails($id: String!) {
   item(id: $id) {

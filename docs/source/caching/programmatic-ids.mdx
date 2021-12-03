@@ -63,7 +63,7 @@ The `CacheKeyResolver` class enables you to generate custom cache IDs from an fi
 ```kotlin
 val cacheKeyResolver = object: CacheKeyResolver() {
   override fun cacheKeyForField(field: CompiledField, variables: Executable.Variables): CacheKey? {
-    // `field` contains compile-time information about what type of object is being resolved.
+    // [field] contains compile-time information about what type of object is being resolved.
     // Even though we call leafType() here, we're guaranteed that the type is a composite type and not a list
     val typename = field.type.leafType().name
 
