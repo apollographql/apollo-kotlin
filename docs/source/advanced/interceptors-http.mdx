@@ -18,12 +18,8 @@ Then add the interceptor to your `HttpNetworkTransport`:
 
 ```kotlin
 val apolloClient = ApolloClient.Builder()
-    .networkTransport(
-        HttpNetworkTransport(
-            serverUrl = "https://",
-            interceptors = listOf(AuthorizationInterceptor(token))
-        )
-    )
+    .serverUrl("https://example.com/graphql")
+    .addHttpInterceptor(AuthorizationInterceptor(token))
     .build()
 ```
 
@@ -39,11 +35,7 @@ val okHttpClient = OkHttpClient.Builder()
     .build()
 
 val apolloClient = ApolloClient.Builder()
-    .networkTransport(
-        HttpNetworkTransport(
-            serverUrl = "https://",
-            engine = DefaultHttpEngine(okHttpClient)
-        )
-    )
+    .serverUrl("https://example.com/graphql")
+    .okHttpClient(okHttpClient)
     .build()
 ```

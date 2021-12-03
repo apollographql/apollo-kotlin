@@ -42,24 +42,15 @@ val graphQLText = """
     }
 """.trimIndent()
 
-val parseResult = graphQLText.parseAsGQLDocument()
+val parseResult = Buffer().writeUtf8(graphQLText).parseAsGQLDocument()
 ```
 
-This method returns a `ParseResult<GQLDocument>`, which is a sealed class that can either be a `Success` or an `Error`:
+This method returns a `GQLResult<GQLDocument>`, which contains the document and/or parsing issues, each of which can have a severity of either `WARNING` or `ERROR`. Because there can be warnings, it is possible to have both a valid document and issues at the same time.
+
+To get the document and throw on errors, use `valueAssertNoErrors()`:
 
 ```kotlin
-val queryGqlDocument: GQLDocument = when (parseResult) {
-  is ParseResult.Success -> parseResult.value
-  is ParseResult.Error -> throw MyException(parseResult.issues)
-}
-```
-
-If parse errors are encountered, their details are included in `issues`.
-
-If you don't expect errors, the `toGQLDocument` convenience method returns the AST directly:
-
-```kotlin
-val queryGqlDocument: GQLDocument = graphQLText.toGQLDocument()
+val queryGqlDocument = parseResult.valueAssertNoErrors()
 ```
 
 `GQLDocument` is the root of the AST. It contains a list of `GQLDefinition`s that together represent the GraphQL document.
@@ -98,11 +89,9 @@ To validate a parsed `GQLDocument`:
 * **If the document represents a schema,** call the `validateAsSchema` method.
 * **If the document represents one or more operations,** call the `validateAsExecutable` method.
 
-Both of these methods return a list of `Issue`s, each of which can have a severity of either `WARNING` or `ERROR`.
-
 ### `validateAsSchema`
 
-The following snippet parses and validates a short invalid schema that uses an undefined directive (`@private`):
+`validateAsSchema` returns a `GQLResult<Schema>`. The following snippet parses and validates a short invalid schema that uses an undefined directive (`@private`):
 
 ```kotlin{11,19}
 val schemaText = """
@@ -122,19 +111,21 @@ val schemaText = """
     }
 """.trimIndent()
 
-val schemaGQLDocument = schemaText.toGQLDocument()
-val schemaIssues = schemaGQLDocument.validateAsSchema()
-println(schemaIssues.map { it.severity.name + ": " + it.message })
+val schemaGQLDocument = Buffer().writeUtf8(schemaText).parseAsGQLDocument().valueAssertNoErrors()
+val schemaResult = schemaGQLDocument.validateAsSchema()
+println(schemaResult.issues.map { it.severity.name + ": " + it.message })
 ```
 
-When excuted, this snippet prints `[WARNING: Unknown directive 'private']`.
+When executed, this snippet prints `[WARNING: Unknown directive 'private']`.
+
+Because this is a warning and not an error, you can still use the returned `schemaResult.valueAssertNoErrors()`
 
 ### `validateAsExecutable`
 
-The `validateAsExecutable` method checks whether a document's defined operations are valid against a particular provided `Schema`. You can obtain this `Schema` parameter by calling `toSchema()` on the `GQLDocument` that represents the schema:
+The `validateAsExecutable` method checks whether a document's defined operations are valid against a particular provided `Schema`. You can obtain this `Schema` parameter by calling the [above](#validateAsSchema) `validateAsSchema` on the `GQLDocument` that represents the schema:
 
 ```kotlin
-val schema = schemaGQLDocument.toSchema()
+val schema = schemaGQLDocument.validateAsSchema().valueAssertNoErrors()
 val executableIssues = queryGqlDocument.validateAsExecutable(schema)
 println(executableIssues.map { it.severity.name + ": " + it.message })
 ```
