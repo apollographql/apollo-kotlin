@@ -6,7 +6,7 @@
 package com.example.deprecated_merged_field
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -16,7 +16,6 @@ import com.example.deprecated_merged_field.fragment.AnimalFragment
 import com.example.deprecated_merged_field.selections.CatQuerySelections
 import kotlin.String
 import kotlin.Unit
-import kotlin.collections.List
 
 public class CatQuery() : Query<CatQuery.Data> {
   public override fun id(): String = OPERATION_ID
@@ -34,7 +33,12 @@ public class CatQuery() : Query<CatQuery.Data> {
     return CatQuery_ResponseAdapter.Data.obj()
   }
 
-  public override fun selections(): List<CompiledSelection> = CatQuerySelections.root
+  public override fun rootField(): CompiledField = CompiledField.Builder(
+    name = "data",
+    type = com.example.deprecated_merged_field.type.Query.type
+  )
+  .selections(selections = CatQuerySelections.root)
+  .build()
 
   public data class Data(
     public val cat: Cat?

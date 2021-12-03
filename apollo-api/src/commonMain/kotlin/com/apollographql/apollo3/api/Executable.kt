@@ -28,9 +28,9 @@ interface Executable<D: Executable.Data> {
 
   /**
    * A list of [CompiledSelection]. Used when reading from the cache and/or normalizing a model.
-   * Use [com.apollographql.apollo3.cache.normalized.Store.readOperation] for a higher level API
+   * Use [com.apollographql.apollo3.cache.normalized.ApolloStore.readOperation] for a higher level API
    */
-  fun selections(): List<CompiledSelection>
+  fun rootField(): CompiledField
 
   /**
    * Marker interface for generated models

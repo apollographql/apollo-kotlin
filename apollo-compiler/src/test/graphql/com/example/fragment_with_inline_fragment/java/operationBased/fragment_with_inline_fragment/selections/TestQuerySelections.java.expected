@@ -21,7 +21,7 @@ public class TestQuerySelections {
   private static List<CompiledSelection> hero = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Droid", "Human")).selections(HeroDetailsSelections.root).build(),
+    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(HeroDetailsSelections.root).build(),
     new CompiledField.Builder("appearsIn", new CompiledNotNullType(new CompiledListType(Episode.type))).build()
   );
 

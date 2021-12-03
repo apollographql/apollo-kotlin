@@ -6,7 +6,7 @@
 package com.example.antlr_tokens;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Query;
@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.util.List;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "197e186cfb461d1c38c0be4da7b182eff42e304043973b994c8c2de3535daea6";
@@ -111,8 +110,13 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   @Override
-  public List<CompiledSelection> selections() {
-    return TestQuerySelections.root;
+  public CompiledField rootField() {
+    return new CompiledField.Builder(
+      "data",
+      com.example.antlr_tokens.type.Query.type
+    )
+    .selections(TestQuerySelections.root)
+    .build();
   }
 
   public static class Data implements Query.Data {

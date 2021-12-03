@@ -26,8 +26,8 @@ public class TestQuerySelections {
 
   private static List<CompiledSelection> iface2 = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Impl2")).selections(onIface2).build(),
-    new CompiledFragment.Builder(Arrays.asList("Impl2")).selections(onImpl2).build()
+    new CompiledFragment.Builder("Iface2", Arrays.asList("Impl2")).selections(onIface2).build(),
+    new CompiledFragment.Builder("Impl2", Arrays.asList("Impl2")).selections(onImpl2).build()
   );
 
   private static List<CompiledSelection> onIface1 = Arrays.asList(
@@ -44,8 +44,8 @@ public class TestQuerySelections {
 
   private static List<CompiledSelection> iface21 = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Impl2")).selections(onIface21).build(),
-    new CompiledFragment.Builder(Arrays.asList("Impl2")).selections(onImpl21).build()
+    new CompiledFragment.Builder("Iface2", Arrays.asList("Impl2")).selections(onIface21).build(),
+    new CompiledFragment.Builder("Impl2", Arrays.asList("Impl2")).selections(onImpl21).build()
   );
 
   private static List<CompiledSelection> onImpl1 = Arrays.asList(
@@ -54,8 +54,8 @@ public class TestQuerySelections {
 
   private static List<CompiledSelection> iface1 = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Impl1")).selections(onIface1).build(),
-    new CompiledFragment.Builder(Arrays.asList("Impl1")).selections(onImpl1).build()
+    new CompiledFragment.Builder("Iface1", Arrays.asList("Impl1")).selections(onIface1).build(),
+    new CompiledFragment.Builder("Impl1", Arrays.asList("Impl1")).selections(onImpl1).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(

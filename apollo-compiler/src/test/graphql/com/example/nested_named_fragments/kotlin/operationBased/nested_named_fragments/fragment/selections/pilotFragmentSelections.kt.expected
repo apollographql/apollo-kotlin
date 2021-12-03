@@ -20,6 +20,7 @@ public object pilotFragmentSelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Planet",
           possibleTypes = (listOf("Planet"))
         ).selections(planetFragmentSelections.root)
         .build()

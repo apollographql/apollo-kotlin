@@ -25,7 +25,7 @@ public class TestOperationSelections {
   private static List<CompiledSelection> friends = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Wookie")).selections(onWookie).build()
+    new CompiledFragment.Builder("Wookie", Arrays.asList("Wookie")).selections(onWookie).build()
   );
 
   private static List<CompiledSelection> onWookie1 = Arrays.asList(
@@ -35,7 +35,7 @@ public class TestOperationSelections {
   private static List<CompiledSelection> friends1 = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
     new CompiledField.Builder("isFamous", CompiledGraphQL.CompiledBooleanType).build(),
-    new CompiledFragment.Builder(Arrays.asList("Wookie")).selections(onWookie1).build()
+    new CompiledFragment.Builder("Wookie", Arrays.asList("Wookie")).selections(onWookie1).build()
   );
 
   private static List<CompiledSelection> onHuman = Arrays.asList(
@@ -47,7 +47,7 @@ public class TestOperationSelections {
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
     new CompiledField.Builder("friends", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Being.type)))).selections(friends).build(),
-    new CompiledFragment.Builder(Arrays.asList("Human")).selections(onHuman).build()
+    new CompiledFragment.Builder("Human", Arrays.asList("Human")).selections(onHuman).build()
   );
 
   private static List<CompiledSelection> friends2 = Arrays.asList(
@@ -65,7 +65,7 @@ public class TestOperationSelections {
 
   private static List<CompiledSelection> friends3 = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Wookie")).selections(onWookie3).build()
+    new CompiledFragment.Builder("Wookie", Arrays.asList("Wookie")).selections(onWookie3).build()
   );
 
   private static List<CompiledSelection> onBeing1 = Arrays.asList(
@@ -74,9 +74,9 @@ public class TestOperationSelections {
 
   private static List<CompiledSelection> random = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Human", "Wookie")).selections(onBeing).build(),
-    new CompiledFragment.Builder(Arrays.asList("Wookie")).selections(onWookie2).build(),
-    new CompiledFragment.Builder(Arrays.asList("Human", "Wookie")).selections(onBeing1).build()
+    new CompiledFragment.Builder("Being", Arrays.asList("Human", "Wookie")).selections(onBeing).build(),
+    new CompiledFragment.Builder("Wookie", Arrays.asList("Wookie")).selections(onWookie2).build(),
+    new CompiledFragment.Builder("Being", Arrays.asList("Human", "Wookie")).selections(onBeing1).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(

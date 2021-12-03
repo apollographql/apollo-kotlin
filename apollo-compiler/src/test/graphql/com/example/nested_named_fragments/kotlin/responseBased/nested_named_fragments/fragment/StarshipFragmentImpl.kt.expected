@@ -6,12 +6,13 @@
 package com.example.nested_named_fragments.fragment
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.nested_named_fragments.fragment.selections.starshipFragmentSelections
+import com.example.nested_named_fragments.type.Starship
 import kotlin.String
 import kotlin.Unit
 import kotlin.collections.List
@@ -26,7 +27,12 @@ public class StarshipFragmentImpl() : Fragment<StarshipFragmentImpl.Data> {
     return StarshipFragmentImpl_ResponseAdapter.Data.obj()
   }
 
-  public override fun selections(): List<CompiledSelection> = starshipFragmentSelections.root
+  public override fun rootField(): CompiledField = CompiledField.Builder(
+    name = "data",
+    type = Starship.type
+  )
+  .selections(selections = starshipFragmentSelections.root)
+  .build()
 
   public data class Data(
     /**

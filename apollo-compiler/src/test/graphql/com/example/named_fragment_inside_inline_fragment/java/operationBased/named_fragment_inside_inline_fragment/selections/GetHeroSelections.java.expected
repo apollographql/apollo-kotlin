@@ -19,13 +19,13 @@ import java.util.List;
 public class GetHeroSelections {
   private static List<CompiledSelection> onCharacter = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Droid", "Human")).selections(characterNameSelections.root).build(),
-    new CompiledFragment.Builder(Arrays.asList("Droid", "Human")).selections(characterAppearsInSelections.root).build()
+    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(characterNameSelections.root).build(),
+    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(characterAppearsInSelections.root).build()
   );
 
   private static List<CompiledSelection> hero = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Droid", "Human")).selections(onCharacter).build()
+    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(onCharacter).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(

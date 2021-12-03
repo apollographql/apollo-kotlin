@@ -36,6 +36,7 @@ public object TestOperationSelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Wookie",
           possibleTypes = listOf("Wookie")
         ).selections(onWookie)
         .build()
@@ -58,6 +59,7 @@ public object TestOperationSelections {
           type = CompiledBooleanType
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Wookie",
           possibleTypes = listOf("Wookie")
         ).selections(onWookie1)
         .build()
@@ -90,6 +92,7 @@ public object TestOperationSelections {
         ).selections(friends)
         .build(),
         CompiledFragment.Builder(
+          typeCondition = "Human",
           possibleTypes = listOf("Human")
         ).selections(onHuman)
         .build()
@@ -127,6 +130,7 @@ public object TestOperationSelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Wookie",
           possibleTypes = listOf("Wookie")
         ).selections(onWookie3)
         .build()
@@ -146,14 +150,17 @@ public object TestOperationSelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Being",
           possibleTypes = listOf("Human", "Wookie")
         ).selections(onBeing)
         .build(),
         CompiledFragment.Builder(
+          typeCondition = "Wookie",
           possibleTypes = listOf("Wookie")
         ).selections(onWookie2)
         .build(),
         CompiledFragment.Builder(
+          typeCondition = "Being",
           possibleTypes = listOf("Human", "Wookie")
         ).selections(onBeing1)
         .build()

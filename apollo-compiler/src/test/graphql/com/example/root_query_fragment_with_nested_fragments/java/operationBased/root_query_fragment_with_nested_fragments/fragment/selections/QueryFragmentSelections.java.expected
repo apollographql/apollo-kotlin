@@ -20,12 +20,12 @@ import java.util.List;
 public class QueryFragmentSelections {
   private static List<CompiledSelection> hero = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Droid", "Human")).selections(heroFragmentSelections.root).build()
+    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(heroFragmentSelections.root).build()
   );
 
   private static List<CompiledSelection> droid = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Droid")).selections(droidFragmentSelections.root).build()
+    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(droidFragmentSelections.root).build()
   );
 
   private static List<CompiledSelection> onHuman = Arrays.asList(
@@ -35,7 +35,7 @@ public class QueryFragmentSelections {
 
   private static List<CompiledSelection> human = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Human")).selections(onHuman).build()
+    new CompiledFragment.Builder("Human", Arrays.asList("Human")).selections(onHuman).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(

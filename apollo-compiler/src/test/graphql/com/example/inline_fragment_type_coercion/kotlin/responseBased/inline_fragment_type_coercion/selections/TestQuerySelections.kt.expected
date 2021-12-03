@@ -31,6 +31,7 @@ public object TestQuerySelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Bar",
           possibleTypes = listOf("BarObject", "FooBar")
         ).selections(onBar)
         .build()

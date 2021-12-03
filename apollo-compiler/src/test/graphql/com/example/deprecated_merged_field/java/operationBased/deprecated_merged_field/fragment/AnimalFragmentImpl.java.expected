@@ -6,17 +6,17 @@
 package com.example.deprecated_merged_field.fragment;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Fragment;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.deprecated_merged_field.fragment.selections.AnimalFragmentSelections;
+import com.example.deprecated_merged_field.type.Animal;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.util.List;
 
 public class AnimalFragmentImpl implements Fragment<AnimalFragment> {
   private transient volatile int $hashCode;
@@ -71,7 +71,12 @@ public class AnimalFragmentImpl implements Fragment<AnimalFragment> {
   }
 
   @Override
-  public List<CompiledSelection> selections() {
-    return AnimalFragmentSelections.root;
+  public CompiledField rootField() {
+    return new CompiledField.Builder(
+      "data",
+      Animal.type
+    )
+    .selections(AnimalFragmentSelections.root)
+    .build();
   }
 }

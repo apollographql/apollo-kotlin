@@ -2,13 +2,15 @@ package com.apollographql.apollo3.compiler.codegen.java.file
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
-import com.apollographql.apollo3.compiler.codegen.Identifier.selections
+import com.apollographql.apollo3.compiler.codegen.Identifier.root
+import com.apollographql.apollo3.compiler.codegen.Identifier.rootField
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
+import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.adapter.singletonAdapterInitializer
 import com.squareup.javapoet.ClassName
@@ -57,11 +59,22 @@ fun adapterMethodSpec(
       .build()
 }
 
-fun selectionsMethodSpec(context: JavaContext, className: ClassName): MethodSpec {
-  return MethodSpec.methodBuilder(selections)
+fun rootFieldMethodSpec(context: JavaContext, typeInScope: String, selectionsClassName: ClassName): MethodSpec {
+  return MethodSpec.methodBuilder(rootField)
       .addModifiers(Modifier.PUBLIC)
       .addAnnotation(JavaClassNames.Override)
-      .returns(ParameterizedTypeName.get(JavaClassNames.List, JavaClassNames.CompiledSelection))
-      .addCode("return $T.$L;\n", className, context.layout.rootSelectionsPropertyName())
+      .returns(JavaClassNames.CompiledField)
+      .addCode(
+          CodeBlock.builder()
+              .add("return new $T(\n", JavaClassNames.CompiledFieldBuilder)
+              .indent()
+              .add("$S,\n", Identifier.data)
+              .add("$L\n", context.resolver.resolveCompiledType(typeInScope))
+              .unindent()
+              .add(")\n")
+              .add(".${Identifier.selections}($T.$root)\n", selectionsClassName)
+              .add(".build();\n")
+              .build()
+      )
       .build()
 }

@@ -31,6 +31,7 @@ public object HeroDetailQuerySelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Character",
           possibleTypes = (listOf("Droid", "Human"))
         ).selections(HeroDetailsSelections.root)
         .build()
@@ -75,6 +76,7 @@ public object HeroDetailQuerySelections {
         ).selections(friends)
         .build(),
         CompiledFragment.Builder(
+          typeCondition = "Human",
           possibleTypes = listOf("Human")
         ).selections(onHuman)
         .build()

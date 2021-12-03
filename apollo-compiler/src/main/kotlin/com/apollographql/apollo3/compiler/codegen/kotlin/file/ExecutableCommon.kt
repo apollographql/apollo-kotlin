@@ -1,6 +1,9 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
+import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
+import com.apollographql.apollo3.compiler.codegen.Identifier.root
+import com.apollographql.apollo3.compiler.codegen.Identifier.rootField
 import com.apollographql.apollo3.compiler.codegen.Identifier.selections
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
@@ -19,7 +22,7 @@ import com.squareup.kotlinpoet.TypeSpec
 
 fun serializeVariablesFunSpec(
     adapterClassName: TypeName?,
-    emptyMessage: String
+    emptyMessage: String,
 ): FunSpec {
 
   val body = if (adapterClassName == null) {
@@ -29,7 +32,7 @@ fun serializeVariablesFunSpec(
   } else {
     CodeBlock.of(
         "%L.$toJson($writer, $customScalarAdapters, this)",
-            CodeBlock.of("%T", adapterClassName)
+        CodeBlock.of("%T", adapterClassName)
     )
   }
   return FunSpec.builder(serializeVariables)
@@ -42,7 +45,7 @@ fun serializeVariablesFunSpec(
 
 fun adapterFunSpec(
     adapterTypeName: TypeName,
-    adaptedTypeName: TypeName
+    adaptedTypeName: TypeName,
 ): FunSpec {
   return FunSpec.builder("adapter")
       .addModifiers(KModifier.OVERRIDE)
@@ -51,11 +54,22 @@ fun adapterFunSpec(
       .build()
 }
 
-fun selectionsFunSpec(context: KotlinContext, className: ClassName): FunSpec {
-  return FunSpec.builder(selections)
+fun rootFieldFunSpec(context: KotlinContext, typeInScope: String, selectionsClassName: ClassName): FunSpec {
+  return FunSpec.builder(rootField)
       .addModifiers(KModifier.OVERRIDE)
-      .returns(KotlinSymbols.List.parameterizedBy(KotlinSymbols.CompiledSelection))
-      .addCode("return %T.%L\n", className, context.layout.rootSelectionsPropertyName())
+      .returns(KotlinSymbols.CompiledField)
+      .addCode(
+          CodeBlock.builder()
+              .add("return %T(\n", KotlinSymbols.CompiledFieldBuilder)
+              .indent()
+              .add("name·=·%S,\n", Identifier.data)
+              .add("type·=·%L\n", context.resolver.resolveCompiledType(typeInScope))
+              .unindent()
+              .add(")\n")
+              .add(".$selections(selections·=·%T.$root)\n", selectionsClassName)
+              .add(".build()\n")
+              .build()
+      )
       .build()
 }
 

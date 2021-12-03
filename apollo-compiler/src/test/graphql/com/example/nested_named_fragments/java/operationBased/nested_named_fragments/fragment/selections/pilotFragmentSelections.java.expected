@@ -17,7 +17,7 @@ import java.util.List;
 public class pilotFragmentSelections {
   private static List<CompiledSelection> homeworld = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Planet")).selections(planetFragmentSelections.root).build()
+    new CompiledFragment.Builder("Planet", Arrays.asList("Planet")).selections(planetFragmentSelections.root).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(

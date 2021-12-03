@@ -36,6 +36,7 @@ public object TestQuerySelections {
           type = Date.type.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Droid",
           possibleTypes = listOf("Droid")
         ).selections(onDroid)
         .build()

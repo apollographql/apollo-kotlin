@@ -59,7 +59,7 @@ internal class IrBuilder(
     private val schema: Schema,
     private val operationDefinitions: List<GQLOperationDefinition>,
     private val alwaysGenerateResponseBasedDataModelGroup: Boolean,
-    private val fragments: List<GQLFragmentDefinition>,
+    private val fragmentDefinitions: List<GQLFragmentDefinition>,
     private val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val alwaysGenerateTypesMatching: Set<String>,
     private val customScalarsMapping: Map<String, String>,
@@ -95,7 +95,7 @@ internal class IrBuilder(
 
   fun build(): Ir {
     val operations = operationDefinitions.map { it.toIr() }
-    val fragments = fragments.map { it.toIr() }
+    val fragments = fragmentDefinitions.map { it.toIr() }
 
     val visitedTypes = mutableSetOf<String>()
     val enums = mutableListOf<IrEnum>()
@@ -109,6 +109,19 @@ internal class IrBuilder(
     usedTypes.addAll(schema.typeDefinitions.keys.filter { shouldAlwaysGenerate(it) })
     // inject custom scalars specified in the Gradle configuration
     usedTypes.addAll(customScalarsMapping.keys)
+
+    // Generate the root types
+    operationDefinitions.forEach {
+      when (it.operationType) {
+        "query" -> usedTypes.add(schema.queryTypeDefinition.name)
+        "mutation" -> usedTypes.add(schema.mutationTypeDefinition?.name ?: error("No mutation type"))
+        "subscription" -> usedTypes.add(schema.subscriptionTypeDefinition?.name ?: error("No subscription type"))
+      }
+    }
+    // Generate the fragment types
+    fragmentDefinitions.forEach {
+      usedTypes.add(it.typeCondition.name)
+    }
 
     // Input objects and Interfaces contain (possible reentrant) references so we need to loop here
     while (usedTypes.isNotEmpty()) {

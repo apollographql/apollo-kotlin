@@ -24,6 +24,7 @@ internal class CacheBatchReader(
     private val cacheResolver: CacheResolver,
     private val cacheHeaders: CacheHeaders,
     private val rootSelections: List<CompiledSelection>,
+    private val rootTypename: String,
 ) {
   /**
    * @param key: the key of the record we need to fetch
@@ -33,6 +34,7 @@ internal class CacheBatchReader(
       val key: String,
       val path: List<Any>,
       val selections: List<CompiledSelection>,
+      val typeInScope: String,
   )
 
   /**
@@ -50,24 +52,28 @@ internal class CacheBatchReader(
   /**
    *
    */
-  private fun List<CompiledSelection>.collect(typename: String?, state: CollectState) {
-    forEach { compiledSelection ->
+  private fun collect(selections: List<CompiledSelection>, typeInScope: String, typename: String?, state: CollectState) {
+    selections.forEach { compiledSelection ->
       when (compiledSelection) {
         is CompiledField -> {
           state.fields.add(compiledSelection)
         }
         is CompiledFragment -> {
-          if (typename in compiledSelection.possibleTypes) {
-            compiledSelection.selections.collect(typename, state)
+          if (typename in compiledSelection.possibleTypes || compiledSelection.typeCondition == typeInScope) {
+            collect(compiledSelection.selections, typeInScope, typename, state)
           }
         }
       }
     }
   }
 
-  private fun List<CompiledSelection>.collectAndMergeSameDirectives(typename: String?): List<CompiledField> {
+  private fun collectAndMergeSameDirectives(
+      selections: List<CompiledSelection>,
+      typeInScope: String,
+      typename: String?,
+  ): List<CompiledField> {
     val state = CollectState()
-    collect(typename, state)
+    collect(selections, typeInScope, typename, state)
     return state.fields.groupBy { (it.responseName) to it.condition }.values.map {
       it.first().newBuilder().selections(it.flatMap { it.selections }).build()
     }
@@ -78,6 +84,7 @@ internal class CacheBatchReader(
         PendingReference(
             key = rootKey,
             selections = rootSelections,
+            typeInScope = rootTypename,
             path = emptyList()
         )
     )
@@ -98,7 +105,7 @@ internal class CacheBatchReader(
           }
         }
 
-        val collectedFields = pendingReference.selections.collectAndMergeSameDirectives(record["__typename"] as? String)
+        val collectedFields = collectAndMergeSameDirectives(pendingReference.selections, pendingReference.typeInScope, record["__typename"] as? String)
 
         val map = collectedFields.mapNotNull {
           if (it.shouldSkip(variables.valueMap)) {
@@ -107,7 +114,7 @@ internal class CacheBatchReader(
 
           val value = cacheResolver.resolveField(it, variables, record, record.key)
 
-          value.registerCacheKeys(pendingReference.path + it.responseName, it.selections)
+          value.registerCacheKeys(pendingReference.path + it.responseName, it.selections, it.type.leafType().name)
 
           it.responseName to value
         }.toMap()
@@ -123,20 +130,21 @@ internal class CacheBatchReader(
   /**
    * The path leading to this value
    */
-  private fun Any?.registerCacheKeys(path: List<Any>, selections: List<CompiledSelection>) {
+  private fun Any?.registerCacheKeys(path: List<Any>, selections: List<CompiledSelection>, typeInScope: String) {
     when (this) {
       is CacheKey -> {
         pendingReferences.add(
             PendingReference(
                 key = key,
                 selections = selections,
+                typeInScope = typeInScope,
                 path = path
             )
         )
       }
       is List<*> -> {
         forEachIndexed { index, value ->
-          value.registerCacheKeys(path + index, selections)
+          value.registerCacheKeys(path + index, selections, typeInScope)
         }
       }
     }

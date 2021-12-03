@@ -28,12 +28,14 @@ public object TestQuerySelections {
           type = CompiledIDType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Character",
           possibleTypes = (listOf("Droid", "Human"))
         ).selections(HeroDetailsSelections.root)
         .condition(listOf(CompiledCondition("withDetails", false),
             CompiledCondition("skipHumanDetails", true)))
         .build(),
         CompiledFragment.Builder(
+          typeCondition = "Human",
           possibleTypes = (listOf("Human"))
         ).selections(HumanDetailsSelections.root)
         .condition(listOf(CompiledCondition("withDetails", false)))

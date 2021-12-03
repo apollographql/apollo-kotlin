@@ -22,7 +22,7 @@ import java.util.List;
 public class AllStarshipsSelections {
   private static List<CompiledSelection> node = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Starship")).selections(starshipFragmentSelections.root).build()
+    new CompiledFragment.Builder("Starship", Arrays.asList("Starship")).selections(starshipFragmentSelections.root).build()
   );
 
   private static List<CompiledSelection> edges = Arrays.asList(

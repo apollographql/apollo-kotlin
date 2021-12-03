@@ -6,15 +6,15 @@
 package com.example.simple_fragment.fragment
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.simple_fragment.fragment.selections.HumanDetailsSelections
+import com.example.simple_fragment.type.Human
 import kotlin.String
 import kotlin.Unit
-import kotlin.collections.List
 
 /**
  * Fragment with Java / Kotlin docs generation
@@ -29,7 +29,12 @@ internal class HumanDetailsImpl() : Fragment<HumanDetailsImpl.Data> {
     return HumanDetailsImpl_ResponseAdapter.Data.obj()
   }
 
-  public override fun selections(): List<CompiledSelection> = HumanDetailsSelections.root
+  public override fun rootField(): CompiledField = CompiledField.Builder(
+    name = "data",
+    type = Human.type
+  )
+  .selections(selections = HumanDetailsSelections.root)
+  .build()
 
   public data class Data(
     public override val __typename: String,

@@ -6,7 +6,7 @@
 package com.example.simple_union;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Query;
@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.util.List;
 
 public class AnimalQuery implements Query<AnimalQuery.Data> {
   public static final String OPERATION_ID = "0a4d6f7c4de2a81e6247e9f2205b24b2b42e03c1f25fe7267e13fe1342d905d7";
@@ -114,8 +113,13 @@ public class AnimalQuery implements Query<AnimalQuery.Data> {
   }
 
   @Override
-  public List<CompiledSelection> selections() {
-    return AnimalQuerySelections.root;
+  public CompiledField rootField() {
+    return new CompiledField.Builder(
+      "data",
+      com.example.simple_union.type.Query.type
+    )
+    .selections(AnimalQuerySelections.root)
+    .build();
   }
 
   public static class Data implements Query.Data {

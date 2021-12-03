@@ -135,7 +135,7 @@ object ApolloCompiler {
         schema = options.schema,
         operationDefinitions = operations,
         alwaysGenerateResponseBasedDataModelGroup = options.generateTestBuilders,
-        fragments = fragments,
+        fragmentDefinitions = fragments,
         allFragmentDefinitions = allFragmentDefinitions,
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
         customScalarsMapping = options.customScalarsMapping,

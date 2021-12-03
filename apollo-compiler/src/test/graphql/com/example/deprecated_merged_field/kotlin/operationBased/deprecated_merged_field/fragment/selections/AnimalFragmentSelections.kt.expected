@@ -33,10 +33,12 @@ public object AnimalFragmentSelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Cat",
           possibleTypes = listOf("Cat")
         ).selections(onCat)
         .build(),
         CompiledFragment.Builder(
+          typeCondition = "Dog",
           possibleTypes = listOf("Dog")
         ).selections(onDog)
         .build()

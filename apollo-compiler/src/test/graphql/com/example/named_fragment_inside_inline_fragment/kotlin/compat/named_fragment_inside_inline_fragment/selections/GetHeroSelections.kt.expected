@@ -22,10 +22,12 @@ public object GetHeroSelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Character",
           possibleTypes = (listOf("Droid", "Human"))
         ).selections(characterNameSelections.root)
         .build(),
         CompiledFragment.Builder(
+          typeCondition = "Character",
           possibleTypes = (listOf("Droid", "Human"))
         ).selections(characterAppearsInSelections.root)
         .build()
@@ -37,6 +39,7 @@ public object GetHeroSelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Character",
           possibleTypes = listOf("Droid", "Human")
         ).selections(onCharacter)
         .build()

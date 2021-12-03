@@ -6,7 +6,7 @@
 package com.example.mutation_create_review;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Mutation;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -127,8 +127,13 @@ public class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.D
   }
 
   @Override
-  public List<CompiledSelection> selections() {
-    return CreateReviewForEpisodeSelections.root;
+  public CompiledField rootField() {
+    return new CompiledField.Builder(
+      "data",
+      com.example.mutation_create_review.type.Mutation.type
+    )
+    .selections(CreateReviewForEpisodeSelections.root)
+    .build();
   }
 
   public static class Data implements Mutation.Data {

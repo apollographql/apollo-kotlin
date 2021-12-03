@@ -35,10 +35,12 @@ public object TestQuerySelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Iface2",
           possibleTypes = listOf("Impl2")
         ).selections(onIface2)
         .build(),
         CompiledFragment.Builder(
+          typeCondition = "Impl2",
           possibleTypes = listOf("Impl2")
         ).selections(onImpl2)
         .build()
@@ -72,10 +74,12 @@ public object TestQuerySelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Iface2",
           possibleTypes = listOf("Impl2")
         ).selections(onIface21)
         .build(),
         CompiledFragment.Builder(
+          typeCondition = "Impl2",
           possibleTypes = listOf("Impl2")
         ).selections(onImpl21)
         .build()
@@ -95,10 +99,12 @@ public object TestQuerySelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Iface1",
           possibleTypes = listOf("Impl1")
         ).selections(onIface1)
         .build(),
         CompiledFragment.Builder(
+          typeCondition = "Impl1",
           possibleTypes = listOf("Impl1")
         ).selections(onImpl1)
         .build()

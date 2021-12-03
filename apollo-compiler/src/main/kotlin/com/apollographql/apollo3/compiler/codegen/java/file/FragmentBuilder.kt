@@ -76,8 +76,8 @@ class FragmentBuilder(
   }
 
   private fun IrNamedFragment.selectionsMethodSpec(): MethodSpec {
-    return selectionsMethodSpec(
-        context, context.resolver.resolveFragmentSelections(name)
+    return rootFieldMethodSpec(
+        context, fragment.typeCondition, context.resolver.resolveFragmentSelections(name)
     )
   }
 

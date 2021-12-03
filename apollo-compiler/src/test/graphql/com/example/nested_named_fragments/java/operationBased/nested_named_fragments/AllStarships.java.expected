@@ -6,7 +6,7 @@
 package com.example.nested_named_fragments;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Query;
@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.nested_named_fragments.adapter.AllStarships_ResponseAdapter;
 import com.example.nested_named_fragments.fragment.StarshipFragment;
 import com.example.nested_named_fragments.selections.AllStarshipsSelections;
+import com.example.nested_named_fragments.type.Root;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
@@ -133,8 +134,13 @@ public class AllStarships implements Query<AllStarships.Data> {
   }
 
   @Override
-  public List<CompiledSelection> selections() {
-    return AllStarshipsSelections.root;
+  public CompiledField rootField() {
+    return new CompiledField.Builder(
+      "data",
+      Root.type
+    )
+    .selections(AllStarshipsSelections.root)
+    .build();
   }
 
   public static class Data implements Query.Data {

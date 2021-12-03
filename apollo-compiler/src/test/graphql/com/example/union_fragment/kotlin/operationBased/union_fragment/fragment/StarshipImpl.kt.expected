@@ -6,14 +6,13 @@
 package com.example.union_fragment.fragment
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.union_fragment.fragment.selections.StarshipSelections
 import kotlin.Unit
-import kotlin.collections.List
 
 public class StarshipImpl() : Fragment<Starship> {
   public override fun serializeVariables(writer: JsonWriter,
@@ -25,5 +24,10 @@ public class StarshipImpl() : Fragment<Starship> {
     return StarshipImpl_ResponseAdapter.Starship.obj()
   }
 
-  public override fun selections(): List<CompiledSelection> = StarshipSelections.root
+  public override fun rootField(): CompiledField = CompiledField.Builder(
+    name = "data",
+    type = com.example.union_fragment.type.Starship.type
+  )
+  .selections(selections = StarshipSelections.root)
+  .build()
 }

@@ -21,6 +21,7 @@ public object TestQuerySelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "B",
           possibleTypes = (listOf("ABC", "SomeBC"))
         ).selections(bFragmentSelections.root)
         .build()
@@ -36,6 +37,7 @@ public object TestQuerySelections {
           type = CompiledStringType
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "B",
           possibleTypes = listOf("ABC", "SomeBC")
         ).selections(onB)
         .build()
@@ -47,6 +49,7 @@ public object TestQuerySelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "A",
           possibleTypes = listOf("ABC")
         ).selections(onA)
         .build()

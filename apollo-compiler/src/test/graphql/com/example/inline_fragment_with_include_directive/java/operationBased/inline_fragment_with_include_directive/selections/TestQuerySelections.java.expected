@@ -33,9 +33,9 @@ public class TestQuerySelections {
   private static List<CompiledSelection> hero = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
     new CompiledField.Builder("id", new CompiledNotNullType(CompiledGraphQL.CompiledIDType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Human")).condition(Arrays.asList(new CompiledCondition("withDetails", false), new CompiledCondition("skipHumanDetails", true))).selections(onHuman).build(),
-    new CompiledFragment.Builder(Arrays.asList("Droid")).condition(Arrays.asList(new CompiledCondition("withDetails", false))).selections(onDroid).build(),
-    new CompiledFragment.Builder(Arrays.asList("Droid", "Human")).condition(Arrays.asList(new CompiledCondition("withDetails", false))).selections(onCharacter).build()
+    new CompiledFragment.Builder("Human", Arrays.asList("Human")).condition(Arrays.asList(new CompiledCondition("withDetails", false), new CompiledCondition("skipHumanDetails", true))).selections(onHuman).build(),
+    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).condition(Arrays.asList(new CompiledCondition("withDetails", false))).selections(onDroid).build(),
+    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).condition(Arrays.asList(new CompiledCondition("withDetails", false))).selections(onCharacter).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(

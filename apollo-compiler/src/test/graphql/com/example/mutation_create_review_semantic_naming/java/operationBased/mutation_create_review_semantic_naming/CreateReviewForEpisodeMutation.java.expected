@@ -6,7 +6,7 @@
 package com.example.mutation_create_review_semantic_naming;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Mutation;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -21,7 +21,6 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.util.List;
 
 public class CreateReviewForEpisodeMutation implements Mutation<CreateReviewForEpisodeMutation.Data> {
   public static final String OPERATION_ID = "0af665fbb1ccec4fbec377a80b620cb423b737162848a7b16b842c2fa382b54c";
@@ -120,8 +119,13 @@ public class CreateReviewForEpisodeMutation implements Mutation<CreateReviewForE
   }
 
   @Override
-  public List<CompiledSelection> selections() {
-    return CreateReviewForEpisodeMutationSelections.root;
+  public CompiledField rootField() {
+    return new CompiledField.Builder(
+      "data",
+      com.example.mutation_create_review_semantic_naming.type.Mutation.type
+    )
+    .selections(CreateReviewForEpisodeMutationSelections.root)
+    .build();
   }
 
   public static class Data implements Mutation.Data {

@@ -6,7 +6,7 @@
 package com.example.named_fragment_delegate;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Query;
@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.util.List;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "73b2c830dc5cf246957890f00500cb83e254c050a6e6ad3ab8e6d9e4e26dbd60";
@@ -126,8 +125,13 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   @Override
-  public List<CompiledSelection> selections() {
-    return TestQuerySelections.root;
+  public CompiledField rootField() {
+    return new CompiledField.Builder(
+      "data",
+      com.example.named_fragment_delegate.type.Query.type
+    )
+    .selections(TestQuerySelections.root)
+    .build();
   }
 
   public static class Data implements Query.Data {

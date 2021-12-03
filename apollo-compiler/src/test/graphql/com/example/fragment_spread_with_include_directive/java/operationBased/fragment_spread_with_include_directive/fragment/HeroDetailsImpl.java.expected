@@ -6,17 +6,17 @@
 package com.example.fragment_spread_with_include_directive.fragment;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Fragment;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragment_spread_with_include_directive.fragment.selections.HeroDetailsSelections;
+import com.example.fragment_spread_with_include_directive.type.Character;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.util.List;
 
 public class HeroDetailsImpl implements Fragment<HeroDetails> {
   private transient volatile int $hashCode;
@@ -71,7 +71,12 @@ public class HeroDetailsImpl implements Fragment<HeroDetails> {
   }
 
   @Override
-  public List<CompiledSelection> selections() {
-    return HeroDetailsSelections.root;
+  public CompiledField rootField() {
+    return new CompiledField.Builder(
+      "data",
+      Character.type
+    )
+    .selections(HeroDetailsSelections.root)
+    .build();
   }
 }

@@ -19,6 +19,7 @@ internal object HeroDetailsSelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Human",
           possibleTypes = (listOf("Human"))
         ).selections(HumanDetailsSelections.root)
         .build()

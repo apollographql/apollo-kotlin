@@ -21,6 +21,7 @@ public object CatQuerySelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Animal",
           possibleTypes = (listOf("Cat", "Dog"))
         ).selections(AnimalFragmentSelections.root)
         .build()

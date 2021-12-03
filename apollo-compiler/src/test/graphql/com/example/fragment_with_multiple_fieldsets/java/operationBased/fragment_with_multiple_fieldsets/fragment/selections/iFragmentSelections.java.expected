@@ -20,6 +20,6 @@ public class iFragmentSelections {
 
   public static List<CompiledSelection> root = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("A")).selections(onA).build()
+    new CompiledFragment.Builder("A", Arrays.asList("A")).selections(onA).build()
   );
 }

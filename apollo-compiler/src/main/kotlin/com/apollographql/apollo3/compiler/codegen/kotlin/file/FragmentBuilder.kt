@@ -67,16 +67,16 @@ class FragmentBuilder(
         .makeDataClass(variables.map { it.toNamedType().toParameterSpec(context) })
         .addFunction(serializeVariablesFunSpec())
         .addFunction(adapterFunSpec())
-        .addFunction(selectionsFunSpec())
+        .addFunction(rootFieldFunSpec())
         // Fragments can have multiple data shapes
         .addTypes(dataTypeSpecs())
         .build()
         .maybeAddFilterNotNull(generateFilterNotNull)
   }
 
-  private fun IrNamedFragment.selectionsFunSpec(): FunSpec {
-    return selectionsFunSpec(
-        context, context.resolver.resolveFragmentSelections(name)
+  private fun IrNamedFragment.rootFieldFunSpec(): FunSpec {
+    return rootFieldFunSpec(
+        context, fragment.typeCondition, context.resolver.resolveFragmentSelections(name)
     )
   }
 

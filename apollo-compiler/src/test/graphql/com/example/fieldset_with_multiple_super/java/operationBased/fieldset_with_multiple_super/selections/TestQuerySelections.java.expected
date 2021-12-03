@@ -22,7 +22,7 @@ public class TestQuerySelections {
   private static List<CompiledSelection> onA = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
     new CompiledField.Builder("fieldA1", CompiledGraphQL.CompiledStringType).build(),
-    new CompiledFragment.Builder(Arrays.asList("ABC", "BC")).selections(onB).build()
+    new CompiledFragment.Builder("B", Arrays.asList("ABC", "BC")).selections(onB).build()
   );
 
   private static List<CompiledSelection> onA1 = Arrays.asList(
@@ -32,13 +32,13 @@ public class TestQuerySelections {
   private static List<CompiledSelection> onB1 = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
     new CompiledField.Builder("fieldB2", CompiledGraphQL.CompiledStringType).build(),
-    new CompiledFragment.Builder(Arrays.asList("ABC", "AC")).selections(onA1).build()
+    new CompiledFragment.Builder("A", Arrays.asList("ABC", "AC")).selections(onA1).build()
   );
 
   private static List<CompiledSelection> c = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("ABC", "AC")).selections(onA).build(),
-    new CompiledFragment.Builder(Arrays.asList("ABC", "BC")).selections(onB1).build()
+    new CompiledFragment.Builder("A", Arrays.asList("ABC", "AC")).selections(onA).build(),
+    new CompiledFragment.Builder("B", Arrays.asList("ABC", "BC")).selections(onB1).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(

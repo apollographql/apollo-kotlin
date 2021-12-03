@@ -6,17 +6,17 @@
 package com.example.not_all_combinations_are_needed.fragment;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Fragment;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.not_all_combinations_are_needed.fragment.selections.bFragmentSelections;
+import com.example.not_all_combinations_are_needed.type.B;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.util.List;
 
 public class BFragmentImpl implements Fragment<BFragment> {
   private transient volatile int $hashCode;
@@ -71,7 +71,12 @@ public class BFragmentImpl implements Fragment<BFragment> {
   }
 
   @Override
-  public List<CompiledSelection> selections() {
-    return bFragmentSelections.root;
+  public CompiledField rootField() {
+    return new CompiledField.Builder(
+      "data",
+      B.type
+    )
+    .selections(bFragmentSelections.root)
+    .build();
   }
 }

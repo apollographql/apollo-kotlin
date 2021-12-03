@@ -6,7 +6,7 @@
 package com.example.named_fragment_inside_inline_fragment;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Query;
@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.util.List;
 
 public class GetHero implements Query<GetHero.Data> {
   public static final String OPERATION_ID = "9885eef2193cd56885e6e1bacd7f02b712820858880de6fb29b3f3b04458c831";
@@ -117,8 +116,13 @@ public class GetHero implements Query<GetHero.Data> {
   }
 
   @Override
-  public List<CompiledSelection> selections() {
-    return GetHeroSelections.root;
+  public CompiledField rootField() {
+    return new CompiledField.Builder(
+      "data",
+      com.example.named_fragment_inside_inline_fragment.type.Query.type
+    )
+    .selections(GetHeroSelections.root)
+    .build();
   }
 
   public static class Data implements Query.Data {

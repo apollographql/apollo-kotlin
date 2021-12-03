@@ -6,7 +6,7 @@
 package com.example.interface_on_interface;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Query;
@@ -18,7 +18,6 @@ import java.lang.Double;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.util.List;
 
 public class GetHuman implements Query<GetHuman.Data> {
   public static final String OPERATION_ID = "b5ec6431463438b91c2cf1c33eb4b6a1f9e2580b51fcf5150ef3685b9108a12c";
@@ -111,8 +110,13 @@ public class GetHuman implements Query<GetHuman.Data> {
   }
 
   @Override
-  public List<CompiledSelection> selections() {
-    return GetHumanSelections.root;
+  public CompiledField rootField() {
+    return new CompiledField.Builder(
+      "data",
+      com.example.interface_on_interface.type.Query.type
+    )
+    .selections(GetHumanSelections.root)
+    .build();
   }
 
   public static class Data implements Query.Data {
