@@ -23,6 +23,7 @@ public object HumanDetailsSelections {
           type = CompiledStringType.notNull()
         ).build(),
         CompiledFragment.Builder(
+          typeCondition = "Character",
           possibleTypes = (listOf("Droid", "Human"))
         ).selections(CharacterDetailsSelections.root)
         .build()

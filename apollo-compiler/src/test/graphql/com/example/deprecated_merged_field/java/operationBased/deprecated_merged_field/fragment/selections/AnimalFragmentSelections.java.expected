@@ -24,7 +24,7 @@ public class AnimalFragmentSelections {
 
   public static List<CompiledSelection> root = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledFragment.Builder(Arrays.asList("Cat")).selections(onCat).build(),
-    new CompiledFragment.Builder(Arrays.asList("Dog")).selections(onDog).build()
+    new CompiledFragment.Builder("Cat", Arrays.asList("Cat")).selections(onCat).build(),
+    new CompiledFragment.Builder("Dog", Arrays.asList("Dog")).selections(onDog).build()
   );
 }

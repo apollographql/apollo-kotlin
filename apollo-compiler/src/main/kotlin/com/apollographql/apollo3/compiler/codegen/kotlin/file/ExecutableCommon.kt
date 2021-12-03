@@ -67,7 +67,7 @@ fun rootFieldFunSpec(context: KotlinContext, typeInScope: String, selectionsClas
               .unindent()
               .add(")\n")
               .add(".$selections(selections·=·%T.$root)\n", selectionsClassName)
-              .add(".build()")
+              .add(".build()\n")
               .build()
       )
       .build()

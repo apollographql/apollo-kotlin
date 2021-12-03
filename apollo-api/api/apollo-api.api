@@ -227,15 +227,17 @@ public final class com/apollographql/apollo3/api/CompiledFragment : com/apollogr
 	public final fun getCondition ()Ljava/util/List;
 	public final fun getPossibleTypes ()Ljava/util/List;
 	public final fun getSelections ()Ljava/util/List;
+	public final fun getTypeCondition ()Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo3/api/CompiledFragment$Builder {
-	public fun <init> (Ljava/util/List;)V
+	public fun <init> (Ljava/lang/String;Ljava/util/List;)V
 	public final fun build ()Lcom/apollographql/apollo3/api/CompiledFragment;
 	public final fun condition (Ljava/util/List;)Lcom/apollographql/apollo3/api/CompiledFragment$Builder;
 	public final fun getCondition ()Ljava/util/List;
 	public final fun getPossibleTypes ()Ljava/util/List;
 	public final fun getSelections ()Ljava/util/List;
+	public final fun getTypeCondition ()Ljava/lang/String;
 	public final fun selections (Ljava/util/List;)Lcom/apollographql/apollo3/api/CompiledFragment$Builder;
 	public final fun setCondition (Ljava/util/List;)V
 	public final fun setSelections (Ljava/util/List;)V
@@ -402,7 +404,7 @@ public final class com/apollographql/apollo3/api/Error$Location {
 
 public abstract interface class com/apollographql/apollo3/api/Executable {
 	public abstract fun adapter ()Lcom/apollographql/apollo3/api/Adapter;
-	public abstract fun selections ()Ljava/util/List;
+	public abstract fun rootField ()Lcom/apollographql/apollo3/api/CompiledField;
 	public abstract fun serializeVariables (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)V
 }
 
@@ -459,7 +461,7 @@ public final class com/apollographql/apollo3/api/FileUpload {
 
 public abstract interface class com/apollographql/apollo3/api/Fragment : com/apollographql/apollo3/api/Executable {
 	public abstract fun adapter ()Lcom/apollographql/apollo3/api/Adapter;
-	public abstract fun selections ()Ljava/util/List;
+	public abstract fun rootField ()Lcom/apollographql/apollo3/api/CompiledField;
 	public abstract fun serializeVariables (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)V
 }
 
@@ -548,7 +550,7 @@ public abstract interface class com/apollographql/apollo3/api/Operation : com/ap
 	public abstract fun document ()Ljava/lang/String;
 	public abstract fun id ()Ljava/lang/String;
 	public abstract fun name ()Ljava/lang/String;
-	public abstract fun selections ()Ljava/util/List;
+	public abstract fun rootField ()Lcom/apollographql/apollo3/api/CompiledField;
 	public abstract fun serializeVariables (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)V
 }
 

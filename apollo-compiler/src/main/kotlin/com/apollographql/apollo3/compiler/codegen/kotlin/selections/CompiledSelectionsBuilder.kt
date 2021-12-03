@@ -202,6 +202,7 @@ class CompiledSelectionsBuilder(
     builder.add("%T(\n", KotlinSymbols.CompiledFragmentBuilder)
     builder.indent()
     val fragmentDefinition = allFragmentDefinitions[name]!!
+    builder.add("typeCondition·=·%S,\n", fragmentDefinition.typeCondition.name)
     builder.add("possibleTypes·=·(%L)\n", possibleTypesCodeBlock(fragmentDefinition.typeCondition.name))
     builder.unindent()
     builder.add(")")

@@ -161,7 +161,12 @@ class CompiledSelectionsBuilder(
     val name = "on${typeCondition.name.capitalizeFirstLetter()}"
 
     val builder = CodeBlock.builder()
-    builder.add("new $T($L)", JavaClassNames.CompiledFragmentBuilder, possibleTypesCodeBlock(typeCondition.name))
+    builder.add(
+        "new $T($S, $L)",
+        JavaClassNames.CompiledFragmentBuilder,
+        typeCondition.name,
+        possibleTypesCodeBlock(typeCondition.name)
+    )
     builder.indent()
     if (expression !is BooleanExpression.True) {
       builder.add(".condition($L)", expression.toCompiledConditionInitializer())
@@ -188,7 +193,7 @@ class CompiledSelectionsBuilder(
 
     val builder = CodeBlock.builder()
     builder.add(
-        "new $T(%S, $L)",
+        "new $T($S, $L)",
         JavaClassNames.CompiledFragmentBuilder,
         fragmentDefinition.typeCondition.name,
         possibleTypesCodeBlock(fragmentDefinition.typeCondition.name)

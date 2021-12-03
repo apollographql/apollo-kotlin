@@ -10,6 +10,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
+import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.adapter.singletonAdapterInitializer
 import com.squareup.javapoet.ClassName
@@ -67,12 +68,12 @@ fun rootFieldMethodSpec(context: JavaContext, typeInScope: String, selectionsCla
           CodeBlock.builder()
               .add("return new $T(\n", JavaClassNames.CompiledFieldBuilder)
               .indent()
-              .add("%S,\n", Identifier.data)
-              .add("%L\n", context.resolver.resolveCompiledType(typeInScope))
+              .add("$S,\n", Identifier.data)
+              .add("$L\n", context.resolver.resolveCompiledType(typeInScope))
               .unindent()
               .add(")\n")
-              .add(".${Identifier.selections}(%T.$root)\n", selectionsClassName)
-              .add(".build()")
+              .add(".${Identifier.selections}($T.$root)\n", selectionsClassName)
+              .add(".build();\n")
               .build()
       )
       .build()

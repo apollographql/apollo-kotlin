@@ -6,7 +6,7 @@
 package com.example.case_sensitive_enum
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -16,7 +16,6 @@ import com.example.case_sensitive_enum.selections.TestQuerySelections
 import com.example.case_sensitive_enum.type.Enum
 import kotlin.String
 import kotlin.Unit
-import kotlin.collections.List
 
 public class TestQuery() : Query<TestQuery.Data> {
   public override fun id(): String = OPERATION_ID
@@ -34,7 +33,12 @@ public class TestQuery() : Query<TestQuery.Data> {
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  public override fun selections(): List<CompiledSelection> = TestQuerySelections.root
+  public override fun rootField(): CompiledField = CompiledField.Builder(
+    name = "data",
+    type = com.example.case_sensitive_enum.type.Query.type
+  )
+  .selections(selections = TestQuerySelections.root)
+  .build()
 
   public data class Data(
     public val `enum`: Enum?
