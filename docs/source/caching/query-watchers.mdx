@@ -1,35 +1,61 @@
 ---
-title: Query watchers
+title: Watching cached data
+description: Update your UI in response to cache changes
 ---
 
-Because the normalized cache deduplicates all your data, and if you defined your cache ids, you can use the cache as the source of truth for your UI and be automatically notified when some data changes. For this you can use `ApolloQueryCall.watch`
+Because your [normalized cache](./normalized-cache/) can deduplicate your GraphQL data (using proper [cache IDs](./declarative-ids/)), you can use the cache as the source of truth for populating your UI.
+
+When executing an operation, you can use the `ApolloQueryCall.watch` method to automatically notify that operation whenever its associated cached data changes:
+
+```kotlin{2}
+apolloClient.query(TodoDetailsQuery())
+  .watch()
+  .collect { response ->
+    // This code now executes on response *and*
+    // every time cached data changes
+  }
+```
+
+Let's look at some examples.
 
 ## Watching a query
 
-Assuming you have the following queries for a collaborative todo list app:
+Let's say we're building a collaborative todo list app that executes these two queries:
+
+import { CodeColumns } from 'gatsby-theme-apollo-docs';
+
+<CodeColumns>
 
 ```graphql
+# AllTodos.graphql
+
+# Gets all todo items
 query AllTodos {
   items {
     id
-    checked
+    completed
     title
   }
 }
 ```
 
 ```graphql
+# TodoDetails.graphql
+
+# Gets one todo item's details
 query TodoDetails($id: String!) {
   item(id: $id) {
     id
-    checked
+    completed
     title
     content
   }
 }
 ```
 
-The `AllTodos` returns a list of all Item along with their title and checked status:
+</CodeColumns>
+
+The app's main view executes the `AllTodos` query to display a list of todo `Item`s, which includes each item's `title` and `completed` status. Here's an example response:
 
 ```json
 {
@@ -38,19 +64,21 @@ The `AllTodos` returns a list of all Item along with their title and checked sta
       {
         "id": "0",
         "title": "Write code for Apollo Android 3",
-        "checked": true,
+        "completed": true,
       },
       {
         "id": "1",
         "title": "Write documentation for Apollo Android 3",
-        "checked": false,
+        "completed": false,
       }
     ]
   }
 }
 ```
 
-If someone clicks on item "1", it opens the details of the todo. Because it's a collaborative todo list, someone might have changed the content on the server. Maybe someone else wrote the documentation for `Apollo Android 3` and set the 'checked' field to 'true'. In this case, the TodoDetails query will return something like this:
+When someone selects a particular item in the UI, the app executes `TodoDetails` to display that item's full details. And because this is a _collaborative_ todo list, those details might have _changed_ on the backend since executing `AllTodos` (i.e., another user made changes).
+
+In this case, the `TodoDetails` query might return something like this:
 
 ```json{6-7}
 {
@@ -58,62 +86,73 @@ If someone clicks on item "1", it opens the details of the todo. Because it's a 
     "item": {
       "id": "1",
       "title": "Write documentation for Apollo Android 3",
-      "checked": true,
-      "content": "Do not forget documentation about the normalized cache!"
+      "completed": true,
+      "content": "Don't forget docs about the normalized cache!"
     }
   }
 }
 ```
 
-With a regular query, you'd have to update the data when going back to the main list screen. Using `watch()` instead, your main screen can be updated automatically without any additional logic:
+With a [normalized cache](./normalized-cache) and [properly configured cache IDs](./declarative-ids/), this updated `Item` is automatically merged with the _existing_ cached `Item` that was returned from `AllTodos`. _However_, our UI doesn't automatically update to reflect the new cached data.
 
-```kotlin
+To handle this, we can call `watch()` when we execute any query:
+
+```kotlin{2}
 apolloClient.query(TodoDetailsQuery())
-            .watch()
-            .collect { response ->
-              // update the UI every time the data changes
-            }
+  .watch()
+  .collect { response ->
+    // This code now executes on response *and*
+    // every time cached data changes
+  }
 ```
+
+Now if another operation updates this query's cached fields, our UI renders with the same logic it used when the query first returned.
 
 ## Updating the cache after a mutation
 
-Most of the times, the data changes do not come from the backend but are triggered by the users themselves using a mutation. For an example, the user could change the status from the app:
+You sometimes need to update your cached data to reflect changes made by a mutation.
+
+For example, in our todo list app, the user might check off a completed item. This might execute the following mutation to modify an `Item`'s `completed` field:
 
 ```graphql
-mutation SetTodoChecked($id: String!, $checked: Boolean!) {
-  setTodoChecked(id: $id, checked: $checked) { # this returns an item
+mutation SetTodoCompleted($id: String!, $completed: Boolean!) {
+  setTodocompleted(id: $id, completed: $completed) { # Returns the modified Item
     id
   }
 }
 ```
 
-The above mutation will change the 'checked' status on the server but not in the cache because the response does not contain the 'checked' field. If you want the cache to be automatically updated, you need to include all the changed fields in the response:
+As written, this mutation updates the `completed` field on the server, but _not_ in the cache. This is because the mutation's response doesn't include the `Item`'s `completed` field.
 
- ```graphql
- mutation SetTodoChecked($id: String!, $checked: Boolean!) {
-   setTodoChecked(id: $id, checked: $checked) {
-     id
-     # ask for checked to update the cache
-     checked
-   }
- }
- ```
+To update the cache automatically with the new value, you need to request all modified fields in the response:
 
-> Note: For this to work, it's important that your schema allows to returns all potentially modified fields.
-
-Because `setTodoChecked` above is of `Item` type and contains an "id" field and the "checked" field, the result of the mutation is going to update the cache automatically when the network response is received. Any watcher listening to `"Item:1.checked"` will be automatically notified.
-
-## Optimistic updates
-
-Sometimes you want to update the cache without waiting for the network response. In that case, you can use optimistic updates:
-
-```kotlin
-apolloClient.mutation(SetTodoCheckedMutation(id = "1", checked = true))
-            .optimisticResponse(
-              SetTodoCheckedMutation.Data(
-                id = "1",
-                checked = true,
-              )
-            )
-            .execute()
+```graphql
+mutation SetTodoCompleted($id: String!, $completed: Boolean!) {
+  setTodoCompleted(id: $id, completed: $completed) {
+    id
+    # Ask for `completed` to update the cache
+    completed
+  }
+}
 ```
+
+Because the `setTodoCompleted` field above returns an `Item` type with both an `id` _and_ the `completed` field, Apollo Android can update the cached `Item` entry with the new data. Additionally, any watchers listening to this `Item`'s `completed` field are automatically notified.
+
+### Optimistic updates
+
+It's often possible to predict the most likely result of a mutation _before_ your GraphQL server returns it. Apollo Android can use this "most likely result" to update your UI **optimistically**, making your app feel more responsive to the user.
+
+You provide optimistic data with the `optimisticResponse` method, like so:
+
+```kotlin{2-7}
+apolloClient.mutation(SetTodocompletedMutation(id = "1", completed = true))
+  .optimisticResponse(
+    SetTodocompletedMutation.Data(
+      id = "1",
+      completed = true,
+    )
+  )
+  .execute()
+```
+
+This optimistic response is written to the cache immediately, and any watchers of the corresponding data are notified. Then when the operation returns, the cache is updated _again_ with any changes, and watchers are notified again. If the optimistic response is correct, the second cache update is invisible to the user, because no data changes.
