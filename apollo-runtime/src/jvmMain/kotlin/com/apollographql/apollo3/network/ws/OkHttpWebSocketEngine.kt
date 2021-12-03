@@ -83,15 +83,17 @@ actual class DefaultWebSocketEngine(
 
       override fun send(data: ByteString) {
         //println("sendBytes: ${data.utf8()}")
-        check(webSocket.send(data)) {
-          "WeSocket queue full"
+        if(!webSocket.send(data)) {
+          // The websocket is full or closed
+          messageChannel.close()
         }
       }
 
       override fun send(string: String) {
         //println("sendText: $string")
-        check(webSocket.send(string)) {
-          "WeSocket queue full"
+        if(!webSocket.send(string)) {
+          // The websocket is full or closed
+          messageChannel.close()
         }
       }
 
