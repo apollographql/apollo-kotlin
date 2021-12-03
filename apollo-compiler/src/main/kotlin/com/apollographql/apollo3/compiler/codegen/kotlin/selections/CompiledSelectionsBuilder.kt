@@ -30,6 +30,8 @@ import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.leafType
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
+import com.apollographql.apollo3.compiler.codegen.Identifier
+import com.apollographql.apollo3.compiler.codegen.Identifier.root
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.ir.toBooleanExpression
@@ -61,7 +63,7 @@ class CompiledSelectionsBuilder(
 
   fun build(selections: List<GQLSelection>, rootName: String, parentType: String): TypeSpec {
     return TypeSpec.objectBuilder(rootName)
-        .addProperties(selections.walk(context.layout.rootSelectionsPropertyName(), false, parentType))
+        .addProperties(selections.walk(root, false, parentType))
         .build()
   }
 
@@ -170,6 +172,7 @@ class CompiledSelectionsBuilder(
     val builder = CodeBlock.builder()
     builder.add("%T(\n", KotlinSymbols.CompiledFragmentBuilder)
     builder.indent()
+    builder.add("typeCondition·=·%S,\n", typeCondition.name)
     builder.add("possibleTypes·=·%L\n", possibleTypesCodeBlock(typeCondition.name))
     builder.unindent()
     builder.add(")")
@@ -202,7 +205,7 @@ class CompiledSelectionsBuilder(
     builder.add("possibleTypes·=·(%L)\n", possibleTypesCodeBlock(fragmentDefinition.typeCondition.name))
     builder.unindent()
     builder.add(")")
-    builder.add(".selections(%T.%L)\n", context.resolver.resolveFragmentSelections(name), context.layout.rootSelectionsPropertyName())
+    builder.add(".selections(%T.$root)\n", context.resolver.resolveFragmentSelections(name))
     if (expression !is BooleanExpression.True) {
       builder.add(".condition(%L)\n", expression.toCompiledConditionInitializer())
     }

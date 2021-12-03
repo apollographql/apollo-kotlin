@@ -33,7 +33,7 @@ interface Operation<D : Operation.Data> : Executable<D> {
   @Throws(IOException::class)
   override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters)
 
-  override fun selections(): List<CompiledSelection>
+  override fun rootField(): CompiledField
 
   /**
    * Marker interface for generated models built from data returned by the server in response to this operation.

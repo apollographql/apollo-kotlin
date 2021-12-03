@@ -14,7 +14,7 @@ interface Fragment<D : Fragment.Data> : Executable<D> {
 
   override fun adapter(): Adapter<D>
 
-  override fun selections(): List<CompiledSelection>
+  override fun rootField(): CompiledField
 
   /**
    * Marker interface for generated models of this fragment

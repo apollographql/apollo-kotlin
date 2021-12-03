@@ -109,7 +109,13 @@ internal class IrBuilder(
     usedTypes.addAll(schema.typeDefinitions.keys.filter { shouldAlwaysGenerate(it) })
     // inject custom scalars specified in the Gradle configuration
     usedTypes.addAll(customScalarsMapping.keys)
-
+    operationDefinitions.forEach {
+      when (it.operationType) {
+        "query" -> usedTypes.add(schema.queryTypeDefinition.name)
+        "mutation" -> usedTypes.add(schema.mutationTypeDefinition?.name ?: error("No mutation type"))
+        "subscription" -> usedTypes.add(schema.subscriptionTypeDefinition?.name ?: error("No subscription type"))
+      }
+    }
     // Input objects and Interfaces contain (possible reentrant) references so we need to loop here
     while (usedTypes.isNotEmpty()) {
       val name = usedTypes.removeAt(0)

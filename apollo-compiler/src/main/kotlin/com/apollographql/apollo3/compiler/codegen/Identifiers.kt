@@ -18,13 +18,16 @@ internal object Identifier {
   const val fromJson = "fromJson"
   const val serializeVariables = "serializeVariables"
   const val fields = "fields"
-  const val selections = "selections"
+  const val rootField = "rootField"
   @Suppress("ObjectPropertyName")
   const val __typename = "__typename"
   const val typename = "typename"
 
   const val id = "id"
   const val name = "name"
+  const val data = "data"
+  const val root = "root"
+  const val selections = "selections"
   const val document = "document"
   const val Data = "Data"
 

@@ -29,6 +29,8 @@ import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.leafType
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
+import com.apollographql.apollo3.compiler.codegen.Identifier
+import com.apollographql.apollo3.compiler.codegen.Identifier.root
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
@@ -64,7 +66,7 @@ class CompiledSelectionsBuilder(
   fun build(selections: List<GQLSelection>, rootName: String, parentType: String): TypeSpec {
     return TypeSpec.classBuilder(rootName)
         .addModifiers(Modifier.PUBLIC)
-        .addFields(selections.walk(context.layout.rootSelectionsPropertyName(), false, parentType))
+        .addFields(selections.walk(root, false, parentType))
         .build()
   }
 
@@ -185,12 +187,17 @@ class CompiledSelectionsBuilder(
     val fragmentDefinition = allFragmentDefinitions[name]!!
 
     val builder = CodeBlock.builder()
-    builder.add("new $T($L)", JavaClassNames.CompiledFragmentBuilder, possibleTypesCodeBlock(fragmentDefinition.typeCondition.name))
+    builder.add(
+        "new $T(%S, $L)",
+        JavaClassNames.CompiledFragmentBuilder,
+        fragmentDefinition.typeCondition.name,
+        possibleTypesCodeBlock(fragmentDefinition.typeCondition.name)
+    )
     builder.indent()
     if (expression !is BooleanExpression.True) {
       builder.add(".condition($L)", expression.toCompiledConditionInitializer())
     }
-    builder.add(".selections($T.$L)", context.resolver.resolveFragmentSelections(name), context.layout.rootSelectionsPropertyName())
+    builder.add(".selections($T.$root)", context.resolver.resolveFragmentSelections(name))
     builder.unindent()
     builder.add(".build()")
 

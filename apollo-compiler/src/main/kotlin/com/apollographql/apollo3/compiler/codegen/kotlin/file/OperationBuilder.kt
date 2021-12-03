@@ -84,7 +84,7 @@ class OperationBuilder(
         .addFunction(nameFunSpec())
         .addFunction(serializeVariablesFunSpec())
         .addFunction(adapterFunSpec())
-        .addFunction(fieldSetsFunSpec())
+        .addFunction(rootFieldFunSpec())
         .addTypes(dataTypeSpecs())
         .addType(companionTypeSpec())
         .build()
@@ -180,9 +180,11 @@ class OperationBuilder(
     return replace("[", "\\[").replace("]", "\\]")
   }
 
-  private fun fieldSetsFunSpec(): FunSpec {
-    return selectionsFunSpec(
-        context, context.resolver.resolveOperationSelections(operation.name)
+  private fun rootFieldFunSpec(): FunSpec {
+    return rootFieldFunSpec(
+        context,
+        operation.typeCondition,
+        context.resolver.resolveOperationSelections(operation.name)
     )
   }
 }

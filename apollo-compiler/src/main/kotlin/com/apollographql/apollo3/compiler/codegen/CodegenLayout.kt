@@ -95,7 +95,6 @@ abstract class CodegenLayout(
     return escapeReservedWord(name.capitalizeFirstLetter())
   }
 
-  fun rootSelectionsPropertyName() = "root"
   fun testBuilder(modelName: String): String {
     return "${modelName}Builder"
   }

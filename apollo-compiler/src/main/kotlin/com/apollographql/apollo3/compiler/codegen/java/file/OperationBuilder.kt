@@ -87,7 +87,7 @@ class OperationBuilder(
         .addMethod(nameMethodSpec())
         .addMethod(serializeVariablesMethodSpec())
         .addMethod(adapterMethodSpec())
-        .addMethod(fieldSetsMethodSpec())
+        .addMethod(rootFieldMethodSpec())
         .addTypes(dataTypeSpecs())
         .addField(
             FieldSpec.builder(JavaClassNames.String, OPERATION_ID)
@@ -186,9 +186,11 @@ class OperationBuilder(
     return replace("[", "\\[").replace("]", "\\]")
   }
 
-  private fun fieldSetsMethodSpec(): MethodSpec {
-    return selectionsMethodSpec(
-        context, context.resolver.resolveOperationSelections(operation.name)
+  private fun rootFieldMethodSpec(): MethodSpec {
+    return rootFieldMethodSpec(
+        context,
+        operation.typeCondition,
+        context.resolver.resolveOperationSelections(operation.name)
     )
   }
 }
