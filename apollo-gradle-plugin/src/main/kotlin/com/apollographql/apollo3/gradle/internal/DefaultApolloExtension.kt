@@ -4,6 +4,7 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.PackageNameGenerator
+import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.gradle.api.AndroidProject
 import com.apollographql.apollo3.gradle.api.ApolloAttributes
@@ -443,8 +444,14 @@ abstract class DefaultApolloExtension(
         }
       }
 
+      val targetLanguage = if (generateKotlinModels) {
+        getKotlinTargetLanguage(project, languageVersion.orNull)
+      } else {
+        TargetLanguage.JAVA
+      }
+
       task.useSemanticNaming.set(service.useSemanticNaming)
-      task.generateKotlinModels.set(generateKotlinModels)
+      task.targetLanguage.set(targetLanguage)
       task.warnOnDeprecatedUsages.set(service.warnOnDeprecatedUsages)
       task.failOnWarnings.set(service.failOnWarnings)
       @Suppress("DEPRECATION")
