@@ -7,7 +7,7 @@ import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
 ## Automatic persisted queries
 
-Apollo Android supports [Automatic Persisted Queries](https://www.apollographql.com/docs/apollo-server/performance/apq/) (APQ). To take advantage of this support, your GraphQL server _also_ needs to support APQ (Apollo Server supports it out of the box).
+Apollo Kotlin supports [Automatic Persisted Queries](https://www.apollographql.com/docs/apollo-server/performance/apq/) (APQ). To take advantage of this support, your GraphQL server _also_ needs to support APQ (Apollo Server supports it out of the box).
 
 Enable the feature when you initialize your `ApolloClient` instance, like so:
 
@@ -35,7 +35,7 @@ apolloClient.query(myQuery).enableAutoPersistedQueries(false).toFlow()
 
 ## operationOutput.json
 
-If your backend uses custom persisted queries, Apollo Android can generate an OperationOutput json from your .graphql queries. They will match what the client is sending exactly so you can persist them on your server.
+If your backend uses custom persisted queries, Apollo Kotlin can generate an OperationOutput json from your .graphql queries. They will match what the client is sending exactly so you can persist them on your server.
 
 ```
 apollo {

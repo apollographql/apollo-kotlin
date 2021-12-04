@@ -63,12 +63,12 @@ The app's main view executes the `AllTodos` query to display a list of todo `Ite
     "items": [
       {
         "id": "0",
-        "title": "Write code for Apollo Android 3",
+        "title": "Write code for Apollo Kotlin 3",
         "completed": true,
       },
       {
         "id": "1",
-        "title": "Write documentation for Apollo Android 3",
+        "title": "Write documentation for Apollo Kotlin 3",
         "completed": false,
       }
     ]
@@ -85,7 +85,7 @@ In this case, the `TodoDetails` query might return something like this:
   "data": {
     "item": {
       "id": "1",
-      "title": "Write documentation for Apollo Android 3",
+      "title": "Write documentation for Apollo Kotlin 3",
       "completed": true,
       "content": "Don't forget docs about the normalized cache!"
     }
@@ -136,11 +136,11 @@ mutation SetTodoCompleted($id: String!, $completed: Boolean!) {
 }
 ```
 
-Because the `setTodoCompleted` field above returns an `Item` type with both an `id` _and_ the `completed` field, Apollo Android can update the cached `Item` entry with the new data. Additionally, any watchers listening to this `Item`'s `completed` field are automatically notified.
+Because the `setTodoCompleted` field above returns an `Item` type with both an `id` _and_ the `completed` field, Apollo Kotlin can update the cached `Item` entry with the new data. Additionally, any watchers listening to this `Item`'s `completed` field are automatically notified.
 
 ### Optimistic updates
 
-It's often possible to predict the most likely result of a mutation _before_ your GraphQL server returns it. Apollo Android can use this "most likely result" to update your UI **optimistically**, making your app feel more responsive to the user.
+It's often possible to predict the most likely result of a mutation _before_ your GraphQL server returns it. Apollo Kotlin can use this "most likely result" to update your UI **optimistically**, making your app feel more responsive to the user.
 
 You provide optimistic data with the `optimisticResponse` method, like so:
 

@@ -1,5 +1,5 @@
 ---
-title: Custom scalar types in Apollo Android
+title: Custom scalar types in Apollo Kotlin
 sidebar_title: Custom scalars
 ---
 
@@ -9,7 +9,7 @@ In addition to its [built-in scalar types](https://graphql.org/learn/schema/#sca
 
 ## Define class mapping
 
-To interact with custom scalars in your Apollo Android app, you need to define a mapping in your `build.gradle` file. This tells Apollo Android which class to use to represent each custom scalar from your schema.
+To interact with custom scalars in your Apollo Kotlin app, you need to define a mapping in your `build.gradle` file. This tells Apollo Kotlin which class to use to represent each custom scalar from your schema.
 
 <MultiCodeBlock>
 
@@ -70,7 +70,7 @@ val geoPointAdapter = object : Adapter<GeoPoint> {
 }
 ```
 
-If you prefer working with `Maps`, Apollo Android comes with `AnyAdapter`, which supports adapting `String`, `Int`, `Double`, `Boolean`, `List`, and `Map`. You can use it in an intermediate step:
+If you prefer working with `Maps`, Apollo Kotlin comes with `AnyAdapter`, which supports adapting `String`, `Int`, `Double`, `Boolean`, `List`, and `Map`. You can use it in an intermediate step:
 
 ```kotlin
 val geoPointAdapter = object : Adapter<GeoPoint> {

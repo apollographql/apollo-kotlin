@@ -13,19 +13,19 @@ Open your [Sandbox](https://studio.apollographql.com/sandbox/explorer?endpoint=h
 
 This subscription doesn't take any argument and returns a single scalar named `tripsBooked`. Since you can book multiple trips at once, `tripsBooked` is an `Int`. It will contain the number of trips booked at once or -1 if a trip has been cancelled.
 
-Click the play button to the left of `tripsBooked` to open the subscription in Explorer. Open a new tab, then check the `tripsBooked` button to have the subscription added: 
+Click the play button to the left of `tripsBooked` to open the subscription in Explorer. Open a new tab, then check the `tripsBooked` button to have the subscription added:
 
 <img alt="The initial definition of the TripsBooked subscription" class="screenshot" src="images/explorer_tripsbooked_initial.png"/>
 
-Again, rename your subscription so it's easier to find: 
+Again, rename your subscription so it's easier to find:
 
 <img alt="The subscription after rename" class="screenshot" src="images/explorer_tripsbooked_renamed.png"/>
 
-Click the Submit Operation button, and your subscription will start listening to events. You can tell it's up and running because a panel will pop up at the lower left where subscription data will come in: 
+Click the Submit Operation button, and your subscription will start listening to events. You can tell it's up and running because a panel will pop up at the lower left where subscription data will come in:
 
 <img alt="The UI showing that it's listening for subscription updates" class="screenshot" src="images/explorer_subscriptions_listening.png"/>
 
-## Test your subscription 
+## Test your subscription
 
 Open a new tab in Explorer. In this new tab, add code to book a trip like on [step 9](09-write-your-first-mutation), but with a hard-coded ID:
 
@@ -99,7 +99,7 @@ In `MainActivity`, register your subscription and start listening to events usin
     }
 ```
 
-> NOTE: You may need to `import kotlinx.coroutines.flow.collect` if you see an error about internal use for `collect`. 
+> NOTE: You may need to `import kotlinx.coroutines.flow.collect` if you see an error about internal use for `collect`.
 
 ## Handle errors
 
@@ -129,7 +129,7 @@ Use the rest of this documentation for more advanced topics like [Caching](https
 
 Feel free to ask questions by either [opening an issue on our GitHub repo](https://github.com/apollographql/apollo-android/issues), [joining the community](http://community.apollographql.com/new-topic?category=Help&tags=mobile,client) or [stopping by our channel in the KotlinLang Slack](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ)(get your invite [here](https://slack.kotl.in/)).
 
-And if you want dig more and see GraphQL in real-life apps, you can take a look at these open source projects using Apollo Android:
+And if you want dig more and see GraphQL in real-world apps, you can take a look at these open source projects using Apollo Kotlin:
 
 * https://github.com/BoD/apollo-graphql-android-sample
 * https://github.com/ZacSweers/CatchUp

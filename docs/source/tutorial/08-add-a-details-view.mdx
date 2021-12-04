@@ -93,7 +93,7 @@ As you execute your query, two types of errors can happen:
 * Protocol errors. HTTP errors or JSON parsing errors will throw an `ApolloException`.
 * Application errors. In this case, `response.errors` will contain the application errors and `response.data` might be `null`.
 
-For protocol errors, Apollo Android will throw an `ApolloException`, so you'll need to wrap the call in a try/catch block:
+For protocol errors, Apollo Kotlin throws an `ApolloException`, so you'll need to wrap the call in a try/catch block:
 
 ```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchDetailsFragment.kt
             val response = try {

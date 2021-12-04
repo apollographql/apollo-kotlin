@@ -1,19 +1,19 @@
 ---
-title: GraphQL file types in Apollo Android
+title: GraphQL file types in Apollo Kotlin
 sidebar_title: File types
 ---
 
-Apollo Android supports the following file types for GraphQL definitions:
+Apollo Kotlin supports the following file types for GraphQL definitions:
 
 * `.json` for [introspection schemas](#introspection-schemas-json)
 * `.graphqls` for [SDL schemas](#sdl-schemas-graphqls)
 * `.graphql` for [operations](#operations-graphql) (queries, mutations, and subscriptions)
 
-> To learn more about SDL schemas, see the [blog post](https://www.apollographql.com/blog/frontend/sdl-support-in-apollo-android/) about SDL support in Apollo Android.
+> To learn more about SDL schemas, see the [blog post](https://www.apollographql.com/blog/frontend/sdl-support-in-apollo-android/) about SDL support in Apollo Kotlin.
 
 ## Schemas
 
-A GraphQL **schema** describes a graph's data types and the relationships between those types. Apollo Android supports JSON schemas obtained via [introspection](#introspection-schemas-json), along with conventional [SDL schemas](#sdl-schemas-graphqls).
+A GraphQL **schema** describes a graph's data types and the relationships between those types. Apollo Kotlin supports JSON schemas obtained via [introspection](#introspection-schemas-json), along with conventional [SDL schemas](#sdl-schemas-graphqls).
 
 ### Introspection schemas (`.json`)
 
@@ -35,9 +35,9 @@ You can obtain a GraphQL server's schema via a special [introspection query](htt
 }
 ```
 
-> Some JSON schemas omit the top-level `data` field. Apollo Android supports this omission.
+> Some JSON schemas omit the top-level `data` field. Apollo Kotlin supports this omission.
 
-Tools like [Apollo Sandbox](https://studio.apollographql.com/sandbox/schema/sdl) introspect a GraphQL server automatically and enable you to download its schema in JSON (or SDL) format. Apollo Android can also download an introspected schema with the `downloadApolloSchema` Gradle task:
+Tools like [Apollo Sandbox](https://studio.apollographql.com/sandbox/schema/sdl) introspect a GraphQL server automatically and enable you to download its schema in JSON (or SDL) format. Apollo Kotlin can also download an introspected schema with the `downloadApolloSchema` Gradle task:
 
 ```bash
 ./gradlew :app:downloadApolloSchema \
@@ -63,7 +63,7 @@ type Query {
 }
 ```
 
-You can't use introspection to download an SDL schema directly from a GraphQL endpoint. However, Apollo Android can convert an introspection schema to SDL automatically if you specify the `.graphqls` extension in the `--schema` option:
+You can't use introspection to download an SDL schema directly from a GraphQL endpoint. However, Apollo Kotlin can convert an introspection schema to SDL automatically if you specify the `.graphqls` extension in the `--schema` option:
 
 ```bash{3}
 ./gradlew :app:downloadApolloSchema \
@@ -71,13 +71,13 @@ You can't use introspection to download an SDL schema directly from a GraphQL en
   --schema schema.graphqls
 ```
 
-> Apollo Android also supports the `.sdl` file extension for SDL schemas, but very few other tools use `.sdl`. You should use `.graphqls` moving forward.
+> Apollo Kotlin also supports the `.sdl` file extension for SDL schemas, but very few other tools use `.sdl`. You should use `.graphqls` moving forward.
 
 ## Operations (`.graphql`)
 
 GraphQL **operations** are executed against a graph to fetch or modify data.
 
-In Apollo Android, operation files use the `.graphql` (without `'s'`) extension. These files only contain [executable definitions](https://spec.graphql.org/draft/#ExecutableDefinition) (queries, mutations, subscriptions, and/or fragments):
+In Apollo Kotlin, operation files use the `.graphql` (without `'s'`) extension. These files only contain [executable definitions](https://spec.graphql.org/draft/#ExecutableDefinition) (queries, mutations, subscriptions, and/or fragments):
 
 ```graphql:title=MyQuery.graphql
 query MyQuery {
@@ -87,4 +87,4 @@ query MyQuery {
 }
 ```
 
-Apollo Android compiles these operations into type-safe models that you can use at runtime.
+Apollo Kotlin compiles these operations into type-safe models that you can use at runtime.

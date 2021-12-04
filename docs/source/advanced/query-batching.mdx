@@ -2,7 +2,7 @@
 title: Batching operations
 ---
 
-Apollo Android supports batching multiple operations in a single HTTP request to reduce the number of network round trips. Whenever you execute an operation with batching enabled, your client waits a short time interval to collect any _other_ batchable operations that are also executed. When the interval completes, your client sends all of the operations in a single HTTP request.
+Apollo Kotlin supports batching multiple operations in a single HTTP request to reduce the number of network round trips. Whenever you execute an operation with batching enabled, your client waits a short time interval to collect any _other_ batchable operations that are also executed. When the interval completes, your client sends all of the operations in a single HTTP request.
 
 Note that due to the waiting interval, batching adds some latency to operations. Operations that require as little latency as possible can [opt out of batching](#opting-outin).
 

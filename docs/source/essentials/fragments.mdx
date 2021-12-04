@@ -1,11 +1,11 @@
 ---
-title: Fragments in Apollo Android
+title: Fragments in Apollo Kotlin
 sidebar_title: Fragments
 ---
 
-> **Note:** This article describes the behavior of fragments when using the default `operationBased` codegen in Apollo Android. For the `responseBased` codegen, see [this page](../../advanced/response-based-codegen).
+> **Note:** This article describes the behavior of fragments when using the default `operationBased` codegen in Apollo Kotlin. For the `responseBased` codegen, see [this page](../../advanced/response-based-codegen).
 
-Apollo Android supports both forms of [GraphQL fragments](https://graphql.org/learn/queries/#fragments):
+Apollo Kotlin supports both forms of [GraphQL fragments](https://graphql.org/learn/queries/#fragments):
 
 * [Named fragments](#named-fragments), which enable you to reuse a set of fields across multiple operations
 * [Inline fragments](#inline-fragments), which enable you to access fields of [polymorphic types](https://www.apollographql.com/docs/apollo-server/schema/unions-interfaces/)
@@ -33,7 +33,7 @@ query LaunchDetails($id:ID!) {
 }
 ```
 
-Based on the `fragment` definition, Apollo Android generates the following `LaunchFragment` class that you can reuse in different queries:
+Based on the `fragment` definition, Apollo Kotlin generates the following `LaunchFragment` class that you can reuse in different queries:
 
 ```kotlin:title=LaunchFragment.kt
 data class LaunchFragment(
@@ -65,7 +65,7 @@ query LaunchList {
 }
 ```
 
-You can even use a fragment in operations that are defined in a different `.graphql` file from the fragment itself. This is because Apollo Android codegen merges all `.graphql` files in to a _single_ file before generating models.
+You can even use a fragment in operations that are defined in a different `.graphql` file from the fragment itself. This is because Apollo Kotlin codegen merges all `.graphql` files in to a _single_ file before generating models.
 
 ## Inline fragments
 
@@ -85,7 +85,7 @@ query HeroForEpisode($ep: Episode!) {
 }
 ```
 
-For this operation, Apollo Android generates a `Hero` class that contains `OnDroid` and `OnHuman` nested classes. `Hero` also includes `onDroid` and `onHuman` fields that enable you to access fields that are specific to `Droid` and `Human`:
+For this operation, Apollo Kotlin generates a `Hero` class that contains `OnDroid` and `OnHuman` nested classes. `Hero` also includes `onDroid` and `onHuman` fields that enable you to access fields that are specific to `Droid` and `Human`:
 
 ```kotlin
 println("Droid primaryFunction: ${hero.onDroid?.primaryFunction}")

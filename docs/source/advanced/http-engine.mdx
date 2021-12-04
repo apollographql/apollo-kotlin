@@ -3,7 +3,7 @@ title: Using a custom HTTP client
 sidebar_title: Custom HTTP clients
 ---
 
-By default, Apollo Android uses the following HTTP clients for different platforms/languages:
+By default, Apollo Kotlin uses the following HTTP clients for different platforms/languages:
 
 | Platform | HTTP Client |
 |----------|-------------|
@@ -11,7 +11,7 @@ By default, Apollo Android uses the following HTTP clients for different platfor
 | JavaScript | [Ktor](https://ktor.io/) |
 | iOS/MacOS | [NSURLSesssion](https://developer.apple.com/documentation/foundation/nsurlsession) |
 
-You can use a different HTTP client with Apollo Android by creating a custom class that implements the `HttpEngine` interface.
+You can use a different HTTP client with Apollo Kotlin by creating a custom class that implements the `HttpEngine` interface.
 
 ## The `HttpEngine` interface
 
@@ -74,11 +74,11 @@ val client = ApolloClient.Builder()
   .build()
 ```
 
-With this configuration, Apollo Android sends all of its GraphQL operation requests with `MyHttpEngine`.
+With this configuration, Apollo Kotlin sends all of its GraphQL operation requests with `MyHttpEngine`.
 
 ## Other HTTP customizations
 
-Besides implementing `HttpEngine`, Apollo Android also supports other methods for customizing HTTP behavior:
+Besides implementing `HttpEngine`, Apollo Kotlin also supports other methods for customizing HTTP behavior:
 
-* [No runtime](no-runtime): You can opt out of the Apollo Android runtime completely and only use generated models and parsers. Use this option if you don't need any of the runtime features (caching, batching, automatic persisted queries, etc.).
+* [No runtime](no-runtime): You can opt out of the Apollo Kotlin runtime completely and only use generated models and parsers. Use this option if you don't need any of the runtime features (caching, batching, automatic persisted queries, etc.).
 * [HTTP interceptors](interceptors-http): If you want to add HTTP headers and/or logging to your requests, [HTTP interceptors](interceptors-http) enable you to do this with minimal code.
