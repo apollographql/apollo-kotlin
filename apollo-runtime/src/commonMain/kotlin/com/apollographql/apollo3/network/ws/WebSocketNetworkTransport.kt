@@ -10,7 +10,18 @@ import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.internal.BackgroundDispatcher
 import com.apollographql.apollo3.internal.transformWhile
 import com.apollographql.apollo3.network.NetworkTransport
+import com.apollographql.apollo3.network.ws.internal.Command
+import com.apollographql.apollo3.network.ws.internal.Event
+import com.apollographql.apollo3.network.ws.internal.GeneralError
+import com.apollographql.apollo3.network.ws.internal.Message
+import com.apollographql.apollo3.network.ws.internal.NetworkError
+import com.apollographql.apollo3.network.ws.internal.OperationComplete
+import com.apollographql.apollo3.network.ws.internal.OperationError
+import com.apollographql.apollo3.network.ws.internal.OperationResponse
+import com.apollographql.apollo3.network.ws.internal.StartOperation
+import com.apollographql.apollo3.network.ws.internal.StopOperation
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.BufferOverflow
@@ -41,32 +52,18 @@ private constructor(
     private val webSocketEngine: WebSocketEngine = DefaultWebSocketEngine(),
     private val idleTimeoutMillis: Long = 60_000,
     private val protocolFactory: WsProtocol.Factory = SubscriptionWsProtocol.Factory(),
-) : NetworkTransport, WsProtocol.Listener {
+) : NetworkTransport {
 
-  private interface Command
-  class StartOperation<D : Operation.Data>(val request: ApolloRequest<D>) : Command
-  class StopOperation<D : Operation.Data>(val request: ApolloRequest<D>) : Command
-
-  private sealed interface Event {
-    val id: String?
-  }
-
-  private class OperationResponse(override val id: String?, val payload: Map<String, Any?>) : Event
-  private class OperationError(override val id: String?, val payload: Map<String, Any?>?) : Event
-  private class OperationComplete(override val id: String?) : Event
-  private class GeneralError(val payload: Map<String, Any?>?) : Event {
-    override val id: String? = null
-  }
-
-  private class NetworkError(val cause: Throwable?) : Event {
-    override val id: String? = null
-  }
 
   /**
    * Use unlimited buffers so that we never have to suspend when writing a command or an event,
    * and we avoid deadlocks. This might be overkill but is most likely never going to be a problem in practice.
    */
-  private val commands = Channel<Command>(UNLIMITED)
+  private val messages = Channel<Message>(UNLIMITED)
+
+  /**
+   * This takes messages from [messages] and broadcasts the [Event]s
+   */
   private val mutableEvents = MutableSharedFlow<Event>(0, Int.MAX_VALUE, BufferOverflow.SUSPEND)
   private val events = mutableEvents.asSharedFlow()
 
@@ -77,74 +74,117 @@ private constructor(
 
   init {
     coroutineScope.launch {
-      /**
-       * No need to lock these variables as they are all accessed from the same thread
-       */
-      var idleJob: Job? = null
-      var connectionJob: Job? = null
-      var protocol: WsProtocol? = null
-      var subscriptions = 0
+      supervise(this)
+    }
+  }
 
-      while (true) {
-        val command = commands.receive()
+  private val listener = object : WsProtocol.Listener {
+    override fun operationResponse(id: String, payload: Map<String, Any?>) {
+      messages.trySend(OperationResponse(id, payload))
+    }
 
-        if (protocol == null) {
-          if (command !is StartOperation<*>) {
-            // A stop was received, but we don't have a connection. Ignore it
-            continue
-          }
+    override fun operationError(id: String, payload: Map<String, Any?>?) {
+      messages.trySend(OperationError(id, payload))
+    }
 
-          val webSocketConnection = try {
-            webSocketEngine.open(
-                url = serverUrl,
-                headers = mapOf(
-                    "Sec-WebSocket-Protocol" to protocolFactory.name,
-                )
-            )
-          } catch (e: Exception) {
-            // Error opening the websocket
-            mutableEvents.emit(NetworkError(e))
-            continue
-          }
+    override fun operationComplete(id: String) {
+      messages.trySend(OperationComplete(id))
+    }
 
-          protocol = protocolFactory.create(
-              webSocketConnection = webSocketConnection,
-              listener = this@WebSocketNetworkTransport,
-          )
-          try {
-            protocol.connectionInit()
-          } catch (e: Exception) {
+    override fun generalError(payload: Map<String, Any?>?) {
+      messages.trySend(GeneralError(payload))
+    }
+
+    override fun networkError(cause: Throwable) {
+      messages.trySend(NetworkError(cause))
+    }
+  }
+
+  /**
+   * Long-running method that creates/handles the websocket lifecyle
+   */
+  private suspend fun supervise(scope: CoroutineScope) {
+    /**
+     * No need to lock these variables as they are all accessed from the same thread
+     */
+    var idleJob: Job? = null
+    var connectionJob: Job? = null
+    var protocol: WsProtocol? = null
+    var subscriptions = 0
+
+    while (true) {
+      val message = messages.receive()
+
+      when (message) {
+        is Event -> {
+          if (message is NetworkError) {
             protocol = null
-            // Error initializing the connection
-            mutableEvents.emit(NetworkError(e))
-            continue
-          }
-          connectionJob = launch {
-            protocol!!.run(this)
-          }
-        }
-
-        when (command) {
-          is StartOperation<*> -> {
-            subscriptions++
-            protocol.startOperation(command.request)
-          }
-          is StopOperation<*> -> {
-            subscriptions--
-            protocol.stopOperation(command.request)
-          }
-        }
-
-        if (subscriptions == 0) {
-          idleJob = launch {
-            delay(idleTimeoutMillis)
             connectionJob?.cancel()
             connectionJob = null
-            protocol = null
+            idleJob?.cancel()
+            idleJob = null
           }
-        } else {
-          idleJob?.cancel()
-          idleJob = null
+          mutableEvents.tryEmit(message)
+        }
+        is Command -> {
+          if (protocol == null) {
+            if (message !is StartOperation<*>) {
+              // A stop was received, but we don't have a connection. Ignore it
+              continue
+            }
+
+            val webSocketConnection = try {
+              webSocketEngine.open(
+                  url = serverUrl,
+                  headers = mapOf(
+                      "Sec-WebSocket-Protocol" to protocolFactory.name,
+                  )
+              )
+            } catch (e: Exception) {
+              // Error opening the websocket
+              mutableEvents.emit(NetworkError(e))
+              continue
+            }
+
+            protocol = protocolFactory.create(
+                webSocketConnection = webSocketConnection,
+                listener = listener,
+                scope = scope,
+            )
+            try {
+              protocol.connectionInit()
+            } catch (e: Exception) {
+              // Error initializing the connection
+              protocol = null
+              mutableEvents.emit(NetworkError(e))
+              continue
+            }
+
+            connectionJob = scope.launch(start = CoroutineStart.UNDISPATCHED) {
+              protocol.run()
+            }
+          }
+
+          when (message) {
+            is StartOperation<*> -> {
+              subscriptions++
+              protocol.startOperation(message.request)
+            }
+            is StopOperation<*> -> {
+              subscriptions--
+              protocol.stopOperation(message.request)
+            }
+          }
+
+          if (subscriptions == 0) {
+            idleJob = scope.launch {
+              delay(idleTimeoutMillis)
+              protocol.close()
+            }
+          } else {
+            idleJob?.cancel()
+            idleJob = null
+          }
         }
       }
     }
@@ -154,7 +194,7 @@ private constructor(
       request: ApolloRequest<D>,
   ): Flow<ApolloResponse<D>> {
     return events.onSubscription {
-      commands.send(StartOperation(request))
+      messages.send(StartOperation(request))
     }.filter {
       it.id == request.requestUuid.toString() || it.id == null
     }.transformWhile<Event, Event> {
@@ -192,33 +232,13 @@ private constructor(
         is OperationComplete, is GeneralError -> error("Unexpected event $it")
       }
     }.onCompletion {
-      commands.send(StopOperation(request))
+      messages.send(StopOperation(request))
     }
   }
 
   override fun dispose() {
     coroutineScope.cancel()
     backgroundDispatcher.dispose()
-  }
-
-  override fun operationResponse(id: String, payload: Map<String, Any?>) {
-    mutableEvents.tryEmit(OperationResponse(id, payload))
-  }
-
-  override fun operationError(id: String, payload: Map<String, Any?>?) {
-    mutableEvents.tryEmit(OperationError(id, payload))
-  }
-
-  override fun operationComplete(id: String) {
-    mutableEvents.tryEmit(OperationComplete(id))
-  }
-
-  override fun generalError(payload: Map<String, Any?>?) {
-    mutableEvents.tryEmit(GeneralError(payload))
-  }
-
-  override fun networkError(cause: Throwable) {
-    mutableEvents.tryEmit(NetworkError(cause))
   }
 
   class Builder {

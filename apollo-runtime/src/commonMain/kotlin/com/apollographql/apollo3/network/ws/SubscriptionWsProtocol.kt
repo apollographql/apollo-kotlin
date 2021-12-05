@@ -4,6 +4,7 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.exception.ApolloNetworkException
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withTimeout
 
 /**
@@ -84,6 +85,7 @@ class SubscriptionWsProtocol(
     override fun create(
         webSocketConnection: WebSocketConnection,
         listener: Listener,
+        scope: CoroutineScope
     ): WsProtocol {
       return SubscriptionWsProtocol(
           connectionPayload = connectionPayload,

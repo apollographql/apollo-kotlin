@@ -24,6 +24,7 @@ class GraphQLWsProtocol(
     private val frameType: WsFrameType,
     webSocketConnection: WebSocketConnection,
     listener: Listener,
+    private val scope: CoroutineScope
 ) : WsProtocol(webSocketConnection, listener) {
 
   override suspend fun connectionInit() {
@@ -67,7 +68,7 @@ class GraphQLWsProtocol(
     )
   }
 
-  override fun run(scope: CoroutineScope) {
+  override suspend fun run() {
     if (pingIntervalMillis > 0) {
       scope.launch {
         val map = mutableMapOf<String, Any?>(
@@ -83,7 +84,7 @@ class GraphQLWsProtocol(
         }
       }
     }
-    super.run(scope)
+    super.run()
   }
 
   override fun handleServerMessage(messageMap: Map<String, Any?>) {
@@ -125,7 +126,7 @@ class GraphQLWsProtocol(
     override val name: String
       get() = "graphql-transport-ws"
 
-    override fun create(webSocketConnection: WebSocketConnection, listener: Listener): WsProtocol {
+    override fun create(webSocketConnection: WebSocketConnection, listener: Listener, scope: CoroutineScope): WsProtocol {
       return GraphQLWsProtocol(
           connectionPayload = connectionPayload,
           pingPayload = pingPayload,
@@ -134,7 +135,8 @@ class GraphQLWsProtocol(
           pingIntervalMillis = pingIntervalMillis,
           frameType = frameType,
           webSocketConnection = webSocketConnection,
-          listener = listener
+          listener = listener,
+          scope = scope
       )
     }
   }

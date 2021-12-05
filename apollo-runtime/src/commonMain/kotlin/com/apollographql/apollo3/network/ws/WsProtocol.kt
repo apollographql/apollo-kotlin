@@ -8,6 +8,7 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.internal.buildJsonByteString
 import com.apollographql.apollo3.api.json.internal.buildJsonString
+import com.apollographql.apollo3.api.json.internal.writeAny
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import okio.Buffer
@@ -49,11 +50,14 @@ abstract class WsProtocol(
 
     /**
      * A general error was received
+     * A general error is a protocol error that doesn't have an operation id
+     * If you have an operation id, use [operationError] instead
      */
     fun generalError(payload: Map<String, Any?>?)
 
     /**
      * A network error occurred
+     * A network error is terminal
      */
     fun networkError(cause: Throwable)
   }
@@ -73,21 +77,21 @@ abstract class WsProtocol(
   /**
    * Starts the given operation
    */
-  abstract fun <D: Operation.Data> startOperation(request: ApolloRequest<D>)
+  abstract fun <D : Operation.Data> startOperation(request: ApolloRequest<D>)
 
   /**
    * Stops the given operation
    */
-  abstract fun <D: Operation.Data> stopOperation(request: ApolloRequest<D>)
+  abstract fun <D : Operation.Data> stopOperation(request: ApolloRequest<D>)
 
   @OptIn(ApolloInternal::class)
   protected fun Map<String, Any?>.toByteString() = buildJsonByteString {
-    AnyAdapter.toJson(this, CustomScalarAdapters.Empty, this@toByteString)
+    writeAny(this@toByteString)
   }
 
   @OptIn(ApolloInternal::class)
   protected fun Map<String, Any?>.toUtf8() = buildJsonString {
-    AnyAdapter.toJson(this, CustomScalarAdapters.Empty, this@toUtf8)
+    writeAny(this@toUtf8)
   }
 
   @Suppress("UNCHECKED_CAST")
@@ -99,11 +103,13 @@ abstract class WsProtocol(
   protected fun sendMessageMapBinary(messageMap: Map<String, Any?>) {
     webSocketConnection.send(messageMap.toByteString())
   }
+
   protected fun sendMessageMapText(messageMap: Map<String, Any?>) {
     webSocketConnection.send(messageMap.toUtf8())
   }
+
   protected fun sendMessageMap(messageMap: Map<String, Any?>, frameType: WsFrameType) {
-    when(frameType) {
+    when (frameType) {
       WsFrameType.Text -> sendMessageMapText(messageMap)
       WsFrameType.Binary -> sendMessageMapBinary(messageMap)
     }
@@ -111,16 +117,28 @@ abstract class WsProtocol(
 
   protected suspend fun receiveMessageMap() = webSocketConnection.receive().toMessageMap()
 
-  open fun run(scope: CoroutineScope) {
-    scope.launch {
-      try {
-        while(true) {
-          handleServerMessage(receiveMessageMap())
-        }
-      } catch (e: Exception) {
-        listener.networkError(e)
+  /**
+   * Read the WebSocket
+   *
+   * [run] **must** call [WsProtocol.Listener.networkError] when the socket is closed, either gracefully or with an
+   * error so that the caller can collect it and start a new websocket
+   */
+  open suspend fun run() {
+    try {
+      while (true) {
+        handleServerMessage(receiveMessageMap())
       }
+    } catch (e: Exception) {
+      listener.networkError(e)
     }
+  }
+
+  /**
+   * Closes the connection gracefully.
+   * It is expected that a future call to [WsProtocol.Listener.networkError] is made
+   */
+  open fun close() {
+    webSocketConnection.close()
   }
 
   interface Factory {
@@ -137,6 +155,7 @@ abstract class WsProtocol(
     fun create(
         webSocketConnection: WebSocketConnection,
         listener: Listener,
+        scope: CoroutineScope,
     ): WsProtocol
   }
 }
