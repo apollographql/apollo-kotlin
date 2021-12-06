@@ -81,6 +81,7 @@ fun configureApollo(generateKotlinModels: Boolean) {
             packageName.set("com.apollographql.apollo3.integration.${it.name}")
             codegenModels.set("operationBased")
             this.generateKotlinModels.set(generateKotlinModels)
+            generateOptionalOperationVariables.set(false)
             configureConnection(generateKotlinModels)
           }
         }
@@ -94,6 +95,7 @@ fun configureApollo(generateKotlinModels: Boolean) {
             this.generateKotlinModels.set(generateKotlinModels)
             codegenModels.set("operationBased")
             packageName.set(it.name)
+            generateOptionalOperationVariables.set(false)
             configureConnection(generateKotlinModels)
           }
         }

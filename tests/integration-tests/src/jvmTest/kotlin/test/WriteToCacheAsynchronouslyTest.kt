@@ -1,9 +1,8 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
+import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.cache.normalized.writeToCacheAsynchronously
@@ -49,7 +48,7 @@ class WriteToCacheAsynchronouslyTest {
    */
   @Test
   fun writeToCacheAsynchronously() = runTest(dispatcher, { setUp() }, { tearDown() }) {
-    val query = HeroAndFriendsNamesQuery(Optional.Present(Episode.JEDI))
+    val query = HeroAndFriendsNamesQuery(Episode.JEDI)
 
     mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNameResponse.json"))
     apolloClient.query(query)
@@ -66,7 +65,7 @@ class WriteToCacheAsynchronouslyTest {
    */
   @Test
   fun writeToCacheSynchronously() = runTest(dispatcher, { setUp() }, { tearDown() }) {
-    val query = HeroAndFriendsNamesQuery(Optional.Present(Episode.JEDI))
+    val query = HeroAndFriendsNamesQuery(Episode.JEDI)
 
     mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNameResponse.json"))
     apolloClient.query(query)
