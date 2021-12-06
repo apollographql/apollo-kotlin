@@ -8,8 +8,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.CustomScalarType
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.ExecutionOptions
-import com.apollographql.apollo3.api.HasExecutionContext
-import com.apollographql.apollo3.api.HasMutableExecutionContext
 import com.apollographql.apollo3.api.MutableExecutionOptions
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
@@ -53,6 +51,7 @@ private constructor(
     override val httpHeaders: List<HttpHeader>,
     override val sendApqExtensions: Boolean,
     override val sendDocument: Boolean,
+    override val enableAutoPersistedQueries: Boolean
 ) : ExecutionOptions {
   private val concurrencyInfo: ConcurrencyInfo
 
@@ -61,7 +60,6 @@ private constructor(
     concurrencyInfo = ConcurrencyInfo(
         dispatcher,
         CoroutineScope(dispatcher))
-
   }
 
   /**
@@ -153,6 +151,10 @@ private constructor(
       this.httpHeaders = httpHeaders
     }
 
+    override fun addHttpHeader(name: String, value: String): Builder = apply {
+      this.httpHeaders += HttpHeader(name, value)
+    }
+
     override var sendApqExtensions: Boolean = ExecutionOptions.defaultSendApqExtensions
 
     override fun sendApqExtensions(sendApqExtensions: Boolean): Builder = apply {
@@ -163,6 +165,12 @@ private constructor(
 
     override fun sendDocument(sendDocument: Boolean): Builder = apply {
       this.sendDocument = sendDocument
+    }
+
+    override var enableAutoPersistedQueries = ExecutionOptions.defaultEnableAutoPersistedQueries
+
+    override fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean): Builder = apply {
+      this.enableAutoPersistedQueries = enableAutoPersistedQueries
     }
 
     /**
@@ -398,6 +406,11 @@ private constructor(
           interceptors = _interceptors,
           requestedDispatcher = requestedDispatcher,
           executionContext = executionContext,
+          httpMethod = httpMethod,
+          httpHeaders = httpHeaders,
+          sendApqExtensions = sendApqExtensions,
+          sendDocument = sendDocument,
+          enableAutoPersistedQueries = enableAutoPersistedQueries
       )
     }
   }
@@ -410,6 +423,11 @@ private constructor(
         .interceptors(interceptors)
         .requestedDispatcher(requestedDispatcher)
         .executionContext(executionContext)
+        .httpMethod(httpMethod)
+        .httpHeaders(httpHeaders)
+        .sendApqExtensions(sendApqExtensions)
+        .sendDocument(sendDocument)
+        .enableAutoPersistedQueries(enableAutoPersistedQueries)
   }
 
   companion object {

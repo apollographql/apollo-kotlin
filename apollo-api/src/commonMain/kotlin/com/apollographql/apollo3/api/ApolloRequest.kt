@@ -19,13 +19,18 @@ private constructor(
     override val httpHeaders: List<HttpHeader>,
     override val sendApqExtensions: Boolean,
     override val sendDocument: Boolean,
+    override val enableAutoPersistedQueries: Boolean,
 ) : ExecutionOptions {
 
   fun newBuilder(): Builder<D> {
-    return Builder(operation).also {
-      it.requestUuid(requestUuid)
-      it.executionContext = executionContext
-    }
+    return Builder(operation)
+        .requestUuid(requestUuid)
+        .executionContext(executionContext)
+        .httpMethod(httpMethod)
+        .httpHeaders(httpHeaders)
+        .sendApqExtensions(sendApqExtensions)
+        .sendDocument(sendDocument)
+        .enableAutoPersistedQueries(enableAutoPersistedQueries)
   }
 
   class Builder<D : Operation.Data>(
@@ -46,6 +51,10 @@ private constructor(
       this.httpHeaders = httpHeaders
     }
 
+    override fun addHttpHeader(name: String, value: String): Builder<D> = apply {
+      this.httpHeaders += HttpHeader(name, value)
+    }
+
     override var sendApqExtensions: Boolean = ExecutionOptions.defaultSendApqExtensions
 
     override fun sendApqExtensions(sendApqExtensions: Boolean): Builder<D> = apply {
@@ -58,8 +67,18 @@ private constructor(
       this.sendDocument = sendDocument
     }
 
+    override var enableAutoPersistedQueries = ExecutionOptions.defaultEnableAutoPersistedQueries
+
+    override fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean): Builder<D> = apply {
+      this.enableAutoPersistedQueries = enableAutoPersistedQueries
+    }
+
     fun requestUuid(requestUuid: Uuid) = apply {
       this.requestUuid = requestUuid
+    }
+
+    fun executionContext(executionContext: ExecutionContext) = apply {
+      this.executionContext = executionContext
     }
 
     override fun addExecutionContext(executionContext: ExecutionContext) = apply {
@@ -75,7 +94,8 @@ private constructor(
           httpMethod = httpMethod,
           httpHeaders = httpHeaders,
           sendApqExtensions = sendApqExtensions,
-          sendDocument = sendDocument
+          sendDocument = sendDocument,
+          enableAutoPersistedQueries = enableAutoPersistedQueries
       )
     }
   }

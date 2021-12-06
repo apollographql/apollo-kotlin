@@ -8,9 +8,6 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.api.http.httpMethod
-import com.apollographql.apollo3.api.http.sendApqExtensions
-import com.apollographql.apollo3.api.http.sendDocument
 import com.apollographql.apollo3.exception.AutoPersistedQueriesNotSupported
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

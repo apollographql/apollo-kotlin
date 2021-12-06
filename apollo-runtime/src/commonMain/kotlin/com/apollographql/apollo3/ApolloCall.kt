@@ -40,6 +40,12 @@ abstract class ApolloCall<D : Operation.Data, E>(val apolloClient: ApolloClient,
     return this as E
   }
 
+  override fun addHttpHeader(name: String, value: String): E {
+    this.httpHeaders += HttpHeader(name, value)
+    @Suppress("UNCHECKED_CAST")
+    return this as E
+  }
+
   override var sendApqExtensions: Boolean = ExecutionOptions.defaultSendApqExtensions
 
   override fun sendApqExtensions(sendApqExtensions: Boolean): E {
@@ -52,6 +58,14 @@ abstract class ApolloCall<D : Operation.Data, E>(val apolloClient: ApolloClient,
 
   override fun sendDocument(sendDocument: Boolean): E {
     this.sendDocument = sendDocument
+    @Suppress("UNCHECKED_CAST")
+    return this as E
+  }
+
+  override var enableAutoPersistedQueries = ExecutionOptions.defaultEnableAutoPersistedQueries
+
+  override fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean): E  {
+    this.enableAutoPersistedQueries = enableAutoPersistedQueries
     @Suppress("UNCHECKED_CAST")
     return this as E
   }
@@ -72,7 +86,12 @@ abstract class ApolloCall<D : Operation.Data, E>(val apolloClient: ApolloClient,
    */
   fun toFlow(): Flow<ApolloResponse<D>> {
     val request = ApolloRequest.Builder(operation)
-        .addExecutionContext(executionContext)
+        .executionContext(executionContext)
+        .httpMethod(httpMethod)
+        .httpHeaders(httpHeaders)
+        .sendApqExtensions(sendApqExtensions)
+        .sendDocument(sendDocument)
+        .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .build()
     return apolloClient.executeAsFlow(request)
   }
@@ -143,7 +162,7 @@ class ApolloMutationCall<D : Mutation.Data>(apolloClient: ApolloClient, mutation
 /**
  * [ApolloSubscriptionCall] contains everything needed to execute a [Subscription] with the given [ApolloClient]
  *
- * [ApolloSubscriptionCall] is mutable. You can customize it before calling [execute]
+ * [ApolloSubscriptionCall] is mutable. You can customize it before calling [toFlow]
  */
 class ApolloSubscriptionCall<D : Subscription.Data>(apolloClient: ApolloClient, subscription: Subscription<D>)
   : ApolloCall<D, ApolloSubscriptionCall<D>>(apolloClient, subscription) {

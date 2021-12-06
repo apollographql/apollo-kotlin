@@ -41,9 +41,3 @@ class AutoPersistedQueryInfo(
 val <D : Operation.Data> ApolloResponse<D>.autoPersistedQueryInfo
   get() = executionContext[AutoPersistedQueryInfo]
 
-/**
- * Enable autoPersistedQueries
- */
-fun <T> HasMutableExecutionContext<T>.enableAutoPersistedQueries(enable: Boolean): T where T : HasMutableExecutionContext<T>  {
-  return addExecutionContext(AutoPersistedQueryContext(enable))
-}
