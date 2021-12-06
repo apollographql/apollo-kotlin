@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.Query;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.deprecation.adapter.TestQuery_ResponseAdapter;
@@ -40,7 +41,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
-  public final Episode episode;
+  public final Optional<Episode> episode;
 
   private transient volatile int $hashCode;
 
@@ -48,7 +49,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   private transient volatile String $toString;
 
-  public TestQuery(Episode episode) {
+  public TestQuery(Optional<Episode> episode) {
     this.episode = episode;
   }
 

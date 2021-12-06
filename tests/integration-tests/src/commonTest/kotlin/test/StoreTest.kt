@@ -5,6 +5,7 @@ import IdCacheResolver
 import assertEquals2
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
@@ -131,7 +132,7 @@ class StoreTest {
 
   private suspend fun storeAllFriends() {
     mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNameWithIdsResponse.json"))
-    val response = apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE))
+    val response = apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Optional.Present(Episode.NEWHOPE)))
         .fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
     assertEquals(response.data?.hero?.name, "R2-D2")
@@ -160,7 +161,7 @@ class StoreTest {
 
   private suspend fun assertRootNotCached() {
     try {
-      apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE))
+      apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Optional.Present(Episode.NEWHOPE)))
           .fetchPolicy(FetchPolicy.CacheOnly)
           .execute()
 

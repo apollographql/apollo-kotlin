@@ -40,11 +40,11 @@ import com.apollographql.apollo3.ast.coerceInSchemaContextOrThrow
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.findDeprecationReason
 import com.apollographql.apollo3.ast.findNonnull
-import com.apollographql.apollo3.ast.findOptional
 import com.apollographql.apollo3.ast.inferVariables
 import com.apollographql.apollo3.ast.isApollo
 import com.apollographql.apollo3.ast.isFieldNonNull
 import com.apollographql.apollo3.ast.leafType
+import com.apollographql.apollo3.ast.optionalValue
 import com.apollographql.apollo3.ast.pretty
 import com.apollographql.apollo3.ast.responseName
 import com.apollographql.apollo3.ast.rootTypeDefinition
@@ -379,13 +379,17 @@ internal class IrBuilder(
       }
       irType !is IrNonNullType -> {
         // The variable is nullable. By the GraphQL spec, it means it's also optional
-        // In practice though, this is rarely needed because if the user added tha variable in
+        // In practice though, we often want it non optional, because if the user added tha variable in
         // the first place, there is a high change they're going to use it.
-        // To simplify the callsite, we default to not adding the [Optional] wrapper.
         //
         // One counter example is bi-directional pagination where 'before' or 'after' could be
         // left Absent
-        if (directives.findOptional() || generateOptionalOperationVariables) {
+        //
+        // We default to add the [Optional] wrapper, but this can be overridden by the user globally or individually
+        // with the @optional directive.
+
+        val makeOptional = directives.optionalValue() ?: generateOptionalOperationVariables
+        if (makeOptional) {
           irType = irType.makeOptional()
         }
       }
@@ -475,7 +479,7 @@ internal class IrBuilder(
           description = fieldDefinition.description,
           deprecationReason = fieldDefinition.directives.findDeprecationReason(),
           forceNonNull = forceNonNull,
-          forceOptional = gqlField.directives.findOptional(),
+          forceOptional = gqlField.directives.optionalValue() == true,
           parentType = fieldWithParent.parentType
       )
     }.groupBy {

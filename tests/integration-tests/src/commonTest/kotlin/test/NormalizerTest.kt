@@ -3,6 +3,7 @@ package test
 import IdCacheKeyGenerator
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
@@ -75,7 +76,7 @@ class NormalizerTest {
   @Test
   @Throws(Exception::class)
   fun testHeroNameWithVariable() {
-    val records = records(EpisodeHeroNameQuery(Episode.JEDI), "EpisodeHeroNameResponse.json")
+    val records = records(EpisodeHeroNameQuery(Optional.Present(Episode.JEDI)), "EpisodeHeroNameResponse.json")
     val record = records.get(rootKey)
     val reference = record!![TEST_FIELD_KEY_JEDI] as CacheKey?
     assertEquals(reference, CacheKey(TEST_FIELD_KEY_JEDI))
@@ -100,7 +101,7 @@ class NormalizerTest {
   @Test
   @Throws(Exception::class)
   fun testHeroAndFriendsNamesQueryWithoutIDs() {
-    val records = records(HeroAndFriendsNamesQuery(Episode.JEDI), "HeroAndFriendsNameResponse.json")
+    val records = records(HeroAndFriendsNamesQuery(Optional.Present(Episode.JEDI)), "HeroAndFriendsNameResponse.json")
     val record = records.get(rootKey)
     val heroReference = record!![TEST_FIELD_KEY_JEDI] as CacheKey?
     assertEquals(heroReference, CacheKey(TEST_FIELD_KEY_JEDI))
@@ -121,7 +122,7 @@ class NormalizerTest {
   @Test
   @Throws(Exception::class)
   fun testHeroAndFriendsNamesQueryWithIDs() {
-    val records = records(HeroAndFriendsNamesWithIDsQuery(Episode.JEDI), "HeroAndFriendsNameWithIdsResponse.json")
+    val records = records(HeroAndFriendsNamesWithIDsQuery(Optional.Present(Episode.JEDI)), "HeroAndFriendsNameWithIdsResponse.json")
     val record = records.get(rootKey)
     val heroReference = record!![TEST_FIELD_KEY_JEDI] as CacheKey?
     assertEquals(heroReference, CacheKey("2001"))
@@ -142,7 +143,7 @@ class NormalizerTest {
   @Test
   @Throws(Exception::class)
   fun testHeroAndFriendsNamesWithIDForParentOnly() {
-    val records = records(HeroAndFriendsNamesWithIDForParentOnlyQuery(Episode.JEDI), "HeroAndFriendsNameWithIdsParentOnlyResponse.json")
+    val records = records(HeroAndFriendsNamesWithIDForParentOnlyQuery(Optional.Present(Episode.JEDI)), "HeroAndFriendsNameWithIdsParentOnlyResponse.json")
     val record = records[rootKey]
     val heroReference = record!![TEST_FIELD_KEY_JEDI] as CacheKey?
     assertEquals(heroReference, CacheKey("2001"))
@@ -175,7 +176,7 @@ class NormalizerTest {
   @Test
   @Throws(Exception::class)
   fun testHeroTypeDependentAliasedFieldQueryDroid() {
-    val records = records(HeroTypeDependentAliasedFieldQuery(Episode.JEDI), "HeroTypeDependentAliasedFieldResponse.json")
+    val records = records(HeroTypeDependentAliasedFieldQuery(Optional.Present(Episode.JEDI)), "HeroTypeDependentAliasedFieldResponse.json")
     val record = records.get(rootKey)
     val heroReference = record!![TEST_FIELD_KEY_JEDI] as CacheKey?
     val hero = records.get(heroReference!!.key)
@@ -186,7 +187,7 @@ class NormalizerTest {
   @Test
   @Throws(Exception::class)
   fun testHeroTypeDependentAliasedFieldQueryHuman() {
-    val records = records(HeroTypeDependentAliasedFieldQuery(Episode.EMPIRE), "HeroTypeDependentAliasedFieldResponseHuman.json")
+    val records = records(HeroTypeDependentAliasedFieldQuery(Optional.Present(Episode.EMPIRE)), "HeroTypeDependentAliasedFieldResponseHuman.json")
     val record = records.get(rootKey)
     val heroReference = record!![TEST_FIELD_KEY_EMPIRE] as CacheKey?
     val hero = records.get(heroReference!!.key)
@@ -197,7 +198,7 @@ class NormalizerTest {
   @Test
   @Throws(Exception::class)
   fun testHeroParentTypeDependentAliasedFieldQueryHuman() {
-    val records = records(HeroTypeDependentAliasedFieldQuery(Episode.EMPIRE), "HeroTypeDependentAliasedFieldResponseHuman.json")
+    val records = records(HeroTypeDependentAliasedFieldQuery(Optional.Present(Episode.EMPIRE)), "HeroTypeDependentAliasedFieldResponseHuman.json")
     val record = records.get(rootKey)
     val heroReference = record!![TEST_FIELD_KEY_EMPIRE] as CacheKey?
     val hero = records.get(heroReference!!.key)
@@ -208,7 +209,7 @@ class NormalizerTest {
   @Test
   @Throws(Exception::class)
   fun testHeroParentTypeDependentFieldDroid() {
-    val records = records(HeroParentTypeDependentFieldQuery(Episode.JEDI), "HeroParentTypeDependentFieldDroidResponse.json")
+    val records = records(HeroParentTypeDependentFieldQuery(Optional.Present(Episode.JEDI)), "HeroParentTypeDependentFieldDroidResponse.json")
     val lukeRecord = records.get(TEST_FIELD_KEY_JEDI + ".friends.0")
     assertEquals(lukeRecord!!["name"], "Luke Skywalker")
     assertEquals(lukeRecord["height({\"unit\":\"METER\"})"], 1.72)
@@ -239,7 +240,7 @@ class NormalizerTest {
   @Test
   @Throws(Exception::class)
   fun testHeroParentTypeDependentFieldHuman() {
-    val records = records(HeroParentTypeDependentFieldQuery(Episode.EMPIRE), "HeroParentTypeDependentFieldHumanResponse.json")
+    val records = records(HeroParentTypeDependentFieldQuery(Optional.Present(Episode.EMPIRE)), "HeroParentTypeDependentFieldHumanResponse.json")
 
     val lukeRecord = records.get("$TEST_FIELD_KEY_EMPIRE.friends.0")
     assertEquals(lukeRecord!!["name"], "Han Solo")

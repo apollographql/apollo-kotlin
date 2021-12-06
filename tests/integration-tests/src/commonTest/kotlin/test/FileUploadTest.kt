@@ -64,9 +64,9 @@ class FileUploadTest {
   private val mutationTwice = SingleUploadTwiceMutation(upload1, upload2)
   private val mutationMultiple = MultipleUploadMutation(listOf(upload1, upload2))
   private val mutationNested = NestedUploadMutation(
-      upload2,
-      listOf(upload1, upload0),
-      nestedObject2,
+      Optional.Present(upload2),
+      Optional.Present(listOf(upload1, upload0)),
+      Optional.Present(nestedObject2),
   )
 
   private lateinit var mockServer: MockServer

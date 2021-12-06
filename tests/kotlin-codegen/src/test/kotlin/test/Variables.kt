@@ -4,35 +4,35 @@ import com.apollographql.apollo3.api.Optional
 import variables.NonNullVariableWithDefaultValueQuery
 import variables.NullableVariableQuery
 import variables.NullableVariableWithDefaultValueQuery
-import variables.NullableVariableWithOptionalDirectiveQuery
+import variables.NullableVariableWithOptionalFalseDirectiveQuery
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class VariablesTest {
   @Test
-  fun nullableVariableDefaultsToNonOptional() {
+  fun nullableVariableDefaultsToOptional() {
     /**
-     * By default, we remove the `Optional` so that users have to input a parameter
-     * It's not possible to omit a variable. But it is possible to send null
+     * By default, we generate the `Optional` so that users can omit parameters
+     * It's possible to omit a variable, and it is possible to send null
      */
-    assertEquals(42, NullableVariableQuery(42).param)
-    assertEquals(null, NullableVariableQuery(null).param)
+    assertEquals(Optional.Absent, NullableVariableQuery().param)
+    assertEquals(Optional.Present(42), NullableVariableQuery(Optional.Present(42)).param)
+    assertEquals(Optional.Present(null), NullableVariableQuery(Optional.Present(null)).param)
   }
 
   @Test
-  fun nullableVariableWithOptionalDirectivesGeneratesOptional() {
+  fun nullableVariableWithOptionalFalseDirectivesDoesntGenerateOptional() {
     /**
-     * If the user opted-in @optional, it's possible to omit the variable again
+     * If the user opted-out @optional, it's not possible to omit the variable
      */
-    assertEquals(Optional.Absent, NullableVariableWithOptionalDirectiveQuery().param)
-    assertEquals(Optional.Present(42), NullableVariableWithOptionalDirectiveQuery(Optional.Present(42)).param)
-    assertEquals(Optional.Present(null), NullableVariableWithOptionalDirectiveQuery(Optional.Present(null)).param)
+    assertEquals(null, NullableVariableWithOptionalFalseDirectiveQuery(null).param)
+    assertEquals(42, NullableVariableWithOptionalFalseDirectiveQuery(42).param)
   }
 
   @Test
   fun nullableVariableWithDefaultValueGeneratesAbsentInKotlin() {
     /**
-     * If the variable has a default value, it always get generated as Optional
+     * If the variable has a default value, it always gets generated as Optional (opting-out is ignored)
      */
     assertEquals(Optional.Absent, NullableVariableWithDefaultValueQuery().param)
     assertEquals(Optional.Present(42), NullableVariableWithDefaultValueQuery(Optional.Present(42)).param)
@@ -43,7 +43,7 @@ class VariablesTest {
   @Test
   fun nonnullVariableWithDefaultValueGeneratesAbsentInKotlin() {
     /**
-     * If the variable has a default value, it always gets generated as Optional
+     * If the variable has a default value, it always gets generated as Optional (opting-out is ignored)
      */
     assertEquals(Optional.Absent, NonNullVariableWithDefaultValueQuery().param)
     assertEquals(Optional.Present(42), NonNullVariableWithDefaultValueQuery(Optional.Present(42)).param)

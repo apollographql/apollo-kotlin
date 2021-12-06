@@ -3,6 +3,7 @@ package test
 import assertEquals2
 import com.apollographql.apollo3.adapter.KotlinxLocalDateAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.api.toJsonString
@@ -123,7 +124,7 @@ class ParseResponseBodyTest {
   @Test
   @Throws(Exception::class)
   fun errorResponse_with_data() {
-    val response = EpisodeHeroNameQuery(Episode.JEDI).parseJsonResponse(testFixtureToJsonReader("ResponseErrorWithData.json"))
+    val response = EpisodeHeroNameQuery(Optional.Present(Episode.JEDI)).parseJsonResponse(testFixtureToJsonReader("ResponseErrorWithData.json"))
     val data = response.data
     val errors = response.errors
     assertTrue(data != null)
@@ -194,7 +195,7 @@ class ParseResponseBodyTest {
   @Test
   @Throws(Exception::class)
   fun parseErrorOperationRawResponse() {
-    val response = EpisodeHeroNameQuery(Episode.EMPIRE).parseJsonResponse(
+    val response = EpisodeHeroNameQuery(Optional.Present(Episode.EMPIRE)).parseJsonResponse(
         testFixtureToJsonReader("/ResponseErrorWithData.json"),
         CustomScalarAdapters.Empty
     )

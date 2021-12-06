@@ -5,6 +5,7 @@ import IdCacheResolver
 import assertEquals2
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
@@ -50,7 +51,7 @@ class OtherCacheTest {
   fun masterDetailSuccess() = runTest(before = { setUp() }, after = { tearDown() }) {
     // Store a query that contains all data
     mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNameWithIdsResponse.json"))
-    apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE))
+    apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Optional.Present(Episode.NEWHOPE)))
         .fetchPolicy(FetchPolicy.NetworkOnly)
         .execute()
 
@@ -68,7 +69,7 @@ class OtherCacheTest {
   fun masterDetailFailIncomplete() = runTest(before = { setUp() }, after = { tearDown() }) {
     // Store a query that contains all data
     mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNameWithIdsResponse.json"))
-    apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE))
+    apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Optional.Present(Episode.NEWHOPE)))
         .fetchPolicy(FetchPolicy.NetworkOnly)
         .execute()
 
@@ -85,7 +86,7 @@ class OtherCacheTest {
   @Test
   fun cacheMissThrows() = runTest(before = { setUp() }, after = { tearDown() }) {
     try {
-      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+      apolloClient.query(EpisodeHeroNameQuery(Optional.Present(Episode.EMPIRE)))
           .fetchPolicy(FetchPolicy.CacheOnly)
           .execute()
       fail("we expected a cache miss")
@@ -98,12 +99,12 @@ class OtherCacheTest {
   @Throws(Exception::class)
   fun skipIncludeDirective() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNameResponse.json"))
-    apolloClient.query(HeroAndFriendsDirectivesQuery(Episode.JEDI, true, false))
+    apolloClient.query(HeroAndFriendsDirectivesQuery(Optional.Present(Episode.JEDI), true, false))
         .fetchPolicy(FetchPolicy.NetworkOnly)
         .execute()
 
     var response = apolloClient.query(
-        HeroAndFriendsDirectivesQuery(Episode.JEDI, true, false))
+        HeroAndFriendsDirectivesQuery(Optional.Present(Episode.JEDI), true, false))
         .fetchPolicy(FetchPolicy.CacheOnly)
         .execute()
 
@@ -114,7 +115,7 @@ class OtherCacheTest {
     assertEquals2(response.data?.hero?.friends?.get(2)?.name, "Leia Organa")
 
     response = apolloClient.query(
-        HeroAndFriendsDirectivesQuery(Episode.JEDI, false, false))
+        HeroAndFriendsDirectivesQuery(Optional.Present(Episode.JEDI), false, false))
         .fetchPolicy(FetchPolicy.CacheOnly)
         .execute()
 
@@ -125,7 +126,7 @@ class OtherCacheTest {
     assertEquals2(response.data?.hero?.friends?.get(2)?.name, "Leia Organa")
 
     response = apolloClient.query(
-        HeroAndFriendsDirectivesQuery(Episode.JEDI, true, true))
+        HeroAndFriendsDirectivesQuery(Optional.Present(Episode.JEDI), true, true))
         .fetchPolicy(FetchPolicy.CacheOnly)
         .execute()
 
@@ -138,13 +139,13 @@ class OtherCacheTest {
   fun skipIncludeDirectiveUnsatisfiedCache() = runTest(before = { setUp() }, after = { tearDown() }) {
     // Store a response that doesn't contain friends
     mockServer.enqueue(testFixtureToUtf8("HeroNameResponse.json"))
-    apolloClient.query(HeroAndFriendsDirectivesQuery(Episode.JEDI, true, true))
+    apolloClient.query(HeroAndFriendsDirectivesQuery(Optional.Present(Episode.JEDI), true, true))
         .fetchPolicy(FetchPolicy.NetworkOnly)
         .execute()
 
 
     // Get it from the cache, we should get the name but no friends
-    val response = apolloClient.query(HeroAndFriendsDirectivesQuery(Episode.JEDI, true, true))
+    val response = apolloClient.query(HeroAndFriendsDirectivesQuery(Optional.Present(Episode.JEDI), true, true))
         .fetchPolicy(FetchPolicy.CacheOnly)
         .execute()
 
@@ -153,7 +154,7 @@ class OtherCacheTest {
 
     // Now try to get the friends from the cache, it should fail
     try {
-      apolloClient.query(HeroAndFriendsDirectivesQuery(Episode.JEDI, true, false))
+      apolloClient.query(HeroAndFriendsDirectivesQuery(Optional.Present(Episode.JEDI), true, false))
           .fetchPolicy(FetchPolicy.CacheOnly)
           .execute()
 

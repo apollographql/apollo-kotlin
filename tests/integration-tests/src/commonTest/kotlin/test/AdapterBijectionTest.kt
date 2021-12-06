@@ -77,7 +77,7 @@ class AdapterBijectionTest {
 
   @Test
   fun objects1() = bijection(
-      HeroAndFriendsNamesWithIDsQuery(Episode.JEDI),
+      HeroAndFriendsNamesWithIDsQuery(Optional.Present(Episode.JEDI)),
       HeroAndFriendsNamesWithIDsQuery.Data(
           HeroAndFriendsNamesWithIDsQuery.Hero(
               "2001",
@@ -89,7 +89,7 @@ class AdapterBijectionTest {
 
   @Test
   fun objects2() = bijection(
-      HeroAndFriendsNamesWithIDsQuery(Episode.JEDI),
+      HeroAndFriendsNamesWithIDsQuery(Optional.Present(Episode.JEDI)),
       HeroAndFriendsNamesWithIDsQuery.Data(
           HeroAndFriendsNamesWithIDsQuery.Hero(
               "2001",

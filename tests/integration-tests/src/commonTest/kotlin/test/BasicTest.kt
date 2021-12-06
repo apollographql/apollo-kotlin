@@ -4,6 +4,7 @@ import IdCacheKeyGenerator
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
@@ -73,7 +74,7 @@ class BasicTest {
   @Test
   fun episodeHeroName() = basicTest(
       "HeroNameResponse.json",
-      EpisodeHeroNameQuery(Episode.EMPIRE)
+      EpisodeHeroNameQuery(Optional.Present(Episode.EMPIRE))
   ) {
 
     assertFalse(hasErrors())
@@ -84,7 +85,7 @@ class BasicTest {
   @Throws(Exception::class)
   fun heroAndFriendsNameResponse() = basicTest(
       "HeroAndFriendsNameResponse.json",
-      HeroAndFriendsNamesQuery(Episode.JEDI)
+      HeroAndFriendsNamesQuery(Optional.Present(Episode.JEDI))
   ) {
 
     assertFalse(hasErrors())
@@ -98,7 +99,7 @@ class BasicTest {
   @Test
   fun heroAndFriendsNamesWithIDs() = basicTest(
       "HeroAndFriendsNameWithIdsResponse.json",
-      HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)
+      HeroAndFriendsNamesWithIDsQuery(Optional.Present(Episode.NEWHOPE))
   ) {
 
     assertFalse(hasErrors())
@@ -117,7 +118,7 @@ class BasicTest {
   @Throws(Exception::class)
   fun heroAndFriendsNameWithIdsForParentOnly() = basicTest(
       "HeroAndFriendsNameWithIdsParentOnlyResponse.json",
-      HeroAndFriendsNamesWithIDForParentOnlyQuery(Episode.NEWHOPE)
+      HeroAndFriendsNamesWithIDForParentOnlyQuery(Optional.Present(Episode.NEWHOPE))
   ) {
 
     assertFalse(hasErrors())
@@ -184,7 +185,7 @@ class BasicTest {
   @Test
   fun readList() = basicTest(
       "HeroAndFriendsNameWithIdsResponse.json",
-      HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)
+      HeroAndFriendsNamesWithIDsQuery(Optional.Present(Episode.NEWHOPE))
   ) {
     assertEquals(data?.hero?.id, "2001")
     assertEquals(data?.hero?.name, "R2-D2")

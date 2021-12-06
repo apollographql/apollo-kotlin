@@ -15,7 +15,16 @@ fun List<GQLDirective>.findDeprecationReason() = firstOrNull { it.name == "depre
           ?: "No longer supported"
     }
 
-fun List<GQLDirective>.findOptional() = any { it.name == "optional" }
+/**
+ * @return `true` or `false` based on the `if` argument if the `optional` directive is present, `null` otherwise
+ */
+fun List<GQLDirective>.optionalValue(): Boolean? {
+  val directive = firstOrNull { it.name == "optional" } ?: return null
+  val argument = directive.arguments?.arguments?.firstOrNull { it.name == "if" }
+  // "if" argument defaults to true
+  return argument == null || argument.name == "if" && (argument.value as GQLBooleanValue).value
+}
+
 fun List<GQLDirective>.findNonnull() = any { it.name == "nonnull" }
 
 fun GQLDirective.isApollo() = name in listOf("optional", "nonnull")

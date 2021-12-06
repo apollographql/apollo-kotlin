@@ -2,6 +2,7 @@ package test
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.executeCacheAndNetwork
 import com.apollographql.apollo3.cache.normalized.normalizedCache
@@ -35,7 +36,7 @@ class CancelTest {
 
     val job = launch {
       delay(100)
-      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE)).execute()
+      apolloClient.query(EpisodeHeroNameQuery(Optional.Present(Episode.EMPIRE))).execute()
       error("The Flow should have been canceled before reaching that state")
     }
     job.cancel()
@@ -48,7 +49,7 @@ class CancelTest {
     val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).normalizedCache(MemoryCacheFactory()).build()
 
     val job = launch {
-      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE)).executeCacheAndNetwork().toList()
+      apolloClient.query(EpisodeHeroNameQuery(Optional.Present(Episode.EMPIRE))).executeCacheAndNetwork().toList()
     }
     delay(100)
     job.cancel()

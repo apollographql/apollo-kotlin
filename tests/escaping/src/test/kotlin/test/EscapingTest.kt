@@ -10,7 +10,7 @@ class EscapingTest {
   suspend fun test() {
     val response = ApolloClient.Builder().build()
         .query(WhileQuery(
-            `return` = "public",
+            `return` = Optional.Present("public"),
             `for` = Do(
                 `if` = Optional.Absent,
                 yield = Optional.Absent,
@@ -19,5 +19,6 @@ class EscapingTest {
         .execute()
     val `while`: WhileQuery.While? = response.dataAssertNoErrors.`while`
     val `if`: String? = `while`?.`if`
+    val `else`: String? = `while`?.`else`
   }
 }

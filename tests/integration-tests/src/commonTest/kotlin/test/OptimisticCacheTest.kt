@@ -54,7 +54,7 @@ class OptimisticCacheTest {
    */
   @Test
   fun programmaticOptimiticUpdates() = runTest(before = { setUp() }, after = { tearDown() }) {
-    val query = HeroAndFriendsNamesQuery(Episode.JEDI)
+    val query = HeroAndFriendsNamesQuery(Optional.Present(Episode.JEDI))
 
     mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNameResponse.json"))
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
@@ -99,7 +99,7 @@ class OptimisticCacheTest {
    */
   @Test
   fun two_optimistic_two_rollback() = runTest(before = { setUp() }, after = { tearDown() }) {
-    val query1 = HeroAndFriendsNamesWithIDsQuery(Episode.JEDI)
+    val query1 = HeroAndFriendsNamesWithIDsQuery(Optional.Present(Episode.JEDI))
     val mutationId1 = uuid4()
 
     // execute query1 from the network
@@ -292,7 +292,7 @@ class OptimisticCacheTest {
   @Test
   @Throws(Exception::class)
   fun two_optimistic_reverse_rollback_order() = runTest(before = { setUp() }, after = { tearDown() }) {
-    val query1 = HeroAndFriendsNamesWithIDsQuery(Episode.JEDI)
+    val query1 = HeroAndFriendsNamesWithIDsQuery(Optional.Present(Episode.JEDI))
     val mutationId1 = uuid4()
     val query2 = HeroNameWithIdQuery()
     val mutationId2 = uuid4()

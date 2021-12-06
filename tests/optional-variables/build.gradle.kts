@@ -11,5 +11,5 @@ dependencies {
 
 apollo {
   packageName.set("optional.variables")
-  generateOptionalOperationVariables.set(true)
+  generateOptionalOperationVariables.set(false)
 }
