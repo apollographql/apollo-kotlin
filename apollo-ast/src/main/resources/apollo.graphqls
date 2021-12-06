@@ -12,16 +12,9 @@ directive @optional(if: Boolean = true) on FIELD | VARIABLE_DEFINITION
 # and null in the other
 directive @nonnull(fields: String! = "") on OBJECT | FIELD
 
-# Whether to make all variables optional or required at the schema level (they are optional by default)
-# This can overridden with @optional
-directive @variables(optional: Boolean = false) on SCHEMA
-
 # Marks fields as key fields. Key fields are used to compute the cache key of an object
 # `keyFields` should contain a selection set. Composite fields are not supported yet.
 directive @typePolicy(keyFields: String!) on OBJECT
 
 # Indicates how to compute a key from a field arguments.
 directive @fieldPolicy(forField: String!, keyArgs: String!) on OBJECT
-
-
-

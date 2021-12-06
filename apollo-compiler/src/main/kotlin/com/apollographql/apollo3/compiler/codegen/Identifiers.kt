@@ -33,7 +33,6 @@ internal object Identifier {
 
   const val cacheKeyForObject = "cacheKeyForObject"
   const val field = "field"
-  const val variables = "variables"
   const val __map = "__map"
 
 
