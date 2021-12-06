@@ -39,18 +39,16 @@ val query = GetTodosQuery(Optional.Present(100), Optional.Present(0))
 
 ## Make nullable variables non optional
 
-If you want to make a variable non-optional in generated code, you can use the `@optional(if: false)` directive:
+You can opt out to optional variables globally in your Gradle config:
 
-```graphql{1}
-query GetTodos($first: Int @optional(if: false), $offset: Int @optional(if: false)) {
-  todos(first: $first, offset: $offset) {
-    id
-    text
-  }
+```kotlin
+apollo {
+  // ...
+  generateOptionalOperationVariables.set(false)
 }
 ```
 
-In that case, Apollo Android generates the following Kotlin code:
+In that case, for the query seen above, Apollo Android generates the following Kotlin code:
 
 ```kotlin
 class GetTodosQuery(val first: Int?, val offset: Int?)
@@ -67,11 +65,13 @@ val query = GetTodosQuery(100, 0)
 
 If you pass `null` as the value for either of these variables, Apollo Android sends `null` to the server _as the value of that variable_ instead of omitting it entirely.
 
-You can also opt out to optional variables globally in your Gradle config:
+This can also be configured on a per-variable basis, by setting the `@optional(if: false)` directive on the variables:
 
-```kotlin
-apollo {
-  // ...
-  generateOptionalOperationVariables.set(false)
+```graphql{1}
+query GetTodos($first: Int @optional(if: false), $offset: Int @optional(if: false)) {
+  todos(first: $first, offset: $offset) {
+    id
+    text
+  }
 }
 ```
