@@ -67,10 +67,10 @@ If you pass `null` as the value for either of these variables, Apollo Android se
 of that variable_ instead of omitting it entirely.
 
 While doing this could simplify your code globally, you may still need to omit variables in certain cases. To that
-effect, optional can be opted back in on a per-variable basis, by setting the `@optional(if: true)` directive:
+effect, optional can be opted back in on a per-variable basis, by setting the `@optional` directive:
 
 ```graphql{1}
-query GetTodos($first: Int @optional(if: true), $offset: Int @optional(if: true)) {
+query GetTodos($first: Int @optional, $offset: Int @optional) {
   todos(first: $first, offset: $offset) {
     id
     text
