@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler
 
-import java.util.Locale
 import java.util.regex.Pattern
 
 /**

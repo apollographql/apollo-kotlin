@@ -20,6 +20,7 @@ class VariablesTest {
     assertEquals(Optional.Present(null), NullableVariableQuery(Optional.Present(null)).param)
   }
 
+
   @Test
   fun nullableVariableWithOptionalFalseDirectivesDoesntGenerateOptional() {
     /**

@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.json.internal.buildJsonByteString
 import com.apollographql.apollo3.api.json.internal.writeAny
 import com.apollographql.apollo3.api.toJsonString
 import com.apollographql.apollo3.exception.ApolloNetworkException
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withTimeout
 
 /**
@@ -102,7 +103,11 @@ class AppSyncWsProtocol(
     override val name: String
       get() = "graphql-ws"
 
-    override fun create(webSocketConnection: WebSocketConnection, listener: Listener): WsProtocol {
+    override fun create(
+        webSocketConnection: WebSocketConnection,
+        listener: Listener,
+        scope: CoroutineScope
+    ): WsProtocol {
       return AppSyncWsProtocol(
           authorization = authorization,
           webSocketConnection = webSocketConnection,
