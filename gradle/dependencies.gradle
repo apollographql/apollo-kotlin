@@ -6,7 +6,7 @@ def versions = [
     antlr4              : '4.9.2',
     cache               : '2.0.2',
     guava               : '28.0-jre',
-    javaPoet            : '1.10.0',
+    javaPoet            : '1.13.0',
     jetbrainsAnnotations: '13.0',
     junit               : '4.13.2',
     kotlin              : '1.6.0',
