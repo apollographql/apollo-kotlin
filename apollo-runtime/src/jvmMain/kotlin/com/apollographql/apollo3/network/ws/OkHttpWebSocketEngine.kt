@@ -4,7 +4,7 @@ import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
 import com.apollographql.apollo3.internal.ChannelWrapper
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.channels.Channel
-import okhttp3.Headers
+import okhttp3.Headers.Companion.toHeaders
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -30,7 +30,7 @@ actual class DefaultWebSocketEngine(
     //println("opening $url")
     val request = Request.Builder()
         .url(url)
-        .headers(Headers.of(headers))
+        .headers(headers.toHeaders())
         .build()
 
     val webSocket = webSocketFactory.newWebSocket(request, object : WebSocketListener() {
@@ -54,7 +54,7 @@ actual class DefaultWebSocketEngine(
         messageChannel.close(t)
       }
 
-      override fun onClosing(webSocket: WebSocket?, code: Int, reason: String?) {
+      override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
         webSocketOpenResult.complete(Unit)
 
         val t = ApolloWebSocketClosedException(code, reason)
@@ -83,7 +83,7 @@ actual class DefaultWebSocketEngine(
 
       override fun send(data: ByteString) {
         //println("sendBytes: ${data.utf8()}")
-        if(!webSocket.send(data)) {
+        if (!webSocket.send(data)) {
           // The websocket is full or closed
           messageChannel.close()
         }
@@ -91,7 +91,7 @@ actual class DefaultWebSocketEngine(
 
       override fun send(string: String) {
         //println("sendText: $string")
-        if(!webSocket.send(string)) {
+        if (!webSocket.send(string)) {
           // The websocket is full or closed
           messageChannel.close()
         }

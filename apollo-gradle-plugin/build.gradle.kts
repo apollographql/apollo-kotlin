@@ -30,7 +30,7 @@ dependencies {
   add("shade", projects.apolloCompiler)
   add("shade", projects.apolloAst)
 
-  add("shade", groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4"))
+  add("shade", groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
   add("shade", groovy.util.Eval.x(project, "x.dep.moshi.moshi").toString()) {
     because("Needed for manual Json construction in `SchemaDownloader`")
   }
@@ -38,7 +38,7 @@ dependencies {
   testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.assertj"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer4"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer"))
 }
 
 if (true) {
