@@ -3,7 +3,6 @@ package com.apollographql.apollo3.compiler
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.toSchema
-import com.apollographql.apollo3.ast.validateAsSchema
 import com.apollographql.apollo3.compiler.introspection.toGQLDocument
 import com.apollographql.apollo3.compiler.introspection.toSchema
 import java.io.File
@@ -146,7 +145,7 @@ class Options(
      * Using [com.apollographql.apollo3.api.Optional] allows to omit the variables if needed but makes the
      * callsite more verbose in most cases.
      *
-     * Default: false
+     * Default: true
      */
     val generateOptionalOperationVariables: Boolean = defaultGenerateOptionalOperationVariables,
 ) {
@@ -254,7 +253,7 @@ class Options(
     const val defaultGenerateSchema = false
     const val defaultGenerateTestBuilders = false
     val defaultSealedClassesForEnumsMatching = emptyList<String>()
-    const val defaultGenerateOptionalOperationVariables = false
+    const val defaultGenerateOptionalOperationVariables = true
   }
 }
 

@@ -8,6 +8,7 @@ package com.example.deprecation
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
@@ -21,7 +22,7 @@ import kotlin.String
 import kotlin.Unit
 
 public data class TestQuery(
-  public val episode: Episode?
+  public val episode: Optional<Episode?> = Optional.Absent
 ) : Query<TestQuery.Data> {
   public override fun id(): String = OPERATION_ID
 

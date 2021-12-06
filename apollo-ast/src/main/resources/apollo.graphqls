@@ -1,8 +1,6 @@
-# Marks a field or variable as optional
-# When used on a variable definition, the corresponding variable will be optional. By default Apollo Android generates all variables as
-# non-optional because if the variable was added in the first place, it's usually to pass a value but setting this directive allows
-# to mark them optional again
-# See also @variables
+# Marks a field or variable definition as optional or required
+# By default Apollo Android generates all variables of nullable types as optional, in compliance with the GraphQL specification,
+# but this can be configured with this directive, because if the variable was added in the first place, it's usually to pass a value
 directive @optional(if: Boolean = true) on FIELD | VARIABLE_DEFINITION
 
 # Marks a field as non-null. The corresponding Kotlin property will be made non-nullable even if the GraphQL type is nullable.
@@ -13,16 +11,9 @@ directive @optional(if: Boolean = true) on FIELD | VARIABLE_DEFINITION
 # and null in the other
 directive @nonnull(fields: String! = "") on OBJECT | FIELD
 
-# Whether to make all variables optional at the schema level
-# This is false by default. This can overriden with @optional
-directive @variables(optional: Boolean = false) on SCHEMA
-
 # Marks fields as key fields. Key fields are used to compute the cache key of an object
 # `keyFields` should contain a selection set. Composite fields are not supported yet.
 directive @typePolicy(keyFields: String!) on OBJECT
 
 # Indicates how to compute a key from a field arguments.
 directive @fieldPolicy(forField: String!, keyArgs: String!) on OBJECT
-
-
-

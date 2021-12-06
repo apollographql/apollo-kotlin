@@ -285,7 +285,7 @@ interface Service {
    * Using [com.apollographql.apollo3.api.Optional] allows to omit the variables if needed but makes the
    * callsite more verbose in most cases.
    *
-   * Default: false
+   * Default: true
    */
   val generateOptionalOperationVariables: Property<Boolean>
 
@@ -361,7 +361,6 @@ interface Service {
    * ```
    * packageNamesFromFilePaths(rootPackageName)
    * codegenModels.set(MODELS_COMPAT)
-   * generateOptionalOperationVariables.set(true)
    * ```
    *
    * See the individual options for a more complete description.

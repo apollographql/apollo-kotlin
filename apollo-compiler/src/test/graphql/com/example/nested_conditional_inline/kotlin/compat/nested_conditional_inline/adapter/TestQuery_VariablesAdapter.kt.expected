@@ -7,9 +7,11 @@ package com.example.nested_conditional_inline.adapter
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.optional
 import com.example.nested_conditional_inline.TestQuery
 import com.example.nested_conditional_inline.type.adapter.Episode_ResponseAdapter
 import kotlin.IllegalStateException
@@ -24,7 +26,10 @@ public object TestQuery_VariablesAdapter : Adapter<TestQuery> {
     customScalarAdapters: CustomScalarAdapters,
     `value`: TestQuery
   ): Unit {
-    writer.name("episode")
-    Episode_ResponseAdapter.nullable().toJson(writer, customScalarAdapters, value.episode)
+    if (value.episode is Optional.Present) {
+      writer.name("episode")
+      Episode_ResponseAdapter.nullable().optional().toJson(writer, customScalarAdapters,
+          value.episode)
+    }
   }
 }

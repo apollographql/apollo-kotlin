@@ -1,39 +1,55 @@
 package test
 
 import com.apollographql.apollo3.api.Optional
-import optional.variables.DefaultValueParamsQuery
-import optional.variables.NonNullableParamsQuery
-import optional.variables.NullableParamsQuery
+import optional.variables.WithDirectiveDefaultValueParamsQuery
+import optional.variables.WithDirectiveNonNullableParamsQuery
+import optional.variables.WithDirectiveNullableParamsQuery
+import optional.variables.WithoutDirectiveDefaultValueParamsQuery
+import optional.variables.WithoutDirectiveNonNullableParamsQuery
+import optional.variables.WithoutDirectiveNullableParamsQuery
 import org.junit.Test
 
 class VariablesTest {
   @Test
-  fun nullableVariablesAreOptional() {
+  fun withDirectiveNullableVariablesAreOptional() {
     // By default, everything is absent. It is ok to omit everything
-    NullableParamsQuery()
+    WithDirectiveNullableParamsQuery()
     // But we can pass arguments
-    NullableParamsQuery(param1 = Optional.Present(0), param2 = Optional.Present(3.0))
+    WithDirectiveNullableParamsQuery(param1 = Optional.Present(0), param2 = Optional.Present(3.0))
     // Including null
-    NullableParamsQuery(param1 = Optional.Present(null), param2 = Optional.Present(null))
+    WithDirectiveNullableParamsQuery(param1 = Optional.Present(null), param2 = Optional.Present(null))
   }
 
   @Test
-  fun nonNullableVariablesAreNonOptional() {
+  fun withDirectiveNonNullableVariablesAreNonOptional() {
     // This doesn't compile, we need to set params
     // NonNullableParamsQuery()
     // But we can pass arguments
-    NonNullableParamsQuery(param1 = 0, param2 = 0.0)
+    WithDirectiveNonNullableParamsQuery(param1 = 0, param2 = 0.0)
     // But not null
     // NonNullableParamsQuery(param1 = null, param2 = null)
   }
 
   @Test
-  fun variablesWithDefaultValuesAreOptional() {
+  fun withDirectiveVariablesWithDefaultValuesAreOptional() {
     // By default, everything is absent. It is ok to omit everything
-    DefaultValueParamsQuery()
+    WithDirectiveDefaultValueParamsQuery()
     // But we can pass arguments
-    DefaultValueParamsQuery(param1 = Optional.Present(0), param2 = Optional.Present(3.0))
+    WithDirectiveDefaultValueParamsQuery(param1 = Optional.Present(0), param2 = Optional.Present(3.0))
     // Including null
-    DefaultValueParamsQuery(param1 = Optional.Present(null), param2 = Optional.Present(3.0))
+    WithDirectiveDefaultValueParamsQuery(param1 = Optional.Present(null), param2 = Optional.Present(3.0))
+  }
+
+
+  @Test
+  fun withoutDirective() {
+    // No optional parameters, since generateOptionalOperationVariables is set to false
+    WithoutDirectiveNullableParamsQuery(param1 = null, param2 = null)
+    WithoutDirectiveNonNullableParamsQuery(param1 = 0, param2 = 0.0)
+
+    // We still have optional in the presence of default values
+    WithoutDirectiveDefaultValueParamsQuery()
+    WithoutDirectiveDefaultValueParamsQuery(param1 = Optional.Present(0), param2 = Optional.Present(3.0))
+    WithoutDirectiveDefaultValueParamsQuery(param1 = Optional.Present(null), param2 = Optional.Present(3.0))
   }
 }

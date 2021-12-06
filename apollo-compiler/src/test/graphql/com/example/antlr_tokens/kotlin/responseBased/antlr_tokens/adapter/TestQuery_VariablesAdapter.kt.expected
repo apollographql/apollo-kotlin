@@ -8,8 +8,10 @@ package com.example.antlr_tokens.adapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.optional
 import com.example.antlr_tokens.TestQuery
 import kotlin.IllegalStateException
 import kotlin.Unit
@@ -23,7 +25,9 @@ public object TestQuery_VariablesAdapter : Adapter<TestQuery> {
     customScalarAdapters: CustomScalarAdapters,
     `value`: TestQuery
   ): Unit {
-    writer.name("operation")
-    NullableStringAdapter.toJson(writer, customScalarAdapters, value.operation)
+    if (value.operation is Optional.Present) {
+      writer.name("operation")
+      NullableStringAdapter.optional().toJson(writer, customScalarAdapters, value.operation)
+    }
   }
 }

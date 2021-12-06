@@ -6,6 +6,7 @@ import codegen.models.MergedFieldWithSameShapeQuery
 import codegen.models.type.Episode
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
@@ -51,7 +52,7 @@ class BasicTest {
   @Throws(Exception::class)
   fun heroParentTypeDependentField() = basicTest(
       "HeroParentTypeDependentField.json",
-      HeroParentTypeDependentFieldQuery(Episode.NEWHOPE)
+      HeroParentTypeDependentFieldQuery(Optional.Present(Episode.NEWHOPE))
   ) {
 
     assertFalse(hasErrors())
@@ -68,7 +69,7 @@ class BasicTest {
   @Test
   fun polymorphicDroidFieldsGetParsedToDroid() = basicTest(
       "MergedFieldWithSameShape_Droid.json",
-      MergedFieldWithSameShapeQuery(Episode.NEWHOPE)
+      MergedFieldWithSameShapeQuery(Optional.Present(Episode.NEWHOPE))
   ) {
     assertFalse(hasErrors())
     assertTrue(data?.hero?.onDroid != null)
@@ -78,7 +79,7 @@ class BasicTest {
   @Test
   fun polymorphicHumanFieldsGetParsedToHuman() = basicTest(
       "MergedFieldWithSameShape_Human.json",
-      MergedFieldWithSameShapeQuery(Episode.NEWHOPE)
+      MergedFieldWithSameShapeQuery(Optional.Present(Episode.NEWHOPE))
   ) {
     assertFalse(hasErrors())
     assertTrue(data?.hero?.onHuman != null)
