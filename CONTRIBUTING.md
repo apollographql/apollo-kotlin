@@ -3,8 +3,7 @@
 The Apollo team welcomes contributions of all kinds, including bug reports, documentation, test cases, bug fixes, and
 features.
 
-If you want to discuss the project or just say hi, stop
-by [the kotlinlang slack channel](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ)
+If you want to discuss the project or just say hi, stop by [the kotlinlang slack channel](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ)(get your invite [here](https://slack.kotl.in/))
 
 ## Project Setup
 
