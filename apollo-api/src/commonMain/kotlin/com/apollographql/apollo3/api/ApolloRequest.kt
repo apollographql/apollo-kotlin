@@ -15,11 +15,11 @@ private constructor(
     val operation: Operation<D>,
     val requestUuid: Uuid,
     override val executionContext: ExecutionContext,
-    override val httpMethod: HttpMethod,
-    override val httpHeaders: List<HttpHeader>,
-    override val sendApqExtensions: Boolean,
-    override val sendDocument: Boolean,
-    override val enableAutoPersistedQueries: Boolean,
+    override val httpMethod: HttpMethod?,
+    override val httpHeaders: List<HttpHeader>?,
+    override val sendApqExtensions: Boolean?,
+    override val sendDocument: Boolean?,
+    override val enableAutoPersistedQueries: Boolean?,
 ) : ExecutionOptions {
 
   fun newBuilder(): Builder<D> {
@@ -39,37 +39,37 @@ private constructor(
     private var requestUuid: Uuid = uuid4()
     override var executionContext: ExecutionContext = ExecutionContext.Empty
 
-    override var httpMethod: HttpMethod = ExecutionOptions.defaultHttpMethod
+    override var httpMethod: HttpMethod? = null
 
-    override fun httpMethod(httpMethod: HttpMethod): Builder<D> = apply {
+    override fun httpMethod(httpMethod: HttpMethod?): Builder<D> = apply {
       this.httpMethod = httpMethod
     }
 
-    override var httpHeaders: List<HttpHeader> = emptyList()
+    override var httpHeaders: List<HttpHeader>? = null
 
-    override fun httpHeaders(httpHeaders: List<HttpHeader>): Builder<D> = apply {
+    override fun httpHeaders(httpHeaders: List<HttpHeader>?): Builder<D> = apply {
       this.httpHeaders = httpHeaders
     }
 
     override fun addHttpHeader(name: String, value: String): Builder<D> = apply {
-      this.httpHeaders += HttpHeader(name, value)
+      this.httpHeaders = (this.httpHeaders ?: emptyList()) + HttpHeader(name, value)
     }
 
-    override var sendApqExtensions: Boolean = ExecutionOptions.defaultSendApqExtensions
+    override var sendApqExtensions: Boolean? = null
 
-    override fun sendApqExtensions(sendApqExtensions: Boolean): Builder<D> = apply {
+    override fun sendApqExtensions(sendApqExtensions: Boolean?): Builder<D> = apply {
       this.sendApqExtensions = sendApqExtensions
     }
 
-    override var sendDocument: Boolean = ExecutionOptions.defaultSendDocument
+    override var sendDocument: Boolean? = null
 
-    override fun sendDocument(sendDocument: Boolean): Builder<D> = apply {
+    override fun sendDocument(sendDocument: Boolean?): Builder<D> = apply {
       this.sendDocument = sendDocument
     }
 
-    override var enableAutoPersistedQueries = ExecutionOptions.defaultEnableAutoPersistedQueries
+    override var enableAutoPersistedQueries: Boolean? = null
 
-    override fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean): Builder<D> = apply {
+    override fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean?): Builder<D> = apply {
       this.enableAutoPersistedQueries = enableAutoPersistedQueries
     }
 

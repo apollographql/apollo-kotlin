@@ -47,11 +47,11 @@ private constructor(
     val interceptors: List<ApolloInterceptor>,
     override val executionContext: ExecutionContext,
     private val requestedDispatcher: CoroutineDispatcher?,
-    override val httpMethod: HttpMethod,
-    override val httpHeaders: List<HttpHeader>,
-    override val sendApqExtensions: Boolean,
-    override val sendDocument: Boolean,
-    override val enableAutoPersistedQueries: Boolean,
+    override val httpMethod: HttpMethod?,
+    override val httpHeaders: List<HttpHeader>?,
+    override val sendApqExtensions: Boolean?,
+    override val sendDocument: Boolean?,
+    override val enableAutoPersistedQueries: Boolean?,
 ) : ExecutionOptions {
   private val concurrencyInfo: ConcurrencyInfo
 
@@ -120,15 +120,27 @@ private constructor(
         .addExecutionContext(executionContext)
         .addExecutionContext(apolloRequest.executionContext)
         .httpMethod(httpMethod)
-        .httpMethod(apolloRequest.httpMethod)
         .httpHeaders(httpHeaders)
-        .httpHeaders(apolloRequest.httpHeaders)
         .sendApqExtensions(sendApqExtensions)
-        .sendApqExtensions(apolloRequest.sendApqExtensions)
         .sendDocument(sendDocument)
-        .sendDocument(apolloRequest.sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
-        .enableAutoPersistedQueries(apolloRequest.enableAutoPersistedQueries)
+        .apply {
+          if (apolloRequest.httpMethod != null) {
+            httpMethod(apolloRequest.httpMethod)
+          }
+          if (apolloRequest.httpHeaders != null) {
+            httpHeaders(apolloRequest.httpHeaders)
+          }
+          if (apolloRequest.sendApqExtensions != null) {
+            sendApqExtensions(apolloRequest.sendApqExtensions)
+          }
+          if (apolloRequest.sendDocument != null) {
+            sendDocument(apolloRequest.sendDocument)
+          }
+          if (apolloRequest.enableAutoPersistedQueries != null) {
+            enableAutoPersistedQueries(apolloRequest.enableAutoPersistedQueries)
+          }
+        }
         .build()
     // ensureNeverFrozen(request)
 
@@ -154,37 +166,37 @@ private constructor(
     private var httpEngine: HttpEngine? = null
     private var webSocketEngine: WebSocketEngine? = null
 
-    override var httpMethod: HttpMethod = ExecutionOptions.defaultHttpMethod
+    override var httpMethod: HttpMethod? = null
 
-    override fun httpMethod(httpMethod: HttpMethod): Builder = apply {
+    override fun httpMethod(httpMethod: HttpMethod?): Builder = apply {
       this.httpMethod = httpMethod
     }
 
-    override var httpHeaders: List<HttpHeader> = emptyList()
+    override var httpHeaders: List<HttpHeader>? = null
 
-    override fun httpHeaders(httpHeaders: List<HttpHeader>): Builder = apply {
+    override fun httpHeaders(httpHeaders: List<HttpHeader>?): Builder = apply {
       this.httpHeaders = httpHeaders
     }
 
     override fun addHttpHeader(name: String, value: String): Builder = apply {
-      this.httpHeaders += HttpHeader(name, value)
+      this.httpHeaders = (this.httpHeaders ?: emptyList()) + HttpHeader(name, value)
     }
 
-    override var sendApqExtensions: Boolean = ExecutionOptions.defaultSendApqExtensions
+    override var sendApqExtensions: Boolean? = null
 
-    override fun sendApqExtensions(sendApqExtensions: Boolean): Builder = apply {
+    override fun sendApqExtensions(sendApqExtensions: Boolean?): Builder = apply {
       this.sendApqExtensions = sendApqExtensions
     }
 
-    override var sendDocument: Boolean = ExecutionOptions.defaultSendDocument
+    override var sendDocument: Boolean? = null
 
-    override fun sendDocument(sendDocument: Boolean): Builder = apply {
+    override fun sendDocument(sendDocument: Boolean?): Builder = apply {
       this.sendDocument = sendDocument
     }
 
-    override var enableAutoPersistedQueries = ExecutionOptions.defaultEnableAutoPersistedQueries
+    override var enableAutoPersistedQueries: Boolean? = null
 
-    override fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean): Builder = apply {
+    override fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean?): Builder = apply {
       this.enableAutoPersistedQueries = enableAutoPersistedQueries
     }
 

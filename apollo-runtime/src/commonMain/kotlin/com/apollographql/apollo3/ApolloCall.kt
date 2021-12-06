@@ -24,47 +24,47 @@ abstract class ApolloCall<D : Operation.Data, E>(val apolloClient: ApolloClient,
     return this as E
   }
 
-  override var httpMethod: HttpMethod = ExecutionOptions.defaultHttpMethod
+  override var httpMethod: HttpMethod? = null
 
-  override fun httpMethod(httpMethod: HttpMethod): E {
+  override fun httpMethod(httpMethod: HttpMethod?): E {
     this.httpMethod = httpMethod
     @Suppress("UNCHECKED_CAST")
     return this as E
   }
 
-  override var httpHeaders: List<HttpHeader> = emptyList()
+  override var httpHeaders: List<HttpHeader>? = null
 
-  override fun httpHeaders(httpHeaders: List<HttpHeader>): E {
+  override fun httpHeaders(httpHeaders: List<HttpHeader>?): E {
     this.httpHeaders = httpHeaders
     @Suppress("UNCHECKED_CAST")
     return this as E
   }
 
   override fun addHttpHeader(name: String, value: String): E {
-    this.httpHeaders += HttpHeader(name, value)
+    this.httpHeaders = (this.httpHeaders ?: emptyList()) + HttpHeader(name, value)
     @Suppress("UNCHECKED_CAST")
     return this as E
   }
 
-  override var sendApqExtensions: Boolean = ExecutionOptions.defaultSendApqExtensions
+  override var sendApqExtensions: Boolean? = null
 
-  override fun sendApqExtensions(sendApqExtensions: Boolean): E {
+  override fun sendApqExtensions(sendApqExtensions: Boolean?): E {
     this.sendApqExtensions = sendApqExtensions
     @Suppress("UNCHECKED_CAST")
     return this as E
   }
 
-  override var sendDocument: Boolean = ExecutionOptions.defaultSendDocument
+  override var sendDocument: Boolean? = null
 
-  override fun sendDocument(sendDocument: Boolean): E {
+  override fun sendDocument(sendDocument: Boolean?): E {
     this.sendDocument = sendDocument
     @Suppress("UNCHECKED_CAST")
     return this as E
   }
 
-  override var enableAutoPersistedQueries = ExecutionOptions.defaultEnableAutoPersistedQueries
+  override var enableAutoPersistedQueries: Boolean? = null
 
-  override fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean): E  {
+  override fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean?): E  {
     this.enableAutoPersistedQueries = enableAutoPersistedQueries
     @Suppress("UNCHECKED_CAST")
     return this as E

@@ -35,12 +35,12 @@ class DefaultHttpRequestComposer(
     val requestHeaders = listOf(
         HttpHeader(HEADER_APOLLO_OPERATION_ID, operation.id()),
         HttpHeader(HEADER_APOLLO_OPERATION_NAME, operation.name())
-    ) + apolloRequest.httpHeaders
+    ) + (apolloRequest.httpHeaders ?: emptyList())
 
-    val sendApqExtensions = apolloRequest.sendApqExtensions
-    val sendDocument = apolloRequest.sendDocument
+    val sendApqExtensions = apolloRequest.sendApqExtensions ?: false
+    val sendDocument = apolloRequest.sendDocument ?: true
 
-    return when (apolloRequest.httpMethod) {
+    return when (apolloRequest.httpMethod ?: HttpMethod.Post) {
       HttpMethod.Get -> {
         HttpRequest.Builder(
             method = HttpMethod.Get,
@@ -286,8 +286,8 @@ class DefaultHttpRequestComposer(
         apolloRequest: ApolloRequest<D>,
     ): Map<String, Any?> {
       val operation = apolloRequest.operation
-      val sendApqExtensions = apolloRequest.sendApqExtensions
-      val sendDocument = apolloRequest.sendDocument
+      val sendApqExtensions = apolloRequest.sendApqExtensions ?: false
+      val sendDocument = apolloRequest.sendDocument ?: true
       val customScalarAdapters = apolloRequest.executionContext[CustomScalarAdapters] ?: error("Cannot find a ResponseAdapterCache")
 
       val query = if (sendDocument) operation.document() else null

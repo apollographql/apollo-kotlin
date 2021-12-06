@@ -9,27 +9,27 @@ interface ExecutionOptions {
   /**
    * Used by [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer]
    */
-  val httpMethod: HttpMethod
+  val httpMethod: HttpMethod?
 
   /**
    * Used by [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer]
    */
-  val httpHeaders: List<HttpHeader>
+  val httpHeaders: List<HttpHeader>?
 
   /**
    * Used by [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer]
    */
-  val sendApqExtensions: Boolean
+  val sendApqExtensions: Boolean?
 
   /**
    * Used by [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer]
    */
-  val sendDocument: Boolean
+  val sendDocument: Boolean?
 
   /**
    * Used by [com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor]
    */
-  val enableAutoPersistedQueries: Boolean
+  val enableAutoPersistedQueries: Boolean?
 
   companion object {
     val defaultEnableAutoPersistedQueries = false
@@ -49,21 +49,21 @@ interface MutableExecutionOptions<T> : ExecutionOptions {
    *
    * Default: [HttpMethod.Post]
    */
-  fun httpMethod(httpMethod: HttpMethod): T
+  fun httpMethod(httpMethod: HttpMethod?): T
 
   /**
    * Add HTTP headers to be sent with the request.
    */
-  fun httpHeaders(httpHeaders: List<HttpHeader>): T
+  fun httpHeaders(httpHeaders: List<HttpHeader>?): T
 
   /**
    * Add a HTTP header to be sent with the request.
    */
   fun addHttpHeader(name: String, value: String): T
 
-  fun sendApqExtensions(sendApqExtensions: Boolean): T
+  fun sendApqExtensions(sendApqExtensions: Boolean?): T
 
-  fun sendDocument(sendDocument: Boolean): T
+  fun sendDocument(sendDocument: Boolean?): T
 
-  fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean): T
+  fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean?): T
 }

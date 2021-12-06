@@ -17,7 +17,7 @@ internal class AutoPersistedQueryInterceptor(
 ) : ApolloInterceptor {
 
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-    val enabled = request.enableAutoPersistedQueries
+    val enabled = request.enableAutoPersistedQueries ?: true
 
     if (!enabled) {
       return chain.proceed(request)
