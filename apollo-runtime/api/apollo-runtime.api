@@ -304,7 +304,7 @@ public final class com/apollographql/apollo3/network/ws/AppSyncWsProtocol$Compan
 public final class com/apollographql/apollo3/network/ws/AppSyncWsProtocol$Factory : com/apollographql/apollo3/network/ws/WsProtocol$Factory {
 	public fun <init> (Ljava/util/Map;J)V
 	public synthetic fun <init> (Ljava/util/Map;JILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun create (Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;)Lcom/apollographql/apollo3/network/ws/WsProtocol;
+	public fun create (Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;Lkotlinx/coroutines/CoroutineScope;)Lcom/apollographql/apollo3/network/ws/WsProtocol;
 	public fun getName ()Ljava/lang/String;
 }
 
@@ -315,11 +315,11 @@ public final class com/apollographql/apollo3/network/ws/DefaultWebSocketEngine :
 }
 
 public final class com/apollographql/apollo3/network/ws/GraphQLWsProtocol : com/apollographql/apollo3/network/ws/WsProtocol {
-	public fun <init> (Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;JJLcom/apollographql/apollo3/network/ws/WsFrameType;Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;)V
-	public synthetic fun <init> (Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;JJLcom/apollographql/apollo3/network/ws/WsFrameType;Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;JJLcom/apollographql/apollo3/network/ws/WsFrameType;Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;Lkotlinx/coroutines/CoroutineScope;)V
+	public synthetic fun <init> (Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;JJLcom/apollographql/apollo3/network/ws/WsFrameType;Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun connectionInit (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun handleServerMessage (Ljava/util/Map;)V
-	public fun run (Lkotlinx/coroutines/CoroutineScope;)V
+	public fun run (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun startOperation (Lcom/apollographql/apollo3/api/ApolloRequest;)V
 	public fun stopOperation (Lcom/apollographql/apollo3/api/ApolloRequest;)V
 }
@@ -328,7 +328,7 @@ public final class com/apollographql/apollo3/network/ws/GraphQLWsProtocol$Factor
 	public fun <init> ()V
 	public fun <init> (Ljava/util/Map;JLjava/util/Map;Ljava/util/Map;JLcom/apollographql/apollo3/network/ws/WsFrameType;)V
 	public synthetic fun <init> (Ljava/util/Map;JLjava/util/Map;Ljava/util/Map;JLcom/apollographql/apollo3/network/ws/WsFrameType;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun create (Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;)Lcom/apollographql/apollo3/network/ws/WsProtocol;
+	public fun create (Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;Lkotlinx/coroutines/CoroutineScope;)Lcom/apollographql/apollo3/network/ws/WsProtocol;
 	public fun getName ()Ljava/lang/String;
 }
 
@@ -345,7 +345,7 @@ public final class com/apollographql/apollo3/network/ws/SubscriptionWsProtocol$F
 	public fun <init> ()V
 	public fun <init> (JLkotlin/jvm/functions/Function1;)V
 	public synthetic fun <init> (JLkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun create (Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;)Lcom/apollographql/apollo3/network/ws/WsProtocol;
+	public fun create (Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;Lkotlinx/coroutines/CoroutineScope;)Lcom/apollographql/apollo3/network/ws/WsProtocol;
 	public fun getName ()Ljava/lang/String;
 }
 
@@ -369,16 +369,11 @@ public final class com/apollographql/apollo3/network/ws/WebSocketEngineKt {
 	public static final field CLOSE_NORMAL I
 }
 
-public final class com/apollographql/apollo3/network/ws/WebSocketNetworkTransport : com/apollographql/apollo3/network/NetworkTransport, com/apollographql/apollo3/network/ws/WsProtocol$Listener {
+public final class com/apollographql/apollo3/network/ws/WebSocketNetworkTransport : com/apollographql/apollo3/network/NetworkTransport {
 	public synthetic fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/network/ws/WebSocketEngine;JLcom/apollographql/apollo3/network/ws/WsProtocol$Factory;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun dispose ()V
 	public fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
-	public fun generalError (Ljava/util/Map;)V
 	public final fun getSubscriptionCount ()Lkotlinx/coroutines/flow/StateFlow;
-	public fun networkError (Ljava/lang/Throwable;)V
-	public fun operationComplete (Ljava/lang/String;)V
-	public fun operationError (Ljava/lang/String;Ljava/util/Map;)V
-	public fun operationResponse (Ljava/lang/String;Ljava/util/Map;)V
 }
 
 public final class com/apollographql/apollo3/network/ws/WebSocketNetworkTransport$Builder {
@@ -390,16 +385,6 @@ public final class com/apollographql/apollo3/network/ws/WebSocketNetworkTranspor
 	public final fun webSocketEngine (Lcom/apollographql/apollo3/network/ws/WebSocketEngine;)Lcom/apollographql/apollo3/network/ws/WebSocketNetworkTransport$Builder;
 }
 
-public final class com/apollographql/apollo3/network/ws/WebSocketNetworkTransport$StartOperation : com/apollographql/apollo3/network/ws/WebSocketNetworkTransport$Command {
-	public fun <init> (Lcom/apollographql/apollo3/api/ApolloRequest;)V
-	public final fun getRequest ()Lcom/apollographql/apollo3/api/ApolloRequest;
-}
-
-public final class com/apollographql/apollo3/network/ws/WebSocketNetworkTransport$StopOperation : com/apollographql/apollo3/network/ws/WebSocketNetworkTransport$Command {
-	public fun <init> (Lcom/apollographql/apollo3/api/ApolloRequest;)V
-	public final fun getRequest ()Lcom/apollographql/apollo3/api/ApolloRequest;
-}
-
 public final class com/apollographql/apollo3/network/ws/WsFrameType : java/lang/Enum {
 	public static final field Binary Lcom/apollographql/apollo3/network/ws/WsFrameType;
 	public static final field Text Lcom/apollographql/apollo3/network/ws/WsFrameType;
@@ -409,12 +394,13 @@ public final class com/apollographql/apollo3/network/ws/WsFrameType : java/lang/
 
 public abstract class com/apollographql/apollo3/network/ws/WsProtocol {
 	public fun <init> (Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;)V
+	public fun close ()V
 	public abstract fun connectionInit (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected final fun getListener ()Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;
 	protected final fun getWebSocketConnection ()Lcom/apollographql/apollo3/network/ws/WebSocketConnection;
 	public abstract fun handleServerMessage (Ljava/util/Map;)V
 	protected final fun receiveMessageMap (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun run (Lkotlinx/coroutines/CoroutineScope;)V
+	public fun run (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected final fun sendMessageMap (Ljava/util/Map;Lcom/apollographql/apollo3/network/ws/WsFrameType;)V
 	protected final fun sendMessageMapBinary (Ljava/util/Map;)V
 	protected final fun sendMessageMapText (Ljava/util/Map;)V
@@ -426,7 +412,7 @@ public abstract class com/apollographql/apollo3/network/ws/WsProtocol {
 }
 
 public abstract interface class com/apollographql/apollo3/network/ws/WsProtocol$Factory {
-	public abstract fun create (Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;)Lcom/apollographql/apollo3/network/ws/WsProtocol;
+	public abstract fun create (Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;Lkotlinx/coroutines/CoroutineScope;)Lcom/apollographql/apollo3/network/ws/WsProtocol;
 	public abstract fun getName ()Ljava/lang/String;
 }
 
