@@ -160,6 +160,12 @@ private constructor(
               continue
             }
 
+            /**
+             * We start as [CoroutineStart.UNDISPATCHED] to make sure protocol.run() is always be called.
+             * I'm not 100% sure if protocol could be reset before starting to execute the coroutine
+             * so added this as an extra precaution. Maybe it's not required, but it shouldn't hurt
+             * so better safe than sorry...
+             */
             connectionJob = scope.launch(start = CoroutineStart.UNDISPATCHED) {
               protocol.run()
             }

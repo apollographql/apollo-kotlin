@@ -2,10 +2,6 @@ package com.apollographql.apollo3.network.ws.internal
 
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Operation
-import kotlinx.coroutines.channels.Channel
-
-internal class ConnectionHolder(val events: Channel<Event>) {
-}
 
 internal sealed interface Message
 internal sealed interface Command : Message
