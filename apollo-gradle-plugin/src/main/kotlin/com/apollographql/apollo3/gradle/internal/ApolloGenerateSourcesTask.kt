@@ -103,7 +103,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Input
   @get:Optional
-  abstract val generateKotlinModels: Property<Boolean>
+  abstract val targetLanguage: Property<TargetLanguage>
 
   @get:Input
   @get:Optional
@@ -188,11 +188,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
     val commonMetadata = commonMetadatas.singleOrNull()
     var outputCommonMetadata: CommonMetadata? = null
 
-    val targetLanguage = if (generateKotlinModels.get()) {
-      getKotlinTargetLanguage(project, languageVersion.orNull)
-    } else {
-      TargetLanguage.JAVA
-    }
     val incomingOptions = if (commonMetadata != null) {
       check(schemaFiles.files.isEmpty()) {
         "Specifying 'schemaFiles' has no effect as an upstream module already provided a schema"
@@ -225,6 +220,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       }
     }
 
+    val targetLanguage = targetLanguage.get()
     val flattenModels = when {
       targetLanguage == TargetLanguage.JAVA -> {
         check(flattenModels.isPresent.not()) {
@@ -284,7 +280,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       ApolloMetadata(
           commonMetadata = outputCommonMetadata,
           compilerMetadata = outputCompilerMetadata,
-          moduleName = project.name
+          moduleName = projectName.get()
       ).writeTo(metadataOutputFile)
     }
   }
