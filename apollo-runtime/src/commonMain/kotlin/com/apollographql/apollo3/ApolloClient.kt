@@ -346,7 +346,7 @@ private constructor(
           networkTransport
         } else {
           WebSocketNetworkTransport.Builder()
-              .serverUrl(webSocketServerUrl!!)
+              .serverUrl(url)
               .apply {
                 if (webSocketEngine != null) {
                   webSocketEngine(webSocketEngine!!)
