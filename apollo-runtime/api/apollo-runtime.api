@@ -53,7 +53,7 @@ public final class com/apollographql/apollo3/ApolloClient$Builder : com/apollogr
 	public fun setExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)V
 	public final fun subscriptionNetworkTransport (Lcom/apollographql/apollo3/network/NetworkTransport;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun webSocketEngine (Lcom/apollographql/apollo3/network/ws/WebSocketEngine;)Lcom/apollographql/apollo3/ApolloClient$Builder;
-	public final fun webSocketIdleTimeout (J)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public final fun webSocketIdleTimeoutMillis (J)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun webSocketServerUrl (Ljava/lang/String;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun wsProtocol (Lcom/apollographql/apollo3/network/ws/WsProtocol$Factory;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 }

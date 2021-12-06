@@ -23,11 +23,9 @@ import com.apollographql.apollo3.interceptor.NetworkInterceptor
 import com.apollographql.apollo3.internal.defaultDispatcher
 import com.apollographql.apollo3.mpp.assertMainThreadOnNative
 import com.apollographql.apollo3.network.NetworkTransport
-import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.network.http.HttpEngine
 import com.apollographql.apollo3.network.http.HttpInterceptor
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
-import com.apollographql.apollo3.network.ws.DefaultWebSocketEngine
 import com.apollographql.apollo3.network.ws.WebSocketEngine
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import com.apollographql.apollo3.network.ws.WsProtocol
@@ -132,7 +130,7 @@ private constructor(
     override var executionContext: ExecutionContext = ExecutionContext.Empty
     private var httpServerUrl: String? = null
     private var webSocketServerUrl: String? = null
-    private var webSocketIdleTimeout: Long? = null
+    private var webSocketIdleTimeoutMillis: Long? = null
     private var wsProtocolFactory: WsProtocol.Factory? = null
     private var httpEngine: HttpEngine? = null
     private var webSocketEngine: WebSocketEngine? = null
@@ -189,8 +187,8 @@ private constructor(
      *
      * See also [subscriptionNetworkTransport] for more customization
      */
-    fun webSocketIdleTimeout(webSocketIdleTimeout: Long) = apply {
-      this.webSocketIdleTimeout = webSocketIdleTimeout
+    fun webSocketIdleTimeoutMillis(webSocketIdleTimeoutMillis: Long) = apply {
+      this.webSocketIdleTimeoutMillis = webSocketIdleTimeoutMillis
     }
 
     /**
@@ -331,8 +329,8 @@ private constructor(
         check(webSocketEngine == null) {
           "Apollo: 'webSocketEngine' has no effect if 'subscriptionNetworkTransport' is set"
         }
-        check(webSocketIdleTimeout == null) {
-          "Apollo: 'webSocketIdleTimeout' has no effect if 'subscriptionNetworkTransport' is set"
+        check(webSocketIdleTimeoutMillis == null) {
+          "Apollo: 'webSocketIdleTimeoutMillis' has no effect if 'subscriptionNetworkTransport' is set"
         }
         check(wsProtocolFactory == null) {
           "Apollo: 'wsProtocolFactory' has no effect if 'subscriptionNetworkTransport' is set"
@@ -351,8 +349,8 @@ private constructor(
                 if (webSocketEngine != null) {
                   webSocketEngine(webSocketEngine!!)
                 }
-                if (webSocketIdleTimeout != null) {
-                  idleTimeoutMillis(webSocketIdleTimeout!!)
+                if (webSocketIdleTimeoutMillis != null) {
+                  idleTimeoutMillis(webSocketIdleTimeoutMillis!!)
                 }
                 if (wsProtocolFactory != null) {
                   protocol(wsProtocolFactory!!)
