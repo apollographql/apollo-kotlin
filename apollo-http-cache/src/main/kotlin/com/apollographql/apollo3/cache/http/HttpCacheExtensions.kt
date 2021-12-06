@@ -4,7 +4,6 @@ package com.apollographql.apollo3.cache.http
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.HasMutableExecutionContext
 import com.apollographql.apollo3.api.MutableExecutionOptions
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.network.http.HttpInfo
