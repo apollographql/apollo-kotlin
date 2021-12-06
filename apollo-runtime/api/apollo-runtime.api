@@ -167,11 +167,6 @@ public abstract interface class com/apollographql/apollo3/interceptor/ApolloInte
 	public abstract fun proceed (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
 }
 
-public final class com/apollographql/apollo3/interceptor/NetworkInterceptor : com/apollographql/apollo3/interceptor/ApolloInterceptor {
-	public fun <init> (Lcom/apollographql/apollo3/network/NetworkTransport;Lcom/apollographql/apollo3/network/NetworkTransport;Lkotlinx/coroutines/CoroutineDispatcher;)V
-	public fun intercept (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/interceptor/ApolloInterceptorChain;)Lkotlinx/coroutines/flow/Flow;
-}
-
 public abstract interface class com/apollographql/apollo3/network/NetworkTransport {
 	public abstract fun dispose ()V
 	public abstract fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;

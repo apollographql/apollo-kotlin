@@ -483,20 +483,12 @@ public abstract interface class com/apollographql/apollo3/api/ExecutionContext$K
 }
 
 public abstract interface class com/apollographql/apollo3/api/ExecutionOptions {
-	public static final field Companion Lcom/apollographql/apollo3/api/ExecutionOptions$Companion;
 	public abstract fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;
 	public abstract fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
 	public abstract fun getHttpHeaders ()Ljava/util/List;
 	public abstract fun getHttpMethod ()Lcom/apollographql/apollo3/api/http/HttpMethod;
 	public abstract fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public abstract fun getSendDocument ()Ljava/lang/Boolean;
-}
-
-public final class com/apollographql/apollo3/api/ExecutionOptions$Companion {
-	public final fun getDefaultEnableAutoPersistedQueries ()Z
-	public final fun getDefaultHttpMethod ()Lcom/apollographql/apollo3/api/http/HttpMethod;
-	public final fun getDefaultSendApqExtensions ()Z
-	public final fun getDefaultSendDocument ()Z
 }
 
 public final class com/apollographql/apollo3/api/FileUpload {
