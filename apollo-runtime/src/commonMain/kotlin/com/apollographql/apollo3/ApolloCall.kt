@@ -3,21 +3,55 @@ package com.apollographql.apollo3
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
-import com.apollographql.apollo3.api.HasMutableExecutionContext
+import com.apollographql.apollo3.api.ExecutionOptions
+import com.apollographql.apollo3.api.MutableExecutionOptions
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.api.http.HttpHeader
+import com.apollographql.apollo3.api.http.HttpMethod
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.single
 
-
-abstract class ApolloCall<D : Operation.Data, E : HasMutableExecutionContext<E>>
-(val apolloClient: ApolloClient, val operation: Operation<D>) : HasMutableExecutionContext<E> {
+abstract class ApolloCall<D : Operation.Data, E>(val apolloClient: ApolloClient, val operation: Operation<D>)
+  : MutableExecutionOptions<E> {
   override var executionContext: ExecutionContext = ExecutionContext.Empty
 
   override fun addExecutionContext(executionContext: ExecutionContext): E {
     this.executionContext += executionContext
+    @Suppress("UNCHECKED_CAST")
+    return this as E
+  }
+
+  override var httpMethod: HttpMethod = ExecutionOptions.defaultHttpMethod
+
+  override fun httpMethod(httpMethod: HttpMethod): E {
+    this.httpMethod = httpMethod
+    @Suppress("UNCHECKED_CAST")
+    return this as E
+  }
+
+  override var httpHeaders: List<HttpHeader> = emptyList()
+
+  override fun httpHeaders(httpHeaders: List<HttpHeader>): E {
+    this.httpHeaders = httpHeaders
+    @Suppress("UNCHECKED_CAST")
+    return this as E
+  }
+
+  override var sendApqExtensions: Boolean = ExecutionOptions.defaultSendApqExtensions
+
+  override fun sendApqExtensions(sendApqExtensions: Boolean): E {
+    this.sendApqExtensions = sendApqExtensions
+    @Suppress("UNCHECKED_CAST")
+    return this as E
+  }
+
+  override var sendDocument: Boolean = ExecutionOptions.defaultSendDocument
+
+  override fun sendDocument(sendDocument: Boolean): E {
+    this.sendDocument = sendDocument
     @Suppress("UNCHECKED_CAST")
     return this as E
   }

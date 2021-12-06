@@ -7,14 +7,16 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.CustomScalarType
 import com.apollographql.apollo3.api.ExecutionContext
+import com.apollographql.apollo3.api.ExecutionOptions
 import com.apollographql.apollo3.api.HasExecutionContext
 import com.apollographql.apollo3.api.HasMutableExecutionContext
+import com.apollographql.apollo3.api.MutableExecutionOptions
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.api.http.httpMethod
 import com.apollographql.apollo3.api.internal.Version2CustomTypeAdapterToAdapter
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
@@ -42,12 +44,16 @@ import kotlin.jvm.JvmStatic
 class ApolloClient
 private constructor(
     val networkTransport: NetworkTransport,
-    private val customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-    private val subscriptionNetworkTransport: NetworkTransport = networkTransport,
-    val interceptors: List<ApolloInterceptor> = emptyList(),
-    override val executionContext: ExecutionContext = ExecutionContext.Empty,
-    private val requestedDispatcher: CoroutineDispatcher? = null,
-) : HasExecutionContext {
+    private val customScalarAdapters: CustomScalarAdapters,
+    private val subscriptionNetworkTransport: NetworkTransport,
+    val interceptors: List<ApolloInterceptor>,
+    override val executionContext: ExecutionContext,
+    private val requestedDispatcher: CoroutineDispatcher?,
+    override val httpMethod: HttpMethod,
+    override val httpHeaders: List<HttpHeader>,
+    override val sendApqExtensions: Boolean,
+    override val sendDocument: Boolean,
+) : ExecutionOptions {
   private val concurrencyInfo: ConcurrencyInfo
 
   init {
@@ -119,7 +125,7 @@ private constructor(
   /**
    * A Builder used to create instances of [ApolloClient]
    */
-  class Builder : HasMutableExecutionContext<Builder> {
+  class Builder : MutableExecutionOptions<Builder> {
     private var _networkTransport: NetworkTransport? = null
     private var subscriptionNetworkTransport: NetworkTransport? = null
     private val customScalarAdaptersBuilder = CustomScalarAdapters.Builder()
@@ -134,6 +140,30 @@ private constructor(
     private var wsProtocolFactory: WsProtocol.Factory? = null
     private var httpEngine: HttpEngine? = null
     private var webSocketEngine: WebSocketEngine? = null
+
+    override var httpMethod: HttpMethod = ExecutionOptions.defaultHttpMethod
+
+    override fun httpMethod(httpMethod: HttpMethod): Builder = apply {
+      this.httpMethod = httpMethod
+    }
+
+    override var httpHeaders: List<HttpHeader> = emptyList()
+
+    override fun httpHeaders(httpHeaders: List<HttpHeader>): Builder = apply {
+      this.httpHeaders = httpHeaders
+    }
+
+    override var sendApqExtensions: Boolean = ExecutionOptions.defaultSendApqExtensions
+
+    override fun sendApqExtensions(sendApqExtensions: Boolean): Builder = apply {
+      this.sendApqExtensions = sendApqExtensions
+    }
+
+    override var sendDocument: Boolean = ExecutionOptions.defaultSendDocument
+
+    override fun sendDocument(sendDocument: Boolean): Builder = apply {
+      this.sendDocument = sendDocument
+    }
 
     /**
      * The url of the GraphQL server used for HTTP
