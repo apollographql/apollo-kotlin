@@ -30,13 +30,6 @@ interface ExecutionOptions {
    * Used by [com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor]
    */
   val enableAutoPersistedQueries: Boolean?
-
-  companion object {
-    val defaultEnableAutoPersistedQueries = false
-    val defaultHttpMethod = HttpMethod.Post
-    val defaultSendApqExtensions = false
-    val defaultSendDocument = true
-  }
 }
 
 
