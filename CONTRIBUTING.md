@@ -123,6 +123,7 @@ Sonatype ecosystem.
 
 After a successful release, do not forget to:
 * add the changelog to the [releases page](https://github.com/apollographql/apollo-android/releases).
+* also paste the changelog to the `CHANGELOG.md` file
 * merge pending documentation/tutorial updates
 * if it's a significant release, tweet about it 🐦
  
