@@ -7,6 +7,17 @@ _2021-12-07_
 
 This version is the release candidate for Apollo Android 3 🚀. Please try it and [report any issues](https://github.com/apollographql/apollo-android/issues/new/choose), we'll fix them urgently.
 
+There is [documentation](https://www.apollographql.com/docs/android/v3) and a [migration guide](https://www.apollographql.com/docs/android/v3/migration/3.0/). More details are coming soon. In a nutshell, Apollo Android 3 brings, amongst other things:
+
+* [coroutine APIs](https://www.apollographql.com/docs/android/v3/essentials/queries/) for easier concurrency
+* [multiplatform support](https://www.apollographql.com/docs/android/v3/advanced/kotlin-native/) makes it possible to run the same code on Android, JS, iOS, MacOS and linux
+* [responseBased codegen](https://www.apollographql.com/docs/android/v3/advanced/response-based-codegen/) is a new optional codegen that models fragments as interfaces
+* SQLite batching makes reading from the SQLite cache significantly faster
+* [Test builders](https://www.apollographql.com/docs/android/v3/advanced/test-builders/) offer a simple APIs to build fake models for your tests
+* [The @typePolicy and @fieldPolicy](https://www.apollographql.com/docs/android/v3/caching/declarative-ids/) directives make it easier to define your cache ids at compile time
+* [The @nonnull](https://www.apollographql.com/docs/android/v3/advanced/nonnull/) directive catches null values at parsing time, so you don't have to deal with them in your UI code
+
+
 Compared to `beta05`, this version changes the default value of `generateOptionalOperationVariables`, is compatible with Gradle configuration cache and fixes a few other issues.
 
 ## ⚙️ API changes
