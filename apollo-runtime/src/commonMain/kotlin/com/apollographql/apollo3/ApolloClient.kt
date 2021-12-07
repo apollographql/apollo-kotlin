@@ -23,13 +23,12 @@ import com.apollographql.apollo3.interceptor.NetworkInterceptor
 import com.apollographql.apollo3.internal.defaultDispatcher
 import com.apollographql.apollo3.mpp.assertMainThreadOnNative
 import com.apollographql.apollo3.network.NetworkTransport
-import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.network.http.HttpEngine
 import com.apollographql.apollo3.network.http.HttpInterceptor
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
-import com.apollographql.apollo3.network.ws.DefaultWebSocketEngine
 import com.apollographql.apollo3.network.ws.WebSocketEngine
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
+import com.apollographql.apollo3.network.ws.WsProtocol
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
@@ -131,44 +130,80 @@ private constructor(
     override var executionContext: ExecutionContext = ExecutionContext.Empty
     private var httpServerUrl: String? = null
     private var webSocketServerUrl: String? = null
+    private var webSocketIdleTimeoutMillis: Long? = null
+    private var wsProtocolFactory: WsProtocol.Factory? = null
     private var httpEngine: HttpEngine? = null
     private var webSocketEngine: WebSocketEngine? = null
 
     /**
-     * The url of the GraphQL server used for both HTTP and WebSockets
+     * The url of the GraphQL server used for HTTP
+     *
+     * This is the same as [httpServerUrl]
+     *
+     * See also [networkTransport] for more customization
      */
     fun serverUrl(serverUrl: String) = apply {
       httpServerUrl = serverUrl
-      webSocketServerUrl = serverUrl
     }
 
     /**
      * The url of the GraphQL server used for HTTP
+     *
+     * See also [networkTransport] for more customization
      */
     fun httpServerUrl(httpServerUrl: String) = apply {
       this.httpServerUrl = httpServerUrl
     }
 
     /**
-     * The url of the GraphQL server used for WebSockets
-     */
-    fun webSocketServerUrl(webSocketServerUrl: String) = apply {
-      this.webSocketServerUrl = webSocketServerUrl
-    }
-
-    /**
      * The [HttpEngine] to use for HTTP requests
      *
-     * For more customization, see also [networkTransport]
+     * See also [networkTransport] for more customization
      */
     fun httpEngine(httpEngine: HttpEngine) = apply {
       this.httpEngine = httpEngine
     }
 
     /**
+     * Adds [httpInterceptor] to the list of HTTP interceptors
+     *
+     * See also [networkTransport] for more customization
+     */
+    fun addHttpInterceptor(httpInterceptor: HttpInterceptor) = apply {
+      httpInterceptors += httpInterceptor
+    }
+
+    /**
+     * The url of the GraphQL server used for WebSockets
+     *
+     * See also [subscriptionNetworkTransport] for more customization
+     */
+    fun webSocketServerUrl(webSocketServerUrl: String) = apply {
+      this.webSocketServerUrl = webSocketServerUrl
+    }
+
+    /**
+     * The timeout after which an inactive WebSocket will be closed
+     *
+     * See also [subscriptionNetworkTransport] for more customization
+     */
+    fun webSocketIdleTimeoutMillis(webSocketIdleTimeoutMillis: Long) = apply {
+      this.webSocketIdleTimeoutMillis = webSocketIdleTimeoutMillis
+    }
+
+    /**
+     * The [WsProtocol.Factory] to use for websockets
+     *
+     * See also [subscriptionNetworkTransport] for more customization
+     */
+    fun wsProtocol(wsProtocolFactory: WsProtocol.Factory) = apply {
+      this.wsProtocolFactory = wsProtocolFactory
+    }
+
+    /**
      * The [WebSocketEngine] to use for WebSocket requests
      *
-     * For more customization, see also [subscriptionNetworkTransport]
+     * See also [subscriptionNetworkTransport] for more customization
      */
     fun webSocketEngine(webSocketEngine: WebSocketEngine) = apply {
       this.webSocketEngine = webSocketEngine
@@ -208,10 +243,6 @@ private constructor(
 
     fun addInterceptor(interceptor: ApolloInterceptor) = apply {
       _interceptors += interceptor
-    }
-
-    fun addHttpInterceptor(httpInterceptor: HttpInterceptor) = apply {
-      httpInterceptors += httpInterceptor
     }
 
     fun addInterceptors(interceptors: List<ApolloInterceptor>) = apply {
@@ -261,6 +292,9 @@ private constructor(
       enableAutoPersistedQueries(enableByDefault)
     }
 
+    /**
+     * Creates an [ApolloClient] from this [Builder]
+     */
     fun build(): ApolloClient {
       val networkTransport = if (_networkTransport != null) {
         check(httpServerUrl == null) {
@@ -279,7 +313,11 @@ private constructor(
         }
         HttpNetworkTransport.Builder()
             .serverUrl(httpServerUrl!!)
-            .httpEngine(httpEngine ?: DefaultHttpEngine())
+            .apply {
+              if (httpEngine != null) {
+                httpEngine(httpEngine!!)
+              }
+            }
             .interceptors(httpInterceptors)
             .build()
       }
@@ -291,17 +329,33 @@ private constructor(
         check(webSocketEngine == null) {
           "Apollo: 'webSocketEngine' has no effect if 'subscriptionNetworkTransport' is set"
         }
+        check(webSocketIdleTimeoutMillis == null) {
+          "Apollo: 'webSocketIdleTimeoutMillis' has no effect if 'subscriptionNetworkTransport' is set"
+        }
+        check(wsProtocolFactory == null) {
+          "Apollo: 'wsProtocolFactory' has no effect if 'subscriptionNetworkTransport' is set"
+        }
         subscriptionNetworkTransport!!
       } else {
         val url = webSocketServerUrl ?: httpServerUrl
         if (url == null) {
           // Fallback to the regular [NetworkTransport]. This is unlikely to work but chances are
-          // that the user is not going to use subscription so it's better than failing
+          // that the user is not going to use subscription, so it's better than failing
           networkTransport
         } else {
           WebSocketNetworkTransport.Builder()
-              .serverUrl(webSocketServerUrl!!)
-              .webSocketEngine(webSocketEngine ?: DefaultWebSocketEngine())
+              .serverUrl(url)
+              .apply {
+                if (webSocketEngine != null) {
+                  webSocketEngine(webSocketEngine!!)
+                }
+                if (webSocketIdleTimeoutMillis != null) {
+                  idleTimeoutMillis(webSocketIdleTimeoutMillis!!)
+                }
+                if (wsProtocolFactory != null) {
+                  protocol(wsProtocolFactory!!)
+                }
+              }
               .build()
         }
       }
