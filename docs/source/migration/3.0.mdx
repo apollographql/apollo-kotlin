@@ -551,26 +551,6 @@ Optional.presentIfNotNull(value)
 
 #### Non-optional variables generation
 
-As with 2.x, Apollo Android 3.x represents operation variables as optional parameters.
-
-Given the following query:
-
-```graphql
-query GetHero($id: String) {
-  hero(id: $id)
-}
-```
-
-Apollo Android generates:
-
-```kotlin
-// 2.x
-class GetHero(val id: Input<String?> = Input.absent())
-
-// 3.x
-class GetHero(val id: Optional<String?> = Optional.Absent)
-```
-
 By default, the [GraphQL spec](https://spec.graphql.org/draft/#sec-Coercing-Variable-Values) treats nullable variables as optional, so it's valid to omit them at runtime. In practice, however, this is rarely used and makes the operation's declaration verbose.
 
 That is why Apollo Android 3.x provides a mechanism to remove the `Optional` wrapper, which makes the construction of queries with nullable variables more straightforward.
