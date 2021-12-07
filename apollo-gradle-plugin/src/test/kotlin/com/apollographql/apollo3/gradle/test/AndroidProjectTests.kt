@@ -83,4 +83,12 @@ class AndroidProjectTests {
       executeTaskAndAssertSuccess(":build", dir)
     }
   }
+
+  @Test
+  fun `android with java`() {
+    withTestProject("android-java") {dir ->
+//      executeTaskAndAssertSuccess(":generateApolloSources", dir)
+      executeTaskAndAssertSuccess(":assembleDebug", dir)
+    }
+  }
 }
