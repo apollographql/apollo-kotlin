@@ -27,10 +27,10 @@ internal class DefaultDirectoryConnection(
   }
 
   override fun connectToAndroidVariant(variant: Any) {
-    connectToAndroidVariant(project, variant, outputDir)
+    connectToAndroidVariant(project, variant, outputDir, task.get())
   }
 
   override fun connectToAndroidSourceSet(name: String) {
-    connectToAndroidSourceSet(project, name, outputDir)
+    connectToAndroidSourceSet(project, name, outputDir, task.get())
   }
 }

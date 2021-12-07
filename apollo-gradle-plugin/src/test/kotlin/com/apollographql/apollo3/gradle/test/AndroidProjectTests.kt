@@ -6,7 +6,6 @@ import com.apollographql.apollo3.gradle.util.TestUtils.withProject
 import com.apollographql.apollo3.gradle.util.TestUtils.withTestProject
 import com.apollographql.apollo3.gradle.util.generatedChild
 import org.gradle.testkit.runner.TaskOutcome
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -58,7 +57,7 @@ class AndroidProjectTests {
 
   @Test
   fun `android application compiles variants for all flavors, build types and tests`() {
-    withTestProject("androidVariants") {dir ->
+    withTestProject("androidVariants") { dir ->
       // compile library variants
       executeTaskAndAssertSuccess(":compileDemoDebugKotlin", dir)
       executeTaskAndAssertSuccess(":compileDemoReleaseKotlin", dir)
@@ -78,9 +77,16 @@ class AndroidProjectTests {
 
   @Test
   fun `can connect outputDir to tests`() {
-    withTestProject("androidTestVariants") {dir ->
+    withTestProject("androidTestVariants") { dir ->
       // compile library variants
       executeTaskAndAssertSuccess(":build", dir)
+    }
+  }
+
+  @Test
+  fun `android with java`() {
+    withTestProject("android-java") { dir ->
+      executeTaskAndAssertSuccess(":assembleDebug", dir)
     }
   }
 }
