@@ -53,11 +53,16 @@ fun connectToAndroidSourceSet(project: Project, sourceSetName: String, outputDir
     }
   }
 
-  project.androidExtensionOrThrow
+  val androidSourceSet = project.androidExtensionOrThrow
       .sourceSets
       .getByName(sourceSetName)
-      .kotlinSourceSet()!!
-      .srcDir(outputDir)
+
+  val kotlinSourceSet = androidSourceSet.kotlinSourceSet()
+  if (kotlinSourceSet != null) {
+    kotlinSourceSet.srcDir(outputDir)
+  } else {
+    androidSourceSet.java.srcDir(outputDir)
+  }
 }
 
 fun connectToAndroidVariant(project: Project, variant: Any, outputDir: Provider<Directory>) {
