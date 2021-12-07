@@ -13,7 +13,7 @@ def versions = [
     kotlinPluginMin     : '1.4.0',
     kotlinCoroutines    : '1.5.2',
     moshi               : '1.12.0',
-    moshix              : '0.14.1',
+    moshix              : '0.13.0',
     okHttp              : '4.9.3',
     okio                : '3.0.0',
     rxjava              : '2.2.21',
