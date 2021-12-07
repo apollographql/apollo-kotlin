@@ -20,7 +20,7 @@ dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.sealedRuntime"))
 
-  ksp(groovy.util.Eval.x(project, "x.dep.moshi.sealedKsp"))
+  ksp(groovy.util.Eval.x(project, "x.dep.moshi.sealedCodegen"))
   ksp(groovy.util.Eval.x(project, "x.dep.moshi.ksp"))
 
   testImplementation(groovy.util.Eval.x(project, "x.dep.kotlinCompileTesting"))
