@@ -7,12 +7,11 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.HasMutableExecutionContext
+import com.apollographql.apollo3.api.MutableExecutionOptions
 import com.apollographql.apollo3.api.http.HttpBody
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
-import com.apollographql.apollo3.api.http.addHttpHeader
 import com.apollographql.apollo3.api.http.valueOf
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
@@ -46,10 +45,10 @@ import kotlin.jvm.JvmStatic
  * Some servers might have a per-HTTP-call cache making it faster to resolve 1 big array
  * of n queries compared to resolving the n queries separately.
  *
- * Because [ApolloCall.execute] suspends, it only makes sense to use query batching when queries are
+ * Because [com.apollographql.apollo3.ApolloQueryCall.execute] suspends, it only makes sense to use query batching when queries are
  * executed from different coroutines. Use [async] to create a new coroutine if needed
  *
- * [BatchingHttpEngine] buffers the whole response so it might additionally introduce some
+ * [BatchingHttpEngine] buffers the whole response, so it might additionally introduce some
  * client-side latency as it cannot amortize parsing/building the models during network I/O.
  *
  * [BatchingHttpEngine] only works with Post requests. Trying to batch a Get requests is undefined.
@@ -60,7 +59,7 @@ import kotlin.jvm.JvmStatic
 class BatchingHttpEngine @JvmOverloads constructor(
     val delegate: HttpEngine = DefaultHttpEngine(),
     val batchIntervalMillis: Long = 10,
-    val maxBatchSize: Int = 10,
+    private val maxBatchSize: Int = 10,
 ) : HttpEngine {
   private val dispatcher = BackgroundDispatcher()
   private val scope = CoroutineScope(dispatcher.coroutineDispatcher)
@@ -229,6 +228,6 @@ class BatchingHttpEngine @JvmOverloads constructor(
   }
 }
 
-fun <T> HasMutableExecutionContext<T>.canBeBatched(canBeBatched: Boolean) where T : HasMutableExecutionContext<T> = addHttpHeader(
+fun <T> MutableExecutionOptions<T>.canBeBatched(canBeBatched: Boolean) = addHttpHeader(
     CAN_BE_BATCHED, canBeBatched.toString()
 )

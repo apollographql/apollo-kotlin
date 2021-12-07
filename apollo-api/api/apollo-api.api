@@ -28,22 +28,50 @@ public final class com/apollographql/apollo3/api/Adapters {
 	public static synthetic fun -toJson$default (Lcom/apollographql/apollo3/api/Adapter;Ljava/lang/Object;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/String;ILjava/lang/Object;)Ljava/lang/String;
 }
 
-public final class com/apollographql/apollo3/api/ApolloRequest : com/apollographql/apollo3/api/HasExecutionContext {
-	public synthetic fun <init> (Lcom/apollographql/apollo3/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo3/api/ExecutionContext;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+public final class com/apollographql/apollo3/api/ApolloRequest : com/apollographql/apollo3/api/ExecutionOptions {
+	public synthetic fun <init> (Lcom/apollographql/apollo3/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo3/api/ExecutionContext;Lcom/apollographql/apollo3/api/http/HttpMethod;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;
 	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
+	public fun getHttpHeaders ()Ljava/util/List;
+	public fun getHttpMethod ()Lcom/apollographql/apollo3/api/http/HttpMethod;
 	public final fun getOperation ()Lcom/apollographql/apollo3/api/Operation;
 	public final fun getRequestUuid ()Ljava/util/UUID;
+	public fun getSendApqExtensions ()Ljava/lang/Boolean;
+	public fun getSendDocument ()Ljava/lang/Boolean;
 	public final fun newBuilder ()Lcom/apollographql/apollo3/api/ApolloRequest$Builder;
 }
 
-public final class com/apollographql/apollo3/api/ApolloRequest$Builder : com/apollographql/apollo3/api/HasMutableExecutionContext {
+public final class com/apollographql/apollo3/api/ApolloRequest$Builder : com/apollographql/apollo3/api/MutableExecutionOptions {
 	public fun <init> (Lcom/apollographql/apollo3/api/Operation;)V
 	public fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ApolloRequest$Builder;
-	public synthetic fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
+	public synthetic fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Ljava/lang/Object;
+	public fun addHttpHeader (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/api/ApolloRequest$Builder;
+	public synthetic fun addHttpHeader (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;
 	public final fun build ()Lcom/apollographql/apollo3/api/ApolloRequest;
+	public fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/api/ApolloRequest$Builder;
+	public synthetic fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Ljava/lang/Object;
+	public final fun executionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ApolloRequest$Builder;
+	public fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;
 	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
+	public fun getHttpHeaders ()Ljava/util/List;
+	public fun getHttpMethod ()Lcom/apollographql/apollo3/api/http/HttpMethod;
+	public fun getSendApqExtensions ()Ljava/lang/Boolean;
+	public fun getSendDocument ()Ljava/lang/Boolean;
+	public fun httpHeaders (Ljava/util/List;)Lcom/apollographql/apollo3/api/ApolloRequest$Builder;
+	public synthetic fun httpHeaders (Ljava/util/List;)Ljava/lang/Object;
+	public fun httpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)Lcom/apollographql/apollo3/api/ApolloRequest$Builder;
+	public synthetic fun httpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)Ljava/lang/Object;
 	public final fun requestUuid (Ljava/util/UUID;)Lcom/apollographql/apollo3/api/ApolloRequest$Builder;
+	public fun sendApqExtensions (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/api/ApolloRequest$Builder;
+	public synthetic fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
+	public fun sendDocument (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/api/ApolloRequest$Builder;
+	public synthetic fun sendDocument (Ljava/lang/Boolean;)Ljava/lang/Object;
+	public fun setEnableAutoPersistedQueries (Ljava/lang/Boolean;)V
 	public fun setExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)V
+	public fun setHttpHeaders (Ljava/util/List;)V
+	public fun setHttpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)V
+	public fun setSendApqExtensions (Ljava/lang/Boolean;)V
+	public fun setSendDocument (Ljava/lang/Boolean;)V
 }
 
 public final class com/apollographql/apollo3/api/ApolloResponse {
@@ -454,6 +482,15 @@ public final class com/apollographql/apollo3/api/ExecutionContext$Element$Defaul
 public abstract interface class com/apollographql/apollo3/api/ExecutionContext$Key {
 }
 
+public abstract interface class com/apollographql/apollo3/api/ExecutionOptions {
+	public abstract fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;
+	public abstract fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
+	public abstract fun getHttpHeaders ()Ljava/util/List;
+	public abstract fun getHttpMethod ()Lcom/apollographql/apollo3/api/http/HttpMethod;
+	public abstract fun getSendApqExtensions ()Ljava/lang/Boolean;
+	public abstract fun getSendDocument ()Ljava/lang/Boolean;
+}
+
 public final class com/apollographql/apollo3/api/FileUpload {
 	public static final fun content (Lcom/apollographql/apollo3/api/DefaultUpload$Builder;Ljava/io/File;)Lcom/apollographql/apollo3/api/DefaultUpload$Builder;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/api/Upload;
@@ -466,14 +503,6 @@ public abstract interface class com/apollographql/apollo3/api/Fragment : com/apo
 }
 
 public abstract interface class com/apollographql/apollo3/api/Fragment$Data : com/apollographql/apollo3/api/Executable$Data {
-}
-
-public abstract interface class com/apollographql/apollo3/api/HasExecutionContext {
-	public abstract fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
-}
-
-public abstract interface class com/apollographql/apollo3/api/HasMutableExecutionContext : com/apollographql/apollo3/api/HasExecutionContext {
-	public abstract fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
 }
 
 public final class com/apollographql/apollo3/api/ImmutableMapBuilder {
@@ -518,6 +547,16 @@ public final class com/apollographql/apollo3/api/ListAdapter : com/apollographql
 	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Ljava/util/List;
 	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/Object;)V
 	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/util/List;)V
+}
+
+public abstract interface class com/apollographql/apollo3/api/MutableExecutionOptions : com/apollographql/apollo3/api/ExecutionOptions {
+	public abstract fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Ljava/lang/Object;
+	public abstract fun addHttpHeader (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;
+	public abstract fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Ljava/lang/Object;
+	public abstract fun httpHeaders (Ljava/util/List;)Ljava/lang/Object;
+	public abstract fun httpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)Ljava/lang/Object;
+	public abstract fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
+	public abstract fun sendDocument (Ljava/lang/Boolean;)Ljava/lang/Object;
 }
 
 public abstract interface class com/apollographql/apollo3/api/Mutation : com/apollographql/apollo3/api/Operation {
@@ -668,19 +707,6 @@ public abstract interface class com/apollographql/apollo3/api/http/HttpBody {
 	public abstract fun getContentLength ()J
 	public abstract fun getContentType ()Ljava/lang/String;
 	public abstract fun writeTo (Lokio/BufferedSink;)V
-}
-
-public final class com/apollographql/apollo3/api/http/HttpContext {
-	public static final fun addHttpHeader (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Lcom/apollographql/apollo3/api/http/HttpHeader;)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
-	public static final fun addHttpHeader (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
-	public static final fun addHttpHeaders (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Ljava/util/List;)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
-	public static final fun getHttpHeaders (Lcom/apollographql/apollo3/api/HasExecutionContext;)Ljava/util/List;
-	public static final fun getHttpMethod (Lcom/apollographql/apollo3/api/HasExecutionContext;)Lcom/apollographql/apollo3/api/http/HttpMethod;
-	public static final fun getSendApqExtensions (Lcom/apollographql/apollo3/api/HasExecutionContext;)Z
-	public static final fun getSendDocument (Lcom/apollographql/apollo3/api/HasExecutionContext;)Z
-	public static final fun httpMethod (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Lcom/apollographql/apollo3/api/http/HttpMethod;)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
-	public static final fun sendApqExtensions (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Z)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
-	public static final fun sendDocument (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Z)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
 }
 
 public final class com/apollographql/apollo3/api/http/HttpHeader {

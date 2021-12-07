@@ -36,10 +36,10 @@ public final class com/apollographql/apollo3/cache/http/DiskLruHttpCache$Compani
 
 public final class com/apollographql/apollo3/cache/http/HttpCache {
 	public static final fun configureApolloClientBuilder (Lcom/apollographql/apollo3/ApolloClient$Builder;Ljava/io/File;J)Lcom/apollographql/apollo3/ApolloClient$Builder;
-	public static final fun httpDoNotStore (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Z)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
-	public static final fun httpExpireAfterRead (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Z)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
-	public static final fun httpExpireTimeout (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;J)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
-	public static final fun httpFetchPolicy (Lcom/apollographql/apollo3/api/HasMutableExecutionContext;Lcom/apollographql/apollo3/cache/http/HttpFetchPolicy;)Lcom/apollographql/apollo3/api/HasMutableExecutionContext;
+	public static final fun httpDoNotStore (Lcom/apollographql/apollo3/api/MutableExecutionOptions;Z)Ljava/lang/Object;
+	public static final fun httpExpireAfterRead (Lcom/apollographql/apollo3/api/MutableExecutionOptions;Z)Ljava/lang/Object;
+	public static final fun httpExpireTimeout (Lcom/apollographql/apollo3/api/MutableExecutionOptions;J)Ljava/lang/Object;
+	public static final fun httpFetchPolicy (Lcom/apollographql/apollo3/api/MutableExecutionOptions;Lcom/apollographql/apollo3/cache/http/HttpFetchPolicy;)Ljava/lang/Object;
 	public static final fun isFromHttpCache (Lcom/apollographql/apollo3/api/ApolloResponse;)Z
 }
 

@@ -8,7 +8,7 @@ import com.apollographql.apollo3.ApolloQueryCall
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
-import com.apollographql.apollo3.api.HasMutableExecutionContext
+import com.apollographql.apollo3.api.MutableExecutionOptions
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
@@ -137,30 +137,30 @@ fun ApolloClient.clearNormalizedCache() = apolloStore.clearAll()
  * Sets the initial [FetchPolicy]
  * This only has effects for queries. Mutations and subscriptions always use [FetchPolicy.NetworkOnly]
  */
-fun <T : HasMutableExecutionContext<T>> HasMutableExecutionContext<T>.fetchPolicy(fetchPolicy: FetchPolicy) = addExecutionContext(
+fun <T> MutableExecutionOptions<T>.fetchPolicy(fetchPolicy: FetchPolicy) = addExecutionContext(
     FetchPolicyContext(fetchPolicy)
 )
 
 /**
  * Sets the [FetchPolicy] used when watching queries and a cache change has been published
  */
-fun <T : HasMutableExecutionContext<T>> HasMutableExecutionContext<T>.refetchPolicy(fetchPolicy: FetchPolicy) = addExecutionContext(
+fun <T> MutableExecutionOptions<T>.refetchPolicy(fetchPolicy: FetchPolicy) = addExecutionContext(
     RefetchPolicyContext(fetchPolicy)
 )
 
-fun <T : HasMutableExecutionContext<T>> HasMutableExecutionContext<T>.doNotStore(doNotStore: Boolean) = addExecutionContext(
+fun <T> MutableExecutionOptions<T>.doNotStore(doNotStore: Boolean) = addExecutionContext(
     DoNotStoreContext(doNotStore)
 )
 
-fun <T : HasMutableExecutionContext<T>> HasMutableExecutionContext<T>.storePartialResponses(storePartialResponses: Boolean) = addExecutionContext(
+fun <T> MutableExecutionOptions<T>.storePartialResponses(storePartialResponses: Boolean) = addExecutionContext(
     StorePartialResponsesContext(storePartialResponses)
 )
 
-fun <T : HasMutableExecutionContext<T>> HasMutableExecutionContext<T>.cacheHeaders(cacheHeaders: CacheHeaders) = addExecutionContext(
+fun <T> MutableExecutionOptions<T>.cacheHeaders(cacheHeaders: CacheHeaders) = addExecutionContext(
     CacheHeadersContext(cacheHeaders)
 )
 
-fun <T : HasMutableExecutionContext<T>> HasMutableExecutionContext<T>.writeToCacheAsynchronously(writeToCacheAsynchronously: Boolean) = addExecutionContext(
+fun <T> MutableExecutionOptions<T>.writeToCacheAsynchronously(writeToCacheAsynchronously: Boolean) = addExecutionContext(
     WriteToCacheAsynchronouslyContext(writeToCacheAsynchronously)
 )
 
