@@ -18,7 +18,7 @@ kotlin {
 
     val jvmMain by getting {
       dependencies {
-        implementation(groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer4"))
+        implementation(groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer"))
       }
     }
 

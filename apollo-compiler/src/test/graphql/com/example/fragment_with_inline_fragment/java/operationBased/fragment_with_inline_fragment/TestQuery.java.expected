@@ -62,7 +62,8 @@ public class TestQuery implements Query<TestQuery.Data> {
    *       }
    *     }
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query TestQuery { hero { __typename name ...HeroDetails appearsIn } }  fragment HumanDetails on Human { name }  fragment DroidDetails on Droid { name primaryFunction }  fragment HeroDetails on Character { __typename ...HumanDetails ... on Droid { __typename ...DroidDetails } name friendsConnection { totalCount edges { node { name } } } }";
 
   public static final String OPERATION_NAME = "TestQuery";

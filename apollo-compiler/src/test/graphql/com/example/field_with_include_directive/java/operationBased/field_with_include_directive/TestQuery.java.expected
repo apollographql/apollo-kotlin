@@ -35,7 +35,8 @@ public class TestQuery implements Query<TestQuery.Data> {
    *       totalCount
    *     }
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query TestQuery($includeName: Boolean!, $skipFriends: Boolean!) @operationDirective(dummy: \"hello\") { hero { name @include(if: $includeName) friendsConnection @skip(if: $skipFriends) { totalCount } } }";
 
   public static final String OPERATION_NAME = "TestQuery";

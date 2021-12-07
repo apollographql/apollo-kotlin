@@ -59,7 +59,8 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
    *       }
    *     }
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query HeroDetailQuery { heroDetailQuery { __typename name friends { name } ... on Human { height friends { appearsIn friends { __typename ...HeroDetails } } } } }  fragment HeroDetails on Character { name friendsConnection { totalCount edges { node { name } } } }";
 
   public static final String OPERATION_NAME = "HeroDetailQuery";

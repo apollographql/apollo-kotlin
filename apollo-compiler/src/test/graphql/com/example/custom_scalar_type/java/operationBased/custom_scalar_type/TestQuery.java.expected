@@ -36,7 +36,8 @@ public class TestQuery implements Query<TestQuery.Data> {
    *     profileLink
    *     links
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query TestQuery { hero { name birthDate appearanceDates fieldWithUnsupportedType profileLink links } }";
 
   public static final String OPERATION_NAME = "TestQuery";

@@ -33,7 +33,8 @@ public class TestQuery implements Query<TestQuery.Data> {
    *     null(fragment: $operation)
    *     alias: null(fragment: "A string\nwith a new line")
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query TestQuery($operation: String) { typeWithGraphQLKeywords { on null(fragment: $operation) alias: null(fragment: \"A string\\nwith a new line\") } }";
 
   public static final String OPERATION_NAME = "TestQuery";

@@ -30,7 +30,8 @@ public class LoginBarber implements Mutation<LoginBarber.Data> {
    *   login(input: $input) {
    *     response
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "mutation LoginBarber($input: Login!) { login(input: $input) { response } }";
 
   public static final String OPERATION_NAME = "LoginBarber";

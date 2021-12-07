@@ -47,7 +47,8 @@ public class TestQuery implements Query<TestQuery.Data> {
    *     ...fragment1
    *     ...fragment2
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query TestQuery { a { __typename ...aFragment } }  fragment fragment1 on ANode { field1 }  fragment fragment2 on ANode { field2 }  fragment aFragment on A { node { __typename ...fragment1 ...fragment2 } }";
 
   public static final String OPERATION_NAME = "TestQuery";

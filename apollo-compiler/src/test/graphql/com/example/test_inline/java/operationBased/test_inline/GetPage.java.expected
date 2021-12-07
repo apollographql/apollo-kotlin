@@ -41,7 +41,8 @@ public class GetPage implements Query<GetPage.Data> {
    *       }
    *     }
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query GetPage { collection { __typename items { title } ... on ParticularCollection { items { __typename ... on ParticularItem { image } } } } }";
 
   public static final String OPERATION_NAME = "GetPage";

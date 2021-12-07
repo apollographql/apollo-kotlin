@@ -43,7 +43,8 @@ public class TestQuery implements Query<TestQuery.Data> {
    *       }
    *     }
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query TestQuery { hero { __typename ...HeroDetails } }  fragment HeroDetails on Character { name friendsConnection { totalCount edges { node { name } } } }";
 
   public static final String OPERATION_NAME = "TestQuery";

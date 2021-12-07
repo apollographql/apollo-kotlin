@@ -48,7 +48,8 @@ public class GetUser implements Query<GetUser.Data> {
    *       ...UserFragment
    *     }
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query GetUser($organizationId: String!, $query: UserQuery!, $size: Int!) { __typename ...QueryFragment }  fragment UserFragment on User { firstName lastName avatar(size: $size) }  fragment QueryFragment on Query { organization(id: $organizationId) { id user(query: $query) { __typename ...UserFragment } } }";
 
   public static final String OPERATION_NAME = "GetUser";

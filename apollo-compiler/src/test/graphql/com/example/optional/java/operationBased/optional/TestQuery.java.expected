@@ -32,7 +32,8 @@ public class TestQuery implements Query<TestQuery.Data> {
    *     name
    *     appearsIn
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query TestQuery { hero { name appearsIn } }";
 
   public static final String OPERATION_NAME = "TestQuery";

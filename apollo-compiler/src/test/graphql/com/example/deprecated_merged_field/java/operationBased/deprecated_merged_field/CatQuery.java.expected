@@ -41,7 +41,8 @@ public class CatQuery implements Query<CatQuery.Data> {
    *   ... on Dog {
    *     name
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query CatQuery { cat { __typename ...AnimalFragment } }  fragment AnimalFragment on Animal { __typename ... on Cat { name } ... on Dog { name } }";
 
   public static final String OPERATION_NAME = "CatQuery";

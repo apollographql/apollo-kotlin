@@ -43,7 +43,8 @@ public class TestQuery implements Query<TestQuery.Data> {
    *       primaryFunction
    *     }
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query TestQuery { hero { __typename ... on Character { __typename id ... on Character { name } } ... on Human { height } ... on Droid { primaryFunction } } }";
 
   public static final String OPERATION_NAME = "TestQuery";

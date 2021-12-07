@@ -43,7 +43,8 @@ public class TestQuery implements Mutation<TestQuery.Data> {
    *     stars
    *     commentary
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "mutation TestQuery($ep: Episode!) { createReview(episode: $ep, review: { stars: 5 listOfEnums: [JEDI,EMPIRE,NEWHOPE] listOfStringNonOptional: [\"1\",\"2\",\"3\"] favoriteColor: { red: 1 blue: 1 }  } ) { stars commentary } }";
 
   public static final String OPERATION_NAME = "TestQuery";

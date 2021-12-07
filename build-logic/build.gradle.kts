@@ -14,7 +14,7 @@ group = "com.apollographql.apollo3"
 
 dependencies {
   compileOnly(groovy.util.Eval.x(project, "x.dep.gradleApi"))
-  implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4"))
+  implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
 
   compileOnly(groovy.util.Eval.x(project, "x.dep.kotlin.reflect").toString()) {

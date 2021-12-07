@@ -8,7 +8,7 @@ import com.apollographql.apollo3.exception.ApolloNetworkException
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
 import okhttp3.Headers
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -25,7 +25,7 @@ actual class DefaultHttpEngine constructor(
   // an overload that takes an OkHttpClient for easier discovery
   constructor(okHttpClient: OkHttpClient) : this(okHttpClient as Call.Factory)
 
-  actual constructor(timeoutMillis: Long): this(timeoutMillis, timeoutMillis)
+  actual constructor(timeoutMillis: Long) : this(timeoutMillis, timeoutMillis)
 
   constructor(connectTimeout: Long, readTimeout: Long) : this(
       OkHttpClient.Builder()
@@ -53,7 +53,7 @@ actual class DefaultHttpEngine constructor(
               "HTTP POST requires a request body"
             }
             post(object : RequestBody() {
-              override fun contentType() = MediaType.parse(body.contentType)
+              override fun contentType() = body.contentType.toMediaType()
 
               override fun contentLength() = body.contentLength
 
@@ -88,11 +88,11 @@ actual class DefaultHttpEngine constructor(
       return@suspendCancellableCoroutine
     } else {
       val result = Result.success(
-          HttpResponse.Builder(statusCode = response!!.code())
-              .body(response.body()!!.source())
+          HttpResponse.Builder(statusCode = response!!.code)
+              .body(response.body!!.source())
               .addHeaders(
-                  response.headers().let { headers ->
-                    0.until(headers.size()).map { index ->
+                  response.headers.let { headers ->
+                    0.until(headers.size).map { index ->
                       HttpHeader(headers.name(index), headers.value(index))
                     }
                   }

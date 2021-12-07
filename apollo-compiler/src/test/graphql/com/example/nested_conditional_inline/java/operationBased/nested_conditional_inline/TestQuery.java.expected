@@ -53,7 +53,8 @@ public class TestQuery implements Query<TestQuery.Data> {
    *       }
    *     }
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query TestQuery($episode: Episode) { hero(episode: $episode) { __typename name ... on Human { friends { __typename name ... on Human { height(unit: FOOT) } } } ... on Droid { friends { __typename name ... on Human { height(unit: METER) } } } } }";
 
   public static final String OPERATION_NAME = "TestQuery";

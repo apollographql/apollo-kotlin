@@ -36,7 +36,8 @@ public class TestQuery implements Query<TestQuery.Data> {
    *     deprecated
    *     deprecatedBool
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query TestQuery($episode: Episode) { hero(episode: $episode) { name deprecated deprecatedBool } }";
 
   public static final String OPERATION_NAME = "TestQuery";

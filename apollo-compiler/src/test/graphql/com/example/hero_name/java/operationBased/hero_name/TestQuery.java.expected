@@ -34,7 +34,8 @@ public class TestQuery implements Query<TestQuery.Data> {
    *       primaryFunction
    *     }
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query TestQuery { hero { __typename name birthDate ... on Droid { primaryFunction } } }";
 
   public static final String OPERATION_NAME = "TestQuery";

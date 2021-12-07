@@ -39,7 +39,8 @@ public class HeroDetailsQuery implements Query<HeroDetailsQuery.Data> {
    *       }
    *     }
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query HeroDetails { hero { name friendsConnection { totalCount edges { node { name } } } } }";
 
   public static final String OPERATION_NAME = "HeroDetails";

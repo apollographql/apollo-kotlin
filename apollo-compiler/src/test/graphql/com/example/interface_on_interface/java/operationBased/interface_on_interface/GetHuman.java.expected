@@ -38,7 +38,8 @@ public class GetHuman implements Query<GetHuman.Data> {
    *       height
    *     }
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query GetHuman { human { id name height } node { __typename ... on Human { height } } }";
 
   public static final String OPERATION_NAME = "GetHuman";

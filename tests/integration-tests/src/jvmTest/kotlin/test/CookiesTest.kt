@@ -22,16 +22,15 @@ class CookiesTest {
    * Only use for tests.
    */
   class ObservableCookieJar : CookieJar {
-    val storage = mutableMapOf<String, MutableList<Cookie>>()
-    override fun saveFromResponse(url: HttpUrl, cookies: MutableList<Cookie>) {
-      storage.merge(url.host(), cookies) { old, new ->
-        (old + new).toMutableList()
+    private val storage = mutableMapOf<String, List<Cookie>>()
+    override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
+      storage.merge(url.host, cookies) { old, new ->
+        old + new
       }
     }
 
-    override fun loadForRequest(url: HttpUrl): MutableList<Cookie> {
-      val cookies = storage[url.host()] ?: mutableListOf()
-      return cookies
+    override fun loadForRequest(url: HttpUrl): List<Cookie> {
+      return storage[url.host] ?: listOf()
     }
   }
 
