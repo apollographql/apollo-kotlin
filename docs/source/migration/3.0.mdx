@@ -551,50 +551,32 @@ Input.optional(value)
 Optional.presentIfNotNull(value)
 ```
 
-#### Non-optional variables by default
-
-By default, Apollo Android 3.x represents operation variables that _don't_ have a default value as non-optional Kotlin constructor parameters.
-
-Given the following query:
-
-```graphql
-query GetHero($id: String) {
-  hero(id: $id)
-}
-```
-
-Apollo Android generates:
-
-```kotlin
-// 2.x
-class GetHero(val id: Input<String?> = Input.absent())
-
-// 3.x
-class GetHero(val id: String?)
-```
+#### Non-optional variables generation
 
 By default, the [GraphQL spec](https://spec.graphql.org/draft/#sec-Coercing-Variable-Values) treats nullable variables as optional, so it's valid to omit them at runtime. In practice, however, this is rarely used and makes the operation's declaration verbose.
 
-Apollo Android 3.x removes the `Optional` wrapper so that it's more straightforward to construct a query with nullable variables.
+That is why Apollo Android 3.x provides a mechanism to remove the `Optional` wrapper, which makes the construction of queries with nullable variables more straightforward.
 
-> This new behavior applies _only_ to variables. Fields of input objects still use `Optional`, because it's common to omit particular input fields.
+> When enabled, this new behavior applies _only_ to variables. Fields of input objects still use `Optional`, because it's common to omit particular input fields.
 
-If you want to be able to omit a variable, you can opt in to the `Optional` wrapper with the `@optional` directive:
+To omit optional variables globally in your Gradle config:
+
+```kotlin
+apollo {
+  // ...
+  generateOptionalOperationVariables.set(false)
+}
+```
+
+If you still need to omit a variable in certain places, you can opt in to the `Optional` wrapper with the `@optional` directive:
 
 ```graphql
 query GetHero($id: String @optional) {
   hero(id: $id)
 }
 ```
+More information is available [here](../advanced/operation-variables).
 
-Or opt-in optional variables globally in your Gradle config:
-
-```kotlin
-apollo {
-  // ...
-  generateOptionalOperationVariables.set(true)
-}
-```
 ### Enums
 
 Apollo Android 2.x converts enums and enum values names to uppercase. 

@@ -188,7 +188,7 @@ repositories {
 
 Some platforms have specific requirements:
 
-* Android API level 15+
+* Android API level 21+
 * JDK 8+
 * iOS 13+
 

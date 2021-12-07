@@ -56,7 +56,7 @@ Replace all usages of `apolloClient` with `apolloClient(context)`. There is one 
 
 ```kotlin
 // LaunchListFragment
-apolloClient(requireContext()).query(LaunchListQuery(cursor)).execute()
+apolloClient(requireContext()).query(LaunchListQuery(Optional.Present(cursor))).execute()
 
 // LaunchDetailsFragment
 apolloClient(requireContext()).query(LaunchDetailsQuery(id = args.launchId)).execute()
