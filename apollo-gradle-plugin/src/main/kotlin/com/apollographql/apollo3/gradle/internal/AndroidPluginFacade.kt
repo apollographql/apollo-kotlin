@@ -10,10 +10,11 @@ import com.android.build.gradle.api.UnitTestVariant
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.gradle.api.androidExtensionOrThrow
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.file.Directory
 import org.gradle.api.provider.Provider
 
-fun connectToAndroidSourceSet(project: Project, sourceSetName: String, outputDir: Provider<Directory>) {
+fun connectToAndroidSourceSet(project: Project, sourceSetName: String, outputDir: Provider<Directory>, task: Task) {
   val container = project.container(BaseVariant::class.java)
 
   val extension = project.androidExtensionOrThrow
@@ -45,14 +46,6 @@ fun connectToAndroidSourceSet(project: Project, sourceSetName: String, outputDir
     }
   }
 
-  container.all {
-    if (it.sourceSets.any { it.name == sourceSetName }) {
-      // This is required for AS to see the sources
-      // See https://github.com/apollographql/apollo-android/issues/3351
-      it.addJavaSourceFoldersToModel(outputDir.get().asFile)
-    }
-  }
-
   val androidSourceSet = project.androidExtensionOrThrow
       .sourceSets
       .getByName(sourceSetName)
@@ -60,12 +53,24 @@ fun connectToAndroidSourceSet(project: Project, sourceSetName: String, outputDir
   val kotlinSourceSet = androidSourceSet.kotlinSourceSet()
   if (kotlinSourceSet != null) {
     kotlinSourceSet.srcDir(outputDir)
-  } else {
-    androidSourceSet.java.srcDir(outputDir)
+  }
+
+  container.all {
+    if (it.sourceSets.any { it.name == sourceSetName }) {
+      if (kotlinSourceSet == null) {
+        it.registerJavaGeneratingTask(task, outputDir.get().asFile)
+      } else {
+        // The kotlinSourceSet carries task dependencies, calling srcDir() above is enough
+        // to setup task dependencies
+        // addJavaSourceFoldersToModel is still required for AS to see the sources
+        // See https://github.com/apollographql/apollo-android/issues/3351
+        it.addJavaSourceFoldersToModel(outputDir.get().asFile)
+      }
+    }
   }
 }
 
-fun connectToAndroidVariant(project: Project, variant: Any, outputDir: Provider<Directory>) {
+fun connectToAndroidVariant(project: Project, variant: Any, outputDir: Provider<Directory>, task: Task) {
   check(variant is BaseVariant) {
     "Apollo: 'variant' must be an instance of an Android [BaseVariant]"
   }
@@ -85,5 +90,5 @@ fun connectToAndroidVariant(project: Project, variant: Any, outputDir: Provider<
     else -> variant.name
   }
 
-  connectToAndroidSourceSet(project, sourceSetName, outputDir)
+  connectToAndroidSourceSet(project, sourceSetName, outputDir, task)
 }
