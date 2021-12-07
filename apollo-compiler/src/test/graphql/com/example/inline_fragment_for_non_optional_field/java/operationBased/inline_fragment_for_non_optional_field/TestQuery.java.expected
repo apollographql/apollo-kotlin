@@ -34,7 +34,8 @@ public class TestQuery implements Query<TestQuery.Data> {
    *       height
    *     }
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query TestQuery { nonOptionalHero(episode: EMPIRE) { __typename name ... on Human { height } } }";
 
   public static final String OPERATION_NAME = "TestQuery";

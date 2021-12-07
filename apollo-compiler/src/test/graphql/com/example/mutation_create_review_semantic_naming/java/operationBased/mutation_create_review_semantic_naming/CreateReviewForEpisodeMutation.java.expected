@@ -34,7 +34,8 @@ public class CreateReviewForEpisodeMutation implements Mutation<CreateReviewForE
    *     stars
    *     commentary
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) { createReview(episode: $ep, review: $review) { stars commentary } }";
 
   public static final String OPERATION_NAME = "CreateReviewForEpisode";

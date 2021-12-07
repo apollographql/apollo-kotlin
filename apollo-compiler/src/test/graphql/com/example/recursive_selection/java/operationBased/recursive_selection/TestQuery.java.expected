@@ -36,7 +36,8 @@ public class TestQuery implements Query<TestQuery.Data> {
    *       name
    *     }
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query TestQuery { tree { name children { name } parent { name } } }";
 
   public static final String OPERATION_NAME = "TestQuery";

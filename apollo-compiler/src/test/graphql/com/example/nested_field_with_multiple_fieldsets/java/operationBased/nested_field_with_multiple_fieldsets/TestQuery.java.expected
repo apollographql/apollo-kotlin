@@ -51,7 +51,8 @@ public class TestQuery implements Query<TestQuery.Data> {
    *       }
    *     }
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query TestQuery { iface1 { __typename ... on Iface1 { iface2 { __typename ... on Iface2 { scalar1 } ... on Impl2 { scalar2 } } } ... on Impl1 { iface2 { __typename ... on Iface2 { scalar3 } ... on Impl2 { scalar4 } } } } }";
 
   public static final String OPERATION_NAME = "TestQuery";

@@ -41,7 +41,8 @@ public class TestQuery implements Query<TestQuery.Data> {
    *
    * fragment DroidDetails2 on Droid {
    *   primaryFunction
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query TestQuery { hero { __typename ...DroidDetails1 ...DroidDetails2 } }  fragment DroidDetails1 on Droid { name }  fragment DroidDetails2 on Droid { primaryFunction }";
 
   public static final String OPERATION_NAME = "TestQuery";

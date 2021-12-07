@@ -32,7 +32,8 @@ public class TestSubscription implements Subscription<TestSubscription.Data> {
    *     id
    *     content
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "subscription TestSubscription($repo: String!) { commentAdded(repoFullName: $repo) { id content } }";
 
   public static final String OPERATION_NAME = "TestSubscription";

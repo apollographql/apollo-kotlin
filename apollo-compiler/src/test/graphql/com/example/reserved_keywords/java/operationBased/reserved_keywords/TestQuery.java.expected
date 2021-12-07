@@ -36,7 +36,8 @@ public class TestQuery implements Query<TestQuery.Data> {
    *       name
    *     }
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query TestQuery { yield: hero { while: id it: name } objects: search(text: \"abc\") { __typename ... on Character { name } } }";
 
   public static final String OPERATION_NAME = "TestQuery";

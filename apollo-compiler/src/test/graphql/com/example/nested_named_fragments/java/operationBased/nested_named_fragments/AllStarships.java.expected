@@ -62,7 +62,8 @@ public class AllStarships implements Query<AllStarships.Data> {
    *       }
    *     }
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query AllStarships { allStarships(first: 7) { edges { node { __typename ...starshipFragment } } } }  fragment planetFragment on Planet { name }  fragment pilotFragment on Person { name homeworld { __typename ...planetFragment } }  fragment starshipFragment on Starship { id name pilotConnection { edges { node { __typename ...pilotFragment } } } }";
 
   public static final String OPERATION_NAME = "AllStarships";

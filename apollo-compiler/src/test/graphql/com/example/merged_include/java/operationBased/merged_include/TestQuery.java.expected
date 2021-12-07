@@ -32,7 +32,8 @@ public class TestQuery implements Query<TestQuery.Data> {
    *   hero @include(if: false) {
    *     id
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query TestQuery { hero { name } hero @include(if: false) { id } }";
 
   public static final String OPERATION_NAME = "TestQuery";

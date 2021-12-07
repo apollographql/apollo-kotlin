@@ -30,7 +30,8 @@ public class TestQuery implements Query<TestQuery.Data> {
    *     id
    *     name
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query TestQuery { hero { id name } }";
 
   public static final String OPERATION_NAME = "TestQuery";

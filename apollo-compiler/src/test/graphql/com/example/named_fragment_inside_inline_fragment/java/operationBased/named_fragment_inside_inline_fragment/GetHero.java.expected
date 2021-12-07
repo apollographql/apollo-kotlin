@@ -44,7 +44,8 @@ public class GetHero implements Query<GetHero.Data> {
    *
    * fragment characterAppearsIn on Character {
    *   appearsIn
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query GetHero { hero { __typename ... on Character { __typename ...characterName ...characterAppearsIn } } }  fragment characterName on Character { name }  fragment characterAppearsIn on Character { appearsIn }";
 
   public static final String OPERATION_NAME = "GetHero";

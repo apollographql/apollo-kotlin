@@ -41,7 +41,8 @@ public class AnimalQuery implements Query<AnimalQuery.Data> {
    *
    * fragment DogFragment on Dog {
    *   woof
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query AnimalQuery { animal { __typename ...CatFragment ...DogFragment } }  fragment CatFragment on Cat { meow }  fragment DogFragment on Dog { woof }";
 
   public static final String OPERATION_NAME = "AnimalQuery";

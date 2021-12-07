@@ -39,7 +39,8 @@ public class TestQuery implements Query<TestQuery.Data> {
    *
    * fragment Starship on Starship {
    *   name
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query TestQuery { search(text: \"test\") { __typename ... on Starship { id } ...Starship } }  fragment Starship on Starship { name }";
 
   public static final String OPERATION_NAME = "TestQuery";

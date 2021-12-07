@@ -38,7 +38,8 @@ public class TestQuery implements Query<TestQuery.Data> {
    *       fieldB2
    *     }
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query TestQuery { root { __typename ... on A { __typename ... on B { fieldB1 } } ... on B { fieldB2 } } }";
 
   public static final String OPERATION_NAME = "TestQuery";

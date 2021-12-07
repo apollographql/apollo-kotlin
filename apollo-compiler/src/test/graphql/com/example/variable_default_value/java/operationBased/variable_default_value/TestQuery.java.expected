@@ -32,7 +32,8 @@ public class TestQuery implements Query<TestQuery.Data> {
    *   hero(episode: $episode) {
    *     name
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query TestQuery($episode: Episode! = JEDI ) { hero(episode: $episode) { name } }";
 
   public static final String OPERATION_NAME = "TestQuery";

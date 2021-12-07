@@ -68,7 +68,8 @@ public class TestOperation implements Query<TestOperation.Data> {
    *       }
    *     }
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query TestOperation { random { __typename ... on Being { __typename name friends { __typename name ... on Wookie { lifeExpectancy } } ... on Human { profilePictureUrl friends { __typename isFamous ... on Wookie { race } } } } ... on Wookie { race friends { lifeExpectancy } } ... on Being { friends { __typename ... on Wookie { lifeExpectancy } } } } }";
 
   public static final String OPERATION_NAME = "TestOperation";

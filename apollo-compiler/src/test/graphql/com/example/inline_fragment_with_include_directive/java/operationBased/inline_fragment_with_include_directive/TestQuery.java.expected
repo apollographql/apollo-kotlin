@@ -43,7 +43,8 @@ public class TestQuery implements Query<TestQuery.Data> {
    *       name
    *     }
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query TestQuery($withDetails: Boolean!, $skipHumanDetails: Boolean!) { hero { __typename id ... on Human @include(if: $withDetails) @skip(if: $skipHumanDetails) { name homePlanet } ... on Droid @include(if: $withDetails) { name primaryFunction } ... on Character @include(if: $withDetails) { name } } }";
 
   public static final String OPERATION_NAME = "TestQuery";

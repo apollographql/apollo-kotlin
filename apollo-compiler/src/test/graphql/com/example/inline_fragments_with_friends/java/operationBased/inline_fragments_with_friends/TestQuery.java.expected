@@ -45,7 +45,8 @@ public class TestQuery implements Query<TestQuery.Data> {
    *       }
    *     }
    *   }
-   * } */
+   * }
+   */
   public static final String OPERATION_DOCUMENT = "query TestQuery { hero { __typename name ... on Human { height friends { appearsIn } } ... on Droid { primaryFunction friends { id } } } }";
 
   public static final String OPERATION_NAME = "TestQuery";
