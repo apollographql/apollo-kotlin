@@ -59,10 +59,11 @@ Next, copy the operation, either manually or using the three-dot menu's "Copy op
 Now that your mutation is working, add it to your project. Create a file named `Login.graphql` next to `schema.graphqls` and your other GraphQL files and paste the contents of the mutation:
 
 ```graphql:title=app/src/main/graphql/com/example/rocketreserver/Login.graphql
-mutation Login($email: String) {
+mutation Login($email: String!) {
   login(email: $email)
 }
 ```
+Note: we've also marked the `email` variable as non-nullable by adding `!` to the end of the type, since we always want to pass a value for it.
 
 Build your project to generate the `LoginMutation` class.
 
