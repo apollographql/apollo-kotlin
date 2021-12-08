@@ -138,7 +138,7 @@ private constructor(
     }
 
     /**
-     * configures whether to expose the error body in [ApolloHttpException].
+     * Configures whether to expose the error body in [ApolloHttpException].
      *
      * If you're setting this to `true`, you **must** catch [ApolloHttpException] and close the body explicitly
      * to avoid sockets and other resources leaking.
