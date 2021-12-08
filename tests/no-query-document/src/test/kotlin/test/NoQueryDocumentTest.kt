@@ -29,14 +29,7 @@ class NoQueryDocumentTest {
       random
     }
   """.trimIndent()
-
-  class Document(val utf8: String) : ExecutionContext.Element {
-    override val key: ExecutionContext.Key<*>
-      get() = Document
-
-    companion object Key : ExecutionContext.Key<Document>
-  }
-
+  
   @Test
   fun noQueryDocumentTest() = runTest {
     val mockServer = MockServer()
