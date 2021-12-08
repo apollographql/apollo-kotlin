@@ -416,7 +416,7 @@ private constructor(
                 httpEngine(httpEngine!!)
               }
               if (httpExposeErrorBody != null) {
-                httpExposeErrorBody(httpExposeErrorBody!!)
+                exposeErrorBody(httpExposeErrorBody!!)
               }
             }
             .interceptors(httpInterceptors)
