@@ -167,7 +167,7 @@ class OperationBuilder(
         if (generateQueryDocument) {
           addStatement("return $OPERATION_DOCUMENT")
         } else {
-          addStatement("error(\"The query document was removed from this operation. Use generateQueryDocument = true if you need it\"")
+          addStatement("error(\"The query document was removed from this operation. Use generateQueryDocument.set(true) if you need it\"")
         }
       }
       .build()
