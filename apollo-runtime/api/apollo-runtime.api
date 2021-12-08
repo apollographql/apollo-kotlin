@@ -75,7 +75,7 @@ public final class com/apollographql/apollo3/ApolloClient$Builder : com/apollogr
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public fun getSendDocument ()Ljava/lang/Boolean;
 	public final fun httpEngine (Lcom/apollographql/apollo3/network/http/HttpEngine;)Lcom/apollographql/apollo3/ApolloClient$Builder;
-	public final fun httpExposeErrorBody (Z)V
+	public final fun httpExposeErrorBody (Z)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public fun httpHeaders (Ljava/util/List;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public synthetic fun httpHeaders (Ljava/util/List;)Ljava/lang/Object;
 	public fun httpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)Lcom/apollographql/apollo3/ApolloClient$Builder;
