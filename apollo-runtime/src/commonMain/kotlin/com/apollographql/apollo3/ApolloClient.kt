@@ -15,8 +15,8 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.api.http.HttpRequestComposer
 import com.apollographql.apollo3.api.internal.Version2CustomTypeAdapterToAdapter
+import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.interceptor.DefaultInterceptorChain
@@ -165,6 +165,7 @@ private constructor(
     private var webSocketServerUrl: String? = null
     private var webSocketIdleTimeoutMillis: Long? = null
     private var wsProtocolFactory: WsProtocol.Factory? = null
+    private var httpExposeErrorBody: Boolean? = null
     private var webSocketEngine: WebSocketEngine? = null
 
     override var httpMethod: HttpMethod? = null
@@ -230,6 +231,17 @@ private constructor(
       this.httpEngine = httpEngine
     }
 
+    /**
+     * configures whether to expose the error body in [ApolloHttpException].
+     *
+     * If you're setting this to `true`, you **must** catch [ApolloHttpException] and close the body explicitly
+     * to avoid sockets and other resources leaking.
+     *
+     * Default: false
+     */
+    fun httpExposeErrorBody(httpExposeErrorBody: Boolean) {
+      this.httpExposeErrorBody = httpExposeErrorBody
+    }
     /**
      * Adds [httpInterceptor] to the list of HTTP interceptors
      *
@@ -389,6 +401,9 @@ private constructor(
         check(httpInterceptors.isEmpty()) {
           "Apollo: 'addHttpInterceptor' has no effect if 'networkTransport' is set"
         }
+        check(httpExposeErrorBody == null) {
+          "Apollo: 'httpExposeErrorBody' has no effect if 'networkTransport' is set"
+        }
         _networkTransport!!
       } else {
         check(httpServerUrl != null) {
@@ -399,6 +414,9 @@ private constructor(
             .apply {
               if (httpEngine != null) {
                 httpEngine(httpEngine!!)
+              }
+              if (httpExposeErrorBody != null) {
+                httpExposeErrorBody(httpExposeErrorBody!!)
               }
             }
             .interceptors(httpInterceptors)

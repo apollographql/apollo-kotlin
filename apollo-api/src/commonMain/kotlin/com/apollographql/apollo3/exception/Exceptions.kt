@@ -2,6 +2,7 @@
 package com.apollographql.apollo3.exception
 
 import com.apollographql.apollo3.api.http.HttpHeader
+import okio.BufferedSource
 
 /**
  * The base class for all exceptions
@@ -21,7 +22,7 @@ open class ApolloException(message: String? = null, cause: Throwable? = null) : 
  */
 class ApolloNetworkException(
     message: String? = null,
-    val platformCause: Any? = null
+    val platformCause: Any? = null,
 ) : ApolloException(message = message, cause = platformCause as? Throwable)
 
 /**
@@ -30,16 +31,23 @@ class ApolloNetworkException(
 class ApolloWebSocketClosedException(
     val code: Int,
     val reason: String? = null,
-    cause: Throwable? = null) : ApolloException(message = "WebSocket Closed code='$code' reason='$reason'", cause = cause)
+    cause: Throwable? = null,
+) : ApolloException(message = "WebSocket Closed code='$code' reason='$reason'", cause = cause)
 
 /**
  * The response was received but the response code was not 200
+ *
+ * @param statusCode: the HTTP status code
+ * @param headers: the HTTP headers
+ * @param body: the HTTP error body. By default, [body] is always null. You can opt-in [exposeHttpErrorBody] in [HttpNetworkTransport]
+ * if you need it. If you're doing this, you **must** call [BufferedSource.close] on [body] to avoid sockets and other resources leaking.
  */
 class ApolloHttpException(
     val statusCode: Int,
     val headers: List<HttpHeader>,
+    val body: BufferedSource?,
     message: String,
-    cause: Throwable? = null
+    cause: Throwable? = null,
 ) : ApolloException(message = message, cause = cause)
 
 /**
@@ -91,8 +99,8 @@ class HttpCacheMissException(message: String, cause: Exception? = null) : Apollo
  * Multiple exceptions happened, for an exemple with a [CacheFirst] fetch policy
  */
 class ApolloCompositeException(first: Throwable?, second: Throwable?) : ApolloException(message = "multiple exceptions happened", second) {
-  val first = (first as? ApolloException)  ?: throw RuntimeException("unexpected first exception", first)
-  val second = (second as? ApolloException)  ?: throw RuntimeException("unexpected second exception", second)
+  val first = (first as? ApolloException) ?: throw RuntimeException("unexpected first exception", first)
+  val second = (second as? ApolloException) ?: throw RuntimeException("unexpected second exception", second)
 }
 
 class AutoPersistedQueriesNotSupported : ApolloException(message = "The server does not support auto persisted queries")

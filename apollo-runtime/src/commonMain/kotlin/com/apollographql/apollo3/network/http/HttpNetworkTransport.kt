@@ -23,8 +23,9 @@ import kotlinx.coroutines.flow.flow
 class HttpNetworkTransport
 private constructor(
     private val httpRequestComposer: HttpRequestComposer,
-    val engine: HttpEngine = DefaultHttpEngine(),
-    val interceptors: List<HttpInterceptor> = emptyList(),
+    val engine: HttpEngine,
+    val interceptors: List<HttpInterceptor>,
+    val exposeErrorBody: Boolean
 ) : NetworkTransport {
   private val worker = NonMainWorker()
 
@@ -52,10 +53,17 @@ private constructor(
       ).proceed(httpRequest)
 
       if (httpResponse.statusCode !in 200..299) {
+        val maybeBody = if (exposeErrorBody) {
+          httpResponse.body
+        } else {
+          httpResponse.body?.close()
+          null
+        }
         throw ApolloHttpException(
             statusCode = httpResponse.statusCode,
             headers = httpResponse.headers,
-            message = "Http request failed with status code `${httpResponse.statusCode} (${httpResponse.body?.readUtf8()})`"
+            body = maybeBody,
+            message = "Http request failed with status code `${httpResponse.statusCode}`"
         )
       }
 
@@ -111,11 +119,15 @@ private constructor(
         .httpRequestComposer(httpRequestComposer)
   }
 
+  /**
+   * A builder for [HttpNetworkTransport]
+   */
   class Builder {
     private var httpRequestComposer: HttpRequestComposer? = null
     private var serverUrl: String? = null
     private var engine: HttpEngine? = null
     private val interceptors: MutableList<HttpInterceptor> = mutableListOf()
+    private var exposeErrorBody: Boolean = false
 
     fun httpRequestComposer(httpRequestComposer: HttpRequestComposer) = apply {
       this.httpRequestComposer = httpRequestComposer
@@ -123,6 +135,18 @@ private constructor(
 
     fun serverUrl(serverUrl: String) = apply {
       this.serverUrl = serverUrl
+    }
+
+    /**
+     * configures whether to expose the error body in [ApolloHttpException].
+     *
+     * If you're setting this to `true`, you **must** catch [ApolloHttpException] and close the body explicitly
+     * to avoid sockets and other resources leaking.
+     *
+     * Default: false
+     */
+    fun exposeErrorBody(exposeErrorBody: Boolean) = apply {
+      this.exposeErrorBody = exposeErrorBody
     }
 
     fun httpHeaders(headers: List<HttpHeader>) = apply {
@@ -152,7 +176,8 @@ private constructor(
       return HttpNetworkTransport(
           httpRequestComposer = composer,
           engine = engine ?: DefaultHttpEngine(),
-          interceptors = interceptors
+          interceptors = interceptors,
+          exposeErrorBody = exposeErrorBody,
       )
     }
   }
