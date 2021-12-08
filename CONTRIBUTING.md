@@ -109,26 +109,18 @@ Plugin Portal.
 Snapshots are published automatically.  
 Releases are published when a tag is pushed.
 
-To create a new tag, use the script:
+Here are the steps to do a new release:
 
-```bash
-scripts/tag.main.kts <version-name>
-```
-
-and then push the tag.
-
-This will publish to the Gradle Portal and upload to OSSRH. After a successful CI build, you need to login
-to https://oss.sonatype.org/ and release the artifacts manually. This step is called "close, release and drop" in the
-Sonatype ecosystem.
-
-> 📣 Before publicizing the release, wait for it to be visible on [Maven Central](https://repo1.maven.org/maven2/com/apollographql/apollo3/) (this usually takes a few minutes).
-
-After a successful release, do not forget to:
-* add the changelog to the `CHANGELOG.md` file
+* `scripts/tag.main.kts <version-name>`
+* push the tag and branch
+* while it compiles, prepare the changelog, open a PR to `CHANGELOG.md`
+* wait for the CI to finish compiling
+* go to https://oss.sonatype.org/, and release the artifacts manually. This step is called "close, release and drop" in the Sonatype ecosystem.
+* wait for it to be visible on [Maven Central](https://repo1.maven.org/maven2/com/apollographql/apollo3/) (this usually takes a few minutes)
 * paste the changelog in a new release on [GitHub](https://github.com/apollographql/apollo-android/releases)
 * merge pending documentation/tutorial updates
 * if it's a significant release, tweet about it 🐦
- 
+* relax 🍹
 
 ## Overview of the CI
 
