@@ -122,7 +122,8 @@ to https://oss.sonatype.org/ and release the artifacts manually. This step is ca
 Sonatype ecosystem.
 
 After a successful release, do not forget to:
-* add the changelog to the [releases page](https://github.com/apollographql/apollo-android/releases).
+* add the changelog to the `CHANGELOG.md` file
+* also paste the changelog to the [releases page](https://github.com/apollographql/apollo-android/releases)
 * merge pending documentation/tutorial updates
 * if it's a significant release, tweet about it 🐦
  
