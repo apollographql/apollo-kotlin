@@ -239,7 +239,7 @@ private constructor(
      *
      * Default: false
      */
-    fun httpExposeErrorBody(httpExposeErrorBody: Boolean) {
+    fun httpExposeErrorBody(httpExposeErrorBody: Boolean) = apply {
       this.httpExposeErrorBody = httpExposeErrorBody
     }
     /**
