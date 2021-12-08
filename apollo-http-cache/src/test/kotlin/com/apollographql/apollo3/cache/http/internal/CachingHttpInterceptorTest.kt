@@ -8,16 +8,16 @@ import com.apollographql.apollo3.cache.http.CachingHttpInterceptor
 import com.apollographql.apollo3.exception.HttpCacheMissException
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
-import com.apollographql.apollo3.network.http.HttpInterceptor
 import com.apollographql.apollo3.network.http.HttpInterceptorChain
-import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import java.io.File
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
@@ -121,6 +121,31 @@ class CachingHttpInterceptorTest {
         )
       }
     }
+  }
+
+  @Test
+  fun cacheInParallel() {
+    val concurrency = 4
+    val executorService: ExecutorService = Executors.newFixedThreadPool(concurrency / 2)
+
+    repeat(concurrency) {
+      mockServer.enqueue(MockResponse(statusCode = 200, body = "success"))
+    }
+    val futures = mutableListOf<Future<*>>()
+    repeat(concurrency) {
+      futures += executorService.submit {
+        runBlocking {
+          val request = HttpRequest.Builder(
+              method = HttpMethod.Get,
+              url = mockServer.url(),
+          ).build()
+
+          val response = interceptor.intercept(request, chain)
+          assertEquals("success", response.body?.readUtf8())
+        }
+      }
+    }
+    futures.forEach { it.get() }
   }
 }
 
