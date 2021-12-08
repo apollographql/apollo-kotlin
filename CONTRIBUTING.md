@@ -121,9 +121,11 @@ This will publish to the Gradle Portal and upload to OSSRH. After a successful C
 to https://oss.sonatype.org/ and release the artifacts manually. This step is called "close, release and drop" in the
 Sonatype ecosystem.
 
+> 📣 Before publicizing the release, wait for it to be visible on [Maven Central](https://repo1.maven.org/maven2/com/apollographql/apollo3/) (this usually takes a few minutes).
+
 After a successful release, do not forget to:
 * add the changelog to the `CHANGELOG.md` file
-* also paste the changelog to the [releases page](https://github.com/apollographql/apollo-android/releases)
+* paste the changelog in a new release on [GitHub](https://github.com/apollographql/apollo-android/releases)
 * merge pending documentation/tutorial updates
 * if it's a significant release, tweet about it 🐦
  
