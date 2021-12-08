@@ -148,18 +148,42 @@ fun <T> MutableExecutionOptions<T>.refetchPolicy(fetchPolicy: FetchPolicy) = add
     RefetchPolicyContext(fetchPolicy)
 )
 
+/**
+ * @param doNotStore Whether to store the response in cache.
+ *
+ * Default: false
+ */
 fun <T> MutableExecutionOptions<T>.doNotStore(doNotStore: Boolean) = addExecutionContext(
     DoNotStoreContext(doNotStore)
 )
 
+/**
+ * @param storePartialResponses Whether to store partial responses.
+ *
+ * Errors are not stored in the cache and are therefore not replayed on cache reads.
+ * Set this to true if you want to store partial responses at the risk of also returning partial responses
+ * in subsequent cache reads.
+ *
+ * Default: false
+ */
 fun <T> MutableExecutionOptions<T>.storePartialResponses(storePartialResponses: Boolean) = addExecutionContext(
     StorePartialResponsesContext(storePartialResponses)
 )
 
+/**
+ * @param cacheHeaders additional cache headers to be passed to your [com.apollographql.apollo3.cache.normalized.api.NormalizedCache]
+ */
 fun <T> MutableExecutionOptions<T>.cacheHeaders(cacheHeaders: CacheHeaders) = addExecutionContext(
     CacheHeadersContext(cacheHeaders)
 )
 
+/**
+ * @param writeToCacheAsynchronously whether to return the response before writing it to the cache
+ *
+ * Setting this to true reduces the latency
+ *
+ * Default: false
+ */
 fun <T> MutableExecutionOptions<T>.writeToCacheAsynchronously(writeToCacheAsynchronously: Boolean) = addExecutionContext(
     WriteToCacheAsynchronouslyContext(writeToCacheAsynchronously)
 )
