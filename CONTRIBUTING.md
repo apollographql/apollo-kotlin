@@ -1,4 +1,4 @@
-# Contributing to Apollo Android
+# Contributing to Apollo Kotlin
 
 The Apollo team welcomes contributions of all kinds, including bug reports, documentation, test cases, bug fixes, and
 features.
@@ -62,7 +62,7 @@ Java interop
 * If some extensions do not make sense in Java, mark them with `@JvmName("-$methodName")` to hide them from Java
 
 Logging & Error messages
-* Apollo Android must not log anything to System.out or System.err
+* Apollo Kotlin must not log anything to System.out or System.err
 * Error messages are passed to the user through `Exception.message`
 * For debugging logs, APIs are provided to get diagnostics (like CacheMissException, HttpInfo, ...). APIs are better defined and allow more fine-grained diagnostics. 
 * There is one exception for the Gradle plugin. It is allowed to log information though the lifecycle() methods. 
@@ -84,7 +84,7 @@ Please note that we will not accept pull requests for style changes.
 
 ## API compatibility
 
-Apollo Android observes [semantic versioning](https://semver.org/). Between major releases, breaking changes are not
+Apollo Kotlin observes [semantic versioning](https://semver.org/). Between major releases, breaking changes are not
 allowed and any public API change will fail the build.
 
 If that happens, you will need to run `./gradlew apiDump` and check for any incompatible changes before commiting these
@@ -94,7 +94,7 @@ files.
 
 Using Kotlin's (or other dependencies') experimental or internal APIs, such as the ones marked
 with `@ExperimentalCoroutinesApi` should be avoided as much as possible (exceptions can be made for native/JS targets only when no other option is
-available). Indeed, applications using a certain version of Apollo Android could use a more up-to-date version of these
+available). Indeed, applications using a certain version of Apollo Kotlin could use a more up-to-date version of these
 APIs than the one used when building the library, causing crashes or other issues.
 
 We also have the `@ApolloExperimental` annotation which can be used to mark APIs as experimental, for instance when

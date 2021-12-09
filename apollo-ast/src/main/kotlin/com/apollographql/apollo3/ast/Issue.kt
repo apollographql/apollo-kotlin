@@ -43,7 +43,7 @@ sealed class Issue(
    * Upper case fields are not supported as Kotlin doesn't allow a property name with the same name as a nested class.
    * If this happens, the easiest solution is to add an alias with a lower case first letter.
    *
-   * This error is an Apollo Android specific error
+   * This error is an Apollo Kotlin specific error
    */
   class UpperCaseField(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.ERROR)
 

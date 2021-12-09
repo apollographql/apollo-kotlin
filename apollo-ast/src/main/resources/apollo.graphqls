@@ -1,5 +1,5 @@
 # Marks a field or variable definition as optional or required
-# By default Apollo Android generates all variables of nullable types as optional, in compliance with the GraphQL specification,
+# By default Apollo Kotlin generates all variables of nullable types as optional, in compliance with the GraphQL specification,
 # but this can be configured with this directive, because if the variable was added in the first place, it's usually to pass a value
 directive @optional(if: Boolean = true) on FIELD | VARIABLE_DEFINITION
 
