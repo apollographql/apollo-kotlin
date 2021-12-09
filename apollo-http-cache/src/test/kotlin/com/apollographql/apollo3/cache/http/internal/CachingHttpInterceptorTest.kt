@@ -8,12 +8,12 @@ import com.apollographql.apollo3.cache.http.CachingHttpInterceptor
 import com.apollographql.apollo3.exception.HttpCacheMissException
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
-import com.apollographql.apollo3.network.http.HttpInterceptor
 import com.apollographql.apollo3.network.http.HttpInterceptorChain
-import com.apollographql.apollo3.network.http.HttpNetworkTransport
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -120,6 +120,29 @@ class CachingHttpInterceptorTest {
             chain
         )
       }
+    }
+  }
+
+  @Test
+  fun cacheInParallel() {
+    val concurrency = 2
+    repeat(concurrency) {
+      mockServer.enqueue(MockResponse(statusCode = 200, body = "success"))
+    }
+    val jobs = mutableListOf<Job>()
+    runBlocking {
+      repeat(concurrency) {
+        jobs += launch(Dispatchers.IO) {
+          val request = HttpRequest.Builder(
+              method = HttpMethod.Get,
+              url = mockServer.url(),
+          ).build()
+
+          val response = interceptor.intercept(request, chain)
+          assertEquals("success", response.body?.readUtf8())
+        }
+      }
+      jobs.forEach { it.join() }
     }
   }
 }

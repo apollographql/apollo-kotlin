@@ -43,6 +43,10 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
         .build()
   }
 
+  /**
+   * Store the [response] with the given [cacheKey] into the cache.
+   * Note: the response's body is not consumed nor closed.
+   */
   fun write(response: HttpResponse, cacheKey: String) {
     val editor = cacheLock.read {
       cache.edit(cacheKey)
@@ -67,8 +71,7 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
       editor.newSink(ENTRY_BODY).buffer().use {
         val responseBody = response.body
         if (responseBody != null) {
-          it.writeAll(responseBody)
-          responseBody.close()
+          it.writeAll(responseBody.peek())
         }
       }
       editor.commit()
