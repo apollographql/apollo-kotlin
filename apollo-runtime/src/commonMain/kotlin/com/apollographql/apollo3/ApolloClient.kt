@@ -166,6 +166,7 @@ private constructor(
     private var webSocketIdleTimeoutMillis: Long? = null
     private var wsProtocolFactory: WsProtocol.Factory? = null
     private var webSocketEngine: WebSocketEngine? = null
+    private var webSocketReconnectWhen: ((Throwable) -> Boolean)? = null
 
     override var httpMethod: HttpMethod? = null
 
@@ -273,6 +274,19 @@ private constructor(
      */
     fun webSocketEngine(webSocketEngine: WebSocketEngine) = apply {
       this.webSocketEngine = webSocketEngine
+    }
+
+    /**
+     * Configure the [WebSocketNetworkTransport] to reconnect the websocket automatically when a network error
+     * happens
+     *
+     * @param webSocketReconnectWhen a function taking the error as a parameter and returning 'true' to reconnect
+     * automatically or 'false' to forward the error to all listening [Flow]
+     *
+     * See also [subscriptionNetworkTransport] for more customization
+     */
+    fun webSocketReconnectWhen(webSocketReconnectWhen: ((Throwable) -> Boolean)) = apply {
+      this.webSocketReconnectWhen = webSocketReconnectWhen
     }
 
     fun networkTransport(networkTransport: NetworkTransport) = apply {
@@ -418,6 +432,9 @@ private constructor(
         check(wsProtocolFactory == null) {
           "Apollo: 'wsProtocolFactory' has no effect if 'subscriptionNetworkTransport' is set"
         }
+        check(webSocketReconnectWhen == null) {
+          "Apollo: 'webSocketReconnectWhen' has no effect if 'subscriptionNetworkTransport' is set"
+        }
         subscriptionNetworkTransport!!
       } else {
         val url = webSocketServerUrl ?: httpServerUrl
@@ -437,6 +454,9 @@ private constructor(
                 }
                 if (wsProtocolFactory != null) {
                   protocol(wsProtocolFactory!!)
+                }
+                if (webSocketReconnectWhen != null) {
+                  reconnectWhen(webSocketReconnectWhen)
                 }
               }
               .build()

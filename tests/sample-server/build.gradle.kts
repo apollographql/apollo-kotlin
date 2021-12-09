@@ -1,6 +1,6 @@
 plugins {
-  kotlin("jvm")
-  kotlin("plugin.spring")
+  id("org.jetbrains.kotlin.jvm")
+  id("org.jetbrains.kotlin.plugin.spring")
   id("application")
 }
 

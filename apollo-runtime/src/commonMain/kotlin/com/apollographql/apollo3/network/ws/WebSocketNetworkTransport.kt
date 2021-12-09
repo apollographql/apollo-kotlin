@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.internal.BackgroundDispatcher
 import com.apollographql.apollo3.internal.transformWhile
@@ -20,6 +21,7 @@ import com.apollographql.apollo3.network.ws.internal.OperationError
 import com.apollographql.apollo3.network.ws.internal.OperationResponse
 import com.apollographql.apollo3.network.ws.internal.StartOperation
 import com.apollographql.apollo3.network.ws.internal.StopOperation
+import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
@@ -52,6 +54,7 @@ private constructor(
     private val webSocketEngine: WebSocketEngine = DefaultWebSocketEngine(),
     private val idleTimeoutMillis: Long = 60_000,
     private val protocolFactory: WsProtocol.Factory = SubscriptionWsProtocol.Factory(),
+    private val reconnectWhen: ((Throwable) -> Boolean)?,
 ) : NetworkTransport {
 
 
@@ -110,7 +113,7 @@ private constructor(
     var idleJob: Job? = null
     var connectionJob: Job? = null
     var protocol: WsProtocol? = null
-    var subscriptions = 0
+    val activeMessages = mutableMapOf<Uuid, StartOperation<*>>()
 
     while (true) {
       val message = messages.receive()
@@ -123,8 +126,20 @@ private constructor(
             connectionJob = null
             idleJob?.cancel()
             idleJob = null
+
+            if (reconnectWhen?.invoke(message.cause) == true) {
+              activeMessages.values.forEach {
+                // Re-queue all start messages
+                // This will restart the websocket
+                messages.trySend(it)
+              }
+            } else {
+              // forward the NetworkError downstream. Active flows will throw
+              mutableEvents.tryEmit(message)
+            }
+          } else {
+            mutableEvents.tryEmit(message)
           }
-          mutableEvents.tryEmit(message)
         }
         is Command -> {
           if (protocol == null) {
@@ -173,16 +188,16 @@ private constructor(
 
           when (message) {
             is StartOperation<*> -> {
-              subscriptions++
+              activeMessages[message.request.requestUuid] = message
               protocol.startOperation(message.request)
             }
             is StopOperation<*> -> {
-              subscriptions--
+              activeMessages.remove(message.request.requestUuid)
               protocol.stopOperation(message.request)
             }
           }
 
-          if (subscriptions == 0) {
+          if (activeMessages.isEmpty()) {
             idleJob = scope.launch {
               delay(idleTimeoutMillis)
               protocol.close()
@@ -252,6 +267,7 @@ private constructor(
     private var webSocketEngine: WebSocketEngine? = null
     private var idleTimeoutMillis: Long? = null
     private var protocolFactory: WsProtocol.Factory? = null
+    private var reconnectWhen: ((Throwable) -> Boolean)? = null
 
     fun serverUrl(serverUrl: String) = apply {
       this.serverUrl = serverUrl
@@ -270,13 +286,26 @@ private constructor(
       this.protocolFactory = protocolFactory
     }
 
+    /**
+     * Configure the [WebSocketNetworkTransport] to reconnect the websocket automatically when a network error
+     * happens
+     *
+     * @param reconnectWhen a function taking the error as a parameter and returning 'true' to reconnect
+     * automatically or 'false' to forward the error to all listening [Flow]
+     *
+     */
+    fun reconnectWhen(reconnectWhen: ((Throwable) -> Boolean)?) = apply {
+      this.reconnectWhen = reconnectWhen
+    }
+
     fun build(): WebSocketNetworkTransport {
       @Suppress("DEPRECATION")
       return WebSocketNetworkTransport(
           serverUrl ?: error("No serverUrl specified"),
           webSocketEngine ?: DefaultWebSocketEngine(),
           idleTimeoutMillis ?: 60_000,
-          protocolFactory ?: SubscriptionWsProtocol.Factory()
+          protocolFactory ?: SubscriptionWsProtocol.Factory(),
+          reconnectWhen
       )
     }
   }

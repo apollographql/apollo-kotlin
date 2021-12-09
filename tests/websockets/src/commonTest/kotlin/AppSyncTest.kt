@@ -1,4 +1,3 @@
-
 import appsync.CommentsSubscription
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.network.ws.AppSyncWsProtocol
@@ -8,15 +7,42 @@ import kotlinx.coroutines.flow.collect
 import kotlin.test.Ignore
 import kotlin.test.Test
 
-// Ignored because it depends on a remote server
-// This test requires to add a comment using the AWS console at https://eu-west-3.console.aws.amazon.com/appsync/home
-// The AWS project requires authentication at the moment. Would be nice to remove this
+/**
+ *
+ * This test is Ignored because it depends on a remote server
+ * This test requires to add a comment using the AWS console at https://eu-west-3.console.aws.amazon.com/appsync/home
+ * It's important that the mutation returns all fields queried by the subscription:
+ *
+ * mutation {
+ *   commentOnEvent(content: "hello", createdAt: "2021-10-11T08:35:23+0000", eventId: "eeafafae-91dc-4951-9fdb-d2df84f3abf3") {
+ *     content
+ *     eventId
+ *   }
+ * }
+ *
+ * To list the comments:
+ *
+ * query {
+ *   getEvent(id: "eeafafae-91dc-4951-9fdb-d2df84f3abf3") {
+ *     id
+ *     name
+ *     comments {
+ *       items {
+ *         commentId
+ *         content
+ *         createdAt
+ *       }
+ *     }
+ *   }
+ *
+ * The AWS project requires authentication at the moment. You can get an apiKey from the console. It would be nice to change this
+ */
 @Ignore
 class AppSyncTest {
 
   @Test
   fun simple() = runTest {
-    val apiKey = "changeMe"
+    val apiKey = "da2-mdu5pjfruvbe3kf4sukxr76bim" //TODO("changeMe")
     val host = "6l5lltvi6fgmrpx5abfxrtq6wu.appsync-api.eu-west-3.amazonaws.com"
 
     val authorization = mapOf(
@@ -39,7 +65,7 @@ class AppSyncTest {
 
     apolloClient.subscription(CommentsSubscription()).toFlow()
         .collect {
-          println("comment: ${it.data?.subscribeToEventComments?.content}")
+          println(it.data)
         }
   }
 }
