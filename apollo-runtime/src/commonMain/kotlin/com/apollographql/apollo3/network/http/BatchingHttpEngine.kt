@@ -55,11 +55,18 @@ import kotlin.jvm.JvmStatic
  *
  * @param batchIntervalMillis the interval between two batches
  * @param maxBatchSize always send the batch when this threshold is reached
+ * @param exposeErrorBody configures whether to expose the error body in [ApolloHttpException].
+ *
+ * If you're setting this to `true`, you **must** catch [ApolloHttpException] and close the body explicitly
+ * to avoid sockets and other resources leaking.
+ *
+ * Default: false
  */
 class BatchingHttpEngine @JvmOverloads constructor(
     val delegate: HttpEngine = DefaultHttpEngine(),
     val batchIntervalMillis: Long = 10,
     private val maxBatchSize: Int = 10,
+    private val exposeErrorBody: Boolean = false
 ) : HttpEngine {
   private val dispatcher = BackgroundDispatcher()
   private val scope = CoroutineScope(dispatcher.coroutineDispatcher)
@@ -161,7 +168,18 @@ class BatchingHttpEngine @JvmOverloads constructor(
     val result = try {
       val response = delegate.execute(request)
       if (response.statusCode !in 200..299) {
-        throw ApolloHttpException(response.statusCode, response.headers, "HTTP error ${response.statusCode} while executing batched query: '${response.body?.readUtf8()}'")
+        val maybeBody = if (exposeErrorBody) {
+          response.body
+        } else {
+          response.body?.close()
+          null
+        }
+        throw ApolloHttpException(
+            response.statusCode,
+            response.headers,
+            maybeBody,
+            "HTTP error ${response.statusCode} while executing batched query"
+        )
       }
       val responseBody = response.body ?: throw ApolloException("null body when executing batched query")
 

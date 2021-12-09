@@ -998,8 +998,9 @@ public final class com/apollographql/apollo3/exception/ApolloGenericException : 
 }
 
 public final class com/apollographql/apollo3/exception/ApolloHttpException : com/apollographql/apollo3/exception/ApolloException {
-	public fun <init> (ILjava/util/List;Ljava/lang/String;Ljava/lang/Throwable;)V
-	public synthetic fun <init> (ILjava/util/List;Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (ILjava/util/List;Lokio/BufferedSource;Ljava/lang/String;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (ILjava/util/List;Lokio/BufferedSource;Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getBody ()Lokio/BufferedSource;
 	public final fun getHeaders ()Ljava/util/List;
 	public final fun getStatusCode ()I
 }
