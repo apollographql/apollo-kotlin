@@ -68,6 +68,8 @@ class CachingHttpInterceptor(
 
     val doNotStore = request.headers.valueOf(CACHE_DO_NOT_STORE)?.lowercase() == "true"
     if (response.statusCode in 200..299 && !doNotStore) {
+      // Note: this write may fail if the same cacheKey is being stored by another thread.
+      // This is OK though: the other thread will be the one that stores it in the cache (see issue #3664).
       store.write(
           response.newBuilder()
               .addHeaders(
@@ -78,12 +80,8 @@ class CachingHttpInterceptor(
               )
               .build(),
           cacheKey)
-
-      // Writing the response will consume the response body, so we re-read it from the cache
-      return store.read(cacheKey)
-    } else {
-      return response
     }
+    return response
   }
 
   private fun cacheMightThrow(request: HttpRequest, cacheKey: String): HttpResponse {

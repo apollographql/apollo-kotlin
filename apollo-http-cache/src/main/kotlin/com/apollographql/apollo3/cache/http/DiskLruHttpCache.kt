@@ -43,35 +43,40 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
         .build()
   }
 
+  /**
+   * Store the [response] with the given [cacheKey] into the cache.
+   * Note: the response's body is not consumed nor closed.
+   */
   fun write(response: HttpResponse, cacheKey: String) {
-    val editor = cacheLock.write {
+    val editor = cacheLock.read {
       cache.edit(cacheKey)
-    } ?: return
+    }
 
-    cacheLock.write {
-      try {
-        editor.newSink(ENTRY_HEADERS).buffer().use {
-          val map = mapOf(
-              "statusCode" to response.statusCode.toString(),
-              "headers" to response.headers.map { httpHeader ->
-                // Moshi doesn't serialize Pairs by default (https://github.com/square/moshi/issues/508) so
-                // we use a Map with a single entry
-                mapOf(httpHeader.name to httpHeader.value)
-              },
-          )
-          adapter.toJson(it, map)
-        }
-        editor.newSink(ENTRY_BODY).buffer().use {
-          val responseBody = response.body
-          if (responseBody != null) {
-            it.writeAll(responseBody)
-            responseBody.close()
-          }
-        }
-        editor.commit()
-      } catch (e: Exception) {
-        editor.abort()
+    if (editor == null) {
+      return
+    }
+
+    try {
+      editor.newSink(ENTRY_HEADERS).buffer().use {
+        val map = mapOf(
+            "statusCode" to response.statusCode.toString(),
+            "headers" to response.headers.map { httpHeader ->
+              // Moshi doesn't serialize Pairs by default (https://github.com/square/moshi/issues/508) so
+              // we use a Map with a single entry
+              mapOf(httpHeader.name to httpHeader.value)
+            },
+        )
+        adapter.toJson(it, map)
       }
+      editor.newSink(ENTRY_BODY).buffer().use {
+        val responseBody = response.body
+        if (responseBody != null) {
+          it.writeAll(responseBody.peek())
+        }
+      }
+      editor.commit()
+    } catch (e: Exception) {
+      editor.abort()
     }
   }
 
