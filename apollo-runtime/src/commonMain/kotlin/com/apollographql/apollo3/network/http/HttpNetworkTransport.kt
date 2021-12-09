@@ -103,6 +103,7 @@ private constructor(
   }
 
   override fun dispose() {
+    interceptors.forEach { it.dispose() }
     engine.dispose()
   }
 

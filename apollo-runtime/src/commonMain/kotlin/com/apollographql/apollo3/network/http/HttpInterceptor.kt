@@ -9,6 +9,7 @@ interface HttpInterceptorChain {
 
 interface HttpInterceptor {
   suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse
+  fun dispose() {}
 }
 
 internal class DefaultHttpInterceptorChain(
