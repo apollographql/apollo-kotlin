@@ -432,6 +432,15 @@ val response = apolloClient.query(request)
 
 #### HTTP cache
 
+To add http cache support, add the dependency to your gradle file:
+
+```kotlin
+dependencies {
+  // Add
+  implementation("com.apollographql.apollo3:apollo-http-cache:$version") // Gives access to `httpCache` and `httpFetchPolicy`
+}
+```
+
 Similarly, the HTTP cache is configurable through extension functions:
 
 ```kotlin
