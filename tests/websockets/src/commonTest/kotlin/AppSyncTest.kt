@@ -42,7 +42,7 @@ class AppSyncTest {
 
   @Test
   fun simple() = runTest {
-    val apiKey = "da2-mdu5pjfruvbe3kf4sukxr76bim" //TODO("changeMe")
+    val apiKey = TODO("changeMe")
     val host = "6l5lltvi6fgmrpx5abfxrtq6wu.appsync-api.eu-west-3.amazonaws.com"
 
     val authorization = mapOf(
