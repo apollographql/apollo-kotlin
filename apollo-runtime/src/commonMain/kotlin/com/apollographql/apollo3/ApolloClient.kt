@@ -386,10 +386,10 @@ private constructor(
      * Some servers might have a per-HTTP-call cache making it faster to resolve 1 big array
      * of n queries compared to resolving the n queries separately.
      *
+     * See also [BatchingHttpInterceptor]
+     *
      * @param batchIntervalMillis the interval between two batches
      * @param maxBatchSize always send the batch when this threshold is reached
-     *
-     * See also [BatchingHttpInterceptor]
      */
     @JvmOverloads
     fun httpBatching(
