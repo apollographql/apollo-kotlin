@@ -15,6 +15,7 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
+import com.apollographql.apollo3.api.http.HttpRequestComposer
 import com.apollographql.apollo3.api.internal.Version2CustomTypeAdapterToAdapter
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
@@ -160,10 +161,10 @@ private constructor(
     private var requestedDispatcher: CoroutineDispatcher? = null
     override var executionContext: ExecutionContext = ExecutionContext.Empty
     private var httpServerUrl: String? = null
+    private var httpEngine: HttpEngine? = null
     private var webSocketServerUrl: String? = null
     private var webSocketIdleTimeoutMillis: Long? = null
     private var wsProtocolFactory: WsProtocol.Factory? = null
-    private var httpEngine: HttpEngine? = null
     private var webSocketEngine: WebSocketEngine? = null
 
     override var httpMethod: HttpMethod? = null

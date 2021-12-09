@@ -113,6 +113,7 @@ private constructor(
 
   class Builder {
     private var httpRequestComposer: HttpRequestComposer? = null
+    private var serverUrl: String? = null
     private var engine: HttpEngine? = null
     private val interceptors: MutableList<HttpInterceptor> = mutableListOf()
 
@@ -121,7 +122,7 @@ private constructor(
     }
 
     fun serverUrl(serverUrl: String) = apply {
-      this.httpRequestComposer = DefaultHttpRequestComposer(serverUrl)
+      this.serverUrl = serverUrl
     }
 
     fun httpHeaders(headers: List<HttpHeader>) = apply {
@@ -142,9 +143,14 @@ private constructor(
     }
 
     fun build(): HttpNetworkTransport {
-      @Suppress("DEPRECATION")
+      check (httpRequestComposer == null || serverUrl == null) {
+        "It is an error to set both 'httpRequestComposer' and 'serverUrl'"
+      }
+      val composer = httpRequestComposer
+          ?: serverUrl?.let { DefaultHttpRequestComposer(it) }
+          ?: error("No HttpRequestComposer found. Use 'httpRequestComposer' or 'serverUrl'")
       return HttpNetworkTransport(
-          httpRequestComposer = httpRequestComposer ?: error("No HttpRequestComposer found. Use 'httpRequestComposer' or 'serverUrl'"),
+          httpRequestComposer = composer,
           engine = engine ?: DefaultHttpEngine(),
           interceptors = interceptors
       )
