@@ -5,7 +5,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.MutableExecutionOptions
+import com.apollographql.apollo3.api.ExecutionOptions
 import com.apollographql.apollo3.api.http.HttpBody
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
@@ -20,7 +20,6 @@ import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.internal.BackgroundDispatcher
 import com.apollographql.apollo3.mpp.ensureNeverFrozen
 import com.apollographql.apollo3.mpp.freeze
-import com.apollographql.apollo3.network.http.BatchingHttpInterceptor.Companion.CAN_BE_BATCHED
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -93,11 +92,11 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
 
   override suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse {
     // Batching is enabled by default, unless explicitly disabled
-    val canBeBatched = request.headers.valueOf(CAN_BE_BATCHED)?.toBoolean() ?: true
+    val canBeBatched = request.headers.valueOf(ExecutionOptions.CAN_BE_BATCHED)?.toBoolean() ?: true
 
     if (!canBeBatched) {
       // Remove the CAN_BE_BATCHED header and forward directly
-      return chain.proceed(request.newBuilder().addHeaders(headers = request.headers.filter { it.name != CAN_BE_BATCHED }).build())
+      return chain.proceed(request.newBuilder().addHeaders(headers = request.headers.filter { it.name != ExecutionOptions.CAN_BE_BATCHED }).build())
     }
 
     // Keep the chain for later
@@ -233,8 +232,6 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
   }
 
   companion object {
-    const val CAN_BE_BATCHED = "X-APOLLO-CAN-BE-BATCHED"
-
     @JvmStatic
     fun configureApolloClientBuilder(apolloClientBuilder: ApolloClient.Builder, canBeBatched: Boolean) {
       apolloClientBuilder.canBeBatched(canBeBatched)
@@ -246,7 +243,3 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
     }
   }
 }
-
-fun <T> MutableExecutionOptions<T>.canBeBatched(canBeBatched: Boolean) = addHttpHeader(
-    CAN_BE_BATCHED, canBeBatched.toString()
-)

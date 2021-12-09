@@ -95,7 +95,7 @@ public class ClientTest {
   private void queryBatching() {
     ApolloClient.Builder apolloClientBuilder = new ApolloClient.Builder()
         .serverUrl("https://localhost")
-        .batching();
+        .httpBatching();
     BatchingHttpInterceptor.configureApolloClientBuilder(apolloClientBuilder, false);
     apolloClient = apolloClientBuilder.build();
 

@@ -28,7 +28,6 @@ import com.apollographql.apollo3.network.http.BatchingHttpInterceptor
 import com.apollographql.apollo3.network.http.HttpEngine
 import com.apollographql.apollo3.network.http.HttpInterceptor
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
-import com.apollographql.apollo3.network.http.canBeBatched
 import com.apollographql.apollo3.network.ws.WebSocketEngine
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import com.apollographql.apollo3.network.ws.WsProtocol
@@ -202,6 +201,10 @@ private constructor(
 
     override fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean?): Builder = apply {
       this.enableAutoPersistedQueries = enableAutoPersistedQueries
+    }
+
+    override fun canBeBatched(canBeBatched: Boolean?): Builder = apply {
+      if (canBeBatched != null) addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, canBeBatched.toString())
     }
 
     /**
@@ -389,7 +392,7 @@ private constructor(
      * See also [BatchingHttpInterceptor]
      */
     @JvmOverloads
-    fun batching(
+    fun httpBatching(
         batchIntervalMillis: Long = 10,
         maxBatchSize: Int = 10,
         enableByDefault: Boolean = true,
@@ -497,7 +500,7 @@ private constructor(
           httpHeaders = httpHeaders,
           sendApqExtensions = sendApqExtensions,
           sendDocument = sendDocument,
-          enableAutoPersistedQueries = enableAutoPersistedQueries
+          enableAutoPersistedQueries = enableAutoPersistedQueries,
       )
     }
   }

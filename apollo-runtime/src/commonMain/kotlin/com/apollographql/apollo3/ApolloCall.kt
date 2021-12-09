@@ -64,8 +64,14 @@ abstract class ApolloCall<D : Operation.Data, E>(val apolloClient: ApolloClient,
 
   override var enableAutoPersistedQueries: Boolean? = null
 
-  override fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean?): E  {
+  override fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean?): E {
     this.enableAutoPersistedQueries = enableAutoPersistedQueries
+    @Suppress("UNCHECKED_CAST")
+    return this as E
+  }
+
+  override fun canBeBatched(canBeBatched: Boolean?): E {
+    if (canBeBatched != null) addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, canBeBatched.toString())
     @Suppress("UNCHECKED_CAST")
     return this as E
   }

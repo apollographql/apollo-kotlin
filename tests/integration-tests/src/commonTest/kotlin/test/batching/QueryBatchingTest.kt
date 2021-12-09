@@ -9,7 +9,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.network.http.canBeBatched
 import com.apollographql.apollo3.testing.runTest
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -40,7 +39,7 @@ class QueryBatchingTest {
   fun testAgainstARealServer() = runTest(before = { setUp() }, after = { tearDown() }) {
     apolloClient = ApolloClient.Builder()
         .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
-        .batching()
+        .httpBatching()
         .build()
 
     val result1 = async {
@@ -62,7 +61,7 @@ class QueryBatchingTest {
     mockServer.enqueue(response)
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
-        .batching(batchIntervalMillis = 300)
+        .httpBatching(batchIntervalMillis = 300)
         .build()
 
     val result1 = async {
@@ -98,7 +97,7 @@ class QueryBatchingTest {
     mockServer.enqueue("""[{"data":{"launch":{"id":"84"}}}]""")
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
-        .batching(batchIntervalMillis = 10)
+        .httpBatching(batchIntervalMillis = 10)
         .build()
 
     val result1 = async {
@@ -123,7 +122,7 @@ class QueryBatchingTest {
     mockServer.enqueue("""[{"data":{"launch":{"id":"84"}}}]""")
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
-        .batching(batchIntervalMillis = 300)
+        .httpBatching(batchIntervalMillis = 300)
         .build()
 
     val result1 = async {
@@ -151,7 +150,7 @@ class QueryBatchingTest {
     mockServer.enqueue(response)
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
-        .batching(batchIntervalMillis = 300)
+        .httpBatching(batchIntervalMillis = 300)
         // Opt out by default
         .canBeBatched(false)
         .build()
