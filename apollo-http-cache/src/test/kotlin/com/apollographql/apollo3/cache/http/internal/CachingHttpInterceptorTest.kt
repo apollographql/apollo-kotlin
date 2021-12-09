@@ -10,14 +10,14 @@ import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.network.http.HttpInterceptorChain
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import java.io.File
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import java.util.concurrent.Future
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
@@ -125,16 +125,14 @@ class CachingHttpInterceptorTest {
 
   @Test
   fun cacheInParallel() {
-    val concurrency = 4
-    val executorService: ExecutorService = Executors.newFixedThreadPool(concurrency / 2)
-
+    val concurrency = 2
     repeat(concurrency) {
       mockServer.enqueue(MockResponse(statusCode = 200, body = "success"))
     }
-    val futures = mutableListOf<Future<*>>()
-    repeat(concurrency) {
-      futures += executorService.submit {
-        runBlocking {
+    val jobs = mutableListOf<Job>()
+    runBlocking {
+      repeat(concurrency) {
+        jobs += launch(Dispatchers.IO) {
           val request = HttpRequest.Builder(
               method = HttpMethod.Get,
               url = mockServer.url(),
@@ -144,8 +142,8 @@ class CachingHttpInterceptorTest {
           assertEquals("success", response.body?.readUtf8())
         }
       }
+      jobs.forEach { it.join() }
     }
-    futures.forEach { it.get() }
   }
 }
 
