@@ -48,10 +48,10 @@ import kotlin.jvm.JvmStatic
  * [BatchingHttpInterceptor] buffers the whole response, so it might additionally introduce some
  * client-side latency as it cannot amortize parsing/building the models during network I/O.
  *
- * [BatchingHttpInterceptor] only works with Post requests. Trying to batch a Get requests is undefined.
+ * [BatchingHttpInterceptor] only works with Post requests. Trying to batch a Get request is undefined.
  *
- * @param batchIntervalMillis the interval between two batches
- * @param maxBatchSize always send the batch when this threshold is reached
+ * @param batchIntervalMillis the maximum time interval before a new batch is sent
+ * @param maxBatchSize the maximum number of requests queued before a new batch is sent
  * @param exposeErrorBody configures whether to expose the error body in [ApolloHttpException].
  *
  * If you're setting this to `true`, you **must** catch [ApolloHttpException] and close the body explicitly
