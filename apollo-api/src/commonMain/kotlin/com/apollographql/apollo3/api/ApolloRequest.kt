@@ -73,6 +73,10 @@ private constructor(
       this.enableAutoPersistedQueries = enableAutoPersistedQueries
     }
 
+    override fun canBeBatched(canBeBatched: Boolean?): Builder<D> = apply {
+      if (canBeBatched != null) addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, canBeBatched.toString())
+    }
+
     fun requestUuid(requestUuid: Uuid) = apply {
       this.requestUuid = requestUuid
     }
@@ -95,7 +99,7 @@ private constructor(
           httpHeaders = httpHeaders,
           sendApqExtensions = sendApqExtensions,
           sendDocument = sendDocument,
-          enableAutoPersistedQueries = enableAutoPersistedQueries
+          enableAutoPersistedQueries = enableAutoPersistedQueries,
       )
     }
   }

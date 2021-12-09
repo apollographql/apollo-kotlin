@@ -22,7 +22,7 @@ import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory;
 import com.apollographql.apollo3.mockserver.MockResponse;
 import com.apollographql.apollo3.mockserver.MockServer;
 import com.apollographql.apollo3.network.http.ApolloClientAwarenessInterceptor;
-import com.apollographql.apollo3.network.http.BatchingHttpEngine;
+import com.apollographql.apollo3.network.http.BatchingHttpInterceptor;
 import com.apollographql.apollo3.network.http.HttpNetworkTransport;
 import com.apollographql.apollo3.rx2.Rx2Apollo;
 import com.google.common.truth.Truth;
@@ -95,12 +95,12 @@ public class ClientTest {
   private void queryBatching() {
     ApolloClient.Builder apolloClientBuilder = new ApolloClient.Builder()
         .serverUrl("https://localhost")
-        .httpEngine(new BatchingHttpEngine());
-    BatchingHttpEngine.configureApolloClientBuilder(apolloClientBuilder, false);
+        .httpBatching();
+    BatchingHttpInterceptor.configureApolloClientBuilder(apolloClientBuilder, false);
     apolloClient = apolloClientBuilder.build();
 
     ApolloQueryCall<GetRandomQuery.Data> call = apolloClient.query(new GetRandomQuery());
-    BatchingHttpEngine.configureApolloCall(call, true);
+    BatchingHttpInterceptor.configureApolloCall(call, true);
     ApolloResponse<GetRandomQuery.Data> result = Rx2Apollo.single(call).blockingGet();
   }
 

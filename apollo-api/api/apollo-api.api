@@ -48,6 +48,8 @@ public final class com/apollographql/apollo3/api/ApolloRequest$Builder : com/apo
 	public fun addHttpHeader (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/api/ApolloRequest$Builder;
 	public synthetic fun addHttpHeader (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;
 	public final fun build ()Lcom/apollographql/apollo3/api/ApolloRequest;
+	public fun canBeBatched (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/api/ApolloRequest$Builder;
+	public synthetic fun canBeBatched (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/api/ApolloRequest$Builder;
 	public synthetic fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public final fun executionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ApolloRequest$Builder;
@@ -483,12 +485,18 @@ public abstract interface class com/apollographql/apollo3/api/ExecutionContext$K
 }
 
 public abstract interface class com/apollographql/apollo3/api/ExecutionOptions {
+	public static final field CAN_BE_BATCHED Ljava/lang/String;
+	public static final field Companion Lcom/apollographql/apollo3/api/ExecutionOptions$Companion;
 	public abstract fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;
 	public abstract fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
 	public abstract fun getHttpHeaders ()Ljava/util/List;
 	public abstract fun getHttpMethod ()Lcom/apollographql/apollo3/api/http/HttpMethod;
 	public abstract fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public abstract fun getSendDocument ()Ljava/lang/Boolean;
+}
+
+public final class com/apollographql/apollo3/api/ExecutionOptions$Companion {
+	public static final field CAN_BE_BATCHED Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo3/api/FileUpload {
@@ -552,6 +560,7 @@ public final class com/apollographql/apollo3/api/ListAdapter : com/apollographql
 public abstract interface class com/apollographql/apollo3/api/MutableExecutionOptions : com/apollographql/apollo3/api/ExecutionOptions {
 	public abstract fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Ljava/lang/Object;
 	public abstract fun addHttpHeader (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;
+	public abstract fun canBeBatched (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public abstract fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public abstract fun httpHeaders (Ljava/util/List;)Ljava/lang/Object;
 	public abstract fun httpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)Ljava/lang/Object;

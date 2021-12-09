@@ -9,8 +9,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.network.http.BatchingHttpEngine
-import com.apollographql.apollo3.network.http.canBeBatched
 import com.apollographql.apollo3.testing.runTest
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -32,7 +30,7 @@ class QueryBatchingTest {
 
   private suspend fun tearDown() {
     mockServer.stop()
-    // This is important. JS will hang if the BatchingHttpEngine scope is not cancelled
+    // This is important. JS will hang if the BatchingHttpInterceptor scope is not cancelled
     apolloClient.dispose()
   }
 
@@ -41,7 +39,7 @@ class QueryBatchingTest {
   fun testAgainstARealServer() = runTest(before = { setUp() }, after = { tearDown() }) {
     apolloClient = ApolloClient.Builder()
         .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
-        .httpEngine(BatchingHttpEngine())
+        .httpBatching()
         .build()
 
     val result1 = async {
@@ -63,7 +61,7 @@ class QueryBatchingTest {
     mockServer.enqueue(response)
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
-        .httpEngine(BatchingHttpEngine(batchIntervalMillis = 300))
+        .httpBatching(batchIntervalMillis = 300)
         .build()
 
     val result1 = async {
@@ -99,7 +97,7 @@ class QueryBatchingTest {
     mockServer.enqueue("""[{"data":{"launch":{"id":"84"}}}]""")
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
-        .httpEngine(BatchingHttpEngine(batchIntervalMillis = 10))
+        .httpBatching(batchIntervalMillis = 10)
         .build()
 
     val result1 = async {
@@ -124,7 +122,7 @@ class QueryBatchingTest {
     mockServer.enqueue("""[{"data":{"launch":{"id":"84"}}}]""")
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
-        .httpEngine(BatchingHttpEngine(batchIntervalMillis = 300))
+        .httpBatching(batchIntervalMillis = 300)
         .build()
 
     val result1 = async {
@@ -152,7 +150,7 @@ class QueryBatchingTest {
     mockServer.enqueue(response)
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
-        .httpEngine(BatchingHttpEngine(batchIntervalMillis = 300))
+        .httpBatching(batchIntervalMillis = 300)
         // Opt out by default
         .canBeBatched(false)
         .build()

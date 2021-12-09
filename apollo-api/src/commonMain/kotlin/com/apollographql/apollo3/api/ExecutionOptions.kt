@@ -30,6 +30,13 @@ interface ExecutionOptions {
    * Used by [com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor]
    */
   val enableAutoPersistedQueries: Boolean?
+
+  companion object {
+    /**
+     * Used by [com.apollographql.apollo3.network.http.BatchingHttpInterceptor]
+     */
+    const val CAN_BE_BATCHED = "X-APOLLO-CAN-BE-BATCHED"
+  }
 }
 
 
@@ -59,4 +66,6 @@ interface MutableExecutionOptions<T> : ExecutionOptions {
   fun sendDocument(sendDocument: Boolean?): T
 
   fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean?): T
+
+  fun canBeBatched(canBeBatched: Boolean?): T
 }

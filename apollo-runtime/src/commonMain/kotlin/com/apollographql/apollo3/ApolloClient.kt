@@ -24,6 +24,7 @@ import com.apollographql.apollo3.interceptor.NetworkInterceptor
 import com.apollographql.apollo3.internal.defaultDispatcher
 import com.apollographql.apollo3.mpp.assertMainThreadOnNative
 import com.apollographql.apollo3.network.NetworkTransport
+import com.apollographql.apollo3.network.http.BatchingHttpInterceptor
 import com.apollographql.apollo3.network.http.HttpEngine
 import com.apollographql.apollo3.network.http.HttpInterceptor
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
@@ -202,6 +203,10 @@ private constructor(
       this.enableAutoPersistedQueries = enableAutoPersistedQueries
     }
 
+    override fun canBeBatched(canBeBatched: Boolean?): Builder = apply {
+      if (canBeBatched != null) addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, canBeBatched.toString())
+    }
+
     /**
      * The url of the GraphQL server used for HTTP
      *
@@ -374,6 +379,28 @@ private constructor(
       enableAutoPersistedQueries(enableByDefault)
     }
 
+    /**
+     * Batch HTTP queries to execute multiple at once.
+     * This reduces the number of HTTP round trips at the price of increased latency as
+     * every request in the batch is now as slow as the slowest one.
+     * Some servers might have a per-HTTP-call cache making it faster to resolve 1 big array
+     * of n queries compared to resolving the n queries separately.
+     *
+     * See also [BatchingHttpInterceptor]
+     *
+     * @param batchIntervalMillis the interval between two batches
+     * @param maxBatchSize always send the batch when this threshold is reached
+     */
+    @JvmOverloads
+    fun httpBatching(
+        batchIntervalMillis: Long = 10,
+        maxBatchSize: Int = 10,
+        enableByDefault: Boolean = true,
+    ) = apply {
+      addHttpInterceptor(BatchingHttpInterceptor(batchIntervalMillis, maxBatchSize))
+      canBeBatched(enableByDefault)
+    }
+
     @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("httpMethod(HttpMethod.Get)", "com.apollographql.apollo3.api.http.httpMethod", "com.apollographql.apollo3.api.http.HttpMethod"))
     fun useHttpGetMethodForQueries(
         useHttpGetMethodForQueries: Boolean,
@@ -473,7 +500,7 @@ private constructor(
           httpHeaders = httpHeaders,
           sendApqExtensions = sendApqExtensions,
           sendDocument = sendDocument,
-          enableAutoPersistedQueries = enableAutoPersistedQueries
+          enableAutoPersistedQueries = enableAutoPersistedQueries,
       )
     }
   }
