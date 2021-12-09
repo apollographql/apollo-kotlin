@@ -547,7 +547,7 @@ abstract class DefaultApolloExtension(
     }
     val registry = service.registry
     if (registry != null) {
-      project.tasks.register(ModelNames.downloadApolloSchemaIntrospection(service), ApolloDownloadSchemaTask::class.java) { task ->
+      project.tasks.register(ModelNames.downloadApolloSchemaRegistry(service), ApolloDownloadSchemaTask::class.java) { task ->
 
         task.group = TASK_GROUP
         task.graph.set(registry.graph)
