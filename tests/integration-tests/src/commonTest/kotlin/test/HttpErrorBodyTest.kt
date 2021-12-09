@@ -36,5 +36,8 @@ class HttpErrorBodyTest {
     } catch (e: ApolloHttpException) {
       assertEquals("Ooops", e.body?.readUtf8())
     }
+
+    apolloClient.dispose()
+    mockServer.stop()
   }
 }
