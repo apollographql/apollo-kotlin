@@ -9,16 +9,18 @@ Support for multi-modules build is currently experimental and we'd love to have 
 
 ## Setup
 
-Configure your parent module to generate Apollo metadata:
+Multi-modules requires that one module and only one contains a schema. This is the schema that all other modules can reuse. In this document, we'll name it "graphql-root". This is **not to be confused with Gradle root project** that contains all your modules.
+
+Configure your "graphql-root" module to generate Apollo metadata:
 
 ```kotlin
-// parent/build.gradle.kts
+// graphql-root/build.gradle.kts
 apollo {
     generateApolloMetadata.set(true)
 }
 ```
 
-And declare your parent module as a dependency of your feature module:
+And declare your graphql-root module as a dependency of your feature module:
 
 ```kotlin
 // feature/build.gradle.kts
@@ -27,9 +29,9 @@ dependencies {
     // more regular dependencies
     
     // Apollo dependencies
-    apolloMetadata(project(":parent"))
-    // You still need to declare the parent module as a regular dependency
-    implementation(project(":parent"))
+    apolloMetadata(project(":graphql-root"))
+    // You still need to declare the graphql-root module as a regular dependency
+    implementation(project(":graphql-root"))
 }
 ```
 
@@ -39,25 +41,25 @@ A feature module can have any number of parent modules. Parent modules themselve
 
 Transitive Apollo dependencies will always expose their fragments and types to the modules downstream. In other words, there is no `implementation` vs `api` concept like there is for regular dependencies. Apollo dependencies will always expose everything downstream (i.e are treated as `api`). 
 
-Another important thing to note is that all modules must share the same schema. Place schema.[json | sdl] in the root module, the module that is the higher up in the dependencies graph:
+Another important thing to note is that all modules must share the same schema. Place schema.[json | sdl] in the graphql root module, the module that is the higher up in the dependencies graph:
 
 ```kotlin
 // feature/build.gradle.kts
 // This module must not have a schema
-// This module can use fragments and types from 'shared' and 'root'
+// This module can use fragments and types from 'shared' and 'graphql-root'
 dependencies {
     apolloMetadata(project(":shared"))
 }
 
 // shared/build.gradle.kts
-// This module can use fragments and types from 'root'
+// This module can use fragments and types from 'graphql-root'
 dependencies {
-    apolloMetadata(project(":root"))
+    apolloMetadata(project(":graphql-root"))
     generateApolloMetadata.set(true)
 }
 
-// root/build.gradle.kts
-// This module is the root module
+// graphql-root/build.gradle.kts
+// This module is the graphql root module
 // Place the schema in this module 
 dependencies {
     generateApolloMetadata.set(true)
@@ -66,18 +68,18 @@ dependencies {
 
 Summary of different constraints:
 
-* The root module and only the root module must define schema.[json | sdl]
-* The root module and only the root module must define `customTypeMapping`
-* The root module and only the root module must define `generateKotlinModels`
-* The root module must have a `.graphql` file. This file can be empty
+* The graphql root module and only the graphql root module must define schema.[json | sdl]
+* The graphql root module and only the graphql root module must define `customTypeMapping`
+* The graphql root module and only the graphql root module must define `generateKotlinModels`
+* The graphql root module must have a `.graphql` file. This file can be empty
 * All modules must apply the same version of the Apollo Gradle Plugin
 * Either all modules must apply the Android plugin or no module should apply it
 
 ## Big schemas
 
-When using multiple modules, Apollo Android will generate all possible Input Types and Enums in the root module, and not only the used ones. This is because there is no way to know from the parent module what types are going to be used in feature modules. By default:
+When using multiple modules, Apollo Android will generate all possible Input Types and Enums in the graphql root module, and not only the used ones. This is because there is no way to know from the parent module what types are going to be used in feature modules. By default:
 
-* All input objects and enums are generated in the root module.
+* All input objects and enums are generated in the graphql root module.
 * Fragments, queries, mutations and subscriptions are generated in the module where they are defined.
 
 If your schema contains a lot of input objects, it can generate a lot of source files and increase compilation time beyond what's acceptable. To mitigate this, you have the option to control what types are generated with the `alwaysGenerateTypesMatching` option:
@@ -86,7 +88,7 @@ If your schema contains a lot of input objects, it can generate a lot of source 
 // parent/build.gradle.kts
 apollo {
     generateApolloMetadata.set(true)
-    // For the root module, this defaults to [".*"]
+    // For the graphql root module, this defaults to [".*"]
     // To use the single-module behaviour of only generating types that are actually used, pass en empty list
     alwaysGenerateTypesMatching.set(emptyList())
 }
@@ -114,7 +116,7 @@ For multiplatform projects, put `apolloMetadata` in the top level `dependencies 
 ```kotlin
 // feature/build.gradle.kts
 // This module must not have a schema
-// This module can use fragments and types from 'shared' and 'root'
+// This module can use fragments and types from 'shared' and 'graphql-root'
 dependencies {
     apolloMetadata(project(":shared"))
 }
