@@ -12,6 +12,7 @@ import com.apollographql.apollo3.internal.BackgroundDispatcher
 import com.apollographql.apollo3.internal.transformWhile
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.ws.internal.Command
+import com.apollographql.apollo3.network.ws.internal.Dispose
 import com.apollographql.apollo3.network.ws.internal.Event
 import com.apollographql.apollo3.network.ws.internal.GeneralError
 import com.apollographql.apollo3.network.ws.internal.Message
@@ -78,6 +79,7 @@ private constructor(
   init {
     coroutineScope.launch {
       supervise(this)
+      backgroundDispatcher.dispose()
     }
   }
 
@@ -115,17 +117,28 @@ private constructor(
     var protocol: WsProtocol? = null
     val activeMessages = mutableMapOf<Uuid, StartOperation<*>>()
 
+    /**
+     * This happens:
+     * - when this coroutine receives a [Dispose] message
+     * - when the idleJob completes
+     * - when there is an error reading the WebSocket and this coroutine receives a [NetworkError] message
+     */
+    fun closeProtocol() {
+      protocol?.close()
+      protocol = null
+      connectionJob?.cancel()
+      connectionJob = null
+      idleJob?.cancel()
+      idleJob = null
+    }
+
     while (true) {
       val message = messages.receive()
 
       when (message) {
         is Event -> {
           if (message is NetworkError) {
-            protocol = null
-            connectionJob?.cancel()
-            connectionJob = null
-            idleJob?.cancel()
-            idleJob = null
+            closeProtocol()
 
             if (reconnectWhen?.invoke(message.cause) == true) {
               activeMessages.values.forEach {
@@ -167,7 +180,7 @@ private constructor(
                 scope = scope,
             )
             try {
-              protocol.connectionInit()
+              protocol!!.connectionInit()
             } catch (e: Exception) {
               // Error initializing the connection
               protocol = null
@@ -182,25 +195,30 @@ private constructor(
              * so better safe than sorry...
              */
             connectionJob = scope.launch(start = CoroutineStart.UNDISPATCHED) {
-              protocol.run()
+              protocol!!.run()
             }
           }
 
           when (message) {
             is StartOperation<*> -> {
               activeMessages[message.request.requestUuid] = message
-              protocol.startOperation(message.request)
+              protocol!!.startOperation(message.request)
             }
             is StopOperation<*> -> {
               activeMessages.remove(message.request.requestUuid)
-              protocol.stopOperation(message.request)
+              protocol!!.stopOperation(message.request)
+            }
+            is Dispose -> {
+              closeProtocol()
+              // Exit the loop and the coroutine scope
+              return
             }
           }
 
           if (activeMessages.isEmpty()) {
             idleJob = scope.launch {
               delay(idleTimeoutMillis)
-              protocol.close()
+              closeProtocol()
             }
           } else {
             idleJob?.cancel()
@@ -258,8 +276,7 @@ private constructor(
   }
 
   override fun dispose() {
-    coroutineScope.cancel()
-    backgroundDispatcher.dispose()
+    messages.trySend(Dispose)
   }
 
   class Builder {

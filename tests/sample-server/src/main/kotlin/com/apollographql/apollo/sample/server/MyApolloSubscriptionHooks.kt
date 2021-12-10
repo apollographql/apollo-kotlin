@@ -1,14 +1,10 @@
 package com.apollographql.apollo.sample.server
 
 import com.expediagroup.graphql.server.spring.subscriptions.ApolloSubscriptionHooks
-import com.expediagroup.graphql.server.spring.subscriptions.SubscriptionOperationMessage
 import org.springframework.web.reactive.socket.CloseStatus
 import org.springframework.web.reactive.socket.WebSocketSession
 
 class MyApolloSubscriptionHooks : ApolloSubscriptionHooks {
-  companion object {
-    val activeSessions = mutableListOf<WebSocketSession>()
-  }
   override fun onConnectWithContext(connectionParams: Map<String, String>,
                                     session: WebSocketSession,
                                     graphQLContext: Map<*, Any>?): Map<*, Any>? {
@@ -28,14 +24,6 @@ class MyApolloSubscriptionHooks : ApolloSubscriptionHooks {
       }
     }
 
-    activeSessions.add(session)
     return super.onConnectWithContext(connectionParams, session, graphQLContext)
-  }
-
-  override fun onOperationWithContext(operationMessage: SubscriptionOperationMessage,
-                                      session: WebSocketSession,
-                                      graphQLContext: Map<*, Any>?) {
-
-    super.onOperationWithContext(operationMessage, session, graphQLContext)
   }
 }

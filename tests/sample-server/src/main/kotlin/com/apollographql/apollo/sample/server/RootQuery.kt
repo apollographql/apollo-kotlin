@@ -17,10 +17,10 @@ class RootQuery : Query {
 
   @GraphQLDescription("Closes the socket")
   suspend fun closeWebSocket(): String {
-    val sessions = MyApolloSubscriptionHooks.activeSessions
+    val sessions = MyWebSocketHandler.sessions()
     sessions.forEach {
-      println("${System.currentTimeMillis()}: closing session...")
-      it.close(CloseStatus.SERVER_ERROR).block()
+      println("${System.currentTimeMillis()}: closing session ${it.key}...")
+      it.value.close(CloseStatus.SERVER_ERROR).block()
       println("${System.currentTimeMillis()}: session closed.")
     }
     return "Closed ${sessions.size} session(s)"

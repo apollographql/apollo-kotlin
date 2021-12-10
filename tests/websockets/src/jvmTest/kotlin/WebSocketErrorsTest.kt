@@ -4,6 +4,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
 import com.apollographql.apollo3.network.ws.SubscriptionWsProtocol
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
@@ -20,6 +21,8 @@ import sample.server.CloseSocketQuery
 import sample.server.CountSubscription
 import sample.server.OperationErrorSubscription
 import sample.server.TimeSubscription
+import java.util.concurrent.Executors
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
@@ -59,6 +62,8 @@ class WebSocketErrorsTest {
           assertIs<ApolloNetworkException>(error)
           assertTrue(error.cause?.message?.contains("Connection error") == true)
         }
+
+    apolloClient.dispose()
   }
 
   @Test
@@ -78,10 +83,11 @@ class WebSocketErrorsTest {
         .toFlow()
         .test {
           val error = awaitError()
-          error.printStackTrace()
           assertIs<ApolloNetworkException>(error)
           assertTrue(error.cause?.message?.contains("WebSocket Closed code='3666'") == true)
         }
+
+    apolloClient.dispose()
   }
 
   @Test
@@ -146,8 +152,39 @@ class WebSocketErrorsTest {
     assertEquals(2, connectionInitCount)
     assertIs<ApolloWebSocketClosedException>(exception)
     assertEquals(1011, (exception as ApolloWebSocketClosedException).code)
+
+    apolloClient.dispose()
   }
 
+  @Test
+  fun disposingTheClientClosesTheWebSocket() = runBlocking {
+    var apolloClient = ApolloClient.Builder()
+        .httpServerUrl("http://localhost:8080/graphql")
+        .webSocketServerUrl("http://localhost:8080/subscriptions")
+        .build()
+
+
+    apolloClient.subscription(CountSubscription(2, 0))
+        .toFlow()
+        .test {
+          awaitItem()
+          awaitItem()
+          awaitComplete()
+        }
+
+    println("dispose")
+    apolloClient.dispose()
+
+    apolloClient = ApolloClient.Builder()
+        .httpServerUrl("http://localhost:8080/graphql")
+        .webSocketServerUrl("http://localhost:8080/subscriptions")
+        .build()
+
+    delay(1000)
+    val response = apolloClient.query(CloseSocketQuery()).execute()
+
+    println(response.dataAssertNoErrors)
+  }
 
   @Test
   fun flowThrowsIfNoReconnect() = runBlocking {
@@ -181,5 +218,7 @@ class WebSocketErrorsTest {
           assertIs<ApolloWebSocketClosedException>(cause)
           assertEquals(1011, cause.code)
         }
+
+    apolloClient.dispose()
   }
 }
