@@ -29,7 +29,8 @@ public final class com/apollographql/apollo3/api/Adapters {
 }
 
 public final class com/apollographql/apollo3/api/ApolloRequest : com/apollographql/apollo3/api/ExecutionOptions {
-	public synthetic fun <init> (Lcom/apollographql/apollo3/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo3/api/ExecutionContext;Lcom/apollographql/apollo3/api/http/HttpMethod;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo3/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo3/api/ExecutionContext;Lcom/apollographql/apollo3/api/http/HttpMethod;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getCanBeBatched ()Ljava/lang/Boolean;
 	public fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;
 	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
 	public fun getHttpHeaders ()Ljava/util/List;
@@ -53,6 +54,7 @@ public final class com/apollographql/apollo3/api/ApolloRequest$Builder : com/apo
 	public fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/api/ApolloRequest$Builder;
 	public synthetic fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public final fun executionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ApolloRequest$Builder;
+	public fun getCanBeBatched ()Ljava/lang/Boolean;
 	public fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;
 	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
 	public fun getHttpHeaders ()Ljava/util/List;
@@ -68,6 +70,7 @@ public final class com/apollographql/apollo3/api/ApolloRequest$Builder : com/apo
 	public synthetic fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun sendDocument (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/api/ApolloRequest$Builder;
 	public synthetic fun sendDocument (Ljava/lang/Boolean;)Ljava/lang/Object;
+	public fun setCanBeBatched (Ljava/lang/Boolean;)V
 	public fun setEnableAutoPersistedQueries (Ljava/lang/Boolean;)V
 	public fun setExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)V
 	public fun setHttpHeaders (Ljava/util/List;)V
@@ -487,6 +490,7 @@ public abstract interface class com/apollographql/apollo3/api/ExecutionContext$K
 public abstract interface class com/apollographql/apollo3/api/ExecutionOptions {
 	public static final field CAN_BE_BATCHED Ljava/lang/String;
 	public static final field Companion Lcom/apollographql/apollo3/api/ExecutionOptions$Companion;
+	public abstract fun getCanBeBatched ()Ljava/lang/Boolean;
 	public abstract fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;
 	public abstract fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
 	public abstract fun getHttpHeaders ()Ljava/util/List;
