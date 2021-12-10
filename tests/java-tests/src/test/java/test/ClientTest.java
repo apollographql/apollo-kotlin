@@ -1,7 +1,7 @@
 package test;
 
+import com.apollographql.apollo3.ApolloCall;
 import com.apollographql.apollo3.ApolloClient;
-import com.apollographql.apollo3.ApolloQueryCall;
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.api.CompiledField;
@@ -99,7 +99,7 @@ public class ClientTest {
     BatchingHttpInterceptor.configureApolloClientBuilder(apolloClientBuilder, false);
     apolloClient = apolloClientBuilder.build();
 
-    ApolloQueryCall<GetRandomQuery.Data> call = apolloClient.query(new GetRandomQuery());
+    ApolloCall<GetRandomQuery.Data> call = apolloClient.query(new GetRandomQuery());
     BatchingHttpInterceptor.configureApolloCall(call, true);
     ApolloResponse<GetRandomQuery.Data> result = Rx2Apollo.single(call).blockingGet();
   }
@@ -111,7 +111,7 @@ public class ClientTest {
     HttpCache.configureApolloClientBuilder(apolloClientBuilder, cacheDir, cacheSize);
     apolloClient = apolloClientBuilder.build();
 
-    ApolloQueryCall<GetRandomQuery.Data> call = apolloClient.query(new GetRandomQuery());
+    ApolloCall<GetRandomQuery.Data> call = apolloClient.query(new GetRandomQuery());
     HttpCache.httpFetchPolicy(call, HttpFetchPolicy.NetworkOnly);
     ApolloResponse<GetRandomQuery.Data> result = Rx2Apollo.single(call).blockingGet();
   }

@@ -2,18 +2,13 @@
 
 package com.apollographql.apollo3.rx2
 
-import com.apollographql.apollo3.ApolloMutationCall
-import com.apollographql.apollo3.ApolloQueryCall
-import com.apollographql.apollo3.ApolloSubscriptionCall
+import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
-import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.cache.normalized.ApolloStore
@@ -156,16 +151,10 @@ class Rx2ApolloStore(
 
 @JvmOverloads
 @JvmName("single")
-fun <D: Query.Data> ApolloQueryCall<D>.rxSingle(scheduler: Scheduler = Schedulers.io()) = rxSingle(scheduler.asCoroutineDispatcher()) {
-  execute()
-}
-
-@JvmOverloads
-@JvmName("single")
-fun <D: Mutation.Data> ApolloMutationCall<D>.rxSingle(scheduler: Scheduler = Schedulers.io()) = rxSingle(scheduler.asCoroutineDispatcher()) {
+fun <D: Operation.Data> ApolloCall<D>.rxSingle(scheduler: Scheduler = Schedulers.io()) = rxSingle(scheduler.asCoroutineDispatcher()) {
   execute()
 }
 
 @JvmOverloads
 @JvmName("flowable")
-fun <D: Subscription.Data> ApolloSubscriptionCall<D>.rxFlowable(scheduler: Scheduler = Schedulers.io()) = toFlow().asFlowable(scheduler.asCoroutineDispatcher())
+fun <D: Operation.Data> ApolloCall<D>.rxFlowable(scheduler: Scheduler = Schedulers.io()) = toFlow().asFlowable(scheduler.asCoroutineDispatcher())

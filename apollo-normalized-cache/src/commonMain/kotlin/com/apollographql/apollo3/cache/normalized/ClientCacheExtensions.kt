@@ -2,9 +2,8 @@
 
 package com.apollographql.apollo3.cache.normalized
 
+import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.ApolloMutationCall
-import com.apollographql.apollo3.ApolloQueryCall
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
@@ -82,7 +81,7 @@ fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: B
  * Gets the result from the network, then observes the cache for any changes.
  * Overriding the [FetchPolicy] will change how the result is first queried.
  */
-fun <D : Query.Data> ApolloQueryCall<D>.watch(): Flow<ApolloResponse<D>> {
+fun <D : Query.Data> ApolloCall<D>.watch(): Flow<ApolloResponse<D>> {
   return copy().addExecutionContext(WatchContext(true)).toFlow()
 }
 
@@ -92,7 +91,7 @@ fun <D : Query.Data> ApolloQueryCall<D>.watch(): Flow<ApolloResponse<D>> {
  *
  * Any [FetchPolicy] previously set will be ignored
  */
-fun <D : Query.Data> ApolloQueryCall<D>.executeCacheAndNetwork(): Flow<ApolloResponse<D>> {
+fun <D : Query.Data> ApolloCall<D>.executeCacheAndNetwork(): Flow<ApolloResponse<D>> {
   return flow {
     var cacheException: ApolloException? = null
     var networkException: ApolloException? = null
@@ -195,7 +194,7 @@ fun <D : Mutation.Data> ApolloRequest.Builder<D>.optimisticUpdates(data: D) = ad
     OptimisticUpdatesContext(data)
 )
 
-fun <D : Mutation.Data> ApolloMutationCall<D>.optimisticUpdates(data: D) = addExecutionContext(
+fun <D : Mutation.Data> ApolloCall<D>.optimisticUpdates(data: D) = addExecutionContext(
     OptimisticUpdatesContext(data)
 )
 
