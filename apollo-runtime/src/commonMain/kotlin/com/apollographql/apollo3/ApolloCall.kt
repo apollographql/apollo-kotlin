@@ -3,6 +3,7 @@ package com.apollographql.apollo3
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
+import com.apollographql.apollo3.api.ExecutionOptions
 import com.apollographql.apollo3.api.MutableExecutionOptions
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.HttpHeader
@@ -49,6 +50,11 @@ class ApolloCall<D : Operation.Data> internal constructor(
     this.enableAutoPersistedQueries = enableAutoPersistedQueries
   }
 
+  override fun canBeBatched(canBeBatched: Boolean?) = apply {
+    if (canBeBatched != null) addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, canBeBatched.toString())
+  }
+
+
   fun copy(): ApolloCall<D> {
     return ApolloCall(apolloClient, operation)
         .addExecutionContext(executionContext)
@@ -57,12 +63,6 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .sendApqExtensions(sendApqExtensions)
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
-  }
-
-  override fun canBeBatched(canBeBatched: Boolean?): E {
-    if (canBeBatched != null) addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, canBeBatched.toString())
-    @Suppress("UNCHECKED_CAST")
-    return this as E
   }
 
   /**

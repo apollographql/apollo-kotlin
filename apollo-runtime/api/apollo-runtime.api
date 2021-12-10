@@ -1,21 +1,28 @@
-public abstract class com/apollographql/apollo3/ApolloCall : com/apollographql/apollo3/api/MutableExecutionOptions {
-	public fun <init> (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/Operation;)V
-	public fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Ljava/lang/Object;
-	public fun addHttpHeader (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;
-	public fun canBeBatched (Ljava/lang/Boolean;)Ljava/lang/Object;
-	public fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Ljava/lang/Object;
-	public final fun getApolloClient ()Lcom/apollographql/apollo3/ApolloClient;
+public final class com/apollographql/apollo3/ApolloCall : com/apollographql/apollo3/api/MutableExecutionOptions {
+	public fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/ApolloCall;
+	public synthetic fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Ljava/lang/Object;
+	public fun addHttpHeader (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/ApolloCall;
+	public synthetic fun addHttpHeader (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;
+	public fun canBeBatched (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloCall;
+	public synthetic fun canBeBatched (Ljava/lang/Boolean;)Ljava/lang/Object;
+	public final fun copy ()Lcom/apollographql/apollo3/ApolloCall;
+	public fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloCall;
+	public synthetic fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Ljava/lang/Object;
+	public final fun execute (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;
 	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
 	public fun getHttpHeaders ()Ljava/util/List;
 	public fun getHttpMethod ()Lcom/apollographql/apollo3/api/http/HttpMethod;
-	public final fun getOperation ()Lcom/apollographql/apollo3/api/Operation;
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public fun getSendDocument ()Ljava/lang/Boolean;
-	public fun httpHeaders (Ljava/util/List;)Ljava/lang/Object;
-	public fun httpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)Ljava/lang/Object;
-	public fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
-	public fun sendDocument (Ljava/lang/Boolean;)Ljava/lang/Object;
+	public fun httpHeaders (Ljava/util/List;)Lcom/apollographql/apollo3/ApolloCall;
+	public synthetic fun httpHeaders (Ljava/util/List;)Ljava/lang/Object;
+	public fun httpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)Lcom/apollographql/apollo3/ApolloCall;
+	public synthetic fun httpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)Ljava/lang/Object;
+	public fun sendApqExtensions (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloCall;
+	public synthetic fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
+	public fun sendDocument (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloCall;
+	public synthetic fun sendDocument (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun setEnableAutoPersistedQueries (Ljava/lang/Boolean;)V
 	public fun setExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)V
 	public fun setHttpHeaders (Ljava/util/List;)V
@@ -39,12 +46,12 @@ public final class com/apollographql/apollo3/ApolloClient : com/apollographql/ap
 	public final fun getNetworkTransport ()Lcom/apollographql/apollo3/network/NetworkTransport;
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public fun getSendDocument ()Ljava/lang/Boolean;
-	public final fun mutate (Lcom/apollographql/apollo3/api/Mutation;)Lcom/apollographql/apollo3/ApolloMutationCall;
-	public final fun mutation (Lcom/apollographql/apollo3/api/Mutation;)Lcom/apollographql/apollo3/ApolloMutationCall;
+	public final fun mutate (Lcom/apollographql/apollo3/api/Mutation;)Lcom/apollographql/apollo3/ApolloCall;
+	public final fun mutation (Lcom/apollographql/apollo3/api/Mutation;)Lcom/apollographql/apollo3/ApolloCall;
 	public final fun newBuilder ()Lcom/apollographql/apollo3/ApolloClient$Builder;
-	public final fun query (Lcom/apollographql/apollo3/api/Query;)Lcom/apollographql/apollo3/ApolloQueryCall;
-	public final fun subscribe (Lcom/apollographql/apollo3/api/Subscription;)Lcom/apollographql/apollo3/ApolloSubscriptionCall;
-	public final fun subscription (Lcom/apollographql/apollo3/api/Subscription;)Lcom/apollographql/apollo3/ApolloSubscriptionCall;
+	public final fun query (Lcom/apollographql/apollo3/api/Query;)Lcom/apollographql/apollo3/ApolloCall;
+	public final fun subscribe (Lcom/apollographql/apollo3/api/Subscription;)Lcom/apollographql/apollo3/ApolloCall;
+	public final fun subscription (Lcom/apollographql/apollo3/api/Subscription;)Lcom/apollographql/apollo3/ApolloCall;
 }
 
 public final class com/apollographql/apollo3/ApolloClient$Builder : com/apollographql/apollo3/api/MutableExecutionOptions {
@@ -114,25 +121,6 @@ public final class com/apollographql/apollo3/ApolloClient$Builder : com/apollogr
 
 public final class com/apollographql/apollo3/ApolloClient$Companion {
 	public final fun builder ()Lcom/apollographql/apollo3/ApolloClient$Builder;
-}
-
-public final class com/apollographql/apollo3/ApolloMutationCall : com/apollographql/apollo3/ApolloCall {
-	public fun <init> (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/Mutation;)V
-	public final fun await (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun copy ()Lcom/apollographql/apollo3/ApolloMutationCall;
-	public final fun execute (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class com/apollographql/apollo3/ApolloQueryCall : com/apollographql/apollo3/ApolloCall {
-	public fun <init> (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/Query;)V
-	public final fun await (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun copy ()Lcom/apollographql/apollo3/ApolloQueryCall;
-	public final fun execute (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class com/apollographql/apollo3/ApolloSubscriptionCall : com/apollographql/apollo3/ApolloCall {
-	public fun <init> (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/Subscription;)V
-	public final fun copy ()Lcom/apollographql/apollo3/ApolloSubscriptionCall;
 }
 
 public final class com/apollographql/apollo3/AutoPersistedQueryInfo : com/apollographql/apollo3/api/ExecutionContext$Element {

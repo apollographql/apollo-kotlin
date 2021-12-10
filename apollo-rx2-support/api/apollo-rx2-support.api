@@ -1,13 +1,10 @@
 public final class com/apollographql/apollo3/rx2/Rx2Apollo {
-	public static final fun flowable (Lcom/apollographql/apollo3/ApolloSubscriptionCall;)Lio/reactivex/Flowable;
-	public static final fun flowable (Lcom/apollographql/apollo3/ApolloSubscriptionCall;Lio/reactivex/Scheduler;)Lio/reactivex/Flowable;
-	public static synthetic fun flowable$default (Lcom/apollographql/apollo3/ApolloSubscriptionCall;Lio/reactivex/Scheduler;ILjava/lang/Object;)Lio/reactivex/Flowable;
-	public static final fun single (Lcom/apollographql/apollo3/ApolloMutationCall;)Lio/reactivex/Single;
-	public static final fun single (Lcom/apollographql/apollo3/ApolloMutationCall;Lio/reactivex/Scheduler;)Lio/reactivex/Single;
-	public static final fun single (Lcom/apollographql/apollo3/ApolloQueryCall;)Lio/reactivex/Single;
-	public static final fun single (Lcom/apollographql/apollo3/ApolloQueryCall;Lio/reactivex/Scheduler;)Lio/reactivex/Single;
-	public static synthetic fun single$default (Lcom/apollographql/apollo3/ApolloMutationCall;Lio/reactivex/Scheduler;ILjava/lang/Object;)Lio/reactivex/Single;
-	public static synthetic fun single$default (Lcom/apollographql/apollo3/ApolloQueryCall;Lio/reactivex/Scheduler;ILjava/lang/Object;)Lio/reactivex/Single;
+	public static final fun flowable (Lcom/apollographql/apollo3/ApolloCall;)Lio/reactivex/Flowable;
+	public static final fun flowable (Lcom/apollographql/apollo3/ApolloCall;Lio/reactivex/Scheduler;)Lio/reactivex/Flowable;
+	public static synthetic fun flowable$default (Lcom/apollographql/apollo3/ApolloCall;Lio/reactivex/Scheduler;ILjava/lang/Object;)Lio/reactivex/Flowable;
+	public static final fun single (Lcom/apollographql/apollo3/ApolloCall;)Lio/reactivex/Single;
+	public static final fun single (Lcom/apollographql/apollo3/ApolloCall;Lio/reactivex/Scheduler;)Lio/reactivex/Single;
+	public static synthetic fun single$default (Lcom/apollographql/apollo3/ApolloCall;Lio/reactivex/Scheduler;ILjava/lang/Object;)Lio/reactivex/Single;
 	public static final fun toRx2ApolloInterceptor (Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;Lio/reactivex/Scheduler;)Lcom/apollographql/apollo3/rx2/Rx2ApolloInterceptor;
 	public static synthetic fun toRx2ApolloInterceptor$default (Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;Lio/reactivex/Scheduler;ILjava/lang/Object;)Lcom/apollographql/apollo3/rx2/Rx2ApolloInterceptor;
 	public static final fun toRx2ApolloInterceptorChain (Lcom/apollographql/apollo3/interceptor/ApolloInterceptorChain;Lio/reactivex/Scheduler;)Lcom/apollographql/apollo3/rx2/Rx2ApolloInterceptorChain;

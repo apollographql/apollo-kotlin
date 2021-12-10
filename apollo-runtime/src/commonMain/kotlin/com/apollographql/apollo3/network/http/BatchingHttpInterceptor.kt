@@ -238,7 +238,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
     }
 
     @JvmStatic
-    fun configureApolloCall(apolloCall: ApolloCall<*, *>, canBeBatched: Boolean) {
+    fun configureApolloCall(apolloCall: ApolloCall<*>, canBeBatched: Boolean) {
       apolloCall.canBeBatched(canBeBatched)
     }
   }
