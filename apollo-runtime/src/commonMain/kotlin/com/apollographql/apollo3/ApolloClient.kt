@@ -89,6 +89,7 @@ private constructor(
   }
 
   @Deprecated("Use a query and ignore the result", level = DeprecationLevel.ERROR)
+  @Suppress("UNUSED_PARAMETER")
   fun <D : Operation.Data> prefetch(operation: Operation<D>): Nothing {
     throw NotImplementedError()
   }

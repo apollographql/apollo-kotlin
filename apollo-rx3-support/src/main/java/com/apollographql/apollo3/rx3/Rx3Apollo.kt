@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.Operation
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.core.Single
-import io.reactivex.annotations.CheckReturnValue
+import io.reactivex.rxjava3.annotations.CheckReturnValue
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class Rx3Apollo private constructor() {
