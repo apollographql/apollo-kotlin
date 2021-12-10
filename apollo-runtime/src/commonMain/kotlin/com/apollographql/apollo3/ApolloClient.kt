@@ -65,31 +65,31 @@ private constructor(
   }
 
   /**
-   * Creates a new [ApolloQueryCall] that you can customize and/or execute.
+   * Creates a new [ApolloCall] that you can customize and/or execute.
    */
-  fun <D : Query.Data> query(query: Query<D>): ApolloQueryCall<D> {
-    return ApolloQueryCall(this, query)
+  fun <D : Query.Data> query(query: Query<D>): ApolloCall<D> {
+    return ApolloCall(this, query)
   }
 
   /**
-   * Creates a new [ApolloMutationCall] that you can customize and/or execute.
+   * Creates a new [ApolloCall] that you can customize and/or execute.
    */
-  fun <D : Mutation.Data> mutation(mutation: Mutation<D>): ApolloMutationCall<D> {
-    return ApolloMutationCall(this, mutation)
+  fun <D : Mutation.Data> mutation(mutation: Mutation<D>): ApolloCall<D> {
+    return ApolloCall(this, mutation)
   }
 
   @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("mutation(mutation)"))
-  fun <D : Mutation.Data> mutate(mutation: Mutation<D>): ApolloMutationCall<D> = mutation(mutation)
+  fun <D : Mutation.Data> mutate(mutation: Mutation<D>): ApolloCall<D> = mutation(mutation)
 
   /**
-   * Creates a new [ApolloSubscriptionCall] that you can customize and/or execute.
+   * Creates a new [ApolloCall] that you can customize and/or execute.
    */
-  fun <D : Subscription.Data> subscription(subscription: Subscription<D>): ApolloSubscriptionCall<D> {
-    return ApolloSubscriptionCall(this, subscription)
+  fun <D : Subscription.Data> subscription(subscription: Subscription<D>): ApolloCall<D> {
+    return ApolloCall(this, subscription)
   }
 
   @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("subscription(subscription)"))
-  fun <D : Subscription.Data> subscribe(subscription: Subscription<D>): ApolloSubscriptionCall<D> = subscription(subscription)
+  fun <D : Subscription.Data> subscribe(subscription: Subscription<D>): ApolloCall<D> = subscription(subscription)
 
   fun dispose() {
     concurrencyInfo.coroutineScope.cancel()
