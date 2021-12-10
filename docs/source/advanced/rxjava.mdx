@@ -32,17 +32,17 @@ import com.apollographql.apollo3.rx2.Rx2Apollo;
 // (...)
 
 // Query
-ApolloQueryCall<MyQuery.Data> queryCall = client.query(new MyQuery());
+ApolloCall<MyQuery.Data> queryCall = client.query(new MyQuery());
 Single<ApolloResponse<MyQuery.Data>> queryResponse = Rx2Apollo.single(queryCall);
 queryResponse.subscribe( /* ... */ );
 
 // Mutation
-ApolloMutationCall<MyMutation.Data> mutationCall = client.mutation(new MyMutation("my-parameter"));
+ApolloCallCall<MyMutation.Data> mutationCall = client.mutation(new MyMutation("my-parameter"));
 Single<ApolloResponse<MyMutation.Data>> mutationResponse = Rx2Apollo.single(mutationCall);
 mutationResponse.subscribe( /* ... */ );
 
 // Subscription
-ApolloSubscriptionCall<MySubscription.Data> subscriptionCall = client.subscription(new MySubscription());
+ApolloCall<MySubscription.Data> subscriptionCall = client.subscription(new MySubscription());
 Flowable<ApolloResponse<MySubscription.Data>> subscriptionResponse = Rx2Apollo.flowable(subscriptionCall);
 subscriptionResponse.subscribe( /* ... */ );
 ```
