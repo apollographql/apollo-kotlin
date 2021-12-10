@@ -1,6 +1,60 @@
 Change Log
 ==========
 
+# Version 3.0.0-rc02
+
+_2021-12-010_
+
+💙 Many thanks to @michgauz, @joeldenke, @rohandhruva, @schoeda, @CoreFloDev and @sproctor for all the feedback 💙  
+
+### ⚙️ [breaking] Merge ApolloQueryCall, ApolloSubscriptionCall, ApolloMutationCall (#3676)
+
+In order to simplify the API and keep the symmetry with `ApolloRequest<D>` and `ApolloResponse<D>`, `ApolloQueryCall<D, E>`, `ApolloSubscriptionCall<D, E>`, `ApolloMutationCall<D, E>` are replaced with `ApolloCall<D>`. This change should be mostly transparent but it's technically a breaking change. If you are passing `ApolloQueryCall<D, E>` variables, it is safe to drop the second type parameter and use `ApolloCall<D>` instead.
+
+### ✨ [New] Add `WebSocketNetworkTransport.reconnectWhen {}` (#3674)
+
+You now have the option to reconnect a WebSocket automatically when an error happens and re-subscribe automatically after the reconnection has happened. To do so, use the `webSocketReconnectWhen` parameter: 
+
+```kotlin
+val apolloClient = ApolloClient.Builder()
+    .httpServerUrl("http://localhost:8080/graphql")
+    .webSocketServerUrl("http://localhost:8080/subscriptions")
+    .wsProtocol(
+        SubscriptionWsProtocol.Factory(
+            connectionPayload = {
+              mapOf("token" to upToDateToken)
+            }
+        )
+    )
+    .webSocketReconnectWhen {
+      // this is called when an error happens on the WebSocket
+      it is ApolloWebSocketClosedException && it.code == 1001
+    }
+    .build()
+```
+
+### Better Http Batching API (#3670)
+
+The `HttpBatchingEngine` has been moved to an `HttpInterceptor`. You can now configure Http batching with a specific method:
+
+```kotlin
+apolloClient = ApolloClient.Builder()
+    .serverUrl(mockServer.url())
+    .httpBatching(batchIntervalMillis = 10)
+    .build()
+```
+
+### All changes:
+
+* Add 2.x symbols (`Rx2Apollo`, `prefetch()`, `customAttributes()`, `ApolloIdlingResource.create()`) to help the transition (#3679)
+* Add canBeBatched var to ExecutionOptions (#3677)
+* Merge ApolloQueryCall, ApolloSubscriptionCall, ApolloMutationCall (#3676)
+* Add `WebSocketNetworkTransport.reconnectWhen {}` (#3674)
+* Move BatchingHttpEngine to a HttpInterceptor (#3670)
+* Add exposeErrorBody (#3661)
+* fix the name of the downloadServiceApolloSchemaFromRegistry task (#3669)
+* Fix DiskLruHttpCache concurrency (#3667)
+
 # Version 3.0.0-rc01
 
 _2021-12-07_
