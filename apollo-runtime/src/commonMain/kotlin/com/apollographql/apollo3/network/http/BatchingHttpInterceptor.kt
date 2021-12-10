@@ -6,6 +6,7 @@ import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ExecutionOptions
+import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.HttpBody
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
@@ -61,7 +62,7 @@ import kotlin.jvm.JvmStatic
 class BatchingHttpInterceptor @JvmOverloads constructor(
     private val batchIntervalMillis: Long = 10,
     private val maxBatchSize: Int = 10,
-    private val exposeErrorBody: Boolean = false
+    private val exposeErrorBody: Boolean = false,
 ) : HttpInterceptor {
   private val dispatcher = BackgroundDispatcher()
   private val scope = CoroutineScope(dispatcher.coroutineDispatcher)
@@ -238,7 +239,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
     }
 
     @JvmStatic
-    fun configureApolloCall(apolloCall: ApolloCall<*>, canBeBatched: Boolean) {
+    fun <D : Operation.Data> configureApolloCall(apolloCall: ApolloCall<D>, canBeBatched: Boolean) {
       apolloCall.canBeBatched(canBeBatched)
     }
   }
