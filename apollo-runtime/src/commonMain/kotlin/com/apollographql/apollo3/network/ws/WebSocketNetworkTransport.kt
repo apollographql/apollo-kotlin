@@ -6,11 +6,13 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.internal.BackgroundDispatcher
 import com.apollographql.apollo3.internal.transformWhile
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.ws.internal.Command
+import com.apollographql.apollo3.network.ws.internal.Dispose
 import com.apollographql.apollo3.network.ws.internal.Event
 import com.apollographql.apollo3.network.ws.internal.GeneralError
 import com.apollographql.apollo3.network.ws.internal.Message
@@ -20,6 +22,7 @@ import com.apollographql.apollo3.network.ws.internal.OperationError
 import com.apollographql.apollo3.network.ws.internal.OperationResponse
 import com.apollographql.apollo3.network.ws.internal.StartOperation
 import com.apollographql.apollo3.network.ws.internal.StopOperation
+import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
@@ -52,6 +55,7 @@ private constructor(
     private val webSocketEngine: WebSocketEngine = DefaultWebSocketEngine(),
     private val idleTimeoutMillis: Long = 60_000,
     private val protocolFactory: WsProtocol.Factory = SubscriptionWsProtocol.Factory(),
+    private val reconnectWhen: ((Throwable) -> Boolean)?,
 ) : NetworkTransport {
 
 
@@ -75,6 +79,7 @@ private constructor(
   init {
     coroutineScope.launch {
       supervise(this)
+      backgroundDispatcher.dispose()
     }
   }
 
@@ -110,7 +115,22 @@ private constructor(
     var idleJob: Job? = null
     var connectionJob: Job? = null
     var protocol: WsProtocol? = null
-    var subscriptions = 0
+    val activeMessages = mutableMapOf<Uuid, StartOperation<*>>()
+
+    /**
+     * This happens:
+     * - when this coroutine receives a [Dispose] message
+     * - when the idleJob completes
+     * - when there is an error reading the WebSocket and this coroutine receives a [NetworkError] message
+     */
+    fun closeProtocol() {
+      protocol?.close()
+      protocol = null
+      connectionJob?.cancel()
+      connectionJob = null
+      idleJob?.cancel()
+      idleJob = null
+    }
 
     while (true) {
       val message = messages.receive()
@@ -118,13 +138,21 @@ private constructor(
       when (message) {
         is Event -> {
           if (message is NetworkError) {
-            protocol = null
-            connectionJob?.cancel()
-            connectionJob = null
-            idleJob?.cancel()
-            idleJob = null
+            closeProtocol()
+
+            if (reconnectWhen?.invoke(message.cause) == true) {
+              activeMessages.values.forEach {
+                // Re-queue all start messages
+                // This will restart the websocket
+                messages.trySend(it)
+              }
+            } else {
+              // forward the NetworkError downstream. Active flows will throw
+              mutableEvents.tryEmit(message)
+            }
+          } else {
+            mutableEvents.tryEmit(message)
           }
-          mutableEvents.tryEmit(message)
         }
         is Command -> {
           if (protocol == null) {
@@ -152,7 +180,7 @@ private constructor(
                 scope = scope,
             )
             try {
-              protocol.connectionInit()
+              protocol!!.connectionInit()
             } catch (e: Exception) {
               // Error initializing the connection
               protocol = null
@@ -167,25 +195,30 @@ private constructor(
              * so better safe than sorry...
              */
             connectionJob = scope.launch(start = CoroutineStart.UNDISPATCHED) {
-              protocol.run()
+              protocol!!.run()
             }
           }
 
           when (message) {
             is StartOperation<*> -> {
-              subscriptions++
-              protocol.startOperation(message.request)
+              activeMessages[message.request.requestUuid] = message
+              protocol!!.startOperation(message.request)
             }
             is StopOperation<*> -> {
-              subscriptions--
-              protocol.stopOperation(message.request)
+              activeMessages.remove(message.request.requestUuid)
+              protocol!!.stopOperation(message.request)
+            }
+            is Dispose -> {
+              closeProtocol()
+              // Exit the loop and the coroutine scope
+              return
             }
           }
 
-          if (subscriptions == 0) {
+          if (activeMessages.isEmpty()) {
             idleJob = scope.launch {
               delay(idleTimeoutMillis)
-              protocol.close()
+              closeProtocol()
             }
           } else {
             idleJob?.cancel()
@@ -243,8 +276,7 @@ private constructor(
   }
 
   override fun dispose() {
-    coroutineScope.cancel()
-    backgroundDispatcher.dispose()
+    messages.trySend(Dispose)
   }
 
   class Builder {
@@ -252,6 +284,7 @@ private constructor(
     private var webSocketEngine: WebSocketEngine? = null
     private var idleTimeoutMillis: Long? = null
     private var protocolFactory: WsProtocol.Factory? = null
+    private var reconnectWhen: ((Throwable) -> Boolean)? = null
 
     fun serverUrl(serverUrl: String) = apply {
       this.serverUrl = serverUrl
@@ -270,13 +303,26 @@ private constructor(
       this.protocolFactory = protocolFactory
     }
 
+    /**
+     * Configure the [WebSocketNetworkTransport] to reconnect the websocket automatically when a network error
+     * happens
+     *
+     * @param reconnectWhen a function taking the error as a parameter and returning 'true' to reconnect
+     * automatically or 'false' to forward the error to all listening [Flow]
+     *
+     */
+    fun reconnectWhen(reconnectWhen: ((Throwable) -> Boolean)?) = apply {
+      this.reconnectWhen = reconnectWhen
+    }
+
     fun build(): WebSocketNetworkTransport {
       @Suppress("DEPRECATION")
       return WebSocketNetworkTransport(
           serverUrl ?: error("No serverUrl specified"),
           webSocketEngine ?: DefaultWebSocketEngine(),
           idleTimeoutMillis ?: 60_000,
-          protocolFactory ?: SubscriptionWsProtocol.Factory()
+          protocolFactory ?: SubscriptionWsProtocol.Factory(),
+          reconnectWhen
       )
     }
   }

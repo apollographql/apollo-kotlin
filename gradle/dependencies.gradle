@@ -116,7 +116,7 @@ ext.dep = [
     gradleApi                : "dev.gradleplugins:gradle-api:7.2",
     // Keep in sync with MIN_GRADLE_VERSION
     minGradleApi             : "dev.gradleplugins:gradle-api:5.6",
-    graphqlKotlin            : "com.expediagroup:graphql-kotlin-spring-server:4.1.0",
+    graphqlKotlin            : "com.expediagroup:graphql-kotlin-spring-server:5.3.0",
     testParameterInjector    : "com.google.testparameterinjector:test-parameter-injector:1.4",
     binaryCompatibilityValidator: "org.jetbrains.kotlinx:binary-compatibility-validator:0.8.0-RC",
     kotlinPluginMin: "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlinPluginMin",

@@ -17,3 +17,7 @@ subscription OperationError {
 query TimeQuery {
   time
 }
+
+query CloseSocket {
+  closeWebSocket
+}

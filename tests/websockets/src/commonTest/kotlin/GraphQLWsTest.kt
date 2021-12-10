@@ -13,6 +13,7 @@ import kotlin.test.assertEquals
 
 // Ignored because it depends on a local server
 // See https://github.com/martinbonnin/graphql-ws-server
+// These tests take a long time to execute, this is expected
 @Ignore
 class GraphQLWsTest {
   @Test
