@@ -34,7 +34,7 @@ dependencies {
 
 ## Resolving Apollo dependencies
 
-A feature module can have any number of apollo module dependencies, each one contributing their types and fragment.
+A feature module can have any number of apollo module dependencies, each one contributing their types and fragments.
 
 Transitive Apollo dependencies will always expose their fragments and types to the modules downstream. In other words, there is no `implementation` vs `api` concept like there is for regular dependencies. Apollo dependencies will always expose everything downstream (i.e are treated as `api`). 
 
