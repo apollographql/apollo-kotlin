@@ -1,5 +1,6 @@
 package test.declarativecache
 
+import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -9,11 +10,15 @@ import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheResolver
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
+import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.testing.runTest
+import declarativecache.GetAuthorQuery
 import declarativecache.GetBookQuery
 import declarativecache.GetBooksQuery
 import declarativecache.GetOtherBookQuery
 import declarativecache.GetOtherLibraryQuery
+import declarativecache.GetPromoAuthorQuery
 import declarativecache.GetPromoBookQuery
 import declarativecache.GetPromoLibraryQuery
 import kotlin.test.Test
@@ -66,14 +71,31 @@ class DeclarativeCacheTest {
   fun fieldPolicyIsWorking() = runTest {
     val store = ApolloStore(MemoryCacheFactory())
 
-    val promoOperation = GetPromoBookQuery()
-    val promoData = GetPromoBookQuery.Data(GetPromoBookQuery.PromoBook("Promo", "42", "Book"))
-    store.writeOperation(promoOperation, promoData)
+    val bookQuery1 = GetPromoBookQuery()
+    val bookData1 = GetPromoBookQuery.Data(GetPromoBookQuery.PromoBook("Promo", "42", "Book"))
+    store.writeOperation(bookQuery1, bookData1)
 
-    val operation = GetBookQuery("42")
-    val data = store.readOperation(operation, CustomScalarAdapters.Empty)
+    val bookQuery2 = GetBookQuery("42")
+    val bookData2 = store.readOperation(bookQuery2, CustomScalarAdapters.Empty)
 
-    assertEquals("Promo", data?.book?.title)
+    assertEquals("Promo", bookData2.book?.title)
+
+    val authorQuery1 = GetPromoAuthorQuery()
+    val authorData1 = GetPromoAuthorQuery.Data(
+        GetPromoAuthorQuery.Author(
+            firstName = "Pierre",
+            lastName = "Bordage",
+            __typename = "Author"
+        )
+    )
+
+    store.writeOperation(authorQuery1, authorData1)
+
+    val authorQuery2 = GetAuthorQuery("Pierre", "Bordage")
+    val authorData2 = store.readOperation(authorQuery2, CustomScalarAdapters.Empty)
+
+    assertEquals("Pierre", authorData2.author?.firstName)
+    assertEquals("Bordage", authorData2.author?.lastName)
   }
 
   @Test
@@ -84,7 +106,7 @@ class DeclarativeCacheTest {
           @Suppress("UNCHECKED_CAST")
           val isbns = field.resolveArgument("isbns", variables) as? List<String>
           if (isbns != null) {
-            return isbns.map { CacheKey.from(field.type.leafType().name, listOf(it))}
+            return isbns.map { CacheKey.from(field.type.leafType().name, listOf(it)) }
           }
         }
 
