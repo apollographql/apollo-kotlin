@@ -36,6 +36,7 @@ rx3Dir.walk().filter { it.isFile && (it.extension == "kt" || it.extension == "pr
           .replace("Rx2", "Rx3")
           .replace("rx2", "rx3")
           .replace("RxJava2", "RxJava3")
+          .replace("import io.reactivex.annotations", "import io.reactivex.rxjava3.annotations")
           .replace("import io.reactivex.Flowable", "import io.reactivex.rxjava3.core.Flowable")
           .replace("import io.reactivex.Scheduler", "import io.reactivex.rxjava3.core.Scheduler")
           .replace("import io.reactivex.Single", "import io.reactivex.rxjava3.core.Single")

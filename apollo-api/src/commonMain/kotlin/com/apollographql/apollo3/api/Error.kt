@@ -34,6 +34,17 @@ class Error(
     val nonStandardFields: Map<String, Any?>?,
 ) {
 
+  /**
+   * Custom attributes associated with this error
+   */
+  @Deprecated(
+      message = "Used for backward compatibility with 2.x",
+      replaceWith = ReplaceWith("nonStandardFields"),
+      level = DeprecationLevel.ERROR
+  )
+  val customAttributes: Map<String, Any?>
+    get() = error("Use nonStandardFields instead")
+
   override fun toString(): String {
     return "Error(message = $message, locations = $locations, path=$path, extensions = $extensions, nonStandardFields = $nonStandardFields)"
   }

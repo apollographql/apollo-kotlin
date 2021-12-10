@@ -89,6 +89,12 @@ private constructor(
     return ApolloCall(this, subscription)
   }
 
+  @Deprecated("Use a query and ignore the result", level = DeprecationLevel.ERROR)
+  @Suppress("UNUSED_PARAMETER")
+  fun <D : Operation.Data> prefetch(operation: Operation<D>): Nothing {
+    throw NotImplementedError()
+  }
+
   @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("subscription(subscription)"))
   fun <D : Subscription.Data> subscribe(subscription: Subscription<D>): ApolloCall<D> = subscription(subscription)
 

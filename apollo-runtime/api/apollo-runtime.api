@@ -52,6 +52,7 @@ public final class com/apollographql/apollo3/ApolloClient : com/apollographql/ap
 	public final fun mutate (Lcom/apollographql/apollo3/api/Mutation;)Lcom/apollographql/apollo3/ApolloCall;
 	public final fun mutation (Lcom/apollographql/apollo3/api/Mutation;)Lcom/apollographql/apollo3/ApolloCall;
 	public final fun newBuilder ()Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public final fun prefetch (Lcom/apollographql/apollo3/api/Operation;)Ljava/lang/Void;
 	public final fun query (Lcom/apollographql/apollo3/api/Query;)Lcom/apollographql/apollo3/ApolloCall;
 	public final fun subscribe (Lcom/apollographql/apollo3/api/Subscription;)Lcom/apollographql/apollo3/ApolloCall;
 	public final fun subscription (Lcom/apollographql/apollo3/api/Subscription;)Lcom/apollographql/apollo3/ApolloCall;
