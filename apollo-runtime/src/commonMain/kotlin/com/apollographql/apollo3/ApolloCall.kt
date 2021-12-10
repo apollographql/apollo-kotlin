@@ -92,7 +92,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
   }
 
   /**
-   * A shorthand for `toFlow().execute()`.
+   * A shorthand for `toFlow().single()`.
    * Use this for queries and mutation to get a single [ApolloResponse] from the network or the cache.
    * For subscriptions, you usually want to use [toFlow] instead to listen to all values.
    */
