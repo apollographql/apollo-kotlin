@@ -49,13 +49,13 @@ actual class DefaultWebSocketEngine(
       }
 
       override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-        println("onFailure: ${t.message} - ${response?.body?.string()}")
+        //println("onFailure: ${t.message} - ${response?.body?.string()}")
         webSocketOpenResult.complete(Unit)
         messageChannel.close(t)
       }
 
       override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-        println("onClosing: $code - $reason")
+        //println("onClosing: $code - $reason")
         webSocketOpenResult.complete(Unit)
 
         val t = ApolloWebSocketClosedException(code, reason)
@@ -63,7 +63,7 @@ actual class DefaultWebSocketEngine(
       }
 
       override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-        println("onClosed: $code - $reason")
+        //println("onClosed: $code - $reason")
         messageChannel.close()
       }
     })
@@ -100,7 +100,7 @@ actual class DefaultWebSocketEngine(
       }
 
       override fun close() {
-        println("close")
+        //println("close")
         webSocket.close(CLOSE_NORMAL, null)
       }
     }
