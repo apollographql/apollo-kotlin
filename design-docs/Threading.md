@@ -155,7 +155,7 @@ class NativeSerialSharedState<T>(producer: () -> T): SharedState<T> {
 ## Appendix-2 Non-goal: Atomic Cached Requests
 
 
-Apollo Android has no concept of "Atomic request". Launching the same request twice in a row will most likely end up in the request being sent to the network twice even if the first one will ultimately cache it (but this is not guaranteed either):
+Apollo Kotlin has no concept of "Atomic request". Launching the same request twice in a row will most likely end up in the request being sent to the network twice even if the first one will ultimately cache it (but this is not guaranteed either):
 
 ```kotlin
 val response1 = launch {

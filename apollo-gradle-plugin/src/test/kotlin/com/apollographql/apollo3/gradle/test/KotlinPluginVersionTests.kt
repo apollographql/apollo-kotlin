@@ -23,7 +23,7 @@ class KotlinPluginVersionTests {
         TestUtils.executeGradleWithVersion(dir, "5.6", "generateApolloSources")
         fail("An exception was expected")
       } catch (e: UnexpectedBuildFailure) {
-        Truth.assertThat(e.message).contains("Apollo Android requires Kotlin plugin version 1.4")
+        Truth.assertThat(e.message).contains("Apollo Kotlin requires Kotlin plugin version 1.4")
       }
     }
   }

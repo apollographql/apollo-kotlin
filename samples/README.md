@@ -1,4 +1,4 @@
-If you're looking for a specific feature (APQs, Codegen options, `@nonnull`, ...) the [integration-tests](../tests) have a lot of very focused examples of how to use Apollo Android.
+If you're looking for a specific feature (APQs, Codegen options, `@nonnull`, ...) the [integration-tests](../tests) have a lot of very focused examples of how to use Apollo Kotlin.
 
 For more general examples demonstrating how to build an App end to end, check:
 

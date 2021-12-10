@@ -55,7 +55,7 @@ internal fun checkKotlinPluginVersion(project: Project) {
     else -> false
   }
   require(isKotlinSupported) {
-    "Apollo Android requires Kotlin plugin version 1.4 or more (found '${project.getKotlinPluginVersion()}')"
+    "Apollo Kotlin requires Kotlin plugin version 1.4 or more (found '${project.getKotlinPluginVersion()}')"
   }
 }
 

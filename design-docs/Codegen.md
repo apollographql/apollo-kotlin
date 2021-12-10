@@ -1,12 +1,12 @@
 # Codegen Models
 
-In order to provide type safety, Apollo Android generates Kotlin models from your queries. The fields you're querying will be accessible in the Kotlin models. Fields that are not queried will not be accessible. For simple queries, the mapping of GraphQL queries to Kotlin models is relatively natural. GraphQL objects are mapped to Kotlin data classes and GraphQL fields to Kotlin properties.
+In order to provide type safety, Apollo Kotlin generates Kotlin models from your queries. The fields you're querying will be accessible in the Kotlin models. Fields that are not queried will not be accessible. For simple queries, the mapping of GraphQL queries to Kotlin models is relatively natural. GraphQL objects are mapped to Kotlin data classes and GraphQL fields to Kotlin properties.
 
-For more complex queries, involving [merged fields](https://spec.graphql.org/draft/#sec-Field-Selection-Merging) and/or [fragments](https://spec.graphql.org/draft/#sec-Validation.Fragments) on different interfaces/union types, this mapping becomes more complicated as polymorphic types are needed. In order to accommodate different needs, Apollo Android supports three different codegen modes:
+For more complex queries, involving [merged fields](https://spec.graphql.org/draft/#sec-Field-Selection-Merging) and/or [fragments](https://spec.graphql.org/draft/#sec-Validation.Fragments) on different interfaces/union types, this mapping becomes more complicated as polymorphic types are needed. In order to accommodate different needs, Apollo Kotlin supports three different codegen modes:
 
 * **responseBased**: the Kotlin models map the received json.
 * **operationBased**: the Kotlin models map the sent operation.
-* **compat**: for compatibility with Apollo Android 2.x
+* **compat**: for compatibility with Apollo Kotlin 2.x
 
 `operationBased` will generate less code but will use more memory and expose less type information. `responseBased` will generate interfaces to access the models in a more polymorphic way. It will also store each merged field exactly once and have more efficient json parsing. That comes at the price of more generated code.
 

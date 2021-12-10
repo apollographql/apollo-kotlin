@@ -1,8 +1,8 @@
 # Roadmap
 
-This document is meant to give the community some idea of where we're going with Apollo Android in the short and longer term.
+This document is meant to give the community some idea of where we're going with Apollo Kotlin in the short and longer term.
 
-Please open issues or comment/upvote the existing ones for items you'd like to see added here. Feedback is very welcome! We'd love to learn more about how you're using Apollo Android and what you'd like to see in the future.
+Please open issues or comment/upvote the existing ones for items you'd like to see added here. Feedback is very welcome! We'd love to learn more about how you're using Apollo Kotlin and what you'd like to see in the future.
 
 This document was last updated on October 25th, 2021.
 
@@ -24,9 +24,9 @@ As we move to a stable 3.0 release our priority will be to make sure the feedbac
 
 The declarative cache makes working with the cache and defining unique object ids easier. We also want to include helpers to handle with common cases like pagination, garbage collection and eviction.
 
-### Make Apollo Android even more multiplatform
+### Make Apollo Kotlin even more multiplatform
 
-Apollo Android 3 is multiplatform first with runtime and cache support for the JVM, iOS, macOS and JS. We can do more to make the library even more easy to use:
+Apollo Kotlin 3 is multiplatform first with runtime and cache support for the JVM, iOS, macOS and JS. We can do more to make the library even more easy to use:
 
 - HMPP support
 - Trying out and adopting the new memory model

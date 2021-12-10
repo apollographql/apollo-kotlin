@@ -1,4 +1,4 @@
-Json is a relatively simple format but there are a few caveats in Apollo Android:
+Json is a relatively simple format but there are a few caveats in Apollo Kotlin:
 
 ## Fields order
 
