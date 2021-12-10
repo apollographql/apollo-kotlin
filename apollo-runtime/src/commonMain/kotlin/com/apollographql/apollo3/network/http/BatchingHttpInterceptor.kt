@@ -42,7 +42,7 @@ import kotlin.jvm.JvmStatic
  * Some servers might have a per-HTTP-call cache making it faster to resolve 1 big array
  * of n queries compared to resolving the n queries separately.
  *
- * Because [com.apollographql.apollo3.ApolloQueryCall.execute] suspends, it only makes sense to use query batching when queries are
+ * Because [com.apollographql.apollo3.ApolloCall.execute] suspends, it only makes sense to use query batching when queries are
  * executed from different coroutines. Use [async] to create a new coroutine if needed
  *
  * [BatchingHttpInterceptor] buffers the whole response, so it might additionally introduce some
