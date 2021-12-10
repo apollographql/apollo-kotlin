@@ -9,18 +9,18 @@ Support for multi-modules build is currently experimental and we'd love to have 
 
 ## Setup
 
-Multi-modules requires that one module and only one contains a schema. This is the schema that all other modules can reuse. In this document, we'll name it "graphql-root". This is **not to be confused with Gradle root project** that contains all your modules.
+Multi-modules requires that one module and only one contains a schema. This is the schema that all other modules can reuse. In this document, we'll refer to it as the "schema module". 
 
-Configure your "graphql-root" module to generate Apollo metadata:
+Configure your schema module to generate Apollo metadata:
 
 ```kotlin
-// graphql-root/build.gradle.kts
+// schema/build.gradle.kts
 apollo {
     generateApolloMetadata.set(true)
 }
 ```
 
-And declare your graphql-root module as a dependency of your feature module:
+And declare your schema module as a dependency of your feature module:
 
 ```kotlin
 // feature/build.gradle.kts
@@ -29,37 +29,37 @@ dependencies {
     // more regular dependencies
     
     // Apollo dependencies
-    apolloMetadata(project(":graphql-root"))
+    apolloMetadata(project(":schema"))
     // You still need to declare the graphql-root module as a regular dependency
-    implementation(project(":graphql-root"))
+    implementation(project(":schema"))
 }
 ```
 
 ## Resolving Apollo dependencies
 
-A feature module can have any number of parent modules. Parent modules themselves can also have parents, creating a graph of dependencies. 
+A feature module can have any number of apollo dependencies, each one contributing their types and fragments. 
 
 Transitive Apollo dependencies will always expose their fragments and types to the modules downstream. In other words, there is no `implementation` vs `api` concept like there is for regular dependencies. Apollo dependencies will always expose everything downstream (i.e are treated as `api`). 
 
-Another important thing to note is that all modules must share the same schema. Place schema.[json | sdl] in the graphql root module, the module that is the higher up in the dependencies graph:
+Another important thing to note is that all modules must share the same schema. Place schema.[graphqls | json] in the schema module, the module that is the higher up in the dependencies graph:
 
 ```kotlin
 // feature/build.gradle.kts
 // This module must not have a schema
-// This module can use fragments and types from 'shared' and 'graphql-root'
+// This module can use fragments and types from 'shared' and 'schema'
 dependencies {
     apolloMetadata(project(":shared"))
 }
 
 // shared/build.gradle.kts
-// This module can use fragments and types from 'graphql-root'
+// This module can use fragments and types from 'schema'
 dependencies {
-    apolloMetadata(project(":graphql-root"))
+    apolloMetadata(project(":schema"))
     generateApolloMetadata.set(true)
 }
 
-// graphql-root/build.gradle.kts
-// This module is the graphql root module
+// schemabuild.gradle.kts
+// This module is the schema module
 // Place the schema in this module 
 dependencies {
     generateApolloMetadata.set(true)
@@ -68,24 +68,24 @@ dependencies {
 
 Summary of different constraints:
 
-* The graphql root module and only the graphql root module must define schema.[json | sdl]
-* The graphql root module and only the graphql root module must define `customTypeMapping`
-* The graphql root module and only the graphql root module must define `generateKotlinModels`
-* The graphql root module must have a `.graphql` file. This file can be empty
+* The schema module and only the schema module must define schema.[graphqls | json]
+* The schema module and only the schema module must define `customTypeMapping`
+* The schema module and only the schema module must define `generateKotlinModels`
+* The schema module must have a `.graphql` file. This file can be empty
 * All modules must apply the same version of the Apollo Gradle Plugin
 * Either all modules must apply the Android plugin or no module should apply it
 
 ## Big schemas
 
-When using multiple modules, Apollo Android will generate all possible Input Types and Enums in the graphql root module, and not only the used ones. This is because there is no way to know from the parent module what types are going to be used in feature modules. By default:
+When using multiple modules, Apollo Android will generate all possible Input Types and Enums in the schema module, and not only the used ones. This is because there is no way to know from the dependencies what types are going to be used in feature modules. By default:
 
-* All input objects and enums are generated in the graphql root module.
+* All input objects and enums are generated in the schema module.
 * Fragments, queries, mutations and subscriptions are generated in the module where they are defined.
 
 If your schema contains a lot of input objects, it can generate a lot of source files and increase compilation time beyond what's acceptable. To mitigate this, you have the option to control what types are generated with the `alwaysGenerateTypesMatching` option:
 
 ```kotlin
-// parent/build.gradle.kts
+// schema/build.gradle.kts
 apollo {
     generateApolloMetadata.set(true)
     // For the graphql root module, this defaults to [".*"]
@@ -98,9 +98,8 @@ If the same input object or enum is used in two sibling modules, the same type w
 
 
 ```kotlin
-// common/build.gradle.kts
+// shared/build.gradle.kts
 apollo {
-    generateApolloMetadata.set(true)
     // Generate common types here
     // Here we specify the names of the types 
     alwaysGenerateTypesMatching.set(listOf("CommonInputType", "CommonEnum"))
@@ -116,7 +115,7 @@ For multiplatform projects, put `apolloMetadata` in the top level `dependencies 
 ```kotlin
 // feature/build.gradle.kts
 // This module must not have a schema
-// This module can use fragments and types from 'shared' and 'graphql-root'
+// This module can use fragments and types from 'shared' and 'schema'
 dependencies {
     apolloMetadata(project(":shared"))
 }
@@ -127,6 +126,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                implementation(project(":shared"))
                 implementation("com.apollographql.apollo:apollo-api:2.5.8")
                 api("com.apollographql.apollo:apollo-runtime-kotlin:2.5.8")
             }
