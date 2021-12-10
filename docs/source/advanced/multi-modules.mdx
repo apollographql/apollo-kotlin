@@ -2,7 +2,7 @@
 title: Multi Modules (experimental)
 ---
 
-For multi-modules projects, Apollo Android allows to define queries in a feature module and reuse fragments and types from another parent module. This helps with better separation of concerns and build times.
+For multi-modules projects, Apollo Android allows to define queries in a feature module and reuse fragments and types from another module dependency. This helps with better separation of concerns and build times.
 
 Support for multi-modules build is currently experimental and we'd love to have your feedback on it. Things that worked well, things that can be improved, etc.. You can reach out either through [Github issues](https://github.com/apollographql/apollo-android/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md&title=[Multi-Modules]) or the [Kotlinlang slack channel](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ). We're looking forward to hearing from you!
 
@@ -30,7 +30,7 @@ dependencies {
     
     // Apollo dependencies
     apolloMetadata(project(":schema"))
-    // You still need to declare the graphql-root module as a regular dependency
+    // You still need to declare the schema module as a regular dependency
     implementation(project(":schema"))
 }
 ```
@@ -88,7 +88,7 @@ If your schema contains a lot of input objects, it can generate a lot of source 
 // schema/build.gradle.kts
 apollo {
     generateApolloMetadata.set(true)
-    // For the graphql root module, this defaults to [".*"]
+    // For the schema module, this defaults to [".*"]
     // To use the single-module behaviour of only generating types that are actually used, pass en empty list
     alwaysGenerateTypesMatching.set(emptyList())
 }
