@@ -603,6 +603,26 @@ enum Direction {
 
 See [#3035](https://github.com/apollographql/apollo-android/issues/3035) for more details
 
+### IdlingResource
+
+In Apollo Android 2.x, you can pass an `ApolloClient` to `ApolloIdlingResource.create()` and the `ApolloClient` will be modified to register an idle callback.
+
+In Apollo Android 3, an `ApolloClient` is immutable once instantiated so it's not possible to register callbacks/interceptors once it is instantiated. Instead, you can create your `ApolloIdlingResource` as a first step and then pass it to your `ApolloClient.Builder` like so:
+
+```kotlin
+// Replace
+val idlingResource = ApolloIdlingResource.create("ApolloIdlingResource", apolloClient)
+IdlingRegistry.getInstance().register(idlingResource)
+
+// With
+val idlingResource = ApolloIdlingResource("ApolloIdlingResource")
+IdlingRegistry.getInstance().register(idlingResource)
+val apolloClient = ApolloClient.Builder()
+    .serverUrl("https://example.com/graphql")
+    .idlingResource(idlingResource)
+    .build()
+```
+
 ### BigDecimal
 
 By default, Apollo Android 2.x internally maps all numbers to a custom `BigDecimal` value.

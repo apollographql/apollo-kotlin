@@ -42,6 +42,19 @@ class ApolloIdlingResource(
   override fun registerIdleTransitionCallback(callback: IdlingResource.ResourceCallback?) {
     this.callback = callback
   }
+
+  companion object {
+    @JvmStatic
+    @Deprecated(
+        message = "Used for backward compatibility with 2.x. You now need to pass your ApolloIdlingResource to your ApolloClient.Builder." +
+            " See https://www.apollographql.com/docs/android/v3/migration/3.0/ for more details.",
+        ReplaceWith("ApolloIdlingResource(name)")
+    )
+    @Suppress("UNUSED_PARAMETER")
+    fun create(name: String, apolloClient: ApolloClient) {
+      throw NotImplementedError()
+    }
+  }
 }
 
 fun ApolloClient.Builder.idlingResource(idlingResource: ApolloIdlingResource): ApolloClient.Builder {
