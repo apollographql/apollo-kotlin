@@ -417,6 +417,7 @@ public final class com/apollographql/apollo3/api/EnumType : com/apollographql/ap
 
 public final class com/apollographql/apollo3/api/Error {
 	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/Map;Ljava/util/Map;)V
+	public final fun getCustomAttributes ()Ljava/util/Map;
 	public final fun getExtensions ()Ljava/util/Map;
 	public final fun getLocations ()Ljava/util/List;
 	public final fun getMessage ()Ljava/lang/String;
