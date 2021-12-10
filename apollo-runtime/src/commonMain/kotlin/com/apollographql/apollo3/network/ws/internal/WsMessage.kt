@@ -7,7 +7,7 @@ internal sealed interface Message
 internal sealed interface Command : Message
 internal class StartOperation<D : Operation.Data>(val request: ApolloRequest<D>) : Command
 internal class StopOperation<D : Operation.Data>(val request: ApolloRequest<D>) : Command
-object Dispose: Command
+internal object Dispose: Command
 
 internal sealed interface Event : Message {
   /**
