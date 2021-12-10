@@ -50,7 +50,10 @@ class ApolloCall<D : Operation.Data> internal constructor(
     this.enableAutoPersistedQueries = enableAutoPersistedQueries
   }
 
+  override var canBeBatched: Boolean? = null
+
   override fun canBeBatched(canBeBatched: Boolean?) = apply {
+    this.canBeBatched = canBeBatched
     if (canBeBatched != null) addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, canBeBatched.toString())
   }
 

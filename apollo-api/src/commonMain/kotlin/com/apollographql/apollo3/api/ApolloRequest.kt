@@ -20,6 +20,7 @@ private constructor(
     override val sendApqExtensions: Boolean?,
     override val sendDocument: Boolean?,
     override val enableAutoPersistedQueries: Boolean?,
+    override val canBeBatched: Boolean?,
 ) : ExecutionOptions {
 
   fun newBuilder(): Builder<D> {
@@ -31,6 +32,7 @@ private constructor(
         .sendApqExtensions(sendApqExtensions)
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
+        .canBeBatched(canBeBatched)
   }
 
   class Builder<D : Operation.Data>(
@@ -73,7 +75,10 @@ private constructor(
       this.enableAutoPersistedQueries = enableAutoPersistedQueries
     }
 
+    override var canBeBatched: Boolean? = null
+
     override fun canBeBatched(canBeBatched: Boolean?): Builder<D> = apply {
+      this.canBeBatched = canBeBatched
       if (canBeBatched != null) addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, canBeBatched.toString())
     }
 
@@ -100,6 +105,7 @@ private constructor(
           sendApqExtensions = sendApqExtensions,
           sendDocument = sendDocument,
           enableAutoPersistedQueries = enableAutoPersistedQueries,
+          canBeBatched = canBeBatched,
       )
     }
   }

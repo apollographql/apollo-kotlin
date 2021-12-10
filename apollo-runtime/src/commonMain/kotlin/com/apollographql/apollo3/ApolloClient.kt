@@ -54,6 +54,7 @@ private constructor(
     override val sendApqExtensions: Boolean?,
     override val sendDocument: Boolean?,
     override val enableAutoPersistedQueries: Boolean?,
+    override val canBeBatched: Boolean?,
 ) : ExecutionOptions {
   private val concurrencyInfo: ConcurrencyInfo
 
@@ -204,7 +205,10 @@ private constructor(
       this.enableAutoPersistedQueries = enableAutoPersistedQueries
     }
 
+    override var canBeBatched: Boolean? = null
+
     override fun canBeBatched(canBeBatched: Boolean?): Builder = apply {
+      this.canBeBatched = canBeBatched
       if (canBeBatched != null) addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, canBeBatched.toString())
     }
 
@@ -248,6 +252,7 @@ private constructor(
     fun httpExposeErrorBody(httpExposeErrorBody: Boolean) = apply {
       this.httpExposeErrorBody = httpExposeErrorBody
     }
+
     /**
      * Adds [httpInterceptor] to the list of HTTP interceptors
      *
@@ -521,6 +526,7 @@ private constructor(
           sendApqExtensions = sendApqExtensions,
           sendDocument = sendDocument,
           enableAutoPersistedQueries = enableAutoPersistedQueries,
+          canBeBatched = canBeBatched,
       )
     }
   }
@@ -538,6 +544,7 @@ private constructor(
         .sendApqExtensions(sendApqExtensions)
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
+        .canBeBatched(canBeBatched)
   }
 
   companion object {

@@ -31,6 +31,8 @@ interface ExecutionOptions {
    */
   val enableAutoPersistedQueries: Boolean?
 
+  val canBeBatched: Boolean?
+
   companion object {
     /**
      * Used by [com.apollographql.apollo3.network.http.BatchingHttpInterceptor]
