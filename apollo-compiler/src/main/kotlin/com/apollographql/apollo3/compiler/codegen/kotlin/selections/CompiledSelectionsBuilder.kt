@@ -32,6 +32,7 @@ import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.root
+import com.apollographql.apollo3.compiler.codegen.keyArgs
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.ir.toBooleanExpression
@@ -320,22 +321,6 @@ class CompiledSelectionsBuilder(
     builder.unindent()
     builder.add(")")
     return builder.build()
-  }
-
-  private fun GQLTypeDefinition.keyArgs(fieldName: String): Set<String> {
-    val directives = when (this) {
-      is GQLObjectTypeDefinition -> directives
-      is GQLInterfaceTypeDefinition -> directives
-      else -> emptyList()
-    }
-
-    return directives.filter { it.name == Schema.FIELD_POLICY }.filter {
-      (it.arguments?.arguments?.single { it.name == Schema.FIELD_POLICY_FOR_FIELD }?.value as GQLStringValue).value == fieldName
-    }.flatMap {
-      (it.arguments?.arguments?.single { it.name == Schema.FIELD_POLICY_KEY_ARGS }?.value as? GQLListValue)?.values ?: emptyList()
-    }.map {
-      (it as GQLStringValue).value
-    }.toSet()
   }
 }
 

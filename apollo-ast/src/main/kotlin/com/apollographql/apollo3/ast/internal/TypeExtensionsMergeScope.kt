@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.ast.internal
 
 import com.apollographql.apollo3.ast.GQLDefinition
+import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLEnumTypeExtension
 import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
@@ -23,7 +24,7 @@ import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.UnrecognizedAntlrRule
 
 
-internal fun IssuesScope.mergeExtensions(definitions: List<GQLDefinition>): List<GQLDefinition> {
+internal fun ValidationScope.mergeExtensions(definitions: List<GQLDefinition>): List<GQLDefinition> {
   val (extensions, otherDefinitions) = definitions.partition { it is GQLTypeSystemExtension }
 
   return extensions.fold(otherDefinitions) { acc, extension ->
@@ -40,48 +41,48 @@ internal fun IssuesScope.mergeExtensions(definitions: List<GQLDefinition>): List
   }
 }
 
-private fun IssuesScope.merge(
+private fun ValidationScope.merge(
     unionTypeDefinition: GQLUnionTypeDefinition,
     extension: GQLUnionTypeExtension,
 ): GQLUnionTypeDefinition = with(unionTypeDefinition) {
   return copy(
-      directives = mergeUniquesOrThrow(directives, extension.directives),
+      directives = mergeDirectives(directives, extension.directives),
       memberTypes = mergeUniquesOrThrow(memberTypes, extension.memberTypes)
   )
 }
 
-private fun IssuesScope.merge(
+private fun ValidationScope.merge(
     enumTypeDefinition: GQLEnumTypeDefinition,
     extension: GQLEnumTypeExtension,
 ): GQLEnumTypeDefinition = with(enumTypeDefinition) {
   return copy(
-      directives = mergeUniquesOrThrow(directives, extension.directives),
+      directives = mergeDirectives(directives, extension.directives),
       enumValues = mergeUniquesOrThrow(enumValues, extension.enumValues),
   )
 }
 
-private fun IssuesScope.merge(
+private fun ValidationScope.merge(
     inputObjectTypeDefinition: GQLInputObjectTypeDefinition,
     extension: GQLInputObjectTypeExtension,
 ): GQLInputObjectTypeDefinition = with(inputObjectTypeDefinition) {
   return copy(
-      directives = mergeUniquesOrThrow(directives, extension.directives),
+      directives = mergeDirectives(directives, extension.directives),
       inputFields = mergeUniquesOrThrow(inputFields, extension.inputFields)
   )
 }
 
-private fun IssuesScope.merge(
+private fun ValidationScope.merge(
     objectTypeDefinition: GQLObjectTypeDefinition,
     extension: GQLObjectTypeExtension,
 ): GQLObjectTypeDefinition = with(objectTypeDefinition) {
   return copy(
-      directives = mergeUniquesOrThrow(directives, extension.directives),
+      directives = mergeDirectives(directives, extension.directives),
       fields = mergeUniquesOrThrow(fields, extension.fields),
       implementsInterfaces = mergeUniqueInterfacesOrThrow(implementsInterfaces, extension.implementsInterfaces, extension.sourceLocation)
   )
 }
 
-private fun IssuesScope.merge(
+private fun ValidationScope.merge(
     interfaceTypeDefinition: GQLInterfaceTypeDefinition,
     extension: GQLInterfaceTypeExtension,
 ): GQLInterfaceTypeDefinition = with(interfaceTypeDefinition) {
@@ -91,7 +92,7 @@ private fun IssuesScope.merge(
   )
 }
 
-private fun IssuesScope.mergeSchemaExtension(
+private fun ValidationScope.mergeSchemaExtension(
     definitions: List<GQLDefinition>,
     schemaExtension: GQLSchemaExtension,
 ): List<GQLDefinition> = with(definitions) {
@@ -111,16 +112,16 @@ private fun IssuesScope.mergeSchemaExtension(
   return newDefinitions
 }
 
-private fun IssuesScope.merge(
+private fun ValidationScope.merge(
     scalarTypeDefinition: GQLScalarTypeDefinition,
     scalarTypeExtension: GQLScalarTypeExtension,
 ): GQLScalarTypeDefinition = with(scalarTypeDefinition) {
   return copy(
-      directives = mergeUniquesOrThrow(directives, scalarTypeExtension.directives)
+      directives = mergeDirectives(directives, scalarTypeExtension.directives)
   )
 }
 
-private inline fun <reified T, E> IssuesScope.merge(
+private inline fun <reified T, E> ValidationScope.merge(
     definitions: List<GQLDefinition>,
     extension: E,
     merge: (T) -> T,
@@ -144,14 +145,35 @@ private inline fun <reified T, E> IssuesScope.merge(
   return newDefinitions
 }
 
-private fun IssuesScope.merge(
+private fun ValidationScope.merge(
     schemaDefinition: GQLSchemaDefinition,
     extension: GQLSchemaExtension,
 ): GQLSchemaDefinition = with(schemaDefinition) {
   return copy(
-      directives = mergeUniquesOrThrow(directives, extension.directives),
+      directives = mergeDirectives(directives, extension.directives),
       rootOperationTypeDefinitions = mergeUniquesOrThrow(rootOperationTypeDefinitions, extension.operationTypesDefinition) { it.operationType }
   )
+}
+
+private fun ValidationScope.mergeDirectives(
+    list: List<GQLDirective>,
+    other: List<GQLDirective>,
+): List<GQLDirective> {
+  val result = mutableListOf<GQLDirective>()
+
+  result.addAll(list)
+  for (directive in other) {
+    if (result.any { it.name == directive.name } ) {
+      val definition = directiveDefinitions[directive.name] ?: error("Cannot find directive definition '${directive.name}")
+      if (!definition.repeatable) {
+        issues.add(Issue.ValidationError("Cannot add non-repeatable directive `${directive.name}`", directive.sourceLocation))
+        continue
+      }
+    }
+    result.add(directive)
+  }
+
+  return result
 }
 
 private inline fun <reified T> IssuesScope.mergeUniquesOrThrow(
@@ -160,7 +182,7 @@ private inline fun <reified T> IssuesScope.mergeUniquesOrThrow(
 ): List<T> where T : GQLNamed, T : GQLNode = with(list) {
   return (this + others).apply {
     groupBy { it.name }.entries.firstOrNull { it.value.size > 1 }?.let {
-      issues.add(Issue.ValidationError("Cannot merge already existing node ${T::class.java.simpleName} `${it.key}`", it.value.first().sourceLocation))
+      issues.add(Issue.ValidationError("Cannot merge already existing node `${it.key}`", it.value.first().sourceLocation))
     }
   }
 }
@@ -185,7 +207,7 @@ private inline fun <reified T : GQLNode> IssuesScope.mergeUniquesOrThrow(
 ): List<T> = with(list) {
   return (this + others).apply {
     groupBy { name(it) }.entries.firstOrNull { it.value.size > 1 }?.let {
-      issues.add(Issue.ValidationError("Cannot merge already existing node ${T::class.java.simpleName} `${it.key}`", it.value.first().sourceLocation))
+      issues.add(Issue.ValidationError("Cannot merge already existing node `${it.key}`", it.value.first().sourceLocation))
     }
   }
 }

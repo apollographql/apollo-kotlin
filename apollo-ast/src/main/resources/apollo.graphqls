@@ -16,4 +16,5 @@ directive @nonnull(fields: String! = "") on OBJECT | FIELD
 directive @typePolicy(keyFields: String!) on OBJECT
 
 # Indicates how to compute a key from a field arguments.
-directive @fieldPolicy(forField: String!, keyArgs: String!) on OBJECT
+# `keyArgs` should contain a selection set. Composite args are not supported yet.
+directive @fieldPolicy(forField: String!, keyArgs: String!) repeatable on OBJECT
