@@ -229,8 +229,6 @@ internal val <D : Mutation.Data> ApolloRequest<D>.optimisticData
 internal val <D : Operation.Data> ApolloRequest<D>.cacheHeaders
   get() = executionContext[CacheHeadersContext]?.value ?: CacheHeaders.NONE
 
-internal val <D : Operation.Data> ApolloRequest<D>.watch
-  get() = executionContext[WatchContext]?.value ?: false
 
 
 class CacheInfo(

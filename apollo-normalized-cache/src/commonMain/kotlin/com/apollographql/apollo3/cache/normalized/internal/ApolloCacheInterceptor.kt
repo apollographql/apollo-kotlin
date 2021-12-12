@@ -11,14 +11,11 @@ import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheInfo
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
-import com.apollographql.apollo3.cache.normalized.api.dependentKeys
 import com.apollographql.apollo3.cache.normalized.cacheHeaders
 import com.apollographql.apollo3.cache.normalized.doNotStore
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.optimisticData
-import com.apollographql.apollo3.cache.normalized.refetchPolicy
 import com.apollographql.apollo3.cache.normalized.storePartialResponses
-import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.cache.normalized.withCacheInfo
 import com.apollographql.apollo3.cache.normalized.writeToCacheAsynchronously
 import com.apollographql.apollo3.exception.ApolloCompositeException
@@ -28,7 +25,6 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onEach
@@ -101,7 +97,7 @@ internal class ApolloCacheInterceptor(
   }
 
   /**
-   * Subscriptions  always go to the network
+   * Subscriptions always go to the network
    */
   private fun <D : Subscription.Data> interceptSubscription(
       request: ApolloRequest<D>,
@@ -162,50 +158,9 @@ internal class ApolloCacheInterceptor(
 
   private fun <D : Query.Data> interceptQuery(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     val fetchPolicy = request.fetchPolicy
-    val refetchPolicy = request.refetchPolicy
     val customScalarAdapters = request.customScalarAdapters
     return flow {
-      var exception: ApolloException? = null
-      var response: ApolloResponse<D>? = null
-      try {
-        response = fetchOneMightThrow(request, chain, fetchPolicy, customScalarAdapters)
-        emit(response)
-      } catch (e: ApolloException) {
-        exception = e
-      }
-
-      if (!request.watch) {
-        if (exception != null) {
-          throw exception
-        }
-        return@flow
-      }
-
-      var watchedKeys = if (response != null && !response.hasErrors() && response.data != null) {
-        store.normalize(request.operation, response.data!!, customScalarAdapters).values.dependentKeys()
-      } else {
-        null
-      }
-
-      store.changedKeys.collect { changedKeys ->
-        if (watchedKeys == null || changedKeys.intersect(watchedKeys!!).isNotEmpty()) {
-          try {
-            val newResponse = fetchOneMightThrow(
-                request,
-                chain,
-                refetchPolicy,
-                customScalarAdapters
-            )
-            emit(newResponse)
-
-            if (!newResponse.hasErrors() && newResponse.data != null) {
-              watchedKeys = store.normalize(request.operation, newResponse.data!!, customScalarAdapters).values.dependentKeys()
-            }
-          } catch (e: ApolloException) {
-
-          }
-        }
-      }
+      emit(fetchOneMightThrow(request, chain, fetchPolicy, customScalarAdapters))
     }
   }
 
