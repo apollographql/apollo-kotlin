@@ -44,38 +44,4 @@ class NormalizationTest() {
     val data2 =  store.readOperation(query)
     check(data1 == data2)
   }
-
-//
-//  @Test
-//  internal fun issue2818() = runBlocking {
-//    apollo.apolloStore.writeOperation(
-//      Issue2818Query(),
-//      Issue2818Query.Data(
-//        Issue2818Query.Home(
-//          __typename = "Home",
-//          sectionA = Issue2818Query.SectionA(
-//            name = "section-name",
-//          ),
-//          sectionFragment = SectionFragment(
-//            sectionA = SectionFragment.SectionA(
-//              id = "section-id",
-//              imageUrl = "https://...",
-//            ),
-//          ),
-//        ),
-//      ),
-//    )
-//
-//    val (prefetch, prefetchJob) = watch(
-//      query = Issue2818Query(),
-//      fetchPolicy = FetchPolicy.CacheOnly,
-//      refetchPolicy = FetchPolicy.CacheOnly,
-//      failFast = true,
-//    )
-//    val cached = prefetch.receiveAsFlow().first()
-//    check(cached.data?.home?.sectionA?.name == "section-name")
-//    check(cached.data?.home?.sectionFragment?.sectionA?.id == "section=id")
-//    check(cached.data?.home?.sectionFragment?.sectionA?.imageUrl == "https://...")
-//    prefetchJob.cancel()
-//  }
 }
