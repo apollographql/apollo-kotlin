@@ -1,9 +1,27 @@
 Change Log
 ==========
 
+# Version 3.0.0-rc03
+
+_2021-12-13_
+
+💙 Many thanks to @ mateuszkwiecinski and @ fn-jt for all the feedback 💙
+
+Compared to the previous RC, this version adds an API to [TODO websocket] and fixes 2 issues.
+
+## ✨ [New] API to [TODO websocket]
+
+TODO
+
+## 🪲 Bug fixes
+
+- Allow repeated `@fieldPolicy` (#3686)
+- Fix incorrect merging of nested objects in JSON (#3672)
+
+
 # Version 3.0.0-rc02
 
-_2021-12-010_
+_2021-12-10_
 
 💙 Many thanks to @michgauz, @joeldenke, @rohandhruva, @schoeda, @CoreFloDev and @sproctor for all the feedback 💙  
 
@@ -54,6 +72,7 @@ apolloClient = ApolloClient.Builder()
 * Add exposeErrorBody (#3661)
 * fix the name of the downloadServiceApolloSchemaFromRegistry task (#3669)
 * Fix DiskLruHttpCache concurrency (#3667)
+
 
 # Version 3.0.0-rc01
 
