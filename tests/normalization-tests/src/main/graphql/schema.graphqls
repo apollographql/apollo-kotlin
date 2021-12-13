@@ -1,0 +1,31 @@
+type Query {
+  viewer: Viewer!
+  home: Home!
+}
+
+type Viewer {
+  libraries(limit: Int): [Library!]!
+}
+
+type Book {
+  id: String!
+  name: String!
+  year: Int!
+  author: String!
+}
+
+type Library {
+  id: String!
+  name: String!
+  book: Book!
+}
+
+type Home {
+  sectionA: SectionA
+}
+
+type SectionA {
+  id: String!
+  name: String!
+  imageUrl: String
+}

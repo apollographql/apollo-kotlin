@@ -54,7 +54,27 @@ class MapJsonWriter : JsonWriter {
   }
 
   override fun beginObject(): JsonWriter = apply {
-    val map = mutableMapOf<String, Any?>()
+    val map = if (stack.isEmpty()) {
+      mutableMapOf<String, Any?>()
+    } else {
+      val state = stack[stack.size - 1]
+      when (state) {
+        is State.List -> mutableMapOf<String, Any?>()
+        is State.Map -> {
+          val existingValue = state.map.get(state.name)
+          if (existingValue == null) {
+            mutableMapOf<String, Any?>()
+          } else {
+            // The stream rewinded. This happens with fragments as interface
+            check(existingValue is MutableMap<*, *>) {
+              "Trying to overwrite a non-object value with an object at $path: $existingValue"
+            }
+            @Suppress("UNCHECKED_CAST")
+            existingValue as MutableMap<String, Any?>
+          }
+        }
+      }
+    }
 
     valueInternal(map)
 
@@ -80,18 +100,7 @@ class MapJsonWriter : JsonWriter {
     when (val state = stack.lastOrNull()) {
       is State.Map -> {
         check(state.name != null)
-
-        // We support writing the same fields several time for fragments as classes
-        val existingValue = state.map[state.name!!]
-        if (existingValue != null && existingValue is Map<*, *>) {
-          check(value is Map<*, *>)
-          // merge any incoming object
-          state.map[state.name!!] = existingValue + value
-        } else {
-          // just overwrite what was previously there
-          // by construction it should be either null or the same value
-          state.map[state.name!!] = value
-        }
+        state.map[state.name!!] = value
         state.name = null
       }
       is State.List -> {
