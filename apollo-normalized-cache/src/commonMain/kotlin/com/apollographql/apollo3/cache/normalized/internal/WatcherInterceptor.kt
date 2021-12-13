@@ -35,6 +35,7 @@ internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor {
     check(request.operation is Query) {
       "It's impossible to watch a mutation or subscription"
     }
+
     val customScalarAdapters = request.executionContext[CustomScalarAdapters]!!
     val refetchPolicy: FetchPolicy = request.refetchPolicy
     var watchedKeys: Set<String>? = null

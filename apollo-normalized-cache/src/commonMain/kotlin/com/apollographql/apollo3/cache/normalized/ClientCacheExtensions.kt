@@ -374,7 +374,6 @@ fun <D : Operation.Data> ApolloRequest.Builder<D>.fetchFromCache(fetchFromCache:
   addExecutionContext(FetchFromCacheContext(fetchFromCache))
 }
 
-
 val <D : Operation.Data> ApolloRequest<D>.fetchFromCache
-  get() = executionContext[FetchFromCacheContext] ?: false
+  get() = executionContext[FetchFromCacheContext]?.value ?: false
 
