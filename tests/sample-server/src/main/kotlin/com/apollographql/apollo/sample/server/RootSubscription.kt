@@ -59,6 +59,10 @@ class RootSubscription : Subscription {
         DataFetcherResult.newResult<Int>()
             .data(null)
             .error(
+                /**
+                 * This should add an "errors" field to the payload but for some reason it doesn't
+                 * This is kept to indicate the intent of this code but should certainly be investigated
+                 */
                 GraphqlErrorException.newErrorException()
                     .message("Woops")
                     .build()
