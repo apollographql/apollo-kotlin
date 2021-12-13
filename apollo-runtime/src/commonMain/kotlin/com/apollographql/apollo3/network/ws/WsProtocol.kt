@@ -125,6 +125,7 @@ abstract class WsProtocol(
         handleServerMessage(receiveMessageMap())
       }
     } catch (e: CancellationException) {
+      throw e
     } catch (e: Exception) {
       listener.networkError(e)
     }
