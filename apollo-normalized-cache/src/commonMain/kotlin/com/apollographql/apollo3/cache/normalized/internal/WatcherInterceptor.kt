@@ -6,10 +6,8 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.dependentKeys
 import com.apollographql.apollo3.cache.normalized.isRefetching
-import com.apollographql.apollo3.cache.normalized.refetchPolicyInterceptor
 import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
