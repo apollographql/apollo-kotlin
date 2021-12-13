@@ -188,7 +188,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
       is Double -> value
       is String -> value.toDouble()
       is JsonNumber -> value.value.toDouble()
-      else -> error("Expected Double but got $this instead")
+      else -> error("Expected Double but got $value instead")
     }
   }
 
@@ -199,7 +199,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
       is Double -> value.toIntExact()
       is String -> value.toInt()
       is JsonNumber -> value.value.toInt()
-      else -> error("Expected Int but got $this instead")
+      else -> error("Expected Int but got $value instead")
     }
   }
 
@@ -210,7 +210,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
       is Double -> value.toLongExact()
       is String -> value.toLong()
       is JsonNumber -> value.value.toLong()
-      else -> error("Expected Int but got $this instead")
+      else -> error("Expected Int but got $value instead")
     }
   }
 
@@ -219,7 +219,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
       is Int, is Long, is Double -> JsonNumber(value.toString())
       is String -> JsonNumber(value) // assert value is a valid number
       is JsonNumber -> value
-      else -> error("Expected JsonNumber but got $this instead")
+      else -> error("Expected JsonNumber but got $value instead")
     }
   }
 
