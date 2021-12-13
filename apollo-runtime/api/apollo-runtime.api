@@ -405,6 +405,14 @@ public final class com/apollographql/apollo3/network/ws/SubscriptionWsProtocol$F
 	public fun getName ()Ljava/lang/String;
 }
 
+public class com/apollographql/apollo3/network/ws/SubscriptionWsProtocolAdapter : com/apollographql/apollo3/network/ws/WsProtocol {
+	public fun <init> (Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;)V
+	public fun connectionInit (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun handleServerMessage (Ljava/util/Map;)V
+	public fun startOperation (Lcom/apollographql/apollo3/api/ApolloRequest;)V
+	public fun stopOperation (Lcom/apollographql/apollo3/api/ApolloRequest;)V
+}
+
 public abstract interface class com/apollographql/apollo3/network/ws/WebSocketConnection {
 	public abstract fun close ()V
 	public abstract fun receive (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

@@ -182,7 +182,7 @@ class SampleServerTest {
       assertTrue(caught!!.message!!.contains("Woops"))
     }
   }
-  
+
   private object AuthorizationException: Exception()
 
   private class AuthorizationAwareWsProtocol(webSocketConnection: WebSocketConnection, listener: Listener) : SubscriptionWsProtocolAdapter(webSocketConnection, listener) {
