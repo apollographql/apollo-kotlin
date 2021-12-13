@@ -5,33 +5,15 @@ Change Log
 
 _2021-12-13_
 
+Compared to the previous RC, this version adds a few new convenience API and fixes 3 annoying issues.
+
 💙 Many thanks to @ mateuszkwiecinski, @ schoeda and @ fn-jt for all the feedback 💙
 
-Compared to the previous RC, this version adds an easier way to implement a custom `WsProtocol`, and fixes 3 issues.
 
-## ✨ [New] `SubscriptionWsProtocolAdapter` (#3697)
-
-`SubscriptionWsProtocolAdapter` makes it easy to implement a `WsProtocol` via delegation. To use it, create your own implementation that extends `SubscriptionWsProtocolAdapter` and override the methods of interest. For instance, you can override `handleServerMessage` to handle specific errors.
-
-Example:
-
-```kotlin
-private class CustomWsProtocol(webSocketConnection: WebSocketConnection, listener: Listener) : SubscriptionWsProtocolAdapter(webSocketConnection, listener) {
-    override fun handleServerMessage(messageMap: Map<String, Any?>) {
-      // Your custom logic here
-      super.handleServerMessage(messageMap)
-    }
-  }
-
-  class AuthorizationAwareWsProtocolFactory: WsProtocol.Factory {
-    override val name: String
-      get() = "graphql-ws"
-
-    override fun create(webSocketConnection: WebSocketConnection, listener: WsProtocol.Listener, scope: CoroutineScope): WsProtocol {
-      return AuthorizationAwareWsProtocol(webSocketConnection, listener)
-    }
-  }
-```
+## ✨ New APIs
+- Make `ApolloCall.operation` public (#3698)
+- Add `SubscriptionWsProtocolAdapter` (#3697)
+- Add `Operation.composeJsonRequest` (#3697)
 
 ## 🪲 Bug fixes
 
