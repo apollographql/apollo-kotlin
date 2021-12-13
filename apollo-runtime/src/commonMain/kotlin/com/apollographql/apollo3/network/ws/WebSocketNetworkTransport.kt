@@ -58,7 +58,6 @@ private constructor(
     private val reconnectWhen: ((Throwable) -> Boolean)?,
 ) : NetworkTransport {
 
-
   /**
    * Use unlimited buffers so that we never have to suspend when writing a command or an event,
    * and we avoid deadlocks. This might be overkill but is most likely never going to be a problem in practice.
@@ -264,7 +263,7 @@ private constructor(
             .newBuilder()
             .requestUuid(request.requestUuid)
             .build()
-        is OperationError -> throw ApolloNetworkException("Cannot start operation ${request.operation.name()}: ${it.payload}")
+        is OperationError -> throw ApolloNetworkException("Operation error ${request.operation.name()}: ${it.payload}")
         is NetworkError -> throw ApolloNetworkException("Network error while executing ${request.operation.name()}", it.cause)
 
         // Cannot happen as these events are filtered out upstream
