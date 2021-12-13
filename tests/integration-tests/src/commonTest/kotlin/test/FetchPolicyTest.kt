@@ -2,7 +2,12 @@ package test
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.api.ApolloRequest
+import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.cache.normalized.ApolloStore
+import com.apollographql.apollo3.cache.normalized.CacheFirstInterceptor
+import com.apollographql.apollo3.cache.normalized.CacheOnlyInterceptor
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.executeCacheAndNetwork
@@ -11,11 +16,16 @@ import com.apollographql.apollo3.cache.normalized.isFromCache
 import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
+import com.apollographql.apollo3.interceptor.ApolloInterceptor
+import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.testing.runTest
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.toList
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -197,5 +207,23 @@ class FetchPolicyTest {
     assertTrue(responses[0].isFromCache)
     assertNotNull(responses[1].data)
     assertFalse(responses[1].isFromCache)
+  }
+
+  @Test
+  fun customRefetchPolicy() = runTest(before = { setUp() }, after = { tearDown() }) {
+    val refetchPolicyInterceptor = object : ApolloInterceptor {
+      var hasSeenValidResponse: Boolean = false
+      override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+        return if (!hasSeenValidResponse) {
+          CacheOnlyInterceptor.intercept(request, chain).onEach {
+            if (it.data != null) {
+              hasSeenValidResponse = true
+            }
+          }
+        } else {
+          CacheFirstInterceptor.intercept(request, chain)
+        }
+      }
+    }
   }
 }
