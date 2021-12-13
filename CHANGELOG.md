@@ -7,7 +7,7 @@ _2021-12-13_
 
 💙 Many thanks to @ mateuszkwiecinski, @ schoeda and @ fn-jt for all the feedback 💙
 
-Compared to the previous RC, this version adds an easier way to implement a custom `WsProtocol` and fixes 2 issues.
+Compared to the previous RC, this version adds an easier way to implement a custom `WsProtocol`, and fixes 3 issues.
 
 ## ✨ [New] `SubscriptionWsProtocolAdapter` (#3697)
 
@@ -37,6 +37,7 @@ private class CustomWsProtocol(webSocketConnection: WebSocketConnection, listene
 
 - Allow repeated `@fieldPolicy` (#3686)
 - Fix incorrect merging of nested objects in JSON (#3672)
+- Fix duplicate query detection (#3699)
 
 
 # Version 3.0.0-rc02
