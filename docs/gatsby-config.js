@@ -13,6 +13,10 @@ module.exports = {
         subtitle: 'Client (Kotlin)',
         description: 'A guide to using Apollo with Kotlin and Android',
         githubRepo: 'apollographql/apollo-android',
+        defaultVersion: '3',
+        versions: {
+          '2': 'release-2.x',
+        },
         sidebarCategories: {
           null: [
             'index',
