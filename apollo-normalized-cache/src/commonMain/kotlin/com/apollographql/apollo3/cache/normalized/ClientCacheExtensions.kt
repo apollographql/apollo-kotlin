@@ -265,12 +265,17 @@ internal val <D : Operation.Data> ApolloRequest<D>.cacheHeaders
 internal val <D : Operation.Data> ApolloRequest<D>.watch
   get() = executionContext[WatchContext]?.value ?: false
 
-
+/**
+ * @param cacheHit true if this was a cache hit
+ * @param cacheException the exception while reading the cache. Note that it's possible to have [cacheHit] == false && [cacheException] == null
+ * if no cache read was attempted
+ */
 class CacheInfo private constructor(
     val cacheStartMillis: Long,
     val cacheEndMillis: Long,
     val networkStartMillis: Long,
     val networkEndMillis: Long,
+    val cacheHit: Boolean,
     val cacheException: CacheMissException?,
     val networkException: ApolloException?,
 ) : ExecutionContext.Element {
@@ -284,17 +289,19 @@ class CacheInfo private constructor(
         .cacheEndMillis(cacheEndMillis)
         .networkStartMillis(networkStartMillis)
         .networkEndMillis(networkEndMillis)
+        .cacheHit(cacheHit)
         .cacheException(cacheException)
         .networkException(networkException)
   }
 
   class Builder {
-    var cacheStartMillis: Long = 0
-    var cacheEndMillis: Long = 0
-    var networkStartMillis: Long = 0
-    var networkEndMillis: Long = 0
-    var cacheException: CacheMissException? = null
-    var networkException: ApolloException? = null
+    private var cacheStartMillis: Long = 0
+    private var cacheEndMillis: Long = 0
+    private var networkStartMillis: Long = 0
+    private var networkEndMillis: Long = 0
+    private var cacheHit: Boolean = false
+    private var cacheException: CacheMissException? = null
+    private var networkException: ApolloException? = null
 
     fun cacheStartMillis(cacheStartMillis: Long) = apply {
       this.cacheStartMillis = cacheStartMillis
@@ -312,6 +319,10 @@ class CacheInfo private constructor(
       this.networkEndMillis = networkEndMillis
     }
 
+    fun cacheHit(cacheHit: Boolean) = apply {
+      this.cacheHit = cacheHit
+    }
+
     fun cacheException(cacheException: CacheMissException?) = apply {
       this.cacheException = cacheException
     }
@@ -322,13 +333,21 @@ class CacheInfo private constructor(
 
 
     fun build(): CacheInfo = CacheInfo(
-        cacheStartMillis, cacheEndMillis, networkStartMillis, networkEndMillis, cacheException, networkException
+        cacheStartMillis = cacheStartMillis,
+        cacheEndMillis = cacheEndMillis,
+        networkStartMillis = networkStartMillis,
+        networkEndMillis = networkEndMillis,
+        cacheHit = cacheHit,
+        cacheException = cacheException,
+        networkException = networkException
     )
   }
 }
 
-val <D : Operation.Data> ApolloResponse<D>.isFromCache
-  get() = cacheInfo?.cacheException ?: false
+val <D : Operation.Data> ApolloResponse<D>.isFromCache: Boolean
+  get() {
+    return cacheInfo?.cacheHit == true
+  }
 
 val <D : Operation.Data> ApolloResponse<D>.cacheInfo
   get() = executionContext[CacheInfo]

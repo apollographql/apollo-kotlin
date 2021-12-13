@@ -171,12 +171,6 @@ internal class ApolloCacheInterceptor(
     }
   }
 
-  private class CacheResult<D : Query.Data>(
-      val response: ApolloResponse<D>?,
-      val cacheInfo: CacheInfo,
-      val error: Throwable?,
-  )
-
   private suspend fun <D : Query.Data> readFromCache(
       request: ApolloRequest<D>,
       customScalarAdapters: CustomScalarAdapters,
@@ -199,6 +193,7 @@ internal class ApolloCacheInterceptor(
             CacheInfo.Builder()
                 .cacheStartMillis(startMillis)
                 .cacheEndMillis(currentTimeMillis())
+                .cacheHit(true)
                 .build()
         )
         .build()

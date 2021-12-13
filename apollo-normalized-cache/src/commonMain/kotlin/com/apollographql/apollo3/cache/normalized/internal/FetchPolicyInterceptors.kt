@@ -1,8 +1,11 @@
+@file:Suppress("SENSELESS_COMPARISON")
+
 package com.apollographql.apollo3.cache.normalized.internal
 
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.cache.normalized.cacheInfo
 import com.apollographql.apollo3.cache.normalized.fetchFromCache
 import com.apollographql.apollo3.cache.normalized.fetchPolicyInterceptor
@@ -16,6 +19,8 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.singleOrNull
 
 /**
@@ -52,11 +57,11 @@ internal val CacheFirstInterceptor = object : ApolloInterceptor {
               .newBuilder()
               .fetchFromCache(true)
               .build()
-      ).catch {
-        if (it is ApolloException) {
-          cacheException = it
+      ).catch { throwable ->
+        if (throwable is ApolloException) {
+          cacheException = throwable
         } else {
-          throw it
+          throw throwable
         }
       }.singleOrNull()
 
@@ -155,6 +160,10 @@ internal val NetworkFirstInterceptor = object : ApolloInterceptor {
 
 val FetchPolicyRouterInterceptor = object : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+    if (request.operation !is Query) {
+      // Subscriptions and Mutations do not support fetchPolicies
+      return chain.proceed(request)
+    }
     return if (!request.isRefetching) {
       request.fetchPolicyInterceptor.intercept(request, chain)
     } else {
