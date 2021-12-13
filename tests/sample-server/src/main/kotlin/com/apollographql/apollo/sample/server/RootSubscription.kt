@@ -40,4 +40,12 @@ class RootSubscription : Subscription {
   fun operationError() = flow<String> {
     throw Exception("Woops")
   }.asPublisher()
+
+  @GraphQLDescription("Emits 'after' items and returns an error")
+  fun graphqlAccessError(after: Int = 1) = flow {
+    repeat(after) {
+      emit(it)
+    }
+    throw Exception("Woops")
+  }.asPublisher()
 }

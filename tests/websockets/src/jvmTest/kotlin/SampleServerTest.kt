@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -19,6 +20,7 @@ import org.junit.Test
 import org.springframework.boot.runApplication
 import org.springframework.context.ConfigurableApplicationContext
 import sample.server.CountSubscription
+import sample.server.GraphqlAccessErrorSubscription
 import sample.server.OperationErrorSubscription
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -173,6 +175,22 @@ class SampleServerTest {
           .collect()
       assertIs<ApolloNetworkException>(caught)
       assertTrue(caught!!.message!!.contains("Woops"))
+    }
+  }
+
+  @Test
+  fun canResumeAfterGraphQLError() {
+    val apolloClient = ApolloClient.Builder()
+        .serverUrl("http://localhost:8080/subscriptions")
+        .build()
+
+    runBlocking {
+      val list = apolloClient.subscription(GraphqlAccessErrorSubscription(1))
+          .toFlow()
+          .map { it.data!!.graphqlAccessError }
+          .take(2)
+          .toList()
+      assertEquals(listOf(0, 0), list)
     }
   }
 }

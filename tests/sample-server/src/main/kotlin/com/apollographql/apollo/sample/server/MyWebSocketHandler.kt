@@ -17,8 +17,12 @@ class MyWebSocketHandler(
   override fun handle(session: WebSocketSession): Mono<Void> {
     val response = session.receive()
         .flatMap { subscriptionHandler.handle(it.payloadAsText, session) }
-        .map { objectMapper.writeValueAsString(it) }
-        .map { session.textMessage(it) }
+        .map {
+          objectMapper.writeValueAsString(it)
+        }
+        .map {
+          session.textMessage(it)
+        }
         .doOnSubscribe {
           synchronized(activeSessions) {
             println("adding session $index")
