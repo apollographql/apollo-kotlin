@@ -18,6 +18,6 @@ type Subscription {
   "Trigger an error when accessed"
   operationError: String!
   "Returns a GraphQL error afeter 'after' items"
-  graphqlAccessError(after: Int!): Int!
+  graphqlAccessError(after: Int!): Int
   time: Int!
 }

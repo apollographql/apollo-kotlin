@@ -2,9 +2,14 @@ package com.apollographql.apollo.sample.server
 
 import com.expediagroup.graphql.generator.annotations.GraphQLDescription
 import com.expediagroup.graphql.server.operations.Subscription
+import graphql.GraphQLError
+import graphql.GraphqlErrorException
+import graphql.execution.DataFetcherResult
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.reactive.asPublisher
+import org.reactivestreams.Publisher
 import org.springframework.stereotype.Component
 
 @Component
@@ -42,10 +47,24 @@ class RootSubscription : Subscription {
   }.asPublisher()
 
   @GraphQLDescription("Emits 'after' items and returns an error")
-  fun graphqlAccessError(after: Int = 1) = flow {
+  fun graphqlAccessError(after: Int = 1): Publisher<DataFetcherResult<Int?>> = flow {
     repeat(after) {
-      emit(it)
+      emit(
+          DataFetcherResult.newResult<Int>()
+              .data(it)
+              .build()
+      )
     }
-    throw Exception("Woops")
+    emit(
+        DataFetcherResult.newResult<Int>()
+            .data(null)
+            .error(
+                GraphqlErrorException.newErrorException()
+                    .message("Woops")
+                    .build()
+            )
+            .build()
+    )
+
   }.asPublisher()
 }
