@@ -607,7 +607,7 @@ See [#3035](https://github.com/apollographql/apollo-android/issues/3035) for mor
 
 In Apollo Android 2.x, you can pass an `ApolloClient` to `ApolloIdlingResource.create()` and the `ApolloClient` will be modified to register an idle callback.
 
-In Apollo Android 3, an `ApolloClient` is immutable once instantiated so it's not possible to register callbacks/interceptors once it is instantiated. Instead, you can create your `ApolloIdlingResource` as a first step and then pass it to your `ApolloClient.Builder` like so:
+In Apollo Kotlin 3.x, an `ApolloClient` is immutable once instantiated so it's not possible to register callbacks/interceptors once it is instantiated. Instead, you can create your `ApolloIdlingResource` as a first step and then pass it to your `ApolloClient.Builder` like so:
 
 ```kotlin
 // Replace

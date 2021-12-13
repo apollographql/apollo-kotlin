@@ -25,7 +25,7 @@ val apolloClient = ApolloClient.Builder()
   .build()
 ```
 
-> **Note:** Apollo Android supports both `https://` (or `http://`) and `wss://` (or `ws://`) protocols. Internally, `wss://` is renamed to `https://` and which one you use does not matter.
+> **Note:** Apollo Kotlin supports both `https://` (or `http://`) and `wss://` (or `ws://`) protocols. Internally, `wss://` is renamed to `https://` and which one you use does not matter.
 
 ## Listening to a subscription
 
@@ -55,13 +55,13 @@ Network errors terminate the `Flow`, and you will have to retry it to get new up
 
 ## Customizing your WebSocket protocol
 
-By default, Apollo Android uses [subscriptions-transport-ws](https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md) as a protocol. The subscription protocol is not specified by the GraphQL specification so you might come across different variants:
+By default, Apollo Kotlin uses [subscriptions-transport-ws](https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md) as a protocol. The subscription protocol is not specified by the GraphQL specification so you might come across different variants:
 
 * [subscriptions-transport-ws](https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md)
 * [graphql-ws](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md)
 * [appsync](https://docs.aws.amazon.com/appsync/latest/devguide/real-time-websocket-client.html) (also uses `graphql-ws` as [Sec-WebSocket-Protocol](https://datatracker.ietf.org/doc/html/rfc6455#section-1.2))
 
-To customize your protocol, use the `WsProtocol` interface. Apollo Android comes with builtin support for the protocols above:
+To customize your protocol, use the `WsProtocol` interface. Apollo Kotlin comes with built-in support for the protocols above:
 
 * subscriptions-transport-ws: `SubscriptionWsProtocol` (default)
 * graphql-ws: `GraphQLWsProtocol`
