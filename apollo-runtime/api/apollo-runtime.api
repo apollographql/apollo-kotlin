@@ -14,6 +14,7 @@ public final class com/apollographql/apollo3/ApolloCall : com/apollographql/apol
 	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
 	public fun getHttpHeaders ()Ljava/util/List;
 	public fun getHttpMethod ()Lcom/apollographql/apollo3/api/http/HttpMethod;
+	public final fun getOperation ()Lcom/apollographql/apollo3/api/Operation;
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public fun getSendDocument ()Ljava/lang/Boolean;
 	public fun httpHeaders (Ljava/util/List;)Lcom/apollographql/apollo3/ApolloCall;

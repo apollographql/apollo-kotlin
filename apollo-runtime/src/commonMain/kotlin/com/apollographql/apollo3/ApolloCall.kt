@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.single
 
 class ApolloCall<D : Operation.Data> internal constructor(
     internal val apolloClient: ApolloClient,
-    internal val operation: Operation<D>,
+    val operation: Operation<D>,
 ) : MutableExecutionOptions<ApolloCall<D>> {
   override var executionContext: ExecutionContext = ExecutionContext.Empty
   override var httpMethod: HttpMethod? = null
