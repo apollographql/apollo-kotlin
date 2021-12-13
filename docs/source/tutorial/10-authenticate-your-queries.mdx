@@ -2,7 +2,7 @@
 title: "10. Authenticate your operations"
 ---
 
-In this section, you will book a flight 🚀! Booking a flight requires being authenticated to the server so the correct person is sent to space! To do that, and since Apollo Android is using [OkHttp](https://square.github.io/okhttp/) to handle HTTP requests, you will use OkHttp [Interceptors](https://square.github.io/okhttp/interceptors/) to add headers to your GraphQL requests.
+In this section, you will book a flight 🚀! Booking a flight requires being authenticated to the server so the correct person is sent to space! To do that, and since Apollo Kotlin is using [OkHttp](https://square.github.io/okhttp/) to handle HTTP requests, you will use OkHttp [Interceptors](https://square.github.io/okhttp/interceptors/) to add headers to your GraphQL requests.
 
 ## Add the interceptor
 
@@ -30,7 +30,7 @@ Create a custom `OkHttpClient` that will use this interceptor and pass it to the
     val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(AuthorizationInterceptor(context))
         .build()
-        
+
     val apolloClient = ApolloClient.Builder()
         .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
         .okHttpClient(okHttpClient)
@@ -44,7 +44,7 @@ fun apolloClient(context: Context): ApolloClient {
     val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(AuthorizationInterceptor(context))
         .build()
-        
+
     return ApolloClient.Builder()
         .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
         .okHttpClient(okHttpClient)
@@ -79,7 +79,7 @@ fun apolloClient(context: Context): ApolloClient {
     val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(AuthorizationInterceptor(context))
         .build()
-        
+
     instance = ApolloClient.Builder()
         .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
         .okHttpClient(okHttpClient)
@@ -160,6 +160,6 @@ This sends the appropriate mutation based on whether the launch is booked.
 
 ## Book your trip!
 
-Compile and run your app. You can now book and cancel your trips! The button will change based on whether a trip has been booked or not. 
+Compile and run your app. You can now book and cancel your trips! The button will change based on whether a trip has been booked or not.
 
 In the next section, you will [write your first subscription](11-subscriptions) and be notified in real time when someone books a flight.

@@ -10,7 +10,7 @@ import { ExpansionPanel } from 'gatsby-theme-apollo-docs';
 
 > **Operation safelisting requires an Apollo Studio [Enterprise plan](https://www.apollographql.com/plans/).** To enable this feature, please contact Apollo.
 
-If you enabled operation safelisting on your backend (see [here](https://www.apollographql.com/docs/studio/operation-registry/) for more information about how to do this), you can use Apollo Android Gradle plugin to register your operations automatically. Apollo Android might transform the GraphQL files you write to include `__typename` (for polymorphic types) or trim whitespaces (to save some space). Registering your operations through the Gradle plugin ensures the transformed versions are registered so that there is an exact match between what is registered and what is sent by your app.
+If you enabled operation safelisting on your backend (see [here](https://www.apollographql.com/docs/studio/operation-registry/) for more information about how to do this), you can use Apollo Kotlin's Gradle plugin to register your operations automatically. Apollo Kotlin might transform the GraphQL files you write to include `__typename` (for polymorphic types) or trim whitespace (to save some space). Registering your operations through the Gradle plugin ensures the transformed versions are registered so that there is an exact match between what is registered and what is sent by your app.
 
 Add this to your Gradle configuration:
 

@@ -2,7 +2,7 @@
 title: Error handling
 ---
 
-Whenever you execute a GraphQL operation with Apollo Android (or any other GraphQL client), two high-level types of errors can occur:
+Whenever you execute a GraphQL operation with Apollo Kotlin (or any other GraphQL client), two high-level types of errors can occur:
 
 * **Network errors**: a GraphQL response wasn't received because an error occurred while communicating with your GraphQL server. This might be an SSL error, a socket error because your app is offline, or a 500 or any other HTTP error. When a network error occurs, no data is returned.
 * **GraphQL errors**: a GraphQL response _is_ received, and it contains a non-empty [`errors`](https://spec.graphql.org/draft/#sec-Errors) field. This means the server wasn't able to completely process the query. The response might include _partial_ data if the server was able to process _some_ of the query.
@@ -80,7 +80,7 @@ The server will send the following response:
 
 Note that while there are errors, the query successfully returned the title of the film: `A New Hope`. In general, any error while executing an operation [bubbles up](https://spec.graphql.org/draft/#sec-Errors) to the next nullable field. In this case, `person` is nullable. In the worst case, `response.data` can be null if everything else is non-nullable.
 
-Apollo Android gives you access to both the data and the errors in the `Response` class:
+Apollo Kotlin gives you access to both the data and the errors in the `Response` class:
 
 ```kotlin
 val response = try {

@@ -2,7 +2,7 @@
 title: Multi Modules
 ---
 
-For multi-modules projects, Apollo Android allows to define queries in a feature module and reuse fragments and types from another  module dependency. This helps with better separation of concerns and build times.
+For multi-modules projects, Apollo Kotlin enables you to define queries in a feature module and reuse fragments and types from another module dependency. This helps with better separation of concerns and build times.
 
 ## Setup
 
@@ -24,7 +24,7 @@ And declare your schema module as a dependency of your feature module:
 dependencies {
     implementation("com.apollographql.apollo3:apollo-runtime:xyz")
     // more regular dependencies
-    
+
     // Apollo dependencies
     apolloMetadata(project(":schema"))
     // You also need to declare the schema module as a regular dependency
@@ -36,7 +36,7 @@ dependencies {
 
 A feature module can have any number of apollo module dependencies, each one contributing their types and fragments.
 
-Transitive Apollo dependencies will always expose their fragments and types to the modules downstream. In other words, there is no `implementation` vs `api` concept like there is for regular dependencies. Apollo dependencies will always expose everything downstream (i.e are treated as `api`). 
+Transitive Apollo dependencies will always expose their fragments and types to the modules downstream. In other words, there is no `implementation` vs `api` concept like there is for regular dependencies. Apollo dependencies will always expose everything downstream (i.e are treated as `api`).
 
 Another important thing to note is that all modules must share the same schema. Place schema.[graphqls | json] in the schema module, the module that is the higher up in the dependencies graph:
 
@@ -102,9 +102,9 @@ Summary of different constraints:
 
 ## Type clashes
 
-When using multiple modules, Apollo Android will generate models for every operation and fragment defined in this module. In addition, it's going to generate classes for schema types used by these operation. For an example, for Input Objects, Enums, Custom Scalars, etc...
+When using multiple modules, Apollo Kotlin will generate models for every operation and fragment defined in this module. In addition, it's going to generate classes for schema types used by these operation. For an example, for Input Objects, Enums, Custom Scalars, etc...
 
-If two sibling modules use the same schema type and this schema type wasn't generated upstream, each module will generate its own version of the schema type which could clash. To prevent this, Apollo Android registers a global "check${service}ApolloDuplicates" task that will fail if there are duplicates.
+If two sibling modules use the same schema type and this schema type wasn't generated upstream, each module will generate its own version of the schema type, which could clash. To prevent this, Apollo Kotlin registers a global "check${service}ApolloDuplicates" task that will fail if there are duplicates.
 
 If that happens, you will need to resolve the type clash manually by forcing generation of the conflicting type in an upstream module. This is done using the `alwaysGenerateTypesMatching` Gradle option:
 
@@ -118,4 +118,3 @@ apollo {
     alwaysGenerateTypesMatching.set(listOf(".*Input"))
 }
 ```
-

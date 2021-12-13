@@ -1,9 +1,9 @@
 ---
-title: Declarative cache IDs in Apollo Android
+title: Declarative cache IDs in Apollo Kotlin
 sidebar_title: Declarative cache IDs
 ---
 
-When using a [normalized cache](./normalized-cache/) in Apollo Android, it's recommended that you specify a **cache ID** for each object type in your schema. If you don't, objects are assigned a _default_ cache ID, but that ID can lead to undesirable duplication of data.
+When using a [normalized cache](./normalized-cache/) in Apollo Kotlin, it's recommended that you specify a **cache ID** for each object type in your schema. If you don't, objects are assigned a _default_ cache ID, but that ID can lead to undesirable duplication of data.
 
 When specifying cache IDs, it's recommended that you do so **declaratively**, using the methods described in this article:
 
@@ -17,7 +17,7 @@ extend type Book @typePolicy(keyFields: "id")
 
 With declarative cache IDs, the codegen process adds ID fields automatically and generates type-safe code that can return a valid cache ID for any object.
 
-To do this, Apollo Android extends your back-end schema. The GraphQL spec supports [object extensions](https://spec.graphql.org/draft/#sec-Object-Extensions) using the `extend type` keywords. We can use this together with the `@typePolicy` and `@fieldPolicy` directives, along with an extra `.graphqls` file named `extra.graphqls`.
+To do this, Apollo Kotlin extends your back-end schema. The GraphQL spec supports [object extensions](https://spec.graphql.org/draft/#sec-Object-Extensions) using the `extend type` keywords. We can use this together with the `@typePolicy` and `@fieldPolicy` directives, along with an extra `.graphqls` file named `extra.graphqls`.
 
 You can obtain a given object type's cache ID from one of two sources:
 
@@ -46,7 +46,7 @@ We can add the following definition to an `extra.graphqls` file in the same dire
 extend type Book @typePolicy(keyFields: "id")
 ```
 
-Apollo Android now knows to use the `id` field of a `Book` type to generate its cache ID.
+Apollo Kotlin now knows to use the `id` field of a `Book` type to generate its cache ID.
 
 You can specify _multiple_ key fields for an object if they're all required to uniquely identify a particular cache entry:
 
@@ -80,7 +80,7 @@ We can add the following definition to an `extra.graphqls` file in the same dire
 extend type Query @fieldPolicy(forField: "book", keyArgs: "id")
 ```
 
-Apollo Android now knows to check the cache for a `Book` object with the provided `id` _before_ sending a network request for `Query.book`.
+Apollo Kotlin now knows to check the cache for a `Book` object with the provided `id` _before_ sending a network request for `Query.book`.
 
 > Note that even though the `@fieldPolicy` directive corresponds to a single field, you apply the directive to the _type_ definition (`Query` in this case). This is because GraphQL doesn't allow extending a single field. You specify _which_ field the directive corresponds to with the `forField` argument.
 

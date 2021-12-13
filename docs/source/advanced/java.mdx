@@ -5,11 +5,11 @@ title: 'Using with Java'
 import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
 
-Because Apollo Android is written in Kotlin, you can use it in Java projects. This article describes how.
+This article describes how to use Apollo Kotlin in Java projects.
 
 ## Use the Java codegen
 
-Apollo Android generates Kotlin code by default, but you can configure it to use the Java codegen instead:
+Apollo Kotlin generates Kotlin code by default, but you can configure it to use the Java codegen instead:
 
 ```kotlin:title=build.gradle[.kts]
 apollo {
@@ -46,4 +46,4 @@ ApolloClient client = builder.build();
 
 ## Use RxJava extensions
 
-Apollo Android has a coroutines / Flow-based API that isn't well suited to using with Java. To achieve a similar effect, you can use Apollo's [RxJava extensions](./rxjava/).
+Apollo Kotlin has a coroutines / Flow-based API that isn't well suited to using with Java. To achieve a similar effect, you can use Apollo's [RxJava extensions](./rxjava/).

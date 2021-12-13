@@ -1,5 +1,5 @@
 ---
-title: Programmatic cache IDs in Apollo Android
+title: Programmatic cache IDs in Apollo Kotlin
 sidebar_title: Programmatic cache IDs
 ---
 
@@ -12,7 +12,7 @@ You can generate a given object type's cache ID from one of two sources:
 | From a response object's fields (e.g., `Book.id`) | [`CacheKeyGenerator`](#cachekeygenerator) | This happens _after_ a network request and is essential to merging a query result with existing cached data. This is the most common case. |
 | From a GraphQL operation's arguments (e.g., `author(id: "au456")`) | [`CacheKeyResolver`](#cachekeyresolver) | This happens _before_ a network request and enables you to avoid a network round trip if all requested data is in the cache already. This is an optional optimization that can avoid some cache misses. |
 
-Apollo Android provides a class for generating cache keys from each of these sources.
+Apollo Kotlin provides a class for generating cache keys from each of these sources.
 
 ## `CacheKeyGenerator`
 

@@ -2,11 +2,11 @@
 title: 'Kotlin native'
 ---
 
-Apollo Android is built for multiplatform and therefore supports iOS, MacOS, and other Darwin targets.
+Apollo Kotlin is built for multiplatform and therefore supports iOS, MacOS, and other Darwin targets.
 
 Because the current Kotlin memory model requires freezing objects that are accessed from multiple threads ([docs](https://kotlinlang.org/docs/kmm-concurrency-overview.html)), there are some limitations.
 
-In particular, you must create your `ApolloClient` and call `query` and other operations from the main thread. Apollo Android then executes the work on a background thread and returns the result to the main thread.
+In particular, you must create your `ApolloClient` and call `query` and other operations from the main thread. Apollo Kotlin then executes the work on a background thread and returns the result to the main thread.
 
 ## Multithreaded coroutines
 

@@ -2,7 +2,7 @@
 title: HTTP interceptors
 ---
 
-Apollo Android supports multi platform `HttpInterceptor` very similar to `OkHttp` `Interceptors`. Use them to add authentication headers, log the network calls or anything else.
+Apollo Kotlin supports multi platform `HttpInterceptor` very similar to `OkHttp` `Interceptors`. Use them to add authentication headers, log the network calls or anything else.
 
 The interface is a single method. For an example, implementing an authentication interceptors can be done with:
 
@@ -23,7 +23,7 @@ val apolloClient = ApolloClient.Builder()
     .build()
 ```
 
-By default, Apollo Android comes with `ClientAwarenessInterceptor` and `LoggingInterceptor`.
+By default, Apollo Kotlin comes with `ClientAwarenessInterceptor` and `LoggingInterceptor`.
 
 ## Reusing OkHttp interceptors on JVM only projects
 

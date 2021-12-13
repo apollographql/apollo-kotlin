@@ -1,9 +1,9 @@
 ---
-title: Normalized caches in Apollo Android
+title: Normalized caches in Apollo Kotlin
 sidebar_title: Normalized caches
 ---
 
-Apollo Android provides two built-in **normalized caches** for storing and reusing the results of GraphQL operations:
+Apollo Kotlin provides two built-in **normalized caches** for storing and reusing the results of GraphQL operations:
 
 * An [in-memory cache](#in-memory-cache) (`MemoryCache`)
 * A [SQLite-backed cache](#sqlite-cache) (`SqlNormalizedCache`)
@@ -67,7 +67,7 @@ A normalized cache does _not_ store this response directly. Instead, it breaks i
 
 ### In-memory cache
 
-Apollo Android's `MemoryCache` is a normalized, in-memory cache for storing objects from your GraphQL operations. To use it, first add the `apollo-normalized-cache` artifact to your dependencies in your `build.gradle[.kts]` file:
+Apollo Kotlin's `MemoryCache` is a normalized, in-memory cache for storing objects from your GraphQL operations. To use it, first add the `apollo-normalized-cache` artifact to your dependencies in your `build.gradle[.kts]` file:
 
 ```kotlin:title=build.gradle[.kts]
 dependencies {
@@ -101,7 +101,7 @@ When your app is stopped, data in the `MemoryCache` is lost forever. If you need
 
 ### SQLite cache
 
-Apollo Android's SQLite cache uses [SQLDelight](https://github.com/cashapp/sqldelight) to store data persistently. You can use it to persist data across app restarts, or if your cached data becomes too large to fit in memory.
+Apollo Kotlin's SQLite cache uses [SQLDelight](https://github.com/cashapp/sqldelight) to store data persistently. You can use it to persist data across app restarts, or if your cached data becomes too large to fit in memory.
 
 To enable SQLite cache support, add the `apollo-normalized-cache-sqlite` dependency to your project's `build.gradle` file:
 
@@ -140,13 +140,13 @@ val memoryFirstThenSqlCacheFactory = MemoryCacheFactory(10 * 1024 * 1024)
   .chain(SqlNormalizedCacheFactory(context, "db_name"))
 ```
 
-Whenever Apollo Android attempts to read cached data, it checks each chained cache in order until it encounters a hit. It then immediately returns that cached data without reading any additional caches.
+Whenever Apollo Kotlin attempts to read cached data, it checks each chained cache in order until it encounters a hit. It then immediately returns that cached data without reading any additional caches.
 
-Whenever Apollo Android _writes_ data to the cache, those writes propagate down _all caches_ in the chain.
+Whenever Apollo Kotlin _writes_ data to the cache, those writes propagate down _all caches_ in the chain.
 
 ## Setting a fetch policy
 
-After you add a normalized cache to your `ApolloClient` initialization, Apollo Android automatically uses it by default for all queries. You can customize _how_ the cache is used for a particular query by setting a **fetch policy** for that query.
+After you add a normalized cache to your `ApolloClient` initialization, Apollo Kotlin automatically uses it by default for all queries. You can customize _how_ the cache is used for a particular query by setting a **fetch policy** for that query.
 
 The following snippet shows how to set all available fetch policies and their behavior:
 
@@ -175,7 +175,7 @@ Because the normalized cache deduplicates data, it enables you to react to cache
 
 ## Specifying cache IDs
 
-By default, Apollo Android uses an object's GraphQL field path as its cache ID. For example, recall the following query and its resulting cache entries from earlier:
+By default, Apollo Kotlin uses an object's GraphQL field path as its cache ID. For example, recall the following query and its resulting cache entries from earlier:
 
 ```graphql
 query GetFavoriteBook {

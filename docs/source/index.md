@@ -1,12 +1,12 @@
 ---
-title: Introduction to Apollo Android
+title: Introduction to Apollo Kotlin
 description: A strongly-typed, caching GraphQL client for Java and Kotlin multiplatform
 sidebar_title: Introduction
 ---
 
-[Apollo Android](https://github.com/apollographql/apollo-android) is a GraphQL client that generates Kotlin and Java models from GraphQL queries.
+[Apollo Kotlin](https://github.com/apollographql/apollo-android) (formerly Apollo Android) is a GraphQL client that generates Kotlin and Java models from GraphQL queries.
 
-Apollo Android executes queries and mutations against a GraphQL server and returns results as query-specific Kotlin types. This means you don't have to deal with parsing JSON, or passing around `Map`s and making clients cast values to the right type manually. You also don't have to write model types yourself, because these are generated from the GraphQL definitions your UI uses.
+Apollo Kotlin executes queries and mutations against a GraphQL server and returns results as query-specific Kotlin types. This means you don't have to deal with parsing JSON, or passing around `Map`s and making clients cast values to the right type manually. You also don't have to write model types yourself, because these are generated from the GraphQL definitions your UI uses.
 
 Because generated types are query-specific, you can only access data that you actually specify as part of a query. If you don't ask for a particular field in a query, you can't access the corresponding property on the returned data structure.
 
@@ -30,7 +30,7 @@ This library is designed primarily with Android in mind, but you can use it in a
 
 ## Multiplatform
 
-Apollo Android is a [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html) project.
+Apollo Kotlin is a [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html) project.
 
 Here's the current matrix of supported features per platform:
 
@@ -62,7 +62,7 @@ Here's the current matrix of supported features per platform:
 
 If you are new to GraphQL, check out [the tutorial](https://www.apollographql.com/docs/android/v3/tutorial/00-introduction/) that will guide you through building an Android app using Apollo, Kotlin and coroutines.
 
-If you'd like to add Apollo Android to an existing project, follow these steps:
+If you'd like to add Apollo Kotlin to an existing project, follow these steps:
 
 Add the plugin to your `build.gradle.kts`:
 
@@ -88,12 +88,12 @@ apollo {
 }
 ```
 
-Apollo Android supports three types of files:
+Apollo Kotlin supports three types of files:
 - `.graphqls` schema files: describes the types in your backend using the GraphQL syntax.
 - `.json` schema files: describes the types in your backend using the Json syntax.
 - `.graphql` executable files: describes your queries and operations in the GraphQL syntax.
 
-By default, Apollo Android requires a schema in your module's `src/main/graphql` directory. You can download a schema using introspection with the `./gradlew downloadApolloSchema` task. Sometimes introspection is disabled and you will have to ask your backend team to provide a schema. Copy this schema to your module:
+By default, Apollo Kotlin requires a schema in your module's `src/main/graphql` directory. You can download a schema using introspection with the `./gradlew downloadApolloSchema` task. Sometimes introspection is disabled and you will have to ask your backend team to provide a schema. Copy this schema to your module:
 
 ```
 cp ${schema} ${module}/src/main/graphql/
@@ -125,7 +125,7 @@ Build your project. This will generate a `HeroQuery` class that you can use with
   println("Hero.name=${response.data?.hero?.name}")
 ```
 
-**To learn more about other Apollo Android APIs:**
+**To learn more about other Apollo Kotlin APIs:**
 
 * Execute your first [mutation](./essentials/mutations/)
 * Handle [custom scalar types](./essentials/custom-scalars/)
@@ -196,10 +196,8 @@ If you'd like to contribute, please see [Contributing.md](https://github.com/apo
 ## Additional resources
 
 - [A journey to Kotlin multiplatform](https://www.youtube.com/watch?v=GN6LHrqyimI): how the project was moved to Kotlin multiplatform, talk given at Kotliners in June 2020.
-- [#125, Fragmented Podcast](http://fragmentedpodcast.com/episodes/125/): Why's and How's about Apollo Android and the entire journey.
+- [#125, Fragmented Podcast](http://fragmentedpodcast.com/episodes/125/): Why's and How's about Apollo Kotlin and the entire journey.
 - [GraphQL.org](http://graphql.org) for an introduction and reference to GraphQL itself.
 - [apollographql.com](http://www.apollographql.com/) to learn about Apollo open-source and commercial tools.
 - [The Apollo blog](https://www.apollographql.com/blog/) for long-form articles about GraphQL, feature announcements for Apollo, and guest articles from the community.
 - [The Apollo Twitter account](https://twitter.com/apollographql) for in-the-moment news.
-
-

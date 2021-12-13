@@ -2,13 +2,13 @@
 title: Gradle plugin configuration
 ---
 
-Apollo Android's default configuration works for the majority of use cases. If you're getting started, see the [getting started guide](../introduction/) for an overview of the default configuration.
+Apollo Kotlin's default configuration works for the majority of use cases. If you're getting started, see the [getting started guide](../introduction/) for an overview of the default configuration.
 
 This article describes configuration options for advanced use cases.
 
 ## Using multiple GraphQL APIs
 
-Apollo Android supports communicating with multiple GraphQL endpoints with different schemas. To do so, create multiple services like so:
+Apollo Kotlin supports communicating with multiple GraphQL endpoints with different schemas. To do so, create multiple services like so:
 
 ```kotlin
 apollo {
@@ -33,13 +33,13 @@ apollo {
 }
 ```
 
-> By default, Apollo Android combines all files in your project that match the pattern `schema.[graphqls|json|sdl]`.
+> By default, Apollo Kotlin combines all files in your project that match the pattern `schema.[graphqls|json|sdl]`.
 
 ## Combining multiple schema files
 
-Apollo Android supports a collection of client directives, including `@nonnull`, `@optional`, and `@typePolicy`. These directives enable you to extend your server's base schema with client-specific types and fields.
+Apollo Kotlin supports a collection of client directives, including `@nonnull`, `@optional`, and `@typePolicy`. These directives enable you to extend your server's base schema with client-specific types and fields.
 
-If you expand your schema in a separate file, you can instruct Apollo Android to construct its schema from a combination of multiple files, like so:
+If you expand your schema in a separate file, you can instruct Apollo Kotlin to construct its schema from a combination of multiple files, like so:
 
 ```kotlin
 apollo {
@@ -47,11 +47,11 @@ apollo {
 }
 ```
 
-> By default, Apollo Android combines all files in your project that match the pattern `schema.[graphqls|json|sdl]`.
+> By default, Apollo Kotlin combines all files in your project that match the pattern `schema.[graphqls|json|sdl]`.
 
 ## Wiring generated source
 
-By default, Apollo Android adds generated source:
+By default, Apollo Kotlin adds generated source:
 
 * to the `main` sourceSet for JVM projects
 * to `commonMain` for multiplatform projects
