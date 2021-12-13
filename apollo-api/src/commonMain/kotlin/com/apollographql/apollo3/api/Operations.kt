@@ -20,6 +20,36 @@ import kotlin.jvm.JvmOverloads
  * }
  * ```
  */
+@OptIn(ApolloInternal::class)
+@JvmOverloads
+fun <D : Operation.Data> Operation<D>.composeJsonRequest(
+    jsonWriter: JsonWriter,
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+) {
+  jsonWriter.writeObject {
+    name("operationName")
+    value(name())
+
+    name("variables")
+    writeObject {
+      serializeVariables(this, customScalarAdapters)
+    }
+
+    name("query")
+    value(document())
+  }
+}
+
+/**
+ * Reads a GraphQL Json response like below to a [ApolloResponse]
+ * ```
+ * {
+ *  "data": ...
+ *  "errors": ...
+ *  "extensions": ...
+ * }
+ * ```
+ */
 @JvmOverloads
 fun <D : Operation.Data> Operation<D>.parseJsonResponse(
     jsonReader: JsonReader,
