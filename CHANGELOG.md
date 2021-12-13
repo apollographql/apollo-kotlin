@@ -7,11 +7,31 @@ _2021-12-13_
 
 💙 Many thanks to @ mateuszkwiecinski and @ fn-jt for all the feedback 💙
 
-Compared to the previous RC, this version adds an API to [TODO websocket] and fixes 2 issues.
+Compared to the previous RC, this version adds an easier way to implement a custom `WsProtocol` and fixes 2 issues.
 
-## ✨ [New] API to [TODO websocket]
+## ✨ [New] `SubscriptionWsProtocolAdapter` (#3697)
 
-TODO
+`SubscriptionWsProtocolAdapter` makes it easy to implement a `WsProtocol` via delegation. To use it, create your own implementation that extends `SubscriptionWsProtocolAdapter` and override the methods of interest. For instance, you can override `handleServerMessage` to handle specific errors.
+
+Example:
+
+```kotlin
+private class CustomWsProtocol(webSocketConnection: WebSocketConnection, listener: Listener) : SubscriptionWsProtocolAdapter(webSocketConnection, listener) {
+    override fun handleServerMessage(messageMap: Map<String, Any?>) {
+      // Your custom logic here
+      super.handleServerMessage(messageMap)
+    }
+  }
+
+  class AuthorizationAwareWsProtocolFactory: WsProtocol.Factory {
+    override val name: String
+      get() = "graphql-ws"
+
+    override fun create(webSocketConnection: WebSocketConnection, listener: WsProtocol.Listener, scope: CoroutineScope): WsProtocol {
+      return AuthorizationAwareWsProtocol(webSocketConnection, listener)
+    }
+  }
+```
 
 ## 🪲 Bug fixes
 
