@@ -18,11 +18,6 @@ import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.internal.ApolloCacheInterceptor
-import com.apollographql.apollo3.cache.normalized.internal.CacheFirstInterceptor
-import com.apollographql.apollo3.cache.normalized.internal.CacheOnlyInterceptor
-import com.apollographql.apollo3.cache.normalized.internal.FetchPolicyRouterInterceptor
-import com.apollographql.apollo3.cache.normalized.internal.NetworkFirstInterceptor
-import com.apollographql.apollo3.cache.normalized.internal.NetworkOnlyInterceptor
 import com.apollographql.apollo3.cache.normalized.internal.WatcherInterceptor
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
@@ -425,18 +420,18 @@ internal class IsRefetching(val value: Boolean) : ExecutionContext.Element {
   companion object Key : ExecutionContext.Key<IsRefetching>
 }
 
-fun <D : Operation.Data> ApolloRequest.Builder<D>.fetchFromCache(fetchFromCache: Boolean) = apply {
+internal fun <D : Operation.Data> ApolloRequest.Builder<D>.fetchFromCache(fetchFromCache: Boolean) = apply {
   addExecutionContext(FetchFromCacheContext(fetchFromCache))
 }
 
-fun <D : Operation.Data> ApolloRequest.Builder<D>.isRefetching(isRefetching: Boolean) = apply {
+internal fun <D : Operation.Data> ApolloRequest.Builder<D>.isRefetching(isRefetching: Boolean) = apply {
   addExecutionContext(IsRefetching(isRefetching))
 }
 
-val <D : Operation.Data> ApolloRequest<D>.fetchFromCache
+internal val <D : Operation.Data> ApolloRequest<D>.fetchFromCache
   get() = executionContext[FetchFromCacheContext]?.value ?: false
 
 
-val <D : Operation.Data> ApolloRequest<D>.isRefetching
+internal val <D : Operation.Data> ApolloRequest<D>.isRefetching
   get() = executionContext[IsRefetching]?.value ?: false
 

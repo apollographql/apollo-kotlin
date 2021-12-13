@@ -22,8 +22,6 @@ class ApolloCall<D : Operation.Data> internal constructor(
   override var sendApqExtensions: Boolean? = null
   override var sendDocument: Boolean? = null
   override var enableAutoPersistedQueries: Boolean? = null
-  var interceptors = mutableListOf<ApolloInterceptor>()
-
   override fun addExecutionContext(executionContext: ExecutionContext) = apply {
     this.executionContext = this.executionContext + executionContext
   }
@@ -57,15 +55,6 @@ class ApolloCall<D : Operation.Data> internal constructor(
   override fun canBeBatched(canBeBatched: Boolean?) = apply {
     this.canBeBatched = canBeBatched
     if (canBeBatched != null) addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, canBeBatched.toString())
-  }
-
-  fun addInterceptor(interceptor: ApolloInterceptor) {
-    this.interceptors += interceptor
-  }
-
-  fun interceptors(interceptors: List<ApolloInterceptor>) {
-    this.interceptors.clear()
-    this.interceptors.addAll(interceptors)
   }
 
   fun copy(): ApolloCall<D> {
