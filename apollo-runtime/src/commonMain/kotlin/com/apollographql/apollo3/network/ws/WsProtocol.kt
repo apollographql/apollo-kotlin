@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.internal.buildJsonByteString
 import com.apollographql.apollo3.api.json.internal.buildJsonString
 import com.apollographql.apollo3.api.json.internal.writeAny
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import okio.Buffer
@@ -16,15 +17,13 @@ import okio.Buffer
 /**
  * A [WsProtocol] is responsible for handling the details of the WebSocket protocol.
  *
- * Implementations must implement [WsProtocol.readWebsocket], [WsProtocol.startOperation], [WsProtocol.stopOperation]
- * Additionally, implementation can use the provided [scope] to implement keep alive or other long running processes
+ * Implementations must implement [WsProtocol.handleServerMessage], [WsProtocol.startOperation], [WsProtocol.stopOperation]
  *
- * [WsProtocol.readWebsocket], [WsProtocol.startOperation], [WsProtocol.stopOperation] and [scope] all share the same
+ * [WsProtocol.handleServerMessage], [WsProtocol.startOperation], [WsProtocol.stopOperation]  all share the same
  * thread and rely on [webSocketConnection] to do the operations async
  *
  * @param webSocketConnection the connection
  * @param listener a listener
- * @param scope a [CoroutineScope] bound to this websocket
  */
 abstract class WsProtocol(
     protected val webSocketConnection: WebSocketConnection,
@@ -119,15 +118,13 @@ abstract class WsProtocol(
 
   /**
    * Read the WebSocket
-   *
-   * [run] **must** call [WsProtocol.Listener.networkError] when the socket is closed, either gracefully or with an
-   * error so that the caller can collect it and start a new websocket
    */
   open suspend fun run() {
     try {
       while (true) {
         handleServerMessage(receiveMessageMap())
       }
+    } catch (e: CancellationException) {
     } catch (e: Exception) {
       listener.networkError(e)
     }
