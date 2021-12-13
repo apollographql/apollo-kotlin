@@ -26,14 +26,14 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 
-class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor {
+internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     if (!request.watch) {
       return chain.proceed(request)
     }
 
     check(request.operation is Query) {
-      "It's impossible to watch a subscription"
+      "It's impossible to watch a mutation or subscription"
     }
     val customScalarAdapters = request.executionContext[CustomScalarAdapters]!!
     val refetchPolicy: FetchPolicy = request.refetchPolicy
