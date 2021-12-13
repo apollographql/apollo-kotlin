@@ -18,6 +18,7 @@ import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.internal.ApolloCacheInterceptor
+import com.apollographql.apollo3.cache.normalized.internal.WatcherInterceptor
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
 import kotlinx.coroutines.flow.Flow
@@ -84,7 +85,9 @@ fun ApolloClient.Builder.logCacheMisses(
 }
 
 fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: Boolean = false): ApolloClient.Builder {
-  return addInterceptor(ApolloCacheInterceptor(store)).writeToCacheAsynchronously(writeToCacheAsynchronously)
+  return addInterceptor(WatcherInterceptor(store))
+      .addInterceptor(ApolloCacheInterceptor(store))
+      .writeToCacheAsynchronously(writeToCacheAsynchronously)
 }
 
 /***
@@ -211,7 +214,7 @@ fun <D : Mutation.Data> ApolloCall<D>.optimisticUpdates(data: D) = addExecutionC
 internal val <D : Query.Data> ApolloRequest<D>.fetchPolicy
   get() = executionContext[FetchPolicyContext]?.value ?: FetchPolicy.CacheFirst
 
-internal val <D : Query.Data> ApolloRequest<D>.refetchPolicy
+internal val <D : Operation.Data> ApolloRequest<D>.refetchPolicy
   get() = executionContext[RefetchPolicyContext]?.value ?: FetchPolicy.CacheOnly
 
 internal val <D : Operation.Data> ApolloRequest<D>.doNotStore
@@ -229,6 +232,8 @@ internal val <D : Mutation.Data> ApolloRequest<D>.optimisticData
 internal val <D : Operation.Data> ApolloRequest<D>.cacheHeaders
   get() = executionContext[CacheHeadersContext]?.value ?: CacheHeaders.NONE
 
+internal val <D : Operation.Data> ApolloRequest<D>.watch
+  get() = executionContext[WatchContext]?.value ?: false
 
 
 class CacheInfo(
