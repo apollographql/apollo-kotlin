@@ -5,7 +5,7 @@ Change Log
 
 _2021-12-13_
 
-💙 Many thanks to @ mateuszkwiecinski and @ fn-jt for all the feedback 💙
+💙 Many thanks to @ mateuszkwiecinski, @ schoeda and @ fn-jt for all the feedback 💙
 
 Compared to the previous RC, this version adds an easier way to implement a custom `WsProtocol` and fixes 2 issues.
 
