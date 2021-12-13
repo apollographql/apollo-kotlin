@@ -44,6 +44,7 @@ query GetPromoAuthor {
         lastName
     }
 }
+
 query GetAuthor($firstName: String!, $lastName: String!) {
     author(firstName: $firstName, lastName: $lastName) {
         firstName

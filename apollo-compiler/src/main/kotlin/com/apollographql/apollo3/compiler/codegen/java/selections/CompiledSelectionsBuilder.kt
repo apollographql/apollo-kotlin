@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.java.selections
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.BVariable
 import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.ast.GQLArgument
@@ -26,8 +27,10 @@ import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.ast.SourceAwareException
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.leafType
+import com.apollographql.apollo3.ast.parseAsGQLSelections
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.root
@@ -38,11 +41,14 @@ import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toListInitializerCodeblock
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toMapInitializerCodeblock
+import com.apollographql.apollo3.compiler.codegen.keyArgs
 import com.apollographql.apollo3.compiler.ir.toBooleanExpression
+import com.apollographql.apollo3.exception.ApolloException
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeSpec
+import okio.Buffer
 import javax.lang.model.element.Modifier
 
 class CompiledSelectionsBuilder(
@@ -270,22 +276,6 @@ class CompiledSelectionsBuilder(
       argumentBuilder.build()
     }
     return arguments.toListInitializerCodeblock()
-  }
-
-  private fun GQLTypeDefinition.keyArgs(fieldName: String): Set<String> {
-    val directives = when (this) {
-      is GQLObjectTypeDefinition -> directives
-      is GQLInterfaceTypeDefinition -> directives
-      else -> emptyList()
-    }
-
-    return directives.filter { it.name == Schema.FIELD_POLICY }.filter {
-      (it.arguments?.arguments?.single { it.name == Schema.FIELD_POLICY_FOR_FIELD }?.value as GQLStringValue).value == fieldName
-    }.flatMap {
-      (it.arguments?.arguments?.single { it.name == Schema.FIELD_POLICY_KEY_ARGS }?.value as? GQLListValue)?.values ?: emptyList()
-    }.map {
-      (it as GQLStringValue).value
-    }.toSet()
   }
 }
 
