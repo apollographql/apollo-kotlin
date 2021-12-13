@@ -1,5 +1,5 @@
 ---
-title: Using the client without apollo-runtime
+title: Using the models without apollo-runtime
 ---
 
 import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
@@ -16,11 +16,8 @@ implementation("com.apollographql.apollo3:apollo-api:x.y.z")
 
 To compose an HTTP POST request body to be sent to your server, use `composeJsonRequest`:
 
-<MultiCodeBlock>
 
 ```kotlin
-val jsonRequest = query.composeJsonRequest()
-val mediaType = MediaType.parse("application/json");
 /**
  * jsonRequest contains data to be sent to the server
  * {
@@ -29,33 +26,21 @@ val mediaType = MediaType.parse("application/json");
  *  "extensions": ...
  * }
  */
-val requestBody = RequestBody.create(mediaType, jsonRequest);
-```
+val body = buildJsonString {
+  query.composeJsonRequest()
+}
 
-</MultiCodeBlock>
-
-
-## Composing an HTTP response body
-
-To compose a complete response that you can use during tests for an example, use `composeJsonResponse` with a programmatically built `data`:
-
-```kotlin
 /**
- * jsonResponse will contain a json with data and possibly errors:
- * {
- *  "data": ...
- *  "errors": ...
- *  "extensions": ...
- * }
- **/
-val data = SomeQuery.Data(...)
-val buffer = Buffer()
-val jsonWriter = buffer.jsonWriter()
-operation.composeJsonResponse(jsonWriter, data)
-val jsonResponse = buffer.readUtf8()
-
-mockServer.enqueue(jsonResponse)
+ * Send it to your backend
+ */
+val httpResponse = sendHttpRequest(
+  "POST",
+  "https://com.example/graphql",
+  "application/json",
+  body
+)
 ```
+
 
 ## Parsing an HTTP response body
 
@@ -70,9 +55,34 @@ To parse a network response into the type safe models, use `parseJsonResponse`:
  *  "extensions": ...
  * }
  **/
-val jsonReader = Buffer().write(jsonResponse).jsonReader()
+val jsonResponse = httpResponse.body.string()
+val jsonReader = Buffer().writeUtf8(jsonResponse).jsonReader()
 val response = operation.parseJsonResponse(jsonReader)
 
 println(response.data)
 ```
 
+## Composing an HTTP response body
+
+For your integration tests, you can also compose a complete response from a programmatically built `data`. For this, use `composeJsonResponse`:
+
+```kotlin
+/**
+ * Build a fake data object
+ **/
+val data = SomeQuery.Data(...)
+
+/**
+ * jsonResponse contains a json with data and possibly errors:
+ * {
+ *  "data": ...
+ *  "errors": ...
+ *  "extensions": ...
+ * }
+ **/
+val jsonResponse = buildJsonString {
+  operation.composeJsonResponse(this, data)
+}
+
+mockServer.enqueue(jsonResponse)
+```
