@@ -85,8 +85,8 @@ private constructor(
               .requestUuid(request.requestUuid)
               .addExecutionContext(
                   HttpInfo(
-                      millisStart = millisStart,
-                      millisEnd = currentTimeMillis(),
+                      startMillis = millisStart,
+                      endMillis = currentTimeMillis(),
                       statusCode = httpResponse.statusCode,
                       headers = httpResponse.headers
                   )

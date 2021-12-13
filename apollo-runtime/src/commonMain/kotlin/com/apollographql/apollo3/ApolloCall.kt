@@ -8,6 +8,7 @@ import com.apollographql.apollo3.api.MutableExecutionOptions
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
+import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.single
 
@@ -21,6 +22,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
   override var sendApqExtensions: Boolean? = null
   override var sendDocument: Boolean? = null
   override var enableAutoPersistedQueries: Boolean? = null
+  var interceptors = mutableListOf<ApolloInterceptor>()
 
   override fun addExecutionContext(executionContext: ExecutionContext) = apply {
     this.executionContext = this.executionContext + executionContext
@@ -57,6 +59,14 @@ class ApolloCall<D : Operation.Data> internal constructor(
     if (canBeBatched != null) addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, canBeBatched.toString())
   }
 
+  fun addInterceptor(interceptor: ApolloInterceptor) {
+    this.interceptors += interceptor
+  }
+
+  fun interceptors(interceptors: List<ApolloInterceptor>) {
+    this.interceptors.clear()
+    this.interceptors.addAll(interceptors)
+  }
 
   fun copy(): ApolloCall<D> {
     return ApolloCall(apolloClient, operation)

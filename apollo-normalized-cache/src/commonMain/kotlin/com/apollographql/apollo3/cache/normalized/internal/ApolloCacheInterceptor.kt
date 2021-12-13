@@ -264,10 +264,10 @@ internal class ApolloCacheInterceptor(
     return CacheResult(
         response = response,
         cacheInfo = CacheInfo(
-            millisStart = millisStart,
-            millisEnd = currentTimeMillis(),
-            hit = response != null,
-            missedKey = cacheMissException?.key,
+            cacheStartMillis = millisStart,
+            cacheEndMillis = currentTimeMillis(),
+            cacheException = response != null,
+            networkException = cacheMissException?.key,
             missedField = cacheMissException?.fieldName
         ),
         error = exception

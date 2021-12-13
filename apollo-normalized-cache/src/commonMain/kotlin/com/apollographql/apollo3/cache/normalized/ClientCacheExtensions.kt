@@ -21,6 +21,7 @@ import com.apollographql.apollo3.cache.normalized.internal.ApolloCacheIntercepto
 import com.apollographql.apollo3.cache.normalized.internal.WatcherInterceptor
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.CacheMissException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlin.jvm.JvmName
@@ -236,26 +237,75 @@ internal val <D : Operation.Data> ApolloRequest<D>.watch
   get() = executionContext[WatchContext]?.value ?: false
 
 
-class CacheInfo(
-    val millisStart: Long,
-    val millisEnd: Long,
-    val hit: Boolean,
-    val missedKey: String?,
-    val missedField: String?,
+class CacheInfo private constructor(
+    val cacheStartMillis: Long,
+    val cacheEndMillis: Long,
+    val networkStartMillis: Long,
+    val networkEndMillis: Long,
+    val cacheException: CacheMissException?,
+    val networkException: ApolloException?,
 ) : ExecutionContext.Element {
   override val key: ExecutionContext.Key<*>
     get() = Key
 
   companion object Key : ExecutionContext.Key<CacheInfo>
+
+  fun newBuilder(): Builder {
+    return Builder().cacheStartMillis(cacheStartMillis)
+        .cacheEndMillis(cacheEndMillis)
+        .networkStartMillis(networkStartMillis)
+        .networkEndMillis(networkEndMillis)
+        .cacheException(cacheException)
+        .networkException(networkException)
+  }
+
+  class Builder {
+    var cacheStartMillis: Long = 0
+    var cacheEndMillis: Long = 0
+    var networkStartMillis: Long = 0
+    var networkEndMillis: Long = 0
+    var cacheException: CacheMissException? = null
+    var networkException: ApolloException? = null
+
+    fun cacheStartMillis(cacheStartMillis: Long) = apply {
+      this.cacheStartMillis = cacheStartMillis
+    }
+
+    fun cacheEndMillis(cacheEndMillis: Long) = apply {
+      this.cacheEndMillis = cacheEndMillis
+    }
+
+    fun networkStartMillis(networkStartMillis: Long) = apply {
+      this.networkStartMillis = networkStartMillis
+    }
+
+    fun networkEndMillis(networkEndMillis: Long) = apply {
+      this.networkEndMillis = networkEndMillis
+    }
+
+    fun cacheException(cacheException: CacheMissException?) = apply {
+      this.cacheException = cacheException
+    }
+
+    fun networkException(networkException: ApolloException?) = apply {
+      this.networkException = networkException
+    }
+
+
+    fun build(): CacheInfo = CacheInfo(
+        cacheStartMillis, cacheEndMillis, networkStartMillis, networkEndMillis, cacheException, networkException
+    )
+  }
 }
 
 val <D : Operation.Data> ApolloResponse<D>.isFromCache
-  get() = cacheInfo?.hit ?: false
+  get() = cacheInfo?.cacheException ?: false
 
 val <D : Operation.Data> ApolloResponse<D>.cacheInfo
   get() = executionContext[CacheInfo]
 
 internal fun <D : Operation.Data> ApolloResponse<D>.withCacheInfo(cacheInfo: CacheInfo) = newBuilder().addExecutionContext(cacheInfo).build()
+internal fun <D : Operation.Data> ApolloResponse.Builder<D>.cacheInfo(cacheInfo: CacheInfo) = addExecutionContext(cacheInfo)
 
 internal class FetchPolicyContext(val value: FetchPolicy) : ExecutionContext.Element {
   override val key: ExecutionContext.Key<*>
@@ -312,3 +362,19 @@ internal class WatchContext(val value: Boolean) : ExecutionContext.Element {
 
   companion object Key : ExecutionContext.Key<WatchContext>
 }
+
+internal class FetchFromCacheContext(val value: Boolean) : ExecutionContext.Element {
+  override val key: ExecutionContext.Key<*>
+    get() = Key
+
+  companion object Key : ExecutionContext.Key<FetchFromCacheContext>
+}
+
+fun <D : Operation.Data> ApolloRequest.Builder<D>.fetchFromCache(fetchFromCache: Boolean) = apply {
+  addExecutionContext(FetchFromCacheContext(fetchFromCache))
+}
+
+
+val <D : Operation.Data> ApolloRequest<D>.fetchFromCache
+  get() = executionContext[FetchFromCacheContext] ?: false
+
