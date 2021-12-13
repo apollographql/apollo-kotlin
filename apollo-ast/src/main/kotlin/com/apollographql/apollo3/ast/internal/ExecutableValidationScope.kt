@@ -603,7 +603,6 @@ internal class ExecutableValidationScope(
 
   private fun List<GQLOperationDefinition>.checkDuplicateOperations(): List<Issue> {
     val filtered = mutableMapOf<String, GQLOperationDefinition>()
-    val issues = mutableListOf<Issue>()
 
     forEach {
       if (it.name == null) {
