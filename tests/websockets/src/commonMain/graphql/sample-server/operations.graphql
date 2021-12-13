@@ -21,3 +21,7 @@ query TimeQuery {
 query CloseSocket {
   closeWebSocket
 }
+
+subscription GraphqlAccessError($after: Int!) {
+  graphqlAccessError(after: $after)
+}

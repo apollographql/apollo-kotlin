@@ -1,7 +1,12 @@
 import com.apollographql.apollo.sample.server.DefaultApplication
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.network.ws.SubscriptionWsProtocol
+import com.apollographql.apollo3.network.ws.SubscriptionWsProtocolAdapter
+import com.apollographql.apollo3.network.ws.WebSocketConnection
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
+import com.apollographql.apollo3.network.ws.WsProtocol
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -9,6 +14,7 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -19,6 +25,7 @@ import org.junit.Test
 import org.springframework.boot.runApplication
 import org.springframework.context.ConfigurableApplicationContext
 import sample.server.CountSubscription
+import sample.server.GraphqlAccessErrorSubscription
 import sample.server.OperationErrorSubscription
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -173,6 +180,70 @@ class SampleServerTest {
           .collect()
       assertIs<ApolloNetworkException>(caught)
       assertTrue(caught!!.message!!.contains("Woops"))
+    }
+  }
+
+  private object AuthorizationException: Exception()
+
+  private class AuthorizationAwareWsProtocol(webSocketConnection: WebSocketConnection, listener: Listener) : SubscriptionWsProtocolAdapter(webSocketConnection, listener) {
+    @Suppress("UNCHECKED_CAST")
+    private fun Any?.asMap() = this as? Map<String, Any?>
+
+    @Suppress("UNCHECKED_CAST")
+    private fun Any?.asList() = this as? List<Any?>
+
+    override fun handleServerMessage(messageMap: Map<String, Any?>) {
+      /**
+       * For this test, we use the sample server and I haven't figured out a way to make it out errors yet so we just check
+       * if the value is null. A more real life example would do something like below
+       * val isError = messageMap.get("payload")
+       *                      ?.asMap()
+       *                      ?.get("errors")
+       *                      ?.asList()
+       *                      ?.first()
+       *                      ?.asMap()
+       *                      ?.get("message") == "Unauthorized error"
+       */
+      val isError = messageMap.get("payload")?.asMap()?.get("data")?.asMap()?.get("graphqlAccessError") == null
+      if (isError) {
+        /**
+         * The server returned a message with an error and no data. Send a general error upstream
+         * so that the WebSocket is restarted
+         */
+        listener.networkError(AuthorizationException)
+      } else {
+        super.handleServerMessage(messageMap)
+      }
+    }
+  }
+
+  class AuthorizationAwareWsProtocolFactory: WsProtocol.Factory {
+    override val name: String
+      get() = "graphql-ws"
+
+    override fun create(webSocketConnection: WebSocketConnection, listener: WsProtocol.Listener, scope: CoroutineScope): WsProtocol {
+      return AuthorizationAwareWsProtocol(webSocketConnection, listener)
+    }
+  }
+
+  @Test
+  fun canResumeAfterGraphQLError() {
+    val wsFactory = AuthorizationAwareWsProtocolFactory()
+    val apolloClient = ApolloClient.Builder()
+        .serverUrl("http://localhost:8080/subscriptions")
+        .wsProtocol(wsFactory)
+        .webSocketReconnectWhen {
+          it is AuthorizationException
+        }
+        .build()
+
+    runBlocking {
+      val list = apolloClient.subscription(GraphqlAccessErrorSubscription(1))
+          .toFlow()
+          .map { it.data!!.graphqlAccessError }
+          .take(2)
+          .toList()
+      assertEquals(listOf(0, 0), list)
     }
   }
 }

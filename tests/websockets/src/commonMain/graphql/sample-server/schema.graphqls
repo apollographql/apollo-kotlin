@@ -17,5 +17,7 @@ type Subscription {
   countString(delayMillis: Int!, to: Int!): String!
   "Trigger an error when accessed"
   operationError: String!
+  "Returns a GraphQL error after 'after' items"
+  graphqlAccessError(after: Int!): Int
   time: Int!
 }
