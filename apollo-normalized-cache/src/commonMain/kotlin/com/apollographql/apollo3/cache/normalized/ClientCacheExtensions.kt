@@ -18,10 +18,16 @@ import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.internal.ApolloCacheInterceptor
+import com.apollographql.apollo3.cache.normalized.internal.CacheFirstInterceptor
+import com.apollographql.apollo3.cache.normalized.internal.CacheOnlyInterceptor
+import com.apollographql.apollo3.cache.normalized.internal.FetchPolicyRouterInterceptor
+import com.apollographql.apollo3.cache.normalized.internal.NetworkFirstInterceptor
+import com.apollographql.apollo3.cache.normalized.internal.NetworkOnlyInterceptor
 import com.apollographql.apollo3.cache.normalized.internal.WatcherInterceptor
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.CacheMissException
+import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlin.jvm.JvmName
@@ -87,6 +93,7 @@ fun ApolloClient.Builder.logCacheMisses(
 
 fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: Boolean = false): ApolloClient.Builder {
   return addInterceptor(WatcherInterceptor(store))
+      .addInterceptor(FetchPolicyRouterInterceptor)
       .addInterceptor(ApolloCacheInterceptor(store))
       .writeToCacheAsynchronously(writeToCacheAsynchronously)
 }
@@ -151,15 +158,37 @@ fun ApolloClient.clearNormalizedCache() = apolloStore.clearAll()
  * This only has effects for queries. Mutations and subscriptions always use [FetchPolicy.NetworkOnly]
  */
 fun <T> MutableExecutionOptions<T>.fetchPolicy(fetchPolicy: FetchPolicy) = addExecutionContext(
-    FetchPolicyContext(fetchPolicy)
+    FetchPolicyContext(interceptorFor(fetchPolicy))
 )
 
 /**
  * Sets the [FetchPolicy] used when watching queries and a cache change has been published
  */
 fun <T> MutableExecutionOptions<T>.refetchPolicy(fetchPolicy: FetchPolicy) = addExecutionContext(
-    RefetchPolicyContext(fetchPolicy)
+    RefetchPolicyContext(interceptorFor(fetchPolicy))
 )
+
+/**
+ * Sets the initial [FetchPolicy]
+ * This only has effects for queries. Mutations and subscriptions always use [FetchPolicy.NetworkOnly]
+ */
+fun <T> MutableExecutionOptions<T>.fetchPolicyInterceptor(interceptor: ApolloInterceptor) = addExecutionContext(
+    FetchPolicyContext(interceptor)
+)
+
+/**
+ * Sets the [FetchPolicy] used when watching queries and a cache change has been published
+ */
+fun <T> MutableExecutionOptions<T>.refetchPolicyInterceptor(interceptor: ApolloInterceptor) = addExecutionContext(
+    RefetchPolicyContext(interceptor)
+)
+
+private fun interceptorFor(fetchPolicy: FetchPolicy) = when(fetchPolicy) {
+  FetchPolicy.CacheOnly -> CacheOnlyInterceptor
+  FetchPolicy.NetworkOnly -> NetworkOnlyInterceptor
+  FetchPolicy.CacheFirst -> CacheFirstInterceptor
+  FetchPolicy.NetworkFirst -> NetworkFirstInterceptor
+}
 
 /**
  * @param doNotStore Whether to store the response in cache.
@@ -212,11 +241,11 @@ fun <D : Mutation.Data> ApolloCall<D>.optimisticUpdates(data: D) = addExecutionC
     OptimisticUpdatesContext(data)
 )
 
-internal val <D : Query.Data> ApolloRequest<D>.fetchPolicy
-  get() = executionContext[FetchPolicyContext]?.value ?: FetchPolicy.CacheFirst
+internal val <D : Operation.Data> ApolloRequest<D>.fetchPolicyInterceptor
+  get() = executionContext[FetchPolicyContext]?.interceptor ?: CacheFirstInterceptor
 
-internal val <D : Operation.Data> ApolloRequest<D>.refetchPolicy
-  get() = executionContext[RefetchPolicyContext]?.value ?: FetchPolicy.CacheOnly
+internal val <D : Operation.Data> ApolloRequest<D>.refetchPolicyInterceptor
+  get() = executionContext[RefetchPolicyContext]?.interceptor ?: CacheOnlyInterceptor
 
 internal val <D : Operation.Data> ApolloRequest<D>.doNotStore
   get() = executionContext[DoNotStoreContext]?.value ?: false
@@ -307,14 +336,14 @@ val <D : Operation.Data> ApolloResponse<D>.cacheInfo
 internal fun <D : Operation.Data> ApolloResponse<D>.withCacheInfo(cacheInfo: CacheInfo) = newBuilder().addExecutionContext(cacheInfo).build()
 internal fun <D : Operation.Data> ApolloResponse.Builder<D>.cacheInfo(cacheInfo: CacheInfo) = addExecutionContext(cacheInfo)
 
-internal class FetchPolicyContext(val value: FetchPolicy) : ExecutionContext.Element {
+internal class FetchPolicyContext(val interceptor: ApolloInterceptor) : ExecutionContext.Element {
   override val key: ExecutionContext.Key<*>
     get() = Key
 
   companion object Key : ExecutionContext.Key<FetchPolicyContext>
 }
 
-internal class RefetchPolicyContext(val value: FetchPolicy) : ExecutionContext.Element {
+internal class RefetchPolicyContext(val interceptor: ApolloInterceptor) : ExecutionContext.Element {
   override val key: ExecutionContext.Key<*>
     get() = Key
 
@@ -370,10 +399,25 @@ internal class FetchFromCacheContext(val value: Boolean) : ExecutionContext.Elem
   companion object Key : ExecutionContext.Key<FetchFromCacheContext>
 }
 
+internal class IsRefetching(val value: Boolean) : ExecutionContext.Element {
+  override val key: ExecutionContext.Key<*>
+    get() = Key
+
+  companion object Key : ExecutionContext.Key<IsRefetching>
+}
+
 fun <D : Operation.Data> ApolloRequest.Builder<D>.fetchFromCache(fetchFromCache: Boolean) = apply {
   addExecutionContext(FetchFromCacheContext(fetchFromCache))
 }
 
+fun <D : Operation.Data> ApolloRequest.Builder<D>.isRefetching(isRefetching: Boolean) = apply {
+  addExecutionContext(IsRefetching(isRefetching))
+}
+
 val <D : Operation.Data> ApolloRequest<D>.fetchFromCache
   get() = executionContext[FetchFromCacheContext]?.value ?: false
+
+
+val <D : Operation.Data> ApolloRequest<D>.isRefetching
+  get() = executionContext[IsRefetching]?.value ?: false
 

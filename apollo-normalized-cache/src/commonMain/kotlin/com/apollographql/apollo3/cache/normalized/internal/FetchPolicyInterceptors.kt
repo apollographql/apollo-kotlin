@@ -5,6 +5,9 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.cache.normalized.cacheInfo
 import com.apollographql.apollo3.cache.normalized.fetchFromCache
+import com.apollographql.apollo3.cache.normalized.fetchPolicyInterceptor
+import com.apollographql.apollo3.cache.normalized.isRefetching
+import com.apollographql.apollo3.cache.normalized.refetchPolicyInterceptor
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.CacheMissException
@@ -18,7 +21,7 @@ import kotlinx.coroutines.flow.singleOrNull
 /**
  *
  */
-internal class CacheOnlyInterceptor : ApolloInterceptor {
+internal val CacheOnlyInterceptor = object : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return chain.proceed(
         request = request
@@ -29,7 +32,7 @@ internal class CacheOnlyInterceptor : ApolloInterceptor {
   }
 }
 
-internal class NetworkOnlyInterceptor : ApolloInterceptor {
+internal val NetworkOnlyInterceptor = object : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return chain.proceed(request)
   }
@@ -38,7 +41,7 @@ internal class NetworkOnlyInterceptor : ApolloInterceptor {
 /**
  * An interceptor that goes to cache first and then to the network if it fails
  */
-internal class CacheFirstInterceptor : ApolloInterceptor {
+internal val CacheFirstInterceptor = object : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return flow {
       var cacheException: ApolloException? = null
@@ -94,7 +97,7 @@ internal class CacheFirstInterceptor : ApolloInterceptor {
   }
 }
 
-internal class NetworkFirstInterceptor : ApolloInterceptor {
+internal val NetworkFirstInterceptor = object : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return flow {
       var cacheException: ApolloException? = null
@@ -146,6 +149,16 @@ internal class NetworkFirstInterceptor : ApolloInterceptor {
           networkException,
           cacheException,
       )
+    }
+  }
+}
+
+val FetchPolicyRouterInterceptor = object : ApolloInterceptor {
+  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+    return if (!request.isRefetching) {
+      request.fetchPolicyInterceptor.intercept(request, chain)
+    } else {
+      request.refetchPolicyInterceptor.intercept(request, chain)
     }
   }
 }

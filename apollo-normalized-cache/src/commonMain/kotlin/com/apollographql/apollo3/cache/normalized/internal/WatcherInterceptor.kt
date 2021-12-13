@@ -7,10 +7,9 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
-import com.apollographql.apollo3.cache.normalized.RefetchPolicyContext
 import com.apollographql.apollo3.cache.normalized.api.dependentKeys
-import com.apollographql.apollo3.cache.normalized.fetchPolicy
-import com.apollographql.apollo3.cache.normalized.refetchPolicy
+import com.apollographql.apollo3.cache.normalized.isRefetching
+import com.apollographql.apollo3.cache.normalized.refetchPolicyInterceptor
 import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
@@ -37,7 +36,6 @@ internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor {
     }
 
     val customScalarAdapters = request.executionContext[CustomScalarAdapters]!!
-    val refetchPolicy: FetchPolicy = request.refetchPolicy
     var watchedKeys: Set<String>? = null
 
     return chain.proceed(request)
@@ -60,7 +58,7 @@ internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor {
           store.changedKeys.filter { changedKeys ->
             watchedKeys == null || changedKeys.intersect(watchedKeys!!).isNotEmpty()
           }.map {
-            chain.proceed(request.newBuilder().fetchPolicy(refetchPolicy).build())
+            chain.proceed(request.newBuilder().isRefetching(true).build())
           }.catch {
             if (it !is ApolloException) {
               // Re-throw cancellation exceptions
