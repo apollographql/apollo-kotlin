@@ -24,7 +24,7 @@ internal fun GQLTypeDefinition.keyArgs(fieldName: String): Set<String> {
     val keyArgsValue = it.arguments?.arguments?.single { it.name == Schema.FIELD_POLICY_KEY_ARGS }?.value
 
     if (keyArgsValue !is GQLStringValue) {
-      throw SourceAwareException("Apollo: no eyArgs found or wrong keyArgs type", it.sourceLocation)
+      throw SourceAwareException("Apollo: no keyArgs found or wrong keyArgs type", it.sourceLocation)
     }
 
     @OptIn(ApolloExperimental::class)
