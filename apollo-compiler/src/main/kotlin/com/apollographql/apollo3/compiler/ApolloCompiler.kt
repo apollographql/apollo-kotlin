@@ -116,11 +116,15 @@ object ApolloCompiler {
     // Remember the fragments with the possibly updated fragments
     val allFragmentDefinitions = (fragments + incomingFragments).associateBy { it.name }
 
-    operations.forEach {
-      checkKeyFields(it, options.schema, allFragmentDefinitions)
-    }
-    fragments.forEach {
-      checkKeyFields(it, options.schema, allFragmentDefinitions)
+    // Check if all the key fields are present in operations and fragments
+    // (do this only if there are key fields as it may be costly)
+    if (options.schema.hasAnyTypePolicyDirectives()) {
+      operations.forEach {
+        checkKeyFields(it, options.schema, allFragmentDefinitions)
+      }
+      fragments.forEach {
+        checkKeyFields(it, options.schema, allFragmentDefinitions)
+      }
     }
 
     var alwaysGenerateTypesMatching = options.alwaysGenerateTypesMatching
