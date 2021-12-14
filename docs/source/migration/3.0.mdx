@@ -623,6 +623,15 @@ val apolloClient = ApolloClient.Builder()
     .build()
 ```
 
+The idlingResource function is hosted under the [new artifact](https://github.com/apollographql/apollo-kotlin/blob/d881829a652d5745a593197fc5384db5f08f2760/apollo-idling-resource/src/main/java/com/apollographql/apollo3/android/ApolloIdlingResource.kt#L60-L63) `apollo-idling-resource`.
+Add the new dependency like so:
+
+```kotlin
+dependencies {
+  testImplementation("com.apollographql.apollo3:apollo-idling-resource:$version")
+}
+```
+
 ### BigDecimal
 
 By default, Apollo Android 2.x internally maps all numbers to a custom `BigDecimal` value.
