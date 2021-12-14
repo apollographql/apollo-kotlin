@@ -1,0 +1,23 @@
+type Query {
+    a: A
+}
+
+type A {
+    node: Node
+}
+
+interface Node {
+    field1: String,
+}
+
+type ANode implements Node {
+    field1: String,
+    field2: String,
+    field3: String,
+}
+
+type BNode implements Node {
+    field1: String,
+    field2: String,
+    field4: String,
+}

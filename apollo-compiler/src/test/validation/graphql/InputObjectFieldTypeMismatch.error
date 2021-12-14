@@ -1,7 +1,0 @@
-Failed to parse GraphQL file /InputObjectFieldTypeMismatch.graphql (2:23)
-Variable `red` of type `String!` used in position expecting type `Int!`
-----------------------------------------------------
-[1]:mutation TestQuery($red: String!) {
-[2]:  createReview(review: {
-[3]:    favoriteColor: {
-----------------------------------------------------

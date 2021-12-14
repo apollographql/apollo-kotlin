@@ -1,0 +1,128 @@
+query HeroAndFriendsWithFragments {
+    hero {
+        ... HeroWithFriendsFragment
+    }
+}
+
+fragment HeroWithFriendsFragment on Character {
+    id
+    name
+    friends {
+        ... HumanWithIdFragment
+    }
+}
+
+fragment HumanWithIdFragment on Human {
+    id
+    name
+}
+
+query HeroAndFriendsNamesWithIDs($episode: Episode) {
+    hero(episode: $episode) {
+        id
+        name
+        friends {
+            id
+            name
+        }
+    }
+}
+
+query HeroAndFriendsWithTypename {
+    hero {
+        __typename
+        id
+        name
+        friends {
+            __typename
+            id
+            name
+        }
+    }
+}
+
+
+
+query AllPlanets {
+    allPlanets(first: 300) {
+        planets {
+            ...PlanetFragment
+            filmConnection {
+                totalCount
+                films {
+                    title
+                    ...FilmFragment
+                }
+            }
+        }
+    }
+}
+
+query HeroParentTypeDependentField($episode: Episode) {
+    hero(episode: $episode) {
+        name
+        ... on Human {
+            friends {
+                name
+                ... on Human {
+                    height(unit: FOOT)
+                }
+            }
+        }
+        ... on Droid {
+            friends {
+                name
+                ... on Human {
+                    height(unit: METER)
+                }
+            }
+        }
+    }
+}
+
+query Birthdate {
+    hero {
+        birthDate
+    }
+}
+
+query Episode {
+    hero {
+        appearsIn
+    }
+}
+
+query MergedFieldWithSameShape($episode: Episode) {
+    hero(episode: $episode) {
+        ... on Human {
+            property: homePlanet
+        }
+        ... on Droid {
+            property: primaryFunction
+        }
+    }
+}
+
+
+fragment FilmFragment on Film {
+    title
+    producers
+}
+
+fragment PlanetFragment on Planet {
+    name
+    climates
+    surfaceWater
+}
+
+query HeroHumanOrDroid($episode: Episode) {
+    hero(episode: $episode) {
+        name
+        ... on Human {
+            homePlanet
+        }
+        ... on Droid {
+            primaryFunction
+        }
+    }
+}

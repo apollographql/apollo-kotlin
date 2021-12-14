@@ -1,0 +1,2 @@
+ERROR: ValidationError (3:22)
+Value `"badarg"` cannot be used in position expecting `Boolean`

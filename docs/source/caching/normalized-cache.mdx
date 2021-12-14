@@ -1,0 +1,240 @@
+---
+title: Normalized caches in Apollo Kotlin
+sidebar_title: Normalized caches
+---
+
+Apollo Kotlin provides two built-in **normalized caches** for storing and reusing the results of GraphQL operations:
+
+* An [in-memory cache](#in-memory-cache) (`MemoryCache`)
+* A [SQLite-backed cache](#sqlite-cache) (`SqlNormalizedCache`)
+
+You can use one ([or both!](#chaining-caches)) of these caches in your app to improve its responsiveness for most operations.
+
+> To get started with a coarser caching strategy that's faster to set up, take a look at the [HTTP cache](./http-cache/).
+
+## What is a normalized cache?
+
+In a GraphQL client, a normalized cache breaks each of your GraphQL operation responses into the individual objects it contains. Then, each object is cached as a _separate entry_ based on its **cache ID**. This means that if multiple responses include the _same_ object, that object can be deduplicated into a single cache entry. This reduces the overall size of the cache and helps keep your cached data consistent and fresh.
+
+You can also use a normalized cache as a single source of truth for your UI, enabling it to react to changes in the cache. To learn more about the normalization process, [see this blog post](https://www.apollographql.com/blog/apollo-client/caching/demystifying-cache-normalization/).
+
+### Normalizing responses
+
+Look at this example query:
+
+```graphql
+query GetFavoriteBook {
+  favoriteBook { # Book object
+    id
+    title
+    author {     # Author object
+      id
+      name
+    }
+  }
+}
+```
+
+This query returns a `Book` object, which in turn includes an `Author` object. An example response from the GraphQL server looks like this:
+
+```json
+{
+  "favoriteBook": {
+    "id": "bk123",
+    "title": "Les Guerriers du silence",
+    "author": {
+      "id": "au456",
+      "name": "Pierre Bordage"
+    }
+  }
+}
+```
+
+A normalized cache does _not_ store this response directly. Instead, it breaks it up into the following entries by default:
+
+```json:title=Cache
+"favoriteBook": {"id": "bk123", "title": "Les guerriers du silence", "author": "ApolloCacheReference{favoriteBook.author}"
+"favoriteBook.author": {"id": "au456", "name": "Pierre Bordage"}
+"QUERY_ROOT": {"favoriteBook": "ApolloCacheReference{favoriteBook}"}
+```
+
+> ⚠️ These default generated cache IDs (`favoriteBook` and `favoriteBook.author`) are undesirable for data deduplication. See [Specifying cache IDs](#specifying-cache-ids).
+
+* Notice that the `author` field of the `Book` entry now contains the string `ApolloCacheReference{favoriteBook.author}`. This is a **reference** to the `Author` cache entry.
+* Notice also the `QUERY_ROOT` entry, which is always present if you've cached results from at least one query. This entry contains a reference for each top-level field you've included in a query (e.g., `favoriteBook`).
+
+## Provided caches
+
+### In-memory cache
+
+Apollo Kotlin's `MemoryCache` is a normalized, in-memory cache for storing objects from your GraphQL operations. To use it, first add the `apollo-normalized-cache` artifact to your dependencies in your `build.gradle[.kts]` file:
+
+```kotlin:title=build.gradle[.kts]
+dependencies {
+  implementation("com.apollographql.apollo3:apollo-normalized-cache:x.y.z")
+}
+```
+
+Then include the cache in your `ApolloClient` initialization, like so:
+
+```kotlin{1-2,6-7}
+// Creates a 10MB MemoryCacheFactory
+val cacheFactory = MemoryCacheFactory(maxSizeBytes = 10 * 1024 * 1024)
+// Build the ApolloClient
+val apolloClient = ApolloClient.Builder()
+  .serverUrl("https://...")
+  // normalizedCache() is an extension function on ApolloClient.Builder
+  .normalizedCache(cacheFactory)
+  .build()
+```
+
+Because the normalized cache is optional, `normalizedCache()` is an extension function on `ApolloClient.Builder()` that's defined in the `apollo-normalized-cache` artifact. It takes a `NormalizedCacheFactory` as a parameter so that it can create the cache outside the main thread if needed.
+
+A `MemoryCache` is a least recently used (LRU) cache. It keeps entries in memory according to the following conditions:
+
+| Name | Description |
+|------|-------------|
+| `maxSizeBytes` | The cache's maximum size, in bytes. |
+| `expireAfterMillis` | The timeout for expiring existing cache entries, in milliseconds. By default, there is no timeout. |
+
+When your app is stopped, data in the `MemoryCache` is lost forever. If you need to persist data, you can use the [SQLite cache](#sqlite-cache).
+
+### SQLite cache
+
+Apollo Kotlin's SQLite cache uses [SQLDelight](https://github.com/cashapp/sqldelight) to store data persistently. You can use it to persist data across app restarts, or if your cached data becomes too large to fit in memory.
+
+To enable SQLite cache support, add the `apollo-normalized-cache-sqlite` dependency to your project's `build.gradle` file:
+
+```kotlin:title=build.gradle.kts
+dependencies {
+  implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite:x.y.z")
+}
+```
+
+Then include the SQLite cache in your `ApolloClient` initialization **according to your platform target** (different platforms use different drivers):
+
+```kotlin
+// Android
+val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory(context, "apollo.db")
+// JVM
+val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory("jdbc:sqlite:apollo.db")
+// iOS
+val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory("apollo.db")
+
+// Build the ApolloClient
+val apolloClient = ApolloClient.Builder()
+  .serverUrl("https://...")
+  .normalizedCache(sqlNormalizedCacheFactory)
+  .build()
+```
+
+You can then use the SQLite cache just like you'd use the `MemoryCache`.
+
+
+## Chaining caches
+
+To get the most out of _both_ normalized caches, you can chain a `MemoryCacheFactory` with a `SqlNormalizedCacheFactory`:
+
+```kotlin
+val memoryFirstThenSqlCacheFactory = MemoryCacheFactory(10 * 1024 * 1024)
+  .chain(SqlNormalizedCacheFactory(context, "db_name"))
+```
+
+Whenever Apollo Kotlin attempts to read cached data, it checks each chained cache in order until it encounters a hit. It then immediately returns that cached data without reading any additional caches.
+
+Whenever Apollo Kotlin _writes_ data to the cache, those writes propagate down _all caches_ in the chain.
+
+## Setting a fetch policy
+
+After you add a normalized cache to your `ApolloClient` initialization, Apollo Kotlin automatically uses it by default for all queries. You can customize _how_ the cache is used for a particular query by setting a **fetch policy** for that query.
+
+The following snippet shows how to set all available fetch policies and their behavior:
+
+```kotlin
+val response = apolloClient.query(query)
+
+  // (Default) Check the cache, then only use the network if data isn't present
+  .fetchPolicy(FetchPolicy.CacheFirst)
+
+  // Check the cache and never use the network, even if data isn't present
+  .fetchPolicy(FetchPolicy.CacheOnly)
+
+  // Always use the network, then check the cache if network fails
+  .fetchPolicy(FetchPolicy.NetworkFirst)
+
+  // Always use the network and never check the cache, even if network fails
+  .fetchPolicy(FetchPolicy.NetworkOnly)
+
+  // Execute the query
+  .execute()
+```
+
+As with `normalizedCache(NormalizedCacheFactory)`, `fetchPolicy(FetchPolicy)` is an extension function on `ApolloClient.Builder()`, so you need `apollo-normalized-cache` in your classpath for this to work.
+
+Because the normalized cache deduplicates data, it enables you to react to cache changes. You do this with `watchers` that listen for cache changes. [Learn more about query watchers.](./query-watchers/)
+
+## Specifying cache IDs
+
+By default, Apollo Kotlin uses an object's GraphQL field path as its cache ID. For example, recall the following query and its resulting cache entries from earlier:
+
+```graphql
+query GetFavoriteBook {
+  favoriteBook { # Book object
+    id
+    title
+    author {     # Author object
+      id
+      name
+    }
+  }
+}
+```
+
+```json:title=Cache
+"favoriteBook": {"id": "bk123", "title": "Les guerriers du silence", "author": "ApolloCacheReference{favoriteBook.author}"
+"favoriteBook.author": {"id": "au456", "name": "Pierre Bordage"}
+"QUERY_ROOT": {"favoriteBook": "ApolloCacheReference{favoriteBook}"}
+```
+
+Now, what happens if we execute a _different_ query to fetch the _same_ `Author` object with `id` `au456`?
+
+```graphql
+query AuthorById($id: String!) {
+  author(id: $id) {
+      id
+      name
+    }
+  }
+}
+```
+
+After executing this query, our cache looks like this:
+
+```json{2-3}:title=Cache
+"favoriteBook": {"id": "bk123", "title": "Les guerriers du silence", "author": "ApolloCacheReference{favoriteBook.author}"
+"favoriteBook.author": {"id": "au456", "name": "Pierre Bordage"}
+"author(\"id\": \"au456\")": {"id": "au456", "name": "Pierre Bordage"}
+"QUERY_ROOT": {"favoriteBook": "ApolloCacheReference{favoriteBook}", "author(\"id\": \"au456\")": "ApolloCacheReference{author(\"id\": \"au456\")}"}
+```
+
+We're now caching two identical entries for the same `Author` object! This is undesirable for a few reasons:
+
+* It takes up more space.
+* Modifying one of these objects does _not_ notify any watchers of the _other_ object.
+
+We want to deduplicate entries like these by making sure they're assigned the _same_ cache ID when they're written, resulting in a cache that looks more like this:
+
+```json:title=Cache
+"Book:bk123": {"id": "bk123", "title": "Les guerriers du silence", "author": "ApolloCacheReference{Author:au456}"
+"Author:au456": {"id": "au456", "name": "Pierre Bordage"}
+"QUERY_ROOT": {"favoriteBook": "ApolloCacheReference(Book:bk123)", "author(\"id\": \"au456\")": "ApolloCacheReference{Author:au456}"}
+```
+
+Fortunately, all of our objects have an `id` field that we can use for this purpose. If an `id` is unique across _all_ objects in your graph, you can use its value directly as a cache ID. Otherwise if it's unique _per object type_, you can prefix it with the type name (as shown above).
+
+### Methods
+
+There are two methods for specifying an object's cache ID:
+
+* **[Declaratively](declarative-ids)** (recommended). You can specify schema extensions that tell the codegen where to find the ID and make sure at compile time that all the `id` fields are requested so that all objects can be identified. Declarative IDs also prefix each ID with the typename to ensure global uniqueness.
+* **[Programmatically](programmatic-ids).** You can implement custom APIs that retrieve the ID for an object. Because you can execute arbitrary code, this solution is more flexible, but it's also more error prone and requires that you manually request `id` fields.

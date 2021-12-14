@@ -1,6 +1,6 @@
 plugins {
   kotlin("jvm")
-  id("com.apollographql.apollo")
+  id("com.apollographql.apollo3")
   id("application")
 }
 
@@ -11,7 +11,6 @@ dependencies {
 
   implementation(project(":node1"))
   implementation(project(":node2"))
-  implementation(project(":root"))
 
   apolloMetadata(project(":node1"))
   apolloMetadata(project(":node2"))
@@ -19,4 +18,8 @@ dependencies {
 
 application {
   mainClass.set("LeafKt")
+}
+
+apollo {
+  packageNamesFromFilePaths()
 }

@@ -1,7 +1,0 @@
-Failed to parse GraphQL file /MissingSelectionSet.graphql (2:2)
-Field `hero` of type `Query` must have a selection of sub-fields
-----------------------------------------------------
-[1]:query TestQuery {
-[2]:  hero
-[3]:}
-----------------------------------------------------

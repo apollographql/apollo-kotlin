@@ -1,0 +1,18 @@
+public final class com/apollographql/apollo3/mpp/Platform : java/lang/Enum {
+	public static final field Js Lcom/apollographql/apollo3/mpp/Platform;
+	public static final field Jvm Lcom/apollographql/apollo3/mpp/Platform;
+	public static final field Native Lcom/apollographql/apollo3/mpp/Platform;
+	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/mpp/Platform;
+	public static fun values ()[Lcom/apollographql/apollo3/mpp/Platform;
+}
+
+public final class com/apollographql/apollo3/mpp/UtilsKt {
+	public static final fun assertMainThreadOnNative ()V
+	public static final fun currentThreadId ()Ljava/lang/String;
+	public static final fun currentTimeMillis ()J
+	public static final fun ensureNeverFrozen (Ljava/lang/Object;)V
+	public static final fun freeze (Ljava/lang/Object;)V
+	public static final fun isFrozen (Ljava/lang/Object;)Z
+	public static final fun platform ()Lcom/apollographql/apollo3/mpp/Platform;
+}
+

@@ -1,0 +1,51 @@
+---
+title: 'Enforcing non-nullability'
+description: Using the @nonnull directive
+---
+
+Because GraphQL allows very granular error handling and resolver may return errors on different fields during execution, many GraphQL schemas expose nullable fields even though these fields should never be null in the absence of errors.
+
+This is typically the case for relay connections:
+
+```graphql
+type FilmConnection {
+  # films is nullable here
+  films: [Film]
+}
+```
+
+Apollo Kotlin supports the @nonnull client directive. Any field annotated with @nonnull will be made non-null in Kotlin, even if it is nullable in the GraphQL schema. The below query:
+
+```
+query AllFilms {
+  allFilms @nonnull {
+    films @nonnull {
+      title @nonnull
+    }
+  }
+}
+```
+
+Will generate the following models:
+
+```kotlin
+// All fields are non-nullable
+data class Data(val allFilms: AllFilms)
+data class AllFilms(val films: List<Film>)
+data class Film(val title: String)
+```
+
+This way, the consuming code doesn't have to use safe calls to access title:
+
+```
+val title = data.allFilms.films[0].title
+```
+
+Doing this for every query is redundant if you know every `FilmConnection` will have nonnull films. That's why you can also extend your schema.
+
+Create a `extensions.graphqls` file next to your `schema.[graphqls|sdl|json]`:
+
+```graphql
+# Make the 'film' field always non-nullable
+extend type FilmConnection @nonnull(fields: "films")
+```

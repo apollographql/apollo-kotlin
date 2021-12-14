@@ -1,0 +1,1 @@
+{"operationName":"AllFilms","variables":{"after":"some cursor","last":100},"query":"query AllFilms($after: String, $first: Int, $before: String, $last: Int) { allFilms(after: $after, first: $first, before: $before, last: $last) { totalCount films { title releaseDate } } }"}

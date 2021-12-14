@@ -1,0 +1,11 @@
+type Query {
+  gravity: Gravity
+}
+
+enum Gravity {
+  TOP
+  CENTER
+  BOTTOM
+  # like BOTTOM but with different case instead
+  bottom @deprecated(reason: "use BOTTOM instead")
+}

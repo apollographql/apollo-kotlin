@@ -1,0 +1,126 @@
+public final class com/apollographql/apollo3/gradle/api/AndroidProject {
+	public static final field INSTANCE Lcom/apollographql/apollo3/gradle/api/AndroidProject;
+	public final fun onEachVariant (Lorg/gradle/api/Project;ZLkotlin/jvm/functions/Function1;)V
+	public static synthetic fun onEachVariant$default (Lcom/apollographql/apollo3/gradle/api/AndroidProject;Lorg/gradle/api/Project;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class com/apollographql/apollo3/gradle/api/AndroidProjectKt {
+	public static final fun getAndroidExtension (Lorg/gradle/api/Project;)Lcom/android/build/gradle/BaseExtension;
+	public static final fun getAndroidExtensionOrThrow (Lorg/gradle/api/Project;)Lcom/android/build/gradle/BaseExtension;
+	public static final fun getApplicationVariants (Lorg/gradle/api/Project;)Lorg/gradle/api/DomainObjectSet;
+	public static final fun getLibraryVariants (Lorg/gradle/api/Project;)Lorg/gradle/api/DomainObjectSet;
+	public static final fun getTestVariants (Lorg/gradle/api/Project;)Lorg/gradle/api/DomainObjectSet;
+	public static final fun getUnitTestVariants (Lorg/gradle/api/Project;)Lorg/gradle/api/DomainObjectSet;
+}
+
+public final class com/apollographql/apollo3/gradle/api/ApolloAttributes {
+	public static final field INSTANCE Lcom/apollographql/apollo3/gradle/api/ApolloAttributes;
+	public final fun getAPOLLO_SERVICE_ATTRIBUTE ()Lorg/gradle/api/attributes/Attribute;
+}
+
+public abstract interface class com/apollographql/apollo3/gradle/api/ApolloAttributes$Service : org/gradle/api/Named {
+}
+
+public abstract interface class com/apollographql/apollo3/gradle/api/ApolloExtension : com/apollographql/apollo3/gradle/api/Service {
+	public abstract fun createAllAndroidVariantServices (Ljava/lang/String;Ljava/lang/String;Lorg/gradle/api/Action;)V
+	public abstract fun createAllKotlinSourceSetServices (Ljava/lang/String;Ljava/lang/String;Lorg/gradle/api/Action;)V
+	public abstract fun getLinkSqlite ()Lorg/gradle/api/provider/Property;
+	public abstract fun service (Ljava/lang/String;Lorg/gradle/api/Action;)V
+}
+
+public abstract interface class com/apollographql/apollo3/gradle/api/Introspection {
+	public abstract fun getEndpointUrl ()Lorg/gradle/api/provider/Property;
+	public abstract fun getHeaders ()Lorg/gradle/api/provider/MapProperty;
+	public abstract fun getSchemaFile ()Lorg/gradle/api/file/RegularFileProperty;
+}
+
+public final class com/apollographql/apollo3/gradle/api/JavaProjectKt {
+	public static final fun getJavaConvention (Lorg/gradle/api/Project;)Lorg/gradle/api/plugins/JavaPluginConvention;
+	public static final fun getJavaConventionOrThrow (Lorg/gradle/api/Project;)Lorg/gradle/api/plugins/JavaPluginConvention;
+}
+
+public final class com/apollographql/apollo3/gradle/api/KotlinProjectKt {
+	public static final fun getKotlinMultiplatformExtension (Lorg/gradle/api/Project;)Lorg/jetbrains/kotlin/gradle/dsl/KotlinMultiplatformExtension;
+	public static final fun getKotlinProjectExtension (Lorg/gradle/api/Project;)Lorg/jetbrains/kotlin/gradle/dsl/KotlinProjectExtension;
+	public static final fun getKotlinProjectExtensionOrThrow (Lorg/gradle/api/Project;)Lorg/jetbrains/kotlin/gradle/dsl/KotlinProjectExtension;
+	public static final fun isKotlinMultiplatform (Lorg/gradle/api/Project;)Z
+}
+
+public abstract interface class com/apollographql/apollo3/gradle/api/RegisterOperationsConfig {
+	public abstract fun getGraph ()Lorg/gradle/api/provider/Property;
+	public abstract fun getGraphVariant ()Lorg/gradle/api/provider/Property;
+	public abstract fun getKey ()Lorg/gradle/api/provider/Property;
+}
+
+public abstract interface class com/apollographql/apollo3/gradle/api/Registry {
+	public abstract fun getGraph ()Lorg/gradle/api/provider/Property;
+	public abstract fun getGraphVariant ()Lorg/gradle/api/provider/Property;
+	public abstract fun getKey ()Lorg/gradle/api/provider/Property;
+	public abstract fun getSchemaFile ()Lorg/gradle/api/file/RegularFileProperty;
+}
+
+public abstract interface class com/apollographql/apollo3/gradle/api/Service {
+	public abstract fun getAlwaysGenerateTypesMatching ()Lorg/gradle/api/provider/SetProperty;
+	public abstract fun getCodegenModels ()Lorg/gradle/api/provider/Property;
+	public abstract fun getCustomScalarsMapping ()Lorg/gradle/api/provider/MapProperty;
+	public abstract fun getCustomTypeMapping ()Lorg/gradle/api/provider/MapProperty;
+	public abstract fun getDebugDir ()Lorg/gradle/api/file/DirectoryProperty;
+	public abstract fun getExcludes ()Lorg/gradle/api/provider/ListProperty;
+	public abstract fun getFailOnWarnings ()Lorg/gradle/api/provider/Property;
+	public abstract fun getFlattenModels ()Lorg/gradle/api/provider/Property;
+	public abstract fun getGenerateApolloMetadata ()Lorg/gradle/api/provider/Property;
+	public abstract fun getGenerateAsInternal ()Lorg/gradle/api/provider/Property;
+	public abstract fun getGenerateFragmentImplementations ()Lorg/gradle/api/provider/Property;
+	public abstract fun getGenerateKotlinModels ()Lorg/gradle/api/provider/Property;
+	public abstract fun getGenerateOperationOutput ()Lorg/gradle/api/provider/Property;
+	public abstract fun getGenerateOptionalOperationVariables ()Lorg/gradle/api/provider/Property;
+	public abstract fun getGenerateQueryDocument ()Lorg/gradle/api/provider/Property;
+	public abstract fun getGenerateSchema ()Lorg/gradle/api/provider/Property;
+	public abstract fun getGenerateTestBuilders ()Lorg/gradle/api/provider/Property;
+	public abstract fun getIncludes ()Lorg/gradle/api/provider/ListProperty;
+	public abstract fun getLanguageVersion ()Lorg/gradle/api/provider/Property;
+	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun getOperationIdGenerator ()Lorg/gradle/api/provider/Property;
+	public abstract fun getOperationOutputFile ()Lorg/gradle/api/file/RegularFileProperty;
+	public abstract fun getOperationOutputGenerator ()Lorg/gradle/api/provider/Property;
+	public abstract fun getOutputDir ()Lorg/gradle/api/file/DirectoryProperty;
+	public abstract fun getPackageName ()Lorg/gradle/api/provider/Property;
+	public abstract fun getPackageNameGenerator ()Lorg/gradle/api/provider/Property;
+	public abstract fun getSchemaFile ()Lorg/gradle/api/file/RegularFileProperty;
+	public abstract fun getSchemaFiles ()Lorg/gradle/api/file/ConfigurableFileCollection;
+	public abstract fun getSealedClassesForEnumsMatching ()Lorg/gradle/api/provider/ListProperty;
+	public abstract fun getSourceFolder ()Lorg/gradle/api/provider/Property;
+	public abstract fun getTestDir ()Lorg/gradle/api/file/DirectoryProperty;
+	public abstract fun getUseSemanticNaming ()Lorg/gradle/api/provider/Property;
+	public abstract fun getWarnOnDeprecatedUsages ()Lorg/gradle/api/provider/Property;
+	public abstract fun introspection (Lorg/gradle/api/Action;)V
+	public abstract fun operationOutputConnection (Lorg/gradle/api/Action;)V
+	public abstract fun outputDirConnection (Lorg/gradle/api/Action;)V
+	public abstract fun packageNamesFromFilePaths (Ljava/lang/String;)V
+	public abstract fun registerOperations (Lorg/gradle/api/Action;)V
+	public abstract fun registry (Lorg/gradle/api/Action;)V
+	public abstract fun srcDir (Ljava/lang/Object;)V
+	public abstract fun testDirConnection (Lorg/gradle/api/Action;)V
+	public abstract fun useVersion2Compat (Ljava/lang/String;)V
+}
+
+public final class com/apollographql/apollo3/gradle/api/Service$DefaultImpls {
+	public static synthetic fun packageNamesFromFilePaths$default (Lcom/apollographql/apollo3/gradle/api/Service;Ljava/lang/String;ILjava/lang/Object;)V
+	public static synthetic fun useVersion2Compat$default (Lcom/apollographql/apollo3/gradle/api/Service;Ljava/lang/String;ILjava/lang/Object;)V
+}
+
+public abstract interface class com/apollographql/apollo3/gradle/api/Service$DirectoryConnection {
+	public abstract fun connectToAndroidSourceSet (Ljava/lang/String;)V
+	public abstract fun connectToAndroidVariant (Ljava/lang/Object;)V
+	public abstract fun connectToJavaSourceSet (Ljava/lang/String;)V
+	public abstract fun connectToKotlinSourceSet (Ljava/lang/String;)V
+	public abstract fun getOutputDir ()Lorg/gradle/api/provider/Provider;
+	public abstract fun getTask ()Lorg/gradle/api/tasks/TaskProvider;
+}
+
+public final class com/apollographql/apollo3/gradle/api/Service$OperationOutputConnection {
+	public fun <init> (Lorg/gradle/api/tasks/TaskProvider;Lorg/gradle/api/provider/Provider;)V
+	public final fun getOperationOutputFile ()Lorg/gradle/api/provider/Provider;
+	public final fun getTask ()Lorg/gradle/api/tasks/TaskProvider;
+}
+

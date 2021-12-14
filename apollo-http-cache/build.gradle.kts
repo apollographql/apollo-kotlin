@@ -1,23 +1,27 @@
 plugins {
-  `java-library`
-}
-
-metalava {
-  hiddenPackages += setOf("com.apollographql.apollo.cache.http.internal")
+  kotlin("jvm")
 }
 
 dependencies {
-  add("compileOnly", groovy.util.Eval.x(project, "x.dep.jetbrainsAnnotations"))
+  api(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
+  api(projects.apolloApi)
+  api(projects.apolloRuntime)
+  implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
+  implementation(groovy.util.Eval.x(project, "x.dep.kotlinxdatetime"))
 
-  add("api", groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
-  add("api", project(":apollo-api"))
-  add("api", project(":apollo-http-cache-api"))
-
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.junit"))
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.truth"))
+  testImplementation(projects.apolloMockserver)
+  testImplementation(kotlin("test-junit"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
 }
 
-tasks.withType<Javadoc> {
-  options.encoding = "UTF-8"
+val jar by tasks.getting(Jar::class) {
+  manifest {
+    attributes("Automatic-Module-Name" to "com.apollographql.apollo3.cache.http")
+  }
 }
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
+  kotlinOptions {
+    allWarningsAsErrors = true
+  }
+}

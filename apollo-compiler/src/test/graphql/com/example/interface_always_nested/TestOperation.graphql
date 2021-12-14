@@ -1,0 +1,12 @@
+# The B interface is only used from A so we don't really need a B interface even if some concrete types map to it
+# Having AB should be enough
+query TestQuery {
+    root {
+        ... on A {
+            fieldA1
+            ... on B {
+                fieldB1
+            }
+        }
+    }
+}

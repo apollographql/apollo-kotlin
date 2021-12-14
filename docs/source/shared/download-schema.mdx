@@ -1,14 +1,19 @@
 
-Apollo Android requires your GraphQL server's schema as a `schema.json` file. You can obtain the contents of this file by running an introspection query on your server.
+Apollo Kotlin requires your GraphQL server's schema as either an introspection or SDL schema. Usually, it's a `schema.[graphqls|json|sdl]` file. This section shows how to obtain a schema from your server using introspection.
 
-**Note**: If you don't have a GraphQL server yet, you can use the server from the [tutorial](https://www.apollographql.com/docs/android/tutorial/00-introduction/): https://apollo-fullstack-tutorial.herokuapp.com/graphql.
+> **Note**: If you don't have a GraphQL server yet, you can use the server from the [tutorial](https://www.apollographql.com/docs/android/tutorial/00-introduction/): https://apollo-fullstack-tutorial.herokuapp.com/graphql.
 
-The Apollo Gradle plugin exposes a `downloadApolloSchema` task to help you obtain your schema. Provide this task your server's GraphQL endpoint and the output location for the `schema.json` file:
+The Apollo Gradle plugin exposes a `downloadApolloSchema` task to help you obtain your schema. Provide this task your server's GraphQL endpoint and the output location for the `schema.graphqls` file:
 
 ```bash:title=(shell)
+# Create a directory for your GraphQL files:
+mkdir -p app/src/main/graphql/com/example/
+
+# --schema is interpreted relative to the current working directory. This example
+# assumes the root project directory and an Android app in `app`
 ./gradlew downloadApolloSchema \
   --endpoint="https://your.domain/graphql/endpoint" \
-  --schema="src/main/graphql/com/example/schema.json"
+  --schema="app/src/main/graphql/com/example/schema.graphqls"
 ```
 
 If your GraphQL endpoint requires authentication, you can pass custom HTTP headers:
@@ -16,6 +21,6 @@ If your GraphQL endpoint requires authentication, you can pass custom HTTP heade
 ```bash:title=(shell)
 ./gradlew downloadApolloSchema \
   --endpoint="https://your.domain/graphql/endpoint" \
-  --schema="app/src/main/graphql/com/example" \
+  --schema="app/src/main/graphql/com/example/schema.graphqls" \
   --header="Authorization: Bearer $TOKEN"
 ```

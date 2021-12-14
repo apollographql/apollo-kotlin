@@ -1,0 +1,90 @@
+---
+title: GraphQL file types in Apollo Kotlin
+sidebar_title: File types
+---
+
+Apollo Kotlin supports the following file types for GraphQL definitions:
+
+* `.json` for [introspection schemas](#introspection-schemas-json)
+* `.graphqls` for [SDL schemas](#sdl-schemas-graphqls)
+* `.graphql` for [operations](#operations-graphql) (queries, mutations, and subscriptions)
+
+> To learn more about SDL schemas, see the [blog post](https://www.apollographql.com/blog/frontend/sdl-support-in-apollo-android/) about SDL support in Apollo Kotlin.
+
+## Schemas
+
+A GraphQL **schema** describes a graph's data types and the relationships between those types. Apollo Kotlin supports JSON schemas obtained via [introspection](#introspection-schemas-json), along with conventional [SDL schemas](#sdl-schemas-graphqls).
+
+### Introspection schemas (`.json`)
+
+You can obtain a GraphQL server's schema via a special [introspection query](https://graphql.org/learn/introspection/) (assuming the server enables introspection). Like any other GraphQL server response, the returned schema is provided as JSON similar to the following:
+
+```json:title=schema.json
+{
+  "data": {
+    "__schema": {
+      "queryType": {
+        "name": "Query"
+      },
+      "mutationType": {
+        "name": "Mutation"
+      },
+      "types": [...]
+    }
+  }
+}
+```
+
+> Some JSON schemas omit the top-level `data` field. Apollo Kotlin supports this omission.
+
+Tools like [Apollo Sandbox](https://studio.apollographql.com/sandbox/schema/sdl) introspect a GraphQL server automatically and enable you to download its schema in JSON (or SDL) format. Apollo Kotlin can also download an introspected schema with the `downloadApolloSchema` Gradle task:
+
+```bash
+./gradlew :app:downloadApolloSchema \
+  --endpoint "https://example.com/graphql" \
+  --schema schema.json
+```
+
+JSON introspection schemas are verbose and difficult to read or modify. For simplicity, you should consider JSON schemas read-only and convert them to [SDL schemas](#sdl-schemas-graphqls) if you need to make changes.
+
+### SDL schemas (`.graphqls`)
+
+SDL (Schema Definition Language) is the canonical language for defining GraphQL schemas as defined in the [GraphQL spec](https://spec.graphql.org/October2021/). It's much cleaner and more expressive than [JSON](#introspection-schemas-json) for understanding a schema's structure. It also supports directives, unlike the JSON representation (see [this issue](https://github.com/graphql/graphql-spec/issues/300)):
+
+```graphql:title=schema.graphqls
+type schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  field: String @deprecated
+  ...
+}
+```
+
+You can't use introspection to download an SDL schema directly from a GraphQL endpoint. However, Apollo Kotlin can convert an introspection schema to SDL automatically if you specify the `.graphqls` extension in the `--schema` option:
+
+```bash{3}
+./gradlew :app:downloadApolloSchema \
+  --endpoint "https://example.com/graphql" \
+  --schema schema.graphqls
+```
+
+> Apollo Kotlin also supports the `.sdl` file extension for SDL schemas, but very few other tools use `.sdl`. You should use `.graphqls` moving forward.
+
+## Operations (`.graphql`)
+
+GraphQL **operations** are executed against a graph to fetch or modify data.
+
+In Apollo Kotlin, operation files use the `.graphql` (without `'s'`) extension. These files only contain [executable definitions](https://spec.graphql.org/draft/#ExecutableDefinition) (queries, mutations, subscriptions, and/or fragments):
+
+```graphql:title=MyQuery.graphql
+query MyQuery {
+  field1
+  field2
+  ...
+}
+```
+
+Apollo Kotlin compiles these operations into type-safe models that you can use at runtime.

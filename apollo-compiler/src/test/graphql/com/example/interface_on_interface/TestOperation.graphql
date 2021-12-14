@@ -5,8 +5,6 @@ query GetHuman {
     height
   }
   node {
-    # A parser understanding interfaces on interfaces should not fail here
-    # as Human is a possibleType of Node
     ... on Human {
       height
     }

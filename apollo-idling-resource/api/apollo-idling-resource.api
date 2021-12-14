@@ -1,0 +1,26 @@
+public final class com/apollographql/apollo3/android/ApolloIdlingResource : androidx/test/espresso/IdlingResource {
+	public static final field Companion Lcom/apollographql/apollo3/android/ApolloIdlingResource$Companion;
+	public fun <init> (Ljava/lang/String;)V
+	public static final fun create (Ljava/lang/String;Lcom/apollographql/apollo3/ApolloClient;)V
+	public fun getName ()Ljava/lang/String;
+	public fun isIdleNow ()Z
+	public final fun operationEnd ()V
+	public final fun operationStart ()V
+	public fun registerIdleTransitionCallback (Landroidx/test/espresso/IdlingResource$ResourceCallback;)V
+}
+
+public final class com/apollographql/apollo3/android/ApolloIdlingResource$Companion {
+	public final fun create (Ljava/lang/String;Lcom/apollographql/apollo3/ApolloClient;)V
+}
+
+public final class com/apollographql/apollo3/android/ApolloIdlingResourceKt {
+	public static final fun idlingResource (Lcom/apollographql/apollo3/ApolloClient$Builder;Lcom/apollographql/apollo3/android/ApolloIdlingResource;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+}
+
+public final class com/apollographql/apollo3/android/BuildConfig {
+	public static final field BUILD_TYPE Ljava/lang/String;
+	public static final field DEBUG Z
+	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
+	public fun <init> ()V
+}
+

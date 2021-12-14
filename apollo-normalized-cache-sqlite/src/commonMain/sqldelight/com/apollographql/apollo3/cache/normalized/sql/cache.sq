@@ -1,0 +1,38 @@
+CREATE TABLE records (
+  _id INTEGER PRIMARY KEY AUTOINCREMENT,
+  key TEXT NOT NULL,
+  record TEXT NOT NULL
+);
+
+CREATE INDEX idx_records_key ON records(key);
+
+recordForKey:
+SELECT key, record FROM records WHERE key=?;
+
+recordsForKeys:
+SELECT key, record FROM records WHERE key IN ?;
+
+insert:
+INSERT INTO records (key, record) VALUES (?,?);
+
+update:
+UPDATE records SET record=:record WHERE key=:key;
+
+delete:
+DELETE FROM records WHERE key=?;
+
+deleteRecords:
+DELETE FROM records WHERE key IN ?;
+
+deleteRecordsWithKeyMatching:
+DELETE FROM records WHERE key LIKE ? ESCAPE ?;
+
+-- use only for debug
+selectRecords:
+SELECT * FROM records;
+
+changes:
+SELECT changes();
+
+deleteAll:
+DELETE FROM records;

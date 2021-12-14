@@ -1,0 +1,19 @@
+# This test tests that inside a given field some field set might implement multiple super interfaces
+# In this case, the ABC object must implement both AC and AB interfaces
+# Even if it's not tested here, the same is true when implementing fragments
+query TestQuery {
+    c {
+        ... on A {
+            fieldA1
+            ... on B {
+                fieldB1
+            }
+        }
+        ... on B {
+            fieldB2
+            ... on A {
+                fieldA2
+            }
+        }
+    }
+}

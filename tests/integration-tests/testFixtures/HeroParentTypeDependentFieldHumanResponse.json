@@ -1,0 +1,28 @@
+{
+  "data": {
+    "hero": {
+      "__typename": "Human",
+      "name": "Luke Skywalker",
+      "friends": [
+        {
+          "__typename": "Human",
+          "name": "Han Solo",
+          "height": 5.905512
+        },
+        {
+          "__typename": "Human",
+          "name": "Leia Organa",
+          "height": 4.92126
+        },
+        {
+          "__typename": "Droid",
+          "name": "C-3PO"
+        },
+        {
+          "__typename": "Droid",
+          "name": "R2-D2"
+        }
+      ]
+    }
+  }
+}

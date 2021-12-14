@@ -1,63 +1,86 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-  antlr
-  `java-library`
   kotlin("jvm")
-  kotlin("kapt")
+  id("com.google.devtools.ksp")
 }
 
 dependencies {
-  add("antlr", groovy.util.Eval.x(project, "x.dep.antlr.antlr"))
-  add("implementation", groovy.util.Eval.x(project, "x.dep.moshi.adapters"))
-  add("implementation", groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
-  add("implementation", groovy.util.Eval.x(project, "x.dep.poet.java"))
-  add("implementation", groovy.util.Eval.x(project, "x.dep.poet.kotlin"))
-  add("implementation", project(":apollo-api"))
+  implementation(projects.apolloAst)
+  implementation(projects.apolloNormalizedCacheApi) {
+    because("To generate the CacheResolver")
+  }
+  implementation(groovy.util.Eval.x(project, "x.dep.poet.kotlin").toString()) {
+    // We don't use any of the KotlinPoet kotlin-reflect features
+    exclude(module = "kotlin-reflect")
+  }
+  implementation(groovy.util.Eval.x(project, "x.dep.poet.java"))
 
-  add("kapt", groovy.util.Eval.x(project, "x.dep.moshi.kotlinCodegen"))
+  implementation(groovy.util.Eval.x(project, "x.dep.moshi.adapters"))
+  implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
+  implementation(groovy.util.Eval.x(project, "x.dep.moshi.sealedRuntime"))
 
+  ksp(groovy.util.Eval.x(project, "x.dep.moshi.sealedCodegen"))
+  ksp(groovy.util.Eval.x(project, "x.dep.moshi.ksp"))
 
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.compiletesting"))
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.kotlinCompileTesting"))
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.junit"))
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.truth"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.kotlinCompileTesting"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.javaCompileTesting"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
+  testImplementation(kotlin("test-junit"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.testParameterInjector"))
 }
 
 abstract class GeneratePluginVersion : DefaultTask() {
   @get:org.gradle.api.tasks.Input
   abstract val version: Property<String>
 
-  @get:org.gradle.api.tasks.OutputFile
-  abstract val outputFile: RegularFileProperty
+  @get:org.gradle.api.tasks.OutputDirectory
+  abstract val outputDir: DirectoryProperty
 
   @org.gradle.api.tasks.TaskAction
   fun taskAction() {
-    val versionFile = outputFile.asFile.get()
+    val versionFile = File(outputDir.asFile.get(), "com/apollographql/apollo3/compiler/Version.kt")
     versionFile.parentFile.mkdirs()
     versionFile.writeText("""// Generated file. Do not edit!
-package com.apollographql.apollo.compiler
-val VERSION = "${project.version}"
+package com.apollographql.apollo3.compiler
+const val APOLLO_VERSION = "${project.version}"
 """)
   }
 }
 
 val pluginVersionTaskProvider = tasks.register("pluginVersion", GeneratePluginVersion::class.java) {
-  outputFile.set(project.layout.buildDirectory.file("generated/kotlin/com/apollographql/apollo/compiler/Version.kt"))
+  outputDir.set(project.layout.buildDirectory.dir("generated/kotlin/"))
   version.set(project.version.toString())
 }
 
-tasks.withType(KotlinCompile::class.java) {
-  val versionFileProvider = pluginVersionTaskProvider.flatMap { it.outputFile }
-  source(versionFileProvider)
-  dependsOn("generateGrammarSource")
+configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
+  val versionFileProvider = pluginVersionTaskProvider.flatMap { it.outputDir }
+  sourceSets.getByName("main").kotlin.srcDir(versionFileProvider)
 }
 
-tasks.withType<Checkstyle> {
-  exclude("**com/apollographql/apollo/compiler/parser/antlr/**")
+tasks.withType(KotlinCompile::class.java) {
+  // Fixes the warning below:
+  // "Task ':apollo-android:apollo-compiler:kaptGenerateStubsKotlin' uses the output of task ':apollo-android:apollo-compiler:pluginVersion', without declaring an explicit dependency"
+  dependsOn(pluginVersionTaskProvider)
+}
+
+tasks.withType(KotlinCompile::class.java) {
+  kotlinOptions {
+    allWarningsAsErrors = true
+  }
 }
 
 // since test/graphql is not an input to Test tasks, they're not run with the changes made in there.
 tasks.withType<Test>().configureEach {
   inputs.dir("src/test/graphql")
+  inputs.dir("src/test/sdl")
+  inputs.dir("src/test/typename")
+  inputs.dir("src/test/usedtypes")
+  inputs.dir("src/test/validation")
+}
+
+val jar by tasks.getting(Jar::class) {
+  manifest {
+    attributes("Automatic-Module-Name" to "com.apollographql.apollo3.compiler")
+  }
 }

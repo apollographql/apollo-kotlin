@@ -1,0 +1,7 @@
+query EpisodeHeroWithDates($episode: Episode = null) {
+  hero(episode: $episode) {
+    heroName: name
+    birthDate
+    showUpDates: appearanceDates
+  }
+}

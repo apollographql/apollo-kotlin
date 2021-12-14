@@ -3,51 +3,67 @@ title: "9. Write your first mutation"
 ---
 
 In this section, you will write your first mutation to log in to the backend.
+
 A mutation is used to change data on your server. Here the login mutation will create a session based on your email address.
 
 > **Note**: The way you log in to this particular server might differ from the way you log in with your own server. Login is often handled by _middleware_, or a layer totally separate from GraphQL, like [Oauth](https://en.wikipedia.org/wiki/OAuth).
 > Also note that a typical authentication flow should require a password but for this tutorial, anyone is allowed to book flights with a valid email address!
 
 
-## Prototype your mutation in GraphQL Playground
+## Prototype your mutation in Sandbox Explorer
 
-Open [GraphQL Playground](https://apollo-fullstack-tutorial.herokuapp.com/) and select the `login` mutation in the docs tab on the right:
+Open [your Sandbox Explorer](https://studio.apollographql.com/sandbox/explorer?endpoint=https%3A%2F%2Fapollo-fullstack-tutorial.herokuapp.com) and click on the plus symbol to add a new tab. Next, click on the Schema icon to get back to looking at your schema, and select "Mutation" to look at your list of mutations:
+
+<img alt="The list of available mutations" class="screenshot" src="images/sandbox_schema_mutations.png"/>
+
+Scroll down to take a look at the `login` mutation:
 
 <img alt="The definition of login in the schema" class="screenshot" src="images/schema_login_definition.png"/>
 
-This mutation takes a single argument, the `email` address of the person being logged in. Unlike many GraphQL operations that return objects which need to have fields selected, the `login` mutation returns only a single string.
+Click the play button to the right to open that mutation in the Explorer tab. When it opens, click the plus sign to add the operation:
 
-Type the following mutation in GraphiQL:
+<img alt="The login mutation after initially being added" class="screenshot" src="images/explorer_added_login_mutation.png"/>
 
-```graphql
-mutation Login($email: String) {
-  login(email: $email)
-}
+Sandbox Explorer tries to be helpful by adding the word `Mutation` after the word `Login`, but the Android SDK also does that for you automatically. Rename the operation `Login` instead:
+
+<img alt="The renamed operation" class="screenshot" src="images/explorer_login_mutation_rename.png"/>
+
+Notice that there are no brackets after the call to the `login` mutation - this is because the type returned by this mutation is `String`, which is known as a **scalar type**. This means it won't have properties the way an object would, so you don't need to specify what properties you want returned to you.
+
+You'll also notice that `email` wasn't automatically added as an argument even though it doesn't seem to have a default value: That's because `email` is of type `String` - which remember, in GraphQL, means that it's **not** required (although obviously you won't get too far without it).
+
+Click the plus sign next to the `email` argument to have that argument added:
+
+<img alt="The operation with the email argument" class="screenshot" src="images/explorer_login_email_added.png"/>
+
+You'll also notice that Sandbox Explorer has added a variable to your "Variables" section to match the login email.
+
+Click the Submit Operation button your mutation. You'll see that  since you sent `null` for the email address, you get back `null` for the login:
+
+<img alt="Results of passing a null email" class="screenshot" src="images/login_mutation_null.png"/>
+
+Now, replace `null` in the Query Variables section with an actual email address:
+
+```json:title=(Sandbox%20Explorer)
+{ "loginEmail": "me@example.com" }
 ```
 
-If you hit Play, you should get a `null` login:
-
-<img alt="Results of not passing email" class="screenshot" src="images/login_mutation_null.png"/>
-
-This is expected, because you didn't specify your email. To do so, add it to the **Query Variables**  in the lower-left pane of GraphQL Playground:
-
-```json:title=(GraphiQL)
-{ "email": "me@example.com" }
-```
-
-Press the Play button, and you'll get an actual response:
+Press the Submit Operation button, and this time you'll get an actual response:
 
 <img alt="Results of passing an actual email" class="screenshot" src="images/login_mutation_email.png"/>
 
+Next, copy the operation, either manually or using the three-dot menu's "Copy operation" option.
+
 ## Add the mutation to the project
 
-Now that your mutation is working, add it to your project. Create a file named `Login.graphql` next to `schema.json` and your other GraphQL files and paste the contents of the mutation:
+Now that your mutation is working, add it to your project. Create a file named `Login.graphql` next to `schema.graphqls` and your other GraphQL files and paste the contents of the mutation:
 
 ```graphql:title=app/src/main/graphql/com/example/rocketreserver/Login.graphql
-mutation Login($email: String) {
+mutation Login($email: String!) {
   login(email: $email)
 }
 ```
+Note: we've also marked the `email` variable as non-nullable by adding `!` to the end of the type, since we always want to pass a value for it.
 
 Build your project to generate the `LoginMutation` class.
 
@@ -66,22 +82,29 @@ Open `LoginFragment.kt` and like you did for the other fragments, override `onVi
                 binding.emailLayout.error = getString(R.string.invalid_email)
                 return@setOnClickListener
             }
+
+            // TODO: More code here
+        }
+    }
 ```
 
-From the click listener, display the ProgressBar and execute the query with the email the user just entered:
+From the click listener, display the ProgressBar and execute the query with the email the user just entered. Replace the `TODO` with:
 
 ```kotlin:title=app/src/main/java/com/example/rocketreserver/LoginFragment.kt
             binding.submitProgressBar.visibility = View.VISIBLE
             binding.submit.visibility = View.GONE
             lifecycleScope.launchWhenResumed {
                 val response = try {
-                    apolloClient.mutate(LoginMutation(email = Input.fromNullable(email))).await()
+                    apolloClient.mutation(LoginMutation(email = email)).execute()
                 } catch (e: Exception) {
                     null
                 }
+
+                // TODO: handle errors
+            }
 ```
 
-Handle errors if needed:
+Handle errors if needed by replacing the `TODO` you just added:
 
 ```kotlin:title=app/src/main/java/com/example/rocketreserver/LoginFragment.kt
                 val login = response?.data?.login
@@ -92,22 +115,19 @@ Handle errors if needed:
                 }
 ```
 
-Finally if everything is successful, store the login and go back to the previous screen:
+Finally if everything is successful, store the login and go back to the previous screen at the end of `launchWhenResumed`:
 
 ```kotlin:title=app/src/main/java/com/example/rocketreserver/LoginFragment.kt
                 User.setToken(requireContext(), login)
                 findNavController().popBackStack()
-            }
-        }
-    }
 ```
 
-`User` is a helper class that saves the token in [EncryptedSharedPreference](https://developer.android.com/reference/androidx/security/crypto/EncryptedSharedPreferences). This is the reason why this tutorial uses API level 23+. Apollo Android itself supports API levels 19+.
+`User` is a helper class that saves the token in [EncryptedSharedPreference](https://developer.android.com/reference/androidx/security/crypto/EncryptedSharedPreferences). This is the reason why this tutorial uses API level 23+. Apollo Kotlin itself supports API levels 19+.
 
 ## Test the login
 
-Go the details fragment, click **Book** and in the Login fragment, enter your email and click **Submit**. You now have a token that allows you to authenticate your queries.
+Go to the details fragment, click **Book** and in the Login fragment, enter your email and click **Submit**. You now have a token that allows you to authenticate your operations.
 
 <img src="images/login_screen.png" alt="The login screen" class="screenshot" width="300"/>
 
-In the next section, you will [authenticate your queries](10-authenticate-your-queries).
+In the next section, you will [use authenticated operations to book a flight](10-authenticate-your-queries).

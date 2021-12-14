@@ -1,0 +1,54 @@
+query GetPromoBook {
+    promoBook {
+        # ISBN should be added automatically here
+        title
+    }
+}
+
+query GetOtherBook {
+    otherBook {
+        isbn
+        title
+    }
+}
+
+query GetPromoLibrary {
+    promoLibrary {
+        # id should be added automatically here
+        address
+    }
+}
+
+query GetOtherLibrary {
+    otherLibrary {
+        id
+        address
+    }
+}
+
+query GetBook($isbn: String!) {
+  book(isbn: $isbn) {
+    title
+  }
+}
+
+query GetBooks($isbns: [String!]!) {
+    books(isbns: $isbns) {
+        title
+    }
+}
+
+query GetPromoAuthor {
+    author {
+        firstName
+        lastName
+    }
+}
+
+query GetAuthor($firstName: String!, $lastName: String!) {
+    author(firstName: $firstName, lastName: $lastName) {
+        firstName
+        lastName
+    }
+}
+

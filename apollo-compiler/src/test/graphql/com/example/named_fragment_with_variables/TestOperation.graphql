@@ -1,0 +1,18 @@
+query GetUser($organizationId: String!, $query: UserQuery!, $size: Int! ) {
+  ...QueryFragment
+}
+
+fragment QueryFragment on Query {
+  organization(id: $organizationId) {
+    id
+    user(query: $query) {
+      ...UserFragment
+    }
+  }
+}
+
+fragment UserFragment on User {
+  firstName
+  lastName
+  avatar(size: $size)
+}

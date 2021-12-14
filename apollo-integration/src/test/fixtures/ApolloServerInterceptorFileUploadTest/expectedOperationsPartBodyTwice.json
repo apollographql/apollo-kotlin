@@ -1,1 +1,0 @@
-{"operationName":"SingleUploadTwice","variables":{"file1":null,"file2":null},"query":"mutation SingleUploadTwice($file1: Upload!, $file2: Upload!) { file1: singleUpload(file: $file1) { __typename id path filename mimetype } file2: singleUpload(file: $file2) { __typename id path filename mimetype } }"}

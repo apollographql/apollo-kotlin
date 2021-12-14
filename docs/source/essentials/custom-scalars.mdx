@@ -1,0 +1,142 @@
+---
+title: Custom scalar types in Apollo Kotlin
+sidebar_title: Custom scalars
+---
+
+import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
+
+In addition to its [built-in scalar types](https://graphql.org/learn/schema/#scalar-types) (`Int`, `String`, etc.), GraphQL supports defining [custom scalars](https://www.apollographql.com/docs/apollo-server/schema/custom-scalars/). For example, your schema might define a custom scalar for `Long`, `Date`, `BigDecimalAdapter`, or `GeoPoint`.
+
+## Define class mapping
+
+To interact with custom scalars in your Apollo Kotlin app, you need to define a mapping in your `build.gradle` file. This tells Apollo Kotlin which class to use to represent each custom scalar from your schema.
+
+<MultiCodeBlock>
+
+```groovy
+apollo {
+  customScalarsMapping = [
+    "GeoPoint" : "com.example.GeoPoint"
+  ]
+}
+```
+
+```kotlin
+apollo {
+  customScalarsMapping.set(mapOf(
+    "GeoPoint" to "com.example.GeoPoint"
+  ))
+}
+```
+
+</MultiCodeBlock>
+
+## Define class adapters
+
+Each class you use to represent a custom scalar also requires an **adapter** to convert it to and from the JSON format that's sent over the network.
+
+Writing an adapter is similar to writing a JSON adapter. Each adapter requires a `fromJson` function. A `toJson` function is also required if your app ever passes the custom scalar as a GraphQL argument.
+
+Here's an adapter for a `GeoPoint` custom scalar:
+
+```kotlin
+class GeoPoint(val latitude: Double, val longitude: Double)
+
+val geoPointAdapter = object : Adapter<GeoPoint> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GeoPoint {
+    var latitude: Double? = null
+    var longitude: Double? = null
+    reader.beginObject()
+    while(reader.hasNext()) {
+      when (reader.nextName()) {
+        "latitude" -> latitude = reader.nextDouble()
+        "longitude" -> longitude = reader.nextDouble()
+      }
+    }
+    reader.endObject()
+
+    // fromJson can throw on unexpected data and the exception will be wrapped in a
+    // ApolloParseException
+    return GeoPoint(latitude!!, longitude!!)
+  }
+
+  // If you do not expect your scalar to be used as input, you can leave this method as TODO()
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: GeoPoint) {
+    writer.beginObject()
+    writer.name("latitude").value(value.latitude)
+    writer.name("longitude").value(value.longitude)
+    writer.endObject()
+  }
+}
+```
+
+If you prefer working with `Maps`, Apollo Kotlin comes with `AnyAdapter`, which supports adapting `String`, `Int`, `Double`, `Boolean`, `List`, and `Map`. You can use it in an intermediate step:
+
+```kotlin
+val geoPointAdapter = object : Adapter<GeoPoint> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GeoPoint {
+    val map = AnyAdapter.fromJson(reader) as Map<String, Double>
+    return GeoPoint(map["latitude"] as Double, map["longitude"] as Double)
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: GeoPoint) {
+    val map = mapOf(
+        "latitude" to value.latitude,
+        "longitude" to value.longitude
+    )
+    AnyAdapter.toJson(writer, map)
+  }
+}
+```
+
+This solution is more concise but slightly less performant.
+
+## Register adapters
+
+After you define your adapters, you need to register them with your `ApolloClient` instance. To do so,
+call `ApolloClient.Builder.addCustomScalarAdapter` once for each adapter:
+
+```kotlin
+val apolloClient = ApolloClient.Builder().serverUrl("https://")
+    .addCustomScalarAdapter(GeoPoint.type, geoPointAdapter)
+    .build()
+```
+
+This method takes a type-safe generated class from `Types`, along with its corresponding adapter.
+
+> If you can't find `Types`, build your project to trigger codegen.
+
+
+## Apollo-provided adapters
+
+The `com.apollographql.apollo3:apollo-adapters` artifact provides built-in adapters for the following common custom scalar types.
+
+| Adapter | Description |
+|---------|-------------|
+| `com.apollographql.apollo3.adapter.InstantAdapter` | For `kotlinx.datetime.Instant` ISO8601 dates |
+| `com.apollographql.apollo3.adapter.LocalDateAdapter` | For `kotlinx.datetime.LocalDate` ISO8601 dates |
+| `com.apollographql.apollo3.adapter.DateAdapter` | For `java.util.Date` ISO8601 dates |
+| `com.apollographql.apollo3.adapter.LongAdapter` | For `java.lang.Long` |
+| `com.apollographql.apollo3.adapter.BigDecimalAdapter` | For a MPP `com.apollographql.apollo3.BigDecimal` class holding big decimal values |
+
+For an example, to use `DateAdapter`, configure your Gradle scripts like so:
+
+```kotlin
+dependencies {
+  implementation("com.apollographql.apollo3:apollo-adapters:$version")
+}
+
+apollo {
+  customScalarsMapping.set(mapOf(
+    "Date" to "java.util.Date"
+  ))
+}
+```
+
+And add it to your `ApolloClient`:
+
+```kotlin
+val apolloClient = ApolloClient.Builder().serverUrl("https://")
+    .addCustomScalarAdapter(Date.type, DateAdapter())
+    .build()
+```

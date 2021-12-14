@@ -1,0 +1,16 @@
+query EpisodeHeroWithInlineFragment {
+  hero {
+    name
+    friends {
+      ... on Human {
+        id
+        name
+        height
+      }
+      ... on Droid {
+        name
+        primaryFunction
+      }
+    }
+  }
+}

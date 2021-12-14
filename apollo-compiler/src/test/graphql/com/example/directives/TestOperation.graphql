@@ -1,8 +1,0 @@
-query TestQuery($includeName: Boolean!, $skipFriends: Boolean!) @operationDirective(dummy0: "hello", dummy1: 0) {
-  hero {
-    name @include(if: $includeName)
-    friendsConnection @skip(if: $skipFriends) {
-      totalCount
-    }
-  }
-}

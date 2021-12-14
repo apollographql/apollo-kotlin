@@ -1,0 +1,14 @@
+query GetAnimal($withTemperature: Boolean! = false) {
+  animal {
+    species
+    name
+    ...animalFragment
+    # This field will not be in the Json triggering a bug where the expected name index was going out of bounds
+    # See https://github.com/apollographql/apollo-android/issues/3361
+    temperature @include(if: $withTemperature)
+  }
+}
+
+fragment animalFragment on Animal {
+  other
+}

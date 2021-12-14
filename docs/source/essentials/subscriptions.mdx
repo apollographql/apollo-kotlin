@@ -1,0 +1,77 @@
+---
+title: Subscriptions in Apollo Kotlin
+sidebar_title: Subscriptions
+---
+
+Subscriptions are long-lived GraphQL read operations that can update their response over time, enabling clients to receive updates as they occur. They're usually implemented as a connection to a GraphQL server over WebSocket (including in Apollo Kotlin).
+
+You define a subscription in your app just like you define a query, except you use the `subscription` keyword. Here's an example subscription for getting the latest value of a number whenever that number is incremented:
+
+```graphql
+subscription NumberIncremented {
+  numberIncremented
+}
+```
+
+Unlike with queries and mutations, a subscription operation can include only _one_ field of the `Subscription` type. To subscribe to multiple fields, you create multiple subscription operations.
+
+## Setting the WebSocket URL
+
+Because subscriptions usually use WebSocket instead of HTTP, you might have to customize the URL used:
+
+```kotlin
+val apolloClient = ApolloClient.Builder()
+  .webSocketServerUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
+  .build()
+```
+
+> **Note:** Apollo Kotlin supports both `https://` (or `http://`) and `wss://` (or `ws://`) protocols. Internally, `wss://` is renamed to `https://` and which one you use does not matter.
+
+## Listening to a subscription
+
+After you configure the `NetworkTransport`, use `ApolloClient.subscribe` to open the connection and listen for changes:
+
+```kotlin
+apolloClient.subscription(TripsBookedSubscription())
+    .toFlow()
+    .collect {
+      println("trips booked: ${it.data?.tripsBooked}")
+    }
+```
+
+Because subscriptions are long-lasting operations, they return a `Flow<Response>` instead of a single `Response`.
+
+## Terminating a subscription
+
+Termination is handled through the coroutine scope. Cancel the coroutine to terminate the subscription.
+
+By default, a single WebSocket is shared between all active subscriptions. When no subscription is active, the WebSocket is closed after a configurable timeout.
+
+## Error handling
+
+Like queries, subscriptions support partial responses with GraphQL errors, which are emitted in the `Flow`.
+
+Network errors terminate the `Flow`, and you will have to retry it to get new updates. Retrying might reopen a new WebSocket or restart the subscription depending on the case.
+
+## Customizing your WebSocket protocol
+
+By default, Apollo Kotlin uses [subscriptions-transport-ws](https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md) as a protocol. The subscription protocol is not specified by the GraphQL specification so you might come across different variants:
+
+* [subscriptions-transport-ws](https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md)
+* [graphql-ws](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md)
+* [appsync](https://docs.aws.amazon.com/appsync/latest/devguide/real-time-websocket-client.html) (also uses `graphql-ws` as [Sec-WebSocket-Protocol](https://datatracker.ietf.org/doc/html/rfc6455#section-1.2))
+
+To customize your protocol, use the `WsProtocol` interface. Apollo Kotlin comes with built-in support for the protocols above:
+
+* subscriptions-transport-ws: `SubscriptionWsProtocol` (default)
+* graphql-ws: `GraphQLWsProtocol`
+* appsync: `AppSyncWsProtocol`
+
+For example, you can configure a `graphql-ws` transport like so:
+
+```kotlin
+val apolloClient = ApolloClient.Builder()
+    .webSocketServerUrl("http://localhost:9090/graphql")
+    .wsProtocol(GraphQLWsProtocol.Factory())
+    .build()
+```

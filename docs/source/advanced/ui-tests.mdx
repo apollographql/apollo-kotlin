@@ -4,61 +4,28 @@ title: UI Tests
 
 import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
-Apollo Android offers a built-in [IdlingResource](https://developer.android.com/reference/androidx/test/espresso/IdlingResource) to help writing UI tests with Espresso. The `ApolloIdlingResource` will make sure that your tests wait for your GraphQL queries terminate before moving on with testing.
+Apollo Kotlin provides a built-in [`IdlingResource`](https://developer.android.com/reference/androidx/test/espresso/IdlingResource) to help you write UI tests with Espresso. The `ApolloIdlingResource` makes sure that your tests wait for your GraphQL queries to terminate before proceeding.
 
-Add the following `dependency`:
+Add the `apollo-idling-resource` dependency:
 
-[![apollo-idling-resource](https://img.shields.io/maven-central/v/com.apollographql.apollo/apollo-idling-resource?label=apollo-idling-resource)](https://search.maven.org/artifact/com.apollographql.apollo/apollo-idling-resource)
-```groovy
-implementation("com.apollographql.apollo:apollo-idling-resource:x.y.z")
+```kotlin:title=build.gradle[.kts]
+implementation("com.apollographql.apollo3:apollo-idling-resource:x.y.z")
 ```
 
-If you have multiple `ApolloClients` you need to create and register multiple `ApolloIdlingResource` with different names. Registering several IdlingResources with the same name will crash.
-
-<MultiCodeBlock>
+> If you have multiple `ApolloClient`s, you need to create and register a different `ApolloIdlingResource` with a different name for each. Registering multiple `IdlingResource`s with the same name will cause your test suite to crash.
 
 ```kotlin
+// Create your IdlingResource
+val idlingResource = ApolloIdlingResource("apolloIdlingResource")
+
 // Register the idlingResource before running your tests (once per client).
-val idlingResource = ApolloIdlingResource.create("ApolloIdlingResource", apolloClient)
 IdlingRegistry.getInstance().register(idlingResource)
+
+// Intruct your ApolloClient to update the IdlingResource
+val apolloClient = ApolloClient.Builder()
+  .serverUrl("https://example.com/graphql")
+  .idlingResource(idlingResource)
+  .build()
 ```
 
-```java
-// Register the idlingResource before running your tests (once per client).
-IdlingResource idlingResource = ApolloIdlingResource.create("ApolloIdlingResource", apolloClient);
-IdlingRegistry.getInstance().register(idlingResource);
-```
-
-</MultiCodeBlock>
-
-
-Most frequently this code is put into a custom TestRunner as below. Please note that you need the ApolloClient instance you use in the app.
-
-<MultiCodeBlock>
-
-```kotlin
-class TestRunner : AndroidJUnitRunner() {
-    override fun onStart() {
-        val idlingResource = ApolloIdlingResource.create ("ApolloIdlingResource", apolloClient);
-        IdlingRegistry.getInstance().register(idlingResource);
-
-        super.onStart();
-    }
-}
-```
-
-```java
-public final class TestRunner extends AndroidJUnitRunner {
-  @Override
-  public void onStart() {
-    IdlingResource idlingResource = ApolloIdlingResource.create("ApolloIdlingResource", apolloClient);
-    IdlingRegistry.getInstance().register(idlingResource);
-    // etc...
-
-    super.onStart();
-  }
-}
-```
-
-</MultiCodeBlock>
-
+In the example above, all operations executed by `apolloClient` (except subscriptions, which might run for a long time) will update the `IdlingResource` so that no automatic actions take place while your app is waiting for data.

@@ -1,0 +1,45 @@
+name: push
+
+on:
+  push:
+    branches: [ dev-3.x ]
+
+jobs:
+  push:
+    runs-on: macos-11
+    steps:
+      - uses: actions/checkout@v2
+      - name: set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      - name: Build with Gradle
+        run: |
+          ulimit -c unlimited
+          # Workaround an issue where kotlinNpmInstall outputs
+          # 'Resolving NPM dependencies using yarn' returns 137
+          ./gradlew compileKotlinJsIr compileKotlinJsLegacy
+          ./gradlew --stop
+          ./gradlew ciBuild
+          ./gradlew --stop
+          ./gradlew -p tests ciBuild
+          ./gradlew dokkaHtmlMultiModule
+          ./gradlew ciPublishSnapshot
+        env:
+          SONATYPE_NEXUS_PASSWORD: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
+          SONATYPE_NEXUS_USERNAME: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
+          COM_APOLLOGRAPHQL_PROFILE_ID: ${{ secrets.COM_APOLLOGRAPHQL_PROFILE_ID }}
+      - name: Collect Diagnostics
+        if: always()
+        run: ./scripts/collect-diagnostics.main.kts
+      - uses: actions/upload-artifact@v2.2.4
+        if: always()
+        with:
+          name: push.zip
+          path: push.zip
+      - name: Deploy Kdoc to github pages
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: build/dokkaHtml # The folder the action should deploy.

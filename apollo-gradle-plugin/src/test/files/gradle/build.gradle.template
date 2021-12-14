@@ -7,11 +7,6 @@ buildscript {
     }
     google()
     mavenCentral()
-    jcenter {
-      content {
-        includeGroup("org.jetbrains.trove4j")
-      }
-    }
   }
   dependencies {
     // ADD BUILDSCRIPT DEPENDENCIES HERE
@@ -22,7 +17,7 @@ buildscript {
 
 // ADD PLUGINS HERE
 // apply plugin: 'com.android.library'
-// apply plugin: 'com.apollographql.apollo'
+// apply plugin: 'com.apollographql.apollo3'
 
 repositories {
   maven {
@@ -30,11 +25,6 @@ repositories {
   }
   google() // for aapt2
   mavenCentral() // for jetbrainsAnnotations, depended on by apolloApi
-  jcenter {
-    content {
-      includeGroup("org.jetbrains.trove4j")
-    }
-  }
 }
 
 dependencies {

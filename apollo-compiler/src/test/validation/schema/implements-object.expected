@@ -1,0 +1,2 @@
+ERROR: ValidationError (5:0)
+Object 'Cat' cannot implement non-interface 'Animal'

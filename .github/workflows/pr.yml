@@ -1,0 +1,111 @@
+name: pr
+
+on:
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+
+# Cancel any current or previous job from the same PR
+concurrency:
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests-gradle:
+    runs-on: macos-11
+    steps:
+      - uses: actions/checkout@v2
+      - name: set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build with Gradle
+        run: |
+          ulimit -c unlimited
+          # Workaround an issue where kotlinNpmInstall outputs
+          # 'Resolving NPM dependencies using yarn' returns 137
+          ./gradlew compileKotlinJsIr compileKotlinJsLegacy
+          ./gradlew --stop
+          ./gradlew ciTestsGradle
+      - name: Collect Diagnostics
+        if: always()
+        run: ./scripts/collect-diagnostics.main.kts
+      - uses: actions/upload-artifact@v2.2.4
+        if: always()
+        with:
+          name: tests-gradle.zip
+          path: diagnostics.zip
+  tests-no-gradle:
+    runs-on: macos-11
+    steps:
+      - uses: actions/checkout@v2
+      - name: set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build with Gradle
+        run: |
+          ulimit -c unlimited
+          # Workaround an issue where kotlinNpmInstall outputs
+          # 'Resolving NPM dependencies using yarn' returns 137
+          ./gradlew compileKotlinJsIr compileKotlinJsLegacy
+          ./gradlew --stop
+          ./gradlew ciTestsNoGradle
+      - name: Collect Diagnostics
+        if: always()
+        run: ./scripts/collect-diagnostics.main.kts
+      - uses: actions/upload-artifact@v2.2.4
+        if: always()
+        with:
+          name: tests-no-gradle.zip
+          path: diagnostics.zip
+  tests-integration:
+    runs-on: macos-11
+    steps:
+      - uses: actions/checkout@v2
+      - name: set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build with Gradle
+        run: |
+          ulimit -c unlimited
+          # Workaround an issue where kotlinNpmInstall outputs
+          # 'Resolving NPM dependencies using yarn' returns 137
+          ./gradlew compileKotlinJsIr compileKotlinJsLegacy
+          ./gradlew --stop
+          ./gradlew -p tests ciBuildJava8
+      - name: Collect Diagnostics
+        if: always()
+        run: ./scripts/collect-diagnostics.main.kts
+      - uses: actions/upload-artifact@v2.2.4
+        if: always()
+        with:
+          name: tests-integration.zip
+          path: diagnostics.zip
+  tests-java9:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      - name: Build with Gradle
+        run: |
+          ulimit -c unlimited
+          # Workaround an issue where kotlinNpmInstall outputs
+          # 'Resolving NPM dependencies using yarn' returns 137
+          ./gradlew compileKotlinJsIr compileKotlinJsLegacy
+          ./gradlew --stop
+          ./gradlew -p tests ciBuildJava9
+      - name: Collect Diagnostics
+        if: always()
+        run: ./scripts/collect-diagnostics.main.kts
+      - uses: actions/upload-artifact@v2.2.4
+        if: always()
+        with:
+          name: tests-integration.zip
+          path: diagnostics.zip

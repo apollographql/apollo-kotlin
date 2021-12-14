@@ -282,7 +282,6 @@ type Query {
   """For testing fragment type coercion"""
   foo: Foo
   hero(
-    """Test description with "quotes" inside"""
     episode: Episode
 
     """for test purpose only"""
@@ -424,4 +423,25 @@ scalar UnsupportedType
 schema {
   query: Query
   mutation: Mutation
+}
+
+interface Node {
+  id: ID!
+}
+
+interface Organization implements Node {
+  id: ID!
+  name: String!
+}
+
+type Empire implements Organization {
+  id: ID!
+  name: String!
+  emperor: String!
+}
+
+type Rebellion implements Organization {
+  id: ID!
+  name: String!
+  emperor: String!
 }

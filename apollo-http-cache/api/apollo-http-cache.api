@@ -1,0 +1,55 @@
+public final class com/apollographql/apollo3/cache/http/CachingHttpInterceptor : com/apollographql/apollo3/network/http/HttpInterceptor {
+	public static final field CACHE_DO_NOT_STORE Ljava/lang/String;
+	public static final field CACHE_EXPIRE_AFTER_READ_HEADER Ljava/lang/String;
+	public static final field CACHE_EXPIRE_TIMEOUT_HEADER Ljava/lang/String;
+	public static final field CACHE_FETCH_POLICY_HEADER Ljava/lang/String;
+	public static final field CACHE_FIRST Ljava/lang/String;
+	public static final field CACHE_KEY_HEADER Ljava/lang/String;
+	public static final field CACHE_ONLY Ljava/lang/String;
+	public static final field CACHE_SERVED_DATE_HEADER Ljava/lang/String;
+	public static final field Companion Lcom/apollographql/apollo3/cache/http/CachingHttpInterceptor$Companion;
+	public static final field FROM_CACHE Ljava/lang/String;
+	public static final field NETWORK_FIRST Ljava/lang/String;
+	public static final field NETWORK_ONLY Ljava/lang/String;
+	public fun <init> (Ljava/io/File;JLokio/FileSystem;)V
+	public synthetic fun <init> (Ljava/io/File;JLokio/FileSystem;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun delete ()V
+	public fun dispose ()V
+	public fun intercept (Lcom/apollographql/apollo3/api/http/HttpRequest;Lcom/apollographql/apollo3/network/http/HttpInterceptorChain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun remove (Ljava/lang/String;)V
+}
+
+public final class com/apollographql/apollo3/cache/http/CachingHttpInterceptor$Companion {
+	public final fun cacheKey (Lcom/apollographql/apollo3/api/http/HttpRequest;)Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/cache/http/DiskLruHttpCache {
+	public static final field Companion Lcom/apollographql/apollo3/cache/http/DiskLruHttpCache$Companion;
+	public fun <init> (Lokio/FileSystem;Ljava/io/File;J)V
+	public final fun delete ()V
+	public final fun read (Ljava/lang/String;)Lcom/apollographql/apollo3/api/http/HttpResponse;
+	public final fun remove (Ljava/lang/String;)V
+	public final fun write (Lcom/apollographql/apollo3/api/http/HttpResponse;Ljava/lang/String;)V
+}
+
+public final class com/apollographql/apollo3/cache/http/DiskLruHttpCache$Companion {
+}
+
+public final class com/apollographql/apollo3/cache/http/HttpCache {
+	public static final fun configureApolloClientBuilder (Lcom/apollographql/apollo3/ApolloClient$Builder;Ljava/io/File;J)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public static final fun httpDoNotStore (Lcom/apollographql/apollo3/api/MutableExecutionOptions;Z)Ljava/lang/Object;
+	public static final fun httpExpireAfterRead (Lcom/apollographql/apollo3/api/MutableExecutionOptions;Z)Ljava/lang/Object;
+	public static final fun httpExpireTimeout (Lcom/apollographql/apollo3/api/MutableExecutionOptions;J)Ljava/lang/Object;
+	public static final fun httpFetchPolicy (Lcom/apollographql/apollo3/api/MutableExecutionOptions;Lcom/apollographql/apollo3/cache/http/HttpFetchPolicy;)Ljava/lang/Object;
+	public static final fun isFromHttpCache (Lcom/apollographql/apollo3/api/ApolloResponse;)Z
+}
+
+public final class com/apollographql/apollo3/cache/http/HttpFetchPolicy : java/lang/Enum {
+	public static final field CacheFirst Lcom/apollographql/apollo3/cache/http/HttpFetchPolicy;
+	public static final field CacheOnly Lcom/apollographql/apollo3/cache/http/HttpFetchPolicy;
+	public static final field NetworkFirst Lcom/apollographql/apollo3/cache/http/HttpFetchPolicy;
+	public static final field NetworkOnly Lcom/apollographql/apollo3/cache/http/HttpFetchPolicy;
+	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/cache/http/HttpFetchPolicy;
+	public static fun values ()[Lcom/apollographql/apollo3/cache/http/HttpFetchPolicy;
+}
+

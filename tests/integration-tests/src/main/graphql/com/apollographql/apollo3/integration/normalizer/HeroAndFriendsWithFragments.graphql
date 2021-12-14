@@ -1,0 +1,5 @@
+query HeroAndFriendsWithFragments {
+  hero {
+    ... HeroWithFriendsFragment
+  }
+}

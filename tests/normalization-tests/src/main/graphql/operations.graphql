@@ -1,0 +1,43 @@
+query Issue3672 {
+  viewer {
+    libraries(limit: 1) {
+      book { id }
+      ...nestedBook
+      ...anotherBookFragment
+    }
+  }
+}
+
+fragment nestedBook on Library {
+  name
+  book {
+    name
+  }
+}
+
+fragment anotherBookFragment on Library {
+  book {
+    year
+  }
+}
+
+fragment bookAuthor on Book {
+  author
+}
+
+
+query Issue2818 {
+  home {
+    ...sectionFragment
+    sectionA {
+      name
+    }
+  }
+}
+
+fragment sectionFragment on Home {
+  sectionA {
+    id
+    imageUrl
+  }
+}

@@ -1,0 +1,8 @@
+type Query {
+  animal: Animal!
+}
+
+type Animal {
+  name: String
+}
+

@@ -1,0 +1,54 @@
+enum Class {
+    MAMMAL
+    FISH
+    BIRD
+    INSECT
+}
+
+scalar Date
+
+interface Animal {
+    class: Class!
+}
+
+type Cat implements Animal {
+    class: Class!
+    mustaches: Int!
+    dateOfBirth: Date!
+}
+
+type Plant {
+    name: String!
+    picture(size: Int!): String!
+}
+
+type Query {
+    randomAnimal: Animal!
+
+    randomPlant: Plant!
+
+    animal(class: Class!): Animal!
+}
+
+input AnimalInput {
+    class: Class!
+    name: String!
+}
+
+type Mutation {
+    registerAnimal(input: AnimalInput!): Boolean!
+}
+
+"""
+String
+Class
+Int
+"""
+fragment CatFragment on Cat {
+    class
+    mustaches
+}
+
+fragment PlantFragment on Plant {
+    picture(size: $size)
+}

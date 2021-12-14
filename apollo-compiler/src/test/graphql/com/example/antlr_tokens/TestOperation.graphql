@@ -1,0 +1,11 @@
+# A query that contains fields named as GraphQL keywords as well as a multiline string to make sure the parser
+# handles them correctly
+query TestQuery($operation: String) {
+  typeWithGraphQLKeywords {
+    on
+    null(fragment: $operation)
+    alias: null(fragment: """A string
+with a new line
+""")
+  }
+}

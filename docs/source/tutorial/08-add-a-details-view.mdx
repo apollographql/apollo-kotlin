@@ -63,7 +63,7 @@ query LaunchDetails($id:ID!) {
 }
 ```
 
-Remember you can always experiment in GraphQL Playground and type `Ctrl + Space` to show a list of fields that are available.
+> Remember you can always experiment in Studio Explorer and check out the left sidebar for a list of fields that are available.
 
 ## Show a loading ProgressBar
 
@@ -81,21 +81,23 @@ This time, display a progressBar while the query executes:
             binding.progressBar.visibility = View.VISIBLE
             binding.error.visibility = View.GONE
 
-            val response = apolloClient.query(LaunchDetailsQuery(id = args.launchId)).await()
+            val response = apolloClient.query(LaunchDetailsQuery(id = args.launchId)).execute()
+        }
+    }
 ```
 
 ## Handle protocol errors
 
 As you execute your query, two types of errors can happen:
 
-* Protocol errors. HTTP errors or JSON parsing errors will throw a `ApolloException`.
+* Protocol errors. HTTP errors or JSON parsing errors will throw an `ApolloException`.
 * Application errors. In this case, `response.errors` will contain the application errors and `response.data` might be `null`.
 
-For protocol errors, Apollo Android will throw an `ApolloException`, so you'll need to wrap the call in a try/catch block:
+For protocol errors, Apollo Kotlin throws an `ApolloException`, so you'll need to wrap the call in a try/catch block:
 
-```
+```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchDetailsFragment.kt
             val response = try {
-                apolloClient.query(LaunchDetailsQuery(id = args.launchId)).await()
+                apolloClient.query(LaunchDetailsQuery(id = args.launchId)).execute()
             } catch (e: ApolloException) {
                 binding.progressBar.visibility = View.GONE
                 binding.error.text = "Oh no... A protocol error happened"
@@ -112,7 +114,7 @@ This is good! But it's not enough. Even if the request executes correctly at the
 
 ## Handle application errors
 
-To handle application errors, you can check `response.hasErrors`:
+To handle application errors, you can check `response.hasErrors`. Add the following just below the previous `try`/`catch` block:
 
 ```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchDetailsFragment.kt
             val launch = response.data?.launch
@@ -161,7 +163,7 @@ Restore the correct launch ID: `LaunchDetailsQuery(id = args.launchId)` before d
 
 ## Display details
 
-If no errors occurred, hide the progressBar and display the detailed information:
+If no errors occurred, hide the progressBar and display the detailed information. Add the following code below the error handling code you just added:
 
 ```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchDetailsFragment.kt
             binding.progressBar.visibility = View.GONE
@@ -173,8 +175,6 @@ If no errors occurred, hide the progressBar and display the detailed information
             binding.missionName.text = launch.mission?.name
             val rocket = launch.rocket
             binding.rocketName.text = "🚀 ${rocket?.name} ${rocket?.type}"
-        }
-    }
 ```
 
 ## Handle the **Book now** button

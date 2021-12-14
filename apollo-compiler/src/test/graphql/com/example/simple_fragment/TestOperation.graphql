@@ -1,5 +1,7 @@
-# Demonstration of Java / Kotlin docs generation
-# for both query and fragments
+"""
+Demonstration of Java / Kotlin docs generation
+for both query and fragments
+"""
 query TestQuery {
   hero {
     __typename
@@ -8,15 +10,18 @@ query TestQuery {
   }
 }
 
-# Fragment with Java / Kotlin docs generation
-# with multi lines support
+"""
+Fragment with Java / Kotlin docs generation
+with multi lines support
+"""
 fragment HeroDetails on Character {
   __typename
-  name
   ... HumanDetails
 }
 
-# Fragment with Java / Kotlin docs generation
+"""
+Fragment with Java / Kotlin docs generation
+"""
 fragment HumanDetails on Human {
   __typename
   name

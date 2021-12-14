@@ -1,0 +1,122 @@
+---
+title: Error handling
+---
+
+Whenever you execute a GraphQL operation with Apollo Kotlin (or any other GraphQL client), two high-level types of errors can occur:
+
+* **Network errors**: a GraphQL response wasn't received because an error occurred while communicating with your GraphQL server. This might be an SSL error, a socket error because your app is offline, or a 500 or any other HTTP error. When a network error occurs, no data is returned.
+* **GraphQL errors**: a GraphQL response _is_ received, and it contains a non-empty [`errors`](https://spec.graphql.org/draft/#sec-Errors) field. This means the server wasn't able to completely process the query. The response might include _partial_ data if the server was able to process _some_ of the query.
+
+
+## Network errors
+
+Network errors throw an `ApolloException`. To handle them, wrap your query in a `try/catch` block:
+
+```kotlin
+try {
+  val response = apolloClient.query(query).execute()
+} catch(exception: ApolloException) {
+  // handle exception here
+}
+```
+
+**Non-exhaustive list of possible causes:**
+
+* The app is offline or doesn't have access to the network.
+* A DNS error occurred, making it impossible to look up the host.
+* An SSL error occurred (e.g., the server certificate isn't trusted).
+* The connection was closed.
+* The server responded with a non-successful HTTP code.
+* The server didn't respond with valid JSON.
+* The response JSON doesn't satisfy the schema and cannot be parsed.
+* A request was specified as CacheOnly but the data wasn't cached.
+* ...
+
+Examine the exception to get more detailed information about the actual error happening.
+
+## GraphQL errors
+
+Because GraphQL errors might still contain data, they do _not_ throw. Instead, they return a `Response` with a `Response.errors` field indicating the errors that occurred.
+
+For example, the following query uses an invalid `id` to look up a `Person`:
+
+```graphql
+query FilmAndPersonQuery {
+  film(id: "ZmlsbXM6MQ==") {
+    title
+  }
+  person(id: "badId") {
+    name
+  }
+}
+```
+
+The server will send the following response:
+
+```json
+{
+  "data": {
+    "film": {
+      "title": "A New Hope"
+    },
+    "person": null
+  },
+  "errors": [
+    {
+      "message": "No entry in local cache for https://swapi.dev/api/people/m�H/",
+      "locations": [
+        {
+          "line": 35,
+          "column": 3
+        }
+      ],
+      "path": [
+        "person"
+      ]
+    }
+  ]
+}
+```
+
+Note that while there are errors, the query successfully returned the title of the film: `A New Hope`. In general, any error while executing an operation [bubbles up](https://spec.graphql.org/draft/#sec-Errors) to the next nullable field. In this case, `person` is nullable. In the worst case, `response.data` can be null if everything else is non-nullable.
+
+Apollo Kotlin gives you access to both the data and the errors in the `Response` class:
+
+```kotlin
+val response = try {
+  apolloClient.query(query).execute()
+} catch(exception: ApolloException) {
+  // Network error, not much to do
+  throw exception
+}
+
+// It's possible to display the film title
+val title = response.data?.film?.title
+if (title != null) {
+  println(title)
+}
+
+// The person triggered an error
+val person = response.data?.person?.name
+if (person != null) {
+  // do something with response.errors
+}
+```
+
+## Ignoring partial data
+
+If you don't want to handle partial responses, you can simplify your error handling logic. `ApolloResponse.dataAssertNoErrors` will return a non-nullable `data` and throw if there are any errors. This way, you can handle all errors in a single `catch {}` block:
+
+```
+val data = try {
+  apolloClient.query(query).execute().dataAssertNoErrors
+} catch(exception: ApolloException) {
+  // All network or GraphQL errors are handled here
+  throw exception
+}
+
+// No need for safe calls on data
+val title = data.film?.title
+```
+
+Note that the safe call is still required on `film` because this field has a nullable type in the GraphQL schema. There are ways to override this in codegen. For more details, see [@nonnull](../advanced/nonnull).

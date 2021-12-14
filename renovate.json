@@ -1,7 +1,6 @@
 {
   "dependencyDashboard": true,
   "packageFiles": ["docs/package.json"],
-  "prNotPendingHours": 1,
   "extends": [
     "apollo-docs"
   ]

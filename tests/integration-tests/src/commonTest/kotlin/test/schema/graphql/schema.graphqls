@@ -1,0 +1,26 @@
+type Query {
+  animal: Animal
+}
+
+
+interface Animal {
+  species: String
+}
+
+interface Pet {
+  name: String
+}
+
+type Cat implements Animal & Pet {
+  species: String
+  name: String
+}
+
+type Dog implements Animal & Pet {
+  species: String
+  name: String
+}
+
+type Crocodile implements Animal {
+  species: String
+}

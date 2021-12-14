@@ -1,5 +1,0 @@
-query HeroAndFriendsWithFragments($episode: Episode) {
-  hero(episode: $episode) {
-    ... HeroWithFriendsFragment
-  }
-}

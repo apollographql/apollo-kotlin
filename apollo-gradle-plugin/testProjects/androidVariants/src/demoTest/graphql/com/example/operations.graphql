@@ -1,0 +1,4 @@
+query DemoTest {
+  demoField
+  testField
+}

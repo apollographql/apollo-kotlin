@@ -1,31 +1,48 @@
 ---
-title: Mutations
+title: Mutations in Apollo Kotlin
+sidebar_title: Mutations
 ---
 
 import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
-Queries are useful to fetch data from a server, but client-server communication may also require sending data to the server. This is where Mutations become handy.
-Just like REST, any request might end up causing some side-effects on the server, but by convention it's suggested that one doesn't use GET requests to modify data. GraphQL is similar - technically any query could be implemented to cause a data write.
-However, it's useful to establish a convention that any operations that cause writes should be sent explicitly via a *mutation*.
+**Mutations** are GraphQL operations that _modify_ back-end data. As a convention in GraphQL, [queries](./queries/) are read operations and mutations are write operations.
 
-Apollo Android handles GraphQL mutations. Mutations are similar to queries in syntax, the only difference being that you use the keyword `mutation` instead of `query` to indicate that the root fields on this query are going to be performing writes to the backend.
+## Defining a mutation
 
-```
+You define a mutation in your app just like you define a query, except you use the `mutation` keyword. Here's an example mutation for upvoting a post:
+
+```graphql:title=UpvotePost.graphql
 mutation UpvotePost($postId: Int!) {
   upvotePost(postId: $postId) {
+    id
     votes
   }
 }
 ```
 
-GraphQL mutations represent two things in one query string:
+And here's an example schema snippet that supports this mutation:
 
-1. The mutation field name with arguments, `upvotePost`, which represents the actual operation to be done on the server
-2. The fields you want back from the result of the mutation to update the client: `{ votes }`
+```graphql:title=schema.graphql
+type Mutation {
+  upvotePost(postId: Int!): Post
+}
 
-The above mutation will upvote a post on the server. The result might be:
-
+type Post {
+  id: Int!
+  votes: Int!
+  content: String!
+}
 ```
+
+The fields of the `Mutation` type (such as `upvotePost` above) usually describe the actions that your mutations can take. These fields commonly take one or more arguments, because they help specify the data to create or modify.
+
+### Mutation return types
+
+The return type of a `Mutation` field usually includes the back-end data that's been modified. This enables the requesting client to immediately know about the result of the mutation.
+
+In the example above, `upvotePost` returns the `Post` object that's just been upvoted. Here's an example response:
+
+```json
 {
   "data": {
     "upvotePost": {
@@ -36,52 +53,32 @@ The above mutation will upvote a post on the server. The result might be:
 }
 ```
 
-Similar to queries, mutations are represented by instances of generated classes, conforming to the `ApolloMutationCall` interface. Constructor arguments are used to define mutation variables. You pass a mutation object to `ApolloClient#perform(mutation)` to send the mutation to the server, execute it, and receive typed results:
+For more information on mutation return types, see [Designing mutations](https://www.apollographql.com/docs/apollo-server/schema/schema/#designing-mutations).
+
+
+## Generating mutation classes
+
+Similar to queries, mutations are represented by instances of generated classes, conforming to the `Mutation` interface.
+Constructor arguments are used to define mutation variables. You pass a mutation object
+to `ApolloClient#mutation(mutation)` to send the mutation to the server, execute it, and receive typed results:
 
 <MultiCodeBlock>
 
 ```kotlin
 val upvotePostMutation = UpvotePostMutation(votes = 3)
 
-apolloClient
-    .mutate(upvotePostMutation)
-    .enqueue(object: ApolloCall.Callback<UpvotePost.Data>() {
-            override fun onResponse(response: Response<UpvotePost.Data>) {
-                Log.i(TAG, response.toString());
-            }
-            
-            override fun onFailure(e: ApolloException) {
-                Log.e(TAG, e.getMessage(), e);
-            }
-        }
-    )
-```
-
-```java
-UpvotePostMutation upvotePostMutation = UpvotePostMutation.builder()
-    .votes(3)
-    .build();
-
-apolloClient
-    .mutate(upvotePostMutation)
-    .enqueue(
-        new ApolloCallback<>(new ApolloCall.Callback<UpvotePost.Data>() {
-          @Override public void onResponse(@NotNull Response<UpvotePost.Data> response) {
-              Log.i(TAG, response.toString());
-          }
-        
-          @Override public void onFailure(@NotNull ApolloException e) {
-              Log.e(TAG, e.getMessage(), e);
-          }
-        });
-    );
+val response = try {
+  apolloClient.mutation(upvotePostMutation).execute()
+} catch(e: ApolloException) {
+  // handle error
+}
 ```
 
 </MultiCodeBlock>
 
 ## Using fragments in mutation results
 
-In many cases, you'll want to use mutation results to update your UI. Fragments can be a great way of sharing result handling between queries and mutations:
+In many cases, you'll want to use mutation results to update your UI. [Fragments](./named-fragments) are a great way to share result handling between queries and mutations:
 
 ```graphql
 mutation UpvotePost($postId: Int!) {
@@ -91,44 +88,9 @@ mutation UpvotePost($postId: Int!) {
 }
 ```
 
-<MultiCodeBlock>
-
-```kotlin
-apolloClient
-    .mutate(upvotePostMutation)
-    .enqueue(object: ApolloCall.Callback<UpvotePost.Data>() {
-            override fun onFailure(e: ApolloException) {
-                Log.e(TAG, e.getMessage(), e);
-            }
-
-            override fun onResponse(response: Response<UpvotePost.Data>) {
-                Log.i(TAG, response.data.upvotePost.fragments.postDetails);              
-            }
-        }
-    )
-```
-
-```java
-apolloClient
-    .mutate(upvotePostMutation)
-    .enqueue(
-        new ApolloCallback<>(new ApolloCall.Callback<UpvotePost.Data>() {
-          @Override public void onResponse(@NotNull Response<UpvotePost.Data> response) {
-            Log.i(TAG, response.data.upvotePost.fragments.postDetails);
-          }
-        
-          @Override public void onFailure(@NotNull ApolloException e) {
-            Log.e(TAG, e.getMessage(), e);
-          }
-        })
-    );
-```
-
-</MultiCodeBlock>
-
 ## Passing input objects
 
-The GraphQL type system includes [input objects](http://graphql.org/learn/schema/#input-types) as a way to pass complex values to fields. Input objects are often defined as mutation variables, because they give you a compact way to pass in objects to be created:
+The GraphQL type system includes [input objects](http://graphql.org/learn/schema/#input-types) as a way to pass complex values to fields. Input objects are often used for mutation variables, because they give you a compact way to pass in objects to be created:
 
 ```graphql
 mutation CreateReviewForEpisode($episode: Episode!, $review: ReviewInput!) {
@@ -144,115 +106,11 @@ mutation CreateReviewForEpisode($episode: Episode!, $review: ReviewInput!) {
 ```kotlin
 val reviewInput = ReviewInput(stars = 5, commentary = "This is a great movie!")
 
-apolloClient.mutate(CreateReviewForEpisodeMutation(episode = Episode.NEWHOPE, review = reviewInput))
-```
-
-```java
-ReviewInput reviewInput = ReviewInput.Builder()
-    .stars(5)
-    .commentary("This is a great movie!")
-    .build()
-
-apolloClient.mutate(CreateReviewForEpisodeMutation(Episode.NEWHOPE, reviewInput))
-```
-
-</MultiCodeBlock>
-
-## Designing mutation results
-
-In GraphQL, mutations can return any type, and that type can be queried just like a regular GraphQL query. So the question is - what type should a particular mutation return?
-
-In most cases, the data available from a mutation result should be the server developer's best guess of the data a client would need to understand what happened on the server. For example, a mutation that creates a new comment on a blog post might return the comment itself. A mutation that reorders an array might need to return the whole array.
-
-## Uploading files
-
-Apollo Android supports file uploading over [graphql-multipart-request-spec](https://github.com/jaydenseric/graphql-multipart-request-spec).
-
-You need to define this mapping in your build.gradle file.
-
-```groovy
-apollo {
-  customTypeMapping = [
-    "Upload" : "com.apollographql.apollo.api.FileUpload"
-  ]
+try {
+  val response = apolloClient.mutation(CreateReviewForEpisodeMutation(episode = Episode.NEWHOPE, review = reviewInput)).execute()
+} catch (e: ApolloException) {
+  // handle exception
 }
-```
-
-**Note1** You don't need to register custom type adapter for `FileUpload`.
-
-**Note2** While Apollo Android doesn't use reflection for regular operations, it does for file upload. If you're using Proguard/R8, you need to keep everything inheriting from `InputType`:
-
-```proguard:title=proguard-rules.pro
--keep class * implements com.apollographql.apollo.api.InputType { *; }
-```
-
-In this example, the GraphQL schema uses custom scalar type named `Upload` for file upload. 
-Change it to match your GraphQL schema.
-
-Create graphql mutation.
-
-```
-mutation SingleUpload($file: Upload!) {
-  singleUpload(file: $file) {
-    id
-    path
-    filename
-    mimetype
-  }
-}
-```
-
-Call your mutation with mimetype and a valid file path.
-
-<MultiCodeBlock>
-
-```kotlin
-  mutationSingle = SingleUploadMutation(file = FileUpload.create("image/jpeg", "/my/image.jpg"))
-```
-
-```java
-  mutationSingle = SingleUploadMutation.builder()
-        .file(FileuploadKt.create(FileUpload.Companion, "image/jpeg", "/my/image.jpg"))
-        .build();
-```
-
-</MultiCodeBlock>
-
-If you don't have a `File`, you can also subclass `FileUpload`:
-
-<MultiCodeBlock>
-
-```kotlin
-  object upload : FileUpload(mimetype) {
-    override fun contentLength(): Long {
-      TODO("return contentLength here")
-    }
-    override fun fileName(): String? {
-      TODO("return fileName to use in the multipart request here")
-    }
-    override fun writeTo(sink: BufferedSink) {
-      TODO("write the data here")
-    }
-  }
-```
-
-```java
-FileUpload upload = new FileUpload(mimetype) {
-    @Override
-    public long contentLength() {
-        // return contentLength here
-    }
-    
-    @Override
-    public String fileName() {
-        // return fileName to use in the multipart request here
-    }
-    
-    @Override
-    public void writeTo(@NonNull BufferedSink sink) {
-        // write the data here
-    }
-};
 ```
 
 </MultiCodeBlock>

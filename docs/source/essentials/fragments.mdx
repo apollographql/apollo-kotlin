@@ -1,10 +1,22 @@
 ---
-title: Fragments
+title: Fragments in Apollo Kotlin
+sidebar_title: Fragments
 ---
 
-Apollo Android supports [GraphQL fragments](https://graphql.org/learn/queries/#fragments). Fragments allow you to define a set of fields that can be reusable in your queries.
+> **Note:** This article describes the behavior of fragments when using the default `operationBased` codegen in Apollo Kotlin. For the `responseBased` codegen, see [this page](../../advanced/response-based-codegen).
+
+Apollo Kotlin supports both forms of [GraphQL fragments](https://graphql.org/learn/queries/#fragments):
+
+* [Named fragments](#named-fragments), which enable you to reuse a set of fields across multiple operations
+* [Inline fragments](#inline-fragments), which enable you to access fields of [polymorphic types](https://www.apollographql.com/docs/apollo-server/schema/unions-interfaces/)
+
+
+## Named fragments
+
+Take a look at the following GraphQL definitions:
 
 ```graphql:title=Launch.graphql
+# Declaration of named fragment
 fragment launchFragment on Launch {
   id
   site
@@ -15,40 +27,69 @@ fragment launchFragment on Launch {
 
 query LaunchDetails($id:ID!) {
   launch(id: $id) {
+    # Usage of named fragment
     ...launchFragment
   }
 }
 ```
 
-Apollo Android will generate a `LaunchFragment` class that can be reused in different queries:
+Based on the `fragment` definition, Apollo Kotlin generates the following `LaunchFragment` class that you can reuse in different queries:
 
 ```kotlin:title=LaunchFragment.kt
 data class LaunchFragment(
-     val __typename: String = "Launch",
-     val id: String,
-     val site: String?,
-     val mission: Mission?
-   )
+  val id: String,
+  val site: String?,
+  val mission: Mission?
+)
 ```
 
-Your generated models will have a `.fragments` property to access the fragments:
+Generated models for operations that use this fragment have a `.launchFragment` property for accessing the fragment's fields:
 
 ```kotlin
-println("Mission site: ${launch.fragments.launchFragment.site}")
+println("Mission site: ${launch.launchFragment?.site}")
 ```
 
-To reuse a fragment, use it in any other query:
+> The `launchFragment` property is `null` if the returned object is _not_ a `Launch`.
+
+You can reuse the fragment in any number of operations:
 
 ```graphql:title=Launch.graphql
-// ...
+ # ...previous definitions...
 
 query LaunchList {
   launches {
-	launches {
+    launches {
       ...launchFragment
     }
   }
 }
 ```
-You can define your fragment in any `.graphql` file. The compiler merges all `.graphql` files so it doesn't matter if you have multiple files or put everything in the same file.
 
+You can even use a fragment in operations that are defined in a different `.graphql` file from the fragment itself. This is because Apollo Kotlin codegen merges all `.graphql` files in to a _single_ file before generating models.
+
+## Inline fragments
+
+Take a look at this query definition that uses two inline fragments:
+
+```graphql{4-9}:title=HeroQuery.graphql
+query HeroForEpisode($ep: Episode!) {
+  hero(episode: $ep) {
+    name
+    ... on Droid {
+      primaryFunction
+    }
+    ... on Human {
+      height
+    }
+  }
+}
+```
+
+For this operation, Apollo Kotlin generates a `Hero` class that contains `OnDroid` and `OnHuman` nested classes. `Hero` also includes `onDroid` and `onHuman` fields that enable you to access fields that are specific to `Droid` and `Human`:
+
+```kotlin
+println("Droid primaryFunction: ${hero.onDroid?.primaryFunction}")
+println("Human height: ${hero.onHuman?.height}")
+```
+
+> These `on<ShapeName>` fields (`onDroid` and `onHuman`) are `null` if the returned object is _not_ the corresponding type.

@@ -1,10 +1,12 @@
-apply(plugin = "kotlin")
-apply(plugin = "com.apollographql.apollo")
+import com.apollographql.apollo3.gradle.api.ApolloExtension
 
-configure<com.apollographql.apollo.gradle.api.ApolloExtension> {
-    generateKotlinModels.set(true)
-}
+apply(plugin = "kotlin")
+apply(plugin = "com.apollographql.apollo3")
 
 dependencies {
-    add("implementation","com.apollographql.apollo:apollo-runtime:1.4.5")
+    add("implementation","com.apollographql.apollo3:apollo-runtime:1.4.5")
+}
+
+configure<ApolloExtension> {
+    packageNamesFromFilePaths()
 }

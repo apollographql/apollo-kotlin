@@ -1,0 +1,10 @@
+query GetAll {
+  long
+  float
+  any
+  geoPoints
+}
+
+query GetAddress {
+  address
+}

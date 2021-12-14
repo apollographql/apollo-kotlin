@@ -1,9 +1,0 @@
-fragment HeroDetails on Character {
-  name
-}
-
-query TestQuery {
-  hero {
-    ...HeroDetails
-  }
-}

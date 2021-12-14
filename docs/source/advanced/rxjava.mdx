@@ -1,0 +1,60 @@
+---
+title: 'RxJava support'
+---
+
+import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
+
+If you're using Apollo Kotlin in a [Java project](java) or a Kotlin project that uses RxJava, you can use Apollo's RxJava extensions.
+
+To do so, add the `apollo-rx2-support` or `apollo-rx3-support` dependency to your project:
+
+```kotlin:title=build.gradle[.kts]
+dependencies {
+  // ...
+
+  // For RxJava 2
+  implementation("com.apollographql.apollo3:apollo-rx2-support:$version")
+
+  // For RxJava 3
+  implementation("com.apollographql.apollo3:apollo-rx3-support:$version")
+}
+```
+
+## Executing operations
+
+Use the `rxSingle` / `rxFlowable` extensions to execute GraphQL operations and get RxJava observables:
+
+<MultiCodeBlock>
+
+```java
+import com.apollographql.apollo3.rx2.Rx2Apollo;
+
+// (...)
+
+// Query
+ApolloCall<MyQuery.Data> queryCall = client.query(new MyQuery());
+Single<ApolloResponse<MyQuery.Data>> queryResponse = Rx2Apollo.single(queryCall);
+queryResponse.subscribe( /* ... */ );
+
+// Mutation
+ApolloCallCall<MyMutation.Data> mutationCall = client.mutation(new MyMutation("my-parameter"));
+Single<ApolloResponse<MyMutation.Data>> mutationResponse = Rx2Apollo.single(mutationCall);
+mutationResponse.subscribe( /* ... */ );
+
+// Subscription
+ApolloCall<MySubscription.Data> subscriptionCall = client.subscription(new MySubscription());
+Flowable<ApolloResponse<MySubscription.Data>> subscriptionResponse = Rx2Apollo.flowable(subscriptionCall);
+subscriptionResponse.subscribe( /* ... */ );
+```
+
+```kotlin
+// Query
+client.query(MyQuery()).rxSingle().subscribe(/* ... */)
+
+// Mutation
+client.mutation(MyMutation("my-parameter")).rxSingle().subscribe(/* ... */)
+
+// Subscription
+client.subscription(MySubscription()).rxFlowable().subscribe(/* ... */)
+```
+</MultiCodeBlock>

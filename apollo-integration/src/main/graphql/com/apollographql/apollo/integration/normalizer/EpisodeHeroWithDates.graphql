@@ -1,7 +1,0 @@
-query EpisodeHeroWithDates($episode: Episode) {
-  hero(episode: $episode) {
-    heroName: name
-    birthDate
-    showUpDates: appearanceDates
-  }
-}

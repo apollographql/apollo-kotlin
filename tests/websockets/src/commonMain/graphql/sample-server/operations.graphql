@@ -1,0 +1,27 @@
+subscription Count($to: Int!, $delayMillis: Int!)  {
+  count(to: $to, delayMillis: $delayMillis)
+}
+
+subscription CountString($to: Int!, $delayMillis: Int!)  {
+  countString(to: $to, delayMillis: $delayMillis)
+}
+
+subscription TimeSubscription  {
+  time
+}
+
+subscription OperationError {
+  operationError
+}
+
+query TimeQuery {
+  time
+}
+
+query CloseSocket {
+  closeWebSocket
+}
+
+subscription GraphqlAccessError($after: Int!) {
+  graphqlAccessError(after: $after)
+}

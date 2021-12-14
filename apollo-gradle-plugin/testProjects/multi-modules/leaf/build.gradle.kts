@@ -1,6 +1,6 @@
 plugins {
   kotlin("jvm")
-  id("com.apollographql.apollo")
+  id("com.apollographql.apollo3")
   id("application")
 }
 
@@ -18,5 +18,5 @@ application {
 }
 
 apollo {
-  generateKotlinModels.set(true)
+  packageNamesFromFilePaths()
 }

@@ -1,1 +1,6 @@
-<manifest package="com.apollographql.apollo.test.espresso" />
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.apollographql.apollo3.android">
+</manifest>

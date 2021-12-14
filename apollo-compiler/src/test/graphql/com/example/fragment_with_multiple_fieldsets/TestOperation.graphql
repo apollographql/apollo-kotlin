@@ -1,0 +1,18 @@
+# when generating the implementations, it's important to inherit from the most qualified fragment interface
+# In that case `AIFragment`. Else we not have access to fieldA from interfaces
+# i.e with
+#    data.i
+#        .iFragment()
+#        .asA() // <= this will cast to AIFragment so the interface needs to be implemented
+#        .fieldA
+query TestQuery {
+    i {
+        ...iFragment
+    }
+}
+
+fragment iFragment on I {
+    ... on A {
+        fieldA
+    }
+}

@@ -1,0 +1,20 @@
+---
+title: Caching in Apollo Kotlin
+description: Introduction
+sidebar_title: Introduction
+---
+
+Apollo Kotlin supports multiple forms of client-side caching for different purposes. Its built-in [normalized caches](./normalized-cache/) are especially useful for storing GraphQL operation results in an efficient, deduplicated way.
+
+> Additionally, Apollo Kotlin supports _server-side_ caching of operation strings via [persisted queries](../advanced/persisted-queries/).
+
+Here's a summary of all supported caches:
+
+| Cache | Description |
+|-------|-------------|
+| Built-in [normalized caches](./normalized-cache/) | Deduplicates GraphQL response data, enabling your app to use it as a source of truth for your UI. Can also dynamically react to changes in that data. Both in-memory and SQLite caches are included, and you can use _both_ to combine in-memory speed with SQLite persistence. |
+| Built-in [HTTP cache](./http-cache/) | Caches response data at the HTTP level. Can be faster to get started with and uses less CPU than normalized caches, but duplicates data and can't act as a source of truth. |
+| External caches | If you're already using an external cache (such as Room or SQLDelight), you can use it with Apollo Kotlin. Instead of using Apollo for both the network and database domains, you use generated models for the network and map them to your own database models. |
+| [Persisted queries](../advanced/persisted-queries/) (APQ) | <p>With APQ, your client sends a _hash_ of most queries to the server instead of the query itself. This makes requests much smaller and enables the use of GET requests instead of POST. This in turn makes it possible to cache results at the CDN level. The server also caches your query strings, meaning it doesn't have to parse a particular query each time it's sent. </p> <p>Persisted queries can be [_automatic_ persisted queries](https://www.apollographql.com/docs/apollo-server/performance/apq/) (which require little configuration), or you can use [custom persisted query IDs](https://www.apollographql.com/docs/android/v3/advanced/persisted-queries/#custom-id-for-persisted-queries).</p> |
+
+Client-side and server-side caches are not mutually exclusive, and most full-stack applications use both. Using a normalized cache with persisted queries helps you minimize your number of network requests, while also taking advantage of a CDN for requests that _are_ required.

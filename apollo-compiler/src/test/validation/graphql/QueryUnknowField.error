@@ -1,7 +1,0 @@
-Failed to parse GraphQL file /QueryUnknowField.graphql (2:2)
-Can't query `hero12` on type `Query`
-----------------------------------------------------
-[1]:query TestQuery {
-[2]:  hero12 {
-[3]:    name
-----------------------------------------------------

@@ -29,27 +29,25 @@ query LaunchList($cursor: String) {
 }
 ```
 
-You can experiment with GraphQL variables in GraphQL Playground by using the lower-left pane named **Query variables**. If you omit the `$cursor` variable, the server returns data starting from the beginning.
+You can experiment with GraphQL variables in Sandbox Explorer by using the pane under the main body of the operation named **Variables**. If you omit the `$cursor` variable, the server returns data starting from the beginning: 
 
-<img src="images/graphiql_variables.png" alt="GraphQL Playground variables" class="screenshot"/>
-
+<img src="images/explorer_cursor.png" alt="Explorer variables" class="screenshot"/>
 
 ## Get a callback when more data is needed
 
-modify `LaunchListAdapter.kt` to get a callback when the end of the list is reached:
+Add the following to `LaunchListAdapter.kt` to get a callback when the end of the list is reached:
 
 ```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchListAdapter.kt
     var onEndOfListReached: (() -> Unit)? = null
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val launch = launches.get(position)
+        val launch = launches[position]
         // ...
 
         if (position == launches.size - 1) {
             onEndOfListReached?.invoke()
         }
     }
-
 ```
 
 Note that you can add some look-ahead and trigger the callback before the end of list is reached if you want to minimize the wait time and trigger a new network requests a few items before the end of list is reached.
@@ -57,7 +55,7 @@ This is a basic implementation of a paging adapter - in a real project you would
 
 ## Connect to the callback
 
-In `LaunchListFragment.kt`, register this callback and link it to a coroutine [Channel](https://kotlinlang.org/docs/reference/coroutines/channels.html):
+In `LaunchListFragment.kt`'s `onViewCreated` between the `super` call and your existing `lifecyleScope` code, register this callback and link it to a coroutine [Channel](https://kotlinlang.org/docs/reference/coroutines/channels.html):
 
 ```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchListFragment.kt
         val launches = mutableListOf<LaunchListQuery.Launch>()
@@ -80,14 +78,14 @@ Also note that the channel is [CONFLATED](https://play.kotlinlang.org/hands-on/I
 
 ## Execute the paginated query
 
-Start a coroutine and execute the query. Replace the previous single query with the paginated version:
+Start a coroutine and execute the query. Replace the previous single query in your call to the `lifecycleScope` with the paginated version:
 
 ```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchListFragment.kt
   lifecycleScope.launchWhenResumed {
       var cursor: String? = null
       for (item in channel) {
           val response = try {
-              apolloClient.query(LaunchListQuery(cursor = Input.fromNullable(cursor))).await()
+              apolloClient.query(LaunchListQuery(Optional.Present(cursor))).execute()
           } catch (e: ApolloException) {
               Log.d("LaunchList", "Failure", e)
               return@launchWhenResumed
@@ -113,9 +111,10 @@ Start a coroutine and execute the query. Replace the previous single query with 
 
 Coroutines help you write pagination as if it were a procedural `while` loop. Notice how the cursor is updated at each iteration and the loop is terminated if there is no data to get from the backend anymore (`hasMore == false`)
 
+Note that we wrap the `cursor` in an `Optional`: this is because this parameter can be omitted in the query. 
 
 ## Test scrolling
 
-Click **Run**. You can now see all the scheduled launches!
+Click **Run**. You can now see all SpaceX launches back to their first FalconSat from Kwajalein Atoll!
 
 Next, you'll [add a details view](08-add-a-details-view) that will allow you to book a seat on a launch.

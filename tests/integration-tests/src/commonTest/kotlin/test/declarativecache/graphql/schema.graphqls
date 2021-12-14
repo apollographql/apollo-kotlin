@@ -1,0 +1,29 @@
+type Query {
+    promoAuthor: Author
+
+    promoBook: Book
+    otherBook: Book
+
+    promoLibrary: Library
+    otherLibrary: Library
+
+    author(firstName: String!, lastName: String!): Author
+    book(isbn: String!): Book
+    books(isbns: [String!]!): [Book!]!
+}
+
+type Library {
+    id: ID!
+    address: String!
+}
+
+type Author {
+    firstName: String!
+    lastName: String!
+}
+
+type Book {
+    isbn: String!
+    title: String!
+    author: Author
+}

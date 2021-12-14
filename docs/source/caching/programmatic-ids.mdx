@@ -1,0 +1,175 @@
+---
+title: Programmatic cache IDs in Apollo Kotlin
+sidebar_title: Programmatic cache IDs
+---
+
+In situations where [declarative cache IDs](./declarative-ids/) don't fit your use case, you can **programmatically** generate cache IDs for object types in your normalized cache.
+
+You can generate a given object type's cache ID from one of two sources:
+
+| Source | Class | Description |
+|--------|-----------|-------------|
+| From a response object's fields (e.g., `Book.id`) | [`CacheKeyGenerator`](#cachekeygenerator) | This happens _after_ a network request and is essential to merging a query result with existing cached data. This is the most common case. |
+| From a GraphQL operation's arguments (e.g., `author(id: "au456")`) | [`CacheKeyResolver`](#cachekeyresolver) | This happens _before_ a network request and enables you to avoid a network round trip if all requested data is in the cache already. This is an optional optimization that can avoid some cache misses. |
+
+Apollo Kotlin provides a class for generating cache keys from each of these sources.
+
+## `CacheKeyGenerator`
+
+The `CacheKeyGenerator` class enables you to generate custom cache IDs from an object's field values. This basic example generates _every_ object type's cache ID from its `id` field:
+
+```kotlin
+val cacheKeyGenerator = object : CacheKeyGenerator {
+  override fun cacheKeyForObject(obj: Map<String, Any?>, context: CacheKeyGeneratorContext): CacheKey? {
+    // Generate the cache ID based on the object's id field
+    return CacheKey(obj["id"] as String)
+  }
+}
+```
+
+To use your custom `CacheKeyGenerator`, include it in your cache initialization code like so:
+
+```kotlin{5}
+val apolloClient = ApolloClient.Builder()
+  .serverUrl("https://...")
+  .normalizedCache(
+    normalizedCacheFactory = cacheFactory,
+    cacheKeyGenerator = cacheKeyGenerator,
+  )
+  .build()
+```
+
+You can get the current object's typename from the `context` object and include it in the generated ID, like so:
+
+```kotlin
+val cacheKeyGenerator = object : CacheKeyGenerator {
+  override fun cacheKeyForObject(obj: Map<String, Any?>, context: CacheKeyGeneratorContext): CacheKey? {
+    val typename = context.field.type.leafType().name
+    val id = obj["id"] as String
+
+    return CacheKey(typename, id)
+  }
+}
+```
+
+You can also use the current object's typename to use _different_ cache ID generation logic for different object types.
+
+Note that for cache ID generation to work, your GraphQL operations must return whatever fields your custom code relies on (such as `id` above). If a query does not return a required field, the cache ID will be inconsistent, resulting in data duplication.
+
+## `CacheKeyResolver`
+
+The `CacheKeyResolver` class enables you to generate custom cache IDs from an field's arguments. This basic example generates _every_ object type's cache ID from the `id` argument _if it's present_:
+
+```kotlin
+val cacheKeyResolver = object: CacheKeyResolver() {
+  override fun cacheKeyForField(field: CompiledField, variables: Executable.Variables): CacheKey? {
+    // [field] contains compile-time information about what type of object is being resolved.
+    // Even though we call leafType() here, we're guaranteed that the type is a composite type and not a list
+    val typename = field.type.leafType().name
+
+    // resolveArgument returns the runtime value of the "id" argument
+    // from either the variables or as a literal value
+    val id = field.resolveArgument("id", variables)
+
+    if (id is String) {
+      // This field has an id argument, so we can use it to compute a cache ID
+      return CacheKey(typename, id)
+    }
+
+    // Return null to use the default handling
+    return null
+  }
+}
+```
+
+To use your custom `CacheKeyResolver`, include it in your cache initialization code like so:
+
+```kotlin{6}
+val apolloClient = ApolloClient.Builder()
+  .serverUrl("https://...")
+  .normalizedCache(
+    normalizedCacheFactory = cacheFactory,
+    cacheKeyGenerator = cacheKeyGenerator,
+    cacheResolver = cacheKeyResolver
+  )
+  .build()
+```
+
+Note the following about using a custom `CacheKeyResolver`:
+
+* The `cacheKeyForField` function is called for _every_ field in your operation that returns a composite type, so it's important to return `null` if you don't want to handle a particular field.
+* The function is _not_ called for fields that return a _list_ of composite types. [See below.](#handling-lists)
+
+### Handling lists
+
+Let's say we have this query:
+
+```graphql
+query GetBooks($ids: [String!]!) {
+  books(ids: $ids) {
+    id
+    title
+  }
+}
+```
+
+To have the cache look up _all_ books in the `ids` list, we need to override `listOfCacheKeysForField` in `CacheKeyResolver`:
+
+```kotlin
+override fun listOfCacheKeysForField(field: CompiledField, variables: Executable.Variables): List<CacheKey?>? {
+  // Note that the field *can* be a list type here
+  val typename = field.type.leafType().name
+
+  // resolveArgument returns the runtime value of the "id" argument
+  // from either the variables or as a literal value
+  val ids = field.resolveArgument("ids", variables)
+
+  if (ids is List<*>) {
+    // This field has an id argument, so we can use it to compute a cache key
+    return ids.map { CacheKey(typename, it as String) }
+  }
+
+  // Return null to use the default handling
+  return null
+}
+```
+
+For the sake of simplicity, only one level of list is supported. To support more nested lists, you can implement `CacheResolver`. `CacheResolver` is a generalization of `CacheKeyResolver` that can return any value from the cache, even scalar values:
+
+```kotlin
+val cacheResolver = object: CacheResolver {
+  override fun resolveField(
+      field: CompiledField,
+      variables: Executable.Variables,
+      parent: Map<String, @JvmSuppressWildcards Any?>,
+      parentId: String,
+  ): Any? {
+
+    var type = field.type
+    var listDepth = 0
+
+    while (true) {
+      when (type) {
+        is CompiledNotNullType -> type = type.ofType
+        is CompiledListType -> {
+          listDepth++
+          type = type.ofType
+        }
+        else -> break
+      }
+    }
+
+    // Now type points to the leaf type and lestDepth is the nesting of lists required
+
+    // Return a kotlin value for this field
+    // No type checking is done here so it must match the expected GraphQL type
+
+    if (listDepth == 2) {
+      return listOf(listOf("0", "1"))
+    }
+
+    // CacheResolver must always call DefaultCacheResolver last or all fields will be null else
+    return DefaultCacheResolver.resolveField(field, variables, parent, parentId)
+  }
+}
+```

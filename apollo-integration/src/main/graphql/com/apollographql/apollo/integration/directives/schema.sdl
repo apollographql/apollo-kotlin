@@ -1,7 +1,0 @@
-type Query {
-  getCityByName(name: String!): City
-}
-
-type City {
-  id: ID
-}

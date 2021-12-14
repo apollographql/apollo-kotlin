@@ -1,6 +1,0 @@
-query GetLaunch {
-  launch(id: "82", intValue: 41, floatValue: 3.5) {
-    id
-    cursor
-  }
-}

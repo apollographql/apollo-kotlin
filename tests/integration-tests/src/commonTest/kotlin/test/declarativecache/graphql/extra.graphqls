@@ -1,0 +1,12 @@
+extend type Author @typePolicy(keyFields: "firstName lastName")
+
+extend type Book @typePolicy(keyFields: "isbn")
+
+extend type Query @fieldPolicy(forField: "book", keyArgs: "isbn") @fieldPolicy(forField: "author", keyArgs: "firstName lastName")
+
+interface Node @typePolicy(keyFields: "id") {
+  id: ID!
+}
+
+extend type Library implements Node
+

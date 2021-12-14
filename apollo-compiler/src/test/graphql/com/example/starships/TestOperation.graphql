@@ -3,6 +3,5 @@ query TestQuery($id: ID!) {
     id,
     name,
     coordinates
-    shieldLevel
   }
 }

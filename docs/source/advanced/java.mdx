@@ -1,0 +1,49 @@
+---
+title: 'Using with Java'
+---
+
+import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
+
+
+This article describes how to use Apollo Kotlin in Java projects.
+
+## Use the Java codegen
+
+Apollo Kotlin generates Kotlin code by default, but you can configure it to use the Java codegen instead:
+
+```kotlin:title=build.gradle[.kts]
+apollo {
+  generateKotlinModels.set(false)
+}
+```
+
+## Build the client
+
+This snippet demonstrates initializing an `ApolloClient` instance in Java:
+
+```java
+import com.apollographql.apollo3.cache.normalized.NormalizedCache;
+import com.apollographql.apollo3.cache.http.HttpCache;
+// (...)
+
+ApolloClient.Builder builder = new ApolloClient.Builder()
+  .serverUrl("http://localhost:4000/graphql")
+
+// Optionally, set an http cache
+HttpCache.configureApolloClientBuilder(builder, cacheDirectory, cacheMaxSize);
+
+// Optionally, set a normalized cache
+NormalizedCache.configureApolloClientBuilder(
+  builder,
+  new MemoryCacheFactory(10 * 1024 * 1024, -1),
+  TypePolicyCacheKeyGenerator.INSTANCE,
+  FieldPolicyCacheResolver.INSTANCE,
+  false
+);
+
+ApolloClient client = builder.build();
+```
+
+## Use RxJava extensions
+
+Apollo Kotlin has a coroutines / Flow-based API that isn't well suited to using with Java. To achieve a similar effect, you can use Apollo's [RxJava extensions](./rxjava/).

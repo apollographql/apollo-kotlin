@@ -1,0 +1,107 @@
+---
+title: ApolloStore
+---
+
+Apollo Kotlin exposes the `ApolloStore` API to read and write from the normalized cache programmatically. The `ApolloStore` sits on top of `NormalizedCache`, exposes a thread safe API as well as methods that make it easier to read and write fragments and operations.
+
+The store is accessible with the `ApolloClient.apolloStore` extension:
+
+```kotlin
+val apolloClient = ApolloClient.Builder()
+  .serverUrl("https://...")
+  .normalizedCache(MemoryCacheFactory(maxSizeBytes = 10 * 1024 * 1024))
+  .build()
+
+val apolloStore: ApolloStore = apolloClient.apolloStore
+```
+
+## Reading operation data
+
+Just like a regular GraphQL query, the main way to use the store is to read and write queries:
+
+Given the following query:
+
+```graphql
+query GetBook($id: String!) {
+  book(id: $id) {
+    title
+    author {
+      name
+    }
+  }
+}
+```
+
+You can read it like this:
+
+```kotlin
+val data = apolloClient.apolloStore.readOperation(GetBookQuery(id = "42"))
+
+println("Title=${data.title}")
+println("Author Name=${data.author.name}")
+```
+
+In the event of cache miss, `readOperation` will throw:
+
+```kotlin
+try {
+  apolloClient.apolloStore.readOperation(GetBookQuery(id = "42"))
+} catch(e: CacheMissException) {
+  println("CacheMiss on key: ${e.key}.${e.fieldName}")
+}
+```
+## Writing operation data
+
+Writing operation data is similar to reading:
+
+```kotlin
+apolloClient.apolloStore.writeOperation(GetBookQuery(id = "42"), data)
+```
+
+Note how you'll need to pass the data allong the operation.
+
+## Reading and Writing fragments
+
+In the [GraphQL specification](https://spec.graphql.org/draft/), fragments are always part of a larger operation and cannot be executed standalone.
+
+```graphql
+fragment BookDetails on Book {
+  id
+  title
+  author {
+    name
+  }
+}
+```
+
+Apollo Kotlin makes an exception to that rule and allows to read/write individual fragments. This is disabled by default and can be enabled with `generateFragmentImplementations`:
+
+```kotlin
+apollo {
+  generateFragmentImplementations.set(true)
+}
+```
+
+Because fragments are not rooted, you need to specify the root cache id of the fragment:
+
+```kotlin
+val data = apolloClient.apolloStore.readFragment(BookDetailsImpl(), CacheKey("42")
+
+println("Title=${data.title}")
+println("Author Name=${data.author.name}")
+```
+
+Fragments can contain variables. Different fragments with different variables can return different data. In that case the fragment `Impl` class will require variables as constructor parameters:
+
+```graphql
+fragment BookDetails on Book {
+  id
+  title(locale: $locale)
+}
+```
+
+```kotlin
+val data = apolloClient.apolloStore.readFragment(BookDetailsImpl(locale = "en-US"), CacheKey("42")
+
+println("Title=${data.title}")
+```

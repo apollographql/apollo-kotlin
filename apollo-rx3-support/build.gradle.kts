@@ -1,15 +1,27 @@
+/*
+ * This file is auto generated from apollo-rx2-support by rxjava3.main.kts, do not edit manually.
+ */
 plugins {
-  `java-library`
   kotlin("jvm")
 }
 
 dependencies {
-  add("implementation", project(":apollo-api"))
-  add("api", groovy.util.Eval.x(project, "x.dep.rx.java3"))
-  add("api", project(":apollo-runtime"))
+  implementation(projects.apolloApi)
+  api(groovy.util.Eval.x(project, "x.dep.rx3"))
+  api(groovy.util.Eval.x(project, "x.dep.kotlin.coroutinesRx3"))
+
+  api(projects.apolloRuntime)
+  api(projects.apolloNormalizedCache)
 }
 
-tasks.withType<Javadoc> {
-  options.encoding = "UTF-8"
+val jar by tasks.getting(Jar::class) {
+  manifest {
+    attributes("Automatic-Module-Name" to "com.apollographql.apollo3.rx3")
+  }
 }
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
+  kotlinOptions {
+    allWarningsAsErrors = true
+  }
+}

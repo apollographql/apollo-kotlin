@@ -1,0 +1,134 @@
+# Built in scalar and introspection types from:
+# - https://spec.graphql.org/June2018/#sec-Scalars
+# - https://spec.graphql.org/June2018/#sec-Schema-Introspection
+
+"""
+The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
+"""
+scalar Int
+
+"""
+The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](http://en.wikipedia.org/wiki/IEEE_floating_point).
+"""
+scalar Float
+
+"""
+The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
+"""
+scalar String
+
+"""
+The `Boolean` scalar type represents `true` or `false`.
+"""
+scalar Boolean
+
+"""
+The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
+"""
+scalar ID
+
+
+type __Schema {
+  description: String
+  types: [__Type!]!
+  queryType: __Type!
+  mutationType: __Type
+  subscriptionType: __Type
+  directives: [__Directive!]!
+}
+
+type __Type {
+  kind: __TypeKind!
+  name: String
+  description: String
+
+  # should be non-null for OBJECT and INTERFACE only, must be null for the others
+  fields(includeDeprecated: Boolean = false): [__Field!]
+
+  # should be non-null for OBJECT and INTERFACE only, must be null for the others
+  interfaces: [__Type!]
+
+  # should be non-null for INTERFACE and UNION only, always null for the others
+  possibleTypes: [__Type!]
+
+  # should be non-null for ENUM only, must be null for the others
+  enumValues(includeDeprecated: Boolean = false): [__EnumValue!]
+
+  # should be non-null for INPUT_OBJECT only, must be null for the others
+  inputFields: [__InputValue!]
+
+  # should be non-null for NON_NULL and LIST only, must be null for the others
+  ofType: __Type
+}
+
+type __Field {
+  name: String!
+  description: String
+  args: [__InputValue!]!
+  type: __Type!
+  isDeprecated: Boolean!
+  deprecationReason: String
+}
+
+type __InputValue {
+  name: String!
+  description: String
+  type: __Type!
+  defaultValue: String
+}
+
+type __EnumValue {
+  name: String!
+  description: String
+  isDeprecated: Boolean!
+  deprecationReason: String
+}
+
+enum __TypeKind {
+  SCALAR
+  OBJECT
+  INTERFACE
+  UNION
+  ENUM
+  INPUT_OBJECT
+  LIST
+  NON_NULL
+}
+
+type __Directive {
+  name: String!
+  description: String
+  locations: [__DirectiveLocation!]!
+  args: [__InputValue!]!
+  isRepeatable: Boolean!
+}
+
+enum __DirectiveLocation {
+  QUERY
+  MUTATION
+  SUBSCRIPTION
+  FIELD
+  FRAGMENT_DEFINITION
+  FRAGMENT_SPREAD
+  INLINE_FRAGMENT
+  VARIABLE_DEFINITION
+  SCHEMA
+  SCALAR
+  OBJECT
+  FIELD_DEFINITION
+  ARGUMENT_DEFINITION
+  INTERFACE
+  UNION
+  ENUM
+  ENUM_VALUE
+  INPUT_OBJECT
+  INPUT_FIELD_DEFINITION
+}
+
+directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+directive @include(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+directive @deprecated(
+  reason: String = "No longer supported"
+) on FIELD_DEFINITION | ENUM_VALUE

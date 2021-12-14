@@ -1,0 +1,18 @@
+query TestQuery {
+  ... on Query {
+    __typename
+    hero {
+      name
+      appearsIn
+      ... on Human {
+        height
+      }
+    }
+    droid(id: 1) {
+      ... on Droid {
+        name
+        primaryFunction
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+query CatQuery {
+    cat {
+        ...AnimalFragment
+    }
+}
+
+fragment AnimalFragment on Animal {
+    ... on Cat {
+        name
+    }
+    ... on Dog {
+        name
+    }
+}

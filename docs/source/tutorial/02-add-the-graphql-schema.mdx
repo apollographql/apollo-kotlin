@@ -2,28 +2,34 @@
 title: "2. Add the GraphQL schema"
 ---
 
-This tutorial uses a modified version of the GraphQL server you build as part of [the Apollo full-stack tutorial](https://www.apollographql.com/docs/tutorial/introduction/). You can visit [`https://apollo-fullstack-tutorial.herokuapp.com/`](https://apollo-fullstack-tutorial.herokuapp.com/) to start it up and open the GraphQL Playground tool to explore its schema.
+This tutorial uses a modified version of the GraphQL server you build as part of [the Apollo full-stack tutorial](https://www.apollographql.com/docs/tutorial/introduction/). You can visit [that server's Apollo Studio Sandbox Explorer](https://studio.apollographql.com/sandbox/explorer?endpoint=https%3A%2F%2Fapollo-fullstack-tutorial.herokuapp.com) to explore its schema without needing to be logged in:
 
-<img src="images/graphiql.png" alt="The GraphQL Playground query explorer" class="screenshot"/>
+<img src="images/sandbox_landing.png" alt="The Sandbox query explorer" class="screenshot"/>
 
-The [schema](https://graphql.org/learn/schema/) defines which GraphQL operations your server can execute. Click **Docs** on the right-hand side to view a list of types you can query (and the types of fields on those types) along with any possible mutations or subscriptions.
+You'll know that this Sandbox instance is pointed at our server because its URL, `https://apollo-fullstack-tutorial.herokuapp.com`, is in the box at the top left of the page. If Sandbox is properly connected, you'll see a green dot:
 
-<img src="images/graphiql_show_schema.png" alt="GraphQL Playground showing the schema" class="screenshot">
-</img>
+<img src="images/sandbox_green_dot.png" alt="A closeup of the URL box with a dot indicating it's connected" class="screenshot"/>
+
+The schema defines which GraphQL operations your server can execute. At the top left, click the schema icon to get an overview of your schema:
+
+<img src="images/schema_icon.png" alt="The schema icon to click" class="screenshot"/>
+
+In the **Reference** tab, you can now see a list of all of the things available to you as a consumer of this API, along with available fields on all objects:
+
+<img src="images/sandbox_schema_reference.png" alt="Apollo sandbox showing the schema reference" class="screenshot"/>
 
 ## Download your server's schema
 
-Apollo Android requires a schema to generate typesafe models and code from your queries. There are multiple ways to get a schema. For an example, you can download a json schema directly from GraphQL Playground by clicking **Schema > Download** in the right pane.
+Apollo Kotlin requires a schema to generate type-safe models and code from your queries. There are multiple ways to get a schema. For example, you can go to the SDL tab and download the raw SDL schema using Apollo Studio Sandbox.
 
-In this tutorial, we will use the `apolloDownloadSchema` task that is created by the plugin automatically. Since GraphQL supports [introspection](https://graphql.org/learn/introspection/), this will work with any GraphQL endpoint that has introspection enabled.
+In this tutorial, we will use the `apolloDownloadSchema` Gradle task that is created by our plugin automatically. Since GraphQL supports [introspection](https://graphql.org/learn/introspection/), this will work with any GraphQL endpoint that has introspection enabled.
 
-From the root of the project, run the following:
+From the root of the project, run the following in Android Studio's Terminal tab:
 
 ```shell:title=(shell)
-mkdir -p app/src/main/graphql/com/example/rocketreserver/
-./gradlew :app:downloadApolloSchema --endpoint='https://apollo-fullstack-tutorial.herokuapp.com/' --schema='app/src/main/graphql/com/example/rocketreserver/schema.json'
+./gradlew :app:downloadApolloSchema --endpoint='https://apollo-fullstack-tutorial.herokuapp.com/graphql' --schema='app/src/main/graphql/com/example/rocketreserver/schema.graphqls'
 ```
 
-This will download a `schema.json` file from your endpoint to `app/src/main/graphql/com/example/rocketserver/schema.json`.
+This will download a `schema.graphqls` file from your endpoint to `app/src/main/graphql/com/example/rocketreserver/schema.graphqls`.
 
 Next, [write your first query](03-write-your-first-query) that uses this schema.

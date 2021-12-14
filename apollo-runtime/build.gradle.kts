@@ -1,26 +1,66 @@
 plugins {
-  `java-library`
-  kotlin("jvm")
+  kotlin("multiplatform")
 }
 
-metalava {
-  hiddenPackages += setOf("com.apollographql.apollo.internal")
+configureMppDefaults(withLinux = false)
+
+kotlin {
+  sourceSets {
+    val commonMain by getting {
+      dependencies {
+        api(projects.apolloApi)
+        api(projects.apolloMppUtils)
+        api(groovy.util.Eval.x(project, "x.dep.okio"))
+        api(groovy.util.Eval.x(project, "x.dep.uuid"))
+        api(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
+      }
+    }
+
+    val jvmMain by getting {
+      dependencies {
+        api(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
+      }
+    }
+
+    val jsMain by getting {
+      dependencies {
+        api(groovy.util.Eval.x(project, "x.dep.ktor.clientJs"))
+      }
+    }
+
+    val appleMain by getting {
+      dependencies {
+      }
+    }
+
+    val jvmTest by getting {
+      dependencies {
+        implementation(kotlin("test-junit"))
+        implementation(groovy.util.Eval.x(project, "x.dep.truth"))
+        implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
+      }
+    }
+  }
 }
 
-dependencies {
-  api(project(":apollo-api"))
-  api(project(":apollo-normalized-cache"))
-  api(project(":apollo-http-cache-api"))
-  api(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
-
-  add("testCompileOnly", groovy.util.Eval.x(project, "x.dep.jetbrainsAnnotations"))
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.mockito"))
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.junit"))
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.truth"))
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer"))
-  add("testImplementation", project(":apollo-rx2-support"))
+tasks.register("iOSSimTest") {
+  dependsOn("iosSimTestBinaries")
+  doLast {
+    val binary = kotlin.targets.getByName<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>("iosSim").binaries.getTest("DEBUG").outputFile
+    exec {
+      commandLine = listOf("xcrun", "simctl", "spawn", "iPhone 8", binary.absolutePath)
+    }
+  }
 }
 
-tasks.withType<Javadoc> {
-  options.encoding = "UTF-8"
+val jvmJar by tasks.getting(Jar::class) {
+  manifest {
+    attributes("Automatic-Module-Name" to "com.apollographql.apollo3.runtime")
+  }
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
+  kotlinOptions {
+    allWarningsAsErrors = true
+  }
 }

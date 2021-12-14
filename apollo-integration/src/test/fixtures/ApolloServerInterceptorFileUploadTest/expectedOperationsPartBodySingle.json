@@ -1,1 +1,0 @@
-{"operationName":"SingleUpload","variables":{"file":null},"query":"mutation SingleUpload($file: Upload!) { singleUpload(file: $file) { __typename id path filename mimetype } }"}

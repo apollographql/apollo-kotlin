@@ -1,0 +1,24 @@
+query WithDirectiveNullableParams($param1: Int @optional(if: true), $param2: Float @optional(if: true)) {
+  field(param1: $param1, param2: $param2)
+}
+
+query WithDirectiveNonNullableParams($param1: Int! @optional(if: true), $param2: Float! @optional(if: true)) {
+  field(param1: $param1, param2: $param2)
+}
+
+query WithDirectiveDefaultValueParams($param1: Int = 0 @optional(if: true), $param2: Float! = 0.0 @optional(if: true)) {
+  field(param1: $param1, param2: $param2)
+}
+
+
+query WithoutDirectiveNullableParams($param1: Int, $param2: Float) {
+  field(param1: $param1, param2: $param2)
+}
+
+query WithoutDirectiveNonNullableParams($param1: Int!, $param2: Float!) {
+  field(param1: $param1, param2: $param2)
+}
+
+query WithoutDirectiveDefaultValueParams($param1: Int = 0, $param2: Float! = 0.0) {
+  field(param1: $param1, param2: $param2)
+}

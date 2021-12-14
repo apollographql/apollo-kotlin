@@ -1,0 +1,23 @@
+schema {
+  query: Query
+  subscription: Subscription
+}
+
+type Query {
+  "Closes the socket"
+  closeWebSocket: String!
+  random: Int!
+  time: Int!
+}
+
+type Subscription {
+  "Count from 0 until 'to', waiting 'delayMillis' after each response"
+  count(delayMillis: Int!, to: Int!): Int!
+  "Count from 0 until 'to', waiting 'delayMillis' after each response and returns each result as a String"
+  countString(delayMillis: Int!, to: Int!): String!
+  "Trigger an error when accessed"
+  operationError: String!
+  "Returns a GraphQL error after 'after' items"
+  graphqlAccessError(after: Int!): Int
+  time: Int!
+}

@@ -1,0 +1,84 @@
+---
+title: Using a custom HTTP client
+sidebar_title: Custom HTTP clients
+---
+
+By default, Apollo Kotlin uses the following HTTP clients for different platforms/languages:
+
+| Platform | HTTP Client |
+|----------|-------------|
+| Android  | [OkHttp](https://square.github.io/okhttp/) |
+| JavaScript | [Ktor](https://ktor.io/) |
+| iOS/MacOS | [NSURLSesssion](https://developer.apple.com/documentation/foundation/nsurlsession) |
+
+You can use a different HTTP client with Apollo Kotlin by creating a custom class that implements the `HttpEngine` interface.
+
+## The `HttpEngine` interface
+
+The [HttpEngine interface](https://apollographql.github.io/apollo-android/kdoc/apollo-runtime/com.apollographql.apollo3.network.http/-http-engine/index.html) defines two functions: `execute` and `dispose`. Here's an example implementation that also includes a couple of helper methods:
+
+```kotlin
+class MyHttpEngine(val wrappedClient: MyClient) : HttpEngine {
+  /**
+   * Helper function to map the Apollo requests to MyClient requests
+   */
+  private fun HttpMethod.toMyClientRequest(): MyClientRequest {
+    ...
+  }
+
+  /**
+   * And the other way around
+   */
+  private fun MyClientResponse.toApolloResponse(): HttpResponse {
+    ...
+  }
+
+  override suspend fun execute(request: HttpRequest) = suspendCancellableCoroutine { continuation ->
+
+    val call = wrappedClient.newCall(request.toMyClientRequest())
+    continuation.invokeOnCancellation {
+      // If the coroutine is cancelled, also cancel the HTTP call
+      call.cancel()
+    }
+
+    wrappedClient.enqueue(
+        call,
+        success = { myResponse ->
+          // Success! report the response
+          continuation.resume(myResponse.toApolloResponse())
+        },
+        error = { throwable ->
+          // Error. Wrap in an ApolloException and report the error
+          continuation.resumeWithException(ApolloNetworkException(throwable))
+        }
+    )
+  }
+
+  override fun dispose() {
+    // Dispose any resources here
+  }
+}
+```
+
+This example uses an asynchronous `wrappedClient` that runs the network request in a separate thread. Note that because `HttpEngine.execute` itself is called from a background thread, you can safely block in `execute()`.
+
+## Using your `HttpEngine`
+
+After you create your `HttpEngine` implementation, you can register it with your [`ApolloClient`](https://apollographql.github.io/apollo-android/kdoc/apollo-runtime/com.apollographql.apollo3/-apollo-client/index.html) instance using [`ApolloClient.Builder.httpEngine`](https://apollographql.github.io/apollo-android/kdoc/apollo-runtime/com.apollographql.apollo3/-apollo-client/-builder/http-engine.html):
+
+```kotlin
+// Use your HttpEngine
+val client = ApolloClient.Builder()
+  .serverUrl(serverUrl = "https://com.example/graphql")
+  .httpEngine(httpEngine = MyHttpEngine(wrappedClient))
+  .build()
+```
+
+With this configuration, Apollo Kotlin sends all of its GraphQL operation requests with `MyHttpEngine`.
+
+## Other HTTP customizations
+
+Besides implementing `HttpEngine`, Apollo Kotlin also supports other methods for customizing HTTP behavior:
+
+* [No runtime](no-runtime): You can opt out of the Apollo Kotlin runtime completely and only use generated models and parsers. Use this option if you don't need any of the runtime features (caching, batching, automatic persisted queries, etc.).
+* [HTTP interceptors](interceptors-http): If you want to add HTTP headers and/or logging to your requests, [HTTP interceptors](interceptors-http) enable you to do this with minimal code.

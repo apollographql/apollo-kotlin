@@ -1,0 +1,21 @@
+type Query {
+  organization(id: String!): Organization
+}
+
+type Organization {
+  id: String!
+  name: String!
+  user(query: UserQuery!): [User!]!
+}
+
+input UserQuery {
+  name: String!
+  isAdmin: Boolean
+}
+
+type User {
+  firstName: String!
+  lastName: String!
+  birthDate: String!
+  avatar(size: Int!): String!
+}

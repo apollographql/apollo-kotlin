@@ -1,0 +1,17 @@
+# https://spec.graphql.org/draft/#sec-List.Input-Coercion
+# It's possible to pass a single value as a list
+query listOfIntValue {
+    listOfIntValue(listOfInt: 1)
+}
+
+query listOfIntValueNull {
+    listOfIntValue(listOfInt: null)
+}
+
+query listOfListOfIntValue {
+    listOfListOfIntValue(listOfListOfInt: 1)
+}
+
+query listOfListOfIntValueArray {
+    listOfListOfIntValue(listOfListOfInt: [1])
+}

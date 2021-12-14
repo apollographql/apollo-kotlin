@@ -1,0 +1,66 @@
+---
+title: Uploading files
+---
+import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
+
+Apollo Kotlin supports file uploading following
+the [GraphQL multipart request specification](https://github.com/jaydenseric/graphql-multipart-request-spec).
+
+First, add the following custom scalar mapping to the Apollo Gradle plugin configuration:
+
+<MultiCodeBlock>
+
+```groovy:title=build.gradle
+apollo {
+  customScalarsMapping = [
+    "Upload" : "com.apollographql.apollo3.api.Upload"
+  ]
+}
+```
+
+```kotlin:title=build.gradle.kts
+apollo {
+  customScalarsMapping.set(mapOf(
+    "Upload" to "com.apollographql.apollo3.api.Upload"
+  ))
+}
+```
+</MultiCodeBlock>
+
+In this example, the GraphQL schema defines a custom scalar type named `Upload` - adapt it to match your own GraphQL
+schema.
+
+Note: you don't need to register a type adapter for `Upload`, the runtime will recognize it and use the appropriate
+adapter.
+
+Now let's consider a mutation that takes an `Upload` as a parameter:
+
+```graphql
+mutation SingleUpload($file: Upload!) {
+  singleUpload(file: $file) {
+    id
+    path
+    filename
+    mimetype
+  }
+}
+```
+
+Create an instance of `Upload` using one of the factory methods:
+
+```kotlin
+val upload = DefaultUpload.Builder()
+              .content(okioSource)
+              .build()
+
+// or if you're on the JVM
+val upload = DefaultUpload.Builder()
+              .file(file)
+              .build()
+```
+
+And execute your mutation:
+
+```kotlin
+val response = apolloClient.mutation(SingleUploadMutation(file = upload)).execute()
+```

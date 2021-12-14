@@ -1,0 +1,19 @@
+query NullableVariable($param: Int) {
+  fieldWithNullableParameter(param: $param)
+}
+
+query NullableVariableWithOptionalFalseDirective($param: Int @optional(if: false)) {
+  fieldWithNullableParameter(param: $param)
+}
+
+query NonNullVariable($param: Int!) {
+  fieldWithNullableParameter(param: $param)
+}
+
+query NullableVariableWithDefaultValue($param: Int = 42 @optional(if: false)) {
+  fieldWithNullableParameter(param: $param)
+}
+
+query NonNullVariableWithDefaultValue($param: Int! = 42 @optional(if: false)) {
+  fieldWithNullableParameter(param: $param)
+}

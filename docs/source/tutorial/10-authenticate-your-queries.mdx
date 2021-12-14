@@ -1,8 +1,8 @@
 ---
-title: "10. Authenticate your queries"
+title: "10. Authenticate your operations"
 ---
 
-In this section, you will book a flight 🚀! Booking a flight requires being authenticated to the server so the correct person is sent to space! To do that, and since Apollo Android is using [OkHttp](https://square.github.io/okhttp/) to handle HTTP requests, you will use OkHttp [Interceptors](https://square.github.io/okhttp/interceptors/) to add headers to your GraphQL requests.
+In this section, you will book a flight 🚀! Booking a flight requires being authenticated to the server so the correct person is sent to space! To do that, and since Apollo Kotlin is using [OkHttp](https://square.github.io/okhttp/) to handle HTTP requests, you will use OkHttp [Interceptors](https://square.github.io/okhttp/interceptors/) to add headers to your GraphQL requests.
 
 ## Add the interceptor
 
@@ -27,12 +27,13 @@ This interceptor appends an `"Authorization: $token"` HTTP header to every reque
 Create a custom `OkHttpClient` that will use this interceptor and pass it to the `ApolloClient`:
 
 ```kotlin:title=app/src/main/kotlin/com/example/rocketreserver/Apollo.kt
-    instance = ApolloClient.builder()
-        .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/")
-        .okHttpClient(OkHttpClient.Builder()
-            .addInterceptor(AuthorizationInterceptor(context))
-            .build()
-        )
+    val okHttpClient = OkHttpClient.Builder()
+        .addInterceptor(AuthorizationInterceptor(context))
+        .build()
+
+    val apolloClient = ApolloClient.Builder()
+        .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
+        .okHttpClient(okHttpClient)
         .build()
 ```
 
@@ -40,12 +41,13 @@ Notice that `Apollo.kt` now requires a context to create the interceptor and rea
 
 ```kotlin:title=app/src/main/kotlin/com/example/rocketreserver/Apollo.kt
 fun apolloClient(context: Context): ApolloClient {
-    return ApolloClient.builder()
-        .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/")
-        .okHttpClient(OkHttpClient.Builder()
-            .addInterceptor(AuthorizationInterceptor(context))
-            .build()
-        )
+    val okHttpClient = OkHttpClient.Builder()
+        .addInterceptor(AuthorizationInterceptor(context))
+        .build()
+
+    return ApolloClient.Builder()
+        .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
+        .okHttpClient(okHttpClient)
         .build()
 }
 ```
@@ -54,19 +56,19 @@ Replace all usages of `apolloClient` with `apolloClient(context)`. There is one 
 
 ```kotlin
 // LaunchListFragment
-apolloClient(requireContext()).query(LaunchListQuery(cursor = Input.fromNullable(cursor))).await()
+apolloClient(requireContext()).query(LaunchListQuery(Optional.Present(cursor))).execute()
 
 // LaunchDetailsFragment
-apolloClient(requireContext()).query(LaunchDetailsQuery(id = args.launchId)).await()
+apolloClient(requireContext()).query(LaunchDetailsQuery(id = args.launchId)).execute()
 
 // LoginFragment
-apolloClient(requireContext()).mutate(LoginMutation(email = Input.fromNullable(email))).await()
+apolloClient(requireContext()).mutation(LoginMutation(email)).execute()
 
 ```
 
-There is no need to create a new instance of the apolloClient for each GraphQL request. You can reuse a single instance like so:
+There is no need to create a new instance of the apolloClient for each GraphQL request. You can reuse a single instance by updating `Apollo.kt` to use a singleton under the hood:
 
-```
+```kotlin:title=app/src/main/kotlin/com/example/rocketreserver/Apollo.kt
 private var instance: ApolloClient? = null
 
 fun apolloClient(context: Context): ApolloClient {
@@ -74,24 +76,24 @@ fun apolloClient(context: Context): ApolloClient {
         return instance!!
     }
 
-    instance = ApolloClient.builder()
-        .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/")
-        .okHttpClient(
-            OkHttpClient.Builder()
-            .addInterceptor(AuthorizationInterceptor(context))
-            .build()
-        )
+    val okHttpClient = OkHttpClient.Builder()
+        .addInterceptor(AuthorizationInterceptor(context))
+        .build()
+
+    instance = ApolloClient.Builder()
+        .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
+        .okHttpClient(okHttpClient)
         .build()
 
     return instance!!
 }
 ```
 
-**Note**: The singleton is handled here manually for sample purposes. In a real-life application, you would certainly use a dependency injection framework such as `Dagger` or `Koin`.
+**Note**: The singleton is handled here manually for sample purposes. In a real-life application, you would want to use a dependency injection framework such as `Dagger` or `Koin`.
 
 ## Add the BookTrip and CancelTrip mutations
 
-Next to `schema.json` add a `BookTrip.graphql` file:
+Next to `schema.graphqls` add a `BookTrip.graphql` file:
 
 ```graphql:title=app/src/main/graphql/com/example/rocketreserver/BookTrip.graphql
 mutation BookTrip($id:ID!) {
@@ -139,7 +141,7 @@ lifecycleScope.launchWhenResumed {
     }
 
     val response = try {
-        apolloClient(requireContext()).mutate(mutation).await()
+        apolloClient(requireContext()).mutation(mutation).execute()
     } catch (e: ApolloException) {
         configureButton(isBooked)
         return@launchWhenResumed
@@ -158,6 +160,6 @@ This sends the appropriate mutation based on whether the launch is booked.
 
 ## Book your trip!
 
-Compile and run your app. You can now book and cancel your trips!
+Compile and run your app. You can now book and cancel your trips! The button will change based on whether a trip has been booked or not.
 
 In the next section, you will [write your first subscription](11-subscriptions) and be notified in real time when someone books a flight.

@@ -1,0 +1,41 @@
+---
+title: HTTP interceptors
+---
+
+Apollo Kotlin supports multi platform `HttpInterceptor` very similar to `OkHttp` `Interceptors`. Use them to add authentication headers, log the network calls or anything else.
+
+The interface is a single method. For an example, implementing an authentication interceptors can be done with:
+
+```kotlin
+class AuthorizationInterceptor(val token: String) : HttpInterceptor {
+  override suspend fun intercept(request: HttpRequest,  chain: HttpInterceptorChain): HttpResponse {
+    return chain.proceed(request.newBuilder().addHeader("Authorization", "Bearer $token").build())
+  }
+}
+```
+
+Then add the interceptor to your `HttpNetworkTransport`:
+
+```kotlin
+val apolloClient = ApolloClient.Builder()
+    .serverUrl("https://example.com/graphql")
+    .addHttpInterceptor(AuthorizationInterceptor(token))
+    .build()
+```
+
+By default, Apollo Kotlin comes with `ClientAwarenessInterceptor` and `LoggingInterceptor`.
+
+## Reusing OkHttp interceptors on JVM only projects
+
+If your project is a JVM only project and you already have an `OkHttp` `Interceptor`, you can also reuse it:
+
+```kotlin
+val okHttpClient = OkHttpClient.Builder()
+    .addInterceptor(interceptor)
+    .build()
+
+val apolloClient = ApolloClient.Builder()
+    .serverUrl("https://example.com/graphql")
+    .okHttpClient(okHttpClient)
+    .build()
+```

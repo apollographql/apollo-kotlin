@@ -1,0 +1,90 @@
+public abstract interface class com/apollographql/apollo3/cache/normalized/sql/ApolloDatabase : com/squareup/sqldelight/Transacter {
+	public static final field Companion Lcom/apollographql/apollo3/cache/normalized/sql/ApolloDatabase$Companion;
+	public abstract fun getCacheQueries ()Lcom/apollographql/apollo3/cache/normalized/sql/CacheQueries;
+}
+
+public final class com/apollographql/apollo3/cache/normalized/sql/ApolloDatabase$Companion {
+	public final fun getSchema ()Lcom/squareup/sqldelight/db/SqlDriver$Schema;
+	public final fun invoke (Lcom/squareup/sqldelight/db/SqlDriver;)Lcom/apollographql/apollo3/cache/normalized/sql/ApolloDatabase;
+}
+
+public abstract interface class com/apollographql/apollo3/cache/normalized/sql/CacheQueries : com/squareup/sqldelight/Transacter {
+	public abstract fun changes ()Lcom/squareup/sqldelight/Query;
+	public abstract fun delete (Ljava/lang/String;)V
+	public abstract fun deleteAll ()V
+	public abstract fun deleteRecords (Ljava/util/Collection;)V
+	public abstract fun deleteRecordsWithKeyMatching (Ljava/lang/String;Ljava/lang/String;)V
+	public abstract fun insert (Ljava/lang/String;Ljava/lang/String;)V
+	public abstract fun recordForKey (Ljava/lang/String;)Lcom/squareup/sqldelight/Query;
+	public abstract fun recordForKey (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)Lcom/squareup/sqldelight/Query;
+	public abstract fun recordsForKeys (Ljava/util/Collection;)Lcom/squareup/sqldelight/Query;
+	public abstract fun recordsForKeys (Ljava/util/Collection;Lkotlin/jvm/functions/Function2;)Lcom/squareup/sqldelight/Query;
+	public abstract fun selectRecords ()Lcom/squareup/sqldelight/Query;
+	public abstract fun selectRecords (Lkotlin/jvm/functions/Function3;)Lcom/squareup/sqldelight/Query;
+	public abstract fun update (Ljava/lang/String;Ljava/lang/String;)V
+}
+
+public final class com/apollographql/apollo3/cache/normalized/sql/RecordForKey {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/cache/normalized/sql/RecordForKey;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/cache/normalized/sql/RecordForKey;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/cache/normalized/sql/RecordForKey;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getKey ()Ljava/lang/String;
+	public final fun getRecord ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/cache/normalized/sql/Records {
+	public fun <init> (JLjava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()J
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (JLjava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/cache/normalized/sql/Records;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/cache/normalized/sql/Records;JLjava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/cache/normalized/sql/Records;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getKey ()Ljava/lang/String;
+	public final fun getRecord ()Ljava/lang/String;
+	public final fun get_id ()J
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/cache/normalized/sql/RecordsForKeys {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/cache/normalized/sql/RecordsForKeys;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/cache/normalized/sql/RecordsForKeys;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/cache/normalized/sql/RecordsForKeys;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getKey ()Ljava/lang/String;
+	public final fun getRecord ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/cache/normalized/sql/SqlNormalizedCache : com/apollographql/apollo3/cache/normalized/api/NormalizedCache {
+	public fun clearAll ()V
+	public fun dump ()Ljava/util/Map;
+	public fun loadRecord (Ljava/lang/String;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;)Lcom/apollographql/apollo3/cache/normalized/api/Record;
+	public fun loadRecords (Ljava/util/Collection;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;)Ljava/util/Collection;
+	public fun merge (Lcom/apollographql/apollo3/cache/normalized/api/Record;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;)Ljava/util/Set;
+	public fun merge (Ljava/util/Collection;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;)Ljava/util/Set;
+	public fun remove (Lcom/apollographql/apollo3/cache/normalized/api/CacheKey;Z)Z
+	public fun remove (Ljava/lang/String;)I
+}
+
+public final class com/apollographql/apollo3/cache/normalized/sql/SqlNormalizedCacheFactory : com/apollographql/apollo3/cache/normalized/api/NormalizedCacheFactory {
+	public static final field Companion Lcom/apollographql/apollo3/cache/normalized/sql/SqlNormalizedCacheFactory$Companion;
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/util/Properties;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/util/Properties;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun create ()Lcom/apollographql/apollo3/cache/normalized/api/NormalizedCache;
+	public fun create ()Lcom/apollographql/apollo3/cache/normalized/sql/SqlNormalizedCache;
+}
+
+public final class com/apollographql/apollo3/cache/normalized/sql/SqlNormalizedCacheFactory$Companion {
+}
+

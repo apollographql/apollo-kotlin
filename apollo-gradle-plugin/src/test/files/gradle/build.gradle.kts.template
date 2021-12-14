@@ -1,4 +1,4 @@
-import com.apollographql.apollo.gradle.api.ApolloExtension
+import com.apollographql.apollo3.gradle.api.ApolloExtension
 
 buildscript {
   apply("../../../gradle/dependencies.gradle")
@@ -20,11 +20,6 @@ buildscript {
     }
     google()
     mavenCentral()
-    jcenter {
-      content {
-        includeGroup("org.jetbrains.trove4j")
-      }
-    }
   }
   dependencies {
     // ADD BUILDSCRIPT DEPENDENCIES HERE
@@ -44,7 +39,7 @@ fun kotlinDep(artifact: String): Any {
 
 // ADD PLUGINS HERE
 // apply plugin: 'com.android.library'
-// apply plugin: 'com.apollographql.apollo'
+// apply plugin: 'com.apollographql.apollo3'
 
 repositories {
   maven {
@@ -52,11 +47,6 @@ repositories {
   }
   google() // for aapt2
   mavenCentral()
-  jcenter {
-    content {
-      includeGroup("org.jetbrains.trove4j")
-    }
-  }
 }
 
 dependencies {

@@ -1,0 +1,41 @@
+public final class com/apollographql/apollo3/rx3/Rx3Apollo {
+	public static final field Companion Lcom/apollographql/apollo3/rx3/Rx3Apollo$Companion;
+	public static final fun flowable (Lcom/apollographql/apollo3/ApolloCall;)Lio/reactivex/rxjava3/core/Flowable;
+	public static final fun flowable (Lcom/apollographql/apollo3/ApolloCall;Lio/reactivex/rxjava3/core/Scheduler;)Lio/reactivex/rxjava3/core/Flowable;
+	public static final fun from (Lcom/apollographql/apollo3/ApolloCall;)Lio/reactivex/rxjava3/core/Flowable;
+	public static final fun from (Lcom/apollographql/apollo3/ApolloCall;Lio/reactivex/rxjava3/core/Scheduler;)Lio/reactivex/rxjava3/core/Flowable;
+	public static final fun single (Lcom/apollographql/apollo3/ApolloCall;)Lio/reactivex/rxjava3/core/Single;
+	public static final fun single (Lcom/apollographql/apollo3/ApolloCall;Lio/reactivex/rxjava3/core/Scheduler;)Lio/reactivex/rxjava3/core/Single;
+}
+
+public final class com/apollographql/apollo3/rx3/Rx3Apollo$Companion {
+	public final fun flowable (Lcom/apollographql/apollo3/ApolloCall;)Lio/reactivex/rxjava3/core/Flowable;
+	public final fun flowable (Lcom/apollographql/apollo3/ApolloCall;Lio/reactivex/rxjava3/core/Scheduler;)Lio/reactivex/rxjava3/core/Flowable;
+	public static synthetic fun flowable$default (Lcom/apollographql/apollo3/rx3/Rx3Apollo$Companion;Lcom/apollographql/apollo3/ApolloCall;Lio/reactivex/rxjava3/core/Scheduler;ILjava/lang/Object;)Lio/reactivex/rxjava3/core/Flowable;
+	public final fun from (Lcom/apollographql/apollo3/ApolloCall;)Lio/reactivex/rxjava3/core/Flowable;
+	public final fun from (Lcom/apollographql/apollo3/ApolloCall;Lio/reactivex/rxjava3/core/Scheduler;)Lio/reactivex/rxjava3/core/Flowable;
+	public static synthetic fun from$default (Lcom/apollographql/apollo3/rx3/Rx3Apollo$Companion;Lcom/apollographql/apollo3/ApolloCall;Lio/reactivex/rxjava3/core/Scheduler;ILjava/lang/Object;)Lio/reactivex/rxjava3/core/Flowable;
+	public final fun single (Lcom/apollographql/apollo3/ApolloCall;)Lio/reactivex/rxjava3/core/Single;
+	public final fun single (Lcom/apollographql/apollo3/ApolloCall;Lio/reactivex/rxjava3/core/Scheduler;)Lio/reactivex/rxjava3/core/Single;
+	public static synthetic fun single$default (Lcom/apollographql/apollo3/rx3/Rx3Apollo$Companion;Lcom/apollographql/apollo3/ApolloCall;Lio/reactivex/rxjava3/core/Scheduler;ILjava/lang/Object;)Lio/reactivex/rxjava3/core/Single;
+}
+
+public final class com/apollographql/apollo3/rx3/_Rx3ExtensionsKt {
+	public static final synthetic fun rx (Lcom/apollographql/apollo3/ApolloCall;Lio/reactivex/rxjava3/core/Scheduler;)Ljava/lang/Void;
+	public static synthetic fun rx$default (Lcom/apollographql/apollo3/ApolloCall;Lio/reactivex/rxjava3/core/Scheduler;ILjava/lang/Object;)Ljava/lang/Void;
+	public static final synthetic fun rxFlowable (Lcom/apollographql/apollo3/ApolloCall;Lio/reactivex/rxjava3/core/Scheduler;)Lio/reactivex/rxjava3/core/Flowable;
+	public static synthetic fun rxFlowable$default (Lcom/apollographql/apollo3/ApolloCall;Lio/reactivex/rxjava3/core/Scheduler;ILjava/lang/Object;)Lio/reactivex/rxjava3/core/Flowable;
+	public static final synthetic fun rxMutate (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/Mutation;Lcom/apollographql/apollo3/api/Mutation$Data;Lkotlin/jvm/functions/Function1;)Ljava/lang/Void;
+	public static final synthetic fun rxMutate (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/Mutation;Lkotlin/jvm/functions/Function1;)Ljava/lang/Void;
+	public static synthetic fun rxMutate$default (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/Mutation;Lcom/apollographql/apollo3/api/Mutation$Data;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Void;
+	public static synthetic fun rxMutate$default (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/Mutation;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Void;
+	public static final synthetic fun rxPrefetch (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/Operation;Lkotlin/jvm/functions/Function1;)Ljava/lang/Void;
+	public static synthetic fun rxPrefetch$default (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/Operation;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Void;
+	public static final synthetic fun rxQuery (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/Query;Lkotlin/jvm/functions/Function1;)Ljava/lang/Void;
+	public static synthetic fun rxQuery$default (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/Query;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Void;
+	public static final synthetic fun rxSingle (Lcom/apollographql/apollo3/ApolloCall;Lio/reactivex/rxjava3/core/Scheduler;)Lio/reactivex/rxjava3/core/Single;
+	public static synthetic fun rxSingle$default (Lcom/apollographql/apollo3/ApolloCall;Lio/reactivex/rxjava3/core/Scheduler;ILjava/lang/Object;)Lio/reactivex/rxjava3/core/Single;
+	public static final synthetic fun rxSubscribe (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/Subscription;Lkotlin/jvm/functions/Function1;)Ljava/lang/Void;
+	public static synthetic fun rxSubscribe$default (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/Subscription;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Void;
+}
+

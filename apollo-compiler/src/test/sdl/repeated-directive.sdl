@@ -1,6 +1,0 @@
-
-type Query {
-  random: Int!
-}
-
-directive @testDirective repeatable on OBJECT

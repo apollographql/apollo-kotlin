@@ -1,7 +1,7 @@
 query TestQuery {
   yield: hero {
-    it: id
-    name
+    while: id
+    it: name
   }
 
   objects: search(text: "abc") {

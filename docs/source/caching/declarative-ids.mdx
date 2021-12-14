@@ -1,0 +1,95 @@
+---
+title: Declarative cache IDs in Apollo Kotlin
+sidebar_title: Declarative cache IDs
+---
+
+When using a [normalized cache](./normalized-cache/) in Apollo Kotlin, it's recommended that you specify a **cache ID** for each object type in your schema. If you don't, objects are assigned a _default_ cache ID, but that ID can lead to undesirable duplication of data.
+
+When specifying cache IDs, it's recommended that you do so **declaratively**, using the methods described in this article:
+
+```graphql
+extend type Book @typePolicy(keyFields: "id")
+```
+
+> For advanced use cases, you can also define cache IDs [programmatically](programmatic-ids).
+
+## How they work
+
+With declarative cache IDs, the codegen process adds ID fields automatically and generates type-safe code that can return a valid cache ID for any object.
+
+To do this, Apollo Kotlin extends your back-end schema. The GraphQL spec supports [object extensions](https://spec.graphql.org/draft/#sec-Object-Extensions) using the `extend type` keywords. We can use this together with the `@typePolicy` and `@fieldPolicy` directives, along with an extra `.graphqls` file named `extra.graphqls`.
+
+You can obtain a given object type's cache ID from one of two sources:
+
+| Source | Directive | Description |
+|--------|-----------|-------------|
+| From a response object's fields (e.g., `Book.id`) | [`@typePolicy`](#typepolicy) | This happens _after_ a network request and is essential to merging a query result with existing cached data. This is the most common case. |
+| From a GraphQL operation's arguments (e.g., `author(id: "au456")`) | [`@fieldPolicy`](#fieldpolicy) | This happens _before_ a network request and enables you to avoid a network round trip if all requested data is in the cache already. This is an optional optimization that can avoid some cache misses. |
+
+## `@typePolicy`
+
+The `@typePolicy` directive enables you to specify an object's cache ID from **key fields** of the object returned by your GraphQL server. Most commonly, you can use an object's `id` field as its key field.
+
+For example, let's say our app's `schema.graphqls` file includes the following definition:
+
+```graphql:title=schema.graphqls
+type Book {
+  id: String!
+  author: Author!
+  title: String!
+}
+```
+
+We can add the following definition to an `extra.graphqls` file in the same directory as our schema:
+
+```graphql:title=extra.graphqls
+extend type Book @typePolicy(keyFields: "id")
+```
+
+Apollo Kotlin now knows to use the `id` field of a `Book` type to generate its cache ID.
+
+You can specify _multiple_ key fields for an object if they're all required to uniquely identify a particular cache entry:
+
+
+```graphql:title=extra.graphqls
+extend type Author @typePolicy(keyFields: "firstName lastName")
+```
+
+In this case, the cache ID for an `Author` object includes the values of both its `firstName` and `lastName` fields.
+
+> All of an object type's key fields must return a [scalar type](https://www.apollographql.com/docs/apollo-server/schema/schema/#scalar-types).
+
+
+## `@fieldPolicy`
+
+The `@fieldPolicy` directive enables you to specify an object's cache ID from the values of **key arguments** you provide to a particular field. This enables you to identify an object in your cache _before_ sending a network request, potentially enabling you to skip the request entirely.
+
+For example, let's say our app's `schema.graphqls` file includes the following definition:
+
+```graphql:title=schema.graphqls
+type Query {
+  book(id: String!): Book
+}
+```
+
+We happen to know that this query returns whichever `Book` object has an `id` field that matches the required argument. Therefore, we can make the `id` argument a key argument for this field.
+
+We can add the following definition to an `extra.graphqls` file in the same directory as our schema:
+
+```graphql:title=extra.graphqls
+extend type Query @fieldPolicy(forField: "book", keyArgs: "id")
+```
+
+Apollo Kotlin now knows to check the cache for a `Book` object with the provided `id` _before_ sending a network request for `Query.book`.
+
+> Note that even though the `@fieldPolicy` directive corresponds to a single field, you apply the directive to the _type_ definition (`Query` in this case). This is because GraphQL doesn't allow extending a single field. You specify _which_ field the directive corresponds to with the `forField` argument.
+
+You can specify _multiple_ key arguments for a field if they're all required to uniquely identify a particular cache entry:
+
+```graphql:title=extra.graphqls
+extend type Query @fieldPolicy(forField: "author", keyArgs: "firstName lastName")
+```
+
+In this case, the cache ID for an `Author` object includes the values of both its `firstName` and `lastName` fields, which are both provided as arguments to the `Query.author` field.
+
+If multiple fields of an object type have key arguments, you can apply multiple `@fieldPolicy` directives to that type.

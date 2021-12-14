@@ -1,26 +1,37 @@
 .gradle
-**/.idea/.name
-**/.idea/*.xml
-**/.idea/caches/
-**/.idea/copyright/
-**/.idea/inspectionProfiles/
-**/.idea/libraries/
-**/.idea/$PRODUCT_WORKSPACE_FILE$
-**/.idea/.gitignore
-**/.idea/artifacts/
-**/.idea/sonarlint/
-*.iml
-build
-local.properties
-/reports
-generated
 
+# Idea
+**/.idea/*
+!**/.idea/codeStyles
+!**/.idea/icon.png
+!**/.idea/runConfigurations
+!**/.idea/scopes
+*.iml
+
+# Generated files
+build
+/reports
+
+# Place where the Android SDK path is set
+local.properties
+
+# Secret used by sample apps
+github_token
+
+# XCode 
+xcuserdata
+project.xcworkspace
+
+# Mac OS Finder 
 .DS_Store
 Thumbs.db
 db.json
 *.log
+
+# Docs
 node_modules/
-docs/public/*
+/docs/public
+/docs/.cache
 !docs/public/_redirects
 .deploy*/
 docs.json

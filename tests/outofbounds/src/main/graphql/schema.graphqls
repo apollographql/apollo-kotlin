@@ -1,0 +1,10 @@
+type Query {
+  animal: Animal
+}
+
+type Animal {
+  species: String
+  name: String
+  temperature: Float
+  other: String
+}

@@ -1,6 +1,6 @@
 plugins {
-  id("org.jetbrains.kotlin.jvm")
-  id("com.apollographql.apollo")
+  kotlin("jvm")
+  id("com.apollographql.apollo3")
 }
 
 dependencies {
@@ -11,6 +11,6 @@ dependencies {
 }
 
 apollo {
-  generateKotlinModels.set(true)
+  packageNamesFromFilePaths()
   generateApolloMetadata.set(true)
 }

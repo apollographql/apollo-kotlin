@@ -1,6 +1,6 @@
 plugins {
   kotlin("jvm")
-  id("com.apollographql.apollo")
+  id("com.apollographql.apollo3")
   id("maven-publish")
 }
 
@@ -12,7 +12,8 @@ dependencies {
 }
 
 apollo {
+  alwaysGenerateTypesMatching.set(listOf("Cat"))
+  packageNamesFromFilePaths()
   generateApolloMetadata.set(true)
-  generateKotlinModels.set(true)
-  customTypeMapping.set(mapOf("Date" to "java.util.Date"))
+  customScalarsMapping.set(mapOf("Date" to "java.util.Date"))
 }

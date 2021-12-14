@@ -1,33 +1,6 @@
-query GetHero(
-  $myBool: Boolean = true,
-  $unit: LengthUnit! = FOOT,
-  $listOfInts: [Int] = [1, 2, 3]
-  $first: Int = null,
-  $optionalUnit: LengthUnit = METER,
-  # FIXME
-  #$review: ReviewInput! = {
-  #  stars: 0,
-  #  favoriteColor: {
-  #    red: 1,
-  #    blue: 1
-  #  },
-  #  listOfStringNonOptional: ["foo"],
-  #}
-) {
-  hero {
-    name @include(if: $myBool)
-    ... on Human {
-      height(unit: $unit)
-      heightInMeters: height(unit: $optionalUnit)
-    }
-    friendsConnection(first: $first) {
-      totalCount
-    }
-  }
-  heroWithReview(listOfInts: $listOfInts) {
+query TestQuery($episode: Episode! = JEDI) {
+  hero(episode: $episode) {
     name
   }
-  #heroWithReview(review: $review) {
-  #  name
-  #}
 }
+

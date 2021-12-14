@@ -1,49 +1,59 @@
 import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
-In your app Gradle file, apply the `com.apollographql.apollo` plugin:
+First, obtain the latest version number of Apollo Kotlin from [the Releases page](https://github.com/apollographql/apollo-android/releases).
 
-Using the [plugins DSL](https://docs.gradle.org/current/userguide/plugins.html#sec:plugins_block):
+Then in your app's Gradle file, apply the `com.apollographql.apollo3` plugin using one of the following methods (replace `VERSION_NUMBER` with the desired version number, such as `3.0.0`):
+
+**Using the [plugins DSL](https://docs.gradle.org/current/userguide/plugins.html#sec:plugins_block)**
 
 <MultiCodeBlock>
 
-```kotlin
+```kotlin:title=build.gradle.kts
 plugins {
   // ...
-  id("com.apollographql.apollo").version("x.y.z")
+  id("com.apollographql.apollo3").version("VERSION_NUMBER")
 }
 ```
 
-```groovy
+```groovy:title=build.gradle
 plugins {
   // ...
-  id("com.apollographql.apollo").version("x.y.z")
+  id("com.apollographql.apollo3").version("VERSION_NUMBER")
 }
 ```
 
 </MultiCodeBlock>
 
-Or using the [legacy syntax](https://docs.gradle.org/current/userguide/plugins.html#sec:old_plugin_application):
+**Using the [legacy syntax](https://docs.gradle.org/current/userguide/plugins.html#sec:old_plugin_application)**
 
 <MultiCodeBlock>
 
-```kotlin
+```kotlin:title=build.gradle.kts
 buildscript {
   // ...
-  classpath("com.apollographql.apollo:apollo-gradle-plugin:x.y.z")
+  classpath("com.apollographql.apollo3:apollo-gradle-plugin:VERSION_NUMBER")
 }
 
-apply(plugin = "com.apollographql.apollo")
+apply(plugin = "com.apollographql.apollo3")
 ```
 
-```groovy
+```groovy:title=build.gradle
 buildscript {
   // ...
-  classpath("com.apollographql.apollo:apollo-gradle-plugin:x.y.z")
+  classpath("com.apollographql.apollo3:apollo-gradle-plugin:VERSION_NUMBER")
 }
 
-apply plugin: "com.apollographql.apollo"
+apply plugin: "com.apollographql.apollo3"
 ```
 
 </MultiCodeBlock>
 
-The plugin is hosted on the Gradle plugin portal, Jcenter and Maven Central.
+The plugin is hosted on both the Gradle plugin portal and Maven Central.
+
+The package in which the generated code will reside must be configured in the `apollo {}` block:
+
+```kotlin:title=build.gradle[.kts]
+apollo {
+  packageName.set("com.example")
+}
+```

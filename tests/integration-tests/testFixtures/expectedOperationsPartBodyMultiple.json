@@ -1,0 +1,1 @@
+{"operationName":"MultipleUpload","variables":{"files":[null,null]},"query":"mutation MultipleUpload($files: [Upload!]!) { multipleUpload(files: $files) { id path filename mimetype } }"}

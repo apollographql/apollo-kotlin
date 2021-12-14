@@ -1,0 +1,47 @@
+---
+title: HTTP cache
+---
+
+
+> This page focuses on the HTTP cache. If you want to deduplicate the storage of your objects and/or notify your UI when your data changes, take a look at the [normalized cache](./normalized-cache) instead.
+
+> ℹ️ The HTTP cache is only available on the JVM.
+
+To enable HTTP cache support, add the dependency to your project's `build.gradle` file:
+
+```kotlin:title=build.gradle[.kts]
+dependencies {
+  implementation("com.apollographql.apollo3:apollo-http-cache:x.y.z")
+}
+```
+
+Then configure your HTTP cache:
+
+```kotlin
+apolloClient = ApolloClient.Builder()
+    .httpCache(
+      // Use a dedicated directory for the cache
+      directory = File(pathToCacheDirectory),
+      // Configure a max size of 100MB
+      maxSize = 100 * 1024 * 1024
+    )
+    .build()
+```
+
+The HTTP cache is a least recently used (LRU) cache with a configurable max size.
+
+Once your cache setup is complete, the cache will be used by default by all your queries. By default, queries will try to find a result in the cache first and go the network if it's not there. This is the `HttpFetchPolicy.CacheFirst`. You can customize that behaviour with `httpFetchPolicy(HttpFetchPolicy)`:
+
+```kotlin
+val response = apolloClient.query(query)
+                 // Don't use the cache
+                 .httpFetchPolicy(HttpFetchPolicy.NetworkOnly)
+
+                 // Or only use the cache
+                 .httpFetchPolicy(HttpFetchPolicy.CacheOnly)
+
+                 // Finally, execute your query
+                 .execute()
+```
+
+If the query is present in cache, it will be used to return `response.data`. If not, a `HttpCacheMissException` will be thrown.

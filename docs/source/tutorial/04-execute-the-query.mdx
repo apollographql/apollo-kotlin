@@ -9,14 +9,16 @@ To execute your first query, you need to create an instance of `ApolloClient` an
 Create a new file named Apollo.kt in the `com.example.rocketreserver` package and create an instance of `ApolloClient` in it:
 
 ```kotlin:title=app/src/main/java/com/example/rocketreserver/Apollo.kt
-val apolloClient = ApolloClient.builder()
-    .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com")
+import com.apollographql.apollo3.ApolloClient
+
+val apolloClient = ApolloClient.Builder()
+    .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
     .build()
 ```
 
 **Note**: `apolloClient` is a top-level variable so that it can be reused from other parts of the app later on for better performance. Reusing the `apolloClient` allows to reuse the underlying OkHttp instance and the associated threadpools and connections.
 
-Creating the ApolloClient is as simple as giving it the endpoint of your GraphQL backend. It is `https://apollo-fullstack-tutorial.herokuapp.com` in our case.
+Creating the ApolloClient is as simple as giving it the endpoint of your GraphQL backend. It is `https://apollo-fullstack-tutorial.herokuapp.com/graphql` in our case.
 
 ## Execute the query
 
@@ -27,7 +29,7 @@ Open `LaunchListFragment.kt`, override `onViewCreated` and launch a new coroutin
         super.onViewCreated(view, savedInstanceState)
 
         lifecycleScope.launchWhenResumed {
-            val response = apolloClient.query(LaunchListQuery()).await()
+            val response = apolloClient.query(LaunchListQuery()).execute()
 
             Log.d("LaunchList", "Success ${response.data}")
         }
@@ -40,8 +42,8 @@ Thanks to [Kotlin coroutines](https://kotlinlang.org/docs/reference/coroutines-o
 
 Hit run. You should see this in the logcat output:
 
-```plain:title=(logcat)
-2020-05-25 19:36:12.211 1835-1956/com.example.rocketreserver D/LaunchList: Success Data(launches=Launches(__typename=LaunchConnection, cursor=1547220660, hasMore=true, launches=[Launch(__typename=Launch, id=93, site=KSC LC 39A), Launch(__typename=Launch, id=92, site=KSC LC 39A), Launch(__typename=Launch, id=91, site=CCAFS SLC 40), Launch(__typename=Launch, id=90, site=CCAFS SLC 40), Launch(__typename=Launch, id=89, site=CCAFS SLC 40), Launch(__typename=Launch, id=88, site=KSC LC 39A), Launch(__typename=Launch, id=87, site=CCAFS SLC 40), Launch(__typename=Launch, id=86, site=CCAFS SLC 40), Launch(__typename=Launch, id=85, site=CCAFS SLC 40), Launch(__typename=Launch, id=84, site=CCAFS SLC 40), Launch(__typename=Launch, id=83, site=CCAFS SLC 40), Launch(__typename=Launch, id=82, site=CCAFS SLC 40), Launch(__typename=Launch, id=81, site=KSC LC 39A), Launch(__typename=Launch, id=80, site=VAFB SLC 4E), Launch(__typename=Launch, id=79, site=CCAFS SLC 40), Launch(__typename=Launch, id=78, site=CCAFS SLC 40), Launch(__typename=Launch, id=77, site=KSC LC 39A), Launch(__typename=Launch, id=76, site=KSC LC 39A), Launch(__typename=Launch, id=75, site=CCAFS SLC 40), Launch(__typename=Launch, id=74, site=VAFB SLC 4E)]))
+```text:title=(logcat)
+2021-10-19 12:08:30.694 16611-16611/com.example.rocketreserver D/LaunchList: Success Data(launches=Launches(cursor=1581951955, hasMore=true, launches=[Launch(id=109, site=CCAFS SLC 40), Launch(id=108, site=VAFB SLC 4E), Launch(id=107, site=KSC LC 39A), Launch(id=106, site=CCAFS SLC 40), Launch(id=105, site=CCAFS SLC 40), Launch(id=104, site=KSC LC 39A), Launch(id=103, site=KSC LC 39A), Launch(id=102, site=KSC LC 39A), Launch(id=101, site=CCAFS SLC 40), Launch(id=100, site=CCAFS SLC 40), Launch(id=99, site=KSC LC 39A), Launch(id=98, site=CCAFS SLC 40), Launch(id=97, site=CCAFS SLC 40), Launch(id=96, site=CCAFS SLC 40), Launch(id=95, site=CCAFS SLC 40), Launch(id=94, site=KSC LC 39A), Launch(id=93, site=KSC LC 39A), Launch(id=92, site=KSC LC 39A), Launch(id=91, site=CCAFS SLC 40), Launch(id=90, site=CCAFS SLC 40)]))
 ```
 
 This means the request was correctly executed and you now have a list of launch sites 🚀🚀🚀.

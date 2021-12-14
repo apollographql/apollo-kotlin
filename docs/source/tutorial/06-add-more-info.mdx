@@ -6,9 +6,9 @@ In this section, you will use the [Coil](https://github.com/coil-kt/coil) image-
 
 ## Add more info to your query
 
-Go back to `LaunchList.graphql`. Your query is already fetching most of the information you want to display, but it would be nice to display both the name of the mission and an image of the patch.
+Go back to **LaunchList.graphql**. Your query is already fetching most of the information you want to display, but it would be nice to display both the name of the mission and an image of the patch.
 
-Looking at the schema in GraphQL Playground, you can see that `Launch` has a property of `mission`, which allows you to get details of the mission. A mission has both a name and a `missionPatch` property, and the `missionPatch` can optionally take a parameter to specify the desired image size.
+Looking at the schema in Studio Sandbox, you can see that `Launch` has a `mission` property, which allows you to get details of the mission. A mission has both a name and a `missionPatch` property, and the `missionPatch` can optionally take a parameter to specify the desired image size.
 
 Because loading a RecyclerView with large images can impact performance, ask for the name and a `SMALL` mission patch. Update your query to look like the following:
 
@@ -31,17 +31,17 @@ query LaunchList {
 
 When you recompile, if you look in `LaunchListQuery.kt`, you'll see a new nested type, `Mission`, with the two properties you requested.
 
-Any GraphQL field can take arguments like `missionPatch` above, and arguments can be of scalar or complex types. In this case, `SMALL` is an enum in the GraphQL schema. It can take a finite list of values. If you look at the Docs pane in GraphQL Playground, you will see that size is an argument of type `PatchSize` that can only take two values: `SMALL` and `LARGE`
+Any GraphQL field can take arguments like `missionPatch` above, and arguments can be of scalar or complex types. In this case, `SMALL` is an enum in the GraphQL schema. It can take a finite list of values. If you look at the Schema section in Sandbox, you can see a list of the enums. You can then click in to see that `PatchSize` can only take two values: `SMALL` and `LARGE`
 
-<img src="images/enum.png" alt="GraphQL enums" class="screenshot"/>
+<img src="images/sandbox_patch_size_docs.png" alt="The patch size enum in Sandbox's Schema tab" class="screenshot"/>
 
-## Bind the infos
+## Bind the info
 
 In `LaunchListAdapter.kt`, bind the GraphQL data to the missionName and missionPatch Views using Coil:
 
 ```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchListAdapter.kt
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val launch = launches.get(position)
+        val launch = launches[position]
         holder.binding.site.text = launch.site ?: ""
         holder.binding.missionName.text = launch.mission?.name
         holder.binding.missionPatch.load(launch.mission?.missionPatch) {

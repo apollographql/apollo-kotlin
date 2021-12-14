@@ -1,8 +1,7 @@
-"""Dummy directive with multiple arguments that can be placed on operations."""
+"""Dummy directive that can be placed on operations."""
 directive @operationDirective(
   """blah"""
-  dummy0: String!
-  dummy1: Int!
+  dummy: String!
 ) on QUERY | MUTATION | SUBSCRIPTION
 
 """For testing fragment type coercion"""
@@ -27,12 +26,6 @@ interface Character {
 
   """Test deprecated field"""
   deprecated: String! @deprecated(reason: "For test purpose only")
-
-  """Test deprecated field with no reason"""
-  deprecatedWithNoReason: String! @deprecated
-
-  """Test deprecated field with blank reason"""
-  deprecatedWithBlankReason: String! @deprecated(reason: "")
 
   """Test deprecated field"""
   deprecatedBool: Boolean! @deprecated(reason: "For test purpose only")
@@ -270,8 +263,6 @@ enum LengthUnit {
 """The mutation type, represents all updates we can make to our data"""
 type Mutation {
   createReview(episode: Episode, review: ReviewInput!): Review
-  """For testing https://github.com/apollographql/apollo-android/issues/2660"""
-  stat_collect: [Boolean!]! @deprecated(reason: "Deprecated")
 }
 
 """Information for paginating this connection"""
@@ -319,6 +310,7 @@ type Query {
   search(text: String): [SearchResult]
   starship(id: ID!): Starship
   tree: Tree
+  typeWithGraphQLKeywords: TypeWithGraphQLKeywords
 }
 
 """Represents a review for a movie"""
@@ -444,6 +436,7 @@ scalar UnsupportedType
 """URL for testing"""
 scalar URL
 
-extend type Starship {
-  shieldLevel: Float!
+type TypeWithGraphQLKeywords {
+  on: String
+  null(fragment: String): String
 }

@@ -1,0 +1,653 @@
+---
+title: Migrating to Apollo Kotlin 3.0
+description: From 2.x
+sidebar_title: "Migrating to v3"
+---
+
+import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
+
+Apollo Kotlin 3.0 rewrites most of Apollo Android's internals in Kotlin. Among other improvements, it features:
+
+* Kotlin-first, coroutine-based APIs
+* A unified runtime for both JVM and multiplatform
+* Declarative cache, `@nonnull` client directives, performance improvements and more...
+
+Although most of the library's concepts are the same, many APIs have changed to work better in Kotlin.
+
+This page describes the most important changes, along with how to migrate an existing project from Apollo Android 2.x to Apollo Kotlin 3.x.
+
+Feel free to ask questions by either [opening an issue on our GitHub repo](https://github.com/apollographql/apollo-android/issues), [joining the community](http://community.apollographql.com/new-topic?category=Help&tags=mobile,client) or [stopping by our channel in the KotlinLang Slack](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ)(get your invite [here](https://slack.kotl.in/)).
+
+## The quick route 🚀
+
+Apollo Kotlin 3 provides a few helpers and compatibility modes to ease the migration from 2.x. To quickly reach a working state, follow the steps below.
+Once you have a working app, we strongly recommend to migrate to idiomatic Apollo Kotlin 3 as described in the [All details](#all-details) section below. The compatibility helpers will be removed in a future version of Apollo Kotlin
+
+1. Update your dependencies and imports (`com.apollographql.apollo` → `com.apollographql.apollo3`, see [section below](#package-name--group-id--plugin-id)).
+  Remove `apollo-coroutines-support` and `apollo-android-support` if applicable.
+2. Gradle configuration:
+```kotlin
+apollo {
+  // Remove this
+  generateKotlinModels.set(true)
+
+  // Add this
+  useVersion2Compat()
+}
+```
+3. Apollo Client configuration:
+```kotlin
+val client = ApolloClient.builder()
+  .serverUrl(...)
+
+  // Replace:
+  .addCustomTypeAdapter(CustomType.YOURTYPE, ...)
+
+  // With:
+  .addCustomTypeAdapter(YourType.type, ...)
+
+  .build()
+
+```
+
+## All details
+
+### Package name / group id / plugin id
+
+Apollo Kotlin 3.0 uses a new identifier for its package name, Gradle plugin id, and maven group id: **`com.apollographql.apollo3`**.
+
+This change avoids dependency conflicts as encouraged in [Java Interoperability Policy for Major Version Updates](https://jakewharton.com/java-interoperability-policy-for-major-version-updates/). It also allows to run version 2 and version 3 side by side if needed.
+
+> In most cases, you can update the identifier throughout your project by performing a find-and-replace and replacing `com.apollographql.apollo` with `com.apollographql.apollo3`.
+
+#### Group id
+
+The maven group id used to identify Apollo Kotlin 3.0 [artifacts](https://repo1.maven.org/maven2/com/apollographql/apollo3/) is `com.apollographql.apollo3`:
+
+```kotlin
+// Replace:
+implementation("com.apollographql.apollo:apollo-runtime:$version")
+implementation("com.apollographql.apollo:apollo-api:$version")
+
+// With:
+implementation("com.apollographql.apollo3:apollo-runtime:$version")
+implementation("com.apollographql.apollo3:apollo-api:$version")
+```
+
+#### Gradle plugin id
+
+The Apollo Kotlin 3.0 Gradle plugin id is `com.apollographql.apollo3`:
+
+```kotlin
+// Replace:
+plugins {
+  id("com.apollographql.apollo").version("$version")
+}
+
+// With:
+plugins {
+  id("com.apollographql.apollo3").version("$version")
+}
+```
+
+#### Package name
+
+All Apollo Kotlin 3.0 classes are imported from the `com.apollographql.apollo3` package:
+
+```kotlin
+// Replace:
+import com.apollographql.apollo.ApolloClient
+
+// With:
+import com.apollographql.apollo3.ApolloClient
+```
+
+### Gradle configuration
+
+#### `generateKotlinModels`
+
+Apollo Kotlin 3.0 generates Kotlin models by default. You can safely remove this behavior:
+
+```kotlin
+apollo {
+  // remove this
+  generateKotlinModels.set(true)
+}
+```
+
+#### `apollo-coroutines-support` is removed
+
+Apollo Kotlin 3.x is kotlin first and exposes suspend functions by default. `apollo-coroutines-support` is not needed anymore:
+
+```kotlin
+// Remove:
+implementation("com.apollographql.apollo:apollo-coroutines-support:$version")
+```
+
+#### `apollo-android-support` is removed
+
+Apollo Android 2.x publishes a small artifact to support running callbacks on a specific Handler and write logs to logcat.
+
+Apollo Kotlin 3.x uses coroutines and exposes more information in its API so that logging hooks shouldn't be required any more. If you were using logs to get information about cache hits/misses, you can now catch `CacheMissException` to get the same information in a more strongly typed way.
+
+
+```kotlin
+// Remove:
+implementation("com.apollographql.apollo:apollo-android-support:$version")
+```
+
+#### `customScalarMappings`
+
+In order to make it explicit that custom mappings only apply to custom scalars and not arbitrary types, `customTypeMapping` has been renamed to `customScalarsMapping`
+
+<MultiCodeBlock>
+
+```groovy
+apollo {
+  // Replace
+  customTypeMapping = [
+    "GeoPoint" : "com.example.GeoPoint"
+  ]
+  // With
+  customScalarsMapping = [
+    "GeoPoint" : "com.example.GeoPoint"
+  ]
+}
+```
+
+```kotlin
+apollo {
+  // Replace
+  customTypeMapping.set(mapOf(
+    "GeoPoint" to "com.example.GeoPoint"
+  ))
+  // With
+  customScalarsMapping.set(mapOf(
+    "GeoPoint" to "com.example.GeoPoint"
+  ))
+}
+```
+
+</MultiCodeBlock>
+
+#### Specifying schema and .graphql files
+
+Apollo Android 2.x has a complex logic to determine what files to use as input. For example, it resolves `sourceFolder` relative to multiple Android variants or kotlin sourceSets, tries to get the .graphql files from the schema location and the other way around too. This logic works in most cases but makes troubleshooting more complicated, especially in more complex scenarios. Also, this runs the GraphQL compiler multiple times for different source sets even if in the vast majority of cases, the same .graphql files are used.
+
+Apollo Kotlin 3.x simplifies this setup. Each `Service` is exactly one compilation. For Android projects, GraphQL classes are generated once and then added to all variants.
+
+If you previously used `graphqlSourceDirectorySet` to explicitly specify the location of GraphQL files, you can now use `srcDir`:
+
+
+```kotlin
+apollo {
+  // Replace
+  graphqlSourceDirectorySet.srcDirs += "shared/graphql"
+
+  // With
+  srcDir("shared/graphql")
+
+  // Replace
+  graphqlSourceDirectorySet.include("**/*.graphql")
+  graphqlSourceDirectorySet.exclude("**/schema.graphql")
+
+  // With
+  includes.add("**/*.graphql")
+  excludes.add("**/schema.graphql")
+}
+```
+
+If you were relying on the schema location to automatically lookup the .graphql files, you should also now add `srcDir()` to explicitly set the location of your .graphql files:
+
+```kotlin
+apollo {
+  // Replace
+  schemaFile.set(file("src/main/graphql-api/schema.graphqls"))
+
+  // With
+  // Keep schemaFile
+  schemaFile.set(file("src/main/graphql-api/schema.graphqls"))
+  // explicitly set srcDir
+  srcDir(file("src/main/graphql-api/"))
+}
+```
+
+If you need different GraphQL operations for different variants, you can create multiple services for each Android variant using [apollo.createAllAndroidVariantServices](https://apollographql.github.io/apollo-android/kdoc/apollo-gradle-plugin/com.apollographql.apollo3.gradle.api/-apollo-extension/create-all-android-variant-services.html).
+
+
+#### Package name
+
+Apollo Android 2.x computes its target package name based on a combination of the path of GraphQL operation and schema files, and the `packageName` and `rootPackageName` options. While this is very flexible, it's not easy to anticipate the final package name that is going to be used.
+
+Apollo Kotlin 3.x uses a flat package name by default using the `packageName` option:
+
+```kotlin
+apollo {
+  packageName.set("com.example")
+}
+```
+
+The generated classes will be:
+
+```
+- com.example.SomeQuery
+- com.example.fragment.SomeFragment
+- com.example.type.SomeInputObject
+- com.example.type.SomeEnum
+- com.example.type.Types // types is a slimmed down version of the schema
+```
+
+If you need different package names for different operation folders, you can fallback to the 2.x behaviour with:
+
+```kotlin
+apollo {
+  packageNamesFromFilePaths("$rootPackageName")
+}
+```
+
+For even more control, you can also define your own `PackageNameGenerator`:
+
+```kotlin
+apollo {
+  packageNameGenerator.set(customPackageNameGenerator)
+}
+```
+
+### Builders
+
+On Apollo Android 2.x you would use the `ApolloClient.builder()` method to instantiate a new Builder. With 3.x, use the `ApolloClient.Builder()` constructor instead (notice the capital `B`).
+
+```kotlin
+// Replace
+val apolloClient = ApolloClient.builder()
+    .serverUrl(serverUrl)
+    // ...other Builder methods
+    .build()
+
+// With
+val apolloClient = ApolloClient.Builder()
+    .serverUrl(serverUrl)
+        // ...other Builder methods
+        .build()
+```
+
+### Operation APIs
+
+Apollo Android 2.x has callback APIs that can become verbose and require explicitly handling cancellation.
+
+Apollo Kotlin 3.x exposes more concise coroutines APIs that handle cancellation automatically through the coroutine
+scope.
+
+Also, `mutate` has been renamed to `mutation` and `subscribe` has been renamed to `subscription` for consistency.
+
+```kotlin
+// Replace
+apolloClient.query(query).await()
+// With
+apolloClient.query(query).execute()
+
+// Replace
+apolloClient.mutate(query).await()
+// With
+apolloClient.mutation(query).execute()
+
+// Replace
+apolloClient.subscribe(query).toFlow()
+// With
+apolloClient.subscription(subscription).toFlow()
+```
+
+### Custom Scalar adapters
+
+Apollo Kotlin 3 ships an optional [apollo-adapters](https://apollographql.github.io/apollo-android/kdoc/apollo-adapters/com.apollographql.apollo3.adapter/index.html) artifact that includes adapters for common scalar types like:
+
+* `InstantAdapter` for `kotlinx.datetime.Instant` ISO8601 dates
+* `LocalDateAdapter` for `kotlinx.datetime.LocalDate` ISO8601 dates
+* `DateAdapter` for `java.util.Date` ISO8601 dates
+* `LongAdapter` for `java.lang.Long`
+* `BigDecimalAdapter` for a MPP `BigDecimal` class holding big decimal values
+
+To include them, add this dependency to your gradle file:
+
+```kotlin
+dependencies {
+  implementation("com.apollographql.apollo3:apollo-adapters:$version")
+}
+```
+
+If the above adapters do not fit your needs or if you need to customize them, you can use the Custom Scalar adapters API.
+
+The Custom Scalar adapters API has changed a lot to support nullable and absent values as well as streaming use cases. Apollo Kotlin 3 makes it possible to read/write custom scalars without having to create an intermediate copy in memory. To do this, it uses the same `Adapter` API that is used internally to parse the models:
+
+```kotlin
+// Replace
+val dateAdapter = object : CustomTypeAdapter<Date> {
+  override fun decode(value: CustomTypeValue<*>): Date {
+    return DATE_FORMAT.parse(value.value.toString())
+  }
+
+  override fun encode(value: Date): CustomTypeValue<*> {
+    return GraphQLString(DATE_FORMAT.format(value))
+  }
+}
+
+// With
+val dateAdapter = object : Adapter<Date> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Date {
+    return DATE_FORMAT.parse(reader.nextString())
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Date) {
+    writer.value(DATE_FORMAT.format(value))
+  }
+}
+```
+
+The `JsonReader` and `JsonWriter` APIs are similar to the ones you can find in [Moshi](https://github.com/square/moshi) and are stateful APIs that require you to handle the Json properties in the order they arrive from the Json stream. If you prefer, you can also buffer the Json into an untyped `Any?` value that represent the json and use `AnyAdapter` to decode/encode it:
+
+```kotlin
+// Use AnyAdapter to convert between JsonReader/JsonWriter and a Kotlin Any value
+val geoPointAdapter = object : Adapter<GeoPoint> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): GeoPoint {
+    val map = AnyAdapter.fromJson(reader) as Map<String, Double>
+    return GeoPoint(map["latitude"] as Double, map["longitude"] as Double)
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: GeoPoint) {
+    val map = mapOf(
+        "latitude" to value.latitude,
+        "longitude" to value.longitude
+    )
+    AnyAdapter.toJson(writer, map)
+  }
+}
+```
+
+After you define your adapters, you need to register them with your `ApolloClient` instance. To do so, call `ApolloClient.Builder.addCustomScalarAdapter` once for each adapter:
+
+```kotlin
+// Replace
+val apolloClient = apolloClientBuilder.addCustomTypeAdapter(CustomType.DATE, dateAdapter).build()
+
+// With
+val apolloClient = apolloClientBuilder.addCustomScalarAdapter(Date.type, dateAdapter).build()
+```
+
+This method takes a type-safe generated class from `Types`, along with its corresponding adapter.
+
+### Caching
+
+#### Normalized cache
+
+The Apollo Android 2.x runtime has a dependency on the normalized cache APIs, and it's possible to call cache methods even if no cache implementation is in the classpath.
+
+The Apollo Kotlin 3.x runtime is more modular and doesn't know anything about normalized cache by default. To add normalized cache support, add the dependencies to your gradle file:
+
+```kotlin
+dependencies {
+  // Replace
+  implementation("com.apollographql.apollo:apollo-normalized-cache:$version") // for memory cache
+  implementation("com.apollographql.apollo:apollo-normalized-cache-sqlite:$version") // for SQL cache
+
+  // With
+  implementation("com.apollographql.apollo3:apollo-normalized-cache:$version") // for memory cache
+  implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite:$version") // for SQL cache
+}
+```
+
+```kotlin
+// Replace
+val cacheFactory = LruNormalizedCacheFactory(
+                     EvictionPolicy.builder().maxSizeBytes(10 * 1024 * 1024).build()
+                   )
+
+val apolloClient = ApolloClient.builder()
+  .serverUrl("https://...")
+  .normalizedCache(cacheFactory)
+  .build()
+
+// With
+val cacheFactory = MemoryCacheFactory(maxSizeBytes = 10 * 1024 * 1024)
+val apolloClient = ApolloClient.Builder()
+  .serverUrl("https://...")
+  .normalizedCache(cacheFactory)
+  .build()
+```
+
+Configuring the fetch policy is now made on an `ApolloCall` instance:
+
+```kotlin
+// Replace
+val response = apolloClient.query(query)
+                      .toBuilder()
+                      .responseFetcher(ApolloResponseFetchers.CACHE_FIRST)
+                      .build()
+                      .await()
+
+// With
+val response = apolloClient.query(request)
+                      .fetchPolicy(CacheFirst)
+                      .execute()
+```
+
+#### HTTP cache
+
+To add http cache support, add the dependency to your gradle file:
+
+```kotlin
+dependencies {
+  // Add
+  implementation("com.apollographql.apollo3:apollo-http-cache:$version") // Gives access to `httpCache` and `httpFetchPolicy`
+}
+```
+
+Similarly, the HTTP cache is configurable through extension functions:
+
+```kotlin
+// Replace
+val cacheStore = DiskLruHttpCacheStore()
+val apolloClient = ApolloClient.builder()
+    .serverUrl("/")
+    .httpCache(ApolloHttpCache(cacheStore))
+    .build()
+
+// With
+val apolloClient = ApolloClient.Builder()
+    .serverUrl("https://...")
+    .httpCache(File(cacheDir, "apolloCache"), 1024 * 1024)
+    .build()
+```
+
+Configuring the HTTP fetch policy is now made on an `ApolloCall` instance:
+
+```kotlin
+// Replace
+val response = apolloClient.query(query)
+                      .toBuilder()
+                      .httpCachePolicy(HttpCachePolicy.CACHE_FIRST)
+                      .build()
+                      .await()
+
+// With
+val response = apolloClient.query(request)
+                      .httpFetchPolicy(CacheFirst)
+                      .execute()
+```
+
+#### `CacheKeyResolver`
+
+The `CacheKeyResolver` API has been split in two different APIs:
+
+* `CacheKeyGenerator.cacheKeyForObject`
+  * takes Json data as input and returns a unique id for an object.
+  * is used **after** a network request
+  * is used during normalization when **writing** to the cache
+* `CacheKeyResolver.cacheKeyForField`
+  * takes a GraphQL field and operation variables as input and generates an id for this field
+  * is used **before** a network request
+  * is used when **reading** the cache
+
+Previously, both methods were in `CacheResolver` even if under the hood, the code path were very different. By separating them, it makes it explicit and also makes it possible to only implement one of them.
+
+At a high level,
+* `fromFieldRecordSet` is renamed to `CacheKeyGenerator.cacheKeyForObject`.
+* `fromFieldArguments` is renamed to `CacheKeyResolver.cacheKeyForField`.
+* The `CacheKey` return value is now nullable, and `CacheKey.NONE` is replaced with `null`.
+
+```kotlin
+// Replace
+val resolver: CacheKeyResolver = object : CacheKeyResolver() {
+  override fun fromFieldRecordSet(field: ResponseField, recordSet: Map<String, Any>): CacheKey {
+    return CacheKey.from(recordSet["id"] as String)
+  }
+  override fun fromFieldArguments(field: ResponseField, variables: Operation.Variables): CacheKey {
+    return CacheKey.from(field.resolveArgument("id", variables) as String)
+  }
+}
+val apolloClient = ApolloClient.builder()
+    .serverUrl("https://...")
+    .normalizedCache(cacheFactory, resolver)
+    .build()
+
+
+// With
+val objectIdGenerator = object : CacheKeyGenerator {
+  override fun cacheKeyForObject(obj: Map<String, Any?>, context: CacheKeyGeneratorContext): CacheKey? {
+    return obj["id"]?.toString()?.let { CacheKey(it) } ?: TypePolicyCacheKeyGenerator.cacheKeyForObject(obj, context)
+  }
+}
+
+val cacheKeyResolver = object : CacheKeyResolver() {
+  override fun cacheKeyForField(field: CompiledField, variables: Executable.Variables): CacheKey? {
+    return (field.resolveArgument("id", variables) as String?)?.let { CacheKey(it) }
+  }
+}
+
+val apolloClient = ApolloClient("https://").normalizedCache(
+    normalizedCacheFactory = cacheFactory,
+    objectIdGenerator = objectIdGenerator,
+    cacheResolver = cacheKeyResolver
+)
+```
+
+### Optional values
+
+#### The `Optional` class
+
+Apollo Kotlin distinguishes between `null` values and absent values.
+
+Apollo Android 2.x uses `Input` to represent optional (maybe nullable) values for input types.
+
+Apollo Kotlin 3.x uses `Optional` instead so that later it can potentially be used in places _besides_ input types (for example, fields could be made optional with an [`@optional`](https://github.com/apollographql/apollo-android/blob/5c1ff82ccaded93ae7126cedc6d7835e63fed75a/apollo-compiler/src/main/resources/apollo.graphqls#L6) directive).
+
+`Optional` is a sealed class, so `when` statements don't need an `else` branch.
+
+
+```kotlin
+// Replace
+Input.fromNullable(value)
+// With
+Optional.Present(value)
+
+// Replace
+Input.absent()
+// With
+Optional.Absent
+
+// Replace
+Input.optional(value)
+// With
+Optional.presentIfNotNull(value)
+```
+
+#### Non-optional variables generation
+
+By default, the [GraphQL spec](https://spec.graphql.org/draft/#sec-Coercing-Variable-Values) treats nullable variables as optional, so it's valid to omit them at runtime. In practice, however, this is rarely used and makes the operation's declaration verbose.
+
+That is why Apollo Kotlin 3.x provides a mechanism to remove the `Optional` wrapper, which makes the construction of queries with nullable variables more straightforward.
+
+> When enabled, this new behavior applies _only_ to variables. Fields of input objects still use `Optional`, because it's common to omit particular input fields.
+
+To omit optional variables globally in your Gradle config:
+
+```kotlin
+apollo {
+  // ...
+  generateOptionalOperationVariables.set(false)
+}
+```
+
+If you still need to omit a variable in certain places, you can opt in to the `Optional` wrapper with the `@optional` directive:
+
+```graphql
+query GetHero($id: String @optional) {
+  hero(id: $id)
+}
+```
+More information is available [here](../advanced/operation-variables).
+
+### Enums
+
+Apollo Android 2.x always converts enums and enum values names to uppercase.
+
+Apollo Kotlin 3.x uses the schema case for both enums and enum value names. This allows to define multiple enum values with a different case:
+
+```graphql
+# This now generates valid Kotlin code
+enum Direction {
+  left @deprecated("use LEFT instead")
+  LEFT,
+  RIGHT
+}
+```
+
+See [#3035](https://github.com/apollographql/apollo-android/issues/3035) for more details
+
+### IdlingResource
+
+In Apollo Android 2.x, you can pass an `ApolloClient` to `ApolloIdlingResource.create()` and the `ApolloClient` will be modified to register an idle callback.
+
+In Apollo Kotlin 3.x, an `ApolloClient` is immutable once instantiated so it's not possible to register callbacks/interceptors once it is instantiated. Instead, you can create your `ApolloIdlingResource` as a first step and then pass it to your `ApolloClient.Builder` like so:
+
+```kotlin
+// Replace
+val idlingResource = ApolloIdlingResource.create("ApolloIdlingResource", apolloClient)
+IdlingRegistry.getInstance().register(idlingResource)
+
+// With
+val idlingResource = ApolloIdlingResource("ApolloIdlingResource")
+IdlingRegistry.getInstance().register(idlingResource)
+val apolloClient = ApolloClient.Builder()
+    .serverUrl("https://example.com/graphql")
+    .idlingResource(idlingResource)
+    .build()
+```
+
+### BigDecimal
+
+By default, Apollo Android 2.x internally maps all numbers to a custom `BigDecimal` value.
+
+For performance reasons, Apollo Kotlin 3.x uses the primitive type when possible and moves `BigDecimal` to the `apollo-adapters` artifact. This change should be transparent for most users because the generated parsers will convert Json numbers to `Int` or `Double` internally.
+
+If you're reading the internal `Maps`, you can still be exposed to this change. This happens for an example, if you have a `CustomTypeAdapter` that reads nested values. In that case, be prepared to receive `Int`/`Double` instead of `BigDecimal`:
+
+```kotlin
+    val customTypeAdapter = object: CustomTypeAdapter<Address> {
+      override fun decode(value: CustomTypeValue<*>): Address {
+        check (value is CustomTypeValue.GraphQLJsonObject)
+
+        val street = value.value["street"] as String
+
+        // BigDecimal is not exposed anymore
+        // Replace
+        // val number = value.value["number"] as BigDecimal
+
+        // With
+        val number = value.value["number"] as Int
+
+        return Address(street, number)
+      }
+    }
+```
+
+By default, numbers are mapped to `Int` or `Double` if they don't fit in an `Int`. If the number doesn't fit in a `Double` either, it will fallback to a `JsonNumber` containing the String representation of the number.

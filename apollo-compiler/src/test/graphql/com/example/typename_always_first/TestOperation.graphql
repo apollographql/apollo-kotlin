@@ -1,0 +1,15 @@
+query TestQuery {
+  hero {
+    ... on Human {
+      height
+      __typename
+    }
+    ... on Droid {
+      name
+      __typename
+      primaryFunction
+    }
+    __typename
+  }
+  __typename
+}

@@ -1,0 +1,14 @@
+query TestQuery {
+  hero {
+    ...DroidDetails1
+    ...DroidDetails2
+  }
+}
+
+fragment DroidDetails1 on Droid {
+  name
+}
+
+fragment DroidDetails2 on Droid {
+  primaryFunction
+}

@@ -1,0 +1,968 @@
+{
+  "data": {
+    "allPlanets": {
+      "planets": [
+        {
+          "__typename": "Planet",
+          "name": "Tatooine",
+          "climates": null,
+          "surfaceWater": 1.0,
+          "filmConnection": null
+        },
+        {
+          "__typename": "Planet",
+          "name": "Alderaan",
+          "climates": [
+            "temperate"
+          ],
+          "surfaceWater": 40.0,
+          "filmConnection": {
+            "totalCount": 2,
+            "films": [
+              {
+                "__typename": "Film",
+                "title": "A New Hope",
+                "producers": [
+                  "Gary Kurtz",
+                  "Rick McCallum"
+                ]
+              },
+              {
+                "__typename": "Film",
+                "title": "Revenge of the Sith",
+                "producers": [
+                  "Rick McCallum"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Yavin IV",
+          "climates": [
+            "temperate",
+            "tropical"
+          ],
+          "surfaceWater": 8.0,
+          "filmConnection": {
+            "totalCount": 1,
+            "films": [
+              {
+                "__typename": "Film",
+                "title": "A New Hope",
+                "producers": [
+                  "Gary Kurtz",
+                  "Rick McCallum"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Hoth",
+          "climates": [
+            "frozen"
+          ],
+          "surfaceWater": 100.0,
+          "filmConnection": {
+            "totalCount": 1,
+            "films": [
+              {
+                "__typename": "Film",
+                "title": "The Empire Strikes Back",
+                "producers": [
+                  "Gary Kutz",
+                  "Rick McCallum"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Dagobah",
+          "climates": [
+            "murky"
+          ],
+          "surfaceWater": 8.0,
+          "filmConnection": {
+            "totalCount": 3,
+            "films": [
+              {
+                "__typename": "Film",
+                "title": "The Empire Strikes Back",
+                "producers": [
+                  "Gary Kutz",
+                  "Rick McCallum"
+                ]
+              },
+              {
+                "__typename": "Film",
+                "title": "Return of the Jedi",
+                "producers": [
+                  "Howard G. Kazanjian",
+                  "George Lucas",
+                  "Rick McCallum"
+                ]
+              },
+              {
+                "__typename": "Film",
+                "title": "Revenge of the Sith",
+                "producers": [
+                  "Rick McCallum"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Bespin",
+          "climates": [
+            "temperate"
+          ],
+          "surfaceWater": 0.0,
+          "filmConnection": {
+            "totalCount": 1,
+            "films": [
+              {
+                "__typename": "Film",
+                "title": "The Empire Strikes Back",
+                "producers": [
+                  "Gary Kutz",
+                  "Rick McCallum"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Endor",
+          "climates": [
+            "temperate"
+          ],
+          "surfaceWater": 8.0,
+          "filmConnection": {
+            "totalCount": 1,
+            "films": [
+              {
+                "__typename": "Film",
+                "title": "Return of the Jedi",
+                "producers": [
+                  "Howard G. Kazanjian",
+                  "George Lucas",
+                  "Rick McCallum"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Naboo",
+          "climates": [
+            "temperate"
+          ],
+          "surfaceWater": 12.0,
+          "filmConnection": {
+            "totalCount": 4,
+            "films": [
+              {
+                "__typename": "Film",
+                "title": "Return of the Jedi",
+                "producers": [
+                  "Howard G. Kazanjian",
+                  "George Lucas",
+                  "Rick McCallum"
+                ]
+              },
+              {
+                "__typename": "Film",
+                "title": "The Phantom Menace",
+                "producers": [
+                  "Rick McCallum"
+                ]
+              },
+              {
+                "__typename": "Film",
+                "title": "Attack of the Clones",
+                "producers": [
+                  "Rick McCallum"
+                ]
+              },
+              {
+                "__typename": "Film",
+                "title": "Revenge of the Sith",
+                "producers": [
+                  "Rick McCallum"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Coruscant",
+          "climates": [
+            "temperate"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 4,
+            "films": [
+              {
+                "__typename": "Film",
+                "title": "Return of the Jedi",
+                "producers": [
+                  "Howard G. Kazanjian",
+                  "George Lucas",
+                  "Rick McCallum"
+                ]
+              },
+              {
+                "__typename": "Film",
+                "title": "The Phantom Menace",
+                "producers": [
+                  "Rick McCallum"
+                ]
+              },
+              {
+                "__typename": "Film",
+                "title": "Attack of the Clones",
+                "producers": [
+                  "Rick McCallum"
+                ]
+              },
+              {
+                "__typename": "Film",
+                "title": "Revenge of the Sith",
+                "producers": [
+                  "Rick McCallum"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Kamino",
+          "climates": [
+            "temperate"
+          ],
+          "surfaceWater": 100.0,
+          "filmConnection": {
+            "totalCount": 1,
+            "films": [
+              {
+                "__typename": "Film",
+                "title": "Attack of the Clones",
+                "producers": [
+                  "Rick McCallum"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Geonosis",
+          "climates": [
+            "temperate",
+            "arid"
+          ],
+          "surfaceWater": 5.0,
+          "filmConnection": {
+            "totalCount": 1,
+            "films": [
+              {
+                "__typename": "Film",
+                "title": "Attack of the Clones",
+                "producers": [
+                  "Rick McCallum"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Utapau",
+          "climates": [
+            "temperate",
+            "arid",
+            "windy"
+          ],
+          "surfaceWater": 0.9,
+          "filmConnection": {
+            "totalCount": 1,
+            "films": [
+              {
+                "__typename": "Film",
+                "title": "Revenge of the Sith",
+                "producers": [
+                  "Rick McCallum"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Mustafar",
+          "climates": [
+            "hot"
+          ],
+          "surfaceWater": 0.0,
+          "filmConnection": {
+            "totalCount": 1,
+            "films": [
+              {
+                "__typename": "Film",
+                "title": "Revenge of the Sith",
+                "producers": [
+                  "Rick McCallum"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Kashyyyk",
+          "climates": [
+            "tropical"
+          ],
+          "surfaceWater": 60.0,
+          "filmConnection": {
+            "totalCount": 1,
+            "films": [
+              {
+                "__typename": "Film",
+                "title": "Revenge of the Sith",
+                "producers": [
+                  "Rick McCallum"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Polis Massa",
+          "climates": [
+            "artificial temperate"
+          ],
+          "surfaceWater": 0.0,
+          "filmConnection": {
+            "totalCount": 1,
+            "films": [
+              {
+                "__typename": "Film",
+                "title": "Revenge of the Sith",
+                "producers": [
+                  "Rick McCallum"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Mygeeto",
+          "climates": [
+            "frigid"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 1,
+            "films": [
+              {
+                "__typename": "Film",
+                "title": "Revenge of the Sith",
+                "producers": [
+                  "Rick McCallum"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Felucia",
+          "climates": [
+            "hot",
+            "humid"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 1,
+            "films": [
+              {
+                "__typename": "Film",
+                "title": "Revenge of the Sith",
+                "producers": [
+                  "Rick McCallum"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Cato Neimoidia",
+          "climates": [
+            "temperate",
+            "moist"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 1,
+            "films": [
+              {
+                "__typename": "Film",
+                "title": "Revenge of the Sith",
+                "producers": [
+                  "Rick McCallum"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Saleucami",
+          "climates": [
+            "hot"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 1,
+            "films": [
+              {
+                "__typename": "Film",
+                "title": "Revenge of the Sith",
+                "producers": [
+                  "Rick McCallum"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Stewjon",
+          "climates": [
+            "temperate"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Eriadu",
+          "climates": [
+            "polluted"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Corellia",
+          "climates": [
+            "temperate"
+          ],
+          "surfaceWater": 70.0,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Rodia",
+          "climates": [
+            "hot"
+          ],
+          "surfaceWater": 60.0,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Nal Hutta",
+          "climates": [
+            "temperate"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Dantooine",
+          "climates": [
+            "temperate"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Bestine IV",
+          "climates": [
+            "temperate"
+          ],
+          "surfaceWater": 98.0,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Ord Mantell",
+          "climates": [
+            "temperate"
+          ],
+          "surfaceWater": 10.0,
+          "filmConnection": {
+            "totalCount": 1,
+            "films": [
+              {
+                "__typename": "Film",
+                "title": "The Empire Strikes Back",
+                "producers": [
+                  "Gary Kutz",
+                  "Rick McCallum"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "unknown",
+          "climates": [
+            "unknown"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Trandosha",
+          "climates": [
+            "arid"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Socorro",
+          "climates": [
+            "arid"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Mon Cala",
+          "climates": [
+            "temperate"
+          ],
+          "surfaceWater": 100.0,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Chandrila",
+          "climates": [
+            "temperate"
+          ],
+          "surfaceWater": 40.0,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Sullust",
+          "climates": [
+            "superheated"
+          ],
+          "surfaceWater": 5.0,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Toydaria",
+          "climates": [
+            "temperate"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Malastare",
+          "climates": [
+            "arid",
+            "temperate",
+            "tropical"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Dathomir",
+          "climates": [
+            "temperate"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Ryloth",
+          "climates": [
+            "temperate",
+            "arid",
+            "subartic"
+          ],
+          "surfaceWater": 5.0,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Aleen Minor",
+          "climates": [
+            "unknown"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Vulpter",
+          "climates": [
+            "temperate",
+            "artic"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Troiken",
+          "climates": [
+            "unknown"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Tund",
+          "climates": [
+            "unknown"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Haruun Kal",
+          "climates": [
+            "temperate"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Cerea",
+          "climates": [
+            "temperate"
+          ],
+          "surfaceWater": 20.0,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Glee Anselm",
+          "climates": [
+            "tropical",
+            "temperate"
+          ],
+          "surfaceWater": 80.0,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Iridonia",
+          "climates": [
+            "unknown"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Tholoth",
+          "climates": [
+            "unknown"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Iktotch",
+          "climates": [
+            "arid",
+            "rocky",
+            "windy"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Quermia",
+          "climates": [
+            "unknown"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Dorin",
+          "climates": [
+            "temperate"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Champala",
+          "climates": [
+            "temperate"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Mirial",
+          "climates": [
+            "unknown"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Serenno",
+          "climates": [
+            "unknown"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Concord Dawn",
+          "climates": [
+            "unknown"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Zolan",
+          "climates": [
+            "unknown"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Ojom",
+          "climates": [
+            "frigid"
+          ],
+          "surfaceWater": 100.0,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Skako",
+          "climates": [
+            "temperate"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Muunilinst",
+          "climates": [
+            "temperate"
+          ],
+          "surfaceWater": 25.0,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Shili",
+          "climates": [
+            "temperate"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Kalee",
+          "climates": [
+            "arid",
+            "temperate",
+            "tropical"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        },
+        {
+          "__typename": "Planet",
+          "name": "Umbara",
+          "climates": [
+            "unknown"
+          ],
+          "surfaceWater": null,
+          "filmConnection": {
+            "totalCount": 0,
+            "films": []
+          }
+        }
+      ]
+    }
+  }
+}

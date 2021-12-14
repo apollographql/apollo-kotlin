@@ -1,6 +1,6 @@
 plugins {
   kotlin("jvm")
-  id("com.apollographql.apollo")
+  id("com.apollographql.apollo3")
 }
 
 dependencies {
@@ -8,10 +8,11 @@ dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.apollo.api"))
   testImplementation(kotlin("test-junit"))
 
-  implementation(project(":root"))
+  api(project(":root"))
   apolloMetadata(project(":root"))
 }
 
 apollo {
-  generateKotlinModels.set(true)
+  packageNamesFromFilePaths()
+  generateApolloMetadata.set(true)
 }

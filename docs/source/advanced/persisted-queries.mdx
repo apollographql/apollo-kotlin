@@ -1,47 +1,51 @@
 ---
-title: Persisted queries 
+title: Persisted queries in Apollo Kotlin
+sidebar_title: Persisted queries
 ---
 
 import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
 ## Automatic persisted queries
 
-Apollo Android supports [Automatic Persisted Queries](https://www.apollographql.com/docs/apollo-server/performance/apq/).
-Your server needs to supports it (apollo-server supports it out of the box).
-Enable the feature in apollo-android like so:
+Apollo Kotlin supports [Automatic Persisted Queries](https://www.apollographql.com/docs/apollo-server/performance/apq/) (APQ). To take advantage of this support, your GraphQL server _also_ needs to support APQ (Apollo Server supports it out of the box).
 
-```java
-ApolloClient.builder()
-  /* ... */
-  .enableAutoPersistedQueries(true)
-  /* ... */
+Enable the feature when you initialize your `ApolloClient` instance, like so:
+
+```kotlin
+val apolloClient = ApolloClient.Builder()
+  .serverUrl("https://...")
+  .autoPersistedQueries()
   .build()
 ```
 
 You can optionally configure apollo-android to send GET HTTP verbs for queries, to benefit from caching if your server uses a CDN:
-```java
-ApolloClient.builder()
-  /* ... */
-  .enableAutoPersistedQueries(true)
-  .useHttpGetMethodForQueries(true)
-  /* ... */
-  .build()
+```kotlin
+val apolloClient = ApolloClient.Builder()
+    .serverUrl("https://...")
+    .autoPersistedQueries(httpMethodForDocumentQueries = HttpMethod.Get)
+    .build()
 ```
 
+## Disable persisted queries for some queries
+
+You may want to disable server side caching like for some users data that is updated often. In order to do that, set `hashedQuery` to false like:
+```kotlin
+apolloClient.query(myQuery).enableAutoPersistedQueries(false).toFlow()
+```
 
 ## operationOutput.json
 
-If your backend uses custom persisted queries, Apollo Android can generate an OperationOutput json from your .graphql queries. They will match what the client is sending exactly so you can persist them on your server.
+If your backend uses custom persisted queries, Apollo Kotlin can generate an OperationOutput json from your .graphql queries. They will match what the client is sending exactly so you can persist them on your server.
 
 ```
 apollo {
-  generateOperationOutput = true
+  generateOperationOutput.set(true)
 }
 ```
 
 ## Custom ID for Persisted Queries
 
-By default, Apollo uses `Sha256` hashing algorithm to generate an ID for the query. To provide custom ID generation logic, use the option - `operationIdGenerator` which accepts an `instance` that implements the `OperationIdGenerator` interface (`com.apollographql.apollo.compiler.OperationIdGenerator`) as the input. This option can be used to either specify a different hashing algorithm or to fetch the persisted query ID from a different place - e.g. a service or a CLI.
+By default, Apollo uses `Sha256` hashing algorithm to generate an ID for the query. To provide custom ID generation logic, use the option - `operationIdGenerator` which accepts an `instance` that implements the `OperationIdGenerator` interface (`com.apollographql.apollo3.compiler.OperationIdGenerator`) as the input. This option can be used to either specify a different hashing algorithm or to fetch the persisted query ID from a different place - e.g. a service or a CLI.
 
 Example Md5 hash generator:
 
@@ -49,10 +53,10 @@ Example Md5 hash generator:
 
 ```kotlin
 apollo {
-    operationIdGenerator.set(object: com.apollographql.apollo.compiler.OperationIdGenerator {
+    operationIdGenerator.set(object: com.apollographql.apollo3.compiler.OperationIdGenerator {
         override val version = "my-md5-version1"
 
-        override fun apply(operationDocument: String, operationFilepath: String): String {
+        override fun apply(operationDocument: String, operationName: String): String {
             return operationDocument.md5()
         }
     })
@@ -60,11 +64,11 @@ apollo {
 ```
 
 ```groovy
-import com.apollographql.apollo.compiler.OperationIdGenerator
+import com.apollographql.apollo3.compiler.OperationIdGenerator
 
 apollo {
   operationIdGenerator = new OperationIdGenerator() {
-    String apply(String operationDocument, String operationFilepath) {
+    String apply(String operationDocument, String operationName) {
       return operationDocument.md5()
     }
 

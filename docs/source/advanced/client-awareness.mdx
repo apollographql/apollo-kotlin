@@ -9,14 +9,10 @@ Client Awareness uses `apollographql-client-name` and `apollographql-client-vers
 Enable it by adding an `ApolloClientAwarenessInterceptor` to your `OkHttpClient`:
 
 ```kotlin
-    val okHttpClient = OkHttpClient.Builder()
-        .addInterceptor(ApolloClientAwarenessInterceptor(BuildConfig.APPLICATION_ID, BuildConfig.VERSION_NAME))
-        .build()
-
-    instance = ApolloClient.builder()
-        .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
-        .okHttpClient(okHttpClient)
-        .build()
+val apolloClient = ApolloClient.Builder()
+    .serverUrl("https://example.com/graphql")
+    .addHttpInterceptor(ApolloClientAwarenessInterceptor(BuildConfig.APPLICATION_ID, BuildConfig.VERSION_NAME))
+    .build()
 ```
 
 **Note**: This example uses `BuildConfig` to set the applicationId as client name and app version as client version but you can override this. Especially, if your iOS and Android apps use the same package name, it's useful to customize it to allow differentiating the clients

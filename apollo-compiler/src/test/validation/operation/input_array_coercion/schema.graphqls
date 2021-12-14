@@ -1,0 +1,5 @@
+type Query {
+    listOfIntValue(listOfInt: [Int]): Int!
+    listOfNonNullIntValue(listOfInt: [Int!]!): Int!
+    listOfListOfIntValue(listOfListOfInt: [[Int]]): Int!
+}

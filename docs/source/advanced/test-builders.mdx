@@ -1,0 +1,97 @@
+---
+title: Test builders
+---
+
+> ⚠️ **Test builders are experimental and subject to change.** If you have feedback on them, please let us know via [GitHub issues](https://github.com/apollographql/apollo-android/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md&title=[Test%20Builders]) or in the [Kotlin Slack community](https://slack.kotl.in/).
+
+Apollo Kotlin provides **test builders** that enable you to instantiate your GraphQL model classes with default values. Test builders are especially helpful for testing models with a large number of fields or a deeply nested hierarchy. They automatically populate the `__typename` field and deduplicate merged fields whenever possible.
+
+## Enabling test builders
+
+Test builders are _not_ enabled by default, because they aren't useful for every application and they generate additional code. To enable them, set the `generateTestBuilders` option to `true`:
+
+```kotlin:title=build.gradle[.kts]
+apollo {
+  // ...
+
+  // Enable test builder generation
+  generateTestBuilders.set(true)
+}
+```
+
+This generates a builder DSL for each model used by your operations. These DSLs are based on each model's fields. Using the DSLs, you can set the values of fields you require for a particular test, and mocked values are set automatically for _other_ fields.
+
+## Example usage
+
+Let's say we're building a test that uses a mocked result of the following query:
+
+```graphql
+query HeroForEpisode($ep: Episode!) {
+  hero(episode: $ep) {
+    firstName
+    lastName
+    age
+    ... on Droid {
+      primaryFunction
+    }
+
+    ... on Human {
+      height
+    }
+  }
+}
+```
+
+Here's how we can use the corresponding test builder for that mocked result:
+
+```kotlin
+// Import the query's test builder
+import com.example.test.HeroForEpisodeQuery_TestBuilder.Data
+
+@Test
+fun test() {
+  val data = HeroForEpisodeQuery.Data {
+    // Set values for particular fields of the query
+    hero = humanHero {
+      firstName = "John"
+      age = 42
+    }
+  }
+
+  assertEquals("John", data.hero.firstName)
+  assertEquals(42, data.hero.age)
+}
+```
+
+In this example, the `hero` field is a `Human` object with specified values for `firstName` and `age`. The values for `lastName`and `height` are automatically populated with mock values.
+
+> You can replace `humanHero` above with `droidHero` to create a `Droid` object instead, or specify `otherHero` to create an object that is neither a `Human` nor a `Droid`.
+
+## Configuring default field values
+
+To assign default values to fields, test builders use an implementation of the `TestResolver` interface. By default, they use an instance of `DefaultTestResolver`.
+
+The `DefaultTestResolver` gives each `String` field the field's name as its default value, and it increments a counter as it assigns default values for `Int` fields. It defines similar default behavior for other types.
+
+You can create your _own_ `TestResolver` implementation (optionally extending `DefaultTestResolver` for a head start). You then pass this implementation as a parameter to the `Data` function, like so:
+
+```kotlin{10}
+// A TestResolver implementation that assigns -1 to all Int fields
+val myTestResolver = object : DefaultTestResolver() {
+  override fun resolveInt(path: List<Any>): Int {
+    return -1
+  }
+}
+
+@Test
+fun test() {
+  val data = HeroForEpisodeQuery.Data(testResolver = myTestResolver) {
+    hero = humanHero {
+      firstName = "John"
+    }
+  }
+
+  // Unspecified Int field is -1
+  assertEquals(-1, data.hero.age)
+}
+```
