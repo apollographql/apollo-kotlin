@@ -12,7 +12,7 @@ This document was last updated on October 25th, 2021.
 
 ## `3.x` branch
 
-**`dev-3.x` is in Beta stage**. It's working, contains [a ton of new features and improvements](https://github.com/apollographql/apollo-android/releases/tag/v3.0.0-alpha01) and a [migration guide](https://www.apollographql.com/docs/android/v3/migration/3.0/). It's not stable yet because the API might change but if you don't mind the occasional APIs updates, **please try it out**. The faster we get feedback, the faster it can reach stable. The current goal is to go stable by the end of 2021.
+**`dev-3.x` is in Beta stage**. It's working, contains [a ton of new features and improvements](https://github.com/apollographql/apollo-android/releases/tag/v3.0.0-alpha01) and a [migration guide](https://www.apollographql.com/docs/android//migration/3.0/). It's not stable yet because the API might change but if you don't mind the occasional APIs updates, **please try it out**. The faster we get feedback, the faster it can reach stable. The current goal is to go stable by the end of 2021.
 
 The next things to get worked on are:
 
