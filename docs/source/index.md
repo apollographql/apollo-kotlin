@@ -1,11 +1,7 @@
 ---
-title: Introduction
+title: Introduction to Apollo Android
 description: A strongly-typed, caching GraphQL client for the JVM, Android and Kotlin multiplatform
 ---
-
-# Apollo Android
-
-> **Apollo Android 3 is available in beta.** It is still in active development, and we'd love for folks to test it out. [See the v3 documentation](https://www.apollographql.com/docs/android/v3) and please [report any issues](https://github.com/apollographql/apollo-android/issues/new/choose)!
 
 Apollo Android is a GraphQL client that generates Java and Kotlin models from GraphQL queries. These models give you a type-safe API to work with GraphQL servers.  Apollo helps you keep your GraphQL query statements together, organized, and easy to access.
 
