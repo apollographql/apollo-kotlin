@@ -7,7 +7,7 @@ module.exports = {
       options: {
         ...themeOptions,
         root: __dirname,
-        pathPrefix: '/docs/android',
+        pathPrefix: '/docs/kotlin',
         algoliaIndexName: 'android',
         algoliaFilters: ['docset:android'],
         subtitle: 'Client (Kotlin)',

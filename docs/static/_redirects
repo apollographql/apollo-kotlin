@@ -1,4 +1,4 @@
-/advanced/file-upload/ /docs/android/essentials/mutations/#uploading-files
-/essentials/caching/ /docs/android/essentials/normalized-cache
-/advanced/android/ /docs/android/advanced/ui-tests/
-/tutorial /docs/android/tutorial/00-introduction
+/advanced/file-upload/ /docs/kotlin/essentials/mutations/#uploading-files
+/essentials/caching/ /docs/kotlin/essentials/normalized-cache
+/advanced/android/ /docs/kotlin/advanced/ui-tests/
+/tutorial /docs/kotlin/tutorial/00-introduction
