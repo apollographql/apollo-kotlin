@@ -13,10 +13,6 @@ module.exports = {
         subtitle: 'Client (Android)',
         description: 'A guide to using Apollo with Android',
         githubRepo: 'apollographql/apollo-android',
-        defaultVersion: '2',
-        versions: {
-          '3': 'dev-3.x',
-        },
         sidebarCategories: {
           null: [
             'index',
