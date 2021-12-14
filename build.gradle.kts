@@ -292,15 +292,15 @@ fun isTag(): Boolean {
   return ref?.startsWith("refs/tags/") == true
 }
 
-fun isMain(): Boolean {
+fun shouldPublishSnapshots(): Boolean {
   val eventName = System.getenv("GITHUB_EVENT_NAME")
   val ref = System.getenv("GITHUB_REF")
 
-  return eventName == "push" && ref == "refs/heads/main"
+  return eventName == "push" && ref == "refs/heads/release-2.x"
 }
 
 tasks.register("publishSnapshotsIfNeeded") {
-  if (isMain()) {
+  if (shouldPublishSnapshots()) {
     project.logger.log(LogLevel.LIFECYCLE, "Deploying snapshot to OSS Snapshots...")
     dependsOn(subprojectTasks("publishAllPublicationsToOssSnapshotsRepository"))
   }
