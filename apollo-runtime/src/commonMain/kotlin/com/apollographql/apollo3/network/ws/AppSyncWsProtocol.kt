@@ -7,8 +7,8 @@ import com.apollographql.apollo3.api.NullableAnyAdapter
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer.Companion.appendQueryParameters
-import com.apollographql.apollo3.api.json.internal.buildJsonByteString
-import com.apollographql.apollo3.api.json.internal.writeAny
+import com.apollographql.apollo3.api.json.buildJsonByteString
+import com.apollographql.apollo3.api.json.writeAny
 import com.apollographql.apollo3.api.toJsonString
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import kotlinx.coroutines.CoroutineScope

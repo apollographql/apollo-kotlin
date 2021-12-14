@@ -5,7 +5,7 @@ import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.internal.ResponseParser
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.json.internal.writeObject
+import com.apollographql.apollo3.api.json.writeObject
 import okio.use
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads

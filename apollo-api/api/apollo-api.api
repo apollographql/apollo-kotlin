@@ -789,6 +789,17 @@ public final class com/apollographql/apollo3/api/json/-JsonReaders {
 	public static final fun jsonReader (Lokio/BufferedSource;)Lcom/apollographql/apollo3/api/json/JsonReader;
 }
 
+public final class com/apollographql/apollo3/api/json/-JsonWriters {
+	public static final fun buildJsonByteString (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lokio/ByteString;
+	public static synthetic fun buildJsonByteString$default (Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lokio/ByteString;
+	public static final fun buildJsonMap (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun buildJsonString (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Ljava/lang/String;
+	public static synthetic fun buildJsonString$default (Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/String;
+	public static final fun writeAny (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;)V
+	public static final fun writeArray (Lcom/apollographql/apollo3/api/json/JsonWriter;Lkotlin/jvm/functions/Function1;)V
+	public static final fun writeObject (Lcom/apollographql/apollo3/api/json/JsonWriter;Lkotlin/jvm/functions/Function1;)V
+}
+
 public final class com/apollographql/apollo3/api/json/BufferedSinkJsonWriter : com/apollographql/apollo3/api/json/JsonWriter {
 	public static final field Companion Lcom/apollographql/apollo3/api/json/BufferedSinkJsonWriter$Companion;
 	public fun <init> (Lokio/BufferedSink;)V
@@ -977,14 +988,6 @@ public final class com/apollographql/apollo3/api/json/MapJsonWriter$State$Map : 
 	public final fun getMap ()Ljava/util/Map;
 	public final fun getName ()Ljava/lang/String;
 	public final fun setName (Ljava/lang/String;)V
-}
-
-public final class com/apollographql/apollo3/api/json/internal/-JsonWriters {
-	public static final fun buildJsonByteString (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lokio/ByteString;
-	public static synthetic fun buildJsonByteString$default (Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lokio/ByteString;
-	public static final fun buildJsonMap (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-	public static final fun buildJsonString (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Ljava/lang/String;
-	public static synthetic fun buildJsonString$default (Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo3/api/test/TestResolverKt {

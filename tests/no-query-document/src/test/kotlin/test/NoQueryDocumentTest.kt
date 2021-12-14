@@ -3,14 +3,13 @@ package test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.ByteStringHttpBody
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpRequestComposer
-import com.apollographql.apollo3.api.json.internal.buildJsonByteString
-import com.apollographql.apollo3.api.json.internal.writeObject
+import com.apollographql.apollo3.api.json.buildJsonByteString
+import com.apollographql.apollo3.api.json.writeObject
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.json.readAny
 import com.apollographql.apollo3.mockserver.MockResponse

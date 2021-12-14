@@ -7,8 +7,8 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.MapJsonWriter
-import com.apollographql.apollo3.api.json.internal.buildJsonString
-import com.apollographql.apollo3.api.json.internal.writeAny
+import com.apollographql.apollo3.api.json.buildJsonString
+import com.apollographql.apollo3.api.json.writeAny
 import com.apollographql.apollo3.api.json.readAny
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName

@@ -5,7 +5,7 @@ import codegen.models.AllPlanetsQuery.Data.AllPlanets.Planet.Companion.planetFra
 import codegen.models.AllPlanetsQuery.Data.AllPlanets.Planet.FilmConnection.Film.Companion.filmFragment
 import codegen.models.fragment.PlanetFragment
 import com.apollographql.apollo3.api.composeJsonResponse
-import com.apollographql.apollo3.api.json.internal.buildJsonString
+import com.apollographql.apollo3.api.json.buildJsonString
 import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.mpp.Platform
 import com.apollographql.apollo3.mpp.platform

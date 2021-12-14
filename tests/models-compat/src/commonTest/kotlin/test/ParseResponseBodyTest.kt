@@ -2,9 +2,8 @@ package test
 
 import codegen.models.AllPlanetsQuery
 import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.composeJsonResponse
-import com.apollographql.apollo3.api.json.internal.buildJsonString
+import com.apollographql.apollo3.api.json.buildJsonString
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.json.readAny
 import com.apollographql.apollo3.api.parseJsonResponse
