@@ -57,12 +57,13 @@ internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor {
             watchedKeys == null || changedKeys.intersect(watchedKeys!!).isNotEmpty()
           }.map {
             chain.proceed(request.newBuilder().isRefetching(true).build())
-          }.catch {
-            if (it !is ApolloException) {
-              // Re-throw cancellation exceptions
-              throw it
-            }
-            // Else just ignore errors
+                .catch {
+                  if (it !is ApolloException) {
+                    // Re-throw cancellation exceptions
+                    throw it
+                  }
+                  // Else just ignore errors
+                }
           }.flattenConcatPolyfill()
               .onEach { response ->
                 if (response.data != null) {
