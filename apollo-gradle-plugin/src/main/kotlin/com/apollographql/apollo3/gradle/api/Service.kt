@@ -301,7 +301,7 @@ interface Service {
   /**
    * What codegen to use. One of "operationBased", "responseBased" or "compat"
    *
-   * Default value: "compat"
+   * Default value: "operationBased"
    */
   val codegenModels: Property<String>
 
