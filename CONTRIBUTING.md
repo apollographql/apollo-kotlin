@@ -126,12 +126,12 @@ Here are the steps to do a new release:
 
 The project uses [GitHub Actions](https://docs.github.com/en/actions) to automate the build process.
 
-We have [3 workflows](https://github.com/apollographql/apollo-android/tree/dev-3.x/.github/workflows), triggered by the
+We have [3 workflows](https://github.com/apollographql/apollo-android/tree/main/.github/workflows), triggered by the
 following events:
 
 ### On PRs
 
-**Workflow:** [`pr.yml`](https://github.com/apollographql/apollo-android/blob/dev-3.x/.github/workflows/pr.yml)
+**Workflow:** [`pr.yml`](https://github.com/apollographql/apollo-android/blob/main/.github/workflows/pr.yml)
 
 **Jobs (run in parallel):**
 
@@ -145,11 +145,11 @@ following events:
 - `tests-java9`
     - Java 9+ specific tests
 
-### On pushes to `dev-3.x` branch
+### On pushes to `main` branch
 
 _(Will be replaced to "on pushes to `main` branch" after v3 is released.)_
 
-**Workflow:** [`push.yml`](https://github.com/apollographql/apollo-android/blob/dev-3.x/.github/workflows/push.yml)
+**Workflow:** [`push.yml`](https://github.com/apollographql/apollo-android/blob/main/.github/workflows/push.yml)
 
 **Job:**
 
@@ -162,7 +162,7 @@ _(Will be replaced to "on pushes to `main` branch" after v3 is released.)_
 
 ### On new tags
 
-**Workflow:** [`tag.yml`](https://github.com/apollographql/apollo-android/blob/dev-3.x/.github/workflows/tag.yml)
+**Workflow:** [`tag.yml`](https://github.com/apollographql/apollo-android/blob/main/.github/workflows/tag.yml)
 
 **Job:**
 
