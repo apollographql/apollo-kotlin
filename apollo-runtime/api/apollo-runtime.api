@@ -42,6 +42,7 @@ public final class com/apollographql/apollo3/ApolloClient : com/apollographql/ap
 	public final fun dispose ()V
 	public final fun executeAsFlow (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
 	public fun getCanBeBatched ()Ljava/lang/Boolean;
+	public final fun getCustomScalarAdapters ()Lcom/apollographql/apollo3/api/CustomScalarAdapters;
 	public fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;
 	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
 	public fun getHttpHeaders ()Ljava/util/List;
@@ -50,6 +51,7 @@ public final class com/apollographql/apollo3/ApolloClient : com/apollographql/ap
 	public final fun getNetworkTransport ()Lcom/apollographql/apollo3/network/NetworkTransport;
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public fun getSendDocument ()Ljava/lang/Boolean;
+	public final fun getSubscriptionNetworkTransport ()Lcom/apollographql/apollo3/network/NetworkTransport;
 	public final fun mutate (Lcom/apollographql/apollo3/api/Mutation;)Lcom/apollographql/apollo3/ApolloCall;
 	public final fun mutation (Lcom/apollographql/apollo3/api/Mutation;)Lcom/apollographql/apollo3/ApolloCall;
 	public final fun newBuilder ()Lcom/apollographql/apollo3/ApolloClient$Builder;

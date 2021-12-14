@@ -44,8 +44,8 @@ import kotlin.jvm.JvmStatic
 class ApolloClient
 private constructor(
     val networkTransport: NetworkTransport,
-    private val customScalarAdapters: CustomScalarAdapters,
-    private val subscriptionNetworkTransport: NetworkTransport,
+    val customScalarAdapters: CustomScalarAdapters,
+    val subscriptionNetworkTransport: NetworkTransport,
     val interceptors: List<ApolloInterceptor>,
     override val executionContext: ExecutionContext,
     private val requestedDispatcher: CoroutineDispatcher?,
