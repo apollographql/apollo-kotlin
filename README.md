@@ -68,7 +68,7 @@ Check [the project website](https://www.apollographql.com/docs/android/) for in 
 
 ## Getting started
 
-If you are new to GraphQL, check out [the tutorial](https://www.apollographql.com/docs/android/v3/tutorial/00-introduction/) that will guide you through building an Android app using Apollo, Kotlin and coroutines.
+If you are new to GraphQL, check out [the tutorial](https://www.apollographql.com/docs/android/tutorial/00-introduction/) that will guide you through building an Android app using Apollo, Kotlin and coroutines.
 
 If you'd like to add Apollo Kotlin to an existing project, follow these steps:
 
@@ -135,9 +135,9 @@ Build your project, this will generate a `HeroQuery` class that you can use with
 
 **To learn more about other Apollo Kotlin APIs:**
 
-* Execute your first [mutation](https://www.apollographql.com/docs/android/v3/essentials/mutations/)
-* Handle [custom scalar types](https://www.apollographql.com/docs/android/v3/essentials/custom-scalars/)
-* Factor common patterns using [fragments](https://www.apollographql.com/docs/android/v3/essentials/inline-fragments)
+* Execute your first [mutation](https://www.apollographql.com/docs/android/essentials/mutations/)
+* Handle [custom scalar types](https://www.apollographql.com/docs/android/essentials/custom-scalars/)
+* Factor common patterns using [fragments](https://www.apollographql.com/docs/android/essentials/inline-fragments)
 
 ## IntelliJ Plugin
 
