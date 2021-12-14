@@ -1,7 +1,7 @@
 [build]
   base    = "docs"
   publish = "docs/public"
-  command = "./generate-docs.sh"
+  command = "gatsby build"
 [build.environment]
   NPM_VERSION = "6"
 [context.production.environment]
