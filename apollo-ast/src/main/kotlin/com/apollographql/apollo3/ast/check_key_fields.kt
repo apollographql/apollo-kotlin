@@ -100,7 +100,13 @@ private fun CheckKeyFieldsScope.collectFields(
         }
 
         val fragmentDefinition = allFragmentDefinitions[it.name]!!
-        collectFields(fragmentDefinition.selectionSet.selections, fragmentDefinition.typeCondition.name, implementedTypes)
+        collectFields(
+            fragmentDefinition.selectionSet.selections.map {
+              if (it is GQLField) it.copy(selectionSet = GQLSelectionSet(emptyList())) else it
+            },
+            fragmentDefinition.typeCondition.name,
+            implementedTypes
+        )
       }
     }
   }
