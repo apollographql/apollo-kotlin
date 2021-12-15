@@ -41,7 +41,7 @@ private fun CheckKeyFieldsScope.checkField(
 private fun CheckKeyFieldsScope.checkFieldSet(path: String, selections: List<GQLSelection>, parentType: String, possibleType: String) {
   val implementedTypes = implementedTypes(possibleType)
 
-  val mergedFields = collectFieldsCached(selections, parentType, implementedTypes).groupBy {
+  val mergedFields = collectFields(selections, parentType, implementedTypes).groupBy {
     it.field.name
   }.values
 
@@ -67,20 +67,14 @@ private fun CheckKeyFieldsScope.checkFieldSet(path: String, selections: List<GQL
 
 private class FieldWithParent(val field: GQLField, val parentType: String)
 
-private val collectFieldsCache = mutableMapOf<String, List<FieldWithParent>>()
-private fun CheckKeyFieldsScope.collectFieldsCached(
-    selections: List<GQLSelection>,
-    parentType: String,
-    implementedTypes: Set<String>,
-) = collectFieldsCache.getOrPut("$selections $parentType $implementedTypes") {
-  collectFields(selections, parentType, implementedTypes)
-}
-
 private fun CheckKeyFieldsScope.collectFields(
     selections: List<GQLSelection>,
     parentType: String,
     implementedTypes: Set<String>,
 ): List<FieldWithParent> {
+  if (selections.isEmpty()) {
+    return emptyList()
+  }
   if (!implementedTypes.contains(parentType)) {
     return emptyList()
   }
@@ -98,7 +92,7 @@ private fun CheckKeyFieldsScope.collectFields(
           return@flatMap emptyList()
         }
 
-        collectFieldsCached(it.selectionSet.selections, it.typeCondition.name, implementedTypes)
+        collectFields(it.selectionSet.selections, it.typeCondition.name, implementedTypes)
       }
       is GQLFragmentSpread -> {
         if (it.directives.hasCondition()) {
@@ -106,7 +100,7 @@ private fun CheckKeyFieldsScope.collectFields(
         }
 
         val fragmentDefinition = allFragmentDefinitions[it.name]!!
-        collectFieldsCached(fragmentDefinition.selectionSet.selections, fragmentDefinition.typeCondition.name, implementedTypes)
+        collectFields(fragmentDefinition.selectionSet.selections, fragmentDefinition.typeCondition.name, implementedTypes)
       }
     }
   }
