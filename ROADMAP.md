@@ -4,25 +4,25 @@ This document is meant to give the community some idea of where we're going with
 
 Please open issues or comment/upvote the existing ones for items you'd like to see added here. Feedback is very welcome! We'd love to learn more about how you're using Apollo Kotlin and what you'd like to see in the future.
 
-This document was last updated on October 25th, 2021.
+This document was last updated on December 15th, 2021.
 
-## `2.x` branch
+## `main` branch
 
-`main` is the stable `2.x` branch. Non breaking improvements and bugfixes land here. This branch is battle-tested and actively maintained. No new features are planned for this branch and only major security or fixes will get new releases.
-
-## `3.x` branch
-
-**`dev-3.x` is in Beta stage**. It's working, contains [a ton of new features and improvements](https://github.com/apollographql/apollo-android/releases/tag/v3.0.0-alpha01) and a [migration guide](https://www.apollographql.com/docs/android/migration/3.0/). It's not stable yet because the API might change but if you don't mind the occasional APIs updates, **please try it out**. The faster we get feedback, the faster it can reach stable. The current goal is to go stable by the end of 2021.
+Apollo Kotlin 3 is the latest version of Apollo Kotlin. It's 100% written in Kotlin and brings [a ton of new APIs and features](https://github.com/apollographql/apollo-kotlin/releases/tag/v3.0.0). 
 
 The next things to get worked on are:
 
-### 3.0 Stabilization and Feedbacks
+### 3.0 Feedbacks
 
-As we move to a stable 3.0 release our priority will be to make sure the feedbacks are addressed and any bug fixed rapidly. We will also work on streamlining the documentation and migration process.
+As Apollo Kotlin 3 is relatively young, there will be use cases and issues that are not addressed yet. Our priority will be to make sure the feedbacks are addressed and any bug fixed rapidly. 
 
 ### Cache improvements
 
 The declarative cache makes working with the cache and defining unique object ids easier. We also want to include helpers to handle with common cases like pagination, garbage collection and eviction.
+
+### Test server
+
+Apollo Kotlin 3 introduces [test builders](https://www.apollographql.com/docs/kotlin/advanced/test-builders/) as a new type-safe way to build test data. We can go a step further and build an all-in-one solution that includes a GraphQL aware server.
 
 ### Make Apollo Kotlin even more multiplatform
 
@@ -31,4 +31,10 @@ Apollo Kotlin 3 is multiplatform first with runtime and cache support for the JV
 - HMPP support
 - Trying out and adopting the new memory model
 - More targets like linux/mingw/etc..
+
+## `release-2.x` branch
+
+`release-2.x` is the Apollo Android `2.x` branch. Major security issues or fixes will get new releases.
+
+
 
