@@ -26,7 +26,6 @@ dependencies {
   add("gr8Classpath", "org.conscrypt:conscrypt-openjdk-uber:2.5.2")
 
   add("shade", "org.jetbrains.kotlin:kotlin-stdlib")
-  add("shade", projects.apolloApi)
   add("shade", projects.apolloCompiler)
   add("shade", projects.apolloAst)
 
