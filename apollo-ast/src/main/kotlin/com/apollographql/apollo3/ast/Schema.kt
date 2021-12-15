@@ -2,7 +2,6 @@ package com.apollographql.apollo3.ast
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.internal.buffer
-import okio.Buffer
 
 /**
  * A wrapper around a schema GQLDocument that:
@@ -89,6 +88,15 @@ class Schema(
       is GQLEnumTypeDefinition,
       -> setOf(name)
       else -> error("Cannot determine implementedTypes of $name")
+    }
+  }
+
+  /**
+   * Returns whether the `typePolicy` directive is present on at least one object in the schema
+   */
+  fun hasTypeWithTypePolicy(): Boolean {
+    return typeDefinitions.values.filterIsInstance<GQLObjectTypeDefinition>().any { objectType ->
+      objectType.directives.any { it.name == TYPE_POLICY }
     }
   }
 

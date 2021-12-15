@@ -3,14 +3,28 @@ package com.apollographql.apollo3.ast
 private class CheckKeyFieldsScope(
     val schema: Schema,
     val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
-)
+) {
+  private val implementedTypesCache = mutableMapOf<String, Set<String>>()
+  fun implementedTypes(name: String) = implementedTypesCache.getOrPut(name) {
+    schema.implementedTypes(name)
+  }
+
+  private val keyFieldsCache = mutableMapOf<String, Set<String>>()
+  fun keyFields(name: String) = keyFieldsCache.getOrPut(name) {
+    schema.keyFields(name)
+  }
+}
 
 fun checkKeyFields(operation: GQLOperationDefinition, schema: Schema, allFragmentDefinitions: Map<String, GQLFragmentDefinition>) {
   val parentType = operation.rootTypeDefinition(schema)!!.name
   CheckKeyFieldsScope(schema, allFragmentDefinitions).checkField("Operation(${operation.name})", operation.selectionSet.selections, parentType)
 }
 
-fun checkKeyFields(fragmentDefinition: GQLFragmentDefinition, schema: Schema, allFragmentDefinitions: Map<String, GQLFragmentDefinition>) {
+fun checkKeyFields(
+    fragmentDefinition: GQLFragmentDefinition,
+    schema: Schema,
+    allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
+) {
   CheckKeyFieldsScope(schema, allFragmentDefinitions).checkField("Fragment(${fragmentDefinition.name})", fragmentDefinition.selectionSet.selections, fragmentDefinition.typeCondition.name)
 }
 
@@ -25,7 +39,7 @@ private fun CheckKeyFieldsScope.checkField(
 }
 
 private fun CheckKeyFieldsScope.checkFieldSet(path: String, selections: List<GQLSelection>, parentType: String, possibleType: String) {
-  val implementedTypes = schema.implementedTypes(possibleType)
+  val implementedTypes = implementedTypes(possibleType)
 
   val mergedFields = collectFields(selections, parentType, implementedTypes).groupBy {
     it.field.name
@@ -36,7 +50,7 @@ private fun CheckKeyFieldsScope.checkFieldSet(path: String, selections: List<GQL
     val fieldNames = mergedFields.map { it.first().field }
         .filter { it.alias == null }
         .map { it.name }.toSet()
-    val keyFieldNames = schema.keyFields(possibleType)
+    val keyFieldNames = keyFields(possibleType)
 
     val missingFieldNames = keyFieldNames.subtract(fieldNames)
     check(missingFieldNames.isEmpty()) {
@@ -58,6 +72,9 @@ private fun CheckKeyFieldsScope.collectFields(
     parentType: String,
     implementedTypes: Set<String>,
 ): List<FieldWithParent> {
+  if (selections.isEmpty()) {
+    return emptyList()
+  }
   if (!implementedTypes.contains(parentType)) {
     return emptyList()
   }
