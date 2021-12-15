@@ -8,11 +8,11 @@ import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.http.internal.urlEncode
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.internal.FileUploadAwareJsonWriter
-import com.apollographql.apollo3.api.json.internal.buildJsonByteString
-import com.apollographql.apollo3.api.json.internal.buildJsonMap
-import com.apollographql.apollo3.api.json.internal.buildJsonString
-import com.apollographql.apollo3.api.json.internal.writeAny
-import com.apollographql.apollo3.api.json.internal.writeObject
+import com.apollographql.apollo3.api.json.buildJsonByteString
+import com.apollographql.apollo3.api.json.buildJsonMap
+import com.apollographql.apollo3.api.json.buildJsonString
+import com.apollographql.apollo3.api.json.writeAny
+import com.apollographql.apollo3.api.json.writeObject
 import com.benasher44.uuid.uuid4
 import okio.BufferedSink
 import okio.ByteString

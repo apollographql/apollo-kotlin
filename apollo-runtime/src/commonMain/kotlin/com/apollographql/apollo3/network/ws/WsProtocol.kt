@@ -6,12 +6,11 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
-import com.apollographql.apollo3.api.json.internal.buildJsonByteString
-import com.apollographql.apollo3.api.json.internal.buildJsonString
-import com.apollographql.apollo3.api.json.internal.writeAny
+import com.apollographql.apollo3.api.json.buildJsonByteString
+import com.apollographql.apollo3.api.json.buildJsonString
+import com.apollographql.apollo3.api.json.writeAny
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import okio.Buffer
 
 /**

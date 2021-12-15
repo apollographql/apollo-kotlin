@@ -1,21 +1,15 @@
 @file:JvmName("-JsonWriters")
 
-package com.apollographql.apollo3.api.json.internal
+package com.apollographql.apollo3.api.json
 
 import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
-import com.apollographql.apollo3.api.json.JsonNumber
-import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.json.MapJsonWriter
 import okio.Buffer
 import okio.ByteString
-import okio.ByteString.Companion.encodeUtf8
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlin.jvm.JvmName
 
-@ApolloInternal
 fun JsonWriter.writeAny(value: Any?) {
   when (value) {
     null -> nullValue()
@@ -48,7 +42,6 @@ fun JsonWriter.writeAny(value: Any?) {
 }
 
 @OptIn(ExperimentalContracts::class)
-@ApolloInternal
 inline fun JsonWriter.writeObject(crossinline block: JsonWriter.() -> Unit) {
   contract {
     callsInPlace(block, InvocationKind.EXACTLY_ONCE)
@@ -60,7 +53,6 @@ inline fun JsonWriter.writeObject(crossinline block: JsonWriter.() -> Unit) {
 }
 
 @OptIn(ExperimentalContracts::class)
-@ApolloInternal
 inline fun JsonWriter.writeArray(crossinline block: JsonWriter.() -> Unit) {
   contract {
     callsInPlace(block, InvocationKind.EXACTLY_ONCE)

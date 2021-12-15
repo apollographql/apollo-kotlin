@@ -14,8 +14,8 @@ import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.http.valueOf
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
-import com.apollographql.apollo3.api.json.internal.buildJsonByteString
-import com.apollographql.apollo3.api.json.internal.writeArray
+import com.apollographql.apollo3.api.json.buildJsonByteString
+import com.apollographql.apollo3.api.json.writeArray
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.internal.BackgroundDispatcher
@@ -197,9 +197,9 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
           throw ApolloException("batched query response contains a null item")
         }
         @OptIn(ApolloInternal::class)
-        buildJsonByteString {
-          AnyAdapter.toJson(this, CustomScalarAdapters.Empty, it)
-        }
+        (buildJsonByteString {
+      AnyAdapter.toJson(this, CustomScalarAdapters.Empty, it)
+    })
       }
     } catch (e: ApolloException) {
       exception = e
