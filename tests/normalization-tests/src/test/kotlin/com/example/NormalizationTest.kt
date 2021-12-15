@@ -14,7 +14,10 @@ import com.apollographql.apollo3.cache.normalized.api.CacheResolver
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
-import com.example.fragment.SectionFragment
+import com.example.one.Issue2818Query
+import com.example.one.fragment.SectionFragment
+import com.example.one.Issue3672Query
+import com.example.two.NestedFragmentQuery
 import kotlinx.coroutines.runBlocking
 import okio.Buffer
 import org.junit.Test
@@ -47,6 +50,22 @@ class NormalizationTest() {
     check(data1 == data2)
   }
 
+  @Test
+  fun issue3672_2() = runBlocking {
+    val store = ApolloStore(
+        normalizedCacheFactory = MemoryCacheFactory(),
+        cacheKeyGenerator = IdBasedCacheKeyResolver,
+        cacheResolver = IdBasedCacheKeyResolver
+    )
+
+    val query = NestedFragmentQuery()
+
+    val data1 = query.parseJsonResponse(Buffer().writeUtf8(nestedResponse_list).jsonReader(), CustomScalarAdapters.Empty).dataAssertNoErrors
+    store.writeOperation(query, data1)
+
+    val data2 = store.readOperation(query)
+    check(data1 == data2)
+  }
 
   @Test
   fun issue2818() = runBlocking {

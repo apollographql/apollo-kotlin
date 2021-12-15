@@ -1,0 +1,16 @@
+query NestedFragment {
+  viewer {
+    libraries(limit: 1) {
+      id
+      books { id }
+      ...nestedBook
+    }
+  }
+}
+
+fragment nestedBook on Library {
+  books {
+    author { id }
+  }
+}
+
