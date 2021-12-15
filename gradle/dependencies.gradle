@@ -9,7 +9,7 @@ def versions = [
     javaPoet            : '1.13.0',
     jetbrainsAnnotations: '13.0',
     junit               : '4.13.2',
-    kotlin              : '1.6.0',
+    kotlin              : '1.6.10',
     kotlinPluginMin     : '1.4.0',
     kotlinCoroutines    : '1.5.2',
     moshi               : '1.12.0',
