@@ -697,6 +697,11 @@ public abstract interface class com/apollographql/apollo3/api/Upload {
 	public abstract fun writeTo (Lokio/BufferedSink;)V
 }
 
+public final class com/apollographql/apollo3/api/_DataKt {
+	public static final fun toJson (Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)V
+	public static synthetic fun toJson$default (Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;ILjava/lang/Object;)V
+}
+
 public final class com/apollographql/apollo3/api/http/ByteStringHttpBody : com/apollographql/apollo3/api/http/HttpBody {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public fun <init> (Ljava/lang/String;Lokio/ByteString;)V
