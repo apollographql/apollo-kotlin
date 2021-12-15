@@ -22,9 +22,18 @@ import com.apollographql.apollo3.api.Upload
  */
 @OptIn(ApolloInternal::class)
 class MapJsonWriter : JsonWriter {
-  sealed class State {
-    class List(val list: MutableList<Any?>) : State()
-    class Map(val map: MutableMap<String, Any?>, var name: String?) : State()
+  internal sealed class State {
+    class List(val list: MutableList<Any?>) : State() {
+      override fun toString(): String {
+        return "List (${list.size})"
+      }
+    }
+
+    class Map(val map: MutableMap<String, Any?>, var name: String?) : State() {
+      override fun toString(): String {
+        return "Map ($name)"
+      }
+    }
   }
 
   private var root: Any? = null
@@ -43,48 +52,68 @@ class MapJsonWriter : JsonWriter {
 
   override fun beginArray(): JsonWriter = apply {
     val list = mutableListOf<Any?>()
-    valueInternal(list)
     stack.add(State.List(list))
   }
 
   override fun endArray(): JsonWriter = apply {
     val state = stack.removeAt(stack.size - 1)
-
     check(state is State.List)
+
+    valueInternal(state.list)
   }
 
   override fun beginObject(): JsonWriter = apply {
-    val map = if (stack.isEmpty()) {
-      mutableMapOf<String, Any?>()
-    } else {
-      val state = stack[stack.size - 1]
-      when (state) {
-        is State.List -> mutableMapOf<String, Any?>()
-        is State.Map -> {
-          val existingValue = state.map.get(state.name)
-          if (existingValue == null) {
-            mutableMapOf<String, Any?>()
-          } else {
-            // The stream rewinded. This happens with fragments as interface
-            check(existingValue is MutableMap<*, *>) {
-              "Trying to overwrite a non-object value with an object at $path: $existingValue"
-            }
-            @Suppress("UNCHECKED_CAST")
-            existingValue as MutableMap<String, Any?>
-          }
-        }
-      }
-    }
-
-    valueInternal(map)
+    val map = mutableMapOf<String, Any?>()
 
     stack.add(State.Map(map, null))
   }
 
+  private fun Any?.mergeWith(other: Any?): Any? {
+    if (this == null) {
+      return other
+    }
+    if (other == null) {
+      return this
+    }
+    return when (this) {
+      is List<*> -> {
+        check(other is List<*>) {
+          "Cannot merge $this with $other"
+        }
+        check(size == other.size) {
+          "Cannot merge $this with $other"
+        }
+        indices.map { i ->
+          get(i).mergeWith(other.get(i))
+        }
+      }
+      is Map<*, *> -> {
+        check(other is Map<*, *>) {
+          "Cannot merge $this with $other"
+        }
+        @Suppress("UNCHECKED_CAST")
+        this as Map<String, Any?>
+        @Suppress("UNCHECKED_CAST")
+        other as Map<String, Any?>
+
+        (keys + other.keys).map {
+          it to get(it).mergeWith(other.get(it))
+        }.toMap()
+      }
+      else -> {
+        check (this == other) {
+          error("Cannot merge $this with $other")
+        }
+        this
+      }
+    }
+  }
+
   override fun endObject(): JsonWriter = apply {
     val state = stack.removeAt(stack.size - 1)
-
     check(state is State.Map)
+
+    valueInternal(state.map)
   }
 
   override fun name(name: String): JsonWriter = apply {
@@ -99,8 +128,15 @@ class MapJsonWriter : JsonWriter {
   private fun <T> valueInternal(value: T?) = apply {
     when (val state = stack.lastOrNull()) {
       is State.Map -> {
-        check(state.name != null)
-        state.map[state.name!!] = value
+        val name = state.name
+        check(name != null)
+        if (state.map.containsKey(name)) {
+          // There is already a value. This happens when using fragments and operationBased codegen
+          // when we have to rewind the parser
+          state.map[name] = state.map[name].mergeWith(value)
+        } else {
+          state.map[name] = value
+        }
         state.name = null
       }
       is State.List -> {
@@ -116,12 +152,13 @@ class MapJsonWriter : JsonWriter {
   override val path: String
     get() {
       return stack.map {
-        when(it) {
+        when (it) {
           is State.List -> it.list.size.toString()
           is State.Map -> it.name ?: "?" // if we don't know the name display '?' for now
         }
       }.joinToString(".")
     }
+
   override fun value(value: String) = valueInternal(value)
 
   override fun value(value: Boolean) = valueInternal(value)

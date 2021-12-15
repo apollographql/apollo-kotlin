@@ -13,5 +13,12 @@ dependencies {
 }
 
 apollo {
-  packageName.set("com.example")
+  service("1") {
+    sourceFolder.set("1")
+    packageName.set("com.example.one")
+  }
+  service("2") {
+    sourceFolder.set("2")
+    packageName.set("com.example.two")
+  }
 }
