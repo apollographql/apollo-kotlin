@@ -1,6 +1,38 @@
 Change Log
 ==========
 
+# Version 3.0.0
+
+_2021-12-15_
+
+This is the first stable release for ~Apollo Android 3~ Apollo Kotlin 3 🎉! 
+
+There is [documentation](https://www.apollographql.com/docs/android/), a [migration guide](https://www.apollographql.com/docs/android/migration/3.0/) and a blog post coming soon (we'll update these notes when it's out). 
+
+In a nutshell, Apollo Kotlin 3 brings:
+
+* [coroutine APIs](https://www.apollographql.com/docs/android/essentials/queries/) for easier concurrency
+* [multiplatform support](https://www.apollographql.com/docs/android/advanced/kotlin-native/) makes it possible to run the same code on Android, JS, iOS, MacOS and linux
+* [responseBased codegen](https://www.apollographql.com/docs/android/advanced/response-based-codegen/) is a new optional codegen that models fragments as interfaces
+* SQLite batching makes reading from the SQLite cache significantly faster
+* [Test builders](https://www.apollographql.com/docs/android/advanced/test-builders/) offer a simple APIs to build fake models for your tests
+* [The @typePolicy and @fieldPolicy](https://www.apollographql.com/docs/android/caching/declarative-ids/) directives make it easier to define your cache ids at compile time
+* [The @nonnull](https://www.apollographql.com/docs/android/advanced/nonnull/) directive catches null values at parsing time, so you don't have to deal with them in your UI code
+
+Feel free to ask questions by either [opening an issue on our GitHub repo](https://github.com/apollographql/apollo-android/issues), [joining the community](http://community.apollographql.com/new-topic?category=Help&tags=mobile,client) or [stopping by our channel in the KotlinLang Slack](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ)(get your invite [here](https://slack.kotl.in/)).
+
+### Changes compared to `3.0.0-rc03`:
+
+* Fix rewinding the Json stream when lists are involved (#3727)
+* Kotlin 1.6.10 (#3723)
+* Disable key fields check if unnecessary and optimize its perf (#3720)
+* Added an easy way to log cache misses (#3724)
+* Add a Data.toJson that uses reflection to lookup the adapter (#3719)
+* Do not run the cache on the main thread (#3718)
+* Promote JsonWriter extensions to public API (#3715)
+* Make customScalarAdapters and subscriptionsNetworkTransport public (#3714)
+
+
 # Version 3.0.0-rc03
 
 _2021-12-13_
