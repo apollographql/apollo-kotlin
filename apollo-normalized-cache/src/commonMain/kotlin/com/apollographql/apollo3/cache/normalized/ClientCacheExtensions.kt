@@ -73,6 +73,16 @@ fun ApolloClient.Builder.normalizedCache(
   return store(ApolloStore(normalizedCacheFactory, cacheKeyGenerator, cacheResolver), writeToCacheAsynchronously)
 }
 
+@JvmName("-logCacheMisses")
+fun ApolloClient.Builder.logCacheMisses(
+    log: (String) -> Unit = { println(it) }
+): ApolloClient.Builder {
+  check(interceptors.none { it is ApolloCacheInterceptor }) {
+    "Apollo: logCacheMisses() must be called before setting up your normalized cache"
+  }
+  return addInterceptor(CacheMissLoggingInterceptor(log))
+}
+
 fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: Boolean = false): ApolloClient.Builder {
   return addInterceptor(ApolloCacheInterceptor(store)).writeToCacheAsynchronously(writeToCacheAsynchronously)
 }

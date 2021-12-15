@@ -1055,10 +1055,15 @@ public final class com/apollographql/apollo3/exception/AutoPersistedQueriesNotSu
 }
 
 public final class com/apollographql/apollo3/exception/CacheMissException : com/apollographql/apollo3/exception/ApolloException {
+	public static final field Companion Lcom/apollographql/apollo3/exception/CacheMissException$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getFieldName ()Ljava/lang/String;
 	public final fun getKey ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/exception/CacheMissException$Companion {
+	public final fun message (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo3/exception/HttpCacheMissException : com/apollographql/apollo3/exception/ApolloException {

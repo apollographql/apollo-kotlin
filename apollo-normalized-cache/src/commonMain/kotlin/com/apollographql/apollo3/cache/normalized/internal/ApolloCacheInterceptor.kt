@@ -225,8 +225,9 @@ internal class ApolloCacheInterceptor(
 
         val networkException: ApolloException?
         try {
-          return readOneFromNetwork(request, chain, customScalarAdapters)
-              .withCacheInfo(cacheResult.cacheInfo)
+          val response = readOneFromNetwork(request, chain, customScalarAdapters)
+
+          return response.withCacheInfo(cacheResult.cacheInfo)
         } catch (e: ApolloException) {
           networkException = e
         }
