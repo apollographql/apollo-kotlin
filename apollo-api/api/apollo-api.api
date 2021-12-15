@@ -980,21 +980,6 @@ public final class com/apollographql/apollo3/api/json/MapJsonWriter : com/apollo
 	public fun value (Z)Lcom/apollographql/apollo3/api/json/MapJsonWriter;
 }
 
-public abstract class com/apollographql/apollo3/api/json/MapJsonWriter$State {
-}
-
-public final class com/apollographql/apollo3/api/json/MapJsonWriter$State$List : com/apollographql/apollo3/api/json/MapJsonWriter$State {
-	public fun <init> (Ljava/util/List;)V
-	public final fun getList ()Ljava/util/List;
-}
-
-public final class com/apollographql/apollo3/api/json/MapJsonWriter$State$Map : com/apollographql/apollo3/api/json/MapJsonWriter$State {
-	public fun <init> (Ljava/util/Map;Ljava/lang/String;)V
-	public final fun getMap ()Ljava/util/Map;
-	public final fun getName ()Ljava/lang/String;
-	public final fun setName (Ljava/lang/String;)V
-}
-
 public final class com/apollographql/apollo3/api/test/TestResolverKt {
 }
 

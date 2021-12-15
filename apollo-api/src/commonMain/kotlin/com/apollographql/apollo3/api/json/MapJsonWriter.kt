@@ -22,7 +22,7 @@ import com.apollographql.apollo3.api.Upload
  */
 @OptIn(ApolloInternal::class)
 class MapJsonWriter : JsonWriter {
-  sealed class State {
+  internal sealed class State {
     class List(val list: MutableList<Any?>) : State() {
       override fun toString(): String {
         return "List (${list.size})"
