@@ -79,8 +79,8 @@ class ApolloParseException(message: String? = null, cause: Throwable? = null) : 
  * If [fieldName] is null, it means a reference to an object could not be resolved
  */
 class CacheMissException(val key: String, val fieldName: String? = null) : ApolloException(message = message(key, fieldName)) {
-  private companion object {
-    private fun message(key: String?, fieldName: String?): String {
+  companion object {
+    fun message(key: String?, fieldName: String?): String {
       return if (fieldName == null) {
         "Object '$key' not found"
       } else {

@@ -50,6 +50,11 @@ public final class com/apollographql/apollo3/cache/normalized/CacheInfo : com/ap
 public final class com/apollographql/apollo3/cache/normalized/CacheInfo$Key : com/apollographql/apollo3/api/ExecutionContext$Key {
 }
 
+public final class com/apollographql/apollo3/cache/normalized/CacheMissLoggingInterceptor : com/apollographql/apollo3/interceptor/ApolloInterceptor {
+	public fun <init> (Lkotlin/jvm/functions/Function1;)V
+	public fun intercept (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/interceptor/ApolloInterceptorChain;)Lkotlinx/coroutines/flow/Flow;
+}
+
 public final class com/apollographql/apollo3/cache/normalized/FetchPolicy : java/lang/Enum {
 	public static final field CacheFirst Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;
 	public static final field CacheOnly Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;
@@ -60,6 +65,8 @@ public final class com/apollographql/apollo3/cache/normalized/FetchPolicy : java
 }
 
 public final class com/apollographql/apollo3/cache/normalized/NormalizedCache {
+	public static final fun -logCacheMisses (Lcom/apollographql/apollo3/ApolloClient$Builder;Lkotlin/jvm/functions/Function1;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public static synthetic fun -logCacheMisses$default (Lcom/apollographql/apollo3/ApolloClient$Builder;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public static final fun apolloStore (Lcom/apollographql/apollo3/ApolloClient;)Lcom/apollographql/apollo3/cache/normalized/ApolloStore;
 	public static final fun cacheHeaders (Lcom/apollographql/apollo3/api/MutableExecutionOptions;Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;)Ljava/lang/Object;
 	public static final fun clearNormalizedCache (Lcom/apollographql/apollo3/ApolloClient;)Z
