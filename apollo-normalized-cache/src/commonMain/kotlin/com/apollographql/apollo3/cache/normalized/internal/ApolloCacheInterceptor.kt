@@ -97,7 +97,7 @@ internal class ApolloCacheInterceptor(
         interceptQuery(request as ApolloRequest<Query.Data>, chain) as Flow<ApolloResponse<D>>
       }
       else -> error("Unknown operation ${request.operation}")
-    }
+    }.flowOn(request.executionContext[ConcurrencyInfo]!!.dispatcher)
   }
 
   /**
@@ -156,7 +156,7 @@ internal class ApolloCacheInterceptor(
         store.publish(optimisticKeys)
         throw exception!!
       }
-    }.flowOn(request.executionContext[ConcurrencyInfo]!!.dispatcher)
+    }
   }
 
 
