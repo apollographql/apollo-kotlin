@@ -97,7 +97,7 @@ ext.dep = [
     uuid                     : "com.benasher44:uuid:0.3.1",
     benManesVersions         : "com.github.ben-manes:gradle-versions-plugin:0.33.0",
     gr8                      : "com.gradleup:gr8-plugin:0.2",
-    kspGradlePlugin          : "com.google.devtools.ksp:symbol-processing-gradle-plugin:1.6.0-1.0.1",
+    kspGradlePlugin          : "com.google.devtools.ksp:symbol-processing-gradle-plugin:1.6.10-1.0.2",
     kotlinxdatetime          : "org.jetbrains.kotlinx:kotlinx-datetime:0.3.1",
     kotlinxserializationjson : "org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0",
     atomicfu                 : "org.jetbrains.kotlinx:atomicfu:0.17.0",
