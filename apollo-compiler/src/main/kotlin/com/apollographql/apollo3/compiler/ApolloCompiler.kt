@@ -118,7 +118,7 @@ object ApolloCompiler {
 
     // Check if all the key fields are present in operations and fragments
     // (do this only if there are key fields as it may be costly)
-    if (options.schema.hasAnyTypePolicyDirectives()) {
+    if (options.schema.hasTypeWithTypePolicy()) {
       operations.forEach {
         checkKeyFields(it, options.schema, allFragmentDefinitions)
       }

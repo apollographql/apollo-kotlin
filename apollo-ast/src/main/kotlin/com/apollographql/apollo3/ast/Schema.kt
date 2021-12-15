@@ -94,7 +94,7 @@ class Schema(
   /**
    * Returns whether the `typePolicy` directive is present on at least one object in the schema
    */
-  fun hasAnyTypePolicyDirectives(): Boolean {
+  fun hasTypeWithTypePolicy(): Boolean {
     return typeDefinitions.values.filterIsInstance<GQLObjectTypeDefinition>().any { objectType ->
       objectType.directives.any { it.name == TYPE_POLICY }
     }
