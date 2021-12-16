@@ -2,7 +2,7 @@
 name: Question
 about: Ask a general question about the project
 title: ''
-labels: 'Type: Question'
+labels: ':speech_balloon: Discussion'
 assignees: ''
 
 ---
