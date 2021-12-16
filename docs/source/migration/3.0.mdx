@@ -651,3 +651,21 @@ If you're reading the internal `Maps`, you can still be exposed to this change. 
 ```
 
 By default, numbers are mapped to `Int` or `Double` if they don't fit in an `Int`. If the number doesn't fit in a `Double` either, it will fallback to a `JsonNumber` containing the String representation of the number.
+
+### ApolloLogger
+
+Apollo Android 2.x has a `ApolloLogger` interface. One of the main use cases was to log cache misses.
+
+Apollo Android 3.x removes this interface and exposes the information in APIs instead. APIs offer a more structured and maintainable way to expose data.
+
+For custom logging, you can now use an `ApolloInterceptor`.
+
+For cache misses, you can use the convenience `ApolloClient.Builder.logCacheMisses()`:
+
+```kotlin
+    val apolloClient = ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .logCacheMisses() // Put this before setting up your normalized cache
+        .normalizedCache(MemoryCacheFactory())
+        .build()
+```
