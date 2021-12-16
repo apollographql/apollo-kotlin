@@ -2,7 +2,7 @@
 name: Feature request
 about: Suggest an idea for this project
 title: ''
-labels: 'Type: Feature'
+labels: ':sparkles: Type: Feature'
 assignees: ''
 
 ---
