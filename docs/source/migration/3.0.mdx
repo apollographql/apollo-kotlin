@@ -530,6 +530,23 @@ val apolloClient = ApolloClient("https://").normalizedCache(
 )
 ```
 
+#### Cache misses now always throw
+
+In Apollo Android 2, a cache miss with a `CacheOnly` policy returns an `ApolloResponse` with `response.data = null`. This was inconsistent with the `CacheFirst` policy that treats cache misses as errors.
+
+In Apollo Android 3, calling `ApolloCall.execute()` is guaranteed to always return one valid (maybe partial) `ApolloResponse` or throw.
+
+If you have any `CacheOnly` queries, make sure to catch their result:
+
+```kotlin
+try {
+  apolloClient.query(query)
+    .fetchPolicy(CacheOnly)
+} catch (e: ApolloException) {
+  // handle error
+}
+```
+
 ### Optional values
 
 #### The `Optional` class
