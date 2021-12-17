@@ -284,7 +284,7 @@ class FetchPolicyTest {
         .execute()
 
     /**
-     * Because the query was disjoint, the watcher will see a cache miss and not receive anything
+     * Because the query was disjoint, the watcher will see a cache miss and not receive anything.
      * Because initially the refetchPolicy uses CacheOnly, no network request will be made
      */
     try {

@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 
 internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
@@ -37,8 +38,11 @@ internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor {
     var watchedKeys: Set<String>? = null
     var isRefetching = false
 
-    return flowOf(flowOf(emptySet()), store.changedKeys)
-        .flattenConcatPolyfill()
+    return store.changedKeys
+        .onStart {
+          // Trigger the initial fetch
+          emit(emptySet())
+        }
         .filter { changedKeys ->
           watchedKeys == null || changedKeys.intersect(watchedKeys!!).isNotEmpty()
         }.map {
