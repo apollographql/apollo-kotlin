@@ -278,6 +278,8 @@ public final class com/apollographql/apollo3/network/http/HttpInfo : com/apollog
 	public final fun getEndMillis ()J
 	public final fun getHeaders ()Ljava/util/List;
 	public fun getKey ()Lcom/apollographql/apollo3/api/ExecutionContext$Key;
+	public final fun getMillisEnd ()J
+	public final fun getMillisStart ()J
 	public final fun getStartMillis ()J
 	public final fun getStatusCode ()I
 	public fun minusKey (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext;

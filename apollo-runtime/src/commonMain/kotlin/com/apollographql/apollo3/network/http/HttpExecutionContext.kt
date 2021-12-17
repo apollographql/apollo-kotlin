@@ -3,7 +3,7 @@ package com.apollographql.apollo3.network.http
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.http.HttpHeader
 
-class HttpInfo(
+class HttpInfo @Deprecated("HttpInfo is only to be constructed internally. Declare your own class if needed") constructor(
     val startMillis: Long,
     val endMillis: Long,
     val statusCode: Int,

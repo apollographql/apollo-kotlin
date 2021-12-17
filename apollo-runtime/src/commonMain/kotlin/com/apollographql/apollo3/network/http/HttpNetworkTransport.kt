@@ -80,6 +80,7 @@ private constructor(
         }
       }
 
+      @Suppress("DEPRECATION")
       emit(
           response.newBuilder()
               .requestUuid(request.requestUuid)
