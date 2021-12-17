@@ -35,13 +35,19 @@ public final class com/apollographql/apollo3/cache/normalized/ApolloStoreKt {
 public final class com/apollographql/apollo3/cache/normalized/CacheInfo : com/apollographql/apollo3/api/ExecutionContext$Element {
 	public static final field Key Lcom/apollographql/apollo3/cache/normalized/CacheInfo$Key;
 	public synthetic fun <init> (JJJJZLcom/apollographql/apollo3/exception/CacheMissException;Lcom/apollographql/apollo3/exception/ApolloException;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (JJZLjava/lang/String;Ljava/lang/String;)V
 	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
 	public fun get (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext$Element;
 	public final fun getCacheEndMillis ()J
-	public final fun getCacheException ()Lcom/apollographql/apollo3/exception/CacheMissException;
 	public final fun getCacheHit ()Z
+	public final fun getCacheMissException ()Lcom/apollographql/apollo3/exception/CacheMissException;
 	public final fun getCacheStartMillis ()J
+	public final fun getHit ()Z
 	public fun getKey ()Lcom/apollographql/apollo3/api/ExecutionContext$Key;
+	public final fun getMillisEnd ()J
+	public final fun getMillisStart ()J
+	public final fun getMissedField ()Ljava/lang/String;
+	public final fun getMissedKey ()Ljava/lang/String;
 	public final fun getNetworkEndMillis ()J
 	public final fun getNetworkException ()Lcom/apollographql/apollo3/exception/ApolloException;
 	public final fun getNetworkStartMillis ()J
@@ -54,8 +60,8 @@ public final class com/apollographql/apollo3/cache/normalized/CacheInfo$Builder 
 	public fun <init> ()V
 	public final fun build ()Lcom/apollographql/apollo3/cache/normalized/CacheInfo;
 	public final fun cacheEndMillis (J)Lcom/apollographql/apollo3/cache/normalized/CacheInfo$Builder;
-	public final fun cacheException (Lcom/apollographql/apollo3/exception/CacheMissException;)Lcom/apollographql/apollo3/cache/normalized/CacheInfo$Builder;
 	public final fun cacheHit (Z)Lcom/apollographql/apollo3/cache/normalized/CacheInfo$Builder;
+	public final fun cacheMissException (Lcom/apollographql/apollo3/exception/CacheMissException;)Lcom/apollographql/apollo3/cache/normalized/CacheInfo$Builder;
 	public final fun cacheStartMillis (J)Lcom/apollographql/apollo3/cache/normalized/CacheInfo$Builder;
 	public final fun networkEndMillis (J)Lcom/apollographql/apollo3/cache/normalized/CacheInfo$Builder;
 	public final fun networkException (Lcom/apollographql/apollo3/exception/ApolloException;)Lcom/apollographql/apollo3/cache/normalized/CacheInfo$Builder;

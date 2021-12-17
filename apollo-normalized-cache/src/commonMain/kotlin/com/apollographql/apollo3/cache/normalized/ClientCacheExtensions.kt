@@ -78,7 +78,7 @@ fun ApolloClient.Builder.normalizedCache(
 
 @JvmName("-logCacheMisses")
 fun ApolloClient.Builder.logCacheMisses(
-    log: (String) -> Unit = { println(it) }
+    log: (String) -> Unit = { println(it) },
 ): ApolloClient.Builder {
   check(interceptors.none { it is ApolloCacheInterceptor }) {
     "Apollo: logCacheMisses() must be called before setting up your normalized cache"
@@ -178,7 +178,7 @@ fun <T> MutableExecutionOptions<T>.refetchPolicyInterceptor(interceptor: ApolloI
     RefetchPolicyContext(interceptor)
 )
 
-private fun interceptorFor(fetchPolicy: FetchPolicy) = when(fetchPolicy) {
+private fun interceptorFor(fetchPolicy: FetchPolicy) = when (fetchPolicy) {
   FetchPolicy.CacheOnly -> CacheOnlyInterceptor
   FetchPolicy.NetworkOnly -> NetworkOnlyInterceptor
   FetchPolicy.CacheFirst -> CacheFirstInterceptor
@@ -271,11 +271,50 @@ class CacheInfo private constructor(
     val networkStartMillis: Long,
     val networkEndMillis: Long,
     val cacheHit: Boolean,
-    val cacheException: CacheMissException?,
+    val cacheMissException: CacheMissException?,
     val networkException: ApolloException?,
 ) : ExecutionContext.Element {
+
+  @Deprecated("Use CacheInfo.Builder")
+  constructor(
+      millisStart: Long,
+      millisEnd: Long,
+      hit: Boolean,
+      missedKey: String?,
+      missedField: String?,
+  ) : this(
+      cacheStartMillis = millisStart,
+      cacheEndMillis = millisEnd,
+      networkStartMillis = 0,
+      networkEndMillis = 0,
+      cacheHit = hit,
+      cacheMissException = missedKey?.let { CacheMissException(it, missedField) },
+      networkException = null
+  )
+
   override val key: ExecutionContext.Key<*>
     get() = Key
+
+  @Deprecated("Use cacheStartMillis instead", ReplaceWith("cacheStartMillis"))
+  val millisStart: Long
+    get() = cacheStartMillis
+
+  @Deprecated("Use cacheEndMillis instead", ReplaceWith("cacheEndMillis"))
+  val millisEnd: Long
+    get() = cacheEndMillis
+
+  @Deprecated("Use cacheHit instead", ReplaceWith("cacheHit"))
+  val hit: Boolean
+    get() = cacheHit
+
+  @Deprecated("Use cacheMissException?.key instead", ReplaceWith("cacheMissException?.key"))
+  val missedKey: String?
+    get() = cacheMissException?.key
+
+  @Deprecated("Use cacheMissException?.fieldName instead", ReplaceWith("cacheMissException?.fieldName"))
+  val missedField: String?
+    get() = cacheMissException?.fieldName
+
 
   companion object Key : ExecutionContext.Key<CacheInfo>
 
@@ -285,7 +324,6 @@ class CacheInfo private constructor(
         .networkStartMillis(networkStartMillis)
         .networkEndMillis(networkEndMillis)
         .cacheHit(cacheHit)
-        .cacheException(cacheException)
         .networkException(networkException)
   }
 
@@ -295,7 +333,7 @@ class CacheInfo private constructor(
     private var networkStartMillis: Long = 0
     private var networkEndMillis: Long = 0
     private var cacheHit: Boolean = false
-    private var cacheException: CacheMissException? = null
+    private var cacheMissException: CacheMissException? = null
     private var networkException: ApolloException? = null
 
     fun cacheStartMillis(cacheStartMillis: Long) = apply {
@@ -318,8 +356,8 @@ class CacheInfo private constructor(
       this.cacheHit = cacheHit
     }
 
-    fun cacheException(cacheException: CacheMissException?) = apply {
-      this.cacheException = cacheException
+    fun cacheMissException(cacheMissException: CacheMissException?) = apply {
+      this.cacheMissException = cacheMissException
     }
 
     fun networkException(networkException: ApolloException?) = apply {
@@ -333,7 +371,7 @@ class CacheInfo private constructor(
         networkStartMillis = networkStartMillis,
         networkEndMillis = networkEndMillis,
         cacheHit = cacheHit,
-        cacheException = cacheException,
+        cacheMissException = cacheMissException,
         networkException = networkException
     )
   }

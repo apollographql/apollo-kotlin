@@ -80,7 +80,7 @@ val CacheFirstInterceptor = object : ApolloInterceptor {
                 .cacheInfo(
                     networkResponse.cacheInfo!!
                         .newBuilder()
-                        .cacheException(cacheException as? CacheMissException)
+                        .cacheMissException(cacheException as? CacheMissException)
                         .build()
                 )
                 .build()
