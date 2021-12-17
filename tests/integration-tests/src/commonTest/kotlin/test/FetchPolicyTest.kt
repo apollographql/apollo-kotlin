@@ -15,7 +15,6 @@ import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.executeCacheAndNetwork
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.isFromCache
-import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.cache.normalized.refetchPolicyInterceptor
 import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.cache.normalized.watch
@@ -60,6 +59,7 @@ class FetchPolicyTest {
 
   private suspend fun tearDown() {
     mockServer.stop()
+    apolloClient.dispose()
   }
 
   @Test
@@ -237,11 +237,6 @@ class FetchPolicyTest {
       }
     }
 
-    val apolloClient = ApolloClient.Builder()
-        .serverUrl(mockServer.url())
-        .normalizedCache(MemoryCacheFactory())
-        .build()
-
     val channel = Channel<ApolloResponse<HeroNameQuery.Data>>()
 
     val job = launch {
@@ -309,7 +304,6 @@ class FetchPolicyTest {
     mockServer.takeRequest()
     mockServer.takeRequest()
 
-    apolloClient.dispose()
     channel.cancel()
   }
 }
