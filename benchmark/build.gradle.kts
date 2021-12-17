@@ -6,7 +6,7 @@ buildscript {
     mavenCentral()
     mavenLocal()
     maven {
-      url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
+      url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
     }
   }
   dependencies {
@@ -30,7 +30,7 @@ repositories {
   mavenCentral()
   mavenLocal()
   maven {
-    url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
+    url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
   }
 }
 
