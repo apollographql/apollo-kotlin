@@ -66,3 +66,10 @@ tasks.register("ciBuild") {
   dependsOn("ciBuildJava8")
   dependsOn("ciBuildJava9")
 }
+
+
+plugins.withType(org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin::class.java) {
+  configure<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension> {
+    lockFileDirectory = rootDir.resolve("../kotlin-js-store")
+  }
+}
