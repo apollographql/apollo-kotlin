@@ -6,9 +6,7 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.composeJsonResponse
-import com.apollographql.apollo3.api.json.internal.buildJsonString
-import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.toJsonString
+import com.apollographql.apollo3.api.json.buildJsonString
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheFirstInterceptor
 import com.apollographql.apollo3.cache.normalized.CacheOnlyInterceptor
@@ -24,8 +22,6 @@ import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.integration.normalizer.CharacterNameByIdQuery
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
-import com.apollographql.apollo3.integration.normalizer.adapter.CharacterNameByIdQuery_ResponseAdapter
-import com.apollographql.apollo3.integration.normalizer.adapter.HeroNameQuery_ResponseAdapter
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.mockserver.MockResponse
