@@ -67,7 +67,7 @@ fun Project.getOssStagingUrl(): String {
         description = "com.apollo.apollo3 $version"
     )
   }
-  return "https://oss.sonatype.org/service/local/staging/deployByRepositoryId/${repositoryId}/".also {
+  return "https://s01.oss.sonatype.org/service/local/staging/deployByRepositoryId/${repositoryId}/".also {
     this.extensions.extraProperties["ossStagingUrl"] = it
   }
 }
@@ -185,7 +185,7 @@ private fun Project.configurePublishingDelayed() {
 
       repositoryHandler.maven { repository ->
         repository.name = "ossSnapshots"
-        repository.url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
+        repository.url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
         repository.credentials { credentials ->
           credentials.username = System.getenv("SONATYPE_NEXUS_USERNAME")
           credentials.password = System.getenv("SONATYPE_NEXUS_PASSWORD")
