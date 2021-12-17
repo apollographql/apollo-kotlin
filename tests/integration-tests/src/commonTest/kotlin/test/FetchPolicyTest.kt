@@ -11,6 +11,7 @@ import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheFirstInterceptor
 import com.apollographql.apollo3.cache.normalized.CacheOnlyInterceptor
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
+import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.executeCacheAndNetwork
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
@@ -220,41 +221,54 @@ class FetchPolicyTest {
     assertFalse(responses[1].isFromCache)
   }
 
-  @Test
-  fun customRefetchPolicy() = runTest(before = { setUp() }, after = { tearDown() }) {
-    val refetchPolicyInterceptor = object : ApolloInterceptor {
-      var hasSeenValidResponse: Boolean = false
-      override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-        return if (!hasSeenValidResponse) {
-          CacheOnlyInterceptor.intercept(request, chain).onEach {
-            if (it.data != null) {
-              hasSeenValidResponse = true
-            }
+  private val refetchPolicyInterceptor = object : ApolloInterceptor {
+    var hasSeenValidResponse: Boolean = false
+    override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+      return if (!hasSeenValidResponse) {
+        CacheOnlyInterceptor.intercept(request, chain).onEach {
+          if (it.data != null) {
+            // We have valid data, we can now use the network
+            hasSeenValidResponse = true
           }
-        } else {
-          CacheFirstInterceptor.intercept(request, chain)
         }
+      } else {
+        // If for some reason we have a cache miss, get fresh data from the network
+        CacheFirstInterceptor.intercept(request, chain)
       }
     }
+  }
 
+  /**
+   * Uses a refetchPolicy that will not go to the network until it has seen a valid response
+   */
+  @Test
+  fun customRefetchPolicy() = runTest(before = { setUp() }, after = { tearDown() }) {
     val channel = Channel<ApolloResponse<HeroNameQuery.Data>>()
 
+    /**
+     * Start the watcher
+     */
+    val operation1 = HeroNameQuery()
     val job = launch {
-      apolloClient.query(HeroNameQuery())
+      apolloClient.query(operation1)
           .fetchPolicy(FetchPolicy.CacheOnly)
           .refetchPolicyInterceptor(refetchPolicyInterceptor)
           .watch()
           .collect {
-            println("received: $it")
+            println(it.data)
             channel.send(it)
           }
     }
 
     delay(200)
-    val operation1 = CharacterNameByIdQuery("83")
+
+    /**
+     * Make a first query that is disjoint from the watcher
+     */
+    val operation2 = CharacterNameByIdQuery("83")
     mockServer.enqueue(
         buildJsonString {
-          operation1.composeJsonResponse(
+          operation2.composeJsonResponse(
               this,
               CharacterNameByIdQuery.Data(
                   CharacterNameByIdQuery.Character(
@@ -265,21 +279,23 @@ class FetchPolicyTest {
         }
     )
 
-    apolloClient.query(operation1)
+    apolloClient.query(operation2)
         .fetchPolicy(FetchPolicy.NetworkOnly)
         .execute()
-    println("data1")
 
+    /**
+     * Because the query was disjoint, the watcher will see a cache miss and not receive anything
+     * Because initially the refetchPolicy uses CacheOnly, no network request will be made
+     */
     try {
       channel.receiveOrTimeout(50)
       error("An exception was expected")
     } catch (_: TimeoutCancellationException) {
     }
 
-    val operation2 = HeroNameQuery()
     mockServer.enqueue(
         buildJsonString {
-          operation2.composeJsonResponse(
+          operation1.composeJsonResponse(
               this,
               HeroNameQuery.Data(
                   HeroNameQuery.Hero(
@@ -290,20 +306,51 @@ class FetchPolicyTest {
         }
     )
 
-    apolloClient.query(operation2)
+    /**
+     * Now we query operation1 from the network and it should update the watcher automatically
+     */
+    apolloClient.query(operation1)
         .fetchPolicy(FetchPolicy.NetworkOnly)
         .execute()
-    println("data2")
 
-    val response = channel.receiveOrTimeout()
+    var response = channel.receiveOrTimeout()
     assertTrue(response.isFromCache)
     assertEquals("Leila", response.data?.hero?.name)
 
+    /**
+     * clear the cache and trigger the watcher again
+     */
+    store.clearAll()
+
+    mockServer.enqueue(
+        buildJsonString {
+          operation1.composeJsonResponse(
+              this,
+              HeroNameQuery.Data(
+                  HeroNameQuery.Hero(
+                      "Chewbacca"
+                  )
+              )
+          )
+        }
+    )
+    store.publish(setOf("${CacheKey.rootKey().key}.hero"))
+
+    /**
+     * This time the watcher should do a network request
+     */
+    response = channel.receiveOrTimeout()
+    assertFalse(response.isFromCache)
+    assertEquals("Chewbacca", response.data?.hero?.name)
+
+    /**
+     * Check that 3 network requests have been made
+     */
+    mockServer.takeRequest()
+    mockServer.takeRequest()
+    mockServer.takeRequest()
+
     job.cancel()
-
-    mockServer.takeRequest()
-    mockServer.takeRequest()
-
     channel.cancel()
   }
 }
