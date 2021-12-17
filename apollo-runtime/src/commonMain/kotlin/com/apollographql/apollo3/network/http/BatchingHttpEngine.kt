@@ -1,10 +1,13 @@
 package com.apollographql.apollo3.network.http
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import kotlin.jvm.JvmOverloads
 
 @Deprecated("Use ApolloClient.Builder.batching instead")
+@ApolloDeprecatedSince(v3_0_0)
 class BatchingHttpEngine @JvmOverloads constructor(
     val delegate: HttpEngine = DefaultHttpEngine(),
     batchIntervalMillis: Long = 10,

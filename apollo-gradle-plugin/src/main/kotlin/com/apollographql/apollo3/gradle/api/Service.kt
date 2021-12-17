@@ -1,6 +1,8 @@
 package com.apollographql.apollo3.gradle.api
 
 import com.android.build.gradle.api.BaseVariant
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
@@ -101,6 +103,7 @@ interface Service {
 
   @Deprecated("customTypeMapping is a helper property to help migrating to 3.x " +
       "and will be removed in a future version", ReplaceWith("customScalarsMapping"))
+  @ApolloDeprecatedSince(v3_0_0)
   val customTypeMapping: MapProperty<String, String>
 
   /**
@@ -370,6 +373,7 @@ interface Service {
    */
   @Deprecated("useVersion2Compat() is a helper function to help migrating to 3.x " +
       "and will be removed in a future version")
+  @ApolloDeprecatedSince(v3_0_0)
   fun useVersion2Compat(rootPackageName: String? = null)
 
   /**

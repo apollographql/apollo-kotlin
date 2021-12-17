@@ -1,5 +1,7 @@
 package com.apollographql.apollo3
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.ApolloRequest
@@ -80,6 +82,7 @@ private constructor(
   }
 
   @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("mutation(mutation)"))
+  @ApolloDeprecatedSince(v3_0_0)
   fun <D : Mutation.Data> mutate(mutation: Mutation<D>): ApolloCall<D> = mutation(mutation)
 
   /**
@@ -90,12 +93,14 @@ private constructor(
   }
 
   @Deprecated("Use a query and ignore the result", level = DeprecationLevel.ERROR)
+  @ApolloDeprecatedSince(v3_0_0)
   @Suppress("UNUSED_PARAMETER")
   fun <D : Operation.Data> prefetch(operation: Operation<D>): Nothing {
     throw NotImplementedError()
   }
 
   @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("subscription(subscription)"))
+  @ApolloDeprecatedSince(v3_0_0)
   fun <D : Subscription.Data> subscribe(subscription: Subscription<D>): ApolloCall<D> = subscription(subscription)
 
   fun dispose() {
@@ -344,6 +349,7 @@ private constructor(
 
     @OptIn(ApolloInternal::class)
     @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("addCustomScalarAdapter"))
+    @ApolloDeprecatedSince(v3_0_0)
     fun <T> addCustomTypeAdapter(
         customScalarType: CustomScalarType,
         @Suppress("DEPRECATION") customTypeAdapter: com.apollographql.apollo3.api.CustomTypeAdapter<T>,
@@ -427,11 +433,13 @@ private constructor(
     }
 
     @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("httpMethod(HttpMethod.Get)", "com.apollographql.apollo3.api.http.httpMethod", "com.apollographql.apollo3.api.http.HttpMethod"))
+    @ApolloDeprecatedSince(v3_0_0)
     fun useHttpGetMethodForQueries(
         useHttpGetMethodForQueries: Boolean,
     ) = httpMethod(if (useHttpGetMethodForQueries) HttpMethod.Get else HttpMethod.Post)
 
     @Deprecated("Used for backward compatibility with 2.x. This method throws immediately", ReplaceWith("autoPersistedQueries(httpMethodForHashedQueries = HttpMethod.Get)", "com.apollographql.apollo3.api.http.HttpMethod", "com.apollographql.apollo3.api.http.HttpMethod"))
+    @ApolloDeprecatedSince(v3_0_0)
     @Suppress("UNUSED_PARAMETER")
     fun useHttpGetMethodForPersistedQueries(
         useHttpGetMethodForQueries: Boolean,
@@ -555,6 +563,7 @@ private constructor(
 
   companion object {
     @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("ApolloClient.Builder()"))
+    @ApolloDeprecatedSince(v3_0_0)
     @JvmStatic
     fun builder() = Builder()
   }

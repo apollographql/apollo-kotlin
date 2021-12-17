@@ -1,5 +1,8 @@
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
+
 /**
  * Represents an error response returned from the GraphQL server
  * See https://spec.graphql.org/draft/#sec-Errors.Error-result-format
@@ -42,6 +45,7 @@ class Error(
       replaceWith = ReplaceWith("nonStandardFields"),
       level = DeprecationLevel.ERROR
   )
+  @ApolloDeprecatedSince(v3_0_0)
   val customAttributes: Map<String, Any?>
     get() = error("Use nonStandardFields instead")
 

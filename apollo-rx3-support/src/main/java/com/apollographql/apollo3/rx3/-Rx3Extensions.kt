@@ -5,15 +5,17 @@ package com.apollographql.apollo3.rx3
 
 import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
+import io.reactivex.rxjava3.annotations.CheckReturnValue
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.annotations.CheckReturnValue
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.rx3.asCoroutineDispatcher
 import kotlinx.coroutines.rx3.asFlowable
@@ -39,6 +41,7 @@ fun <D: Operation.Data> ApolloCall<D>.rxFlowable(scheduler: Scheduler = Schedule
     replaceWith = ReplaceWith("rxFlowable"),
     level = DeprecationLevel.ERROR
 )
+@ApolloDeprecatedSince(v3_0_0)
 fun <D: Operation.Data> ApolloCall<D>.rx(scheduler: Scheduler = Schedulers.io()): Nothing = throw NotImplementedError()
 
 @JvmSynthetic
@@ -49,6 +52,7 @@ fun <D: Operation.Data> ApolloCall<D>.rx(scheduler: Scheduler = Schedulers.io())
     replaceWith = ReplaceWith("query(query).rxSingle()"),
     level = DeprecationLevel.ERROR
 )
+@ApolloDeprecatedSince(v3_0_0)
 inline fun <D : Query.Data> ApolloClient.rxQuery(
     query: Query<D>,
     configure: ApolloCall<D>.() -> ApolloCall<D> = { this }
@@ -62,6 +66,7 @@ inline fun <D : Query.Data> ApolloClient.rxQuery(
     replaceWith = ReplaceWith("mutation(mutation).rxSingle()"),
     level = DeprecationLevel.ERROR
 )
+@ApolloDeprecatedSince(v3_0_0)
 inline fun <D : Mutation.Data> ApolloClient.rxMutate(
     mutation: Mutation<D>,
     configure: ApolloCall<D>.() -> ApolloCall<D> = { this }
@@ -75,6 +80,7 @@ inline fun <D : Mutation.Data> ApolloClient.rxMutate(
     replaceWith = ReplaceWith("mutation(mutation).rxSingle()"),
     level = DeprecationLevel.ERROR
 )
+@ApolloDeprecatedSince(v3_0_0)
 inline fun <D : Mutation.Data> ApolloClient.rxMutate(
     mutation: Mutation<D>,
     withOptimisticUpdates: D,
@@ -89,6 +95,7 @@ inline fun <D : Mutation.Data> ApolloClient.rxMutate(
     replaceWith = ReplaceWith("mutation(mutation).rxSingle()"),
     level = DeprecationLevel.ERROR
 )
+@ApolloDeprecatedSince(v3_0_0)
 inline fun <D : Subscription.Data> ApolloClient.rxSubscribe(
     operation: Subscription<D>,
     configure: ApolloCall<D>.() -> ApolloCall<D> = { this }
@@ -101,6 +108,7 @@ inline fun <D : Subscription.Data> ApolloClient.rxSubscribe(
     message = "3.x doesn't have prefetch anymore. Use a query and ignore the return value",
     level = DeprecationLevel.ERROR
 )
+@ApolloDeprecatedSince(v3_0_0)
 inline fun <D : Operation.Data> ApolloClient.rxPrefetch(
     operation: Operation<D>,
     configure: ApolloCall<D>.() -> ApolloCall<D> = { this }

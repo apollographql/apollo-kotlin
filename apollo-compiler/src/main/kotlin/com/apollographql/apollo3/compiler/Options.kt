@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.compiler
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.toSchema
@@ -15,6 +17,7 @@ const val MODELS_OPERATION_BASED = "operationBased"
     "MODELS_COMPAT is provided for 2.x compatibility and will be removed in a future version.",
     replaceWith = ReplaceWith("MODELS_OPERATION_BASED")
 )
+@ApolloDeprecatedSince(v3_0_0)
 const val MODELS_COMPAT = "compat"
 
 enum class TargetLanguage {

@@ -14,9 +14,13 @@ package com.apollographql.apollo3.annotations
 annotation class ApolloDeprecatedSince(val version: Version) {
   @Suppress("EnumEntryName")
   enum class Version {
-    `3.0.0`,
+    v3_0_0,
 
-    // TODO rename this to the actual version name before releasing
+    /**
+     * Represents the next version of the library.
+     *
+     * TODO: rename this to the actual version name before releasing, and then add a new NEXT enum entry.
+     */
     NEXT,
   }
 }
