@@ -9,6 +9,15 @@ class HttpInfo(
     val statusCode: Int,
     val headers: List<HttpHeader>
 ) : ExecutionContext.Element {
+
+  @Deprecated("Use startMillis instead", ReplaceWith("startMillis"))
+  val millisStart: Long
+    get() = startMillis
+
+  @Deprecated("Use endMillis instead", ReplaceWith("endMillis"))
+  val millisEnd: Long
+    get() = endMillis
+
   override val key: ExecutionContext.Key<*>
     get() = Key
 
