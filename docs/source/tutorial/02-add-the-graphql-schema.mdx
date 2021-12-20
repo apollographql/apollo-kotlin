@@ -27,6 +27,7 @@ In this tutorial, we will use the `apolloDownloadSchema` Gradle task that is cre
 From the root of the project, run the following in Android Studio's Terminal tab:
 
 ```shell:title=(shell)
+mkdir -p app/src/main/graphql/com/example/rocketreserver
 ./gradlew :app:downloadApolloSchema --endpoint='https://apollo-fullstack-tutorial.herokuapp.com/graphql' --schema='app/src/main/graphql/com/example/rocketreserver/schema.graphqls'
 ```
 
