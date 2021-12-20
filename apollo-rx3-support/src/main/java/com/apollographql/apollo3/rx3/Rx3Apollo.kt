@@ -4,12 +4,14 @@
 package com.apollographql.apollo3.rx3
 
 import com.apollographql.apollo3.ApolloCall
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
+import io.reactivex.rxjava3.annotations.CheckReturnValue
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.annotations.CheckReturnValue
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class Rx3Apollo private constructor() {
@@ -40,6 +42,7 @@ class Rx3Apollo private constructor() {
         replaceWith = ReplaceWith("flowable(call)"),
         level = DeprecationLevel.ERROR
     )
+    @ApolloDeprecatedSince(v3_0_0)
     fun <D : Operation.Data> from(call: ApolloCall<D>, scheduler: Scheduler = Schedulers.io()): Flowable<ApolloResponse<D>> {
       return call.rxFlowable(scheduler)
     }

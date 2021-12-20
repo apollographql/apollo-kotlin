@@ -2,8 +2,8 @@
 
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.api.internal.Version2CustomTypeAdapterToAdapter
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmStatic
 
@@ -16,6 +16,7 @@ import kotlin.jvm.JvmStatic
  * **Note**: [Adapter]s are called from multiple threads and implementations must be thread safe.
  */
 @Deprecated("Used for backward compatibility with 2.x, use Adapter instead")
+@ApolloDeprecatedSince(v3_0_0)
 interface CustomTypeAdapter<T> {
   fun decode(value: CustomTypeValue<*>): T
   fun encode(value: T): CustomTypeValue<*>
@@ -28,6 +29,7 @@ interface CustomTypeAdapter<T> {
  * `com.apollographql.apollo3.api` to use this version.
  */
 @Deprecated("Used for backward compatibility with 2.x, use Adapter instead")
+@ApolloDeprecatedSince(v3_0_0)
 sealed class CustomTypeValue<T>(@JvmField val value: T) {
   object GraphQLNull : CustomTypeValue<Unit>(Unit)
   class GraphQLString(value: String) : CustomTypeValue<String>(value)
@@ -64,6 +66,7 @@ sealed class CustomTypeValue<T>(@JvmField val value: T) {
     message = "Used for backward compatibility with 2.x, use Adapter instead",
     level = DeprecationLevel.ERROR
 )
+@ApolloDeprecatedSince(v3_0_0)
 class ScalarTypeAdapters(val customAdapters: Map<CustomScalarType, CustomTypeAdapter<*>>) {
   init {
     throw NotImplementedError("Use CustomScalarAdapters instead")

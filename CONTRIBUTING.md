@@ -90,6 +90,11 @@ allowed and any public API change will fail the build.
 If that happens, you will need to run `./gradlew apiDump` and check for any incompatible changes before commiting these
 files.
 
+## Deprecation
+
+When marking an API with `@Deprecated`, also mark it with `ApolloDeprecatedSince` so we can keep track of when it
+has been deprecated.
+
 ## Experimental / internal APIs
 
 Using Kotlin's (or other dependencies') experimental or internal APIs, such as the ones marked

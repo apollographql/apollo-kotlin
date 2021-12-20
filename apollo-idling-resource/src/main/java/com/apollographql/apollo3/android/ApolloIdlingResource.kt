@@ -1,6 +1,9 @@
 package com.apollographql.apollo3.android
+
 import androidx.test.espresso.IdlingResource
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
@@ -13,7 +16,7 @@ import kotlinx.coroutines.flow.onStart
 
 class ApolloIdlingResource(
     private val resourceName: String,
-): IdlingResource {
+) : IdlingResource {
 
   private var activeCalls = 0
   private var callback: IdlingResource.ResourceCallback? = null
@@ -51,6 +54,7 @@ class ApolloIdlingResource(
         ReplaceWith("ApolloIdlingResource(name)")
     )
     @Suppress("UNUSED_PARAMETER")
+    @ApolloDeprecatedSince(v3_0_0)
     fun create(name: String, apolloClient: ApolloClient) {
       throw NotImplementedError()
     }
@@ -58,11 +62,11 @@ class ApolloIdlingResource(
 }
 
 fun ApolloClient.Builder.idlingResource(idlingResource: ApolloIdlingResource): ApolloClient.Builder {
-  check (!interceptors.any { it is IdlingResourceInterceptor }) { "idlingResource was already set, can only be set once" }
+  check(!interceptors.any { it is IdlingResourceInterceptor }) { "idlingResource was already set, can only be set once" }
   return addInterceptor(IdlingResourceInterceptor(idlingResource))
 }
 
-private class IdlingResourceInterceptor(private val idlingResource: ApolloIdlingResource): ApolloInterceptor {
+private class IdlingResourceInterceptor(private val idlingResource: ApolloIdlingResource) : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     // Do not update the idling resource on subscriptions as they will never terminate
     return if (request.operation !is Subscription) {

@@ -4,6 +4,8 @@ package com.apollographql.apollo3.cache.normalized
 
 import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
@@ -140,12 +142,14 @@ val ApolloClient.apolloStore: ApolloStore
   }
 
 @Deprecated("Used for backward compatibility with 2.x.", ReplaceWith("apolloStore"))
+@ApolloDeprecatedSince(v3_0_0)
 fun ApolloClient.apolloStore(): ApolloStore = apolloStore
 
 @Deprecated(
     message = "Use apolloStore directly",
     replaceWith = ReplaceWith("apolloStore.clearAll()")
 )
+@ApolloDeprecatedSince(v3_0_0)
 fun ApolloClient.clearNormalizedCache() = apolloStore.clearAll()
 
 /**

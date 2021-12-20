@@ -1,6 +1,8 @@
 // This is in the `exception` package and not `api.exception` to keep some compatibility with 2.x
 package com.apollographql.apollo3.exception
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
 import com.apollographql.apollo3.api.http.HttpHeader
 import okio.BufferedSource
 
@@ -110,10 +112,12 @@ class MissingValueException : ApolloException(message = "The optional doesn't ha
  * Something went wrong but it's not sure exactly what
  */
 @Deprecated("This is only used in the JVM runtime and is scheduled for removal")
+@ApolloDeprecatedSince(v3_0_0)
 class ApolloGenericException(message: String? = null, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
 
 
 @Deprecated("This is only used in the JVM runtime and is scheduled for removal")
+@ApolloDeprecatedSince(v3_0_0)
 class ApolloCanceledException(message: String? = null, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
 
 
