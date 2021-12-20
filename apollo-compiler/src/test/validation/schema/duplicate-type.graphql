@@ -1,0 +1,11 @@
+type Query {
+  field(field: Field): Field
+}
+
+input Field {
+  foo: String
+}
+
+type Field {
+  foo: String
+}

@@ -1,12 +1,16 @@
 package com.apollographql.apollo3.ast
 
+/**
+ * @param line the line number of the source location, starting at 1
+ *
+ * @param column the position in the current line, starting at 0
+ *
+ * @param filePath The path to the document containing the node
+ * Might be null if the document origin is not known
+ */
 class SourceLocation(
     val line: Int,
     val position: Int,
-    /**
-     * The path to the document containing the node
-     * Might be null if the document origin is not known
-     */
     val filePath: String?
 ) {
 

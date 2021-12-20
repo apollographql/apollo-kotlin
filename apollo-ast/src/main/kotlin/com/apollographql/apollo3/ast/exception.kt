@@ -21,7 +21,7 @@ open class SourceAwareException(
 
     private fun preview(error: String, sourceLocation: SourceLocation): String {
       val filePath = sourceLocation.filePath
-      val preview = if (filePath != null) {
+      val preview = if (filePath != null && sourceLocation.line >= 1 && sourceLocation.position >= 0) {
         val document = try {
           File(filePath).readText()
         } catch (e: IOException) {
@@ -33,9 +33,7 @@ open class SourceAwareException(
               val prefix = if (sourceLocation.line - 2 >= 0) {
                 "[${sourceLocation.line - 1}]:" + documentLines[sourceLocation.line - 2]
               } else ""
-              val body = if (sourceLocation.line - 1 >= 0) {
-                "\n[${sourceLocation.line}]:${documentLines[sourceLocation.line - 1]}\n"
-              } else ""
+              val body = "\n[${sourceLocation.line}]:${documentLines[sourceLocation.line - 1]}\n"
               val postfix = if (sourceLocation.line < documentLines.size) {
                 "[${sourceLocation.line + 1}]:" + documentLines[sourceLocation.line]
               } else ""
