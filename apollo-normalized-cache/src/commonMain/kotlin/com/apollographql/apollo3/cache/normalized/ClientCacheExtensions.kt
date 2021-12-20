@@ -261,8 +261,8 @@ internal val <D : Operation.Data> ApolloRequest<D>.watch
   get() = executionContext[WatchContext]?.value ?: false
 
 /**
- * @param cacheHit true if this was a cache hit
- * @param cacheException the exception while reading the cache. Note that it's possible to have [cacheHit] == false && [cacheException] == null
+ * @param isCacheHit true if this was a cache hit
+ * @param cacheException the exception while reading the cache. Note that it's possible to have [isCacheHit] == false && [cacheException] == null
  * if no cache read was attempted
  */
 class CacheInfo private constructor(
@@ -270,7 +270,7 @@ class CacheInfo private constructor(
     val cacheEndMillis: Long,
     val networkStartMillis: Long,
     val networkEndMillis: Long,
-    val cacheHit: Boolean,
+    val isCacheHit: Boolean,
     val cacheMissException: CacheMissException?,
     val networkException: ApolloException?,
 ) : ExecutionContext.Element {
@@ -287,7 +287,7 @@ class CacheInfo private constructor(
       cacheEndMillis = millisEnd,
       networkStartMillis = 0,
       networkEndMillis = 0,
-      cacheHit = hit,
+      isCacheHit = hit,
       cacheMissException = missedKey?.let { CacheMissException(it, missedField) },
       networkException = null
   )
@@ -305,7 +305,7 @@ class CacheInfo private constructor(
 
   @Deprecated("Use cacheHit instead", ReplaceWith("cacheHit"))
   val hit: Boolean
-    get() = cacheHit
+    get() = isCacheHit
 
   @Deprecated("Use cacheMissException?.key instead", ReplaceWith("cacheMissException?.key"))
   val missedKey: String?
@@ -323,7 +323,7 @@ class CacheInfo private constructor(
         .cacheEndMillis(cacheEndMillis)
         .networkStartMillis(networkStartMillis)
         .networkEndMillis(networkEndMillis)
-        .cacheHit(cacheHit)
+        .cacheHit(isCacheHit)
         .networkException(networkException)
   }
 
@@ -370,7 +370,7 @@ class CacheInfo private constructor(
         cacheEndMillis = cacheEndMillis,
         networkStartMillis = networkStartMillis,
         networkEndMillis = networkEndMillis,
-        cacheHit = cacheHit,
+        isCacheHit = cacheHit,
         cacheMissException = cacheMissException,
         networkException = networkException
     )
@@ -379,7 +379,7 @@ class CacheInfo private constructor(
 
 val <D : Operation.Data> ApolloResponse<D>.isFromCache: Boolean
   get() {
-    return cacheInfo?.cacheHit == true
+    return cacheInfo?.isCacheHit == true
   }
 
 val <D : Operation.Data> ApolloResponse<D>.cacheInfo
