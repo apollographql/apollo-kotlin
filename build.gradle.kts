@@ -183,6 +183,11 @@ plugins.withType<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin> {
   the<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension>().disableGranularWorkspaces()
 }
 
+// See https://youtrack.jetbrains.com/issue/KT-49109#focus=Comments-27-5259190.0-0
+rootProject.plugins.withType<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin> {
+  rootProject.the<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension>().nodeVersion = "16.0.0"
+}
+
 rootProject.configureJapiCmp()
 
 configure<kotlinx.validation.ApiValidationExtension> {
