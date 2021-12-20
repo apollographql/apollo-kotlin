@@ -3,7 +3,10 @@ package com.apollographql.apollo3.graphql.ast.test
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.internal.buffer
 import com.apollographql.apollo3.ast.toSchema
+import okio.buffer
+import okio.source
 import org.junit.Test
+import java.io.File
 
 @OptIn(ApolloExperimental::class)
 class SchemaTest {
