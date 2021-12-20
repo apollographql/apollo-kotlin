@@ -2,21 +2,42 @@ package test
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.api.ApolloRequest
+import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.composeJsonResponse
+import com.apollographql.apollo3.api.json.buildJsonString
 import com.apollographql.apollo3.cache.normalized.ApolloStore
+import com.apollographql.apollo3.cache.normalized.CacheFirstInterceptor
+import com.apollographql.apollo3.cache.normalized.CacheOnlyInterceptor
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
+import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.executeCacheAndNetwork
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.isFromCache
+import com.apollographql.apollo3.cache.normalized.refetchPolicyInterceptor
 import com.apollographql.apollo3.cache.normalized.store
+import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.exception.ApolloCompositeException
+import com.apollographql.apollo3.integration.normalizer.CharacterNameByIdQuery
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
+import com.apollographql.apollo3.interceptor.ApolloInterceptor
+import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.enqueue
+import com.apollographql.apollo3.testing.receiveOrTimeout
 import com.apollographql.apollo3.testing.runTest
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -39,6 +60,7 @@ class FetchPolicyTest {
 
   private suspend fun tearDown() {
     mockServer.stop()
+    apolloClient.dispose()
   }
 
   @Test
@@ -137,7 +159,7 @@ class FetchPolicyTest {
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
-    val call =  apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly)
+    val call = apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly)
 
     // First query should hit the network and save in cache
     mockServer.enqueue(query, data)
@@ -197,5 +219,138 @@ class FetchPolicyTest {
     assertTrue(responses[0].isFromCache)
     assertNotNull(responses[1].data)
     assertFalse(responses[1].isFromCache)
+  }
+
+  private val refetchPolicyInterceptor = object : ApolloInterceptor {
+    var hasSeenValidResponse: Boolean = false
+    override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+      return if (!hasSeenValidResponse) {
+        CacheOnlyInterceptor.intercept(request, chain).onEach {
+          if (it.data != null) {
+            // We have valid data, we can now use the network
+            hasSeenValidResponse = true
+          }
+        }
+      } else {
+        // If for some reason we have a cache miss, get fresh data from the network
+        CacheFirstInterceptor.intercept(request, chain)
+      }
+    }
+  }
+
+  /**
+   * Uses a refetchPolicy that will not go to the network until it has seen a valid response
+   */
+  @Test
+  fun customRefetchPolicy() = runTest(before = { setUp() }, after = { tearDown() }) {
+    val channel = Channel<ApolloResponse<HeroNameQuery.Data>>()
+
+    /**
+     * Start the watcher
+     */
+    val operation1 = HeroNameQuery()
+    val job = launch {
+      apolloClient.query(operation1)
+          .fetchPolicy(FetchPolicy.CacheOnly)
+          .refetchPolicyInterceptor(refetchPolicyInterceptor)
+          .watch()
+          .collect {
+            println(it.data)
+            channel.send(it)
+          }
+    }
+
+    delay(200)
+
+    /**
+     * Make a first query that is disjoint from the watcher
+     */
+    val operation2 = CharacterNameByIdQuery("83")
+    mockServer.enqueue(
+        buildJsonString {
+          operation2.composeJsonResponse(
+              this,
+              CharacterNameByIdQuery.Data(
+                  CharacterNameByIdQuery.Character(
+                      "Luke"
+                  )
+              )
+          )
+        }
+    )
+
+    apolloClient.query(operation2)
+        .fetchPolicy(FetchPolicy.NetworkOnly)
+        .execute()
+
+    /**
+     * Because the query was disjoint, the watcher will see a cache miss and not receive anything.
+     * Because initially the refetchPolicy uses CacheOnly, no network request will be made
+     */
+    try {
+      channel.receiveOrTimeout(50)
+      error("An exception was expected")
+    } catch (_: TimeoutCancellationException) {
+    }
+
+    mockServer.enqueue(
+        buildJsonString {
+          operation1.composeJsonResponse(
+              this,
+              HeroNameQuery.Data(
+                  HeroNameQuery.Hero(
+                      "Leila"
+                  )
+              )
+          )
+        }
+    )
+
+    /**
+     * Now we query operation1 from the network and it should update the watcher automatically
+     */
+    apolloClient.query(operation1)
+        .fetchPolicy(FetchPolicy.NetworkOnly)
+        .execute()
+
+    var response = channel.receiveOrTimeout()
+    assertTrue(response.isFromCache)
+    assertEquals("Leila", response.data?.hero?.name)
+
+    /**
+     * clear the cache and trigger the watcher again
+     */
+    store.clearAll()
+
+    mockServer.enqueue(
+        buildJsonString {
+          operation1.composeJsonResponse(
+              this,
+              HeroNameQuery.Data(
+                  HeroNameQuery.Hero(
+                      "Chewbacca"
+                  )
+              )
+          )
+        }
+    )
+    store.publish(setOf("${CacheKey.rootKey().key}.hero"))
+
+    /**
+     * This time the watcher should do a network request
+     */
+    response = channel.receiveOrTimeout()
+    assertFalse(response.isFromCache)
+    assertEquals("Chewbacca", response.data?.hero?.name)
+
+    /**
+     * Check that 3 network requests have been made
+     */
+    mockServer.takeRequest()
+    mockServer.takeRequest()
+    mockServer.takeRequest()
+
+    job.cancel()
+    channel.cancel()
   }
 }

@@ -13,6 +13,7 @@ import io.ktor.client.request.header
 import io.ktor.client.request.request
 import io.ktor.http.HttpHeaders
 import io.ktor.util.flattenEntries
+import io.ktor.utils.io.CancellationException
 import okio.Buffer
 
 actual class DefaultHttpEngine constructor(private val connectTimeoutMillis: Long, private val readTimeoutMillis: Long) : HttpEngine {
@@ -51,7 +52,9 @@ actual class DefaultHttpEngine constructor(private val connectTimeoutMillis: Lon
           .body(responseBufferedSource)
           .addHeaders(response.headers.flattenEntries().map { HttpHeader(it.first, it.second) })
           .build()
-
+    } catch (e: CancellationException) {
+      // Cancellation Exception is passthrough
+      throw e
     } catch (t: Throwable) {
       throw ApolloNetworkException(t.message, t)
     }

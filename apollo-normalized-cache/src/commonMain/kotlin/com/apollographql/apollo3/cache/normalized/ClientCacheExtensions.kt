@@ -18,8 +18,11 @@ import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.internal.ApolloCacheInterceptor
+import com.apollographql.apollo3.cache.normalized.internal.WatcherInterceptor
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.CacheMissException
+import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlin.jvm.JvmName
@@ -75,7 +78,7 @@ fun ApolloClient.Builder.normalizedCache(
 
 @JvmName("-logCacheMisses")
 fun ApolloClient.Builder.logCacheMisses(
-    log: (String) -> Unit = { println(it) }
+    log: (String) -> Unit = { println(it) },
 ): ApolloClient.Builder {
   check(interceptors.none { it is ApolloCacheInterceptor }) {
     "Apollo: logCacheMisses() must be called before setting up your normalized cache"
@@ -84,7 +87,10 @@ fun ApolloClient.Builder.logCacheMisses(
 }
 
 fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: Boolean = false): ApolloClient.Builder {
-  return addInterceptor(ApolloCacheInterceptor(store)).writeToCacheAsynchronously(writeToCacheAsynchronously)
+  return addInterceptor(WatcherInterceptor(store))
+      .addInterceptor(FetchPolicyRouterInterceptor)
+      .addInterceptor(ApolloCacheInterceptor(store))
+      .writeToCacheAsynchronously(writeToCacheAsynchronously)
 }
 
 /***
@@ -147,15 +153,37 @@ fun ApolloClient.clearNormalizedCache() = apolloStore.clearAll()
  * This only has effects for queries. Mutations and subscriptions always use [FetchPolicy.NetworkOnly]
  */
 fun <T> MutableExecutionOptions<T>.fetchPolicy(fetchPolicy: FetchPolicy) = addExecutionContext(
-    FetchPolicyContext(fetchPolicy)
+    FetchPolicyContext(interceptorFor(fetchPolicy))
 )
 
 /**
  * Sets the [FetchPolicy] used when watching queries and a cache change has been published
  */
 fun <T> MutableExecutionOptions<T>.refetchPolicy(fetchPolicy: FetchPolicy) = addExecutionContext(
-    RefetchPolicyContext(fetchPolicy)
+    RefetchPolicyContext(interceptorFor(fetchPolicy))
 )
+
+/**
+ * Sets the initial [FetchPolicy]
+ * This only has effects for queries. Mutations and subscriptions always use [FetchPolicy.NetworkOnly]
+ */
+fun <T> MutableExecutionOptions<T>.fetchPolicyInterceptor(interceptor: ApolloInterceptor) = addExecutionContext(
+    FetchPolicyContext(interceptor)
+)
+
+/**
+ * Sets the [FetchPolicy] used when watching queries and a cache change has been published
+ */
+fun <T> MutableExecutionOptions<T>.refetchPolicyInterceptor(interceptor: ApolloInterceptor) = addExecutionContext(
+    RefetchPolicyContext(interceptor)
+)
+
+private fun interceptorFor(fetchPolicy: FetchPolicy) = when (fetchPolicy) {
+  FetchPolicy.CacheOnly -> CacheOnlyInterceptor
+  FetchPolicy.NetworkOnly -> NetworkOnlyInterceptor
+  FetchPolicy.CacheFirst -> CacheFirstInterceptor
+  FetchPolicy.NetworkFirst -> NetworkFirstInterceptor
+}
 
 /**
  * @param doNotStore Whether to store the response in cache.
@@ -208,11 +236,11 @@ fun <D : Mutation.Data> ApolloCall<D>.optimisticUpdates(data: D) = addExecutionC
     OptimisticUpdatesContext(data)
 )
 
-internal val <D : Query.Data> ApolloRequest<D>.fetchPolicy
-  get() = executionContext[FetchPolicyContext]?.value ?: FetchPolicy.CacheFirst
+internal val <D : Operation.Data> ApolloRequest<D>.fetchPolicyInterceptor
+  get() = executionContext[FetchPolicyContext]?.interceptor ?: CacheFirstInterceptor
 
-internal val <D : Query.Data> ApolloRequest<D>.refetchPolicy
-  get() = executionContext[RefetchPolicyContext]?.value ?: FetchPolicy.CacheOnly
+internal val <D : Operation.Data> ApolloRequest<D>.refetchPolicyInterceptor
+  get() = executionContext[RefetchPolicyContext]?.interceptor ?: CacheOnlyInterceptor
 
 internal val <D : Operation.Data> ApolloRequest<D>.doNotStore
   get() = executionContext[DoNotStoreContext]?.value ?: false
@@ -232,36 +260,142 @@ internal val <D : Operation.Data> ApolloRequest<D>.cacheHeaders
 internal val <D : Operation.Data> ApolloRequest<D>.watch
   get() = executionContext[WatchContext]?.value ?: false
 
-
-class CacheInfo(
-    val millisStart: Long,
-    val millisEnd: Long,
-    val hit: Boolean,
-    val missedKey: String?,
-    val missedField: String?,
+/**
+ * @param isCacheHit true if this was a cache hit
+ * @param cacheException the exception while reading the cache. Note that it's possible to have [isCacheHit] == false && [cacheException] == null
+ * if no cache read was attempted
+ */
+class CacheInfo private constructor(
+    val cacheStartMillis: Long,
+    val cacheEndMillis: Long,
+    val networkStartMillis: Long,
+    val networkEndMillis: Long,
+    val isCacheHit: Boolean,
+    val cacheMissException: CacheMissException?,
+    val networkException: ApolloException?,
 ) : ExecutionContext.Element {
+
+  @Deprecated("Use CacheInfo.Builder")
+  constructor(
+      millisStart: Long,
+      millisEnd: Long,
+      hit: Boolean,
+      missedKey: String?,
+      missedField: String?,
+  ) : this(
+      cacheStartMillis = millisStart,
+      cacheEndMillis = millisEnd,
+      networkStartMillis = 0,
+      networkEndMillis = 0,
+      isCacheHit = hit,
+      cacheMissException = missedKey?.let { CacheMissException(it, missedField) },
+      networkException = null
+  )
+
   override val key: ExecutionContext.Key<*>
     get() = Key
 
+  @Deprecated("Use cacheStartMillis instead", ReplaceWith("cacheStartMillis"))
+  val millisStart: Long
+    get() = cacheStartMillis
+
+  @Deprecated("Use cacheEndMillis instead", ReplaceWith("cacheEndMillis"))
+  val millisEnd: Long
+    get() = cacheEndMillis
+
+  @Deprecated("Use cacheHit instead", ReplaceWith("cacheHit"))
+  val hit: Boolean
+    get() = isCacheHit
+
+  @Deprecated("Use cacheMissException?.key instead", ReplaceWith("cacheMissException?.key"))
+  val missedKey: String?
+    get() = cacheMissException?.key
+
+  @Deprecated("Use cacheMissException?.fieldName instead", ReplaceWith("cacheMissException?.fieldName"))
+  val missedField: String?
+    get() = cacheMissException?.fieldName
+
+
   companion object Key : ExecutionContext.Key<CacheInfo>
+
+  fun newBuilder(): Builder {
+    return Builder().cacheStartMillis(cacheStartMillis)
+        .cacheEndMillis(cacheEndMillis)
+        .networkStartMillis(networkStartMillis)
+        .networkEndMillis(networkEndMillis)
+        .cacheHit(isCacheHit)
+        .networkException(networkException)
+  }
+
+  class Builder {
+    private var cacheStartMillis: Long = 0
+    private var cacheEndMillis: Long = 0
+    private var networkStartMillis: Long = 0
+    private var networkEndMillis: Long = 0
+    private var cacheHit: Boolean = false
+    private var cacheMissException: CacheMissException? = null
+    private var networkException: ApolloException? = null
+
+    fun cacheStartMillis(cacheStartMillis: Long) = apply {
+      this.cacheStartMillis = cacheStartMillis
+    }
+
+    fun cacheEndMillis(cacheEndMillis: Long) = apply {
+      this.cacheEndMillis = cacheEndMillis
+    }
+
+    fun networkStartMillis(networkStartMillis: Long) = apply {
+      this.networkStartMillis = networkStartMillis
+    }
+
+    fun networkEndMillis(networkEndMillis: Long) = apply {
+      this.networkEndMillis = networkEndMillis
+    }
+
+    fun cacheHit(cacheHit: Boolean) = apply {
+      this.cacheHit = cacheHit
+    }
+
+    fun cacheMissException(cacheMissException: CacheMissException?) = apply {
+      this.cacheMissException = cacheMissException
+    }
+
+    fun networkException(networkException: ApolloException?) = apply {
+      this.networkException = networkException
+    }
+
+
+    fun build(): CacheInfo = CacheInfo(
+        cacheStartMillis = cacheStartMillis,
+        cacheEndMillis = cacheEndMillis,
+        networkStartMillis = networkStartMillis,
+        networkEndMillis = networkEndMillis,
+        isCacheHit = cacheHit,
+        cacheMissException = cacheMissException,
+        networkException = networkException
+    )
+  }
 }
 
-val <D : Operation.Data> ApolloResponse<D>.isFromCache
-  get() = cacheInfo?.hit ?: false
+val <D : Operation.Data> ApolloResponse<D>.isFromCache: Boolean
+  get() {
+    return cacheInfo?.isCacheHit == true
+  }
 
 val <D : Operation.Data> ApolloResponse<D>.cacheInfo
   get() = executionContext[CacheInfo]
 
 internal fun <D : Operation.Data> ApolloResponse<D>.withCacheInfo(cacheInfo: CacheInfo) = newBuilder().addExecutionContext(cacheInfo).build()
+internal fun <D : Operation.Data> ApolloResponse.Builder<D>.cacheInfo(cacheInfo: CacheInfo) = addExecutionContext(cacheInfo)
 
-internal class FetchPolicyContext(val value: FetchPolicy) : ExecutionContext.Element {
+internal class FetchPolicyContext(val interceptor: ApolloInterceptor) : ExecutionContext.Element {
   override val key: ExecutionContext.Key<*>
     get() = Key
 
   companion object Key : ExecutionContext.Key<FetchPolicyContext>
 }
 
-internal class RefetchPolicyContext(val value: FetchPolicy) : ExecutionContext.Element {
+internal class RefetchPolicyContext(val interceptor: ApolloInterceptor) : ExecutionContext.Element {
   override val key: ExecutionContext.Key<*>
     get() = Key
 
@@ -309,3 +443,33 @@ internal class WatchContext(val value: Boolean) : ExecutionContext.Element {
 
   companion object Key : ExecutionContext.Key<WatchContext>
 }
+
+internal class FetchFromCacheContext(val value: Boolean) : ExecutionContext.Element {
+  override val key: ExecutionContext.Key<*>
+    get() = Key
+
+  companion object Key : ExecutionContext.Key<FetchFromCacheContext>
+}
+
+internal class IsRefetching(val value: Boolean) : ExecutionContext.Element {
+  override val key: ExecutionContext.Key<*>
+    get() = Key
+
+  companion object Key : ExecutionContext.Key<IsRefetching>
+}
+
+internal fun <D : Operation.Data> ApolloRequest.Builder<D>.fetchFromCache(fetchFromCache: Boolean) = apply {
+  addExecutionContext(FetchFromCacheContext(fetchFromCache))
+}
+
+internal fun <D : Operation.Data> ApolloRequest.Builder<D>.isRefetching(isRefetching: Boolean) = apply {
+  addExecutionContext(IsRefetching(isRefetching))
+}
+
+internal val <D : Operation.Data> ApolloRequest<D>.fetchFromCache
+  get() = executionContext[FetchFromCacheContext]?.value ?: false
+
+
+internal val <D : Operation.Data> ApolloRequest<D>.isRefetching
+  get() = executionContext[IsRefetching]?.value ?: false
+

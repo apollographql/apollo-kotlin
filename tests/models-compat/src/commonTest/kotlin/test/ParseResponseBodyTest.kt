@@ -43,7 +43,6 @@ class ParseResponseBodyTest {
     assertEquals(firstPlanet?.filmConnection?.films?.get(0)?.fragments?.filmFragment?.producers, listOf("Gary Kurtz", "Rick McCallum"))
   }
 
-  @OptIn(ApolloInternal::class)
   @Test
   @Throws(Exception::class)
   fun operationJsonWriter() {
@@ -58,7 +57,9 @@ class ParseResponseBodyTest {
      * operationBased models do not respect the order of fields
      * when fragments are involved so just check for Map equivalence
      */
+    @OptIn(ApolloInternal::class)
     val expectedMap = Buffer().writeUtf8(expected).jsonReader().readAny()
+    @OptIn(ApolloInternal::class)
     val actualMap = Buffer().writeUtf8(actual).jsonReader().readAny()
 
     assertEquals(expectedMap, actualMap)
