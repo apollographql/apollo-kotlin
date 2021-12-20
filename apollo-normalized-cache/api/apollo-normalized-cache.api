@@ -39,7 +39,6 @@ public final class com/apollographql/apollo3/cache/normalized/CacheInfo : com/ap
 	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
 	public fun get (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext$Element;
 	public final fun getCacheEndMillis ()J
-	public final fun getCacheHit ()Z
 	public final fun getCacheMissException ()Lcom/apollographql/apollo3/exception/CacheMissException;
 	public final fun getCacheStartMillis ()J
 	public final fun getHit ()Z
@@ -51,6 +50,7 @@ public final class com/apollographql/apollo3/cache/normalized/CacheInfo : com/ap
 	public final fun getNetworkEndMillis ()J
 	public final fun getNetworkException ()Lcom/apollographql/apollo3/exception/ApolloException;
 	public final fun getNetworkStartMillis ()J
+	public final fun isCacheHit ()Z
 	public fun minusKey (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext;
 	public final fun newBuilder ()Lcom/apollographql/apollo3/cache/normalized/CacheInfo$Builder;
 	public fun plus (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ExecutionContext;
