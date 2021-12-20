@@ -92,15 +92,15 @@ files.
 
 ## Deprecation
 
-When marking an API with `@Deprecated`, also mark it with `ApolloDeprecatedSince(NEXT)` so we can keep track of when it
-has been deprecated (later at release time, `NEXT` will be renamed to the actual version name).
+When marking an API with `@Deprecated`, also mark it with `ApolloDeprecatedSince` so we can keep track of when it
+has been deprecated.
 
 ## Experimental / internal APIs
 
 Using Kotlin's (or other dependencies') experimental or internal APIs, such as the ones marked
-with `@ExperimentalCoroutinesApi` should be avoided as much as possible (exceptions can be made for native/JS targets
-only when no other option is available). Indeed, applications using a certain version of Apollo Kotlin could use a more
-up-to-date version of these APIs than the one used when building the library, causing crashes or other issues.
+with `@ExperimentalCoroutinesApi` should be avoided as much as possible (exceptions can be made for native/JS targets only when no other option is
+available). Indeed, applications using a certain version of Apollo Kotlin could use a more up-to-date version of these
+APIs than the one used when building the library, causing crashes or other issues.
 
 We also have the `@ApolloExperimental` annotation which can be used to mark APIs as experimental, for instance when
 feedback is wanted from the community on new APIs. This can also be used as a warning that APIs are using experimental
@@ -116,8 +116,6 @@ Releases are published when a tag is pushed.
 
 Here are the steps to do a new release:
 
-* if any API are marked with `@ApolloDeprecatedSince(NEXT)`, rename `NEXT` to the new version name, and add a new `NEXT`
-  entry to the `ApolloDeprecatedSince.Version` enum
 * `scripts/tag.main.kts <version-name>`
 * push the tag and branch
 * while it compiles, prepare the changelog, open a PR to `CHANGELOG.md`

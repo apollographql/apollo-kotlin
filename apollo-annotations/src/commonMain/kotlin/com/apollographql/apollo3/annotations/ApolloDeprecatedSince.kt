@@ -15,12 +15,6 @@ annotation class ApolloDeprecatedSince(val version: Version) {
   @Suppress("EnumEntryName")
   enum class Version {
     v3_0_0,
-
-    /**
-     * Represents the next version of the library.
-     *
-     * TODO: rename this to the actual version name before releasing, and then add a new NEXT enum entry.
-     */
-    NEXT,
+    v3_0_1,
   }
 }

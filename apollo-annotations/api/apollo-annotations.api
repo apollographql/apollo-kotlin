@@ -1,3 +1,14 @@
+public abstract interface annotation class com/apollographql/apollo3/annotations/ApolloDeprecatedSince : java/lang/annotation/Annotation {
+	public abstract fun version ()Lcom/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version;
+}
+
+public final class com/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version : java/lang/Enum {
+	public static final field v3_0_0 Lcom/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version;
+	public static final field v3_0_1 Lcom/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version;
+	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version;
+	public static fun values ()[Lcom/apollographql/apollo3/annotations/ApolloDeprecatedSince$Version;
+}
+
 public abstract interface annotation class com/apollographql/apollo3/annotations/ApolloExperimental : java/lang/annotation/Annotation {
 }
 
