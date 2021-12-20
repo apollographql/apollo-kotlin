@@ -212,3 +212,13 @@ configure<kotlinx.validation.ApiValidationExtension> {
       )
   )
 }
+
+// TODO Remove this, investigating
+open class PrintCwdTask : DefaultTask() {
+  @TaskAction
+  fun printCwd() {
+    println("Current working directory: ${File(".").absolutePath}")
+  }
+}
+
+tasks.register<PrintCwdTask>("printcwd")
