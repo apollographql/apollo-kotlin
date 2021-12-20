@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.singleOrNull
 import kotlin.jvm.JvmName
 
 /**
- *
+ * An interceptor that goes to the cache only
  */
 val CacheOnlyInterceptor = object : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
