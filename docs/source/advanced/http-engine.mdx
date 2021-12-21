@@ -15,7 +15,7 @@ You can use a different HTTP client with Apollo Kotlin by creating a custom clas
 
 ## The `HttpEngine` interface
 
-The [HttpEngine interface](https://apollographql.github.io/apollo-android/kdoc/apollo-runtime/com.apollographql.apollo3.network.http/-http-engine/index.html) defines two functions: `execute` and `dispose`. Here's an example implementation that also includes a couple of helper methods:
+The [HttpEngine interface](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/com.apollographql.apollo3.network.http/-http-engine/index.html) defines two functions: `execute` and `dispose`. Here's an example implementation that also includes a couple of helper methods:
 
 ```kotlin
 class MyHttpEngine(val wrappedClient: MyClient) : HttpEngine {
@@ -64,7 +64,7 @@ This example uses an asynchronous `wrappedClient` that runs the network request 
 
 ## Using your `HttpEngine`
 
-After you create your `HttpEngine` implementation, you can register it with your [`ApolloClient`](https://apollographql.github.io/apollo-android/kdoc/apollo-runtime/com.apollographql.apollo3/-apollo-client/index.html) instance using [`ApolloClient.Builder.httpEngine`](https://apollographql.github.io/apollo-android/kdoc/apollo-runtime/com.apollographql.apollo3/-apollo-client/-builder/http-engine.html):
+After you create your `HttpEngine` implementation, you can register it with your [`ApolloClient`](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/com.apollographql.apollo3/-apollo-client/index.html) instance using [`ApolloClient.Builder.httpEngine`](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/com.apollographql.apollo3/-apollo-client/-builder/http-engine.html):
 
 ```kotlin
 // Use your HttpEngine

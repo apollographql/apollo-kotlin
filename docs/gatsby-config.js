@@ -21,7 +21,7 @@ module.exports = {
           null: [
             'index',
             'migration/3.0',
-            '[Kdoc](https://apollographql.github.io/apollo-android/kdoc/)',
+            '[Kdoc](https://apollographql.github.io/apollo-kotlin/kdoc/)',
           ],
           'Tutorial': [
             'tutorial/00-introduction',
