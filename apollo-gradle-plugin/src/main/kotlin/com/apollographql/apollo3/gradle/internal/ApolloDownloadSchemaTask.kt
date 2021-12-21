@@ -3,7 +3,6 @@ package com.apollographql.apollo3.gradle.internal
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.parseAsGQLDocument
-import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.validateAsSchema
 import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
@@ -17,7 +16,6 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
-import java.io.File
 
 /**
  * A task to download a schema either from introspection or from the registry.
@@ -75,7 +73,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
 
     val endpointUrl = endpoint.orNull
 
-    val schema = schema.orNull?.let { File(it) } // commandline is resolved relative to cwd
+    val schema = schema.orNull?.let { project.rootProject.file(it) } // shema is resolved relative to project root
     check(schema != null) {
       "Apollo: no schema property"
     }
@@ -102,7 +100,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
         ).toIntrospectionSchema()
       }
       graph != null -> {
-        check (key != null) {
+        check(key != null) {
           "Apollo: please define --key to download graph $graph"
         }
         gqlSchema = SchemaDownloader.downloadRegistry(
