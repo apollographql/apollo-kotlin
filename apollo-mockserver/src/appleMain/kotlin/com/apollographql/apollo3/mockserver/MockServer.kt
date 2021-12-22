@@ -31,10 +31,11 @@ import kotlin.native.concurrent.freeze
  * call. Can be used to simulate slow connections.
  */
 actual class MockServer(
-    private val acceptDelayMillis: Long
-): MockServerInterface {
+    private val acceptDelayMillis: Long,
+    mockDispatcher: MockDispatcher = QueueMockDispatcher(),
+) : BaseMockServer(mockDispatcher) {
 
-  actual constructor(): this(0)
+  actual constructor(mockDispatcher: MockDispatcher) : this(0, mockDispatcher)
 
   private val pthreadT: pthread_tVar
   private val port: Int
@@ -70,32 +71,38 @@ actual class MockServer(
 
     pthreadT = nativeHeap.alloc()
 
-    socket = Socket(socketFd, acceptDelayMillis)
+    socket = Socket(socketFd, acceptDelayMillis, mockDispatcher)
 
-    val stableRef = StableRef.create(socket!!.freeze())
+    // TODO Temporary workaround: this freeze() can be removed when using kotlin.native.binary.memoryModel=experimental
+    val stableRef = StableRef.create(socket!!/*.freeze()*/)
 
     pthread_create(pthreadT.ptr, null, staticCFunction { arg ->
       initRuntimeIfNeeded()
 
       val ref = arg!!.asStableRef<Socket>()
 
-      ref.get().also {
-        ref.dispose()
-      }.run()
+      try {
+        ref.get().also {
+          ref.dispose()
+        }.run()
+      } catch (e: Throwable) {
+        println("MockServer socket thread crashed: $e")
+        e.printStackTrace()
+      }
 
       null
     }, stableRef.asCPointer())
   }
 
   override suspend fun url(): String {
-    return "http://localhost:$port"
+    return "http://localhost:$port/"
   }
 
   override fun enqueue(mockResponse: MockResponse) {
     check(socket != null) {
       "Cannot enqueue a response to a stopped MockServer"
     }
-    socket!!.enqueue(mockResponse)
+    super.enqueue(mockResponse.freeze())
   }
 
   /**

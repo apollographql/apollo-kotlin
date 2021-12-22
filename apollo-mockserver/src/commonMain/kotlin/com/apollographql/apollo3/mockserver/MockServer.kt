@@ -16,6 +16,13 @@ interface MockServerInterface {
   suspend fun stop()
 
   /**
+   * The dispatcher used to respond to requests.
+   *
+   * The default dispatcher is a QueueMockDispatcher, which serves a fixed sequence of responses from a queue (see [enqueue]).
+   */
+  val mockDispatcher: MockDispatcher
+
+  /**
    * Enqueue a response
    */
   fun enqueue(mockResponse: MockResponse)
@@ -26,7 +33,12 @@ interface MockServerInterface {
   fun takeRequest(): MockRecordedRequest
 }
 
+abstract class BaseMockServer(override val mockDispatcher: MockDispatcher) : MockServerInterface {
+  override fun enqueue(mockResponse: MockResponse) {
+    (mockDispatcher as QueueMockDispatcher).enqueue(mockResponse)
+  }
+}
+
 
 @ApolloExperimental
-expect class MockServer() : MockServerInterface {
-}
+expect class MockServer(mockDispatcher: MockDispatcher = QueueMockDispatcher()) : BaseMockServer

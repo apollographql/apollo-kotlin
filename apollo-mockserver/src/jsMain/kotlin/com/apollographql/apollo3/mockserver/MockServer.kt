@@ -6,9 +6,11 @@ import okio.ByteString.Companion.toByteString
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-actual class MockServer : MockServerInterface {
-  private val responseQueue = mutableListOf<MockResponse>()
+actual class MockServer actual constructor(mockDispatcher: MockDispatcher) : BaseMockServer(mockDispatcher) {
+
   private val requests = mutableListOf<MockRecordedRequest>()
+
+  private var url: String? = null
 
   private val server = http.createServer { req, res ->
     val requestBody = StringBuilder()
@@ -19,19 +21,20 @@ actual class MockServer : MockServerInterface {
         else -> println("WTF")
       }
     }
+    val request = MockRecordedRequest(
+        req.method,
+        req.url,
+        req.httpVersion,
+        req.rawHeaders.toList().zipWithNext().toMap(),
+        requestBody.toString().encodeToByteArray().toByteString()
+    )
     req.on("end") { _ ->
       requests.add(
-          MockRecordedRequest(
-              req.method,
-              req.url,
-              req.httpVersion,
-              req.rawHeaders.toList().zipWithNext().toMap(),
-              requestBody.toString().encodeToByteArray().toByteString()
-          )
+          request
       )
     }
 
-    val mockResponse = responseQueue.removeFirst()
+    val mockResponse = mockDispatcher.dispatch(request)
     res.statusCode = mockResponse.statusCode
     mockResponse.headers.forEach {
       res.setHeader(it.key, it.value)
@@ -39,14 +42,11 @@ actual class MockServer : MockServerInterface {
     res.end(mockResponse.body.utf8())
   }.listen()
 
-  override suspend fun url() = suspendCoroutine<String> { cont ->
+  override suspend fun url() = url ?: suspendCoroutine { cont ->
+    url = "http://localhost:${server.address().unsafeCast<AddressInfo>().port}/"
     server.on("listening") { _ ->
-      cont.resume("http://localhost:${server.address().unsafeCast<AddressInfo>().port}")
+      cont.resume(url!!)
     }
-  }
-
-  override fun enqueue(mockResponse: MockResponse) {
-    responseQueue.add(mockResponse)
   }
 
   override fun takeRequest(): MockRecordedRequest {

@@ -6,7 +6,6 @@ import okio.BufferedSource
 import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
 import kotlin.jvm.JvmOverloads
-import kotlin.jvm.JvmStatic
 
 fun parseHeader(line: String): Pair<String, String> {
   val index = line.indexOfFirst { it == ':' }
@@ -51,8 +50,12 @@ class MockResponse(
   constructor(
       body: String,
       statusCode: Int = 200,
-      headers: Map<String, String> = emptyMap()
+      headers: Map<String, String> = emptyMap(),
   ) : this(statusCode, body.encodeUtf8(), headers)
+}
+
+interface MockDispatcher {
+  fun dispatch(request: MockRecordedRequest): MockResponse
 }
 
 internal fun readRequest(source: BufferedSource): MockRecordedRequest? {

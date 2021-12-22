@@ -31,11 +31,14 @@ import kotlin.experimental.and
 import kotlin.native.concurrent.AtomicInt
 import kotlin.native.concurrent.freeze
 
-class Socket(private val socketFd: Int, private val acceptDelayMillis: Long) {
+class Socket(
+    private val socketFd: Int,
+    private val acceptDelayMillis: Long,
+    private val mockDispatcher: MockDispatcher,
+) {
   private val pipeFd = nativeHeap.allocArray<IntVar>(2)
   private val running = AtomicInt(1)
   private val lock = reentrantLock()
-  private val queuedResponses = NSMutableArray()
   private val recordedRequests = NSMutableArray()
 
   init {
@@ -81,7 +84,7 @@ class Socket(private val socketFd: Int, private val acceptDelayMillis: Long) {
 
         val one = alloc<IntVar>()
         one.value = 1
-        setsockopt(connectionFd, SOL_SOCKET, SO_NOSIGPIPE, one.ptr, 4);
+        setsockopt(connectionFd, SOL_SOCKET, SO_NOSIGPIPE, one.ptr, 4)
 
         handleConnection(connectionFd)
         close(connectionFd)
@@ -128,13 +131,7 @@ class Socket(private val socketFd: Int, private val acceptDelayMillis: Long) {
 
         val mockResponse = synchronized(lock) {
           recordedRequests.addObject(request.freeze())
-
-          check(queuedResponses.count.toInt() > 0) {
-            "no queued responses"
-          }
-          queuedResponses.objectAtIndex(0).also {
-            queuedResponses.removeObjectAtIndex(0)
-          } as MockResponse
+          mockDispatcher.dispatch(request)
         }
 
         debug("Write response: ${mockResponse.statusCode}")
@@ -164,12 +161,6 @@ class Socket(private val socketFd: Int, private val acceptDelayMillis: Long) {
       write(pipeFd[1], buf, 1)
     }
     nativeHeap.free(pipeFd.rawValue)
-  }
-
-  fun enqueue(mockResponse: MockResponse) {
-    synchronized(lock) {
-      queuedResponses.addObject(mockResponse.freeze())
-    }
   }
 
   fun takeRequest(): MockRecordedRequest {
