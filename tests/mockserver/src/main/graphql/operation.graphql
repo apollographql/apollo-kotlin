@@ -1,0 +1,22 @@
+query GetHero {
+  hero {
+    name
+    id
+    ... on Droid {
+      primaryFunction
+    }
+    ... on Human {
+      height
+    }
+  }
+}
+
+query GetHeroNameOnly {
+  hero {
+    name
+  }
+}
+
+query GetDate {
+  date
+}
