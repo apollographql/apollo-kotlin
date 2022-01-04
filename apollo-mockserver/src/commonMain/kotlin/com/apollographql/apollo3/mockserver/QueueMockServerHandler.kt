@@ -7,7 +7,7 @@ class QueueMockServerHandler : MockServerHandler {
     queue.add(response)
   }
 
-  override fun handle(request: MockRecordedRequest): MockResponse {
+  override fun handle(request: MockRequest): MockResponse {
     return queue.removeFirstOrNull() ?: error("No more responses in queue")
   }
 

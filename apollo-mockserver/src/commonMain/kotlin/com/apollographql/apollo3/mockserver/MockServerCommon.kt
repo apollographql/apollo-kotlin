@@ -16,12 +16,12 @@ fun parseHeader(line: String): Pair<String, String> {
   return line.substring(0, index).trim() to line.substring(index + 1, line.length).trim()
 }
 
-class MockRecordedRequest(
+class MockRequest(
     val method: String,
     val path: String,
     val version: String,
     val headers: Map<String, String> = emptyMap(),
-    val body: ByteString = ByteString.EMPTY
+    val body: ByteString = ByteString.EMPTY,
 )
 
 fun writeResponse(sink: BufferedSink, mockResponse: MockResponse, version: String) {
@@ -55,11 +55,11 @@ class MockResponse(
 }
 
 interface MockServerHandler {
-  fun handle(request: MockRecordedRequest): MockResponse
+  fun handle(request: MockRequest): MockResponse
   fun copy(): MockServerHandler
 }
 
-internal fun readRequest(source: BufferedSource): MockRecordedRequest? {
+internal fun readRequest(source: BufferedSource): MockRequest? {
   var line = source.readUtf8Line()
   if (line == null) {
     // the connection was closed
@@ -94,7 +94,7 @@ internal fun readRequest(source: BufferedSource): MockRecordedRequest? {
     source.read(buffer, contentLength)
   }
 
-  return MockRecordedRequest(
+  return MockRequest(
       method = method,
       path = path,
       version = version,

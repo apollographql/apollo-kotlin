@@ -4,7 +4,7 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.mockserver.MockRecordedRequest
+import com.apollographql.apollo3.mockserver.MockRequest
 import com.benasher44.uuid.uuid4
 
 class QueueApolloMockServerHandler(
@@ -28,7 +28,7 @@ class QueueApolloMockServerHandler(
     )
   }
 
-  override fun handle(request: MockRecordedRequest): ApolloResponse<out Operation.Data> {
+  override fun handle(request: MockRequest): ApolloResponse<out Operation.Data> {
     return queue.removeFirstOrNull() ?: error("No more responses in queue")
   }
 }

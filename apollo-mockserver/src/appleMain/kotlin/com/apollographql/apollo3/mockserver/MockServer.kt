@@ -128,7 +128,7 @@ actual class MockServer(
     socket = null
   }
 
-  override fun takeRequest(): MockRecordedRequest {
+  override fun takeRequest(): MockRequest {
     check(socket != null) {
       "Cannot take a request from a stopped MockServer"
     }

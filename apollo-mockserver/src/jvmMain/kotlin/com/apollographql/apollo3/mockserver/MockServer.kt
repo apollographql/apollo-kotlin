@@ -10,11 +10,11 @@ import java.util.concurrent.TimeUnit
 actual class MockServer actual constructor(mockServerHandler: MockServerHandler) : BaseMockServer(mockServerHandler) {
   private val mockWebServer = MockWebServer().apply { dispatcher = mockServerHandler.toOkHttpDispatcher() }
 
-  override fun takeRequest(): MockRecordedRequest {
-    return mockWebServer.takeRequest(10, TimeUnit.MILLISECONDS)?.toApolloMockRecordedRequest() ?: error("No recorded request")
+  override fun takeRequest(): MockRequest {
+    return mockWebServer.takeRequest(10, TimeUnit.MILLISECONDS)?.toApolloMockRequest() ?: error("No recorded request")
   }
 
-  private fun RecordedRequest.toApolloMockRecordedRequest() = MockRecordedRequest(
+  private fun RecordedRequest.toApolloMockRequest() = MockRequest(
       method = method!!,
       path = path!!,
       version = parseRequestLine(requestLine).third,
@@ -33,7 +33,7 @@ actual class MockServer actual constructor(mockServerHandler: MockServerHandler)
 
   private fun MockServerHandler.toOkHttpDispatcher() = object : Dispatcher() {
     override fun dispatch(request: RecordedRequest): okhttp3.mockwebserver.MockResponse {
-      return handle(request.toApolloMockRecordedRequest()).toOkHttpMockResponse()
+      return handle(request.toApolloMockRequest()).toOkHttpMockResponse()
     }
 
     override fun shutdown() {}

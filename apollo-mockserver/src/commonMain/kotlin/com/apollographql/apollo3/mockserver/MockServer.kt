@@ -30,7 +30,7 @@ interface MockServerInterface {
   /**
    * Returns a request from the recorded requests or throws if no request has been received
    */
-  fun takeRequest(): MockRecordedRequest
+  fun takeRequest(): MockRequest
 }
 
 abstract class BaseMockServer(override val mockServerHandler: MockServerHandler) : MockServerInterface {

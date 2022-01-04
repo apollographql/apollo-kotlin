@@ -8,7 +8,7 @@ import kotlin.coroutines.suspendCoroutine
 
 actual class MockServer actual constructor(mockServerHandler: MockServerHandler) : BaseMockServer(mockServerHandler) {
 
-  private val requests = mutableListOf<MockRecordedRequest>()
+  private val requests = mutableListOf<MockRequest>()
 
   private var url: String? = null
 
@@ -22,7 +22,7 @@ actual class MockServer actual constructor(mockServerHandler: MockServerHandler)
       }
     }
     req.on("end") { _ ->
-      val request = MockRecordedRequest(
+      val request = MockRequest(
           req.method,
           req.url,
           req.httpVersion,
@@ -47,7 +47,7 @@ actual class MockServer actual constructor(mockServerHandler: MockServerHandler)
     }
   }
 
-  override fun takeRequest(): MockRecordedRequest {
+  override fun takeRequest(): MockRequest {
     return requests.removeFirst()
   }
 

@@ -167,14 +167,14 @@ class Socket(
     nativeHeap.free(pipeFd.rawValue)
   }
 
-  fun takeRequest(): MockRecordedRequest {
+  fun takeRequest(): MockRequest {
     return synchronized(lock) {
       check(recordedRequests.count.toInt() > 0) {
         "no recorded request"
       }
       recordedRequests.objectAtIndex(0).also {
         recordedRequests.removeObjectAtIndex(0)
-      } as MockRecordedRequest
+      } as MockRequest
     }
   }
 }
