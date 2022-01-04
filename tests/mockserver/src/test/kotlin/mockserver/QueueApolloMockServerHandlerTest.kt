@@ -83,8 +83,8 @@ class QueueApolloMockServerHandlerTest {
 
   @Test
   fun enqueueDataManual() = runTest(before = { setUp() }, after = { tearDown() }) {
-    val dispatcher = QueueApolloMockServerHandler()
-    mockServer = MockServer(dispatcher)
+    val handler = QueueApolloMockServerHandler()
+    mockServer = MockServer(handler)
 
     val query = GetHeroQuery()
     val testData = GetHeroQuery.Data(
@@ -96,7 +96,7 @@ class QueueApolloMockServerHandlerTest {
             onHuman = null
         )
     )
-    dispatcher.enqueue(query, testData)
+    handler.enqueue(query, testData)
 
     val apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
@@ -108,8 +108,8 @@ class QueueApolloMockServerHandlerTest {
 
   @Test
   fun enqueueDataTestBuilder() = runTest(before = { setUp() }, after = { tearDown() }) {
-    val dispatcher = QueueApolloMockServerHandler()
-    mockServer = MockServer(dispatcher)
+    val handler = QueueApolloMockServerHandler()
+    mockServer = MockServer(handler)
 
     val query = GetHeroQuery()
     val testData = GetHeroQuery.Data {
@@ -117,7 +117,7 @@ class QueueApolloMockServerHandlerTest {
         name = "R2D2"
       }
     }
-    dispatcher.enqueue(query, testData)
+    handler.enqueue(query, testData)
 
     val apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())

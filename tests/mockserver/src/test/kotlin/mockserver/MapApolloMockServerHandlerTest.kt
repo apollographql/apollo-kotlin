@@ -130,14 +130,14 @@ class MapApolloMockServerHandlerTest {
   fun customScalarAdapters() = runTest(after = { tearDown() }) {
     val customScalarAdapters = CustomScalarAdapters.Builder().add(mockserver.type.MyDate.type, MyDateAdapter).build()
 
-    val dispatcher = MapApolloMockServerHandler(customScalarAdapters)
-    mockServer = MockServer(dispatcher)
+    val handler = MapApolloMockServerHandler(customScalarAdapters)
+    mockServer = MockServer(handler)
 
     val query = GetDateQuery()
     val testData = GetDateQuery.Data(customScalarAdapters = customScalarAdapters) {
       date = "1978-04-27"
     }
-    dispatcher.register(query, testData)
+    handler.register(query, testData)
 
     val apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
