@@ -19,7 +19,7 @@ actual class MockServer actual constructor(mockDispatcher: MockDispatcher) : Bas
       path = path!!,
       version = parseRequestLine(requestLine).third,
       headers = headers.toMap(),
-      body = body.readByteString()
+      body = body.peek().readByteString()
   )
 
   private fun MockResponse.toOkHttpMockResponse() = okhttp3.mockwebserver.MockResponse()
