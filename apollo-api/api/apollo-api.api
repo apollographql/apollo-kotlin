@@ -101,12 +101,6 @@ public final class com/apollographql/apollo3/api/ApolloResponse$Builder {
 	public final fun requestUuid (Ljava/util/UUID;)Lcom/apollographql/apollo3/api/ApolloResponse$Builder;
 }
 
-public final class com/apollographql/apollo3/api/ApolloResponsesKt {
-	public static final fun composeJsonResponse (Lcom/apollographql/apollo3/api/ApolloResponse;Lcom/apollographql/apollo3/api/json/JsonWriter;)V
-	public static final fun composeJsonResponse (Lcom/apollographql/apollo3/api/ApolloResponse;Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)V
-	public static synthetic fun composeJsonResponse$default (Lcom/apollographql/apollo3/api/ApolloResponse;Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;ILjava/lang/Object;)V
-}
-
 public final class com/apollographql/apollo3/api/Assertions {
 	public static final fun checkFieldNotMissing (Ljava/lang/Object;Ljava/lang/String;)V
 }
