@@ -64,8 +64,8 @@ module.exports = {
             'advanced/no-runtime',
           ],
           Testing: [
-            'advanced/ui-tests',
-            'advanced/test-builders',
+            'testing/ui-tests',
+            'testing/test-builders',
           ],
           Advanced: [
             'advanced/query-batching',

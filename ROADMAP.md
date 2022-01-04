@@ -22,7 +22,7 @@ The declarative cache makes working with the cache and defining unique object id
 
 ### Test server
 
-Apollo Kotlin 3 introduces [test builders](https://www.apollographql.com/docs/kotlin/advanced/test-builders/) as a new type-safe way to build test data. We can go a step further and build an all-in-one solution that includes a GraphQL aware server.
+Apollo Kotlin 3 introduces [test builders](https://www.apollographql.com/docs/kotlin/testing/test-builders/) as a new type-safe way to build test data. We can go a step further and build an all-in-one solution that includes a GraphQL aware server.
 
 ### Make Apollo Kotlin even more multiplatform
 
