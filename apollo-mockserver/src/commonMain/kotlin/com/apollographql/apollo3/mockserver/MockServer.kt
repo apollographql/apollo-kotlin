@@ -33,13 +33,5 @@ interface MockServerInterface {
   fun takeRequest(): MockRequest
 }
 
-abstract class BaseMockServer(override val mockServerHandler: MockServerHandler) : MockServerInterface {
-  override fun enqueue(mockResponse: MockResponse) {
-    (mockServerHandler as? QueueMockServerHandler)?.enqueue(mockResponse)
-        ?: error("Apollo: cannot call MockServer.enqueue() with a custom handler")
-  }
-}
-
-
 @ApolloExperimental
-expect class MockServer(mockServerHandler: MockServerHandler = QueueMockServerHandler()) : BaseMockServer
+expect class MockServer(mockServerHandler: MockServerHandler = QueueMockServerHandler()) : MockServerInterface

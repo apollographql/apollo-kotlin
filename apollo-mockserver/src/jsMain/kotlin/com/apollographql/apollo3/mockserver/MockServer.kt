@@ -6,7 +6,7 @@ import okio.ByteString.Companion.toByteString
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-actual class MockServer actual constructor(mockServerHandler: MockServerHandler) : BaseMockServer(mockServerHandler) {
+actual class MockServer actual constructor(override val mockServerHandler: MockServerHandler) : MockServerInterface {
 
   private val requests = mutableListOf<MockRequest>()
 
@@ -45,6 +45,11 @@ actual class MockServer actual constructor(mockServerHandler: MockServerHandler)
     server.on("listening") { _ ->
       cont.resume(url!!)
     }
+  }
+
+  override fun enqueue(mockResponse: MockResponse) {
+    (mockServerHandler as? QueueMockServerHandler)?.enqueue(mockResponse)
+        ?: error("Apollo: cannot call MockServer.enqueue() with a custom handler")
   }
 
   override fun takeRequest(): MockRequest {

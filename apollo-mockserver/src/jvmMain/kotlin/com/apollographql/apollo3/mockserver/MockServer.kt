@@ -7,8 +7,13 @@ import okhttp3.mockwebserver.RecordedRequest
 import okio.Buffer
 import java.util.concurrent.TimeUnit
 
-actual class MockServer actual constructor(mockServerHandler: MockServerHandler) : BaseMockServer(mockServerHandler) {
+actual class MockServer actual constructor(override val mockServerHandler: MockServerHandler) : MockServerInterface {
   private val mockWebServer = MockWebServer().apply { dispatcher = mockServerHandler.toOkHttpDispatcher() }
+
+  override fun enqueue(mockResponse: MockResponse) {
+    (mockServerHandler as? QueueMockServerHandler)?.enqueue(mockResponse)
+        ?: error("Apollo: cannot call MockServer.enqueue() with a custom handler")
+  }
 
   override fun takeRequest(): MockRequest {
     return mockWebServer.takeRequest(10, TimeUnit.MILLISECONDS)?.toApolloMockRequest() ?: error("No recorded request")

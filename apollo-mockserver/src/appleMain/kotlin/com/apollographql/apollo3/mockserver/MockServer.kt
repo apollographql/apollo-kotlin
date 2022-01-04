@@ -33,8 +33,8 @@ import kotlin.native.concurrent.freeze
  */
 actual class MockServer(
     private val acceptDelayMillis: Long,
-    mockServerHandler: MockServerHandler = QueueMockServerHandler(),
-) : BaseMockServer(mockServerHandler) {
+    override val mockServerHandler: MockServerHandler = QueueMockServerHandler(),
+) : MockServerInterface {
 
   actual constructor(mockServerHandler: MockServerHandler) : this(0, mockServerHandler)
 
