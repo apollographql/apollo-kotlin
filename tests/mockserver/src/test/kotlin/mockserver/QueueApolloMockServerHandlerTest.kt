@@ -17,12 +17,12 @@ import kotlin.test.assertTrue
 
 @OptIn(ApolloExperimental::class)
 class QueueApolloMockServerHandlerTest {
-  private lateinit var dispatcher: QueueApolloMockServerHandler
+  private lateinit var handler: QueueApolloMockServerHandler
   private lateinit var mockServer: MockServer
 
   private fun setUp() {
-    dispatcher = QueueApolloMockServerHandler()
-    mockServer = MockServer(dispatcher)
+    handler = QueueApolloMockServerHandler()
+    mockServer = MockServer(handler)
   }
 
   private suspend fun tearDown() {
@@ -45,8 +45,8 @@ class QueueApolloMockServerHandlerTest {
     val testResponse2 = ApolloResponse.Builder(query2, uuid4(), GetHeroNameOnlyQuery.Data(GetHeroNameOnlyQuery.Hero(name = "Darth Vader")))
         .build()
 
-    dispatcher.enqueue(testResponse1)
-    dispatcher.enqueue(testResponse2)
+    handler.enqueue(testResponse1)
+    handler.enqueue(testResponse2)
 
     val apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
@@ -63,7 +63,7 @@ class QueueApolloMockServerHandlerTest {
   @Test
   fun enqueueError() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = GetHeroQuery()
-    dispatcher.enqueue(query, errors = listOf(Error(
+    handler.enqueue(query, errors = listOf(Error(
         message = "There was an error",
         locations = listOf(Error.Location(line = 1, column = 2)),
         path = listOf("hero", "name"),

@@ -22,12 +22,12 @@ import kotlin.test.assertTrue
 
 @OptIn(ApolloExperimental::class)
 class MapApolloMockServerHandlerTest {
-  private lateinit var dispatcher: MapApolloMockServerHandler
+  private lateinit var handler: MapApolloMockServerHandler
   private lateinit var mockServer: MockServer
 
   private fun setUp() {
-    dispatcher = MapApolloMockServerHandler()
-    mockServer = MockServer(dispatcher)
+    handler = MapApolloMockServerHandler()
+    mockServer = MockServer(handler)
   }
 
   private suspend fun tearDown() {
@@ -50,8 +50,8 @@ class MapApolloMockServerHandlerTest {
     val testResponse2 = ApolloResponse.Builder(query2, uuid4(), GetHeroNameOnlyQuery.Data(GetHeroNameOnlyQuery.Hero(name = "Darth Vader")))
         .build()
 
-    dispatcher.register(query1, testResponse1)
-    dispatcher.register(query2, testResponse2)
+    handler.register(query1, testResponse1)
+    handler.register(query2, testResponse2)
 
     val apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
@@ -68,7 +68,7 @@ class MapApolloMockServerHandlerTest {
   @Test
   fun registerError() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = GetHeroQuery()
-    dispatcher.register(query, errors = listOf(Error(
+    handler.register(query, errors = listOf(Error(
         message = "There was an error",
         locations = listOf(Error.Location(line = 1, column = 2)),
         path = listOf("hero", "name"),
@@ -98,7 +98,7 @@ class MapApolloMockServerHandlerTest {
             onHuman = null
         )
     )
-    dispatcher.register(query, testData)
+    handler.register(query, testData)
 
     val apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
@@ -116,7 +116,7 @@ class MapApolloMockServerHandlerTest {
         name = "R2D2"
       }
     }
-    dispatcher.register(query, testData)
+    handler.register(query, testData)
 
     val apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())

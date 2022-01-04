@@ -20,7 +20,7 @@ class CustomHandlerTest {
   }
 
   @Test
-  fun dispatch() = runTest(after = { tearDown() }) {
+  fun customHandler() = runTest(after = { tearDown() }) {
     val mockResponse0 = MockResponse(
         body = "Hello, World! 000",
         statusCode = 404,
