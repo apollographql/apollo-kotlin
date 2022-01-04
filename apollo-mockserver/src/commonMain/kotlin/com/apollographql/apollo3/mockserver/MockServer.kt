@@ -16,11 +16,11 @@ interface MockServerInterface {
   suspend fun stop()
 
   /**
-   * The dispatcher used to respond to requests.
+   * The mock server handler used to respond to requests.
    *
-   * The default dispatcher is a QueueMockDispatcher, which serves a fixed sequence of responses from a queue (see [enqueue]).
+   * The default handler is a [QueueMockServerHandler], which serves a fixed sequence of responses from a queue (see [enqueue]).
    */
-  val mockDispatcher: MockDispatcher
+  val mockServerHandler: MockServerHandler
 
   /**
    * Enqueue a response
@@ -33,12 +33,13 @@ interface MockServerInterface {
   fun takeRequest(): MockRecordedRequest
 }
 
-abstract class BaseMockServer(override val mockDispatcher: MockDispatcher) : MockServerInterface {
+abstract class BaseMockServer(override val mockServerHandler: MockServerHandler) : MockServerInterface {
   override fun enqueue(mockResponse: MockResponse) {
-    (mockDispatcher as? QueueMockDispatcher)?.enqueue(mockResponse) ?: error("Apollo: cannot call MockServer.enqueue() with a custom dispatcher")
+    (mockServerHandler as? QueueMockServerHandler)?.enqueue(mockResponse)
+        ?: error("Apollo: cannot call MockServer.enqueue() with a custom handler")
   }
 }
 
 
 @ApolloExperimental
-expect class MockServer(mockDispatcher: MockDispatcher = QueueMockDispatcher()) : BaseMockServer
+expect class MockServer(mockServerHandler: MockServerHandler = QueueMockServerHandler()) : BaseMockServer

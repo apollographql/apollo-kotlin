@@ -8,9 +8,9 @@ import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.mockserver.MockRecordedRequest
 import com.benasher44.uuid.uuid4
 
-class MapApolloMockDispatcher(
+class MapApolloMockServerHandler(
     override val customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-) : ApolloMockDispatcher {
+) : ApolloMockServerHandler {
   private val operationsToResponses = mutableMapOf<Operation<out Operation.Data>, ApolloResponse<out Operation.Data>>()
 
   fun <D : Operation.Data> register(operation: Operation<D>, response: ApolloResponse<D>) {
@@ -27,7 +27,7 @@ class MapApolloMockDispatcher(
         .build()
   }
 
-  override fun dispatch(request: MockRecordedRequest): ApolloResponse<out Operation.Data> {
+  override fun handle(request: MockRecordedRequest): ApolloResponse<out Operation.Data> {
     val operationId = request.headers[DefaultHttpRequestComposer.HEADER_APOLLO_OPERATION_ID]
     val operation = operationsToResponses.keys.firstOrNull { it.id() == operationId }
         ?: error("No response found for operation id: $operationId")

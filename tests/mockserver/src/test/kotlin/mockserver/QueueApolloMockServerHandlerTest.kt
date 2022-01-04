@@ -6,7 +6,7 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.testing.MockServer
-import com.apollographql.apollo3.testing.QueueApolloMockDispatcher
+import com.apollographql.apollo3.testing.QueueApolloMockServerHandler
 import com.apollographql.apollo3.testing.runTest
 import com.benasher44.uuid.uuid4
 import mockserver.test.GetHeroQuery_TestBuilder.Data
@@ -16,12 +16,12 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @OptIn(ApolloExperimental::class)
-class QueueApolloMockDispatcherTest {
-  private lateinit var dispatcher: QueueApolloMockDispatcher
+class QueueApolloMockServerHandlerTest {
+  private lateinit var dispatcher: QueueApolloMockServerHandler
   private lateinit var mockServer: MockServer
 
   private fun setUp() {
-    dispatcher = QueueApolloMockDispatcher()
+    dispatcher = QueueApolloMockServerHandler()
     mockServer = MockServer(dispatcher)
   }
 
@@ -83,7 +83,7 @@ class QueueApolloMockDispatcherTest {
 
   @Test
   fun enqueueDataManual() = runTest(before = { setUp() }, after = { tearDown() }) {
-    val dispatcher = QueueApolloMockDispatcher()
+    val dispatcher = QueueApolloMockServerHandler()
     mockServer = MockServer(dispatcher)
 
     val query = GetHeroQuery()
@@ -108,7 +108,7 @@ class QueueApolloMockDispatcherTest {
 
   @Test
   fun enqueueDataTestBuilder() = runTest(before = { setUp() }, after = { tearDown() }) {
-    val dispatcher = QueueApolloMockDispatcher()
+    val dispatcher = QueueApolloMockServerHandler()
     mockServer = MockServer(dispatcher)
 
     val query = GetHeroQuery()

@@ -7,8 +7,8 @@ import okhttp3.mockwebserver.RecordedRequest
 import okio.Buffer
 import java.util.concurrent.TimeUnit
 
-actual class MockServer actual constructor(mockDispatcher: MockDispatcher) : BaseMockServer(mockDispatcher) {
-  private val mockWebServer = MockWebServer().apply { dispatcher = mockDispatcher.toOkHttpDispatcher() }
+actual class MockServer actual constructor(mockServerHandler: MockServerHandler) : BaseMockServer(mockServerHandler) {
+  private val mockWebServer = MockWebServer().apply { dispatcher = mockServerHandler.toOkHttpDispatcher() }
 
   override fun takeRequest(): MockRecordedRequest {
     return mockWebServer.takeRequest(10, TimeUnit.MILLISECONDS)?.toApolloMockRecordedRequest() ?: error("No recorded request")
@@ -31,9 +31,9 @@ actual class MockServer actual constructor(mockDispatcher: MockDispatcher) : Bas
       }.setBody(Buffer().apply { write(body) })
       .setHeadersDelay(delayMillis, TimeUnit.MILLISECONDS)
 
-  private fun MockDispatcher.toOkHttpDispatcher() = object : Dispatcher() {
+  private fun MockServerHandler.toOkHttpDispatcher() = object : Dispatcher() {
     override fun dispatch(request: RecordedRequest): okhttp3.mockwebserver.MockResponse {
-      return dispatch(request.toApolloMockRecordedRequest()).toOkHttpMockResponse()
+      return handle(request.toApolloMockRecordedRequest()).toOkHttpMockResponse()
     }
 
     override fun shutdown() {}

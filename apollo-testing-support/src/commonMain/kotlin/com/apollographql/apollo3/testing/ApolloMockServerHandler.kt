@@ -6,29 +6,29 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.composeJsonResponse
 import com.apollographql.apollo3.api.json.buildJsonString
-import com.apollographql.apollo3.mockserver.MockDispatcher
 import com.apollographql.apollo3.mockserver.MockRecordedRequest
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.MockServerHandler
 
-interface ApolloMockDispatcher {
+interface ApolloMockServerHandler {
   val customScalarAdapters: CustomScalarAdapters
-  fun dispatch(request: MockRecordedRequest): ApolloResponse<out Operation.Data>
+  fun handle(request: MockRecordedRequest): ApolloResponse<out Operation.Data>
 }
 
 @ApolloExperimental
-fun MockServer(apolloMockDispatcher: ApolloMockDispatcher) = MockServer(ApolloMockDispatcherBridge(apolloMockDispatcher))
+fun MockServer(apolloMockServerHandler: ApolloMockServerHandler) = MockServer(ApolloMockServerHandlerBridge(apolloMockServerHandler))
 
-class ApolloMockDispatcherBridge(val wrapped: ApolloMockDispatcher) : MockDispatcher {
-  override fun dispatch(request: MockRecordedRequest): MockResponse {
-    val apolloResponse = wrapped.dispatch(request)
+class ApolloMockServerHandlerBridge(val wrapped: ApolloMockServerHandler) : MockServerHandler {
+  override fun handle(request: MockRecordedRequest): MockResponse {
+    val apolloResponse = wrapped.handle(request)
 
     @Suppress("UNCHECKED_CAST")
     val responseBody = buildJsonString { apolloResponse.composeJsonResponse(this, wrapped.customScalarAdapters) }
     return MockResponse(responseBody)
   }
 
-  override fun copy(): ApolloMockDispatcherBridge {
-    return ApolloMockDispatcherBridge(wrapped)
+  override fun copy(): ApolloMockServerHandlerBridge {
+    return ApolloMockServerHandlerBridge(wrapped)
   }
 }

@@ -7,9 +7,9 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.mockserver.MockRecordedRequest
 import com.benasher44.uuid.uuid4
 
-class QueueApolloMockDispatcher(
+class QueueApolloMockServerHandler(
     override val customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
-) : ApolloMockDispatcher {
+) : ApolloMockServerHandler {
   private val queue = ArrayDeque<ApolloResponse<out Operation.Data>>()
 
   fun <D : Operation.Data> enqueue(response: ApolloResponse<D>) {
@@ -28,7 +28,7 @@ class QueueApolloMockDispatcher(
     )
   }
 
-  override fun dispatch(request: MockRecordedRequest): ApolloResponse<out Operation.Data> {
+  override fun handle(request: MockRecordedRequest): ApolloResponse<out Operation.Data> {
     return queue.removeFirstOrNull() ?: error("No more responses in queue")
   }
 }

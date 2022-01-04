@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.testing.MapApolloMockDispatcher
+import com.apollographql.apollo3.testing.MapApolloMockServerHandler
 import com.apollographql.apollo3.testing.MockServer
 import com.apollographql.apollo3.testing.runTest
 import com.benasher44.uuid.uuid4
@@ -21,12 +21,12 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @OptIn(ApolloExperimental::class)
-class MapApolloMockDispatcherTest {
-  private lateinit var dispatcher: MapApolloMockDispatcher
+class MapApolloMockServerHandlerTest {
+  private lateinit var dispatcher: MapApolloMockServerHandler
   private lateinit var mockServer: MockServer
 
   private fun setUp() {
-    dispatcher = MapApolloMockDispatcher()
+    dispatcher = MapApolloMockServerHandler()
     mockServer = MockServer(dispatcher)
   }
 
@@ -130,7 +130,7 @@ class MapApolloMockDispatcherTest {
   fun customScalarAdapters() = runTest(after = { tearDown() }) {
     val customScalarAdapters = CustomScalarAdapters.Builder().add(mockserver.type.MyDate.type, MyDateAdapter).build()
 
-    val dispatcher = MapApolloMockDispatcher(customScalarAdapters)
+    val dispatcher = MapApolloMockServerHandler(customScalarAdapters)
     mockServer = MockServer(dispatcher)
 
     val query = GetDateQuery()

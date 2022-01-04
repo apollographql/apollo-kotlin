@@ -3,16 +3,16 @@ package com.apollographql.apollo3.mockserver.test
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
-import com.apollographql.apollo3.mockserver.MockDispatcher
 import com.apollographql.apollo3.mockserver.MockRecordedRequest
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.MockServerHandler
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.testing.runTest
 import kotlin.test.Test
 
 @OptIn(ApolloExperimental::class)
-class CustomDispatcherTest {
+class CustomHandlerTest {
   private lateinit var mockServer: MockServer
 
   private suspend fun tearDown() {
@@ -32,8 +32,8 @@ class CustomDispatcherTest {
         headers = mapOf("X-Test" to "true"),
     )
 
-    val mockDispatcher = object : MockDispatcher {
-      override fun dispatch(request: MockRecordedRequest): MockResponse {
+    val mockServerHandler = object : MockServerHandler {
+      override fun handle(request: MockRecordedRequest): MockResponse {
         return when (request.path) {
           "/0" -> mockResponse0
           "/1" -> mockResponse1
@@ -44,7 +44,7 @@ class CustomDispatcherTest {
       override fun copy() = this
     }
 
-    mockServer = MockServer(mockDispatcher)
+    mockServer = MockServer(mockServerHandler)
 
     val engine = DefaultHttpEngine()
 

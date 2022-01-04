@@ -6,7 +6,7 @@ import okio.ByteString.Companion.toByteString
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-actual class MockServer actual constructor(mockDispatcher: MockDispatcher) : BaseMockServer(mockDispatcher) {
+actual class MockServer actual constructor(mockServerHandler: MockServerHandler) : BaseMockServer(mockServerHandler) {
 
   private val requests = mutableListOf<MockRecordedRequest>()
 
@@ -31,7 +31,7 @@ actual class MockServer actual constructor(mockDispatcher: MockDispatcher) : Bas
       )
       requests.add(request)
 
-      val mockResponse = mockDispatcher.dispatch(request)
+      val mockResponse = mockServerHandler.handle(request)
       res.statusCode = mockResponse.statusCode
       mockResponse.headers.forEach {
         res.setHeader(it.key, it.value)

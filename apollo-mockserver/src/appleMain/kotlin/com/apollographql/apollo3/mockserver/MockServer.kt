@@ -33,15 +33,15 @@ import kotlin.native.concurrent.freeze
  */
 actual class MockServer(
     private val acceptDelayMillis: Long,
-    mockDispatcher: MockDispatcher = QueueMockDispatcher(),
-) : BaseMockServer(mockDispatcher) {
+    mockServerHandler: MockServerHandler = QueueMockServerHandler(),
+) : BaseMockServer(mockServerHandler) {
 
-  actual constructor(mockDispatcher: MockDispatcher) : this(0, mockDispatcher)
+  actual constructor(mockServerHandler: MockServerHandler) : this(0, mockServerHandler)
 
   private val pthreadT: pthread_tVar
   private val port: Int
   private var socket: Socket? = null
-  private val mockDispatcherReference = AtomicReference(mockDispatcher.freeze())
+  private val mockServerHandlerReference = AtomicReference(mockServerHandler.freeze())
 
   init {
     val socketFd = socket(AF_INET, SOCK_STREAM, 0)
@@ -73,7 +73,7 @@ actual class MockServer(
 
     pthreadT = nativeHeap.alloc()
 
-    socket = Socket(socketFd, acceptDelayMillis, mockDispatcherReference)
+    socket = Socket(socketFd, acceptDelayMillis, mockServerHandlerReference)
 
     val stableRef = StableRef.create(socket!!.freeze())
 
@@ -103,11 +103,11 @@ actual class MockServer(
     check(socket != null) {
       "Cannot enqueue a response to a stopped MockServer"
     }
-    val queueMockDispatcher = mockDispatcherReference.value as? QueueMockDispatcher
-        ?: error("Apollo: cannot call MockServer.enqueue() with a custom dispatcher")
-    val newMockDispatcher = queueMockDispatcher.copy()
-    newMockDispatcher.enqueue(mockResponse)
-    mockDispatcherReference.value = newMockDispatcher.freeze()
+    val queueMockServerHandler = mockServerHandlerReference.value as? QueueMockServerHandler
+        ?: error("Apollo: cannot call MockServer.enqueue() with a custom handler")
+    val handlerCopy = queueMockServerHandler.copy()
+    handlerCopy.enqueue(mockResponse)
+    mockServerHandlerReference.value = handlerCopy.freeze()
   }
 
   /**

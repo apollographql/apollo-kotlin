@@ -54,9 +54,9 @@ class MockResponse(
   ) : this(statusCode, body.encodeUtf8(), headers)
 }
 
-interface MockDispatcher {
-  fun dispatch(request: MockRecordedRequest): MockResponse
-  fun copy(): MockDispatcher
+interface MockServerHandler {
+  fun handle(request: MockRecordedRequest): MockResponse
+  fun copy(): MockServerHandler
 }
 
 internal fun readRequest(source: BufferedSource): MockRecordedRequest? {

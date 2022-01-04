@@ -35,7 +35,7 @@ import kotlin.native.concurrent.freeze
 class Socket(
     private val socketFd: Int,
     private val acceptDelayMillis: Long,
-    private val mockDispatcherReference: AtomicReference<MockDispatcher>,
+    private val mockServerHandlerReference: AtomicReference<MockServerHandler>,
 ) {
   private val pipeFd = nativeHeap.allocArray<IntVar>(2)
   private val running = AtomicInt(1)
@@ -132,9 +132,9 @@ class Socket(
 
         val mockResponse = synchronized(lock) {
           recordedRequests.addObject(request.freeze())
-          val newMockDispatcher = mockDispatcherReference.value.copy()
-          val mockResponse = newMockDispatcher.dispatch(request)
-          mockDispatcherReference.value = newMockDispatcher.freeze()
+          val handlerCopy = mockServerHandlerReference.value.copy()
+          val mockResponse = handlerCopy.handle(request)
+          mockServerHandlerReference.value = handlerCopy.freeze()
           mockResponse
         }
 
