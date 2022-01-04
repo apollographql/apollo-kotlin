@@ -10,4 +10,10 @@ class QueueMockDispatcher : MockDispatcher {
   override fun dispatch(request: MockRecordedRequest): MockResponse {
     return queue.removeFirstOrNull() ?: error("No more responses in queue")
   }
+
+  override fun copy(): QueueMockDispatcher {
+    return QueueMockDispatcher().apply {
+      queue.addAll(this@QueueMockDispatcher.queue)
+    }
+  }
 }

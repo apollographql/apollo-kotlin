@@ -29,12 +29,13 @@ import platform.posix.usleep
 import platform.posix.write
 import kotlin.experimental.and
 import kotlin.native.concurrent.AtomicInt
+import kotlin.native.concurrent.AtomicReference
 import kotlin.native.concurrent.freeze
 
 class Socket(
     private val socketFd: Int,
     private val acceptDelayMillis: Long,
-    private val mockDispatcher: MockDispatcher,
+    private val mockDispatcherReference: AtomicReference<MockDispatcher>,
 ) {
   private val pipeFd = nativeHeap.allocArray<IntVar>(2)
   private val running = AtomicInt(1)
@@ -131,7 +132,10 @@ class Socket(
 
         val mockResponse = synchronized(lock) {
           recordedRequests.addObject(request.freeze())
-          mockDispatcher.dispatch(request)
+          val newMockDispatcher = mockDispatcherReference.value.copy()
+          val mockResponse = newMockDispatcher.dispatch(request)
+          mockDispatcherReference.value = newMockDispatcher.freeze()
+          mockResponse
         }
 
         debug("Write response: ${mockResponse.statusCode}")

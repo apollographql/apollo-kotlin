@@ -56,6 +56,7 @@ class MockResponse(
 
 interface MockDispatcher {
   fun dispatch(request: MockRecordedRequest): MockResponse
+  fun copy(): MockDispatcher
 }
 
 internal fun readRequest(source: BufferedSource): MockRecordedRequest? {

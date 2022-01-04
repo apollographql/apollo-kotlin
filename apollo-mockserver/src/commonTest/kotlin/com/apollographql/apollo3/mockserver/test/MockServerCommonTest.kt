@@ -126,6 +126,8 @@ class MockServerCommonTest {
           else -> error("Unexpected path: ${request.path}")
         }
       }
+
+      override fun copy() = this
     }
 
     mockServer = MockServer(mockDispatcher)

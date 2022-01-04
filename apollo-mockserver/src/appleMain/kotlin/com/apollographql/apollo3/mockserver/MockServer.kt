@@ -24,6 +24,7 @@ import platform.posix.pthread_join
 import platform.posix.pthread_tVar
 import platform.posix.sockaddr_in
 import platform.posix.socket
+import kotlin.native.concurrent.AtomicReference
 import kotlin.native.concurrent.freeze
 
 /**
@@ -40,6 +41,7 @@ actual class MockServer(
   private val pthreadT: pthread_tVar
   private val port: Int
   private var socket: Socket? = null
+  private val mockDispatcherReference = AtomicReference(mockDispatcher.freeze())
 
   init {
     val socketFd = socket(AF_INET, SOCK_STREAM, 0)
@@ -71,10 +73,9 @@ actual class MockServer(
 
     pthreadT = nativeHeap.alloc()
 
-    socket = Socket(socketFd, acceptDelayMillis, mockDispatcher)
+    socket = Socket(socketFd, acceptDelayMillis, mockDispatcherReference)
 
-    // TODO Temporary workaround: this freeze() can be removed when using kotlin.native.binary.memoryModel=experimental
-    val stableRef = StableRef.create(socket!!/*.freeze()*/)
+    val stableRef = StableRef.create(socket!!.freeze())
 
     pthread_create(pthreadT.ptr, null, staticCFunction { arg ->
       initRuntimeIfNeeded()
@@ -102,7 +103,11 @@ actual class MockServer(
     check(socket != null) {
       "Cannot enqueue a response to a stopped MockServer"
     }
-    super.enqueue(mockResponse.freeze())
+    val queueMockDispatcher = mockDispatcherReference.value as? QueueMockDispatcher
+        ?: error("Apollo: cannot call MockServer.enqueue() with a custom dispatcher")
+    val newMockDispatcher = queueMockDispatcher.copy()
+    newMockDispatcher.enqueue(mockResponse)
+    mockDispatcherReference.value = newMockDispatcher.freeze()
   }
 
   /**
