@@ -40,8 +40,6 @@ class CustomHandlerTest {
           else -> error("Unexpected path: ${request.path}")
         }
       }
-
-      override fun copy() = this
     }
 
     mockServer = MockServer(mockServerHandler)

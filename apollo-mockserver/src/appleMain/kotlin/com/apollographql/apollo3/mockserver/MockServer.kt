@@ -24,7 +24,6 @@ import platform.posix.pthread_join
 import platform.posix.pthread_tVar
 import platform.posix.sockaddr_in
 import platform.posix.socket
-import kotlin.native.concurrent.AtomicReference
 import kotlin.native.concurrent.freeze
 
 /**
@@ -41,7 +40,6 @@ actual class MockServer(
   private val pthreadT: pthread_tVar
   private val port: Int
   private var socket: Socket? = null
-  private val mockServerHandlerReference = AtomicReference(mockServerHandler.freeze())
 
   init {
     val socketFd = socket(AF_INET, SOCK_STREAM, 0)
@@ -73,7 +71,7 @@ actual class MockServer(
 
     pthreadT = nativeHeap.alloc()
 
-    socket = Socket(socketFd, acceptDelayMillis, mockServerHandlerReference)
+    socket = Socket(socketFd, acceptDelayMillis, mockServerHandler)
 
     val stableRef = StableRef.create(socket!!.freeze())
 
@@ -103,11 +101,9 @@ actual class MockServer(
     check(socket != null) {
       "Cannot enqueue a response to a stopped MockServer"
     }
-    val queueMockServerHandler = mockServerHandlerReference.value as? QueueMockServerHandler
+    val queueMockServerHandler = mockServerHandler as? QueueMockServerHandler
         ?: error("Apollo: cannot call MockServer.enqueue() with a custom handler")
-    val handlerCopy = queueMockServerHandler.copy()
-    handlerCopy.enqueue(mockResponse)
-    mockServerHandlerReference.value = handlerCopy.freeze()
+    queueMockServerHandler.enqueue(mockResponse)
   }
 
   /**

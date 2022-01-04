@@ -27,8 +27,4 @@ class ApolloMockServerHandlerBridge(val wrapped: ApolloMockServerHandler) : Mock
     val responseBody = buildJsonString { apolloResponse.composeJsonResponse(this, wrapped.customScalarAdapters) }
     return MockResponse(responseBody)
   }
-
-  override fun copy(): ApolloMockServerHandlerBridge {
-    return ApolloMockServerHandlerBridge(wrapped)
-  }
 }

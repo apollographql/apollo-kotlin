@@ -1,6 +1,12 @@
 package com.apollographql.apollo3.mockserver
 
-class QueueMockServerHandler : MockServerHandler {
+internal expect class QueueMockServerHandler() : MockServerHandler {
+  fun enqueue(response: MockResponse)
+
+  override fun handle(request: MockRequest): MockResponse
+}
+
+internal class CommonQueueMockServerHandler : MockServerHandler {
   private val queue = ArrayDeque<MockResponse>()
 
   fun enqueue(response: MockResponse) {
@@ -9,11 +15,5 @@ class QueueMockServerHandler : MockServerHandler {
 
   override fun handle(request: MockRequest): MockResponse {
     return queue.removeFirstOrNull() ?: error("No more responses in queue")
-  }
-
-  override fun copy(): QueueMockServerHandler {
-    return QueueMockServerHandler().apply {
-      queue.addAll(this@QueueMockServerHandler.queue)
-    }
   }
 }

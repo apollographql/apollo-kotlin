@@ -55,8 +55,12 @@ class MockResponse(
 }
 
 interface MockServerHandler {
+  /**
+   * Handles the given [MockRequest].
+   *
+   * This method is called from one or several background threads and must be thread-safe.
+   */
   fun handle(request: MockRequest): MockResponse
-  fun copy(): MockServerHandler
 }
 
 internal fun readRequest(source: BufferedSource): MockRequest? {
