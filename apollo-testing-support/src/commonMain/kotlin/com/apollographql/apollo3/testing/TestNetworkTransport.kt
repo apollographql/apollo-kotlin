@@ -11,32 +11,32 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
 class TestNetworkTransport(
-    val dispatcher: TestNetworkTransportDispatcher = MapTestNetworkTransportDispatcher(),
+    val handler: TestNetworkTransportHandler = MapTestNetworkTransportHandler(),
 ) : NetworkTransport {
   override fun <D : Operation.Data> execute(request: ApolloRequest<D>): Flow<ApolloResponse<D>> {
     @Suppress("UNCHECKED_CAST")
-    return flowOf(dispatcher.dispatch(request) as ApolloResponse<D>)
+    return flowOf(handler.handle(request) as ApolloResponse<D>)
   }
 
   fun <D : Operation.Data> register(
       operation: Operation<D>,
       response: ApolloResponse<D>,
-  ) = (dispatcher as MapTestNetworkTransportDispatcher).register(operation, response)
+  ) = (handler as MapTestNetworkTransportHandler).register(operation, response)
 
   fun <D : Operation.Data> register(
       operation: Operation<D>,
       data: D? = null,
       errors: List<Error>? = null,
-  ) = (dispatcher as MapTestNetworkTransportDispatcher).register(operation, data, errors)
+  ) = (handler as MapTestNetworkTransportHandler).register(operation, data, errors)
 
   override fun dispose() {}
 }
 
-interface TestNetworkTransportDispatcher {
-  fun dispatch(request: ApolloRequest<*>): ApolloResponse<*>
+interface TestNetworkTransportHandler {
+  fun handle(request: ApolloRequest<*>): ApolloResponse<*>
 }
 
-class QueueTestNetworkTransportDispatcher : TestNetworkTransportDispatcher {
+class QueueTestNetworkTransportHandler : TestNetworkTransportHandler {
   private val queue = ArrayDeque<ApolloResponse<out Operation.Data>>()
 
   fun <D : Operation.Data> enqueue(response: ApolloResponse<D>) {
@@ -55,12 +55,12 @@ class QueueTestNetworkTransportDispatcher : TestNetworkTransportDispatcher {
     )
   }
 
-  override fun dispatch(request: ApolloRequest<*>): ApolloResponse<out Operation.Data> {
+  override fun handle(request: ApolloRequest<*>): ApolloResponse<out Operation.Data> {
     return queue.removeFirstOrNull() ?: error("No more responses in queue")
   }
 }
 
-class MapTestNetworkTransportDispatcher : TestNetworkTransportDispatcher {
+class MapTestNetworkTransportHandler : TestNetworkTransportHandler {
   private val operationsToResponses = mutableMapOf<Operation<out Operation.Data>, ApolloResponse<out Operation.Data>>()
 
   fun <D : Operation.Data> register(operation: Operation<D>, response: ApolloResponse<D>) {
@@ -77,7 +77,7 @@ class MapTestNetworkTransportDispatcher : TestNetworkTransportDispatcher {
         .build()
   }
 
-  override fun dispatch(request: ApolloRequest<*>): ApolloResponse<*> {
+  override fun handle(request: ApolloRequest<*>): ApolloResponse<*> {
     return operationsToResponses[request.operation] ?: error("No response registered for operation ${request.operation}")
   }
 }

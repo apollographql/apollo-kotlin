@@ -4,9 +4,9 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
-import com.apollographql.apollo3.testing.QueueTestNetworkTransportDispatcher
 import com.apollographql.apollo3.testing.TestNetworkTransport
 import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.testNetworkTransport
 import com.benasher44.uuid.uuid4
 import testnetworktransport.test.GetHeroQuery_TestBuilder.Data
 import kotlin.test.Test
@@ -15,14 +15,12 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @OptIn(ApolloExperimental::class)
-class QueueTestNetworkTransportDispatcherTest {
-  private lateinit var queue: QueueTestNetworkTransportDispatcher
+class MapTestNetworkTransportHandlerTest {
   private lateinit var apolloClient: ApolloClient
 
   private fun setUp() {
-    queue = QueueTestNetworkTransportDispatcher()
     apolloClient = ApolloClient.Builder()
-        .networkTransport(TestNetworkTransport(queue))
+        .networkTransport(TestNetworkTransport())
         .build()
   }
 
@@ -31,7 +29,7 @@ class QueueTestNetworkTransportDispatcherTest {
   }
 
   @Test
-  fun enqueueResponses() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun registerResponses() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query1 = GetHeroQuery("001")
     val testResponse1 = ApolloResponse.Builder(query1, uuid4(), null)
         .errors(listOf(Error(
@@ -58,9 +56,10 @@ class QueueTestNetworkTransportDispatcherTest {
     val testResponse3 = ApolloResponse.Builder(query3, uuid4(), GetHeroNameOnlyQuery.Data(GetHeroNameOnlyQuery.Hero(name = "Darth Vader")))
         .build()
 
-    queue.enqueue(testResponse1)
-    queue.enqueue(testResponse2)
-    queue.enqueue(testResponse3)
+    val testNetworkTransport = apolloClient.testNetworkTransport
+    testNetworkTransport.register(query1, testResponse1)
+    testNetworkTransport.register(query2, testResponse2)
+    testNetworkTransport.register(query3, testResponse3)
 
     val actual1: ApolloResponse<GetHeroQuery.Data> = apolloClient.query(query1).execute()
     assertTrue(actual1.hasErrors())
@@ -76,9 +75,9 @@ class QueueTestNetworkTransportDispatcherTest {
   }
 
   @Test
-  fun enqueueError() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun registerError() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = GetHeroQuery("001")
-    queue.enqueue(query, errors = listOf(Error(
+    apolloClient.testNetworkTransport.register(query, errors = listOf(Error(
         message = "There was an error",
         locations = listOf(Error.Location(line = 1, column = 2)),
         path = listOf("hero", "name"),
@@ -93,7 +92,7 @@ class QueueTestNetworkTransportDispatcherTest {
   }
 
   @Test
-  fun enqueueDataManual() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun registerDataManual() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = GetHeroQuery("001")
     val testData = GetHeroQuery.Data(
         GetHeroQuery.Hero(
@@ -104,21 +103,21 @@ class QueueTestNetworkTransportDispatcherTest {
             onHuman = null
         )
     )
-    queue.enqueue(query, testData)
+    apolloClient.testNetworkTransport.register(query, testData)
 
     val actual = apolloClient.query(query).execute().data
     assertEquals(testData, actual)
   }
 
   @Test
-  fun enqueueDataTestBuilder() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun registerDataTestBuilder() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = GetHeroQuery("001")
     val testData = GetHeroQuery.Data {
       hero = droidHero {
         name = "R2D2"
       }
     }
-    queue.enqueue(query, testData)
+    apolloClient.testNetworkTransport.register(query, testData)
 
     val actual = apolloClient.query(query).execute().data!!
     assertEquals(testData.hero.name, actual.hero.name)
