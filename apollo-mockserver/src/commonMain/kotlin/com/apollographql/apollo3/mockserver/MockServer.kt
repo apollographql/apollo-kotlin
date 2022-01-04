@@ -35,7 +35,7 @@ interface MockServerInterface {
 
 abstract class BaseMockServer(override val mockDispatcher: MockDispatcher) : MockServerInterface {
   override fun enqueue(mockResponse: MockResponse) {
-    (mockDispatcher as QueueMockDispatcher).enqueue(mockResponse)
+    (mockDispatcher as? QueueMockDispatcher)?.enqueue(mockResponse) ?: error("Apollo: cannot call MockServer.enqueue() with a custom dispatcher")
   }
 }
 
