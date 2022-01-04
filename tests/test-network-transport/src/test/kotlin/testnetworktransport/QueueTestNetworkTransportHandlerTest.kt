@@ -93,24 +93,6 @@ class QueueTestNetworkTransportHandlerTest {
   }
 
   @Test
-  fun enqueueDataManual() = runTest(before = { setUp() }, after = { tearDown() }) {
-    val query = GetHeroQuery("001")
-    val testData = GetHeroQuery.Data(
-        GetHeroQuery.Hero(
-            __typename = "Droid",
-            name = "R2D2",
-            id = "r2d2",
-            onDroid = GetHeroQuery.OnDroid("mechadroid"),
-            onHuman = null
-        )
-    )
-    queue.enqueue(query, testData)
-
-    val actual = apolloClient.query(query).execute().data
-    assertEquals(testData, actual)
-  }
-
-  @Test
   fun enqueueDataTestBuilder() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = GetHeroQuery("001")
     val testData = GetHeroQuery.Data {

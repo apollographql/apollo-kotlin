@@ -92,24 +92,6 @@ class MapTestNetworkTransportHandlerTest {
   }
 
   @Test
-  fun registerDataManual() = runTest(before = { setUp() }, after = { tearDown() }) {
-    val query = GetHeroQuery("001")
-    val testData = GetHeroQuery.Data(
-        GetHeroQuery.Hero(
-            __typename = "Droid",
-            name = "R2D2",
-            id = "r2d2",
-            onDroid = GetHeroQuery.OnDroid("mechadroid"),
-            onHuman = null
-        )
-    )
-    apolloClient.testNetworkTransport.register(query, testData)
-
-    val actual = apolloClient.query(query).execute().data
-    assertEquals(testData, actual)
-  }
-
-  @Test
   fun registerDataTestBuilder() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = GetHeroQuery("001")
     val testData = GetHeroQuery.Data {
