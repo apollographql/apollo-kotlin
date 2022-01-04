@@ -21,25 +21,23 @@ actual class MockServer actual constructor(mockDispatcher: MockDispatcher) : Bas
         else -> println("WTF")
       }
     }
-    val request = MockRecordedRequest(
-        req.method,
-        req.url,
-        req.httpVersion,
-        req.rawHeaders.toList().zipWithNext().toMap(),
-        requestBody.toString().encodeToByteArray().toByteString()
-    )
     req.on("end") { _ ->
-      requests.add(
-          request
+      val request = MockRecordedRequest(
+          req.method,
+          req.url,
+          req.httpVersion,
+          req.rawHeaders.toList().zipWithNext().toMap(),
+          requestBody.toString().encodeToByteArray().toByteString()
       )
-    }
+      requests.add(request)
 
-    val mockResponse = mockDispatcher.dispatch(request)
-    res.statusCode = mockResponse.statusCode
-    mockResponse.headers.forEach {
-      res.setHeader(it.key, it.value)
+      val mockResponse = mockDispatcher.dispatch(request)
+      res.statusCode = mockResponse.statusCode
+      mockResponse.headers.forEach {
+        res.setHeader(it.key, it.value)
+      }
+      res.end(mockResponse.body.utf8())
     }
-    res.end(mockResponse.body.utf8())
   }.listen()
 
   override suspend fun url() = url ?: suspendCoroutine { cont ->
