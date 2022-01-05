@@ -66,6 +66,7 @@ module.exports = {
           Testing: [
             'testing/ui-tests',
             'testing/test-builders',
+            'testing/mocking-responses',
           ],
           Advanced: [
             'advanced/query-batching',

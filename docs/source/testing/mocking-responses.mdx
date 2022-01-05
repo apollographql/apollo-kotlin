@@ -1,0 +1,181 @@
+---
+title: Mocking responses
+---
+
+Apollo Kotlin provides two tools to mock responses in tests:
+
+- `TestNetworkTransport`: allows to specify the GraphQL responses returned by `ApolloClient`
+- `MockServer`: a low-level HTTP server that can be used to mock any responses
+
+In most cases, `TestNetworkTransport` will be more straightforward to use in your tests, while `MockServer` can be
+useful to test specific server behavior, such as error cases, custom headers, timeouts, etc.
+
+## `TestNetworkTransport`
+
+This is a high level test API which allows to specify the responses that will be returned by your `ApolloClient`.
+
+Add the dependency to your project's `build.gradle` file:
+
+```kotlin:title=build.gradle[.kts]
+dependencies {
+  testImplementation("com.apollographql.apollo3:apollo-testing-support:x.y.z")
+}
+```
+
+Enable the `TestNetworkTransport` by passing it to the `ApolloClient` builder:
+
+```kotlin{2}
+val apolloClient = ApolloClient.Builder()
+    .networkTransport(TestNetworkTransport())
+    .build()
+```
+
+Either keep a reference to the `TestNetworkTransport` instance, or use the `testNetworkTransport` extension function to
+retrieve it:
+
+```kotlin
+val testNetworkTransport = apolloClient.testNetworkTransport
+```
+
+You can then use the `register` function to specify the responses that will be returned in function of the received
+operations:
+
+```kotlin{7}
+val query = GetHeroQuery("001")
+val testData = GetHeroQuery.Data {
+  hero = droidHero {
+    name = "R2D2"
+  }
+}
+apolloClient.testNetworkTransport.register(query, testData)
+
+val actual = apolloClient.query(query).execute().data!!
+assertEquals(testData.hero.name, actual.hero.name)
+```
+
+The `register` function accepts an `Operation` (here, the query) and the `ApolloResponse` to be returned when it is
+executed. As a shortcut you can pass a `Data` directly instead of an `ApolloResponse`, like in the example above.
+
+Note how you can use the [Test builders](./test-builders/) to easily create the data.
+
+### Advanced usage
+
+In some cases it can be useful to have different responses returned when executing the same operations consecutively.
+
+To that effect, instead of mapping operations to responses with `register`, it is possible to **enqueue** responses:
+they will be returned in the order they were added. To do so, pass a `QueueTestNetworkTransportHandler` to
+the `TestNetworkTransport`, and use its `enqueue` function:
+
+```kotlin
+val handler = QueueTestNetworkTransportHandler()
+apolloClient = ApolloClient.Builder().networkTransport(TestNetworkTransport(handler)).build()
+
+handler.enqueue(query, testData1)
+handler.enqueue(query, testData2)
+handler.enqueue(query, testData3)
+
+val actual1 = apolloClient.query(query).execute().data
+val actual2 = apolloClient.query(query).execute().data
+val actual3 = apolloClient.query(query).execute().data
+```
+
+Note that you need to pass an operation to `enqueue` - this is because an `ApolloResponse` is built under the hood which
+has a reference to an operation. There is also a version of `enqueue` that takes only an `ApoolloResponse` as a
+parameter.
+
+Should you need more control over the responses to return, you can implement your own `TestNetworkTransportHandler`
+and pass it to the `TestNetworkTransport`:
+
+```kotlin
+class CustomTestNetworkTransportHandler : TestNetworkTransportHandler {
+  override fun handle(request: ApolloRequest<*>): ApolloResponse<*> {
+    return ApolloResponse.Builder(
+        /* Your custom logic here */
+    ).build()
+  }
+}
+
+apolloClient = ApolloClient.Builder()
+    .networkTransport(TestNetworkTransport(CustomTestNetworkTransportHandler()))
+    .build()
+```
+
+## `MockServer`
+
+While `TestNetworkTransport` functions at the GraphQL level, `MockServer` resides at the HTTP level and can be used to
+mock arbitrary HTTP responses.
+
+Add the dependency to your project's `build.gradle` file:
+
+```kotlin:title=build.gradle[.kts]
+dependencies {
+  testImplementation("com.apollographql.apollo3:apollo-mockserver:x.y.z")
+}
+```
+
+Here is how to use it:
+
+```kotlin
+// Create a mock server
+val mockServer = MockServer()
+
+// Use its URL on your ApolloClient
+val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store).build()
+
+// Enqueue responses
+mockServer.enqueue("""{"data": {"random": 42}}""")
+mockServer.enqueue(
+    MockResponse(
+        body = "Internal server error",
+        statusCode = 500,
+        headers = mapOf("X-Test" to "true"),
+        delayMillis = 1000L,
+    )
+)
+
+// Execute queries
+val response1 = apolloClient
+    .query(GetRandomQuery())
+    .execute()
+
+val response2 = apolloClient
+    .query(GetRandomQuery())
+    .execute()
+
+// Don't forget to stop the server when you're done
+mockServer.stop()
+```
+
+Note how the `enqueue` function normally takes a `MockResponse` as a parameter, while a shorthand version taking
+a `String` also exists.
+
+Also note how a delay can be passed to the `MockResponse` constructor to simulate network latency.
+
+### Advanced usage
+
+By default, `MockServer` is configured with a `QueueMockServerHandler` which will return responses in the order they are
+added. Should you need more control over the responses to return, you can implement your own `MockServerHandler`
+and pass it to the `MockServer`:
+
+```kotlin
+val customHandler = object : MockServerHandler {
+  override fun handle(request: MockRequest): MockResponse {
+    return if (/* Your custom logic here */) {
+      MockResponse(
+          body = """{"data": {"random": 42}}""",
+          headers = mapOf("X-Test" to "true"),
+      )
+    } else {
+      MockResponse(
+          body = "Internal server error",
+          statusCode = 500,
+      )
+    }
+  }
+}
+
+val mockServer = MockServer(customHandler)
+```
+
+Note that when doing so, calling `MockServer.enqueue()` is no longer possible since it expects the handler to be
+a `QueueMockServerHandler`.
