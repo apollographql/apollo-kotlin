@@ -16,10 +16,9 @@ import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.integration.normalizer.CharacterNameByIdQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.testing.TestNetworkTransport
 import com.apollographql.apollo3.testing.runTest
-import testFixtureToUtf8
+import com.apollographql.apollo3.testing.testNetworkTransport
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail
@@ -31,22 +30,16 @@ import kotlin.test.fail
  */
 @OptIn(ApolloExperimental::class)
 class StoreTest {
-  private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
   private lateinit var store: ApolloStore
 
-  private suspend fun setUp() {
+  private fun setUp() {
     store = ApolloStore(MemoryCacheFactory(), cacheKeyGenerator = IdCacheKeyGenerator, cacheResolver = IdCacheResolver)
-    mockServer = MockServer()
-    apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store).build()
-  }
-
-  private suspend fun tearDown() {
-    mockServer.stop()
+    apolloClient = ApolloClient.Builder().networkTransport(TestNetworkTransport()).store(store).build()
   }
 
   @Test
-  fun removeFromStore() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun removeFromStore() = runTest(before = { setUp() }) {
     storeAllFriends()
     assertFriendIsCached("1002", "Han Solo")
 
@@ -77,7 +70,7 @@ class StoreTest {
 
   @Test
   @Throws(Exception::class)
-  fun removeMultipleFromStore() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun removeMultipleFromStore() = runTest(before = { setUp() }) {
     storeAllFriends()
     assertFriendIsCached("1000", "Luke Skywalker")
     assertFriendIsCached("1002", "Han Solo")
@@ -96,7 +89,7 @@ class StoreTest {
 
   @Test
   @Throws(Exception::class)
-  fun cascadeRemove() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun cascadeRemove() = runTest(before = { setUp() }) {
     // put everything in the cache
     storeAllFriends()
 
@@ -117,7 +110,7 @@ class StoreTest {
 
   @Test
   @Throws(Exception::class)
-  fun directAccess() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun directAccess() = runTest(before = { setUp() }) {
     // put everything in the cache
     storeAllFriends()
 
@@ -130,8 +123,28 @@ class StoreTest {
   }
 
   private suspend fun storeAllFriends() {
-    mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNameWithIdsResponse.json"))
-    val response = apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE))
+    val query = HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)
+    apolloClient.testNetworkTransport.register(query, HeroAndFriendsNamesWithIDsQuery.Data(
+        HeroAndFriendsNamesWithIDsQuery.Hero(
+            "2001",
+            "R2-D2",
+            listOf(
+                HeroAndFriendsNamesWithIDsQuery.Friend(
+                    "1000",
+                    "Luke Skywalker"
+                ),
+                HeroAndFriendsNamesWithIDsQuery.Friend(
+                    "1002",
+                    "Han Solo"
+                ),
+                HeroAndFriendsNamesWithIDsQuery.Friend(
+                    "1003",
+                    "Leia Organa"
+                ),
+            )
+        )
+    ))
+    val response = apolloClient.query(query)
         .fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
     assertEquals(response.data?.hero?.name, "R2-D2")
