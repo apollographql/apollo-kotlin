@@ -8,6 +8,8 @@ import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.network.NetworkTransport
 import com.benasher44.uuid.uuid4
+import kotlinx.atomicfu.locks.reentrantLock
+import kotlinx.atomicfu.locks.withLock
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
@@ -23,13 +25,15 @@ class TestNetworkTransport(
   fun <D : Operation.Data> register(
       operation: Operation<D>,
       response: ApolloResponse<D>,
-  ) = (handler as MapTestNetworkTransportHandler).register(operation, response)
+  ) = (handler as? MapTestNetworkTransportHandler)?.register(operation, response)
+      ?: error("Apollo: cannot call TestNetworkTransport.register() with a custom handler")
 
   fun <D : Operation.Data> register(
       operation: Operation<D>,
       data: D? = null,
       errors: List<Error>? = null,
-  ) = (handler as MapTestNetworkTransportHandler).register(operation, data, errors)
+  ) = (handler as? MapTestNetworkTransportHandler)?.register(operation, data, errors)
+      ?: error("Apollo: cannot call TestNetworkTransport.register() with a custom handler")
 
   override fun dispose() {}
 }
@@ -41,49 +45,59 @@ interface TestNetworkTransportHandler {
 
 @ApolloExperimental
 class QueueTestNetworkTransportHandler : TestNetworkTransportHandler {
+  private val lock = reentrantLock()
   private val queue = ArrayDeque<ApolloResponse<out Operation.Data>>()
 
   fun <D : Operation.Data> enqueue(response: ApolloResponse<D>) {
-    queue.add(response)
+    lock.withLock {
+      queue.add(response)
+    }
   }
 
   fun <D : Operation.Data> enqueue(operation: Operation<D>, data: D? = null, errors: List<Error>? = null) {
-    queue.add(
-        ApolloResponse.Builder(
-            operation = operation,
-            requestUuid = uuid4(),
-            data = data
-        )
-            .errors(errors)
-            .build()
-    )
+    lock.withLock {
+      queue.add(
+          ApolloResponse.Builder(
+              operation = operation,
+              requestUuid = uuid4(),
+              data = data
+          )
+              .errors(errors)
+              .build()
+      )
+    }
   }
 
   override fun handle(request: ApolloRequest<*>): ApolloResponse<out Operation.Data> {
-    return queue.removeFirstOrNull() ?: error("No more responses in queue")
+    return lock.withLock { queue.removeFirstOrNull() } ?: error("No more responses in queue")
   }
 }
 
 @ApolloExperimental
 class MapTestNetworkTransportHandler : TestNetworkTransportHandler {
+  private val lock = reentrantLock()
   private val operationsToResponses = mutableMapOf<Operation<out Operation.Data>, ApolloResponse<out Operation.Data>>()
 
   fun <D : Operation.Data> register(operation: Operation<D>, response: ApolloResponse<D>) {
-    operationsToResponses[operation] = response
+    lock.withLock {
+      operationsToResponses[operation] = response
+    }
   }
 
   fun <D : Operation.Data> register(operation: Operation<D>, data: D? = null, errors: List<Error>? = null) {
-    operationsToResponses[operation] = ApolloResponse.Builder(
-        operation = operation,
-        requestUuid = uuid4(),
-        data = data
-    )
-        .errors(errors)
-        .build()
+    lock.withLock {
+      operationsToResponses[operation] = ApolloResponse.Builder(
+          operation = operation,
+          requestUuid = uuid4(),
+          data = data
+      )
+          .errors(errors)
+          .build()
+    }
   }
 
   override fun handle(request: ApolloRequest<*>): ApolloResponse<*> {
-    return operationsToResponses[request.operation] ?: error("No response registered for operation ${request.operation}")
+    return lock.withLock { operationsToResponses[request.operation] } ?: error("No response registered for operation ${request.operation}")
   }
 }
 
