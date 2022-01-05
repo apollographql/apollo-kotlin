@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.testing
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
@@ -10,6 +11,7 @@ import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
+@ApolloExperimental
 class TestNetworkTransport(
     val handler: TestNetworkTransportHandler = MapTestNetworkTransportHandler(),
 ) : NetworkTransport {
@@ -32,10 +34,12 @@ class TestNetworkTransport(
   override fun dispose() {}
 }
 
+@ApolloExperimental
 interface TestNetworkTransportHandler {
   fun handle(request: ApolloRequest<*>): ApolloResponse<*>
 }
 
+@ApolloExperimental
 class QueueTestNetworkTransportHandler : TestNetworkTransportHandler {
   private val queue = ArrayDeque<ApolloResponse<out Operation.Data>>()
 
@@ -60,6 +64,7 @@ class QueueTestNetworkTransportHandler : TestNetworkTransportHandler {
   }
 }
 
+@ApolloExperimental
 class MapTestNetworkTransportHandler : TestNetworkTransportHandler {
   private val operationsToResponses = mutableMapOf<Operation<out Operation.Data>, ApolloResponse<out Operation.Data>>()
 
@@ -82,5 +87,6 @@ class MapTestNetworkTransportHandler : TestNetworkTransportHandler {
   }
 }
 
+@ApolloExperimental
 val ApolloClient.testNetworkTransport: TestNetworkTransport
   get() = networkTransport as TestNetworkTransport
