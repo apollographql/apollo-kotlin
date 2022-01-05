@@ -38,7 +38,13 @@ actual class MockServer actual constructor(override val mockServerHandler: MockS
 
   private fun MockServerHandler.toOkHttpDispatcher() = object : Dispatcher() {
     override fun dispatch(request: RecordedRequest): okhttp3.mockwebserver.MockResponse {
-      return handle(request.toApolloMockRequest()).toOkHttpMockResponse()
+      val apolloMockRequest = request.toApolloMockRequest()
+      val mockResponse = try {
+        handle(apolloMockRequest)
+      } catch (e: Exception) {
+        MockResponse("MockServerHandler.handle() threw an exception: ${e.message}", 500)
+      }
+      return mockResponse.toOkHttpMockResponse()
     }
 
     override fun shutdown() {}

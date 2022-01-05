@@ -131,7 +131,11 @@ class Socket(
 
         val mockResponse = synchronized(lock) {
           recordedRequests.addObject(request.freeze())
-          mockServerHandler.handle(request)
+          try {
+            mockServerHandler.handle(request)
+          } catch (e: Exception) {
+            MockResponse("MockServerHandler.handle() threw an exception: ${e.message}", 500)
+          }
         }
 
         debug("Write response: ${mockResponse.statusCode}")

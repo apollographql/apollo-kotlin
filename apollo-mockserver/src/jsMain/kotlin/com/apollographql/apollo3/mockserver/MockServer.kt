@@ -31,7 +31,11 @@ actual class MockServer actual constructor(override val mockServerHandler: MockS
       )
       requests.add(request)
 
-      val mockResponse = mockServerHandler.handle(request)
+      val mockResponse = try {
+        mockServerHandler.handle(request)
+      } catch (e: Exception) {
+        MockResponse("MockServerHandler.handle() threw an exception: ${e.message}", 500)
+      }
       res.statusCode = mockResponse.statusCode
       mockResponse.headers.forEach {
         res.setHeader(it.key, it.value)
