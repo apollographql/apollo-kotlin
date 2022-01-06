@@ -27,12 +27,12 @@ class TypenameTest(val name: String, private val graphQLFile: File) {
     val schema = schemaFile.toSchema()
 
     val definitions = graphQLFile.source().buffer().toExecutableDefinitions(schema)
-
+    val fragmentDefinitions = definitions.filterIsInstance<GQLFragmentDefinition>().associateBy { it.name }
     val documentWithTypename = GQLDocument(
         definitions = definitions.map {
           when (it) {
-            is GQLOperationDefinition -> addRequiredFields(it, schema)
-            is GQLFragmentDefinition -> addRequiredFields(it, schema)
+            is GQLOperationDefinition -> addRequiredFields(it, schema, fragmentDefinitions)
+            is GQLFragmentDefinition -> addRequiredFields(it, schema, fragmentDefinitions)
             else -> it
           }
         },

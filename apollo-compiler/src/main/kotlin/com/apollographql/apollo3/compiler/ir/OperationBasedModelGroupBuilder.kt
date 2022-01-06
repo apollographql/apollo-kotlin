@@ -24,7 +24,7 @@ internal class OperationBasedModelGroupBuilder(
     private val schema: Schema,
     private val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val fieldMerger: FieldMerger,
-    private val compat: Boolean
+    private val compat: Boolean,
 ) : ModelGroupBuilder {
   private val insertFragmentSyntheticField = compat
   private val collectAllInlineFragmentFields = compat
@@ -219,10 +219,11 @@ internal class OperationBasedModelGroupBuilder(
                   InlineFragmentKey(typeCondition, BooleanExpression.True).toName()
                 }
 
-                val possibleTypes = schema.possibleTypes(typeCondition)
-                var childCondition: BooleanExpression<BTerm> = if (typeCondition == parentTypeCondition) {
+                val isTrue = schema.implementedTypes(parentTypeCondition).contains(typeCondition)
+                var childCondition: BooleanExpression<BTerm> = if (isTrue) {
                   BooleanExpression.True
                 } else {
+                  val possibleTypes = schema.possibleTypes(typeCondition)
                   BooleanExpression.Element(BPossibleTypes(possibleTypes))
                 }
                 childCondition = entry.key.and(childCondition).simplify()
@@ -279,11 +280,13 @@ internal class OperationBasedModelGroupBuilder(
            */
           val parentTypeCondition = values.first().parent
 
-          val possibleTypes = schema.possibleTypes(typeCondition)
-          var childCondition: BooleanExpression<BTerm> = if (typeCondition != parentTypeCondition) {
-            BooleanExpression.Element(BPossibleTypes(possibleTypes))
-          } else {
+          val implementedTypes = schema.implementedTypes(parentTypeCondition)
+          val isTrue = implementedTypes.contains(typeCondition)
+          var childCondition: BooleanExpression<BTerm> = if (isTrue) {
             BooleanExpression.True
+          } else {
+            val possibleTypes = schema.possibleTypes(typeCondition)
+            BooleanExpression.Element(BPossibleTypes(possibleTypes))
           }
 
           /**

@@ -1,6 +1,5 @@
 query TestQuery {
   hero {
-    __typename
     ...heroFragment
   }
 }

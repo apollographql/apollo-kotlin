@@ -4,12 +4,16 @@
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
       <option name="externalSystemIdString" value="GRADLE" />
-      <option name="scriptParameters" value=":apollo-android:apollo-compiler:test --tests &quot;com.apollographql.apollo3.compiler.CodegenTest&quot; -DtestFilter=schema -DupdateTestFixtures=true" />
+      <option name="scriptParameters" value="-DtestFilter=kotlin-compat-simple_fragment_with_inline_fragment -DupdateTestFixtures=true" />
       <option name="taskDescriptions">
         <list />
       </option>
       <option name="taskNames">
-        <list />
+        <list>
+          <option value=":apollo-compiler:test" />
+          <option value="--tests" />
+          <option value="&quot;com.apollographql.apollo3.compiler.CodegenTest&quot;" />
+        </list>
       </option>
       <option name="vmOptions" />
     </ExternalSystemSettings>

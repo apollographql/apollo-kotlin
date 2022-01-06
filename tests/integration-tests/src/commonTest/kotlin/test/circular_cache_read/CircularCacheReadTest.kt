@@ -22,12 +22,12 @@ class CircularCacheReadTest {
      */
     val data = GetUserQuery.Data(
         GetUserQuery.User(
+            "User",
             "42",
             GetUserQuery.Friend(
+                "User",
                 "42",
-                "User"
             ),
-            "User",
         )
     )
 

@@ -5,6 +5,7 @@ import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLFragmentSpread
 import com.apollographql.apollo3.ast.GQLInlineFragment
 import com.apollographql.apollo3.ast.GQLNode
+import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLOperationDefinition
 import com.apollographql.apollo3.ast.GQLSelectionSet
 import com.apollographql.apollo3.ast.NodeTransformer
@@ -16,21 +17,36 @@ import com.apollographql.apollo3.ast.leafType
 import com.apollographql.apollo3.ast.rootTypeDefinition
 import com.apollographql.apollo3.ast.transform
 
-fun addRequiredFields(operation: GQLOperationDefinition, schema: Schema): GQLOperationDefinition {
+/**
+ * Add required fields:
+ * - key fields for declarative cache
+ * - __typename for polymorphic fields
+ */
+fun addRequiredFields(
+    operation: GQLOperationDefinition,
+    schema: Schema,
+    allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
+): GQLOperationDefinition {
   val parentType = operation.rootTypeDefinition(schema)!!.name
   return operation.transform(
       AddRequiredFieldsTransformer(
           schema,
+          allFragmentDefinitions,
           parentType,
           emptySet()
       )
   ) as GQLOperationDefinition
 }
 
-fun addRequiredFields(fragmentDefinition: GQLFragmentDefinition, schema: Schema): GQLFragmentDefinition {
+fun addRequiredFields(
+    fragmentDefinition: GQLFragmentDefinition,
+    schema: Schema,
+    allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
+): GQLFragmentDefinition {
   return fragmentDefinition.transform(
       AddRequiredFieldsTransformer(
           schema,
+          allFragmentDefinitions,
           fragmentDefinition.typeCondition.name,
           emptySet()
       )
@@ -39,20 +55,32 @@ fun addRequiredFields(fragmentDefinition: GQLFragmentDefinition, schema: Schema)
 
 private class AddRequiredFieldsTransformer(
     val schema: Schema,
+    val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     val parentType: String,
     val parentFields: Set<String>,
 ) : NodeTransformer {
+  private fun requiresTypename(selectionSet: GQLSelectionSet): Boolean {
+    val typeConditions = selectionSet.selections.filterIsInstance<GQLInlineFragment>().map {
+      it.typeCondition.name
+    }.toMutableList()
+    typeConditions += selectionSet.selections.filterIsInstance<GQLFragmentSpread>().map {
+      allFragmentDefinitions.get(it.name)!!.typeCondition.name
+    }
+
+    val implementedTypes = schema.implementedTypes(parentType)
+
+    return typeConditions.any {
+      !implementedTypes.contains(it)
+    }
+  }
+
   override fun transform(node: GQLNode): TransformResult {
     if (node !is GQLSelectionSet) {
       return TransformResult.Continue
     }
     val selectionSet = node
-    val hasFragment = selectionSet.selections.any { it is GQLFragmentSpread || it is GQLInlineFragment }
     val requiredFieldNames = schema.keyFields(parentType).toMutableSet()
-
-    if (requiredFieldNames.isNotEmpty()) {
-      requiredFieldNames.add("__typename")
-    }
+    val requiresTypename = requiresTypename(selectionSet) || requiredFieldNames.isNotEmpty()
 
     val fieldNames = parentFields + selectionSet.selections.filterIsInstance<GQLField>().map { it.name }.toSet()
 
@@ -63,6 +91,7 @@ private class AddRequiredFieldsTransformer(
               selectionSet = it.selectionSet.transform(
                   AddRequiredFieldsTransformer(
                       schema,
+                      allFragmentDefinitions,
                       it.typeCondition.name,
                       fieldNames + requiredFieldNames
                   )
@@ -75,6 +104,7 @@ private class AddRequiredFieldsTransformer(
           val newSelectionSet = it.selectionSet?.transform(
               AddRequiredFieldsTransformer(
                   schema,
+                  allFragmentDefinitions,
                   typeDefinition.type.leafType().name,
                   emptySet()
               )
@@ -86,8 +116,8 @@ private class AddRequiredFieldsTransformer(
       }
     }
 
-    val fieldNamesToAdd = (requiredFieldNames - fieldNames).toMutableList()
-    if (hasFragment) {
+    val fieldNamesToAdd = (requiredFieldNames - fieldNames).toMutableSet()
+    if (requiresTypename) {
       fieldNamesToAdd.add("__typename")
     }
 
@@ -100,9 +130,14 @@ private class AddRequiredFieldsTransformer(
         "Field ${it.alias}: ${it.name} in $parentType conflicts with key fields"
       }
     }
+
+    /**
+     * This is done post-order because compat-based codegen requires `__typename` in individual inline fragments
+     * This means that __typename is over-added in the query
+     */
     newSelections = newSelections + fieldNamesToAdd.map { buildField(it) }
 
-    newSelections = if (hasFragment) {
+    newSelections = if (requiresTypename) {
       // remove the __typename if it exists
       // and add it again at the top so we're guaranteed to have it at the beginning of json parsing
       val typeNameField = newSelections.firstOrNull { (it as? GQLField)?.name == "__typename" }

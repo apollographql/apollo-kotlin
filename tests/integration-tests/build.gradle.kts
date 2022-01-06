@@ -5,6 +5,10 @@ plugins {
 
 configureMppTestsDefaults()
 
+tasks.withType<Test> {
+  systemProperty("updateTestFixtures", System.getProperty("updateTestFixtures"))
+}
+
 kotlin {
   /**
    * Extra target to test the java codegen

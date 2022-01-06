@@ -44,6 +44,8 @@ internal fun readFromResponseCodeBlock(
     hasTypenameArgument: Boolean,
 ): CodeBlock {
   val (regularProperties, syntheticProperties) = model.properties.partition { !it.isSynthetic }
+  val requiresTypename = syntheticProperties.any { it.condition != BooleanExpression.True }
+
   val prefix = regularProperties.map { property ->
     val variableInitializer = when {
       hasTypenameArgument && property.info.responseName == "__typename" -> CodeBlock.of(typename)
@@ -85,7 +87,7 @@ internal fun readFromResponseCodeBlock(
   /**
    * Read the synthetic properties
    */
-  val checkTypename = if (syntheticProperties.isNotEmpty()) {
+  val checkTypename = if (requiresTypename) {
     checkedProperties.add(__typename)
     CodeBlock.builder()
         .beginControlFlow("check($__typename·!=·null)")
