@@ -57,6 +57,19 @@ private constructor(
     override val sendDocument: Boolean?,
     override val enableAutoPersistedQueries: Boolean?,
     override val canBeBatched: Boolean?,
+
+    // Builder shortcuts for networkTransport
+    private val httpServerUrl: String?,
+    private val httpEngine: HttpEngine?,
+    private val httpInterceptors: List<HttpInterceptor>,
+    private val httpExposeErrorBody: Boolean?,
+
+    // Builder shortcuts for subscriptionNetworkTransport
+    private val webSocketServerUrl: String?,
+    private val webSocketEngine: WebSocketEngine?,
+    private val webSocketReconnectWhen: ((Throwable) -> Boolean)?,
+    private val webSocketIdleTimeoutMillis: Long?,
+    private val wsProtocolFactory: WsProtocol.Factory?,
 ) : ExecutionOptions {
   private val concurrencyInfo: ConcurrencyInfo
 
@@ -156,7 +169,6 @@ private constructor(
           }
         }
         .build()
-    // ensureNeverFrozen(request)
 
     return DefaultInterceptorChain(interceptors + networkInterceptor, 0).proceed(request)
   }
@@ -541,14 +553,73 @@ private constructor(
           sendDocument = sendDocument,
           enableAutoPersistedQueries = enableAutoPersistedQueries,
           canBeBatched = canBeBatched,
+
+          // Keep a reference to builder shortcuts so newBuilder() behaves as expected
+          httpServerUrl = httpServerUrl,
+          httpEngine = httpEngine,
+          httpInterceptors = httpInterceptors,
+          httpExposeErrorBody = httpExposeErrorBody,
+          webSocketServerUrl = webSocketServerUrl,
+          webSocketEngine = webSocketEngine,
+          webSocketReconnectWhen = webSocketReconnectWhen,
+          webSocketIdleTimeoutMillis = webSocketIdleTimeoutMillis,
+          wsProtocolFactory = wsProtocolFactory,
       )
     }
   }
 
   fun newBuilder(): Builder {
     return Builder()
-        .networkTransport(networkTransport)
-        .subscriptionNetworkTransport(subscriptionNetworkTransport)
+        .apply {
+          // Builder shortcuts for networkTransport.
+          // If any of these are set, we don't pass networkTransport, as it's built in the Builder.
+          var passNetworkTransport = true
+          if (httpServerUrl != null) {
+            httpServerUrl(httpServerUrl)
+            passNetworkTransport = false
+          }
+          if (httpEngine != null) {
+            httpEngine(httpEngine)
+            passNetworkTransport = false
+          }
+          if (httpInterceptors.isNotEmpty()) {
+            for (httpInterceptor in httpInterceptors) {
+              addHttpInterceptor(httpInterceptor)
+            }
+            passNetworkTransport = false
+          }
+          if (httpExposeErrorBody != null) {
+            httpExposeErrorBody(httpExposeErrorBody)
+            passNetworkTransport = false
+          }
+          if (passNetworkTransport) networkTransport(networkTransport)
+
+          // Builder shortcuts for subscriptionNetworkTransport.
+          // If any of these are set, we don't pass subscriptionNetworkTransport, as it's built in the Builder.
+          var passSubscriptionNetworkTransport = true
+          if (webSocketServerUrl != null) {
+            webSocketServerUrl(webSocketServerUrl)
+            passSubscriptionNetworkTransport = false
+          }
+          if (webSocketEngine != null) {
+            webSocketEngine(webSocketEngine)
+            passSubscriptionNetworkTransport = false
+          }
+          if (webSocketReconnectWhen != null) {
+            webSocketReconnectWhen(webSocketReconnectWhen)
+            passSubscriptionNetworkTransport = false
+          }
+          if (webSocketIdleTimeoutMillis != null) {
+            webSocketIdleTimeoutMillis(webSocketIdleTimeoutMillis)
+            passSubscriptionNetworkTransport = false
+          }
+          if (wsProtocolFactory != null) {
+            wsProtocol(wsProtocolFactory)
+            passSubscriptionNetworkTransport = false
+          }
+
+          if (passSubscriptionNetworkTransport) subscriptionNetworkTransport(subscriptionNetworkTransport)
+        }
         .customScalarAdapters(customScalarAdapters)
         .interceptors(interceptors)
         .requestedDispatcher(requestedDispatcher)
