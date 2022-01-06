@@ -29,8 +29,7 @@ val apolloClient = ApolloClient.Builder()
     .build()
 ```
 
-Either keep a reference to the `TestNetworkTransport` instance, or use the `testNetworkTransport` extension function to
-retrieve it:
+Use the `testNetworkTransport` extension function to retrieve the `TestNetworkTransport`:
 
 ```kotlin
 val testNetworkTransport = apolloClient.testNetworkTransport
