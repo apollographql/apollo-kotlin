@@ -37,7 +37,7 @@ Use the `testNetworkTransport` extension function to retrieve the `TestNetworkTr
 val testNetworkTransport = apolloClient.testNetworkTransport
 ```
 
-You can then use the `register` function to specify the responses that are returned for corresponding operations:
+You can then use the `enqueue` function to specify the GraphQL responses to return:
 
 ```kotlin{7}
 val testQuery = GetHeroQuery("001")
@@ -46,39 +46,40 @@ val testData = GetHeroQuery.Data {
     name = "R2D2"
   }
 }
-apolloClient.testNetworkTransport.register(testQuery, testData)
+apolloClient.testNetworkTransport.enqueue(testQuery, testData)
 
 val actual = apolloClient.query(testQuery).execute().data!!
 assertEquals(testData.hero.name, actual.hero.name)
 ```
 
-The `register` function accepts an `Operation` (here, the query) and the `ApolloResponse` to return when that operation executes. As a shortcut, you can pass a `Data` directly instead of an `ApolloResponse`, as shown in the example above.
+You pass an `ApolloResponse` to the `enqueue` function, or as a shortcut, you can pass a `Data` directly, as shown in the example above (in that case you'll also need to pass an operation because an `ApolloResponse` is built under the hood, which needs a reference to it).
 
 > To help create your mocked response data, you can use [test builders](./test-builders/).
 
 ### Advanced usage
 
-In some cases, you might want to return _different_ responses for the _same_ operation if it's executed multiple times.
+By default, `TestNetworkTransport` is configured with a `QueueTestNetworkTransportHandler`, which will returns responses in the order they've been enqueued.
 
-To achieve this, instead of mapping operations to responses with `register`, you can **enqueue** a list of responses. When you do, these responses are returned in the order they were added.
+In certain tests it may be more convenient to **map** responses to operations instead.
 
-To enqueue operations, pass a `QueueTestNetworkTransportHandler` to
-the `TestNetworkTransport` and call its `enqueue` function:
+To achieve this, pass a `MapTestNetworkTransportHandler` to
+the `TestNetworkTransport` and call the `register` function:
 
-```kotlin
-val handler = QueueTestNetworkTransportHandler()
-apolloClient = ApolloClient.Builder().networkTransport(TestNetworkTransport(handler)).build()
+```kotlin{1,3-4}
+val apolloClient = ApolloClient.Builder().networkTransport(TestNetworkTransport(MapTestNetworkTransportHandler())).build()
 
-handler.enqueue(query, testData1)
-handler.enqueue(query, testData2)
-handler.enqueue(query, testData3)
+apolloClient.testNetworkTransport.register(query1, testData1)
+apolloClient.testNetworkTransport.register(query2, testData2)
 
-val actual1 = apolloClient.query(query).execute().data
-val actual2 = apolloClient.query(query).execute().data
-val actual3 = apolloClient.query(query).execute().data
+val actual1 = apolloClient.query(query1).execute().data
+val actual2 = apolloClient.query(query2).execute().data
+// Execute query1 again, which is mapped to testData1
+val actual3 = apolloClient.query(query1).execute().data
+
+assertEquals(testData1, actual1)
+assertEquals(testData2, actual2)
+assertEquals(testData1, actual3)
 ```
-
-Note that you need to pass an operation to `enqueue`. This is because an `ApolloResponse` is built under the hood, which has a reference to an operation. There is also a version of `enqueue` that takes only an `ApoolloResponse` as a parameter.
 
 If you need more control over the responses to return, you can implement your own `TestNetworkTransportHandler` and pass it to the `TestNetworkTransport`:
 
@@ -146,7 +147,7 @@ Note how the `enqueue` function normally takes a `MockResponse` as a parameter, 
 
 ### Advanced usage
 
-By default, `MockServer` is configured with a `QueueMockServerHandler`, which will returns responses in the order they're added. If you need more control over the responses to return, you can implement your own `MockServerHandler` and pass it to the `MockServer`:
+By default, `MockServer` is configured with a `QueueMockServerHandler`, which will returns responses in the order they're enqueued. If you need more control over the responses to return, you can implement your own `MockServerHandler` and pass it to the `MockServer`:
 
 ```kotlin
 val customHandler = object : MockServerHandler {
