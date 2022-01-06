@@ -7,7 +7,9 @@ Apollo Kotlin provides the following tools for mocking responses in tests:
 - `TestNetworkTransport`: enables you to specify the GraphQL responses returned by `ApolloClient`
 - `MockServer`: a low-level HTTP server that you can use to mock _any_ responses
 
-In most cases, `TestNetworkTransport` is more straightforward to use in your tests, whereas `MockServer` can be useful for testing specific server behavior, such as error cases, custom headers, and timeouts.
+`MockServer` creates a full HTTP server. It is useful for testing specific server behaviors, such as error cases, HTTP headers, and timeouts. It will also require very little changes to your production code as you'll only need to change `serverUrl`.
+
+`TestNetworkTransport` will replace the HTTP calls with preregistered GraphQL responses. It is more lightweight and requires more modifications to your production code.
 
 ## `TestNetworkTransport`
 
@@ -122,6 +124,7 @@ mockServer.enqueue(
         body = "Internal server error",
         statusCode = 500,
         headers = mapOf("X-Test" to "true"),
+        // Optionally pass a delay to simulate network latency
         delayMillis = 1000L,
     )
 )
@@ -140,8 +143,6 @@ mockServer.stop()
 ```
 
 Note how the `enqueue` function normally takes a `MockResponse` as a parameter, while a shorthand version that takes a `String` also exists.
-
-Also note that you can pass a delay to the `MockResponse` constructor to simulate network latency.
 
 ### Advanced usage
 
