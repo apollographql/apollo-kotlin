@@ -38,15 +38,15 @@ val testNetworkTransport = apolloClient.testNetworkTransport
 You can then use the `register` function to specify the responses that are returned for corresponding operations:
 
 ```kotlin{7}
-val query = GetHeroQuery("001")
+val testQuery = GetHeroQuery("001")
 val testData = GetHeroQuery.Data {
   hero = droidHero {
     name = "R2D2"
   }
 }
-apolloClient.testNetworkTransport.register(query, testData)
+apolloClient.testNetworkTransport.register(testQuery, testData)
 
-val actual = apolloClient.query(query).execute().data!!
+val actual = apolloClient.query(testQuery).execute().data!!
 assertEquals(testData.hero.name, actual.hero.name)
 ```
 
