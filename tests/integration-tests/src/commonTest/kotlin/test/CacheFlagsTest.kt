@@ -37,7 +37,7 @@ class CacheFlagsTest {
   fun doNotStore() = runTest(before = { setUp() }) {
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
-    apolloClient.testNetworkTransport.register(query, data)
+    apolloClient.testNetworkTransport.enqueue(query, data)
 
     apolloClient.query(query).doNotStore(true).execute()
 
@@ -51,7 +51,7 @@ class CacheFlagsTest {
   fun testEvictAfterRead() = runTest(before = { setUp() }) {
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
-    apolloClient.testNetworkTransport.register(query, data)
+    apolloClient.testNetworkTransport.enqueue(query, data)
 
     // Store the data
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
@@ -80,7 +80,7 @@ class CacheFlagsTest {
   @Test
   fun partialResponsesAreNotStored() = runTest(before = { setUp() }) {
     val query = HeroNameQuery()
-    apolloClient.testNetworkTransport.register(query, partialResponseData, partialResponseErrors)
+    apolloClient.testNetworkTransport.enqueue(query, partialResponseData, partialResponseErrors)
 
     // this should not store the response
     apolloClient.query(query).execute()
@@ -93,7 +93,7 @@ class CacheFlagsTest {
   @Test
   fun storePartialResponse() = runTest(before = { setUp() }) {
     val query = HeroNameQuery()
-    apolloClient.testNetworkTransport.register(query, partialResponseData, partialResponseErrors)
+    apolloClient.testNetworkTransport.enqueue(query, partialResponseData, partialResponseErrors)
 
     // this should not store the response
     apolloClient.query(query).storePartialResponses(true).execute()

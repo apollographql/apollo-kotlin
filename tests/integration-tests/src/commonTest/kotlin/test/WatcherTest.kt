@@ -70,7 +70,7 @@ class WatcherTest {
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
     // The first query should get a "R2-D2" name
-    apolloClient.testNetworkTransport.register(query, episodeHeroNameData)
+    apolloClient.testNetworkTransport.enqueue(query, episodeHeroNameData)
     val job = launch {
       apolloClient.query(query).watch().collect {
         channel.send(it.data)
@@ -80,7 +80,7 @@ class WatcherTest {
     assertEquals(channel.receiveOrTimeout()?.hero?.name, "R2-D2")
 
     // Another newer call gets updated information with "Artoo"
-    apolloClient.testNetworkTransport.register(query, episodeHeroNameChangedData)
+    apolloClient.testNetworkTransport.enqueue(query, episodeHeroNameChangedData)
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
     assertEquals(channel.receiveOrTimeout()?.hero?.name, "Artoo")
@@ -96,7 +96,7 @@ class WatcherTest {
   fun storeWriteTriggersWatcher() = runTest(before = { setUp() }) {
     val channel = Channel<EpisodeHeroNameWithIdQuery.Data?>()
     val operation = EpisodeHeroNameWithIdQuery(Episode.EMPIRE)
-    apolloClient.testNetworkTransport.register(operation, episodeHeroNameWithIdData)
+    apolloClient.testNetworkTransport.enqueue(operation, episodeHeroNameWithIdData)
     val job = launch {
       apolloClient.query(operation).watch().collect {
         channel.send(it.data)
@@ -129,7 +129,7 @@ class WatcherTest {
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
     // The first query should get a "R2-D2" name
-    apolloClient.testNetworkTransport.register(query, episodeHeroNameData)
+    apolloClient.testNetworkTransport.enqueue(query, episodeHeroNameData)
     val job = launch {
       apolloClient.query(query).watch().collect {
         channel.send(it.data)
@@ -139,7 +139,7 @@ class WatcherTest {
     assertEquals(channel.receiveOrTimeout()?.hero?.name, "R2-D2")
 
     // Another newer call gets the same name (R2-D2)
-    apolloClient.testNetworkTransport.register(query, episodeHeroNameData)
+    apolloClient.testNetworkTransport.enqueue(query, episodeHeroNameData)
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
     channel.assertEmpty()
@@ -156,7 +156,7 @@ class WatcherTest {
 
     // The first query should get a "R2-D2" name
     val episodeHeroNameWithIdQuery = EpisodeHeroNameWithIdQuery(Episode.EMPIRE)
-    apolloClient.testNetworkTransport.register(episodeHeroNameWithIdQuery, episodeHeroNameWithIdData)
+    apolloClient.testNetworkTransport.enqueue(episodeHeroNameWithIdQuery, episodeHeroNameWithIdData)
     val job = launch {
       apolloClient.query(episodeHeroNameWithIdQuery).watch().collect {
         channel.send(it.data)
@@ -167,7 +167,7 @@ class WatcherTest {
 
     // Another newer call gets updated information with "Artoo"
     val heroAndFriendsNamesWithIDsQuery = HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)
-    apolloClient.testNetworkTransport.register(heroAndFriendsNamesWithIDsQuery, heroAndFriendsNamesWithIDsNameChangedData)
+    apolloClient.testNetworkTransport.enqueue(heroAndFriendsNamesWithIDsQuery, heroAndFriendsNamesWithIDsNameChangedData)
     apolloClient.query(heroAndFriendsNamesWithIDsQuery)
         .fetchPolicy(FetchPolicy.NetworkOnly)
         .execute()
@@ -187,7 +187,7 @@ class WatcherTest {
 
     // The first query should get a "R2-D2" name
     val episodeHeroNameQuery = EpisodeHeroNameQuery(Episode.EMPIRE)
-    apolloClient.testNetworkTransport.register(episodeHeroNameQuery, episodeHeroNameData)
+    apolloClient.testNetworkTransport.enqueue(episodeHeroNameQuery, episodeHeroNameData)
     val job = launch {
       apolloClient.query(episodeHeroNameQuery).watch().collect {
         channel.send(it.data)
@@ -198,7 +198,7 @@ class WatcherTest {
 
     // Another newer call gets the same information
     val heroAndFriendsNamesWithIDsQuery = HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)
-    apolloClient.testNetworkTransport.register(heroAndFriendsNamesWithIDsQuery, heroAndFriendsNamesWithIDsData)
+    apolloClient.testNetworkTransport.enqueue(heroAndFriendsNamesWithIDsQuery, heroAndFriendsNamesWithIDsData)
     apolloClient.query(heroAndFriendsNamesWithIDsQuery)
         .fetchPolicy(FetchPolicy.NetworkOnly)
         .execute()
@@ -259,7 +259,7 @@ class WatcherTest {
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
-    apolloClient.testNetworkTransport.register(query, episodeHeroNameData)
+    apolloClient.testNetworkTransport.enqueue(query, episodeHeroNameData)
     val job = launch {
       apolloClient.query(query)
           .fetchPolicy(FetchPolicy.NetworkOnly)
@@ -305,7 +305,7 @@ class WatcherTest {
     }
 
     // Another newer call gets updated information with "R2-D2"
-    apolloClient.testNetworkTransport.register(query, episodeHeroNameData)
+    apolloClient.testNetworkTransport.enqueue(query, episodeHeroNameData)
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
     assertEquals(channel.receiveOrTimeout()?.hero?.name, "R2-D2")

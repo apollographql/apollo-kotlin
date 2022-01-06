@@ -7,9 +7,12 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.testing.TestNetworkTransport
 import com.apollographql.apollo3.testing.TestNetworkTransportHandler
 import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.testNetworkTransport
+import com.benasher44.uuid.uuid4
 import testnetworktransport.test.GetHeroQuery_TestBuilder.Data
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 @OptIn(ApolloExperimental::class)
 class CustomTestNetworkTransportHandlerTest {
@@ -51,5 +54,15 @@ class CustomTestNetworkTransportHandlerTest {
     assertEquals("Droid 0", actual0.dataAssertNoErrors.hero.name)
     assertEquals("Droid 1", actual1.dataAssertNoErrors.hero.name)
     assertEquals("Droid 2", actual2.dataAssertNoErrors.hero.name)
+  }
+
+  @Test
+  fun registerAndQueueMethodsFail() = runTest(before = { setUp() }, after = { tearDown() }) {
+    assertFailsWith(IllegalStateException::class) {
+      apolloClient.testNetworkTransport.enqueue(ApolloResponse.Builder(GetHeroQuery("id"), uuid4(), null).build())
+    }
+    assertFailsWith(IllegalStateException::class) {
+      apolloClient.testNetworkTransport.register(GetHeroQuery("id"), null)
+    }
   }
 }

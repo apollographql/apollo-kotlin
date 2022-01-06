@@ -4,6 +4,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
+import com.apollographql.apollo3.testing.MapTestNetworkTransportHandler
 import com.apollographql.apollo3.testing.TestNetworkTransport
 import com.apollographql.apollo3.testing.runTest
 import com.apollographql.apollo3.testing.testNetworkTransport
@@ -20,7 +21,7 @@ class MapTestNetworkTransportHandlerTest {
 
   private fun setUp() {
     apolloClient = ApolloClient.Builder()
-        .networkTransport(TestNetworkTransport())
+        .networkTransport(TestNetworkTransport(MapTestNetworkTransportHandler()))
         .build()
   }
 
@@ -56,10 +57,11 @@ class MapTestNetworkTransportHandlerTest {
     val testResponse3 = ApolloResponse.Builder(query3, uuid4(), GetHeroNameOnlyQuery.Data(GetHeroNameOnlyQuery.Hero(name = "Darth Vader")))
         .build()
 
-    val testNetworkTransport = apolloClient.testNetworkTransport
-    testNetworkTransport.register(query1, testResponse1)
-    testNetworkTransport.register(query2, testResponse2)
-    testNetworkTransport.register(query3, testResponse3)
+    apolloClient.testNetworkTransport.apply {
+      register(query1, testResponse1)
+      register(query2, testResponse2)
+      register(query3, testResponse3)
+    }
 
     val actual1: ApolloResponse<GetHeroQuery.Data> = apolloClient.query(query1).execute()
     assertTrue(actual1.hasErrors())

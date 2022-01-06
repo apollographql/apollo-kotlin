@@ -103,7 +103,7 @@ class ThreadTests {
 
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("Luke"))
     val query = HeroNameQuery()
-    apolloClient.testNetworkTransport.register(query, data)
+    apolloClient.testNetworkTransport.enqueue(query, data)
 
     apolloClient.query(query).execute()
     apolloClient.query(query).fetchPolicy(FetchPolicy.CacheOnly).execute()

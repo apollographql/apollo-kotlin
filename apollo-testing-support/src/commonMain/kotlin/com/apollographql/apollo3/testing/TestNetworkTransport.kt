@@ -15,25 +15,35 @@ import kotlinx.coroutines.flow.flowOf
 
 @ApolloExperimental
 class TestNetworkTransport(
-    val handler: TestNetworkTransportHandler = MapTestNetworkTransportHandler(),
+    val handler: TestNetworkTransportHandler = QueueTestNetworkTransportHandler(),
 ) : NetworkTransport {
   override fun <D : Operation.Data> execute(request: ApolloRequest<D>): Flow<ApolloResponse<D>> {
     @Suppress("UNCHECKED_CAST")
     return flowOf(handler.handle(request) as ApolloResponse<D>)
   }
 
+  fun <D : Operation.Data> enqueue(response: ApolloResponse<D>) = (handler as? QueueTestNetworkTransportHandler)?.enqueue(response)
+      ?: error("Apollo: TestNetworkTransport.enqueue() can be used only with QueueTestNetworkTransportHandler")
+
+  fun <D : Operation.Data> enqueue(
+      operation: Operation<D>,
+      data: D? = null,
+      errors: List<Error>? = null,
+  ) = (handler as? QueueTestNetworkTransportHandler)?.enqueue(operation, data, errors)
+      ?: error("Apollo: TestNetworkTransport.enqueue() can be used only with QueueTestNetworkTransportHandler")
+
   fun <D : Operation.Data> register(
       operation: Operation<D>,
       response: ApolloResponse<D>,
   ) = (handler as? MapTestNetworkTransportHandler)?.register(operation, response)
-      ?: error("Apollo: cannot call TestNetworkTransport.register() with a custom handler")
+      ?: error("Apollo: TestNetworkTransport.register() can be used only with MapTestNetworkTransportHandler")
 
   fun <D : Operation.Data> register(
       operation: Operation<D>,
       data: D? = null,
       errors: List<Error>? = null,
   ) = (handler as? MapTestNetworkTransportHandler)?.register(operation, data, errors)
-      ?: error("Apollo: cannot call TestNetworkTransport.register() with a custom handler")
+      ?: error("Apollo: TestNetworkTransport.register() can be used only with MapTestNetworkTransportHandler")
 
   override fun dispose() {}
 }

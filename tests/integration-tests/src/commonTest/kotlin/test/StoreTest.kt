@@ -124,7 +124,7 @@ class StoreTest {
 
   private suspend fun storeAllFriends() {
     val query = HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)
-    apolloClient.testNetworkTransport.register(query, HeroAndFriendsNamesWithIDsQuery.Data(
+    apolloClient.testNetworkTransport.enqueue(query, HeroAndFriendsNamesWithIDsQuery.Data(
         HeroAndFriendsNamesWithIDsQuery.Hero(
             "2001",
             "R2-D2",
