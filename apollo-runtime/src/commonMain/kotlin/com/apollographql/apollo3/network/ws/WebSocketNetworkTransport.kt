@@ -317,7 +317,8 @@ private constructor(
       this.reconnectWhen = reconnectWhen
     }
 
-    fun reconnectWhen(reconnectWhen: (suspend (Throwable) -> Boolean)?) = apply {
+    @Deprecated("Use the overload where the lambda is suspend and has more args")
+    fun reconnectWhen(reconnectWhen: ((Throwable) -> Boolean)?) = apply {
       this.reconnectWhen = reconnectWhen?.let {
         val adaptedLambda: suspend (Throwable, Long) -> Boolean = { throwable, _ -> reconnectWhen(throwable) }
         adaptedLambda
