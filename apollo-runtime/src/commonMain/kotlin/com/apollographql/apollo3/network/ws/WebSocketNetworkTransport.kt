@@ -6,7 +6,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
-import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.internal.BackgroundDispatcher
 import com.apollographql.apollo3.internal.transformWhile
@@ -26,7 +25,6 @@ import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
@@ -55,7 +53,7 @@ private constructor(
     private val webSocketEngine: WebSocketEngine = DefaultWebSocketEngine(),
     private val idleTimeoutMillis: Long = 60_000,
     private val protocolFactory: WsProtocol.Factory = SubscriptionWsProtocol.Factory(),
-    private val reconnectWhen: ((Throwable) -> Boolean)?,
+    private val reconnectWhen: (suspend (Throwable) -> Boolean)?,
 ) : NetworkTransport {
 
   /**
@@ -283,7 +281,7 @@ private constructor(
     private var webSocketEngine: WebSocketEngine? = null
     private var idleTimeoutMillis: Long? = null
     private var protocolFactory: WsProtocol.Factory? = null
-    private var reconnectWhen: ((Throwable) -> Boolean)? = null
+    private var reconnectWhen: (suspend (Throwable) -> Boolean)? = null
 
     fun serverUrl(serverUrl: String) = apply {
       this.serverUrl = serverUrl
@@ -310,7 +308,7 @@ private constructor(
      * automatically or 'false' to forward the error to all listening [Flow]
      *
      */
-    fun reconnectWhen(reconnectWhen: ((Throwable) -> Boolean)?) = apply {
+    fun reconnectWhen(reconnectWhen: (suspend (Throwable) -> Boolean)?) = apply {
       this.reconnectWhen = reconnectWhen
     }
 

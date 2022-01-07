@@ -180,7 +180,7 @@ private constructor(
     private var wsProtocolFactory: WsProtocol.Factory? = null
     private var httpExposeErrorBody: Boolean? = null
     private var webSocketEngine: WebSocketEngine? = null
-    private var webSocketReconnectWhen: ((Throwable) -> Boolean)? = null
+    private var webSocketReconnectWhen: (suspend (Throwable) -> Boolean)? = null
 
     override var httpMethod: HttpMethod? = null
 
@@ -318,7 +318,7 @@ private constructor(
      *
      * See also [subscriptionNetworkTransport] for more customization
      */
-    fun webSocketReconnectWhen(webSocketReconnectWhen: ((Throwable) -> Boolean)) = apply {
+    fun webSocketReconnectWhen(webSocketReconnectWhen: (suspend (Throwable) -> Boolean)) = apply {
       this.webSocketReconnectWhen = webSocketReconnectWhen
     }
 
