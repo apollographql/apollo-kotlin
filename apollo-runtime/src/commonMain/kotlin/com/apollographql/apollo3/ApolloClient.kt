@@ -546,10 +546,36 @@ private constructor(
           builder = this,
       )
     }
+
+    fun copy(): Builder {
+      val builder = Builder()
+          .customScalarAdapters(customScalarAdaptersBuilder.build())
+          .interceptors(interceptors)
+          .requestedDispatcher(requestedDispatcher)
+          .executionContext(executionContext)
+          .httpMethod(httpMethod)
+          .httpHeaders(httpHeaders)
+          .sendApqExtensions(sendApqExtensions)
+          .sendDocument(sendDocument)
+          .enableAutoPersistedQueries(enableAutoPersistedQueries)
+          .canBeBatched(canBeBatched)
+      httpServerUrl?.let { builder.httpServerUrl(it) }
+      httpEngine?.let { builder.httpEngine(it) }
+      httpExposeErrorBody?.let { builder.httpExposeErrorBody(it) }
+      for (httpInterceptor in httpInterceptors) {
+        builder.addHttpInterceptor(httpInterceptor)
+      }
+      webSocketServerUrl?.let { builder.webSocketServerUrl(it) }
+      webSocketEngine?.let { builder.webSocketEngine(it) }
+      webSocketReconnectWhen?.let { builder.webSocketReconnectWhen(it) }
+      webSocketIdleTimeoutMillis?.let { builder.webSocketIdleTimeoutMillis(it) }
+      wsProtocolFactory?.let { builder.wsProtocol(it) }
+      return builder
+    }
   }
 
   fun newBuilder(): Builder {
-    return builder
+    return builder.copy()
   }
 
   companion object {
