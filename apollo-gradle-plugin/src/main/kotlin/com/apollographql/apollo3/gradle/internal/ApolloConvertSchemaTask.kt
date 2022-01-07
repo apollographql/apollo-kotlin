@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.compiler.introspection.toGQLDocument
 import com.apollographql.apollo3.compiler.introspection.toIntrospectionSchema
@@ -52,7 +51,8 @@ abstract class ApolloConvertSchemaTask: DefaultTask() {
 
   @TaskAction
   fun taskAction() {
-    // Do not use Project.file() as from the command line, we expect the file to be resolved based on cwd
-    convert(File(from.get()), File(to.get()))
+    // Files are relative to the root project. It is not possible in a consistent way to have them relative to the current
+    // working directory where the gradle command was started
+    convert(project.rootProject.file(from.get()), project.rootProject.file(to.get()))
   }
 }

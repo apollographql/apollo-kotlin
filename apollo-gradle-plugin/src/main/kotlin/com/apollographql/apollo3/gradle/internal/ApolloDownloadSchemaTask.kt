@@ -73,7 +73,9 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
 
     val endpointUrl = endpoint.orNull
 
-    val schema = schema.orNull?.let { project.rootProject.file(it) } // shema is resolved relative to project root
+    // Schema file is relative to the root project. It is not possible in a consistent way to have it relative to the current
+    // working directory where the gradle command was started
+    val schema = schema.orNull?.let { project.rootProject.file(it) }
     check(schema != null) {
       "Apollo: no schema property"
     }
