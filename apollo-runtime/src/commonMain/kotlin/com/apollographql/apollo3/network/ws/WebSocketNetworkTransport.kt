@@ -53,7 +53,7 @@ private constructor(
     private val webSocketEngine: WebSocketEngine = DefaultWebSocketEngine(),
     private val idleTimeoutMillis: Long = 60_000,
     private val protocolFactory: WsProtocol.Factory = SubscriptionWsProtocol.Factory(),
-    private val reconnectWhen: (suspend (Throwable) -> Boolean)?,
+    private val reconnectWhen: (suspend (Throwable, attempt: Long) -> Boolean)?,
 ) : NetworkTransport {
 
   /**
@@ -112,6 +112,7 @@ private constructor(
     var idleJob: Job? = null
     var connectionJob: Job? = null
     var protocol: WsProtocol? = null
+    var reconnectAttemptCount = 0L
     val activeMessages = mutableMapOf<Uuid, StartOperation<*>>()
 
     /**
@@ -137,17 +138,20 @@ private constructor(
           if (message is NetworkError) {
             closeProtocol()
 
-            if (reconnectWhen?.invoke(message.cause) == true) {
+            if (reconnectWhen?.invoke(message.cause, reconnectAttemptCount) == true) {
+              reconnectAttemptCount++
               activeMessages.values.forEach {
                 // Re-queue all start messages
                 // This will restart the websocket
                 messages.trySend(it)
               }
             } else {
+              reconnectAttemptCount = 0L
               // forward the NetworkError downstream. Active flows will throw
               mutableEvents.tryEmit(message)
             }
           } else {
+            reconnectAttemptCount = 0L
             mutableEvents.tryEmit(message)
           }
         }
@@ -281,7 +285,7 @@ private constructor(
     private var webSocketEngine: WebSocketEngine? = null
     private var idleTimeoutMillis: Long? = null
     private var protocolFactory: WsProtocol.Factory? = null
-    private var reconnectWhen: (suspend (Throwable) -> Boolean)? = null
+    private var reconnectWhen: (suspend (Throwable, attempt: Long) -> Boolean)? = null
 
     fun serverUrl(serverUrl: String) = apply {
       this.serverUrl = serverUrl
@@ -304,12 +308,20 @@ private constructor(
      * Configure the [WebSocketNetworkTransport] to reconnect the websocket automatically when a network error
      * happens
      *
-     * @param reconnectWhen a function taking the error as a parameter and returning 'true' to reconnect
-     * automatically or 'false' to forward the error to all listening [Flow]
+     * @param reconnectWhen a function taking the error and attempt index (starting from zero) as parameters and returning 'true' to
+     * reconnect automatically or 'false' to forward the error to all listening [Flow].
+     * It is a suspending function, so it can be used to introduce delay before retry (e.g. backoff strategy).
      *
      */
-    fun reconnectWhen(reconnectWhen: (suspend (Throwable) -> Boolean)?) = apply {
+    fun reconnectWhen(reconnectWhen: (suspend (Throwable, attempt: Long) -> Boolean)?) = apply {
       this.reconnectWhen = reconnectWhen
+    }
+
+    fun reconnectWhen(reconnectWhen: (suspend (Throwable) -> Boolean)?) = apply {
+      this.reconnectWhen = reconnectWhen?.let {
+        val adaptedLambda: suspend (Throwable, Long) -> Boolean = { throwable, _ -> reconnectWhen(throwable) }
+        adaptedLambda
+      }
     }
 
     fun build(): WebSocketNetworkTransport {

@@ -180,7 +180,7 @@ private constructor(
     private var wsProtocolFactory: WsProtocol.Factory? = null
     private var httpExposeErrorBody: Boolean? = null
     private var webSocketEngine: WebSocketEngine? = null
-    private var webSocketReconnectWhen: (suspend (Throwable) -> Boolean)? = null
+    private var webSocketReconnectWhen: (suspend (Throwable, attempt: Long) -> Boolean)? = null
 
     override var httpMethod: HttpMethod? = null
 
@@ -313,13 +313,21 @@ private constructor(
      * Configure the [WebSocketNetworkTransport] to reconnect the websocket automatically when a network error
      * happens
      *
-     * @param webSocketReconnectWhen a function taking the error as a parameter and returning 'true' to reconnect
-     * automatically or 'false' to forward the error to all listening [Flow]
+     * @param webSocketReconnectWhen a function taking the error and attempt index (starting from zero) as parameters
+     * and returning 'true' to reconnect automatically or 'false' to forward the error to all listening [Flow].
+     * It is a suspending function, so it can be used to introduce delay before retry (e.g. backoff strategy).
      *
      * See also [subscriptionNetworkTransport] for more customization
      */
-    fun webSocketReconnectWhen(webSocketReconnectWhen: (suspend (Throwable) -> Boolean)) = apply {
+    fun webSocketReconnectWhen(webSocketReconnectWhen: (suspend (Throwable, attempt: Long) -> Boolean)) = apply {
       this.webSocketReconnectWhen = webSocketReconnectWhen
+    }
+
+    fun webSocketReconnectWhen(reconnectWhen: (suspend (Throwable) -> Boolean)?) = apply {
+      this.webSocketReconnectWhen = reconnectWhen?.let {
+        val adaptedLambda: suspend (Throwable, Long) -> Boolean = { throwable, _ -> reconnectWhen(throwable) }
+        adaptedLambda
+      }
     }
 
     fun networkTransport(networkTransport: NetworkTransport) = apply {
