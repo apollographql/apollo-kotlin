@@ -323,7 +323,8 @@ private constructor(
       this.webSocketReconnectWhen = webSocketReconnectWhen
     }
 
-    fun webSocketReconnectWhen(reconnectWhen: (suspend (Throwable) -> Boolean)?) = apply {
+    @Deprecated("Use the overload where the lambda is suspend and has more args")
+    fun webSocketReconnectWhen(reconnectWhen: ((Throwable) -> Boolean)?) = apply {
       this.webSocketReconnectWhen = reconnectWhen?.let {
         val adaptedLambda: suspend (Throwable, Long) -> Boolean = { throwable, _ -> reconnectWhen(throwable) }
         adaptedLambda
