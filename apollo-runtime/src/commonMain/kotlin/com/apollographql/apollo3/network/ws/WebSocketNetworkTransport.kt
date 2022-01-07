@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.network.ws
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_1
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -317,7 +319,9 @@ private constructor(
       this.reconnectWhen = reconnectWhen
     }
 
-    @Deprecated("Use the overload where the lambda is suspend and has more args")
+
+    @Deprecated("Use reconnectWhen(reconnectWhen: (suspend (Throwable, attempt: Long) -> Boolean))")
+    @ApolloDeprecatedSince(v3_0_1)
     fun reconnectWhen(reconnectWhen: ((Throwable) -> Boolean)?) = apply {
       this.reconnectWhen = reconnectWhen?.let {
         val adaptedLambda: suspend (Throwable, Long) -> Boolean = { throwable, _ -> reconnectWhen(throwable) }
