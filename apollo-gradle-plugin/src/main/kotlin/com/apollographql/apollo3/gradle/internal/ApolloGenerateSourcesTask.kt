@@ -203,13 +203,13 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       outputCommonMetadata = CommonMetadata(
           schema = schema,
           codegenModels = codegenModels,
-          schemaPath = mainSchemaFilePath,
+          schemaPackageName = packageNameGenerator.packageName(mainSchemaFilePath),
           pluginVersion = APOLLO_VERSION
       )
 
       IncomingOptions(
           schema = schema,
-          schemaPackageName = packageNameGenerator.packageName(mainSchemaFilePath),
+          schemaPackageName = outputCommonMetadata.schemaPackageName,
           codegenModels = codegenModels,
       )
     }

@@ -86,10 +86,7 @@ data class ApolloMetadata(
 @JsonClass(generateAdapter = true)
 data class CommonMetadata(
     val schema: Schema,
-    /**
-     * Remember the schema path to retrieve the package name if needed
-     */
-    val schemaPath: String,
+    val schemaPackageName: String,
     val pluginVersion: String,
     val codegenModels: String,
 )
