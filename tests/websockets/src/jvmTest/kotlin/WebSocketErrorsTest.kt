@@ -91,7 +91,7 @@ class WebSocketErrorsTest {
   }
 
   @Test
-  fun socketReconnectsAfterAnError() = runBlocking {
+  fun socketReopensAfterAnError() = runBlocking {
     var connectionInitCount = 0
     var exception: Throwable? = null
 
@@ -106,7 +106,7 @@ class WebSocketErrorsTest {
                 }
             )
         )
-        .webSocketReconnectWhen {
+        .webSocketReopenWhen {
           exception = it
           // Only retry once
           connectionInitCount == 1

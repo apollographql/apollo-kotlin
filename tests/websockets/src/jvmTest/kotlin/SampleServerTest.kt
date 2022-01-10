@@ -232,7 +232,7 @@ class SampleServerTest {
     val apolloClient = ApolloClient.Builder()
         .serverUrl("http://localhost:8080/subscriptions")
         .wsProtocol(wsFactory)
-        .webSocketReconnectWhen {
+        .webSocketReopenWhen {
           it is AuthorizationException
         }
         .build()
