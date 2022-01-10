@@ -2,7 +2,7 @@
 title: Mocking GraphQL responses
 ---
 
-`TestNetworkTransport` is a high-level test API that enables you to specify the GraphQL responses that are returned by your `ApolloClient` instance.
+`QueueTestNetworkTransport` is a high-level test API that enables you to specify the GraphQL responses that are returned by your `ApolloClient` instance.
 
 > See also [`MockServer`](./mocking-http-responses) which creates a full HTTP server and is useful for testing specific server behaviors, such as error cases, HTTP headers, and timeouts.
 
@@ -14,21 +14,15 @@ dependencies {
 }
 ```
 
-Enable the `TestNetworkTransport` by passing it to the `ApolloClient` builder:
+Enable the `QueueTestNetworkTransport` by passing it to the `ApolloClient` builder:
 
 ```kotlin{2}
 val apolloClient = ApolloClient.Builder()
-    .networkTransport(TestNetworkTransport())
+    .networkTransport(QueueTestNetworkTransport())
     .build()
 ```
 
-Use the `testNetworkTransport` extension function to retrieve the `TestNetworkTransport`:
-
-```kotlin
-val testNetworkTransport = apolloClient.testNetworkTransport
-```
-
-You can then use the `enqueue` function to specify the GraphQL responses to return:
+You can then use the `enqueueTestResponse` extension function to specify the GraphQL responses to return:
 
 ```kotlin{7}
 val testQuery = GetHeroQuery("001")
@@ -37,30 +31,29 @@ val testData = GetHeroQuery.Data {
     name = "R2D2"
   }
 }
-apolloClient.testNetworkTransport.enqueue(testQuery, testData)
+apolloClient.testNetworkTransport.enqueueTestResponse(testQuery, testData)
 
 val actual = apolloClient.query(testQuery).execute().data!!
 assertEquals(testData.hero.name, actual.hero.name)
 ```
 
-You can pass an `ApolloResponse` to the `enqueue` function or as a shortcut you can pass a `Data` directly, as shown in the example above (in that case you'll also need to pass an operation since an `ApolloResponse` is built under the hood, which needs a reference to it).
+You can pass an `ApolloResponse` to the `enqueueTestResponse` function or as a shortcut you can pass a `Data` directly, as shown in the example above (in that case you'll also need to pass an operation since an `ApolloResponse` is built under the hood, which needs a reference to it).
 
 > To help create your mocked response data, you can use [test builders](./test-builders/).
 
 ### Advanced usage
 
-By default, `TestNetworkTransport` is configured with a `QueueTestNetworkTransportHandler`, which returns responses in the order they've been enqueued.
+`QueueTestNetworkTransport` returns responses in the order they've been enqueued.
 
 In certain tests it might be more convenient to **map** responses to operations.
 
-To achieve this, pass a `MapTestNetworkTransportHandler` to
-the `TestNetworkTransport` and call the `register` function:
+To achieve this, use `MapTestNetworkTransport` instead and call the `registerTestResponse` extension function:
 
 ```kotlin{1,3-4}
-val apolloClient = ApolloClient.Builder().networkTransport(TestNetworkTransport(MapTestNetworkTransportHandler())).build()
+val apolloClient = ApolloClient.Builder().networkTransport(MapTestNetworkTransport()).build()
 
-apolloClient.testNetworkTransport.register(query1, testData1)
-apolloClient.testNetworkTransport.register(query2, testData2)
+apolloClient.registerTestResponse(query1, testData1)
+apolloClient.registerTestResponse(query2, testData2)
 
 val actual1 = apolloClient.query(query1).execute().data
 val actual2 = apolloClient.query(query2).execute().data
@@ -72,21 +65,24 @@ assertEquals(testData2, actual2)
 assertEquals(testData1, actual3)
 ```
 
-If you need more control over the responses to return, you can implement your own `TestNetworkTransportHandler` and pass it to the `TestNetworkTransport`:
+If you need more control over the responses to return, you can implement your own `NetworkTransport` and pass it to the `ApolloClient` builder:
 
 ```kotlin
-class CustomTestNetworkTransportHandler : TestNetworkTransportHandler {
-  override fun handle(request: ApolloRequest<*>): ApolloResponse<*> {
-    return ApolloResponse.Builder(
-        /* Your custom logic here */
-    ).build()
+private class CustomTestNetworkTransport : NetworkTransport {
+  override fun <D : Operation.Data> execute(request: ApolloRequest<D>): Flow<ApolloResponse<D>> {
+    return flowOf(
+        ApolloResponse.Builder(
+          /* Your custom logic here */
+        ).build() as ApolloResponse<D>
+    )
   }
+
+override fun dispose() {}
 }
 
 apolloClient = ApolloClient.Builder()
-    .networkTransport(TestNetworkTransport(CustomTestNetworkTransportHandler()))
+    .networkTransport(CustomTestNetworkTransport())
     .build()
 ```
 
-Note that if you use a custom handler, calling `enqueue()` or `register()` is no longer possible since they expect the handler to be
-`QueueMockServerHandler` or `MapTestNetworkTransportHandler`.
+Note that if you use a custom `NetworkTransport`, calling `enqueueTestResponse()` or `registerTestResponse()` is no longer possible since they expect the transport to be `QueueTestNetworkTransport` or `MapTestNetworkTransport`.
