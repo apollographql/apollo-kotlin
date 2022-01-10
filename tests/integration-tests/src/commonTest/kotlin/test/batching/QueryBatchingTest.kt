@@ -6,6 +6,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ExecutionOptions.Companion.CAN_BE_BATCHED
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
@@ -17,7 +18,9 @@ import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
+import kotlin.test.assertFalse
 import kotlin.test.assertIs
+import kotlin.test.assertTrue
 
 @OptIn(ApolloExperimental::class)
 class QueryBatchingTest {
@@ -186,5 +189,73 @@ class QueryBatchingTest {
     assertFails {
       mockServer.takeRequest()
     }
+  }
+
+  @Test
+  fun httpHeadersOnClientAreMerged() = runTest(before = { setUp() }, after = { tearDown() }) {
+    val response = """
+    [{"data":{"launch":{"id":"83"}}},{"data":{"launch":{"id":"84"}}}]
+    """.trimIndent()
+
+    mockServer.enqueue(response)
+    apolloClient = ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .httpBatching(batchIntervalMillis = 300)
+        .addHttpHeader("client0", "0")
+        .addHttpHeader("client1", "1")
+        .build()
+
+    val result1 = async {
+      apolloClient.query(GetLaunchQuery()).execute()
+    }
+    val result2 = async {
+      delay(50)
+      apolloClient.query(GetLaunch2Query()).execute()
+    }
+    result1.await()
+    result2.await()
+    val request = mockServer.takeRequest()
+    assertTrue(request.headers["client0"] == "0")
+    assertTrue(request.headers["client1"] == "1")
+    assertFalse(request.headers.keys.contains(CAN_BE_BATCHED))
+  }
+
+  @Test
+  fun httpHeadersOnRequestsAreMerged() = runTest(before = { setUp() }, after = { tearDown() }) {
+    val response = """
+    [{"data":{"launch":{"id":"83"}}},{"data":{"launch":{"id":"84"}}}]
+    """.trimIndent()
+
+    mockServer.enqueue(response)
+    apolloClient = ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .httpBatching(batchIntervalMillis = 300)
+        .build()
+
+    val result1 = async {
+      apolloClient.query(GetLaunchQuery())
+          .canBeBatched(true)
+          .addHttpHeader("query1-only", "0")
+          .addHttpHeader("query1+query2-same-value", "0")
+          .addHttpHeader("query1+query2-different-value", "0")
+          .execute()
+    }
+    val result2 = async {
+      delay(50)
+      apolloClient.query(GetLaunch2Query())
+          .canBeBatched(true)
+          .addHttpHeader("query2-only", "0")
+          .addHttpHeader("query1+query2-same-value", "0")
+          .addHttpHeader("query1+query2-different-value", "1")
+          .execute()
+    }
+    result1.await()
+    result2.await()
+    val request = mockServer.takeRequest()
+    assertTrue(request.headers["query1+query2-same-value"] == "0")
+    assertFalse(request.headers.keys.contains("query1-only"))
+    assertFalse(request.headers.keys.contains("query2-only"))
+    assertFalse(request.headers.keys.contains("query1+query2-different-value"))
+    assertFalse(request.headers.keys.contains(CAN_BE_BATCHED))
   }
 }
