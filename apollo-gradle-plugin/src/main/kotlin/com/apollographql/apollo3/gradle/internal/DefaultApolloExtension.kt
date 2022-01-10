@@ -512,6 +512,7 @@ abstract class DefaultApolloExtension(
       task.flattenModels.set(service.flattenModels)
       @OptIn(ApolloExperimental::class)
       task.generateTestBuilders.set(service.generateTestBuilders)
+      task.useSchemaPackageNameForFragments.set(service.useSchemaPackageNameForFragments)
       task.sealedClassesForEnumsMatching.set(service.sealedClassesForEnumsMatching)
       task.generateOptionalOperationVariables.set(service.generateOptionalOperationVariables)
       task.languageVersion.set(service.languageVersion)

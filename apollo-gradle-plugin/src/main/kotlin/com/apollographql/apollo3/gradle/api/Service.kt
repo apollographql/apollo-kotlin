@@ -211,6 +211,13 @@ interface Service {
   fun packageNamesFromFilePaths(rootPackageName: String? = null)
 
   /**
+   * Whether to use the schema package name for fragments. This is used for backward compat with 2.x
+   *
+   * Default value: false
+   */
+  val useSchemaPackageNameForFragments: Property<Boolean>
+
+  /**
    * Whether to generate Kotlin models with `internal` visibility modifier.
    *
    * Default value: false
@@ -242,7 +249,7 @@ interface Service {
 
   /**
    * Whether to generate default implementation classes for GraphQL fragments.
-   * Default value is `false`, means only interfaces are been generated.
+   * Default value is `false`, means only interfaces are generated.
    *
    * Most of the time, fragment implementations are not needed because you can easily access fragments interfaces and read all
    * data from your queries. They are needed if you want to be able to build fragments outside an operation. For an exemple
@@ -363,6 +370,7 @@ interface Service {
    *
    * ```
    * packageNamesFromFilePaths(rootPackageName)
+   * useSchemaPackageNameForFragments.set(true)
    * codegenModels.set(MODELS_COMPAT)
    * ```
    *

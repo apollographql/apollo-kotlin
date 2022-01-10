@@ -18,11 +18,11 @@ import com.apollographql.apollo3.compiler.singularize
  */
 abstract class CodegenLayout(
     private val packageNameGenerator: PackageNameGenerator,
-    schemaPackageName: String,
+    private val schemaPackageName: String,
     private val useSemanticNaming: Boolean,
+    private val useSchemaPackageNameForFragments: Boolean
 ) {
   private val typePackageName = "$schemaPackageName.type"
-  private val fragmentPackageName = "$schemaPackageName.fragment"
 
   // ------------------------ FileNames ---------------------------------
 
@@ -38,11 +38,14 @@ abstract class CodegenLayout(
   fun operationTestBuildersPackageName(filePath: String) = "${operationPackageName(filePath)}.test".stripDots()
   fun operationResponseFieldsPackageName(filePath: String) = "${operationPackageName(filePath)}.selections".stripDots()
 
-  @Suppress("UNUSED_PARAMETER")
-  fun fragmentPackageName(filePath: String?) = fragmentPackageName
+  fun fragmentPackageName(filePath: String) = if (useSchemaPackageNameForFragments) {
+    "$schemaPackageName.fragment"
+  } else {
+    "${packageNameGenerator.packageName(filePath)}.fragment"
+  }
 
-  fun fragmentAdapterPackageName(filePath: String?) = "${fragmentPackageName(filePath)}.adapter".stripDots()
-  fun fragmentResponseFieldsPackageName(filePath: String?) = "${fragmentPackageName(filePath)}.selections".stripDots()
+  fun fragmentAdapterPackageName(filePath: String) = "${fragmentPackageName(filePath)}.adapter".stripDots()
+  fun fragmentResponseFieldsPackageName(filePath: String) = "${fragmentPackageName(filePath)}.selections".stripDots()
 
   private fun String.stripDots() = this.removePrefix(".").removeSuffix(".")
 

@@ -35,6 +35,7 @@ class JavaCodeGen(
     private val useSemanticNaming: Boolean,
     private val packageNameGenerator: PackageNameGenerator,
     private val schemaPackageName: String,
+    private val useSchemaPackageNameForFragments: Boolean,
     /**
      * The operation id cannot be set in [IrOperation] because it needs access to [IrOperation.sourceWithFragments]
      * So we do this in the codegen step
@@ -62,7 +63,8 @@ class JavaCodeGen(
     val layout = JavaCodegenLayout(
         useSemanticNaming = useSemanticNaming,
         packageNameGenerator = packageNameGenerator,
-        schemaPackageName = schemaPackageName
+        schemaPackageName = schemaPackageName,
+        useSchemaPackageNameForFragments = useSchemaPackageNameForFragments,
     )
 
     val context = JavaContext(

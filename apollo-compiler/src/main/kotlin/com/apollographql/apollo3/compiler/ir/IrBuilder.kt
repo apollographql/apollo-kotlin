@@ -342,7 +342,7 @@ internal class IrBuilder(
     return IrNamedFragment(
         name = name,
         description = description,
-        filePath = sourceLocation.filePath,
+        filePath = sourceLocation.filePath!!,
         typeCondition = typeDefinition.name,
         variables = variableDefinitions.map { it.toIr() },
         selections = selectionSet.selections,

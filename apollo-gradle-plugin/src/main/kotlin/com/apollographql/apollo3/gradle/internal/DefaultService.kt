@@ -116,6 +116,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   override fun useVersion2Compat(rootPackageName: String?) {
     packageNamesFromFilePaths(rootPackageName)
     codegenModels.set(MODELS_COMPAT)
+    useSchemaPackageNameForFragments.set(true)
   }
 
   override fun testDirConnection(action: Action<in Service.DirectoryConnection>) {
