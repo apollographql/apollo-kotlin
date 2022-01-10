@@ -560,12 +560,14 @@ private constructor(
           .sendDocument(sendDocument)
           .enableAutoPersistedQueries(enableAutoPersistedQueries)
           .canBeBatched(canBeBatched)
+      _networkTransport?.let { builder.networkTransport(it) }
       httpServerUrl?.let { builder.httpServerUrl(it) }
       httpEngine?.let { builder.httpEngine(it) }
       httpExposeErrorBody?.let { builder.httpExposeErrorBody(it) }
       for (httpInterceptor in httpInterceptors) {
         builder.addHttpInterceptor(httpInterceptor)
       }
+      subscriptionNetworkTransport?.let { builder.subscriptionNetworkTransport(it) }
       webSocketServerUrl?.let { builder.webSocketServerUrl(it) }
       webSocketEngine?.let { builder.webSocketEngine(it) }
       webSocketReconnectWhen?.let { builder.webSocketReconnectWhen(it) }
