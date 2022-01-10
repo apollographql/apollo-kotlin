@@ -542,7 +542,8 @@ private constructor(
           enableAutoPersistedQueries = enableAutoPersistedQueries,
           canBeBatched = canBeBatched,
 
-          // Keep a reference to this Builder shortcuts so newBuilder() behaves as expected
+          // Keep a reference to the Builder so we can keep track of `httpEngine` and other properties that 
+          // are important to rebuild `networkTransport` (and potentially others)
           builder = this,
       )
     }
