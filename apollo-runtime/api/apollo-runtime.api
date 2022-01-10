@@ -37,7 +37,7 @@ public final class com/apollographql/apollo3/ApolloCall : com/apollographql/apol
 
 public final class com/apollographql/apollo3/ApolloClient : com/apollographql/apollo3/api/ExecutionOptions {
 	public static final field Companion Lcom/apollographql/apollo3/ApolloClient$Companion;
-	public synthetic fun <init> (Lcom/apollographql/apollo3/network/NetworkTransport;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/network/NetworkTransport;Ljava/util/List;Lcom/apollographql/apollo3/api/ExecutionContext;Lkotlinx/coroutines/CoroutineDispatcher;Lcom/apollographql/apollo3/api/http/HttpMethod;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo3/network/NetworkTransport;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/network/NetworkTransport;Ljava/util/List;Lcom/apollographql/apollo3/api/ExecutionContext;Lkotlinx/coroutines/CoroutineDispatcher;Lcom/apollographql/apollo3/api/http/HttpMethod;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lcom/apollographql/apollo3/ApolloClient$Builder;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun builder ()Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun dispose ()V
 	public final fun executeAsFlow (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
@@ -80,6 +80,7 @@ public final class com/apollographql/apollo3/ApolloClient$Builder : com/apollogr
 	public final fun build ()Lcom/apollographql/apollo3/ApolloClient;
 	public fun canBeBatched (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public synthetic fun canBeBatched (Ljava/lang/Boolean;)Ljava/lang/Object;
+	public final fun copy ()Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun customScalarAdapters (Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public synthetic fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Ljava/lang/Object;
