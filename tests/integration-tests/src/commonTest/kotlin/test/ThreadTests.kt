@@ -6,24 +6,23 @@ import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.MemoryCache
-import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
-import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.mpp.Platform
 import com.apollographql.apollo3.mpp.currentThreadId
 import com.apollographql.apollo3.mpp.platform
+import com.apollographql.apollo3.testing.QueueTestNetworkTransport
+import com.apollographql.apollo3.testing.enqueueTestResponse
 import com.apollographql.apollo3.testing.runTest
 import kotlin.reflect.KClass
 import kotlin.test.Test
 
 class ThreadTests {
-  class MyNormalizedCache(val mainThreadId: String): NormalizedCache() {
+  class MyNormalizedCache(val mainThreadId: String) : NormalizedCache() {
     val delegate = MemoryCache()
 
     override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
@@ -83,12 +82,13 @@ class ThreadTests {
     }
   }
 
-  class MyMemoryCacheFactory(val mainThreadId: String): NormalizedCacheFactory() {
+  class MyMemoryCacheFactory(val mainThreadId: String) : NormalizedCacheFactory() {
     override fun create(): NormalizedCache {
       return MyNormalizedCache(mainThreadId)
     }
 
   }
+
   @OptIn(ApolloExperimental::class)
   @Test
   fun cacheIsNotReadFromTheMainThread() = runTest {
@@ -96,26 +96,17 @@ class ThreadTests {
       return@runTest
     }
 
-    val mockServer = MockServer()
     val apolloClient = ApolloClient.Builder()
         .normalizedCache(MyMemoryCacheFactory(currentThreadId()))
-        .serverUrl(mockServer.url())
+        .networkTransport(QueueTestNetworkTransport())
         .build()
 
-    val response = """
-      {
-        "data": {
-          "hero": {
-            "name": "Luke"
-          }
-        }
-      }
-    """.trimIndent()
-    mockServer.enqueue(response)
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("Luke"))
+    val query = HeroNameQuery()
+    apolloClient.enqueueTestResponse(query, data)
 
-    apolloClient.query(HeroNameQuery()).execute()
-    apolloClient.query(HeroNameQuery()).fetchPolicy(FetchPolicy.CacheOnly).execute()
-    mockServer.stop()
+    apolloClient.query(query).execute()
+    apolloClient.query(query).fetchPolicy(FetchPolicy.CacheOnly).execute()
     apolloClient.dispose()
   }
 }

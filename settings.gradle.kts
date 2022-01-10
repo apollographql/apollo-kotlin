@@ -1,4 +1,4 @@
-rootProject.name = "apollo-android"
+rootProject.name = "apollo-kotlin"
 
 rootProject.projectDir
     .listFiles()!!

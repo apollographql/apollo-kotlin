@@ -13,6 +13,9 @@ kotlin {
         api(projects.apolloRuntime)
         api(projects.apolloMockserver)
         api(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
+        implementation(groovy.util.Eval.x(project, "x.dep.atomicfu").toString()) {
+          because("We need locks in TestNetworkTransportHandler (we don't use the gradle plugin rewrite)")
+        }
       }
     }
 

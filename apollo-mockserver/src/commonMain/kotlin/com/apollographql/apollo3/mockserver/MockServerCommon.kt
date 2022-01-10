@@ -6,7 +6,6 @@ import okio.BufferedSource
 import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
 import kotlin.jvm.JvmOverloads
-import kotlin.jvm.JvmStatic
 
 fun parseHeader(line: String): Pair<String, String> {
   val index = line.indexOfFirst { it == ':' }
@@ -17,12 +16,12 @@ fun parseHeader(line: String): Pair<String, String> {
   return line.substring(0, index).trim() to line.substring(index + 1, line.length).trim()
 }
 
-class MockRecordedRequest(
+class MockRequest(
     val method: String,
     val path: String,
     val version: String,
     val headers: Map<String, String> = emptyMap(),
-    val body: ByteString = ByteString.EMPTY
+    val body: ByteString = ByteString.EMPTY,
 )
 
 fun writeResponse(sink: BufferedSink, mockResponse: MockResponse, version: String) {
@@ -51,11 +50,20 @@ class MockResponse(
   constructor(
       body: String,
       statusCode: Int = 200,
-      headers: Map<String, String> = emptyMap()
+      headers: Map<String, String> = emptyMap(),
   ) : this(statusCode, body.encodeUtf8(), headers)
 }
 
-internal fun readRequest(source: BufferedSource): MockRecordedRequest? {
+interface MockServerHandler {
+  /**
+   * Handles the given [MockRequest].
+   *
+   * This method is called from one or several background threads and must be thread-safe.
+   */
+  fun handle(request: MockRequest): MockResponse
+}
+
+internal fun readRequest(source: BufferedSource): MockRequest? {
   var line = source.readUtf8Line()
   if (line == null) {
     // the connection was closed
@@ -90,7 +98,7 @@ internal fun readRequest(source: BufferedSource): MockRecordedRequest? {
     source.read(buffer, contentLength)
   }
 
-  return MockRecordedRequest(
+  return MockRequest(
       method = method,
       path = path,
       version = version,

@@ -6,9 +6,11 @@ import okio.ByteString.Companion.toByteString
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-actual class MockServer : MockServerInterface {
-  private val responseQueue = mutableListOf<MockResponse>()
-  private val requests = mutableListOf<MockRecordedRequest>()
+actual class MockServer actual constructor(override val mockServerHandler: MockServerHandler) : MockServerInterface {
+
+  private val requests = mutableListOf<MockRequest>()
+
+  private var url: String? = null
 
   private val server = http.createServer { req, res ->
     val requestBody = StringBuilder()
@@ -20,36 +22,41 @@ actual class MockServer : MockServerInterface {
       }
     }
     req.on("end") { _ ->
-      requests.add(
-          MockRecordedRequest(
-              req.method,
-              req.url,
-              req.httpVersion,
-              req.rawHeaders.toList().zipWithNext().toMap(),
-              requestBody.toString().encodeToByteArray().toByteString()
-          )
+      val request = MockRequest(
+          req.method,
+          req.url,
+          req.httpVersion,
+          req.rawHeaders.toList().zipWithNext().toMap(),
+          requestBody.toString().encodeToByteArray().toByteString()
       )
-    }
+      requests.add(request)
 
-    val mockResponse = responseQueue.removeFirst()
-    res.statusCode = mockResponse.statusCode
-    mockResponse.headers.forEach {
-      res.setHeader(it.key, it.value)
+      val mockResponse = try {
+        mockServerHandler.handle(request)
+      } catch (e: Exception) {
+        MockResponse("MockServerHandler.handle() threw an exception: ${e.message}", 500)
+      }
+      res.statusCode = mockResponse.statusCode
+      mockResponse.headers.forEach {
+        res.setHeader(it.key, it.value)
+      }
+      res.end(mockResponse.body.utf8())
     }
-    res.end(mockResponse.body.utf8())
   }.listen()
 
-  override suspend fun url() = suspendCoroutine<String> { cont ->
+  override suspend fun url() = url ?: suspendCoroutine { cont ->
+    url = "http://localhost:${server.address().unsafeCast<AddressInfo>().port}/"
     server.on("listening") { _ ->
-      cont.resume("http://localhost:${server.address().unsafeCast<AddressInfo>().port}")
+      cont.resume(url!!)
     }
   }
 
   override fun enqueue(mockResponse: MockResponse) {
-    responseQueue.add(mockResponse)
+    (mockServerHandler as? QueueMockServerHandler)?.enqueue(mockResponse)
+        ?: error("Apollo: cannot call MockServer.enqueue() with a custom handler")
   }
 
-  override fun takeRequest(): MockRecordedRequest {
+  override fun takeRequest(): MockRequest {
     return requests.removeFirst()
   }
 

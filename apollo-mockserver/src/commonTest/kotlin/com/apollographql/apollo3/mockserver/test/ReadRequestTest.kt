@@ -1,12 +1,14 @@
 package com.apollographql.apollo3.mockserver.test
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.mockserver.readRequest
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-class MockServerCommonTest {
+@OptIn(ApolloExperimental::class)
+class ReadRequestTest {
   @Test
   fun readGetRequest() {
     val request = """
@@ -47,5 +49,4 @@ class MockServerCommonTest {
     assertEquals("POST", recordedRequest.method)
     assertEquals("Hello world", recordedRequest.body.utf8())
   }
-
 }
