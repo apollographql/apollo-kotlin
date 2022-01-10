@@ -16,9 +16,9 @@ import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.integration.normalizer.CharacterNameByIdQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
-import com.apollographql.apollo3.testing.TestNetworkTransport
+import com.apollographql.apollo3.testing.QueueTestNetworkTransport
+import com.apollographql.apollo3.testing.enqueueTestResponse
 import com.apollographql.apollo3.testing.runTest
-import com.apollographql.apollo3.testing.testNetworkTransport
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail
@@ -35,7 +35,7 @@ class StoreTest {
 
   private fun setUp() {
     store = ApolloStore(MemoryCacheFactory(), cacheKeyGenerator = IdCacheKeyGenerator, cacheResolver = IdCacheResolver)
-    apolloClient = ApolloClient.Builder().networkTransport(TestNetworkTransport()).store(store).build()
+    apolloClient = ApolloClient.Builder().networkTransport(QueueTestNetworkTransport()).store(store).build()
   }
 
   @Test
@@ -124,7 +124,7 @@ class StoreTest {
 
   private suspend fun storeAllFriends() {
     val query = HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)
-    apolloClient.testNetworkTransport.enqueue(query, HeroAndFriendsNamesWithIDsQuery.Data(
+    apolloClient.enqueueTestResponse(query, HeroAndFriendsNamesWithIDsQuery.Data(
         HeroAndFriendsNamesWithIDsQuery.Hero(
             "2001",
             "R2-D2",

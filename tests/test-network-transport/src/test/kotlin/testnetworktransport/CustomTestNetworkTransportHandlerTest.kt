@@ -4,11 +4,14 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.testing.TestNetworkTransport
-import com.apollographql.apollo3.testing.TestNetworkTransportHandler
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.network.NetworkTransport
+import com.apollographql.apollo3.testing.enqueueTestResponse
+import com.apollographql.apollo3.testing.registerTestResponse
 import com.apollographql.apollo3.testing.runTest
-import com.apollographql.apollo3.testing.testNetworkTransport
 import com.benasher44.uuid.uuid4
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import testnetworktransport.test.GetHeroQuery_TestBuilder.Data
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -16,13 +19,13 @@ import kotlin.test.assertFailsWith
 
 @OptIn(ApolloExperimental::class)
 class CustomTestNetworkTransportHandlerTest {
-  private lateinit var handler: CustomTestNetworkTransportHandler
+  private lateinit var networkTransport: CustomTestNetworkTransport
   private lateinit var apolloClient: ApolloClient
 
   private fun setUp() {
-    handler = CustomTestNetworkTransportHandler()
+    networkTransport = CustomTestNetworkTransport()
     apolloClient = ApolloClient.Builder()
-        .networkTransport(TestNetworkTransport(handler))
+        .networkTransport(CustomTestNetworkTransport())
         .build()
   }
 
@@ -30,19 +33,25 @@ class CustomTestNetworkTransportHandlerTest {
     apolloClient.dispose()
   }
 
-  private class CustomTestNetworkTransportHandler : TestNetworkTransportHandler {
+  private class CustomTestNetworkTransport : NetworkTransport {
     private var counter = 0
-    override fun handle(request: ApolloRequest<*>): ApolloResponse<*> {
-      return ApolloResponse.Builder(
-          operation = GetHeroQuery("mock"),
-          requestUuid = request.requestUuid,
-          data = GetHeroQuery.Data {
-            hero = droidHero {
-              name = "Droid ${counter++}"
-            }
-          }
-      ).build()
+
+    override fun <D : Operation.Data> execute(request: ApolloRequest<D>): Flow<ApolloResponse<D>> {
+      @Suppress("UNCHECKED_CAST")
+      return flowOf(
+          ApolloResponse.Builder(
+              operation = GetHeroQuery("mock"),
+              requestUuid = request.requestUuid,
+              data = GetHeroQuery.Data {
+                hero = droidHero {
+                  name = "Droid ${counter++}"
+                }
+              }
+          ).build() as ApolloResponse<D>
+      )
     }
+
+    override fun dispose() {}
   }
 
   @Test
@@ -59,10 +68,10 @@ class CustomTestNetworkTransportHandlerTest {
   @Test
   fun registerAndQueueMethodsFail() = runTest(before = { setUp() }, after = { tearDown() }) {
     assertFailsWith(IllegalStateException::class) {
-      apolloClient.testNetworkTransport.enqueue(ApolloResponse.Builder(GetHeroQuery("id"), uuid4(), null).build())
+      apolloClient.enqueueTestResponse(ApolloResponse.Builder(GetHeroQuery("id"), uuid4(), null).build())
     }
     assertFailsWith(IllegalStateException::class) {
-      apolloClient.testNetworkTransport.register(GetHeroQuery("id"), null)
+      apolloClient.registerTestResponse(GetHeroQuery("id"), null)
     }
   }
 }

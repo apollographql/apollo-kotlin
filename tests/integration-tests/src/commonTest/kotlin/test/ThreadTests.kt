@@ -15,9 +15,9 @@ import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mpp.Platform
 import com.apollographql.apollo3.mpp.currentThreadId
 import com.apollographql.apollo3.mpp.platform
-import com.apollographql.apollo3.testing.TestNetworkTransport
+import com.apollographql.apollo3.testing.QueueTestNetworkTransport
+import com.apollographql.apollo3.testing.enqueueTestResponse
 import com.apollographql.apollo3.testing.runTest
-import com.apollographql.apollo3.testing.testNetworkTransport
 import kotlin.reflect.KClass
 import kotlin.test.Test
 
@@ -98,12 +98,12 @@ class ThreadTests {
 
     val apolloClient = ApolloClient.Builder()
         .normalizedCache(MyMemoryCacheFactory(currentThreadId()))
-        .networkTransport(TestNetworkTransport())
+        .networkTransport(QueueTestNetworkTransport())
         .build()
 
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("Luke"))
     val query = HeroNameQuery()
-    apolloClient.testNetworkTransport.enqueue(query, data)
+    apolloClient.enqueueTestResponse(query, data)
 
     apolloClient.query(query).execute()
     apolloClient.query(query).fetchPolicy(FetchPolicy.CacheOnly).execute()

@@ -4,9 +4,9 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
-import com.apollographql.apollo3.testing.TestNetworkTransport
+import com.apollographql.apollo3.testing.QueueTestNetworkTransport
+import com.apollographql.apollo3.testing.enqueueTestResponse
 import com.apollographql.apollo3.testing.runTest
-import com.apollographql.apollo3.testing.testNetworkTransport
 import com.benasher44.uuid.uuid4
 import testnetworktransport.test.GetHeroQuery_TestBuilder.Data
 import kotlin.test.Test
@@ -20,7 +20,7 @@ class QueueTestNetworkTransportHandlerTest {
 
   private fun setUp() {
     apolloClient = ApolloClient.Builder()
-        .networkTransport(TestNetworkTransport())
+        .networkTransport(QueueTestNetworkTransport())
         .build()
   }
 
@@ -56,10 +56,10 @@ class QueueTestNetworkTransportHandlerTest {
     val testResponse3 = ApolloResponse.Builder(query3, uuid4(), GetHeroNameOnlyQuery.Data(GetHeroNameOnlyQuery.Hero(name = "Darth Vader")))
         .build()
 
-    apolloClient.testNetworkTransport.apply {
-      enqueue(testResponse1)
-      enqueue(testResponse2)
-      enqueue(testResponse3)
+    apolloClient.apply {
+      enqueueTestResponse(testResponse1)
+      enqueueTestResponse(testResponse2)
+      enqueueTestResponse(testResponse3)
     }
 
     val actual1: ApolloResponse<GetHeroQuery.Data> = apolloClient.query(query1).execute()
@@ -78,7 +78,7 @@ class QueueTestNetworkTransportHandlerTest {
   @Test
   fun enqueueError() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = GetHeroQuery("001")
-    apolloClient.testNetworkTransport.enqueue(query, errors = listOf(Error(
+    apolloClient.enqueueTestResponse(query, errors = listOf(Error(
         message = "There was an error",
         locations = listOf(Error.Location(line = 1, column = 2)),
         path = listOf("hero", "name"),
@@ -100,7 +100,7 @@ class QueueTestNetworkTransportHandlerTest {
         name = "R2D2"
       }
     }
-    apolloClient.testNetworkTransport.enqueue(query, testData)
+    apolloClient.enqueueTestResponse(query, testData)
 
     val actual = apolloClient.query(query).execute().data!!
     assertEquals(testData.hero.name, actual.hero.name)

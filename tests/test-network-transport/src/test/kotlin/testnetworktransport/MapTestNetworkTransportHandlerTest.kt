@@ -4,10 +4,9 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
-import com.apollographql.apollo3.testing.MapTestNetworkTransportHandler
-import com.apollographql.apollo3.testing.TestNetworkTransport
+import com.apollographql.apollo3.testing.MapTestNetworkTransport
+import com.apollographql.apollo3.testing.registerTestResponse
 import com.apollographql.apollo3.testing.runTest
-import com.apollographql.apollo3.testing.testNetworkTransport
 import com.benasher44.uuid.uuid4
 import testnetworktransport.test.GetHeroQuery_TestBuilder.Data
 import kotlin.test.Test
@@ -21,7 +20,7 @@ class MapTestNetworkTransportHandlerTest {
 
   private fun setUp() {
     apolloClient = ApolloClient.Builder()
-        .networkTransport(TestNetworkTransport(MapTestNetworkTransportHandler()))
+        .networkTransport(MapTestNetworkTransport())
         .build()
   }
 
@@ -57,10 +56,10 @@ class MapTestNetworkTransportHandlerTest {
     val testResponse3 = ApolloResponse.Builder(query3, uuid4(), GetHeroNameOnlyQuery.Data(GetHeroNameOnlyQuery.Hero(name = "Darth Vader")))
         .build()
 
-    apolloClient.testNetworkTransport.apply {
-      register(query1, testResponse1)
-      register(query2, testResponse2)
-      register(query3, testResponse3)
+    apolloClient.apply {
+      registerTestResponse(query1, testResponse1)
+      registerTestResponse(query2, testResponse2)
+      registerTestResponse(query3, testResponse3)
     }
 
     val actual1: ApolloResponse<GetHeroQuery.Data> = apolloClient.query(query1).execute()
@@ -79,7 +78,7 @@ class MapTestNetworkTransportHandlerTest {
   @Test
   fun registerError() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = GetHeroQuery("001")
-    apolloClient.testNetworkTransport.register(query, errors = listOf(Error(
+    apolloClient.registerTestResponse(query, errors = listOf(Error(
         message = "There was an error",
         locations = listOf(Error.Location(line = 1, column = 2)),
         path = listOf("hero", "name"),
@@ -101,7 +100,7 @@ class MapTestNetworkTransportHandlerTest {
         name = "R2D2"
       }
     }
-    apolloClient.testNetworkTransport.register(query, testData)
+    apolloClient.registerTestResponse(query, testData)
 
     val actual = apolloClient.query(query).execute().data!!
     assertEquals(testData.hero.name, actual.hero.name)
