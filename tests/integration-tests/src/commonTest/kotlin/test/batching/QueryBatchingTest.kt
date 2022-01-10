@@ -192,7 +192,7 @@ class QueryBatchingTest {
   }
 
   @Test
-  fun httpHeadersOnClientAreMerged() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun httpHeadersOnClientAreKept() = runTest(before = { setUp() }, after = { tearDown() }) {
     val response = """
     [{"data":{"launch":{"id":"83"}}},{"data":{"launch":{"id":"84"}}}]
     """.trimIndent()
@@ -221,7 +221,7 @@ class QueryBatchingTest {
   }
 
   @Test
-  fun httpHeadersOnRequestsAreMerged() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun commonHttpHeadersOnRequestsAreKept() = runTest(before = { setUp() }, after = { tearDown() }) {
     val response = """
     [{"data":{"launch":{"id":"83"}}},{"data":{"launch":{"id":"84"}}}]
     """.trimIndent()

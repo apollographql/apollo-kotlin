@@ -141,8 +141,8 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
     }
 
     val allBodies = pending.map { it.request.body ?: error("empty body while batching queries") }
-    // Only keep headers with the same value in all requests
-    val mergedHeaders = pending.map { it.request.headers }.reduce { acc, headers ->
+    // Only keep headers with the same name and value in all requests
+    val commonHeaders = pending.map { it.request.headers }.reduce { acc, headers ->
       acc.intersect(headers.toSet()).toList()
     }
         // Also do not send our internal use header
@@ -170,7 +170,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
         url = firstRequest.url,
     )
         .body(body)
-        .headers(mergedHeaders)
+        .headers(commonHeaders)
         .build()
 
     freeze(request)
