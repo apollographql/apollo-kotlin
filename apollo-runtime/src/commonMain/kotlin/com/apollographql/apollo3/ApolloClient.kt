@@ -581,7 +581,7 @@ private constructor(
       subscriptionNetworkTransport?.let { builder.subscriptionNetworkTransport(it) }
       webSocketServerUrl?.let { builder.webSocketServerUrl(it) }
       webSocketEngine?.let { builder.webSocketEngine(it) }
-      webSocketReconnectWhen?.let { builder.webSocketReconnectWhen(it) }
+      webSocketReopenWhen?.let { builder.webSocketReopenWhen(it) }
       webSocketIdleTimeoutMillis?.let { builder.webSocketIdleTimeoutMillis(it) }
       wsProtocolFactory?.let { builder.wsProtocol(it) }
       return builder
