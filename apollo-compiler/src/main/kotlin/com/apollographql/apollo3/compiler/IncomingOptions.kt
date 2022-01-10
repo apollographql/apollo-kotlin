@@ -22,11 +22,11 @@ class IncomingOptions(
     val schemaPackageName: String,
 ) {
   companion object {
-    fun fromMetadata(commonMetadata: CommonMetadata, packageNameGenerator: PackageNameGenerator): IncomingOptions {
+    fun fromMetadata(commonMetadata: CommonMetadata): IncomingOptions {
       return IncomingOptions(
           schema = commonMetadata.schema,
           codegenModels = commonMetadata.codegenModels,
-          schemaPackageName = packageNameGenerator.packageName(commonMetadata.schemaPath)
+          schemaPackageName = commonMetadata.schemaPackageName
       )
     }
 

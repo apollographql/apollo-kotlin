@@ -47,7 +47,7 @@ class MetadataTest {
       outputCommonMetadata = CommonMetadata(
           schema = schema,
           codegenModels = codegenModels,
-          schemaPath = "",
+          schemaPackageName = "",
           pluginVersion = APOLLO_VERSION
       )
     } else {

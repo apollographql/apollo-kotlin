@@ -23,6 +23,7 @@ import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateRespo
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateSchema
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateTestBuilders
 import com.apollographql.apollo3.compiler.Options.Companion.defaultSealedClassesForEnumsMatching
+import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSchemaPackageNameForFragments
 import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSemanticNaming
 import com.apollographql.apollo3.compiler.Options.Companion.defaultWarnOnDeprecatedUsages
 import com.apollographql.apollo3.compiler.PackageNameGenerator
@@ -169,6 +170,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Optional
   abstract val generateTestBuilders: Property<Boolean>
 
+  @get:Input
+  @get:Optional
+  abstract val useSchemaPackageNameForFragments: Property<Boolean>
+
   @get:Inject
   abstract val objectFactory: ObjectFactory
 
@@ -195,7 +200,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       check(!codegenModels.isPresent) {
         "Specifying 'codegenModels' has no effect as an upstream module already provided a codegenModels"
       }
-      IncomingOptions.fromMetadata(commonMetadata, packageNameGenerator)
+      IncomingOptions.fromMetadata(commonMetadata)
     } else {
       val codegenModels = codegenModels.getOrElse(defaultCodegenModels)
       val (schema, mainSchemaFilePath) = resolveSchema(schemaFiles.files, rootFolders.get())
@@ -203,13 +208,13 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       outputCommonMetadata = CommonMetadata(
           schema = schema,
           codegenModels = codegenModels,
-          schemaPath = mainSchemaFilePath,
+          schemaPackageName = packageNameGenerator.packageName(mainSchemaFilePath),
           pluginVersion = APOLLO_VERSION
       )
 
       IncomingOptions(
           schema = schema,
-          schemaPackageName = packageNameGenerator.packageName(mainSchemaFilePath),
+          schemaPackageName = outputCommonMetadata.schemaPackageName,
           codegenModels = codegenModels,
       )
     }
@@ -266,6 +271,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         schema = incomingOptions.schema,
         codegenModels = codegenModels,
         schemaPackageName = incomingOptions.schemaPackageName,
+        useSchemaPackageNameForFragments = useSchemaPackageNameForFragments.getOrElse(defaultUseSchemaPackageNameForFragments),
         customScalarsMapping = customScalarsMapping.getOrElse(emptyMap()),
         targetLanguage = targetLanguage,
         generateTestBuilders = generateTestBuilders.getOrElse(defaultGenerateTestBuilders),

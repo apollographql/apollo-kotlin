@@ -24,7 +24,10 @@ import com.apollographql.apollo3.testing.runTest
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
 import testFixtureToUtf8
 import kotlin.test.Test
@@ -69,6 +72,13 @@ class WatcherTest {
     mockServer.enqueue(testFixtureToUtf8("EpisodeHeroNameResponseNameChange.json"))
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
+    apolloClient.query(query).toFlow()
+        .catch {
+          // Handle errors here
+        }
+        .onCompletion {
+          emitAll(apolloClient.query(query).watch())
+        }
     assertEquals(channel.receiveOrTimeout()?.hero?.name, "Artoo")
 
     job.cancel()

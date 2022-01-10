@@ -62,6 +62,10 @@ class Options(
      */
     val schemaPackageName: String,
     /**
+     * Whether to use the schemaPackageName for fragments
+     */
+    val useSchemaPackageNameForFragments: Boolean = defaultUseSchemaPackageNameForFragments,
+    /**
      * The package name used for operations
      */
     val packageNameGenerator: PackageNameGenerator,
@@ -181,6 +185,7 @@ class Options(
       operationOutputFile: File? = this.operationOutputFile,
       executableFiles: Set<File> = this.executableFiles,
       schemaPackageName: String = this.schemaPackageName,
+      useSchemaPackageNameForFragments: Boolean = this.useSchemaPackageNameForFragments,
       packageNameGenerator: PackageNameGenerator = this.packageNameGenerator,
       alwaysGenerateTypesMatching: Set<String> = this.alwaysGenerateTypesMatching,
       operationOutputGenerator: OperationOutputGenerator = this.operationOutputGenerator,
@@ -210,6 +215,7 @@ class Options(
       debugDir = debugDir,
       operationOutputFile = operationOutputFile,
       schemaPackageName = schemaPackageName,
+      useSchemaPackageNameForFragments = useSchemaPackageNameForFragments,
       packageNameGenerator = packageNameGenerator,
       alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
       operationOutputGenerator = operationOutputGenerator,
@@ -257,6 +263,7 @@ class Options(
     const val defaultGenerateTestBuilders = false
     val defaultSealedClassesForEnumsMatching = emptyList<String>()
     const val defaultGenerateOptionalOperationVariables = true
+    const val defaultUseSchemaPackageNameForFragments = false
   }
 }
 

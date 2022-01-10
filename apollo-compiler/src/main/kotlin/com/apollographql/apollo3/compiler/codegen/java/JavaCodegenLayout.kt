@@ -8,7 +8,8 @@ class JavaCodegenLayout(
     packageNameGenerator: PackageNameGenerator,
     schemaPackageName: String,
     useSemanticNaming: Boolean,
-) : CodegenLayout(packageNameGenerator, schemaPackageName, useSemanticNaming) {
+    useSchemaPackageNameForFragments: Boolean,
+) : CodegenLayout(packageNameGenerator, schemaPackageName, useSemanticNaming, useSchemaPackageNameForFragments) {
   override fun escapeReservedWord(word: String): String = word.escapeJavaReservedWord()
 
   // We used to write upper case enum values but the server can define different values with different cases
