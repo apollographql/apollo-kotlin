@@ -14,21 +14,21 @@ class ConvertSchemaTests {
   @Test
   fun `convert from SDL to Json works`() {
     TestUtils.withTestProject("convertSchema") { dir ->
-      val from = File(dir, "schemas/schema.sdl")
-      val to = File(dir, "schema.json")
+      val from = "schemas/schema.sdl"
+      val to = "schema.json"
       val result = TestUtils.executeTask("convertApolloSchema",
           dir,
           "--from",
-          from.absolutePath,
+          from,
           "--to",
-          to.absolutePath
+          to
       )
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":convertApolloSchema")!!.outcome)
 
       /**
        * The conversion might change the order of the types
        */
-      val schema1 = to.toIntrospectionSchema().normalize()
+      val schema1 = File(dir, to).toIntrospectionSchema().normalize()
       val schema2 = File(dir, "schemas/schema.json").toIntrospectionSchema().normalize()
       assertjThat(schema1)
           .usingRecursiveComparison()
