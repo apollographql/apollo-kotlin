@@ -1,6 +1,7 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
 $dokka.location:com.apollographql.apollo3.mockserver/MockServer/enqueue/#com.apollographql.apollo3.mockserver.MockResponse/PointingToDeclaration/apollo-mockserver/com.apollographql.apollo3.mockserver/-mock-server/[jvm]enqueue.html
+$dokka.location:com.apollographql.apollo3.mockserver/MockServer/mockServerHandler/#/PointingToDeclaration/apollo-mockserver/com.apollographql.apollo3.mockserver/-mock-server/[jvm]mock-server-handler.html
 $dokka.location:com.apollographql.apollo3.mockserver/MockServer/stop/#/PointingToDeclaration/apollo-mockserver/com.apollographql.apollo3.mockserver/-mock-server/[jvm]stop.html
 $dokka.location:com.apollographql.apollo3.mockserver/MockServer/takeRequest/#/PointingToDeclaration/apollo-mockserver/com.apollographql.apollo3.mockserver/-mock-server/[jvm]take-request.html
 $dokka.location:com.apollographql.apollo3.mockserver/MockServer/url/#/PointingToDeclaration/apollo-mockserver/com.apollographql.apollo3.mockserver/-mock-server/[jvm]url.html
