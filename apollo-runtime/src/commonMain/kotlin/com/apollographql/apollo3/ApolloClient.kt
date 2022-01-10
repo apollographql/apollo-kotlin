@@ -57,6 +57,7 @@ private constructor(
     override val sendDocument: Boolean?,
     override val enableAutoPersistedQueries: Boolean?,
     override val canBeBatched: Boolean?,
+    private val builder: Builder,
 ) : ExecutionOptions {
   private val concurrencyInfo: ConcurrencyInfo
 
@@ -156,7 +157,6 @@ private constructor(
           }
         }
         .build()
-    // ensureNeverFrozen(request)
 
     return DefaultInterceptorChain(interceptors + networkInterceptor, 0).proceed(request)
   }
@@ -541,24 +541,44 @@ private constructor(
           sendDocument = sendDocument,
           enableAutoPersistedQueries = enableAutoPersistedQueries,
           canBeBatched = canBeBatched,
+
+          // Keep a reference to the Builder so we can keep track of `httpEngine` and other properties that 
+          // are important to rebuild `networkTransport` (and potentially others)
+          builder = this,
       )
+    }
+
+    fun copy(): Builder {
+      val builder = Builder()
+          .customScalarAdapters(customScalarAdaptersBuilder.build())
+          .interceptors(interceptors)
+          .requestedDispatcher(requestedDispatcher)
+          .executionContext(executionContext)
+          .httpMethod(httpMethod)
+          .httpHeaders(httpHeaders)
+          .sendApqExtensions(sendApqExtensions)
+          .sendDocument(sendDocument)
+          .enableAutoPersistedQueries(enableAutoPersistedQueries)
+          .canBeBatched(canBeBatched)
+      _networkTransport?.let { builder.networkTransport(it) }
+      httpServerUrl?.let { builder.httpServerUrl(it) }
+      httpEngine?.let { builder.httpEngine(it) }
+      httpExposeErrorBody?.let { builder.httpExposeErrorBody(it) }
+      for (httpInterceptor in httpInterceptors) {
+        builder.addHttpInterceptor(httpInterceptor)
+      }
+      subscriptionNetworkTransport?.let { builder.subscriptionNetworkTransport(it) }
+      webSocketServerUrl?.let { builder.webSocketServerUrl(it) }
+      webSocketEngine?.let { builder.webSocketEngine(it) }
+      webSocketReconnectWhen?.let { builder.webSocketReconnectWhen(it) }
+      webSocketIdleTimeoutMillis?.let { builder.webSocketIdleTimeoutMillis(it) }
+      wsProtocolFactory?.let { builder.wsProtocol(it) }
+      return builder
     }
   }
 
   fun newBuilder(): Builder {
-    return Builder()
-        .networkTransport(networkTransport)
-        .subscriptionNetworkTransport(subscriptionNetworkTransport)
-        .customScalarAdapters(customScalarAdapters)
-        .interceptors(interceptors)
-        .requestedDispatcher(requestedDispatcher)
-        .executionContext(executionContext)
-        .httpMethod(httpMethod)
-        .httpHeaders(httpHeaders)
-        .sendApqExtensions(sendApqExtensions)
-        .sendDocument(sendDocument)
-        .enableAutoPersistedQueries(enableAutoPersistedQueries)
-        .canBeBatched(canBeBatched)
+    return builder.copy()
   }
 
   companion object {
