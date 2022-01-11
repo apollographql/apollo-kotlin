@@ -25,6 +25,5 @@ object ApolloCacheHeaders {
       level = DeprecationLevel.ERROR
   )
   @ApolloDeprecatedSince(Version.v3_0_1)
-  val STORE_PARTIAL_RESPONSES: Nothing
-    get() = throw NotImplementedError("Use storePartialResponses() extension instead")
+  const val STORE_PARTIAL_RESPONSES: String = ""
 }
