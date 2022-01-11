@@ -1,7 +1,6 @@
 import com.apollographql.apollo.sample.server.DefaultApplication
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.network.ws.SubscriptionWsProtocol
 import com.apollographql.apollo3.network.ws.SubscriptionWsProtocolAdapter
 import com.apollographql.apollo3.network.ws.WebSocketConnection
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
@@ -183,9 +182,12 @@ class SampleServerTest {
     }
   }
 
-  private object AuthorizationException: Exception()
+  private object AuthorizationException : Exception()
 
-  private class AuthorizationAwareWsProtocol(webSocketConnection: WebSocketConnection, listener: Listener) : SubscriptionWsProtocolAdapter(webSocketConnection, listener) {
+  private class AuthorizationAwareWsProtocol(
+      webSocketConnection: WebSocketConnection,
+      listener: Listener,
+  ) : SubscriptionWsProtocolAdapter(webSocketConnection, listener) {
     @Suppress("UNCHECKED_CAST")
     private fun Any?.asMap() = this as? Map<String, Any?>
 
@@ -217,7 +219,7 @@ class SampleServerTest {
     }
   }
 
-  class AuthorizationAwareWsProtocolFactory: WsProtocol.Factory {
+  class AuthorizationAwareWsProtocolFactory : WsProtocol.Factory {
     override val name: String
       get() = "graphql-ws"
 
@@ -232,8 +234,8 @@ class SampleServerTest {
     val apolloClient = ApolloClient.Builder()
         .serverUrl("http://localhost:8080/subscriptions")
         .wsProtocol(wsFactory)
-        .webSocketReconnectWhen {
-          it is AuthorizationException
+        .webSocketReopenWhen { e, _ ->
+          e is AuthorizationException
         }
         .build()
 

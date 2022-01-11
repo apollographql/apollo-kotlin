@@ -4,10 +4,8 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
 import com.apollographql.apollo3.network.ws.SubscriptionWsProtocol
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -19,10 +17,7 @@ import org.springframework.boot.runApplication
 import org.springframework.context.ConfigurableApplicationContext
 import sample.server.CloseSocketQuery
 import sample.server.CountSubscription
-import sample.server.OperationErrorSubscription
 import sample.server.TimeSubscription
-import java.util.concurrent.Executors
-import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
@@ -91,7 +86,7 @@ class WebSocketErrorsTest {
   }
 
   @Test
-  fun socketReconnectsAfterAnError() = runBlocking {
+  fun socketReopensAfterAnError() = runBlocking {
     var connectionInitCount = 0
     var exception: Throwable? = null
 
@@ -106,8 +101,8 @@ class WebSocketErrorsTest {
                 }
             )
         )
-        .webSocketReconnectWhen {
-          exception = it
+        .webSocketReopenWhen { e, _ ->
+          exception = e
           // Only retry once
           connectionInitCount == 1
         }

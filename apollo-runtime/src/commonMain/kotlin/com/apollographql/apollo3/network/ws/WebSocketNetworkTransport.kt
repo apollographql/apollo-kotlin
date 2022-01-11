@@ -1,12 +1,13 @@
 package com.apollographql.apollo3.network.ws
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_1
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
-import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.internal.BackgroundDispatcher
 import com.apollographql.apollo3.internal.transformWhile
@@ -26,7 +27,6 @@ import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
@@ -55,7 +55,7 @@ private constructor(
     private val webSocketEngine: WebSocketEngine = DefaultWebSocketEngine(),
     private val idleTimeoutMillis: Long = 60_000,
     private val protocolFactory: WsProtocol.Factory = SubscriptionWsProtocol.Factory(),
-    private val reconnectWhen: ((Throwable) -> Boolean)?,
+    private val reopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)?,
 ) : NetworkTransport {
 
   /**
@@ -114,6 +114,7 @@ private constructor(
     var idleJob: Job? = null
     var connectionJob: Job? = null
     var protocol: WsProtocol? = null
+    var reopenAttemptCount = 0L
     val activeMessages = mutableMapOf<Uuid, StartOperation<*>>()
 
     /**
@@ -139,17 +140,20 @@ private constructor(
           if (message is NetworkError) {
             closeProtocol()
 
-            if (reconnectWhen?.invoke(message.cause) == true) {
+            if (reopenWhen?.invoke(message.cause, reopenAttemptCount) == true) {
+              reopenAttemptCount++
               activeMessages.values.forEach {
                 // Re-queue all start messages
                 // This will restart the websocket
                 messages.trySend(it)
               }
             } else {
+              reopenAttemptCount = 0L
               // forward the NetworkError downstream. Active flows will throw
               mutableEvents.tryEmit(message)
             }
           } else {
+            reopenAttemptCount = 0L
             mutableEvents.tryEmit(message)
           }
         }
@@ -283,7 +287,7 @@ private constructor(
     private var webSocketEngine: WebSocketEngine? = null
     private var idleTimeoutMillis: Long? = null
     private var protocolFactory: WsProtocol.Factory? = null
-    private var reconnectWhen: ((Throwable) -> Boolean)? = null
+    private var reopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)? = null
 
     fun serverUrl(serverUrl: String) = apply {
       this.serverUrl = serverUrl
@@ -303,15 +307,26 @@ private constructor(
     }
 
     /**
-     * Configure the [WebSocketNetworkTransport] to reconnect the websocket automatically when a network error
+     * Configure the [WebSocketNetworkTransport] to reopen the websocket automatically when a network error
      * happens
      *
-     * @param reconnectWhen a function taking the error as a parameter and returning 'true' to reconnect
-     * automatically or 'false' to forward the error to all listening [Flow]
+     * @param reopenWhen a function taking the error and attempt index (starting from zero) as parameters and returning 'true' to
+     * reopen automatically or 'false' to forward the error to all listening [Flow].
+     * It is a suspending function, so it can be used to introduce delay before retry (e.g. backoff strategy).
      *
      */
+    fun reopenWhen(reopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)?) = apply {
+      this.reopenWhen = reopenWhen
+    }
+
+
+    @Deprecated("Use reopenWhen(reopenWhen: (suspend (Throwable, attempt: Long) -> Boolean))")
+    @ApolloDeprecatedSince(v3_0_1)
     fun reconnectWhen(reconnectWhen: ((Throwable) -> Boolean)?) = apply {
-      this.reconnectWhen = reconnectWhen
+      this.reopenWhen = reconnectWhen?.let {
+        val adaptedLambda: suspend (Throwable, Long) -> Boolean = { throwable, _ -> reconnectWhen(throwable) }
+        adaptedLambda
+      }
     }
 
     fun build(): WebSocketNetworkTransport {
@@ -321,7 +336,7 @@ private constructor(
           webSocketEngine ?: DefaultWebSocketEngine(),
           idleTimeoutMillis ?: 60_000,
           protocolFactory ?: SubscriptionWsProtocol.Factory(),
-          reconnectWhen
+          reopenWhen
       )
     }
   }
