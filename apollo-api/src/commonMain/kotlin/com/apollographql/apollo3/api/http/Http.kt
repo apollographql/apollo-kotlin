@@ -22,7 +22,7 @@ interface HttpBody {
 /**
  * a HTTP header
  */
-class HttpHeader(val name: String, val value: String)
+data class HttpHeader(val name: String, val value: String)
 
 /**
  * a HTTP request to be sent
