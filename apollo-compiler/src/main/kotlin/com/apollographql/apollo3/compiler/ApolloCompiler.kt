@@ -207,6 +207,7 @@ object ApolloCompiler {
             flatten = options.flattenModels,
             sealedClassesForEnumsMatching = options.sealedClassesForEnumsMatching,
             targetLanguageVersion = options.targetLanguage,
+            scalarMapping = options.customScalarsMapping,
         ).write(outputDir = outputDir, testDir = testDir)
       }
     }
@@ -228,7 +229,6 @@ object ApolloCompiler {
         .typeDefinitions
         .values
         .filterIsInstance<GQLScalarTypeDefinition>()
-        .filter { !it.isBuiltIn() }
         .map { type -> type.name }
         .toSet()
     val unknownScalars = scalarMapping.keys.subtract(schemaScalars)

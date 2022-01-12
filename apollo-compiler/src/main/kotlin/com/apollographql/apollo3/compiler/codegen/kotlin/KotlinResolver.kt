@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin
 
+import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.type
 import com.apollographql.apollo3.compiler.codegen.ResolverClassName
@@ -23,7 +24,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 
 
-class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?) {
+class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?, private val scalarMapping: Map<String, ScalarInfo>) {
   fun resolve(key: ResolverKey): ClassName? = classNames[key] ?: next?.resolve(key)
 
   private var classNames = entries.associateBy(
@@ -60,16 +61,23 @@ class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?) {
       type is IrNonNullType -> error("") // make the compiler happy, this case is handled as a fast path
       type is IrOptionalType -> KotlinSymbols.Optional.parameterizedBy(resolveIrType(type.ofType, override))
       type is IrListType -> KotlinSymbols.List.parameterizedBy(resolveIrType(type.ofType, override))
-      type is IrScalarType && type.name == "String" -> KotlinSymbols.String
-      type is IrScalarType && type.name == "Float" -> KotlinSymbols.Double
-      type is IrScalarType && type.name == "Int" -> KotlinSymbols.Int
-      type is IrScalarType && type.name == "Boolean" -> KotlinSymbols.Boolean
-      type is IrScalarType && type.name == "ID" -> KotlinSymbols.String
-      type is IrScalarType -> resolve(ResolverKeyKind.CustomScalarTarget, type.name) ?: KotlinSymbols.Any
+      type is IrScalarType -> resolveIrScalarType(type)
       type is IrModelType -> resolveAndAssert(ResolverKeyKind.Model, type.path)
       type is IrNamedType -> resolveAndAssert(ResolverKeyKind.SchemaType, type.name)
       else -> error("$type is not a schema type")
     }.copy(nullable = true)
+  }
+
+  private fun resolveIrScalarType(type: IrScalarType): ClassName {
+    // Try mapping first, then built-ins, then fallback to Any
+    return resolve(ResolverKeyKind.CustomScalarTarget, type.name) ?: when (type.name) {
+      "String" -> KotlinSymbols.String
+      "Float" -> KotlinSymbols.Double
+      "Int" -> KotlinSymbols.Int
+      "Boolean" -> KotlinSymbols.Boolean
+      "ID" -> KotlinSymbols.String
+      else -> KotlinSymbols.Any
+    }
   }
 
   fun adapterInitializer(type: IrType, requiresBuffering: Boolean): CodeBlock {

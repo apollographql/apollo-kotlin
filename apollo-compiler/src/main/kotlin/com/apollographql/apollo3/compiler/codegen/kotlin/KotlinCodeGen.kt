@@ -2,6 +2,7 @@ package com.apollographql.apollo3.compiler.codegen.kotlin
 
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.PackageNameGenerator
+import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.CustomScalarBuilder
@@ -59,6 +60,7 @@ class KotlinCodeGen(
     private val flatten: Boolean,
     private val sealedClassesForEnumsMatching: List<String>,
     private val targetLanguageVersion: TargetLanguage,
+    private val scalarMapping: Map<String, ScalarInfo>,
 ) {
   /**
    * @param outputDir: the directory where to write the Kotlin files
@@ -66,7 +68,7 @@ class KotlinCodeGen(
    */
   fun write(outputDir: File, testDir: File): ResolverInfo {
     val upstreamResolver = resolverInfos.fold(null as KotlinResolver?) { acc, resolverInfo ->
-      KotlinResolver(resolverInfo.entries, acc)
+      KotlinResolver(resolverInfo.entries, acc, scalarMapping)
     }
 
     val layout = KotlinCodegenLayout(
@@ -78,7 +80,7 @@ class KotlinCodeGen(
 
     val context = KotlinContext(
         layout = layout,
-        resolver = KotlinResolver(emptyList(), upstreamResolver),
+        resolver = KotlinResolver(emptyList(), upstreamResolver, scalarMapping),
         targetLanguageVersion = targetLanguageVersion,
     )
     val builders = mutableListOf<CgFileBuilder>()
