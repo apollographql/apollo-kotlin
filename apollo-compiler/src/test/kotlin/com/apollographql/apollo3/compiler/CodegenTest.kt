@@ -274,8 +274,8 @@ class CodegenTest {
               "input_object_type",
               "mutation_create_review")) {
         mapOf(
-            "Date" to "java.util.Date",
-            "URL" to "java.lang.String",
+            "Date" to ScalarInfo("java.util.Date"),
+            "URL" to ScalarInfo("java.lang.String"),
         )
       } else {
         emptyMap()

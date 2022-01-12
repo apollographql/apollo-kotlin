@@ -218,7 +218,7 @@ object ApolloCompiler {
     )
   }
 
-  private fun checkCustomScalars(schema: Schema, customScalarsMapping: Map<String, String>) {
+  private fun checkCustomScalars(schema: Schema, scalarMapping: Map<String, ScalarInfo>) {
     /**
      * Generate the mapping for all custom scalars
      *
@@ -231,7 +231,7 @@ object ApolloCompiler {
         .filter { !it.isBuiltIn() }
         .map { type -> type.name }
         .toSet()
-    val unknownScalars = customScalarsMapping.keys.subtract(schemaScalars)
+    val unknownScalars = scalarMapping.keys.subtract(schemaScalars)
     check(unknownScalars.isEmpty()) {
       "Apollo: unknown custom scalar(s) in customScalarsMapping: ${unknownScalars.joinToString(",")}"
     }
