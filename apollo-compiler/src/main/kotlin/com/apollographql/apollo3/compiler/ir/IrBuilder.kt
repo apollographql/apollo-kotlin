@@ -53,6 +53,7 @@ import com.apollographql.apollo3.ast.transform
 import com.apollographql.apollo3.compiler.MODELS_COMPAT
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
+import com.apollographql.apollo3.compiler.ScalarInfo
 
 @OptIn(ApolloExperimental::class)
 internal class IrBuilder(
@@ -62,7 +63,8 @@ internal class IrBuilder(
     private val fragmentDefinitions: List<GQLFragmentDefinition>,
     private val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val alwaysGenerateTypesMatching: Set<String>,
-    private val customScalarsMapping: Map<String, String>,
+    // TODO rename to scalarMapping
+    private val customScalarsMapping: Map<String, ScalarInfo>,
     private val codegenModels: String,
     private val generateOptionalOperationVariables: Boolean,
 ) : FieldMerger {
@@ -201,7 +203,7 @@ internal class IrBuilder(
   private fun GQLScalarTypeDefinition.toIr(): IrCustomScalar {
     return IrCustomScalar(
         name = name,
-        kotlinName = customScalarsMapping[name],
+        kotlinName = customScalarsMapping[name]?.targetName,
         description = description,
         deprecationReason = directives.findDeprecationReason()
     )

@@ -8,6 +8,7 @@ import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.compiler.introspection.toGQLDocument
 import com.apollographql.apollo3.compiler.introspection.toSchema
 import java.io.File
+import java.io.Serializable
 
 
 const val MODELS_RESPONSE_BASED = "responseBased"
@@ -85,7 +86,8 @@ class Options(
     val targetLanguage: TargetLanguage = defaultTargetLanguage,
 
     //========== codegen options ============
-    val customScalarsMapping: Map<String, String> = defaultCustomScalarsMapping,
+    // TODO rename to scalarMapping
+    val customScalarsMapping: Map<String, ScalarInfo> = defaultCustomScalarsMapping,
     val codegenModels: String = defaultCodegenModels,
     val flattenModels: Boolean = defaultFlattenModels,
     val useSemanticNaming: Boolean = defaultUseSemanticNaming,
@@ -190,7 +192,7 @@ class Options(
       alwaysGenerateTypesMatching: Set<String> = this.alwaysGenerateTypesMatching,
       operationOutputGenerator: OperationOutputGenerator = this.operationOutputGenerator,
       incomingCompilerMetadata: List<CompilerMetadata> = this.incomingCompilerMetadata,
-      customScalarsMapping: Map<String, String> = this.customScalarsMapping,
+      customScalarsMapping: Map<String, ScalarInfo> = this.customScalarsMapping,
       codegenModels: String = this.codegenModels,
       flattenModels: Boolean = this.flattenModels,
       useSemanticNaming: Boolean = this.useSemanticNaming,
@@ -237,14 +239,16 @@ class Options(
       moduleName = moduleName,
       generateTestBuilders = generateTestBuilders,
       testDir = testDir,
-      sealedClassesForEnumsMatching =  sealedClassesForEnumsMatching,
+      sealedClassesForEnumsMatching = sealedClassesForEnumsMatching,
       generateOptionalOperationVariables = generateOptionalOperationVariables,
   )
 
   companion object {
     val defaultAlwaysGenerateTypesMatching = emptySet<String>()
     val defaultOperationOutputGenerator = OperationOutputGenerator.Default(OperationIdGenerator.Sha256)
-    val defaultCustomScalarsMapping = emptyMap<String, String>()
+
+    // TODO: rename to defaultScalarMapping
+    val defaultCustomScalarsMapping = emptyMap<String, ScalarInfo>()
     val defaultLogger = ApolloCompiler.NoOpLogger
     const val defaultUseSemanticNaming = true
     const val defaultWarnOnDeprecatedUsages = true
@@ -267,3 +271,19 @@ class Options(
   }
 }
 
+/**
+ * Controls how scalar adapters are used in the generated code.
+ */
+sealed interface AdapterInitializer : Serializable
+
+/** The adapter will be instantiated in the generated code */
+class SingletonAdapterInitializer(val qualifiedName: String) : AdapterInitializer
+
+/** The adapter will be used as-is (it's an object or a public val) */
+class NoArgConstructorAdapterInitializer(val qualifiedName: String) : AdapterInitializer
+
+/** The adapter instance will be looked up in the [com.apollographql.apollo3.api.CustomScalarAdapters] provided at runtime */
+object RuntimeAdapterInitializer : AdapterInitializer
+
+
+data class ScalarInfo(val targetName: String, val adapterInitializer: AdapterInitializer = RuntimeAdapterInitializer) : Serializable

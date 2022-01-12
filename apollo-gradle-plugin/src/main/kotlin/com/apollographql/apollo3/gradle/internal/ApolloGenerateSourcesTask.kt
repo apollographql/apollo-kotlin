@@ -2,9 +2,9 @@ package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
+import com.apollographql.apollo3.compiler.ApolloCompiler
 import com.apollographql.apollo3.compiler.ApolloMetadata
 import com.apollographql.apollo3.compiler.CommonMetadata
-import com.apollographql.apollo3.compiler.ApolloCompiler
 import com.apollographql.apollo3.compiler.IncomingOptions
 import com.apollographql.apollo3.compiler.IncomingOptions.Companion.resolveSchema
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
@@ -27,6 +27,7 @@ import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSchemaPack
 import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSemanticNaming
 import com.apollographql.apollo3.compiler.Options.Companion.defaultWarnOnDeprecatedUsages
 import com.apollographql.apollo3.compiler.PackageNameGenerator
+import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.TargetLanguage
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
@@ -96,7 +97,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Input
   @get:Optional
-  abstract val customScalarsMapping: MapProperty<String, String>
+  abstract val scalarsMapping: MapProperty<String, ScalarInfo>
 
   @get:Input
   @get:Optional
@@ -272,7 +273,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         codegenModels = codegenModels,
         schemaPackageName = incomingOptions.schemaPackageName,
         useSchemaPackageNameForFragments = useSchemaPackageNameForFragments.getOrElse(defaultUseSchemaPackageNameForFragments),
-        customScalarsMapping = customScalarsMapping.getOrElse(emptyMap()),
+        customScalarsMapping = scalarsMapping.getOrElse(emptyMap()),
         targetLanguage = targetLanguage,
         generateTestBuilders = generateTestBuilders.getOrElse(defaultGenerateTestBuilders),
         sealedClassesForEnumsMatching = sealedClassesForEnumsMatching.getOrElse(defaultSealedClassesForEnumsMatching),

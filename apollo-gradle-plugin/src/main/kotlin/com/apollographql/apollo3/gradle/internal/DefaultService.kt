@@ -1,9 +1,11 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.compiler.AdapterInitializer
 import com.apollographql.apollo3.compiler.MODELS_COMPAT
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.Roots
+import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.gradle.api.Introspection
 import com.apollographql.apollo3.gradle.api.RegisterOperationsConfig
 import com.apollographql.apollo3.gradle.api.Registry
@@ -23,6 +25,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     if (GradleVersion.current() >= GradleVersion.version("6.2")) {
       // This allows users to call customScalarsMapping.put("Date", "java.util.Date")
       // see https://github.com/gradle/gradle/issues/7485
+      scalarMapping.convention(null as Map<String, ScalarInfo>?)
       customScalarsMapping.convention(null as Map<String, String>?)
       customTypeMapping.convention(null as Map<String, String>?)
       includes.convention(null as List<String>?)
@@ -30,6 +33,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
       alwaysGenerateTypesMatching.convention(null as Set<String>?)
       sealedClassesForEnumsMatching.convention(null as List<String>?)
     } else {
+      scalarMapping.set(null as Map<String, ScalarInfo>?)
       customScalarsMapping.set(null as Map<String, String>?)
       customTypeMapping.set(null as Map<String, String>?)
       includes.set(null as List<String>?)
@@ -125,13 +129,17 @@ abstract class DefaultService @Inject constructor(val project: Project, override
 
   override fun packageNamesFromFilePaths(rootPackageName: String?) {
     packageNameGenerator.set(
-      project.provider {
-        PackageNameGenerator.FilePathAware(
-            roots = Roots(graphqlSourceDirectorySet.srcDirs),
-            rootPackageName = rootPackageName ?: ""
-        )
-      }
+        project.provider {
+          PackageNameGenerator.FilePathAware(
+              roots = Roots(graphqlSourceDirectorySet.srcDirs),
+              rootPackageName = rootPackageName ?: ""
+          )
+        }
     )
     packageNameGenerator.disallowChanges()
+  }
+
+  override fun mapScalar(graphQLName: String, targetName: String, adapterInitializer: AdapterInitializer) {
+    scalarMapping.put(graphQLName, ScalarInfo(targetName, adapterInitializer))
   }
 }

@@ -4,6 +4,8 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.PackageNameGenerator
+import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
+import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.gradle.api.AndroidProject
@@ -94,6 +96,7 @@ abstract class DefaultApolloExtension(
             && defaultService.schemaFile.isPresent.not()
             && defaultService.schemaFiles.isEmpty
             && defaultService.alwaysGenerateTypesMatching.isPresent.not()
+            && defaultService.scalarMapping.isPresent.not()
             && defaultService.customScalarsMapping.isPresent.not()
             && defaultService.customTypeMapping.isPresent.not()
             && defaultService.excludes.isPresent.not()
@@ -292,7 +295,11 @@ abstract class DefaultApolloExtension(
     maybeRegisterRegisterOperationsTasks(project, service, codegenProvider)
   }
 
-  private fun maybeRegisterRegisterOperationsTasks(project: Project, service: DefaultService, codegenProvider: TaskProvider<ApolloGenerateSourcesTask>) {
+  private fun maybeRegisterRegisterOperationsTasks(
+      project: Project,
+      service: DefaultService,
+      codegenProvider: TaskProvider<ApolloGenerateSourcesTask>,
+  ) {
     val registerOperationsConfig = service.registerOperationsConfig
     if (registerOperationsConfig != null) {
       project.tasks.register(ModelNames.registerApolloOperations(service), ApolloRegisterOperationsTask::class.java) { task ->
@@ -418,7 +425,7 @@ abstract class DefaultApolloExtension(
       if (project.hasKotlinPlugin()) {
         checkKotlinPluginVersion(project)
       }
-      
+
       val generateKotlinModels: Boolean
       when {
         service.generateKotlinModels.isPresent -> {
@@ -455,7 +462,14 @@ abstract class DefaultApolloExtension(
       task.warnOnDeprecatedUsages.set(service.warnOnDeprecatedUsages)
       task.failOnWarnings.set(service.failOnWarnings)
       @Suppress("DEPRECATION")
-      task.customScalarsMapping.set(service.customScalarsMapping.orElse(service.customTypeMapping))
+      task.scalarsMapping.set(
+          service.scalarMapping.orElse(
+              service.customScalarsMapping.orElse(
+                  service.customTypeMapping
+              )
+                  .getOrNull()?.asScalarInfoMapping() ?: emptyMap()
+          )
+      )
       task.outputDir.apply {
         set(service.outputDir.orElse(BuildDirLayout.outputDir(project, service)).get())
         disallowChanges()
@@ -659,4 +673,7 @@ abstract class DefaultApolloExtension(
       }.toSet()
     }
   }
+
+  private fun Map<String, String>.asScalarInfoMapping(): Map<String, ScalarInfo> =
+      mapValues { (_, value) -> ScalarInfo(value, RuntimeAdapterInitializer) }
 }

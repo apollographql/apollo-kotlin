@@ -11,9 +11,9 @@ dependencies {
 
 apollo {
   packageName.set("custom.scalars")
-  customScalarsMapping.put("Long", "kotlin.Long")
-  customScalarsMapping.put("CustomFloat", "kotlin.Float")
-  customScalarsMapping.put("Any", "kotlin.Any")
-  customScalarsMapping.put("GeoPoint", "kotlin.Any")
-  customScalarsMapping.put("Address", "custom.scalars.Address")
+  mapScalar("Long", "kotlin.Long")
+  mapScalar("CustomFloat", "kotlin.Float")
+  mapScalar("Any", "kotlin.Any")
+  mapScalar("GeoPoint", "kotlin.Any")
+  mapScalar("Address", "custom.scalars.Address")
 }
