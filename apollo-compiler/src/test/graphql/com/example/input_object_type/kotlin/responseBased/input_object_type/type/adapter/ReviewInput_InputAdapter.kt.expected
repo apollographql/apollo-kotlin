@@ -10,9 +10,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.NullableBooleanAdapter
 import com.apollographql.apollo3.api.NullableIntAdapter
-import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -20,6 +18,8 @@ import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.optional
 import com.example.input_object_type.type.ReviewInput
+import com.example.input_object_type.type.adapter.ScalarAdapterInstances
+import com.example.input_object_type.type.adapter.ScalarAdapterInstances.StringAdapter
 import java.util.Date
 import kotlin.IllegalStateException
 import kotlin.Unit
@@ -42,7 +42,7 @@ public object ReviewInput_InputAdapter : Adapter<ReviewInput> {
     }
     if (value.commentary is Optional.Present) {
       writer.name("commentary")
-      NullableStringAdapter.optional().toJson(writer, customScalarAdapters, value.commentary)
+      StringAdapter.nullable().optional().toJson(writer, customScalarAdapters, value.commentary)
     }
     writer.name("favoriteColor")
     ColorInput_InputAdapter.obj().toJson(writer, customScalarAdapters, value.favoriteColor)
@@ -83,11 +83,12 @@ public object ReviewInput_InputAdapter : Adapter<ReviewInput> {
     }
     if (value.listOfString is Optional.Present) {
       writer.name("listOfString")
-      NullableStringAdapter.list().nullable().optional().toJson(writer, customScalarAdapters,
+      StringAdapter.nullable().list().nullable().optional().toJson(writer, customScalarAdapters,
           value.listOfString)
     }
     writer.name("listOfStringNonOptional")
-    NullableStringAdapter.list().toJson(writer, customScalarAdapters, value.listOfStringNonOptional)
+    StringAdapter.nullable().list().toJson(writer, customScalarAdapters,
+        value.listOfStringNonOptional)
     if (value.listOfInputTypes is Optional.Present) {
       writer.name("listOfInputTypes")
       ColorInput_InputAdapter.obj().nullable().list().nullable().optional().toJson(writer,
@@ -125,7 +126,8 @@ public object ReviewInput_InputAdapter : Adapter<ReviewInput> {
     }
     if (value.CapitalizedField is Optional.Present) {
       writer.name("CapitalizedField")
-      NullableStringAdapter.optional().toJson(writer, customScalarAdapters, value.CapitalizedField)
+      StringAdapter.nullable().optional().toJson(writer, customScalarAdapters,
+          value.CapitalizedField)
     }
     if (value.CapitalizedInt is Optional.Present) {
       writer.name("CapitalizedInt")

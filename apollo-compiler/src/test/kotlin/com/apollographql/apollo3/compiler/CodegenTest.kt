@@ -275,7 +275,9 @@ class CodegenTest {
               "mutation_create_review")) {
         mapOf(
             "Date" to ScalarInfo("java.util.Date"),
-            "URL" to ScalarInfo("java.lang.String"),
+            "URL" to ScalarInfo("java.lang.String", SingletonAdapterInitializer("com.example.UrlAdapter")),
+            "ID" to ScalarInfo("java.lang.Long"),
+            "String" to ScalarInfo("java.lang.String", NoArgConstructorAdapterInitializer("com.example.MyStringAdapter")),
         )
       } else {
         emptyMap()

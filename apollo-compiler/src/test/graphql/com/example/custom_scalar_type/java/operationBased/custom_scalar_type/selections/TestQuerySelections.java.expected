@@ -19,6 +19,7 @@ import java.util.List;
 
 public class TestQuerySelections {
   private static List<CompiledSelection> hero = Arrays.asList(
+    new CompiledField.Builder("id", new CompiledNotNullType(CompiledGraphQL.CompiledIDType)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
     new CompiledField.Builder("birthDate", new CompiledNotNullType(Date.type)).build(),
     new CompiledField.Builder("appearanceDates", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Date.type)))).build(),
