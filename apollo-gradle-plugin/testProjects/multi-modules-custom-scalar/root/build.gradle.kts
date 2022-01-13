@@ -1,3 +1,5 @@
+import com.apollographql.apollo3.compiler.NoArgConstructorAdapterInitializer
+
 plugins {
   kotlin("jvm")
   id("com.apollographql.apollo3")
@@ -15,4 +17,5 @@ apollo {
   packageName.set("com.library")
   generateApolloMetadata.set(true)
   mapScalar("Date", "java.util.Date")
+  mapScalar("ID", "com.library.MyID", NoArgConstructorAdapterInitializer("com.library.MyIDAdapter"))
 }

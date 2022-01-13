@@ -7,6 +7,8 @@ import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.compiler.introspection.toGQLDocument
 import com.apollographql.apollo3.compiler.introspection.toSchema
+import com.squareup.moshi.JsonClass
+import dev.zacsweers.moshix.sealed.annotations.TypeLabel
 import java.io.File
 import java.io.Serializable
 
@@ -272,16 +274,22 @@ class Options(
 /**
  * Controls how scalar adapters are used in the generated code.
  */
+@JsonClass(generateAdapter = true, generator = "sealed:type")
 sealed interface AdapterInitializer : Serializable
 
 /** The adapter will be instantiated in the generated code */
+@TypeLabel("Singleton")
+@JsonClass(generateAdapter = true)
 class SingletonAdapterInitializer(val qualifiedName: String) : AdapterInitializer
 
 /** The adapter will be used as-is (it's an object or a public val) */
+@TypeLabel("NoArgConstructor")
+@JsonClass(generateAdapter = true)
 class NoArgConstructorAdapterInitializer(val qualifiedName: String) : AdapterInitializer
 
 /** The adapter instance will be looked up in the [com.apollographql.apollo3.api.CustomScalarAdapters] provided at runtime */
+@TypeLabel("Runtime")
 object RuntimeAdapterInitializer : AdapterInitializer
 
-
+@JsonClass(generateAdapter = true)
 data class ScalarInfo(val targetName: String, val adapterInitializer: AdapterInitializer = RuntimeAdapterInitializer) : Serializable

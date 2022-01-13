@@ -6,7 +6,6 @@ import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.ast.toUtf8
-import com.apollographql.apollo3.ast.validateAsSchema
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonClass
@@ -106,5 +105,10 @@ data class CompilerMetadata(
     /**
      * resolver info used by the codegen to lookup already existing ClassNames
      */
-    val resolverInfo: ResolverInfo
+    val resolverInfo: ResolverInfo,
+
+    /**
+     * Scalar mapping needed for scalars' target types and Adapter initializers
+     */
+    val scalarMapping: Map<String, ScalarInfo>,
 )
