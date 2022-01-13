@@ -3,6 +3,7 @@ scalar Long
 scalar Any
 scalar GeoPoint
 scalar Address
+scalar NotMapped
 
 type Query {
   float: CustomFloat
@@ -10,5 +11,15 @@ type Query {
   any: Any
   geoPoints: [GeoPoint]
   address: Address
+  id: ID!
+  nullableId: ID
+  string: String!
+  nullableString: String
+  int: Int!
+  nullableInt: Int
+  boolean: Boolean!
+  nullableBoolean: Boolean
+  notMapped: NotMapped!
+  nullableNotMapped: NotMapped
 }
 

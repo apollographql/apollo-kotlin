@@ -11,6 +11,7 @@ import custom.scalars.GetAddressQuery
 import custom.scalars.GetAllQuery
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class CustomScalarTest {
   @Test
@@ -19,13 +20,23 @@ class CustomScalarTest {
     server.enqueue("""
       {
         "data": {
+          "id": "1",
+          "nullableId": null,
           "long": 10000000000,
           "float": 1.4,
           "any": { "key": "value" },
           "geoPoints": [
             { "lat": 1, "lon": 2 },
             { "lat": 3, "lon": 4 }
-          ]
+          ],
+          "string": "string",
+          "nullableString": null,
+          "int": 1,
+          "nullableInt": null,
+          "boolean": true,
+          "nullableBoolean": null,
+          "notMapped": { "key": "value" },
+          "nullableNotMapped": null
         }
       }
     """.trimIndent())
@@ -34,7 +45,8 @@ class CustomScalarTest {
         .query(GetAllQuery())
         .execute()
         .dataAssertNoErrors
-
+    assertEquals(1, data.id)
+    assertNull(data.nullableId)
     assertEquals(10_000_000_000, data.long)
     assertEquals(1.4f, data.float)
     assertEquals(mapOf("key" to "value"), data.any)
@@ -42,6 +54,14 @@ class CustomScalarTest {
         mapOf("lat" to 1, "lon" to 2),
         mapOf("lat" to 3, "lon" to 4),
     ), data.geoPoints)
+    assertEquals("string", data.string)
+    assertNull(data.nullableString)
+    assertEquals(1, data.int)
+    assertNull(data.nullableInt)
+    assertEquals(true, data.boolean)
+    assertNull(data.nullableBoolean)
+    assertEquals(mapOf("key" to "value"), data.notMapped)
+    assertNull(data.nullableNotMapped)
   }
 
   @Test
@@ -58,9 +78,9 @@ class CustomScalarTest {
       }
     """.trimIndent())
 
-    val customTypeAdapter = object: CustomTypeAdapter<Address> {
+    val customTypeAdapter = object : CustomTypeAdapter<Address> {
       override fun decode(value: CustomTypeValue<*>): Address {
-        check (value is CustomTypeValue.GraphQLJsonObject)
+        check(value is CustomTypeValue.GraphQLJsonObject)
 
         /**
          * XXX: For consistency, a [CustomTypeValue.GraphQLJsonObject] should contain `GraphQLFoo`
