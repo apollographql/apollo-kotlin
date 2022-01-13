@@ -20,7 +20,7 @@ abstract class CodegenLayout(
     private val packageNameGenerator: PackageNameGenerator,
     private val schemaPackageName: String,
     private val useSemanticNaming: Boolean,
-    private val useSchemaPackageNameForFragments: Boolean
+    private val useSchemaPackageNameForFragments: Boolean,
 ) {
   private val typePackageName = "$schemaPackageName.type"
 
@@ -83,6 +83,8 @@ abstract class CodegenLayout(
 
   internal fun inputObjectName(name: String) = capitalizedIdentifier(name)
   internal fun inputObjectAdapterName(name: String) = capitalizedIdentifier(name) + "_InputAdapter"
+
+  internal fun scalarAdapterName(name: String) = propertyName(name + "Adapter")
 
   // variables keep the same case as their declared name
   internal fun variableName(name: String) = regularIdentifier(name)

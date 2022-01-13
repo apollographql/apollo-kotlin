@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin
 
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
+import com.apollographql.apollo3.compiler.NoArgConstructorAdapterInitializer
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.TargetLanguage
@@ -22,6 +23,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.file.OperationBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.OperationResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.OperationSelectionsBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.OperationVariablesAdapterBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.file.ScalarAdapterInstancesBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.SchemaBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.TestBuildersBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.UnionBuilder
@@ -67,10 +69,6 @@ class KotlinCodeGen(
    * @return a ResolverInfo to be used by downstream modules
    */
   fun write(outputDir: File, testDir: File): ResolverInfo {
-    val upstreamResolver = resolverInfos.fold(null as KotlinResolver?) { acc, resolverInfo ->
-      KotlinResolver(resolverInfo.entries, acc, scalarMapping)
-    }
-
     val layout = KotlinCodegenLayout(
         useSemanticNaming = useSemanticNaming,
         packageNameGenerator = packageNameGenerator,
@@ -78,9 +76,13 @@ class KotlinCodeGen(
         useSchemaPackageNameForFragments = useSchemaPackageNameForFragments
     )
 
+    val upstreamResolver = resolverInfos.fold(null as KotlinResolver?) { acc, resolverInfo ->
+      KotlinResolver(layout, resolverInfo.entries, acc, scalarMapping)
+    }
+
     val context = KotlinContext(
         layout = layout,
-        resolver = KotlinResolver(emptyList(), upstreamResolver, scalarMapping),
+        resolver = KotlinResolver(layout, emptyList(), upstreamResolver, scalarMapping),
         targetLanguageVersion = targetLanguageVersion,
     )
     val builders = mutableListOf<CgFileBuilder>()
@@ -121,6 +123,9 @@ class KotlinCodeGen(
         .forEach { customScalar ->
           builders.add(CustomScalarBuilder(context, customScalar))
         }
+    if (scalarMapping.values.any { it.adapterInitializer is NoArgConstructorAdapterInitializer }) {
+      builders.add(ScalarAdapterInstancesBuilder(context, scalarMapping))
+    }
 
     ir.fragments
         .forEach { fragment ->
