@@ -1,3 +1,6 @@
+import com.apollographql.apollo3.compiler.NoArgConstructorAdapterInitializer
+import com.apollographql.apollo3.compiler.SingletonAdapterInitializer
+
 plugins {
   id("org.jetbrains.kotlin.jvm")
   id("com.apollographql.apollo3")
@@ -16,4 +19,7 @@ apollo {
   mapScalar("Any", "kotlin.Any")
   mapScalar("GeoPoint", "kotlin.Any")
   mapScalar("Address", "custom.scalars.Address")
+  mapScalar("ID", "kotlin.Long")
+  mapScalar("Int", "kotlin.Int", NoArgConstructorAdapterInitializer("custom.scalars.MyIntAdapter"))
+  mapScalar("String", "kotlin.String", SingletonAdapterInitializer("custom.scalars.MyStringAdapter"))
 }
