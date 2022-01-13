@@ -8,8 +8,6 @@ package com.example.mutation_create_review.adapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
-import com.apollographql.apollo3.api.NullableStringAdapter
-import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -18,6 +16,8 @@ import com.apollographql.apollo3.api.obj
 import com.example.mutation_create_review.CreateReviewForEpisode
 import com.example.mutation_create_review.type.Episode
 import com.example.mutation_create_review.type.adapter.Episode_ResponseAdapter
+import com.example.mutation_create_review.type.adapter.ScalarAdapterInstances
+import com.example.mutation_create_review.type.adapter.ScalarAdapterInstances.StringAdapter
 import java.util.Date
 import kotlin.Int
 import kotlin.String
@@ -60,8 +60,8 @@ internal object CreateReviewForEpisode_ResponseAdapter {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           CreateReviewForEpisode.Data.CreateReview {
         var stars: Int? = null
-        var commentary: String? = null
-        var listOfListOfString: List<List<String>>? = null
+        var commentary: java.lang.String? = null
+        var listOfListOfString: List<List<java.lang.String>>? = null
         var listOfListOfEnum: List<List<Episode>>? = null
         var listOfListOfCustom: List<List<Date>>? = null
         var listOfListOfObject: List<List<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject>>? = null
@@ -69,7 +69,7 @@ internal object CreateReviewForEpisode_ResponseAdapter {
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> stars = IntAdapter.fromJson(reader, customScalarAdapters)
-            1 -> commentary = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> commentary = StringAdapter.nullable().fromJson(reader, customScalarAdapters)
             2 -> listOfListOfString = StringAdapter.list().list().nullable().fromJson(reader,
                 customScalarAdapters)
             3 -> listOfListOfEnum = Episode_ResponseAdapter.list().list().nullable().fromJson(reader,
@@ -101,7 +101,7 @@ internal object CreateReviewForEpisode_ResponseAdapter {
         IntAdapter.toJson(writer, customScalarAdapters, value.stars)
 
         writer.name("commentary")
-        NullableStringAdapter.toJson(writer, customScalarAdapters, value.commentary)
+        StringAdapter.nullable().toJson(writer, customScalarAdapters, value.commentary)
 
         writer.name("listOfListOfString")
         StringAdapter.list().list().nullable().toJson(writer, customScalarAdapters,
@@ -127,7 +127,7 @@ internal object CreateReviewForEpisode_ResponseAdapter {
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters):
             CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject {
-          var name: String? = null
+          var name: java.lang.String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {

@@ -59,11 +59,12 @@ public class TestQuery_ResponseAdapter {
   public enum Hero implements Adapter<TestQuery.Hero> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "birthDate", "appearanceDates", "fieldWithUnsupportedType", "profileLink", "links");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("id", "name", "birthDate", "appearanceDates", "fieldWithUnsupportedType", "profileLink", "links");
 
     @Override
     public TestQuery.Hero fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
+      String id = null;
       String name = null;
       Date birthDate = null;
       List<Date> appearanceDates = null;
@@ -74,16 +75,18 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: birthDate = (customScalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type)).fromJson(reader, customScalarAdapters); break;
-          case 2: appearanceDates = new ListAdapter<>((customScalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type))).fromJson(reader, customScalarAdapters); break;
-          case 3: fieldWithUnsupportedType = Adapters.AnyAdapter.fromJson(reader, customScalarAdapters); break;
-          case 4: profileLink = (customScalarAdapters.<String>responseAdapterFor(URL.type)).fromJson(reader, customScalarAdapters); break;
-          case 5: links = new ListAdapter<>((customScalarAdapters.<String>responseAdapterFor(URL.type))).fromJson(reader, customScalarAdapters); break;
+          case 0: id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 2: birthDate = (customScalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type)).fromJson(reader, customScalarAdapters); break;
+          case 3: appearanceDates = new ListAdapter<>((customScalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type))).fromJson(reader, customScalarAdapters); break;
+          case 4: fieldWithUnsupportedType = Adapters.AnyAdapter.fromJson(reader, customScalarAdapters); break;
+          case 5: profileLink = (customScalarAdapters.<String>responseAdapterFor(URL.type)).fromJson(reader, customScalarAdapters); break;
+          case 6: links = new ListAdapter<>((customScalarAdapters.<String>responseAdapterFor(URL.type))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
+      Assertions.checkFieldNotMissing(id, "id");
       Assertions.checkFieldNotMissing(name, "name");
       Assertions.checkFieldNotMissing(birthDate, "birthDate");
       Assertions.checkFieldNotMissing(appearanceDates, "appearanceDates");
@@ -92,6 +95,7 @@ public class TestQuery_ResponseAdapter {
       Assertions.checkFieldNotMissing(links, "links");
 
       return new TestQuery.Hero(
+        id,
         name,
         birthDate,
         appearanceDates,
@@ -104,6 +108,9 @@ public class TestQuery_ResponseAdapter {
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Hero value) throws IOException {
+      writer.name("id");
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.id);
+
       writer.name("name");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
 

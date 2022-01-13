@@ -59,11 +59,11 @@ internal data class CreateReviewForEpisode(
       /**
        * Comment about the movie
        */
-      public val commentary: String?,
+      public val commentary: java.lang.String?,
       /**
        * for test purpose only
        */
-      public val listOfListOfString: List<List<String>>?,
+      public val listOfListOfString: List<List<java.lang.String>>?,
       /**
        * for test purpose only
        */
@@ -81,7 +81,7 @@ internal data class CreateReviewForEpisode(
         /**
          * The name of the character
          */
-        public val name: String
+        public val name: java.lang.String
       )
     }
   }
