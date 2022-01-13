@@ -22,7 +22,7 @@ class ConditionalFragmentsTest {
               outputDir = File("build/test/conditionalFragmentsTest"),
               packageName = ""
           ).copy(
-              customScalarsMapping = emptyMap(),
+              scalarMapping = emptyMap(),
               codegenModels = MODELS_RESPONSE_BASED,
               flattenModels = false
           )
@@ -41,7 +41,7 @@ class ConditionalFragmentsTest {
             outputDir = File("build/test/conditionalFragmentsTest"),
             packageName = ""
         ).copy(
-            customScalarsMapping = emptyMap(),
+            scalarMapping = emptyMap(),
             codegenModels = MODELS_OPERATION_BASED,
             flattenModels = false
         )

@@ -63,8 +63,7 @@ internal class IrBuilder(
     private val fragmentDefinitions: List<GQLFragmentDefinition>,
     private val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val alwaysGenerateTypesMatching: Set<String>,
-    // TODO rename to scalarMapping
-    private val customScalarsMapping: Map<String, ScalarInfo>,
+    private val scalarMapping: Map<String, ScalarInfo>,
     private val codegenModels: String,
     private val generateOptionalOperationVariables: Boolean,
 ) : FieldMerger {
@@ -110,7 +109,7 @@ internal class IrBuilder(
     // inject extra types
     usedTypes.addAll(schema.typeDefinitions.keys.filter { shouldAlwaysGenerate(it) })
     // inject custom scalars specified in the Gradle configuration
-    usedTypes.addAll(customScalarsMapping.keys)
+    usedTypes.addAll(scalarMapping.keys)
 
     // Generate the root types
     operationDefinitions.forEach {
@@ -135,7 +134,7 @@ internal class IrBuilder(
       val typeDefinition = schema.typeDefinition(name)
       if (typeDefinition.isBuiltIn()) {
         // We don't generate builtin types, unless they are explicitly mapped
-        if (!customScalarsMapping.containsKey(name)) continue
+        if (!scalarMapping.containsKey(name)) continue
       }
 
       when (typeDefinition) {
@@ -203,7 +202,7 @@ internal class IrBuilder(
   private fun GQLScalarTypeDefinition.toIr(): IrCustomScalar {
     return IrCustomScalar(
         name = name,
-        kotlinName = customScalarsMapping[name]?.targetName,
+        kotlinName = scalarMapping[name]?.targetName,
         description = description,
         deprecationReason = directives.findDeprecationReason()
     )
