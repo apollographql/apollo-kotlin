@@ -47,7 +47,7 @@ object ApolloCompiler {
           "enclosing one.")
     }
 
-    checkCustomScalars(schema, options.customScalarsMapping)
+    checkCustomScalars(schema, options.scalarMapping)
 
     outputDir.deleteRecursively()
     outputDir.mkdirs()
@@ -142,7 +142,7 @@ object ApolloCompiler {
         fragmentDefinitions = fragments,
         allFragmentDefinitions = allFragmentDefinitions,
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
-        customScalarsMapping = options.customScalarsMapping,
+        scalarMapping = options.scalarMapping,
         codegenModels = options.codegenModels,
         generateOptionalOperationVariables = options.generateOptionalOperationVariables
     ).build()
@@ -207,7 +207,7 @@ object ApolloCompiler {
             flatten = options.flattenModels,
             sealedClassesForEnumsMatching = options.sealedClassesForEnumsMatching,
             targetLanguageVersion = options.targetLanguage,
-            scalarMapping = options.customScalarsMapping,
+            scalarMapping = options.scalarMapping,
         ).write(outputDir = outputDir, testDir = testDir)
       }
     }

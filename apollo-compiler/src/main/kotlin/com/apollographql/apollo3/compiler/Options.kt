@@ -86,8 +86,7 @@ class Options(
     val targetLanguage: TargetLanguage = defaultTargetLanguage,
 
     //========== codegen options ============
-    // TODO rename to scalarMapping
-    val customScalarsMapping: Map<String, ScalarInfo> = defaultCustomScalarsMapping,
+    val scalarMapping: Map<String, ScalarInfo> = defaultScalarMapping,
     val codegenModels: String = defaultCodegenModels,
     val flattenModels: Boolean = defaultFlattenModels,
     val useSemanticNaming: Boolean = defaultUseSemanticNaming,
@@ -192,7 +191,7 @@ class Options(
       alwaysGenerateTypesMatching: Set<String> = this.alwaysGenerateTypesMatching,
       operationOutputGenerator: OperationOutputGenerator = this.operationOutputGenerator,
       incomingCompilerMetadata: List<CompilerMetadata> = this.incomingCompilerMetadata,
-      customScalarsMapping: Map<String, ScalarInfo> = this.customScalarsMapping,
+      scalarMapping: Map<String, ScalarInfo> = this.scalarMapping,
       codegenModels: String = this.codegenModels,
       flattenModels: Boolean = this.flattenModels,
       useSemanticNaming: Boolean = this.useSemanticNaming,
@@ -223,7 +222,7 @@ class Options(
       operationOutputGenerator = operationOutputGenerator,
       incomingCompilerMetadata = incomingCompilerMetadata,
       targetLanguage = targetLanguage,
-      customScalarsMapping = customScalarsMapping,
+      scalarMapping = scalarMapping,
       codegenModels = codegenModels,
       flattenModels = flattenModels,
       useSemanticNaming = useSemanticNaming,
@@ -247,8 +246,7 @@ class Options(
     val defaultAlwaysGenerateTypesMatching = emptySet<String>()
     val defaultOperationOutputGenerator = OperationOutputGenerator.Default(OperationIdGenerator.Sha256)
 
-    // TODO: rename to defaultScalarMapping
-    val defaultCustomScalarsMapping = emptyMap<String, ScalarInfo>()
+    val defaultScalarMapping = emptyMap<String, ScalarInfo>()
     val defaultLogger = ApolloCompiler.NoOpLogger
     const val defaultUseSemanticNaming = true
     const val defaultWarnOnDeprecatedUsages = true

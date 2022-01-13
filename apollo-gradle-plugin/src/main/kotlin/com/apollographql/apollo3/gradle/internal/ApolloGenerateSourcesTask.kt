@@ -273,7 +273,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         codegenModels = codegenModels,
         schemaPackageName = incomingOptions.schemaPackageName,
         useSchemaPackageNameForFragments = useSchemaPackageNameForFragments.getOrElse(defaultUseSchemaPackageNameForFragments),
-        customScalarsMapping = scalarsMapping.getOrElse(emptyMap()),
+        scalarMapping = scalarsMapping.getOrElse(emptyMap()),
         targetLanguage = targetLanguage,
         generateTestBuilders = generateTestBuilders.getOrElse(defaultGenerateTestBuilders),
         sealedClassesForEnumsMatching = sealedClassesForEnumsMatching.getOrElse(defaultSealedClassesForEnumsMatching),

@@ -335,7 +335,7 @@ class CodegenTest {
           packageName = "com.example.${folder.name}"
       ).copy(
           operationOutputGenerator = operationOutputGenerator,
-          customScalarsMapping = customScalarsMapping,
+          scalarMapping = customScalarsMapping,
           codegenModels = codegenModels,
           flattenModels = flattenModels,
           useSemanticNaming = useSemanticNaming,
