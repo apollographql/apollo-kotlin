@@ -170,6 +170,11 @@ object ApolloCompiler {
       options.operationOutputFile.writeText(operationOutput.toJson("  "))
     }
 
+    // Merge scalar mappings from upstream modules and this module's options
+    val allScalarMapping = options.incomingCompilerMetadata.fold(options.scalarMapping.toMutableMap()) { acc, it ->
+      acc.apply { putAll(it.scalarMapping) }
+    }
+
     /**
      * Write the generated models
      */
@@ -207,15 +212,15 @@ object ApolloCompiler {
             flatten = options.flattenModels,
             sealedClassesForEnumsMatching = options.sealedClassesForEnumsMatching,
             targetLanguageVersion = options.targetLanguage,
-            scalarMapping = options.scalarMapping,
+            scalarMapping = allScalarMapping,
         ).write(outputDir = outputDir, testDir = testDir)
       }
     }
 
-
     return CompilerMetadata(
         fragments = fragments,
         resolverInfo = outputResolverInfo,
+        scalarMapping = allScalarMapping,
     )
   }
 
