@@ -276,17 +276,18 @@ class Options(
 @JsonClass(generateAdapter = true, generator = "sealed:type")
 sealed interface AdapterInitializer : Serializable
 
-/** The adapter will be instantiated in the generated code */
-@TypeLabel("Singleton")
+/**
+ * The adapter expression will be used as-is (can be an object, a public val, a class instantiation).
+ *
+ * e.g. `"com.example.MyAdapter"` or `"com.example.MyAdapter()"`.
+ */
+@TypeLabel("Expression")
 @JsonClass(generateAdapter = true)
-class SingletonAdapterInitializer(val qualifiedName: String) : AdapterInitializer
+class ExpressionAdapterInitializer(val expression: String) : AdapterInitializer
 
-/** The adapter will be used as-is (it's an object or a public val) */
-@TypeLabel("NoArgConstructor")
-@JsonClass(generateAdapter = true)
-class NoArgConstructorAdapterInitializer(val qualifiedName: String) : AdapterInitializer
-
-/** The adapter instance will be looked up in the [com.apollographql.apollo3.api.CustomScalarAdapters] provided at runtime */
+/**
+ * The adapter instance will be looked up in the [com.apollographql.apollo3.api.CustomScalarAdapters] provided at runtime.
+ */
 @TypeLabel("Runtime")
 object RuntimeAdapterInitializer : AdapterInitializer
 
