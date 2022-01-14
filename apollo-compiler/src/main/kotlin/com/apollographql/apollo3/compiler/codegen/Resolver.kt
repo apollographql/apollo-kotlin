@@ -29,13 +29,12 @@ enum class ResolverKeyKind {
   Fragment,
   FragmentVariablesAdapter,
   FragmentSelections,
-
   /**
    * CustomScalarTarget is a special case as there is no real generated reference pointing to it.
    * Instead it is a String in [CustomScalarType.className]
    */
   CustomScalarTarget,
-  TestBuilder,
+  TestBuilder
 }
 
 @JsonClass(generateAdapter = true)

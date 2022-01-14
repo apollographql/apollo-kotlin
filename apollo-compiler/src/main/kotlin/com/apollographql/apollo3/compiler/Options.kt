@@ -247,7 +247,6 @@ class Options(
   companion object {
     val defaultAlwaysGenerateTypesMatching = emptySet<String>()
     val defaultOperationOutputGenerator = OperationOutputGenerator.Default(OperationIdGenerator.Sha256)
-
     val defaultScalarMapping = emptyMap<String, ScalarInfo>()
     val defaultLogger = ApolloCompiler.NoOpLogger
     const val defaultUseSemanticNaming = true
