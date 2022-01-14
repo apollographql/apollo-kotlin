@@ -121,7 +121,7 @@ apollo {
   mapScalarToLong("ID")
 
   // equivalent of mapScalar("Json", "kotlin.Any", SingletonAdapterInitializer("com.apollographql.apollo3.api.AnyAdapter")
-  mapScalarToMap("Json")
+  mapScalarToKotlinAny("Json")
   
   // etc.
 }
@@ -133,7 +133,7 @@ With this, it is no longer necessary (but still possible) to register the adapte
 
 We need to keep the current mechanism (`customScalarsMapping` + `addCustomScalarAdapter`) working of course.
 
-Let's make `customScalarsMapping` call `mapScalarToMap` internally and mark it as deprecated.
+Let's make `customScalarsMapping` call `mapScalar` internally and mark it as deprecated.
 
 ### Code changes
 
