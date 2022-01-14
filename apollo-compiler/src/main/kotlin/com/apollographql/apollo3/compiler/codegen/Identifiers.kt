@@ -52,7 +52,6 @@ internal object Identifier {
   const val types = "types"
   const val testResolver = "testResolver"
   const val block = "block"
-  const val ScalarAdapterInstances = "ScalarAdapterInstances"
 
   /**
    * Kotlin language identifiers

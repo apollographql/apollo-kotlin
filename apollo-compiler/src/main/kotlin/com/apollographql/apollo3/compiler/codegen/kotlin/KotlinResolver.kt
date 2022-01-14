@@ -4,8 +4,6 @@ import com.apollographql.apollo3.compiler.NoArgConstructorAdapterInitializer
 import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.SingletonAdapterInitializer
-import com.apollographql.apollo3.compiler.codegen.CodegenLayout
-import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.type
 import com.apollographql.apollo3.compiler.codegen.ResolverClassName
@@ -28,12 +26,8 @@ import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 
-class KotlinResolver(
-    private val layout: CodegenLayout,
-    entries: List<ResolverEntry>,
-    val next: KotlinResolver?,
-    private val scalarMapping: Map<String, ScalarInfo>,
-) {
+
+class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?, private val scalarMapping: Map<String, ScalarInfo>) {
   fun resolve(key: ResolverKey): ClassName? = classNames[key] ?: next?.resolve(key)
 
   private var classNames = entries.associateBy(
@@ -169,8 +163,7 @@ class KotlinResolver(
   private fun nonNullableScalarAdapterInitializer(type: IrScalarType): CodeBlock {
     return when (val adapterInitializer = scalarMapping[type.name]?.adapterInitializer) {
       is NoArgConstructorAdapterInitializer -> {
-        val scalarAdapterInstancesObject = ClassName(layout.typeAdapterPackageName(), layout.compiledTypeName(Identifier.ScalarAdapterInstances))
-        CodeBlock.of("%M", MemberName(scalarAdapterInstancesObject, layout.scalarAdapterName(type.name)))
+        CodeBlock.of(adapterInitializer.qualifiedName + "()")
       }
       is SingletonAdapterInitializer -> {
         CodeBlock.of(adapterInitializer.qualifiedName)

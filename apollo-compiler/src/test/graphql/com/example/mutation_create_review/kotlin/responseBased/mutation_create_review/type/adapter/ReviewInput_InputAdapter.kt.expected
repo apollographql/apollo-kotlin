@@ -18,8 +18,6 @@ import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.optional
 import com.example.mutation_create_review.type.ReviewInput
-import com.example.mutation_create_review.type.adapter.ScalarAdapterInstances
-import com.example.mutation_create_review.type.adapter.ScalarAdapterInstances.StringAdapter
 import java.util.Date
 import kotlin.IllegalStateException
 import kotlin.Unit
@@ -42,7 +40,8 @@ internal object ReviewInput_InputAdapter : Adapter<ReviewInput> {
     }
     if (value.commentary is Optional.Present) {
       writer.name("commentary")
-      StringAdapter.nullable().optional().toJson(writer, customScalarAdapters, value.commentary)
+      com.example.MyStringAdapter().nullable().optional().toJson(writer, customScalarAdapters,
+          value.commentary)
     }
     writer.name("favoriteColor")
     ColorInput_InputAdapter.obj().toJson(writer, customScalarAdapters, value.favoriteColor)
@@ -83,11 +82,11 @@ internal object ReviewInput_InputAdapter : Adapter<ReviewInput> {
     }
     if (value.listOfString is Optional.Present) {
       writer.name("listOfString")
-      StringAdapter.nullable().list().nullable().optional().toJson(writer, customScalarAdapters,
-          value.listOfString)
+      com.example.MyStringAdapter().nullable().list().nullable().optional().toJson(writer,
+          customScalarAdapters, value.listOfString)
     }
     writer.name("listOfStringNonOptional")
-    StringAdapter.nullable().list().toJson(writer, customScalarAdapters,
+    com.example.MyStringAdapter().nullable().list().toJson(writer, customScalarAdapters,
         value.listOfStringNonOptional)
     if (value.listOfInputTypes is Optional.Present) {
       writer.name("listOfInputTypes")
@@ -106,8 +105,8 @@ internal object ReviewInput_InputAdapter : Adapter<ReviewInput> {
     }
     if (value.listOfListOfString is Optional.Present) {
       writer.name("listOfListOfString")
-      StringAdapter.list().list().nullable().optional().toJson(writer, customScalarAdapters,
-          value.listOfListOfString)
+      com.example.MyStringAdapter().list().list().nullable().optional().toJson(writer,
+          customScalarAdapters, value.listOfListOfString)
     }
     if (value.listOfListOfEnum is Optional.Present) {
       writer.name("listOfListOfEnum")
@@ -126,7 +125,7 @@ internal object ReviewInput_InputAdapter : Adapter<ReviewInput> {
     }
     if (value.CapitalizedField is Optional.Present) {
       writer.name("CapitalizedField")
-      StringAdapter.nullable().optional().toJson(writer, customScalarAdapters,
+      com.example.MyStringAdapter().nullable().optional().toJson(writer, customScalarAdapters,
           value.CapitalizedField)
     }
     if (value.CapitalizedInt is Optional.Present) {
