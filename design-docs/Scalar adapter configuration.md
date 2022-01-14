@@ -84,47 +84,49 @@ Plugin configuration:
 
 ```kotlin
 apollo {
-  mapScalar("MyDate", "com.example.MyDate", NoArgConstructorAdapterInitializer("com.example.MyDateAdapter"))
+  mapScalar("MyDate", "com.example.MyDate", "com.example.MyDateAdapter()")
 
-  mapScalar("ID", "kotlin.Long", SingletonAdapterInitializer("com.apollographql.apollo3.api.LongAdapter"))
+  mapScalar("ID", "kotlin.Long", "com.apollographql.apollo3.api.LongAdapter")
   
   mapScalar("MyLong", "kotlin.Long")
 }
 ```
 
-The second parameter is a sealed interface to account of the different ways to use the given adapter name:
+`mapScalar`'s signatures:
 
 ```kotlin
-sealed interface AdapterInitializer
+/**
+ * Map a GraphQL scalar type to the Java/Kotlin type.
+ * The adapter must be configured at runtime via `ApolloClient.Builder.addCustomScalarAdapter()`.
+ *
+ * For example: `mapScalar("Date", "com.example.Date")`
+ */
+fun mapScalar(graphQLName: String, targetName: String)
 
-// The adapter will be instantiated in the generated code
-class SingletonAdapterInitializer(val qualifiedName: String): AdapterInitializer
-
-// The adapter will be used as-is (it's an object or a public val)
-class NoArgConstructorAdapterInitializer(val qualifiedName: String): AdapterInitializer
-
-// The adapter will be looked up in the `customScalarAdapters` parameter (same as current behavior)
-object RuntimeAdapterInitializer: AdapterInitializer
-```
-
-`mapScalar`'s signature:
-
-```kotlin
-fun Service.mapScalar(graphQLName: String, targetName: String, adapterInitializer: AdapterInitializer = RuntimeAdapterInitializer)
+/**
+ * Map a GraphQL scalar type to the Java/Kotlin type and provided adapter expression.
+ *
+ * For example:
+ * - `mapScalar("Date", "com.example.Date", "com.example.DateAdapter")` (an instance property or object)
+ * - `mapScalar("Date", "com.example.Date", "com.example.DateAdapter()")` (instantiate the class on the fly)
+ */
+fun mapScalar(graphQLName: String, targetName: String, expression: String)
 ```
 
 Let's also have convenience shortcuts for the types for which we have built-in adapters:
 
 ```kotlin
 apollo {
-  // equivalent to mapScalar("ID", "kotlin.Long", SingletonAdapterInitializer("com.apollographql.apollo3.api.LongAdapter")
-  mapScalarToLong("ID")
+  // equivalent to mapScalar("ID", "kotlin.Long", "com.apollographql.apollo3.api.LongAdapter")
+  mapScalarToKotlinLong("ID")
 
-  // equivalent of mapScalar("Json", "kotlin.Any", SingletonAdapterInitializer("com.apollographql.apollo3.api.AnyAdapter")
+  // equivalent to mapScalar("ID", "java.lang.Long", "com.apollographql.apollo3.api.LongAdapter")
+  mapScalarToJavaLong("ID")
+
+  // equivalent to mapScalar("Json", "kotlin.Any", "com.apollographql.apollo3.api.AnyAdapter")
   mapScalarToKotlinAny("Json")
-  
+
   // etc.
-}
 ```
 
 With this, it is no longer necessary (but still possible) to register the adapters at runtime with `addCustomScalarAdapter`.
@@ -142,15 +144,10 @@ Let's make `customScalarsMapping` call `mapScalar` internally and mark it as dep
 In `ResponseAdapter` and `VariablesAdapter` code generation, we now have more cases to handle to reference the scalar adapter to use:
 
 ```
-if (an Adapter for the scalar is registered with NoArgConstructorAdapterInitializer) {
-    Output the adapter with "()"
-    Note: this is not optimal: they are instantiated each time they are used.
-    Instead we can generate fields in a specific object (e.g. `ScalarAdapters`) and use them in the generated code.
-} else if (an Adapter for the scalar is registered with SingletonAdapterInitializer) {
-    Output the adapter without "()"
+if (an Adapter for the scalar is registered with ExpressionAdapterInitializer) {
+    Output the adapter with the expression as-is
 } else if (an Adapter for the scalar is registered with RuntimeAdapterInitializer) {
     Output the code to lookup the adapter in `customScalarAdapters`
-    Note: if the scalar is built-in, a "Type" class is needed - currently they are not generated.
 } else if (the scalar is a built-in (e.g. `ID`)) {
     Output the appropriate adapter (same as current behavior)
 } else {
@@ -181,15 +178,28 @@ public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomSca
 
 #### Update and store mapping information
 
-Currently, `customScalarsMapping` in `IrBuilder` (and `Options`) is a `Map<String, String>`.
+A sealed interface is used to account for the ways adapters can be configured:
+
+```kotlin
+sealed interface AdapterInitializer
+
+/**
+ * The adapter expression will be used as-is (can be an object, a public val, a class instantiation).
+ *
+ * e.g. `"com.example.MyAdapter"` or `"com.example.MyAdapter()"`.
+ */
+class ExpressionAdapterInitializer(val expression: String) : AdapterInitializer
+
+/**
+ * The adapter instance will be looked up in the [com.apollographql.apollo3.api.CustomScalarAdapters] provided at runtime.
+ */
+object RuntimeAdapterInitializer : AdapterInitializer
+```
+
+Currently, `customScalarsMapping` in `IrBuilder` (and `Options`) is a `Map<String, String>` (GraphQL name -> Java/Kotlin type).
+
 Let's change it to a `Map<String, ScalarInfo>`, with `ScalarInfo` being `data class ScalarInfo(val targetName: String, val adapterInitializer: AdapterInitializer)`.
 
 We need to pass it to `KotlinResolver` / `JavaResolver` because this is where the logic to get the adapter lies (`adapterInitializer()`, `nonNullableAdapterInitializer()`). 
 
 This can be done by passing it to `KotlinCodeGen` / `JavaCodeGen` which instantiate the resolvers.
-
-#### Remaining points
-
-- Avoid instantiating the no arg constructors adapters at each use
-  -> Generate fields in a specific object (e.g. `ScalarAdapters`) and use them in the generated code?
-- Need a Type class for built-in scalars (e.g. `ID`) when using `RuntimeAdapterInitializer`
