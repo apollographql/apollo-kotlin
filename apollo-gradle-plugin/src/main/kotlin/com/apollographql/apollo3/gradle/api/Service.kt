@@ -137,6 +137,24 @@ interface Service {
    */
   fun mapScalar(graphQLName: String, targetName: String, expression: String)
 
+  fun mapScalarToKotlinString(graphQLName: String)
+  fun mapScalarToKotlinInt(graphQLName: String)
+  fun mapScalarToKotlinDouble(graphQLName: String)
+  fun mapScalarToKotlinFloat(graphQLName: String)
+  fun mapScalarToKotlinLong(graphQLName: String)
+  fun mapScalarToKotlinBoolean(graphQLName: String)
+  fun mapScalarToKotlinAny(graphQLName: String)
+
+  fun mapScalarToJavaString(graphQLName: String)
+  fun mapScalarToJavaInteger(graphQLName: String)
+  fun mapScalarToJavaDouble(graphQLName: String)
+  fun mapScalarToJavaFloat(graphQLName: String)
+  fun mapScalarToJavaLong(graphQLName: String)
+  fun mapScalarToJavaBoolean(graphQLName: String)
+  fun mapScalarToJavaObject(graphQLName: String)
+
+  fun mapScalarToUpload(graphQLName: String)
+
   /**
    * By default, Apollo uses `Sha256` hashing algorithm to generate an ID for the query.
    * To provide a custom ID generation logic, pass an `instance` that implements the [OperationIdGenerator]. How the ID is generated is
