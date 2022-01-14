@@ -15,8 +15,6 @@ import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.custom_scalar_type.TestQuery
 import com.example.custom_scalar_type.type.ID
-import com.example.custom_scalar_type.type.adapter.ScalarAdapterInstances
-import com.example.custom_scalar_type.type.adapter.ScalarAdapterInstances.StringAdapter
 import java.lang.Long
 import java.util.Date
 import kotlin.Any
@@ -71,7 +69,7 @@ public object TestQuery_ResponseAdapter {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> id = customScalarAdapters.responseAdapterFor<Long>(ID.type).fromJson(reader,
                 customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> name = com.example.MyStringAdapter().fromJson(reader, customScalarAdapters)
             2 -> birthDate = customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).fromJson(reader,
                 customScalarAdapters)
             3 -> appearanceDates = customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).list().fromJson(reader,
@@ -104,7 +102,7 @@ public object TestQuery_ResponseAdapter {
             value.id)
 
         writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
+        com.example.MyStringAdapter().toJson(writer, customScalarAdapters, value.name)
 
         writer.name("birthDate")
         customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).toJson(writer,

@@ -13,8 +13,6 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.input_object_type.TestQuery
-import com.example.input_object_type.type.adapter.ScalarAdapterInstances
-import com.example.input_object_type.type.adapter.ScalarAdapterInstances.StringAdapter
 import kotlin.Int
 import kotlin.String
 import kotlin.Unit
@@ -60,7 +58,8 @@ public object TestQuery_ResponseAdapter {
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> stars = IntAdapter.fromJson(reader, customScalarAdapters)
-            1 -> commentary = StringAdapter.nullable().fromJson(reader, customScalarAdapters)
+            1 -> commentary = com.example.MyStringAdapter().nullable().fromJson(reader,
+                customScalarAdapters)
             else -> break
           }
         }
@@ -80,7 +79,8 @@ public object TestQuery_ResponseAdapter {
         IntAdapter.toJson(writer, customScalarAdapters, value.stars)
 
         writer.name("commentary")
-        StringAdapter.nullable().toJson(writer, customScalarAdapters, value.commentary)
+        com.example.MyStringAdapter().nullable().toJson(writer, customScalarAdapters,
+            value.commentary)
       }
     }
   }
