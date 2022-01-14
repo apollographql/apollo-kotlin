@@ -1,10 +1,11 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.compiler.AdapterInitializer
+import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo3.compiler.MODELS_COMPAT
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.Roots
+import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.gradle.api.Introspection
 import com.apollographql.apollo3.gradle.api.RegisterOperationsConfig
@@ -139,7 +140,14 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     packageNameGenerator.disallowChanges()
   }
 
-  override fun mapScalar(graphQLName: String, targetName: String, adapterInitializer: AdapterInitializer) {
-    scalarMapping.put(graphQLName, ScalarInfo(targetName, adapterInitializer))
-  }
+  override fun mapScalar(
+      graphQLName: String,
+      targetName: String,
+  ) = scalarMapping.put(graphQLName, ScalarInfo(targetName, RuntimeAdapterInitializer))
+
+  override fun mapScalar(
+      graphQLName: String,
+      targetName: String,
+      expression: String,
+  ) = scalarMapping.put(graphQLName, ScalarInfo(targetName, ExpressionAdapterInitializer(expression)))
 }

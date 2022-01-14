@@ -99,7 +99,7 @@ interface Service {
   val failOnWarnings: Property<Boolean>
 
   /**
-   * For custom scalar types like Date, map from the GraphQL type to the java/kotlin type.
+   * For custom scalar types like Date, map from the GraphQL type to the Java/Kotlin type.
    *
    * Default value: the empty map
    */
@@ -113,7 +113,7 @@ interface Service {
   val customTypeMapping: MapProperty<String, String>
 
   /**
-   * Map from GraphQL scalar types to the java/kotlin type and adapter.
+   * Map from GraphQL scalar types to the Java/Kotlin type and adapter.
    * Do not use this property directly, instead use [mapScalar].
    *
    * Default value: the empty map
@@ -121,9 +121,21 @@ interface Service {
   val scalarMapping: MapProperty<String, ScalarInfo>
 
   /**
-   * Map a GraphQL scalar type to the java/kotlin type and adapter.
+   * Map a GraphQL scalar type to the Java/Kotlin type.
+   * The adapter must be configured at runtime via `ApolloClient.Builder.addCustomScalarAdapter()`.
+   *
+   * For example: `mapScalar("Date", "com.example.Date")`
    */
-  fun mapScalar(graphQLName: String, targetName: String, adapterInitializer: AdapterInitializer = RuntimeAdapterInitializer)
+  fun mapScalar(graphQLName: String, targetName: String)
+
+  /**
+   * Map a GraphQL scalar type to the Java/Kotlin type and provided adapter expression.
+   *
+   * For example:
+   * - `mapScalar("Date", "com.example.Date", "com.example.DateAdapter")` (an instance property or object)
+   * - `mapScalar("Date", "com.example.Date", "com.example.DateAdapter()")` (instantiate the class on the fly)
+   */
+  fun mapScalar(graphQLName: String, targetName: String, expression: String)
 
   /**
    * By default, Apollo uses `Sha256` hashing algorithm to generate an ID for the query.

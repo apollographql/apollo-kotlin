@@ -1,9 +1,8 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin
 
-import com.apollographql.apollo3.compiler.NoArgConstructorAdapterInitializer
+import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
-import com.apollographql.apollo3.compiler.SingletonAdapterInitializer
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.type
 import com.apollographql.apollo3.compiler.codegen.ResolverClassName
@@ -162,11 +161,8 @@ class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?, pr
 
   private fun nonNullableScalarAdapterInitializer(type: IrScalarType): CodeBlock {
     return when (val adapterInitializer = scalarMapping[type.name]?.adapterInitializer) {
-      is NoArgConstructorAdapterInitializer -> {
-        CodeBlock.of(adapterInitializer.qualifiedName + "()")
-      }
-      is SingletonAdapterInitializer -> {
-        CodeBlock.of(adapterInitializer.qualifiedName)
+      is ExpressionAdapterInitializer -> {
+        CodeBlock.of(adapterInitializer.expression)
       }
       is RuntimeAdapterInitializer -> {
         val target = resolve(ResolverKeyKind.CustomScalarTarget, type.name)
