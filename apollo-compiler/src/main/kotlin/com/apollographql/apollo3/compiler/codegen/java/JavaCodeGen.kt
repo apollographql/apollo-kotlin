@@ -2,6 +2,7 @@ package com.apollographql.apollo3.compiler.codegen.java
 
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.PackageNameGenerator
+import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.codegen.java.adapter.EnumResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.CustomScalarBuilder
@@ -51,6 +52,7 @@ class JavaCodeGen(
      * depth 0
      */
     private val flatten: Boolean,
+    private val scalarMapping: Map<String, ScalarInfo>,
 ) {
   /**
    * @param outputDir: the directory where to write the Kotlin files
@@ -58,7 +60,7 @@ class JavaCodeGen(
    */
   fun write(outputDir: File): ResolverInfo {
     val upstreamResolver = resolverInfos.fold(null as JavaResolver?) { acc, resolverInfo ->
-      JavaResolver(resolverInfo.entries, acc)
+      JavaResolver(resolverInfo.entries, acc, scalarMapping)
     }
 
     val layout = JavaCodegenLayout(
@@ -70,7 +72,7 @@ class JavaCodeGen(
 
     val context = JavaContext(
         layout = layout,
-        resolver = JavaResolver(emptyList(), upstreamResolver)
+        resolver = JavaResolver(emptyList(), upstreamResolver, scalarMapping)
     )
     val builders = mutableListOf<JavaClassBuilder>()
 

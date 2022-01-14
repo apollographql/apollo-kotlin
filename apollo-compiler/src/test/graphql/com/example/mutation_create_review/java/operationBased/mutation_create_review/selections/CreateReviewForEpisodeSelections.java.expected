@@ -16,18 +16,19 @@ import com.example.mutation_create_review.type.Character;
 import com.example.mutation_create_review.type.Date;
 import com.example.mutation_create_review.type.Episode;
 import com.example.mutation_create_review.type.Review;
+import com.example.mutation_create_review.type.String;
 import java.util.Arrays;
 import java.util.List;
 
 public class CreateReviewForEpisodeSelections {
   private static List<CompiledSelection> listOfListOfObject = Arrays.asList(
-    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
+    new CompiledField.Builder("name", new CompiledNotNullType(String.type)).build()
   );
 
   private static List<CompiledSelection> createReview = Arrays.asList(
     new CompiledField.Builder("stars", new CompiledNotNullType(CompiledGraphQL.CompiledIntType)).build(),
-    new CompiledField.Builder("commentary", CompiledGraphQL.CompiledStringType).build(),
-    new CompiledField.Builder("listOfListOfString", new CompiledListType(new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(CompiledGraphQL.CompiledStringType))))).build(),
+    new CompiledField.Builder("commentary", String.type).build(),
+    new CompiledField.Builder("listOfListOfString", new CompiledListType(new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(String.type))))).build(),
     new CompiledField.Builder("listOfListOfEnum", new CompiledListType(new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Episode.type))))).build(),
     new CompiledField.Builder("listOfListOfCustom", new CompiledListType(new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Date.type))))).build(),
     new CompiledField.Builder("listOfListOfObject", new CompiledListType(new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Character.type))))).selections(listOfListOfObject).build()
