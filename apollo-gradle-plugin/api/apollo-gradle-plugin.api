@@ -86,6 +86,7 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Service {
 	public abstract fun getOutputDir ()Lorg/gradle/api/file/DirectoryProperty;
 	public abstract fun getPackageName ()Lorg/gradle/api/provider/Property;
 	public abstract fun getPackageNameGenerator ()Lorg/gradle/api/provider/Property;
+	public abstract fun getScalarMapping ()Lorg/gradle/api/provider/MapProperty;
 	public abstract fun getSchemaFile ()Lorg/gradle/api/file/RegularFileProperty;
 	public abstract fun getSchemaFiles ()Lorg/gradle/api/file/ConfigurableFileCollection;
 	public abstract fun getSealedClassesForEnumsMatching ()Lorg/gradle/api/provider/ListProperty;
@@ -95,6 +96,23 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Service {
 	public abstract fun getUseSemanticNaming ()Lorg/gradle/api/provider/Property;
 	public abstract fun getWarnOnDeprecatedUsages ()Lorg/gradle/api/provider/Property;
 	public abstract fun introspection (Lorg/gradle/api/Action;)V
+	public abstract fun mapScalar (Ljava/lang/String;Ljava/lang/String;)V
+	public abstract fun mapScalar (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public abstract fun mapScalarToJavaBoolean (Ljava/lang/String;)V
+	public abstract fun mapScalarToJavaDouble (Ljava/lang/String;)V
+	public abstract fun mapScalarToJavaFloat (Ljava/lang/String;)V
+	public abstract fun mapScalarToJavaInteger (Ljava/lang/String;)V
+	public abstract fun mapScalarToJavaLong (Ljava/lang/String;)V
+	public abstract fun mapScalarToJavaObject (Ljava/lang/String;)V
+	public abstract fun mapScalarToJavaString (Ljava/lang/String;)V
+	public abstract fun mapScalarToKotlinAny (Ljava/lang/String;)V
+	public abstract fun mapScalarToKotlinBoolean (Ljava/lang/String;)V
+	public abstract fun mapScalarToKotlinDouble (Ljava/lang/String;)V
+	public abstract fun mapScalarToKotlinFloat (Ljava/lang/String;)V
+	public abstract fun mapScalarToKotlinInt (Ljava/lang/String;)V
+	public abstract fun mapScalarToKotlinLong (Ljava/lang/String;)V
+	public abstract fun mapScalarToKotlinString (Ljava/lang/String;)V
+	public abstract fun mapScalarToUpload (Ljava/lang/String;)V
 	public abstract fun operationOutputConnection (Lorg/gradle/api/Action;)V
 	public abstract fun outputDirConnection (Lorg/gradle/api/Action;)V
 	public abstract fun packageNamesFromFilePaths (Ljava/lang/String;)V
