@@ -86,7 +86,6 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Service {
 	public abstract fun getOutputDir ()Lorg/gradle/api/file/DirectoryProperty;
 	public abstract fun getPackageName ()Lorg/gradle/api/provider/Property;
 	public abstract fun getPackageNameGenerator ()Lorg/gradle/api/provider/Property;
-	public abstract fun getScalarMapping ()Lorg/gradle/api/provider/MapProperty;
 	public abstract fun getSchemaFile ()Lorg/gradle/api/file/RegularFileProperty;
 	public abstract fun getSchemaFiles ()Lorg/gradle/api/file/ConfigurableFileCollection;
 	public abstract fun getSealedClassesForEnumsMatching ()Lorg/gradle/api/provider/ListProperty;
