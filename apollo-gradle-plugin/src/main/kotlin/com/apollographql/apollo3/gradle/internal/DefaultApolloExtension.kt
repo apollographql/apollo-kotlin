@@ -96,7 +96,8 @@ abstract class DefaultApolloExtension(
             && defaultService.schemaFile.isPresent.not()
             && defaultService.schemaFiles.isEmpty
             && defaultService.alwaysGenerateTypesMatching.isPresent.not()
-            && defaultService.scalarMapping.isPresent.not()
+            && defaultService.scalarTypeMapping.isEmpty()
+            && defaultService.scalarAdapterMapping.isEmpty()
             && defaultService.customScalarsMapping.isPresent.not()
             && defaultService.customTypeMapping.isPresent.not()
             && defaultService.excludes.isPresent.not()
@@ -461,15 +462,19 @@ abstract class DefaultApolloExtension(
       task.targetLanguage.set(targetLanguage)
       task.warnOnDeprecatedUsages.set(service.warnOnDeprecatedUsages)
       task.failOnWarnings.set(service.failOnWarnings)
+
+      val scalarTypeMappingFallbackOldSyntax = service.customScalarsMapping.orElse(
+          service.customTypeMapping
+      ).getOrElse(emptyMap())
+
+      check(service.scalarTypeMapping.isEmpty() || scalarTypeMappingFallbackOldSyntax.isEmpty()) {
+        "Apollo: either mapScalar() or customScalarsMapping can be used, but not both"
+      }
       @Suppress("DEPRECATION")
-      task.scalarsMapping.set(
-          service.scalarMapping.orElse(
-              service.customScalarsMapping.orElse(
-                  service.customTypeMapping
-              )
-                  .getOrNull()?.asScalarInfoMapping() ?: emptyMap()
-          )
+      task.scalarTypeMapping.set(
+          service.scalarTypeMapping.ifEmpty { scalarTypeMappingFallbackOldSyntax }
       )
+      task.scalarAdapterMapping.set(service.scalarAdapterMapping)
       task.outputDir.apply {
         set(service.outputDir.orElse(BuildDirLayout.outputDir(project, service)).get())
         disallowChanges()

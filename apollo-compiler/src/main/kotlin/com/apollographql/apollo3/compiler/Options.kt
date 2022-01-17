@@ -10,7 +10,6 @@ import com.apollographql.apollo3.compiler.introspection.toSchema
 import com.squareup.moshi.JsonClass
 import dev.zacsweers.moshix.sealed.annotations.TypeLabel
 import java.io.File
-import java.io.Serializable
 
 
 const val MODELS_RESPONSE_BASED = "responseBased"
@@ -274,7 +273,7 @@ class Options(
  * Controls how scalar adapters are used in the generated code.
  */
 @JsonClass(generateAdapter = true, generator = "sealed:type")
-sealed interface AdapterInitializer : Serializable
+sealed interface AdapterInitializer
 
 /**
  * The adapter expression will be used as-is (can be an object, a public val, a class instantiation).
@@ -292,4 +291,4 @@ class ExpressionAdapterInitializer(val expression: String) : AdapterInitializer
 object RuntimeAdapterInitializer : AdapterInitializer
 
 @JsonClass(generateAdapter = true)
-data class ScalarInfo(val targetName: String, val adapterInitializer: AdapterInitializer = RuntimeAdapterInitializer) : Serializable
+data class ScalarInfo(val targetName: String, val adapterInitializer: AdapterInitializer = RuntimeAdapterInitializer)

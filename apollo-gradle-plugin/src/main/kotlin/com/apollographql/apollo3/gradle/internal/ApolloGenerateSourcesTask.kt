@@ -5,6 +5,7 @@ import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.ApolloCompiler
 import com.apollographql.apollo3.compiler.ApolloMetadata
 import com.apollographql.apollo3.compiler.CommonMetadata
+import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo3.compiler.IncomingOptions
 import com.apollographql.apollo3.compiler.IncomingOptions.Companion.resolveSchema
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
@@ -27,6 +28,7 @@ import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSchemaPack
 import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSemanticNaming
 import com.apollographql.apollo3.compiler.Options.Companion.defaultWarnOnDeprecatedUsages
 import com.apollographql.apollo3.compiler.PackageNameGenerator
+import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.TargetLanguage
 import org.gradle.api.DefaultTask
@@ -97,7 +99,11 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Input
   @get:Optional
-  abstract val scalarsMapping: MapProperty<String, ScalarInfo>
+  abstract val scalarTypeMapping: MapProperty<String, String>
+
+  @get:Input
+  @get:Optional
+  abstract val scalarAdapterMapping: MapProperty<String, String>
 
   @get:Input
   @get:Optional
@@ -273,7 +279,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         codegenModels = codegenModels,
         schemaPackageName = incomingOptions.schemaPackageName,
         useSchemaPackageNameForFragments = useSchemaPackageNameForFragments.getOrElse(defaultUseSchemaPackageNameForFragments),
-        scalarMapping = scalarsMapping.getOrElse(emptyMap()),
+        scalarMapping = scalarMapping(),
         targetLanguage = targetLanguage,
         generateTestBuilders = generateTestBuilders.getOrElse(defaultGenerateTestBuilders),
         sealedClassesForEnumsMatching = sealedClassesForEnumsMatching.getOrElse(defaultSealedClassesForEnumsMatching),
@@ -289,6 +295,13 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
           compilerMetadata = outputCompilerMetadata,
           moduleName = projectName.get()
       ).writeTo(metadataOutputFile)
+    }
+  }
+
+  private fun scalarMapping(): Map<String, ScalarInfo> {
+    return scalarTypeMapping.getOrElse(emptyMap()).mapValues { (graphQLName, targetName) ->
+      val adapterInitializerExpression = scalarAdapterMapping.getOrElse(emptyMap())[graphQLName]
+      ScalarInfo(targetName, if (adapterInitializerExpression == null) RuntimeAdapterInitializer else ExpressionAdapterInitializer(adapterInitializerExpression))
     }
   }
 }
