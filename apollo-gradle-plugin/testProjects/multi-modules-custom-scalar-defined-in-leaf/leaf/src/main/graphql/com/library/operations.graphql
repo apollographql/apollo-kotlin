@@ -1,0 +1,4 @@
+query GetGeoPoint {
+  date
+  long
+}
