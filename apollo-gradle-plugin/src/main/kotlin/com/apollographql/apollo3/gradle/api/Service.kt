@@ -5,12 +5,9 @@ import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_1
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.compiler.AdapterInitializer
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.PackageNameGenerator
-import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
-import com.apollographql.apollo3.compiler.ScalarInfo
 import org.gradle.api.Action
 import org.gradle.api.Task
 import org.gradle.api.file.ConfigurableFileCollection
@@ -111,14 +108,6 @@ interface Service {
       "and will be removed in a future version. Use mapScalar() instead.")
   @ApolloDeprecatedSince(v3_0_0)
   val customTypeMapping: MapProperty<String, String>
-
-  /**
-   * Map from GraphQL scalar types to the Java/Kotlin type and adapter.
-   * Do not use this property directly, instead use [mapScalar].
-   *
-   * Default value: the empty map
-   */
-  val scalarMapping: MapProperty<String, ScalarInfo>
 
   /**
    * Map a GraphQL scalar type to the Java/Kotlin type.

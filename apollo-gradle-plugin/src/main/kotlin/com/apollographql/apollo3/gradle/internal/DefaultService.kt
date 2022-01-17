@@ -1,12 +1,9 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo3.compiler.MODELS_COMPAT
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.Roots
-import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
-import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.gradle.api.Introspection
 import com.apollographql.apollo3.gradle.api.RegisterOperationsConfig
 import com.apollographql.apollo3.gradle.api.Registry
@@ -27,7 +24,6 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     if (GradleVersion.current() >= GradleVersion.version("6.2")) {
       // This allows users to call customScalarsMapping.put("Date", "java.util.Date")
       // see https://github.com/gradle/gradle/issues/7485
-      scalarMapping.convention(null as Map<String, ScalarInfo>?)
       customScalarsMapping.convention(null as Map<String, String>?)
       customTypeMapping.convention(null as Map<String, String>?)
       includes.convention(null as List<String>?)
@@ -35,7 +31,6 @@ abstract class DefaultService @Inject constructor(val project: Project, override
       alwaysGenerateTypesMatching.convention(null as Set<String>?)
       sealedClassesForEnumsMatching.convention(null as List<String>?)
     } else {
-      scalarMapping.set(null as Map<String, ScalarInfo>?)
       customScalarsMapping.set(null as Map<String, String>?)
       customTypeMapping.set(null as Map<String, String>?)
       includes.set(null as List<String>?)
@@ -141,16 +136,24 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     packageNameGenerator.disallowChanges()
   }
 
+  val scalarTypeMapping = mutableMapOf<String, String>()
+  val scalarAdapterMapping = mutableMapOf<String, String>()
+
   override fun mapScalar(
       graphQLName: String,
       targetName: String,
-  ) = scalarMapping.put(graphQLName, ScalarInfo(targetName, RuntimeAdapterInitializer))
+  ) {
+    scalarTypeMapping[graphQLName] = targetName
+  }
 
   override fun mapScalar(
       graphQLName: String,
       targetName: String,
       expression: String,
-  ) = scalarMapping.put(graphQLName, ScalarInfo(targetName, ExpressionAdapterInitializer(expression)))
+  ) {
+    scalarTypeMapping[graphQLName] = targetName
+    scalarAdapterMapping[graphQLName] = expression
+  }
 
   override fun mapScalarToKotlinString(graphQLName: String) = mapScalar(graphQLName, "kotlin.String", "com.apollographql.apollo3.api.StringAdapter")
   override fun mapScalarToKotlinInt(graphQLName: String) = mapScalar(graphQLName, "kotlin.Int", "com.apollographql.apollo3.api.IntAdapter")
