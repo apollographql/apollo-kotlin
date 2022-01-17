@@ -45,9 +45,9 @@ class CustomScalarTest {
         .query(GetAllQuery())
         .execute()
         .dataAssertNoErrors
-    assertEquals(1, data.id)
+    assertEquals(1L, data.id)
     assertNull(data.nullableId)
-    assertEquals(10_000_000_000, data.long)
+    assertEquals(10_000_000_000L, data.long)
     assertEquals(1.4f, data.float)
     assertEquals(mapOf("key" to "value"), data.any)
     assertEquals(listOf(
