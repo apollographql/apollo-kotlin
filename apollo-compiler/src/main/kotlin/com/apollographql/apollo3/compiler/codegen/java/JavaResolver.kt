@@ -7,7 +7,6 @@ import com.apollographql.apollo3.compiler.codegen.ResolverEntry
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
 import com.apollographql.apollo3.compiler.codegen.java.adapter.singletonAdapterInitializer
-import com.apollographql.apollo3.compiler.ir.IrScalarType
 import com.apollographql.apollo3.compiler.ir.IrEnumType
 import com.apollographql.apollo3.compiler.ir.IrInputObjectType
 import com.apollographql.apollo3.compiler.ir.IrListType
@@ -15,6 +14,7 @@ import com.apollographql.apollo3.compiler.ir.IrModelType
 import com.apollographql.apollo3.compiler.ir.IrNamedType
 import com.apollographql.apollo3.compiler.ir.IrNonNullType
 import com.apollographql.apollo3.compiler.ir.IrOptionalType
+import com.apollographql.apollo3.compiler.ir.IrScalarType
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
@@ -62,7 +62,7 @@ class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?) {
           "Int" -> JavaClassNames.Integer
           "Boolean" -> JavaClassNames.Boolean
           else -> {
-            resolve(ResolverKeyKind.CustomScalarTarget, type.name) ?: JavaClassNames.Object
+            resolve(ResolverKeyKind.ScalarTarget, type.name) ?: JavaClassNames.Object
           }
         }
 
@@ -80,7 +80,7 @@ class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?) {
         type is IrScalarType && type.name == "Boolean" -> adapterCodeBlock("NullableBooleanAdapter")
         type is IrScalarType && type.name == "Int" -> adapterCodeBlock("NullableIntAdapter")
         type is IrScalarType && type.name == "Float" -> adapterCodeBlock("NullableDoubleAdapter")
-        type is IrScalarType && resolve(ResolverKeyKind.CustomScalarTarget, type.name) == null -> {
+        type is IrScalarType && resolve(ResolverKeyKind.ScalarTarget, type.name) == null -> {
           adapterCodeBlock("NullableAnyAdapter")
         }
         else -> {
@@ -126,7 +126,7 @@ class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?) {
       type is IrScalarType && type.name == "Int" -> adapterCodeBlock("IntAdapter")
       type is IrScalarType && type.name == "Float" -> adapterCodeBlock("DoubleAdapter")
       type is IrScalarType -> {
-        val target = resolve(ResolverKeyKind.CustomScalarTarget, type.name)
+        val target = resolve(ResolverKeyKind.ScalarTarget, type.name)
         if (target == null) {
           adapterCodeBlock("AnyAdapter")
         } else {
@@ -208,7 +208,7 @@ class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?) {
   fun resolveSchemaType(name: String) = resolveAndAssert(ResolverKeyKind.SchemaType, name)
   fun registerSchemaType(name: String, className: ClassName) = register(ResolverKeyKind.SchemaType, name, className)
   fun registerModel(path: String, className: ClassName) = register(ResolverKeyKind.Model, path, className)
-  fun registerCustomScalar(name: String, className: ClassName) = register(ResolverKeyKind.CustomScalarTarget, name, className)
+  fun registerCustomScalar(name: String, className: ClassName) = register(ResolverKeyKind.ScalarTarget, name, className)
 }
 
 fun ResolverClassName.toJavaPoetClassName(): ClassName = ClassName.get(packageName, simpleNames[0], *simpleNames.drop(1).toTypedArray())

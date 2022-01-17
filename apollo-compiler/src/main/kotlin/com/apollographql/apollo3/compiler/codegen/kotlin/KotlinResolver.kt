@@ -72,7 +72,7 @@ class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?, pr
 
   private fun resolveIrScalarType(type: IrScalarType): ClassName {
     // Try mapping first, then built-ins, then fallback to Any
-    return resolve(ResolverKeyKind.CustomScalarTarget, type.name) ?: when (type.name) {
+    return resolve(ResolverKeyKind.ScalarTarget, type.name) ?: when (type.name) {
       "String" -> KotlinSymbols.String
       "Float" -> KotlinSymbols.Double
       "Int" -> KotlinSymbols.Int
@@ -92,7 +92,7 @@ class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?, pr
         type is IrScalarType && type.name == "String" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableStringAdapter)
         type is IrScalarType && type.name == "Int" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableIntAdapter)
         type is IrScalarType && type.name == "Float" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableDoubleAdapter)
-        type is IrScalarType && resolve(ResolverKeyKind.CustomScalarTarget, type.name) == null -> {
+        type is IrScalarType && resolve(ResolverKeyKind.ScalarTarget, type.name) == null -> {
           CodeBlock.of("%M", KotlinSymbols.NullableAnyAdapter)
         }
         else -> {
@@ -165,7 +165,7 @@ class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?, pr
         CodeBlock.of(adapterInitializer.expression)
       }
       is RuntimeAdapterInitializer -> {
-        val target = resolve(ResolverKeyKind.CustomScalarTarget, type.name)
+        val target = resolve(ResolverKeyKind.ScalarTarget, type.name)
         CodeBlock.of(
             "$customScalarAdapters.responseAdapterFor<%T>(%L)",
             target,
@@ -180,7 +180,7 @@ class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?, pr
           "Int" -> CodeBlock.of("%M", KotlinSymbols.IntAdapter)
           "Float" -> CodeBlock.of("%M", KotlinSymbols.DoubleAdapter)
           else -> {
-            val target = resolve(ResolverKeyKind.CustomScalarTarget, type.name)
+            val target = resolve(ResolverKeyKind.ScalarTarget, type.name)
             if (target == null) {
               CodeBlock.of("%M", KotlinSymbols.AnyAdapter)
             } else {
@@ -238,7 +238,7 @@ class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?, pr
   fun resolveSchemaType(name: String) = resolveAndAssert(ResolverKeyKind.SchemaType, name)
   fun registerSchemaType(name: String, className: ClassName) = register(ResolverKeyKind.SchemaType, name, className)
   fun registerModel(path: String, className: ClassName) = register(ResolverKeyKind.Model, path, className)
-  fun registerCustomScalar(name: String, className: ClassName) = register(ResolverKeyKind.CustomScalarTarget, name, className)
+  fun registerCustomScalar(name: String, className: ClassName) = register(ResolverKeyKind.ScalarTarget, name, className)
 
 
   fun registerTestBuilder(path: String, className: ClassName) = register(ResolverKeyKind.TestBuilder, path, className)
