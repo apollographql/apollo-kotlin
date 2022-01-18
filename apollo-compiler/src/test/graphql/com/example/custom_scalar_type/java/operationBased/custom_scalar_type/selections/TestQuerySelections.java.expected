@@ -11,8 +11,8 @@ import com.apollographql.apollo3.api.CompiledNotNullType;
 import com.apollographql.apollo3.api.CompiledSelection;
 import com.example.custom_scalar_type.type.Character;
 import com.example.custom_scalar_type.type.Date;
-import com.example.custom_scalar_type.type.ID;
-import com.example.custom_scalar_type.type.String;
+import com.example.custom_scalar_type.type.GraphQLID;
+import com.example.custom_scalar_type.type.GraphQLString;
 import com.example.custom_scalar_type.type.URL;
 import com.example.custom_scalar_type.type.UnsupportedType;
 import java.util.Arrays;
@@ -20,8 +20,8 @@ import java.util.List;
 
 public class TestQuerySelections {
   private static List<CompiledSelection> hero = Arrays.asList(
-    new CompiledField.Builder("id", new CompiledNotNullType(ID.type)).build(),
-    new CompiledField.Builder("name", new CompiledNotNullType(String.type)).build(),
+    new CompiledField.Builder("id", new CompiledNotNullType(GraphQLID.type)).build(),
+    new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("birthDate", new CompiledNotNullType(Date.type)).build(),
     new CompiledField.Builder("appearanceDates", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Date.type)))).build(),
     new CompiledField.Builder("fieldWithUnsupportedType", new CompiledNotNullType(UnsupportedType.type)).build(),

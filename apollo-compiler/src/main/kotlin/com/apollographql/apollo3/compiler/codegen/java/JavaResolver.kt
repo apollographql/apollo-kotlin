@@ -97,30 +97,6 @@ class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?, privat
   }
 
   fun resolveCompiledType(name: String): CodeBlock {
-    val builtin = if (scalarMapping.containsKey(name)) {
-      // The scalar is mapped to a user-defined type: do not hardcode the compiled type
-      null
-    } else {
-      when (name) {
-        "String" -> "CompiledStringType"
-        "Int" -> "CompiledIntType"
-        "Float" -> "CompiledFloatType"
-        "Boolean" -> "CompiledBooleanType"
-        "ID" -> "CompiledIDType"
-        "__Schema" -> "CompiledSchemaType"
-        "__Type" -> "CompiledTypeType"
-        "__Field" -> "CompiledFieldType"
-        "__InputValue" -> "CompiledInputValueType"
-        "__EnumValue" -> "CompiledEnumValueType"
-        "__Directive" -> "CompiledDirectiveType"
-        else -> null
-      }
-    }
-
-    if (builtin != null) {
-      return CodeBlock.of("$T.$L", JavaClassNames.CompiledGraphQL, builtin)
-    }
-
     return CodeBlock.of("$T.$type", resolveAndAssert(ResolverKeyKind.SchemaType, name))
   }
 

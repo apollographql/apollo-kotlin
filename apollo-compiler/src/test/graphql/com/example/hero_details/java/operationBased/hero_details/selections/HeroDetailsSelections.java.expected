@@ -6,20 +6,21 @@
 package com.example.hero_details.selections;
 
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompiledGraphQL;
 import com.apollographql.apollo3.api.CompiledListType;
 import com.apollographql.apollo3.api.CompiledNotNullType;
 import com.apollographql.apollo3.api.CompiledSelection;
 import com.example.hero_details.type.Character;
 import com.example.hero_details.type.FriendsConnection;
 import com.example.hero_details.type.FriendsEdge;
+import com.example.hero_details.type.GraphQLInt;
+import com.example.hero_details.type.GraphQLString;
 import com.example.hero_details.type.hero_type;
 import java.util.Arrays;
 import java.util.List;
 
 public class HeroDetailsSelections {
   private static List<CompiledSelection> node = Arrays.asList(
-    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
+    new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build()
   );
 
   private static List<CompiledSelection> edges = Arrays.asList(
@@ -27,13 +28,13 @@ public class HeroDetailsSelections {
   );
 
   private static List<CompiledSelection> friendsConnection = Arrays.asList(
-    new CompiledField.Builder("totalCount", CompiledGraphQL.CompiledIntType).build(),
+    new CompiledField.Builder("totalCount", GraphQLInt.type).build(),
     new CompiledField.Builder("edges", new CompiledListType(FriendsEdge.type)).selections(edges).build()
   );
 
   private static List<CompiledSelection> hero = Arrays.asList(
     new CompiledField.Builder("type", new CompiledNotNullType(hero_type.type)).build(),
-    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("friendsConnection", new CompiledNotNullType(FriendsConnection.type)).selections(friendsConnection).build()
   );
 

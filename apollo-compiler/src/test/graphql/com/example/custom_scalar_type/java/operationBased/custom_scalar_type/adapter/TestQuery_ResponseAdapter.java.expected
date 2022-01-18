@@ -15,7 +15,7 @@ import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.custom_scalar_type.TestQuery;
-import com.example.custom_scalar_type.type.ID;
+import com.example.custom_scalar_type.type.GraphQLID;
 import java.io.IOException;
 import java.lang.Long;
 import java.lang.Object;
@@ -76,7 +76,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: id = (customScalarAdapters.<Long>responseAdapterFor(ID.type)).fromJson(reader, customScalarAdapters); break;
+          case 0: id = (customScalarAdapters.<Long>responseAdapterFor(GraphQLID.type)).fromJson(reader, customScalarAdapters); break;
           case 1: name = new com.example.MyStringAdapter().fromJson(reader, customScalarAdapters); break;
           case 2: birthDate = (customScalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type)).fromJson(reader, customScalarAdapters); break;
           case 3: appearanceDates = new ListAdapter<>((customScalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type))).fromJson(reader, customScalarAdapters); break;
@@ -110,7 +110,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Hero value) throws IOException {
       writer.name("id");
-      (customScalarAdapters.<Long>responseAdapterFor(ID.type)).toJson(writer, customScalarAdapters, value.id);
+      (customScalarAdapters.<Long>responseAdapterFor(GraphQLID.type)).toJson(writer, customScalarAdapters, value.id);
 
       writer.name("name");
       new com.example.MyStringAdapter().toJson(writer, customScalarAdapters, value.name);
