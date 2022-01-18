@@ -11,14 +11,14 @@ import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.optional.type.Character
 import com.example.optional.type.Episode
-import com.example.optional.type.String
+import com.example.optional.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "appearsIn",

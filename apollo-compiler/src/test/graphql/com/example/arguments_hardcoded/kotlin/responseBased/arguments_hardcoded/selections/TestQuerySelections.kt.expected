@@ -10,20 +10,20 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
-import com.example.arguments_hardcoded.type.Int
+import com.example.arguments_hardcoded.type.GraphQLInt
+import com.example.arguments_hardcoded.type.GraphQLString
 import com.example.arguments_hardcoded.type.Review
-import com.example.arguments_hardcoded.type.String
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val reviews: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "stars",
-          type = Int.type.notNull()
+          type = GraphQLInt.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "commentary",
-          type = String.type
+          type = GraphQLString.type
         ).build()
       )
 
@@ -40,7 +40,7 @@ public object TestQuerySelections {
         .build(),
         CompiledField.Builder(
           name = "testNullableArguments",
-          type = Int.type.notNull()
+          type = GraphQLInt.type.notNull()
         ).arguments(listOf(
           CompiledArgument("boolean", null),
           CompiledArgument("episode", null),

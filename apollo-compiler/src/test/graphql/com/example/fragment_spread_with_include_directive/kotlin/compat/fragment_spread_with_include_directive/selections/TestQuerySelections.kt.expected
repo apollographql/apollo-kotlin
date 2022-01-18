@@ -13,19 +13,19 @@ import com.apollographql.apollo3.api.notNull
 import com.example.fragment_spread_with_include_directive.fragment.selections.HeroDetailsSelections
 import com.example.fragment_spread_with_include_directive.fragment.selections.HumanDetailsSelections
 import com.example.fragment_spread_with_include_directive.type.Character
-import com.example.fragment_spread_with_include_directive.type.ID
-import com.example.fragment_spread_with_include_directive.type.String
+import com.example.fragment_spread_with_include_directive.type.GraphQLID
+import com.example.fragment_spread_with_include_directive.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "id",
-          type = ID.type.notNull()
+          type = GraphQLID.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Character",

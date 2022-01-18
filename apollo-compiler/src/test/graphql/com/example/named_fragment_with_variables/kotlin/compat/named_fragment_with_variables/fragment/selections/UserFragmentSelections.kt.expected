@@ -10,22 +10,22 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.notNull
-import com.example.named_fragment_with_variables.type.String
+import com.example.named_fragment_with_variables.type.GraphQLString
 import kotlin.collections.List
 
 public object UserFragmentSelections {
   public val root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "firstName",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "lastName",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "avatar",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).arguments(listOf(
           CompiledArgument("size", CompiledVariable("size"))
         ))

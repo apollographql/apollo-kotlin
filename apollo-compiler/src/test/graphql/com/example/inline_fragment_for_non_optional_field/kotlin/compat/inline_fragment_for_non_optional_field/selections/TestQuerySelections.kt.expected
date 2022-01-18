@@ -11,26 +11,26 @@ import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
 import com.example.inline_fragment_for_non_optional_field.type.Character
-import com.example.inline_fragment_for_non_optional_field.type.Float
-import com.example.inline_fragment_for_non_optional_field.type.String
+import com.example.inline_fragment_for_non_optional_field.type.GraphQLFloat
+import com.example.inline_fragment_for_non_optional_field.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val onHuman: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "height",
-          type = Float.type
+          type = GraphQLFloat.type
         ).build()
       )
 
   private val nonOptionalHero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Human",

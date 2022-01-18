@@ -10,25 +10,25 @@ import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
 import com.example.inline_fragment_type_coercion.type.Foo
-import com.example.inline_fragment_type_coercion.type.String
+import com.example.inline_fragment_type_coercion.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val onBar: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "bar",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build()
       )
 
   private val foo: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "foo",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Bar",

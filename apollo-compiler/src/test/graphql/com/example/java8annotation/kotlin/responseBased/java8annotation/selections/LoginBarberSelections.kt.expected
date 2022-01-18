@@ -10,7 +10,7 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.notNull
-import com.example.java8annotation.type.String
+import com.example.java8annotation.type.GraphQLString
 import com.example.java8annotation.type.User
 import kotlin.collections.List
 
@@ -18,7 +18,7 @@ public object LoginBarberSelections {
   private val login: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "response",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build()
       )
 

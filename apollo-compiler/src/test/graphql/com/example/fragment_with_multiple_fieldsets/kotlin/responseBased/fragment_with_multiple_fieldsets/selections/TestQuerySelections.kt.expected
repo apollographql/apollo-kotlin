@@ -10,15 +10,15 @@ import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
 import com.example.fragment_with_multiple_fieldsets.fragment.selections.iFragmentSelections
+import com.example.fragment_with_multiple_fieldsets.type.GraphQLString
 import com.example.fragment_with_multiple_fieldsets.type.I
-import com.example.fragment_with_multiple_fieldsets.type.String
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val i: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "I",

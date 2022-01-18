@@ -10,27 +10,27 @@ import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
 import com.example.simple_inline_fragment.type.Character
-import com.example.simple_inline_fragment.type.Float
-import com.example.simple_inline_fragment.type.ID
-import com.example.simple_inline_fragment.type.String
+import com.example.simple_inline_fragment.type.GraphQLFloat
+import com.example.simple_inline_fragment.type.GraphQLID
+import com.example.simple_inline_fragment.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val onCharacter1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build()
       )
 
   private val onCharacter: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "id",
-          type = ID.type.notNull()
+          type = GraphQLID.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Character",
@@ -42,21 +42,21 @@ public object TestQuerySelections {
   private val onHuman: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "height",
-          type = Float.type
+          type = GraphQLFloat.type
         ).build()
       )
 
   private val onDroid: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "primaryFunction",
-          type = String.type
+          type = GraphQLString.type
         ).build()
       )
 
   private val hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Character",

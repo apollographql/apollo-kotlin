@@ -12,28 +12,28 @@ import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.inline_fragment_intersection.type.Anything
 import com.example.inline_fragment_intersection.type.Being
-import com.example.inline_fragment_intersection.type.Boolean
-import com.example.inline_fragment_intersection.type.Float
+import com.example.inline_fragment_intersection.type.GraphQLBoolean
+import com.example.inline_fragment_intersection.type.GraphQLFloat
+import com.example.inline_fragment_intersection.type.GraphQLString
 import com.example.inline_fragment_intersection.type.Race
-import com.example.inline_fragment_intersection.type.String
 import kotlin.collections.List
 
 public object TestOperationSelections {
   private val onWookie: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "lifeExpectancy",
-          type = Float.type
+          type = GraphQLFloat.type
         ).build()
       )
 
   private val friends: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Wookie",
@@ -52,11 +52,11 @@ public object TestOperationSelections {
   private val friends1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "isFamous",
-          type = Boolean.type
+          type = GraphQLBoolean.type
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Wookie",
@@ -68,7 +68,7 @@ public object TestOperationSelections {
   private val onHuman: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "profilePictureUrl",
-          type = String.type
+          type = GraphQLString.type
         ).build(),
         CompiledField.Builder(
           name = "friends",
@@ -80,11 +80,11 @@ public object TestOperationSelections {
   private val onBeing: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "friends",
@@ -101,7 +101,7 @@ public object TestOperationSelections {
   private val friends2: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "lifeExpectancy",
-          type = Float.type
+          type = GraphQLFloat.type
         ).build()
       )
 
@@ -120,14 +120,14 @@ public object TestOperationSelections {
   private val onWookie3: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "lifeExpectancy",
-          type = Float.type
+          type = GraphQLFloat.type
         ).build()
       )
 
   private val friends3: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Wookie",
@@ -147,7 +147,7 @@ public object TestOperationSelections {
   private val random: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Being",

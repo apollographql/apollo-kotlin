@@ -11,14 +11,14 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
 import com.example.deprecated_merged_field.fragment.selections.AnimalFragmentSelections
 import com.example.deprecated_merged_field.type.Cat
-import com.example.deprecated_merged_field.type.String
+import com.example.deprecated_merged_field.type.GraphQLString
 import kotlin.collections.List
 
 public object CatQuerySelections {
   private val cat: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Animal",

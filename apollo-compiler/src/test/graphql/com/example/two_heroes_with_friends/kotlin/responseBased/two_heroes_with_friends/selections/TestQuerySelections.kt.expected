@@ -13,16 +13,16 @@ import com.apollographql.apollo3.api.notNull
 import com.example.two_heroes_with_friends.type.Character
 import com.example.two_heroes_with_friends.type.FriendsConnection
 import com.example.two_heroes_with_friends.type.FriendsEdge
-import com.example.two_heroes_with_friends.type.ID
-import com.example.two_heroes_with_friends.type.Int
-import com.example.two_heroes_with_friends.type.String
+import com.example.two_heroes_with_friends.type.GraphQLID
+import com.example.two_heroes_with_friends.type.GraphQLInt
+import com.example.two_heroes_with_friends.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val node: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build()
       )
 
@@ -37,7 +37,7 @@ public object TestQuerySelections {
   private val friendsConnection: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "totalCount",
-          type = Int.type
+          type = GraphQLInt.type
         ).build(),
         CompiledField.Builder(
           name = "edges",
@@ -49,7 +49,7 @@ public object TestQuerySelections {
   private val r2: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "friendsConnection",
@@ -61,7 +61,7 @@ public object TestQuerySelections {
   private val node1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build()
       )
 
@@ -76,7 +76,7 @@ public object TestQuerySelections {
   private val friendsConnection1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "totalCount",
-          type = Int.type
+          type = GraphQLInt.type
         ).build(),
         CompiledField.Builder(
           name = "edges",
@@ -88,11 +88,11 @@ public object TestQuerySelections {
   private val luke: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
-          type = ID.type.notNull()
+          type = GraphQLID.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "friendsConnection",

@@ -12,8 +12,8 @@ import com.apollographql.apollo3.api.notNull
 import com.example.hero_details.type.Character
 import com.example.hero_details.type.FriendsConnection
 import com.example.hero_details.type.FriendsEdge
-import com.example.hero_details.type.Int
-import com.example.hero_details.type.String
+import com.example.hero_details.type.GraphQLInt
+import com.example.hero_details.type.GraphQLString
 import com.example.hero_details.type.hero_type
 import kotlin.collections.List
 
@@ -21,7 +21,7 @@ public object HeroDetailsSelections {
   private val node: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build()
       )
 
@@ -36,7 +36,7 @@ public object HeroDetailsSelections {
   private val friendsConnection: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "totalCount",
-          type = Int.type
+          type = GraphQLInt.type
         ).build(),
         CompiledField.Builder(
           name = "edges",
@@ -52,7 +52,7 @@ public object HeroDetailsSelections {
         ).build(),
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "friendsConnection",

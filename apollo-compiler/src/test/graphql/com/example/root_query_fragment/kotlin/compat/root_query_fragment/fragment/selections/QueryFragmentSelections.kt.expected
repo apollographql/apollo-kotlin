@@ -9,21 +9,21 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
 import com.example.root_query_fragment.type.Character
-import com.example.root_query_fragment.type.String
+import com.example.root_query_fragment.type.GraphQLString
 import kotlin.collections.List
 
 public object QueryFragmentSelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build()
       )
 
   public val root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "hero",

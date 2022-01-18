@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.notNull
 import com.example.hero_name_query_long_name.type.Character
-import com.example.hero_name_query_long_name.type.String
+import com.example.hero_name_query_long_name.type.GraphQLString
 import kotlin.collections.List
 
 public object
@@ -20,7 +20,7 @@ public object
   private val heroAVeryAVeryAVeryAVeryAVeryAVeryAV: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).alias("nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")
         .build()
       )

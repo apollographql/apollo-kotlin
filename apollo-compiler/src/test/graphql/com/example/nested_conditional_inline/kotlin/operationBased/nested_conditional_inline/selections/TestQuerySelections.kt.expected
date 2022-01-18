@@ -13,15 +13,15 @@ import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.nested_conditional_inline.type.Character
-import com.example.nested_conditional_inline.type.Float
-import com.example.nested_conditional_inline.type.String
+import com.example.nested_conditional_inline.type.GraphQLFloat
+import com.example.nested_conditional_inline.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val onHuman1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "height",
-          type = Float.type
+          type = GraphQLFloat.type
         ).arguments(listOf(
           CompiledArgument("unit", "FOOT")
         ))
@@ -31,11 +31,11 @@ public object TestQuerySelections {
   private val friends: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Human",
@@ -55,7 +55,7 @@ public object TestQuerySelections {
   private val onHuman2: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "height",
-          type = Float.type
+          type = GraphQLFloat.type
         ).arguments(listOf(
           CompiledArgument("unit", "METER")
         ))
@@ -65,11 +65,11 @@ public object TestQuerySelections {
   private val friends1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Human",
@@ -89,11 +89,11 @@ public object TestQuerySelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Human",

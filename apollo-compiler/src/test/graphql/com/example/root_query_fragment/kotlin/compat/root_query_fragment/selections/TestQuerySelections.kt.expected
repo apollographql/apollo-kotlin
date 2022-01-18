@@ -10,14 +10,14 @@ import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
 import com.example.root_query_fragment.fragment.selections.QueryFragmentSelections
-import com.example.root_query_fragment.type.String
+import com.example.root_query_fragment.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
   public val root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Query",

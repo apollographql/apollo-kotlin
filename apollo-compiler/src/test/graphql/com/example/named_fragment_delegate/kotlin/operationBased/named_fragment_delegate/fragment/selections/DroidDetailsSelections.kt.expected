@@ -10,25 +10,25 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.named_fragment_delegate.type.Character
-import com.example.named_fragment_delegate.type.String
+import com.example.named_fragment_delegate.type.GraphQLString
 import kotlin.collections.List
 
 public object DroidDetailsSelections {
   private val friends: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build()
       )
 
   public val root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "primaryFunction",
-          type = String.type
+          type = GraphQLString.type
         ).build(),
         CompiledField.Builder(
           name = "friends",

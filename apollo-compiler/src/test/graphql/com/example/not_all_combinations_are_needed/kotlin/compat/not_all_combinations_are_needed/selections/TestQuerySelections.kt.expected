@@ -11,14 +11,14 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
 import com.example.not_all_combinations_are_needed.fragment.selections.bFragmentSelections
 import com.example.not_all_combinations_are_needed.type.C
-import com.example.not_all_combinations_are_needed.type.String
+import com.example.not_all_combinations_are_needed.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val onB: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "B",
@@ -30,11 +30,11 @@ public object TestQuerySelections {
   private val onA: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "fieldA1",
-          type = String.type
+          type = GraphQLString.type
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "B",
@@ -46,7 +46,7 @@ public object TestQuerySelections {
   private val root1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "A",

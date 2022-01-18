@@ -11,8 +11,8 @@ import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.custom_scalar_type.type.Character
 import com.example.custom_scalar_type.type.Date
-import com.example.custom_scalar_type.type.ID
-import com.example.custom_scalar_type.type.String
+import com.example.custom_scalar_type.type.GraphQLID
+import com.example.custom_scalar_type.type.GraphQLString
 import com.example.custom_scalar_type.type.URL
 import com.example.custom_scalar_type.type.UnsupportedType
 import kotlin.collections.List
@@ -21,11 +21,11 @@ public object TestQuerySelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
-          type = ID.type.notNull()
+          type = GraphQLID.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "birthDate",

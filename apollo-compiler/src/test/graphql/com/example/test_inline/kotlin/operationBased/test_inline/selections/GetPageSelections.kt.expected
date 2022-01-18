@@ -11,29 +11,29 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.test_inline.type.Collection
+import com.example.test_inline.type.GraphQLString
 import com.example.test_inline.type.Item
-import com.example.test_inline.type.String
 import kotlin.collections.List
 
 public object GetPageSelections {
   private val items: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "title",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build()
       )
 
   private val onParticularItem: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "image",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build()
       )
 
   private val items1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "ParticularItem",
@@ -53,7 +53,7 @@ public object GetPageSelections {
   private val collection: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "items",

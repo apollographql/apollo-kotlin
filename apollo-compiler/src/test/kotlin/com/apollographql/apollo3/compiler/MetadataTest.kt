@@ -115,11 +115,11 @@ class MetadataTest {
 
     // Only scalar types are generated in the root
     rootSourcesDir.assertContents(
-        "Boolean.kt",
-        "Float.kt",
-        "ID.kt",
-        "Int.kt",
-        "String.kt"
+        "GraphQLBoolean.kt",
+        "GraphQLFloat.kt",
+        "GraphQLID.kt",
+        "GraphQLInt.kt",
+        "GraphQLString.kt"
     )
 
     // Leaf contains its referenced types but not the unused ones
@@ -150,16 +150,16 @@ class MetadataTest {
     rootSourcesDir.assertContents(
         "Body1.kt",
         "Body1_InputAdapter.kt",
-        "Boolean.kt",
+        "GraphQLBoolean.kt",
         "CustomScalar1.kt",
         "Encoding.kt",
         "Encoding_ResponseAdapter.kt",
-        "Float.kt",
-        "ID.kt",
-        "Int.kt",
+        "GraphQLFloat.kt",
+        "GraphQLID.kt",
+        "GraphQLInt.kt",
         "MessageInput1.kt",
         "MessageInput1_InputAdapter.kt",
-        "String.kt",
+        "GraphQLString.kt",
         "User1.kt",
         "User1_InputAdapter.kt"
     )
@@ -209,16 +209,16 @@ class MetadataTest {
 
     // Root generates the fragment
     rootSourcesDir.assertContents(
-        "Boolean.kt",
+        "GraphQLBoolean.kt",
         "Character.kt",
         "CharacterFragment.kt",
         "CharacterFragmentSelections.kt",
         "Episode.kt",
         "Episode_ResponseAdapter.kt",
-        "Float.kt",
-        "ID.kt",
-        "Int.kt",
-        "String.kt"
+        "GraphQLFloat.kt",
+        "GraphQLID.kt",
+        "GraphQLInt.kt",
+        "GraphQLString.kt"
     )
 
     // Leaf contains the query but not the fragment
@@ -261,14 +261,14 @@ class MetadataTest {
     fragmentTest("fragment-multiple")
 
     rootSourcesDir.assertContents(
-        "Boolean.kt",
+        "GraphQLBoolean.kt",
         "Character.kt",
         "CharacterFragment.kt",
         "CharacterFragmentSelections.kt",
-        "Float.kt",
-        "ID.kt",
-        "Int.kt",
-        "String.kt"
+        "GraphQLFloat.kt",
+        "GraphQLID.kt",
+        "GraphQLInt.kt",
+        "GraphQLString.kt"
     )
 
     leafSourcesDir.assertContents(

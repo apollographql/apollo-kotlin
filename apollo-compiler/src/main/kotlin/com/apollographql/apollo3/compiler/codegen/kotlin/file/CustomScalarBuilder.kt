@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
@@ -12,11 +11,20 @@ import com.squareup.kotlinpoet.TypeSpec
 
 class CustomScalarBuilder(
     private val context: KotlinContext,
-    private val customScalar: IrCustomScalar
-): CgOutputFileBuilder {
+    private val customScalar: IrCustomScalar,
+) : CgOutputFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = layout.compiledTypeName(name = customScalar.name)
+  private val simpleName = prefixBuiltinScalarNames(layout.compiledTypeName(name = customScalar.name))
+
+  private fun prefixBuiltinScalarNames(name: String): String {
+    // Kotlin Multiplatform won't build with class names that clash with Kotlin types (String, Int, etc.).
+    // For consistency, do this for all built-in scalars, including ID.
+    if (name in arrayOf("String", "Boolean", "Int", "Float", "ID")) {
+      return "GraphQL$name"
+    }
+    return name
+  }
 
   override fun prepare() {
     context.resolver.registerSchemaType(customScalar.name, ClassName(packageName, simpleName))

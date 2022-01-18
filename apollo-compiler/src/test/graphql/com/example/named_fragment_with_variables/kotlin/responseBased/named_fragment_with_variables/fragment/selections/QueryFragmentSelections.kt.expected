@@ -12,8 +12,8 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
+import com.example.named_fragment_with_variables.type.GraphQLString
 import com.example.named_fragment_with_variables.type.Organization
-import com.example.named_fragment_with_variables.type.String
 import com.example.named_fragment_with_variables.type.User
 import kotlin.collections.List
 
@@ -21,7 +21,7 @@ public object QueryFragmentSelections {
   private val user: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "User",
@@ -33,7 +33,7 @@ public object QueryFragmentSelections {
   private val organization: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "user",

@@ -11,33 +11,33 @@ import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
+import com.example.inline_fragment_inside_inline_fragment.type.GraphQLString
 import com.example.inline_fragment_inside_inline_fragment.type.SearchResult
-import com.example.inline_fragment_inside_inline_fragment.type.String
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val onHuman: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "homePlanet",
-          type = String.type
+          type = GraphQLString.type
         ).build()
       )
 
   private val onDroid: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "primaryFunction",
-          type = String.type
+          type = GraphQLString.type
         ).build()
       )
 
   private val onCharacter: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Human",
@@ -54,7 +54,7 @@ public object TestQuerySelections {
   private val search: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Character",

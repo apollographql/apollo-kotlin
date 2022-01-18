@@ -13,18 +13,18 @@ import com.apollographql.apollo3.api.notNull
 import com.example.fragment_with_inline_fragment.fragment.selections.HeroDetailsSelections
 import com.example.fragment_with_inline_fragment.type.Character
 import com.example.fragment_with_inline_fragment.type.Episode
-import com.example.fragment_with_inline_fragment.type.String
+import com.example.fragment_with_inline_fragment.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Character",

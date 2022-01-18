@@ -10,20 +10,20 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.notNull
-import com.example.input_object_type.type.Int
+import com.example.input_object_type.type.GraphQLInt
+import com.example.input_object_type.type.GraphQLString
 import com.example.input_object_type.type.Review
-import com.example.input_object_type.type.String
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val createReview: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "stars",
-          type = Int.type.notNull()
+          type = GraphQLInt.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "commentary",
-          type = String.type
+          type = GraphQLString.type
         ).build()
       )
 

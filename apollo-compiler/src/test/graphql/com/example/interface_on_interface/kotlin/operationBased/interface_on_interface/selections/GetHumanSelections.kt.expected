@@ -9,40 +9,40 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
-import com.example.interface_on_interface.type.Float
+import com.example.interface_on_interface.type.GraphQLFloat
+import com.example.interface_on_interface.type.GraphQLID
+import com.example.interface_on_interface.type.GraphQLString
 import com.example.interface_on_interface.type.Human
-import com.example.interface_on_interface.type.ID
 import com.example.interface_on_interface.type.Node
-import com.example.interface_on_interface.type.String
 import kotlin.collections.List
 
 public object GetHumanSelections {
   private val human: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
-          type = ID.type.notNull()
+          type = GraphQLID.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "height",
-          type = Float.type.notNull()
+          type = GraphQLFloat.type.notNull()
         ).build()
       )
 
   private val onHuman: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "height",
-          type = Float.type.notNull()
+          type = GraphQLFloat.type.notNull()
         ).build()
       )
 
   private val node: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Human",

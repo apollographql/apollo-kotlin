@@ -12,7 +12,7 @@ import com.apollographql.apollo3.api.notNull
 import com.example.named_fragment_delegate.type.Character
 import com.example.named_fragment_delegate.type.FriendsConnection
 import com.example.named_fragment_delegate.type.FriendsEdge
-import com.example.named_fragment_delegate.type.String
+import com.example.named_fragment_delegate.type.GraphQLString
 import com.example.named_fragment_delegate.type.URL
 import kotlin.collections.List
 
@@ -20,7 +20,7 @@ public object HumanDetailsSelections {
   private val node: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build()
       )
 
@@ -43,7 +43,7 @@ public object HumanDetailsSelections {
   public val root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "profileLink",

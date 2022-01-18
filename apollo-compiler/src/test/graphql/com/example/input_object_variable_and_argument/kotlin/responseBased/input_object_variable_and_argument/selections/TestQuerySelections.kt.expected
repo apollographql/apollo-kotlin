@@ -10,20 +10,20 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.notNull
-import com.example.input_object_variable_and_argument.type.Float
+import com.example.input_object_variable_and_argument.type.GraphQLFloat
+import com.example.input_object_variable_and_argument.type.GraphQLString
 import com.example.input_object_variable_and_argument.type.Human
-import com.example.input_object_variable_and_argument.type.String
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val heroWithReview: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "height",
-          type = Float.type
+          type = GraphQLFloat.type
         ).arguments(listOf(
           CompiledArgument("unit", "FOOT")
         ))

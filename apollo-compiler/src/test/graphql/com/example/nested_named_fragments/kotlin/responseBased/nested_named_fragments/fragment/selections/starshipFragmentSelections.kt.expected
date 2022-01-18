@@ -10,18 +10,18 @@ import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
-import com.example.nested_named_fragments.type.ID
+import com.example.nested_named_fragments.type.GraphQLID
+import com.example.nested_named_fragments.type.GraphQLString
 import com.example.nested_named_fragments.type.Person
 import com.example.nested_named_fragments.type.StarshipPilotsConnection
 import com.example.nested_named_fragments.type.StarshipPilotsEdge
-import com.example.nested_named_fragments.type.String
 import kotlin.collections.List
 
 public object starshipFragmentSelections {
   private val node: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Person",
@@ -49,11 +49,11 @@ public object starshipFragmentSelections {
   public val root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
-          type = ID.type.notNull()
+          type = GraphQLID.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "name",
-          type = String.type
+          type = GraphQLString.type
         ).build(),
         CompiledField.Builder(
           name = "pilotConnection",

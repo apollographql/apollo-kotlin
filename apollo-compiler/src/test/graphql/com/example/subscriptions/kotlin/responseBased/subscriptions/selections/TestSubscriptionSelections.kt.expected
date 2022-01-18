@@ -11,19 +11,19 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.notNull
 import com.example.subscriptions.type.Comment
-import com.example.subscriptions.type.Int
-import com.example.subscriptions.type.String
+import com.example.subscriptions.type.GraphQLInt
+import com.example.subscriptions.type.GraphQLString
 import kotlin.collections.List
 
 public object TestSubscriptionSelections {
   private val commentAdded: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
-          type = Int.type.notNull()
+          type = GraphQLInt.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "content",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build()
       )
 

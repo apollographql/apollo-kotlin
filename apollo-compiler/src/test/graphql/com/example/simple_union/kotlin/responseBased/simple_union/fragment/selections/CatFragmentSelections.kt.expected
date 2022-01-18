@@ -8,14 +8,14 @@ package com.example.simple_union.fragment.selections
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
-import com.example.simple_union.type.String
+import com.example.simple_union.type.GraphQLString
 import kotlin.collections.List
 
 public object CatFragmentSelections {
   public val root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "meow",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build()
       )
 }

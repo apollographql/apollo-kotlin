@@ -10,41 +10,41 @@ import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
 import com.example.typename_always_first.type.Character
-import com.example.typename_always_first.type.Float
-import com.example.typename_always_first.type.String
+import com.example.typename_always_first.type.GraphQLFloat
+import com.example.typename_always_first.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val onHuman: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "height",
-          type = Float.type
+          type = GraphQLFloat.type
         ).build(),
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build()
       )
 
   private val onDroid: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "primaryFunction",
-          type = String.type
+          type = GraphQLString.type
         ).build()
       )
 
   private val hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Human",
@@ -66,7 +66,7 @@ public object TestQuerySelections {
         .build(),
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build()
       )
 }

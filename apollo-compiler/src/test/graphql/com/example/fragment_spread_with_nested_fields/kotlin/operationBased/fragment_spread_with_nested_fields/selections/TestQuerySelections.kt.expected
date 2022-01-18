@@ -11,14 +11,14 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
 import com.example.fragment_spread_with_nested_fields.fragment.selections.HeroDetailsSelections
 import com.example.fragment_spread_with_nested_fields.type.Character
-import com.example.fragment_spread_with_nested_fields.type.String
+import com.example.fragment_spread_with_nested_fields.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Character",

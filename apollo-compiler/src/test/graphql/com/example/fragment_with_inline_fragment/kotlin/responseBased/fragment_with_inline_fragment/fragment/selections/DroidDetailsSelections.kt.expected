@@ -8,18 +8,18 @@ package com.example.fragment_with_inline_fragment.fragment.selections
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
-import com.example.fragment_with_inline_fragment.type.String
+import com.example.fragment_with_inline_fragment.type.GraphQLString
 import kotlin.collections.List
 
 public object DroidDetailsSelections {
   public val root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "primaryFunction",
-          type = String.type
+          type = GraphQLString.type
         ).build()
       )
 }

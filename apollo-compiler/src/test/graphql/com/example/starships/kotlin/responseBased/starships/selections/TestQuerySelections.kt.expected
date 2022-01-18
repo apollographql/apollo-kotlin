@@ -11,25 +11,25 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
-import com.example.starships.type.Float
-import com.example.starships.type.ID
+import com.example.starships.type.GraphQLFloat
+import com.example.starships.type.GraphQLID
+import com.example.starships.type.GraphQLString
 import com.example.starships.type.Starship
-import com.example.starships.type.String
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val starship: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
-          type = ID.type.notNull()
+          type = GraphQLID.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "coordinates",
-          type = Float.type.notNull().list().notNull().list()
+          type = GraphQLFloat.type.notNull().list().notNull().list()
         ).build()
       )
 

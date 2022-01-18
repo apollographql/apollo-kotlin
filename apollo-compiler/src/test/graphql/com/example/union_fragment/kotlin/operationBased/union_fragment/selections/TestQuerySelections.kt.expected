@@ -12,23 +12,23 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.union_fragment.fragment.selections.StarshipSelections
-import com.example.union_fragment.type.ID
+import com.example.union_fragment.type.GraphQLID
+import com.example.union_fragment.type.GraphQLString
 import com.example.union_fragment.type.SearchResult
-import com.example.union_fragment.type.String
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val onStarship: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
-          type = ID.type.notNull()
+          type = GraphQLID.type.notNull()
         ).build()
       )
 
   private val search: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Starship",

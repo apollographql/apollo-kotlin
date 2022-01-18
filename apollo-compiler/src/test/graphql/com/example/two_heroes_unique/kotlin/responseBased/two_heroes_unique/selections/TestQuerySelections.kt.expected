@@ -10,26 +10,26 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
 import com.example.two_heroes_unique.type.Character
-import com.example.two_heroes_unique.type.ID
-import com.example.two_heroes_unique.type.String
+import com.example.two_heroes_unique.type.GraphQLID
+import com.example.two_heroes_unique.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val r2: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build()
       )
 
   private val luke: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
-          type = ID.type.notNull()
+          type = GraphQLID.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build()
       )
 

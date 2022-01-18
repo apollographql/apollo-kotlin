@@ -10,24 +10,24 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.notNull
-import com.example.deprecation.type.Boolean
 import com.example.deprecation.type.Character
-import com.example.deprecation.type.String
+import com.example.deprecation.type.GraphQLBoolean
+import com.example.deprecation.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "deprecated",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "deprecatedBool",
-          type = Boolean.type.notNull()
+          type = GraphQLBoolean.type.notNull()
         ).build()
       )
 

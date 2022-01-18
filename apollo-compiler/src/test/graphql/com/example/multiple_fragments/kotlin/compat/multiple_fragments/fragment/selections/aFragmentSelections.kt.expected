@@ -9,15 +9,15 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
+import com.example.multiple_fragments.type.GraphQLString
 import com.example.multiple_fragments.type.Node
-import com.example.multiple_fragments.type.String
 import kotlin.collections.List
 
 public object aFragmentSelections {
   private val node: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "ANode",

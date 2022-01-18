@@ -14,31 +14,31 @@ import com.apollographql.apollo3.api.notNull
 import com.example.mutation_create_review.type.Character
 import com.example.mutation_create_review.type.Date
 import com.example.mutation_create_review.type.Episode
-import com.example.mutation_create_review.type.Int
+import com.example.mutation_create_review.type.GraphQLInt
+import com.example.mutation_create_review.type.GraphQLString
 import com.example.mutation_create_review.type.Review
-import com.example.mutation_create_review.type.String
 import kotlin.collections.List
 
 internal object CreateReviewForEpisodeSelections {
   private val listOfListOfObject: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build()
       )
 
   private val createReview: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "stars",
-          type = Int.type.notNull()
+          type = GraphQLInt.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "commentary",
-          type = String.type
+          type = GraphQLString.type
         ).build(),
         CompiledField.Builder(
           name = "listOfListOfString",
-          type = String.type.notNull().list().notNull().list()
+          type = GraphQLString.type.notNull().list().notNull().list()
         ).build(),
         CompiledField.Builder(
           name = "listOfListOfEnum",

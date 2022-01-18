@@ -11,25 +11,25 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
 import com.example.hero_name.type.Character
 import com.example.hero_name.type.Date
-import com.example.hero_name.type.String
+import com.example.hero_name.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val onDroid: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "primaryFunction",
-          type = String.type
+          type = GraphQLString.type
         ).build()
       )
 
   private val hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "birthDate",

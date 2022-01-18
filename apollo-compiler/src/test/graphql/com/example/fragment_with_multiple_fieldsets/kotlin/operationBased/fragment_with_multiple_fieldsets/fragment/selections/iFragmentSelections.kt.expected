@@ -9,21 +9,21 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
-import com.example.fragment_with_multiple_fieldsets.type.String
+import com.example.fragment_with_multiple_fieldsets.type.GraphQLString
 import kotlin.collections.List
 
 public object iFragmentSelections {
   private val onA: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "fieldA",
-          type = String.type
+          type = GraphQLString.type
         ).build()
       )
 
   public val root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "A",

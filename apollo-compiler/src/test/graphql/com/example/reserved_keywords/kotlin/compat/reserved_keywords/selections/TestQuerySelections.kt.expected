@@ -12,21 +12,21 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.reserved_keywords.type.Character
-import com.example.reserved_keywords.type.ID
+import com.example.reserved_keywords.type.GraphQLID
+import com.example.reserved_keywords.type.GraphQLString
 import com.example.reserved_keywords.type.SearchResult
-import com.example.reserved_keywords.type.String
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val `yield`: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
-          type = ID.type.notNull()
+          type = GraphQLID.type.notNull()
         ).alias("while")
         .build(),
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).alias("it")
         .build()
       )
@@ -34,14 +34,14 @@ public object TestQuerySelections {
   private val onCharacter: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build()
       )
 
   private val objects: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Character",

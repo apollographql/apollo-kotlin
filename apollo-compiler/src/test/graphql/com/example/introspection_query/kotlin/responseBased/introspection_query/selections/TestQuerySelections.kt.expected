@@ -10,7 +10,7 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
-import com.example.introspection_query.type.String
+import com.example.introspection_query.type.GraphQLString
 import com.example.introspection_query.type.__Schema
 import com.example.introspection_query.type.__Type
 import kotlin.collections.List
@@ -19,14 +19,14 @@ public object TestQuerySelections {
   private val queryType: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = String.type
+          type = GraphQLString.type
         ).build()
       )
 
   private val types: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = String.type
+          type = GraphQLString.type
         ).build()
       )
 
@@ -46,7 +46,7 @@ public object TestQuerySelections {
   private val __type: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = String.type
+          type = GraphQLString.type
         ).build()
       )
 

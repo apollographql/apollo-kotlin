@@ -11,22 +11,22 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
 import com.example.field_with_include_directive.type.Character
 import com.example.field_with_include_directive.type.FriendsConnection
-import com.example.field_with_include_directive.type.Int
-import com.example.field_with_include_directive.type.String
+import com.example.field_with_include_directive.type.GraphQLInt
+import com.example.field_with_include_directive.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val friendsConnection: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "totalCount",
-          type = Int.type
+          type = GraphQLInt.type
         ).build()
       )
 
   private val hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = String.type.notNull()
+          type = GraphQLString.type.notNull()
         ).condition(listOf(CompiledCondition("includeName", false)))
         .build(),
         CompiledField.Builder(
