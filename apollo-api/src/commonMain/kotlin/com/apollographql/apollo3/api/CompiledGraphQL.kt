@@ -241,67 +241,67 @@ fun resolveVariables(value: Any?, variables: Executable.Variables): Any? {
   }
 }
 
-@Deprecated("No longer used by the codegen")
+@Deprecated("Use the generated CustomScalarType instead")
 @ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField
 val CompiledStringType = ScalarType("String")
 
-@Deprecated("No longer used by the codegen")
+@Deprecated("Use the generated CustomScalarType instead")
 @ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField
 val CompiledIntType = ScalarType("Int")
 
-@Deprecated("No longer used by the codegen")
+@Deprecated("Use the generated CustomScalarType instead")
 @ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField
 val CompiledFloatType = ScalarType("Float")
 
-@Deprecated("No longer used by the codegen")
+@Deprecated("Use the generated CustomScalarType instead")
 @ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField
 val CompiledBooleanType = ScalarType("Boolean")
 
-@Deprecated("No longer used by the codegen")
+@Deprecated("Use the generated CustomScalarType instead")
 @ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField
 val CompiledIDType = ScalarType("ID")
 
-@Deprecated("No longer used by the codegen")
+@Deprecated("Use the generated CustomScalarType instead")
 @ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField
 val CompiledSchemaType = ObjectType("__Schema")
 
-@Deprecated("No longer used by the codegen")
+@Deprecated("Use the generated CustomScalarType instead")
 @ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField
 val CompiledTypeType = ObjectType("__Type")
 
-@Deprecated("No longer used by the codegen")
+@Deprecated("Use the generated CustomScalarType instead")
 @ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField
 val CompiledFieldType = ObjectType("__Field")
 
-@Deprecated("No longer used by the codegen")
+@Deprecated("Use the generated CustomScalarType instead")
 @ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField
 val CompiledInputValueType = ObjectType("__InputValue")
 
-@Deprecated("No longer used by the codegen")
+@Deprecated("Use the generated CustomScalarType instead")
 @ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField
 val CompiledEnumValueType = ObjectType("__EnumValue")
 
-@Deprecated("No longer used by the codegen")
+@Deprecated("Use the generated CustomScalarType instead")
 @ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField

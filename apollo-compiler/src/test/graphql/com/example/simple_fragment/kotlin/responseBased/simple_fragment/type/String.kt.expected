@@ -13,6 +13,6 @@ import com.apollographql.apollo3.api.CustomScalarType
  */
 internal class String {
   public companion object {
-    public val type: CustomScalarType = CustomScalarType("String", "kotlin.Any")
+    public val type: CustomScalarType = CustomScalarType("String", "kotlin.String")
   }
 }
