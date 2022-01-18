@@ -114,7 +114,13 @@ class MetadataTest {
     alwaysGenerateTypesMatchingTest(emptySet())
 
     // Only scalar types are generated in the root
-    rootSourcesDir.assertContents()
+    rootSourcesDir.assertContents(
+        "Boolean.kt",
+        "Float.kt",
+        "ID.kt",
+        "Int.kt",
+        "String.kt"
+    )
 
     // Leaf contains its referenced types but not the unused ones
     leafSourcesDir.assertContents(
@@ -144,11 +150,16 @@ class MetadataTest {
     rootSourcesDir.assertContents(
         "Body1.kt",
         "Body1_InputAdapter.kt",
+        "Boolean.kt",
         "CustomScalar1.kt",
         "Encoding.kt",
         "Encoding_ResponseAdapter.kt",
+        "Float.kt",
+        "ID.kt",
+        "Int.kt",
         "MessageInput1.kt",
         "MessageInput1_InputAdapter.kt",
+        "String.kt",
         "User1.kt",
         "User1_InputAdapter.kt"
     )
@@ -198,11 +209,16 @@ class MetadataTest {
 
     // Root generates the fragment
     rootSourcesDir.assertContents(
+        "Boolean.kt",
         "Character.kt",
         "CharacterFragment.kt",
         "CharacterFragmentSelections.kt",
         "Episode.kt",
         "Episode_ResponseAdapter.kt",
+        "Float.kt",
+        "ID.kt",
+        "Int.kt",
+        "String.kt"
     )
 
     // Leaf contains the query but not the fragment
@@ -245,9 +261,14 @@ class MetadataTest {
     fragmentTest("fragment-multiple")
 
     rootSourcesDir.assertContents(
+        "Boolean.kt",
         "Character.kt",
         "CharacterFragment.kt",
         "CharacterFragmentSelections.kt",
+        "Float.kt",
+        "ID.kt",
+        "Int.kt",
+        "String.kt"
     )
 
     leafSourcesDir.assertContents(
