@@ -8,27 +8,27 @@ package com.example.interface_always_nested.selections
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
 import com.example.interface_always_nested.type.C
+import com.example.interface_always_nested.type.String
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val onB: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "fieldB1",
-          type = CompiledStringType
+          type = String.type
         ).build()
       )
 
   private val onA: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "fieldA1",
-          type = CompiledStringType
+          type = String.type
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "B",
@@ -40,7 +40,7 @@ public object TestQuerySelections {
   private val root1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "A",

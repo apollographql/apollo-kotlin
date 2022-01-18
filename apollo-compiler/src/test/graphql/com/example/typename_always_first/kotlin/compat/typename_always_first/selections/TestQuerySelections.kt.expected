@@ -6,45 +6,45 @@
 package com.example.typename_always_first.selections
 
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledFloatType
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
 import com.example.typename_always_first.type.Character
+import com.example.typename_always_first.type.Float
+import com.example.typename_always_first.type.String
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val onHuman: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "height",
-          type = CompiledFloatType
+          type = Float.type
         ).build(),
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build()
       )
 
   private val onDroid: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "primaryFunction",
-          type = CompiledStringType
+          type = String.type
         ).build()
       )
 
   private val hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Human",
@@ -66,7 +66,7 @@ public object TestQuerySelections {
         .build(),
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build()
       )
 }

@@ -9,18 +9,18 @@ import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
 import com.example.root_query_fragment_with_nested_fragments.type.Character
 import com.example.root_query_fragment_with_nested_fragments.type.Droid
 import com.example.root_query_fragment_with_nested_fragments.type.Human
+import com.example.root_query_fragment_with_nested_fragments.type.String
 import kotlin.collections.List
 
 public object QueryFragmentSelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Character",
@@ -32,7 +32,7 @@ public object QueryFragmentSelections {
   private val droid: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
@@ -44,18 +44,18 @@ public object QueryFragmentSelections {
   private val onHuman: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "homePlanet",
-          type = CompiledStringType
+          type = String.type
         ).build()
       )
 
   private val human: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Human",
@@ -67,7 +67,7 @@ public object QueryFragmentSelections {
   public val root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "hero",

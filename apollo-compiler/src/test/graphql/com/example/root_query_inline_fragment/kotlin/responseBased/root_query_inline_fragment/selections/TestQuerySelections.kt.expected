@@ -7,33 +7,33 @@ package com.example.root_query_inline_fragment.selections
 
 import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledFloatType
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.root_query_inline_fragment.type.Character
 import com.example.root_query_inline_fragment.type.Droid
 import com.example.root_query_inline_fragment.type.Episode
+import com.example.root_query_inline_fragment.type.Float
+import com.example.root_query_inline_fragment.type.String
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val onHuman: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "height",
-          type = CompiledFloatType
+          type = Float.type
         ).build()
       )
 
   private val hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "name",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "appearsIn",
@@ -49,18 +49,18 @@ public object TestQuerySelections {
   private val onDroid: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "primaryFunction",
-          type = CompiledStringType
+          type = String.type
         ).build()
       )
 
   private val droid: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
@@ -72,7 +72,7 @@ public object TestQuerySelections {
   private val onQuery: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "hero",
@@ -92,7 +92,7 @@ public object TestQuerySelections {
   public val root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Query",

@@ -8,24 +8,24 @@ package com.example.fragment_spread_with_include_directive.selections
 import com.apollographql.apollo3.api.CompiledCondition
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledIDType
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
 import com.example.fragment_spread_with_include_directive.fragment.selections.HeroDetailsSelections
 import com.example.fragment_spread_with_include_directive.fragment.selections.HumanDetailsSelections
 import com.example.fragment_spread_with_include_directive.type.Character
+import com.example.fragment_spread_with_include_directive.type.ID
+import com.example.fragment_spread_with_include_directive.type.String
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "id",
-          type = CompiledIDType.notNull()
+          type = ID.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Character",

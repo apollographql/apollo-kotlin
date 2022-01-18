@@ -8,22 +8,22 @@ package com.example.fragment_with_multiple_fieldsets.fragment.selections
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
+import com.example.fragment_with_multiple_fieldsets.type.String
 import kotlin.collections.List
 
 public object iFragmentSelections {
   private val onA: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "fieldA",
-          type = CompiledStringType
+          type = String.type
         ).build()
       )
 
   public val root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "A",

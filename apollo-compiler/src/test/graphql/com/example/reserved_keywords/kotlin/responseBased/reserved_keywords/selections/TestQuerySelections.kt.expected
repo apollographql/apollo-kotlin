@@ -8,25 +8,25 @@ package com.example.reserved_keywords.selections
 import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledIDType
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.reserved_keywords.type.Character
+import com.example.reserved_keywords.type.ID
 import com.example.reserved_keywords.type.SearchResult
+import com.example.reserved_keywords.type.String
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val `yield`: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
-          type = CompiledIDType.notNull()
+          type = ID.type.notNull()
         ).alias("while")
         .build(),
         CompiledField.Builder(
           name = "name",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).alias("it")
         .build()
       )
@@ -34,14 +34,14 @@ public object TestQuerySelections {
   private val onCharacter: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build()
       )
 
   private val objects: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Character",

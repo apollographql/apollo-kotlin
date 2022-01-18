@@ -8,17 +8,17 @@ package com.example.fragment_with_multiple_fieldsets.selections
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
 import com.example.fragment_with_multiple_fieldsets.fragment.selections.iFragmentSelections
 import com.example.fragment_with_multiple_fieldsets.type.I
+import com.example.fragment_with_multiple_fieldsets.type.String
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val i: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "I",

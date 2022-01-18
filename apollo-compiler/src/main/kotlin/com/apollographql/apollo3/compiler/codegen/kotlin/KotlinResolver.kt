@@ -105,30 +105,6 @@ class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?, pr
   }
 
   fun resolveCompiledType(name: String): CodeBlock {
-    val builtin = if (scalarMapping.containsKey(name)) {
-      // The scalar is mapped to a user-defined type: do not hardcode the compiled type
-      null
-    } else {
-      when (name) {
-        "String" -> MemberName("com.apollographql.apollo3.api", "CompiledStringType")
-        "Int" -> MemberName("com.apollographql.apollo3.api", "CompiledIntType")
-        "Float" -> MemberName("com.apollographql.apollo3.api", "CompiledFloatType")
-        "Boolean" -> MemberName("com.apollographql.apollo3.api", "CompiledBooleanType")
-        "ID" -> MemberName("com.apollographql.apollo3.api", "CompiledIDType")
-        "__Schema" -> MemberName("com.apollographql.apollo3.api", "CompiledSchemaType")
-        "__Type" -> MemberName("com.apollographql.apollo3.api", "CompiledTypeType")
-        "__Field" -> MemberName("com.apollographql.apollo3.api", "CompiledFieldType")
-        "__InputValue" -> MemberName("com.apollographql.apollo3.api", "CompiledInputValueType")
-        "__EnumValue" -> MemberName("com.apollographql.apollo3.api", "CompiledEnumValueType")
-        "__Directive" -> MemberName("com.apollographql.apollo3.api", "CompiledDirectiveType")
-        else -> null
-      }
-    }
-
-    if (builtin != null) {
-      return CodeBlock.of("%M", builtin)
-    }
-
     return CodeBlock.of("%T.$type", resolveAndAssert(ResolverKeyKind.SchemaType, name))
   }
 

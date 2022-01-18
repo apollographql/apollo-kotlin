@@ -7,22 +7,22 @@ package com.example.two_heroes_with_friends.selections
 
 import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledIDType
-import com.apollographql.apollo3.api.CompiledIntType
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.two_heroes_with_friends.type.Character
 import com.example.two_heroes_with_friends.type.FriendsConnection
 import com.example.two_heroes_with_friends.type.FriendsEdge
+import com.example.two_heroes_with_friends.type.ID
+import com.example.two_heroes_with_friends.type.Int
+import com.example.two_heroes_with_friends.type.String
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val node: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build()
       )
 
@@ -37,7 +37,7 @@ public object TestQuerySelections {
   private val friendsConnection: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "totalCount",
-          type = CompiledIntType
+          type = Int.type
         ).build(),
         CompiledField.Builder(
           name = "edges",
@@ -49,7 +49,7 @@ public object TestQuerySelections {
   private val r2: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "friendsConnection",
@@ -61,7 +61,7 @@ public object TestQuerySelections {
   private val node1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build()
       )
 
@@ -76,7 +76,7 @@ public object TestQuerySelections {
   private val friendsConnection1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "totalCount",
-          type = CompiledIntType
+          type = Int.type
         ).build(),
         CompiledField.Builder(
           name = "edges",
@@ -88,11 +88,11 @@ public object TestQuerySelections {
   private val luke: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
-          type = CompiledIDType.notNull()
+          type = ID.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "name",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "friendsConnection",

@@ -7,14 +7,14 @@ package com.example.named_fragment_without_implementation.fragment.selections
 
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
+import com.example.named_fragment_without_implementation.type.String
 import kotlin.collections.List
 
 public object DroidDetailsSelections {
   public val root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "primaryFunction",
-          type = CompiledStringType
+          type = String.type
         ).build()
       )
 }

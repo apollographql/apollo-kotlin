@@ -8,21 +8,21 @@ package com.example.union_inline_fragments.selections
 import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledIDType
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.union_inline_fragments.type.Character
 import com.example.union_inline_fragments.type.Episode
+import com.example.union_inline_fragments.type.ID
 import com.example.union_inline_fragments.type.SearchResult
+import com.example.union_inline_fragments.type.String
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val onCharacter1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build()
       )
 
@@ -36,7 +36,7 @@ public object TestQuerySelections {
   private val friends1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Character",
@@ -48,7 +48,7 @@ public object TestQuerySelections {
   private val onHuman: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "homePlanet",
-          type = CompiledStringType
+          type = String.type
         ).build(),
         CompiledField.Builder(
           name = "friends",
@@ -60,14 +60,14 @@ public object TestQuerySelections {
   private val friends2: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
-          type = CompiledIDType.notNull()
+          type = ID.type.notNull()
         ).build()
       )
 
   private val onDroid: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "primaryFunction",
-          type = CompiledStringType
+          type = String.type
         ).build(),
         CompiledField.Builder(
           name = "friends",
@@ -79,7 +79,7 @@ public object TestQuerySelections {
   private val friends: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Character",
@@ -101,11 +101,11 @@ public object TestQuerySelections {
   private val onCharacter: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
-          type = CompiledIDType.notNull()
+          type = ID.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "name",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "friends",
@@ -117,14 +117,14 @@ public object TestQuerySelections {
   private val onStarship: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build()
       )
 
   private val search: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Character",

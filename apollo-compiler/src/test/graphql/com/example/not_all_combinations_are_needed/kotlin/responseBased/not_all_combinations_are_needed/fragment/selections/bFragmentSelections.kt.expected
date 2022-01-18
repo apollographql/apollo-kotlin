@@ -7,14 +7,14 @@ package com.example.not_all_combinations_are_needed.fragment.selections
 
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
+import com.example.not_all_combinations_are_needed.type.String
 import kotlin.collections.List
 
 public object bFragmentSelections {
   public val root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "fieldB1",
-          type = CompiledStringType
+          type = String.type
         ).build()
       )
 }

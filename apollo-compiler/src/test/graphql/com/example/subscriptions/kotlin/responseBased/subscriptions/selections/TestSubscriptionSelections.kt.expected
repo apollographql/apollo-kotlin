@@ -7,23 +7,23 @@ package com.example.subscriptions.selections
 
 import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledIntType
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.notNull
 import com.example.subscriptions.type.Comment
+import com.example.subscriptions.type.Int
+import com.example.subscriptions.type.String
 import kotlin.collections.List
 
 public object TestSubscriptionSelections {
   private val commentAdded: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
-          type = CompiledIntType.notNull()
+          type = Int.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "content",
-          type = CompiledStringType.notNull()
+          type = String.type.notNull()
         ).build()
       )
 
