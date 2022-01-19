@@ -6,21 +6,21 @@
 package com.example.hero_details_semantic_naming.selections
 
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledIntType
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.hero_details_semantic_naming.type.Character
 import com.example.hero_details_semantic_naming.type.FriendsConnection
 import com.example.hero_details_semantic_naming.type.FriendsEdge
+import com.example.hero_details_semantic_naming.type.GraphQLInt
+import com.example.hero_details_semantic_naming.type.GraphQLString
 import kotlin.collections.List
 
 public object HeroDetailsQuerySelections {
   private val node: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = CompiledStringType.notNull()
+          type = GraphQLString.type.notNull()
         ).build()
       )
 
@@ -35,7 +35,7 @@ public object HeroDetailsQuerySelections {
   private val friendsConnection: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "totalCount",
-          type = CompiledIntType
+          type = GraphQLInt.type
         ).build(),
         CompiledField.Builder(
           name = "edges",
@@ -47,7 +47,7 @@ public object HeroDetailsQuerySelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = CompiledStringType.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "friendsConnection",

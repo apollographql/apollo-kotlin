@@ -106,9 +106,17 @@ internal class IrBuilder(
     val unions = mutableListOf<IrUnion>()
     val customScalars = mutableListOf<IrCustomScalar>()
 
-    // inject extra types
+    // Inject extra types
     usedTypes.addAll(schema.typeDefinitions.keys.filter { shouldAlwaysGenerate(it) })
-    // inject custom scalars specified in the Gradle configuration
+
+    // Inject all built-in scalars
+    usedTypes.add("String")
+    usedTypes.add("Boolean")
+    usedTypes.add("Int")
+    usedTypes.add("Float")
+    usedTypes.add("ID")
+
+    // Inject custom scalars specified in the Gradle configuration
     usedTypes.addAll(scalarMapping.keys)
 
     // Generate the root types
@@ -132,9 +140,9 @@ internal class IrBuilder(
       }
       visitedTypes.add(name)
       val typeDefinition = schema.typeDefinition(name)
-      if (typeDefinition.isBuiltIn()) {
-        // We don't generate builtin types, unless they are explicitly mapped
-        if (!scalarMapping.containsKey(name)) continue
+      if (typeDefinition.isBuiltIn() && typeDefinition !is GQLScalarTypeDefinition) {
+        // We don't generate builtin types, except scalars
+        continue
       }
 
       when (typeDefinition) {

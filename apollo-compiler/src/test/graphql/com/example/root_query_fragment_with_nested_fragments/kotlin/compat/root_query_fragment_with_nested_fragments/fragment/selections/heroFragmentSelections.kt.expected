@@ -7,15 +7,15 @@ package com.example.root_query_fragment_with_nested_fragments.fragment.selection
 
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
+import com.example.root_query_fragment_with_nested_fragments.type.GraphQLString
 import kotlin.collections.List
 
 public object heroFragmentSelections {
   public val root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = CompiledStringType.notNull()
+          type = GraphQLString.type.notNull()
         ).build()
       )
 }

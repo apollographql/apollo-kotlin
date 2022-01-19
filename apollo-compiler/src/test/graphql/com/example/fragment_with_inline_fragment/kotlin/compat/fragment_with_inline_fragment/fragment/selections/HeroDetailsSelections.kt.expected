@@ -7,21 +7,21 @@ package com.example.fragment_with_inline_fragment.fragment.selections
 
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledIntType
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.fragment_with_inline_fragment.type.Character
 import com.example.fragment_with_inline_fragment.type.FriendsConnection
 import com.example.fragment_with_inline_fragment.type.FriendsEdge
+import com.example.fragment_with_inline_fragment.type.GraphQLInt
+import com.example.fragment_with_inline_fragment.type.GraphQLString
 import kotlin.collections.List
 
 public object HeroDetailsSelections {
   private val onDroid: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
@@ -33,7 +33,7 @@ public object HeroDetailsSelections {
   private val node: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = CompiledStringType.notNull()
+          type = GraphQLString.type.notNull()
         ).build()
       )
 
@@ -48,7 +48,7 @@ public object HeroDetailsSelections {
   private val friendsConnection: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "totalCount",
-          type = CompiledIntType
+          type = GraphQLInt.type
         ).build(),
         CompiledField.Builder(
           name = "edges",
@@ -60,7 +60,7 @@ public object HeroDetailsSelections {
   public val root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Human",
@@ -74,7 +74,7 @@ public object HeroDetailsSelections {
         .build(),
         CompiledField.Builder(
           name = "name",
-          type = CompiledStringType.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "friendsConnection",

@@ -8,18 +8,18 @@ package com.example.named_fragment_delegate.selections
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
 import com.example.named_fragment_delegate.fragment.selections.DroidDetailsSelections
 import com.example.named_fragment_delegate.fragment.selections.HumanDetailsSelections
 import com.example.named_fragment_delegate.type.Character
+import com.example.named_fragment_delegate.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",

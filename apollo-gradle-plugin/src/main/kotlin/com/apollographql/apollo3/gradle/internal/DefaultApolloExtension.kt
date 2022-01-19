@@ -527,6 +527,7 @@ abstract class DefaultApolloExtension(
       task.generateFragmentImplementations.set(service.generateFragmentImplementations)
       task.generateQueryDocument.set(service.generateQueryDocument)
       task.generateSchema.set(service.generateSchema)
+      task.generatedSchemaName.set(service.generatedSchemaName)
       task.codegenModels.set(service.codegenModels)
       task.flattenModels.set(service.flattenModels)
       @OptIn(ApolloExperimental::class)
