@@ -271,38 +271,26 @@ val CompiledBooleanType = ScalarType("Boolean")
 @JvmField
 val CompiledIDType = ScalarType("ID")
 
-@Deprecated("Use the generated CustomScalarType instead")
-@ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField
 val CompiledSchemaType = ObjectType("__Schema")
 
-@Deprecated("Use the generated CustomScalarType instead")
-@ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField
 val CompiledTypeType = ObjectType("__Type")
 
-@Deprecated("Use the generated CustomScalarType instead")
-@ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField
 val CompiledFieldType = ObjectType("__Field")
 
-@Deprecated("Use the generated CustomScalarType instead")
-@ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField
 val CompiledInputValueType = ObjectType("__InputValue")
 
-@Deprecated("Use the generated CustomScalarType instead")
-@ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField
 val CompiledEnumValueType = ObjectType("__EnumValue")
 
-@Deprecated("Use the generated CustomScalarType instead")
-@ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField
 val CompiledDirectiveType = ObjectType("__Directive")

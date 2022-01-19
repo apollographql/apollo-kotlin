@@ -123,12 +123,24 @@ class Options(
     val generateQueryDocument: Boolean = defaultGenerateQueryDocument,
 
     /**
-     * Whether to generate the __Schema class.
+     * Whether to generate the Schema class.
      *
-     * __Schema is a special class that contains a list of all composite types (objects, interfaces, unions)
-     * It can be used to retrieve the list of possible types for a given CompiledType
+     * The Schema class is a special class that contains a list of all composite types (objects, interfaces, unions).
+     * It can be used to retrieve the list of possible types for a given CompiledType.
+     *
+     * Its name can be configured with [generatedSchemaName].
+     *
+     * Default: false
      */
     val generateSchema: Boolean = defaultGenerateSchema,
+
+    /**
+     * Class name to use when generating the Schema class.
+     *
+     * Default: "__Schema"
+     */
+    val generatedSchemaName: String = defaultGeneratedSchemaName,
+
     /**
      * Whether to generate the type safe Data builders. These are mainly used for tests but can also be used for other use
      * cases too.
@@ -205,6 +217,7 @@ class Options(
       generateResponseFields: Boolean = this.generateResponseFields,
       generateQueryDocument: Boolean = this.generateQueryDocument,
       generateSchema: Boolean = this.generateSchema,
+      generatedSchemaName: String = this.generatedSchemaName,
       moduleName: String = this.moduleName,
       targetLanguage: TargetLanguage = this.targetLanguage,
       generateTestBuilders: Boolean = this.generateTestBuilders,
@@ -236,6 +249,7 @@ class Options(
       generateResponseFields = generateResponseFields,
       generateQueryDocument = generateQueryDocument,
       generateSchema = generateSchema,
+      generatedSchemaName = generatedSchemaName,
       moduleName = moduleName,
       generateTestBuilders = generateTestBuilders,
       testDir = testDir,
@@ -262,6 +276,7 @@ class Options(
     const val defaultFlattenModels = true
     val defaultTargetLanguage = TargetLanguage.KOTLIN_1_5
     const val defaultGenerateSchema = false
+    const val defaultGeneratedSchemaName = "__Schema"
     const val defaultGenerateTestBuilders = false
     val defaultSealedClassesForEnumsMatching = emptyList<String>()
     const val defaultGenerateOptionalOperationVariables = true

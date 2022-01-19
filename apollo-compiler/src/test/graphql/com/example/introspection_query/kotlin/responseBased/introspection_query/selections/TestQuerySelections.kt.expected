@@ -7,12 +7,12 @@ package com.example.introspection_query.selections
 
 import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.CompiledSchemaType
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledTypeType
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.introspection_query.type.GraphQLString
-import com.example.introspection_query.type.__Schema
-import com.example.introspection_query.type.__Type
 import kotlin.collections.List
 
 public object TestQuerySelections {
@@ -33,12 +33,12 @@ public object TestQuerySelections {
   private val __schema: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "queryType",
-          type = __Type.type.notNull()
+          type = CompiledTypeType.notNull()
         ).selections(queryType)
         .build(),
         CompiledField.Builder(
           name = "types",
-          type = __Type.type.notNull().list().notNull()
+          type = CompiledTypeType.notNull().list().notNull()
         ).selections(types)
         .build()
       )
@@ -53,12 +53,12 @@ public object TestQuerySelections {
   public val root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__schema",
-          type = __Schema.type.notNull()
+          type = CompiledSchemaType.notNull()
         ).selections(__schema)
         .build(),
         CompiledField.Builder(
           name = "__type",
-          type = __Type.type.notNull()
+          type = CompiledTypeType.notNull()
         ).arguments(listOf(
           CompiledArgument("name", "Vehicle")
         ))

@@ -51,6 +51,7 @@ class KotlinCodeGen(
     private val generateFragmentImplementations: Boolean,
     private val generateQueryDocument: Boolean,
     private val generateSchema: Boolean,
+    private val generatedSchemaName: String,
     private val generateTestBuilders: Boolean,
     /**
      * Whether to flatten the models. This decision is left to the codegen. For fragments for an example, we
@@ -188,7 +189,7 @@ class KotlinCodeGen(
         }
 
     if (generateSchema) {
-      builders.add(SchemaBuilder(context, ir.objects, ir.interfaces, ir.unions))
+      builders.add(SchemaBuilder(context, generatedSchemaName, ir.objects, ir.interfaces, ir.unions))
     }
 
     builders.forEach { it.prepare() }

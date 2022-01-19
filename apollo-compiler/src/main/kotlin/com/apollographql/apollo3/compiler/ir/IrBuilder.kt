@@ -139,8 +139,13 @@ internal class IrBuilder(
         continue
       }
       visitedTypes.add(name)
+      val typeDefinition = schema.typeDefinition(name)
+      if (typeDefinition.isBuiltIn() && typeDefinition !is GQLScalarTypeDefinition) {
+        // We don't generate builtin types, except scalars
+        continue
+      }
 
-      when (val typeDefinition = schema.typeDefinition(name)) {
+      when (typeDefinition) {
         is GQLEnumTypeDefinition -> enums.add(typeDefinition.toIr())
         is GQLObjectTypeDefinition -> objects.add(typeDefinition.toIr())
         is GQLUnionTypeDefinition -> unions.add(typeDefinition.toIr())
