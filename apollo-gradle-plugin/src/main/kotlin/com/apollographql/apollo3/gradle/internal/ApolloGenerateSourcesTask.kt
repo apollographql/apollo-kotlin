@@ -23,6 +23,7 @@ import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateQuery
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateResponseFields
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateSchema
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateTestBuilders
+import com.apollographql.apollo3.compiler.Options.Companion.defaultGeneratedSchemaName
 import com.apollographql.apollo3.compiler.Options.Companion.defaultSealedClassesForEnumsMatching
 import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSchemaPackageNameForFragments
 import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSemanticNaming
@@ -124,6 +125,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Input
   @get:Optional
   abstract val generateSchema: Property<Boolean>
+
+  @get:Input
+  @get:Optional
+  abstract val generatedSchemaName: Property<String>
 
   @get:Input
   @get:Optional
@@ -269,6 +274,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         generateFragmentImplementations = generateFragmentImplementations.getOrElse(defaultGenerateFragmentImplementations),
         generateQueryDocument = generateQueryDocument.getOrElse(defaultGenerateQueryDocument),
         generateSchema = generateSchema.getOrElse(defaultGenerateSchema),
+        generatedSchemaName = generatedSchemaName.getOrElse(defaultGeneratedSchemaName),
         generateResponseFields = generateResponseFields.getOrElse(defaultGenerateResponseFields),
         logger = logger,
         moduleName = projectName.get(),

@@ -8,18 +8,18 @@ package com.example.simple_union.selections
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
 import com.example.simple_union.fragment.selections.CatFragmentSelections
 import com.example.simple_union.fragment.selections.DogFragmentSelections
 import com.example.simple_union.type.Animal
+import com.example.simple_union.type.GraphQLString
 import kotlin.collections.List
 
 public object AnimalQuerySelections {
   private val animal: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Cat",

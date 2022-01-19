@@ -8,8 +8,8 @@ package com.example.nested_field_with_multiple_fieldsets.selections
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
+import com.example.nested_field_with_multiple_fieldsets.type.GraphQLString
 import com.example.nested_field_with_multiple_fieldsets.type.Iface1
 import com.example.nested_field_with_multiple_fieldsets.type.Iface2
 import kotlin.collections.List
@@ -18,21 +18,21 @@ public object TestQuerySelections {
   private val onIface2: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "scalar1",
-          type = CompiledStringType
+          type = GraphQLString.type
         ).build()
       )
 
   private val onImpl2: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "scalar2",
-          type = CompiledStringType
+          type = GraphQLString.type
         ).build()
       )
 
   private val iface2: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Iface2",
@@ -57,21 +57,21 @@ public object TestQuerySelections {
   private val onIface21: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "scalar3",
-          type = CompiledStringType
+          type = GraphQLString.type
         ).build()
       )
 
   private val onImpl21: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "scalar4",
-          type = CompiledStringType
+          type = GraphQLString.type
         ).build()
       )
 
   private val iface21: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Iface2",
@@ -96,7 +96,7 @@ public object TestQuerySelections {
   private val iface1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Iface1",

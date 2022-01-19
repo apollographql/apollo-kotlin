@@ -322,10 +322,19 @@ interface Service {
   val generateQueryDocument: Property<Boolean>
 
   /**
-   * Whether to generate the __Schema class. The __Schema class lists all composite
-   * types in order to access __typename and/or possibleTypes
+   * Whether to generate the Schema class. The Schema class lists all composite
+   * types in order to access __typename and/or possibleTypes.
+   *
+   * Default: false
    */
   val generateSchema: Property<Boolean>
+
+  /**
+   * Class name to use when generating the Schema class.
+   *
+   * Default: "__Schema"
+   */
+  val generatedSchemaName: Property<String>
 
   /**
    * Whether to generate operation variables as [com.apollographql.apollo3.api.Optional]

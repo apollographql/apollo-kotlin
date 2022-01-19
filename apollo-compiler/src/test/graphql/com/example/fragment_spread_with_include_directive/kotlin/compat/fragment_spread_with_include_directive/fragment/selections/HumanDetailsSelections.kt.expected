@@ -7,14 +7,14 @@ package com.example.fragment_spread_with_include_directive.fragment.selections
 
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
+import com.example.fragment_spread_with_include_directive.type.GraphQLString
 import kotlin.collections.List
 
 public object HumanDetailsSelections {
   public val root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "homePlanet",
-          type = CompiledStringType
+          type = GraphQLString.type
         ).build()
       )
 }

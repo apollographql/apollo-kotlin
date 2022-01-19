@@ -198,6 +198,7 @@ object ApolloCompiler {
             generateFragmentImplementations = options.generateFragmentImplementations,
             generateQueryDocument = options.generateQueryDocument,
             generateSchema = options.generateSchema,
+            generatedSchemaName = options.generatedSchemaName,
             flatten = options.flattenModels,
         ).write(outputDir = outputDir)
       }
@@ -215,6 +216,7 @@ object ApolloCompiler {
             generateFragmentImplementations = options.generateFragmentImplementations,
             generateQueryDocument = options.generateQueryDocument,
             generateSchema = options.generateSchema,
+            generatedSchemaName = options.generatedSchemaName,
             generateTestBuilders = options.generateTestBuilders,
             flatten = options.flattenModels,
             sealedClassesForEnumsMatching = options.sealedClassesForEnumsMatching,
