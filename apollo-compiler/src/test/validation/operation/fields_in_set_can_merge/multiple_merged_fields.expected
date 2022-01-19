@@ -1,0 +1,5 @@
+ERROR: ValidationError (4:12)
+`foo` cannot be merged with `foo`: they have different types
+------------
+ERROR: ValidationError (9:12)
+`foo` cannot be merged with `foo`: they have different types

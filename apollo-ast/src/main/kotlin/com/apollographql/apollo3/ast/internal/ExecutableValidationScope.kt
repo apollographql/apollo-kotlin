@@ -368,8 +368,8 @@ internal class ExecutableValidationScope(
       return
     }
 
-    val setA = fieldA.selectionSet?.collectFields(parentTypeDefinitionA.name) ?: emptyList()
-    val setB = fieldB.selectionSet?.collectFields(parentTypeDefinitionB.name) ?: emptyList()
+    val setA = fieldA.selectionSet?.collectFields(typeA.leafType().name) ?: emptyList()
+    val setB = fieldB.selectionSet?.collectFields(typeB.leafType().name) ?: emptyList()
 
     fieldsInSetCanMerge(setA + setB)
   }
@@ -378,8 +378,16 @@ internal class ExecutableValidationScope(
     fieldsWithParent.groupBy { it.field.responseName() }
         .values
         .forEach { fieldsForName ->
-          fieldsForName.pairs().forEach {
-            fieldPairCanMerge(it.first, it.second)
+          if (fieldsForName.size == 1) {
+            val first = fieldsForName.first()
+            val fieldDefinition = first.field.definitionFromScope(schema, first.parentTypeDefinition.name)!!
+            val set = first.field.selectionSet?.collectFields(fieldDefinition.type.leafType().name) ?: emptyList()
+            // recurse in subfields
+            fieldsInSetCanMerge(set)
+          } else {
+            fieldsForName.pairs().forEach {
+              fieldPairCanMerge(it.first, it.second)
+            }
           }
         }
   }

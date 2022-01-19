@@ -1,0 +1,17 @@
+type Query {
+    character: Character
+}
+
+type Character {
+    name: String
+    address: Address
+}
+
+type Address {
+    street: String
+    number: Int
+}
+
+
+
+

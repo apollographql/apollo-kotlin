@@ -1,0 +1,8 @@
+query GetAddress {
+    character {
+        address {
+            foo: street
+            foo: number
+        }
+    }
+}

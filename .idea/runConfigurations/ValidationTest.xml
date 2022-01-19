@@ -2,15 +2,17 @@
   <configuration default="false" name="ValidationTest" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
-      <option name="externalProjectPath" value="$PROJECT_DIR$/.." />
+      <option name="externalProjectPath" value="$PROJECT_DIR$" />
       <option name="externalSystemIdString" value="GRADLE" />
-      <option name="scriptParameters" value="--tests &quot;com.apollographql.apollo3.compiler.ValidationTest&quot; -DupdateTestFixtures=true -DtestFilter=ArgumentNonOp" />
+      <option name="scriptParameters" value="-DupdateTestFixtures=true -DtestFilter=multiple_merged_fields" />
       <option name="taskDescriptions">
         <list />
       </option>
       <option name="taskNames">
         <list>
           <option value=":apollo-compiler:test" />
+          <option value="--tests" />
+          <option value="&quot;com.apollographql.apollo3.compiler.ValidationTest&quot;" />
         </list>
       </option>
       <option name="vmOptions" value="" />
