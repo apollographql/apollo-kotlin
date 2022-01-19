@@ -97,6 +97,20 @@ class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?, privat
   }
 
   fun resolveCompiledType(name: String): CodeBlock {
+    val builtin = when (name) {
+      "__Schema" -> "CompiledSchemaType"
+      "__Type" -> "CompiledTypeType"
+      "__Field" -> "CompiledFieldType"
+      "__InputValue" -> "CompiledInputValueType"
+      "__EnumValue" -> "CompiledEnumValueType"
+      "__Directive" -> "CompiledDirectiveType"
+      else -> null
+    }
+
+    if (builtin != null) {
+      return CodeBlock.of("$T.$L", JavaClassNames.CompiledGraphQL, builtin)
+    }
+
     return CodeBlock.of("$T.$type", resolveAndAssert(ResolverKeyKind.SchemaType, name))
   }
 
