@@ -380,7 +380,11 @@ internal class ExecutableValidationScope(
         .forEach { fieldsForName ->
           if (fieldsForName.size == 1) {
             val first = fieldsForName.first()
-            val fieldDefinition = first.field.definitionFromScope(schema, first.parentTypeDefinition.name)!!
+            val fieldDefinition = first.field.definitionFromScope(schema, first.parentTypeDefinition.name)
+            if (fieldDefinition == null) {
+              // This field is unknown. Let other validation rules catch this
+              return@forEach
+            }
             val set = first.field.selectionSet?.collectFields(fieldDefinition.type.leafType().name) ?: emptyList()
             // recurse in subfields
             fieldsInSetCanMerge(set)
