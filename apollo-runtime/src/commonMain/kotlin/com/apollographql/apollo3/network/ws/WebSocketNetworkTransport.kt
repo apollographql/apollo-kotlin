@@ -158,6 +158,12 @@ private constructor(
           }
         }
         is Command -> {
+          if (message is Dispose) {
+            closeProtocol()
+            // Exit the loop and the coroutine scope
+            return
+          }
+
           if (protocol == null) {
             if (message !is StartOperation<*>) {
               // A stop was received, but we don't have a connection. Ignore it
@@ -210,11 +216,6 @@ private constructor(
             is StopOperation<*> -> {
               activeMessages.remove(message.request.requestUuid)
               protocol!!.stopOperation(message.request)
-            }
-            is Dispose -> {
-              closeProtocol()
-              // Exit the loop and the coroutine scope
-              return
             }
           }
 
