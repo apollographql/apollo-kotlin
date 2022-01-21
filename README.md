@@ -203,7 +203,7 @@ For building, it requires:
 
 ## Contributing
 
-If you'd like to contribute, please see [Contributing.md](https://github.com/apollographql/apollo-android/blob/main/Contributing.md).
+If you'd like to contribute, please see [Contributing.md](https://github.com/apollographql/apollo-android/blob/main/CONTRIBUTING.md).
 
 
 ## Additional resources
