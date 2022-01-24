@@ -7,9 +7,9 @@ package com.example.nested_field_with_multiple_fieldsets.selections;
 
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CompiledFragment;
-import com.apollographql.apollo3.api.CompiledGraphQL;
 import com.apollographql.apollo3.api.CompiledNotNullType;
 import com.apollographql.apollo3.api.CompiledSelection;
+import com.example.nested_field_with_multiple_fieldsets.type.GraphQLString;
 import com.example.nested_field_with_multiple_fieldsets.type.Iface1;
 import com.example.nested_field_with_multiple_fieldsets.type.Iface2;
 import java.util.Arrays;
@@ -17,15 +17,15 @@ import java.util.List;
 
 public class TestQuerySelections {
   private static List<CompiledSelection> onIface2 = Arrays.asList(
-    new CompiledField.Builder("scalar1", CompiledGraphQL.CompiledStringType).build()
+    new CompiledField.Builder("scalar1", GraphQLString.type).build()
   );
 
   private static List<CompiledSelection> onImpl2 = Arrays.asList(
-    new CompiledField.Builder("scalar2", CompiledGraphQL.CompiledStringType).build()
+    new CompiledField.Builder("scalar2", GraphQLString.type).build()
   );
 
   private static List<CompiledSelection> iface2 = Arrays.asList(
-    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledFragment.Builder("Iface2", Arrays.asList("Impl2")).selections(onIface2).build(),
     new CompiledFragment.Builder("Impl2", Arrays.asList("Impl2")).selections(onImpl2).build()
   );
@@ -35,15 +35,15 @@ public class TestQuerySelections {
   );
 
   private static List<CompiledSelection> onIface21 = Arrays.asList(
-    new CompiledField.Builder("scalar3", CompiledGraphQL.CompiledStringType).build()
+    new CompiledField.Builder("scalar3", GraphQLString.type).build()
   );
 
   private static List<CompiledSelection> onImpl21 = Arrays.asList(
-    new CompiledField.Builder("scalar4", CompiledGraphQL.CompiledStringType).build()
+    new CompiledField.Builder("scalar4", GraphQLString.type).build()
   );
 
   private static List<CompiledSelection> iface21 = Arrays.asList(
-    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledFragment.Builder("Iface2", Arrays.asList("Impl2")).selections(onIface21).build(),
     new CompiledFragment.Builder("Impl2", Arrays.asList("Impl2")).selections(onImpl21).build()
   );
@@ -53,7 +53,7 @@ public class TestQuerySelections {
   );
 
   private static List<CompiledSelection> iface1 = Arrays.asList(
-    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledFragment.Builder("Iface1", Arrays.asList("Impl1")).selections(onIface1).build(),
     new CompiledFragment.Builder("Impl1", Arrays.asList("Impl1")).selections(onImpl1).build()
   );

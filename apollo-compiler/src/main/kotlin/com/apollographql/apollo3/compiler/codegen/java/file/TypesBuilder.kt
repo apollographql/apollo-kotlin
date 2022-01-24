@@ -26,11 +26,20 @@ internal fun IrCustomScalar.typeFieldSpec(): FieldSpec {
    * so the fallback isn't really required here. We still write it as a way to hint the user
    * to what's happening behind the scenes
    */
-  val kotlinName = kotlinName ?: "kotlin.Any"
+  val kotlinName = kotlinName ?: builtinScalarJavaName(name) ?: "java.lang.Object"
   return FieldSpec
       .builder(JavaClassNames.CustomScalarType, Identifier.type, Modifier.STATIC, Modifier.PUBLIC)
       .initializer("new $T($S, $S)", JavaClassNames.CustomScalarType, name, kotlinName)
       .build()
+}
+
+private fun builtinScalarJavaName(name: String): String? = when (name) {
+  "Int" -> "java.lang.Integer"
+  "Float" -> "java.lang.Float"
+  "String" -> "java.lang.String"
+  "Boolean" -> "java.lang.Boolean"
+  "ID" -> "java.lang.String"
+  else -> null
 }
 
 internal fun IrEnum.typeFieldSpec(): FieldSpec {

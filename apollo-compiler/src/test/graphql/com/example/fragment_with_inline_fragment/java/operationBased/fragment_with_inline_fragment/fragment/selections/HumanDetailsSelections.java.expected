@@ -6,14 +6,14 @@
 package com.example.fragment_with_inline_fragment.fragment.selections;
 
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompiledGraphQL;
 import com.apollographql.apollo3.api.CompiledNotNullType;
 import com.apollographql.apollo3.api.CompiledSelection;
+import com.example.fragment_with_inline_fragment.type.GraphQLString;
 import java.util.Arrays;
 import java.util.List;
 
 public class HumanDetailsSelections {
   public static List<CompiledSelection> root = Arrays.asList(
-    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
+    new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build()
   );
 }

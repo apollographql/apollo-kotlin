@@ -1,5 +1,8 @@
 package com.apollographql.apollo3.compiler.codegen.java
 
+import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
+import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
+import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.type
 import com.apollographql.apollo3.compiler.codegen.ResolverClassName
@@ -22,7 +25,7 @@ import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName
 
 
-class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?) {
+class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?, private val scalarMapping: Map<String, ScalarInfo>) {
   fun resolve(key: ResolverKey): ClassName? = classNames[key] ?: next?.resolve(key)
 
   private var classNames = entries.associateBy(
@@ -54,32 +57,34 @@ class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?) {
       is IrOptionalType -> ParameterizedTypeName.get(JavaClassNames.Optional, resolveIrType(type.ofType))
       is IrListType -> ParameterizedTypeName.get(JavaClassNames.List, resolveIrType(type.ofType))
       is IrModelType -> resolveAndAssert(ResolverKeyKind.Model, type.path)
-      is IrScalarType -> {
-        when (type.name) {
-          "String" -> JavaClassNames.String
-          "ID" -> JavaClassNames.String
-          "Float" -> JavaClassNames.Double
-          "Int" -> JavaClassNames.Integer
-          "Boolean" -> JavaClassNames.Boolean
-          else -> {
-            resolve(ResolverKeyKind.ScalarTarget, type.name) ?: JavaClassNames.Object
-          }
-        }
-
-      }
+      is IrScalarType -> resolveIrScalarType(type)
       is IrNamedType -> resolveAndAssert(ResolverKeyKind.SchemaType, type.name)
       else -> error("$type is not a schema type")
     }
   }
 
+  private fun resolveIrScalarType(type: IrScalarType): ClassName {
+    // Try mapping first, then built-ins, then fallback to Object
+    return resolve(ResolverKeyKind.ScalarTarget, type.name) ?: when (type.name) {
+      "String" -> JavaClassNames.String
+      "ID" -> JavaClassNames.String
+      "Float" -> JavaClassNames.Double
+      "Int" -> JavaClassNames.Integer
+      "Boolean" -> JavaClassNames.Boolean
+      else -> JavaClassNames.Object
+    }
+  }
+
   fun adapterInitializer(type: IrType, requiresBuffering: Boolean): CodeBlock {
     if (type !is IrNonNullType) {
+      // Don't hardcode the adapter when the scalar is mapped to a user-defined type
+      val scalarWithoutCustomMapping = type is IrScalarType && !scalarMapping.containsKey(type.name)
       return when {
-        type is IrScalarType && type.name == "String" -> adapterCodeBlock("NullableStringAdapter")
-        type is IrScalarType && type.name == "ID" -> adapterCodeBlock("NullableStringAdapter")
-        type is IrScalarType && type.name == "Boolean" -> adapterCodeBlock("NullableBooleanAdapter")
-        type is IrScalarType && type.name == "Int" -> adapterCodeBlock("NullableIntAdapter")
-        type is IrScalarType && type.name == "Float" -> adapterCodeBlock("NullableDoubleAdapter")
+        type is IrScalarType && type.name == "String" && scalarWithoutCustomMapping -> adapterCodeBlock("NullableStringAdapter")
+        type is IrScalarType && type.name == "ID" && scalarWithoutCustomMapping -> adapterCodeBlock("NullableStringAdapter")
+        type is IrScalarType && type.name == "Boolean" && scalarWithoutCustomMapping -> adapterCodeBlock("NullableBooleanAdapter")
+        type is IrScalarType && type.name == "Int" && scalarWithoutCustomMapping -> adapterCodeBlock("NullableIntAdapter")
+        type is IrScalarType && type.name == "Float" && scalarWithoutCustomMapping -> adapterCodeBlock("NullableDoubleAdapter")
         type is IrScalarType && resolve(ResolverKeyKind.ScalarTarget, type.name) == null -> {
           adapterCodeBlock("NullableAnyAdapter")
         }
@@ -93,11 +98,6 @@ class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?) {
 
   fun resolveCompiledType(name: String): CodeBlock {
     val builtin = when (name) {
-      "String" -> "CompiledStringType"
-      "Int" -> "CompiledIntType"
-      "Float" -> "CompiledFloatType"
-      "Boolean" -> "CompiledBooleanType"
-      "ID" -> "CompiledIDType"
       "__Schema" -> "CompiledSchemaType"
       "__Type" -> "CompiledTypeType"
       "__Field" -> "CompiledFieldType"
@@ -120,22 +120,8 @@ class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?) {
       type is IrListType -> {
         CodeBlock.of("new $T<>($L)", JavaClassNames.ListAdapter, adapterInitializer(type.ofType, requiresBuffering))
       }
-      type is IrScalarType && type.name == "Boolean" -> adapterCodeBlock("BooleanAdapter")
-      type is IrScalarType && type.name == "ID" -> adapterCodeBlock("StringAdapter")
-      type is IrScalarType && type.name == "String" -> adapterCodeBlock("StringAdapter")
-      type is IrScalarType && type.name == "Int" -> adapterCodeBlock("IntAdapter")
-      type is IrScalarType && type.name == "Float" -> adapterCodeBlock("DoubleAdapter")
       type is IrScalarType -> {
-        val target = resolve(ResolverKeyKind.ScalarTarget, type.name)
-        if (target == null) {
-          adapterCodeBlock("AnyAdapter")
-        } else {
-          CodeBlock.of(
-              "($customScalarAdapters.<$T>responseAdapterFor($L))",
-              target,
-              resolveCompiledType(type.name)
-          )
-        }
+        nonNullableScalarAdapterInitializer(type)
       }
       type is IrEnumType -> {
         CodeBlock.of("$T.INSTANCE", resolveAndAssert(ResolverKeyKind.SchemaTypeAdapter, type.name))
@@ -158,6 +144,43 @@ class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?) {
         CodeBlock.of("new $T<>($L)", JavaClassNames.OptionalAdapter, adapterInitializer(type.ofType, requiresBuffering))
       }
       else -> error("Cannot create an adapter for $type")
+    }
+  }
+
+  private fun nonNullableScalarAdapterInitializer(type: IrScalarType): CodeBlock {
+    return when (val adapterInitializer = scalarMapping[type.name]?.adapterInitializer) {
+      is ExpressionAdapterInitializer -> {
+        CodeBlock.of(adapterInitializer.expression)
+      }
+      is RuntimeAdapterInitializer -> {
+        val target = resolve(ResolverKeyKind.ScalarTarget, type.name)
+        CodeBlock.of(
+            "($customScalarAdapters.<$T>responseAdapterFor($L))",
+            target,
+            resolveCompiledType(type.name)
+        )
+      }
+      else -> {
+        when (type.name) {
+          "Boolean" -> adapterCodeBlock("BooleanAdapter")
+          "ID" -> adapterCodeBlock("StringAdapter")
+          "String" -> adapterCodeBlock("StringAdapter")
+          "Int" -> adapterCodeBlock("IntAdapter")
+          "Float" -> adapterCodeBlock("DoubleAdapter")
+          else -> {
+            val target = resolve(ResolverKeyKind.ScalarTarget, type.name)
+            if (target == null) {
+              adapterCodeBlock("AnyAdapter")
+            } else {
+              CodeBlock.of(
+                  "($customScalarAdapters.<$T>responseAdapterFor($L))",
+                  target,
+                  resolveCompiledType(type.name)
+              )
+            }
+          }
+        }
+      }
     }
   }
 

@@ -7,19 +7,21 @@ package com.example.two_heroes_with_friends.selections;
 
 import com.apollographql.apollo3.api.CompiledArgument;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompiledGraphQL;
 import com.apollographql.apollo3.api.CompiledListType;
 import com.apollographql.apollo3.api.CompiledNotNullType;
 import com.apollographql.apollo3.api.CompiledSelection;
 import com.example.two_heroes_with_friends.type.Character;
 import com.example.two_heroes_with_friends.type.FriendsConnection;
 import com.example.two_heroes_with_friends.type.FriendsEdge;
+import com.example.two_heroes_with_friends.type.GraphQLID;
+import com.example.two_heroes_with_friends.type.GraphQLInt;
+import com.example.two_heroes_with_friends.type.GraphQLString;
 import java.util.Arrays;
 import java.util.List;
 
 public class TestQuerySelections {
   private static List<CompiledSelection> node = Arrays.asList(
-    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
+    new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build()
   );
 
   private static List<CompiledSelection> edges = Arrays.asList(
@@ -27,17 +29,17 @@ public class TestQuerySelections {
   );
 
   private static List<CompiledSelection> friendsConnection = Arrays.asList(
-    new CompiledField.Builder("totalCount", CompiledGraphQL.CompiledIntType).build(),
+    new CompiledField.Builder("totalCount", GraphQLInt.type).build(),
     new CompiledField.Builder("edges", new CompiledListType(FriendsEdge.type)).selections(edges).build()
   );
 
   private static List<CompiledSelection> r2 = Arrays.asList(
-    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("friendsConnection", new CompiledNotNullType(FriendsConnection.type)).selections(friendsConnection).build()
   );
 
   private static List<CompiledSelection> node1 = Arrays.asList(
-    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
+    new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build()
   );
 
   private static List<CompiledSelection> edges1 = Arrays.asList(
@@ -45,13 +47,13 @@ public class TestQuerySelections {
   );
 
   private static List<CompiledSelection> friendsConnection1 = Arrays.asList(
-    new CompiledField.Builder("totalCount", CompiledGraphQL.CompiledIntType).build(),
+    new CompiledField.Builder("totalCount", GraphQLInt.type).build(),
     new CompiledField.Builder("edges", new CompiledListType(FriendsEdge.type)).selections(edges1).build()
   );
 
   private static List<CompiledSelection> luke = Arrays.asList(
-    new CompiledField.Builder("id", new CompiledNotNullType(CompiledGraphQL.CompiledIDType)).build(),
-    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("id", new CompiledNotNullType(GraphQLID.type)).build(),
+    new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("friendsConnection", new CompiledNotNullType(FriendsConnection.type)).selections(friendsConnection1).build()
   );
 
