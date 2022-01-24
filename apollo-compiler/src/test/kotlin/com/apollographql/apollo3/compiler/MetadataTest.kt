@@ -47,7 +47,8 @@ class MetadataTest {
           schema = schema,
           codegenModels = codegenModels,
           schemaPackageName = "",
-          pluginVersion = APOLLO_VERSION
+          pluginVersion = APOLLO_VERSION,
+          scalarMapping = emptyMap()
       )
     } else {
       val metadata = metadataFiles.map { ApolloMetadata.readFrom(it) }

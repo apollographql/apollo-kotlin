@@ -88,6 +88,10 @@ data class CommonMetadata(
     val schemaPackageName: String,
     val pluginVersion: String,
     val codegenModels: String,
+    /**
+     * Scalar mapping needed for scalars' target types and Adapter initializers
+     */
+    val scalarMapping: Map<String, ScalarInfo>,
 )
 
 /**
@@ -106,9 +110,4 @@ data class CompilerMetadata(
      * resolver info used by the codegen to lookup already existing ClassNames
      */
     val resolverInfo: ResolverInfo,
-
-    /**
-     * Scalar mapping needed for scalars' target types and Adapter initializers
-     */
-    val scalarMapping: Map<String, ScalarInfo>,
 )
