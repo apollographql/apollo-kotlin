@@ -68,11 +68,19 @@ Logging & Error messages
 * There is one exception for the Gradle plugin. It is allowed to log information though the lifecycle() methods. 
 * Messages should contain "Apollo: " when it's not immediately clear that the message comes from Apollo.
 
+Gradle APIs
+
+Gradle is a bit peculiar because it can be used from both Kotlin and Groovy, has lazy and eager APIs and can sometimes be used as a DSL and sometimes imperatively. The rules we landed on are:
+
+* Lazy properties use names. Example: `packageName.set("com.example")`
+* Methods with one or more parameters use verbs. Example: `mapScalar("ID", "kotlin.Long")`
+* Except when there is only one parameter that is of `Action<T>` type. Example: `introspection {}`
+
 Misc
 * Parameters using milliseconds should have the "Millis" suffix.
 * Else use [kotlin.time.Duration]
 * `ExperimentalContracts` is ok to use. Since kotlin-stdlib does it, we can too. See https://github.com/Kotlin/KEEP/blob/master/proposals/kotlin-contracts.md#compatibility-notice
- 
+
 ## Workflow
 
 We love Github issues!  Before working on any new features, please open an issue so that we can agree on the direction,
