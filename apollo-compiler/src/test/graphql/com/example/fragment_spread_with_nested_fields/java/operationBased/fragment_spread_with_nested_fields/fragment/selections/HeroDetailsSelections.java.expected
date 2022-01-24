@@ -6,19 +6,20 @@
 package com.example.fragment_spread_with_nested_fields.fragment.selections;
 
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompiledGraphQL;
 import com.apollographql.apollo3.api.CompiledListType;
 import com.apollographql.apollo3.api.CompiledNotNullType;
 import com.apollographql.apollo3.api.CompiledSelection;
 import com.example.fragment_spread_with_nested_fields.type.Character;
 import com.example.fragment_spread_with_nested_fields.type.FriendsConnection;
 import com.example.fragment_spread_with_nested_fields.type.FriendsEdge;
+import com.example.fragment_spread_with_nested_fields.type.GraphQLInt;
+import com.example.fragment_spread_with_nested_fields.type.GraphQLString;
 import java.util.Arrays;
 import java.util.List;
 
 public class HeroDetailsSelections {
   private static List<CompiledSelection> node = Arrays.asList(
-    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
+    new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build()
   );
 
   private static List<CompiledSelection> edges = Arrays.asList(
@@ -26,12 +27,12 @@ public class HeroDetailsSelections {
   );
 
   private static List<CompiledSelection> friendsConnection = Arrays.asList(
-    new CompiledField.Builder("totalCount", CompiledGraphQL.CompiledIntType).build(),
+    new CompiledField.Builder("totalCount", GraphQLInt.type).build(),
     new CompiledField.Builder("edges", new CompiledListType(FriendsEdge.type)).selections(edges).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("friendsConnection", new CompiledNotNullType(FriendsConnection.type)).selections(friendsConnection).build()
   );
 }

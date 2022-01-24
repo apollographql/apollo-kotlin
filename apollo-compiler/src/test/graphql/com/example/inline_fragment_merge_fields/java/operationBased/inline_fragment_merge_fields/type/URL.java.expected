@@ -11,5 +11,5 @@ import com.apollographql.apollo3.api.CustomScalarType;
  * URL for testing
  */
 public class URL {
-  public static CustomScalarType type = new CustomScalarType("URL", "kotlin.Any");
+  public static CustomScalarType type = new CustomScalarType("URL", "java.lang.Object");
 }

@@ -11,16 +11,17 @@ import com.apollographql.apollo3.api.CompiledGraphQL;
 import com.apollographql.apollo3.api.CompiledListType;
 import com.apollographql.apollo3.api.CompiledNotNullType;
 import com.apollographql.apollo3.api.CompiledSelection;
+import com.example.introspection_query.type.GraphQLString;
 import java.util.Arrays;
 import java.util.List;
 
 public class TestQuerySelections {
   private static List<CompiledSelection> queryType = Arrays.asList(
-    new CompiledField.Builder("name", CompiledGraphQL.CompiledStringType).build()
+    new CompiledField.Builder("name", GraphQLString.type).build()
   );
 
   private static List<CompiledSelection> types = Arrays.asList(
-    new CompiledField.Builder("name", CompiledGraphQL.CompiledStringType).build()
+    new CompiledField.Builder("name", GraphQLString.type).build()
   );
 
   private static List<CompiledSelection> __schema = Arrays.asList(
@@ -29,7 +30,7 @@ public class TestQuerySelections {
   );
 
   private static List<CompiledSelection> __type = Arrays.asList(
-    new CompiledField.Builder("name", CompiledGraphQL.CompiledStringType).build()
+    new CompiledField.Builder("name", GraphQLString.type).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(

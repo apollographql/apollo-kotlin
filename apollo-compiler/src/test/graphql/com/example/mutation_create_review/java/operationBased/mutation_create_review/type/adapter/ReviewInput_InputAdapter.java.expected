@@ -47,7 +47,7 @@ public enum ReviewInput_InputAdapter implements Adapter<ReviewInput> {
     }
     if (value.commentary instanceof Optional.Present) {
       writer.name("commentary");
-      new OptionalAdapter<>(Adapters.NullableStringAdapter).toJson(writer, customScalarAdapters, (Optional.Present<String>)value.commentary);
+      new OptionalAdapter<>(new NullableAdapter<>(new com.example.MyStringAdapter())).toJson(writer, customScalarAdapters, (Optional.Present<String>)value.commentary);
     }
     writer.name("favoriteColor");
     new ObjectAdapter<ColorInput>(ColorInput_InputAdapter.INSTANCE, false).toJson(writer, customScalarAdapters, value.favoriteColor);
@@ -81,10 +81,10 @@ public enum ReviewInput_InputAdapter implements Adapter<ReviewInput> {
     }
     if (value.listOfString instanceof Optional.Present) {
       writer.name("listOfString");
-      new OptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(Adapters.NullableStringAdapter))).toJson(writer, customScalarAdapters, (Optional.Present<List<String>>)value.listOfString);
+      new OptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new com.example.MyStringAdapter())))).toJson(writer, customScalarAdapters, (Optional.Present<List<String>>)value.listOfString);
     }
     writer.name("listOfStringNonOptional");
-    new ListAdapter<>(Adapters.NullableStringAdapter).toJson(writer, customScalarAdapters, value.listOfStringNonOptional);
+    new ListAdapter<>(new NullableAdapter<>(new com.example.MyStringAdapter())).toJson(writer, customScalarAdapters, value.listOfStringNonOptional);
     if (value.listOfInputTypes instanceof Optional.Present) {
       writer.name("listOfInputTypes");
       new OptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<ColorInput>(ColorInput_InputAdapter.INSTANCE, false))))).toJson(writer, customScalarAdapters, (Optional.Present<List<ColorInput>>)value.listOfInputTypes);
@@ -99,7 +99,7 @@ public enum ReviewInput_InputAdapter implements Adapter<ReviewInput> {
     }
     if (value.listOfListOfString instanceof Optional.Present) {
       writer.name("listOfListOfString");
-      new OptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(Adapters.StringAdapter)))).toJson(writer, customScalarAdapters, (Optional.Present<List<List<String>>>)value.listOfListOfString);
+      new OptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(new com.example.MyStringAdapter())))).toJson(writer, customScalarAdapters, (Optional.Present<List<List<String>>>)value.listOfListOfString);
     }
     if (value.listOfListOfEnum instanceof Optional.Present) {
       writer.name("listOfListOfEnum");
@@ -115,7 +115,7 @@ public enum ReviewInput_InputAdapter implements Adapter<ReviewInput> {
     }
     if (value.CapitalizedField instanceof Optional.Present) {
       writer.name("CapitalizedField");
-      new OptionalAdapter<>(Adapters.NullableStringAdapter).toJson(writer, customScalarAdapters, (Optional.Present<String>)value.CapitalizedField);
+      new OptionalAdapter<>(new NullableAdapter<>(new com.example.MyStringAdapter())).toJson(writer, customScalarAdapters, (Optional.Present<String>)value.CapitalizedField);
     }
     if (value.CapitalizedInt instanceof Optional.Present) {
       writer.name("CapitalizedInt");

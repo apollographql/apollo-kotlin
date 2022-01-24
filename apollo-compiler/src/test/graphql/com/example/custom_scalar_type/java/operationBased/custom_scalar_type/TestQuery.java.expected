@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.custom_scalar_type.adapter.TestQuery_ResponseAdapter;
 import com.example.custom_scalar_type.selections.TestQuerySelections;
 import java.io.IOException;
+import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -171,7 +172,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The ID of the character
      */
-    public String id;
+    public Long id;
 
     /**
      * The name of the character
@@ -209,7 +210,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(String id, String name, Date birthDate, List<Date> appearanceDates,
+    public Hero(Long id, String name, Date birthDate, List<Date> appearanceDates,
         Object fieldWithUnsupportedType, String profileLink, List<String> links) {
       this.id = id;
       this.name = name;

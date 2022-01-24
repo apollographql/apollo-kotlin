@@ -16,7 +16,16 @@ class CustomScalarBuilder(
 ): JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = layout.compiledTypeName(name = customScalar.name)
+  private val simpleName = prefixBuiltinScalarNames(layout.compiledTypeName(name = customScalar.name))
+
+  private fun prefixBuiltinScalarNames(name: String): String {
+    // Kotlin Multiplatform won't build with class names that clash with Kotlin types (String, Int, etc.).
+    // For consistency, do this for all built-in scalars, including ID, and in the Java codegen as well.
+    if (name in arrayOf("String", "Boolean", "Int", "Float", "ID")) {
+      return "GraphQL$name"
+    }
+    return name
+  }
 
   override fun prepare() {
     context.resolver.registerSchemaType(customScalar.name, ClassName.get(packageName, simpleName))

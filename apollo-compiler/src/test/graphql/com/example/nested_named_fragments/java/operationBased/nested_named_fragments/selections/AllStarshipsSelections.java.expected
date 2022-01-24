@@ -8,11 +8,11 @@ package com.example.nested_named_fragments.selections;
 import com.apollographql.apollo3.api.CompiledArgument;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CompiledFragment;
-import com.apollographql.apollo3.api.CompiledGraphQL;
 import com.apollographql.apollo3.api.CompiledListType;
 import com.apollographql.apollo3.api.CompiledNotNullType;
 import com.apollographql.apollo3.api.CompiledSelection;
 import com.example.nested_named_fragments.fragment.selections.starshipFragmentSelections;
+import com.example.nested_named_fragments.type.GraphQLString;
 import com.example.nested_named_fragments.type.Starship;
 import com.example.nested_named_fragments.type.StarshipsConnection;
 import com.example.nested_named_fragments.type.StarshipsEdge;
@@ -21,7 +21,7 @@ import java.util.List;
 
 public class AllStarshipsSelections {
   private static List<CompiledSelection> node = Arrays.asList(
-    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledFragment.Builder("Starship", Arrays.asList("Starship")).selections(starshipFragmentSelections.root).build()
   );
 

@@ -68,7 +68,7 @@ public class TestQuery_ResponseAdapter {
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: stars = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: commentary = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: commentary = new NullableAdapter<>(new com.example.MyStringAdapter()).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -88,7 +88,7 @@ public class TestQuery_ResponseAdapter {
       Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.stars);
 
       writer.name("commentary");
-      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.commentary);
+      new NullableAdapter<>(new com.example.MyStringAdapter()).toJson(writer, customScalarAdapters, value.commentary);
     }
   }
 }
