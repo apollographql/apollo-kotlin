@@ -442,7 +442,7 @@ interface Service {
   fun registry(configure: Action<in Registry>)
 
   /**
-   * Configures the [Introspection]
+   * Configures operation safelisting (requires an [Apollo Studio](https://www.apollographql.com/docs/studio/) account)
    */
   fun registerOperations(configure: Action<in RegisterOperationsConfig>)
 
