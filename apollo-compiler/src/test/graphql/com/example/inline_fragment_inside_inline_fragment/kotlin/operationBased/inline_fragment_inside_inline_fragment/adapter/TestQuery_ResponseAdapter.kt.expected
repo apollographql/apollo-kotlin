@@ -72,7 +72,7 @@ public object TestQuery_ResponseAdapter {
 
         reader.rewind()
         var onCharacter: TestQuery.Data.Search.OnCharacter? = null
-        if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
+        if (possibleTypes("Droid","Human").evaluate(customScalarAdapters.variables(), __typename)) {
           onCharacter = com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.fromJson(reader,
               customScalarAdapters)
         }
@@ -119,14 +119,14 @@ public object TestQuery_ResponseAdapter {
 
           reader.rewind()
           var onHuman: TestQuery.Data.Search.OnCharacter.OnHuman? = null
-          if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
+          if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
             onHuman = com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.OnHuman.fromJson(reader,
                 customScalarAdapters)
           }
 
           reader.rewind()
           var onDroid: TestQuery.Data.Search.OnCharacter.OnDroid? = null
-          if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
+          if (possibleTypes("Droid").evaluate(customScalarAdapters.variables(), __typename)) {
             onDroid = com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.OnDroid.fromJson(reader,
                 customScalarAdapters)
           }

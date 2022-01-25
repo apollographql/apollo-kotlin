@@ -73,7 +73,7 @@ public object TestQuery_ResponseAdapter {
 
       reader.rewind()
       var asCharacter: TestQuery.AsCharacter? = null
-      if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
+      if (possibleTypes("Droid","Human").evaluate(customScalarAdapters.variables(), __typename)) {
         asCharacter = com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.AsCharacter.fromJson(reader,
             customScalarAdapters)
       }
@@ -121,14 +121,14 @@ public object TestQuery_ResponseAdapter {
 
       reader.rewind()
       var asHuman: TestQuery.AsHuman? = null
-      if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
+      if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
         asHuman = com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.AsHuman.fromJson(reader,
             customScalarAdapters)
       }
 
       reader.rewind()
       var asDroid: TestQuery.AsDroid? = null
-      if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
+      if (possibleTypes("Droid").evaluate(customScalarAdapters.variables(), __typename)) {
         asDroid = com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.AsDroid.fromJson(reader,
             customScalarAdapters)
       }

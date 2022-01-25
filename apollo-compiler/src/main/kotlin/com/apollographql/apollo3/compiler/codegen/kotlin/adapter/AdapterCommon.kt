@@ -33,7 +33,7 @@ internal fun responseNamesPropertySpec(model: IrModel): PropertySpec {
     CodeBlock.of("%S", it.info.responseName)
   }.joinToCode(prefix = "listOf(", separator = ", ", suffix = ")")
 
-  return PropertySpec.builder(Identifier.RESPONSE_NAMES, KotlinSymbols.List.parameterizedBy(KotlinSymbols.String))
+  return PropertySpec.builder(RESPONSE_NAMES, KotlinSymbols.List.parameterizedBy(KotlinSymbols.String))
       .initializer(initializer)
       .build()
 }
@@ -107,7 +107,7 @@ internal fun readFromResponseCodeBlock(
                 context.layout.variableName(property.info.responseName),
                 context.resolver.resolveIrType(property.info.type).copy(nullable = !property.info.type.isOptional()),
             )
-            beginControlFlow("if·(%L.%M(emptySet(),·$__typename))", property.condition.codeBlock(), evaluate)
+            beginControlFlow("if·(%L.%M($customScalarAdapters.variables(),·$__typename))", property.condition.codeBlock(), evaluate)
           } else {
             checkedProperties.add(property.info.responseName)
             add("val·")

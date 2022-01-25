@@ -39,6 +39,10 @@ interface Executable<D: Executable.Data> {
 
   /**
    * A helper class to hold variables
+   *
+   * [valueMap] contains all the variables as a Json-like map. Custom scalars are
+   * serialized to their json representation (String/Map most of the time).
+   * Input objects are serialized to Map<String, Any?>
    */
   class Variables(val valueMap: Map<String, Any?>)
 }

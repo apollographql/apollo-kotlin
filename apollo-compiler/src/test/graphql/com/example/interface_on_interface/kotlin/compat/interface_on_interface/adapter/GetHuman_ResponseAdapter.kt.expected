@@ -117,7 +117,7 @@ public object GetHuman_ResponseAdapter {
 
       reader.rewind()
       var asHuman: GetHuman.AsHuman? = null
-      if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
+      if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
         asHuman = com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.AsHuman.fromJson(reader,
             customScalarAdapters)
       }
