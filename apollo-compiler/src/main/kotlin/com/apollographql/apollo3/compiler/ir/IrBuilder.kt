@@ -608,10 +608,10 @@ internal fun GQLDirective.toBooleanExpression(): BooleanExpression<BVariable>? {
     is GQLBooleanValue -> {
       if (value.value) BooleanExpression.True else BooleanExpression.False
     }
-    is GQLVariableValue -> BooleanExpression.Element(BVariable(name = value.name)).let {
-      if (name == "skip") not(it) else it
-    }
+    is GQLVariableValue -> BooleanExpression.Element(BVariable(name = value.name))
     else -> throw IllegalStateException("Apollo: cannot pass ${value.toUtf8()} to '$name' directive")
+  }.let {
+    if (name == "skip") not(it) else it
   }
 }
 
