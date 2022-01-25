@@ -9,9 +9,9 @@ import kotlin.jvm.JvmField
 /**
  * A wrapper around a Map<String, [Adapter]> used to retrieve custom scalar adapters at runtime
  */
-class CustomScalarAdapters
-private constructor(
+class CustomScalarAdapters private constructor(
     customScalarAdapters: Map<String, Adapter<*>>,
+    val variables: Executable.Variables?
 ) : ExecutionContext.Element {
 
   private val adaptersMap: Map<String, Adapter<*>> = customScalarAdapters
@@ -53,6 +53,18 @@ private constructor(
     } as Adapter<T>
   }
 
+  fun variables(): Set<String> {
+    if (variables == null) {
+      return emptySet()
+    }
+
+    return variables.valueMap.entries.filter {
+      it.value == true
+    }.map {
+      it.key
+    }.toSet()
+  }
+
   override val key: ExecutionContext.Key<*>
     get() = Key
 
@@ -68,6 +80,7 @@ private constructor(
 
   class Builder {
     private val adaptersMap: MutableMap<String, Adapter<*>> = mutableMapOf()
+    private var variables: Executable.Variables? = null
 
     fun <T> add(
         customScalarType: CustomScalarType,
@@ -96,6 +109,10 @@ private constructor(
     }
 
     @Suppress("DEPRECATION")
-    fun build() = CustomScalarAdapters(adaptersMap)
+    fun build() = CustomScalarAdapters(adaptersMap, variables)
+
+    fun variables(variables: Executable.Variables): Builder = apply {
+      this.variables = variables
+    }
   }
 }

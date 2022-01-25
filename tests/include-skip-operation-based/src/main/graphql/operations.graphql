@@ -1,0 +1,17 @@
+query GetCat($withCat: Boolean!) {
+  animal {
+    ... on Cat @include(if: $withCat) {
+      meow
+    }
+  }
+}
+
+query GetDog($withoutDog: Boolean!) {
+  animal {
+    ...dogFragment @skip(if: $withoutDog)
+  }
+}
+
+fragment dogFragment on Dog {
+  barf
+}
