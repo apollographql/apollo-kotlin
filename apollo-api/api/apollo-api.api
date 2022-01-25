@@ -332,7 +332,6 @@ public final class com/apollographql/apollo3/api/CustomScalarAdapters : com/apol
 	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
 	public fun get (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext$Element;
 	public fun getKey ()Lcom/apollographql/apollo3/api/ExecutionContext$Key;
-	public final fun getVariables ()Lcom/apollographql/apollo3/api/Executable$Variables;
 	public fun minusKey (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext;
 	public final fun newBuilder ()Lcom/apollographql/apollo3/api/CustomScalarAdapters$Builder;
 	public fun plus (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ExecutionContext;
