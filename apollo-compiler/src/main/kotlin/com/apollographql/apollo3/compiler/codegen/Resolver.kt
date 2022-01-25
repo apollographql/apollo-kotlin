@@ -29,12 +29,6 @@ enum class ResolverKeyKind {
   Fragment,
   FragmentVariablesAdapter,
   FragmentSelections,
-
-  /**
-   * ScalarTarget is a special case as there is no real generated reference pointing to it.
-   * Instead it is a String in [CustomScalarType.className]
-   */
-  ScalarTarget,
   TestBuilder
 }
 

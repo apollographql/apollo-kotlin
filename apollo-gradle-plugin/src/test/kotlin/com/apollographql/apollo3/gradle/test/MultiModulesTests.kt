@@ -92,7 +92,7 @@ class MultiModulesTests {
         TestUtils.executeTaskAndAssertSuccess(":leaf:assemble", dir)
         fail("the build did not detect scalar mapping registered in leaf module")
       } catch (e: UnexpectedBuildFailure) {
-        Truth.assertThat(e.message).contains("Scalar mapping can only be registered in the schema module")
+        Truth.assertThat(e.message).contains("Mapping scalars can only be done in the schema module")
       }
     }
   }

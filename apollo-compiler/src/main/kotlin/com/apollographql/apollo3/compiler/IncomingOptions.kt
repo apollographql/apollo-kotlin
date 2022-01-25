@@ -22,14 +22,6 @@ class IncomingOptions(
     val schemaPackageName: String,
 ) {
   companion object {
-    fun fromMetadata(commonMetadata: CommonMetadata): IncomingOptions {
-      return IncomingOptions(
-          schema = commonMetadata.schema,
-          codegenModels = commonMetadata.codegenModels,
-          schemaPackageName = commonMetadata.schemaPackageName
-      )
-    }
-
     @OptIn(ApolloExperimental::class)
     fun resolveSchema(schemaFiles: Collection<File>, rootFolders: List<String>): Pair<Schema, String> {
       check(schemaFiles.isNotEmpty()) {

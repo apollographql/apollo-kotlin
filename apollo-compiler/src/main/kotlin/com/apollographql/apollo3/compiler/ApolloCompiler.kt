@@ -170,18 +170,6 @@ object ApolloCompiler {
       options.operationOutputFile.writeText(operationOutput.toJson("  "))
     }
 
-    val upstreamScalarMapping = options.incomingCompilerMetadata.fold(mutableMapOf<String, ScalarInfo>()) { acc, it ->
-      acc.apply { putAll(it.scalarMapping) }
-    }
-    // Scalar mapping must be defined only in the schema module, therefore it is an error to have a mapping from upstream *and* in this
-    // module's options.
-    val scalarMapping = if (upstreamScalarMapping.isNotEmpty()) {
-      if (options.scalarMapping.isNotEmpty()) error("Apollo: Scalar mapping can only be registered in the schema module")
-      upstreamScalarMapping
-    } else {
-      options.scalarMapping
-    }
-
     /**
      * Write the generated models
      */
@@ -200,7 +188,7 @@ object ApolloCompiler {
             generateSchema = options.generateSchema,
             generatedSchemaName = options.generatedSchemaName,
             flatten = options.flattenModels,
-            scalarMapping = scalarMapping,
+            scalarMapping = options.scalarMapping,
         ).write(outputDir = outputDir)
       }
       else -> {
@@ -222,7 +210,7 @@ object ApolloCompiler {
             flatten = options.flattenModels,
             sealedClassesForEnumsMatching = options.sealedClassesForEnumsMatching,
             targetLanguageVersion = options.targetLanguage,
-            scalarMapping = scalarMapping,
+            scalarMapping = options.scalarMapping,
         ).write(outputDir = outputDir, testDir = testDir)
       }
     }
@@ -230,7 +218,6 @@ object ApolloCompiler {
     return CompilerMetadata(
         fragments = fragments,
         resolverInfo = outputResolverInfo,
-        scalarMapping = scalarMapping,
     )
   }
 

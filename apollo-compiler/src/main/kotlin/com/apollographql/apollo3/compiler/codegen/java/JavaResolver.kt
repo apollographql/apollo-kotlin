@@ -65,7 +65,7 @@ class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?, privat
 
   private fun resolveIrScalarType(type: IrScalarType): ClassName {
     // Try mapping first, then built-ins, then fallback to Object
-    return resolve(ResolverKeyKind.ScalarTarget, type.name) ?: when (type.name) {
+    return resolveScalarTaget(type.name) ?: when (type.name) {
       "String" -> JavaClassNames.String
       "ID" -> JavaClassNames.String
       "Float" -> JavaClassNames.Double
@@ -85,7 +85,7 @@ class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?, privat
         type is IrScalarType && type.name == "Boolean" && scalarWithoutCustomMapping -> adapterCodeBlock("NullableBooleanAdapter")
         type is IrScalarType && type.name == "Int" && scalarWithoutCustomMapping -> adapterCodeBlock("NullableIntAdapter")
         type is IrScalarType && type.name == "Float" && scalarWithoutCustomMapping -> adapterCodeBlock("NullableDoubleAdapter")
-        type is IrScalarType && resolve(ResolverKeyKind.ScalarTarget, type.name) == null -> {
+        type is IrScalarType && resolveScalarTaget(type.name) == null -> {
           adapterCodeBlock("NullableAnyAdapter")
         }
         else -> {
@@ -94,6 +94,12 @@ class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?, privat
       }
     }
     return nonNullableAdapterInitializer(type.ofType, requiresBuffering)
+  }
+
+  fun resolveScalarTaget(name: String): ClassName? {
+    return scalarMapping.get(name)?.targetName?.let {
+      ClassName.bestGuess(it)
+    }
   }
 
   fun resolveCompiledType(name: String): CodeBlock {
@@ -153,7 +159,7 @@ class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?, privat
         CodeBlock.of(adapterInitializer.expression)
       }
       is RuntimeAdapterInitializer -> {
-        val target = resolve(ResolverKeyKind.ScalarTarget, type.name)
+        val target = resolveScalarTaget(type.name)
         CodeBlock.of(
             "($customScalarAdapters.<$T>responseAdapterFor($L))",
             target,
@@ -168,7 +174,7 @@ class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?, privat
           "Int" -> adapterCodeBlock("IntAdapter")
           "Float" -> adapterCodeBlock("DoubleAdapter")
           else -> {
-            val target = resolve(ResolverKeyKind.ScalarTarget, type.name)
+            val target = resolveScalarTaget(type.name)
             if (target == null) {
               adapterCodeBlock("AnyAdapter")
             } else {
@@ -231,7 +237,6 @@ class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?, privat
   fun resolveSchemaType(name: String) = resolveAndAssert(ResolverKeyKind.SchemaType, name)
   fun registerSchemaType(name: String, className: ClassName) = register(ResolverKeyKind.SchemaType, name, className)
   fun registerModel(path: String, className: ClassName) = register(ResolverKeyKind.Model, path, className)
-  fun registerCustomScalar(name: String, className: ClassName) = register(ResolverKeyKind.ScalarTarget, name, className)
 }
 
 fun ResolverClassName.toJavaPoetClassName(): ClassName = ClassName.get(packageName, simpleNames[0], *simpleNames.drop(1).toTypedArray())
