@@ -62,11 +62,9 @@ class CustomScalarAdapters private constructor(
       return emptySet()
     }
 
-    return variables.valueMap.entries.filter {
+    return variables.valueMap.filter {
       it.value == true
-    }.map {
-      it.key
-    }.toSet()
+    }.keys
   }
 
   override val key: ExecutionContext.Key<*>
