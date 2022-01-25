@@ -11,7 +11,11 @@ import kotlin.jvm.JvmField
  */
 class CustomScalarAdapters private constructor(
     customScalarAdapters: Map<String, Adapter<*>>,
-    private val variables: Executable.Variables?
+    // We piggyback CustomScalarAdapters to pass around execution variables,
+    // which are needed in the Adapters at parse time for @skip and @include.
+    // Ideally they should be passed as their own parameter but we're avoiding a breaking change.
+    // See https://github.com/apollographql/apollo-kotlin/pull/3813
+    private val variables: Executable.Variables?,
 ) : ExecutionContext.Element {
 
   private val adaptersMap: Map<String, Adapter<*>> = customScalarAdapters
@@ -34,7 +38,7 @@ class CustomScalarAdapters private constructor(
       customScalar.className in listOf("kotlin.Boolean", "java.lang.Boolean") -> {
         BooleanAdapter
       }
-      customScalar.className in listOf("kotlin.Int", "java.lang.Int")  -> {
+      customScalar.className in listOf("kotlin.Int", "java.lang.Int") -> {
         IntAdapter
       }
       customScalar.className in listOf("kotlin.Double", "java.lang.Double") -> {
@@ -43,10 +47,10 @@ class CustomScalarAdapters private constructor(
       customScalar.className in listOf("kotlin.Long", "java.lang.Long") -> {
         LongAdapter
       }
-      customScalar.className in listOf("kotlin.Float", "java.lang.Float")  -> {
+      customScalar.className in listOf("kotlin.Float", "java.lang.Float") -> {
         FloatAdapter
       }
-      customScalar.className in listOf("kotlin.Any", "java.lang.Object")  -> {
+      customScalar.className in listOf("kotlin.Any", "java.lang.Object") -> {
         AnyAdapter
       }
       else -> error("Can't map GraphQL type: `${customScalar.name}` to: `${customScalar.className}`. Did you forget to add a CustomScalarAdapter?")
