@@ -11,7 +11,7 @@ import kotlin.jvm.JvmField
  */
 class CustomScalarAdapters private constructor(
     customScalarAdapters: Map<String, Adapter<*>>,
-    val variables: Executable.Variables?
+    private val variables: Executable.Variables?
 ) : ExecutionContext.Element {
 
   private val adaptersMap: Map<String, Adapter<*>> = customScalarAdapters
