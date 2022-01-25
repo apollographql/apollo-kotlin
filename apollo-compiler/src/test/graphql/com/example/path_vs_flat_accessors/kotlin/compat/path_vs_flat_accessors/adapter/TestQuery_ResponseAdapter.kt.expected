@@ -70,14 +70,14 @@ public object TestQuery_ResponseAdapter {
 
       reader.rewind()
       var asA: TestQuery.AsA? = null
-      if (possibleTypes("ABC","AC").evaluate(emptySet(), __typename)) {
+      if (possibleTypes("ABC","AC").evaluate(customScalarAdapters.variables(), __typename)) {
         asA = com.example.path_vs_flat_accessors.adapter.TestQuery_ResponseAdapter.AsA.fromJson(reader,
             customScalarAdapters)
       }
 
       reader.rewind()
       var asB1: TestQuery.AsB1? = null
-      if (possibleTypes("ABC","BC").evaluate(emptySet(), __typename)) {
+      if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.variables(), __typename)) {
         asB1 = com.example.path_vs_flat_accessors.adapter.TestQuery_ResponseAdapter.AsB1.fromJson(reader,
             customScalarAdapters)
       }
@@ -129,7 +129,7 @@ public object TestQuery_ResponseAdapter {
 
       reader.rewind()
       var asB: TestQuery.AsB? = null
-      if (possibleTypes("ABC","BC").evaluate(emptySet(), __typename)) {
+      if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.variables(), __typename)) {
         asB = com.example.path_vs_flat_accessors.adapter.TestQuery_ResponseAdapter.AsB.fromJson(reader,
             customScalarAdapters)
       }

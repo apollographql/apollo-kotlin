@@ -73,7 +73,7 @@ public object TestQuery_ResponseAdapter {
 
         reader.rewind()
         var humanDetails: HumanDetails? = null
-        if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
+        if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
           humanDetails = com.example.fragment_used_twice.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
               customScalarAdapters)
         }

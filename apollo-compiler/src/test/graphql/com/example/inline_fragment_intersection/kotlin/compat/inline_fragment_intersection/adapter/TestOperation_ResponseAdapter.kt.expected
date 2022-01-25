@@ -76,14 +76,14 @@ public object TestOperation_ResponseAdapter {
 
       reader.rewind()
       var asBeing: TestOperation.AsBeing? = null
-      if (possibleTypes("Human","Wookie").evaluate(emptySet(), __typename)) {
+      if (possibleTypes("Human","Wookie").evaluate(customScalarAdapters.variables(), __typename)) {
         asBeing = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.AsBeing.fromJson(reader,
             customScalarAdapters)
       }
 
       reader.rewind()
       var asWookie2: TestOperation.AsWookie2? = null
-      if (possibleTypes("Wookie").evaluate(emptySet(), __typename)) {
+      if (possibleTypes("Wookie").evaluate(customScalarAdapters.variables(), __typename)) {
         asWookie2 = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.AsWookie2.fromJson(reader,
             customScalarAdapters)
       }
@@ -139,7 +139,7 @@ public object TestOperation_ResponseAdapter {
 
       reader.rewind()
       var asHuman: TestOperation.AsHuman? = null
-      if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
+      if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
         asHuman = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.AsHuman.fromJson(reader,
             customScalarAdapters)
       }
@@ -195,7 +195,7 @@ public object TestOperation_ResponseAdapter {
 
       reader.rewind()
       var asWookie1: TestOperation.AsWookie1? = null
-      if (possibleTypes("Wookie").evaluate(emptySet(), __typename)) {
+      if (possibleTypes("Wookie").evaluate(customScalarAdapters.variables(), __typename)) {
         asWookie1 = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.AsWookie1.fromJson(reader,
             customScalarAdapters)
       }
@@ -338,7 +338,7 @@ public object TestOperation_ResponseAdapter {
 
       reader.rewind()
       var asWookie: TestOperation.AsWookie? = null
-      if (possibleTypes("Wookie").evaluate(emptySet(), __typename)) {
+      if (possibleTypes("Wookie").evaluate(customScalarAdapters.variables(), __typename)) {
         asWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.AsWookie.fromJson(reader,
             customScalarAdapters)
       }

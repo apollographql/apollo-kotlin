@@ -74,14 +74,14 @@ public object TestQuery_ResponseAdapter {
 
         reader.rewind()
         var onCharacter: TestQuery.Data.Search.OnCharacter? = null
-        if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
+        if (possibleTypes("Droid","Human").evaluate(customScalarAdapters.variables(), __typename)) {
           onCharacter = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.fromJson(reader,
               customScalarAdapters)
         }
 
         reader.rewind()
         var onStarship: TestQuery.Data.Search.OnStarship? = null
-        if (possibleTypes("Starship").evaluate(emptySet(), __typename)) {
+        if (possibleTypes("Starship").evaluate(customScalarAdapters.variables(), __typename)) {
           onStarship = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnStarship.fromJson(reader,
               customScalarAdapters)
         }
@@ -179,14 +179,14 @@ public object TestQuery_ResponseAdapter {
 
             reader.rewind()
             var onHuman: TestQuery.Data.Search.OnCharacter.Friend.OnHuman? = null
-            if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
+            if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
               onHuman = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnHuman.fromJson(reader,
                   customScalarAdapters)
             }
 
             reader.rewind()
             var onDroid: TestQuery.Data.Search.OnCharacter.Friend.OnDroid? = null
-            if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
+            if (possibleTypes("Droid").evaluate(customScalarAdapters.variables(), __typename)) {
               onDroid = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnDroid.fromJson(reader,
                   customScalarAdapters)
             }

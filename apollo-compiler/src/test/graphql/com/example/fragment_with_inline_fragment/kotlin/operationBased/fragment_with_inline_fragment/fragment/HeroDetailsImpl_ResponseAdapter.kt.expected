@@ -47,14 +47,14 @@ public object HeroDetailsImpl_ResponseAdapter {
 
       reader.rewind()
       var onDroid: com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid? = null
-      if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
+      if (possibleTypes("Droid").evaluate(customScalarAdapters.variables(), __typename)) {
         onDroid = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.OnDroid.fromJson(reader,
             customScalarAdapters)
       }
 
       reader.rewind()
       var humanDetails: HumanDetails? = null
-      if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
+      if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
         humanDetails = com.example.fragment_with_inline_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
             customScalarAdapters)
       }

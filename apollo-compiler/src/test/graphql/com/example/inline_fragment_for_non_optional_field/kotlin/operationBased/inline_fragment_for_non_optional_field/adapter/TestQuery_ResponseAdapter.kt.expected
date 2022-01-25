@@ -71,7 +71,7 @@ public object TestQuery_ResponseAdapter {
 
         reader.rewind()
         var onHuman: TestQuery.Data.NonOptionalHero.OnHuman? = null
-        if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
+        if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
           onHuman = com.example.inline_fragment_for_non_optional_field.adapter.TestQuery_ResponseAdapter.Data.NonOptionalHero.OnHuman.fromJson(reader,
               customScalarAdapters)
         }
