@@ -62,7 +62,7 @@ Here's the current matrix of supported features per platform:
 
 ## Getting started
 
-If you are new to GraphQL, check out [the tutorial](/tutorial/00-introduction/) that will guide you through building an Android app using Apollo, Kotlin and coroutines.
+If you are new to GraphQL, check out [the tutorial](./tutorial/00-introduction/) that will guide you through building an Android app using Apollo, Kotlin and coroutines.
 
 If you'd like to add Apollo Kotlin to an existing project, follow these steps:
 
