@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.custom_scalar_type.adapter.TestQuery_ResponseAdapter
 import com.example.custom_scalar_type.selections.TestQuerySelections
+import java.lang.Long
 import java.util.Date
 import kotlin.Any
 import kotlin.String
@@ -47,9 +48,13 @@ public class TestQuery() : Query<TestQuery.Data> {
   ) : Query.Data {
     public data class Hero(
       /**
+       * The ID of the character
+       */
+      public val id: Long,
+      /**
        * The name of the character
        */
-      public val name: String,
+      public val name: java.lang.String,
       /**
        * The date character was born.
        */
@@ -75,7 +80,7 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "8f6fd98f3592845e0a3eb760b37ff5bcdad7edc2cbbdfd8350af519bd3a26b19"
+        "1d5498a23394700442413af8ec1b8edce1445ce533afdb2e9d5ec9c0ed40a9e3"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -83,6 +88,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      *
      * query TestQuery {
      *   hero {
+     *     id
      *     name
      *     birthDate
      *     appearanceDates
@@ -93,7 +99,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query TestQuery { hero { name birthDate appearanceDates fieldWithUnsupportedType profileLink links } }"
+        "query TestQuery { hero { id name birthDate appearanceDates fieldWithUnsupportedType profileLink links } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

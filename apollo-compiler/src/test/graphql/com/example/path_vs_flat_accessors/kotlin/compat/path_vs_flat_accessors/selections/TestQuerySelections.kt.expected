@@ -8,23 +8,23 @@ package com.example.path_vs_flat_accessors.selections
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
 import com.example.path_vs_flat_accessors.type.C
+import com.example.path_vs_flat_accessors.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val onB: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "fieldB1",
-          type = CompiledStringType
+          type = GraphQLString.type
         ).build()
       )
 
   private val onA: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "B",
@@ -36,14 +36,14 @@ public object TestQuerySelections {
   private val onB1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "fieldB2",
-          type = CompiledStringType
+          type = GraphQLString.type
         ).build()
       )
 
   private val root1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "A",

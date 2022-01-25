@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.custom_scalar_type.adapter.TestQuery_ResponseAdapter;
 import com.example.custom_scalar_type.selections.TestQuerySelections;
 import java.io.IOException;
+import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -21,7 +22,7 @@ import java.util.Date;
 import java.util.List;
 
 public class TestQuery implements Query<TestQuery.Data> {
-  public static final String OPERATION_ID = "8f6fd98f3592845e0a3eb760b37ff5bcdad7edc2cbbdfd8350af519bd3a26b19";
+  public static final String OPERATION_ID = "1d5498a23394700442413af8ec1b8edce1445ce533afdb2e9d5ec9c0ed40a9e3";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -29,6 +30,7 @@ public class TestQuery implements Query<TestQuery.Data> {
    *
    * query TestQuery {
    *   hero {
+   *     id
    *     name
    *     birthDate
    *     appearanceDates
@@ -38,7 +40,7 @@ public class TestQuery implements Query<TestQuery.Data> {
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery { hero { name birthDate appearanceDates fieldWithUnsupportedType profileLink links } }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery { hero { id name birthDate appearanceDates fieldWithUnsupportedType profileLink links } }";
 
   public static final String OPERATION_NAME = "TestQuery";
 
@@ -168,6 +170,11 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static class Hero {
     /**
+     * The ID of the character
+     */
+    public Long id;
+
+    /**
      * The name of the character
      */
     public String name;
@@ -203,8 +210,9 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(String name, Date birthDate, List<Date> appearanceDates,
+    public Hero(Long id, String name, Date birthDate, List<Date> appearanceDates,
         Object fieldWithUnsupportedType, String profileLink, List<String> links) {
+      this.id = id;
       this.name = name;
       this.birthDate = birthDate;
       this.appearanceDates = appearanceDates;
@@ -220,7 +228,8 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof Hero) {
         Hero that = (Hero) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+        return ((this.id == null) ? (that.id == null) : this.id.equals(that.id))
+         &&((this.name == null) ? (that.name == null) : this.name.equals(that.name))
          &&((this.birthDate == null) ? (that.birthDate == null) : this.birthDate.equals(that.birthDate))
          &&((this.appearanceDates == null) ? (that.appearanceDates == null) : this.appearanceDates.equals(that.appearanceDates))
          &&((this.fieldWithUnsupportedType == null) ? (that.fieldWithUnsupportedType == null) : this.fieldWithUnsupportedType.equals(that.fieldWithUnsupportedType))
@@ -234,6 +243,8 @@ public class TestQuery implements Query<TestQuery.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (id == null) ? 0 : id.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         h *= 1000003;
@@ -256,6 +267,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Hero{"
+          + "id=" + id + ", "
           + "name=" + name + ", "
           + "birthDate=" + birthDate + ", "
           + "appearanceDates=" + appearanceDates + ", "

@@ -7,6 +7,8 @@ import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.compiler.introspection.toGQLDocument
 import com.apollographql.apollo3.compiler.introspection.toSchema
+import com.squareup.moshi.JsonClass
+import dev.zacsweers.moshix.sealed.annotations.TypeLabel
 import java.io.File
 
 
@@ -85,7 +87,7 @@ class Options(
     val targetLanguage: TargetLanguage = defaultTargetLanguage,
 
     //========== codegen options ============
-    val customScalarsMapping: Map<String, String> = defaultCustomScalarsMapping,
+    val scalarMapping: Map<String, ScalarInfo> = defaultScalarMapping,
     val codegenModels: String = defaultCodegenModels,
     val flattenModels: Boolean = defaultFlattenModels,
     val useSemanticNaming: Boolean = defaultUseSemanticNaming,
@@ -121,12 +123,24 @@ class Options(
     val generateQueryDocument: Boolean = defaultGenerateQueryDocument,
 
     /**
-     * Whether to generate the __Schema class.
+     * Whether to generate the Schema class.
      *
-     * __Schema is a special class that contains a list of all composite types (objects, interfaces, unions)
-     * It can be used to retrieve the list of possible types for a given CompiledType
+     * The Schema class is a special class that contains a list of all composite types (objects, interfaces, unions).
+     * It can be used to retrieve the list of possible types for a given CompiledType.
+     *
+     * Its name can be configured with [generatedSchemaName].
+     *
+     * Default: false
      */
     val generateSchema: Boolean = defaultGenerateSchema,
+
+    /**
+     * Class name to use when generating the Schema class.
+     *
+     * Default: "__Schema"
+     */
+    val generatedSchemaName: String = defaultGeneratedSchemaName,
+
     /**
      * Whether to generate the type safe Data builders. These are mainly used for tests but can also be used for other use
      * cases too.
@@ -190,7 +204,7 @@ class Options(
       alwaysGenerateTypesMatching: Set<String> = this.alwaysGenerateTypesMatching,
       operationOutputGenerator: OperationOutputGenerator = this.operationOutputGenerator,
       incomingCompilerMetadata: List<CompilerMetadata> = this.incomingCompilerMetadata,
-      customScalarsMapping: Map<String, String> = this.customScalarsMapping,
+      scalarMapping: Map<String, ScalarInfo> = this.scalarMapping,
       codegenModels: String = this.codegenModels,
       flattenModels: Boolean = this.flattenModels,
       useSemanticNaming: Boolean = this.useSemanticNaming,
@@ -203,6 +217,7 @@ class Options(
       generateResponseFields: Boolean = this.generateResponseFields,
       generateQueryDocument: Boolean = this.generateQueryDocument,
       generateSchema: Boolean = this.generateSchema,
+      generatedSchemaName: String = this.generatedSchemaName,
       moduleName: String = this.moduleName,
       targetLanguage: TargetLanguage = this.targetLanguage,
       generateTestBuilders: Boolean = this.generateTestBuilders,
@@ -221,7 +236,7 @@ class Options(
       operationOutputGenerator = operationOutputGenerator,
       incomingCompilerMetadata = incomingCompilerMetadata,
       targetLanguage = targetLanguage,
-      customScalarsMapping = customScalarsMapping,
+      scalarMapping = scalarMapping,
       codegenModels = codegenModels,
       flattenModels = flattenModels,
       useSemanticNaming = useSemanticNaming,
@@ -234,17 +249,18 @@ class Options(
       generateResponseFields = generateResponseFields,
       generateQueryDocument = generateQueryDocument,
       generateSchema = generateSchema,
+      generatedSchemaName = generatedSchemaName,
       moduleName = moduleName,
       generateTestBuilders = generateTestBuilders,
       testDir = testDir,
-      sealedClassesForEnumsMatching =  sealedClassesForEnumsMatching,
+      sealedClassesForEnumsMatching = sealedClassesForEnumsMatching,
       generateOptionalOperationVariables = generateOptionalOperationVariables,
   )
 
   companion object {
     val defaultAlwaysGenerateTypesMatching = emptySet<String>()
     val defaultOperationOutputGenerator = OperationOutputGenerator.Default(OperationIdGenerator.Sha256)
-    val defaultCustomScalarsMapping = emptyMap<String, String>()
+    val defaultScalarMapping = emptyMap<String, ScalarInfo>()
     val defaultLogger = ApolloCompiler.NoOpLogger
     const val defaultUseSemanticNaming = true
     const val defaultWarnOnDeprecatedUsages = true
@@ -260,6 +276,7 @@ class Options(
     const val defaultFlattenModels = true
     val defaultTargetLanguage = TargetLanguage.KOTLIN_1_5
     const val defaultGenerateSchema = false
+    const val defaultGeneratedSchemaName = "__Schema"
     const val defaultGenerateTestBuilders = false
     val defaultSealedClassesForEnumsMatching = emptyList<String>()
     const val defaultGenerateOptionalOperationVariables = true
@@ -267,3 +284,26 @@ class Options(
   }
 }
 
+/**
+ * Controls how scalar adapters are used in the generated code.
+ */
+@JsonClass(generateAdapter = true, generator = "sealed:type")
+sealed interface AdapterInitializer
+
+/**
+ * The adapter expression will be used as-is (can be an object, a public val, a class instantiation).
+ *
+ * e.g. `"com.example.MyAdapter"` or `"com.example.MyAdapter()"`.
+ */
+@TypeLabel("Expression")
+@JsonClass(generateAdapter = true)
+class ExpressionAdapterInitializer(val expression: String) : AdapterInitializer
+
+/**
+ * The adapter instance will be looked up in the [com.apollographql.apollo3.api.CustomScalarAdapters] provided at runtime.
+ */
+@TypeLabel("Runtime")
+object RuntimeAdapterInitializer : AdapterInitializer
+
+@JsonClass(generateAdapter = true)
+data class ScalarInfo(val targetName: String, val adapterInitializer: AdapterInitializer = RuntimeAdapterInitializer)

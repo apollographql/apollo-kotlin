@@ -1,5 +1,8 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin
 
+import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
+import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
+import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.type
 import com.apollographql.apollo3.compiler.codegen.ResolverClassName
@@ -23,7 +26,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 
 
-class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?) {
+class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?, private val scalarMapping: Map<String, ScalarInfo>) {
   fun resolve(key: ResolverKey): ClassName? = classNames[key] ?: next?.resolve(key)
 
   private var classNames = entries.associateBy(
@@ -60,27 +63,42 @@ class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?) {
       type is IrNonNullType -> error("") // make the compiler happy, this case is handled as a fast path
       type is IrOptionalType -> KotlinSymbols.Optional.parameterizedBy(resolveIrType(type.ofType, override))
       type is IrListType -> KotlinSymbols.List.parameterizedBy(resolveIrType(type.ofType, override))
-      type is IrScalarType && type.name == "String" -> KotlinSymbols.String
-      type is IrScalarType && type.name == "Float" -> KotlinSymbols.Double
-      type is IrScalarType && type.name == "Int" -> KotlinSymbols.Int
-      type is IrScalarType && type.name == "Boolean" -> KotlinSymbols.Boolean
-      type is IrScalarType && type.name == "ID" -> KotlinSymbols.String
-      type is IrScalarType -> resolve(ResolverKeyKind.CustomScalarTarget, type.name) ?: KotlinSymbols.Any
+      type is IrScalarType -> resolveIrScalarType(type)
       type is IrModelType -> resolveAndAssert(ResolverKeyKind.Model, type.path)
       type is IrNamedType -> resolveAndAssert(ResolverKeyKind.SchemaType, type.name)
       else -> error("$type is not a schema type")
     }.copy(nullable = true)
   }
 
+  private fun resolveIrScalarType(type: IrScalarType): ClassName {
+    // Try mapping first, then built-ins, then fallback to Any
+    return resolveScalarTaget(type.name) ?: when (type.name) {
+      "String" -> KotlinSymbols.String
+      "Float" -> KotlinSymbols.Double
+      "Int" -> KotlinSymbols.Int
+      "Boolean" -> KotlinSymbols.Boolean
+      "ID" -> KotlinSymbols.String
+      else -> KotlinSymbols.Any
+    }
+  }
+
+  fun resolveScalarTaget(name: String): ClassName? {
+    return scalarMapping.get(name)?.targetName?.let {
+      ClassName.bestGuess(it)
+    }
+  }
+
   fun adapterInitializer(type: IrType, requiresBuffering: Boolean): CodeBlock {
     if (type !is IrNonNullType) {
+      // Don't hardcode the adapter when the scalar is mapped to a user-defined type
+      val scalarWithoutCustomMapping = type is IrScalarType && !scalarMapping.containsKey(type.name)
       return when {
-        type is IrScalarType && type.name == "ID" -> CodeBlock.of("%M", KotlinSymbols.NullableStringAdapter)
-        type is IrScalarType && type.name == "Boolean" -> CodeBlock.of("%M", KotlinSymbols.NullableBooleanAdapter)
-        type is IrScalarType && type.name == "String" -> CodeBlock.of("%M", KotlinSymbols.NullableStringAdapter)
-        type is IrScalarType && type.name == "Int" -> CodeBlock.of("%M", KotlinSymbols.NullableIntAdapter)
-        type is IrScalarType && type.name == "Float" -> CodeBlock.of("%M", KotlinSymbols.NullableDoubleAdapter)
-        type is IrScalarType && resolve(ResolverKeyKind.CustomScalarTarget, type.name) == null -> {
+        type is IrScalarType && type.name == "ID" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableStringAdapter)
+        type is IrScalarType && type.name == "Boolean" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableBooleanAdapter)
+        type is IrScalarType && type.name == "String" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableStringAdapter)
+        type is IrScalarType && type.name == "Int" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableIntAdapter)
+        type is IrScalarType && type.name == "Float" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableDoubleAdapter)
+        type is IrScalarType && resolveScalarTaget(type.name) == null -> {
           CodeBlock.of("%M", KotlinSymbols.NullableAnyAdapter)
         }
         else -> {
@@ -94,11 +112,6 @@ class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?) {
 
   fun resolveCompiledType(name: String): CodeBlock {
     val builtin = when (name) {
-      "String" -> MemberName("com.apollographql.apollo3.api", "CompiledStringType")
-      "Int" -> MemberName("com.apollographql.apollo3.api", "CompiledIntType")
-      "Float" -> MemberName("com.apollographql.apollo3.api", "CompiledFloatType")
-      "Boolean" -> MemberName("com.apollographql.apollo3.api", "CompiledBooleanType")
-      "ID" -> MemberName("com.apollographql.apollo3.api", "CompiledIDType")
       "__Schema" -> MemberName("com.apollographql.apollo3.api", "CompiledSchemaType")
       "__Type" -> MemberName("com.apollographql.apollo3.api", "CompiledTypeType")
       "__Field" -> MemberName("com.apollographql.apollo3.api", "CompiledFieldType")
@@ -122,22 +135,8 @@ class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?) {
         val listFun = MemberName("com.apollographql.apollo3.api", "list")
         CodeBlock.of("%L.%M()", adapterInitializer(type.ofType, requiresBuffering), listFun)
       }
-      type is IrScalarType && type.name == "Boolean" -> CodeBlock.of("%M", KotlinSymbols.BooleanAdapter)
-      type is IrScalarType && type.name == "ID" -> CodeBlock.of("%M", KotlinSymbols.StringAdapter)
-      type is IrScalarType && type.name == "String" -> CodeBlock.of("%M", KotlinSymbols.StringAdapter)
-      type is IrScalarType && type.name == "Int" -> CodeBlock.of("%M", KotlinSymbols.IntAdapter)
-      type is IrScalarType && type.name == "Float" -> CodeBlock.of("%M", KotlinSymbols.DoubleAdapter)
       type is IrScalarType -> {
-        val target = resolve(ResolverKeyKind.CustomScalarTarget, type.name)
-        if (target == null) {
-          CodeBlock.of("%M", KotlinSymbols.AnyAdapter)
-        } else {
-          CodeBlock.of(
-              "$customScalarAdapters.responseAdapterFor<%T>(%L)",
-              target,
-              resolveCompiledType(type.name)
-          )
-        }
+        nonNullableScalarAdapterInitializer(type)
       }
       type is IrEnumType -> {
         CodeBlock.of("%T", resolveAndAssert(ResolverKeyKind.SchemaTypeAdapter, type.name))
@@ -153,6 +152,43 @@ class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?) {
         CodeBlock.of("%L.%M()", adapterInitializer(type.ofType, requiresBuffering), optionalFun)
       }
       else -> error("Cannot create an adapter for $type")
+    }
+  }
+
+  private fun nonNullableScalarAdapterInitializer(type: IrScalarType): CodeBlock {
+    return when (val adapterInitializer = scalarMapping[type.name]?.adapterInitializer) {
+      is ExpressionAdapterInitializer -> {
+        CodeBlock.of(adapterInitializer.expression)
+      }
+      is RuntimeAdapterInitializer -> {
+        val target = resolveScalarTaget(type.name)
+        CodeBlock.of(
+            "$customScalarAdapters.responseAdapterFor<%T>(%L)",
+            target,
+            resolveCompiledType(type.name)
+        )
+      }
+      else -> {
+        when (type.name) {
+          "Boolean" -> CodeBlock.of("%M", KotlinSymbols.BooleanAdapter)
+          "ID" -> CodeBlock.of("%M", KotlinSymbols.StringAdapter)
+          "String" -> CodeBlock.of("%M", KotlinSymbols.StringAdapter)
+          "Int" -> CodeBlock.of("%M", KotlinSymbols.IntAdapter)
+          "Float" -> CodeBlock.of("%M", KotlinSymbols.DoubleAdapter)
+          else -> {
+            val target = resolveScalarTaget(type.name)
+            if (target == null) {
+              CodeBlock.of("%M", KotlinSymbols.AnyAdapter)
+            } else {
+              CodeBlock.of(
+                  "$customScalarAdapters.responseAdapterFor<%T>(%L)",
+                  target,
+                  resolveCompiledType(type.name)
+              )
+            }
+          }
+        }
+      }
     }
   }
 
@@ -198,8 +234,6 @@ class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?) {
   fun resolveSchemaType(name: String) = resolveAndAssert(ResolverKeyKind.SchemaType, name)
   fun registerSchemaType(name: String, className: ClassName) = register(ResolverKeyKind.SchemaType, name, className)
   fun registerModel(path: String, className: ClassName) = register(ResolverKeyKind.Model, path, className)
-  fun registerCustomScalar(name: String, className: ClassName) = register(ResolverKeyKind.CustomScalarTarget, name, className)
-
 
   fun registerTestBuilder(path: String, className: ClassName) = register(ResolverKeyKind.TestBuilder, path, className)
   fun resolveTestBuilder(path: String) = resolveAndAssert(ResolverKeyKind.TestBuilder, path)

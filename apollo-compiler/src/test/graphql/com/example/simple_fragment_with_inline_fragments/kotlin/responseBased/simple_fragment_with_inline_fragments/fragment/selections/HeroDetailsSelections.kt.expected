@@ -6,38 +6,38 @@
 package com.example.simple_fragment_with_inline_fragments.fragment.selections
 
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledFloatType
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.simple_fragment_with_inline_fragments.type.Character
+import com.example.simple_fragment_with_inline_fragments.type.GraphQLFloat
+import com.example.simple_fragment_with_inline_fragments.type.GraphQLString
 import kotlin.collections.List
 
 public object HeroDetailsSelections {
   private val onHuman: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "height",
-          type = CompiledFloatType
+          type = GraphQLFloat.type
         ).build()
       )
 
   private val onDroid: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "primaryFunction",
-          type = CompiledStringType
+          type = GraphQLString.type
         ).build()
       )
 
   private val friends: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "name",
-          type = CompiledStringType.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Human",
@@ -54,7 +54,7 @@ public object HeroDetailsSelections {
   public val root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = CompiledStringType.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "friends",

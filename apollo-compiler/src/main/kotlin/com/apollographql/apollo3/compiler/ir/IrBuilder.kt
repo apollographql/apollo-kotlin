@@ -53,6 +53,7 @@ import com.apollographql.apollo3.ast.transform
 import com.apollographql.apollo3.compiler.MODELS_COMPAT
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
+import com.apollographql.apollo3.compiler.ScalarInfo
 
 @OptIn(ApolloExperimental::class)
 internal class IrBuilder(
@@ -62,7 +63,7 @@ internal class IrBuilder(
     private val fragmentDefinitions: List<GQLFragmentDefinition>,
     private val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val alwaysGenerateTypesMatching: Set<String>,
-    private val customScalarsMapping: Map<String, String>,
+    private val scalarMapping: Map<String, ScalarInfo>,
     private val codegenModels: String,
     private val generateOptionalOperationVariables: Boolean,
 ) : FieldMerger {
@@ -105,10 +106,18 @@ internal class IrBuilder(
     val unions = mutableListOf<IrUnion>()
     val customScalars = mutableListOf<IrCustomScalar>()
 
-    // inject extra types
+    // Inject extra types
     usedTypes.addAll(schema.typeDefinitions.keys.filter { shouldAlwaysGenerate(it) })
-    // inject custom scalars specified in the Gradle configuration
-    usedTypes.addAll(customScalarsMapping.keys)
+
+    // Inject all built-in scalars
+    usedTypes.add("String")
+    usedTypes.add("Boolean")
+    usedTypes.add("Int")
+    usedTypes.add("Float")
+    usedTypes.add("ID")
+
+    // Inject custom scalars specified in the Gradle configuration
+    usedTypes.addAll(scalarMapping.keys)
 
     // Generate the root types
     operationDefinitions.forEach {
@@ -131,8 +140,8 @@ internal class IrBuilder(
       }
       visitedTypes.add(name)
       val typeDefinition = schema.typeDefinition(name)
-      if (typeDefinition.isBuiltIn()) {
-        // We don't generate builtin types
+      if (typeDefinition.isBuiltIn() && typeDefinition !is GQLScalarTypeDefinition) {
+        // We don't generate builtin types, except scalars
         continue
       }
 
@@ -201,7 +210,7 @@ internal class IrBuilder(
   private fun GQLScalarTypeDefinition.toIr(): IrCustomScalar {
     return IrCustomScalar(
         name = name,
-        kotlinName = customScalarsMapping[name],
+        kotlinName = scalarMapping[name]?.targetName,
         description = description,
         deprecationReason = directives.findDeprecationReason()
     )

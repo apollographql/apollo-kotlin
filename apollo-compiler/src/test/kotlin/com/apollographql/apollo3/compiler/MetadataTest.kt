@@ -3,8 +3,7 @@ package com.apollographql.apollo3.compiler
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.SourceAwareException
-import com.apollographql.apollo3.ast.toSchema
-import com.apollographql.apollo3.compiler.Options.Companion.defaultCustomScalarsMapping
+import com.apollographql.apollo3.compiler.Options.Companion.defaultScalarMapping
 import com.apollographql.apollo3.compiler.introspection.toSchema
 import com.google.common.truth.Truth
 import org.junit.Assert.fail
@@ -48,7 +47,8 @@ class MetadataTest {
           schema = schema,
           codegenModels = codegenModels,
           schemaPackageName = "",
-          pluginVersion = APOLLO_VERSION
+          pluginVersion = APOLLO_VERSION,
+          scalarMapping = emptyMap()
       )
     } else {
       val metadata = metadataFiles.map { ApolloMetadata.readFrom(it) }
@@ -67,8 +67,8 @@ class MetadataTest {
             schemaPackageName = "",
             packageNameGenerator = PackageNameGenerator.Flat(""),
             alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
-            incomingCompilerMetadata =incomingCompilerMetadata,
-            customScalarsMapping = defaultCustomScalarsMapping,
+            incomingCompilerMetadata = incomingCompilerMetadata,
+            scalarMapping = defaultScalarMapping,
             codegenModels = codegenModels,
             flattenModels = true,
             moduleName = "test",
@@ -115,7 +115,13 @@ class MetadataTest {
     alwaysGenerateTypesMatchingTest(emptySet())
 
     // Only scalar types are generated in the root
-    rootSourcesDir.assertContents()
+    rootSourcesDir.assertContents(
+        "GraphQLBoolean.kt",
+        "GraphQLFloat.kt",
+        "GraphQLID.kt",
+        "GraphQLInt.kt",
+        "GraphQLString.kt"
+    )
 
     // Leaf contains its referenced types but not the unused ones
     leafSourcesDir.assertContents(
@@ -145,11 +151,16 @@ class MetadataTest {
     rootSourcesDir.assertContents(
         "Body1.kt",
         "Body1_InputAdapter.kt",
+        "GraphQLBoolean.kt",
         "CustomScalar1.kt",
         "Encoding.kt",
         "Encoding_ResponseAdapter.kt",
+        "GraphQLFloat.kt",
+        "GraphQLID.kt",
+        "GraphQLInt.kt",
         "MessageInput1.kt",
         "MessageInput1_InputAdapter.kt",
+        "GraphQLString.kt",
         "User1.kt",
         "User1_InputAdapter.kt"
     )
@@ -199,11 +210,16 @@ class MetadataTest {
 
     // Root generates the fragment
     rootSourcesDir.assertContents(
+        "GraphQLBoolean.kt",
         "Character.kt",
         "CharacterFragment.kt",
         "CharacterFragmentSelections.kt",
         "Episode.kt",
         "Episode_ResponseAdapter.kt",
+        "GraphQLFloat.kt",
+        "GraphQLID.kt",
+        "GraphQLInt.kt",
+        "GraphQLString.kt"
     )
 
     // Leaf contains the query but not the fragment
@@ -246,9 +262,14 @@ class MetadataTest {
     fragmentTest("fragment-multiple")
 
     rootSourcesDir.assertContents(
+        "GraphQLBoolean.kt",
         "Character.kt",
         "CharacterFragment.kt",
         "CharacterFragmentSelections.kt",
+        "GraphQLFloat.kt",
+        "GraphQLID.kt",
+        "GraphQLInt.kt",
+        "GraphQLString.kt"
     )
 
     leafSourcesDir.assertContents(

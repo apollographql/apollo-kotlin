@@ -1,3 +1,9 @@
+scalar Long
+
 type Query {
+    nullableLong: Long
+    long: Long!
+    nullableId: ID
+    id: ID!
     random: String
 }

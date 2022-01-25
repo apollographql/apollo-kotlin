@@ -7,14 +7,14 @@ package com.example.fragments_same_type_condition.fragment.selections
 
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
+import com.example.fragments_same_type_condition.type.GraphQLString
 import kotlin.collections.List
 
 public object DroidDetails2Selections {
   public val root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "primaryFunction",
-          type = CompiledStringType
+          type = GraphQLString.type
         ).build()
       )
 }

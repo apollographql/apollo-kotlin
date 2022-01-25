@@ -1,0 +1,20 @@
+query GetAll {
+  id
+  nullableId
+  long
+  float
+  any
+  geoPoints
+  string
+  nullableString
+  int
+  nullableInt
+  boolean
+  nullableBoolean
+  notMapped
+  nullableNotMapped
+}
+
+query GetAddress {
+  address
+}

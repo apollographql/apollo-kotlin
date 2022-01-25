@@ -35,6 +35,24 @@ class ServiceTests {
   }
 
   @Test
+  fun `customScalarsMapping and mapScalar trigger an error`() {
+    withSimpleProject("""
+      apollo {
+        packageNamesFromFilePaths()
+        customScalarsMapping = ["DateTime": "java.util.Date"]
+        mapScalar("DateTime", "java.util.Date")
+      }
+    """.trimIndent()) { dir ->
+      try {
+        TestUtils.executeTask("generateApolloSources", dir)
+        fail("an exception was expected")
+      } catch (e: UnexpectedBuildFailure) {
+        Truth.assertThat(e.message).contains("either mapScalar() or customScalarsMapping")
+      }
+    }
+  }
+
+  @Test
   fun `registering an unknown custom scalar fails`() {
     withSimpleProject("""
       apollo {

@@ -2,6 +2,8 @@
 
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_1
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.writeAny
@@ -239,22 +241,32 @@ fun resolveVariables(value: Any?, variables: Executable.Variables): Any? {
   }
 }
 
+@Deprecated("Use the generated CustomScalarType instead")
+@ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField
 val CompiledStringType = ScalarType("String")
 
+@Deprecated("Use the generated CustomScalarType instead")
+@ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField
 val CompiledIntType = ScalarType("Int")
 
+@Deprecated("Use the generated CustomScalarType instead")
+@ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField
 val CompiledFloatType = ScalarType("Float")
 
+@Deprecated("Use the generated CustomScalarType instead")
+@ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField
 val CompiledBooleanType = ScalarType("Boolean")
 
+@Deprecated("Use the generated CustomScalarType instead")
+@ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField
 val CompiledIDType = ScalarType("ID")

@@ -1,3 +1,4 @@
 query GetGeoPoint {
+  id
   geoPoint
 }

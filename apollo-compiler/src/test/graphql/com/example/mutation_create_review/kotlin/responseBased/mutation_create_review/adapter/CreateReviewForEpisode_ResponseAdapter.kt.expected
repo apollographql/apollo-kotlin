@@ -8,8 +8,6 @@ package com.example.mutation_create_review.adapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
-import com.apollographql.apollo3.api.NullableStringAdapter
-import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -60,8 +58,8 @@ internal object CreateReviewForEpisode_ResponseAdapter {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           CreateReviewForEpisode.Data.CreateReview {
         var stars: Int? = null
-        var commentary: String? = null
-        var listOfListOfString: List<List<String>>? = null
+        var commentary: java.lang.String? = null
+        var listOfListOfString: List<List<java.lang.String>>? = null
         var listOfListOfEnum: List<List<Episode>>? = null
         var listOfListOfCustom: List<List<Date>>? = null
         var listOfListOfObject: List<List<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject>>? = null
@@ -69,8 +67,9 @@ internal object CreateReviewForEpisode_ResponseAdapter {
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> stars = IntAdapter.fromJson(reader, customScalarAdapters)
-            1 -> commentary = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> listOfListOfString = StringAdapter.list().list().nullable().fromJson(reader,
+            1 -> commentary = com.example.MyStringAdapter().nullable().fromJson(reader,
+                customScalarAdapters)
+            2 -> listOfListOfString = com.example.MyStringAdapter().list().list().nullable().fromJson(reader,
                 customScalarAdapters)
             3 -> listOfListOfEnum = Episode_ResponseAdapter.list().list().nullable().fromJson(reader,
                 customScalarAdapters)
@@ -101,10 +100,11 @@ internal object CreateReviewForEpisode_ResponseAdapter {
         IntAdapter.toJson(writer, customScalarAdapters, value.stars)
 
         writer.name("commentary")
-        NullableStringAdapter.toJson(writer, customScalarAdapters, value.commentary)
+        com.example.MyStringAdapter().nullable().toJson(writer, customScalarAdapters,
+            value.commentary)
 
         writer.name("listOfListOfString")
-        StringAdapter.list().list().nullable().toJson(writer, customScalarAdapters,
+        com.example.MyStringAdapter().list().list().nullable().toJson(writer, customScalarAdapters,
             value.listOfListOfString)
 
         writer.name("listOfListOfEnum")
@@ -127,11 +127,11 @@ internal object CreateReviewForEpisode_ResponseAdapter {
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters):
             CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject {
-          var name: String? = null
+          var name: java.lang.String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> name = com.example.MyStringAdapter().fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -147,7 +147,7 @@ internal object CreateReviewForEpisode_ResponseAdapter {
           `value`: CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject
         ): Unit {
           writer.name("name")
-          StringAdapter.toJson(writer, customScalarAdapters, value.name)
+          com.example.MyStringAdapter().toJson(writer, customScalarAdapters, value.name)
         }
       }
     }

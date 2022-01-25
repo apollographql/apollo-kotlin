@@ -95,9 +95,6 @@ open class DefaultTestResolver : TestResolver {
         }
       }
       is CustomScalarType -> {
-        resolveCustomScalar(path)
-      }
-      is CompiledNamedType -> {
         when (compiledType.name) {
           "Int" -> resolveInt(path)
           "Float" -> resolveFloat(path)
@@ -105,9 +102,12 @@ open class DefaultTestResolver : TestResolver {
           "String" -> resolveString(path)
           "ID" -> resolveString(path)
           else -> {
-            resolveComposite(path, ctors ?: error("no ctors for $responseName"))
+            resolveCustomScalar(path)
           }
         }
+      }
+      is CompiledNamedType -> {
+        resolveComposite(path, ctors ?: error("no ctors for $responseName"))
       }
     } as T
   }

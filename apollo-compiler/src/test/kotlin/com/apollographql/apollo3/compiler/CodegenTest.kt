@@ -269,17 +269,6 @@ class CodegenTest {
     }
 
     private fun options(folder: File, codegenModels: String, generateKotlinModels: Boolean): Options {
-      val customScalarsMapping = if (folder.name in listOf(
-              "custom_scalar_type",
-              "input_object_type",
-              "mutation_create_review")) {
-        mapOf(
-            "Date" to "java.util.Date",
-            "URL" to "java.lang.String",
-        )
-      } else {
-        emptyMap()
-      }
       val useSemanticNaming = when (folder.name) {
         "hero_details_semantic_naming" -> true
         "mutation_create_review_semantic_naming" -> true
@@ -327,6 +316,19 @@ class CodegenTest {
           codegenModels == MODELS_COMPAT
         }
       }
+      val customScalarsMapping = if (folder.name in listOf(
+              "custom_scalar_type",
+              "input_object_type",
+              "mutation_create_review")) {
+        mapOf(
+            "Date" to ScalarInfo("java.util.Date"),
+            "URL" to ScalarInfo("java.lang.String", ExpressionAdapterInitializer(if (targetLanguage == JAVA) "com.example.UrlAdapter.INSTANCE" else "com.example.UrlAdapter")),
+            "ID" to ScalarInfo("java.lang.Long"),
+            "String" to ScalarInfo("java.lang.String", ExpressionAdapterInitializer(if (targetLanguage == JAVA) "new com.example.MyStringAdapter()" else "com.example.MyStringAdapter()")),
+        )
+      } else {
+        emptyMap()
+      }
 
       return Options(
           executableFiles = graphqlFiles,
@@ -335,7 +337,7 @@ class CodegenTest {
           packageName = "com.example.${folder.name}"
       ).copy(
           operationOutputGenerator = operationOutputGenerator,
-          customScalarsMapping = customScalarsMapping,
+          scalarMapping = customScalarsMapping,
           codegenModels = codegenModels,
           flattenModels = flattenModels,
           useSemanticNaming = useSemanticNaming,
