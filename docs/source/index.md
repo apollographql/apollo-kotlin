@@ -1,7 +1,6 @@
 ---
 title: Introduction to Apollo Kotlin
 description: A strongly-typed, caching GraphQL client for Java and Kotlin multiplatform
-sidebar_title: Introduction
 ---
 
 > 📣 **Apollo Kotlin 3 is generally available.** If you're using Apollo Android 2.x, see the [migration guide](./migration/3.0/). You can also [view the 2.x docs](https://www.apollographql.com/docs/kotlin/v2).

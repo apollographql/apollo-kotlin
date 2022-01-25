@@ -3,11 +3,66 @@
   "version": "v3",
   "sidebar": {
     "Introduction": "/",
-    "Get started": "/get-started",
-    "Why Apollo Client?": "/why-apollo",
+    "Migrating to v3": "/migration/3.0",
+    "Kdoc": "https://apollographql.github.io/apollo-kotlin/kdoc/",
+    "Tutorial": {
+      "0. Introduction": "/tutorial/00-introduction",
+      "1. Configure your project": "/tutorial/01-configure-project",
+      "2. Add the GraphQL schema": "/tutorial/02-add-the-graphql-schema",
+      "3. Write your first query": "/tutorial/03-write-your-first-query",
+      "4. Execute your first query": "/tutorial/04-execute-the-query",
+      "5. Connect your queries to your UI": "/tutorial/05-connect-queries-to-your-ui",
+      "6. Add more info to the list": "/tutorial/06-add-more-info",
+      "7. Paginate results": "/tutorial/07-paginate-results",
+      "8. Add a details view": "/tutorial/08-add-a-details-view",
+      "9. Write your first mutation": "/tutorial/09-write-your-first-mutation",
+      "10. Authenticate your operations": "/tutorial/10-authenticate-your-queries",
+      "11. Write your first subscription": "/tutorial/11-subscriptions"
+    },
+    "Essentials": {
+      "File types": "/essentials/file-types",
+      "Queries": "/essentials/queries",
+      "Mutations": "/essentials/mutations",
+      "Subscriptions": "/essentials/subscriptions",
+      "GraphQL variables": "/advanced/operation-variables",
+      "Error handling": "/essentials/errors",
+      "Custom scalars": "/essentials/custom-scalars",
+      "Fragments": "/essentials/fragments"
+    },
     "Caching": {
-      "Advanced topics": "/caching/advanced-topics",
-      "Overview": "/caching/overview"
+      "Introduction": "/caching/introduction",
+      "Normalized caches": "/caching/normalized-cache",
+      "Declarative cache IDs": "/caching/declarative-ids",
+      "Programmatic cache IDs": "/caching/programmatic-ids",
+      "Watching cached data": "/caching/query-watchers",
+      "ApolloStore": "/caching/store",
+      "HTTP cache": "/caching/http-cache",
+      "Persisted queries": "/advanced/persisted-queries",
+      "Troubleshooting": "/caching/troubleshooting"
+    },
+    "Networking": {
+      "HTTP interceptors": "/advanced/interceptors-http",
+      "Custom HTTP clients": "/advanced/http-engine",
+      "Using the models without apollo-runtime": "/advanced/no-runtime"
+    },
+    "Testing": {
+      "UI Tests": "/advanced/ui-tests",
+      "Test builders": "/advanced/test-builders"
+    },
+    "Advanced": {
+      "Batching operations": "/advanced/query-batching",
+      "Uploading files": "/advanced/upload",
+      "Enforcing non-nullability": "/advanced/nonnull",
+      "Gradle plugin configuration": "/advanced/plugin-configuration",
+      "Multi Modules": "/advanced/multi-modules",
+      "Operation safelisting (enterprise only)": "/advanced/operation-safelisting",
+      "Using aliases": "/advanced/using-aliases",
+      "Client Awareness": "/advanced/client-awareness",
+      "Codegen methods": "/advanced/response-based-codegen",
+      "Using with Java": "/advanced/java",
+      "RxJava support": "/advanced/rxjava",
+      "Kotlin native": "/advanced/kotlin-native",
+      "Apollo AST": "/advanced/apollo-ast"
     }
   }
 }
