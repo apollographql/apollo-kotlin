@@ -95,12 +95,21 @@ fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: B
       .writeToCacheAsynchronously(writeToCacheAsynchronously)
 }
 
+enum class WatchErrorHandling {
+  EMIT_CACHE_ERRORS,
+  EMIT_NETWORK_ERRORS,
+  EMIT_CACHE_AND_NETWORK_ERRORS,
+  IGNORE_ERRORS
+}
+
 /***
  * Gets the result from the network, then observes the cache for any changes.
  * Overriding the [FetchPolicy] will change how the result is first queried.
+ * Exception are ignored by default, this can be changed by setting [watchErrorHandling].
  */
-fun <D : Query.Data> ApolloCall<D>.watch(): Flow<ApolloResponse<D>> {
-  return copy().addExecutionContext(WatchContext(true)).toFlow()
+@JvmOverloads
+fun <D : Query.Data> ApolloCall<D>.watch(errorHandling: WatchErrorHandling = WatchErrorHandling.IGNORE_ERRORS): Flow<ApolloResponse<D>> {
+  return copy().addExecutionContext(WatchContext(errorHandling)).toFlow()
 }
 
 /**
@@ -261,8 +270,8 @@ internal val <D : Mutation.Data> ApolloRequest<D>.optimisticData
 internal val <D : Operation.Data> ApolloRequest<D>.cacheHeaders
   get() = executionContext[CacheHeadersContext]?.value ?: CacheHeaders.NONE
 
-internal val <D : Operation.Data> ApolloRequest<D>.watch
-  get() = executionContext[WatchContext]?.value ?: false
+internal val <D : Operation.Data> ApolloRequest<D>.watchContext: WatchContext?
+  get() = executionContext[WatchContext]
 
 /**
  * @param isCacheHit true if this was a cache hit
@@ -441,7 +450,7 @@ internal class OptimisticUpdatesContext<D : Mutation.Data>(val value: D) : Execu
   companion object Key : ExecutionContext.Key<OptimisticUpdatesContext<*>>
 }
 
-internal class WatchContext(val value: Boolean) : ExecutionContext.Element {
+internal class WatchContext(val errorHandling: WatchErrorHandling) : ExecutionContext.Element {
   override val key: ExecutionContext.Key<*>
     get() = Key
 

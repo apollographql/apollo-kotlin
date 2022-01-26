@@ -6,12 +6,16 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
+import com.apollographql.apollo3.cache.normalized.WatchErrorHandling
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.refetchPolicy
 import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.cache.normalized.watch
+import com.apollographql.apollo3.exception.ApolloCompositeException
+import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameWithIdQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
@@ -21,16 +25,19 @@ import com.apollographql.apollo3.testing.QueueTestNetworkTransport
 import com.apollographql.apollo3.testing.enqueueTestResponse
 import com.apollographql.apollo3.testing.receiveOrTimeout
 import com.apollographql.apollo3.testing.runTest
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.fail
 
 @OptIn(ApolloExperimental::class)
@@ -41,6 +48,11 @@ class WatcherTest {
   private fun setUp() {
     store = ApolloStore(MemoryCacheFactory(), cacheKeyGenerator = IdCacheKeyGenerator)
     apolloClient = ApolloClient.Builder().networkTransport(QueueTestNetworkTransport()).store(store).build()
+  }
+
+  private fun setUpForNetworkException() {
+    store = ApolloStore(MemoryCacheFactory(), cacheKeyGenerator = IdCacheKeyGenerator)
+    apolloClient = ApolloClient.Builder().serverUrl("https://inexistent.host/graphql").store(store).build()
   }
 
   private val episodeHeroNameData = EpisodeHeroNameQuery.Data(EpisodeHeroNameQuery.Hero("R2-D2"))
@@ -340,5 +352,130 @@ class WatcherTest {
     channel.assertEmpty()
 
     job.cancel()
+  }
+
+  @Test
+  fun ignoreAllError() = runTest(before = { setUpForNetworkException() }) {
+    val channel = Channel<EpisodeHeroNameQuery.Data?>()
+    val jobs = mutableListOf<Job>()
+
+    jobs += launch {
+      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+          .fetchPolicy(FetchPolicy.CacheFirst)
+          .watch()
+          .collect {
+            channel.send(it.data)
+          }
+    }
+
+    jobs += launch {
+      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+          .fetchPolicy(FetchPolicy.CacheOnly)
+          .watch()
+          .collect {
+            channel.send(it.data)
+          }
+    }
+
+    jobs += launch {
+      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+          .fetchPolicy(FetchPolicy.NetworkFirst)
+          .watch()
+          .collect {
+            channel.send(it.data)
+          }
+    }
+
+    jobs += launch {
+      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+          .fetchPolicy(FetchPolicy.NetworkOnly)
+          .watch()
+          .collect {
+            channel.send(it.data)
+          }
+    }
+
+    channel.assertEmpty()
+    jobs.forEach { it.cancel() }
+  }
+
+  @Test
+  fun emitCacheErrors() = runTest(before = { setUpForNetworkException() }) {
+    assertFailsWith(CacheMissException::class) {
+      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+          .fetchPolicy(FetchPolicy.CacheFirst)
+          .watch(WatchErrorHandling.EMIT_CACHE_ERRORS)
+          .first()
+    }
+
+    assertFailsWith(CacheMissException::class) {
+      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+          .fetchPolicy(FetchPolicy.CacheOnly)
+          .watch(WatchErrorHandling.EMIT_CACHE_ERRORS)
+          .first()
+    }
+
+    assertFailsWith(CacheMissException::class) {
+      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+          .fetchPolicy(FetchPolicy.NetworkFirst)
+          .watch(WatchErrorHandling.EMIT_CACHE_ERRORS)
+          .first()
+    }
+  }
+
+  @Test
+  fun emitNetworkErrors() = runTest(before = { setUpForNetworkException() }) {
+    assertFailsWith(ApolloNetworkException::class) {
+      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+          .fetchPolicy(FetchPolicy.NetworkFirst)
+          .watch(WatchErrorHandling.EMIT_NETWORK_ERRORS)
+          .first()
+    }
+
+    assertFailsWith(ApolloNetworkException::class) {
+      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+          .fetchPolicy(FetchPolicy.NetworkOnly)
+          .watch(WatchErrorHandling.EMIT_NETWORK_ERRORS)
+          .first()
+    }
+
+    assertFailsWith(ApolloNetworkException::class) {
+      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+          .fetchPolicy(FetchPolicy.CacheFirst)
+          .watch(WatchErrorHandling.EMIT_NETWORK_ERRORS)
+          .first()
+    }
+  }
+
+
+  @Test
+  fun emitCacheAndNetworkErrors() = runTest(before = { setUpForNetworkException() }) {
+    assertFailsWith(CacheMissException::class) {
+      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+          .fetchPolicy(FetchPolicy.CacheOnly)
+          .watch(WatchErrorHandling.EMIT_CACHE_AND_NETWORK_ERRORS)
+          .first()
+    }
+
+    assertFailsWith(ApolloNetworkException::class) {
+      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+          .fetchPolicy(FetchPolicy.NetworkOnly)
+          .watch(WatchErrorHandling.EMIT_CACHE_AND_NETWORK_ERRORS)
+          .first()
+    }
+
+    assertFailsWith(ApolloCompositeException::class) {
+      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+          .fetchPolicy(FetchPolicy.NetworkFirst)
+          .watch(WatchErrorHandling.EMIT_CACHE_AND_NETWORK_ERRORS)
+          .first()
+    }
+
+    assertFailsWith(ApolloCompositeException::class) {
+      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+          .fetchPolicy(FetchPolicy.CacheFirst)
+          .watch(WatchErrorHandling.EMIT_CACHE_AND_NETWORK_ERRORS)
+          .first()
+    }
   }
 }

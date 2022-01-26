@@ -6,10 +6,14 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.cache.normalized.ApolloStore
+import com.apollographql.apollo3.cache.normalized.WatchErrorHandling
 import com.apollographql.apollo3.cache.normalized.api.dependentKeys
 import com.apollographql.apollo3.cache.normalized.isRefetching
-import com.apollographql.apollo3.cache.normalized.watch
+import com.apollographql.apollo3.cache.normalized.watchContext
+import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import kotlinx.coroutines.flow.Flow
@@ -25,9 +29,7 @@ import kotlinx.coroutines.flow.onStart
 
 internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-    if (!request.watch) {
-      return chain.proceed(request)
-    }
+    val watchContext = request.watchContext ?: return chain.proceed(request)
 
     check(request.operation is Query) {
       "It's impossible to watch a mutation or subscription"
@@ -51,7 +53,8 @@ internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor {
                   // Re-throw cancellation exceptions
                   throw it
                 }
-                // Else just ignore errors
+                // Else throw it or not according to error handling policy
+                maybeThrow(it, watchContext.errorHandling)
               }
               .onEach { response ->
                 if (response.data != null) {
@@ -62,6 +65,33 @@ internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor {
                 isRefetching = true
               }
         }.flattenConcatPolyfill()
+  }
+
+  private fun maybeThrow(exception: ApolloException, errorHandling: WatchErrorHandling) {
+    if (errorHandling == WatchErrorHandling.IGNORE_ERRORS) return
+    val emitCacheErrors = errorHandling == WatchErrorHandling.EMIT_CACHE_AND_NETWORK_ERRORS || errorHandling == WatchErrorHandling.EMIT_CACHE_ERRORS
+    val emitNetworkErrors = errorHandling == WatchErrorHandling.EMIT_CACHE_AND_NETWORK_ERRORS || errorHandling == WatchErrorHandling.EMIT_NETWORK_ERRORS
+    when (exception) {
+      is CacheMissException -> if (emitCacheErrors) {
+        throw exception
+      }
+      is ApolloNetworkException -> if (emitNetworkErrors) {
+        throw exception
+      }
+      is ApolloCompositeException -> {
+        if (errorHandling == WatchErrorHandling.EMIT_CACHE_AND_NETWORK_ERRORS) {
+          throw exception
+        }
+        val cacheMissException = exception.first as? CacheMissException ?: exception.second as? CacheMissException
+        val networkException = exception.first as? ApolloNetworkException ?: exception.second as? ApolloNetworkException
+        if (cacheMissException != null && emitCacheErrors) {
+          throw cacheMissException
+        }
+        if (networkException != null && emitNetworkErrors) {
+          throw networkException
+        }
+      }
+    }
   }
 }
 
