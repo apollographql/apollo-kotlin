@@ -69,25 +69,25 @@ internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor {
 
   private fun maybeThrow(exception: ApolloException, errorHandling: WatchErrorHandling) {
     if (errorHandling == WatchErrorHandling.IGNORE_ERRORS) return
-    val emitCacheErrors = errorHandling == WatchErrorHandling.EMIT_CACHE_AND_NETWORK_ERRORS || errorHandling == WatchErrorHandling.EMIT_CACHE_ERRORS
-    val emitNetworkErrors = errorHandling == WatchErrorHandling.EMIT_CACHE_AND_NETWORK_ERRORS || errorHandling == WatchErrorHandling.EMIT_NETWORK_ERRORS
+    val throwCacheErrors = errorHandling == WatchErrorHandling.THROW_CACHE_AND_NETWORK_ERRORS || errorHandling == WatchErrorHandling.THROW_CACHE_ERRORS
+    val throwNetworkErrors = errorHandling == WatchErrorHandling.THROW_CACHE_AND_NETWORK_ERRORS || errorHandling == WatchErrorHandling.THROW_NETWORK_ERRORS
     when (exception) {
-      is CacheMissException -> if (emitCacheErrors) {
+      is CacheMissException -> if (throwCacheErrors) {
         throw exception
       }
-      is ApolloNetworkException -> if (emitNetworkErrors) {
+      is ApolloNetworkException -> if (throwNetworkErrors) {
         throw exception
       }
       is ApolloCompositeException -> {
-        if (errorHandling == WatchErrorHandling.EMIT_CACHE_AND_NETWORK_ERRORS) {
+        if (errorHandling == WatchErrorHandling.THROW_CACHE_AND_NETWORK_ERRORS) {
           throw exception
         }
         val cacheMissException = exception.first as? CacheMissException ?: exception.second as? CacheMissException
         val networkException = exception.first as? ApolloNetworkException ?: exception.second as? ApolloNetworkException
-        if (cacheMissException != null && emitCacheErrors) {
+        if (cacheMissException != null && throwCacheErrors) {
           throw cacheMissException
         }
-        if (networkException != null && emitNetworkErrors) {
+        if (networkException != null && throwNetworkErrors) {
           throw networkException
         }
       }

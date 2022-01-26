@@ -96,9 +96,9 @@ fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: B
 }
 
 enum class WatchErrorHandling {
-  EMIT_CACHE_ERRORS,
-  EMIT_NETWORK_ERRORS,
-  EMIT_CACHE_AND_NETWORK_ERRORS,
+  THROW_CACHE_ERRORS,
+  THROW_NETWORK_ERRORS,
+  THROW_CACHE_AND_NETWORK_ERRORS,
   IGNORE_ERRORS
 }
 
