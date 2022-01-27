@@ -112,6 +112,7 @@ enum class WatchErrorHandling {
  * Exception are ignored by default, this can be changed by setting [fetchErrorHandling] for the first fetch and [refetchErrorHandling]
  * for subsequent fetches.
  */
+@JvmOverloads
 fun <D : Query.Data> ApolloCall<D>.watch(
     fetchErrorHandling: WatchErrorHandling = WatchErrorHandling.IGNORE_ERRORS,
     refetchErrorHandling: WatchErrorHandling = WatchErrorHandling.IGNORE_ERRORS,
