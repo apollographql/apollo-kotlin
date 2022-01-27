@@ -105,11 +105,18 @@ enum class WatchErrorHandling {
 /***
  * Gets the result from the network, then observes the cache for any changes.
  * Overriding the [FetchPolicy] will change how the result is first queried.
- * Exception are ignored by default, this can be changed by setting [watchErrorHandling].
+ * Exception are ignored by default, this can be changed by setting [fetchErrorHandling] for the first fetch and [refetchErrorHandling]
+ * for subsequent fetches.
  */
 @JvmOverloads
-fun <D : Query.Data> ApolloCall<D>.watch(errorHandling: WatchErrorHandling = WatchErrorHandling.IGNORE_ERRORS): Flow<ApolloResponse<D>> {
-  return copy().addExecutionContext(WatchContext(errorHandling)).toFlow()
+fun <D : Query.Data> ApolloCall<D>.watch(
+    fetchErrorHandling: WatchErrorHandling = WatchErrorHandling.IGNORE_ERRORS,
+    refetchErrorHandling: WatchErrorHandling = WatchErrorHandling.IGNORE_ERRORS,
+): Flow<ApolloResponse<D>> {
+  return copy().addExecutionContext(WatchContext(
+      fetchErrorHandling = fetchErrorHandling,
+      refetchErrorHandling = refetchErrorHandling,
+  )).toFlow()
 }
 
 /**
@@ -450,7 +457,10 @@ internal class OptimisticUpdatesContext<D : Mutation.Data>(val value: D) : Execu
   companion object Key : ExecutionContext.Key<OptimisticUpdatesContext<*>>
 }
 
-internal class WatchContext(val errorHandling: WatchErrorHandling) : ExecutionContext.Element {
+internal class WatchContext(
+    val fetchErrorHandling: WatchErrorHandling,
+    val refetchErrorHandling: WatchErrorHandling,
+) : ExecutionContext.Element {
   override val key: ExecutionContext.Key<*>
     get() = Key
 

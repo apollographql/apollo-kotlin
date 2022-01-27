@@ -12,7 +12,6 @@ import com.apollographql.apollo3.cache.normalized.isRefetching
 import com.apollographql.apollo3.cache.normalized.watchContext
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
@@ -54,7 +53,7 @@ internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor {
                   throw it
                 }
                 // Else throw it or not according to error handling policy
-                maybeThrow(it, watchContext.errorHandling)
+                maybeThrow(it, if (isRefetching) watchContext.refetchErrorHandling else watchContext.fetchErrorHandling)
               }
               .onEach { response ->
                 if (response.data != null) {
@@ -72,24 +71,26 @@ internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor {
     val throwCacheErrors = errorHandling == WatchErrorHandling.THROW_CACHE_AND_NETWORK_ERRORS || errorHandling == WatchErrorHandling.THROW_CACHE_ERRORS
     val throwNetworkErrors = errorHandling == WatchErrorHandling.THROW_CACHE_AND_NETWORK_ERRORS || errorHandling == WatchErrorHandling.THROW_NETWORK_ERRORS
     when (exception) {
-      is CacheMissException -> if (throwCacheErrors) {
-        throw exception
-      }
-      is ApolloNetworkException -> if (throwNetworkErrors) {
-        throw exception
-      }
       is ApolloCompositeException -> {
         if (errorHandling == WatchErrorHandling.THROW_CACHE_AND_NETWORK_ERRORS) {
           throw exception
         }
         val cacheMissException = exception.first as? CacheMissException ?: exception.second as? CacheMissException
-        val networkException = exception.first as? ApolloNetworkException ?: exception.second as? ApolloNetworkException
+        // If it's *not* a CacheMissException we consider it a network error (could be ApolloNetworkException, ApolloHttpException, ApolloParseException...)
+        val networkException = exception.first.takeIf { it !is CacheMissException } ?: exception.second.takeIf { it !is CacheMissException }
         if (cacheMissException != null && throwCacheErrors) {
           throw cacheMissException
         }
         if (networkException != null && throwNetworkErrors) {
           throw networkException
         }
+      }
+      is CacheMissException -> if (throwCacheErrors) {
+        throw exception
+      }
+      // Treat all other exceptions as network errors (could be ApolloNetworkException, ApolloHttpException, ApolloParseException...)
+      else -> if (throwNetworkErrors) {
+        throw exception
       }
     }
   }
