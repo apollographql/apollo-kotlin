@@ -114,8 +114,22 @@ fun <D : Query.Data> ApolloCall<D>.watch(
     refetchErrorHandling: WatchErrorHandling = WatchErrorHandling.IGNORE_ERRORS,
 ): Flow<ApolloResponse<D>> {
   return copy().addExecutionContext(WatchContext(
+      data = null,
       fetchErrorHandling = fetchErrorHandling,
       refetchErrorHandling = refetchErrorHandling,
+  )).toFlow()
+}
+
+/**
+ * Observes the cache for the given data. Unlike [watch], no initial request is executed on the network.
+ * The refetch policy set by [refetchPolicy] will be used.
+ * Cache and network exceptions are ignored.
+ */
+fun <D : Query.Data> ApolloCall<D>.watch(data: D): Flow<ApolloResponse<D>> {
+  return copy().addExecutionContext(WatchContext(
+      data = data,
+      fetchErrorHandling = WatchErrorHandling.IGNORE_ERRORS,
+      refetchErrorHandling = WatchErrorHandling.IGNORE_ERRORS,
   )).toFlow()
 }
 
@@ -458,6 +472,7 @@ internal class OptimisticUpdatesContext<D : Mutation.Data>(val value: D) : Execu
 }
 
 internal class WatchContext(
+    val data: Query.Data?,
     val fetchErrorHandling: WatchErrorHandling,
     val refetchErrorHandling: WatchErrorHandling,
 ) : ExecutionContext.Element {

@@ -35,13 +35,20 @@ internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor {
     }
 
     val customScalarAdapters = request.executionContext[CustomScalarAdapters]!!
-    var watchedKeys: Set<String>? = null
-    var isRefetching = false
+
+    // We have 2 watch methods:
+    // - without a data: trigger an initial fetch, and then monitor for changes
+    // - with a data: no initial fetch, only monitor for changes
+    val withInitialFetch = watchContext.data == null
+
+    @Suppress("UNCHECKED_CAST")
+    var watchedKeys: Set<String>? = watchContext.data?.let { store.normalize(request.operation, it as D, customScalarAdapters).values.dependentKeys() }
+    var isRefetching = !withInitialFetch
 
     return store.changedKeys
         .onStart {
           // Trigger the initial fetch
-          emit(emptySet())
+          if (withInitialFetch) emit(emptySet())
         }
         .filter { changedKeys ->
           watchedKeys == null || changedKeys.intersect(watchedKeys!!).isNotEmpty()

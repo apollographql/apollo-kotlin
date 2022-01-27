@@ -12,6 +12,7 @@ import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.refetchPolicy
 import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.cache.normalized.watch
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameWithIdQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
@@ -28,6 +29,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -329,6 +332,96 @@ class WatcherTest {
 
     job.cancel()
   }
+
+  @Test
+  fun watchCacheOrNetwork() = runTest(before = { setUp() }) {
+    val channel = Channel<EpisodeHeroNameQuery.Data?>(capacity = Channel.UNLIMITED)
+    val query = EpisodeHeroNameQuery(Episode.EMPIRE)
+
+    // This is equivalent of calling .fetchPolicy(FetchPolicy.CacheFirst).watch():
+    // 1. get the result from the cache if any, if not, get it from the network
+    // 2. observe new data
+
+    // The first query should get a "R2-D2" name
+    apolloClient.enqueueTestResponse(query, episodeHeroNameData)
+
+    val job = launch {
+      // 1. query (will be a cache miss since the cache starts empty), then watch
+      var data: EpisodeHeroNameQuery.Data? = null
+      apolloClient.query(query).toFlow()
+          .catch {
+            // Swallow cache and network errors
+            if (it !is ApolloException) throw it
+          }
+          .onEach { data = it.data }
+          .onCompletion {
+            // 2. watch
+            data?.let { emitAll(apolloClient.query(query).watch(it)) }
+          }
+          .collect {
+            channel.send(it.data)
+          }
+    }
+
+    assertEquals(channel.receiveOrTimeout()?.hero?.name, "R2-D2")
+
+    // Another newer call gets updated information with "Artoo"
+    apolloClient.enqueueTestResponse(query, episodeHeroNameChangedData)
+    apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
+
+    assertEquals(channel.receiveOrTimeout()?.hero?.name, "Artoo")
+
+    job.cancel()
+  }
+
+  @Test
+  fun watchCacheAndNetwork() = runTest(before = { setUp() }) {
+    val channel = Channel<EpisodeHeroNameQuery.Data?>(capacity = Channel.UNLIMITED)
+    val query = EpisodeHeroNameQuery(Episode.EMPIRE)
+
+    // 1. get the result from the cache if any
+    // 2. get fresh data from the network
+    // 3. observe new data
+
+    // Set up the cache with a "R2-D2" name
+    apolloClient.enqueueTestResponse(query, episodeHeroNameData)
+    apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
+
+    // Prepare next call to get "Artoo"
+    apolloClient.enqueueTestResponse(query, episodeHeroNameChangedData)
+
+    val job = launch {
+      var data: EpisodeHeroNameQuery.Data? = null
+      apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).toFlow()
+          .onStart { emitAll(apolloClient.query(query).fetchPolicy(FetchPolicy.CacheOnly).toFlow()) }
+          .catch {
+            // Swallow cache and network errors
+            if (it !is ApolloException) throw it
+          }
+          .onEach { data = it.data }
+          .onCompletion {
+            data?.let { emitAll(apolloClient.query(query).watch(it)) }
+          }
+          .collect {
+            channel.send(it.data)
+          }
+    }
+    // 1. Value from the cache
+    assertEquals(channel.receiveOrTimeout()?.hero?.name, "R2-D2")
+
+    // 2. Value from the network
+    assertEquals(channel.receiveOrTimeout()?.hero?.name, "Artoo")
+
+    // Another newer call updates the cache with "ArTwo"
+    apolloClient.enqueueTestResponse(query, episodeHeroNameChangedTwoData)
+    apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
+
+    // 3. Value from watching the cache
+    assertEquals(channel.receiveOrTimeout()?.hero?.name, "ArTwo")
+
+    job.cancel()
+  }
+
 }
 
 suspend fun <D> Channel<D>.assertEmpty() {
