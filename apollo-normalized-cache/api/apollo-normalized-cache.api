@@ -118,16 +118,18 @@ public final class com/apollographql/apollo3/cache/normalized/NormalizedCache {
 	public static synthetic fun store$default (Lcom/apollographql/apollo3/ApolloClient$Builder;Lcom/apollographql/apollo3/cache/normalized/ApolloStore;ZILjava/lang/Object;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public static final fun storePartialResponses (Lcom/apollographql/apollo3/api/MutableExecutionOptions;Z)Ljava/lang/Object;
 	public static final fun watch (Lcom/apollographql/apollo3/ApolloCall;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun watch (Lcom/apollographql/apollo3/ApolloCall;Lcom/apollographql/apollo3/api/Query$Data;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun watch (Lcom/apollographql/apollo3/ApolloCall;Lcom/apollographql/apollo3/cache/normalized/WatchErrorHandling;)Lkotlinx/coroutines/flow/Flow;
-	public static synthetic fun watch$default (Lcom/apollographql/apollo3/ApolloCall;Lcom/apollographql/apollo3/cache/normalized/WatchErrorHandling;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun watch (Lcom/apollographql/apollo3/ApolloCall;Lcom/apollographql/apollo3/cache/normalized/WatchErrorHandling;Lcom/apollographql/apollo3/cache/normalized/WatchErrorHandling;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun watch$default (Lcom/apollographql/apollo3/ApolloCall;Lcom/apollographql/apollo3/cache/normalized/WatchErrorHandling;Lcom/apollographql/apollo3/cache/normalized/WatchErrorHandling;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun writeToCacheAsynchronously (Lcom/apollographql/apollo3/api/MutableExecutionOptions;Z)Ljava/lang/Object;
 }
 
 public final class com/apollographql/apollo3/cache/normalized/WatchErrorHandling : java/lang/Enum {
-	public static final field EMIT_CACHE_AND_NETWORK_ERRORS Lcom/apollographql/apollo3/cache/normalized/WatchErrorHandling;
-	public static final field EMIT_CACHE_ERRORS Lcom/apollographql/apollo3/cache/normalized/WatchErrorHandling;
-	public static final field EMIT_NETWORK_ERRORS Lcom/apollographql/apollo3/cache/normalized/WatchErrorHandling;
 	public static final field IGNORE_ERRORS Lcom/apollographql/apollo3/cache/normalized/WatchErrorHandling;
+	public static final field THROW_CACHE_AND_NETWORK_ERRORS Lcom/apollographql/apollo3/cache/normalized/WatchErrorHandling;
+	public static final field THROW_CACHE_ERRORS Lcom/apollographql/apollo3/cache/normalized/WatchErrorHandling;
+	public static final field THROW_NETWORK_ERRORS Lcom/apollographql/apollo3/cache/normalized/WatchErrorHandling;
 	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/cache/normalized/WatchErrorHandling;
 	public static fun values ()[Lcom/apollographql/apollo3/cache/normalized/WatchErrorHandling;
 }
