@@ -26,7 +26,11 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
 
@@ -108,30 +112,68 @@ enum class WatchErrorHandling {
  * Exception are ignored by default, this can be changed by setting [fetchErrorHandling] for the first fetch and [refetchErrorHandling]
  * for subsequent fetches.
  */
-@JvmOverloads
 fun <D : Query.Data> ApolloCall<D>.watch(
     fetchErrorHandling: WatchErrorHandling = WatchErrorHandling.IGNORE_ERRORS,
     refetchErrorHandling: WatchErrorHandling = WatchErrorHandling.IGNORE_ERRORS,
 ): Flow<ApolloResponse<D>> {
-  return copy().addExecutionContext(WatchContext(
-      data = null,
-      fetchErrorHandling = fetchErrorHandling,
-      refetchErrorHandling = refetchErrorHandling,
-  )).toFlow()
+  var data: D? = null
+  return toFlow()
+      .catch {
+        maybeThrow(it, fetchErrorHandling)
+      }.onEach {
+        data = it.data
+      }.onCompletion {
+        emitAll(
+            watch(data)
+                .catch {
+                  maybeThrow(it, refetchErrorHandling)
+                }
+        )
+      }
 }
 
 /**
  * Observes the cache for the given data. Unlike [watch], no initial request is executed on the network.
  * The refetch policy set by [refetchPolicy] will be used.
- * Cache and network exceptions are ignored.
+ * Cache and network exceptions are propagated.
  */
-fun <D : Query.Data> ApolloCall<D>.watch(data: D): Flow<ApolloResponse<D>> {
-  return copy().addExecutionContext(WatchContext(
-      data = data,
-      fetchErrorHandling = WatchErrorHandling.IGNORE_ERRORS,
-      refetchErrorHandling = WatchErrorHandling.IGNORE_ERRORS,
-  )).toFlow()
+fun <D : Query.Data> ApolloCall<D>.watch(data: D?): Flow<ApolloResponse<D>> {
+  return copy().addExecutionContext(WatchContext(data)).toFlow()
 }
+
+private fun maybeThrow(throwable: Throwable, errorHandling: WatchErrorHandling) {
+  // Only potentially swallow Apollo exceptions, the rest must be surfaced
+  if (throwable !is ApolloException) {
+    throw throwable
+  }
+  if (errorHandling == WatchErrorHandling.IGNORE_ERRORS) return
+  val throwCacheErrors = errorHandling == WatchErrorHandling.THROW_CACHE_AND_NETWORK_ERRORS || errorHandling == WatchErrorHandling.THROW_CACHE_ERRORS
+  val throwNetworkErrors = errorHandling == WatchErrorHandling.THROW_CACHE_AND_NETWORK_ERRORS || errorHandling == WatchErrorHandling.THROW_NETWORK_ERRORS
+  when (throwable) {
+    is ApolloCompositeException -> {
+      if (errorHandling == WatchErrorHandling.THROW_CACHE_AND_NETWORK_ERRORS) {
+        throw throwable
+      }
+      val cacheMissException = throwable.first as? CacheMissException ?: throwable.second as? CacheMissException
+      // If it's *not* a CacheMissException we consider it a network error (could be ApolloNetworkException, ApolloHttpException, ApolloParseException...)
+      val networkException = throwable.first.takeIf { it !is CacheMissException } ?: throwable.second.takeIf { it !is CacheMissException }
+      if (cacheMissException != null && throwCacheErrors) {
+        throw cacheMissException
+      }
+      if (networkException != null && throwNetworkErrors) {
+        throw networkException
+      }
+    }
+    is CacheMissException -> if (throwCacheErrors) {
+      throw throwable
+    }
+    // Treat all other exceptions as network errors (could be ApolloNetworkException, ApolloHttpException, ApolloParseException...)
+    else -> if (throwNetworkErrors) {
+      throw throwable
+    }
+  }
+}
+
 
 /**
  * Gets the result from the cache first and always fetch from the network. Use this to get an early
@@ -471,11 +513,7 @@ internal class OptimisticUpdatesContext<D : Mutation.Data>(val value: D) : Execu
   companion object Key : ExecutionContext.Key<OptimisticUpdatesContext<*>>
 }
 
-internal class WatchContext(
-    val data: Query.Data?,
-    val fetchErrorHandling: WatchErrorHandling,
-    val refetchErrorHandling: WatchErrorHandling,
-) : ExecutionContext.Element {
+internal class WatchContext(val data: Query.Data?) : ExecutionContext.Element {
   override val key: ExecutionContext.Key<*>
     get() = Key
 
