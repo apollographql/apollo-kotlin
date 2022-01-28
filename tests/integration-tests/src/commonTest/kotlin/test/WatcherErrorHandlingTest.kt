@@ -7,7 +7,9 @@ import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.WatchErrorHandling
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.errorHandling
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
+import com.apollographql.apollo3.cache.normalized.refetchErrorHandling
 import com.apollographql.apollo3.cache.normalized.refetchPolicy
 import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.cache.normalized.watch
@@ -128,21 +130,24 @@ class WatcherErrorHandlingTest {
     assertFailsWith(CacheMissException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheFirst)
-          .watch(WatchErrorHandling.THROW_CACHE_ERRORS)
+          .errorHandling(WatchErrorHandling.ThrowCacheErrors)
+          .watch()
           .first()
     }
 
     assertFailsWith(CacheMissException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheOnly)
-          .watch(WatchErrorHandling.THROW_CACHE_ERRORS)
+          .errorHandling(WatchErrorHandling.ThrowCacheErrors)
+          .watch()
           .first()
     }
 
     assertFailsWith(CacheMissException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkFirst)
-          .watch(WatchErrorHandling.THROW_CACHE_ERRORS)
+          .errorHandling(WatchErrorHandling.ThrowCacheErrors)
+          .watch()
           .first()
     }
   }
@@ -152,21 +157,24 @@ class WatcherErrorHandlingTest {
     assertFailsWith(ApolloHttpException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkFirst)
-          .watch(WatchErrorHandling.THROW_NETWORK_ERRORS)
+          .errorHandling(WatchErrorHandling.ThrowNetworkErrors)
+          .watch()
           .first()
     }
 
     assertFailsWith(ApolloHttpException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkOnly)
-          .watch(WatchErrorHandling.THROW_NETWORK_ERRORS)
+          .errorHandling(WatchErrorHandling.ThrowNetworkErrors)
+          .watch()
           .first()
     }
 
     assertFailsWith(ApolloHttpException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheFirst)
-          .watch(WatchErrorHandling.THROW_NETWORK_ERRORS)
+          .errorHandling(WatchErrorHandling.ThrowNetworkErrors)
+          .watch()
           .first()
     }
   }
@@ -185,7 +193,8 @@ class WatcherErrorHandlingTest {
       apolloClient.query(query)
           .fetchPolicy(FetchPolicy.NetworkOnly)
           .refetchPolicy(FetchPolicy.NetworkOnly)
-          .watch(refetchErrorHandling = WatchErrorHandling.THROW_NETWORK_ERRORS)
+          .refetchErrorHandling(WatchErrorHandling.ThrowNetworkErrors)
+          .watch()
           .catch { throwable = it }
           .collect {
             channel.send(it.data)
@@ -195,7 +204,7 @@ class WatcherErrorHandlingTest {
 
     // Another newer call gets updated information with "Artoo"
     // Due to .refetchPolicy(FetchPolicy.NetworkOnly), a subsequent call will be executed in watch()
-    // we didn't enqueue anything in mockServer so a network exception is thrown, and surfaced due to THROW_NETWORK_ERRORS
+    // we didn't enqueue anything in mockServer so a network exception is thrown, and surfaced due to ThrowNetworkErrors
     mockServer.enqueue(testFixtureToUtf8("EpisodeHeroNameResponseNameChange.json"))
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
@@ -211,28 +220,32 @@ class WatcherErrorHandlingTest {
     assertFailsWith(CacheMissException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheOnly)
-          .watch(WatchErrorHandling.THROW_CACHE_AND_NETWORK_ERRORS)
+          .errorHandling(WatchErrorHandling.ThrowAll)
+          .watch()
           .first()
     }
 
     assertFailsWith(ApolloHttpException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkOnly)
-          .watch(WatchErrorHandling.THROW_CACHE_AND_NETWORK_ERRORS)
+          .errorHandling(WatchErrorHandling.ThrowAll)
+          .watch()
           .first()
     }
 
     assertFailsWith(ApolloCompositeException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkFirst)
-          .watch(WatchErrorHandling.THROW_CACHE_AND_NETWORK_ERRORS)
+          .errorHandling(WatchErrorHandling.ThrowAll)
+          .watch()
           .first()
     }
 
     assertFailsWith(ApolloCompositeException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheFirst)
-          .watch(WatchErrorHandling.THROW_CACHE_AND_NETWORK_ERRORS)
+          .errorHandling(WatchErrorHandling.ThrowAll)
+          .watch()
           .first()
     }
   }
@@ -251,7 +264,8 @@ class WatcherErrorHandlingTest {
       apolloClient.query(query)
           .fetchPolicy(FetchPolicy.NetworkOnly)
           .refetchPolicy(FetchPolicy.NetworkOnly)
-          .watch(refetchErrorHandling = WatchErrorHandling.THROW_CACHE_AND_NETWORK_ERRORS)
+          .refetchErrorHandling(WatchErrorHandling.ThrowAll)
+          .watch()
           .catch { throwable = it }
           .collect {
             channel.send(it.data)
@@ -261,7 +275,7 @@ class WatcherErrorHandlingTest {
 
     // Another newer call gets updated information with "Artoo"
     // Due to .refetchPolicy(FetchPolicy.NetworkOnly), a subsequent call will be executed in watch()
-    // we didn't enqueue anything in mockServer so a network exception is thrown, and surfaced due to THROW_CACHE_AND_NETWORK_ERRORS
+    // we didn't enqueue anything in mockServer so a network exception is thrown, and surfaced due to ThrowAll
     mockServer.enqueue(testFixtureToUtf8("EpisodeHeroNameResponseNameChange.json"))
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
