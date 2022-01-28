@@ -101,7 +101,7 @@ fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: B
 
 /**
  * Use with [watch] to configure how errors are propagated.
- * Note that any non-Apollo exceptions (e.g. OutOfMemoryError) will still be thrown regardless of the policy.
+ * Note that any non-Apollo exceptions (e.g. `OutOfMemoryError`) will still be thrown regardless of the policy.
  */
 enum class WatchErrorHandling {
   ThrowCacheErrors,
@@ -113,7 +113,7 @@ enum class WatchErrorHandling {
 /***
  * Gets the result from the network, then observes the cache for any changes.
  * Overriding the [FetchPolicy] will change how the result is first queried.
- * Exception are ignored by default, this can be changed by setting [errorHandling] for the first fetch and [refetchErrorHandling]
+ * Exception are ignored by default, this can be changed by setting [fetchErrorHandling] for the first fetch and [refetchErrorHandling]
  * for subsequent fetches.
  */
 @JvmOverloads
