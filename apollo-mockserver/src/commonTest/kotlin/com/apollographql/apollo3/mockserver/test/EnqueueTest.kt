@@ -8,8 +8,6 @@ import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.testing.runTest
 import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 @OptIn(ApolloExperimental::class)
 class EnqueueTest {
@@ -46,13 +44,5 @@ class EnqueueTest {
       val httpResponse = engine.execute(HttpRequest.Builder(HttpMethod.Get, mockServer.url()).build())
       assertMockResponse(mockResponse, httpResponse)
     }
-  }
-
-  @Test
-  fun status500WhenNothingWasEnqueued() = runTest(before = { setUp() }, after = { tearDown() }) {
-    val engine = DefaultHttpEngine()
-    val httpResponse = engine.execute(HttpRequest.Builder(HttpMethod.Get, mockServer.url()).build())
-    assertEquals(500, httpResponse.statusCode)
-    assertTrue(httpResponse.body!!.readUtf8().contains("No more responses in queue"))
   }
 }

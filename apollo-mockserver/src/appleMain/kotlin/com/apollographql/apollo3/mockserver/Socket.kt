@@ -134,7 +134,7 @@ class Socket(
           try {
             mockServerHandler.handle(request)
           } catch (e: Exception) {
-            MockResponse("MockServerHandler.handle() threw an exception: ${e.message}", 500)
+            throw Exception("MockServerHandler.handle() threw an exception: ${e.message}", e)
           }
         }
 
