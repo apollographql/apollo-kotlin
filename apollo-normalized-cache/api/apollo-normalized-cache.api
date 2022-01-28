@@ -126,10 +126,10 @@ public final class com/apollographql/apollo3/cache/normalized/NormalizedCache {
 }
 
 public final class com/apollographql/apollo3/cache/normalized/WatchErrorHandling : java/lang/Enum {
-	public static final field IGNORE_ERRORS Lcom/apollographql/apollo3/cache/normalized/WatchErrorHandling;
-	public static final field THROW_CACHE_AND_NETWORK_ERRORS Lcom/apollographql/apollo3/cache/normalized/WatchErrorHandling;
-	public static final field THROW_CACHE_ERRORS Lcom/apollographql/apollo3/cache/normalized/WatchErrorHandling;
-	public static final field THROW_NETWORK_ERRORS Lcom/apollographql/apollo3/cache/normalized/WatchErrorHandling;
+	public static final field IgnoreErrors Lcom/apollographql/apollo3/cache/normalized/WatchErrorHandling;
+	public static final field ThrowAll Lcom/apollographql/apollo3/cache/normalized/WatchErrorHandling;
+	public static final field ThrowCacheErrors Lcom/apollographql/apollo3/cache/normalized/WatchErrorHandling;
+	public static final field ThrowNetworkErrors Lcom/apollographql/apollo3/cache/normalized/WatchErrorHandling;
 	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/cache/normalized/WatchErrorHandling;
 	public static fun values ()[Lcom/apollographql/apollo3/cache/normalized/WatchErrorHandling;
 }
