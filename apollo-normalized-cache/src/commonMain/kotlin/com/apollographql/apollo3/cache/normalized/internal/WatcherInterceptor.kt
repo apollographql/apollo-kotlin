@@ -7,7 +7,6 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.api.dependentKeys
-import com.apollographql.apollo3.cache.normalized.isRefetching
 import com.apollographql.apollo3.cache.normalized.watchContext
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
@@ -36,7 +35,7 @@ internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor {
         .filter { changedKeys ->
           watchedKeys == null || changedKeys.intersect(watchedKeys!!).isNotEmpty()
         }.map {
-          chain.proceed(request.newBuilder().isRefetching(true).build())
+          chain.proceed(request.newBuilder().build())
               .onEach { response ->
                 if (response.data != null) {
                   watchedKeys = store.normalize(request.operation, response.data!!, customScalarAdapters).values.dependentKeys()

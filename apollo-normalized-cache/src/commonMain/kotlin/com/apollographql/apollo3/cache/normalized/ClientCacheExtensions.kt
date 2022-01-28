@@ -125,7 +125,8 @@ fun <D : Query.Data> ApolloCall<D>.watch(
         data = it.data
       }.onCompletion {
         emitAll(
-            watch(data)
+            copy().fetchPolicyInterceptor(refetchPolicyInterceptor)
+                .watch(data)
                 .catch {
                   maybeThrow(it, refetchErrorHandling)
                 }
@@ -135,7 +136,7 @@ fun <D : Query.Data> ApolloCall<D>.watch(
 
 /**
  * Observes the cache for the given data. Unlike [watch], no initial request is executed on the network.
- * The refetch policy set by [refetchPolicy] will be used.
+ * The fetch policy set by [fetchPolicy] will be used.
  * Cache and network exceptions are propagated.
  */
 fun <D : Query.Data> ApolloCall<D>.watch(data: D?): Flow<ApolloResponse<D>> {
@@ -316,7 +317,7 @@ fun <D : Mutation.Data> ApolloCall<D>.optimisticUpdates(data: D) = addExecutionC
 internal val <D : Operation.Data> ApolloRequest<D>.fetchPolicyInterceptor
   get() = executionContext[FetchPolicyContext]?.interceptor ?: CacheFirstInterceptor
 
-internal val <D : Operation.Data> ApolloRequest<D>.refetchPolicyInterceptor
+private val <T> MutableExecutionOptions<T>.refetchPolicyInterceptor
   get() = executionContext[RefetchPolicyContext]?.interceptor ?: CacheOnlyInterceptor
 
 internal val <D : Operation.Data> ApolloRequest<D>.doNotStore
@@ -528,25 +529,10 @@ internal class FetchFromCacheContext(val value: Boolean) : ExecutionContext.Elem
   companion object Key : ExecutionContext.Key<FetchFromCacheContext>
 }
 
-internal class IsRefetching(val value: Boolean) : ExecutionContext.Element {
-  override val key: ExecutionContext.Key<*>
-    get() = Key
-
-  companion object Key : ExecutionContext.Key<IsRefetching>
-}
-
 internal fun <D : Operation.Data> ApolloRequest.Builder<D>.fetchFromCache(fetchFromCache: Boolean) = apply {
   addExecutionContext(FetchFromCacheContext(fetchFromCache))
 }
 
-internal fun <D : Operation.Data> ApolloRequest.Builder<D>.isRefetching(isRefetching: Boolean) = apply {
-  addExecutionContext(IsRefetching(isRefetching))
-}
-
 internal val <D : Operation.Data> ApolloRequest<D>.fetchFromCache
   get() = executionContext[FetchFromCacheContext]?.value ?: false
-
-
-internal val <D : Operation.Data> ApolloRequest<D>.isRefetching
-  get() = executionContext[IsRefetching]?.value ?: false
 

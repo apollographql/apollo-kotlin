@@ -158,10 +158,6 @@ internal val FetchPolicyRouterInterceptor = object : ApolloInterceptor {
       // Subscriptions and Mutations do not support fetchPolicies
       return chain.proceed(request)
     }
-    return if (!request.isRefetching) {
-      request.fetchPolicyInterceptor.intercept(request, chain)
-    } else {
-      request.refetchPolicyInterceptor.intercept(request, chain)
-    }
+    return request.fetchPolicyInterceptor.intercept(request, chain)
   }
 }
