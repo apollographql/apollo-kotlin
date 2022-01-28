@@ -16,6 +16,7 @@ import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
+import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.receiveOrTimeout
@@ -54,6 +55,7 @@ class WatcherErrorHandlingTest {
     val jobs = mutableListOf<Job>()
 
     jobs += launch {
+      mockServer.enqueue(MockResponse(500))
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheFirst)
           .watch()
@@ -72,6 +74,7 @@ class WatcherErrorHandlingTest {
     }
 
     jobs += launch {
+      mockServer.enqueue(MockResponse(500))
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkFirst)
           .watch()
@@ -81,6 +84,7 @@ class WatcherErrorHandlingTest {
     }
 
     jobs += launch {
+      mockServer.enqueue(MockResponse(500))
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkOnly)
           .watch()
@@ -114,8 +118,9 @@ class WatcherErrorHandlingTest {
 
     // Another newer call gets updated information with "Artoo"
     // Due to .refetchPolicy(FetchPolicy.NetworkOnly), a subsequent call will be executed in watch()
-    // we didn't enqueue anything in the mockServer so a network exception is thrown, and ignored by default
+    // we enqueue an error so a network exception is thrown, and ignored by default
     mockServer.enqueue(testFixtureToUtf8("EpisodeHeroNameResponseNameChange.json"))
+    mockServer.enqueue(MockResponse(500))
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
     channel.assertEmpty()
@@ -125,6 +130,7 @@ class WatcherErrorHandlingTest {
 
   @Test
   fun fetchThrowCacheErrors() = runTest(before = { setUp() }, after = { tearDown() }) {
+    mockServer.enqueue(MockResponse(500))
     assertFailsWith(CacheMissException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheFirst)
@@ -139,6 +145,7 @@ class WatcherErrorHandlingTest {
           .first()
     }
 
+    mockServer.enqueue(MockResponse(500))
     assertFailsWith(CacheMissException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkFirst)
@@ -149,6 +156,7 @@ class WatcherErrorHandlingTest {
 
   @Test
   fun fetchThrowNetworkErrors() = runTest(before = { setUp() }, after = { tearDown() }) {
+    mockServer.enqueue(MockResponse(500))
     assertFailsWith(ApolloHttpException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkFirst)
@@ -156,6 +164,7 @@ class WatcherErrorHandlingTest {
           .first()
     }
 
+    mockServer.enqueue(MockResponse(500))
     assertFailsWith(ApolloHttpException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkOnly)
@@ -163,6 +172,7 @@ class WatcherErrorHandlingTest {
           .first()
     }
 
+    mockServer.enqueue(MockResponse(500))
     assertFailsWith(ApolloHttpException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheFirst)
@@ -195,8 +205,9 @@ class WatcherErrorHandlingTest {
 
     // Another newer call gets updated information with "Artoo"
     // Due to .refetchPolicy(FetchPolicy.NetworkOnly), a subsequent call will be executed in watch()
-    // we didn't enqueue anything in mockServer so a network exception is thrown, and surfaced due to ThrowNetworkErrors
+    // we enqueue an error so a network exception is thrown, and surfaced due to WatchErrorHandling.ThrowNetworkErrors
     mockServer.enqueue(testFixtureToUtf8("EpisodeHeroNameResponseNameChange.json"))
+    mockServer.enqueue(MockResponse(500))
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
     channel.assertEmpty()
@@ -215,6 +226,7 @@ class WatcherErrorHandlingTest {
           .first()
     }
 
+    mockServer.enqueue(MockResponse(500))
     assertFailsWith(ApolloHttpException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkOnly)
@@ -222,6 +234,7 @@ class WatcherErrorHandlingTest {
           .first()
     }
 
+    mockServer.enqueue(MockResponse(500))
     assertFailsWith(ApolloCompositeException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkFirst)
@@ -229,6 +242,7 @@ class WatcherErrorHandlingTest {
           .first()
     }
 
+    mockServer.enqueue(MockResponse(500))
     assertFailsWith(ApolloCompositeException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheFirst)
@@ -240,9 +254,7 @@ class WatcherErrorHandlingTest {
   @Test
   fun refetchThrowCacheAndNetworkErrors() = runTest(before = { setUp() }, after = { tearDown() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
-
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
-
     var throwable: Throwable? = null
 
     // The first query should get a "R2-D2" name
@@ -261,8 +273,9 @@ class WatcherErrorHandlingTest {
 
     // Another newer call gets updated information with "Artoo"
     // Due to .refetchPolicy(FetchPolicy.NetworkOnly), a subsequent call will be executed in watch()
-    // we didn't enqueue anything in mockServer so a network exception is thrown, and surfaced due to ThrowAll
+    // we enqueue an error so a network exception is thrown, and surfaced due to WatchErrorHandling.ThrowAll
     mockServer.enqueue(testFixtureToUtf8("EpisodeHeroNameResponseNameChange.json"))
+    mockServer.enqueue(MockResponse(500))
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
     channel.assertEmpty()
