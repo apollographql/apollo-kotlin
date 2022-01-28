@@ -131,7 +131,7 @@ class WatcherErrorHandlingTest {
   @Test
   fun fetchThrowCacheErrors() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(MockResponse(500))
-    assertFailsWith(CacheMissException::class) {
+    assertFailsWith(ApolloCompositeException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheFirst)
           .watch(WatchErrorHandling.ThrowCacheErrors)
@@ -146,7 +146,7 @@ class WatcherErrorHandlingTest {
     }
 
     mockServer.enqueue(MockResponse(500))
-    assertFailsWith(CacheMissException::class) {
+    assertFailsWith(ApolloCompositeException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkFirst)
           .watch(WatchErrorHandling.ThrowCacheErrors)
@@ -157,7 +157,7 @@ class WatcherErrorHandlingTest {
   @Test
   fun fetchThrowNetworkErrors() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(MockResponse(500))
-    assertFailsWith(ApolloHttpException::class) {
+    assertFailsWith(ApolloCompositeException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkFirst)
           .watch(WatchErrorHandling.ThrowNetworkErrors)
@@ -173,7 +173,7 @@ class WatcherErrorHandlingTest {
     }
 
     mockServer.enqueue(MockResponse(500))
-    assertFailsWith(ApolloHttpException::class) {
+    assertFailsWith(ApolloCompositeException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheFirst)
           .watch(WatchErrorHandling.ThrowNetworkErrors)

@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.retryWhen
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
 
@@ -124,15 +125,19 @@ fun <D : Query.Data> ApolloCall<D>.watch(
   var data: D? = null
   return toFlow()
       .catch {
-        maybeThrow(it, fetchErrorHandling)
+        if (it.shouldThrow(fetchErrorHandling)) throw it
       }.onEach {
         data = it.data
       }.onCompletion {
         emitAll(
             copy().fetchPolicyInterceptor(refetchPolicyInterceptor)
                 .watch(data)
+                .retryWhen { cause, _ ->
+                  // If this exception is ignored (shouldThrow is false), we should continue watching - so retry
+                  !cause.shouldThrow(refetchErrorHandling)
+                }
                 .catch {
-                  maybeThrow(it, refetchErrorHandling)
+                  if (it.shouldThrow(refetchErrorHandling)) throw it
                 }
         )
       }
@@ -147,37 +152,33 @@ fun <D : Query.Data> ApolloCall<D>.watch(data: D?): Flow<ApolloResponse<D>> {
   return copy().addExecutionContext(WatchContext(data)).toFlow()
 }
 
-private fun maybeThrow(throwable: Throwable, errorHandling: WatchErrorHandling) {
+/**
+ * Returns whether this throwable should be thrown according to the [errorHandling]
+ */
+private fun Throwable.shouldThrow(errorHandling: WatchErrorHandling): Boolean {
   // Only potentially swallow Apollo exceptions, the rest must be surfaced
-  if (throwable !is ApolloException || errorHandling == WatchErrorHandling.ThrowAll) {
-    throw throwable
-  }
-  if (errorHandling == WatchErrorHandling.IgnoreErrors) return
+  if (this !is ApolloException || errorHandling == WatchErrorHandling.ThrowAll) return true
+
+  if (errorHandling == WatchErrorHandling.IgnoreErrors) return false
+
   val throwCacheErrors = errorHandling == WatchErrorHandling.ThrowCacheErrors
   val throwNetworkErrors = errorHandling == WatchErrorHandling.ThrowNetworkErrors
-  when (throwable) {
+  when (this) {
     is ApolloCompositeException -> {
-      if (errorHandling == WatchErrorHandling.ThrowAll) {
-        throw throwable
-      }
-      val cacheMissException = throwable.first as? CacheMissException ?: throwable.second as? CacheMissException
+      if (errorHandling == WatchErrorHandling.ThrowAll) return true
+      val cacheMissException = first as? CacheMissException ?: second as? CacheMissException
       // If it's *not* a CacheMissException we consider it a network error (could be ApolloNetworkException, ApolloHttpException, ApolloParseException...)
-      val networkException = throwable.first.takeIf { it !is CacheMissException } ?: throwable.second.takeIf { it !is CacheMissException }
-      if (cacheMissException != null && throwCacheErrors) {
-        throw cacheMissException
-      }
-      if (networkException != null && throwNetworkErrors) {
-        throw networkException
-      }
+      val networkException = first.takeIf { it !is CacheMissException } ?: second.takeIf { it !is CacheMissException }
+      if (cacheMissException != null && throwCacheErrors) return true
+      if (networkException != null && throwNetworkErrors) return true
     }
-    is CacheMissException -> if (throwCacheErrors) {
-      throw throwable
-    }
+
+    is CacheMissException -> if (throwCacheErrors) return true
+
     // Treat all other exceptions as network errors (could be ApolloNetworkException, ApolloHttpException, ApolloParseException...)
-    else -> if (throwNetworkErrors) {
-      throw throwable
-    }
+    else -> if (throwNetworkErrors) return true
   }
+  return false
 }
 
 
