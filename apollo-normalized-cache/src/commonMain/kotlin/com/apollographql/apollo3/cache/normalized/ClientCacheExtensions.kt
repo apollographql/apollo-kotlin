@@ -145,12 +145,12 @@ fun <D : Query.Data> ApolloCall<D>.watch(data: D?): Flow<ApolloResponse<D>> {
 
 private fun maybeThrow(throwable: Throwable, errorHandling: WatchErrorHandling) {
   // Only potentially swallow Apollo exceptions, the rest must be surfaced
-  if (throwable !is ApolloException) {
+  if (throwable !is ApolloException || errorHandling == WatchErrorHandling.ThrowAll) {
     throw throwable
   }
   if (errorHandling == WatchErrorHandling.IgnoreErrors) return
-  val throwCacheErrors = errorHandling == WatchErrorHandling.ThrowAll || errorHandling == WatchErrorHandling.ThrowCacheErrors
-  val throwNetworkErrors = errorHandling == WatchErrorHandling.ThrowAll || errorHandling == WatchErrorHandling.ThrowNetworkErrors
+  val throwCacheErrors = errorHandling == WatchErrorHandling.ThrowCacheErrors
+  val throwNetworkErrors = errorHandling == WatchErrorHandling.ThrowNetworkErrors
   when (throwable) {
     is ApolloCompositeException -> {
       if (errorHandling == WatchErrorHandling.ThrowAll) {
