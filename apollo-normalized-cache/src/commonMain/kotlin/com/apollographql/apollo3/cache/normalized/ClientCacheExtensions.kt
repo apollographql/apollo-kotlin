@@ -100,7 +100,7 @@ fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: B
 }
 
 /**
- * Use with [errorHandling] and [refetchErrorHandling] to configure how errors are handled when using [watch].
+ * Use with [watch] to configure how errors are propagated.
  * Note that any non-Apollo exceptions (e.g. OutOfMemoryError) will still be thrown regardless of the policy.
  */
 enum class WatchErrorHandling {
@@ -116,11 +116,15 @@ enum class WatchErrorHandling {
  * Exception are ignored by default, this can be changed by setting [errorHandling] for the first fetch and [refetchErrorHandling]
  * for subsequent fetches.
  */
-fun <D : Query.Data> ApolloCall<D>.watch(): Flow<ApolloResponse<D>> {
+@JvmOverloads
+fun <D : Query.Data> ApolloCall<D>.watch(
+    fetchErrorHandling: WatchErrorHandling = WatchErrorHandling.IgnoreErrors,
+    refetchErrorHandling: WatchErrorHandling = WatchErrorHandling.IgnoreErrors,
+): Flow<ApolloResponse<D>> {
   var data: D? = null
   return toFlow()
       .catch {
-        maybeThrow(it, errorHandling)
+        maybeThrow(it, fetchErrorHandling)
       }.onEach {
         data = it.data
       }.onCompletion {
@@ -264,20 +268,6 @@ private fun interceptorFor(fetchPolicy: FetchPolicy) = when (fetchPolicy) {
 }
 
 /**
- * Sets the error handling policy used with [watch] when fetching the initial data
- */
-fun <T> MutableExecutionOptions<T>.errorHandling(errorHandling: WatchErrorHandling) = addExecutionContext(
-    ErrorHandlingContext(errorHandling)
-)
-
-/**
- * Sets the error handling policy used with [watch] when refetching
- */
-fun <T> MutableExecutionOptions<T>.refetchErrorHandling(errorHandling: WatchErrorHandling) = addExecutionContext(
-    RefetchErrorHandlingContext(errorHandling)
-)
-
-/**
  * @param doNotStore Whether to store the response in cache.
  *
  * Default: false
@@ -334,12 +324,6 @@ internal val <D : Operation.Data> ApolloRequest<D>.fetchPolicyInterceptor
 private val <T> MutableExecutionOptions<T>.refetchPolicyInterceptor
   get() = executionContext[RefetchPolicyContext]?.interceptor ?: CacheOnlyInterceptor
 
-private val <T> MutableExecutionOptions<T>.errorHandling
-  get() = executionContext[ErrorHandlingContext]?.errorHandling ?: WatchErrorHandling.IgnoreErrors
-
-private val <T> MutableExecutionOptions<T>.refetchErrorHandling
-  get() = executionContext[RefetchErrorHandlingContext]?.errorHandling ?: WatchErrorHandling.IgnoreErrors
-
 internal val <D : Operation.Data> ApolloRequest<D>.doNotStore
   get() = executionContext[DoNotStoreContext]?.value ?: false
 
@@ -360,7 +344,7 @@ internal val <D : Operation.Data> ApolloRequest<D>.watchContext: WatchContext?
 
 /**
  * @param isCacheHit true if this was a cache hit
- * @param cacheException the exception while reading the cache. Note that it's possible to have [isCacheHit] == false && [cacheException] == null
+ * @param cacheMissException the exception while reading the cache. Note that it's possible to have [isCacheHit] == false && [cacheMissException] == null
  * if no cache read was attempted
  */
 class CacheInfo private constructor(
@@ -498,20 +482,6 @@ internal class RefetchPolicyContext(val interceptor: ApolloInterceptor) : Execut
     get() = Key
 
   companion object Key : ExecutionContext.Key<RefetchPolicyContext>
-}
-
-private class ErrorHandlingContext(val errorHandling: WatchErrorHandling) : ExecutionContext.Element {
-  override val key: ExecutionContext.Key<*>
-    get() = Key
-
-  companion object Key : ExecutionContext.Key<ErrorHandlingContext>
-}
-
-private class RefetchErrorHandlingContext(val errorHandling: WatchErrorHandling) : ExecutionContext.Element {
-  override val key: ExecutionContext.Key<*>
-    get() = Key
-
-  companion object Key : ExecutionContext.Key<RefetchErrorHandlingContext>
 }
 
 internal class DoNotStoreContext(val value: Boolean) : ExecutionContext.Element {

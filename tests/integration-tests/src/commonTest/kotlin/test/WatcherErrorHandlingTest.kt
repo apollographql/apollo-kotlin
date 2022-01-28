@@ -7,9 +7,7 @@ import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.WatchErrorHandling
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.errorHandling
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
-import com.apollographql.apollo3.cache.normalized.refetchErrorHandling
 import com.apollographql.apollo3.cache.normalized.refetchPolicy
 import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.cache.normalized.watch
@@ -130,24 +128,21 @@ class WatcherErrorHandlingTest {
     assertFailsWith(CacheMissException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheFirst)
-          .errorHandling(WatchErrorHandling.ThrowCacheErrors)
-          .watch()
+          .watch(WatchErrorHandling.ThrowCacheErrors)
           .first()
     }
 
     assertFailsWith(CacheMissException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheOnly)
-          .errorHandling(WatchErrorHandling.ThrowCacheErrors)
-          .watch()
+          .watch(WatchErrorHandling.ThrowCacheErrors)
           .first()
     }
 
     assertFailsWith(CacheMissException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkFirst)
-          .errorHandling(WatchErrorHandling.ThrowCacheErrors)
-          .watch()
+          .watch(WatchErrorHandling.ThrowCacheErrors)
           .first()
     }
   }
@@ -157,24 +152,21 @@ class WatcherErrorHandlingTest {
     assertFailsWith(ApolloHttpException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkFirst)
-          .errorHandling(WatchErrorHandling.ThrowNetworkErrors)
-          .watch()
+          .watch(WatchErrorHandling.ThrowNetworkErrors)
           .first()
     }
 
     assertFailsWith(ApolloHttpException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkOnly)
-          .errorHandling(WatchErrorHandling.ThrowNetworkErrors)
-          .watch()
+          .watch(WatchErrorHandling.ThrowNetworkErrors)
           .first()
     }
 
     assertFailsWith(ApolloHttpException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheFirst)
-          .errorHandling(WatchErrorHandling.ThrowNetworkErrors)
-          .watch()
+          .watch(WatchErrorHandling.ThrowNetworkErrors)
           .first()
     }
   }
@@ -193,8 +185,7 @@ class WatcherErrorHandlingTest {
       apolloClient.query(query)
           .fetchPolicy(FetchPolicy.NetworkOnly)
           .refetchPolicy(FetchPolicy.NetworkOnly)
-          .refetchErrorHandling(WatchErrorHandling.ThrowNetworkErrors)
-          .watch()
+          .watch(refetchErrorHandling = WatchErrorHandling.ThrowNetworkErrors)
           .catch { throwable = it }
           .collect {
             channel.send(it.data)
@@ -220,32 +211,28 @@ class WatcherErrorHandlingTest {
     assertFailsWith(CacheMissException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheOnly)
-          .errorHandling(WatchErrorHandling.ThrowAll)
-          .watch()
+          .watch(WatchErrorHandling.ThrowAll)
           .first()
     }
 
     assertFailsWith(ApolloHttpException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkOnly)
-          .errorHandling(WatchErrorHandling.ThrowAll)
-          .watch()
+          .watch(WatchErrorHandling.ThrowAll)
           .first()
     }
 
     assertFailsWith(ApolloCompositeException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkFirst)
-          .errorHandling(WatchErrorHandling.ThrowAll)
-          .watch()
+          .watch(WatchErrorHandling.ThrowAll)
           .first()
     }
 
     assertFailsWith(ApolloCompositeException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheFirst)
-          .errorHandling(WatchErrorHandling.ThrowAll)
-          .watch()
+          .watch(WatchErrorHandling.ThrowAll)
           .first()
     }
   }
@@ -264,8 +251,7 @@ class WatcherErrorHandlingTest {
       apolloClient.query(query)
           .fetchPolicy(FetchPolicy.NetworkOnly)
           .refetchPolicy(FetchPolicy.NetworkOnly)
-          .refetchErrorHandling(WatchErrorHandling.ThrowAll)
-          .watch()
+          .watch(refetchErrorHandling = WatchErrorHandling.ThrowAll)
           .catch { throwable = it }
           .collect {
             channel.send(it.data)
