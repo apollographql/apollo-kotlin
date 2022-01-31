@@ -5,7 +5,6 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
-import com.apollographql.apollo3.cache.normalized.WatchErrorHandling
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.refetchPolicy
@@ -127,21 +126,20 @@ class WatcherErrorHandlingTest {
     job.cancel()
   }
 
-
   @Test
-  fun fetchThrowCacheErrors() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun fetchThrows() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(MockResponse(500))
     assertFailsWith(ApolloCompositeException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheFirst)
-          .watch(WatchErrorHandling.ThrowCacheErrors)
+          .watch(fetchThrows = true)
           .first()
     }
 
     assertFailsWith(CacheMissException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheOnly)
-          .watch(WatchErrorHandling.ThrowCacheErrors)
+          .watch(fetchThrows = true)
           .first()
     }
 
@@ -149,18 +147,7 @@ class WatcherErrorHandlingTest {
     assertFailsWith(ApolloCompositeException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkFirst)
-          .watch(WatchErrorHandling.ThrowCacheErrors)
-          .first()
-    }
-  }
-
-  @Test
-  fun fetchThrowNetworkErrors() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(MockResponse(500))
-    assertFailsWith(ApolloCompositeException::class) {
-      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
-          .fetchPolicy(FetchPolicy.NetworkFirst)
-          .watch(WatchErrorHandling.ThrowNetworkErrors)
+          .watch(fetchThrows = true)
           .first()
     }
 
@@ -168,21 +155,13 @@ class WatcherErrorHandlingTest {
     assertFailsWith(ApolloHttpException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkOnly)
-          .watch(WatchErrorHandling.ThrowNetworkErrors)
-          .first()
-    }
-
-    mockServer.enqueue(MockResponse(500))
-    assertFailsWith(ApolloCompositeException::class) {
-      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
-          .fetchPolicy(FetchPolicy.CacheFirst)
-          .watch(WatchErrorHandling.ThrowNetworkErrors)
+          .watch(fetchThrows = true)
           .first()
     }
   }
 
   @Test
-  fun refetchThrowNetworkErrors() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun refetchThrows() = runTest(before = { setUp() }, after = { tearDown() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
@@ -195,7 +174,7 @@ class WatcherErrorHandlingTest {
       apolloClient.query(query)
           .fetchPolicy(FetchPolicy.NetworkOnly)
           .refetchPolicy(FetchPolicy.NetworkOnly)
-          .watch(refetchErrorHandling = WatchErrorHandling.ThrowNetworkErrors)
+          .watch(refetchThrows = true)
           .catch { throwable = it }
           .collect {
             channel.send(it.data)
@@ -205,75 +184,7 @@ class WatcherErrorHandlingTest {
 
     // Another newer call gets updated information with "Artoo"
     // Due to .refetchPolicy(FetchPolicy.NetworkOnly), a subsequent call will be executed in watch()
-    // we enqueue an error so a network exception is thrown, and surfaced due to WatchErrorHandling.ThrowNetworkErrors
-    mockServer.enqueue(testFixtureToUtf8("EpisodeHeroNameResponseNameChange.json"))
-    mockServer.enqueue(MockResponse(500))
-    apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
-
-    channel.assertEmpty()
-
-    assertIs<ApolloHttpException>(throwable)
-
-    job.cancel()
-  }
-
-  @Test
-  fun fetchThrowCacheAndNetworkErrors() = runTest(before = { setUp() }, after = { tearDown() }) {
-    assertFailsWith(CacheMissException::class) {
-      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
-          .fetchPolicy(FetchPolicy.CacheOnly)
-          .watch(WatchErrorHandling.ThrowAll)
-          .first()
-    }
-
-    mockServer.enqueue(MockResponse(500))
-    assertFailsWith(ApolloHttpException::class) {
-      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
-          .fetchPolicy(FetchPolicy.NetworkOnly)
-          .watch(WatchErrorHandling.ThrowAll)
-          .first()
-    }
-
-    mockServer.enqueue(MockResponse(500))
-    assertFailsWith(ApolloCompositeException::class) {
-      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
-          .fetchPolicy(FetchPolicy.NetworkFirst)
-          .watch(WatchErrorHandling.ThrowAll)
-          .first()
-    }
-
-    mockServer.enqueue(MockResponse(500))
-    assertFailsWith(ApolloCompositeException::class) {
-      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
-          .fetchPolicy(FetchPolicy.CacheFirst)
-          .watch(WatchErrorHandling.ThrowAll)
-          .first()
-    }
-  }
-
-  @Test
-  fun refetchThrowCacheAndNetworkErrors() = runTest(before = { setUp() }, after = { tearDown() }) {
-    val channel = Channel<EpisodeHeroNameQuery.Data?>()
-    val query = EpisodeHeroNameQuery(Episode.EMPIRE)
-    var throwable: Throwable? = null
-
-    // The first query should get a "R2-D2" name
-    val job = launch {
-      mockServer.enqueue(testFixtureToUtf8("EpisodeHeroNameResponseWithId.json"))
-      apolloClient.query(query)
-          .fetchPolicy(FetchPolicy.NetworkOnly)
-          .refetchPolicy(FetchPolicy.NetworkOnly)
-          .watch(refetchErrorHandling = WatchErrorHandling.ThrowAll)
-          .catch { throwable = it }
-          .collect {
-            channel.send(it.data)
-          }
-    }
-    assertEquals(channel.receiveOrTimeout()?.hero?.name, "R2-D2")
-
-    // Another newer call gets updated information with "Artoo"
-    // Due to .refetchPolicy(FetchPolicy.NetworkOnly), a subsequent call will be executed in watch()
-    // we enqueue an error so a network exception is thrown, and surfaced due to WatchErrorHandling.ThrowAll
+    // we enqueue an error so a network exception is thrown, and surfaced due to refetchThrows = true
     mockServer.enqueue(testFixtureToUtf8("EpisodeHeroNameResponseNameChange.json"))
     mockServer.enqueue(MockResponse(500))
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()

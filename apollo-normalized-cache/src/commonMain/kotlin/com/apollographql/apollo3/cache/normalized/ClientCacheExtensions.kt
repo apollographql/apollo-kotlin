@@ -100,32 +100,21 @@ fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: B
       .writeToCacheAsynchronously(writeToCacheAsynchronously)
 }
 
-/**
- * Use with [watch] to configure how errors are propagated.
- * Note that any non-Apollo exceptions (e.g. `OutOfMemoryError`) will still be thrown regardless of the policy.
- */
-enum class WatchErrorHandling {
-  ThrowCacheErrors,
-  ThrowNetworkErrors,
-  ThrowAll,
-  IgnoreErrors,
-}
-
 /***
  * Gets the result from the network, then observes the cache for any changes.
  * Overriding the [FetchPolicy] will change how the result is first queried.
- * Exception are ignored by default, this can be changed by setting [fetchErrorHandling] for the first fetch and [refetchErrorHandling]
- * for subsequent fetches.
+ * Exception are ignored by default, this can be changed by setting [fetchThrows] for the first fetch and [refetchThrows]
+ * for subsequent fetches (non Apollo exceptions like `OutOfMemoryError` are always propagated regardless).
  */
 @JvmOverloads
 fun <D : Query.Data> ApolloCall<D>.watch(
-    fetchErrorHandling: WatchErrorHandling = WatchErrorHandling.IgnoreErrors,
-    refetchErrorHandling: WatchErrorHandling = WatchErrorHandling.IgnoreErrors,
+    fetchThrows: Boolean = false,
+    refetchThrows: Boolean = false,
 ): Flow<ApolloResponse<D>> {
   var data: D? = null
   return toFlow()
       .catch {
-        if (it.shouldThrow(fetchErrorHandling)) throw it
+        if (it !is ApolloException || fetchThrows) throw it
       }.onEach {
         data = it.data
       }.onCompletion {
@@ -133,54 +122,20 @@ fun <D : Query.Data> ApolloCall<D>.watch(
             copy().fetchPolicyInterceptor(refetchPolicyInterceptor)
                 .watch(data)
                 .retryWhen { cause, _ ->
-                  // If this exception is ignored (shouldThrow is false), we should continue watching - so retry
-                  !cause.shouldThrow(refetchErrorHandling)
-                }
-                .catch {
-                  if (it.shouldThrow(refetchErrorHandling)) throw it
+                  // If the exception is ignored (refetchThrows is false), we should continue watching - so retry
+                  cause is ApolloException && !refetchThrows
                 }
         )
       }
 }
 
 /**
- * Observes the cache for the given data. Unlike [watch], no initial request is executed on the network.
+ * Observes the cache for the given data. Unlike [watch], no initial request is executed on the network, and exceptions are propagated.
  * The fetch policy set by [fetchPolicy] will be used.
- * Cache and network exceptions are propagated.
  */
 fun <D : Query.Data> ApolloCall<D>.watch(data: D?): Flow<ApolloResponse<D>> {
   return copy().addExecutionContext(WatchContext(data)).toFlow()
 }
-
-/**
- * Returns whether this throwable should be thrown according to the [errorHandling]
- */
-private fun Throwable.shouldThrow(errorHandling: WatchErrorHandling): Boolean {
-  // Only potentially swallow Apollo exceptions, the rest must be surfaced
-  if (this !is ApolloException || errorHandling == WatchErrorHandling.ThrowAll) return true
-
-  if (errorHandling == WatchErrorHandling.IgnoreErrors) return false
-
-  val throwCacheErrors = errorHandling == WatchErrorHandling.ThrowCacheErrors
-  val throwNetworkErrors = errorHandling == WatchErrorHandling.ThrowNetworkErrors
-  when (this) {
-    is ApolloCompositeException -> {
-      if (errorHandling == WatchErrorHandling.ThrowAll) return true
-      val cacheMissException = first as? CacheMissException ?: second as? CacheMissException
-      // If it's *not* a CacheMissException we consider it a network error (could be ApolloNetworkException, ApolloHttpException, ApolloParseException...)
-      val networkException = first.takeIf { it !is CacheMissException } ?: second.takeIf { it !is CacheMissException }
-      if (cacheMissException != null && throwCacheErrors) return true
-      if (networkException != null && throwNetworkErrors) return true
-    }
-
-    is CacheMissException -> if (throwCacheErrors) return true
-
-    // Treat all other exceptions as network errors (could be ApolloNetworkException, ApolloHttpException, ApolloParseException...)
-    else -> if (throwNetworkErrors) return true
-  }
-  return false
-}
-
 
 /**
  * Gets the result from the cache first and always fetch from the network. Use this to get an early
