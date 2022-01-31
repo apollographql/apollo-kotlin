@@ -123,6 +123,10 @@ public final class com/apollographql/apollo3/cache/normalized/NormalizedCache {
 	public static final fun watch (Lcom/apollographql/apollo3/ApolloCall;ZZ)Lkotlinx/coroutines/flow/Flow;
 	public static synthetic fun watch$default (Lcom/apollographql/apollo3/ApolloCall;Lcom/apollographql/apollo3/api/Query$Data;Lkotlin/jvm/functions/Function3;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
 	public static synthetic fun watch$default (Lcom/apollographql/apollo3/ApolloCall;ZZILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun watchCacheAndNetwork (Lcom/apollographql/apollo3/ApolloCall;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun watchCacheAndNetwork (Lcom/apollographql/apollo3/ApolloCall;Z)Lkotlinx/coroutines/flow/Flow;
+	public static final fun watchCacheAndNetwork (Lcom/apollographql/apollo3/ApolloCall;ZZ)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun watchCacheAndNetwork$default (Lcom/apollographql/apollo3/ApolloCall;ZZILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun writeToCacheAsynchronously (Lcom/apollographql/apollo3/api/MutableExecutionOptions;Z)Ljava/lang/Object;
 }
 
