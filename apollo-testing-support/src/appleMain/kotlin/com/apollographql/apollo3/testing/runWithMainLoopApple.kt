@@ -32,16 +32,23 @@ actual fun runTest(
     after: suspend CoroutineScope.() -> Unit,
     block: suspend CoroutineScope.() -> Unit,
 ) {
+  var throwable: Throwable? = null
   GlobalScope.launch(context + MainLoopDispatcher) {
-    before()
     try {
-      block()
+      before()
+      try {
+        block()
+      } finally {
+        after()
+      }
+    } catch (t: Throwable) {
+      throwable = t
     } finally {
-      after()
+      CFRunLoopStop(CFRunLoopGetCurrent())
     }
-    CFRunLoopStop(CFRunLoopGetCurrent())
   }
   CFRunLoopRun()
+  throwable?.let { throw it }
 }
 
 @OptIn(InternalCoroutinesApi::class)
