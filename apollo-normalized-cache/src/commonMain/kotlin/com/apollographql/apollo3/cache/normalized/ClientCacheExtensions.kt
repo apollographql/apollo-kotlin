@@ -31,32 +31,36 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
 
 enum class FetchPolicy {
   /**
-   * Try cache first, then network
+   * Try the cache, if that failed, try the network
    *
    * This is the default behaviour
    */
   CacheFirst,
 
   /**
-   * Only try cache
+   * Only try the cache
    */
   CacheOnly,
 
   /**
-   * Try network first, then cache
+   * Try the network, if that failed, try the cache
    */
   NetworkFirst,
 
   /**
-   * Only try network
+   * Only try the network
    */
   NetworkOnly,
+
+  /**
+   * Try the cache, then also try the network
+   */
+  CacheAndNetwork,
 }
 
 /**
@@ -128,28 +132,6 @@ fun <D : Query.Data> ApolloCall<D>.watch(
                   !refetchThrows
                 }
         )
-      }
-}
-
-/**
- * Gets the result from the cache, then the network, then observes the cache for any changes.
- * [fetchPolicy] has no effect, while [refetchPolicy] will control the subsequent fetches.
- * Network and cache exceptions are ignored by default, this can be changed by setting [fetchThrows] for the initial cache and network
- * fetches and [refetchThrows] for subsequent fetches (non Apollo exceptions like `OutOfMemoryError` are always propagated).
- *
- * @param fetchThrows whether to throw if an [ApolloException] happens during the initial cache and network fetches. Default: false
- * @param refetchThrows whether to throw if an [ApolloException] happens during a refetch. Default: false
- */
-@JvmOverloads
-fun <D : Query.Data> ApolloCall<D>.watchCacheAndNetwork(
-    fetchThrows: Boolean = false,
-    refetchThrows: Boolean = false,
-): Flow<ApolloResponse<D>> {
-  return copy().fetchPolicy(FetchPolicy.NetworkOnly).watch(fetchThrows, refetchThrows)
-      .onStart {
-        emitAll(copy().fetchPolicy(FetchPolicy.CacheOnly).toFlow().catch {
-          if (it !is ApolloException || fetchThrows) throw it
-        })
       }
 }
 
@@ -249,6 +231,7 @@ private fun interceptorFor(fetchPolicy: FetchPolicy) = when (fetchPolicy) {
   FetchPolicy.NetworkOnly -> NetworkOnlyInterceptor
   FetchPolicy.CacheFirst -> CacheFirstInterceptor
   FetchPolicy.NetworkFirst -> NetworkFirstInterceptor
+  FetchPolicy.CacheAndNetwork -> CacheAndNetworkInterceptor
 }
 
 /**

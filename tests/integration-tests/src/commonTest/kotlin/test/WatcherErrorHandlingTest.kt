@@ -92,6 +92,16 @@ class WatcherErrorHandlingTest {
           }
     }
 
+    jobs += launch {
+      mockServer.enqueue(MockResponse(500))
+      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+          .fetchPolicy(FetchPolicy.CacheAndNetwork)
+          .watch()
+          .collect {
+            channel.send(it.data)
+          }
+    }
+
     channel.assertEmpty()
     jobs.forEach { it.cancel() }
   }
@@ -155,6 +165,14 @@ class WatcherErrorHandlingTest {
     assertFailsWith(ApolloHttpException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkOnly)
+          .watch(fetchThrows = true)
+          .first()
+    }
+
+    mockServer.enqueue(MockResponse(500))
+    assertFailsWith(ApolloCompositeException::class) {
+      apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
+          .fetchPolicy(FetchPolicy.CacheAndNetwork)
           .watch(fetchThrows = true)
           .first()
     }
