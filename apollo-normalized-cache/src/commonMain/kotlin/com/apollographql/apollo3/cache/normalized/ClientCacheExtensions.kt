@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.retryWhen
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
 
@@ -103,8 +102,8 @@ fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: B
 /***
  * Gets the result from the network, then observes the cache for any changes.
  * Overriding the [FetchPolicy] will change how the result is first queried.
- * Exception are ignored by default, this can be changed by setting [fetchThrows] for the first fetch and [refetchThrows]
- * for subsequent fetches (non Apollo exceptions like `OutOfMemoryError` are always propagated regardless).
+ * Network and cache exceptions are ignored by default, this can be changed by setting [fetchThrows] for the first fetch and [refetchThrows]
+ * for subsequent fetches (non Apollo exceptions like `OutOfMemoryError` are always propagated).
  */
 @JvmOverloads
 fun <D : Query.Data> ApolloCall<D>.watch(
@@ -120,21 +119,24 @@ fun <D : Query.Data> ApolloCall<D>.watch(
       }.onCompletion {
         emitAll(
             copy().fetchPolicyInterceptor(refetchPolicyInterceptor)
-                .watch(data)
-                .retryWhen { cause, _ ->
+                .watch(data) { _, _ ->
                   // If the exception is ignored (refetchThrows is false), we should continue watching - so retry
-                  cause is ApolloException && !refetchThrows
+                  !refetchThrows
                 }
         )
       }
 }
 
 /**
- * Observes the cache for the given data. Unlike [watch], no initial request is executed on the network, and exceptions are propagated.
+ * Observes the cache for the given data. Unlike [watch], no initial request is executed on the network.
+ * Network and cache exceptions are ignored by default, this can be controlled with the [retryWhen] lambda.
  * The fetch policy set by [fetchPolicy] will be used.
  */
-fun <D : Query.Data> ApolloCall<D>.watch(data: D?): Flow<ApolloResponse<D>> {
-  return copy().addExecutionContext(WatchContext(data)).toFlow()
+fun <D : Query.Data> ApolloCall<D>.watch(
+    data: D?,
+    retryWhen: suspend (cause: Throwable, attempt: Long) -> Boolean = { _, _ -> true },
+): Flow<ApolloResponse<D>> {
+  return copy().addExecutionContext(WatchContext(data, retryWhen)).toFlow()
 }
 
 /**
@@ -475,7 +477,10 @@ internal class OptimisticUpdatesContext<D : Mutation.Data>(val value: D) : Execu
   companion object Key : ExecutionContext.Key<OptimisticUpdatesContext<*>>
 }
 
-internal class WatchContext(val data: Query.Data?) : ExecutionContext.Element {
+internal class WatchContext(
+    val data: Query.Data?,
+    val retryWhen: suspend (cause: Throwable, attempt: Long) -> Boolean,
+) : ExecutionContext.Element {
   override val key: ExecutionContext.Key<*>
     get() = Key
 

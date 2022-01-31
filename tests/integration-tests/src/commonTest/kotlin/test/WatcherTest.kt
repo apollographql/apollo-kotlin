@@ -405,10 +405,6 @@ class WatcherTest {
           .onCompletion {
             emitAll(apolloClient.query(query).watch(data))
           }
-          .catch {
-            // Swallow cache and network errors
-            if (it !is ApolloException) throw it
-          }
           .collect {
             channel.send(it.data)
           }

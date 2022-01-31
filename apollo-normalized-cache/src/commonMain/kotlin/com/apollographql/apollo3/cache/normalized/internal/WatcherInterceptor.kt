@@ -8,6 +8,7 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.api.dependentKeys
 import com.apollographql.apollo3.cache.normalized.watchContext
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import kotlinx.coroutines.flow.Flow
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.retryWhen
 
 internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
@@ -41,7 +43,9 @@ internal class WatcherInterceptor(val store: ApolloStore) : ApolloInterceptor {
                   watchedKeys = store.normalize(request.operation, response.data!!, customScalarAdapters).values.dependentKeys()
                 }
               }
-        }.flattenConcatPolyfill()
+        }
+        .flattenConcatPolyfill()
+        .retryWhen { cause, attempt -> cause is ApolloException && watchContext.retryWhen(cause, attempt) }
   }
 }
 
