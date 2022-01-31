@@ -26,7 +26,11 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
 
@@ -98,9 +102,44 @@ fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: B
 /***
  * Gets the result from the network, then observes the cache for any changes.
  * Overriding the [FetchPolicy] will change how the result is first queried.
+ * Network and cache exceptions are ignored by default, this can be changed by setting [fetchThrows] for the first fetch and [refetchThrows]
+ * for subsequent fetches (non Apollo exceptions like `OutOfMemoryError` are always propagated).
+ *
+ * @param fetchThrows whether to throw if an [ApolloException] happens during the initial fetch. Default: false
+ * @param refetchThrows whether to throw if an [ApolloException] happens during a refetch. Default: false
  */
-fun <D : Query.Data> ApolloCall<D>.watch(): Flow<ApolloResponse<D>> {
-  return copy().addExecutionContext(WatchContext(true)).toFlow()
+@JvmOverloads
+fun <D : Query.Data> ApolloCall<D>.watch(
+    fetchThrows: Boolean = false,
+    refetchThrows: Boolean = false,
+): Flow<ApolloResponse<D>> {
+  var data: D? = null
+  return toFlow()
+      .catch {
+        if (it !is ApolloException || fetchThrows) throw it
+      }.onEach {
+        data = it.data
+      }.onCompletion {
+        emitAll(
+            copy().fetchPolicyInterceptor(refetchPolicyInterceptor)
+                .watch(data) { _, _ ->
+                  // If the exception is ignored (refetchThrows is false), we should continue watching - so retry
+                  !refetchThrows
+                }
+        )
+      }
+}
+
+/**
+ * Observes the cache for the given data. Unlike [watch], no initial request is executed on the network.
+ * Network and cache exceptions are ignored by default, this can be controlled with the [retryWhen] lambda.
+ * The fetch policy set by [fetchPolicy] will be used.
+ */
+fun <D : Query.Data> ApolloCall<D>.watch(
+    data: D?,
+    retryWhen: suspend (cause: Throwable, attempt: Long) -> Boolean = { _, _ -> true },
+): Flow<ApolloResponse<D>> {
+  return copy().addExecutionContext(WatchContext(data, retryWhen)).toFlow()
 }
 
 /**
@@ -243,7 +282,7 @@ fun <D : Mutation.Data> ApolloCall<D>.optimisticUpdates(data: D) = addExecutionC
 internal val <D : Operation.Data> ApolloRequest<D>.fetchPolicyInterceptor
   get() = executionContext[FetchPolicyContext]?.interceptor ?: CacheFirstInterceptor
 
-internal val <D : Operation.Data> ApolloRequest<D>.refetchPolicyInterceptor
+private val <T> MutableExecutionOptions<T>.refetchPolicyInterceptor
   get() = executionContext[RefetchPolicyContext]?.interceptor ?: CacheOnlyInterceptor
 
 internal val <D : Operation.Data> ApolloRequest<D>.doNotStore
@@ -261,12 +300,12 @@ internal val <D : Mutation.Data> ApolloRequest<D>.optimisticData
 internal val <D : Operation.Data> ApolloRequest<D>.cacheHeaders
   get() = executionContext[CacheHeadersContext]?.value ?: CacheHeaders.NONE
 
-internal val <D : Operation.Data> ApolloRequest<D>.watch
-  get() = executionContext[WatchContext]?.value ?: false
+internal val <D : Operation.Data> ApolloRequest<D>.watchContext: WatchContext?
+  get() = executionContext[WatchContext]
 
 /**
  * @param isCacheHit true if this was a cache hit
- * @param cacheException the exception while reading the cache. Note that it's possible to have [isCacheHit] == false && [cacheException] == null
+ * @param cacheMissException the exception while reading the cache. Note that it's possible to have [isCacheHit] == false && [cacheMissException] == null
  * if no cache read was attempted
  */
 class CacheInfo private constructor(
@@ -441,7 +480,10 @@ internal class OptimisticUpdatesContext<D : Mutation.Data>(val value: D) : Execu
   companion object Key : ExecutionContext.Key<OptimisticUpdatesContext<*>>
 }
 
-internal class WatchContext(val value: Boolean) : ExecutionContext.Element {
+internal class WatchContext(
+    val data: Query.Data?,
+    val retryWhen: suspend (cause: Throwable, attempt: Long) -> Boolean,
+) : ExecutionContext.Element {
   override val key: ExecutionContext.Key<*>
     get() = Key
 
@@ -455,25 +497,10 @@ internal class FetchFromCacheContext(val value: Boolean) : ExecutionContext.Elem
   companion object Key : ExecutionContext.Key<FetchFromCacheContext>
 }
 
-internal class IsRefetching(val value: Boolean) : ExecutionContext.Element {
-  override val key: ExecutionContext.Key<*>
-    get() = Key
-
-  companion object Key : ExecutionContext.Key<IsRefetching>
-}
-
 internal fun <D : Operation.Data> ApolloRequest.Builder<D>.fetchFromCache(fetchFromCache: Boolean) = apply {
   addExecutionContext(FetchFromCacheContext(fetchFromCache))
 }
 
-internal fun <D : Operation.Data> ApolloRequest.Builder<D>.isRefetching(isRefetching: Boolean) = apply {
-  addExecutionContext(IsRefetching(isRefetching))
-}
-
 internal val <D : Operation.Data> ApolloRequest<D>.fetchFromCache
   get() = executionContext[FetchFromCacheContext]?.value ?: false
-
-
-internal val <D : Operation.Data> ApolloRequest<D>.isRefetching
-  get() = executionContext[IsRefetching]?.value ?: false
 
