@@ -104,6 +104,9 @@ fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: B
  * Overriding the [FetchPolicy] will change how the result is first queried.
  * Network and cache exceptions are ignored by default, this can be changed by setting [fetchThrows] for the first fetch and [refetchThrows]
  * for subsequent fetches (non Apollo exceptions like `OutOfMemoryError` are always propagated).
+ *
+ * @param fetchThrows whether to throw if an [ApolloException] happens during the initial fetch. Default: false
+ * @param refetchThrows whether to throw if an [ApolloException] happens during a refetch. Default: false
  */
 @JvmOverloads
 fun <D : Query.Data> ApolloCall<D>.watch(
