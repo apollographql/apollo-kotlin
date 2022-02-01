@@ -36,29 +36,41 @@ import kotlin.jvm.JvmOverloads
 
 enum class FetchPolicy {
   /**
-   * Try the cache, if that failed, try the network
+   * Try the cache, if that failed, try the network.
    *
-   * This is the default behaviour
+   * An [ApolloCompositeException] is thrown if the data is not in the cache and the network call failed, otherwise 1 value is emitted.
+   *
+   * This is the default behaviour.
    */
   CacheFirst,
 
   /**
-   * Only try the cache
+   * Only try the cache.
+   *
+   * A [CacheMissException] is thrown if the data is not in the cache, otherwise 1 value is emitted.
    */
   CacheOnly,
 
   /**
-   * Try the network, if that failed, try the cache
+   * Try the network, if that failed, try the cache.
+   *
+   * An [ApolloCompositeException] is thrown if the network call failed and the data is not in the cache, otherwise 1 value is emitted.
    */
   NetworkFirst,
 
   /**
-   * Only try the network
+   * Only try the network.
+   *
+   * An [ApolloException] is thrown if the network call failed, otherwise 1 value is emitted.
    */
   NetworkOnly,
 
   /**
-   * Try the cache, then also try the network
+   * Try the cache, then also try the network.
+   *
+   * If the data is in the cache, it is emitted, if not, no exception is thrown at that point. Then the network call is made, and if
+   * successful, the value is emitted, if not, either an [ApolloCompositeException] (both cache miss and network failed) or an
+   * [ApolloException] (only network failed) is thrown.
    */
   CacheAndNetwork,
 }
