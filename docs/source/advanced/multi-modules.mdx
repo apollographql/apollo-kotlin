@@ -97,8 +97,8 @@ Summary of different constraints:
 * All modules must apply the same version of the Apollo Gradle Plugin
 * All modules using the same schema must use the same service name
 * The schema module and only the schema module must define schema.[json | graphqls]
-* The schema module and only the schema module must define `customScalarsMapping`
-* The schema module and only the schema module must define `generateKotlinModels`
+* The schema module and only the schema module can call `mapScalar`
+* The schema module and only the schema module can define `generateKotlinModels`
 
 ## Type clashes
 
