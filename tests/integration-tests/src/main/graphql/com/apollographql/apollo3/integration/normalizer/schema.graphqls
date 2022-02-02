@@ -23,7 +23,7 @@ type Query {
 
   json: Json
 
-  instantContainer: InstantContainer!
+  instant: Instant!
 }
 
 """
@@ -97,10 +97,6 @@ scalar Instant
 UnsupportedType for testing
 """
 scalar UnsupportedType
-
-type InstantContainer {
-  instant: Instant
-}
 
 """
 A connection object for a character's friends

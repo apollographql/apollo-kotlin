@@ -66,7 +66,11 @@ fun configureApollo(generateKotlinModels: Boolean) {
               "normalizer" -> {
                 generateFragmentImplementations.set(true)
                 mapScalar("Date", "kotlinx.datetime.LocalDate")
-                mapScalar("Instant", "kotlinx.datetime.Instant", "com.example.ScalarAdapters.InstantAdapter")
+                if (generateKotlinModels) {
+                  mapScalar("Instant", "kotlinx.datetime.Instant", "com.apollographql.apollo3.adapter.KotlinxInstantAdapter")
+                } else {
+                  mapScalar("Instant", "kotlinx.datetime.Instant", "com.apollographql.apollo3.adapter.KotlinxInstantAdapter.INSTANCE")
+                }
                 sealedClassesForEnumsMatching.set(listOf("Episode"))
               }
               "fullstack" -> {

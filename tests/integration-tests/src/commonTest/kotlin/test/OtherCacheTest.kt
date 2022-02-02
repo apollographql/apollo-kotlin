@@ -16,7 +16,7 @@ import com.apollographql.apollo3.integration.normalizer.CharacterNameByIdQuery
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsDirectivesQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
-import com.apollographql.apollo3.integration.normalizer.InstantContainerQuery
+import com.apollographql.apollo3.integration.normalizer.InstantQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
@@ -167,11 +167,11 @@ class OtherCacheTest {
   }
 
   @Test
-  fun withCustomScalarDeclaredInGradle() = runTest(before = { setUp() }, after = { tearDown() }) {
-    val query = InstantContainerQuery()
+  fun withCompileTimeScalarAdapter() = runTest(before = { setUp() }, after = { tearDown() }) {
+    val query = InstantQuery()
     // Store in the cache
     val instant = Instant.fromEpochMilliseconds(0L)
-    val data = InstantContainerQuery.Data(InstantContainerQuery.InstantContainer(instant))
+    val data = InstantQuery.Data(instant)
     mockServer.enqueue(query, data)
     apolloClient.query(query).execute()
 
@@ -180,6 +180,6 @@ class OtherCacheTest {
         .fetchPolicy(FetchPolicy.CacheOnly)
         .execute()
 
-    assertEquals(instant, response.data!!.instantContainer.instant)
+    assertEquals(instant, response.data!!.instant)
   }
 }
