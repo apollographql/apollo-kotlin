@@ -22,6 +22,8 @@ type Query {
   starship (id: ID!): Starship
 
   json: Json
+
+  instantContainer: InstantContainer!
 }
 
 """
@@ -88,10 +90,18 @@ interface Character {
 The `Date` scalar type represents date format.
 """
 scalar Date
+
+scalar Instant
+
 """
 UnsupportedType for testing
 """
 scalar UnsupportedType
+
+type InstantContainer {
+  instant: Instant
+}
+
 """
 A connection object for a character's friends
 """

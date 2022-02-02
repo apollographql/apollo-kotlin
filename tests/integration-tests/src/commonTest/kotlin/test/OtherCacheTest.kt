@@ -16,10 +16,13 @@ import com.apollographql.apollo3.integration.normalizer.CharacterNameByIdQuery
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsDirectivesQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
+import com.apollographql.apollo3.integration.normalizer.InstantContainerQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.testing.runTest
+import kotlinx.datetime.Instant
 import testFixtureToUtf8
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -161,5 +164,22 @@ class OtherCacheTest {
     } catch (e: CacheMissException) {
       assertTrue(e.message!!.contains("has no field named 'friends'"))
     }
+  }
+
+  @Test
+  fun withCustomScalarDeclaredInGradle() = runTest(before = { setUp() }, after = { tearDown() }) {
+    val query = InstantContainerQuery()
+    // Store in the cache
+    val instant = Instant.fromEpochMilliseconds(0L)
+    val data = InstantContainerQuery.Data(InstantContainerQuery.InstantContainer(instant))
+    mockServer.enqueue(query, data)
+    apolloClient.query(query).execute()
+
+    // Get from the cache
+    val response = apolloClient.query(query)
+        .fetchPolicy(FetchPolicy.CacheOnly)
+        .execute()
+
+    assertEquals(instant, response.data!!.instantContainer.instant)
   }
 }
