@@ -20,6 +20,7 @@ import com.apollographql.apollo3.cache.normalized.refetchPolicyInterceptor
 import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.exception.ApolloCompositeException
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.integration.normalizer.CharacterNameByIdQuery
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
@@ -34,6 +35,7 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.toList
@@ -42,7 +44,9 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
+import kotlin.test.assertIs
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
@@ -176,6 +180,53 @@ class FetchPolicyTest {
     } catch (e: Exception) {
 
     }
+  }
+
+  @Test
+  fun cacheAndNetwork() = runTest(before = { setUp() }, after = { tearDown() }) {
+    val query = HeroNameQuery()
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
+    var caught: Throwable? = null
+
+    // Initial state: everything fails
+    // Cache Error + Network Error => Error
+    mockServer.enqueue(MockResponse(statusCode = 500))
+    assertFailsWith(ApolloCompositeException::class) {
+      apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().toList()
+    }
+
+    // Make the network return something
+    // Cache Error + Network Success => 1 response (no exception)
+    mockServer.enqueue(query, data)
+    var responses = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().catch { caught = it }.toList()
+
+    assertNull(caught)
+    assertEquals(1, responses.size)
+    assertNotNull(responses[0].data)
+    assertFalse(responses[0].isFromCache)
+    assertEquals("R2-D2", responses[0].data?.hero?.name)
+
+    // Now cache is populated but make the network fail again
+    // Cache Success + Network Error => 1 response + 1 network exception
+    caught = null
+    mockServer.enqueue(MockResponse(statusCode = 500))
+    responses = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().catch { caught = it }.toList()
+
+    assertIs<ApolloException>(caught)
+    assertEquals(1, responses.size)
+    assertNotNull(responses[0].data)
+    assertTrue(responses[0].isFromCache)
+    assertEquals("R2-D2", responses[0].data?.hero?.name)
+
+    // Cache Success + Network Success => 1 response
+    mockServer.enqueue(query, data)
+    responses = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().toList()
+
+    assertEquals(2, responses.size)
+    assertNotNull(responses[0].data)
+    assertTrue(responses[0].isFromCache)
+    assertNotNull(responses[1].data)
+    assertFalse(responses[1].isFromCache)
   }
 
   @Test

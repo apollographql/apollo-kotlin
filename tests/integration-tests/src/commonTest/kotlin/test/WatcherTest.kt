@@ -12,7 +12,6 @@ import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.refetchPolicy
 import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.cache.normalized.watch
-import com.apollographql.apollo3.cache.normalized.watchCacheAndNetwork
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameWithIdQuery
@@ -446,7 +445,7 @@ class WatcherTest {
     apolloClient.enqueueTestResponse(query, episodeHeroNameChangedData)
 
     val job = launch {
-      apolloClient.query(query).watchCacheAndNetwork()
+      apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).watch()
           .collect {
             channel.send(it.data)
           }
@@ -479,7 +478,7 @@ class WatcherTest {
     apolloClient.enqueueTestResponse(query, episodeHeroNameChangedData)
 
     val job = launch {
-      apolloClient.query(query).watchCacheAndNetwork()
+      apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).watch()
           .collect {
             channel.send(it.data)
           }
@@ -513,7 +512,7 @@ class WatcherTest {
     apolloClient.enqueueTestNetworkError()
 
     val job = launch {
-      apolloClient.query(query).watchCacheAndNetwork()
+      apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).watch()
           .collect {
             channel.send(it.data)
           }
@@ -544,7 +543,7 @@ class WatcherTest {
     apolloClient.enqueueTestNetworkError()
 
     val job = launch {
-      apolloClient.query(query).watchCacheAndNetwork()
+      apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).watch()
           .collect {
             channel.send(it.data)
           }
