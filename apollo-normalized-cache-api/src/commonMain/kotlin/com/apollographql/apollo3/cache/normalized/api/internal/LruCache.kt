@@ -119,9 +119,14 @@ internal class LruCache<Key, Value>(
     }
 
     node.prev?.next = node.next
-    node.next?.prev = node.prev
 
-    node.next = headNode?.next
+    if (node.next == null) {
+      tailNode = node.prev
+    } else {
+      node.next?.prev = node.prev
+    }
+
+    node.next = headNode
     node.prev = null
 
     headNode?.prev = node
