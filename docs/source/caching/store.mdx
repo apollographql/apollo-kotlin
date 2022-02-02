@@ -35,7 +35,7 @@ query GetBook($id: String!) {
 You can read it like this:
 
 ```kotlin
-val data = apolloClient.apolloStore.readOperation(GetBookQuery(id = "42"))
+val data = apolloClient.apolloStore.readOperation(GetBookQuery(id = "42"), apolloClient.customScalarAdapters)
 
 println("Title=${data.title}")
 println("Author Name=${data.author.name}")
@@ -45,17 +45,20 @@ In the event of cache miss, `readOperation` will throw:
 
 ```kotlin
 try {
-  apolloClient.apolloStore.readOperation(GetBookQuery(id = "42"))
+  apolloClient.apolloStore.readOperation(GetBookQuery(id = "42"), apolloClient.customScalarAdapters)
 } catch(e: CacheMissException) {
   println("CacheMiss on key: ${e.key}.${e.fieldName}")
 }
 ```
+
+> If you declared [scalar adapters](../essentials/custom-scalars/) at runtime, pass your client's `customScalarAdapters` to the store's methods, as the store will need them to convert scalar values to and from their Kotlin/Java types.
+
 ## Writing operation data
 
 Writing operation data is similar to reading:
 
 ```kotlin
-apolloClient.apolloStore.writeOperation(GetBookQuery(id = "42"), data)
+apolloClient.apolloStore.writeOperation(GetBookQuery(id = "42"), data, apolloClient.customScalarAdapters)
 ```
 
 Note how you'll need to pass the data allong the operation.
@@ -85,7 +88,7 @@ apollo {
 Because fragments are not rooted, you need to specify the root cache id of the fragment:
 
 ```kotlin
-val data = apolloClient.apolloStore.readFragment(BookDetailsImpl(), CacheKey("42")
+val data = apolloClient.apolloStore.readFragment(BookDetailsImpl(), CacheKey("42"), apolloClient.customScalarAdapters)
 
 println("Title=${data.title}")
 println("Author Name=${data.author.name}")
@@ -101,7 +104,7 @@ fragment BookDetails on Book {
 ```
 
 ```kotlin
-val data = apolloClient.apolloStore.readFragment(BookDetailsImpl(locale = "en-US"), CacheKey("42")
+val data = apolloClient.apolloStore.readFragment(BookDetailsImpl(locale = "en-US"), CacheKey("42"), apolloClient.customScalarAdapters)
 
 println("Title=${data.title}")
 ```
