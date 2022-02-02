@@ -151,7 +151,7 @@ After you add a normalized cache to your `ApolloClient` initialization, Apollo K
 The following snippet shows how to set all available fetch policies and their behavior:
 
 ```kotlin
-val response = apolloClient.query(query)
+apolloClient.query(query)
 
   // (Default) Check the cache, then only use the network if data isn't present
   .fetchPolicy(FetchPolicy.CacheFirst)
@@ -165,8 +165,15 @@ val response = apolloClient.query(query)
   // Always use the network and never check the cache, even if network fails
   .fetchPolicy(FetchPolicy.NetworkOnly)
 
-  // Execute the query
+  // Check the cache and also use the network (2 values can be emitted)
+  .fetchPolicy(FetchPolicy.CacheAndNetwork)
+    
+  // Execute the query (if 1 value is expected)
   .execute()
+  // Or, if several values are expected (CacheAndNetwork)
+  .toFlow().collect { response ->
+    // ...
+  }
 ```
 
 As with `normalizedCache(NormalizedCacheFactory)`, `fetchPolicy(FetchPolicy)` is an extension function on `ApolloClient.Builder()`, so you need `apollo-normalized-cache` in your classpath for this to work.
