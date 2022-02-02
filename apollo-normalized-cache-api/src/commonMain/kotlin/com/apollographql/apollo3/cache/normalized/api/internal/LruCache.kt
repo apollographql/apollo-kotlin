@@ -16,7 +16,7 @@ internal typealias Weigher<Key, Value> = (Key, Value?) -> Int
  */
 internal class LruCache<Key, Value>(
     private val maxSize: Int,
-    private val weigher: Weigher<Key, Value> = { _, _ -> 1 }
+    private val weigher: Weigher<Key, Value> = { _, _ -> 1 },
 ) {
   private val cache = LinkedHashMap<Key, Node<Key, Value>>(0, 0.75f)
   private var headNode: Node<Key, Value>? = null
@@ -32,15 +32,15 @@ internal class LruCache<Key, Value>(
   }
 
   operator fun set(key: Key, value: Value) {
-      val node = cache[key]
-      if (node == null) {
-        cache[key] = addNode(key, value)
-      } else {
-        node.value = value
-        moveNodeToHead(node)
-      }
+    val node = cache[key]
+    if (node == null) {
+      cache[key] = addNode(key, value)
+    } else {
+      node.value = value
+      moveNodeToHead(node)
+    }
 
-      trim()
+    trim()
   }
 
   fun remove(key: Key): Value? {
@@ -116,9 +116,14 @@ internal class LruCache<Key, Value>(
     }
 
     node.prev?.next = node.next
-    node.next?.prev = node.prev
 
-    node.next = headNode?.next
+    if (node.next == null) {
+      tailNode = node.prev
+    } else {
+      node.next?.prev = node.prev
+    }
+
+    node.next = headNode
     node.prev = null
 
     headNode?.prev = node

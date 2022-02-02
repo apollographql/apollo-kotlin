@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.cache.normalized.api
 
+import com.apollographql.apollo3.cache.normalized.api.internal.CacheLock
 import com.apollographql.apollo3.cache.normalized.api.internal.LruCache
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import okio.internal.commonAsUtf8ToByteArray
@@ -19,6 +20,16 @@ class MemoryCache(
     private val maxSizeBytes: Int = Int.MAX_VALUE,
     private val expireAfterMillis: Long = -1,
 ) : NormalizedCache() {
+  /**
+   * A lock that is only used during read accesses on the JVM because
+   * reads also write in order to:
+   * - maintain the LRU order
+   * - update the memory cache from the downstream caches
+   *
+   * write accesses are already locked by a higher level ReadWrite lock
+   */
+  private val lock = CacheLock()
+
   private val lruCache = LruCache<String, CacheEntry>(maxSize = maxSizeBytes) { key, cacheEntry ->
     key.commonAsUtf8ToByteArray().size + (cacheEntry?.sizeInBytes ?: 0)
   }
@@ -26,14 +37,14 @@ class MemoryCache(
   val size: Int
     get() = lruCache.size()
 
-  override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
+  override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? = lock.lock {
     val cacheEntry = lruCache[key]?.also { cacheEntry ->
       if (cacheEntry.isExpired || cacheHeaders.hasHeader(ApolloCacheHeaders.EVICT_AFTER_READ)) {
         lruCache.remove(key)
       }
     }
 
-    return cacheEntry?.takeUnless { it.isExpired }?.record ?: nextCache?.loadRecord(key, cacheHeaders)?.also { nextCachedRecord ->
+    cacheEntry?.takeUnless { it.isExpired }?.record ?: nextCache?.loadRecord(key, cacheHeaders)?.also { nextCachedRecord ->
       lruCache[key] = CacheEntry(
           record = nextCachedRecord,
           expireAfterMillis = expireAfterMillis
