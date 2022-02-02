@@ -114,10 +114,16 @@ This method takes a type-safe generated class from `Types`, along with its corre
 
 > If you can't find `Types`, build your project to trigger codegen.
 
-
 ## Apollo-provided adapters
 
-The `com.apollographql.apollo3:apollo-adapters` artifact provides built-in adapters for the following common custom scalar types.
+The following built-in adapters can be used with common custom scalar types:
+
+| Adapter                                      | Description                                       |
+|----------------------------------------------|---------------------------------------------------|
+| `com.apollographql.apollo3.api.FloatAdapter` | Converts from/to `kotlin.Float`/`java.lang.Float` |
+| `com.apollographql.apollo3.api.LongAdapter`  | Converts from/to `kotlin.Long`/`java.lang.Long`   |
+
+In addition, the `com.apollographql.apollo3:apollo-adapters` artifact provides these adapters:
 
 | Adapter                                                         | Description                                                                                         |
 |-----------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
