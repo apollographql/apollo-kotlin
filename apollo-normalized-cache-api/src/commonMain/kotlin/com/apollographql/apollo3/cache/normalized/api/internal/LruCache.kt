@@ -22,14 +22,11 @@ internal class LruCache<Key, Value>(
   private var headNode: Node<Key, Value>? = null
   private var tailNode: Node<Key, Value>? = null
   private var size: Int = 0
-  private val lock = CacheLock()
 
   operator fun get(key: Key): Value? {
     val node = cache[key]
     if (node != null) {
-      lock.lock {
-        moveNodeToHead(node)
-      }
+      moveNodeToHead(node)
     }
     return node?.value
   }
