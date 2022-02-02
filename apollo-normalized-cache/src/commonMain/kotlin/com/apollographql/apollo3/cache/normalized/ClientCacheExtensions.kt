@@ -36,26 +36,43 @@ import kotlin.jvm.JvmOverloads
 
 enum class FetchPolicy {
   /**
-   * Try cache first, then network
+   * Try the cache, if that failed, try the network.
    *
-   * This is the default behaviour
+   * An [ApolloCompositeException] is thrown if the data is not in the cache and the network call failed, otherwise 1 value is emitted.
+   *
+   * This is the default behaviour.
    */
   CacheFirst,
 
   /**
-   * Only try cache
+   * Only try the cache.
+   *
+   * A [CacheMissException] is thrown if the data is not in the cache, otherwise 1 value is emitted.
    */
   CacheOnly,
 
   /**
-   * Try network first, then cache
+   * Try the network, if that failed, try the cache.
+   *
+   * An [ApolloCompositeException] is thrown if the network call failed and the data is not in the cache, otherwise 1 value is emitted.
    */
   NetworkFirst,
 
   /**
-   * Only try network
+   * Only try the network.
+   *
+   * An [ApolloException] is thrown if the network call failed, otherwise 1 value is emitted.
    */
   NetworkOnly,
+
+  /**
+   * Try the cache, then also try the network.
+   *
+   * If the data is in the cache, it is emitted, if not, no exception is thrown at that point. Then the network call is made, and if
+   * successful, the value is emitted, if not, either an [ApolloCompositeException] (both cache miss and network failed) or an
+   * [ApolloException] (only network failed) is thrown.
+   */
+  CacheAndNetwork,
 }
 
 /**
@@ -99,9 +116,9 @@ fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: B
       .writeToCacheAsynchronously(writeToCacheAsynchronously)
 }
 
-/***
+/**
  * Gets the result from the network, then observes the cache for any changes.
- * Overriding the [FetchPolicy] will change how the result is first queried.
+ * [fetchPolicy] will control how the result is first queried, while [refetchPolicy] will control the subsequent fetches.
  * Network and cache exceptions are ignored by default, this can be changed by setting [fetchThrows] for the first fetch and [refetchThrows]
  * for subsequent fetches (non Apollo exceptions like `OutOfMemoryError` are always propagated).
  *
@@ -226,6 +243,7 @@ private fun interceptorFor(fetchPolicy: FetchPolicy) = when (fetchPolicy) {
   FetchPolicy.NetworkOnly -> NetworkOnlyInterceptor
   FetchPolicy.CacheFirst -> CacheFirstInterceptor
   FetchPolicy.NetworkFirst -> NetworkFirstInterceptor
+  FetchPolicy.CacheAndNetwork -> CacheAndNetworkInterceptor
 }
 
 /**

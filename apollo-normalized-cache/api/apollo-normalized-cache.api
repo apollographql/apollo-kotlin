@@ -77,6 +77,7 @@ public final class com/apollographql/apollo3/cache/normalized/CacheMissLoggingIn
 }
 
 public final class com/apollographql/apollo3/cache/normalized/FetchPolicy : java/lang/Enum {
+	public static final field CacheAndNetwork Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;
 	public static final field CacheFirst Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;
 	public static final field CacheOnly Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;
 	public static final field NetworkFirst Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;
@@ -86,6 +87,7 @@ public final class com/apollographql/apollo3/cache/normalized/FetchPolicy : java
 }
 
 public final class com/apollographql/apollo3/cache/normalized/FetchPolicyInterceptors {
+	public static final fun getCacheAndNetworkInterceptor ()Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;
 	public static final fun getCacheFirstInterceptor ()Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;
 	public static final fun getCacheOnlyInterceptor ()Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;
 	public static final fun getNetworkFirstInterceptor ()Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;
