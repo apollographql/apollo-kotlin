@@ -247,7 +247,6 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   }
 
   override fun skipValue() {
-    nextValue()
     consumeValue()
   }
 
