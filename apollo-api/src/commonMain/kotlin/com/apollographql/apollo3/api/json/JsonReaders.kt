@@ -51,18 +51,17 @@ fun JsonReader.readAny(): Any? {
 }
 
 private fun JsonReader.guessNumber(): Any {
-  val jsonNumber = nextNumber()
   try {
-    return jsonNumber.value.toInt()
+    return nextInt()
   } catch (_: Exception) {
   }
   try {
-    return jsonNumber.value.toLong()
+    return nextLong()
   } catch (_: Exception) {
   }
   try {
-    return jsonNumber.value.toDouble()
+    return nextDouble()
   } catch (_: Exception) {
   }
-  return jsonNumber
+  return nextNumber()
 }

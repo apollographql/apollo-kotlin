@@ -70,23 +70,32 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
     pendingName = null
   }
 
+  /**
+   * Calls to this method must be followed by calling [consumeValue] in the normal case. This permits retrying reading the same value in the
+   * exceptional case.
+   */
   private fun nextValue(): Any? {
     return when (val data = dataStack[stackSize - 1]) {
       is List<*> -> {
-        data[indexStack[stackSize - 1]++]
+        data[indexStack[stackSize - 1]]
       }
       is OrderedMap -> {
         check(pendingName != null)
-        pendingName = null
-        data.entries[indexStack[stackSize - 1]++].value
+        data.entries[indexStack[stackSize - 1]].value
       }
       else -> error("")
     }
   }
 
+  private fun consumeValue() {
+    pendingName = null
+    indexStack[stackSize - 1]++
+  }
+
   override fun beginArray() = apply {
     val list = nextValue()
     check(list is List<*>)
+    consumeValue()
     push(list)
   }
 
@@ -97,6 +106,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   override fun beginObject() = apply {
     val map = nextValue()
     check(map is Map<*, *>)
+    consumeValue()
     push(OrderedMap(map.entries.map { Entry(it.key as String, it.value) }))
   }
 
@@ -167,16 +177,21 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
 
   override fun nextString(): String? {
     // nextValue can be an Int or Double too
-    return nextValue()?.toString()
+    return (nextValue()?.toString()).also {
+      consumeValue()
+    }
   }
 
   override fun nextBoolean(): Boolean {
-    return nextValue() as Boolean
+    return (nextValue() as Boolean).also {
+      consumeValue()
+    }
   }
 
   override fun nextNull(): Nothing? {
     nextValue().also {
       check(it == null)
+      consumeValue()
     }
     return null
   }
@@ -189,6 +204,8 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
       is String -> value.toDouble()
       is JsonNumber -> value.value.toDouble()
       else -> error("Expected Double but got $value instead")
+    }.also {
+      consumeValue()
     }
   }
 
@@ -200,6 +217,8 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
       is String -> value.toInt()
       is JsonNumber -> value.value.toInt()
       else -> error("Expected Int but got $value instead")
+    }.also {
+      consumeValue()
     }
   }
 
@@ -211,6 +230,8 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
       is String -> value.toLong()
       is JsonNumber -> value.value.toLong()
       else -> error("Expected Int but got $value instead")
+    }.also {
+      consumeValue()
     }
   }
 
@@ -220,11 +241,14 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
       is String -> JsonNumber(value) // assert value is a valid number
       is JsonNumber -> value
       else -> error("Expected JsonNumber but got $value instead")
+    }.also {
+      consumeValue()
     }
   }
 
   override fun skipValue() {
     nextValue()
+    consumeValue()
   }
 
   override fun close() {
