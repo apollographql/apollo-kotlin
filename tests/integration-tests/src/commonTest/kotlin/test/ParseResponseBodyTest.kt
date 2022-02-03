@@ -3,6 +3,7 @@ package test
 import assertEquals2
 import com.apollographql.apollo3.adapter.KotlinxLocalDateAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.api.toJsonString
@@ -245,6 +246,16 @@ class ParseResponseBodyTest {
     )
   }
 
+  @Test
+  fun parseFloats() {
+    val dataMap = mapOf("a" to 1.1)
+    val data = GetJsonScalarQuery.Data(dataMap)
+    val query = GetJsonScalarQuery()
+    assertEquals(
+        data,
+        query.adapter().fromJson(MapJsonReader(mapOf("json" to dataMap)), CustomScalarAdapters.Empty)
+    )
+  }
 
   @Test
   fun forgettingToAddARuntimeAdapterForAScalarRegisteredInThePluginFails() {

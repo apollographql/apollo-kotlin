@@ -1,4 +1,5 @@
 @file:JvmName("-JsonReaders")
+
 package com.apollographql.apollo3.api.json
 
 import com.apollographql.apollo3.annotations.ApolloInternal
@@ -22,7 +23,7 @@ fun Map<String, Any?>.jsonReader(): JsonReader {
  */
 @ApolloInternal
 fun JsonReader.readAny(): Any? {
-  return when(val token = peek()) {
+  return when (val token = peek()) {
     JsonReader.Token.NULL -> nextNull()
     JsonReader.Token.BOOLEAN -> nextBoolean()
     JsonReader.Token.LONG, JsonReader.Token.NUMBER -> guessNumber()
@@ -30,7 +31,7 @@ fun JsonReader.readAny(): Any? {
     JsonReader.Token.BEGIN_OBJECT -> {
       beginObject()
       val result = mutableMapOf<String, Any?>()
-      while(hasNext()) {
+      while (hasNext()) {
         result.put(nextName(), readAny())
       }
       endObject()
@@ -39,7 +40,7 @@ fun JsonReader.readAny(): Any? {
     JsonReader.Token.BEGIN_ARRAY -> {
       beginArray()
       val result = mutableListOf<Any?>()
-      while(hasNext()) {
+      while (hasNext()) {
         result.add(readAny())
       }
       endArray()
@@ -52,15 +53,15 @@ fun JsonReader.readAny(): Any? {
 private fun JsonReader.guessNumber(): Any {
   try {
     return nextInt()
-  } catch (e: Exception) {
+  } catch (_: Exception) {
   }
   try {
     return nextLong()
-  } catch (e: Exception) {
+  } catch (_: Exception) {
   }
   try {
     return nextDouble()
-  } catch (e: Exception) {
+  } catch (_: Exception) {
   }
   return nextNumber()
 }
