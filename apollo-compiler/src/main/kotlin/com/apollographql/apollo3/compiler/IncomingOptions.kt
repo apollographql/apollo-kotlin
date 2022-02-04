@@ -38,7 +38,7 @@ class IncomingOptions(
             || it.definitions.filterIsInstance<GQLTypeDefinition>().any { it.name == "Query" }
       }
 
-      if(mainSchemaDocuments.size > 1) {
+      if (mainSchemaDocuments.size > 1) {
         error("Multiple schemas found:\n${mainSchemaDocuments.map { it.filePath }.joinToString("\n")}\n" +
             "Use different services for different schemas")
       } else if (mainSchemaDocuments.isEmpty()) {

@@ -63,7 +63,6 @@ class MultiServicesTests {
             containsString("But none of them contain type definitions.")
         )
       }
-
     }
   }
 
