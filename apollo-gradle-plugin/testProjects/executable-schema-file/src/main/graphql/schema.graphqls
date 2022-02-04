@@ -1,0 +1,5 @@
+# This file is named schema.graphqls but actually only contains executable
+# definitions
+query Hello {
+  hello
+}

@@ -4,6 +4,8 @@ package com.apollographql.apollo3.gradle.test
 import com.apollographql.apollo3.gradle.util.TestUtils
 import com.apollographql.apollo3.gradle.util.TestUtils.withProject
 import com.apollographql.apollo3.gradle.util.generatedChild
+import com.google.common.truth.Truth
+import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.MatcherAssert
@@ -46,6 +48,22 @@ class MultiServicesTests {
             containsString("Multiple schemas found")
         )
       }
+    }
+  }
+
+  @Test
+  fun executableSchemaFails() {
+    TestUtils.withTestProject("executable-schema-file") { dir ->
+      try {
+        TestUtils.executeTask("generateApolloSources", dir)
+        fail("expected to fail")
+      } catch (e: UnexpectedBuildFailure) {
+        MatcherAssert.assertThat(
+            e.message,
+            containsString("But none of them contain type definitions.")
+        )
+      }
+
     }
   }
 
