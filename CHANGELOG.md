@@ -1,6 +1,43 @@
 Change Log
 ==========
 
+Change Log
+==========
+
+# Version 3.1.0
+
+_2022-02-07_
+
+Version 3.1.0 introduces new APIs for testing, mapping scalars as well cache support.
+
+
+## ✨ [New] Test
+
+## ✨ [New] Modular cache pipeline
+
+## ✨ [New] Builtin scalars (Int, String, Float, Boolean, ID) can now be mapped to custom classes
+
+## 👷 All changes
+
+* Fix error reporting when there is a "schema.graphqls" but it doesn't contain any type definition (#3844)
+* Make guessNumber read the next value only once, fixes custom scalars without a custom adapter (#3839)
+* Clarify need to pass client's customScalarAdapters to store methods (#3838)
+* Fix null pointer exception in LruCache while trimming (#3833)
+* Add FetchPolicy.CacheAndNetwork (#3828)
+* Allow to specify error handling for watch() (#3817)
+* Scalar mapping and adapter configuration improvements (#3779)
+* Tunnel variables in CustomScalarAdapters (#3813)
+* Terminate threads correctly if no subscription has been executed (#3803)
+* fix validation of merged fields (#3799)
+* Make `reconnectWhen` suspend and pass attempt number (#3772)
+* Merge HTTP headers when batching (#3776)
+* MockServer improvements and TestNetworkTransport (#3757)
+* Fix calling ApolloClient.newBuilder() if the original ApolloClient used `.okHttpClient` (#3771)
+* Make `convertApolloSchema` and `downloadApolloSchema` use path from the root of the project (#3773, #3752)
+* fix fragment package name in multi-module scenarios (#3775)
+* Make the error printer robust to unknown source locations, fixes schemas with duplicate types (#3753)
+* Allow to customize the fetchPolicy with interceptors (#3743)
+
 # Version 3.0.0
 
 _2021-12-15_
