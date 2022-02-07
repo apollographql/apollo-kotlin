@@ -74,6 +74,7 @@ class WatcherTest {
   fun sameQueryTriggersWatcher() = runTest(before = { setUp() }) {
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
+    val channel2 = Channel<EpisodeHeroNameQuery.Data?>()
 
     // The first query should get a "R2-D2" name
     apolloClient.enqueueTestResponse(query, episodeHeroNameData)
@@ -82,8 +83,14 @@ class WatcherTest {
         channel.send(it.data)
       }
     }
+    val job2 = launch {
+      apolloClient.query(query).watch().collect {
+        channel2.send(it.data)
+      }
+    }
 
     assertEquals(channel.receiveOrTimeout()?.hero?.name, "R2-D2")
+    assertEquals(channel2.receiveOrTimeout()?.hero?.name, "R2-D2")
 
     // Another newer call gets updated information with "Artoo"
     apolloClient.enqueueTestResponse(query, episodeHeroNameChangedData)
@@ -97,8 +104,10 @@ class WatcherTest {
           emitAll(apolloClient.query(query).watch())
         }
     assertEquals(channel.receiveOrTimeout()?.hero?.name, "Artoo")
+    assertEquals(channel2.receiveOrTimeout()?.hero?.name, "Artoo")
 
     job.cancel()
+    job2.cancel()
   }
 
 
