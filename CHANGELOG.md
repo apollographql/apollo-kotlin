@@ -23,7 +23,7 @@ val apolloClient = ApolloClient.Builder()
 
 You can then use the `enqueueTestResponse` extension function to specify the GraphQL responses to return:
 
-```kotlin{7}
+```kotlin
 val testQuery = GetHeroQuery("001")
 val testData = GetHeroQuery.Data {
   hero = droidHero {
