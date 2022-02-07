@@ -78,6 +78,7 @@ class WatcherTest {
 
     // The first query should get a "R2-D2" name
     apolloClient.enqueueTestResponse(query, episodeHeroNameData)
+    apolloClient.enqueueTestResponse(query, episodeHeroNameData)
     val job = launch {
       apolloClient.query(query).watch().collect {
         channel.send(it.data)
