@@ -10,7 +10,7 @@ It also contains bugfixes around the `@include` directives, MemoryCache and Grap
 
 ## ✨ [New] `QueueTestNetworkTransport` (#3757)
 
-3.1.0 introduces `QueueTestNetworkTransport` to test at the GraphQL layer without needing to run a HTTP server. 
+3.1.0 introduces `QueueTestNetworkTransport` to test at the GraphQL layer without needing to run an HTTP server. 
 
 To use it, configure your `ApolloClient`:
 
