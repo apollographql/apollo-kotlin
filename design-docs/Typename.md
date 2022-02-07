@@ -139,9 +139,8 @@ interface Animal implements Node
 }
 ```
 
-By construction, only fields of interface type can be polymorphic. That doesn't mean all of them are polymorphic. Some can be monomorphic.
+By construction, only fields of interface/union type can be polymorphic. That doesn't mean all of them are polymorphic. Some can be monomorphic.
 
-Because fragments can be executed 
 
 # Implementation notes
 
