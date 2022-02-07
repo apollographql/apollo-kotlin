@@ -15,6 +15,20 @@ dependencies {
 }
 ```
 
+If you're targeting Android API level < 26, you'll need to enable [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) to support the `java.time` API:
+
+```kotlin
+android {
+    compileOptions {
+        // Flag to enable support for the new language APIs
+        coreLibraryDesugaringEnabled = true
+        // Sets Java compatibility to Java 8
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+}
+```
+
 Then configure your HTTP cache:
 
 ```kotlin
