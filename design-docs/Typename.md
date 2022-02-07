@@ -8,7 +8,7 @@ Historically, __typename was added on most of the selection sets. While this mak
 
 ## 2.x 
 
-3.x adds typename on the below selection sets:
+2.x adds typename on the below selection sets:
 
 * operation definition
 * fragment definition
