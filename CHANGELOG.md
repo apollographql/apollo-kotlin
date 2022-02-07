@@ -1,9 +1,6 @@
 Change Log
 ==========
 
-Change Log
-==========
-
 # Version 3.1.0
 
 _2022-02-07_
