@@ -6,6 +6,9 @@ import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.http.valueOf
+import com.apollographql.apollo3.cache.http.internal.nowDateMillis
+import com.apollographql.apollo3.cache.http.internal.nowDateString
+import com.apollographql.apollo3.cache.http.internal.parseDateString
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.HttpCacheMissException
 import com.apollographql.apollo3.network.http.HttpInterceptor
@@ -14,8 +17,6 @@ import okio.Buffer
 import okio.ByteString.Companion.toByteString
 import okio.FileSystem
 import java.io.File
-import java.time.Instant
-import java.time.format.DateTimeParseException
 
 class CachingHttpInterceptor(
     directory: File,
@@ -75,7 +76,7 @@ class CachingHttpInterceptor(
               .addHeaders(
                   listOf(
                       HttpHeader(CACHE_KEY_HEADER, cacheKey),
-                      HttpHeader(CACHE_SERVED_DATE_HEADER, Instant.now().toString()),
+                      HttpHeader(CACHE_SERVED_DATE_HEADER, nowDateString()),
                   )
               )
               .build(),
@@ -107,11 +108,11 @@ class CachingHttpInterceptor(
 
     val timeoutMillis = request.headers.valueOf(CACHE_EXPIRE_TIMEOUT_HEADER)?.toLongOrNull() ?: 0
     val servedDateMillis = try {
-      Instant.parse(response.headers.valueOf(CACHE_SERVED_DATE_HEADER)).toEpochMilli()
-    } catch (e: DateTimeParseException) {
+      parseDateString(response.headers.valueOf(CACHE_SERVED_DATE_HEADER) ?: "")
+    } catch (e: Exception) {
       0L
     }
-    val nowMillis = Instant.now().toEpochMilli()
+    val nowMillis = nowDateMillis()
 
     if (timeoutMillis > 0 && servedDateMillis > 0 && nowMillis - servedDateMillis > timeoutMillis) {
       // stale response
