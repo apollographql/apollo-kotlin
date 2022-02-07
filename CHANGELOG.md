@@ -60,7 +60,7 @@ val mockServer = MockServer(customHandler)
 
 ## ✨ [New] `FetchPolicy.CacheAndNetwork` (#3828)
 
-Previously, `FetchPolicy`s were limited to policies that emitted at most **one** response. This version introduces `FetchPolicy.CacheAndNetwork` that can emit up to two responses:
+Previously, `FetchPolicy`s were limited to policies that emitted at most **one** response. There was a `executeCacheAndNetwork()` method but it felt asymmetrical. This version introduces `FetchPolicy.CacheAndNetwork` that can emit up to two responses:
 
 ```kotlin
 apolloClient.query(query)
@@ -141,11 +141,13 @@ For convenience, a helper function is provided for common types:
 
 ```kotlin
 apollo {
-  // The generated code will use `kotlin.Long` and the builtin adapter 
+  // The generated code will use `kotlin.Long` and the builtin LongAdapter 
   mapScalarToKotlinLong("ID")
 
+  // The generated code will use `kotlin.String` and the builtin StringAdapter
   mapScalarToKotlinString("Date")
 
+  // The generated code will use `com.apollographql.apollo3.api.Upload` and the builtin UploadAdapter
   mapScalarToUpload("Upload")
 }
 ```
@@ -166,8 +168,6 @@ With 3.1.0 and onwards, paths, will be interpreted relative to the root project 
   --endpoint="https://your.domain/graphql/endpoint" \
   --schema="app/src/main/graphql/com/example/schema.graphqls"
 ```
-
-
 
 ## 👷 All changes
 
