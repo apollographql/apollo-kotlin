@@ -57,7 +57,9 @@ fun Project.getOssStagingUrl(): String {
   if (url != null) {
     return url
   }
+  val baseUrl = "https://s01.oss.sonatype.org/service/local/"
   val client = NexusStagingClient(
+      baseUrl = baseUrl,
       username = System.getenv("SONATYPE_NEXUS_USERNAME"),
       password = System.getenv("SONATYPE_NEXUS_PASSWORD"),
   )
@@ -67,7 +69,7 @@ fun Project.getOssStagingUrl(): String {
         description = "com.apollo.apollo3 $version"
     )
   }
-  return "https://s01.oss.sonatype.org/service/local/staging/deployByRepositoryId/${repositoryId}/".also {
+  return "${baseUrl}staging/deployByRepositoryId/${repositoryId}/".also {
     this.extensions.extraProperties["ossStagingUrl"] = it
   }
 }

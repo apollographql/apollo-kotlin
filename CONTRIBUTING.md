@@ -124,6 +124,7 @@ Releases are published when a tag is pushed.
 
 Here are the steps to do a new release:
 
+* `git checkout main && git pull`
 * `scripts/tag.main.kts <version-name>`
 * push the tag and branch
 * while it compiles, prepare the changelog, open a PR to `CHANGELOG.md`
