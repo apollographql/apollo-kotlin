@@ -10,7 +10,7 @@ It also contains bugfixes around the `@include` directives, MemoryCache and Grap
 
 ## ✨ [New] `QueueTestNetworkTransport` (#3757)
 
-3.1.0 introduces `QueueTestNetworkTransport` to test at the GraphQL layer without needing to run an HTTP server. 
+3.1.0 introduces `QueueTestNetworkTransport` to test at the GraphQL layer without needing to run an HTTP server.
 
 To use it, configure your `ApolloClient`:
 
@@ -30,7 +30,7 @@ val testData = GetHeroQuery.Data {
     name = "R2D2"
   }
 }
-apolloClient.testNetworkTransport.enqueueTestResponse(testQuery, testData)
+apolloClient.enqueueTestResponse(testQuery, testData)
 val actual = apolloClient.query(testQuery).execute().data!!
 assertEquals(testData.hero.name, actual.hero.name)
 ```
@@ -168,6 +168,10 @@ With 3.1.0 and onwards, paths, will be interpreted relative to the root project 
   --endpoint="https://your.domain/graphql/endpoint" \
   --schema="app/src/main/graphql/com/example/schema.graphqls"
 ```
+
+## ❤️ External contributors
+
+Many thanks to @dhritzkiv, @mune0903, @StylianosGakis, @AchrafAmil and @jamesonwilliams for their awesome contributions! You rock 🎸 🤘 !
 
 ## 👷 All changes
 
