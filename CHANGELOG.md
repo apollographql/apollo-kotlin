@@ -6,7 +6,7 @@ Change Log
 _2022-02-07_
 
 Version 3.1.0 introduces new APIs for testing, mapping scalars as well a redesigned cache pipeline.
-It also contains bugfixes around the `@include` directives, MemoryCache and GraphQL validation.
+It also contains bugfixes around the `@include` directives, MemoryCache and GraphQL validation amongst other changes.
 
 ## ✨ [New] `QueueTestNetworkTransport` (#3757)
 
