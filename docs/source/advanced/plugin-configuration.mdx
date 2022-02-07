@@ -73,8 +73,7 @@ apollo {
 By default, the Gradle plugin registers a `downloadApolloSchema` task that you can use from the command line:
 
 ```bash
-# --schema is interpreted relative to the current working directory. This example
-# assumes the root project directory and an Android app in `app`
+# --schema is interpreted relative to the root project directory.
 ./gradlew downloadApolloSchema \
   --endpoint="https://your.domain/graphql/endpoint" \
   --schema="app/src/main/graphql/com/example/schema.graphqls"
