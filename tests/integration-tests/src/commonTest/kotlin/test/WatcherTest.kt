@@ -85,36 +85,32 @@ class WatcherTest {
 
     // The first query should get a "R2-D2" name
     mapResponses.register(query, ApolloResponse.Builder(query, uuid4(), episodeHeroNameData).build())
-    val job = launch {
-      apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).watch().collect {
-        channel.send(it.data)
-      }
-    }
-    val job2 = launch {
-      apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).watch().collect {
-        channel2.send(it.data)
-      }
-    }
-
-    assertEquals(channel.receiveOrTimeout()?.hero?.name, "R2-D2")
-    assertEquals(channel2.receiveOrTimeout()?.hero?.name, "R2-D2")
-
-    // Another newer call gets updated information with "Artoo"
     mapResponses.register(query, ApolloResponse.Builder(query, uuid4(), episodeHeroNameChangedData).build())
-    apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
-    apolloClient.query(query).toFlow()
-        .catch {
-          // Handle errors here
+    repeat(100) {
+      val job = launch {
+        apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).watch().collect {
+          channel.send(it.data)
         }
-        .onCompletion {
-          emitAll(apolloClient.query(query).watch())
+      }
+      val job2 = launch {
+        apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).watch().collect {
+          channel2.send(it.data)
         }
-    assertEquals(channel.receiveOrTimeout()?.hero?.name, "Artoo")
-    assertEquals(channel2.receiveOrTimeout()?.hero?.name, "Artoo")
+      }
 
-    job.cancel()
-    job2.cancel()
+      assertEquals(channel.receiveOrTimeout()?.hero?.name, "R2-D2")
+      assertEquals(channel2.receiveOrTimeout()?.hero?.name, "R2-D2")
+
+      // Another newer call gets updated information with "Artoo"
+      apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
+
+      assertEquals(channel.receiveOrTimeout()?.hero?.name, "Artoo")
+      assertEquals(channel2.receiveOrTimeout()?.hero?.name, "Artoo")
+
+      job.cancel()
+      job2.cancel()
+    }
   }
 
 
