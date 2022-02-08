@@ -44,7 +44,7 @@ val client = ApolloClient.builder()
   .addCustomTypeAdapter(CustomType.YOURTYPE, ...)
 
   // With:
-  .addCustomTypeAdapter(YourType.type, ...)
+  .addCustomScalarAdapter(YourType.type, ...)
 
   .build()
 
