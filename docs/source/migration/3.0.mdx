@@ -136,9 +136,9 @@ Apollo Kotlin 3.x uses coroutines and exposes more information in its API so tha
 implementation("com.apollographql.apollo:apollo-android-support:$version")
 ```
 
-#### `customScalarMappings`
+#### Scalar mapping
 
-In order to make it explicit that custom mappings only apply to custom scalars and not arbitrary types, `customTypeMapping` has been renamed to `customScalarsMapping`
+In order to make it explicit that custom mappings only apply to scalars and not arbitrary types, `customTypeMapping` has been replaced by the `mapScalar` method.
 
 <MultiCodeBlock>
 
@@ -146,12 +146,12 @@ In order to make it explicit that custom mappings only apply to custom scalars a
 apollo {
   // Replace
   customTypeMapping = [
-    "GeoPoint" : "com.example.GeoPoint"
+    "GeoPoint" : "com.example.GeoPoint",
+    "Date" : "com.example.MyDate"
   ]
   // With
-  customScalarsMapping = [
-    "GeoPoint" : "com.example.GeoPoint"
-  ]
+  mapScalar("GeoPoint", "com.example.GeoPoint")
+  mapScalar("Date", "com.example.MyDate")
 }
 ```
 
@@ -159,12 +159,12 @@ apollo {
 apollo {
   // Replace
   customTypeMapping.set(mapOf(
-    "GeoPoint" to "com.example.GeoPoint"
+    "GeoPoint" to "com.example.GeoPoint",
+    "Date" to "com.example.MyDate"
   ))
   // With
-  customScalarsMapping.set(mapOf(
-    "GeoPoint" to "com.example.GeoPoint"
-  ))
+  mapScalar("GeoPoint", "com.example.GeoPoint")
+  mapScalar("Date", "com.example.MyDate")
 }
 ```
 

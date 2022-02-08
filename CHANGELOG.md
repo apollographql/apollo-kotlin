@@ -1,6 +1,199 @@
 Change Log
 ==========
 
+# Version 3.1.0
+
+_2022-02-07_
+
+Version 3.1.0 introduces new APIs for testing, mapping scalars as well a redesigned cache pipeline.
+It also contains bugfixes around the `@include` directives, MemoryCache and GraphQL validation amongst other changes.
+
+## ✨ [New] `QueueTestNetworkTransport` (#3757)
+
+3.1.0 introduces `QueueTestNetworkTransport` to test at the GraphQL layer without needing to run an HTTP server.
+
+To use it, configure your `ApolloClient`:
+
+```kotlin
+// This uses a QueueTestNetworkTransport that will play the queued responses
+val apolloClient = ApolloClient.Builder()
+    .networkTransport(QueueTestNetworkTransport())
+    .build()
+```
+
+You can then use the `enqueueTestResponse` extension function to specify the GraphQL responses to return:
+
+```kotlin
+val testQuery = GetHeroQuery("001")
+val testData = GetHeroQuery.Data {
+  hero = droidHero {
+    name = "R2D2"
+  }
+}
+apolloClient.enqueueTestResponse(testQuery, testData)
+val actual = apolloClient.query(testQuery).execute().data!!
+assertEquals(testData.hero.name, actual.hero.name)
+```
+
+## ✨ [New] `MockServerHandler` (#3757)
+
+If you're testing at the HTTP layer, you can now define your own `MockServerHandler` to customize how the server is going to answer to requests:
+
+```kotlin
+val customHandler = object : MockServerHandler {
+  override fun handle(request: MockRequest): MockResponse {
+    return if (/* Your custom logic here */) {
+      MockResponse(
+          body = """{"data": {"random": 42}}""",
+          headers = mapOf("X-Test" to "true"),
+      )
+    } else {
+      MockResponse(
+          body = "Internal server error",
+          statusCode = 500,
+      )
+    }
+  }
+}
+val mockServer = MockServer(customHandler)
+```
+
+## ✨ [New] `FetchPolicy.CacheAndNetwork` (#3828)
+
+Previously, `FetchPolicy`s were limited to policies that emitted at most **one** response. There was a `executeCacheAndNetwork()` method but it felt asymmetrical. This version introduces `FetchPolicy.CacheAndNetwork` that can emit up to two responses:
+
+```kotlin
+apolloClient.query(query)
+  // Check the cache and also use the network (1 or 2 values can be emitted)
+  .fetchPolicy(FetchPolicy.CacheAndNetwork)
+  // Execute the query and collect the responses
+  .toFlow().collect { response ->
+      // ...
+  }
+```
+
+## ✨ [New] `ApolloCall<D>.fetchPolicyInterceptor(interceptor: ApolloInterceptor)` (#3743)
+
+If you need more customized ways to fetch data from the cache or more fine-grained error handling that does not come with the built-in `FetchPolicy`, you can now use `fetchPolicyInterceptor`:
+
+```kotlin
+// An, interceptor that will only use the network after getting a successful response
+val refetchPolicyInterceptor = object : ApolloInterceptor {
+  var hasSeenValidResponse: Boolean = false
+  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+    return if (!hasSeenValidResponse) {
+      CacheOnlyInterceptor.intercept(request, chain).onEach {
+        if (it.data != null) {
+          // We have valid data, we can now use the network
+          hasSeenValidResponse = true
+        }
+      }
+    } else {
+      // If for some reason we have a cache miss, get fresh data from the network
+      CacheFirstInterceptor.intercept(request, chain)
+    }
+  }
+}
+
+apolloClient.query(myQuery)
+    .refetchPolicyInterceptor(cacheOnlyInterceptor)
+    .watch()
+    .collect {
+      //
+    }
+```
+
+## ✨ [New] `Service.mapScalar` Gradle API (#3779)
+
+You can now use `mapScalar` to specify your scalar mappings:
+
+```kotlin
+apollo {
+  // Replace 
+  customScalarsMapping.set(mapOf(
+      "Date" to "java.util.Date"
+  ))
+  
+  // With
+  mapScalar("Date", "java.util.Date")
+}
+```
+
+`mapScalar` also works with built-in scalar types so you can map the `ID` type to a kotlin Long:
+
+```kotlin
+apollo {
+  // This requires registering an adapter at runtime with `addCustomScalarAdapter()` 
+  mapScalar("ID", "kotlin.Long")
+}
+```
+
+As an optimization, you can also provide the adapter at compile time. This will avoid a lookup at runtime everytime such a scalar is read:
+
+```kotlin
+apollo {
+  // No need to call `addCustomScalarAdapter()`, the generated code will use the provided adapter 
+  mapScalar("ID", "kotlin.Long", "com.apollographql.apollo3.api.LongAdapter")
+}
+```
+
+For convenience, a helper function is provided for common types:
+
+```kotlin
+apollo {
+  // The generated code will use `kotlin.Long` and the builtin LongAdapter 
+  mapScalarToKotlinLong("ID")
+
+  // The generated code will use `kotlin.String` and the builtin StringAdapter
+  mapScalarToKotlinString("Date")
+
+  // The generated code will use `com.apollographql.apollo3.api.Upload` and the builtin UploadAdapter
+  mapScalarToUpload("Upload")
+}
+```
+
+## 🚧 [Changed] `convertApolloSchema` and `downloadApolloSchema` now use paths relative to the root of the project (#3773, #3752)
+
+Apollo Kotlin adds two tasks to help to manage schemas: `convertApolloSchema` and `downloadApolloSchema`. These tasks are meant to be used from the commandline.
+
+Previously, paths were interpreted using the current working directory with `File(path)`. Unfortunately, this is unreliable because Gradle might change the current working directory in some conditions (see [Gradle#13927](https://github.com/gradle/gradle/issues/13927) or [Gradle#6074](https://github.com/gradle/gradle/issues/6074) for an example).
+
+With 3.1.0 and onwards, paths, will be interpreted relative to the root project directory (`project.rootProject.file(path)`):
+
+```
+# schema is now interpreted relative to the root project directory and
+# not the current working directory anymore. This example assumes there 
+# is a 'app' module that applies the apollo plugin
+./gradlew downloadApolloSchema \
+  --endpoint="https://your.domain/graphql/endpoint" \
+  --schema="app/src/main/graphql/com/example/schema.graphqls"
+```
+
+## ❤️ External contributors
+
+Many thanks to @dhritzkiv, @mune0903, @StylianosGakis, @AchrafAmil and @jamesonwilliams for their awesome contributions! You rock 🎸 🤘 !
+
+## 👷 All changes
+
+* Fix error reporting when there is a "schema.graphqls" but it doesn't contain any type definition (#3844)
+* Make guessNumber read the next value only once, fixes custom scalars without a custom adapter (#3839)
+* Clarify need to pass client's customScalarAdapters to store methods (#3838)
+* Fix null pointer exception in LruCache while trimming (#3833)
+* Add FetchPolicy.CacheAndNetwork (#3828)
+* Allow to specify error handling for watch() (#3817)
+* Scalar mapping and adapter configuration improvements (#3779)
+* Tunnel variables in CustomScalarAdapters (#3813)
+* Terminate threads correctly if no subscription has been executed (#3803)
+* fix validation of merged fields (#3799)
+* Make `reconnectWhen` suspend and pass attempt number (#3772)
+* Merge HTTP headers when batching (#3776)
+* MockServer improvements and TestNetworkTransport (#3757)
+* Fix calling ApolloClient.newBuilder() if the original ApolloClient used `.okHttpClient` (#3771)
+* Make `convertApolloSchema` and `downloadApolloSchema` use path from the root of the project (#3773, #3752)
+* fix fragment package name in multi-module scenarios (#3775)
+* Make the error printer robust to unknown source locations, fixes schemas with duplicate types (#3753)
+* Allow to customize the fetchPolicy with interceptors (#3743)
+
 # Version 3.0.0
 
 _2021-12-15_
