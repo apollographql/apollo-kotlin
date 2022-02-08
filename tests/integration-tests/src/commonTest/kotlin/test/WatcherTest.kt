@@ -86,12 +86,12 @@ class WatcherTest {
     // The first query should get a "R2-D2" name
     mapResponses.register(query, ApolloResponse.Builder(query, uuid4(), episodeHeroNameData).build())
     val job = launch {
-      apolloClient.query(query).watch().collect {
+      apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).watch().collect {
         channel.send(it.data)
       }
     }
     val job2 = launch {
-      apolloClient.query(query).watch().collect {
+      apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).watch().collect {
         channel2.send(it.data)
       }
     }
