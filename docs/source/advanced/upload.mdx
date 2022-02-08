@@ -8,30 +8,16 @@ the [GraphQL multipart request specification](https://github.com/jaydenseric/gra
 
 First, add the following custom scalar mapping to the Apollo Gradle plugin configuration:
 
-<MultiCodeBlock>
-
-```groovy:title=build.gradle
+```kotlin:title=build.gradle[.kts]
 apollo {
-  customScalarsMapping = [
-    "Upload" : "com.apollographql.apollo3.api.Upload"
-  ]
+  mapScalarToUpload("Upload")
 }
 ```
-
-```kotlin:title=build.gradle.kts
-apollo {
-  customScalarsMapping.set(mapOf(
-    "Upload" to "com.apollographql.apollo3.api.Upload"
-  ))
-}
-```
-</MultiCodeBlock>
 
 In this example, the GraphQL schema defines a custom scalar type named `Upload` - adapt it to match your own GraphQL
 schema.
 
-Note: you don't need to register a type adapter for `Upload`, the runtime will recognize it and use the appropriate
-adapter.
+Note: you don't need to register a type adapter for `Upload`, the `mapScalarToUpload` method registers it automatically.
 
 Now let's consider a mutation that takes an `Upload` as a parameter:
 

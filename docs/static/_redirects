@@ -14,3 +14,5 @@
 /essentials/caching/ /docs/kotlin/essentials/normalized-cache
 /advanced/android/ /docs/kotlin/advanced/ui-tests/
 /tutorial /docs/kotlin/tutorial/00-introduction
+/advanced/ui-tests/ /docs/kotlin/testing/ui-tests/
+/advanced/test-builders/ /docs/kotlin/testing/test-builders/
