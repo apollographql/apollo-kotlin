@@ -47,11 +47,9 @@ class WatcherTest {
   private lateinit var apolloClient: ApolloClient
   private lateinit var store: ApolloStore
 
-  private val mapResponses = MapTestNetworkTransport()
-
   private fun setUp() {
     store = ApolloStore(MemoryCacheFactory(), cacheKeyGenerator = IdCacheKeyGenerator)
-    apolloClient = ApolloClient.Builder().networkTransport(mapResponses).store(store).build()
+    apolloClient = ApolloClient.Builder().networkTransport(QueueTestNetworkTransport()).store(store).build()
   }
 
   private val episodeHeroNameData = EpisodeHeroNameQuery.Data(EpisodeHeroNameQuery.Hero("R2-D2"))
@@ -83,9 +81,10 @@ class WatcherTest {
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
     val channel2 = Channel<EpisodeHeroNameQuery.Data?>()
 
-    // The first query should get a "R2-D2" name
-    mapResponses.register(query, ApolloResponse.Builder(query, uuid4(), episodeHeroNameData).build())
-    mapResponses.register(query, ApolloResponse.Builder(query, uuid4(), episodeHeroNameChangedData).build())
+    // Enqueue responses
+    apolloClient.enqueueTestResponse(query, episodeHeroNameData)
+    apolloClient.enqueueTestResponse(query, episodeHeroNameData)
+    apolloClient.enqueueTestResponse(query, episodeHeroNameChangedData)
 
     repeat(100) {
       val job = launch {
