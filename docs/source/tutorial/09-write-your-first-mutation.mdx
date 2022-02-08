@@ -24,13 +24,9 @@ Click the play button to the right to open that mutation in the Explorer tab. Wh
 
 <img alt="The login mutation after initially being added" class="screenshot" src="images/explorer_added_login_mutation.png"/>
 
-Sandbox Explorer tries to be helpful by adding the word `Mutation` after the word `Login`, but the Android SDK also does that for you automatically. Rename the operation `Login` instead:
+Notice the red error indication - this is because the type returned by the mutation is `User`, which is not a **leaf** type: you need to choose which of the user's fields the mutation will return. For our purposes, we only need the `token` field, so add it by clicking the plus sign next to it.
 
-<img alt="The renamed operation" class="screenshot" src="images/explorer_login_mutation_rename.png"/>
-
-Notice that there are no brackets after the call to the `login` mutation - this is because the type returned by this mutation is `String`, which is known as a **scalar type**. This means it won't have properties the way an object would, so you don't need to specify what properties you want returned to you.
-
-You'll also notice that `email` wasn't automatically added as an argument even though it doesn't seem to have a default value: That's because `email` is of type `String` - which remember, in GraphQL, means that it's **not** required (although obviously you won't get too far without it).
+You'll also notice that `email` wasn't automatically added as an argument even though it doesn't seem to have a default value: that's because `email` is of type `String` - which remember, in GraphQL, means that it's **not** required (although obviously you won't get too far without it).
 
 Click the plus sign next to the `email` argument to have that argument added:
 
@@ -38,14 +34,14 @@ Click the plus sign next to the `email` argument to have that argument added:
 
 You'll also notice that Sandbox Explorer has added a variable to your "Variables" section to match the login email.
 
-Click the Submit Operation button your mutation. You'll see that  since you sent `null` for the email address, you get back `null` for the login:
+Click the Submit Operation button your mutation. You'll see that since you sent `null` for the email address, you get back `null` for the login:
 
 <img alt="Results of passing a null email" class="screenshot" src="images/login_mutation_null.png"/>
 
 Now, replace `null` in the Query Variables section with an actual email address:
 
 ```json:title=(Sandbox%20Explorer)
-{ "loginEmail": "me@example.com" }
+{ "email": "me@example.com" }
 ```
 
 Press the Submit Operation button, and this time you'll get an actual response:
@@ -60,7 +56,9 @@ Now that your mutation is working, add it to your project. Create a file named `
 
 ```graphql:title=app/src/main/graphql/com/example/rocketreserver/Login.graphql
 mutation Login($email: String!) {
-  login(email: $email)
+  login(email: $email) {
+    token
+  }
 }
 ```
 Note: we've also marked the `email` variable as non-nullable by adding `!` to the end of the type, since we always want to pass a value for it.
@@ -107,22 +105,22 @@ From the click listener, display the ProgressBar and execute the query with the 
 Handle errors if needed by replacing the `TODO` you just added:
 
 ```kotlin:title=app/src/main/java/com/example/rocketreserver/LoginFragment.kt
-                val login = response?.data?.login
-                if (login == null || response.hasErrors()) {
+                val token = response?.data?.login?.token
+                if (token == null || response.hasErrors()) {
                     binding.submitProgressBar.visibility = View.GONE
                     binding.submit.visibility = View.VISIBLE
                     return@launchWhenResumed
                 }
 ```
 
-Finally if everything is successful, store the login and go back to the previous screen at the end of `launchWhenResumed`:
+Finally if everything is successful, store the token and go back to the previous screen at the end of `launchWhenResumed`:
 
 ```kotlin:title=app/src/main/java/com/example/rocketreserver/LoginFragment.kt
-                User.setToken(requireContext(), login)
+                User.setToken(requireContext(), token)
                 findNavController().popBackStack()
 ```
 
-`User` is a helper class that saves the token in [EncryptedSharedPreference](https://developer.android.com/reference/androidx/security/crypto/EncryptedSharedPreferences). This is the reason why this tutorial uses API level 23+. Apollo Kotlin itself supports API levels 19+.
+`User` is a helper class that saves the token in [EncryptedSharedPreference](https://developer.android.com/reference/androidx/security/crypto/EncryptedSharedPreferences). This is the reason why this tutorial uses API level 23+. Apollo Kotlin itself supports API levels 21+.
 
 ## Test the login
 
