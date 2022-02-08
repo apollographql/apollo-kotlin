@@ -148,7 +148,7 @@ Whenever Apollo Kotlin _writes_ data to the cache, those writes propagate down _
 
 After you add a normalized cache to your `ApolloClient` initialization, Apollo Kotlin automatically uses it by default for all queries. You can customize _how_ the cache is used for a particular query by setting a **fetch policy** for that query.
 
-The following snippets shows how to set all available fetch policies and their behavior:
+The following snippets show how to set all available fetch policies and their behavior:
 
 ```kotlin
 val response = apolloClient.query(query)
@@ -168,7 +168,7 @@ val response = apolloClient.query(query)
   // Execute the query
   .execute()
 ```
-The `CacheAndNetwork` policy can emit several values, so `toFlow()` should be used instead of `execute()` with this one:
+The `CacheAndNetwork` policy can emit multiple values, so you call `toFlow()` instead of `execute()`:
 
 ```kotlin
 apolloClient.query(query)

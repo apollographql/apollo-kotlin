@@ -14,13 +14,13 @@ To interact with custom scalars in your Apollo Kotlin app, you need to define a 
 ```kotlin:title=build.gradle[.kts]
 apollo {
   mapScalar("GeoPoint", "com.example.GeoPoint")
-  
+
   // Shortcuts exist for standard types - equivalent to mapScalar("Long", "kotlin.Long")
   mapScalarToKotlinLong("Long")
 }
 ```
 
-Note: if needed, you can also do this with built-in scalars (like `ID`) to override the type used by default.
+> If needed, you can also do this with _default_ scalars (like `ID`) to override the type used by default.
 
 ## Define class adapters
 
@@ -96,13 +96,17 @@ apollo {
 }
 ```
 
-The given expression will be copied as-is in the generated code, it is therefore possible to pass an instantiation expression like `"com.example.GeoPointAdapter()"`, a singleton reference like `"com.example.GeoPointAdapter"`, or a function call like `"com.example.Adapters.getGeoPointAdapter()"`.
+The given expression is copied as-is in the generated code. Therefore, it's possible to pass any of the following:
 
-Make sure you pass the full class name including the package, as imports won't automatically be generated.
+* An instantiation expression, like `"com.example.GeoPointAdapter()"`
+* A singleton reference, like `"com.example.GeoPointAdapter"`
+* A function call, like `"com.example.Adapters.getGeoPointAdapter()"`
+
+Make sure you pass the full class name including the package, because imports aren't automatically generated.
 
 ### At runtime
 
-You can also register adapters on your `ApolloClient` instance, by calling `ApolloClient.Builder.addCustomScalarAdapter` once for each adapter:
+You can also register adapters on your `ApolloClient` instance by calling `ApolloClient.Builder.addCustomScalarAdapter` once for each adapter:
 
 ```kotlin
 val apolloClient = ApolloClient.Builder().serverUrl("https://")

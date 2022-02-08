@@ -4,18 +4,14 @@ description: Overview
 sidebar_title: Overview
 ---
 
-Apollo Kotlin provides the following tools to assist in testing your code:
+Apollo Kotlin provides the following tools to help with testing your code:
 
 - [`MockServer`](./mocking-http-responses): an HTTP server that you can use to mock any responses
 - [`TestNetworkTransport`](./mocking-graphql-responses): enables you to specify the GraphQL responses returned
   by `ApolloClient`
-- [Test builders](./test-builders): help instantiate your model classes by providing an DSL
+- [Test builders](./test-builders): help instantiate your model classes by providing a DSL
 - An [`IdlingResource`](./ui-tests) that you can use in your Espresso UI Tests
 
-`MockServer` creates a full HTTP server. It will require very little changes to your production code as you'll only need
-to change `serverUrl`, meaning the same ApolloClient can be used for tests and production. It is also useful for testing
-specific server behaviors, such as error cases, HTTP headers, and timeouts.
+`MockServer` creates a full HTTP server. It requires minimal changes to your production code (you only need to change `serverUrl`), which means you can use the same `ApolloClient` for tests and production. `MockServer` is also useful for testing specific server behaviors, such as error cases, HTTP headers, and timeouts.
 
-`TestNetworkTransport` bypasses HTTP calls altogether and returns preregistered GraphQL responses. It is more
-lightweight and requires more modifications to your production code. You can use it in lighter tests that don't need to
-create a server. Test builders can be used to instantiate the data in the responses. 
+`TestNetworkTransport` bypasses HTTP calls altogether and returns predefined GraphQL responses. It requires more modifications to your production code, but you can use it in lighter tests that don't need to create a server. You can use test builders to instantiate the data in the responses.
