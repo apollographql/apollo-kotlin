@@ -4,7 +4,7 @@ title: Mocking GraphQL responses
 
 `QueueTestNetworkTransport` is a high-level test API that enables you to specify the GraphQL responses that are returned by your `ApolloClient` instance.
 
-> See also [`MockServer`](./mocking-http-responses) which creates a full HTTP server and is useful for testing specific server behaviors, such as error cases, HTTP headers, and timeouts.
+> See also [`MockServer`](./mocking-http-responses), which creates a full HTTP server and helps test specific server behaviors, such as error cases, HTTP headers, and timeouts.
 
 Add the dependency to your project's `build.gradle` file:
 
@@ -37,7 +37,7 @@ val actual = apolloClient.query(testQuery).execute().data!!
 assertEquals(testData.hero.name, actual.hero.name)
 ```
 
-You can pass an `ApolloResponse` to the `enqueueTestResponse` function or as a shortcut you can pass a `Data` directly, as shown in the example above (in that case you'll also need to pass an operation since an `ApolloResponse` is built under the hood, which needs a reference to it).
+You can pass an `ApolloResponse` to the `enqueueTestResponse` function, or as a shortcut, you can pass a `Data` directly as shown above. If you do pass a `Data`, you _also_ need to pass an operation, because an `ApolloResponse` is built under the hood, which needs a reference to it.
 
 > To help create your mocked response data, you can use [test builders](./test-builders/).
 
@@ -45,7 +45,7 @@ You can pass an `ApolloResponse` to the `enqueueTestResponse` function or as a s
 
 `QueueTestNetworkTransport` returns responses in the order they've been enqueued.
 
-In certain tests it might be more convenient to **map** responses to operations.
+In certain tests, it might be more convenient to **map** responses to operations.
 
 To achieve this, use `MapTestNetworkTransport` instead and call the `registerTestResponse` extension function:
 
@@ -85,4 +85,4 @@ apolloClient = ApolloClient.Builder()
     .build()
 ```
 
-Note that if you use a custom `NetworkTransport`, calling `enqueueTestResponse()` or `registerTestResponse()` is no longer possible since they expect the transport to be `QueueTestNetworkTransport` or `MapTestNetworkTransport`.
+Note that if you use a custom `NetworkTransport`, calling `enqueueTestResponse()` or `registerTestResponse()` is no longer possible because they expect the transport to be `QueueTestNetworkTransport` or `MapTestNetworkTransport`.

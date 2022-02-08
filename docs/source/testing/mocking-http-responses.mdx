@@ -2,9 +2,9 @@
 title: Mocking HTTP responses
 ---
 
-`MockServer` implements an HTTP server that you can use to mock responses. It is useful for testing specific server behaviors, such as error cases, HTTP headers, and timeouts. Using it will require little changes to your production code as you'll only need to change `serverUrl`.
+`MockServer` implements an HTTP server that you can use to mock responses. It's useful for testing specific server behaviors, such as error cases, HTTP headers, and timeouts. Using it requires minimal changes to your production code, because you only need to change your `serverUrl`.
 
-> While `MockServer` resides at the HTTP level and can mock arbitrary HTTP responses, see also [`TestNetworkTransport`](./mocking-graphql-responses) which handles mocking at the GraphQL level.
+> See also [`TestNetworkTransport`](./mocking-graphql-responses), which handles mocking at the GraphQL level instead of the HTTP level.
 
 Add the dependency to your project's `build.gradle` file:
 
@@ -20,7 +20,7 @@ And here's how to use it:
 // Create a mock server
 val mockServer = MockServer()
 
-// Use its URL on your ApolloClient
+// Provide its URL to your ApolloClient
 val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).store(store).build()
 
 // Enqueue HTTP responses
@@ -48,7 +48,7 @@ val response2 = apolloClient
 mockServer.stop()
 ```
 
-Note how the `enqueue` function normally takes a `MockResponse` as a parameter, while a shorthand version that takes a `String` also exists.
+The `enqueue` function normally takes a `MockResponse` as a parameter, but it also supports a shorthand version that takes a `String` (both are shown above).
 
 ### Advanced usage
 
@@ -74,5 +74,5 @@ val customHandler = object : MockServerHandler {
 val mockServer = MockServer(customHandler)
 ```
 
-Note that if you use a custom `MockServerHandler`, calling `MockServer.enqueue()` is no longer possible since it expects the handler to be
+Note that if you use a custom `MockServerHandler`, calling `MockServer.enqueue()` is no longer possible because it expects the handler to be
 a `QueueMockServerHandler`.
