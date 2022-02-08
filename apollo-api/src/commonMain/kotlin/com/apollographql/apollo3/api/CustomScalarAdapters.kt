@@ -9,9 +9,13 @@ import kotlin.jvm.JvmField
 /**
  * A wrapper around a Map<String, [Adapter]> used to retrieve custom scalar adapters at runtime
  */
-class CustomScalarAdapters
-private constructor(
+class CustomScalarAdapters private constructor(
     customScalarAdapters: Map<String, Adapter<*>>,
+    // We piggyback CustomScalarAdapters to pass around execution variables,
+    // which are needed in the Adapters at parse time for @skip and @include.
+    // Ideally they should be passed as their own parameter but we're avoiding a breaking change.
+    // See https://github.com/apollographql/apollo-kotlin/pull/3813
+    private val variables: Executable.Variables?,
 ) : ExecutionContext.Element {
 
   private val adaptersMap: Map<String, Adapter<*>> = customScalarAdapters
@@ -34,7 +38,7 @@ private constructor(
       customScalar.className in listOf("kotlin.Boolean", "java.lang.Boolean") -> {
         BooleanAdapter
       }
-      customScalar.className in listOf("kotlin.Int", "java.lang.Int")  -> {
+      customScalar.className in listOf("kotlin.Int", "java.lang.Int") -> {
         IntAdapter
       }
       customScalar.className in listOf("kotlin.Double", "java.lang.Double") -> {
@@ -43,14 +47,24 @@ private constructor(
       customScalar.className in listOf("kotlin.Long", "java.lang.Long") -> {
         LongAdapter
       }
-      customScalar.className in listOf("kotlin.Float", "java.lang.Float")  -> {
+      customScalar.className in listOf("kotlin.Float", "java.lang.Float") -> {
         FloatAdapter
       }
-      customScalar.className in listOf("kotlin.Any", "java.lang.Object")  -> {
+      customScalar.className in listOf("kotlin.Any", "java.lang.Object") -> {
         AnyAdapter
       }
       else -> error("Can't map GraphQL type: `${customScalar.name}` to: `${customScalar.className}`. Did you forget to add a CustomScalarAdapter?")
     } as Adapter<T>
+  }
+
+  fun variables(): Set<String> {
+    if (variables == null) {
+      return emptySet()
+    }
+
+    return variables.valueMap.filter {
+      it.value == true
+    }.keys
   }
 
   override val key: ExecutionContext.Key<*>
@@ -68,6 +82,7 @@ private constructor(
 
   class Builder {
     private val adaptersMap: MutableMap<String, Adapter<*>> = mutableMapOf()
+    private var variables: Executable.Variables? = null
 
     fun <T> add(
         customScalarType: CustomScalarType,
@@ -96,6 +111,10 @@ private constructor(
     }
 
     @Suppress("DEPRECATION")
-    fun build() = CustomScalarAdapters(adaptersMap)
+    fun build() = CustomScalarAdapters(adaptersMap, variables)
+
+    fun variables(variables: Executable.Variables): Builder = apply {
+      this.variables = variables
+    }
   }
 }

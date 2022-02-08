@@ -7,24 +7,26 @@ package com.example.inline_fragment_intersection.selections;
 
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CompiledFragment;
-import com.apollographql.apollo3.api.CompiledGraphQL;
 import com.apollographql.apollo3.api.CompiledListType;
 import com.apollographql.apollo3.api.CompiledNotNullType;
 import com.apollographql.apollo3.api.CompiledSelection;
 import com.example.inline_fragment_intersection.type.Anything;
 import com.example.inline_fragment_intersection.type.Being;
+import com.example.inline_fragment_intersection.type.GraphQLBoolean;
+import com.example.inline_fragment_intersection.type.GraphQLFloat;
+import com.example.inline_fragment_intersection.type.GraphQLString;
 import com.example.inline_fragment_intersection.type.Race;
 import java.util.Arrays;
 import java.util.List;
 
 public class TestOperationSelections {
   private static List<CompiledSelection> onWookie = Arrays.asList(
-    new CompiledField.Builder("lifeExpectancy", CompiledGraphQL.CompiledFloatType).build()
+    new CompiledField.Builder("lifeExpectancy", GraphQLFloat.type).build()
   );
 
   private static List<CompiledSelection> friends = Arrays.asList(
-    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
+    new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledFragment.Builder("Wookie", Arrays.asList("Wookie")).selections(onWookie).build()
   );
 
@@ -33,25 +35,25 @@ public class TestOperationSelections {
   );
 
   private static List<CompiledSelection> friends1 = Arrays.asList(
-    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledField.Builder("isFamous", CompiledGraphQL.CompiledBooleanType).build(),
+    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
+    new CompiledField.Builder("isFamous", GraphQLBoolean.type).build(),
     new CompiledFragment.Builder("Wookie", Arrays.asList("Wookie")).selections(onWookie1).build()
   );
 
   private static List<CompiledSelection> onHuman = Arrays.asList(
-    new CompiledField.Builder("profilePictureUrl", CompiledGraphQL.CompiledStringType).build(),
+    new CompiledField.Builder("profilePictureUrl", GraphQLString.type).build(),
     new CompiledField.Builder("friends", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Being.type)))).selections(friends1).build()
   );
 
   private static List<CompiledSelection> onBeing = Arrays.asList(
-    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
+    new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("friends", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Being.type)))).selections(friends).build(),
     new CompiledFragment.Builder("Human", Arrays.asList("Human")).selections(onHuman).build()
   );
 
   private static List<CompiledSelection> friends2 = Arrays.asList(
-    new CompiledField.Builder("lifeExpectancy", CompiledGraphQL.CompiledFloatType).build()
+    new CompiledField.Builder("lifeExpectancy", GraphQLFloat.type).build()
   );
 
   private static List<CompiledSelection> onWookie2 = Arrays.asList(
@@ -60,11 +62,11 @@ public class TestOperationSelections {
   );
 
   private static List<CompiledSelection> onWookie3 = Arrays.asList(
-    new CompiledField.Builder("lifeExpectancy", CompiledGraphQL.CompiledFloatType).build()
+    new CompiledField.Builder("lifeExpectancy", GraphQLFloat.type).build()
   );
 
   private static List<CompiledSelection> friends3 = Arrays.asList(
-    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledFragment.Builder("Wookie", Arrays.asList("Wookie")).selections(onWookie3).build()
   );
 
@@ -73,7 +75,7 @@ public class TestOperationSelections {
   );
 
   private static List<CompiledSelection> random = Arrays.asList(
-    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledFragment.Builder("Being", Arrays.asList("Human", "Wookie")).selections(onBeing).build(),
     new CompiledFragment.Builder("Wookie", Arrays.asList("Wookie")).selections(onWookie2).build(),
     new CompiledFragment.Builder("Being", Arrays.asList("Human", "Wookie")).selections(onBeing1).build()

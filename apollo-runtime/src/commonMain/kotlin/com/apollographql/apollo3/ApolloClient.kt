@@ -2,6 +2,7 @@ package com.apollographql.apollo3
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_1
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.ApolloRequest
@@ -57,6 +58,7 @@ private constructor(
     override val sendDocument: Boolean?,
     override val enableAutoPersistedQueries: Boolean?,
     override val canBeBatched: Boolean?,
+    private val builder: Builder,
 ) : ExecutionOptions {
   private val concurrencyInfo: ConcurrencyInfo
 
@@ -156,7 +158,6 @@ private constructor(
           }
         }
         .build()
-    // ensureNeverFrozen(request)
 
     return DefaultInterceptorChain(interceptors + networkInterceptor, 0).proceed(request)
   }
@@ -180,7 +181,7 @@ private constructor(
     private var wsProtocolFactory: WsProtocol.Factory? = null
     private var httpExposeErrorBody: Boolean? = null
     private var webSocketEngine: WebSocketEngine? = null
-    private var webSocketReconnectWhen: ((Throwable) -> Boolean)? = null
+    private var webSocketReopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)? = null
 
     override var httpMethod: HttpMethod? = null
 
@@ -310,16 +311,26 @@ private constructor(
     }
 
     /**
-     * Configure the [WebSocketNetworkTransport] to reconnect the websocket automatically when a network error
+     * Configure the [WebSocketNetworkTransport] to reopen the websocket automatically when a network error
      * happens
      *
-     * @param webSocketReconnectWhen a function taking the error as a parameter and returning 'true' to reconnect
-     * automatically or 'false' to forward the error to all listening [Flow]
+     * @param webSocketReopenWhen a function taking the error and attempt index (starting from zero) as parameters
+     * and returning 'true' to reopen automatically or 'false' to forward the error to all listening [Flow].
+     * It is a suspending function, so it can be used to introduce delay before retry (e.g. backoff strategy).
      *
      * See also [subscriptionNetworkTransport] for more customization
      */
-    fun webSocketReconnectWhen(webSocketReconnectWhen: ((Throwable) -> Boolean)) = apply {
-      this.webSocketReconnectWhen = webSocketReconnectWhen
+    fun webSocketReopenWhen(webSocketReopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)) = apply {
+      this.webSocketReopenWhen = webSocketReopenWhen
+    }
+
+    @Deprecated("Use webSocketReopenWhen(webSocketReopenWhen: (suspend (Throwable, attempt: Long) -> Boolean))")
+    @ApolloDeprecatedSince(v3_0_1)
+    fun webSocketReconnectWhen(reconnectWhen: ((Throwable) -> Boolean)?) = apply {
+      this.webSocketReopenWhen = reconnectWhen?.let {
+        val adaptedLambda: suspend (Throwable, Long) -> Boolean = { throwable, _ -> reconnectWhen(throwable) }
+        adaptedLambda
+      }
     }
 
     fun networkTransport(networkTransport: NetworkTransport) = apply {
@@ -496,8 +507,8 @@ private constructor(
         check(wsProtocolFactory == null) {
           "Apollo: 'wsProtocolFactory' has no effect if 'subscriptionNetworkTransport' is set"
         }
-        check(webSocketReconnectWhen == null) {
-          "Apollo: 'webSocketReconnectWhen' has no effect if 'subscriptionNetworkTransport' is set"
+        check(webSocketReopenWhen == null) {
+          "Apollo: 'webSocketReopenWhen' has no effect if 'subscriptionNetworkTransport' is set"
         }
         subscriptionNetworkTransport!!
       } else {
@@ -519,8 +530,8 @@ private constructor(
                 if (wsProtocolFactory != null) {
                   protocol(wsProtocolFactory!!)
                 }
-                if (webSocketReconnectWhen != null) {
-                  reconnectWhen(webSocketReconnectWhen)
+                if (webSocketReopenWhen != null) {
+                  reopenWhen(webSocketReopenWhen)
                 }
               }
               .build()
@@ -541,24 +552,44 @@ private constructor(
           sendDocument = sendDocument,
           enableAutoPersistedQueries = enableAutoPersistedQueries,
           canBeBatched = canBeBatched,
+
+          // Keep a reference to the Builder so we can keep track of `httpEngine` and other properties that 
+          // are important to rebuild `networkTransport` (and potentially others)
+          builder = this,
       )
+    }
+
+    fun copy(): Builder {
+      val builder = Builder()
+          .customScalarAdapters(customScalarAdaptersBuilder.build())
+          .interceptors(interceptors)
+          .requestedDispatcher(requestedDispatcher)
+          .executionContext(executionContext)
+          .httpMethod(httpMethod)
+          .httpHeaders(httpHeaders)
+          .sendApqExtensions(sendApqExtensions)
+          .sendDocument(sendDocument)
+          .enableAutoPersistedQueries(enableAutoPersistedQueries)
+          .canBeBatched(canBeBatched)
+      _networkTransport?.let { builder.networkTransport(it) }
+      httpServerUrl?.let { builder.httpServerUrl(it) }
+      httpEngine?.let { builder.httpEngine(it) }
+      httpExposeErrorBody?.let { builder.httpExposeErrorBody(it) }
+      for (httpInterceptor in httpInterceptors) {
+        builder.addHttpInterceptor(httpInterceptor)
+      }
+      subscriptionNetworkTransport?.let { builder.subscriptionNetworkTransport(it) }
+      webSocketServerUrl?.let { builder.webSocketServerUrl(it) }
+      webSocketEngine?.let { builder.webSocketEngine(it) }
+      webSocketReopenWhen?.let { builder.webSocketReopenWhen(it) }
+      webSocketIdleTimeoutMillis?.let { builder.webSocketIdleTimeoutMillis(it) }
+      wsProtocolFactory?.let { builder.wsProtocol(it) }
+      return builder
     }
   }
 
   fun newBuilder(): Builder {
-    return Builder()
-        .networkTransport(networkTransport)
-        .subscriptionNetworkTransport(subscriptionNetworkTransport)
-        .customScalarAdapters(customScalarAdapters)
-        .interceptors(interceptors)
-        .requestedDispatcher(requestedDispatcher)
-        .executionContext(executionContext)
-        .httpMethod(httpMethod)
-        .httpHeaders(httpHeaders)
-        .sendApqExtensions(sendApqExtensions)
-        .sendDocument(sendDocument)
-        .enableAutoPersistedQueries(enableAutoPersistedQueries)
-        .canBeBatched(canBeBatched)
+    return builder.copy()
   }
 
   companion object {

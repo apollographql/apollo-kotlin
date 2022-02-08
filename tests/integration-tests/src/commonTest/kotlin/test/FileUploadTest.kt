@@ -11,7 +11,7 @@ import com.apollographql.apollo3.integration.upload.NestedUploadMutation
 import com.apollographql.apollo3.integration.upload.SingleUploadMutation
 import com.apollographql.apollo3.integration.upload.SingleUploadTwiceMutation
 import com.apollographql.apollo3.integration.upload.type.NestedObject
-import com.apollographql.apollo3.mockserver.MockRecordedRequest
+import com.apollographql.apollo3.mockserver.MockRequest
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runTest
@@ -212,7 +212,7 @@ class FileUploadTest {
     return parts
   }
 
-  private fun MockRecordedRequest.parts(): List<Part> {
+  private fun MockRequest.parts(): List<Part> {
     val regex = Regex("multipart/form-data;.*boundary=(.*)")
     val match = regex.matchEntire(headers["Content-Type"]!!)
     assertTrue(match != null)

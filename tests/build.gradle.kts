@@ -50,12 +50,13 @@ rootProject.plugins.withType<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJ
 fun Project.requiresJava9() = name in listOf("jpms")
 
 tasks.register("ciBuildJava8") {
-  description = """Execute the 'build' task in Java8 subprojects"""
+  description = """Execute the 'build' task in Java8 subprojects and termination:run"""
   subprojects {
     if (!requiresJava9()) {
       this@register.dependsOn(tasks.matching { it.name == "build" })
     }
   }
+  dependsOn(":termination:run")
 }
 
 tasks.register("ciBuildJava9") {

@@ -4,6 +4,8 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.PackageNameGenerator
+import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
+import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.gradle.api.AndroidProject
@@ -94,6 +96,8 @@ abstract class DefaultApolloExtension(
             && defaultService.schemaFile.isPresent.not()
             && defaultService.schemaFiles.isEmpty
             && defaultService.alwaysGenerateTypesMatching.isPresent.not()
+            && defaultService.scalarTypeMapping.isEmpty()
+            && defaultService.scalarAdapterMapping.isEmpty()
             && defaultService.customScalarsMapping.isPresent.not()
             && defaultService.customTypeMapping.isPresent.not()
             && defaultService.excludes.isPresent.not()
@@ -292,7 +296,11 @@ abstract class DefaultApolloExtension(
     maybeRegisterRegisterOperationsTasks(project, service, codegenProvider)
   }
 
-  private fun maybeRegisterRegisterOperationsTasks(project: Project, service: DefaultService, codegenProvider: TaskProvider<ApolloGenerateSourcesTask>) {
+  private fun maybeRegisterRegisterOperationsTasks(
+      project: Project,
+      service: DefaultService,
+      codegenProvider: TaskProvider<ApolloGenerateSourcesTask>,
+  ) {
     val registerOperationsConfig = service.registerOperationsConfig
     if (registerOperationsConfig != null) {
       project.tasks.register(ModelNames.registerApolloOperations(service), ApolloRegisterOperationsTask::class.java) { task ->
@@ -418,7 +426,7 @@ abstract class DefaultApolloExtension(
       if (project.hasKotlinPlugin()) {
         checkKotlinPluginVersion(project)
       }
-      
+
       val generateKotlinModels: Boolean
       when {
         service.generateKotlinModels.isPresent -> {
@@ -454,8 +462,19 @@ abstract class DefaultApolloExtension(
       task.targetLanguage.set(targetLanguage)
       task.warnOnDeprecatedUsages.set(service.warnOnDeprecatedUsages)
       task.failOnWarnings.set(service.failOnWarnings)
+
+      val scalarTypeMappingFallbackOldSyntax = service.customScalarsMapping.orElse(
+          service.customTypeMapping
+      ).getOrElse(emptyMap())
+
+      check(service.scalarTypeMapping.isEmpty() || scalarTypeMappingFallbackOldSyntax.isEmpty()) {
+        "Apollo: either mapScalar() or customScalarsMapping can be used, but not both"
+      }
       @Suppress("DEPRECATION")
-      task.customScalarsMapping.set(service.customScalarsMapping.orElse(service.customTypeMapping))
+      task.scalarTypeMapping.set(
+          service.scalarTypeMapping.ifEmpty { scalarTypeMappingFallbackOldSyntax }
+      )
+      task.scalarAdapterMapping.set(service.scalarAdapterMapping)
       task.outputDir.apply {
         set(service.outputDir.orElse(BuildDirLayout.outputDir(project, service)).get())
         disallowChanges()
@@ -508,10 +527,12 @@ abstract class DefaultApolloExtension(
       task.generateFragmentImplementations.set(service.generateFragmentImplementations)
       task.generateQueryDocument.set(service.generateQueryDocument)
       task.generateSchema.set(service.generateSchema)
+      task.generatedSchemaName.set(service.generatedSchemaName)
       task.codegenModels.set(service.codegenModels)
       task.flattenModels.set(service.flattenModels)
       @OptIn(ApolloExperimental::class)
       task.generateTestBuilders.set(service.generateTestBuilders)
+      task.useSchemaPackageNameForFragments.set(service.useSchemaPackageNameForFragments)
       task.sealedClassesForEnumsMatching.set(service.sealedClassesForEnumsMatching)
       task.generateOptionalOperationVariables.set(service.generateOptionalOperationVariables)
       task.languageVersion.set(service.languageVersion)
@@ -658,4 +679,7 @@ abstract class DefaultApolloExtension(
       }.toSet()
     }
   }
+
+  private fun Map<String, String>.asScalarInfoMapping(): Map<String, ScalarInfo> =
+      mapValues { (_, value) -> ScalarInfo(value, RuntimeAdapterInitializer) }
 }

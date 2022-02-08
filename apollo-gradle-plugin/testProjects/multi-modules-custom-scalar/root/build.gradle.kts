@@ -14,5 +14,6 @@ dependencies {
 apollo {
   packageName.set("com.library")
   generateApolloMetadata.set(true)
-  customScalarsMapping.set(mapOf("Date" to "java.util.Date"))
+  mapScalar("Date", "java.util.Date")
+  mapScalar("ID", "com.library.MyID", "com.library.MyIDAdapter()")
 }

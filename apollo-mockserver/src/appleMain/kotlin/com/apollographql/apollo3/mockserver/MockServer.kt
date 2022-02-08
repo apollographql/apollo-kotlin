@@ -31,10 +31,11 @@ import kotlin.native.concurrent.freeze
  * call. Can be used to simulate slow connections.
  */
 actual class MockServer(
-    private val acceptDelayMillis: Long
-): MockServerInterface {
+    private val acceptDelayMillis: Long,
+    override val mockServerHandler: MockServerHandler = QueueMockServerHandler(),
+) : MockServerInterface {
 
-  actual constructor(): this(0)
+  actual constructor(mockServerHandler: MockServerHandler) : this(0, mockServerHandler)
 
   private val pthreadT: pthread_tVar
   private val port: Int
@@ -70,7 +71,7 @@ actual class MockServer(
 
     pthreadT = nativeHeap.alloc()
 
-    socket = Socket(socketFd, acceptDelayMillis)
+    socket = Socket(socketFd, acceptDelayMillis, mockServerHandler)
 
     val stableRef = StableRef.create(socket!!.freeze())
 
@@ -79,23 +80,30 @@ actual class MockServer(
 
       val ref = arg!!.asStableRef<Socket>()
 
-      ref.get().also {
-        ref.dispose()
-      }.run()
+      try {
+        ref.get().also {
+          ref.dispose()
+        }.run()
+      } catch (e: Throwable) {
+        println("MockServer socket thread crashed: $e")
+        e.printStackTrace()
+      }
 
       null
     }, stableRef.asCPointer())
   }
 
   override suspend fun url(): String {
-    return "http://localhost:$port"
+    return "http://localhost:$port/"
   }
 
   override fun enqueue(mockResponse: MockResponse) {
     check(socket != null) {
       "Cannot enqueue a response to a stopped MockServer"
     }
-    socket!!.enqueue(mockResponse)
+    val queueMockServerHandler = mockServerHandler as? QueueMockServerHandler
+        ?: error("Apollo: cannot call MockServer.enqueue() with a custom handler")
+    queueMockServerHandler.enqueue(mockResponse)
   }
 
   /**
@@ -116,7 +124,7 @@ actual class MockServer(
     socket = null
   }
 
-  override fun takeRequest(): MockRecordedRequest {
+  override fun takeRequest(): MockRequest {
     check(socket != null) {
       "Cannot take a request from a stopped MockServer"
     }

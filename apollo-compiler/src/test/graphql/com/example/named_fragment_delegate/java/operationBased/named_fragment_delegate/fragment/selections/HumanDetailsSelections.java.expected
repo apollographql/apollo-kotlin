@@ -6,20 +6,20 @@
 package com.example.named_fragment_delegate.fragment.selections;
 
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompiledGraphQL;
 import com.apollographql.apollo3.api.CompiledListType;
 import com.apollographql.apollo3.api.CompiledNotNullType;
 import com.apollographql.apollo3.api.CompiledSelection;
 import com.example.named_fragment_delegate.type.Character;
 import com.example.named_fragment_delegate.type.FriendsConnection;
 import com.example.named_fragment_delegate.type.FriendsEdge;
+import com.example.named_fragment_delegate.type.GraphQLString;
 import com.example.named_fragment_delegate.type.URL;
 import java.util.Arrays;
 import java.util.List;
 
 public class HumanDetailsSelections {
   private static List<CompiledSelection> node = Arrays.asList(
-    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build()
+    new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build()
   );
 
   private static List<CompiledSelection> edges = Arrays.asList(
@@ -31,7 +31,7 @@ public class HumanDetailsSelections {
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("profileLink", new CompiledNotNullType(URL.type)).build(),
     new CompiledField.Builder("friendsConnection", new CompiledNotNullType(FriendsConnection.type)).selections(friendsConnection).build()
   );

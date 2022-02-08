@@ -22,14 +22,6 @@ class IncomingOptions(
     val schemaPackageName: String,
 ) {
   companion object {
-    fun fromMetadata(commonMetadata: CommonMetadata, packageNameGenerator: PackageNameGenerator): IncomingOptions {
-      return IncomingOptions(
-          schema = commonMetadata.schema,
-          codegenModels = commonMetadata.codegenModels,
-          schemaPackageName = packageNameGenerator.packageName(commonMetadata.schemaPath)
-      )
-    }
-
     @OptIn(ApolloExperimental::class)
     fun resolveSchema(schemaFiles: Collection<File>, rootFolders: List<String>): Pair<Schema, String> {
       check(schemaFiles.isNotEmpty()) {
@@ -46,9 +38,12 @@ class IncomingOptions(
             || it.definitions.filterIsInstance<GQLTypeDefinition>().any { it.name == "Query" }
       }
 
-      check(mainSchemaDocuments.size == 1) {
-        "Multiple schemas found:\n${mainSchemaDocuments.map { it.filePath }.joinToString("\n")}\n" +
-            "Use different services for different schemas"
+      if (mainSchemaDocuments.size > 1) {
+        error("Multiple schemas found:\n${mainSchemaDocuments.map { it.filePath }.joinToString("\n")}\n" +
+            "Use different services for different schemas")
+      } else if (mainSchemaDocuments.isEmpty()) {
+        error("Schema(s) found:\n${schemaFiles.map { it.absolutePath }.joinToString("\n")}\n" +
+            "But none of them contain type definitions.")
       }
       val mainSchemaDocument = mainSchemaDocuments.single()
 

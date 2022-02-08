@@ -21,11 +21,20 @@ internal fun IrCustomScalar.typePropertySpec(): PropertySpec {
    * so the fallback isn't really required here. We still write it as a way to hint the user
    * to what's happening behind the scenes
    */
-  val kotlinName = kotlinName ?: "kotlin.Any"
+  val kotlinName = kotlinName ?: builtinScalarKotlinName(name) ?: "kotlin.Any"
   return PropertySpec
       .builder(Identifier.type, KotlinSymbols.CustomScalarType)
       .initializer("%T(%S, %S)", KotlinSymbols.CustomScalarType, name, kotlinName)
       .build()
+}
+
+private fun builtinScalarKotlinName(name: String): String? = when (name) {
+  "Int" -> "kotlin.Int"
+  "Float" -> "kotlin.Float"
+  "String" -> "kotlin.String"
+  "Boolean" -> "kotlin.Boolean"
+  "ID" -> "kotlin.String"
+  else -> null
 }
 
 internal fun IrEnum.typePropertySpec(): PropertySpec {

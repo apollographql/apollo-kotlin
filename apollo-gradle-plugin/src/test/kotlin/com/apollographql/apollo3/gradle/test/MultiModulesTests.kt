@@ -47,7 +47,7 @@ class MultiModulesTests {
       try {
         TestUtils.executeTask(":node1:generateApolloSources", dir)
         fail("the build did not detect duplicate classes")
-      } catch(e: UnexpectedBuildFailure) {
+      } catch (e: UnexpectedBuildFailure) {
         Truth.assertThat(e.message).contains("duplicate")
         Truth.assertThat(e.message).contains("in modules: node1,node2")
       }
@@ -78,10 +78,22 @@ class MultiModulesTests {
       assertTrue(File(dir, "root/build/generated/source/apollo/service/com/library/type/Date.kt").exists())
       // Leaf metadata doesn't contain anything regarding Date
       val metadata = ApolloMetadata.readFrom(File(dir, "leaf/build/generated/metadata/apollo/service/metadata.json"))
-      Truth.assertThat(metadata.compilerMetadata.resolverInfo.entries.map {it.key.id}).doesNotContain("Date")
+      Truth.assertThat(metadata.compilerMetadata.resolverInfo.entries.map { it.key.id }).doesNotContain("Date")
       // But contains GeoPoint
-      Truth.assertThat(metadata.compilerMetadata.resolverInfo.entries.map {it.key.id}).doesNotContain("Date")
+      Truth.assertThat(metadata.compilerMetadata.resolverInfo.entries.map { it.key.id }).doesNotContain("Date")
       assertTrue(File(dir, "leaf/build/generated/source/apollo/service/com/library/type/GeoPoint.kt").exists())
+    }
+  }
+
+  @Test
+  fun `scalar mapping can only be registered in the schema module`() {
+    TestUtils.withTestProject("multi-modules-custom-scalar-defined-in-leaf") { dir ->
+      try {
+        TestUtils.executeTaskAndAssertSuccess(":leaf:assemble", dir)
+        fail("the build did not detect scalar mapping registered in leaf module")
+      } catch (e: UnexpectedBuildFailure) {
+        Truth.assertThat(e.message).contains("Mapping scalars can only be done in the schema module")
+      }
     }
   }
 }

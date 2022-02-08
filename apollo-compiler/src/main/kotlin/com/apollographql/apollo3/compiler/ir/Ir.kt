@@ -82,7 +82,7 @@ data class IrOperation(
 data class IrNamedFragment(
     val name: String,
     val description: String?,
-    val filePath: String?,
+    val filePath: String,
     /**
      * Fragments do not have variables per-se (as of writing) but we can infer them from the document
      * Default values will always be null for those

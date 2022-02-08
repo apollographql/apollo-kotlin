@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.ObjectType
 import kotlin.collections.List
 
 /**
- * A __Schema object containing all the composite types and a possibleTypes helper function
+ * A ___Schema object containing all the composite types and a possibleTypes helper function
  */
 public object __Schema {
   public val all: List<CompiledType> = listOf(

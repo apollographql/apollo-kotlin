@@ -8,12 +8,12 @@ package com.example.inline_fragment_merge_fields.selections
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.inline_fragment_merge_fields.type.Character
 import com.example.inline_fragment_merge_fields.type.FriendsConnection
 import com.example.inline_fragment_merge_fields.type.FriendsEdge
+import com.example.inline_fragment_merge_fields.type.GraphQLString
 import com.example.inline_fragment_merge_fields.type.URL
 import kotlin.collections.List
 
@@ -21,7 +21,7 @@ public object TestQuerySelections {
   private val node: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = CompiledStringType.notNull()
+          type = GraphQLString.type.notNull()
         ).build()
       )
 
@@ -44,7 +44,7 @@ public object TestQuerySelections {
   private val node1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = CompiledStringType.notNull()
+          type = GraphQLString.type.notNull()
         ).build()
       )
 
@@ -67,7 +67,7 @@ public object TestQuerySelections {
   private val onCharacter: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = CompiledStringType.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "profileLink",
@@ -83,11 +83,11 @@ public object TestQuerySelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "name",
-          type = CompiledStringType.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "friendsConnection",

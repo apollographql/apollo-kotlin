@@ -8,14 +8,14 @@ package com.example.custom_scalar_type.adapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.custom_scalar_type.TestQuery
-import com.example.custom_scalar_type.type.URL
+import com.example.custom_scalar_type.type.GraphQLID
+import java.lang.Long
 import java.util.Date
 import kotlin.Any
 import kotlin.String
@@ -52,12 +52,13 @@ public object TestQuery_ResponseAdapter {
     }
 
     private object Hero : Adapter<TestQuery.Data.Hero> {
-      public val RESPONSE_NAMES: List<String> = listOf("name", "birthDate", "appearanceDates",
+      public val RESPONSE_NAMES: List<String> = listOf("id", "name", "birthDate", "appearanceDates",
           "fieldWithUnsupportedType", "profileLink", "links")
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Hero {
-        var name: String? = null
+        var id: Long? = null
+        var name: java.lang.String? = null
         var birthDate: Date? = null
         var appearanceDates: List<Date>? = null
         var fieldWithUnsupportedType: Any? = null
@@ -66,21 +67,22 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> birthDate = customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).fromJson(reader,
+            0 -> id = customScalarAdapters.responseAdapterFor<Long>(GraphQLID.type).fromJson(reader,
                 customScalarAdapters)
-            2 -> appearanceDates = customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).list().fromJson(reader,
+            1 -> name = com.example.MyStringAdapter().fromJson(reader, customScalarAdapters)
+            2 -> birthDate = customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).fromJson(reader,
                 customScalarAdapters)
-            3 -> fieldWithUnsupportedType = AnyAdapter.fromJson(reader, customScalarAdapters)
-            4 -> profileLink = customScalarAdapters.responseAdapterFor<java.lang.String>(URL.type).fromJson(reader,
+            3 -> appearanceDates = customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).list().fromJson(reader,
                 customScalarAdapters)
-            5 -> links = customScalarAdapters.responseAdapterFor<java.lang.String>(URL.type).list().fromJson(reader,
-                customScalarAdapters)
+            4 -> fieldWithUnsupportedType = AnyAdapter.fromJson(reader, customScalarAdapters)
+            5 -> profileLink = com.example.UrlAdapter.fromJson(reader, customScalarAdapters)
+            6 -> links = com.example.UrlAdapter.list().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.Hero(
+          id = id!!,
           name = name!!,
           birthDate = birthDate!!,
           appearanceDates = appearanceDates!!,
@@ -95,8 +97,12 @@ public object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Hero
       ): Unit {
+        writer.name("id")
+        customScalarAdapters.responseAdapterFor<Long>(GraphQLID.type).toJson(writer,
+            customScalarAdapters, value.id)
+
         writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
+        com.example.MyStringAdapter().toJson(writer, customScalarAdapters, value.name)
 
         writer.name("birthDate")
         customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).toJson(writer,
@@ -110,12 +116,10 @@ public object TestQuery_ResponseAdapter {
         AnyAdapter.toJson(writer, customScalarAdapters, value.fieldWithUnsupportedType)
 
         writer.name("profileLink")
-        customScalarAdapters.responseAdapterFor<java.lang.String>(URL.type).toJson(writer,
-            customScalarAdapters, value.profileLink)
+        com.example.UrlAdapter.toJson(writer, customScalarAdapters, value.profileLink)
 
         writer.name("links")
-        customScalarAdapters.responseAdapterFor<java.lang.String>(URL.type).list().toJson(writer,
-            customScalarAdapters, value.links)
+        com.example.UrlAdapter.list().toJson(writer, customScalarAdapters, value.links)
       }
     }
   }

@@ -8,12 +8,8 @@ package com.apollographql.apollo3.compiler
 interface PackageNameGenerator {
   /**
    * This will be called with
-   * - the executable filePath for operations
+   * - the executable filePath for operations and fragments
    * - the main schema filePath for everything else
-   *
-   * **Note**: Fragments are generated using the fixed schema package name and not the file
-   * where they are defined. This is because multi-modules scenarios need to know where to
-   * lookup fragments
    */
   fun packageName(filePath: String): String
 

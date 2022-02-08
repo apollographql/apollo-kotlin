@@ -152,16 +152,72 @@ val NetworkFirstInterceptor = object : ApolloInterceptor {
   }
 }
 
+/**
+ * An interceptor that goes to cache first and then to the network.
+ * An exception is not thrown if the cache fails, whereas an exception will be thrown upon network failure.
+ */
+val CacheAndNetworkInterceptor = object : ApolloInterceptor {
+  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+    return flow {
+      var cacheException: ApolloException? = null
+      var networkException: ApolloException? = null
+
+      val cacheResponse = chain.proceed(
+          request = request
+              .newBuilder()
+              .fetchFromCache(true)
+              .build()
+      ).catch { throwable ->
+        if (throwable is ApolloException) {
+          cacheException = throwable
+        } else {
+          throw throwable
+        }
+      }.singleOrNull()
+
+      if (cacheResponse != null) {
+        emit(cacheResponse)
+      }
+
+      val networkResponse = chain.proceed(request)
+          .catch {
+            if (it is ApolloException) {
+              networkException = it
+            } else {
+              throw it
+            }
+          }.singleOrNull()
+
+      if (networkResponse != null) {
+        emit(
+            networkResponse.newBuilder()
+                .cacheInfo(
+                    networkResponse.cacheInfo!!
+                        .newBuilder()
+                        .cacheMissException(cacheException as? CacheMissException)
+                        .build()
+                )
+                .build()
+        )
+        return@flow
+      }
+      if (cacheException != null) {
+        throw ApolloCompositeException(
+            cacheException,
+            networkException
+        )
+      }
+      throw networkException!!
+    }
+  }
+}
+
 internal val FetchPolicyRouterInterceptor = object : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     if (request.operation !is Query) {
       // Subscriptions and Mutations do not support fetchPolicies
       return chain.proceed(request)
     }
-    return if (!request.isRefetching) {
-      request.fetchPolicyInterceptor.intercept(request, chain)
-    } else {
-      request.refetchPolicyInterceptor.intercept(request, chain)
-    }
+    return request.fetchPolicyInterceptor.intercept(request, chain)
   }
 }

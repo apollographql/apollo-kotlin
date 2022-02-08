@@ -1,0 +1,46 @@
+query GetCatIncludeVariable($withCat: Boolean!) {
+  animal {
+    ... on Cat @include(if: $withCat) {
+      meow
+    }
+  }
+}
+
+query GetCatIncludeFalse {
+  animal {
+    ... on Cat @include(if: false) {
+      meow
+    }
+  }
+}
+
+query GetCatIncludeTrue {
+  animal {
+    ... on Cat @include(if: true) {
+      meow
+    }
+  }
+}
+
+
+query GetDogSkipVariable($withoutDog: Boolean!) {
+  animal {
+    ...dogFragment @skip(if: $withoutDog)
+  }
+}
+
+query GetDogSkipTrue {
+  animal {
+    ...dogFragment @skip(if: true)
+  }
+}
+
+query GetDogSkipFalse {
+  animal {
+    ...dogFragment @skip(if: false)
+  }
+}
+
+fragment dogFragment on Dog {
+  barf
+}

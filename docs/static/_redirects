@@ -1,3 +1,15 @@
+# The v3 docs were beta for a while, and non-default, but now that they are
+# default, the v3 docs don't exist anymore.  So redirect them to the default!
+/v3/* /docs/kotlin/:splat
+/introduction/ /docs/kotlin/
+/essentials/ /docs/kotlin/essentials/file-types/
+/essentials/get-started* /docs/kotlin/tutorial/00-introduction/
+/fetching-queries/ /docs/kotlin/essentials/queries/
+/advanced/coroutines/ /docs/kotlin/
+/essentials/using-aliases/ /docs/kotlin/advanced/using-aliases/
+/essentials/named-fragments/ /docs/kotlin/essentials/fragments/
+/essentials/inline-fragments/ /docs/kotlin/essentials/fragments/
+
 /advanced/file-upload/ /docs/kotlin/essentials/mutations/#uploading-files
 /essentials/caching/ /docs/kotlin/essentials/normalized-cache
 /advanced/android/ /docs/kotlin/advanced/ui-tests/

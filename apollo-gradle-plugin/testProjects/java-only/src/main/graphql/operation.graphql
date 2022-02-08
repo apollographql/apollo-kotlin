@@ -1,3 +1,7 @@
 query GetRandom {
+    nullableLong
+    long
+    nullableId
+    id
     random
 }

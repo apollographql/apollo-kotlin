@@ -7,9 +7,11 @@ package com.example.interface_on_interface.selections;
 
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CompiledFragment;
-import com.apollographql.apollo3.api.CompiledGraphQL;
 import com.apollographql.apollo3.api.CompiledNotNullType;
 import com.apollographql.apollo3.api.CompiledSelection;
+import com.example.interface_on_interface.type.GraphQLFloat;
+import com.example.interface_on_interface.type.GraphQLID;
+import com.example.interface_on_interface.type.GraphQLString;
 import com.example.interface_on_interface.type.Human;
 import com.example.interface_on_interface.type.Node;
 import java.util.Arrays;
@@ -17,17 +19,17 @@ import java.util.List;
 
 public class GetHumanSelections {
   private static List<CompiledSelection> human = Arrays.asList(
-    new CompiledField.Builder("id", new CompiledNotNullType(CompiledGraphQL.CompiledIDType)).build(),
-    new CompiledField.Builder("name", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
-    new CompiledField.Builder("height", new CompiledNotNullType(CompiledGraphQL.CompiledFloatType)).build()
+    new CompiledField.Builder("id", new CompiledNotNullType(GraphQLID.type)).build(),
+    new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
+    new CompiledField.Builder("height", new CompiledNotNullType(GraphQLFloat.type)).build()
   );
 
   private static List<CompiledSelection> onHuman = Arrays.asList(
-    new CompiledField.Builder("height", new CompiledNotNullType(CompiledGraphQL.CompiledFloatType)).build()
+    new CompiledField.Builder("height", new CompiledNotNullType(GraphQLFloat.type)).build()
   );
 
   private static List<CompiledSelection> node = Arrays.asList(
-    new CompiledField.Builder("__typename", new CompiledNotNullType(CompiledGraphQL.CompiledStringType)).build(),
+    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledFragment.Builder("Human", Arrays.asList("Human")).selections(onHuman).build()
   );
 

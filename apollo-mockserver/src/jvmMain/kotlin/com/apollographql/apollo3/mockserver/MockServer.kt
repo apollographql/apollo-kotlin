@@ -1,36 +1,53 @@
 package com.apollographql.apollo3.mockserver
 
 import okhttp3.Headers
+import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockWebServer
+import okhttp3.mockwebserver.RecordedRequest
 import okio.Buffer
 import java.util.concurrent.TimeUnit
 
-actual class MockServer : MockServerInterface {
-  private val mockWebServer = MockWebServer()
+actual class MockServer actual constructor(override val mockServerHandler: MockServerHandler) : MockServerInterface {
+  private val mockWebServer = MockWebServer().apply { dispatcher = mockServerHandler.toOkHttpDispatcher() }
 
   override fun enqueue(mockResponse: MockResponse) {
-    mockWebServer.enqueue(
-        okhttp3.mockwebserver.MockResponse()
-            .setResponseCode(mockResponse.statusCode)
-            .apply {
-              mockResponse.headers.forEach {
-                addHeader(it.key, it.value)
-              }
-            }.setBody(Buffer().apply { write(mockResponse.body) })
-            .setHeadersDelay(mockResponse.delayMillis, TimeUnit.MILLISECONDS)
-    )
+    (mockServerHandler as? QueueMockServerHandler)?.enqueue(mockResponse)
+        ?: error("Apollo: cannot call MockServer.enqueue() with a custom handler")
   }
 
-  override fun takeRequest(): MockRecordedRequest {
-    return mockWebServer.takeRequest(10, TimeUnit.MILLISECONDS)?.let {
-      MockRecordedRequest(
-          method = it.method!!,
-          path = it.path!!,
-          version = parseRequestLine(it.requestLine).third,
-          headers = it.headers.toMap(),
-          body = it.body.readByteString()
-      )
-    } ?: error("No recorded request")
+  override fun takeRequest(): MockRequest {
+    return mockWebServer.takeRequest(10, TimeUnit.MILLISECONDS)?.toApolloMockRequest() ?: error("No recorded request")
+  }
+
+  private fun RecordedRequest.toApolloMockRequest() = MockRequest(
+      method = method!!,
+      path = path!!,
+      version = parseRequestLine(requestLine).third,
+      headers = headers.toMap(),
+      body = body.peek().readByteString()
+  )
+
+  private fun MockResponse.toOkHttpMockResponse() = okhttp3.mockwebserver.MockResponse()
+      .setResponseCode(statusCode)
+      .apply {
+        this@toOkHttpMockResponse.headers.forEach {
+          addHeader(it.key, it.value)
+        }
+      }.setBody(Buffer().apply { write(body) })
+      .setHeadersDelay(delayMillis, TimeUnit.MILLISECONDS)
+
+  private fun MockServerHandler.toOkHttpDispatcher() = object : Dispatcher() {
+    override fun dispatch(request: RecordedRequest): okhttp3.mockwebserver.MockResponse {
+      val apolloMockRequest = request.toApolloMockRequest()
+      val mockResponse = try {
+        handle(apolloMockRequest)
+      } catch (e: Exception) {
+        throw Exception("MockServerHandler.handle() threw an exception: ${e.message}", e)
+      }
+      return mockResponse.toOkHttpMockResponse()
+    }
+
+    override fun shutdown() {}
   }
 
   private fun Headers.toMap(): Map<String, String> = (0.until(size)).map {

@@ -71,7 +71,7 @@ public object TestQuery_ResponseAdapter {
 
       reader.rewind()
       var asBar: TestQuery.AsBar? = null
-      if (possibleTypes("BarObject","FooBar").evaluate(emptySet(), __typename)) {
+      if (possibleTypes("BarObject","FooBar").evaluate(customScalarAdapters.variables(), __typename)) {
         asBar = com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.AsBar.fromJson(reader,
             customScalarAdapters)
       }

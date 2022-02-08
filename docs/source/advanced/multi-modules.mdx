@@ -2,6 +2,8 @@
 title: Multi Modules
 ---
 
+import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
+
 For multi-modules projects, Apollo Kotlin enables you to define queries in a feature module and reuse fragments and types from another module dependency. This helps with better separation of concerns and build times.
 
 ## Setup
@@ -108,6 +110,7 @@ If two sibling modules use the same schema type and this schema type wasn't gene
 
 If that happens, you will need to resolve the type clash manually by forcing generation of the conflicting type in an upstream module. This is done using the `alwaysGenerateTypesMatching` Gradle option:
 
+<MultiCodeBlock>
 
 ```kotlin
 // shared/build.gradle.kts
@@ -118,3 +121,15 @@ apollo {
     alwaysGenerateTypesMatching.set(listOf(".*Input"))
 }
 ```
+
+```groovy
+// shared/build.gradle.kts
+apollo {
+    // For an example if ReviewInput clashes
+    alwaysGenerateTypesMatching.set(["ReviewInput"])
+    // You can also pass Regex patterns
+    alwaysGenerateTypesMatching.set([".*Input"])
+}
+```
+
+</MultiCodeBlock>

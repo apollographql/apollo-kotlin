@@ -57,7 +57,7 @@ public data class TestQuery(
       /**
        * Comment about the movie
        */
-      public val commentary: String?
+      public val commentary: java.lang.String?
     )
   }
 

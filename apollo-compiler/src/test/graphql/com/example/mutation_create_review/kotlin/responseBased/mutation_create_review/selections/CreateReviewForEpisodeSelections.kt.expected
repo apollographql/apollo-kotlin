@@ -7,15 +7,15 @@ package com.example.mutation_create_review.selections
 
 import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CompiledIntType
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.mutation_create_review.type.Character
 import com.example.mutation_create_review.type.Date
 import com.example.mutation_create_review.type.Episode
+import com.example.mutation_create_review.type.GraphQLInt
+import com.example.mutation_create_review.type.GraphQLString
 import com.example.mutation_create_review.type.Review
 import kotlin.collections.List
 
@@ -23,22 +23,22 @@ internal object CreateReviewForEpisodeSelections {
   private val listOfListOfObject: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
-          type = CompiledStringType.notNull()
+          type = GraphQLString.type.notNull()
         ).build()
       )
 
   private val createReview: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "stars",
-          type = CompiledIntType.notNull()
+          type = GraphQLInt.type.notNull()
         ).build(),
         CompiledField.Builder(
           name = "commentary",
-          type = CompiledStringType
+          type = GraphQLString.type
         ).build(),
         CompiledField.Builder(
           name = "listOfListOfString",
-          type = CompiledStringType.notNull().list().notNull().list()
+          type = GraphQLString.type.notNull().list().notNull().list()
         ).build(),
         CompiledField.Builder(
           name = "listOfListOfEnum",

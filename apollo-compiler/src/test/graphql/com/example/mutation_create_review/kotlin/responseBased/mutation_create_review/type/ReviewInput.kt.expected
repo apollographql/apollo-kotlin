@@ -6,10 +6,10 @@
 package com.example.mutation_create_review.type
 
 import com.apollographql.apollo3.api.Optional
+import java.lang.String
 import java.util.Date
 import kotlin.Boolean
 import kotlin.Int
-import kotlin.String
 import kotlin.collections.List
 
 /**

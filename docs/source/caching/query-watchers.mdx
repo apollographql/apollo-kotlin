@@ -142,11 +142,11 @@ Because the `setTodoCompleted` field above returns an `Item` type with both an `
 
 It's often possible to predict the most likely result of a mutation _before_ your GraphQL server returns it. Apollo Kotlin can use this "most likely result" to update your UI **optimistically**, making your app feel more responsive to the user.
 
-You provide optimistic data with the `optimisticResponse` method, like so:
+You provide optimistic data with the `optimisticUpdates` method, like so:
 
 ```kotlin{2-7}
 apolloClient.mutation(SetTodocompletedMutation(id = "1", completed = true))
-  .optimisticResponse(
+  .optimisticUpdates(
     SetTodocompletedMutation.Data(
       id = "1",
       completed = true,
@@ -155,4 +155,4 @@ apolloClient.mutation(SetTodocompletedMutation(id = "1", completed = true))
   .execute()
 ```
 
-This optimistic response is written to the cache immediately, and any watchers of the corresponding data are notified. Then when the operation returns, the cache is updated _again_ with any changes, and watchers are notified again. If the optimistic response is correct, the second cache update is invisible to the user, because no data changes.
+This optimistic data is written to the cache immediately, and any watchers of the corresponding data are notified. Then when the operation returns, the cache is updated _again_ with any changes, and watchers are notified again. If the optimistic data is correct, the second cache update is invisible to the user, because no data changes.

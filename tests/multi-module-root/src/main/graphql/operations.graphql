@@ -1,3 +1,7 @@
 query GetLong {
   long
 }
+
+fragment QueryDetails on Query {
+  long
+}

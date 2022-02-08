@@ -8,18 +8,18 @@ package com.example.fragment_used_twice.selections
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
 import com.apollographql.apollo3.api.notNull
 import com.example.fragment_used_twice.fragment.selections.HeroDetailsSelections
 import com.example.fragment_used_twice.fragment.selections.HumanDetailsSelections
 import com.example.fragment_used_twice.type.Character
+import com.example.fragment_used_twice.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
-          type = CompiledStringType.notNull()
+          type = GraphQLString.type.notNull()
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Character",

@@ -77,6 +77,7 @@ public final class com/apollographql/apollo3/cache/normalized/CacheMissLoggingIn
 }
 
 public final class com/apollographql/apollo3/cache/normalized/FetchPolicy : java/lang/Enum {
+	public static final field CacheAndNetwork Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;
 	public static final field CacheFirst Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;
 	public static final field CacheOnly Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;
 	public static final field NetworkFirst Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;
@@ -86,6 +87,7 @@ public final class com/apollographql/apollo3/cache/normalized/FetchPolicy : java
 }
 
 public final class com/apollographql/apollo3/cache/normalized/FetchPolicyInterceptors {
+	public static final fun getCacheAndNetworkInterceptor ()Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;
 	public static final fun getCacheFirstInterceptor ()Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;
 	public static final fun getCacheOnlyInterceptor ()Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;
 	public static final fun getNetworkFirstInterceptor ()Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;
@@ -118,6 +120,11 @@ public final class com/apollographql/apollo3/cache/normalized/NormalizedCache {
 	public static synthetic fun store$default (Lcom/apollographql/apollo3/ApolloClient$Builder;Lcom/apollographql/apollo3/cache/normalized/ApolloStore;ZILjava/lang/Object;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public static final fun storePartialResponses (Lcom/apollographql/apollo3/api/MutableExecutionOptions;Z)Ljava/lang/Object;
 	public static final fun watch (Lcom/apollographql/apollo3/ApolloCall;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun watch (Lcom/apollographql/apollo3/ApolloCall;Lcom/apollographql/apollo3/api/Query$Data;Lkotlin/jvm/functions/Function3;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun watch (Lcom/apollographql/apollo3/ApolloCall;Z)Lkotlinx/coroutines/flow/Flow;
+	public static final fun watch (Lcom/apollographql/apollo3/ApolloCall;ZZ)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun watch$default (Lcom/apollographql/apollo3/ApolloCall;Lcom/apollographql/apollo3/api/Query$Data;Lkotlin/jvm/functions/Function3;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun watch$default (Lcom/apollographql/apollo3/ApolloCall;ZZILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun writeToCacheAsynchronously (Lcom/apollographql/apollo3/api/MutableExecutionOptions;Z)Ljava/lang/Object;
 }
 

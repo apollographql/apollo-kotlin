@@ -1,0 +1,23 @@
+type Query {
+    hero(id: ID!): Character!
+    date: MyDate
+}
+
+interface Character {
+    id: ID!
+    name: String!
+}
+
+type Droid implements Character {
+    id: ID!
+    name: String!
+    primaryFunction: String!
+}
+
+type Human implements Character {
+    id: ID!
+    name: String!
+    height: Float!
+}
+
+scalar MyDate

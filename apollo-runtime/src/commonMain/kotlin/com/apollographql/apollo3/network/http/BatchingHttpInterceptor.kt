@@ -50,6 +50,9 @@ import kotlin.jvm.JvmStatic
  *
  * [BatchingHttpInterceptor] only works with Post requests. Trying to batch a Get request is undefined.
  *
+ * HTTP headers will be merged from all requests in the batch by keeping the ones that have the same name and value in all requests. Any
+ * headers present in only some requests, or with different values in some requests will be dropped.
+ *
  * @param batchIntervalMillis the maximum time interval before a new batch is sent
  * @param maxBatchSize the maximum number of requests queued before a new batch is sent
  * @param exposeErrorBody configures whether to expose the error body in [ApolloHttpException].
@@ -138,6 +141,12 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
     }
 
     val allBodies = pending.map { it.request.body ?: error("empty body while batching queries") }
+    // Only keep headers with the same name and value in all requests
+    val commonHeaders = pending.map { it.request.headers }.reduce { acc, headers ->
+      acc.intersect(headers.toSet()).toList()
+    }
+        // Also do not send our internal use header
+        .filter { it.name != ExecutionOptions.CAN_BE_BATCHED }
 
     val body = object : HttpBody {
       override val contentType = "application/json"
@@ -159,9 +168,10 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
     val request = HttpRequest.Builder(
         method = HttpMethod.Post,
         url = firstRequest.url,
-    ).body(
-        body = body,
-    ).build()
+    )
+        .body(body)
+        .headers(commonHeaders)
+        .build()
 
     freeze(request)
 
@@ -198,8 +208,8 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
         }
         @OptIn(ApolloInternal::class)
         (buildJsonByteString {
-      AnyAdapter.toJson(this, CustomScalarAdapters.Empty, it)
-    })
+          AnyAdapter.toJson(this, CustomScalarAdapters.Empty, it)
+        })
       }
     } catch (e: ApolloException) {
       exception = e

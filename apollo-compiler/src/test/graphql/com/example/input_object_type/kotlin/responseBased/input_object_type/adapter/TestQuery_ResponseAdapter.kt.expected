@@ -8,7 +8,6 @@ package com.example.input_object_type.adapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
-import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -54,12 +53,13 @@ public object TestQuery_ResponseAdapter {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.CreateReview {
         var stars: Int? = null
-        var commentary: String? = null
+        var commentary: java.lang.String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> stars = IntAdapter.fromJson(reader, customScalarAdapters)
-            1 -> commentary = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> commentary = com.example.MyStringAdapter().nullable().fromJson(reader,
+                customScalarAdapters)
             else -> break
           }
         }
@@ -79,7 +79,8 @@ public object TestQuery_ResponseAdapter {
         IntAdapter.toJson(writer, customScalarAdapters, value.stars)
 
         writer.name("commentary")
-        NullableStringAdapter.toJson(writer, customScalarAdapters, value.commentary)
+        com.example.MyStringAdapter().nullable().toJson(writer, customScalarAdapters,
+            value.commentary)
       }
     }
   }

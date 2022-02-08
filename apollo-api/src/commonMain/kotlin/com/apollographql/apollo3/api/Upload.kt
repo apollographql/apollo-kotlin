@@ -9,9 +9,10 @@ import okio.BufferedSink
  * Use this to map your upload custom scalar and the apollo runtime will be able to extract them
  * and send them out of band.
  *
- * customScalarsMapping.set(mapOf(
- *   "Upload" to "com.apollographql.apollo3.api.Upload"
- * ))
+ * In your build.gradle file:
+ * ```
+ * mapScalarToUpload(Upload)
+ * ```
  *
  * If you have a JVM File at hand, see also [com.apollographql.apollo3.api.DefaultUpload.Builder.content]
  */

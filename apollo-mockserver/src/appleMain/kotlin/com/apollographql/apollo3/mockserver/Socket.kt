@@ -31,11 +31,14 @@ import kotlin.experimental.and
 import kotlin.native.concurrent.AtomicInt
 import kotlin.native.concurrent.freeze
 
-class Socket(private val socketFd: Int, private val acceptDelayMillis: Long) {
+class Socket(
+    private val socketFd: Int,
+    private val acceptDelayMillis: Long,
+    private val mockServerHandler: MockServerHandler,
+) {
   private val pipeFd = nativeHeap.allocArray<IntVar>(2)
   private val running = AtomicInt(1)
   private val lock = reentrantLock()
-  private val queuedResponses = NSMutableArray()
   private val recordedRequests = NSMutableArray()
 
   init {
@@ -81,7 +84,7 @@ class Socket(private val socketFd: Int, private val acceptDelayMillis: Long) {
 
         val one = alloc<IntVar>()
         one.value = 1
-        setsockopt(connectionFd, SOL_SOCKET, SO_NOSIGPIPE, one.ptr, 4);
+        setsockopt(connectionFd, SOL_SOCKET, SO_NOSIGPIPE, one.ptr, 4)
 
         handleConnection(connectionFd)
         close(connectionFd)
@@ -128,13 +131,11 @@ class Socket(private val socketFd: Int, private val acceptDelayMillis: Long) {
 
         val mockResponse = synchronized(lock) {
           recordedRequests.addObject(request.freeze())
-
-          check(queuedResponses.count.toInt() > 0) {
-            "no queued responses"
+          try {
+            mockServerHandler.handle(request)
+          } catch (e: Exception) {
+            throw Exception("MockServerHandler.handle() threw an exception: ${e.message}", e)
           }
-          queuedResponses.objectAtIndex(0).also {
-            queuedResponses.removeObjectAtIndex(0)
-          } as MockResponse
         }
 
         debug("Write response: ${mockResponse.statusCode}")
@@ -166,20 +167,14 @@ class Socket(private val socketFd: Int, private val acceptDelayMillis: Long) {
     nativeHeap.free(pipeFd.rawValue)
   }
 
-  fun enqueue(mockResponse: MockResponse) {
-    synchronized(lock) {
-      queuedResponses.addObject(mockResponse.freeze())
-    }
-  }
-
-  fun takeRequest(): MockRecordedRequest {
+  fun takeRequest(): MockRequest {
     return synchronized(lock) {
       check(recordedRequests.count.toInt() > 0) {
         "no recorded request"
       }
       recordedRequests.objectAtIndex(0).also {
         recordedRequests.removeObjectAtIndex(0)
-      } as MockRecordedRequest
+      } as MockRequest
     }
   }
 }

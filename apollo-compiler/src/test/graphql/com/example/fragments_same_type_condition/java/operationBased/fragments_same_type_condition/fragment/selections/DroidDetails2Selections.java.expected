@@ -6,13 +6,13 @@
 package com.example.fragments_same_type_condition.fragment.selections;
 
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompiledGraphQL;
 import com.apollographql.apollo3.api.CompiledSelection;
+import com.example.fragments_same_type_condition.type.GraphQLString;
 import java.util.Arrays;
 import java.util.List;
 
 public class DroidDetails2Selections {
   public static List<CompiledSelection> root = Arrays.asList(
-    new CompiledField.Builder("primaryFunction", CompiledGraphQL.CompiledStringType).build()
+    new CompiledField.Builder("primaryFunction", GraphQLString.type).build()
   );
 }

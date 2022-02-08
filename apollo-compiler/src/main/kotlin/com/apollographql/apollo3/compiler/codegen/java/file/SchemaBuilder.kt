@@ -20,6 +20,7 @@ import javax.lang.model.element.Modifier
 
 class SchemaBuilder(
     private val context: JavaContext,
+    private val generatedSchemaName: String,
     private val objects: List<IrObject>,
     private val interfaces: List<IrInterface>,
     private val unions: List<IrUnion>,
@@ -54,8 +55,8 @@ class SchemaBuilder(
   }
 
   private fun typeSpec(): TypeSpec {
-    return TypeSpec.classBuilder(layout.schemaName())
-        .addJavadoc("A __Schema object containing all the composite types and a possibleTypes helper function")
+    return TypeSpec.classBuilder(generatedSchemaName)
+        .addJavadoc("A Schema object containing all the composite types and a possibleTypes helper function")
         .addModifiers(Modifier.PUBLIC)
         .addField(typesFieldSpec())
         .addMethod(possibleTypesFunSpec())

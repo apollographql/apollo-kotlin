@@ -11,5 +11,5 @@ import com.apollographql.apollo3.api.CustomScalarType;
  * UnsupportedType for testing
  */
 public class UnsupportedType {
-  public static CustomScalarType type = new CustomScalarType("UnsupportedType", "kotlin.Any");
+  public static CustomScalarType type = new CustomScalarType("UnsupportedType", "java.lang.Object");
 }

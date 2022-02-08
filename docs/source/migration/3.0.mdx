@@ -511,7 +511,7 @@ val apolloClient = ApolloClient.builder()
 
 
 // With
-val objectIdGenerator = object : CacheKeyGenerator {
+val cacheKeyGenerator = object : CacheKeyGenerator {
   override fun cacheKeyForObject(obj: Map<String, Any?>, context: CacheKeyGeneratorContext): CacheKey? {
     return obj["id"]?.toString()?.let { CacheKey(it) } ?: TypePolicyCacheKeyGenerator.cacheKeyForObject(obj, context)
   }
@@ -525,7 +525,7 @@ val cacheKeyResolver = object : CacheKeyResolver() {
 
 val apolloClient = ApolloClient("https://").normalizedCache(
     normalizedCacheFactory = cacheFactory,
-    objectIdGenerator = objectIdGenerator,
+    cacheKeyGenerator = cacheKeyGenerator,
     cacheResolver = cacheKeyResolver
 )
 ```

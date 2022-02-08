@@ -1,0 +1,7 @@
+type Query {
+  date: Date!
+  long: Long!
+}
+
+scalar Date
+scalar Long

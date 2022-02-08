@@ -47,7 +47,7 @@ object ApolloCompiler {
           "enclosing one.")
     }
 
-    checkCustomScalars(schema, options.customScalarsMapping)
+    checkCustomScalars(schema, options.scalarMapping)
 
     outputDir.deleteRecursively()
     outputDir.mkdirs()
@@ -142,7 +142,7 @@ object ApolloCompiler {
         fragmentDefinitions = fragments,
         allFragmentDefinitions = allFragmentDefinitions,
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
-        customScalarsMapping = options.customScalarsMapping,
+        scalarMapping = options.scalarMapping,
         codegenModels = options.codegenModels,
         generateOptionalOperationVariables = options.generateOptionalOperationVariables
     ).build()
@@ -182,10 +182,13 @@ object ApolloCompiler {
             useSemanticNaming = options.useSemanticNaming,
             packageNameGenerator = options.packageNameGenerator,
             schemaPackageName = options.schemaPackageName,
+            useSchemaPackageNameForFragments = options.useSchemaPackageNameForFragments,
             generateFragmentImplementations = options.generateFragmentImplementations,
             generateQueryDocument = options.generateQueryDocument,
             generateSchema = options.generateSchema,
+            generatedSchemaName = options.generatedSchemaName,
             flatten = options.flattenModels,
+            scalarMapping = options.scalarMapping,
         ).write(outputDir = outputDir)
       }
       else -> {
@@ -197,18 +200,20 @@ object ApolloCompiler {
             useSemanticNaming = options.useSemanticNaming,
             packageNameGenerator = options.packageNameGenerator,
             schemaPackageName = options.schemaPackageName,
+            useSchemaPackageNameForFragments = options.useSchemaPackageNameForFragments,
             generateFilterNotNull = options.generateFilterNotNull,
             generateFragmentImplementations = options.generateFragmentImplementations,
             generateQueryDocument = options.generateQueryDocument,
             generateSchema = options.generateSchema,
+            generatedSchemaName = options.generatedSchemaName,
             generateTestBuilders = options.generateTestBuilders,
             flatten = options.flattenModels,
             sealedClassesForEnumsMatching = options.sealedClassesForEnumsMatching,
             targetLanguageVersion = options.targetLanguage,
+            scalarMapping = options.scalarMapping,
         ).write(outputDir = outputDir, testDir = testDir)
       }
     }
-
 
     return CompilerMetadata(
         fragments = fragments,
@@ -216,7 +221,7 @@ object ApolloCompiler {
     )
   }
 
-  private fun checkCustomScalars(schema: Schema, customScalarsMapping: Map<String, String>) {
+  private fun checkCustomScalars(schema: Schema, scalarMapping: Map<String, ScalarInfo>) {
     /**
      * Generate the mapping for all custom scalars
      *
@@ -226,10 +231,9 @@ object ApolloCompiler {
         .typeDefinitions
         .values
         .filterIsInstance<GQLScalarTypeDefinition>()
-        .filter { !it.isBuiltIn() }
         .map { type -> type.name }
         .toSet()
-    val unknownScalars = customScalarsMapping.keys.subtract(schemaScalars)
+    val unknownScalars = scalarMapping.keys.subtract(schemaScalars)
     check(unknownScalars.isEmpty()) {
       "Apollo: unknown custom scalar(s) in customScalarsMapping: ${unknownScalars.joinToString(",")}"
     }

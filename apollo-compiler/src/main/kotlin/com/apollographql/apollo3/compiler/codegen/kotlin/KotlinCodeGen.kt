@@ -2,6 +2,7 @@ package com.apollographql.apollo3.compiler.codegen.kotlin
 
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.PackageNameGenerator
+import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.CustomScalarBuilder
@@ -40,6 +41,7 @@ class KotlinCodeGen(
     private val useSemanticNaming: Boolean,
     private val packageNameGenerator: PackageNameGenerator,
     private val schemaPackageName: String,
+    private val useSchemaPackageNameForFragments: Boolean,
     /**
      * The operation id cannot be set in [IrOperation] because it needs access to [IrOperation.sourceWithFragments]
      * So we do this in the codegen step
@@ -49,6 +51,7 @@ class KotlinCodeGen(
     private val generateFragmentImplementations: Boolean,
     private val generateQueryDocument: Boolean,
     private val generateSchema: Boolean,
+    private val generatedSchemaName: String,
     private val generateTestBuilders: Boolean,
     /**
      * Whether to flatten the models. This decision is left to the codegen. For fragments for an example, we
@@ -58,6 +61,7 @@ class KotlinCodeGen(
     private val flatten: Boolean,
     private val sealedClassesForEnumsMatching: List<String>,
     private val targetLanguageVersion: TargetLanguage,
+    private val scalarMapping: Map<String, ScalarInfo>,
 ) {
   /**
    * @param outputDir: the directory where to write the Kotlin files
@@ -65,18 +69,19 @@ class KotlinCodeGen(
    */
   fun write(outputDir: File, testDir: File): ResolverInfo {
     val upstreamResolver = resolverInfos.fold(null as KotlinResolver?) { acc, resolverInfo ->
-      KotlinResolver(resolverInfo.entries, acc)
+      KotlinResolver(resolverInfo.entries, acc, scalarMapping)
     }
 
     val layout = KotlinCodegenLayout(
         useSemanticNaming = useSemanticNaming,
         packageNameGenerator = packageNameGenerator,
-        schemaPackageName = schemaPackageName
+        schemaPackageName = schemaPackageName,
+        useSchemaPackageNameForFragments = useSchemaPackageNameForFragments
     )
 
     val context = KotlinContext(
         layout = layout,
-        resolver = KotlinResolver(emptyList(), upstreamResolver),
+        resolver = KotlinResolver(emptyList(), upstreamResolver, scalarMapping),
         targetLanguageVersion = targetLanguageVersion,
     )
     val builders = mutableListOf<CgFileBuilder>()
@@ -184,7 +189,7 @@ class KotlinCodeGen(
         }
 
     if (generateSchema) {
-      builders.add(SchemaBuilder(context, ir.objects, ir.interfaces, ir.unions))
+      builders.add(SchemaBuilder(context, generatedSchemaName, ir.objects, ir.interfaces, ir.unions))
     }
 
     builders.forEach { it.prepare() }

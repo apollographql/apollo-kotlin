@@ -22,7 +22,7 @@ interface HttpBody {
 /**
  * a HTTP header
  */
-class HttpHeader(val name: String, val value: String)
+data class HttpHeader(val name: String, val value: String)
 
 /**
  * a HTTP request to be sent
@@ -80,7 +80,7 @@ private constructor(
 /**
  * an HTTP Response.
  *
- * Specifying both [bodySource] and [bodySource] is invalid
+ * Specifying both [bodySource] and [bodyString] is invalid
  *
  * The [body] of a [HttpResponse] must always be closed if non null
  */

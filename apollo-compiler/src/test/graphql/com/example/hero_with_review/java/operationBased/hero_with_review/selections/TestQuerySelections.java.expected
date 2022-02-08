@@ -7,19 +7,20 @@ package com.example.hero_with_review.selections;
 
 import com.apollographql.apollo3.api.CompiledArgument;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CompiledGraphQL;
 import com.apollographql.apollo3.api.CompiledNotNullType;
 import com.apollographql.apollo3.api.CompiledSelection;
 import com.apollographql.apollo3.api.CompiledVariable;
 import com.apollographql.apollo3.api.ImmutableMapBuilder;
+import com.example.hero_with_review.type.GraphQLInt;
+import com.example.hero_with_review.type.GraphQLString;
 import com.example.hero_with_review.type.Review;
 import java.util.Arrays;
 import java.util.List;
 
 public class TestQuerySelections {
   private static List<CompiledSelection> createReview = Arrays.asList(
-    new CompiledField.Builder("stars", new CompiledNotNullType(CompiledGraphQL.CompiledIntType)).build(),
-    new CompiledField.Builder("commentary", CompiledGraphQL.CompiledStringType).build()
+    new CompiledField.Builder("stars", new CompiledNotNullType(GraphQLInt.type)).build(),
+    new CompiledField.Builder("commentary", GraphQLString.type).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(

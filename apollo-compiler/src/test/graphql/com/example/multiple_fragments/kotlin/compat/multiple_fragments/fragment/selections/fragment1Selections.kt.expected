@@ -7,14 +7,14 @@ package com.example.multiple_fragments.fragment.selections
 
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.CompiledStringType
+import com.example.multiple_fragments.type.GraphQLString
 import kotlin.collections.List
 
 public object fragment1Selections {
   public val root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "field1",
-          type = CompiledStringType
+          type = GraphQLString.type
         ).build()
       )
 }

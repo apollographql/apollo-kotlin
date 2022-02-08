@@ -2,9 +2,10 @@ package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
+import com.apollographql.apollo3.compiler.ApolloCompiler
 import com.apollographql.apollo3.compiler.ApolloMetadata
 import com.apollographql.apollo3.compiler.CommonMetadata
-import com.apollographql.apollo3.compiler.ApolloCompiler
+import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo3.compiler.IncomingOptions
 import com.apollographql.apollo3.compiler.IncomingOptions.Companion.resolveSchema
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
@@ -22,10 +23,14 @@ import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateQuery
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateResponseFields
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateSchema
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateTestBuilders
+import com.apollographql.apollo3.compiler.Options.Companion.defaultGeneratedSchemaName
 import com.apollographql.apollo3.compiler.Options.Companion.defaultSealedClassesForEnumsMatching
+import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSchemaPackageNameForFragments
 import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSemanticNaming
 import com.apollographql.apollo3.compiler.Options.Companion.defaultWarnOnDeprecatedUsages
 import com.apollographql.apollo3.compiler.PackageNameGenerator
+import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
+import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.TargetLanguage
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
@@ -46,6 +51,7 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
+import org.jetbrains.kotlin.gradle.utils.`is`
 import javax.inject.Inject
 
 @CacheableTask
@@ -95,7 +101,11 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Input
   @get:Optional
-  abstract val customScalarsMapping: MapProperty<String, String>
+  abstract val scalarTypeMapping: MapProperty<String, String>
+
+  @get:Input
+  @get:Optional
+  abstract val scalarAdapterMapping: MapProperty<String, String>
 
   @get:Input
   @get:Optional
@@ -116,6 +126,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Input
   @get:Optional
   abstract val generateSchema: Property<Boolean>
+
+  @get:Input
+  @get:Optional
+  abstract val generatedSchemaName: Property<String>
 
   @get:Input
   @get:Optional
@@ -169,6 +183,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Optional
   abstract val generateTestBuilders: Property<Boolean>
 
+  @get:Input
+  @get:Optional
+  abstract val useSchemaPackageNameForFragments: Property<Boolean>
+
   @get:Inject
   abstract val objectFactory: ObjectFactory
 
@@ -185,32 +203,30 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       "Apollo: multiple schemas found in metadata"
     }
 
-    val commonMetadata = commonMetadatas.singleOrNull()
-    var outputCommonMetadata: CommonMetadata? = null
+    var commonMetadata = commonMetadatas.singleOrNull()
+    var rememberCommonMetadata = false
 
-    val incomingOptions = if (commonMetadata != null) {
+    if (commonMetadata != null) {
       check(schemaFiles.files.isEmpty()) {
         "Specifying 'schemaFiles' has no effect as an upstream module already provided a schema"
       }
       check(!codegenModels.isPresent) {
         "Specifying 'codegenModels' has no effect as an upstream module already provided a codegenModels"
       }
-      IncomingOptions.fromMetadata(commonMetadata, packageNameGenerator)
+      check(scalarTypeMapping.getOrElse(emptyMap()).isEmpty()) {
+        "Mapping scalars can only be done in the schema module"
+      }
     } else {
       val codegenModels = codegenModels.getOrElse(defaultCodegenModels)
       val (schema, mainSchemaFilePath) = resolveSchema(schemaFiles.files, rootFolders.get())
 
-      outputCommonMetadata = CommonMetadata(
+      rememberCommonMetadata = true
+      commonMetadata = CommonMetadata(
           schema = schema,
           codegenModels = codegenModels,
-          schemaPath = mainSchemaFilePath,
-          pluginVersion = APOLLO_VERSION
-      )
-
-      IncomingOptions(
-          schema = schema,
           schemaPackageName = packageNameGenerator.packageName(mainSchemaFilePath),
-          codegenModels = codegenModels,
+          pluginVersion = APOLLO_VERSION,
+          scalarMapping = scalarMapping()
       )
     }
 
@@ -228,16 +244,16 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         }
         true
       }
-      else -> flattenModels.getOrElse(incomingOptions.codegenModels != MODELS_RESPONSE_BASED)
+      else -> flattenModels.getOrElse(commonMetadata.codegenModels != MODELS_RESPONSE_BASED)
     }
     val codegenModels = when {
       targetLanguage == TargetLanguage.JAVA -> {
-        check(incomingOptions.codegenModels == MODELS_OPERATION_BASED) {
-          "Java codegen does not support codegenModels=${incomingOptions.codegenModels}"
+        check(commonMetadata.codegenModels == MODELS_OPERATION_BASED) {
+          "Java codegen does not support codegenModels=${commonMetadata.codegenModels}"
         }
         MODELS_OPERATION_BASED
       }
-      else -> incomingOptions.codegenModels
+      else -> commonMetadata.codegenModels
     }
 
     val options = Options(
@@ -257,20 +273,22 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         generateFragmentImplementations = generateFragmentImplementations.getOrElse(defaultGenerateFragmentImplementations),
         generateQueryDocument = generateQueryDocument.getOrElse(defaultGenerateQueryDocument),
         generateSchema = generateSchema.getOrElse(defaultGenerateSchema),
+        generatedSchemaName = generatedSchemaName.getOrElse(defaultGeneratedSchemaName),
         generateResponseFields = generateResponseFields.getOrElse(defaultGenerateResponseFields),
         logger = logger,
         moduleName = projectName.get(),
         // Response-based models generate a lot of models and therefore a lot of name clashes if flattened
         flattenModels = flattenModels,
         incomingCompilerMetadata = metadata.map { it.compilerMetadata },
-        schema = incomingOptions.schema,
+        schema = commonMetadata.schema,
         codegenModels = codegenModels,
-        schemaPackageName = incomingOptions.schemaPackageName,
-        customScalarsMapping = customScalarsMapping.getOrElse(emptyMap()),
+        schemaPackageName = commonMetadata.schemaPackageName,
+        useSchemaPackageNameForFragments = useSchemaPackageNameForFragments.getOrElse(defaultUseSchemaPackageNameForFragments),
+        scalarMapping = commonMetadata.scalarMapping,
         targetLanguage = targetLanguage,
         generateTestBuilders = generateTestBuilders.getOrElse(defaultGenerateTestBuilders),
         sealedClassesForEnumsMatching = sealedClassesForEnumsMatching.getOrElse(defaultSealedClassesForEnumsMatching),
-        generateOptionalOperationVariables = generateOptionalOperationVariables.getOrElse(defaultGenerateOptionalOperationVariables)
+        generateOptionalOperationVariables = generateOptionalOperationVariables.getOrElse(defaultGenerateOptionalOperationVariables),
     )
 
     val outputCompilerMetadata = ApolloCompiler.write(options)
@@ -278,10 +296,17 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
     val metadataOutputFile = metadataOutputFile.asFile.orNull
     if (metadataOutputFile != null) {
       ApolloMetadata(
-          commonMetadata = outputCommonMetadata,
+          commonMetadata = if (rememberCommonMetadata) commonMetadata else null,
           compilerMetadata = outputCompilerMetadata,
           moduleName = projectName.get()
       ).writeTo(metadataOutputFile)
+    }
+  }
+
+  private fun scalarMapping(): Map<String, ScalarInfo> {
+    return scalarTypeMapping.getOrElse(emptyMap()).mapValues { (graphQLName, targetName) ->
+      val adapterInitializerExpression = scalarAdapterMapping.getOrElse(emptyMap())[graphQLName]
+      ScalarInfo(targetName, if (adapterInitializerExpression == null) RuntimeAdapterInitializer else ExpressionAdapterInitializer(adapterInitializerExpression))
     }
   }
 }
