@@ -26,11 +26,14 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
 
@@ -130,21 +133,30 @@ fun <D : Query.Data> ApolloCall<D>.watch(
     fetchThrows: Boolean = false,
     refetchThrows: Boolean = false,
 ): Flow<ApolloResponse<D>> {
-  var data: D? = null
-  return toFlow()
-      .catch {
-        if (it !is ApolloException || fetchThrows) throw it
-      }.onEach {
-        data = it.data
-      }.onCompletion {
-        emitAll(
-            copy().fetchPolicyInterceptor(refetchPolicyInterceptor)
-                .watch(data) { _, _ ->
-                  // If the exception is ignored (refetchThrows is false), we should continue watching - so retry
-                  !refetchThrows
-                }
-        )
-      }
+  return flow {
+    var lastResponse: ApolloResponse<D>? = null
+    toFlow()
+        .catch {
+          if (it !is ApolloException || fetchThrows) throw it
+        }.collect {
+          if (lastResponse != null) {
+            emit(lastResponse!!)
+          }
+          lastResponse = it
+        }
+
+    emitAll(
+        copy().fetchPolicyInterceptor(refetchPolicyInterceptor)
+            .watch(lastResponse?.data) { _, _ ->
+              // If the exception is ignored (refetchThrows is false), we should continue watching - so retry
+              !refetchThrows
+            }.onStart {
+              if (lastResponse != null) {
+                emit(lastResponse!!)
+              }
+            }
+    )
+  }
 }
 
 /**

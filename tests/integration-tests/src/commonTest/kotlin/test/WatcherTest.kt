@@ -3,6 +3,7 @@ package test
 import IdCacheKeyGenerator
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
@@ -18,11 +19,14 @@ import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameWithIdQue
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
 import com.apollographql.apollo3.integration.normalizer.StarshipByIdQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
+import com.apollographql.apollo3.testing.MapTestNetworkTransport
 import com.apollographql.apollo3.testing.QueueTestNetworkTransport
 import com.apollographql.apollo3.testing.enqueueTestNetworkError
 import com.apollographql.apollo3.testing.enqueueTestResponse
 import com.apollographql.apollo3.testing.receiveOrTimeout
 import com.apollographql.apollo3.testing.runTest
+import com.benasher44.uuid.uuid4
+import com.benasher44.uuid.uuidFrom
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.Channel
@@ -33,6 +37,7 @@ import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail
@@ -69,36 +74,35 @@ class WatcherTest {
 
   /**
    * Executing the same query out of band should update the watcher
+   *
+   * Also, this test checks that the watcher gets control fast enough to subscribe to
+   * cache changes
    */
   @Test
   fun sameQueryTriggersWatcher() = runTest(before = { setUp() }) {
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
-    // The first query should get a "R2-D2" name
-    apolloClient.enqueueTestResponse(query, episodeHeroNameData)
-    val job = launch {
-      apolloClient.query(query).watch().collect {
-        channel.send(it.data)
+    repeat(10000) {
+      // Enqueue responses
+      apolloClient.enqueueTestResponse(query, episodeHeroNameData)
+      apolloClient.enqueueTestResponse(query, episodeHeroNameChangedData)
+
+      val job = launch {
+        apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).watch().collect {
+          channel.send(it.data)
+        }
       }
+
+      assertEquals(channel.receiveOrTimeout()?.hero?.name, "R2-D2")
+
+      // Another newer call gets updated information with "Artoo"
+      apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
+
+      assertEquals(channel.receiveOrTimeout()?.hero?.name, "Artoo")
+
+      job.cancel()
     }
-
-    assertEquals(channel.receiveOrTimeout()?.hero?.name, "R2-D2")
-
-    // Another newer call gets updated information with "Artoo"
-    apolloClient.enqueueTestResponse(query, episodeHeroNameChangedData)
-    apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
-
-    apolloClient.query(query).toFlow()
-        .catch {
-          // Handle errors here
-        }
-        .onCompletion {
-          emitAll(apolloClient.query(query).watch())
-        }
-    assertEquals(channel.receiveOrTimeout()?.hero?.name, "Artoo")
-
-    job.cancel()
   }
 
 
