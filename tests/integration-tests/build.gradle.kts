@@ -13,6 +13,17 @@ kotlin {
     withJava()
   }
 
+  js {
+    nodejs {
+      testTask {
+        useMocha {
+          // Override default timeout (needed for stress tests)
+          timeout = "120s"
+        }
+      }
+    }
+  }
+
   sourceSets {
     val commonMain by getting {
       dependencies {
@@ -122,4 +133,3 @@ fun com.apollographql.apollo3.gradle.api.Service.configureConnection(generateKot
 }
 configureApollo(true)
 configureApollo(false)
-
