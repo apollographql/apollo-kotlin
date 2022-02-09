@@ -74,41 +74,35 @@ class WatcherTest {
 
   /**
    * Executing the same query out of band should update the watcher
+   *
+   * Also, this test checks that the watcher gets control fast enough to subscribe to
+   * cache changes
    */
   @Test
   fun sameQueryTriggersWatcher() = runTest(before = { setUp() }) {
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
-    val channel2 = Channel<EpisodeHeroNameQuery.Data?>()
 
-    // Enqueue responses
-    apolloClient.enqueueTestResponse(query, episodeHeroNameData)
-    apolloClient.enqueueTestResponse(query, episodeHeroNameData)
-    apolloClient.enqueueTestResponse(query, episodeHeroNameChangedData)
+    repeat(10000) {
+      println("$it")
+      // Enqueue responses
+      apolloClient.enqueueTestResponse(query, episodeHeroNameData)
+      apolloClient.enqueueTestResponse(query, episodeHeroNameChangedData)
 
-    repeat(100) {
       val job = launch {
         apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).watch().collect {
           channel.send(it.data)
         }
       }
-      val job2 = launch {
-        apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).watch().collect {
-          channel2.send(it.data)
-        }
-      }
 
       assertEquals(channel.receiveOrTimeout()?.hero?.name, "R2-D2")
-      assertEquals(channel2.receiveOrTimeout()?.hero?.name, "R2-D2")
 
       // Another newer call gets updated information with "Artoo"
       apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
       assertEquals(channel.receiveOrTimeout()?.hero?.name, "Artoo")
-      assertEquals(channel2.receiveOrTimeout()?.hero?.name, "Artoo")
 
       job.cancel()
-      job2.cancel()
     }
   }
 
