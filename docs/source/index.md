@@ -137,7 +137,7 @@ Build your project. This will generate a `HeroQuery` class that you can use with
 
 Some platforms have specific requirements:
 
-* Android API level 21+
+* Android API level 21+ (`apollo-http-cache` and `apollo-adapters` require enabling [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) on Android API levels < 26)
 * JDK 8+
 * iOS 13+
 

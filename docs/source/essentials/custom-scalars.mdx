@@ -140,6 +140,8 @@ In addition, the `com.apollographql.apollo3:apollo-adapters` artifact provides t
 | `com.apollographql.apollo3.adapter.DateAdapter`                 | For `java.util.Date` ISO8601 dates                                                                  |
 | `com.apollographql.apollo3.adapter.BigDecimalAdapter`           | For a Multiplatform `com.apollographql.apollo3.adapter.BigDecimal` class holding big decimal values |
 
+> Note: because some adapters use `kotlinx.datetime`, which itself uses `java.time`, you will need to enable [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) on Android API levels < 26
+
 For example, to use `DateAdapter`, configure your Gradle scripts like so:
 
 ```kotlin:title=build.gradle[.kts]
