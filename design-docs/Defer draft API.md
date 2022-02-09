@@ -79,7 +79,6 @@ Would be received as:
 // Payload 2
 {
   "data": {
-    "__typename": "Computer",
     "cpu": "386",
     "year": 1993,
     "screen": {
@@ -96,7 +95,6 @@ Would be received as:
 // Payload 3
 {
   "data": {
-    "__typename": "Computer",
     "cpu": "486",
     "year": 1996,
     "screen": {
@@ -113,7 +111,6 @@ Would be received as:
 // Payload 4
 {
   "data": {
-    "__typename": "Screen",
     "isColor": false
   },
   "path": [
@@ -127,7 +124,6 @@ Would be received as:
 // Payload 5 (final)
 {
   "data": {
-    "__typename": "Screen",
     "isColor": false
   },
   "path": [
@@ -202,12 +198,10 @@ So in the example above, a collector would receive:
 Data(
     computers=[
         Computer(
-            __typename=Computer,
             id=Computer1,
             computerFields=null
         ),
         Computer(
-            __typename=Computer,
             id=Computer2,
             computerFields=null
         )
@@ -218,20 +212,17 @@ Data(
 Data(
     computers=[
         Computer(
-            __typename=Computer,
             id=Computer1,
             computerFields=ComputerFields(
                 cpu=386,
                 year=1993,
                 screen=Screen(
-                    __typename=Screen,
                     resolution=640x480,
                     screenFields=null
                 )
             )
         ),
         Computer(
-            __typename=Computer,
             id=Computer2,
             computerFields=null
         )
@@ -242,26 +233,22 @@ Data(
 Data(
     computers=[
         Computer(
-            __typename=Computer,
             id=Computer1,
             computerFields=ComputerFields(
                 cpu=386,
                 year=1993,
                 screen=Screen(
-                    __typename=Screen,
                     resolution=640x480,
                     screenFields=null
                 )
             )
         ),
         Computer(
-            __typename=Computer,
             id=Computer2,
             computerFields=ComputerFields(
                 cpu=486,
                 year=1996,
                 screen=Screen(
-                    __typename=Screen,
                     resolution=800x600,
                     screenFields=null
                 )
@@ -274,13 +261,11 @@ Data(
 Data(
     computers=[
         Computer(
-            __typename=Computer,
             id=Computer1,
             computerFields=ComputerFields(
                 cpu=386,
                 year=1993,
                 screen=Screen(
-                    __typename=Screen,
                     resolution=640x480,
                     screenFields=ScreenFields(
                         isColor=false
@@ -289,13 +274,11 @@ Data(
             )
         ),
         Computer(
-            __typename=Computer,
             id=Computer2,
             computerFields=ComputerFields(
                 cpu=486,
                 year=1996,
                 screen=Screen(
-                    __typename=Screen,
                     resolution=800x600,
                     screenFields=null
                 )
@@ -308,13 +291,11 @@ Data(
 Data(
     computers=[
         Computer(
-            __typename=Computer,
             id=Computer1,
             computerFields=ComputerFields(
                 cpu=386,
                 year=1993,
                 screen=Screen(
-                    __typename=Screen,
                     resolution=640x480,
                     screenFields=ScreenFields(
                         isColor=false
@@ -323,13 +304,11 @@ Data(
             )
         ),
         Computer(
-            __typename=Computer,
             id=Computer2,
             computerFields=ComputerFields(
                 cpu=486,
                 year=1996,
                 screen=Screen(
-                    __typename=Screen,
                     resolution=800x600,
                     screenFields=ScreenFields(
                         isColor=false
@@ -413,7 +392,6 @@ So for instance when receiving this:
 // Payload 2
 {
   "data": {
-    "__typename": "Computer",
     "cpu": "386",
     "year": 1993,
     "screen": {
@@ -430,7 +408,6 @@ So for instance when receiving this:
 // Payload 3
 {
   "data": {
-    "__typename": "Computer",
     "cpu": "486",
     "year": 1996,
     "screen": {
@@ -513,12 +490,10 @@ Response(
     data=Data(
         computers=[
             Computer(
-                __typename=Computer,
                 id=Computer1,
                 computerFields=null
             ),
             Computer(
-                __typename=Computer,
                 id=Computer2,
                 computerFields=null
             )
@@ -532,20 +507,17 @@ Response(
     data=Data(
         computers=[
             Computer(
-                __typename=Computer,
                 id=Computer1,
                 computerFields=ComputerFields(
                     cpu=386,
                     year=1993,
                     screen=Screen(
-                        __typename=Screen,
                         resolution=640x480,
                         screenFields=null
                     )
                 )
             ),
             Computer(
-                __typename=Computer,
                 id=Computer2,
                 computerFields=null
             )
@@ -559,26 +531,22 @@ Response(
     data=Data(
         computers=[
             Computer(
-                __typename=Computer,
                 id=Computer1,
                 computerFields=ComputerFields(
                     cpu=386,
                     year=1993,
                     screen=Screen(
-                        __typename=Screen,
                         resolution=640x480,
                         screenFields=null
                     )
                 )
             ),
             Computer(
-                __typename=Computer,
                 id=Computer2,
                 computerFields=ComputerFields(
                     cpu=486,
                     year=1996,
                     screen=Screen(
-                        __typename=Screen,
                         resolution=800x600,
                         screenFields=null
                     )
@@ -602,26 +570,22 @@ Response(
     data=Data(
         computers=[
             Computer(
-                __typename=Computer,
                 id=Computer1,
                 computerFields=ComputerFields(
                     cpu=386,
                     year=1993,
                     screen=Screen(
-                        __typename=Screen,
                         resolution=640x480,
                         screenFields=null
                     )
                 )
             ),
             Computer(
-                __typename=Computer,
                 id=Computer2,
                 computerFields=ComputerFields(
                     cpu=486,
                     year=1996,
                     screen=Screen(
-                        __typename=Screen,
                         resolution=800x600,
                         screenFields=null
                     )
@@ -652,26 +616,22 @@ Response(
     data=Data(
         computers=[
             Computer(
-                __typename=Computer,
                 id=Computer1,
                 computerFields=ComputerFields(
                     cpu=386,
                     year=1993,
                     screen=Screen(
-                        __typename=Screen,
                         resolution=640x480,
                         screenFields=null
                     )
                 )
             ),
             Computer(
-                __typename=Computer,
                 id=Computer2,
                 computerFields=ComputerFields(
                     cpu=486,
                     year=1996,
                     screen=Screen(
-                        __typename=Screen,
                         resolution=800x600,
                         screenFields=null
                     )
