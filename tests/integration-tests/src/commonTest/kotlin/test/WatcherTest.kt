@@ -110,7 +110,6 @@ class WatcherTest {
    * Writing to the store out of band should update the watcher
    */
   @Test
-  @Ignore
   fun storeWriteTriggersWatcher() = runTest(before = { setUp() }) {
     val channel = Channel<EpisodeHeroNameWithIdQuery.Data?>()
     val operation = EpisodeHeroNameWithIdQuery(Episode.EMPIRE)
@@ -142,7 +141,6 @@ class WatcherTest {
    * A new query updates the store with data that is the same as the one originally seen by the watcher
    */
   @Test
-  @Ignore
   fun noChangeSameQuery() = runTest(before = { setUp() }) {
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
@@ -170,7 +168,6 @@ class WatcherTest {
    * A new query that contains overlapping fields with the watched query should trigger the watcher
    */
   @Test
-  @Ignore
   fun differentQueryTriggersWatcher() = runTest(before = { setUp() }) {
     val channel = Channel<EpisodeHeroNameWithIdQuery.Data?>()
 
@@ -202,7 +199,6 @@ class WatcherTest {
    * Same as noChangeSameQuery with different queries
    */
   @Test
-  @Ignore
   fun noChangeDifferentQuery() = runTest(before = { setUp() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
@@ -234,7 +230,6 @@ class WatcherTest {
    * from the network
    */
   @Test
-  @Ignore
   fun networkRefetchPolicy() = runTest(before = { setUp() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
@@ -274,7 +269,6 @@ class WatcherTest {
 
 
   @Test
-  @Ignore
   fun nothingReceivedWhenCancelled() = runTest(before = { setUp() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
@@ -298,7 +292,6 @@ class WatcherTest {
    * Doing the initial query as cache only will detect when the query becomes available
    */
   @Test
-  @Ignore
   fun cacheOnlyFetchPolicy() = runTest(before = { setUp() }) {
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
@@ -323,7 +316,6 @@ class WatcherTest {
   }
 
   @Test
-  @Ignore
   fun queryWatcherWithCacheOnlyNeverGoesToTheNetwork() = runTest(before = { setUp() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>(capacity = Channel.UNLIMITED)
     val job = launch {
@@ -347,7 +339,6 @@ class WatcherTest {
   }
 
   @Test
-  @Ignore
   fun watchCacheOrNetwork() = runTest(before = { setUp() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>(capacity = Channel.UNLIMITED)
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
@@ -392,7 +383,6 @@ class WatcherTest {
    * Demonstrates how watch(Data?) can be used in advanced scenarios.
    */
   @Test
-  @Ignore
   fun watchCacheAndNetworkManual() = runTest(before = { setUp() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>(capacity = Channel.UNLIMITED)
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
@@ -447,7 +437,6 @@ class WatcherTest {
    * watchCacheAndNetwork() with cached value and no network error
    */
   @Test
-  @Ignore
   fun watchCacheAndNetwork() = runTest(before = { setUp() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>(capacity = Channel.UNLIMITED)
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
@@ -485,7 +474,6 @@ class WatcherTest {
    * watchCacheAndNetwork() with a cache miss
    */
   @Test
-  @Ignore
   fun watchCacheAndNetworkWithCacheMiss() = runTest(before = { setUp() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>(capacity = Channel.UNLIMITED)
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
@@ -516,7 +504,6 @@ class WatcherTest {
    * watchCacheAndNetwork() with a network error on the initial call
    */
   @Test
-  @Ignore
   fun watchCacheAndNetworkWithNetworkError() = runTest(before = { setUp() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>(capacity = Channel.UNLIMITED)
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
@@ -552,7 +539,6 @@ class WatcherTest {
    * watchCacheAndNetwork() with a cache error AND a network error on the initial call
    */
   @Test
-  @Ignore
   fun watchCacheAndNetworkWithCacheAndNetworkError() = runTest(before = { setUp() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>(capacity = Channel.UNLIMITED)
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
