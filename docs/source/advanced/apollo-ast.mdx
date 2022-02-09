@@ -17,7 +17,7 @@ Features of `apollo-ast` include:
 
 Add the `apollo-ast` dependency to your project:
 
-```kotlin:title=build.gradle[.kts]
+```kotlin title="build.gradle[.kts]"
 dependencies {
   // ...
 
@@ -29,7 +29,7 @@ dependencies {
 
 Use the `parseAsGQLDocument` method to parse a document from a `File`, a `String`, or an Okio [`BufferedSource`](https://square.github.io/okio/3.x/okio/okio/okio/-buffered-source/index.html).
 
-```kotlin{12}
+```kotlin {12}
 val graphQLText = """
     query HeroForEpisode(${"$"}ep: Episode) {
       hero(episode: ${"$"}ep) {
@@ -93,7 +93,7 @@ To validate a parsed `GQLDocument`:
 
 `validateAsSchema` returns a `GQLResult<Schema>`. The following snippet parses and validates a short invalid schema that uses an undefined directive (`@private`):
 
-```kotlin{11,19}
+```kotlin {11,19}
 val schemaText = """
     type Query {
       hero(episode: Episode): Character

@@ -28,7 +28,7 @@ val cacheKeyGenerator = object : CacheKeyGenerator {
 
 To use your custom `CacheKeyGenerator`, include it in your cache initialization code like so:
 
-```kotlin{5}
+```kotlin {5}
 val apolloClient = ApolloClient.Builder()
   .serverUrl("https://...")
   .normalizedCache(
@@ -83,7 +83,7 @@ val cacheKeyResolver = object: CacheKeyResolver() {
 
 To use your custom `CacheKeyResolver`, include it in your cache initialization code like so:
 
-```kotlin{6}
+```kotlin {6}
 val apolloClient = ApolloClient.Builder()
   .serverUrl("https://...")
   .normalizedCache(

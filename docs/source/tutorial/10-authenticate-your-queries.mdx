@@ -8,7 +8,7 @@ In this section, you will book a flight 🚀! Booking a flight requires being au
 
 In `Apollo.kt`, add the `AuthorizationInterceptor` class:
 
-```kotlin:title=app/src/main/kotlin/com/example/rocketreserver/Apollo.kt
+```kotlin title="app/src/main/kotlin/com/example/rocketreserver/Apollo.kt"
 private class AuthorizationInterceptor(val context: Context): Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder()
@@ -26,7 +26,7 @@ This interceptor appends an `"Authorization: $token"` HTTP header to every reque
 
 Create a custom `OkHttpClient` that will use this interceptor and pass it to the `ApolloClient`:
 
-```kotlin:title=app/src/main/kotlin/com/example/rocketreserver/Apollo.kt
+```kotlin title="app/src/main/kotlin/com/example/rocketreserver/Apollo.kt"
     val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(AuthorizationInterceptor(context))
         .build()
@@ -39,7 +39,7 @@ Create a custom `OkHttpClient` that will use this interceptor and pass it to the
 
 Notice that `Apollo.kt` now requires a context to create the interceptor and read the token from the `EncryptedSharedPreferences`. `apolloClient` cannot be a top level variable anymore, so transform it to a top-level _method_ that takes a `context` parameter instead:
 
-```kotlin:title=app/src/main/kotlin/com/example/rocketreserver/Apollo.kt
+```kotlin title="app/src/main/kotlin/com/example/rocketreserver/Apollo.kt"
 fun apolloClient(context: Context): ApolloClient {
     val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(AuthorizationInterceptor(context))
@@ -68,7 +68,7 @@ apolloClient(requireContext()).mutation(LoginMutation(email)).execute()
 
 There is no need to create a new instance of the apolloClient for each GraphQL request. You can reuse a single instance by updating `Apollo.kt` to use a singleton under the hood:
 
-```kotlin:title=app/src/main/kotlin/com/example/rocketreserver/Apollo.kt
+```kotlin title="app/src/main/kotlin/com/example/rocketreserver/Apollo.kt"
 private var instance: ApolloClient? = null
 
 fun apolloClient(context: Context): ApolloClient {
@@ -95,7 +95,7 @@ fun apolloClient(context: Context): ApolloClient {
 
 Next to `schema.graphqls` add a `BookTrip.graphql` file:
 
-```graphql:title=app/src/main/graphql/com/example/rocketreserver/BookTrip.graphql
+```graphql title="app/src/main/graphql/com/example/rocketreserver/BookTrip.graphql"
 mutation BookTrip($id:ID!) {
   bookTrips(launchIds: [$id]) {
     success
@@ -111,7 +111,7 @@ Notice how the `bookTrips` field takes a list as argument but the mutation itsel
 
 Also add the `CancelTrip.graphql` file. This mutation doesn't use lists:
 
-```graphql:title=app/src/main/graphql/com/example/rocketreserver/CancelTrip.graphql
+```graphql title="app/src/main/graphql/com/example/rocketreserver/CancelTrip.graphql"
 mutation CancelTrip($id:ID!) {
   cancelTrip(launchId: $id) {
     success
@@ -129,7 +129,7 @@ Connect the mutations to the **Book Now** button:
 
 Go back to `LaunchDetailsFragment.kt`. In the button click listener, after checking for the user token, add the following code:
 
-```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchDetailsFragment.kt
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetailsFragment.kt"
 binding.bookButton.visibility = View.INVISIBLE
 binding.bookProgressBar.visibility = View.VISIBLE
 

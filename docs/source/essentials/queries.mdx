@@ -18,7 +18,7 @@ In Apollo Kotlin, each query you execute is represented as an instance of a gene
 
 Let's say we define a GraphQL query named `HeroQuery`, like so:
 
-```graphql:title=HeroQuery.graphql
+```graphql title="HeroQuery.graphql"
 query HeroQuery($id: String!) {
   hero(id: $id) {
     id
@@ -39,7 +39,7 @@ To generate classes, Apollo Kotlin requires your server's schema, along with all
 
 To execute the query we [just defined](#defining), we pass a `HeroQuery` instance to the `query` method of `ApolloClient`, like so:
 
-```kotlin{2}
+```kotlin {2}
 val apolloClient = ApolloClient.Builder().serverUrl("https://your.domain/graphql").build()
 val response = apolloClient.query(HeroQuery(id = "12")).execute()
 ```

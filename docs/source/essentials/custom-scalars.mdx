@@ -8,7 +8,7 @@ In addition to its [built-in scalar types](https://graphql.org/learn/schema/#sca
 
 To interact with custom scalars in your Apollo Kotlin app, you need to define a mapping in your `build.gradle[.kts]` file. This tells Apollo Kotlin which class to use to represent each custom scalar from your schema.
 
-```kotlin:title=build.gradle[.kts]
+```kotlin title="build.gradle[.kts]"
 apollo {
   mapScalar("GeoPoint", "com.example.GeoPoint")
 
@@ -87,7 +87,7 @@ After you define your adapters, you need to register them. This can be done eith
 
 A third argument can be passed to `mapScalar` to specify the adapter to use:
 
-```kotlin:title=build.gradle[.kts]
+```kotlin title="build.gradle[.kts]"
 apollo {
   mapScalar("GeoPoint", "com.example.GeoPoint", "com.example.Adapters.geoPointAdapter")
 }
@@ -141,7 +141,7 @@ In addition, the `com.apollographql.apollo3:apollo-adapters` artifact provides t
 
 For example, to use `DateAdapter`, configure your Gradle scripts like so:
 
-```kotlin:title=build.gradle[.kts]
+```kotlin title="build.gradle[.kts]"
 dependencies {
   implementation("com.apollographql.apollo3:apollo-adapters:3.1.0")
 }

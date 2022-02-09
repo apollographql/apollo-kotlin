@@ -10,7 +10,7 @@ Apollo Kotlin provides **test builders** that enable you to instantiate your Gra
 
 Test builders are _not_ enabled by default, because they aren't useful for every application and they generate additional code. To enable them, set the `generateTestBuilders` option to `true`:
 
-```kotlin:title=build.gradle[.kts]
+```kotlin title="build.gradle[.kts]"
 apollo {
   // ...
 
@@ -75,7 +75,7 @@ The `DefaultTestResolver` gives each `String` field the field's name as its defa
 
 You can create your _own_ `TestResolver` implementation (optionally extending `DefaultTestResolver` for a head start). You then pass this implementation as a parameter to the `Data` function, like so:
 
-```kotlin{10}
+```kotlin {10}
 // A TestResolver implementation that assigns -1 to all Int fields
 val myTestResolver = object : DefaultTestResolver() {
   override fun resolveInt(path: List<Any>): Int {

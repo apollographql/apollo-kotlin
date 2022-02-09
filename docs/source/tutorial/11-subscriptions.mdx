@@ -51,7 +51,7 @@ Continue booking and/or canceling trips, you will see events coming in the subsc
 
 Now that your subscription is working, add it to your project. Create a file named `TripsBooked.graphql` next to `schema.graphqls` and your other GraphQL files and paste the contents of the subscription. The process is similar to what you did for queries and mutations:
 
-```graphql:title=app/src/main/graphql/com/example/rocketreserver/TripsBooked.graphql
+```graphql title="app/src/main/graphql/com/example/rocketreserver/TripsBooked.graphql"
 subscription TripsBooked {
   tripsBooked
 }
@@ -61,7 +61,7 @@ subscription TripsBooked {
 
 In `Apollo.kt`, configure a `webSocketServerUrl` for your `ApolloClient`:
 
-```kotlin:title=Apollo.kt
+```kotlin title="Apollo.kt"
     instance = ApolloClient.Builder()
         .httpServerUrl("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
         .webSocketServerUrl("wss://apollo-fullstack-tutorial.herokuapp.com/graphql")
@@ -75,7 +75,7 @@ In `Apollo.kt`, configure a `webSocketServerUrl` for your `ApolloClient`:
 
 In `MainActivity`, register your subscription and start listening to events using coroutine Flows. Use a [Material SnackBar](https://material.io/develop/android/components/snackbar/) to display a small message coming from the bottom of the screen:
 
-```kotlin:title=MainActivity.kt
+```kotlin title="MainActivity.kt"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -105,7 +105,7 @@ In `MainActivity`, register your subscription and start listening to events usin
 
 Like for queries and mutations, the subscription will throw an error if the connection is lost or any other protocol error happens. To handle these situations, you can use [Flow.retry](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/retry.html):
 
-```kotlin:title=MainActivity.kt
+```kotlin title="MainActivity.kt"
     apolloClient(this@MainActivity).subscription(TripsBookedSubscription()).toFlow()
         .retryWhen { _, attempt ->
             delay(attempt * 1000)

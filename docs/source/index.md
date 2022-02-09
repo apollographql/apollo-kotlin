@@ -186,7 +186,7 @@ dependencies {
 
 Latest development changes are available in Sonatype's snapshots repository:
 
-```kotlin:title=build.gradle.kts
+```kotlin title="build.gradle.kts"
 repositories {
   maven {
     url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")

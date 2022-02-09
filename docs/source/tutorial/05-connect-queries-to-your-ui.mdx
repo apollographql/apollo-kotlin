@@ -8,7 +8,7 @@ In this chapter, you are going to display a list of Launch Sites in a [RecyclerV
 
 Open `LaunchListAdapter` and add a `launches` property:
 
-```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchListAdapter.kt
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchListAdapter.kt"
 class LaunchListAdapter(
     private val launches: List<LaunchListQuery.Launch>
 ) : RecyclerView.Adapter<LaunchListAdapter.ViewHolder>() {
@@ -20,7 +20,7 @@ class LaunchListAdapter(
 
 Use the `launches` property to bind items to your adapter:
 
-```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchListAdapter.kt
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchListAdapter.kt"
     override fun getItemCount(): Int {
         return launches.size
     }
@@ -35,7 +35,7 @@ Use the `launches` property to bind items to your adapter:
 
 In **LaunchListFragment.kt**, update what happens within your `lifecycleScope` in `onViewCreated` to create a new Adapter and pass it to your RecyclerView:
 
-```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchListFragment.kt
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchListFragment.kt"
         lifecycleScope.launchWhenResumed {
             val response = try {
                 apolloClient.query(LaunchListQuery()).execute()
