@@ -9,7 +9,7 @@ Apollo Android provides two different kinds of caches: an HTTP cache and a norma
 To enable HTTP cache support, add the dependency to your project's `build.gradle file. The latest version is
 [![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.apollo/apollo-api)](https://repo1.maven.org/maven2/com/apollographql/apollo/)
 
-```kotlin:title=build.gradle
+```kotlin title="build.gradle"
 dependencies {
   implementation("com.apollographql.apollo:apollo-http-cache:x.y.z")
 }
@@ -19,7 +19,7 @@ dependencies {
 
 <MultiCodeBlock>
 
-```kotlin:title=Kotlin
+```kotlin title="Kotlin"
 // Directory where cached responses will be stored
 val file = File(cacheDir, "apolloCache")
 
@@ -44,7 +44,7 @@ val dataResponse = apolloClient.query(query)
     .await()
 ```
 
-```java:title=Java
+```java title="Java"
 //Directory where cached responses will be stored
 File file = new File(cacheDir, "apolloCache");
 

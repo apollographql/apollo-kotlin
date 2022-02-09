@@ -38,7 +38,7 @@ This tutorial uses `2.5.9` because it is the latest version at the time of writi
 
 Apply the Apollo plugin in `app/build.gradle.kts`. There are two `build.gradle.kts` in the project. Make sure to use the one in the `app` directory this time. The Apollo plugin ID is `com.apollographql.apollo`.
 
-```kotlin:title=app/build.gradle.kts
+```kotlin title="app/build.gradle.kts"
 plugins {
     id("com.android.application")
     // ...
@@ -52,7 +52,7 @@ The plugin contains the compiler that will generate models from your queries whe
 
 Configure the Apollo plugin to generate Kotlin files instead of Java files. Put this at the end of `app/build.gradle.kts`:
 
-```kotlin:title=app/build.gradle.kts
+```kotlin title="app/build.gradle.kts"
 apollo {
     generateKotlinModels.set(true)
 }
@@ -62,7 +62,7 @@ apollo {
 
 Now add `apollo-runtime` and `apollo-coroutines-support` to the list of dependencies. This is the actual code that will run on the device and help schedule queries.
 
-```groovy:title=app/build.gradle.kts
+```groovy title="app/build.gradle.kts"
 dependencies {
     // ...
     implementation("com.apollographql.apollo:apollo-runtime:2.5.9")

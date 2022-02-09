@@ -6,7 +6,7 @@ title: Using the client without apollo-runtime
 
 For this, remove the `com.apollographql.apollo:apollo-runtime`dependency and replace it with:
 
-```kotlin:title=build.gradle
+```kotlin title="build.gradle"
 implementation("com.apollographql.apollo:apollo-api:x.y.z")
 ```
 
@@ -81,7 +81,7 @@ Response<Operation.Data> response = new Query().parse(httpResponse.body().source
 
 With Kotlin Multiplatform support, you can use Swift's `NSData` type to parse the response
 
-```kotlin:title=Kotlin-Common
+```kotlin title="Kotlin-Common"
 val data: NSData = ...;
 
 val response = query.parse(data.toByteString())

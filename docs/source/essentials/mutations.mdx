@@ -180,7 +180,7 @@ apollo {
 
 **Note2** While Apollo Android doesn't use reflection for regular operations, it does for file upload. If you're using Proguard/R8, you need to keep everything inheriting from `InputType`:
 
-```proguard:title=proguard-rules.pro
+```proguard title="proguard-rules.pro"
 -keep class * implements com.apollographql.apollo.api.InputType { *; }
 ```
 

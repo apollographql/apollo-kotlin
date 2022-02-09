@@ -4,7 +4,7 @@ title: Fragments
 
 Apollo Android supports [GraphQL fragments](https://graphql.org/learn/queries/#fragments). Fragments allow you to define a set of fields that can be reusable in your queries.
 
-```graphql:title=Launch.graphql
+```graphql title="Launch.graphql"
 fragment launchFragment on Launch {
   id
   site
@@ -22,7 +22,7 @@ query LaunchDetails($id:ID!) {
 
 Apollo Android will generate a `LaunchFragment` class that can be reused in different queries:
 
-```kotlin:title=LaunchFragment.kt
+```kotlin title="LaunchFragment.kt"
 data class LaunchFragment(
      val __typename: String = "Launch",
      val id: String,
@@ -39,7 +39,7 @@ println("Mission site: ${launch.fragments.launchFragment.site}")
 
 To reuse a fragment, use it in any other query:
 
-```graphql:title=Launch.graphql
+```graphql title="Launch.graphql"
 // ...
 
 query LaunchList {

@@ -46,7 +46,7 @@ Check the [changelog](https://github.com/apollographql/apollo-android/releases) 
 Releases are hosted on [Jcenter](https://jcenter.bintray.com/com/apollographql/apollo/) and [Maven Central](https://repo1.maven.org/maven2/com/apollographql/apollo/). The plugin is additionally hosted on the [Gradle Plugin Portal](https://plugins.gradle.org/plugin/com.apollographql.apollo)
 
 
-```groovy:title=build.gradle.kts
+```groovy title="build.gradle.kts"
 plugins {
   id("com.apollographql.apollo").version("x.y.z")
 }
@@ -80,7 +80,7 @@ dependencies {
 
 Latest development changes are available in Sonatype's snapshots repository:
 
-```kotlin:title=build.gradle.kts
+```kotlin title="build.gradle.kts"
 repositories {
   maven {
     url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
