@@ -134,13 +134,11 @@ fun <D : Query.Data> ApolloCall<D>.watch(
     refetchThrows: Boolean = false,
 ): Flow<ApolloResponse<D>> {
   return flow {
-    var data: D? = null
     var lastResponse: ApolloResponse<D>? = null
     toFlow()
         .catch {
           if (it !is ApolloException || fetchThrows) throw it
         }.collect {
-          data = it.data
           if (lastResponse != null) {
             emit(lastResponse!!)
           }
@@ -149,9 +147,13 @@ fun <D : Query.Data> ApolloCall<D>.watch(
 
     emitAll(
         copy().fetchPolicyInterceptor(refetchPolicyInterceptor)
-            .watch(data) { _, _ ->
+            .watch(lastResponse?.data) { _, _ ->
               // If the exception is ignored (refetchThrows is false), we should continue watching - so retry
               !refetchThrows
+            }.onStart {
+              if (lastResponse != null) {
+                emit(lastResponse!!)
+              }
             }
     )
   }

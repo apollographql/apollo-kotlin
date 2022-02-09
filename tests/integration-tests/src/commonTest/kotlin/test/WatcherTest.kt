@@ -84,7 +84,6 @@ class WatcherTest {
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
     repeat(10000) {
-      println("$it")
       // Enqueue responses
       apolloClient.enqueueTestResponse(query, episodeHeroNameData)
       apolloClient.enqueueTestResponse(query, episodeHeroNameChangedData)
