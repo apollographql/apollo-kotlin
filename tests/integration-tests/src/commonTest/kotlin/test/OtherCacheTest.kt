@@ -17,6 +17,7 @@ import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsDirectivesQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
 import com.apollographql.apollo3.integration.normalizer.InstantQuery
+import com.apollographql.apollo3.integration.normalizer.UpdateReviewWithoutVariableMutation
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
@@ -181,5 +182,22 @@ class OtherCacheTest {
         .execute()
 
     assertEquals(instant, response.data!!.instant)
+  }
+
+  @Test
+  fun cacheFieldWithObjectValueArgument() = runTest(before = { setUp() }, after = { tearDown() }) {
+    val mutation = UpdateReviewWithoutVariableMutation()
+    val data = UpdateReviewWithoutVariableMutation.Data(
+        UpdateReviewWithoutVariableMutation.UpdateReview(
+            "0",
+            5,
+            "Great"
+        )
+    )
+    mockServer.enqueue(mutation, data)
+    apolloClient.mutation(mutation).execute()
+
+    val storeData = store.readOperation(mutation)
+    assertEquals(data, storeData)
   }
 }
