@@ -8,6 +8,27 @@ _2022-02-07_
 Version 3.1.0 introduces new APIs for testing, mapping scalars as well a redesigned cache pipeline.
 It also contains bugfixes around the `@include` directives, MemoryCache and GraphQL validation amongst other changes.
 
+## ⚙️ [breaking] Fragment package name and `useSchemaPackageNameForFragments` (#3775)
+
+If you're using `packageNameFromFilePath()`, the package name of generated fragment classes has changed. 
+
+Different generated types have different package names:
+
+* Generated types coming from operations are generated based on the operation path
+* Generated types coming from the schema (input objects, custom scalars and enums) are generated based on the schema path
+
+Previously, fragments were using the schema path which is inconsistent because fragments are not defined in the schema but are executable files, like operations. 
+
+Version 3.1.0 now uses the same logic for fragments as for operations. To revert to the previous behaviour, you can use `useSchemaPackageNameForFragments`:
+
+```kotlin
+apollo {
+  useSchemaPackageNameForFragments.set(true)
+}
+```
+
+This is also done automatically if you're using `useVersion2Compat()`. Moving forward, the plan is to remove `useSchemaPackageNameForFragments` in favor of setting a custom `PackageNameGenerator`. If you have use cases that require `useSchemaPackageNameForFragments`, please [reach out](https://github.com/apollographql/apollo-kotlin/issues/new?assignees=&labels=%3Aquestion%3A+Type%3A+Question&template=question.md&title=).
+
 ## ✨ [New] `QueueTestNetworkTransport` (#3757)
 
 3.1.0 introduces `QueueTestNetworkTransport` to test at the GraphQL layer without needing to run an HTTP server.
