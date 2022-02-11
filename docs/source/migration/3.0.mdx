@@ -242,6 +242,8 @@ If you need different package names for different operation folders, you can fal
 ```kotlin
 apollo {
   packageNamesFromFilePaths("$rootPackageName")
+  # If using version 3.1.0+, you will also need useSchemaPackageNameForFragments
+  useSchemaPackageNameForFragments.set(true)
 }
 ```
 
