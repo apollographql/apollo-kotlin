@@ -185,7 +185,7 @@ class OtherCacheTest {
   }
 
   @Test
-  fun mutationWithObjectValueArgument() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun cacheFieldWithObjectValueArgument() = runTest(before = { setUp() }, after = { tearDown() }) {
     val mutation = UpdateReviewWithoutVariableMutation()
     val data = UpdateReviewWithoutVariableMutation.Data(
         UpdateReviewWithoutVariableMutation.UpdateReview(
