@@ -41,6 +41,7 @@ fun List<Pair<String, CodeBlock>>.toMapInitializerCodeblock(): CodeBlock {
         forEach {
           add(".put($S, $L)", it.first, it.second)
         }
+        add(".build()")
       }
       .build()
 }
