@@ -1,0 +1,11 @@
+mutation UpdateReviewWithoutVariable {
+  updateReview(id: "0", review: {
+    stars: 5
+    commentary: "Great"
+    favoriteColor: {}
+  }) {
+    id
+    stars
+    commentary
+  }
+}
