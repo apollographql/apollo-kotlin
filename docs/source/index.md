@@ -144,7 +144,7 @@ Some platforms have specific requirements:
 For building, it requires:
 
 * Gradle 5.6
-* Kotlin 1.4+
+* Kotlin 1.4+ (1.6+ for native)
 
 ## Proguard / R8 configuration
 
