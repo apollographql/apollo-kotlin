@@ -737,61 +737,126 @@ automatically opted-out for any operations using `@defer`.
 
 ### Normalized Cache
 
-Several options are possible:
+**The data is stored in the cache as it is being received.**
 
-**A. Incremental data is cached as it is being received**
+This means:
+
+- Querying the cache for data for which a query is ongoing and some fields haven't been received yet, will
+  lead to a cache miss.
+- Same is true when using `watch(Data?)`: only data where all fields have been received will be emitted.
+- Similarly, reading fragments from the store will either throw or not, depending on if the fields for this fragment
+  has been received.
+- An API to watch fragments would be useful in a `@defer` scenario:
+  - different UI components are watching for different fragments
+  - they are notified as soon as the fragment's fields are received
+
+Essentially, `@defer` is ignored by the cache. 
+
+Because of this, we could throw an exception when a query with `@defer` is executed only on the
+cache (`FetchPolicy.CacheOnly`, or with `watch(Data?)`) because it doesn't make much sense.
+
+- Pros: prevents some confusion
+- Cons: can lead to code duplication (1 query with `@defer` for cache+network, and the same without `@defer` for cache
+  only/watch)
+
+**Key fields in deferred fragments**
+
+What happens if all or some of the key fields are deferred on a query? For example:
+
+```graphql
+query Query {
+  computers {
+    cpu
+    year
+    ... on Computer @defer {
+      id
+    }
+  }
+}
+```
+
+**Option 1:** keep the current behavior.
+
+Currently, id fields are automatically added to selection sets, so for instance the above query will be transformed to:
+
+```graphql
+query Query {
+  computers {
+    id
+    cpu
+    year
+    ... on Computer @defer {
+      id
+    }
+  }
+}
+```
+This means that an object, even partial, can always be stored in the cache, because its id fields are available.
+
+However, this may not be what the user expects/wants: the id fields may be part of fields that take longer to load
+and are not needed at first. Adding them to the initial payloads may mean that initial payloads won't arrive as fast
+as they could.
+
+On the other hand, we shouldn't expect this to be a real problem *in most cases*: ids usually correspond to
+primary keys, which aren't fields that "take long to load" on the server.
+
+💡 Maybe this could output a warning? But ideally we would need a way to suppress it.
+
+**Option 2:** update current behavior: don't add key fields on selection sets if they are already part of a `@defer`
+  fragment.
+
+The reasoning is that we don't want to add id fields in initial payloads if the user wants them to be deferred.
+
+In that case we may store partial objects in the cache only if all the key fields are available.
+
+In the example above, for instance, we would receive the following objects:
+
+```kotlin
+// Emission 1
+Data(
+        computers=[
+          Computer(
+                  cpu=386,
+                  year=1993,
+                  computerFields=null
+          )
+        ]
+)
+
+// Emission 2
+Data(
+        computers=[
+          Computer(
+                  cpu=386,
+                  year=1993,
+                  computerFields=ComputerFields(
+                          id=Computer1
+                  )
+          ),
+        ]
+)
+```
+The first emission would not update the cache (id not available), and the second one would.
+
+The drawback is that observers of the cache wouldn't get updated as early as data is available (UI is less reactive).
+
+
+**Option 3:** detect and disallow such case
 
 Pros:
 
-- When using `watch` the UI can be as reactive as possible and reflect the received data in real time
+- Queries are not automatically modified, removing the risk of "accidentally not deferring" fields that should be
+  deferred.
+- The user is in charge.
 
 Cons:
+- This may be confusing.
+- The most probable resolution is to manually do what is currently done automatically (adding the id fields to the root
+  selection set).
 
-- When using `query` with `FetchPolicy.CacheOnly` partial data can be returned, with no way to know this
-- A potentially undesirable experience with `watch` when calls are done in parallel. For instance a collector could receive in this order:
-    1. A Computer *(from request **a**)*
-    2. A Computer, with computerFields *(from request **a**)*
-    3. A Computer *(from request **b**)*
-    4. A Computer, with computerFields, with screenFields *(from request **a**)*
-    5. A Computer, with computerFields *(from request **b**)*
-    6. A Computer, with computerFields, with screenFields *(from request **b**)*
 
-Open questions
-
-- What happens if the key fields are deferred? Maybe this could be forbidden via a compile time check?
-
-**B. Only the full data is cached**
-
-Similarly to the Http Cache, we wait for the last payload to be received before storing the data in the cache.
-
-Pros:
-
-- No risk of getting a partial data when using `query` with `FetchPolicy.CacheOnly`
-- Avoids the “interweaved partial results” potential issue highlighted above
-
-Cons:
-
-- Less reactiveness when using `watch`
-- The cache is not reflecting the latest received data
-- Basically renders `@defer` useless, when using the cache as the single source of truth
-
-**C. Same as A, but with more control**
-
-A parameter (similarly to `storePartialResponses`) can be added on `ApolloCall` to control whether partial data is
-wanted from the cache.
-
-- Pros:
-    - `watch` is “reactive” by emitting data as it’s being received, including partial, by default (but can be opted out
-      if needed)
-    - `query` with `FetchPolicy.CacheOnly` does not return partial data, by default (but can if needed)
-- Cons:
-    - Out of scope for this document but noteworthy: I don’t know how (if?) this can be implemented
-    - Depending on how it is implemented, this may be a breaking change (a database migration may be needed?)
-
-**Implementation / planning considerations**
-
-Option C is not as simple to implement as the other two - a good way to go would probably be to implement A in the first
-milestone, and implement C later on a subsequent release.
+All in all, option 1 seems to be acceptable at least for the first milestone, and has the advantage of being
+already in place.
 
 ### Mock Server
 
@@ -805,7 +870,7 @@ class MockResponse(
     val body: ByteString = ByteString.EMPTY,
     val headers: Map<String, String> = emptyMap(),
     val delayMillis: Long = 0,
-    val chunks: Flow<MockChunk> = emptyFlow {}, // <- New!
+    val chunks: List<MockChunk> = emptyList(), // <- New!
 )
 ```
 
