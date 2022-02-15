@@ -13,6 +13,7 @@ kotlin {
         implementation(groovy.util.Eval.x(project, "x.dep.atomicfu").toString()) {
           because("We need locks for native (we don't use the gradle plugin rewrite)")
         }
+        implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
       }
     }
 

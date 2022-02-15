@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.mockserver
 
+import kotlinx.coroutines.delay
 import okio.Buffer
 import okio.BufferedSink
 import okio.BufferedSource
@@ -24,34 +25,69 @@ class MockRequest(
     val body: ByteString = ByteString.EMPTY,
 )
 
-fun writeResponse(sink: BufferedSink, mockResponse: MockResponse, version: String) {
-  sink.writeUtf8("${version} ${mockResponse.statusCode}\r\n")
-  val contentLengthHeader = mapOf("Content-Length" to mockResponse.body.size.toString())
+suspend fun writeResponse(sink: BufferedSink, mockResponse: MockResponse, version: String) {
+  sink.writeUtf8("$version ${mockResponse.statusCode}\r\n")
+  val isChunked = mockResponse.chunks.isNotEmpty()
 
-  (contentLengthHeader + mockResponse.headers).forEach {
+  val headers = mockResponse.headers + if (isChunked) {
+    mapOf("Transfer-Encoding" to "chunked")
+  } else {
+    mapOf("Content-Length" to mockResponse.body.size.toString())
+  }
+
+  headers.forEach {
     sink.writeUtf8("${it.key}: ${it.value}\r\n")
   }
   sink.writeUtf8("\r\n")
   sink.flush()
 
-  if (mockResponse.body.size > 0) {
+  if (isChunked) {
+    // Chunked format is a sequence of:
+    // - chunk-size (in hexadecimal) + CRLF
+    // - chunk-data + CRLF
+    // Ended with a chunk-size of 0 + CRLF + CRLF
+    for (chunk in mockResponse.chunks) {
+      delay(chunk.delayMillis)
+      sink.writeHexadecimalUnsignedLong(chunk.body.size.toLong())
+      sink.writeUtf8("\r\n")
+      sink.write(chunk.body)
+      sink.writeUtf8("\r\n")
+      sink.flush()
+    }
+    sink.writeUtf8("0\r\n\r\n")
+    sink.flush()
+  } else if (mockResponse.body.size > 0) {
     sink.write(mockResponse.body)
+    sink.flush()
   }
-  sink.flush()
 }
 
 class MockResponse(
     val statusCode: Int = 200,
     val body: ByteString = ByteString.EMPTY,
+    val chunks: List<MockChunk> = emptyList(),
     val headers: Map<String, String> = emptyMap(),
     val delayMillis: Long = 0,
 ) {
   @JvmOverloads
   constructor(
       body: String,
+      chunks: List<MockChunk> = emptyList(),
       statusCode: Int = 200,
       headers: Map<String, String> = emptyMap(),
-  ) : this(statusCode, body.encodeUtf8(), headers)
+      delayMillis: Long = 0,
+  ) : this(statusCode, body.encodeUtf8(), chunks, headers, delayMillis)
+}
+
+class MockChunk(
+    val body: ByteString = ByteString.EMPTY,
+    val delayMillis: Long = 0,
+) {
+  @JvmOverloads
+  constructor(
+      body: String,
+      delayMillis: Long = 0,
+  ) : this(body.encodeUtf8(), delayMillis)
 }
 
 interface MockServerHandler {

@@ -3,6 +3,7 @@ package com.apollographql.apollo3.mockserver.test
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
+import com.apollographql.apollo3.mockserver.MockChunk
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
@@ -33,6 +34,11 @@ class EnqueueTest {
             body = "Hello, World! 001",
             statusCode = 200,
             headers = mapOf("X-Test" to "true"),
+        ),
+        MockResponse(
+            chunks = listOf(MockChunk("First chunk\n"), MockChunk("Second chunk")),
+            statusCode = 200,
+            headers = mapOf("X-Test" to "false"),
         ),
     )
     for (mockResponse in mockResponses) {

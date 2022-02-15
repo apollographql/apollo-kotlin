@@ -12,6 +12,7 @@ import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.nativeHeap
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.value
+import kotlinx.coroutines.runBlocking
 import okio.IOException
 import okio.buffer
 import platform.Foundation.NSMutableArray
@@ -145,7 +146,7 @@ class Socket(
         }
 
         try {
-          writeResponse(sink, mockResponse, request.version)
+          runBlocking { writeResponse(sink, mockResponse, request.version) }
         } catch (e: IOException) {
           debug("'$connectionFd': writeResponse error")
           return
