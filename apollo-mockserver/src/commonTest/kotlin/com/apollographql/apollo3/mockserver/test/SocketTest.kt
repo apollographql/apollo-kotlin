@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.mockserver.test
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.mockserver.MockResponse
@@ -11,6 +12,7 @@ import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@OptIn(ApolloExperimental::class)
 class SocketTest {
   @Test
   fun writeMoreThan8kToTheSocket() = runTest {

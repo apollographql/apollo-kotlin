@@ -49,4 +49,28 @@ class ReadRequestTest {
     assertEquals("POST", recordedRequest.method)
     assertEquals("Hello world", recordedRequest.body.utf8())
   }
+
+  @Test
+  fun readChunkedPostRequest() {
+    val request = """
+      POST / HTTP/2
+      Transfer-Encoding: chunked
+      
+      a
+      This is 
+      
+      6
+      a test
+      0
+
+    """.trimIndent()
+        .split("\n")
+        .joinToString(separator = "\r\n", postfix = "")
+
+    val recordedRequest = readRequest(Buffer().apply { writeUtf8(request) })
+    assertNotNull(recordedRequest)
+    assertEquals("POST", recordedRequest.method)
+    assertEquals("This is \r\na test", recordedRequest.body.utf8())
+  }
+
 }
