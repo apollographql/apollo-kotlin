@@ -29,11 +29,14 @@ suspend fun writeResponse(sink: BufferedSink, mockResponse: MockResponse, versio
   sink.writeUtf8("$version ${mockResponse.statusCode}\r\n")
   val isChunked = mockResponse.chunks.isNotEmpty()
 
-  val headers = mockResponse.headers + if (isChunked) {
-    mapOf("Transfer-Encoding" to "chunked")
-  } else {
-    mapOf("Content-Length" to mockResponse.body.size.toString())
-  }
+  val headers = mockResponse.headers +
+      if (isChunked) {
+        mapOf("Transfer-Encoding" to "chunked")
+      } else {
+        mapOf("Content-Length" to mockResponse.body.size.toString())
+      } +
+      // We don't support 'Connection: Keep-Alive', so indicate it to the client
+      mapOf("Connection" to "close")
 
   headers.forEach {
     sink.writeUtf8("${it.key}: ${it.value}\r\n")
