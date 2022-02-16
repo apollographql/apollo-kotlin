@@ -25,6 +25,7 @@ class WriteResponseTest {
         "1.1 404\r\n" +
             "X-Custom-Header: Custom-Value\r\n" +
             "Content-Length: 44\r\n" +
+            "Connection: close\r\n" +
             "\r\n" +
             "I will not buy this record, it is scratched.",
         buffer.readUtf8()
@@ -45,6 +46,7 @@ class WriteResponseTest {
         "1.1 404\r\n" +
             "X-Custom-Header: Custom-Value\r\n" +
             "Transfer-Encoding: chunked\r\n" +
+            "Connection: close\r\n" +
             "\r\n" +
             "1c\r\n" +
             "I will not buy this record, \r\n" +
