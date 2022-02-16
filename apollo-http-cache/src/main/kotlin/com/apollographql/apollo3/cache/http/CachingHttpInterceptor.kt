@@ -25,7 +25,7 @@ class CachingHttpInterceptor(
   private val store = DiskLruHttpCache(fileSystem, directory, maxSize)
 
   override suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse {
-    val policy = request.headers.valueOf(CACHE_FETCH_POLICY_HEADER) ?: CACHE_FIRST
+    val policy = request.headers.valueOf(CACHE_FETCH_POLICY_HEADER) ?: defaultPolicy(request)
     val cacheKey = cacheKey(request)
 
     when (policy) {
@@ -63,6 +63,13 @@ class CachingHttpInterceptor(
     }
   }
 
+  private fun defaultPolicy(request: HttpRequest): String {
+    return if (request.headers.firstOrNull { it.name == CACHE_OPERATION_TYPE_HEADER }?.value == "query") {
+      CACHE_FIRST
+    } else {
+      NETWORK_ONLY
+    }
+  }
   private suspend fun networkMightThrow(request: HttpRequest, chain: HttpInterceptorChain, cacheKey: String): HttpResponse {
     val response = chain.proceed(request)
 
@@ -152,6 +159,11 @@ class CachingHttpInterceptor(
      * Cache fetch strategy http header
      */
     const val CACHE_FETCH_POLICY_HEADER = "X-APOLLO-CACHE-FETCH-POLICY"
+
+    /**
+     * Cache fetch strategy http header
+     */
+    const val CACHE_OPERATION_TYPE_HEADER = "X-APOLLO-CACHE-OPERATION-TYPE"
 
     const val CACHE_ONLY = "CACHE_ONLY"
     const val NETWORK_ONLY = "NETWORK_ONLY"

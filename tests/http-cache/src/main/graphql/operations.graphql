@@ -5,3 +5,7 @@ query GetRandom {
 query GetRandom2 {
   random2
 }
+
+mutation SetRandom {
+  setRandom
+}

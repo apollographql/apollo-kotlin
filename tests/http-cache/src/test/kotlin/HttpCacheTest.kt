@@ -1,4 +1,5 @@
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.cache.http.HttpFetchPolicy
 import com.apollographql.apollo3.cache.http.httpCache
 import com.apollographql.apollo3.cache.http.httpExpireTimeout
@@ -12,6 +13,7 @@ import com.apollographql.apollo3.network.okHttpClient
 import com.apollographql.apollo3.testing.runTest
 import httpcache.GetRandom2Query
 import httpcache.GetRandomQuery
+import httpcache.SetRandomMutation
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
@@ -170,6 +172,27 @@ class HttpCacheTest {
     }
 
     assertEquals("Test-Value", mockServer.takeRequest().headers["Test-Header"])
+  }
+
+  @Test
+  fun mutationAreNotCachedByDefault() = runTest(before = { before() }, after = { tearDown() }) {
+    val mutation = SetRandomMutation()
+
+    repeat(2) {
+      mockServer.enqueue("""
+        {
+          "data": {
+            "setRandom": "42"
+          }
+        }
+      """.trimIndent())
+      apolloClient.mutation(mutation).execute()
+
+      /**
+       * The HTTP request should hit the network twice
+       */
+      mockServer.takeRequest()
+    }
   }
 }
 

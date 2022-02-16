@@ -3,10 +3,17 @@
 package com.apollographql.apollo3.cache.http
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.MutableExecutionOptions
+import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.interceptor.ApolloInterceptor
+import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.network.http.HttpInfo
+import kotlinx.coroutines.flow.Flow
 import java.io.File
 
 enum class HttpFetchPolicy {
@@ -52,7 +59,23 @@ fun ApolloClient.Builder.httpCache(
           directory = directory,
           maxSize = maxSize,
       )
-  )
+  ).addInterceptor(object : ApolloInterceptor {
+    override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+      return chain.proceed(request.newBuilder()
+          .addHttpHeader(
+              CachingHttpInterceptor.CACHE_OPERATION_TYPE_HEADER,
+              when(request.operation) {
+                is Query<*> -> "query"
+                is Mutation<*> -> "mutation"
+                is Subscription<*> -> "subscription"
+                else -> error("Unknown operation type")
+              }
+          )
+          .build()
+      )
+    }
+
+  })
 }
 
 val <D : Operation.Data> ApolloResponse<D>.isFromHttpCache
