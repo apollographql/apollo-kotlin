@@ -17,12 +17,6 @@ kotlin {
       }
     }
 
-    val jvmMain by getting {
-      dependencies {
-        implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
-      }
-    }
-
     val jsMain by getting {
       dependencies {
         implementation(groovy.util.Eval.x(project, "x.dep.kotlin.nodejs"))

@@ -33,7 +33,7 @@ actual class MockServer actual constructor(
           // An exception here means the server socket has been closed (stop() was called)
           break
         }
-        coroutineScope.launch { handleClient(clientSocket) }
+        launch { handleClient(clientSocket) }
       }
     }
   }
@@ -44,13 +44,16 @@ actual class MockServer actual constructor(
       val clientSink = clientSocket.getOutputStream().sink().buffer()
 
       val mockRequest = readRequest(clientSource)!!
-      mockRequests += mockRequest
+      synchronized(mockRequests) {
+        mockRequests += mockRequest
+      }
 
       val mockResponse = mockServerHandler.handle(mockRequest)
       delay(mockResponse.delayMillis)
       writeResponse(clientSink, mockResponse, mockRequest.version)
-    } catch (_: CancellationException) {
-      // Ignored: this is expected when the MockServer is closed
+    } catch (e: CancellationException) {
+      // This is expected when the MockServer is closed
+      throw e
     } catch (e: Exception) {
       println("Apollo: error in MockServer while handling client - $e")
       e.printStackTrace()
@@ -65,7 +68,7 @@ actual class MockServer actual constructor(
   }
 
   override fun takeRequest(): MockRequest {
-    return mockRequests.removeFirst()
+    return synchronized(mockRequests) { mockRequests.removeFirst() }
   }
 
   override suspend fun url(): String {
