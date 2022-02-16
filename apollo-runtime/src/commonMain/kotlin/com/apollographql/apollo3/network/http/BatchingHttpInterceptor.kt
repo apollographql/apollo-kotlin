@@ -133,13 +133,6 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
 
     val firstRequest = pending.first().request
 
-    val allLengths = pending.map { it.request.headers.valueOf("Content-Length")?.toLongOrNull() ?: -1L }
-    val contentLength = if (allLengths.contains(-1)) {
-      -1
-    } else {
-      allLengths.sum()
-    }
-
     val allBodies = pending.map { it.request.body ?: error("empty body while batching queries") }
     // Only keep headers with the same name and value in all requests
     val commonHeaders = pending.map { it.request.headers }.reduce { acc, headers ->
@@ -148,20 +141,24 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
         // Also do not send our internal use header
         .filter { it.name != ExecutionOptions.CAN_BE_BATCHED }
 
+    val combinedBodiesJsonString = Buffer().also {
+      val writer = BufferedSinkJsonWriter(it)
+      @OptIn(ApolloInternal::class)
+      writer.writeArray {
+        this as BufferedSinkJsonWriter
+        allBodies.forEach { body ->
+          val buffer = Buffer()
+          body.writeTo(buffer)
+          jsonValue(buffer.readUtf8())
+        }
+      }
+    }.readUtf8()
+
     val body = object : HttpBody {
       override val contentType = "application/json"
-      override val contentLength = contentLength
+      override val contentLength = combinedBodiesJsonString.length.toLong()
       override fun writeTo(bufferedSink: BufferedSink) {
-        val writer = BufferedSinkJsonWriter(bufferedSink)
-        @OptIn(ApolloInternal::class)
-        writer.writeArray {
-          this as BufferedSinkJsonWriter
-          allBodies.forEach { body ->
-            val buffer = Buffer()
-            body.writeTo(buffer)
-            jsonValue(buffer.readUtf8())
-          }
-        }
+        bufferedSink.writeUtf8(combinedBodiesJsonString)
       }
     }
 
