@@ -161,7 +161,7 @@ class CachingHttpInterceptor(
     const val CACHE_FETCH_POLICY_HEADER = "X-APOLLO-CACHE-FETCH-POLICY"
 
     /**
-     * Cache fetch strategy http header
+     * Cache operation type http header
      */
     const val CACHE_OPERATION_TYPE_HEADER = "X-APOLLO-CACHE-OPERATION-TYPE"
 
