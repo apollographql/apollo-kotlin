@@ -6,6 +6,7 @@ public final class com/apollographql/apollo3/cache/http/CachingHttpInterceptor :
 	public static final field CACHE_FIRST Ljava/lang/String;
 	public static final field CACHE_KEY_HEADER Ljava/lang/String;
 	public static final field CACHE_ONLY Ljava/lang/String;
+	public static final field CACHE_OPERATION_TYPE_HEADER Ljava/lang/String;
 	public static final field CACHE_SERVED_DATE_HEADER Ljava/lang/String;
 	public static final field Companion Lcom/apollographql/apollo3/cache/http/CachingHttpInterceptor$Companion;
 	public static final field FROM_CACHE Ljava/lang/String;
