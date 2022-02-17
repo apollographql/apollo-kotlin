@@ -141,24 +141,24 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
         // Also do not send our internal use header
         .filter { it.name != ExecutionOptions.CAN_BE_BATCHED }
 
-    val combinedBodiesJsonString = Buffer().also {
-      val writer = BufferedSinkJsonWriter(it)
-      @OptIn(ApolloInternal::class)
-      writer.writeArray {
-        this as BufferedSinkJsonWriter
-        allBodies.forEach { body ->
-          val buffer = Buffer()
-          body.writeTo(buffer)
-          jsonValue(buffer.readUtf8())
-        }
-      }
-    }.readUtf8()
-
     val body = object : HttpBody {
       override val contentType = "application/json"
-      override val contentLength = combinedBodiesJsonString.length.toLong()
+
+      // We don't know the combined size at that point.
+      // Note: returning -1 here will switch to chunked encoding when using OkHttp.
+      override val contentLength = -1L
+
       override fun writeTo(bufferedSink: BufferedSink) {
-        bufferedSink.writeUtf8(combinedBodiesJsonString)
+        val writer = BufferedSinkJsonWriter(bufferedSink)
+        @OptIn(ApolloInternal::class)
+        writer.writeArray {
+          this as BufferedSinkJsonWriter
+          allBodies.forEach { body ->
+            val buffer = Buffer()
+            body.writeTo(buffer)
+            jsonValue(buffer.readUtf8())
+          }
+        }
       }
     }
 
