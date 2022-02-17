@@ -5,7 +5,8 @@ import com.apollographql.apollo3.ast.internal.ExecutableValidationScope2
 import com.apollographql.apollo3.ast.internal.validateAndCoerceValue
 
 /**
- * For a [GQLValue] used in input position, validate that it can be coerced to [expectedType] and coerce it at the same time.
+ * For a [GQLValue] used in input position, validate that it can be coerced to [expectedType]
+ * and coerce it at the same time.
  *
  * This should only be used in places where variables are available. For an example:
  * - variable defaultValue (executable)

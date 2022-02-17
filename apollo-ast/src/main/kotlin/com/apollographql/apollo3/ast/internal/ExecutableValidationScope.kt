@@ -39,7 +39,8 @@ import com.apollographql.apollo3.ast.sharesPossibleTypesWith
 import java.util.Locale
 
 /**
- * @param fragmentDefinitions: all the fragments in the current compilation unit. This is required to check the type conditions as well as fields merging
+ * @param fragmentDefinitions: all the fragments in the current compilation unit.
+ * This is required to check the type conditions as well as fields merging
  */
 internal class ExecutableValidationScope(
     private val schema: Schema,
