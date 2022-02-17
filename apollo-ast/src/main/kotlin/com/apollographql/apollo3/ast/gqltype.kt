@@ -13,31 +13,45 @@ fun GQLType.pretty(): String = when (this) {
   is GQLNamedType -> this.name
 }
 
-internal fun GQLType.canInputValueBeAssignedTo(target: GQLType): Boolean {
-  return when (this) {
-    is GQLNonNullType -> when (target) {
-      // non-null can always be assigned to their nullable equivalents
-      is GQLNonNullType -> type.canInputValueBeAssignedTo(target.type)
-      is GQLListType -> type.canInputValueBeAssignedTo(target)
-      is GQLNamedType -> type.canInputValueBeAssignedTo(target)
+internal fun isVariableUsageAllowed(variableDefinition: GQLVariableDefinition, usage: VariableUsage): Boolean {
+  val variableType = variableDefinition.type
+  val locationType = usage.locationType
+
+  if (locationType is GQLNonNullType && variableType !is GQLNonNullType) {
+    if (variableDefinition.defaultValue == null && !usage.hasLocationDefaultValue) {
+      return false
     }
-    is GQLListType -> when (target) {
-      // lists are covariant. [CatInput!] can be passed where [CatInput] is expected
-      is GQLListType -> type.canInputValueBeAssignedTo(target.type)
-      is GQLNonNullType -> false
-      is GQLNamedType -> false
+
+    return areTypesCompatible(variableType, locationType.type)
+  }
+  return areTypesCompatible(variableType, locationType)
+}
+
+internal fun areTypesCompatible(variableType: GQLType, locationType: GQLType): Boolean {
+  return if(locationType is GQLNonNullType) {
+    if (variableType !is GQLNonNullType) {
+      false
+    } else {
+      areTypesCompatible(variableType.type, locationType.type)
     }
-    is GQLNamedType -> when (target) {
-      is GQLNonNullType -> false
-      is GQLListType -> false
-      is GQLNamedType -> {
-        /**
-         * At this point, both this and target must be input objects
-         * If this is not the case, this means variables validation has failed
-         */
-        return name == target.name
-      }
+  } else if (variableType is GQLNonNullType) {
+    areTypesCompatible(variableType.type, locationType)
+  } else if (locationType is GQLListType){
+    if (variableType !is GQLListType) {
+      false
+    } else {
+      areTypesCompatible(variableType.type, locationType.type)
     }
+  } else if (variableType is GQLListType) {
+    false
+  } else {
+    /**
+     * At this point, both variableType and locationType must be input objects
+     * If this is not the case, this means variables validation has failed
+     */
+    check(variableType is GQLNamedType)
+    check(locationType is GQLNamedType)
+    variableType.name == locationType.name
   }
 }
 

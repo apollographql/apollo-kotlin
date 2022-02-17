@@ -5,7 +5,8 @@ import com.apollographql.apollo3.ast.internal.ExecutableValidationScope2
 import com.apollographql.apollo3.ast.internal.validateAndCoerceValue
 
 /**
- * For a [GQLValue] used in input position, validate that it can be coerced to [expectedType] and coerce it at the same time.
+ * For a [GQLValue] used in input position, validate that it can be coerced to [expectedType]
+ * and coerce it at the same time.
  *
  * This should only be used in places where variables are available. For an example:
  * - variable defaultValue (executable)
@@ -13,7 +14,7 @@ import com.apollographql.apollo3.ast.internal.validateAndCoerceValue
  */
 fun GQLValue.coerceInExecutableContextOrThrow(expectedType: GQLType, schema: Schema): GQLValue {
   val scope = ExecutableValidationScope2(schema)
-  val coercedValue = scope.validateAndCoerceValue(this, expectedType)
+  val coercedValue = scope.validateAndCoerceValue(this, expectedType, false)
   scope.issues.checkNoErrors()
   return coercedValue
 }
@@ -28,7 +29,7 @@ fun GQLValue.coerceInExecutableContextOrThrow(expectedType: GQLType, schema: Sch
  */
 fun GQLValue.coerceInSchemaContextOrThrow(expectedType: GQLType, schema: Schema): GQLValue {
   val scope = DefaultValidationScope(schema)
-  val coercedValue = scope.validateAndCoerceValue(this, expectedType)
+  val coercedValue = scope.validateAndCoerceValue(this, expectedType, false)
   scope.issues.checkNoErrors()
   return coercedValue
 }

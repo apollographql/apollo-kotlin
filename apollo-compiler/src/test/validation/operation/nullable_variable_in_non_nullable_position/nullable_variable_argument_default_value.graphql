@@ -1,0 +1,3 @@
+query TestQuery($arg: String) {
+    field2(arg: $arg)
+}

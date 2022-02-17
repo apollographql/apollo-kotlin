@@ -34,7 +34,7 @@ import com.apollographql.apollo3.ast.GQLVariableDefinition
 import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.TransformResult
-import com.apollographql.apollo3.ast.VariableReference
+import com.apollographql.apollo3.ast.VariableUsage
 import com.apollographql.apollo3.ast.coerceInExecutableContextOrThrow
 import com.apollographql.apollo3.ast.coerceInSchemaContextOrThrow
 import com.apollographql.apollo3.ast.definitionFromScope
@@ -360,10 +360,10 @@ internal class IrBuilder(
     )
   }
 
-  private fun VariableReference.toIr(): IrVariable {
-    var type = expectedType.toIr()
+  private fun VariableUsage.toIr(): IrVariable {
+    var type = locationType.toIr()
     // This is an inferred variable from a fragment
-    if (expectedType !is GQLNonNullType) {
+    if (locationType !is GQLNonNullType) {
       type = type.makeOptional()
     }
     return IrVariable(
