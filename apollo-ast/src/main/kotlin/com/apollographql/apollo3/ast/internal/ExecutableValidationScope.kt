@@ -28,7 +28,7 @@ import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.VariableReference
+import com.apollographql.apollo3.ast.VariableUsage
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.findDeprecationReason
 import com.apollographql.apollo3.ast.leafType
@@ -36,7 +36,6 @@ import com.apollographql.apollo3.ast.pretty
 import com.apollographql.apollo3.ast.responseName
 import com.apollographql.apollo3.ast.rootTypeDefinition
 import com.apollographql.apollo3.ast.sharesPossibleTypesWith
-import java.util.Locale
 
 /**
  * @param fragmentDefinitions: all the fragments in the current compilation unit.
@@ -54,7 +53,7 @@ internal class ExecutableValidationScope(
   /**
    * As the tree is walked, variable references will be put here
    */
-  override val variableReferences = mutableListOf<VariableReference>()
+  override val variableUsages = mutableListOf<VariableUsage>()
 
   fun validate(document: GQLDocument): List<Issue> {
     document.validateExecutable()
@@ -86,19 +85,19 @@ internal class ExecutableValidationScope(
     return issues
   }
 
-  fun inferFragmentVariables(fragment: GQLFragmentDefinition): List<VariableReference> {
-    variableReferences.clear()
+  fun inferFragmentVariables(fragment: GQLFragmentDefinition): List<VariableUsage> {
+    variableUsages.clear()
     fragment.validate()
 
-    variableReferences.groupBy {
+    variableUsages.groupBy {
       it.variable.name
     }.forEach {
-      val types = it.value.map { it.expectedType.pretty() }.distinct()
+      val types = it.value.map { it.locationType.pretty() }.distinct()
       check(types.size == 1) {
         "Fragment ${fragment.name} uses different types for variable '${it.key}': ${types.joinToString()}"
       }
     }
-    return variableReferences.distinctBy { it.variable.name }
+    return variableUsages.distinctBy { it.variable.name }
   }
 
   private fun decapitalizeFirstLetter(name: String): String {
@@ -277,7 +276,7 @@ internal class ExecutableValidationScope(
   }
 
   private fun GQLOperationDefinition.validate() {
-    variableReferences.clear()
+    variableUsages.clear()
 
     val rootTypeDefinition = rootTypeDefinition(schema)
 
@@ -293,10 +292,10 @@ internal class ExecutableValidationScope(
 
     fieldsInSetCanMerge(selectionSet.collectFields(rootTypeDefinition.name))
 
-    variableReferences.forEach {
-      validateVariable(this, it.variable, it.expectedType)
+    variableUsages.forEach {
+      validateVariable(this, it)
     }
-    val foundVariables = variableReferences.map { it.variable.name }.toSet()
+    val foundVariables = variableUsages.map { it.variable.name }.toSet()
     variableDefinitions.forEach {
       if (!foundVariables.contains(it.name)) {
         issues.add(Issue.UnusedVariable(

@@ -25,24 +25,22 @@ import com.apollographql.apollo3.ast.GQLOperationTypeDefinition
 import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.GQLSchemaDefinition
 import com.apollographql.apollo3.ast.GQLStringValue
-import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.GQLVariableDefinition
-import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
 import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.ValidationDetails
-import com.apollographql.apollo3.ast.VariableReference
-import com.apollographql.apollo3.ast.canInputValueBeAssignedTo
+import com.apollographql.apollo3.ast.VariableUsage
+import com.apollographql.apollo3.ast.isVariableUsageAllowed
 import com.apollographql.apollo3.ast.parseAsGQLSelections
 import com.apollographql.apollo3.ast.pretty
 import okio.Buffer
 
 internal interface VariableReferencesScope {
-  val variableReferences: MutableList<VariableReference>
+  val variableUsages: MutableList<VariableUsage>
 }
 
 interface IssuesScope {
@@ -84,7 +82,7 @@ internal class ExecutableValidationScope2(
     override val typeDefinitions: Map<String, GQLTypeDefinition>,
     override val directiveDefinitions: Map<String, GQLDirectiveDefinition>,
     override val issues: MutableList<Issue> = mutableListOf(),
-    override val variableReferences: MutableList<VariableReference> = mutableListOf(),
+    override val variableUsages: MutableList<VariableUsage> = mutableListOf(),
 ) : ValidationScope, VariableReferencesScope {
   constructor(validationScope: ValidationScope) : this(
       validationScope.typeDefinitions,
@@ -232,7 +230,7 @@ private fun ValidationScope.validateArgument(
   // 5.6.2 Input Object Field Names
   // Note that this does not modify the document, it calls coerce because it's easier
   // to validate at the same time but the coerced result is not used here
-  validateAndCoerceValue(argument.value, schemaArgument.type)
+  validateAndCoerceValue(argument.value, schemaArgument.type, schemaArgument.defaultValue != null)
 }
 
 internal fun ValidationScope.validateArguments(
@@ -264,24 +262,28 @@ internal fun ValidationScope.validateArguments(
   }
 }
 
-internal fun ValidationScope.validateVariable(operation: GQLOperationDefinition?, value: GQLVariableValue, expectedType: GQLType) {
+internal fun ValidationScope.validateVariable(
+    operation: GQLOperationDefinition?,
+    variableUsage: VariableUsage
+) {
   if (operation == null) {
     // if operation is null, it means we're currently validating a fragment outside the context of an operation
     return
   }
 
-  val variableDefinition = operation.variableDefinitions.firstOrNull { it.name == value.name }
+  val variable = variableUsage.variable
+  val variableDefinition = operation.variableDefinitions.firstOrNull { it.name == variable.name }
   if (variableDefinition == null) {
     registerIssue(
-        message = "Variable `${value.name}` is not defined by operation `${operation.name}`",
-        sourceLocation = value.sourceLocation
+        message = "Variable `${variable.name}` is not defined by operation `${operation.name}`",
+        sourceLocation = variable.sourceLocation
     )
     return
   }
-  if (!variableDefinition.type.canInputValueBeAssignedTo(target = expectedType)) {
+  if (!isVariableUsageAllowed(variableDefinition = variableDefinition, usage = variableUsage)) {
     registerIssue(
-        message = "Variable `${value.name}` of type `${variableDefinition.type.pretty()}` used in position expecting type `${expectedType.pretty()}`",
-        sourceLocation = value.sourceLocation
+        message = "Variable `${variable.name}` of type `${variableDefinition.type.pretty()}` used in position expecting type `${variableUsage.locationType.pretty()}`",
+        sourceLocation = variable.sourceLocation
     )
   }
 }

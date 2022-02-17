@@ -19,12 +19,12 @@ import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.ast.Issue
-import com.apollographql.apollo3.ast.VariableReference
+import com.apollographql.apollo3.ast.VariableUsage
 import com.apollographql.apollo3.ast.isDeprecated
 import com.apollographql.apollo3.ast.pretty
 import com.apollographql.apollo3.ast.toUtf8
 
-internal fun ValidationScope.validateAndCoerceValue(value: GQLValue, expectedType: GQLType): GQLValue {
+internal fun ValidationScope.validateAndCoerceValue(value: GQLValue, expectedType: GQLType, hasLocationDefaultValue: Boolean): GQLValue {
   if (value is GQLVariableValue) {
     if (this !is VariableReferencesScope) {
       registerIssue(
@@ -32,7 +32,13 @@ internal fun ValidationScope.validateAndCoerceValue(value: GQLValue, expectedTyp
           value.sourceLocation,
       )
     } else {
-      variableReferences.add(VariableReference(value, expectedType))
+      variableUsages.add(
+          VariableUsage(
+              value,
+              expectedType,
+              hasLocationDefaultValue
+          )
+      )
     }
     return value
   } else if (value is GQLNullValue) {
@@ -47,16 +53,26 @@ internal fun ValidationScope.validateAndCoerceValue(value: GQLValue, expectedTyp
 
   when (expectedType) {
     is GQLNonNullType -> {
-      return validateAndCoerceValue(value, expectedType.type)
+      return validateAndCoerceValue(value, expectedType.type, hasLocationDefaultValue)
     }
     is GQLListType -> {
       val coercedValue = if (value !is GQLListValue) {
+        /**
+         * http://spec.graphql.org/draft/#sec-List.Input-Coercion
+         *
+         * Single values are coerced to lists
+         */
         GQLListValue(sourceLocation = value.sourceLocation, listOf(value))
       } else {
         value
       }
       return GQLListValue(
-          values = coercedValue.values.map { validateAndCoerceValue(it, expectedType.type) }
+          values = coercedValue.values.map {
+            /**
+             * When using a GQLListValue like `[$variable, 1, 3]`, it's not possible to have a default location value
+             */
+            validateAndCoerceValue(it, expectedType.type, false)
+          }
       )
     }
     is GQLNamedType -> {
@@ -113,7 +129,7 @@ private fun ValidationScope.validateAndCoerceInputObject(value: GQLValue, expect
     }
     GQLObjectField(
         name = field.name,
-        value = validateAndCoerceValue(field.value, inputField.type)
+        value = validateAndCoerceValue(field.value, inputField.type, inputField.defaultValue != null)
     )
   })
 }
