@@ -13,7 +13,7 @@ interface HttpBody {
   val contentType: String
 
   /**
-   * The number of bytes that will be written when calling to [writeTo], or -1 if that count is unknown.
+   * The number of bytes that will be written when calling [writeTo], or -1 if that count is unknown.
    */
   val contentLength: Long
 
