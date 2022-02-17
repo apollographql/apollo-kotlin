@@ -133,13 +133,6 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
 
     val firstRequest = pending.first().request
 
-    val allLengths = pending.map { it.request.headers.valueOf("Content-Length")?.toLongOrNull() ?: -1L }
-    val contentLength = if (allLengths.contains(-1)) {
-      -1
-    } else {
-      allLengths.sum()
-    }
-
     val allBodies = pending.map { it.request.body ?: error("empty body while batching queries") }
     // Only keep headers with the same name and value in all requests
     val commonHeaders = pending.map { it.request.headers }.reduce { acc, headers ->
@@ -150,7 +143,11 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
 
     val body = object : HttpBody {
       override val contentType = "application/json"
-      override val contentLength = contentLength
+
+      // We don't know the combined size at that point.
+      // Note: this assumes the underlying HttpEngine will use chunked encoding when contentLength is -1.
+      override val contentLength = -1L
+
       override fun writeTo(bufferedSink: BufferedSink) {
         val writer = BufferedSinkJsonWriter(bufferedSink)
         @OptIn(ApolloInternal::class)
