@@ -156,7 +156,7 @@ class HttpCacheTest {
     val okHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
 
     val mockServer = MockServer()
-
+    mockServer.enqueue(MockResponse())
     val apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
         .okHttpClient(okHttpClient)

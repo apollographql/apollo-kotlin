@@ -9,7 +9,12 @@ fun assertMockResponse(
     mockResponse: MockResponse,
     httpResponse: HttpResponse,
 ) {
-  assertEquals(mockResponse.body.utf8(), httpResponse.body!!.readUtf8())
+  if (mockResponse.chunks.isNotEmpty()) {
+    val body = mockResponse.chunks.joinToString("") { chunk -> chunk.body.utf8() }
+    assertEquals(body, httpResponse.body!!.readUtf8())
+  } else {
+    assertEquals(mockResponse.body.utf8(), httpResponse.body!!.readUtf8())
+  }
   assertEquals(mockResponse.statusCode, httpResponse.statusCode)
   // JS MockServer serves headers in lowercase, so convert before comparing
   val mockResponseHeaders = mockResponse.headers.map { it.key.lowercase() to it.value.lowercase() }

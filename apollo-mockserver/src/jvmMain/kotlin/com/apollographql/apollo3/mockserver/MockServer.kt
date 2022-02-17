@@ -1,14 +1,66 @@
 package com.apollographql.apollo3.mockserver
 
-import okhttp3.Headers
-import okhttp3.mockwebserver.Dispatcher
-import okhttp3.mockwebserver.MockWebServer
-import okhttp3.mockwebserver.RecordedRequest
-import okio.Buffer
-import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import okio.buffer
+import okio.sink
+import okio.source
+import java.net.ServerSocket
+import java.net.Socket
+import java.util.concurrent.Executors
 
-actual class MockServer actual constructor(override val mockServerHandler: MockServerHandler) : MockServerInterface {
-  private val mockWebServer = MockWebServer().apply { dispatcher = mockServerHandler.toOkHttpDispatcher() }
+@Suppress("BlockingMethodInNonBlockingContext")
+actual class MockServer actual constructor(
+    override val mockServerHandler: MockServerHandler,
+) : MockServerInterface {
+  private val serverSocket = ServerSocket(0)
+  private val mockRequests = mutableListOf<MockRequest>()
+
+  private val dispatcher = Executors.newFixedThreadPool(5).asCoroutineDispatcher()
+  private val coroutineScope = CoroutineScope(SupervisorJob() + dispatcher)
+
+  init {
+    coroutineScope.launch {
+      while (true) {
+        val clientSocket = try {
+          serverSocket.accept()
+        } catch (_: Exception) {
+          // An exception here means the server socket has been closed (stop() was called)
+          break
+        }
+        launch { handleClient(clientSocket) }
+      }
+    }
+  }
+
+  private suspend fun handleClient(clientSocket: Socket) {
+    try {
+      val clientSource = clientSocket.getInputStream().source().buffer()
+      val clientSink = clientSocket.getOutputStream().sink().buffer()
+
+      val mockRequest = readRequest(clientSource)!!
+      synchronized(mockRequests) {
+        mockRequests += mockRequest
+      }
+
+      val mockResponse = mockServerHandler.handle(mockRequest)
+      delay(mockResponse.delayMillis)
+      writeResponse(clientSink, mockResponse, mockRequest.version)
+    } catch (e: CancellationException) {
+      // This is expected when the MockServer is closed
+      throw e
+    } catch (e: Exception) {
+      println("Apollo: error in MockServer while handling client - $e")
+      e.printStackTrace()
+    } finally {
+      runCatching { clientSocket.close() }
+    }
+  }
 
   override fun enqueue(mockResponse: MockResponse) {
     (mockServerHandler as? QueueMockServerHandler)?.enqueue(mockResponse)
@@ -16,50 +68,16 @@ actual class MockServer actual constructor(override val mockServerHandler: MockS
   }
 
   override fun takeRequest(): MockRequest {
-    return mockWebServer.takeRequest(10, TimeUnit.MILLISECONDS)?.toApolloMockRequest() ?: error("No recorded request")
+    return synchronized(mockRequests) { mockRequests.removeFirst() }
   }
-
-  private fun RecordedRequest.toApolloMockRequest() = MockRequest(
-      method = method!!,
-      path = path!!,
-      version = parseRequestLine(requestLine).third,
-      headers = headers.toMap(),
-      body = body.peek().readByteString()
-  )
-
-  private fun MockResponse.toOkHttpMockResponse() = okhttp3.mockwebserver.MockResponse()
-      .setResponseCode(statusCode)
-      .apply {
-        this@toOkHttpMockResponse.headers.forEach {
-          addHeader(it.key, it.value)
-        }
-      }.setBody(Buffer().apply { write(body) })
-      .setHeadersDelay(delayMillis, TimeUnit.MILLISECONDS)
-
-  private fun MockServerHandler.toOkHttpDispatcher() = object : Dispatcher() {
-    override fun dispatch(request: RecordedRequest): okhttp3.mockwebserver.MockResponse {
-      val apolloMockRequest = request.toApolloMockRequest()
-      val mockResponse = try {
-        handle(apolloMockRequest)
-      } catch (e: Exception) {
-        throw Exception("MockServerHandler.handle() threw an exception: ${e.message}", e)
-      }
-      return mockResponse.toOkHttpMockResponse()
-    }
-
-    override fun shutdown() {}
-  }
-
-  private fun Headers.toMap(): Map<String, String> = (0.until(size)).map {
-    name(it) to get(name(it))!!
-  }.toMap()
 
   override suspend fun url(): String {
-    return mockWebServer.url("/").toString()
+    return "http://${serverSocket.inetAddress.hostAddress}:${serverSocket.localPort}/"
   }
 
   override suspend fun stop() {
-    mockWebServer.shutdown()
+    runCatching { serverSocket.close() }
+    coroutineScope.cancel()
+    dispatcher.close()
   }
 }
-

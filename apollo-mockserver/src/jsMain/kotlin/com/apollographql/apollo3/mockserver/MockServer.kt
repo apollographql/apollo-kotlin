@@ -1,10 +1,13 @@
 package com.apollographql.apollo3.mockserver
 
 import Buffer
+import http.ServerResponse
 import net.AddressInfo
 import okio.ByteString.Companion.toByteString
+import setTimeout
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+import kotlin.js.Promise
 
 actual class MockServer actual constructor(override val mockServerHandler: MockServerHandler) : MockServerInterface {
 
@@ -36,13 +39,42 @@ actual class MockServer actual constructor(override val mockServerHandler: MockS
       } catch (e: Exception) {
         throw Exception("MockServerHandler.handle() threw an exception: ${e.message}", e)
       }
-      res.statusCode = mockResponse.statusCode
-      mockResponse.headers.forEach {
-        res.setHeader(it.key, it.value)
+
+      schedule(mockResponse.delayMillis) {
+        res.statusCode = mockResponse.statusCode
+        mockResponse.headers.forEach {
+          res.setHeader(it.key, it.value)
+        }
+        if (mockResponse.chunks.isNotEmpty()) {
+          sendChunksWithDelays(res, mockResponse.chunks)
+        } else {
+          res.end(mockResponse.body.utf8())
+        }
       }
-      res.end(mockResponse.body.utf8())
     }
   }.listen()
+
+  private fun sendChunksWithDelays(res: ServerResponse, chunks: List<MockChunk>) {
+    val promises = mutableListOf<Promise<Unit>>()
+    var delayMillis = 0L
+    for (chunk in chunks) {
+      delayMillis += chunk.delayMillis
+      promises += schedule(delayMillis) {
+        res.write(chunk.body.utf8())
+      }
+    }
+    Promise.all(promises.toTypedArray()).then {
+      res.end()
+    }
+  }
+
+  private fun schedule(delayMillis: Long, block: () -> Unit) = Promise<Unit> { resolve, _ ->
+    setTimeout({
+      block()
+      resolve(Unit)
+    }, delayMillis)
+  }
+
 
   override suspend fun url() = url ?: suspendCoroutine { cont ->
     url = "http://localhost:${server.address().unsafeCast<AddressInfo>().port}/"

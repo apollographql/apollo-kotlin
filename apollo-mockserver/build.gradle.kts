@@ -13,12 +13,7 @@ kotlin {
         implementation(groovy.util.Eval.x(project, "x.dep.atomicfu").toString()) {
           because("We need locks for native (we don't use the gradle plugin rewrite)")
         }
-      }
-    }
-
-    val jvmMain by getting {
-      dependencies {
-        implementation(groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer"))
+        implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
       }
     }
 
