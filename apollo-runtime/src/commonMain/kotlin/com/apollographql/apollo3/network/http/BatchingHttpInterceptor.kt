@@ -145,7 +145,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
       override val contentType = "application/json"
 
       // We don't know the combined size at that point.
-      // Note: returning -1 here will switch to chunked encoding when using OkHttp.
+      // Note: this assumes the underlying HttpEngine will use chunked encoding when contentLength is -1.
       override val contentLength = -1L
 
       override fun writeTo(bufferedSink: BufferedSink) {
