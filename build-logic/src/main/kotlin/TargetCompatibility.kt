@@ -10,7 +10,10 @@ fun Project.configureJavaAndKotlinCompilers() {
     // For Kotlin JVM projects
     tasks.withType(KotlinCompile::class.java) {
       it.kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
+        freeCompilerArgs = freeCompilerArgs +
+            "-Xopt-in=kotlin.RequiresOptIn" +
+            // See https://blog.jetbrains.com/kotlin/2020/07/kotlin-1-4-m3-generating-default-methods-in-interfaces/
+            "-Xjvm-default=all-compatibility"
         apiVersion = "1.5"
         languageVersion = "1.5"
       }
