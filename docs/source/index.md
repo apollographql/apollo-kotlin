@@ -130,7 +130,7 @@ Build your project. This will generate a `HeroQuery` class that you can use with
 
 * Execute your first [mutation](./essentials/mutations/)
 * Handle [custom scalar types](./essentials/custom-scalars/)
-* Factor common patterns using [fragments](./essentials/inline-fragments)
+* Factor common patterns using [fragments](./essentials/fragments/)
 
 ## Requirements
 
