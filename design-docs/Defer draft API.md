@@ -672,63 +672,13 @@ Some implementations of `ApolloInterceptor` may assume that proceeding down the 
 because that is always the case currently (except when using the normalized cache). Emitting several values in the Flow
 will break such implementations.
 
-### HttpEngine / HttpInterceptor / HttpResponse
-
-Here’s the current definitions of these 3 classes:
-
-```kotlin
-interface HttpEngine {
-  suspend fun execute(request: HttpRequest): HttpResponse
-  fun dispose()
-}
-
-interface HttpInterceptor {
-  suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse
-  fun dispose() {}
-}
-
-class HttpResponse {
-  val statusCode: Int,
-  val headers: List<HttpHeader>,
-  val body: BufferedSource?,
-}
-```
-
-As we can see the contracts are designed around 1 full response being returned from a request, whereas when
-using `@defer` this is no longer appropriate: several parts can be returned.
-
-To address this let’s augment `HttpResponse` with a Flow representing the parts:
-
-```kotlin
-class HttpResponse {
-  val statusCode: Int,
-  val headers: List<HttpHeader>,
-  val body: BufferedSource?,
-  val parts: Flow<HttpPart>?, // <- New!
-}
-
-class HttpPart {
-  val headers: List<HttpHeader>,
-  val body: BufferedSource,
-}
-```
-
-This introduces `HttpPart` which is a light version of `HttpResponse`.
-
-Notes:
-
-- in the non-multipart (`@defer` not used) case, `parts` will be `null`
-- and conversely, when `parts` is present, `body` is `null`
-- any `HttpInterceptor` implementation that manipulates the response body won’t automatically work on parts. Not sure
-  if this is a common use-case but it will break / not work as expected.
-
 ### Http Cache
 
 The http cache can still be used in `@defer` scenarios.
 
-A response will be cached after all its parts have been received.
+A response will be cached after all its chunks have been received.
 
-When a response comes from the cache, the parts will be available immediately.
+When a response comes from the cache, the assembled body will be available immediately.
 
 ### Batching
 
@@ -874,4 +824,4 @@ class MockResponse(
 )
 ```
 
-`MockChunk` is identical to `HttpChunk` but with a `delayMills` field (similarly to `MockResponse` vs `HttpResponse`).
+`MockChunk` has a `delayMills` field (similarly to `MockResponse`).
