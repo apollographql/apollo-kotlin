@@ -695,40 +695,40 @@ class HttpResponse {
 ```
 
 As we can see the contracts are designed around 1 full response being returned from a request, whereas when
-using `@defer` this is no longer appropriate: several chunks can be returned.
+using `@defer` this is no longer appropriate: several parts can be returned.
 
-To address this let’s augment `HttpResponse` with a Flow representing the chunks:
+To address this let’s augment `HttpResponse` with a Flow representing the parts:
 
 ```kotlin
 class HttpResponse {
   val statusCode: Int,
   val headers: List<HttpHeader>,
   val body: BufferedSource?,
-  val chunks: Flow<HttpChunk>, // <- New!
+  val parts: Flow<HttpPart>?, // <- New!
 }
 
-class HttpChunk {
+class HttpPart {
   val headers: List<HttpHeader>,
-  val body: BufferedSource?,
+  val body: BufferedSource,
 }
 ```
 
-This introduces `HttpChunk` which is a light version of `HttpResponse`.
+This introduces `HttpPart` which is a light version of `HttpResponse`.
 
 Notes:
 
-- in the non-chunked (`@defer` not used) case, `chunks` will be an empty Flow
-- when `chunks` is not empty, the response `body` is `null`
-- any `HttpInterceptor` implementation that manipulates the response body won’t automatically work on chunks. Not sure
+- in the non-multipart (`@defer` not used) case, `parts` will be `null`
+- and conversely, when `parts` is present, `body` is `null`
+- any `HttpInterceptor` implementation that manipulates the response body won’t automatically work on parts. Not sure
   if this is a common use-case but it will break / not work as expected.
 
 ### Http Cache
 
 The http cache can still be used in `@defer` scenarios.
 
-A response will be cached after all its chunks have been received.
+A response will be cached after all its parts have been received.
 
-When a response comes from the cache, the chunks will be available immediately.
+When a response comes from the cache, the parts will be available immediately.
 
 ### Batching
 
