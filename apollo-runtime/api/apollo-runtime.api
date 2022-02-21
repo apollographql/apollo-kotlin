@@ -138,12 +138,8 @@ public final class com/apollographql/apollo3/ApolloClient$Companion {
 public final class com/apollographql/apollo3/AutoPersistedQueryInfo : com/apollographql/apollo3/api/ExecutionContext$Element {
 	public static final field Key Lcom/apollographql/apollo3/AutoPersistedQueryInfo$Key;
 	public fun <init> (Z)V
-	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
-	public fun get (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext$Element;
 	public final fun getHit ()Z
 	public fun getKey ()Lcom/apollographql/apollo3/api/ExecutionContext$Key;
-	public fun minusKey (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext;
-	public fun plus (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ExecutionContext;
 }
 
 public final class com/apollographql/apollo3/AutoPersistedQueryInfo$Key : com/apollographql/apollo3/api/ExecutionContext$Key {
@@ -156,13 +152,9 @@ public final class com/apollographql/apollo3/AutoPersistedQueryInfoKt {
 public final class com/apollographql/apollo3/ConcurrencyInfo : com/apollographql/apollo3/api/ExecutionContext$Element {
 	public static final field Key Lcom/apollographql/apollo3/ConcurrencyInfo$Key;
 	public fun <init> (Lkotlinx/coroutines/CoroutineDispatcher;Lkotlinx/coroutines/CoroutineScope;)V
-	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
-	public fun get (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext$Element;
 	public final fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
 	public final fun getDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
 	public fun getKey ()Lcom/apollographql/apollo3/api/ExecutionContext$Key;
-	public fun minusKey (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext;
-	public fun plus (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ExecutionContext;
 }
 
 public final class com/apollographql/apollo3/ConcurrencyInfo$Key : com/apollographql/apollo3/api/ExecutionContext$Key {
@@ -191,7 +183,6 @@ public final class com/apollographql/apollo3/network/OkHttpExtensionsKt {
 
 public final class com/apollographql/apollo3/network/http/ApolloClientAwarenessInterceptor : com/apollographql/apollo3/network/http/HttpInterceptor {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
-	public fun dispose ()V
 	public fun intercept (Lcom/apollographql/apollo3/api/http/HttpRequest;Lcom/apollographql/apollo3/network/http/HttpInterceptorChain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -233,7 +224,6 @@ public final class com/apollographql/apollo3/network/http/BatchingHttpIntercepto
 
 public final class com/apollographql/apollo3/network/http/BearerTokenInterceptor : com/apollographql/apollo3/network/http/HttpInterceptor {
 	public fun <init> (Lcom/apollographql/apollo3/network/http/TokenProvider;)V
-	public fun dispose ()V
 	public fun intercept (Lcom/apollographql/apollo3/api/http/HttpRequest;Lcom/apollographql/apollo3/network/http/HttpInterceptorChain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -249,7 +239,6 @@ public final class com/apollographql/apollo3/network/http/DefaultHttpEngine : co
 
 public final class com/apollographql/apollo3/network/http/HeadersInterceptor : com/apollographql/apollo3/network/http/HttpInterceptor {
 	public fun <init> (Ljava/util/List;)V
-	public fun dispose ()V
 	public fun intercept (Lcom/apollographql/apollo3/api/http/HttpRequest;Lcom/apollographql/apollo3/network/http/HttpInterceptorChain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -275,8 +264,6 @@ public final class com/apollographql/apollo3/network/http/HttpEngineKt {
 public final class com/apollographql/apollo3/network/http/HttpInfo : com/apollographql/apollo3/api/ExecutionContext$Element {
 	public static final field Key Lcom/apollographql/apollo3/network/http/HttpInfo$Key;
 	public fun <init> (JJILjava/util/List;)V
-	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
-	public fun get (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext$Element;
 	public final fun getEndMillis ()J
 	public final fun getHeaders ()Ljava/util/List;
 	public fun getKey ()Lcom/apollographql/apollo3/api/ExecutionContext$Key;
@@ -284,15 +271,13 @@ public final class com/apollographql/apollo3/network/http/HttpInfo : com/apollog
 	public final fun getMillisStart ()J
 	public final fun getStartMillis ()J
 	public final fun getStatusCode ()I
-	public fun minusKey (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext;
-	public fun plus (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ExecutionContext;
 }
 
 public final class com/apollographql/apollo3/network/http/HttpInfo$Key : com/apollographql/apollo3/api/ExecutionContext$Key {
 }
 
 public abstract interface class com/apollographql/apollo3/network/http/HttpInterceptor {
-	public abstract fun dispose ()V
+	public fun dispose ()V
 	public abstract fun intercept (Lcom/apollographql/apollo3/api/http/HttpRequest;Lcom/apollographql/apollo3/network/http/HttpInterceptorChain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -333,7 +318,6 @@ public final class com/apollographql/apollo3/network/http/HttpNetworkTransport$C
 
 public final class com/apollographql/apollo3/network/http/HttpNetworkTransport$EngineInterceptor : com/apollographql/apollo3/network/http/HttpInterceptor {
 	public fun <init> (Lcom/apollographql/apollo3/network/http/HttpNetworkTransport;)V
-	public fun dispose ()V
 	public fun intercept (Lcom/apollographql/apollo3/api/http/HttpRequest;Lcom/apollographql/apollo3/network/http/HttpInterceptorChain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -341,7 +325,6 @@ public final class com/apollographql/apollo3/network/http/LoggingInterceptor : c
 	public fun <init> ()V
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun dispose ()V
 	public fun intercept (Lcom/apollographql/apollo3/api/http/HttpRequest;Lcom/apollographql/apollo3/network/http/HttpInterceptorChain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -429,6 +412,7 @@ public abstract interface class com/apollographql/apollo3/network/ws/WebSocketCo
 
 public abstract interface class com/apollographql/apollo3/network/ws/WebSocketEngine {
 	public abstract fun open (Ljava/lang/String;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun open$default (Lcom/apollographql/apollo3/network/ws/WebSocketEngine;Ljava/lang/String;Ljava/util/Map;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public final class com/apollographql/apollo3/network/ws/WebSocketEngine$DefaultImpls {
