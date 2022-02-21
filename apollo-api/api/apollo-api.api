@@ -329,8 +329,12 @@ public final class com/apollographql/apollo3/api/CustomScalarAdapters : com/apol
 	public static final field Empty Lcom/apollographql/apollo3/api/CustomScalarAdapters;
 	public static final field Key Lcom/apollographql/apollo3/api/CustomScalarAdapters$Key;
 	public synthetic fun <init> (Ljava/util/Map;Lcom/apollographql/apollo3/api/Executable$Variables;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public fun get (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext$Element;
 	public fun getKey ()Lcom/apollographql/apollo3/api/ExecutionContext$Key;
+	public fun minusKey (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext;
 	public final fun newBuilder ()Lcom/apollographql/apollo3/api/CustomScalarAdapters$Builder;
+	public fun plus (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ExecutionContext;
 	public final fun responseAdapterFor (Lcom/apollographql/apollo3/api/CustomScalarType;)Lcom/apollographql/apollo3/api/Adapter;
 	public final fun variables ()Ljava/util/Set;
 }
@@ -459,7 +463,7 @@ public abstract interface class com/apollographql/apollo3/api/ExecutionContext {
 	public abstract fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
 	public abstract fun get (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext$Element;
 	public abstract fun minusKey (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext;
-	public fun plus (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ExecutionContext;
+	public abstract fun plus (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ExecutionContext;
 }
 
 public final class com/apollographql/apollo3/api/ExecutionContext$Companion {
@@ -470,10 +474,10 @@ public final class com/apollographql/apollo3/api/ExecutionContext$DefaultImpls {
 }
 
 public abstract interface class com/apollographql/apollo3/api/ExecutionContext$Element : com/apollographql/apollo3/api/ExecutionContext {
-	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
-	public fun get (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext$Element;
+	public abstract fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public abstract fun get (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext$Element;
 	public abstract fun getKey ()Lcom/apollographql/apollo3/api/ExecutionContext$Key;
-	public fun minusKey (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext;
+	public abstract fun minusKey (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext;
 }
 
 public final class com/apollographql/apollo3/api/ExecutionContext$Element$DefaultImpls {

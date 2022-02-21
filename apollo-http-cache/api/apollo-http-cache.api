@@ -15,6 +15,7 @@ public final class com/apollographql/apollo3/cache/http/CachingHttpInterceptor :
 	public fun <init> (Ljava/io/File;JLokio/FileSystem;)V
 	public synthetic fun <init> (Ljava/io/File;JLokio/FileSystem;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun delete ()V
+	public fun dispose ()V
 	public fun intercept (Lcom/apollographql/apollo3/api/http/HttpRequest;Lcom/apollographql/apollo3/network/http/HttpInterceptorChain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun remove (Ljava/lang/String;)V
 }
