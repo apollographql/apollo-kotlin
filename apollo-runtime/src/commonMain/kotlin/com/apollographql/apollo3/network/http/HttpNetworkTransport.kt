@@ -86,10 +86,11 @@ private constructor(
 
       emitAll(
           bodies.map { body ->
-            val operation = request.operation
             // On native, body will be freezed in worker.doWork, but reading a BufferedSource is a mutating operation.
             // So we read the bytes into a ByteString first, and create a new BufferedSource from it after freezing.
             val bodyByteString = if (platform() == Platform.Native) body.readByteString() else null
+            // Do not capture request
+            val operation = request.operation
             val response = worker.doWork {
               try {
                 val safeBody = if (bodyByteString == null) body else Buffer().apply { write(bodyByteString) }
