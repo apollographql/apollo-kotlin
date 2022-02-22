@@ -17,13 +17,16 @@ import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.internal.NonMainWorker
 import com.apollographql.apollo3.internal.isMultipart
 import com.apollographql.apollo3.internal.multipartBodyFlow
+import com.apollographql.apollo3.mpp.Platform
 import com.apollographql.apollo3.mpp.currentTimeMillis
+import com.apollographql.apollo3.mpp.platform
 import com.apollographql.apollo3.network.NetworkTransport
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import okio.Buffer
 import okio.BufferedSource
 
 class HttpNetworkTransport
@@ -84,10 +87,14 @@ private constructor(
       emitAll(
           bodies.map { body ->
             val operation = request.operation
+            // On native, body will be freezed in worker.doWork, but reading a BufferedSource is a mutating operation.
+            // So we read the bytes into a ByteString first, and create a new BufferedSource from it after freezing.
+            val bodyByteString = if (platform() == Platform.Native) body.readByteString() else null
             val response = worker.doWork {
               try {
+                val safeBody = if (bodyByteString == null) body else Buffer().apply { write(bodyByteString) }
                 operation.parseJsonResponse(
-                    jsonReader = body.jsonReader(),
+                    jsonReader = safeBody.jsonReader(),
                     customScalarAdapters = customScalarAdapters
                 )
               } catch (e: Exception) {
