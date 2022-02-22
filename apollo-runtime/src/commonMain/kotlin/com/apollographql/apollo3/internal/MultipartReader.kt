@@ -181,6 +181,7 @@ class MultipartReader constructor(
   }
 
   /** A single part in a multipart body. */
+  @ApolloInternal
   class Part(
       val headers: List<HttpHeader>,
       val body: BufferedSource,
