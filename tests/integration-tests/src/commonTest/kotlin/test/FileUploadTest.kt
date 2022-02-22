@@ -3,14 +3,17 @@ package test
 import checkTestFixture
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.DefaultUpload
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Upload
+import com.apollographql.apollo3.api.http.valueOf
 import com.apollographql.apollo3.integration.upload.MultipleUploadMutation
 import com.apollographql.apollo3.integration.upload.NestedUploadMutation
 import com.apollographql.apollo3.integration.upload.SingleUploadMutation
 import com.apollographql.apollo3.integration.upload.SingleUploadTwiceMutation
 import com.apollographql.apollo3.integration.upload.type.NestedObject
+import com.apollographql.apollo3.internal.MultipartReader
 import com.apollographql.apollo3.mockserver.MockRequest
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
@@ -20,7 +23,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-@OptIn(ApolloExperimental::class)
+@OptIn(ApolloExperimental::class, ApolloInternal::class)
 class FileUploadTest {
   private val upload0: Upload = DefaultUpload.Builder()
       .content("content_file0")
@@ -152,66 +155,6 @@ class FileUploadTest {
       val bytes: ByteArray,
   )
 
-  private fun Buffer.parts(boundary: String): List<Part> {
-    val parts = mutableListOf<Part>()
-    var currentLength = -1L
-    var currentDisposition: String? = null
-    var currentType: String? = null
-
-    while (true) {
-      if (exhausted()) {
-        error("no boundary found")
-      }
-      if (readUtf8Line() == "--$boundary") {
-        break
-      }
-    }
-
-    while (!exhausted()) {
-      val line = readUtf8Line()!!
-      when {
-        line.startsWith("Content-Length: ") -> {
-          currentLength = line.substring("Content-Length: ".length).toLong()
-        }
-        line.startsWith("Content-Disposition: ") -> {
-          currentDisposition = line.substring("Content-Disposition: ".length)
-        }
-        line.startsWith("Content-Type: ") -> {
-          currentType = line.substring("Content-Type: ".length)
-        }
-        line.isEmpty() -> {
-          check(currentLength != -1L) {
-            "We don't know how to read streamed multi part data (if that's even possible)"
-          }
-          parts.add(
-              Part(
-                  currentDisposition,
-                  currentType,
-                  buffer.readByteArray(currentLength)
-              )
-          )
-          currentLength = -1
-          currentDisposition = null
-          currentType = null
-
-          check(readByte() == '\r'.code.toByte())
-          check(readByte() == '\n'.code.toByte())
-          check(readUtf8("--$boundary".length.toLong()) == "--$boundary")
-          when (val suffix = readUtf8(2)) {
-            "--" -> {
-              check(readByte() == '\r'.code.toByte())
-              check(readByte() == '\n'.code.toByte())
-              break
-            }
-            "\r\n" -> Unit
-            else -> error("Unexpected suffix '$suffix'")
-          }
-        }
-      }
-    }
-    return parts
-  }
-
   private fun MockRequest.parts(): List<Part> {
     val regex = Regex("multipart/form-data;.*boundary=(.*)")
     val match = regex.matchEntire(headers["Content-Type"]!!)
@@ -220,9 +163,18 @@ class FileUploadTest {
     val boundary = match.groupValues[1]
     assertTrue(boundary.isNotBlank())
 
-    return Buffer().apply { write(body) }.parts(boundary)
+    val reader = MultipartReader(Buffer().apply { write(body) }, boundary)
+    val parts = mutableListOf<Part>()
+    while (true) {
+      parts += reader.nextPart()?.let {
+        Part(
+            contentDisposition = it.headers.valueOf("Content-Disposition"),
+            contentType = it.headers.valueOf("Content-Type"),
+            bytes = it.body.readByteArray())
+      } ?: break
+    }
+    return parts
   }
-
 
   private fun assertOperationsPart(part: Part, fixtureName: String) {
     assertEquals(part.contentDisposition, "form-data; name=\"operations\"")

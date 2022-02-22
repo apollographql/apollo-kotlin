@@ -16,6 +16,7 @@
  */
 package com.apollographql.apollo3.internal
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloException
 import okio.Buffer
@@ -57,7 +58,8 @@ import okio.buffer
  *
  * [rfc_2046]: http://www.ietf.org/rfc/rfc2046.txt
  */
-internal class MultipartReader constructor(
+@ApolloInternal
+class MultipartReader constructor(
     private val source: BufferedSource,
     val boundary: String,
 ) : Closeable {
@@ -184,7 +186,7 @@ internal class MultipartReader constructor(
       val body: BufferedSource,
   ) : Closeable by body
 
-  internal companion object {
+  private companion object {
     /** These options follow the boundary. */
     val afterBoundaryOptions = Options.of(
         "\r\n".encodeUtf8(), // 0.  "\r\n"  More parts.
@@ -201,7 +203,7 @@ internal class MultipartReader constructor(
 
         val index = line.indexOf(':')
         check(index != -1) { "Unexpected header: $line" }
-        headers += HttpHeader(line.substring(0, index).trim(), line.substring(index + 1))
+        headers += HttpHeader(line.substring(0, index).trim(), line.substring(index + 1).trim())
       }
       return headers
     }
