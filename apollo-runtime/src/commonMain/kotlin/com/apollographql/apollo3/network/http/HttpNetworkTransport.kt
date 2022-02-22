@@ -91,16 +91,26 @@ private constructor(
             val bodyByteString = if (platform() == Platform.Native) body.readByteString() else null
             // Do not capture request
             val operation = request.operation
-            val response = worker.doWork {
-              try {
-                val safeBody = if (bodyByteString == null) body else Buffer().apply { write(bodyByteString) }
-                operation.parseJsonResponse(
-                    jsonReader = safeBody.jsonReader(),
-                    customScalarAdapters = customScalarAdapters
-                )
-              } catch (e: Exception) {
-                throw wrapThrowableIfNeeded(e)
+            val response = try {
+              if (bodyByteString != null) {
+                // Native case, use bodyByteString
+                worker.doWork {
+                  operation.parseJsonResponse(
+                      jsonReader = Buffer().apply { write(bodyByteString) }.jsonReader(),
+                      customScalarAdapters = customScalarAdapters
+                  )
+                }
+              } else {
+                // Non-native case, use body
+                worker.doWork {
+                  operation.parseJsonResponse(
+                      jsonReader = body.jsonReader(),
+                      customScalarAdapters = customScalarAdapters
+                  )
+                }
               }
+            } catch (e: Exception) {
+              throw wrapThrowableIfNeeded(e)
             }
 
             @Suppress("DEPRECATION")
