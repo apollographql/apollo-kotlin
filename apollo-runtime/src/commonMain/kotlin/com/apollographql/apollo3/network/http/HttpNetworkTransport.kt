@@ -15,17 +15,26 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.internal.NonMainWorker
+import com.apollographql.apollo3.internal.isMultipart
+import com.apollographql.apollo3.internal.multipartBodyFlow
+import com.apollographql.apollo3.mpp.Platform
 import com.apollographql.apollo3.mpp.currentTimeMillis
+import com.apollographql.apollo3.mpp.platform
 import com.apollographql.apollo3.network.NetworkTransport
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import okio.Buffer
+import okio.BufferedSource
 
 class HttpNetworkTransport
 private constructor(
     private val httpRequestComposer: HttpRequestComposer,
     val engine: HttpEngine,
     val interceptors: List<HttpInterceptor>,
-    val exposeErrorBody: Boolean
+    val exposeErrorBody: Boolean,
 ) : NetworkTransport {
   private val worker = NonMainWorker()
 
@@ -67,32 +76,56 @@ private constructor(
         )
       }
 
-      // do not capture request
-      val operation = request.operation
-      val response = worker.doWork {
-        try {
-          operation.parseJsonResponse(
-              jsonReader = httpResponse.body!!.jsonReader(),
-              customScalarAdapters = customScalarAdapters
-          )
-        } catch (e: Exception) {
-          throw wrapThrowableIfNeeded(e)
-        }
+      // When using @defer, the response contains multiple parts, using the multipart content type.
+      // See https://github.com/graphql/graphql-over-http/blob/main/rfcs/IncrementalDelivery.md
+      val bodies: Flow<BufferedSource> = if (httpResponse.isMultipart) {
+        multipartBodyFlow(httpResponse)
+      } else {
+        flowOf(httpResponse.body!!)
       }
 
-      @Suppress("DEPRECATION")
-      emit(
-          response.newBuilder()
-              .requestUuid(request.requestUuid)
-              .addExecutionContext(
-                  HttpInfo(
-                      startMillis = millisStart,
-                      endMillis = currentTimeMillis(),
-                      statusCode = httpResponse.statusCode,
-                      headers = httpResponse.headers
+      emitAll(
+          bodies.map { body ->
+            // On native, body will be freezed in worker.doWork, but reading a BufferedSource is a mutating operation.
+            // So we read the bytes into a ByteString first, and create a new BufferedSource from it after freezing.
+            val bodyByteString = if (platform() == Platform.Native) body.readByteString() else null
+            // Do not capture request
+            val operation = request.operation
+            val response = try {
+              if (bodyByteString != null) {
+                // Native case, use bodyByteString
+                worker.doWork {
+                  operation.parseJsonResponse(
+                      jsonReader = Buffer().apply { write(bodyByteString) }.jsonReader(),
+                      customScalarAdapters = customScalarAdapters
                   )
-              )
-              .build()
+                }
+              } else {
+                // Non-native case, use body
+                worker.doWork {
+                  operation.parseJsonResponse(
+                      jsonReader = body.jsonReader(),
+                      customScalarAdapters = customScalarAdapters
+                  )
+                }
+              }
+            } catch (e: Exception) {
+              throw wrapThrowableIfNeeded(e)
+            }
+
+            @Suppress("DEPRECATION")
+            response.newBuilder()
+                .requestUuid(request.requestUuid)
+                .addExecutionContext(
+                    HttpInfo(
+                        startMillis = millisStart,
+                        endMillis = currentTimeMillis(),
+                        statusCode = httpResponse.statusCode,
+                        headers = httpResponse.headers
+                    )
+                )
+                .build()
+          }
       )
     }
   }
@@ -169,7 +202,7 @@ private constructor(
     }
 
     fun build(): HttpNetworkTransport {
-      check (httpRequestComposer == null || serverUrl == null) {
+      check(httpRequestComposer == null || serverUrl == null) {
         "It is an error to set both 'httpRequestComposer' and 'serverUrl'"
       }
       val composer = httpRequestComposer
