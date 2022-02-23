@@ -24,7 +24,7 @@ And declare your schema module as a dependency of your feature module:
 ```kotlin
 // feature/build.gradle.kts
 dependencies {
-    implementation("com.apollographql.apollo3:apollo-runtime:xyz")
+    implementation("com.apollographql.apollo3:apollo-runtime:3.1.0")
     // more regular dependencies
 
     // Apollo dependencies
@@ -85,8 +85,8 @@ kotlin {
             dependencies {
                 implementation(project(":shared")
 
-                implementation("com.apollographql.apollo:apollo-api:x.y.z")
-                api("com.apollographql.apollo:apollo-runtime-kotlin:x.y.z")
+                implementation("com.apollographql.apollo:apollo-api:3.1.0")
+                api("com.apollographql.apollo:apollo-runtime-kotlin:3.1.0")
             }
         }
     }
