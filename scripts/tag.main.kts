@@ -39,6 +39,7 @@ while (true) {
 }
 
 setCurrentVersion(tagVersion)
+setVersionInDocs(tagVersion)
 
 runCommand("git", "commit", "-a", "-m", "release $tagVersion")
 runCommand("git", "tag", "v$tagVersion")
@@ -137,4 +138,28 @@ fun getNextSnapshot(version: String): String {
 
   components.add("$prefix$nextPart")
   return components.joinToString(".") + "-SNAPSHOT"
+}
+
+fun setVersionInDocs(version: String) {
+  for (file in File("docs/source").walk()) {
+    if (file.isDirectory || !(file.name.endsWith(".md") || file.name.endsWith(".mdx"))) continue
+
+    // Don't touch docs inside /migration
+    if (file.path.contains("migration")) continue
+
+    val content = file.readText()
+        // Plugin
+        .replace(Regex("""id\("com\.apollographql\.apollo3"\)\.version\("(.+)\)""")) {
+          """id("com.apollographql.apollo3").version("$version")"""
+        }
+        // Dependencies
+        .replace(Regex(""""com\.apollographql\.apollo3:(.+):.+"""")) {
+          """"com.apollographql.apollo3:${it.groupValues[1]}:$version""""
+        }
+        // Tutorial
+        .replace(Regex("This tutorial uses `(.+)`")) {
+          "This tutorial uses `$version`"
+        }
+    file.writeText(content)
+  }
 }
