@@ -12,7 +12,7 @@ query GetHero($id: ID!) {
 }
 
 query GetHeroNameOnly {
-  hero {
+  hero(id: "2001") {
     name
   }
 }
