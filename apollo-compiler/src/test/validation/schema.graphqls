@@ -2,7 +2,7 @@
 The query type, represents all of the entry points into our object graph
 """
 type Query {
-  hero("" episode: Episode!, "for test purpose only" listOfListOfStringArgs: [[String]]): Character
+  hero("" episode: Episode! = NEWHOPE, "for test purpose only" listOfListOfStringArgs: [[String]]): Character
 }
 
 """

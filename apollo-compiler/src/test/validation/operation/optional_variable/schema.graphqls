@@ -1,0 +1,4 @@
+type Query {
+    field(arg: String!): String
+}
+
