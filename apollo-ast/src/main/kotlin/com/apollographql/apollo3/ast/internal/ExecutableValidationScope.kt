@@ -147,9 +147,13 @@ internal class ExecutableValidationScope(
     if (fieldDefinition.directives.findDeprecationReason() != null) {
       issues.add(Issue.DeprecatedUsage(message = "Use of deprecated field `$name`", sourceLocation = sourceLocation))
     }
-    arguments?.let {
-      validateArguments(it, fieldDefinition.arguments, "field `${fieldDefinition.name}`")
-    }
+
+    validateArguments(
+        arguments?.arguments ?: emptyList(),
+        sourceLocation,
+        fieldDefinition.arguments,
+        "field `${fieldDefinition.name}`"
+    )
 
     val leafTypeDefinition = typeDefinitions[fieldDefinition.type.leafType().name]
 

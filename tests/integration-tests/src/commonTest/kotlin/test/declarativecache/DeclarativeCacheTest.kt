@@ -82,7 +82,7 @@ class DeclarativeCacheTest {
 
     val authorQuery1 = GetPromoAuthorQuery()
     val authorData1 = GetPromoAuthorQuery.Data(
-        GetPromoAuthorQuery.Author(
+        GetPromoAuthorQuery.PromoAuthor(
             "Pierre",
             "Bordage",
             "Author"

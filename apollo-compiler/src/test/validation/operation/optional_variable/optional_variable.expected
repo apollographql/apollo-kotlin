@@ -1,0 +1,2 @@
+ERROR: ValidationError (3:15)
+Variable `arg` of type `String` used in position expecting type `String!`

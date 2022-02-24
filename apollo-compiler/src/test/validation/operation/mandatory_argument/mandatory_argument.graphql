@@ -1,0 +1,5 @@
+mutation UpdateMySettings {
+    edit {
+        someResult
+    }
+}

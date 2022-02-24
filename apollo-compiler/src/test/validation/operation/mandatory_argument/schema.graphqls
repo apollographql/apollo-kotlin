@@ -1,0 +1,16 @@
+type Mutation {
+    edit(input: MySettingEditInput!): MySettingEditResult
+}
+
+input MySettingEditInput {
+    someOptionalParameter: String
+}
+
+type MySettingEditResult {
+    someResult: String
+}
+
+type Query {
+    random: Int
+}
+

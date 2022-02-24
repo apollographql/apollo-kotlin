@@ -2,7 +2,6 @@ package com.apollographql.apollo3.ast.internal
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLArgument
-import com.apollographql.apollo3.ast.GQLArguments
 import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLDirectiveDefinition
 import com.apollographql.apollo3.ast.GQLDirectiveLocation
@@ -150,9 +149,12 @@ internal fun ValidationScope.validateDirective(
     return
   }
 
-  directive.arguments?.let {
-    validateArguments(it, directiveDefinition.arguments, "directive '${directiveDefinition.name}'")
-  }
+  validateArguments(
+      directive.arguments?.arguments ?: emptyList(),
+      directive.sourceLocation,
+      directiveDefinition.arguments,
+      "directive '${directiveDefinition.name}'"
+  )
 
   /**
    * Apollo specific validation
@@ -233,13 +235,17 @@ private fun ValidationScope.validateArgument(
   validateAndCoerceValue(argument.value, schemaArgument.type, schemaArgument.defaultValue != null)
 }
 
+/**
+ * @param sourceLocation: the location of the field or directive for error reporting
+ */
 internal fun ValidationScope.validateArguments(
-    arguments: GQLArguments,
+    arguments: List<GQLArgument>,
+    sourceLocation: SourceLocation,
     inputValueDefinitions: List<GQLInputValueDefinition>,
     debug: String,
 ) {
   // 5.4.2 Argument Uniqueness
-  arguments.arguments.groupBy { it.name }.filter { it.value.size > 1 }.toList().firstOrNull()?.let {
+  arguments.groupBy { it.name }.filter { it.value.size > 1 }.toList().firstOrNull()?.let {
     registerIssue(message = "Argument `${it.first}` is defined multiple times", sourceLocation = it.second.first().sourceLocation)
     return
   }
@@ -247,17 +253,17 @@ internal fun ValidationScope.validateArguments(
   // 5.4.2.1 Required arguments
   inputValueDefinitions.forEach { inputValueDefinition ->
     if (inputValueDefinition.type is GQLNonNullType && inputValueDefinition.defaultValue == null) {
-      val argumentValue = arguments.arguments.firstOrNull { it.name == inputValueDefinition.name }?.value
+      val argumentValue = arguments.firstOrNull { it.name == inputValueDefinition.name }?.value
       if (argumentValue is GQLNullValue) {
         // This will be caught later when validating individual arguments
         // registerIssue((message = "Cannot pass `null` for a required argument", sourceLocation = argumentValue.sourceLocation))
       } else if (argumentValue == null) {
-        registerIssue(message = "No value passed for required argument ${inputValueDefinition.name}", sourceLocation = arguments.sourceLocation)
+        registerIssue(message = "No value passed for required argument ${inputValueDefinition.name}", sourceLocation = sourceLocation)
       }
     }
   }
 
-  arguments.arguments.forEach {
+  arguments.forEach {
     validateArgument(it, inputValueDefinitions, debug)
   }
 }

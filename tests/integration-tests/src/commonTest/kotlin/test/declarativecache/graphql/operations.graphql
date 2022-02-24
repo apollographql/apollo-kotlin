@@ -39,7 +39,7 @@ query GetBooks($isbns: [String!]!) {
 }
 
 query GetPromoAuthor {
-    author {
+    promoAuthor {
         firstName
         lastName
     }
