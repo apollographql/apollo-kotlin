@@ -6,6 +6,7 @@
 package com.example.case_sensitive_enum.type
 
 import com.apollographql.apollo3.api.EnumType
+import kotlin.Array
 import kotlin.Deprecated
 import kotlin.String
 
@@ -29,5 +30,14 @@ public enum class Enum(
 
     public fun safeValueOf(rawValue: String): Enum = values().find { it.rawValue == rawValue } ?:
         UNKNOWN__
+
+    /**
+     * Returns all [Enum] known at compile time
+     */
+    public fun knownValues(): Array<Enum> = arrayOf(
+      north,
+      North,
+      NORTH,
+      SOUTH)
   }
 }

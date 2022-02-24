@@ -6,6 +6,7 @@
 package com.example.enum_field.type
 
 import com.apollographql.apollo3.api.EnumType
+import kotlin.Array
 import kotlin.Deprecated
 import kotlin.String
 
@@ -28,5 +29,14 @@ public enum class Gravity(
 
     public fun safeValueOf(rawValue: String): Gravity = values().find { it.rawValue == rawValue } ?:
         UNKNOWN__
+
+    /**
+     * Returns all [Gravity] known at compile time
+     */
+    public fun knownValues(): Array<Gravity> = arrayOf(
+      TOP,
+      CENTER,
+      BOTTOM,
+      bottom)
   }
 }

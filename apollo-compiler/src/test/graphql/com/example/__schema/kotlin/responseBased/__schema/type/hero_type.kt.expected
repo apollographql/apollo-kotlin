@@ -6,6 +6,7 @@
 package com.example.__schema.type
 
 import com.apollographql.apollo3.api.EnumType
+import kotlin.Array
 import kotlin.String
 
 /**
@@ -27,5 +28,12 @@ public enum class hero_type(
 
     public fun safeValueOf(rawValue: String): hero_type = values().find { it.rawValue == rawValue }
         ?: UNKNOWN__
+
+    /**
+     * Returns all [hero_type] known at compile time
+     */
+    public fun knownValues(): Array<hero_type> = arrayOf(
+      human,
+      droid)
   }
 }

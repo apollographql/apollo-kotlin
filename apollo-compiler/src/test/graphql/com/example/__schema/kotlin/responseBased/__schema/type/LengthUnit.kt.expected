@@ -6,6 +6,7 @@
 package com.example.__schema.type
 
 import com.apollographql.apollo3.api.EnumType
+import kotlin.Array
 import kotlin.String
 
 /**
@@ -33,5 +34,12 @@ public enum class LengthUnit(
 
     public fun safeValueOf(rawValue: String): LengthUnit = values().find { it.rawValue == rawValue }
         ?: UNKNOWN__
+
+    /**
+     * Returns all [LengthUnit] known at compile time
+     */
+    public fun knownValues(): Array<LengthUnit> = arrayOf(
+      METER,
+      FOOT)
   }
 }
