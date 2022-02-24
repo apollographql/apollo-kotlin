@@ -218,4 +218,12 @@ class TestBuildersTest {
 
     assertEquals(Episode.JEDI, data.hero?.appearsIn?.single())
   }
+
+  @Test
+  fun enumResolve() {
+    val data = EpisodeQuery.Data {
+    }
+
+    assertIs<Episode>(data.hero?.appearsIn?.single())
+  }
 }
