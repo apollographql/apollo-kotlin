@@ -16,6 +16,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinMemberNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.test.TBuilderBuilder
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
+import com.apollographql.apollo3.compiler.ir.IrEnumType
 import com.apollographql.apollo3.compiler.ir.IrModel
 import com.apollographql.apollo3.compiler.ir.IrModelGroup
 import com.apollographql.apollo3.compiler.ir.IrModelType
@@ -161,6 +162,7 @@ internal data class TProperty(
     val deprecationReason: String?,
 
     val ctors: List<TCtor>,
+    val enumName: String?,
 )
 
 internal data class TCtor(
@@ -169,16 +171,22 @@ internal data class TCtor(
 )
 
 private fun IrProperty.tProperty(modelGroups: List<IrModelGroup>): TProperty {
-  val leafPath = (info.type.leafType() as? IrModelType)?.path
+  val leafType = info.type.leafType()
 
   /**
    * Lookup the modelGroup for this property
    * This feels a bit weird because this is information we had before the tree gets split into properties and models
    * We might be able to remove that lookup
    */
-
-  val modelGroup = if (leafPath != null) {
-    modelGroups.single { it.baseModelId == leafPath }
+  val ctors = if (leafType is IrModelType) {
+    val leafPath = (leafType as? IrModelType)?.path
+    val modelGroup = modelGroups.single { it.baseModelId == leafPath }
+    modelGroup.models.filter { !it.isInterface }.map { TCtor(it.modelName.decapitalizeFirstLetter(), it.id) }
+  } else {
+    emptyList()
+  }
+  val enumName = if (leafType is IrEnumType) {
+    leafType.name
   } else {
     null
   }
@@ -189,7 +197,8 @@ private fun IrProperty.tProperty(modelGroups: List<IrModelGroup>): TProperty {
       description = info.description,
       deprecationReason = info.deprecationReason,
       gqlType = info.gqlType ?: error("Synthetic fields do not belong in the Test Builders"),
-      ctors = modelGroup?.models?.filter { !it.isInterface }?.map { TCtor(it.modelName.decapitalizeFirstLetter(), it.id) } ?: emptyList(),
+      ctors = ctors,
+      enumName = enumName
   )
 
 }

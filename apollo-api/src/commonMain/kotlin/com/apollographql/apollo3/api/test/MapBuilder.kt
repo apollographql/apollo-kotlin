@@ -15,13 +15,13 @@ abstract class MapBuilder {
    */
   protected val __map = mutableMapOf<String, Any?>()
 
-  fun <T> resolve(responseName: String, type: CompiledType, vararg ctors: () -> Map<String, Any?>): T {
+  fun <T> resolve(responseName: String, type: CompiledType, enumValues: List<String>, vararg ctors: () -> Map<String, Any?>): T {
     return if (__map.contains(responseName)) {
       @Suppress("UNCHECKED_CAST")
       __map[responseName] as T
     } else {
       val resolver = currentTestResolver ?: error("No TestResolver found, wrap with withTestResolver() {}")
-      return resolver.resolve(responseName, type, ctors)
+      return resolver.resolve(responseName, type, enumValues, ctors)
     }
   }
 

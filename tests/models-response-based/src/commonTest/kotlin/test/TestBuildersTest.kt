@@ -164,10 +164,10 @@ class TestBuildersTest {
     val defaultFloat = 7.0
 
     val myTestResolver = object : TestResolver {
-      override fun <T> resolve(responseName: String, compiledType: CompiledType, ctors: Array<out () -> Map<String, Any?>>?): T {
+      override fun <T> resolve(responseName: String, compiledType: CompiledType, enumValues: List<String>, ctors: Array<out () -> Map<String, Any?>>?): T {
         return when (compiledType) {
-          is CompiledNotNullType -> resolve(responseName, compiledType.ofType, ctors)
-          is CompiledListType -> listOf(resolve<Any>(responseName, compiledType.ofType, ctors))
+          is CompiledNotNullType -> resolve(responseName, compiledType.ofType, enumValues, ctors)
+          is CompiledListType -> listOf(resolve<Any>(responseName, compiledType.ofType, enumValues, ctors))
           is CompiledNamedType -> {
             when (compiledType.name) {
               "Int" -> defaultInt
@@ -224,6 +224,10 @@ class TestBuildersTest {
     val data = EpisodeQuery.Data {
     }
 
-    assertIs<Episode>(data.hero?.appearsIn?.single())
+    val enums = data.hero?.appearsIn
+    assertIs<List<*>>(enums)
+    enums.forEach {
+      assertIs<Episode>(it)
+    }
   }
 }

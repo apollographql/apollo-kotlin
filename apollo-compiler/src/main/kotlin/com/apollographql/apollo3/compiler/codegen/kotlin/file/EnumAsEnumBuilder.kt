@@ -1,17 +1,22 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
+import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.UNKNOWN__
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.joinToCode
 
 class EnumAsEnumBuilder(
     private val context: KotlinContext,
@@ -61,6 +66,27 @@ class EnumAsEnumBuilder(
     return TypeSpec.companionObjectBuilder()
         .addProperty(typePropertySpec())
         .addFunction(safeValueOfFunSpec())
+        .addFunction(knownValuesFunSpec())
+        .build()
+  }
+
+  private fun IrEnum.knownValuesFunSpec(): FunSpec {
+    return FunSpec.builder(Identifier.knownValues)
+        .addKdoc("Returns all [%T] known at compile time", className())
+        .returns(KotlinSymbols.Array.parameterizedBy(className()))
+        .addCode(
+            CodeBlock.builder()
+                .add("return·arrayOf(\n")
+                .indent()
+                .add(
+                    values.map {
+                      CodeBlock.of("%L", layout.enumAsEnumValueName(it.name))
+                    }.joinToCode(",\n")
+                )
+                .unindent()
+                .add(")\n")
+                .build()
+        )
         .build()
   }
 
