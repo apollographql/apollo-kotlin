@@ -141,7 +141,7 @@ fun getNextSnapshot(version: String): String {
 }
 
 fun setVersionInDocs(version: String) {
-  for (file in File("docs/source").walk()) {
+  for (file in File("docs/source").walk() + File("README.md")) {
     if (file.isDirectory || !(file.name.endsWith(".md") || file.name.endsWith(".mdx"))) continue
 
     // Don't touch docs inside /migration
