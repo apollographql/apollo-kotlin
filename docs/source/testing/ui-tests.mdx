@@ -9,7 +9,7 @@ Apollo Kotlin provides a built-in [`IdlingResource`](https://developer.android.c
 Add the `apollo-idling-resource` dependency:
 
 ```kotlin:title=build.gradle[.kts]
-implementation("com.apollographql.apollo3:apollo-idling-resource:x.y.z")
+implementation("com.apollographql.apollo3:apollo-idling-resource:3.1.0")
 ```
 
 > If you have multiple `ApolloClient`s, you need to create and register a different `ApolloIdlingResource` with a different name for each. Registering multiple `IdlingResource`s with the same name will cause your test suite to crash.
