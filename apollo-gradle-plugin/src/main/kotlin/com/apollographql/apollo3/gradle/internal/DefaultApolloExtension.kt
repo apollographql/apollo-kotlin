@@ -174,7 +174,7 @@ abstract class DefaultApolloExtension(
                 getDeps(project.buildscript.configurations) +
                 getDeps(project.configurations)
             )
-        allDeps.mapNotNull { it.version }.distinct().sorted()
+        allDeps.distinct().sorted()
       })
       it.outputs.file(outputFile)
 
@@ -634,16 +634,17 @@ abstract class DefaultApolloExtension(
 
     private const val USAGE_APOLLO_METADATA = "apollo-metadata"
 
-    private data class Dep(val name: String, val version: String?)
 
-    private fun getDeps(configurations: ConfigurationContainer): List<Dep> {
+    private fun getDeps(configurations: ConfigurationContainer): List<String> {
       return configurations.flatMap { configuration ->
         configuration.dependencies
             .filter {
-              it.group == "com.apollographql.apollo3"
+              // the "_" check is for refreshVersions,
+              // see https://github.com/jmfayard/refreshVersions/issues/507
+              it.group == "com.apollographql.apollo3"  && it.version != "_"
             }.map { dependency ->
-              Dep(dependency.name, dependency.version)
-            }
+              dependency.version
+            }.filterNotNull()
       }
     }
 
