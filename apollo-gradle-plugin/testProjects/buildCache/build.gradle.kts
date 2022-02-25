@@ -16,3 +16,12 @@ buildscript {
         classpath(groovy.util.Eval.x(project, "x.dep.kotlinPlugin"))
     }
 }
+
+allprojects {
+    repositories {
+        maven {
+            url = uri("../../../../build/localMaven")
+        }
+        mavenCentral()
+    }
+}

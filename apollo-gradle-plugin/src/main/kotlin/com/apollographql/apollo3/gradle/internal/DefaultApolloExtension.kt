@@ -170,9 +170,16 @@ abstract class DefaultApolloExtension(
       val outputFile = BuildDirLayout.versionCheck(project)
 
       it.inputs.property("allVersions", Callable {
-        // runtimeClasspath will aggregate api and implementation
-        val allDeps = getDeps(project.configurations.getByName("runtimeClasspath")) + APOLLO_VERSION
-        allDeps.distinct().sorted()
+        /**
+         * This potentially misses some cases for tests or other configurations. Let's assume this is ok
+         * as this check is more of a safety net but it's always possible to fix the versions manually
+         */
+        val configuration = project.configurations.findByName("runtimeClasspath")
+            ?: project.configurations.findByName("jvmRuntimeClasspath") // for multiplatfrom
+
+        val versions = configuration?.let { getDeps(it) } ?: emptyList()
+
+        (versions + listOf(APOLLO_VERSION)).distinct().sorted()
       })
       it.outputs.file(outputFile)
 
