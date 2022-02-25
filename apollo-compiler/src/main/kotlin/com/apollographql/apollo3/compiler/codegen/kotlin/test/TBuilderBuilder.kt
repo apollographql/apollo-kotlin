@@ -23,6 +23,7 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.LambdaTypeName
+import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
@@ -102,6 +103,11 @@ internal class TBuilderBuilder(
     return CodeBlock.builder()
         .add("resolve(%S, %L", responseName, gqlType!!.codeBlock(context))
         .apply {
+          if (enumName != null) {
+            add(", %M().map { it.name }", MemberName(context.resolver.resolveSchemaType(enumName).nestedClass("Companion"), "knownValues"))
+          } else {
+            add(", emptyList()")
+          }
           ctors.forEach {
             add(", { %L() }", it.kotlinName)
           }

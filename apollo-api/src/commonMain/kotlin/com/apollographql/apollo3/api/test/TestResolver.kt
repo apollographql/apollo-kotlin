@@ -1,12 +1,12 @@
 package com.apollographql.apollo3.api.test
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.CompiledListType
 import com.apollographql.apollo3.api.CompiledNamedType
 import com.apollographql.apollo3.api.CompiledNotNullType
 import com.apollographql.apollo3.api.CompiledType
 import com.apollographql.apollo3.api.CustomScalarType
+import com.apollographql.apollo3.api.EnumType
 import kotlin.native.concurrent.ThreadLocal
 
 /**
@@ -19,12 +19,13 @@ interface TestResolver {
    *
    * @param responseName the name of the field as seen in the json
    * @param compiledType the GraphQL type of the field
+   * @param enumValues if [compiledType] is an enum, the list of possible values
    * @param ctors if [compiledType] is a composite type or any non-null or list combination of a composite type,
    * ctors contain a list of constructors for the possible shapes
    *
    * @return T the Kotlin value for the field. Can be Int, Double, String, List<Any?> or Map<String, Any?> or null
    */
-  fun <T> resolve(responseName: String, compiledType: CompiledType, ctors: Array<out () -> Map<String, Any?>>?): T
+  fun <T> resolve(responseName: String, compiledType: CompiledType, enumValues: List<String>, ctors: Array<out () -> Map<String, Any?>>?): T
 }
 
 @ApolloExperimental
@@ -37,6 +38,7 @@ open class DefaultTestResolver : TestResolver {
   private var intCounter = 0
   private var floatCounter = 0.5
   private var compositeCounter = 0
+  private var enumCounter = 0
   private var booleanCounter = false
 
   open fun resolveListSize(path: List<Any>): Int {
@@ -61,6 +63,10 @@ open class DefaultTestResolver : TestResolver {
     }
   }
 
+  open fun resolveEnum(path: List<Any>, enumValues: List<String>): String {
+    return enumValues[(enumCounter++) % enumValues.size]
+  }
+
   open fun resolveComposite(path: List<Any>, ctors: Array<out () -> Map<String, Any?>>): Map<String, Any?> {
     return ctors[(compositeCounter++) % ctors.size]()
   }
@@ -81,15 +87,18 @@ open class DefaultTestResolver : TestResolver {
     stack[stackSize] = 0 // Allow garbage collection
   }
 
-  private fun <T> resolveInternal(responseName: String, compiledType: CompiledType, ctors: Array<out () -> Map<String, Any?>>?): T {
+  private fun <T> resolveInternal(responseName: String,
+                                  compiledType: CompiledType,
+                                  enumValues: List<String>,
+                                  ctors: Array<out () -> Map<String, Any?>>?): T {
     val path = stack.take(stackSize).toList()
     @Suppress("UNCHECKED_CAST")
     return when (compiledType) {
-      is CompiledNotNullType -> resolve(responseName, compiledType.ofType, ctors)
+      is CompiledNotNullType -> resolve(responseName, compiledType.ofType, enumValues, ctors)
       is CompiledListType -> {
         0.until(resolveListSize(path)).map { i ->
           push(i)
-          resolveInternal<Any>(responseName, compiledType.ofType, ctors).also {
+          resolveInternal<Any>(responseName, compiledType.ofType, enumValues, ctors).also {
             pop()
           }
         }
@@ -106,15 +115,23 @@ open class DefaultTestResolver : TestResolver {
           }
         }
       }
+      is EnumType -> {
+        resolveEnum(path, enumValues)
+      }
       is CompiledNamedType -> {
         resolveComposite(path, ctors ?: error("no ctors for $responseName"))
       }
     } as T
   }
 
-  override fun <T> resolve(responseName: String, compiledType: CompiledType, ctors: Array<out () -> Map<String, Any?>>?): T {
+  override fun <T> resolve(
+      responseName: String,
+      compiledType: CompiledType,
+      enumValues: List<String>,
+      ctors: Array<out () -> Map<String, Any?>>?,
+  ): T {
     push(responseName)
-    return resolveInternal<T>(responseName, compiledType, ctors).also {
+    return resolveInternal<T>(responseName, compiledType, enumValues, ctors).also {
       pop()
     }
   }

@@ -6,6 +6,7 @@
 package com.example.variable_default_value.type
 
 import com.apollographql.apollo3.api.EnumType
+import kotlin.Array
 import kotlin.Deprecated
 import kotlin.String
 
@@ -48,5 +49,15 @@ public enum class Episode(
 
     public fun safeValueOf(rawValue: String): Episode = values().find { it.rawValue == rawValue } ?:
         UNKNOWN__
+
+    /**
+     * Returns all [Episode] known at compile time
+     */
+    public fun knownValues(): Array<Episode> = arrayOf(
+      NEWHOPE,
+      EMPIRE,
+      JEDI,
+      DEPRECATED,
+      new)
   }
 }

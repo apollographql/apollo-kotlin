@@ -6,6 +6,7 @@
 package com.example.inline_fragment_intersection.type
 
 import com.apollographql.apollo3.api.EnumType
+import kotlin.Array
 import kotlin.String
 
 public enum class Race(
@@ -25,5 +26,13 @@ public enum class Race(
 
     public fun safeValueOf(rawValue: String): Race = values().find { it.rawValue == rawValue } ?:
         UNKNOWN__
+
+    /**
+     * Returns all [Race] known at compile time
+     */
+    public fun knownValues(): Array<Race> = arrayOf(
+      WOOKIE,
+      GUMGAN,
+      EWOK)
   }
 }
