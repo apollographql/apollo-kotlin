@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.PackageNameGenerator
@@ -169,12 +170,9 @@ abstract class DefaultApolloExtension(
       val outputFile = BuildDirLayout.versionCheck(project)
 
       it.inputs.property("allVersions", Callable {
-        val allDeps = (
-            getDeps(project.rootProject.buildscript.configurations) +
-                getDeps(project.buildscript.configurations) +
-                getDeps(project.configurations)
-            )
-        allDeps.mapNotNull { it.version }.distinct().sorted()
+        // runtimeClasspath will aggregate api and implementation
+        val allDeps = getDeps(project.configurations.getByName("runtimeClasspath")) + APOLLO_VERSION
+        allDeps.distinct().sorted()
       })
       it.outputs.file(outputFile)
 
@@ -634,17 +632,12 @@ abstract class DefaultApolloExtension(
 
     private const val USAGE_APOLLO_METADATA = "apollo-metadata"
 
-    private data class Dep(val name: String, val version: String?)
-
-    private fun getDeps(configurations: ConfigurationContainer): List<Dep> {
-      return configurations.flatMap { configuration ->
-        configuration.dependencies
-            .filter {
-              it.group == "com.apollographql.apollo3"
-            }.map { dependency ->
-              Dep(dependency.name, dependency.version)
-            }
-      }
+    private fun getDeps(configuration: Configuration): List<String> {
+      return configuration.resolvedConfiguration.firstLevelModuleDependencies.filter {
+            it.moduleGroup == "com.apollographql.apollo3"
+          }.map { dependency ->
+            dependency.moduleVersion
+          }
     }
 
     // Don't use `graphqlSourceDirectorySet.isEmpty` here, it doesn't work for some reason
