@@ -56,7 +56,41 @@ fun String.decodeAsGraphQLSingleQuoted(): String {
 }
 
 fun String.decodeAsGraphQLTripleQuoted(): String {
-  return replace("\\\"\"\"", "\"\"\"").trimIndent()
+  val value = replace("\\\"\"\"", "\"\"\"")
+
+  // https://spec.graphql.org/draft/#BlockStringValue()
+
+  var lines = value.split("\n")
+
+  var commonIndent: Int? = null
+  for (line in lines.drop(1)) {
+    val firstNonWhitespace = line.indexOfFirst { it != ' ' && it != '\t' }
+    if (firstNonWhitespace == -1) continue
+    if (commonIndent == null || firstNonWhitespace < commonIndent) {
+      commonIndent = firstNonWhitespace
+    }
+  }
+
+  lines = listOf(lines.first()) + lines.drop(1).map {
+    if (commonIndent == null) {
+      it
+    } else if (it.length > commonIndent) {
+      it.substring(commonIndent)
+    } else {
+      // The spec isn't 100% clear whether we should try to remove as many whitespace as possible or not
+      it
+    }
+  }
+
+  lines = lines.dropWhile {
+    it.indexOfFirst { it != ' ' && it != '\t' } == -1
+  }
+
+  lines = lines.dropLastWhile {
+    it.indexOfFirst { it != ' ' && it != '\t' } == -1
+  }
+
+  return lines.joinToString("\n")
 }
 
 /**

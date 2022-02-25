@@ -374,7 +374,7 @@ name
 STRING
   : '"' ( ESC | ~ ["\\] )* '"'
   ;
-BLOCK_STRING:   '"""' .*? '"""';
+BLOCK_STRING:   '"""' ('\\"""' | .)*? '"""';
 BOOLEAN
   : 'true' | 'false'
   ;

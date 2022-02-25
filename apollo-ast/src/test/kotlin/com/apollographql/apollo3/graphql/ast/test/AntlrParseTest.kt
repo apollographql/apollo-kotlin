@@ -1,9 +1,12 @@
 package com.apollographql.apollo3.graphql.ast.test
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.ast.GQLStringValue
 import com.apollographql.apollo3.ast.internal.buffer
 import com.apollographql.apollo3.ast.parseAsGQLDocument
+import com.apollographql.apollo3.ast.parseAsGQLValue
 import org.junit.Test
+import kotlin.test.assertEquals
 import kotlin.test.fail
 
 @OptIn(ApolloExperimental::class)
@@ -35,5 +38,24 @@ class AntlrParseTest {
           .buffer()
           .parseAsGQLDocument()
           .valueAssertNoErrors()
+  }
+
+  @Test
+  fun blockString() {
+    val value = "\"\"\" \\\"\"\" \"\"\"".buffer().parseAsGQLValue().valueAssertNoErrors()
+
+    assertEquals(" \"\"\" ", (value as GQLStringValue).value)
+  }
+
+  @Test
+  fun blockStringIndentationIsRemoved() {
+    val value = ("\"\"\"\n" +
+        "  first line\n" +
+        "   \n" +
+        "  second line\n" +
+        "   \n" +
+        "\"\"\"").buffer().parseAsGQLValue().valueAssertNoErrors()
+
+    assertEquals("first line\n \nsecond line", (value as GQLStringValue).value)
   }
 }
