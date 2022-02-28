@@ -1,0 +1,12 @@
+query TestQuery {
+  hero {
+    ...heroFragment @defer
+    ...heroFragment @defer(label: "alreadySet")
+    ...heroFragment @defer(if: true)
+    ...heroFragment @defer(label: "alreadySet", if: true)
+  }
+}
+
+fragment heroFragment on Character {
+  name
+}

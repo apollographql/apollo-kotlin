@@ -1,0 +1,31 @@
+query TestQuery {
+  hero {
+    ...heroFragment @defer
+    ...heroFragment2 @defer
+    ... on Droid @defer {
+      name
+      primaryFunction
+      ...heroFragment @defer
+      ...heroFragment @defer
+      friendsConnection {
+        edges {
+          node {
+            ... on Human @defer {
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment heroFragment on Character {
+  name
+  ...heroFragment2 @defer
+  ...heroFragment2 @defer
+}
+
+fragment heroFragment2 on Character {
+  name
+}
