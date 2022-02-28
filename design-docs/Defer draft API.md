@@ -1,4 +1,4 @@
-# Apollo Kotlin: @defer draft API
+# `@defer`: draft API
 
 This document outlines proposed changes to the user-facing API of Apollo Kotlin related to supporting the new `@defer`
 directive.
