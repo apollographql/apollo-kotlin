@@ -12,6 +12,7 @@ import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.checkKeyFields
 import com.apollographql.apollo3.ast.checkNoErrors
 import com.apollographql.apollo3.ast.parseAsGQLDocument
+import com.apollographql.apollo3.ast.transformation.addDeferLabel
 import com.apollographql.apollo3.ast.transformation.addRequiredFields
 import com.apollographql.apollo3.ast.validateAsExecutable
 import com.apollographql.apollo3.compiler.codegen.java.JavaCodeGen
@@ -102,15 +103,19 @@ object ApolloCompiler {
     }
 
     /**
-     * Step 3, Modify the AST to add typename and key fields
+     * Step 3, Modify the AST to add typename, key fields, and label on @defer
      */
 
     val fragments = definitions.filterIsInstance<GQLFragmentDefinition>().map {
       addRequiredFields(it, options.schema)
+    }.map {
+      addDeferLabel(it)
     }
 
     val operations = definitions.filterIsInstance<GQLOperationDefinition>().map {
       addRequiredFields(it, options.schema)
+    }.map {
+      addDeferLabel(it)
     }
 
     // Remember the fragments with the possibly updated fragments
