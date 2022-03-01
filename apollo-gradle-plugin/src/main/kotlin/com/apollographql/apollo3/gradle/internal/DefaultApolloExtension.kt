@@ -23,6 +23,7 @@ import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.attributes.Usage
+import org.gradle.api.component.AdhocComponentWithVariants
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.provider.Property
@@ -202,7 +203,7 @@ abstract class DefaultApolloExtension(
 
     val producerConfigurationName = ModelNames.producerConfiguration(service)
 
-    project.configurations.create(producerConfigurationName) {
+    val producerConfiguration = project.configurations.create(producerConfigurationName) {
       it.isCanBeConsumed = true
       it.isCanBeResolved = false
 
@@ -214,6 +215,19 @@ abstract class DefaultApolloExtension(
       it.attributes {
         it.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage::class.java, USAGE_APOLLO_METADATA))
         it.attribute(ApolloAttributes.APOLLO_SERVICE_ATTRIBUTE, project.objects.named(ApolloAttributes.Service::class.java, service.name))
+      }
+    }
+
+    project.components.all {
+      println("Found Component ${it.name}")
+    }
+    val component = project.components.findByName("java")
+        ?: project.components.findByName("java")
+
+    (component as AdhocComponentWithVariants?)?.apply {
+      addVariantsFromConfiguration(producerConfiguration) {
+        // and also optional dependencies, because we don't want them to leak
+        it.mapToOptional()
       }
     }
 
@@ -641,7 +655,7 @@ abstract class DefaultApolloExtension(
             .filter {
               // the "_" check is for refreshVersions,
               // see https://github.com/jmfayard/refreshVersions/issues/507
-              it.group == "com.apollographql.apollo3"  && it.version != "_"
+              it.group == "com.apollographql.apollo3" && it.version != "_"
             }.map { dependency ->
               dependency.version
             }.filterNotNull()
