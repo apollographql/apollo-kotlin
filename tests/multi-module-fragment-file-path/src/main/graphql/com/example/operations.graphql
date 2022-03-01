@@ -1,9 +1,0 @@
-#
-query GetLong3 {
-  ...QueryDetails
-  ...QueryDetails3
-}
-
-fragment QueryDetails3 on Query {
-  long3: long
-}

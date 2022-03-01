@@ -1,9 +1,0 @@
-#
-query GetLong4 {
-  ...QueryDetails
-  ...QueryDetails4
-}
-
-fragment QueryDetails4 on Query {
-  long4: long
-}
