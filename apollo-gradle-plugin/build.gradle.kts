@@ -38,6 +38,7 @@ dependencies {
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.assertj"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.testParameterInjector"))
 }
 
 if (true) {
