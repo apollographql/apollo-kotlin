@@ -322,6 +322,15 @@ interface Service {
   val useSchemaPackageNameForFragments: Property<Boolean>
 
   /**
+   * Overrides the package name for schema types
+   *
+   * Default value:
+   * - for module containing a schema, it is [packageName] or the result of applying [packageNameGenerator] to the schema file
+   * - for multi-modules child modules, it is the typePackageName of the schema module
+   */
+  val typePackageName: Property<String>
+
+  /**
    * Whether to generate Kotlin models with `internal` visibility modifier.
    *
    * Default value: false

@@ -14,7 +14,7 @@ class MultiModulePackageNamesTest {
   fun test(
       @TestParameter packageNamesFromFilePaths: Boolean,
       @TestParameter useSchemaPackageNameForFragments: Boolean,
-      @TestParameter useSchemaPackageNameForSchemaTypes: Boolean,
+      @TestParameter("null", "some.type") typePackageName: String?,
   ) {
     withTestProject("multi-modules-package-names") {
       val packageNameLine = if (packageNamesFromFilePaths) {
@@ -22,9 +22,15 @@ class MultiModulePackageNamesTest {
       } else {
         "packageName.set(\"com.module2\")"
       }
+      val typePackageNameLine = if (typePackageName != null) {
+        "typePackageName.set(\"$typePackageName\")"
+      } else {
+        ""
+      }
       val apolloConfiguration = """
         apollo {
           useSchemaPackageNameForFragments.set($useSchemaPackageNameForFragments)
+          $typePackageNameLine
           $packageNameLine
         }
       """.trimIndent()
@@ -42,14 +48,10 @@ class MultiModulePackageNamesTest {
         }
       }
 
-      if (useSchemaPackageNameForSchemaTypes) {
+      if (typePackageName == null) {
         checkModule2Class(it, "com.module1.type.FieldInput2")
       } else {
-        if (packageNamesFromFilePaths) {
-          checkModule2Class(it, "some.path.type.FieldInput2")
-        } else {
-          checkModule2Class(it, "com.module2.type.FieldInput2")
-        }
+        checkModule2Class(it, "some.type.FieldInput2")
       }
 
       if (packageNamesFromFilePaths) {

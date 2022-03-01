@@ -10,7 +10,14 @@ class KotlinCodegenLayout(
     schemaPackageName: String,
     useSemanticNaming: Boolean,
     useSchemaPackageNameForFragments: Boolean,
-) : CodegenLayout(packageNameGenerator, schemaPackageName, useSemanticNaming, useSchemaPackageNameForFragments) {
+    typePackageName: String,
+) : CodegenLayout(
+    packageNameGenerator,
+    schemaPackageName,
+    useSemanticNaming,
+    useSchemaPackageNameForFragments,
+    typePackageName
+) {
 
   override fun escapeReservedWord(word: String): String = word.escapeKotlinReservedWord()
 

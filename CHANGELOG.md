@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+# Version 3.1.1
+
+_TBD_
+
+
+## ⚙️ [breaking] Fragment package name and `useSchemaPackageNameForFragments` (#3775)
+
 # Version 3.1.0
 
 _2022-02-07_
@@ -28,6 +35,12 @@ apollo {
 ```
 
 This is also done automatically if you're using `useVersion2Compat()`. Moving forward, the plan is to remove `useSchemaPackageNameForFragments` in favor of setting a custom `PackageNameGenerator`. If you have use cases that require `useSchemaPackageNameForFragments`, please [reach out](https://github.com/apollographql/apollo-kotlin/issues/new?assignees=&labels=%3Aquestion%3A+Type%3A+Question&template=question.md&title=).
+
+## ⚙️ [breaking] Schema Types package name 
+
+If you're using multi modules, the package name of generated schema types has changed. They are now all generated using the same package name, the package name of the schema in the schema module. Having all schema types use the same package name makes it easy to change the module they are generated with `alwaysGenerateTypesMatching`. This can happen when types are used [in two sibling modules](https://www.apollographql.com/docs/kotlin/advanced/multi-modules/#type-clashes). 
+
+We realize it's not always easy to update to the new package name when you have a lot of input types. We are working on a `useSchemaPackageNameForSchemaTypes` option to make it easier to update in 3.1.1.
 
 ## ✨ [New] `QueueTestNetworkTransport` (#3757)
 

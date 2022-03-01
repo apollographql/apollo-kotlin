@@ -60,9 +60,15 @@ class Options(
      */
     val operationOutputFile: File? = null,
     /**
-     * The package name used as a base for input objects, fragments, enums and types
+     * The package name of the schema
+     * In multi-module scenarios, this is coming from the schema module
      */
     val schemaPackageName: String,
+    /**
+     * The package name for schema types (scalars, enums, input objects)
+     * Typically, this is `"$schemaPackageName.type"`. typePackageName allows overriding it
+     */
+    val typePackageName: String = "$schemaPackageName.type",
     /**
      * Whether to use the schemaPackageName for fragments
      */
@@ -223,6 +229,7 @@ class Options(
       generateTestBuilders: Boolean = this.generateTestBuilders,
       sealedClassesForEnumsMatching: List<String> = this.sealedClassesForEnumsMatching,
       generateOptionalOperationVariables: Boolean = this.generateOptionalOperationVariables,
+      typePackageName: String = this.typePackageName,
   ) = Options(
       executableFiles = executableFiles,
       schema = schema,
@@ -255,6 +262,7 @@ class Options(
       testDir = testDir,
       sealedClassesForEnumsMatching = sealedClassesForEnumsMatching,
       generateOptionalOperationVariables = generateOptionalOperationVariables,
+      typePackageName = typePackageName
   )
 
   companion object {

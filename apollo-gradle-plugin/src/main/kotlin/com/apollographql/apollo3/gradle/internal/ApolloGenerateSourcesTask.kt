@@ -187,6 +187,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Optional
   abstract val useSchemaPackageNameForFragments: Property<Boolean>
 
+  @get:Input
+  @get:Optional
+  abstract val typePackageName: Property<String>
+
   @get:Inject
   abstract val objectFactory: ObjectFactory
 
@@ -283,6 +287,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         schema = commonMetadata.schema,
         codegenModels = codegenModels,
         schemaPackageName = commonMetadata.schemaPackageName,
+        typePackageName = typePackageName.getOrElse("${commonMetadata.schemaPackageName}.type"),
         useSchemaPackageNameForFragments = useSchemaPackageNameForFragments.getOrElse(defaultUseSchemaPackageNameForFragments),
         scalarMapping = commonMetadata.scalarMapping,
         targetLanguage = targetLanguage,

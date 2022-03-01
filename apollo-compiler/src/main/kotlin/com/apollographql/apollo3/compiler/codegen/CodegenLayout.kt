@@ -20,9 +20,9 @@ abstract class CodegenLayout(
     private val packageNameGenerator: PackageNameGenerator,
     private val schemaPackageName: String,
     private val useSemanticNaming: Boolean,
-    private val useSchemaPackageNameForFragments: Boolean
+    private val useSchemaPackageNameForFragments: Boolean,
+    private val typePackageName: String
 ) {
-  private val typePackageName = "$schemaPackageName.type"
 
   // ------------------------ FileNames ---------------------------------
 
