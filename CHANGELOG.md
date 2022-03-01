@@ -6,7 +6,7 @@ Change Log
 _TBD_
 
 
-## ⚙️ [breaking] Fragment package name and `useSchemaPackageNameForFragments` (#3775)
+## ⚙️ `typePackageName` (#3902)
 
 # Version 3.1.0
 
