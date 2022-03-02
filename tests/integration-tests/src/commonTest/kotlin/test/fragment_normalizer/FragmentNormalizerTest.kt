@@ -16,7 +16,7 @@ import kotlin.test.assertEquals
 @OptIn(ApolloExperimental::class)
 class FragmentNormalizerTest{
   @Test
-  fun testFoo() = runTest {
+  fun test() = runTest {
     val cacheFactory = MemoryCacheFactory()
 
     val apolloClient = ApolloClient.builder()
