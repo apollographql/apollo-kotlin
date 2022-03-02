@@ -1,16 +1,19 @@
 package test.fragment_normalizer
 
+import IdCacheKeyGenerator
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.api.normalize
 import com.apollographql.apollo3.cache.normalized.apolloStore
 import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.testing.runTest
 import fragment_normalizer.fragment.ConversationFragment
 import fragment_normalizer.fragment.ConversationFragmentImpl
 import kotlin.test.Test
+import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
 @OptIn(ApolloExperimental::class)
@@ -62,5 +65,25 @@ class FragmentNormalizerTest{
     )
 
     assertEquals("John Doe", fragment1.author.fullName)
+  }
+
+  @Test
+  fun rootKeyIsNotSkipped() = runTest {
+    val fragment = ConversationFragment(
+        id = "1",
+        author = ConversationFragment.Author(
+            fullName = "John Doe",
+        ),
+        read = false
+    )
+
+    val records = ConversationFragmentImpl().normalize(
+        fragment,
+        CustomScalarAdapters.Empty,
+        IdCacheKeyGenerator,
+        "1",
+    )
+
+    assertContains( records.keys, "1.author")
   }
 }
