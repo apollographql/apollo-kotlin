@@ -101,11 +101,7 @@ class MultiModulesTests {
   fun `metadata is published`() {
     TestUtils.withTestProject("multi-modules-publishing") { dir ->
       TestUtils.executeTaskAndAssertSuccess(
-          ":publishKotlinMultiplatformPublicationToPluginTestRepository",
-          dir.resolve("multiplatform-producer")
-      )
-      TestUtils.executeTaskAndAssertSuccess(
-          ":publishMavenJavaPublicationToPluginTestRepository",
+          ":publishAllPublicationsToPluginTestRepository",
           dir.resolve("jvm-producer")
       )
       TestUtils.executeTaskAndAssertSuccess(

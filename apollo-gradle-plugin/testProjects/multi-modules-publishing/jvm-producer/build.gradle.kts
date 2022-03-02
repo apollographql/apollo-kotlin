@@ -17,8 +17,14 @@ dependencies {
 }
 
 configure<ApolloExtension> {
-  packageName.set("com.jvm")
-  generateApolloMetadata.set(true)
+  service("jvm") {
+    packageName.set("com.jvm")
+    generateApolloMetadata.set(true)
+  }
+  service("jvm2") {
+    packageName.set("com.jvm2")
+    generateApolloMetadata.set(true)
+  }
 }
 
 configure<PublishingExtension> {

@@ -24,14 +24,18 @@ import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.attributes.Usage
 import org.gradle.api.component.AdhocComponentWithVariants
+import org.gradle.api.component.SoftwareComponentFactory
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.provider.Property
+import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import java.io.File
 import java.util.concurrent.Callable
+import javax.inject.Inject
 
 abstract class DefaultApolloExtension(
     private val project: Project,
@@ -43,6 +47,10 @@ abstract class DefaultApolloExtension(
   private val apolloConfiguration: Configuration
   private val rootProvider: TaskProvider<Task>
   private var registerDefaultService = true
+  private var adhocComponentWithVariants: AdhocComponentWithVariants? = null
+
+  @get:Inject
+  protected abstract val softwareComponentFactory: SoftwareComponentFactory
 
   // Called when the plugin is applied
   init {
@@ -218,19 +226,6 @@ abstract class DefaultApolloExtension(
       }
     }
 
-    project.components.all {
-      println("Found Component ${it.name}")
-    }
-    val component = project.components.findByName("java")
-        ?: project.components.findByName("java")
-
-    (component as AdhocComponentWithVariants?)?.apply {
-      addVariantsFromConfiguration(producerConfiguration) {
-        // and also optional dependencies, because we don't want them to leak
-        it.mapToOptional()
-      }
-    }
-
     val consumerConfiguration = project.configurations.create(ModelNames.consumerConfiguration(service)) {
       it.isCanBeResolved = true
       it.isCanBeConsumed = false
@@ -247,8 +242,11 @@ abstract class DefaultApolloExtension(
 
     project.afterEvaluate {
       if (shouldGenerateMetadata(service)) {
+        maybeSetupPublishingForConfiguration(producerConfiguration)
         project.artifacts {
-          it.add(producerConfigurationName, codegenProvider.flatMap { it.metadataOutputFile })
+          it.add(producerConfigurationName, codegenProvider.flatMap { it.metadataOutputFile }) {
+            it.classifier = service.name
+          }
         }
       }
     }
@@ -308,6 +306,20 @@ abstract class DefaultApolloExtension(
 
     registerDownloadSchemaTasks(service)
     maybeRegisterRegisterOperationsTasks(project, service, codegenProvider)
+  }
+
+  private fun maybeSetupPublishingForConfiguration(producerConfiguration: Configuration) {
+    val publishing = project.extensions.findByType(PublishingExtension::class.java) ?: return
+
+    if (adhocComponentWithVariants == null) {
+      adhocComponentWithVariants = softwareComponentFactory.adhoc("apollo")
+
+      publishing.publications.create("apollo", MavenPublication::class.java) {
+        it.from(adhocComponentWithVariants)
+        it.artifactId = "${project.name}-apollo"
+      }
+    }
+    adhocComponentWithVariants!!.addVariantsFromConfiguration(producerConfiguration) {}
   }
 
   private fun maybeRegisterRegisterOperationsTasks(
