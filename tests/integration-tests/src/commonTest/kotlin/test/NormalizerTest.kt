@@ -246,6 +246,16 @@ class NormalizerTest {
     assertEquals(lukeRecord["height({\"unit\":\"FOOT\"})"], 5.905512)
   }
 
+  @Test
+  @Throws(Exception::class)
+  fun fragmentRootKeyIsKept() {
+    val records = records(HeroParentTypeDependentFieldQuery(Episode.EMPIRE), "HeroParentTypeDependentFieldHumanResponse.json")
+
+    val lukeRecord = records.get("$TEST_FIELD_KEY_EMPIRE.friends.0")
+    assertEquals(lukeRecord!!["name"], "Han Solo")
+    assertEquals(lukeRecord["height({\"unit\":\"FOOT\"})"], 5.905512)
+  }
+
   companion object {
     internal fun <D : Operation.Data> records(operation: Operation<D>, name: String): Map<String, Record> {
       val response = operation.parseJsonResponse(testFixtureToJsonReader(name))

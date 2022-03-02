@@ -105,6 +105,11 @@ fun configureApollo(generateKotlinModels: Boolean) {
           service("${it.name}-$extra") {
             srcDir(it)
 
+            when (it.name) {
+              "fragment_normalizer" -> {
+                generateFragmentImplementations.set(true)
+              }
+            }
             generateSchema.set(it.name == "schema")
             this.generateKotlinModels.set(generateKotlinModels)
             codegenModels.set("operationBased")
