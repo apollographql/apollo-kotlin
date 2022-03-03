@@ -28,34 +28,51 @@ class FragmentNormalizerTest{
         .build()
 
     var fragment1 = ConversationFragment(
-        id = "1",
-        author = ConversationFragment.Author(
-            fullName = "John Doe",
+        "1",
+        ConversationFragment.Author(
+            "John Doe",
         ),
-        read = false
+        false
+    )
+
+    /**
+     * This is not using .copy() because this test also runs in Java and Java doesn't have copy()
+     */
+    var fragment1Read = ConversationFragment(
+        "1",
+        ConversationFragment.Author(
+            "John Doe",
+        ),
+        true
     )
     val fragment2 = ConversationFragment(
-        id = "2",
-        author = ConversationFragment.Author(
-            fullName = "Yayyy Pancakes!",
+        "2",
+        ConversationFragment.Author(
+            "Yayyy Pancakes!",
         ),
-        read = false
+        false
+    )
+    /**
+     * This is not using .copy() because this test also runs in Java and Java doesn't have copy()
+     */
+    val fragment2Read = ConversationFragment(
+        "2",
+        ConversationFragment.Author(
+            "Yayyy Pancakes!",
+        ),
+        true
     )
     apolloClient.apolloStore.writeFragment(
         ConversationFragmentImpl(),
         CacheKey(fragment1.id),
-        fragment1.copy(
-            read = true,
-        ),
+        fragment1Read,
         CustomScalarAdapters.Empty
     )
 
     apolloClient.apolloStore.writeFragment(
         ConversationFragmentImpl(),
         CacheKey(fragment2.id),
-        fragment2.copy(
-            read = true,
-        ),
+        fragment2Read,
         CustomScalarAdapters.Empty
     )
 
@@ -70,11 +87,11 @@ class FragmentNormalizerTest{
   @Test
   fun rootKeyIsNotSkipped() = runTest {
     val fragment = ConversationFragment(
-        id = "1",
-        author = ConversationFragment.Author(
-            fullName = "John Doe",
+        "1",
+        ConversationFragment.Author(
+            "John Doe",
         ),
-        read = false
+        false
     )
 
     val records = ConversationFragmentImpl().normalize(
