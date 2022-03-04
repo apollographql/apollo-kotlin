@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.ResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
@@ -12,7 +12,7 @@ class OperationResponseAdapterBuilder(
     val context: KotlinContext,
     val operation: IrOperation,
     val flatten: Boolean,
-) : CgOutputFileBuilder {
+) : CgFileBuilder {
   private val packageName = context.layout.operationAdapterPackageName(operation.filePath)
   private val simpleName = context.layout.operationResponseAdapterWrapperName(operation)
 
