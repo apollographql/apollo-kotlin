@@ -35,6 +35,7 @@ class OperationBuilder(
     private val generateQueryDocument: Boolean,
     private val operation: IrOperation,
     flatten: Boolean,
+    private val addJvmOverloads: Boolean,
 ) : CgOutputFileBuilder {
   private val layout = context.layout
   private val packageName = layout.operationPackageName(operation.filePath)
@@ -78,7 +79,7 @@ class OperationBuilder(
     return TypeSpec.classBuilder(layout.operationName(operation))
         .addSuperinterface(superInterfaceType())
         .maybeAddDescription(operation.description)
-        .makeDataClass(operation.variables.map { it.toNamedType().toParameterSpec(context) })
+        .makeDataClass(operation.variables.map { it.toNamedType().toParameterSpec(context) }, addJvmOverloads)
         .addFunction(operationIdFunSpec())
         .addFunction(queryDocumentFunSpec(generateQueryDocument))
         .addFunction(nameFunSpec())

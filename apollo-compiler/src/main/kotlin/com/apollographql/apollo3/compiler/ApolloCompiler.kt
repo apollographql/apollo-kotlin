@@ -211,6 +211,7 @@ object ApolloCompiler {
             sealedClassesForEnumsMatching = options.sealedClassesForEnumsMatching,
             targetLanguageVersion = options.targetLanguage,
             scalarMapping = options.scalarMapping,
+            addJvmOverloads = options.addJvmOverloads,
         ).write(outputDir = outputDir, testDir = testDir)
       }
     }

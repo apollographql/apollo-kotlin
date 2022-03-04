@@ -12,6 +12,7 @@ import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.Options
+import com.apollographql.apollo3.compiler.Options.Companion.defaultAddJvmOverloads
 import com.apollographql.apollo3.compiler.Options.Companion.defaultAlwaysGenerateTypesMatching
 import com.apollographql.apollo3.compiler.Options.Companion.defaultCodegenModels
 import com.apollographql.apollo3.compiler.Options.Companion.defaultFailOnWarnings
@@ -193,6 +194,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Input
   abstract val projectName: Property<String>
 
+  @get:Input
+  @get:Optional
+  abstract val addJvmOverloads: Property<Boolean>
+
   @TaskAction
   fun taskAction() {
     val metadata = metadataFiles.files.toList().map { ApolloMetadata.readFrom(it) }
@@ -289,6 +294,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         generateTestBuilders = generateTestBuilders.getOrElse(defaultGenerateTestBuilders),
         sealedClassesForEnumsMatching = sealedClassesForEnumsMatching.getOrElse(defaultSealedClassesForEnumsMatching),
         generateOptionalOperationVariables = generateOptionalOperationVariables.getOrElse(defaultGenerateOptionalOperationVariables),
+        addJvmOverloads = addJvmOverloads.getOrElse(defaultAddJvmOverloads)
     )
 
     val outputCompilerMetadata = ApolloCompiler.write(options)

@@ -169,6 +169,13 @@ class Options(
      * Default: true
      */
     val generateOptionalOperationVariables: Boolean = defaultGenerateOptionalOperationVariables,
+
+    /**
+     * Whether to generate kotlin constructors with @JvmOverloads for more graceful Java interop experience when default values are present.
+     *
+     * Default: false
+     */
+    val addJvmOverloads: Boolean = false,
 ) {
 
   /**
@@ -223,6 +230,7 @@ class Options(
       generateTestBuilders: Boolean = this.generateTestBuilders,
       sealedClassesForEnumsMatching: List<String> = this.sealedClassesForEnumsMatching,
       generateOptionalOperationVariables: Boolean = this.generateOptionalOperationVariables,
+      addJvmOverloads: Boolean = this.addJvmOverloads,
   ) = Options(
       executableFiles = executableFiles,
       schema = schema,
@@ -255,6 +263,7 @@ class Options(
       testDir = testDir,
       sealedClassesForEnumsMatching = sealedClassesForEnumsMatching,
       generateOptionalOperationVariables = generateOptionalOperationVariables,
+      addJvmOverloads = addJvmOverloads,
   )
 
   companion object {
@@ -281,6 +290,7 @@ class Options(
     val defaultSealedClassesForEnumsMatching = emptyList<String>()
     const val defaultGenerateOptionalOperationVariables = true
     const val defaultUseSchemaPackageNameForFragments = false
+    const val defaultAddJvmOverloads = false
   }
 }
 

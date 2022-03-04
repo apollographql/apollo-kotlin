@@ -322,6 +322,13 @@ interface Service {
   val useSchemaPackageNameForFragments: Property<Boolean>
 
   /**
+   * Whether to generate kotlin constructors with @JvmOverloads for more graceful Java interop experience when default values are present.
+   *
+   * Default value: false
+   */
+  val addJvmOverloads: Property<Boolean>
+
+  /**
    * Whether to generate Kotlin models with `internal` visibility modifier.
    *
    * Default value: false

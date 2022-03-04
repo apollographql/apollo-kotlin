@@ -533,6 +533,7 @@ abstract class DefaultApolloExtension(
       @OptIn(ApolloExperimental::class)
       task.generateTestBuilders.set(service.generateTestBuilders)
       task.useSchemaPackageNameForFragments.set(service.useSchemaPackageNameForFragments)
+      task.addJvmOverloads.set(service.addJvmOverloads)
       task.sealedClassesForEnumsMatching.set(service.sealedClassesForEnumsMatching)
       task.generateOptionalOperationVariables.set(service.generateOptionalOperationVariables)
       task.languageVersion.set(service.languageVersion)
