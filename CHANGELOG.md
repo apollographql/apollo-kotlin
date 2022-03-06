@@ -197,7 +197,7 @@ Many thanks to @dhritzkiv, @mune0903, @StylianosGakis, @AchrafAmil and @jamesonw
 ## 👷 All changes
 
 * Fix error reporting when there is a "schema.graphqls" but it doesn't contain any type definition (#3844)
-* Make guessNumber read the next value only once, fixes custom scalars without a custom adapter (#3839)
+* Make guessNumber read the next value only once, fixes parsing custom scalars without a custom adapter (#3839, #3836)
 * Clarify need to pass client's customScalarAdapters to store methods (#3838)
 * Fix null pointer exception in LruCache while trimming (#3833)
 * Add FetchPolicy.CacheAndNetwork (#3828)
