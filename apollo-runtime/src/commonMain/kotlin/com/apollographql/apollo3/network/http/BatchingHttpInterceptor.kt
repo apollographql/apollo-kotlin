@@ -208,8 +208,11 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
           AnyAdapter.toJson(this, CustomScalarAdapters.Empty, it)
         })
       }
-    } catch (e: ApolloException) {
-      exception = e
+    } catch (e: Exception) {
+      exception = when (e) {
+        is ApolloException -> e
+        else -> ApolloException("batched query failed with exception", e)
+      }
       null
     }
 
