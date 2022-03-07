@@ -11,14 +11,23 @@ import com.squareup.kotlinpoet.TypeSpec
  * Makes this [TypeSpec.Builder] a data class and add a primary constructor using the given parameter spec
  * as well as the corresponding properties
  */
-fun TypeSpec.Builder.makeDataClass(parameters: List<ParameterSpec>) = apply {
+fun TypeSpec.Builder.makeDataClass(
+    parameters: List<ParameterSpec>,
+    addJvmOverloads: Boolean = false,
+) = apply {
   if (parameters.isNotEmpty()) {
     addModifiers(KModifier.DATA)
   }
   primaryConstructor(FunSpec.constructorBuilder()
       .apply {
+        var hasDefaultValues = false
         parameters.forEach {
           addParameter(it)
+          hasDefaultValues = hasDefaultValues || it.defaultValue != null
+        }
+
+        if (addJvmOverloads && hasDefaultValues) {
+          addAnnotation(JvmOverloads::class)
         }
       }
       .build())

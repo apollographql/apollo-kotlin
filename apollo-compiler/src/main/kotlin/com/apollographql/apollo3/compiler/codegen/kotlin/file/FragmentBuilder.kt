@@ -22,6 +22,7 @@ class FragmentBuilder(
     private val generateFilterNotNull: Boolean,
     private val fragment: IrNamedFragment,
     flatten: Boolean,
+    private val addJvmOverloads: Boolean,
 ) : CgOutputFileBuilder {
   private val layout = context.layout
   private val packageName = layout.fragmentPackageName(fragment.filePath)
@@ -64,7 +65,7 @@ class FragmentBuilder(
     return TypeSpec.classBuilder(simpleName)
         .addSuperinterface(superInterfaceType())
         .maybeAddDescription(description)
-        .makeDataClass(variables.map { it.toNamedType().toParameterSpec(context) })
+        .makeDataClass(variables.map { it.toNamedType().toParameterSpec(context) }, addJvmOverloads)
         .addFunction(serializeVariablesFunSpec())
         .addFunction(adapterFunSpec())
         .addFunction(rootFieldFunSpec())
