@@ -1,51 +1,51 @@
 package com.apollographql.apollo3.network.ws
 
-import io.ktor.client.HttpClient
-import io.ktor.client.features.websocket.webSocketSession
-import io.ktor.client.request.headers
-import io.ktor.http.cio.websocket.CloseReason
-import io.ktor.http.cio.websocket.Frame
-import io.ktor.http.cio.websocket.close
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.apollographql.apollo3.internal.ChannelWrapper
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.channels.Channel
 import okio.ByteString
+import org.khronos.webgl.ArrayBuffer
+import org.khronos.webgl.Uint8Array
+import org.w3c.dom.MessageEvent
+import org.w3c.dom.WebSocket
+import org.w3c.files.Blob
 
-actual class DefaultWebSocketEngine(
-    private val ktorClient: HttpClient,
-) : WebSocketEngine {
-  private val coroutineScope = CoroutineScope(Dispatchers.Main)
-  actual constructor(): this(ktorClient = HttpClient())
-
+actual class DefaultWebSocketEngine : WebSocketEngine {
   override suspend fun open(
       url: String,
       headers: Map<String, String>,
   ): WebSocketConnection {
-    val session = ktorClient.webSocketSession {
-      headers {
-        headers.forEach { (key, value) ->
-          append(key, value)
-        }
+    val messageChannel = ChannelWrapper(Channel<String>(Channel.UNLIMITED))
+    val socket = WebSocket(url)
+    val webSocketOpenResult = CompletableDeferred<Unit>()
+    socket.onopen = { webSocketOpenResult.complete(Unit) }
+    socket.onmessage = { messageEvent: MessageEvent ->
+      val data = messageEvent.data
+      if (data is String) {
+        messageChannel.trySend(data)
+      }
+      if (data is ByteString) {
+        messageChannel.trySend(data.utf8())
       }
     }
 
+    webSocketOpenResult.await()
+
     return object : WebSocketConnection {
       override suspend fun receive(): String {
-        return session.incoming.receive().data.decodeToString()
+        return messageChannel.receive()
       }
 
       override fun send(data: ByteString) {
-        session.outgoing.trySend(Frame.Binary(false, data.toByteArray()))
+        socket.send(Uint8Array(data.toByteArray().toTypedArray()))
       }
 
       override fun send(string: String) {
-          session.outgoing.trySend(Frame.Text(string))
+        socket.send(string)
       }
 
       override fun close() {
-        coroutineScope.launch {
-          session.close(CloseReason(CloseReason.Codes.NORMAL, ""))
-        }
+        socket.close(CLOSE_NORMAL.toShort())
       }
     }
   }
