@@ -1,0 +1,14 @@
+type Query {
+  conversation: Conversation
+}
+
+type Conversation {
+  id: ID!
+  author: Author!
+  read: Boolean!
+}
+
+type Author {
+  id: ID!
+  fullName: String!
+}
