@@ -1,0 +1,12 @@
+type Query {
+  field(fieldInput: FieldInput!): String!
+  field2(fieldInput2: FieldInput2!): String!
+}
+
+input FieldInput {
+  field: String!
+}
+
+input FieldInput2 {
+  field: String!
+}

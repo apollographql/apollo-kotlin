@@ -1,0 +1,8 @@
+query GetField2($input2: FieldInput2!) {
+  ...QueryFragment
+}
+
+fragment QueryFragment on Query {
+  field2(fieldInput2: $input2)
+}
+

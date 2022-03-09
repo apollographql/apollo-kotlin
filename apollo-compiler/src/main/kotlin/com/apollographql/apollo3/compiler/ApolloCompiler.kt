@@ -225,6 +225,7 @@ object ApolloCompiler {
             targetLanguageVersion = options.targetLanguage,
             scalarMapping = options.scalarMapping,
             nameToClassName = nameToClassName
+            addJvmOverloads = options.addJvmOverloads,
         ).write(outputDir = outputDir, testDir = testDir)
       }
     }

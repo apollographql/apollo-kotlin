@@ -96,4 +96,18 @@ class MultiModulesTests {
       }
     }
   }
+
+  @Test
+  fun `metadata is published`() {
+    TestUtils.withTestProject("multi-modules-publishing") { dir ->
+      TestUtils.executeTaskAndAssertSuccess(
+          ":publishAllPublicationsToPluginTestRepository",
+          dir.resolve("jvm-producer")
+      )
+      TestUtils.executeTaskAndAssertSuccess(
+          ":build",
+          dir.resolve("consumer")
+      )
+    }
+  }
 }

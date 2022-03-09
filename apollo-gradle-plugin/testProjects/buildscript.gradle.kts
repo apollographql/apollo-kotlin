@@ -1,8 +1,14 @@
-apply(from = "../../../gradle/dependencies.gradle")
+val apolloDepth = try {
+  rootProject.extra.get("apolloDepth")
+} catch (e: Exception) {
+  "../../.."
+}
+
+apply(from = "$apolloDepth/gradle/dependencies.gradle")
 
 project.buildscript.repositories {
   maven {
-    url = uri("../../../build/localMaven")
+    url = uri("$apolloDepth/build/localMaven")
   }
   mavenCentral()
   google()
@@ -17,8 +23,8 @@ project.buildscript.dependencies.apply {
 allprojects {
   repositories {
     maven {
-      // Some projects are in submoodules, use the
-      url = uri(File(project.rootDir, "../../../build/localMaven").absolutePath)
+      // Some projects are in submodules, use the rootDir
+      url = uri(File(project.rootDir, "$apolloDepth/build/localMaven").absolutePath)
     }
     google()
     mavenCentral()

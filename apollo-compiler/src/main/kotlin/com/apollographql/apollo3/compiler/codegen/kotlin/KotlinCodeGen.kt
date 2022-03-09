@@ -64,6 +64,7 @@ class KotlinCodeGen(
     private val targetLanguageVersion: TargetLanguage,
     private val scalarMapping: Map<String, ScalarInfo>,
     private val nameToClassName: Map<String, String>,
+    private val addJvmOverloads: Boolean,
 ) {
   /**
    * @param outputDir: the directory where to write the Kotlin files
@@ -151,6 +152,7 @@ class KotlinCodeGen(
                     generateFilterNotNull,
                     fragment,
                     flatten,
+                    addJvmOverloads,
                 )
             )
             if (fragment.variables.isNotEmpty()) {
@@ -176,6 +178,7 @@ class KotlinCodeGen(
                   generateQueryDocument,
                   operation,
                   flatten,
+                  addJvmOverloads,
               )
           )
 

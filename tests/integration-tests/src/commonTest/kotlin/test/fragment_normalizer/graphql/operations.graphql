@@ -1,0 +1,8 @@
+# From https://github.com/apollographql/apollo-kotlin/issues/3875
+fragment ConversationFragment on Conversation {
+  id
+  author {
+    fullName
+  }
+  read
+}
