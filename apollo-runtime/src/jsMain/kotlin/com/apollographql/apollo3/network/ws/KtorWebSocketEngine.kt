@@ -1,51 +1,53 @@
 package com.apollographql.apollo3.network.ws
 
-import com.apollographql.apollo3.internal.ChannelWrapper
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.channels.Channel
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.js.Js
+import io.ktor.client.features.websocket.WebSockets
+import io.ktor.client.features.websocket.webSocketSession
+import io.ktor.client.request.headers
+import io.ktor.http.Url
+import io.ktor.http.cio.websocket.CloseReason
+import io.ktor.http.cio.websocket.Frame
+import io.ktor.http.cio.websocket.close
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import okio.ByteString
-import org.khronos.webgl.ArrayBuffer
-import org.khronos.webgl.Uint8Array
-import org.w3c.dom.MessageEvent
-import org.w3c.dom.WebSocket
-import org.w3c.files.Blob
 
-actual class DefaultWebSocketEngine : WebSocketEngine {
+actual class DefaultWebSocketEngine(private val ktorClient: HttpClient) : WebSocketEngine {
+  actual constructor() : this(ktorClient = HttpClient(Js) { install(WebSockets) })
+
   override suspend fun open(
       url: String,
       headers: Map<String, String>,
-  ): WebSocketConnection {
-    val messageChannel = ChannelWrapper(Channel<String>(Channel.UNLIMITED))
-    val socket = WebSocket(url)
-    val webSocketOpenResult = CompletableDeferred<Unit>()
-    socket.onopen = { webSocketOpenResult.complete(Unit) }
-    socket.onmessage = { messageEvent: MessageEvent ->
-      val data = messageEvent.data
-      if (data is String) {
-        messageChannel.trySend(data)
-      }
-      if (data is ByteString) {
-        messageChannel.trySend(data.utf8())
+  ): WebSocketConnection = open(Url(url), headers)
+
+  private suspend fun open(url:Url, headers: Map<String, String>): WebSocketConnection {
+    val socketSession = ktorClient.webSocketSession(host = url.host, port = url.port, path = url.encodedPath) {
+      headers {
+        headers.forEach {
+          append(it.key, it.value)
+        }
       }
     }
 
-    webSocketOpenResult.await()
-
     return object : WebSocketConnection {
       override suspend fun receive(): String {
-        return messageChannel.receive()
+        return socketSession.incoming.receive().data.decodeToString()
       }
 
       override fun send(data: ByteString) {
-        socket.send(Uint8Array(data.toByteArray().toTypedArray()))
+        socketSession.outgoing.trySend(Frame.Binary(true, data.toByteArray()))
       }
 
       override fun send(string: String) {
-        socket.send(string)
+        socketSession.outgoing.trySend(Frame.Text(string))
       }
 
       override fun close() {
-        socket.close(CLOSE_NORMAL.toShort())
+        CoroutineScope(Dispatchers.Unconfined).launch {
+          socketSession.close(CloseReason(CloseReason.Codes.NORMAL, ""))
+        }
       }
     }
   }
