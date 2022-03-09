@@ -23,14 +23,19 @@ import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.attributes.Usage
+import org.gradle.api.component.AdhocComponentWithVariants
+import org.gradle.api.component.SoftwareComponentFactory
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.provider.Property
+import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import java.io.File
 import java.util.concurrent.Callable
+import javax.inject.Inject
 
 abstract class DefaultApolloExtension(
     private val project: Project,
@@ -42,6 +47,10 @@ abstract class DefaultApolloExtension(
   private val apolloConfiguration: Configuration
   private val rootProvider: TaskProvider<Task>
   private var registerDefaultService = true
+  private var adhocComponentWithVariants: AdhocComponentWithVariants? = null
+
+  @get:Inject
+  protected abstract val softwareComponentFactory: SoftwareComponentFactory
 
   // Called when the plugin is applied
   init {
@@ -202,7 +211,7 @@ abstract class DefaultApolloExtension(
 
     val producerConfigurationName = ModelNames.producerConfiguration(service)
 
-    project.configurations.create(producerConfigurationName) {
+    val producerConfiguration = project.configurations.create(producerConfigurationName) {
       it.isCanBeConsumed = true
       it.isCanBeResolved = false
 
@@ -233,8 +242,11 @@ abstract class DefaultApolloExtension(
 
     project.afterEvaluate {
       if (shouldGenerateMetadata(service)) {
+        maybeSetupPublishingForConfiguration(producerConfiguration)
         project.artifacts {
-          it.add(producerConfigurationName, codegenProvider.flatMap { it.metadataOutputFile })
+          it.add(producerConfigurationName, codegenProvider.flatMap { it.metadataOutputFile }) {
+            it.classifier = service.name
+          }
         }
       }
     }
@@ -294,6 +306,20 @@ abstract class DefaultApolloExtension(
 
     registerDownloadSchemaTasks(service)
     maybeRegisterRegisterOperationsTasks(project, service, codegenProvider)
+  }
+
+  private fun maybeSetupPublishingForConfiguration(producerConfiguration: Configuration) {
+    val publishing = project.extensions.findByType(PublishingExtension::class.java) ?: return
+
+    if (adhocComponentWithVariants == null) {
+      adhocComponentWithVariants = softwareComponentFactory.adhoc("apollo")
+
+      publishing.publications.create("apollo", MavenPublication::class.java) {
+        it.from(adhocComponentWithVariants)
+        it.artifactId = "${project.name}-apollo"
+      }
+    }
+    adhocComponentWithVariants!!.addVariantsFromConfiguration(producerConfiguration) {}
   }
 
   private fun maybeRegisterRegisterOperationsTasks(
@@ -642,7 +668,7 @@ abstract class DefaultApolloExtension(
             .filter {
               // the "_" check is for refreshVersions,
               // see https://github.com/jmfayard/refreshVersions/issues/507
-              it.group == "com.apollographql.apollo3"  && it.version != "_"
+              it.group == "com.apollographql.apollo3" && it.version != "_"
             }.map { dependency ->
               dependency.version
             }.filterNotNull()
