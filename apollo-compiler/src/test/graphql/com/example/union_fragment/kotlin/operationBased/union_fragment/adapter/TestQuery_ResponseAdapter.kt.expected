@@ -72,14 +72,14 @@ public object TestQuery_ResponseAdapter {
 
         reader.rewind()
         var onStarship: TestQuery.Data.Search.OnStarship? = null
-        if (possibleTypes("Starship").evaluate(customScalarAdapters.variables(), __typename)) {
+        if (possibleTypes("Starship").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
           onStarship = com.example.union_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnStarship.fromJson(reader,
               customScalarAdapters)
         }
 
         reader.rewind()
         var starship: Starship? = null
-        if (possibleTypes("Starship").evaluate(customScalarAdapters.variables(), __typename)) {
+        if (possibleTypes("Starship").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
           starship = com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter.Starship.fromJson(reader,
               customScalarAdapters)
         }

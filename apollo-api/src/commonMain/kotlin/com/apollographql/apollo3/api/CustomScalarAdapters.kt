@@ -11,11 +11,11 @@ import kotlin.jvm.JvmField
  */
 class CustomScalarAdapters private constructor(
     customScalarAdapters: Map<String, Adapter<*>>,
-    // We piggyback CustomScalarAdapters to pass around execution variables,
-    // which are needed in the Adapters at parse time for @skip and @include.
-    // Ideally they should be passed as their own parameter but we're avoiding a breaking change.
+    // We piggyback CustomScalarAdapters to pass around a context which is used in the Adapters at parse time.
+    // This is currently used for @skip/@include and @defer.
+    // Ideally it should be passed as its own parameter but we're avoiding a breaking change.
     // See https://github.com/apollographql/apollo-kotlin/pull/3813
-    private val variables: Executable.Variables?,
+    val adapterContext: AdapterContext,
 ) : ExecutionContext.Element {
 
   private val adaptersMap: Map<String, Adapter<*>> = customScalarAdapters
@@ -57,16 +57,6 @@ class CustomScalarAdapters private constructor(
     } as Adapter<T>
   }
 
-  fun variables(): Set<String> {
-    if (variables == null) {
-      return emptySet()
-    }
-
-    return variables.valueMap.filter {
-      it.value == true
-    }.keys
-  }
-
   override val key: ExecutionContext.Key<*>
     get() = Key
 
@@ -82,7 +72,7 @@ class CustomScalarAdapters private constructor(
 
   class Builder {
     private val adaptersMap: MutableMap<String, Adapter<*>> = mutableMapOf()
-    private var variables: Executable.Variables? = null
+    private var adapterContext: AdapterContext = AdapterContext.Builder().build()
 
     fun <T> add(
         customScalarType: CustomScalarType,
@@ -111,10 +101,10 @@ class CustomScalarAdapters private constructor(
     }
 
     @Suppress("DEPRECATION")
-    fun build() = CustomScalarAdapters(adaptersMap, variables)
+    fun build() = CustomScalarAdapters(adaptersMap, adapterContext)
 
-    fun variables(variables: Executable.Variables): Builder = apply {
-      this.variables = variables
+    fun adapterContext(adapterContext: AdapterContext): Builder = apply {
+      this.adapterContext = adapterContext
     }
   }
 }

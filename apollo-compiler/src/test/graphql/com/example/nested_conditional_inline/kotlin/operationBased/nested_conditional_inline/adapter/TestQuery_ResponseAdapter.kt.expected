@@ -73,14 +73,14 @@ public object TestQuery_ResponseAdapter {
 
         reader.rewind()
         var onHuman: TestQuery.Data.Hero.OnHuman? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
           onHuman = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.fromJson(reader,
               customScalarAdapters)
         }
 
         reader.rewind()
         var onDroid: TestQuery.Data.Hero.OnDroid? = null
-        if (possibleTypes("Droid").evaluate(customScalarAdapters.variables(), __typename)) {
+        if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
           onDroid = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.fromJson(reader,
               customScalarAdapters)
         }
@@ -167,7 +167,7 @@ public object TestQuery_ResponseAdapter {
 
             reader.rewind()
             var onHuman: TestQuery.Data.Hero.OnHuman.Friend.OnHuman? = null
-            if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+            if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
               onHuman = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.Friend.OnHuman.fromJson(reader,
                   customScalarAdapters)
             }
@@ -280,7 +280,7 @@ public object TestQuery_ResponseAdapter {
 
             reader.rewind()
             var onHuman: TestQuery.Data.Hero.OnDroid.Friend.OnHuman? = null
-            if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+            if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
               onHuman = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.Friend.OnHuman.fromJson(reader,
                   customScalarAdapters)
             }

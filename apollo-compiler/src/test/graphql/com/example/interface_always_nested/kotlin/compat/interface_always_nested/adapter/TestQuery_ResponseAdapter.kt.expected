@@ -70,7 +70,7 @@ public object TestQuery_ResponseAdapter {
 
       reader.rewind()
       var asA: TestQuery.AsA? = null
-      if (possibleTypes("ABC","AC").evaluate(customScalarAdapters.variables(), __typename)) {
+      if (possibleTypes("ABC","AC").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
         asA = com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.AsA.fromJson(reader,
             customScalarAdapters)
       }
@@ -118,7 +118,7 @@ public object TestQuery_ResponseAdapter {
 
       reader.rewind()
       var asB: TestQuery.AsB? = null
-      if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.variables(), __typename)) {
+      if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
         asB = com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.AsB.fromJson(reader,
             customScalarAdapters)
       }

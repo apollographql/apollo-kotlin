@@ -75,14 +75,14 @@ public object TestOperation_ResponseAdapter {
 
         reader.rewind()
         var onBeing: TestOperation.Data.Random.OnBeing? = null
-        if (possibleTypes("Human","Wookie").evaluate(customScalarAdapters.variables(), __typename)) {
+        if (possibleTypes("Human","Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
           onBeing = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.fromJson(reader,
               customScalarAdapters)
         }
 
         reader.rewind()
         var onWookie: TestOperation.Data.Random.OnWookie? = null
-        if (possibleTypes("Wookie").evaluate(customScalarAdapters.variables(), __typename)) {
+        if (possibleTypes("Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
           onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnWookie.fromJson(reader,
               customScalarAdapters)
         }
@@ -137,7 +137,7 @@ public object TestOperation_ResponseAdapter {
 
           reader.rewind()
           var onHuman: TestOperation.Data.Random.OnBeing.OnHuman? = null
-          if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+          if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
             onHuman = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.fromJson(reader,
                 customScalarAdapters)
           }
@@ -193,7 +193,7 @@ public object TestOperation_ResponseAdapter {
 
             reader.rewind()
             var onWookie: TestOperation.Data.Random.OnBeing.Friend.OnWookie? = null
-            if (possibleTypes("Wookie").evaluate(customScalarAdapters.variables(), __typename)) {
+            if (possibleTypes("Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
               onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.Friend.OnWookie.fromJson(reader,
                   customScalarAdapters)
             }
@@ -312,7 +312,7 @@ public object TestOperation_ResponseAdapter {
 
               reader.rewind()
               var onWookie: TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie? = null
-              if (possibleTypes("Wookie").evaluate(customScalarAdapters.variables(), __typename)) {
+              if (possibleTypes("Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
                 onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.Friend.OnWookie.fromJson(reader,
                     customScalarAdapters)
               }

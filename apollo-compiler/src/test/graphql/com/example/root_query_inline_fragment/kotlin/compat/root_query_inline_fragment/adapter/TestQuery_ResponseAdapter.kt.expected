@@ -92,7 +92,7 @@ public object TestQuery_ResponseAdapter {
 
       reader.rewind()
       var asHuman: TestQuery.AsHuman? = null
-      if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+      if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
         asHuman = com.example.root_query_inline_fragment.adapter.TestQuery_ResponseAdapter.AsHuman.fromJson(reader,
             customScalarAdapters)
       }

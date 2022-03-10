@@ -47,7 +47,7 @@ public object HeroDetailsImpl_ResponseAdapter {
 
       reader.rewind()
       var asDroid: com.example.fragment_with_inline_fragment.fragment.HeroDetails.AsDroid? = null
-      if (possibleTypes("Droid").evaluate(customScalarAdapters.variables(), __typename)) {
+      if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
         asDroid = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.AsDroid.fromJson(reader,
             customScalarAdapters)
       }
@@ -109,7 +109,7 @@ public object HeroDetailsImpl_ResponseAdapter {
 
         reader.rewind()
         var humanDetails: HumanDetails? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
           humanDetails = com.example.fragment_with_inline_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
               customScalarAdapters)
         }

@@ -81,7 +81,7 @@ public object HeroDetailQuery_ResponseAdapter {
 
         reader.rewind()
         var onHuman: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
           onHuman = com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.Data.HeroDetailQuery.OnHuman.fromJson(reader,
               customScalarAdapters)
         }

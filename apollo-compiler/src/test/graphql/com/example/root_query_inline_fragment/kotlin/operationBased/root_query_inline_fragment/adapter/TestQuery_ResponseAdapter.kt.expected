@@ -131,7 +131,7 @@ public object TestQuery_ResponseAdapter {
 
           reader.rewind()
           var onHuman: TestQuery.Data.OnQuery.Hero.OnHuman? = null
-          if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+          if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
             onHuman = com.example.root_query_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.OnQuery.Hero.OnHuman.fromJson(reader,
                 customScalarAdapters)
           }

@@ -38,14 +38,14 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
       reader.rewind()
       var onCat: com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat? = null
-      if (possibleTypes("Cat").evaluate(customScalarAdapters.variables(), __typename)) {
+      if (possibleTypes("Cat").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
         onCat = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnCat.fromJson(reader,
             customScalarAdapters)
       }
 
       reader.rewind()
       var onDog: com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog? = null
-      if (possibleTypes("Dog").evaluate(customScalarAdapters.variables(), __typename)) {
+      if (possibleTypes("Dog").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
         onDog = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnDog.fromJson(reader,
             customScalarAdapters)
       }

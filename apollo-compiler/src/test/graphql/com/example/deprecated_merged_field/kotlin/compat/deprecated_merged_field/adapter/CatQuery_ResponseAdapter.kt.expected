@@ -110,7 +110,7 @@ public object CatQuery_ResponseAdapter {
 
         reader.rewind()
         var animalFragment: AnimalFragment? = null
-        if (possibleTypes("Cat","Dog").evaluate(customScalarAdapters.variables(), __typename)) {
+        if (possibleTypes("Cat","Dog").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
           animalFragment = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.fromJson(reader,
               customScalarAdapters)
         }

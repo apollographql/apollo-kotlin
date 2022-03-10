@@ -116,7 +116,7 @@ public object GetHuman_ResponseAdapter {
 
         reader.rewind()
         var onHuman: GetHuman.Data.Node.OnHuman? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
           onHuman = com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.Data.Node.OnHuman.fromJson(reader,
               customScalarAdapters)
         }

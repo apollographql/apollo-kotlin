@@ -39,7 +39,7 @@ public object IFragmentImpl_ResponseAdapter {
 
       reader.rewind()
       var onA: com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA? = null
-      if (possibleTypes("A").evaluate(customScalarAdapters.variables(), __typename)) {
+      if (possibleTypes("A").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
         onA = com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.OnA.fromJson(reader,
             customScalarAdapters)
       }

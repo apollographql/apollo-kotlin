@@ -11,8 +11,8 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.reader
 import com.apollographql.apollo3.compiler.codegen.Identifier.typename
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.codeBlock
 import com.apollographql.apollo3.compiler.ir.IrModel
 import com.apollographql.apollo3.compiler.ir.IrModelType
@@ -107,7 +107,7 @@ internal fun readFromResponseCodeBlock(
                 context.layout.variableName(property.info.responseName),
                 context.resolver.resolveIrType(property.info.type).copy(nullable = !property.info.type.isOptional()),
             )
-            beginControlFlow("if·(%L.%M($customScalarAdapters.variables(),·$__typename))", property.condition.codeBlock(), evaluate)
+            beginControlFlow("if·(%L.%M($customScalarAdapters.adapterContext.variables(),·$__typename))", property.condition.codeBlock(), evaluate)
           } else {
             checkedProperties.add(property.info.responseName)
             add("val·")
