@@ -360,16 +360,19 @@ fragment fields.
 
 **Combined single emission**
 
-Calling `suspend fun ApolloCall.execute(): ApolloResponse<D>` will wait for all the incremental payloads to be received
-and return the fully combined data in the response.
+~~Calling `suspend fun ApolloCall.execute(): ApolloResponse<D>` will wait for all the incremental payloads to be received
+and return the fully combined data in the response.~~
 
-This allows users to ignore the incremental nature of the response if desired.
+~~This allows users to ignore the incremental nature of the response if desired.~~
+
+This idea may lead to confusion if errors and extensions are not merged and may not be that useful anyway. Let's
+keep the current implementation that will throw if there are more than one emission in the Flow.
 
 **Error handling**
 
 Errors can be present in the initial payload as well as in any subsequent payloads.
 
-This will be reflected by emitting the `ApolloResult` with the `errors` field combining the received errors.
+This will be reflected by emitting the `ApolloResponse` with the `errors` field copied from each payload.
 
 So for instance when receiving this:
 
@@ -485,7 +488,7 @@ In this example, a collector would receive:
 
 ```kotlin
 // Emission 1
-Response(
+ApolloResponse(
     errors=null,
     data=Data(
         computers=[
@@ -502,7 +505,7 @@ Response(
 )
 
 // Emission 2
-Response(
+ApolloResponse(
     errors=null,
     data=Data(
         computers=[
@@ -526,7 +529,7 @@ Response(
 )
 
 // Emission 3
-Response(
+ApolloResponse(
     errors=null,
     data=Data(
         computers=[
@@ -557,7 +560,7 @@ Response(
 )    
 
 // Emission 4
-Response(
+ApolloResponse(
     errors=[
         Error(
             message = Cannot resolve isColor,
@@ -596,15 +599,8 @@ Response(
 )    
 
 // Emission 5 (final and full)
-Response(
+ApolloResponse(
     errors=[
-        Error(
-            message = Cannot resolve isColor,
-            locations = [Location(line = 12, column = 11)],
-            path=[computers, 0, screen, isColor],
-            extensions = null,
-            nonStandardFields = null
-        ),
         Error(
             message = Cannot resolve isColor,
             locations = [Location(line = 12, column = 11)],
@@ -644,27 +640,8 @@ Response(
 
 **Extensions**
 
-Similarly to `errors`, an `extensions` field can be present in the initial and any subsequent payloads, which will be
-reflected by merging them. The value of `extensions` is a map, and the same key can be present in several payloads. In
-that case it can be reflected by using a list as the value:
-
-```jsx
-// Payload 1:
-extensions: { "a": 1, "foo": "bar" }
-
-// Payload 2:
-extensions: { "foo": "baz" }
-```
-
-Would be received as:
-
-```kotlin
-// Emission 1:
-extensions = { a = 1, foo = bar }
-
-// Emission 2:
-extensions = { a = 1, foo = [bar, baz] }
-```
+Similarly to `errors`, an `extensions` field can be present in the initial and any subsequent payloads, and
+they will be copied to each emitted ApolloResponse.
 
 **Impacts on ApolloInterceptor**
 
