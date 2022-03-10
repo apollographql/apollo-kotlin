@@ -50,9 +50,24 @@ class DeferredJsonMerger {
     // payloadData can be null if there are errors
     if (payloadData != null) {
       val nodeToMergeInto = nodeAtPath(mergedData, payloadPath) as MutableMap<String, Any?>
-      nodeToMergeInto += payloadData
+      deepMerge(nodeToMergeInto, payloadData)
 
       (payloadMap["label"] as String?)?.let { _mergedFragmentLabels += it }
+    }
+  }
+
+  @Suppress("UNCHECKED_CAST")
+  private fun deepMerge(destination: MutableMap<String, Any?>, map: Map<String, Any?>) {
+    for ((key, value) in map) {
+      if (destination.containsKey(key) && destination[key] is MutableMap<*, *>) {
+        // Objects: merge recursively
+        val fieldDestination = destination[key] as MutableMap<String, Any?>
+        val fieldMap = value as? Map<String, Any?> ?: error("'$key' is an object in destination but not in map")
+        deepMerge(destination = fieldDestination, map = fieldMap)
+      } else {
+        // Other types: add / overwrite
+        destination[key] = value
+      }
     }
   }
 
