@@ -21,10 +21,16 @@ class DeferJsonMergerTest {
         "data": {
           "computers": [
             {
-              "id": "Computer1"
+              "id": "Computer1",
+              "screen": {
+                "isTouch": true
+              }
             },
             {
-              "id": "Computer2"
+              "id": "Computer2",
+              "screen": {
+                "isTouch": false
+              }
             }
           ]
         },
@@ -68,11 +74,15 @@ class DeferJsonMergerTest {
               "cpu": "386",
               "year": 1993,
               "screen": {
+                "isTouch": true,
                 "resolution": "640x480"
               }
             },
             {
-              "id": "Computer2"
+              "id": "Computer2",
+              "screen": {
+                "isTouch": false
+              }
             }
           ]
         },
@@ -122,6 +132,7 @@ class DeferJsonMergerTest {
               "cpu": "386",
               "year": 1993,
               "screen": {
+                "isTouch": true,
                 "resolution": "640x480"
               }
             },
@@ -130,6 +141,7 @@ class DeferJsonMergerTest {
               "cpu": "486",
               "year": 1996,
               "screen": {
+                "isTouch": false,
                 "resolution": "640x480"
               }
             }
@@ -193,6 +205,7 @@ class DeferJsonMergerTest {
               "cpu": "386",
               "year": 1993,
               "screen": {
+                "isTouch": true,
                 "resolution": "640x480"
               }
             },
@@ -201,6 +214,7 @@ class DeferJsonMergerTest {
               "cpu": "486",
               "year": 1996,
               "screen": {
+                "isTouch": false,
                 "resolution": "640x480"
               }
             }
@@ -283,6 +297,7 @@ class DeferJsonMergerTest {
               "cpu": "386",
               "year": 1993,
               "screen": {
+                "isTouch": true,
                 "resolution": "640x480"
               }
             },
@@ -291,6 +306,7 @@ class DeferJsonMergerTest {
               "cpu": "486",
               "year": 1996,
               "screen": {
+                "isTouch": false,
                 "resolution": "640x480",
                 "isColor": false
               }
