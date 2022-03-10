@@ -14,14 +14,12 @@ import okio.BufferedSource
  * The fields in `data` are merged into the node found in [merged] at `path` (for the first call to [merge], the payload is
  * copied to [merged] as-is).
  *
- * Errors are merged by adding them to [merged]'s `errors` list field.
- *
- * Extensions are merged by adding them into [merged]'s `extensions` field - if several payloads have the same key in `extensions`,
- * their values are stored as a list.
+ * `errors` and `extensions` fields are not merged: they are copied as-is (if present) to the [merged] Map at each call to [merge].
  */
 @ApolloInternal
 class DeferredJsonMerger {
-  val merged: Map<String, Any?> = mutableMapOf()
+  private val _merged = mutableMapOf<String, Any?>()
+  val merged: Map<String, Any?> = _merged
 
   private val _mergedFragmentLabels = mutableSetOf<String>()
   val mergedFragmentLabels: Set<String> = _mergedFragmentLabels
@@ -30,13 +28,21 @@ class DeferredJsonMerger {
     val payloadMap = jsonToMap(payload)
     if (merged.isEmpty()) {
       // Initial payload, no merging needed
-      (merged as MutableMap) += payloadMap
+      _merged += payloadMap
       return merged
     }
 
     mergeData(payloadMap)
-    mergeErrors(payloadMap)
-    mergeExtensions(payloadMap)
+    if (payloadMap.containsKey("errors")) {
+      _merged["errors"] = payloadMap["errors"]
+    } else {
+      _merged.remove("errors")
+    }
+    if (payloadMap.containsKey("extensions")) {
+      _merged["extensions"] = payloadMap["extensions"]
+    } else {
+      _merged.remove("extensions")
+    }
 
     return merged
   }
@@ -70,38 +76,6 @@ class DeferredJsonMerger {
       }
     }
   }
-
-  @Suppress("UNCHECKED_CAST")
-  private fun mergeErrors(payloadMap: Map<String, Any?>) {
-    @Suppress("UNCHECKED_CAST")
-    val payloadErrors = payloadMap["errors"] as List<Map<String, Any?>>?
-    if (payloadErrors != null) {
-      val mergedErrors = (merged as MutableMap<String, Any?>).getOrPut("errors") { mutableListOf<Map<String, Any?>>() } as MutableList<Map<String, Any?>>
-      mergedErrors += payloadErrors
-    }
-  }
-
-  @Suppress("UNCHECKED_CAST")
-  private fun mergeExtensions(payloadMap: Map<String, Any?>) {
-    val payloadExtensions = payloadMap["extensions"] as Map<String, Any?>?
-    if (payloadExtensions != null) {
-      val mergedExtensions = (merged as MutableMap<String, Any?>).getOrPut("extensions") { mutableMapOf<String, Any?>() } as MutableMap<String, Any?>
-      for ((key, value) in payloadExtensions.entries) {
-        if (mergedExtensions.containsKey(key)) {
-          // Key already exists in merged extensions: merge the values into a list
-          val mergedValue = mergedExtensions[key]
-          val mergedValueAsList = mergedValue.asMutableList()
-          mergedValueAsList.add(value)
-          mergedExtensions[key] = mergedValueAsList
-        } else {
-          mergedExtensions[key] = value
-        }
-      }
-    }
-  }
-
-  @Suppress("UNCHECKED_CAST")
-  private fun Any?.asMutableList(): MutableList<Any?> = if (this is MutableList<*>) this as MutableList<Any?> else mutableListOf(this)
 
   @Suppress("UNCHECKED_CAST")
   private fun jsonToMap(json: BufferedSource): Map<String, Any?> = BufferedSourceJsonReader(json).readAny() as Map<String, Any?>

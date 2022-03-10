@@ -149,16 +149,10 @@ class DeferJsonMergerTest {
         },
         "hasNext": true,
         "extensions": {
-          "duration": [
-            {
-              "amount": 100,
-              "unit": "ms"
-            },
-            {
-              "amount": 25,
-              "unit": "ms"
-            }
-          ]
+          "duration": {
+            "amount": 25,
+            "unit": "ms"
+          }
         }
       }
     """
@@ -221,18 +215,6 @@ class DeferJsonMergerTest {
           ]
         },
         "hasNext": true,
-        "extensions": {
-          "duration": [
-            {
-              "amount": 100,
-              "unit": "ms"
-            },
-            {
-              "amount": 25,
-              "unit": "ms"
-            }
-          ]
-        },
         "errors": [
           {
             "message": "Cannot resolve isColor",
@@ -315,38 +297,13 @@ class DeferJsonMergerTest {
         },
         "hasNext": true,
         "extensions": {
-          "duration": [
-            {
-              "amount": 100,
-              "unit": "ms"
-            },
-            {
-              "amount": 25,
-              "unit": "ms"
-            },
-            {
-              "amount": 130,
-              "unit": "ms"
-            }
-          ],
-          "value": 42
+          "value": 42,
+          "duration": {
+            "amount": 130,
+            "unit": "ms"
+          }
         },
         "errors": [
-          {
-            "message": "Cannot resolve isColor",
-            "locations": [
-              {
-                "line": 12,
-                "column": 11
-              }
-            ],
-            "path": [
-              "computers",
-              0,
-              "screen",
-              "isColor"
-            ]
-          },
           {
             "message": "Another error",
             "locations": [
