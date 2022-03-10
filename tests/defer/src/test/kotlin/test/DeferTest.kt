@@ -33,6 +33,10 @@ class DeferTest {
     mockServer.stop()
   }
 
+  /**
+   * TODO: This tests the preliminary Multipart support in HttpNetworkTransport which can receive several **full** payloads for now.
+   * This can never happen in real life - this test must be updated when partial responses with @defer are supported.
+   */
   @Test
   fun multipleBodies() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = Query1Query()
