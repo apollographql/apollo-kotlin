@@ -24,7 +24,7 @@ class CachingHttpInterceptor(
 ) : HttpInterceptor {
   private val lruHttpCache = DiskLruHttpCache(fileSystem, directory, maxSize)
 
-  val cache: HttpCache = lruHttpCache
+  val cache: ApolloHttpCache = lruHttpCache
 
   override suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse {
     val policy = request.headers.valueOf(CACHE_FETCH_POLICY_HEADER) ?: defaultPolicy(request)
@@ -133,7 +133,7 @@ class CachingHttpInterceptor(
 
   @Deprecated("Use store.clearAll() instead", ReplaceWith("store.clearAll()"))
   fun delete() {
-    lruHttpCache.delete()
+    lruHttpCache.clearAll()
   }
 
   @Deprecated("Use store.remove(key) instead", ReplaceWith("store.remove(key)"))

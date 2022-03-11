@@ -1,8 +1,9 @@
 package com.apollographql.apollo3.cache.http
 
 import com.apollographql.apollo3.api.http.HttpResponse
+import java.io.IOException
 
-interface HttpCache {
+interface ApolloHttpCache {
   fun read(cacheKey: String): HttpResponse
 
   /**

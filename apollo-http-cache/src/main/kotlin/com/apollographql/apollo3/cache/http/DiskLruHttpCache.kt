@@ -12,7 +12,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
 import kotlin.concurrent.write
 
-class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory: File, private val maxSize: Long) : HttpCache {
+class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory: File, private val maxSize: Long) : ApolloHttpCache {
   private var cache = createDiskLruCache()
   private val cacheLock = ReentrantReadWriteLock()
   private val adapter = Moshi.Builder().build().adapter(Any::class.java)

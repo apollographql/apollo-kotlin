@@ -122,7 +122,7 @@ fun <T> MutableExecutionOptions<T>.httpDoNotStore(httpDoNotStore: Boolean) = add
     CachingHttpInterceptor.CACHE_DO_NOT_STORE, httpDoNotStore.toString()
 )
 
-val ApolloClient.httpCache: HttpCache
+val ApolloClient.httpCache: ApolloHttpCache
   get() {
     val httpNetworkTransport = networkTransport as? HttpNetworkTransport
         ?: error("cannot get the HttpCache, networkTransport is not a HttpNetworkTransport")
