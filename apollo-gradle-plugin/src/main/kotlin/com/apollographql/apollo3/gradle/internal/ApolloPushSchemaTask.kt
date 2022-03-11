@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.gradle.internal
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
@@ -29,6 +30,8 @@ abstract class ApolloPushSchemaTask : DefaultTask() {
   @get:Option(option = "graphVariant", description = "The variant of the Apollo graph used to download the schema.")
   abstract val graphVariant: Property<String>
 
+  @get:Input
+  abstract val projectRootDir: DirectoryProperty
 
   private fun Property<String>.orProperty(name: String) = orElse(project.provider {
     (project.findProperty("com.apollographql.apollo3.$name") as? String)?.also {
@@ -59,6 +62,13 @@ abstract class ApolloPushSchemaTask : DefaultTask() {
       "please define schema"
     }
 
-    SchemaUploader.uploadSchema(key = key, graph = graph, variant = graphVariant ?: "current", File(schema).readText())
+    // Files are relative to the root project. It is not possible in a consistent way to have them relative to the current
+    // working directory where the gradle command was started
+    SchemaUploader.uploadSchema(
+        key = key,
+        graph = graph,
+        variant = graphVariant ?: "current",
+        sdl = projectRootDir.asFile.get().resolve(schema).readText()
+    )
   }
 }

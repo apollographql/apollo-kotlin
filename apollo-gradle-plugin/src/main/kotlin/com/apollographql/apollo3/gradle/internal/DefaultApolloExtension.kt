@@ -82,18 +82,23 @@ abstract class DefaultApolloExtension(
      */
     project.tasks.register(ModelNames.downloadApolloSchema(), ApolloDownloadSchemaTask::class.java) { task ->
       task.group = TASK_GROUP
+      task.projectRootDir.set(project.rootDir)
     }
+
     /**
      * A simple task to be used from the command line to ease the schema upload
      */
     project.tasks.register(ModelNames.pushApolloSchema(), ApolloPushSchemaTask::class.java) { task ->
       task.group = TASK_GROUP
+      task.projectRootDir.set(project.rootDir)
     }
+    
     /**
      * A simple task to be used from the command line to ease schema conversion
      */
     project.tasks.register(ModelNames.convertApolloSchema(), ApolloConvertSchemaTask::class.java) { task ->
       task.group = TASK_GROUP
+      task.projectRootDir.set(project.rootDir)
     }
 
     project.afterEvaluate {
@@ -588,6 +593,7 @@ abstract class DefaultApolloExtension(
       project.tasks.register(ModelNames.downloadApolloSchemaIntrospection(service), ApolloDownloadSchemaTask::class.java) { task ->
 
         task.group = TASK_GROUP
+        task.projectRootDir.set(project.rootDir)
         task.endpoint.set(introspection.endpointUrl)
         task.header = introspection.headers.get().map { "${it.key}: ${it.value}" }
         task.schema.set(project.provider { lazySchemaFileForDownload(service, introspection.schemaFile) })
@@ -598,6 +604,7 @@ abstract class DefaultApolloExtension(
       project.tasks.register(ModelNames.downloadApolloSchemaRegistry(service), ApolloDownloadSchemaTask::class.java) { task ->
 
         task.group = TASK_GROUP
+        task.projectRootDir.set(project.rootDir)
         task.graph.set(registry.graph)
         task.key.set(registry.key)
         task.graphVariant.set(registry.graphVariant)

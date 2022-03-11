@@ -7,6 +7,7 @@ import com.apollographql.apollo3.compiler.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.compiler.introspection.toSchema
 import com.apollographql.apollo3.compiler.toJson
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
@@ -14,7 +15,7 @@ import org.gradle.api.tasks.options.Option
 import java.io.File
 
 @OptIn(ApolloExperimental::class)
-abstract class ApolloConvertSchemaTask: DefaultTask() {
+abstract class ApolloConvertSchemaTask : DefaultTask() {
   @get:Input
   @get:Option(option = "from", description = "schema to convert from")
   abstract val from: Property<String>
@@ -23,6 +24,9 @@ abstract class ApolloConvertSchemaTask: DefaultTask() {
   @get:Input
   @get:Option(option = "to", description = "schema to convert to")
   abstract val to: Property<String>
+
+  @get:Input
+  abstract val projectRootDir: DirectoryProperty
 
   init {
     /**
@@ -38,7 +42,7 @@ abstract class ApolloConvertSchemaTask: DefaultTask() {
   private fun File.isIntrospection() = extension == "json"
 
   fun convert(from: File, to: File) {
-    check (from.isIntrospection() && !to.isIntrospection() || !from.isIntrospection() && to.isIntrospection()) {
+    check(from.isIntrospection() && !to.isIntrospection() || !from.isIntrospection() && to.isIntrospection()) {
       "Cannot convert from ${from.name} to ${to.name}, they are already the same format"
     }
 
@@ -53,6 +57,6 @@ abstract class ApolloConvertSchemaTask: DefaultTask() {
   fun taskAction() {
     // Files are relative to the root project. It is not possible in a consistent way to have them relative to the current
     // working directory where the gradle command was started
-    convert(project.rootProject.file(from.get()), project.rootProject.file(to.get()))
+    convert(projectRootDir.asFile.get().resolve(from.get()), projectRootDir.asFile.get().resolve(to.get()))
   }
 }
