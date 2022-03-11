@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.network.http.HttpInfo
+import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import kotlinx.coroutines.flow.Flow
 import java.io.File
 
@@ -64,7 +65,7 @@ fun ApolloClient.Builder.httpCache(
       return chain.proceed(request.newBuilder()
           .addHttpHeader(
               CachingHttpInterceptor.CACHE_OPERATION_TYPE_HEADER,
-              when(request.operation) {
+              when (request.operation) {
                 is Query<*> -> "query"
                 is Mutation<*> -> "mutation"
                 is Subscription<*> -> "subscription"
@@ -103,20 +104,31 @@ fun <T> MutableExecutionOptions<T>.httpFetchPolicy(httpFetchPolicy: HttpFetchPol
 /**
  * Configures httpExpireTimeout. Entries will be removed from the cache after this timeout.
  */
-fun <T> MutableExecutionOptions<T>.httpExpireTimeout(httpExpireTimeout: Long)  = addHttpHeader(
+fun <T> MutableExecutionOptions<T>.httpExpireTimeout(httpExpireTimeout: Long) = addHttpHeader(
     CachingHttpInterceptor.CACHE_EXPIRE_TIMEOUT_HEADER, httpExpireTimeout.toString()
 )
 
 /**
  * Configures httpExpireAfterRead. Entries will be removed from the cache after read if set to true.
  */
-fun <T> MutableExecutionOptions<T>.httpExpireAfterRead(httpExpireAfterRead: Boolean)  = addHttpHeader(
+fun <T> MutableExecutionOptions<T>.httpExpireAfterRead(httpExpireAfterRead: Boolean) = addHttpHeader(
     CachingHttpInterceptor.CACHE_EXPIRE_AFTER_READ_HEADER, httpExpireAfterRead.toString()
 )
 
 /**
  * Configures httpDoNotStore. Entries will never be stored if set to true.
  */
-fun <T> MutableExecutionOptions<T>.httpDoNotStore(httpDoNotStore: Boolean)  = addHttpHeader(
+fun <T> MutableExecutionOptions<T>.httpDoNotStore(httpDoNotStore: Boolean) = addHttpHeader(
     CachingHttpInterceptor.CACHE_DO_NOT_STORE, httpDoNotStore.toString()
 )
+
+val ApolloClient.httpCache: HttpCache
+  get() {
+    val httpNetworkTransport = networkTransport as? HttpNetworkTransport
+        ?: error("cannot get the HttpCache, networkTransport is not a HttpNetworkTransport")
+    val cachingHttpInterceptor = httpNetworkTransport.interceptors.firstOrNull { it is CachingHttpInterceptor }
+        ?: error("no http cache configured")
+
+    return (cachingHttpInterceptor as CachingHttpInterceptor).cache
+  }
+

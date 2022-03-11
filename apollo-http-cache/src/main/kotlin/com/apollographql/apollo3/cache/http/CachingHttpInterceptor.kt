@@ -22,7 +22,9 @@ class CachingHttpInterceptor(
     maxSize: Long,
     fileSystem: FileSystem = FileSystem.SYSTEM,
 ) : HttpInterceptor {
-  private val store = DiskLruHttpCache(fileSystem, directory, maxSize)
+  private val lruHttpCache = DiskLruHttpCache(fileSystem, directory, maxSize)
+
+  val cache: HttpCache = lruHttpCache
 
   override suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse {
     val policy = request.headers.valueOf(CACHE_FETCH_POLICY_HEADER) ?: defaultPolicy(request)
@@ -70,6 +72,7 @@ class CachingHttpInterceptor(
       NETWORK_ONLY
     }
   }
+
   private suspend fun networkMightThrow(request: HttpRequest, chain: HttpInterceptorChain, cacheKey: String): HttpResponse {
     val response = chain.proceed(request)
 
@@ -77,7 +80,7 @@ class CachingHttpInterceptor(
     if (response.statusCode in 200..299 && !doNotStore) {
       // Note: this write may fail if the same cacheKey is being stored by another thread.
       // This is OK though: the other thread will be the one that stores it in the cache (see issue #3664).
-      store.write(
+      lruHttpCache.write(
           response.newBuilder()
               .addHeaders(
                   listOf(
@@ -94,7 +97,7 @@ class CachingHttpInterceptor(
   private fun cacheMightThrow(request: HttpRequest, cacheKey: String): HttpResponse {
     val operationName = request.headers.valueOf(DefaultHttpRequestComposer.HEADER_APOLLO_OPERATION_NAME)
     val response = try {
-      store.read(cacheKey)
+      lruHttpCache.read(cacheKey)
           .newBuilder()
           .addHeaders(
               listOf(
@@ -109,7 +112,7 @@ class CachingHttpInterceptor(
 
     val expireAfterRead = request.headers.valueOf(CACHE_EXPIRE_AFTER_READ_HEADER)?.lowercase() == "true"
     if (expireAfterRead) {
-      store.remove(cacheKey)
+      lruHttpCache.remove(cacheKey)
     }
 
     val timeoutMillis = request.headers.valueOf(CACHE_EXPIRE_TIMEOUT_HEADER)?.toLongOrNull() ?: 0
@@ -128,12 +131,14 @@ class CachingHttpInterceptor(
     return response
   }
 
+  @Deprecated("Use store.clearAll() instead", ReplaceWith("store.clearAll()"))
   fun delete() {
-    store.delete()
+    lruHttpCache.delete()
   }
 
+  @Deprecated("Use store.remove(key) instead", ReplaceWith("store.remove(key)"))
   fun remove(key: String) {
-    store.remove(key)
+    lruHttpCache.remove(key)
   }
 
   companion object {
