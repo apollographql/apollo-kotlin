@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Executable;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
-import com.apollographql.apollo3.cache.http.ApolloHttpCache;
+import com.apollographql.apollo3.cache.http.HttpCache;
 import com.apollographql.apollo3.cache.http.HttpFetchPolicy;
 import com.apollographql.apollo3.cache.normalized.NormalizedCache;
 import com.apollographql.apollo3.cache.normalized.api.CacheKey;
@@ -108,11 +108,11 @@ public class ClientTest {
     ApolloClient.Builder apolloClientBuilder = new ApolloClient.Builder().serverUrl("https://localhost");
     File cacheDir = new File("/tmp/apollo-cache");
     long cacheSize = 10_000_000;
-    ApolloHttpCache.configureApolloClientBuilder(apolloClientBuilder, cacheDir, cacheSize);
+    HttpCache.configureApolloClientBuilder(apolloClientBuilder, cacheDir, cacheSize);
     apolloClient = apolloClientBuilder.build();
 
     ApolloCall<GetRandomQuery.Data> call = apolloClient.query(new GetRandomQuery());
-    ApolloHttpCache.httpFetchPolicy(call, HttpFetchPolicy.NetworkOnly);
+    HttpCache.httpFetchPolicy(call, HttpFetchPolicy.NetworkOnly);
     ApolloResponse<GetRandomQuery.Data> result = Rx2Apollo.single(call).blockingGet();
   }
 
