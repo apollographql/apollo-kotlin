@@ -102,8 +102,7 @@ ext.dep = [
     kotlinxserializationjson : "org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0",
     atomicfu                 : "org.jetbrains.kotlinx:atomicfu:0.17.0",
     ktor                     : [
-        clientJs: "io.ktor:ktor-client-js:$versions.ktor",
-        clientWebsocketJs: "io.ktor:ktor-client-websockets-js:$versions.ktor"
+        clientJs: "io.ktor:ktor-client-js:$versions.ktor"
     ],
     dokka                    : "org.jetbrains.dokka:dokka-gradle-plugin:1.5.0",
     androidSupportAnnotations: "com.android.support:support-annotations:28.0.0",
