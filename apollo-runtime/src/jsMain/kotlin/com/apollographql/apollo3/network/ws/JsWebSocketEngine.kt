@@ -64,9 +64,14 @@ actual class DefaultWebSocketEngine : WebSocketEngine {
   }
 
   /*
-   * The following applies for lines 71-114
+   * The function below works due to ktor being used for the HTTP engine
+   * and how ktor imports ws, if this changes, ws would need to be added
+   * as a direct dependency.
+   *
+   * The following applies for lines below
    * Copyright 2014-2019 JetBrains s.r.o and contributors. Use of this source code is governed by the Apache 2.0 license.
    * Some lines have been added/modified from the original source (https://github.com/ktorio/ktor/blob/f723638afd4d36024c390c5b79108b53ab513943/ktor-client/ktor-client-core/js/src/io/ktor/client/engine/js/JsClientEngine.kt#L62)
+   * in order to fix an issue with subprotocols on Node (https://youtrack.jetbrains.com/issue/KTOR-4001)
    */
   // Adding "_capturingHack" to reduce chances of JS IR backend to rename variable,
   // so it can be accessed inside js("") function
