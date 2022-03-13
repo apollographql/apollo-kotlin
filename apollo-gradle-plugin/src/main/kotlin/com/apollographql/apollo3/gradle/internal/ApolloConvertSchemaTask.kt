@@ -7,9 +7,9 @@ import com.apollographql.apollo3.compiler.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.compiler.introspection.toSchema
 import com.apollographql.apollo3.compiler.toJson
 import org.gradle.api.DefaultTask
-import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
 import java.io.File
@@ -25,8 +25,8 @@ abstract class ApolloConvertSchemaTask : DefaultTask() {
   @get:Option(option = "to", description = "schema to convert to")
   abstract val to: Property<String>
 
-  @get:Input
-  abstract val projectRootDir: DirectoryProperty
+  @get:Internal
+  abstract var projectRootDir: String
 
   init {
     /**
@@ -57,6 +57,6 @@ abstract class ApolloConvertSchemaTask : DefaultTask() {
   fun taskAction() {
     // Files are relative to the root project. It is not possible in a consistent way to have them relative to the current
     // working directory where the gradle command was started
-    convert(projectRootDir.asFile.get().resolve(from.get()), projectRootDir.asFile.get().resolve(to.get()))
+    convert(File(projectRootDir).resolve(from.get()), File(projectRootDir).resolve(to.get()))
   }
 }

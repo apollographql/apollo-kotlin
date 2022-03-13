@@ -82,7 +82,7 @@ abstract class DefaultApolloExtension(
      */
     project.tasks.register(ModelNames.downloadApolloSchema(), ApolloDownloadSchemaTask::class.java) { task ->
       task.group = TASK_GROUP
-      task.projectRootDir.set(project.rootDir)
+      task.projectRootDir = project.rootDir.absolutePath
     }
 
     /**
@@ -90,7 +90,7 @@ abstract class DefaultApolloExtension(
      */
     project.tasks.register(ModelNames.pushApolloSchema(), ApolloPushSchemaTask::class.java) { task ->
       task.group = TASK_GROUP
-      task.projectRootDir.set(project.rootDir)
+      task.projectRootDir = project.rootDir.absolutePath
     }
     
     /**
@@ -98,7 +98,7 @@ abstract class DefaultApolloExtension(
      */
     project.tasks.register(ModelNames.convertApolloSchema(), ApolloConvertSchemaTask::class.java) { task ->
       task.group = TASK_GROUP
-      task.projectRootDir.set(project.rootDir)
+      task.projectRootDir = project.rootDir.absolutePath
     }
 
     project.afterEvaluate {
@@ -593,7 +593,7 @@ abstract class DefaultApolloExtension(
       project.tasks.register(ModelNames.downloadApolloSchemaIntrospection(service), ApolloDownloadSchemaTask::class.java) { task ->
 
         task.group = TASK_GROUP
-        task.projectRootDir.set(project.rootDir)
+        task.projectRootDir = project.rootDir.absolutePath
         task.endpoint.set(introspection.endpointUrl)
         task.header = introspection.headers.get().map { "${it.key}: ${it.value}" }
         task.schema.set(project.provider { lazySchemaFileForDownload(service, introspection.schemaFile) })
@@ -604,7 +604,7 @@ abstract class DefaultApolloExtension(
       project.tasks.register(ModelNames.downloadApolloSchemaRegistry(service), ApolloDownloadSchemaTask::class.java) { task ->
 
         task.group = TASK_GROUP
-        task.projectRootDir.set(project.rootDir)
+        task.projectRootDir = project.rootDir.absolutePath
         task.graph.set(registry.graph)
         task.key.set(registry.key)
         task.graphVariant.set(registry.graphVariant)

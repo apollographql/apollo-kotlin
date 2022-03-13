@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.gradle.internal
 
 import org.gradle.api.DefaultTask
-import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
@@ -31,7 +30,7 @@ abstract class ApolloPushSchemaTask : DefaultTask() {
   abstract val graphVariant: Property<String>
 
   @get:Input
-  abstract val projectRootDir: DirectoryProperty
+  abstract var projectRootDir: String
 
   private fun Property<String>.orProperty(name: String) = orElse(project.provider {
     (project.findProperty("com.apollographql.apollo3.$name") as? String)?.also {
@@ -68,7 +67,7 @@ abstract class ApolloPushSchemaTask : DefaultTask() {
         key = key,
         graph = graph,
         variant = graphVariant ?: "current",
-        sdl = projectRootDir.asFile.get().resolve(schema).readText()
+        sdl = File(projectRootDir).resolve(schema).readText()
     )
   }
 }

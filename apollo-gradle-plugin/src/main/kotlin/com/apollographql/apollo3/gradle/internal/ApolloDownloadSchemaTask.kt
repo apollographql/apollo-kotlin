@@ -14,9 +14,11 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
+import java.io.File
 
 /**
  * A task to download a schema either from introspection or from the registry.
@@ -54,8 +56,8 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
   @get:Option(option = "schema", description = "path where the schema will be downloaded, relative to the current working directory")
   abstract val schema: Property<String>
 
-  @get:Input
-  abstract val projectRootDir: DirectoryProperty
+  @get:Internal
+  abstract var projectRootDir: String
 
   @get:Optional
   @get:Input
@@ -78,7 +80,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
 
     // Schema file is relative to the root project. It is not possible in a consistent way to have it relative to the current
     // working directory where the gradle command was started
-    val schema = projectRootDir.asFile.get().resolve(schema.get())
+    val schema = File(projectRootDir).resolve(schema.get())
     val headers = header.toMap()
 
     var introspectionSchema: IntrospectionSchema? = null
