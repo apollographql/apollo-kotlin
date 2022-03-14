@@ -375,21 +375,28 @@ Converting the JSONs to `Map<String, Any?>` should make the implementation of su
 When parsing payload 1, the fields of the `ComputerFields` fragment are not present, so the adapter should not try to
 read them.
 
-However, when parsing "payload 1 merged with payload 2", the fields for `ComputerFields` are present and must be read.
+However, when parsing "payload 1 merged with payload 2", the fields for `ComputerFields` are present in the computers 
+array at position 0, and must be read, and not present at position 1 and must not be read.
 
-We need a way to switch this reading on/off depending on whether specific fragments have been merged or not.
+We need a way to switch this reading on/off depending on whether specific fragments have been merged or not. To do so,
+we need to:
 
-Solution:
+1. keep track of the fragments that have been merged, by maintaining a set of the received `path` + `label`
+2. have a way to check a fragment's defer label in the Adapter's generated code
+3. have a way to check the current path in the Adapter's generated code
 
-- Like with Approach A, add a unique label to each `@defer` directive.
-- Add a property `deferredFragmentLabels: Set<String>` to `CustomScalarAdapters`
+Implementation:
+
+- Like with Approach A, add a unique label to each `@defer` directive. **<- currently under discussion!**
+- Add a property `deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>` to `CustomScalarAdapters`
     - ⚠️ This is kind of a hack - we hijack the original purpose of `CustomScalarAdapters` and use it as a kind of
       context. This avoids changing the Adapter API in a breaking way.
     - We already used this technique to pass around execution variables, which are needed at parse time for `@skip`
       / `@include`.
-- When handling a payload, add its label to `customScalarAdapters.deferredFragmentLabels`.
-- The Adapter's generated code only parses a fragment marked with `@defer` if the associated label is present
-  in `customScalarAdapters.deferredFragmentLabels`.
+    - `DeferredFragmentIdentifier` is a class with a `path` and a `label`
+- When handling a payload, add its path and label to `customScalarAdapters.deferredFragmentIdentifiers`.
+- The Adapter's generated code only parses a fragment marked with `@defer` if the current path + the associated label is
+  present in `customScalarAdapters.deferredFragmentIdentifiers`.
 
 For instance currently the generated code for `ComputerFieldsImpl_ResponseAdapter.ComputerFields` looks like this:
 
@@ -410,7 +417,7 @@ Instead, we'd have:
 ```kotlin
 reader.rewind()
 var screenFields: ScreenFields? = null
-if (customScalarAdapters.deferredFragmentLabels.contains("fragment:ComputerFields:0")) {
+if (customScalarAdapters.deferredFragmentIdentifiers.contains(DeferredFragmentIdentifier(path = currentPath, label = "fragment:ComputerFields:0"))) {
     screenFields = com.example.fragment.ScreenFieldsImpl_ResponseAdapter.ScreenFields.fromJson(reader,
         customScalarAdapters)
 }
@@ -421,6 +428,63 @@ return com.example.fragment.ComputerFields.Screen(
     screenFields = screenFields
 )
 ```
+
+**How to keep track of the current path**
+
+Here too, we can use the `CustomScalarAdapters` as a context:
+- Add a property `currentPath: List<Any>` to `CustomScalarAdapters` (or better, a dedicated class encapsulating the list)
+- In the generated Adapter code, append the field name to the path before parsing it
+
+For instance, here's a snippet of generated Adapter code:
+
+_Before_:
+```kotlin
+    public val RESPONSE_NAMES: List<String> = listOf("computers")
+
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        Query1Query.Data {
+      var computers: List<Query1Query.Computer>? = null
+
+      while (true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> computers = Computer.obj(true).list().fromJson(reader, customScalarAdapters)
+          else -> break
+        }
+
+      return Query1Query.Data(
+        computers = computers!!
+      )
+    }
+```
+
+_After_:
+```kotlin
+    public val RESPONSE_NAMES: List<String> = listOf("computers")
+
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        Query1Query.Data {
+      var computers: List<Query1Query.Computer>? = null
+
+      while (true) {
+        val __nameIdx = reader.selectName(RESPONSE_NAMES)
+        if (__nameIdx != -1) customScalarAdapters.currentPath.push(RESPONSE_NAMES[__nameIdx])
+        when (__nameIdx) {
+          0 -> computers = Computer.obj(true).list().fromJson(reader, customScalarAdapters)
+          else -> break
+        }
+        customScalarAdapters.currentPath.pop()}
+
+      return Query1Query.Data(
+        computers = computers!!
+      )
+    }
+```
+
+For arrays, no need to update the generated code: we can add the index to the path in a generic way, directly
+inside `ListAdapter`.
+
+Note: I propose we move `variables`, `deferredFragmentIdentifiers` and `currentPath` to an `AdapterContext` class
+instead of keeping them directly in `CustomScalarAdapters`.
 
 ### Comparison of both approaches
 
