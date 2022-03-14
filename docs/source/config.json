@@ -46,8 +46,11 @@
       "Using the models without apollo-runtime": "/advanced/no-runtime"
     },
     "Testing": {
-      "UI Tests": "/advanced/ui-tests",
-      "Test builders": "/advanced/test-builders"
+      "Overview": "/testing/overview",
+      "Mocking HTTP responses": "/testing/mocking-http-responses",
+      "Mocking GraphQL responses": "/testing/mocking-graphql-responses",
+      "Test builders": "/testing/test-builders",
+      "UI Tests": "/testing/ui-tests"
     },
     "Advanced": {
       "Batching operations": "/advanced/query-batching",
