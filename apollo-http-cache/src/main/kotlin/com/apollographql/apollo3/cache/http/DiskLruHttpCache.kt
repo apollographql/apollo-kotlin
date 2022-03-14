@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.cache.http
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.cache.http.internal.DiskLruCache
@@ -12,7 +13,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
 import kotlin.concurrent.write
 
-class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory: File, private val maxSize: Long) {
+class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory: File, private val maxSize: Long) : ApolloHttpCache {
   private var cache = createDiskLruCache()
   private val cacheLock = ReentrantReadWriteLock()
   private val adapter = Moshi.Builder().build().adapter(Any::class.java)
@@ -22,7 +23,7 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
   }
 
   @Suppress("UNCHECKED_CAST")
-  fun read(cacheKey: String): HttpResponse {
+  override fun read(cacheKey: String): HttpResponse {
     val snapshot = cacheLock.read {
       cache[cacheKey]
     } ?: error("HTTP cache: no snapshot")
@@ -47,7 +48,7 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
    * Store the [response] with the given [cacheKey] into the cache.
    * Note: the response's body is not consumed nor closed.
    */
-  fun write(response: HttpResponse, cacheKey: String) {
+  override fun write(response: HttpResponse, cacheKey: String) {
     val editor = cacheLock.read {
       cache.edit(cacheKey)
     }
@@ -81,7 +82,7 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
   }
 
   @Throws(IOException::class)
-  fun delete() {
+  override fun clearAll() {
     cache = cacheLock.write {
       cache.delete()
       createDiskLruCache()
@@ -89,7 +90,14 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
   }
 
   @Throws(IOException::class)
-  fun remove(cacheKey: String) {
+  @Deprecated("Use clearAll() instead", ReplaceWith("clearAll"))
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_1_1)
+  fun delete() {
+    clearAll()
+  }
+
+  @Throws(IOException::class)
+  override fun remove(cacheKey: String) {
     // is `read` ok here?
     cacheLock.read {
       cache.remove(cacheKey)
