@@ -2,10 +2,9 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.selections.CompiledSelectionsBuilder
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.squareup.kotlinpoet.ClassName
@@ -15,7 +14,7 @@ class OperationSelectionsBuilder(
     val operation: IrOperation,
     val schema: Schema,
     val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
-) : CgOutputFileBuilder {
+) : CgFileBuilder {
   private val packageName = context.layout.operationResponseFieldsPackageName(operation.filePath)
   private val simpleName = context.layout.operationSelectionsName(operation)
 

@@ -11,18 +11,15 @@ import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLFragmentSpread
 import com.apollographql.apollo3.ast.GQLInlineFragment
 import com.apollographql.apollo3.ast.GQLIntValue
-import com.apollographql.apollo3.ast.GQLInterfaceTypeDefinition
 import com.apollographql.apollo3.ast.GQLListType
 import com.apollographql.apollo3.ast.GQLListValue
 import com.apollographql.apollo3.ast.GQLNamedType
 import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLNullValue
-import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLObjectValue
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.GQLStringValue
 import com.apollographql.apollo3.ast.GQLType
-import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.ast.Schema
@@ -30,7 +27,6 @@ import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.leafType
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
-import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.root
 import com.apollographql.apollo3.compiler.codegen.keyArgs
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext

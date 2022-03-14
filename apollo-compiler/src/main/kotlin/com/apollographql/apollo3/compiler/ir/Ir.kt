@@ -34,10 +34,10 @@ data class Ir(
 )
 
 data class IrEnum(
-    val name: String,
+    override val name: String,
     val description: String?,
     val values: List<Value>,
-) {
+): IrSchemaType {
   val type = IrEnumType(name)
 
   data class Value(
@@ -191,42 +191,46 @@ data class IrModelGroup(
     val models: List<IrModel>,
 )
 
+sealed interface IrSchemaType {
+  val name: String
+}
+
 data class IrInputObject(
-    val name: String,
+    override val name: String,
     val description: String?,
     val deprecationReason: String?,
     val fields: List<IrInputField>,
-)
+): IrSchemaType
 
 data class IrObject(
-    val name: String,
+    override val name: String,
     val implements: List<String>,
     val keyFields: Set<String>,
     val description: String?,
     val deprecationReason: String?,
-)
+): IrSchemaType
 
 data class IrInterface(
-    val name: String,
+    override val name: String,
     val implements: List<String>,
     val keyFields: Set<String>,
     val description: String?,
     val deprecationReason: String?,
-)
+): IrSchemaType
 
 data class IrUnion(
-    val name: String,
+    override val name: String,
     val members: List<String>,
     val description: String?,
     val deprecationReason: String?,
-)
+): IrSchemaType
 
 data class IrCustomScalar(
-    val name: String,
+    override val name: String,
     val kotlinName: String?, // might be null if no user mapping is provided
     val description: String?,
     val deprecationReason: String?,
-) {
+): IrSchemaType {
   val type = IrScalarType(name)
 }
 
