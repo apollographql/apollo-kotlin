@@ -11,6 +11,8 @@ internal object Identifier {
 
   const val type = "type"
   const val customScalarAdapters = "customScalarAdapters"
+  const val adapterContext = "adapterContext"
+  const val currentPath = "currentPath"
   const val value = "value"
   const val reader = "reader"
   const val writer = "writer"
@@ -52,6 +54,7 @@ internal object Identifier {
   const val types = "types"
   const val testResolver = "testResolver"
   const val block = "block"
+  const val __nameIdx = "__nameIdx"
 
   /**
    * Kotlin language identifiers
