@@ -305,16 +305,12 @@ public object TestQuery_ResponseAdapter {
                   }
                 }
 
-                check(__typename != null) {
-                  "__typename was not found"
-                }
-
                 reader.rewind()
                 val onCharacter = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnHuman.Friend.OnCharacter.fromJson(reader,
                     customScalarAdapters)
 
                 return TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend(
-                  __typename = __typename,
+                  __typename = __typename!!,
                   onCharacter = onCharacter
                 )
               }

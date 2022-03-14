@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.NullableDoubleAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.json.readTypename
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
@@ -50,16 +51,9 @@ public object TestQuery_ResponseAdapter {
     }
 
     private object Hero : Adapter<TestQuery.Data.Hero> {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Hero {
-        reader.selectName(RESPONSE_NAMES).also {
-          check(it == 0) {
-            "__typename not present in first position"
-          }
-        }
-        val __typename = reader.nextString()!!
+        val __typename = reader.readTypename()
         return when(__typename) {
           "Human",
           -> HumanHero.fromJson(reader, customScalarAdapters, __typename)
@@ -129,16 +123,9 @@ public object TestQuery_ResponseAdapter {
       }
 
       private object Friend : Adapter<TestQuery.Data.HumanHero.Friend> {
-        public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.HumanHero.Friend {
-          reader.selectName(RESPONSE_NAMES).also {
-            check(it == 0) {
-              "__typename not present in first position"
-            }
-          }
-          val __typename = reader.nextString()!!
+          val __typename = reader.readTypename()
           return when(__typename) {
             "Human",
             -> HumanFriend.fromJson(reader, customScalarAdapters, __typename)
@@ -290,16 +277,9 @@ public object TestQuery_ResponseAdapter {
       }
 
       private object Friend : Adapter<TestQuery.Data.DroidHero.Friend> {
-        public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.DroidHero.Friend {
-          reader.selectName(RESPONSE_NAMES).also {
-            check(it == 0) {
-              "__typename not present in first position"
-            }
-          }
-          val __typename = reader.nextString()!!
+          val __typename = reader.readTypename()
           return when(__typename) {
             "Human",
             -> HumanFriend.fromJson(reader, customScalarAdapters, __typename)

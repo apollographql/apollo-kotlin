@@ -81,16 +81,12 @@ public object QueryFragmentImpl_ResponseAdapter {
         }
       }
 
-      check(__typename != null) {
-        "__typename was not found"
-      }
-
       reader.rewind()
       val fragments = com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.Hero.Fragments.fromJson(reader,
           customScalarAdapters)
 
       return com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero(
-        __typename = __typename,
+        __typename = __typename!!,
         fragments = fragments
       )
     }
@@ -110,22 +106,9 @@ public object QueryFragmentImpl_ResponseAdapter {
     private object Fragments :
         Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero.Fragments>
         {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero.Fragments {
-        var __typename: String? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            else -> break
-          }
-        }
-
-        check(__typename != null) {
-          "__typename was not found"
-        }
 
         reader.rewind()
         val heroFragment = com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.fromJson(reader,
@@ -162,16 +145,12 @@ public object QueryFragmentImpl_ResponseAdapter {
         }
       }
 
-      check(__typename != null) {
-        "__typename was not found"
-      }
-
       reader.rewind()
       val fragments = com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.Droid.Fragments.fromJson(reader,
           customScalarAdapters)
 
       return com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid(
-        __typename = __typename,
+        __typename = __typename!!,
         fragments = fragments
       )
     }
@@ -191,22 +170,9 @@ public object QueryFragmentImpl_ResponseAdapter {
     private object Fragments :
         Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid.Fragments>
         {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid.Fragments {
-        var __typename: String? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            else -> break
-          }
-        }
-
-        check(__typename != null) {
-          "__typename was not found"
-        }
 
         reader.rewind()
         val droidFragment = com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.fromJson(reader,

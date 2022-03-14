@@ -12,6 +12,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.typename
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinMemberNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.codeBlock
 import com.apollographql.apollo3.compiler.ir.IrModel
@@ -28,25 +29,21 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.joinToCode
 
-internal fun responseNamesPropertySpec(model: IrModel): PropertySpec {
-  val initializer = model.properties.filter { !it.isSynthetic }.map {
-    CodeBlock.of("%S", it.info.responseName)
-  }.joinToCode(prefix = "listOf(", separator = ", ", suffix = ")")
 
-  return PropertySpec.builder(RESPONSE_NAMES, KotlinSymbols.List.parameterizedBy(KotlinSymbols.String))
-      .initializer(initializer)
-      .build()
-}
-
+/**
+ * @param useTypenameFromArgument
+ * - for responseBased codegen that can't rewind, this is set to true so that the
+ * implementation adapter can use it and __typename becomes initialized
+ */
 internal fun readFromResponseCodeBlock(
     model: IrModel,
     context: KotlinContext,
-    hasTypenameArgument: Boolean,
+    useTypenameFromArgument: Boolean,
 ): CodeBlock {
   val (regularProperties, syntheticProperties) = model.properties.partition { !it.isSynthetic }
   val prefix = regularProperties.map { property ->
     val variableInitializer = when {
-      hasTypenameArgument && property.info.responseName == "__typename" -> CodeBlock.of(typename)
+      useTypenameFromArgument && property.info.responseName == "__typename" -> CodeBlock.of(typename)
       (property.info.type is IrNonNullType && property.info.type.ofType is IrOptionalType) -> CodeBlock.of("%T", KotlinSymbols.Absent)
       else -> CodeBlock.of("null")
     }
@@ -62,36 +59,49 @@ internal fun readFromResponseCodeBlock(
   /**
    * Read the regular properties
    */
-  val loop = CodeBlock.builder()
-      .beginControlFlow("while(true)")
-      .beginControlFlow("when·($reader.selectName($RESPONSE_NAMES))")
-      .add(
-          regularProperties.mapIndexed { index, property ->
-            CodeBlock.of(
-                "%L·->·%N·=·%L.$fromJson($reader, $customScalarAdapters)",
-                index,
-                context.layout.variableName(property.info.responseName),
-                context.resolver.adapterInitializer(property.info.type, property.requiresBuffering)
-            )
-          }.joinToCode(separator = "\n", suffix = "\n")
-      )
-      .addStatement("else -> break")
-      .endControlFlow()
-      .endControlFlow()
-      .build()
+  val loop = if (regularProperties.isNotEmpty()) {
+    CodeBlock.builder()
+        .beginControlFlow("while(true)")
+        .beginControlFlow("when·($reader.selectName($RESPONSE_NAMES))")
+        .add(
+            regularProperties.mapIndexed { index, property ->
+              CodeBlock.of(
+                  "%L·->·%N·=·%L.$fromJson($reader, $customScalarAdapters)",
+                  index,
+                  context.layout.variableName(property.info.responseName),
+                  context.resolver.adapterInitializer(property.info.type, property.requiresBuffering)
+              )
+            }.joinToCode(separator = "\n", suffix = "\n")
+        )
+        .addStatement("else -> break")
+        .endControlFlow()
+        .endControlFlow()
+        .build()
+  } else {
+    CodeBlock.of("")
+  }
 
   val checkedProperties = mutableSetOf<String>()
+
 
   /**
    * Read the synthetic properties
    */
-  val checkTypename = if (syntheticProperties.isNotEmpty()) {
+  val typenameCodeBlock = if (syntheticProperties.any { it.requiresTypename }) {
     checkedProperties.add(__typename)
+
     CodeBlock.builder()
-        .beginControlFlow("check($__typename·!=·null)")
-        .add("%S\n", "__typename was not found")
-        .endControlFlow()
-        .build()
+        .apply {
+          if (regularProperties.none { it.info.responseName == "__typename" }) {
+            // We are in a nested fragment that needs access to __typename, get it from the buffered reader
+            add("$reader.rewind()\n")
+            add(typenameFromReaderCodeBlock())
+          } else {
+            beginControlFlow("check($__typename·!=·null)")
+            add("%S\n", "__typename was not found")
+            endControlFlow()
+          }
+        }.build()
   } else {
     CodeBlock.of("")
   }
@@ -107,7 +117,12 @@ internal fun readFromResponseCodeBlock(
                 context.layout.variableName(property.info.responseName),
                 context.resolver.resolveIrType(property.info.type).copy(nullable = !property.info.type.isOptional()),
             )
-            beginControlFlow("if·(%L.%M($customScalarAdapters.variables(),·$__typename))", property.condition.codeBlock(), evaluate)
+            val typenameLiteral = if (property.requiresTypename) {
+              __typename
+            } else {
+              "null"
+            }
+            beginControlFlow("if·(%L.%M($customScalarAdapters.variables(),·$typenameLiteral))", property.condition.codeBlock(), evaluate)
           } else {
             checkedProperties.add(property.info.responseName)
             add("val·")
@@ -117,7 +132,7 @@ internal fun readFromResponseCodeBlock(
             CodeBlock.of(
                 "%L·=·%L.$fromJson($reader, $customScalarAdapters)\n",
                 context.layout.variableName(property.info.responseName),
-                context.resolver.resolveModelAdapter(property.info.type.modelPath())
+                context.resolver.resolveModelAdapter(property.info.type.modelPath()),
             )
         )
         .applyIf(property.condition != BooleanExpression.True) {
@@ -129,7 +144,7 @@ internal fun readFromResponseCodeBlock(
   val suffix = CodeBlock.builder()
       .addStatement("return·%T(", context.resolver.resolveModel(model.id))
       .indent()
-      .add(model.properties.filter { !it.hidden }.map { property ->
+      .add(model.properties.map { property ->
         val maybeAssertNotNull = if (
             property.info.type is IrNonNullType
             && !property.info.type.isOptional()
@@ -155,12 +170,18 @@ internal fun readFromResponseCodeBlock(
       .applyIf(prefix.isNotEmpty()) { add("\n") }
       .add(loop)
       .applyIf(loop.isNotEmpty()) { add("\n") }
-      .add(checkTypename)
-      .applyIf(checkTypename.isNotEmpty()) { add("\n") }
+      .add(typenameCodeBlock)
+      .applyIf(typenameCodeBlock.isNotEmpty()) { add("\n") }
       .add(syntheticLoop)
       .applyIf(syntheticLoop.isNotEmpty()) { add("\n") }
       .add(suffix)
       .build()
+}
+
+internal fun typenameFromReaderCodeBlock(): CodeBlock {
+  return CodeBlock.builder().apply {
+    add("val $__typename = ${reader}.%M()\n", KotlinMemberNames.readTypename)
+  }.build()
 }
 
 private fun IrType.modelPath(): String {
@@ -172,7 +193,7 @@ private fun IrType.modelPath(): String {
 }
 
 internal fun writeToResponseCodeBlock(model: IrModel, context: KotlinContext): CodeBlock {
-  return model.properties.filter { !it.hidden }.map { it.writeToResponseCodeBlock(context) }.joinToCode("\n")
+  return model.properties.map { it.writeToResponseCodeBlock(context) }.joinToCode("\n")
 }
 
 private fun IrProperty.writeToResponseCodeBlock(context: KotlinContext): CodeBlock {
@@ -224,7 +245,7 @@ internal fun CodeBlock.obj(buffered: Boolean): CodeBlock {
       .add("%L", this)
       .add(
           ".%M(%L)",
-          MemberName("com.apollographql.apollo3.api", "obj"),
+          KotlinMemberNames.obj,
           params
       ).build()
 }

@@ -61,16 +61,12 @@ public object TestQuery_ResponseAdapter {
         }
       }
 
-      check(__typename != null) {
-        "__typename was not found"
-      }
-
       reader.rewind()
       val fragments = com.example.fragment_spread_with_nested_fields.adapter.TestQuery_ResponseAdapter.Hero.Fragments.fromJson(reader,
           customScalarAdapters)
 
       return TestQuery.Hero(
-        __typename = __typename,
+        __typename = __typename!!,
         fragments = fragments
       )
     }
@@ -88,22 +84,9 @@ public object TestQuery_ResponseAdapter {
     }
 
     private object Fragments : Adapter<TestQuery.Hero.Fragments> {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Hero.Fragments {
-        var __typename: String? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            else -> break
-          }
-        }
-
-        check(__typename != null) {
-          "__typename was not found"
-        }
 
         reader.rewind()
         val heroDetails = com.example.fragment_spread_with_nested_fields.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,

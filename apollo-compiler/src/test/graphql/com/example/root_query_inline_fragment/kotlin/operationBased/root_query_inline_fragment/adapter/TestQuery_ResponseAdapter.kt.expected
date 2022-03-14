@@ -40,16 +40,12 @@ public object TestQuery_ResponseAdapter {
         }
       }
 
-      check(__typename != null) {
-        "__typename was not found"
-      }
-
       reader.rewind()
       val onQuery = com.example.root_query_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.OnQuery.fromJson(reader,
           customScalarAdapters)
 
       return TestQuery.Data(
-        __typename = __typename,
+        __typename = __typename!!,
         onQuery = onQuery
       )
     }
@@ -209,16 +205,12 @@ public object TestQuery_ResponseAdapter {
             }
           }
 
-          check(__typename != null) {
-            "__typename was not found"
-          }
-
           reader.rewind()
           val onDroid = com.example.root_query_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.OnQuery.Droid.OnDroid.fromJson(reader,
               customScalarAdapters)
 
           return TestQuery.Data.OnQuery.Droid(
-            __typename = __typename,
+            __typename = __typename!!,
             onDroid = onDroid
           )
         }

@@ -1,11 +1,6 @@
 package com.apollographql.apollo3.api.json.internal
 
-import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.api.json.JsonNumber
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.jvm.JvmName
-
 
 @JvmName("-LongToIntExact")
 internal fun Long.toIntExact(): Int {

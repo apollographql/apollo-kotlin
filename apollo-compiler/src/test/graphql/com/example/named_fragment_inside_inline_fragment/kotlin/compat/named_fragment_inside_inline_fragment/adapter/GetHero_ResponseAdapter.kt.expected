@@ -61,16 +61,12 @@ public object GetHero_ResponseAdapter {
         }
       }
 
-      check(__typename != null) {
-        "__typename was not found"
-      }
-
       reader.rewind()
       val fragments = com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.Hero.Fragments.fromJson(reader,
           customScalarAdapters)
 
       return GetHero.Hero(
-        __typename = __typename,
+        __typename = __typename!!,
         fragments = fragments
       )
     }
@@ -88,22 +84,9 @@ public object GetHero_ResponseAdapter {
     }
 
     private object Fragments : Adapter<GetHero.Hero.Fragments> {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           GetHero.Hero.Fragments {
-        var __typename: String? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            else -> break
-          }
-        }
-
-        check(__typename != null) {
-          "__typename was not found"
-        }
 
         reader.rewind()
         val characterName = com.example.named_fragment_inside_inline_fragment.fragment.CharacterNameImpl_ResponseAdapter.CharacterName.fromJson(reader,

@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.json.readTypename
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.nested_field_with_multiple_fieldsets.TestQuery
@@ -48,16 +49,9 @@ public object TestQuery_ResponseAdapter {
     }
 
     private object Iface1 : Adapter<TestQuery.Data.Iface1> {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Iface1 {
-        reader.selectName(RESPONSE_NAMES).also {
-          check(it == 0) {
-            "__typename not present in first position"
-          }
-        }
-        val __typename = reader.nextString()!!
+        val __typename = reader.readTypename()
         return when(__typename) {
           "Impl1",
           -> Impl1Iface1.fromJson(reader, customScalarAdapters, __typename)
@@ -116,16 +110,9 @@ public object TestQuery_ResponseAdapter {
       }
 
       private object Iface2 : Adapter<TestQuery.Data.Impl1Iface1.Iface2> {
-        public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Impl1Iface1.Iface2 {
-          reader.selectName(RESPONSE_NAMES).also {
-            check(it == 0) {
-              "__typename not present in first position"
-            }
-          }
-          val __typename = reader.nextString()!!
+          val __typename = reader.readTypename()
           return when(__typename) {
             "Impl2",
             -> Impl2Iface2.fromJson(reader, customScalarAdapters, __typename)
@@ -288,16 +275,9 @@ public object TestQuery_ResponseAdapter {
       }
 
       private object Iface2 : Adapter<TestQuery.Data.OtherIface1.Iface2> {
-        public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.OtherIface1.Iface2 {
-          reader.selectName(RESPONSE_NAMES).also {
-            check(it == 0) {
-              "__typename not present in first position"
-            }
-          }
-          val __typename = reader.nextString()!!
+          val __typename = reader.readTypename()
           return when(__typename) {
             "Impl2",
             -> Impl2Iface2.fromJson(reader, customScalarAdapters, __typename)

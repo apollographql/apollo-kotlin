@@ -65,3 +65,16 @@ private fun JsonReader.guessNumber(): Any {
   }
   return nextNumber()
 }
+
+
+fun JsonReader.readTypename(assertFirst: Boolean = true): String {
+  while (hasNext()) {
+    if (nextName() == "__typename") {
+      return nextString() ?: "__typename is null"
+    }
+    if (assertFirst) {
+      error("__typename not found in first position")
+    }
+  }
+  error("__typename not found")
+}

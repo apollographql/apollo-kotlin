@@ -2,6 +2,7 @@ package com.apollographql.apollo3.compiler.ir
 
 import com.apollographql.apollo3.api.BTerm
 import com.apollographql.apollo3.api.BooleanExpression
+import com.apollographql.apollo3.api.containsPossibleTypes
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.GQLType
@@ -169,21 +170,26 @@ data class IrModel(
 
 /**
  * @param condition a condition for reading the property
- * @param requiresBuffering true if this property contains synthetic properties
- * @param hidden allows to hide a property from the model but still have it part of the selections.
- * This is used for typename in compat models because the adapters need to read __typename
+ * @param requiresBuffering true if this property contains synthetic properties and needs to be buffered
  */
 data class IrProperty(
     val info: IrFieldInfo,
     val override: Boolean,
     val condition: BooleanExpression<BTerm>,
-    val requiresBuffering: Boolean,
-    val hidden: Boolean,
+    val requiresBuffering: Boolean
 ) {
-  // synthetic properties are special as we need to rewind the reader before reading them
+  /**
+   * synthetic properties are special as we need to rewind the reader before reading them
+   * They are read in a second pass and are not real json names
+   */
   val isSynthetic: Boolean
     get() = info.gqlType == null
 
+  /**
+   *
+   */
+  val requiresTypename: Boolean
+    get() = condition.containsPossibleTypes()
 }
 
 data class IrModelGroup(

@@ -61,16 +61,12 @@ public object TestQuery_ResponseAdapter {
         }
       }
 
-      check(__typename != null) {
-        "__typename was not found"
-      }
-
       reader.rewind()
       val fragments = com.example.fragment_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.I.Fragments.fromJson(reader,
           customScalarAdapters)
 
       return TestQuery.I(
-        __typename = __typename,
+        __typename = __typename!!,
         fragments = fragments
       )
     }
@@ -88,22 +84,9 @@ public object TestQuery_ResponseAdapter {
     }
 
     private object Fragments : Adapter<TestQuery.I.Fragments> {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.I.Fragments {
-        var __typename: String? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            else -> break
-          }
-        }
-
-        check(__typename != null) {
-          "__typename was not found"
-        }
 
         reader.rewind()
         val iFragment = com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.fromJson(reader,

@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.json.readTypename
 import kotlin.Any
 import kotlin.String
 import kotlin.Unit
@@ -18,16 +19,9 @@ import kotlin.collections.List
 
 public object HumanDetailsImpl_ResponseAdapter {
   public object Data : Adapter<HumanDetailsImpl.Data> {
-    public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         HumanDetailsImpl.Data {
-      reader.selectName(RESPONSE_NAMES).also {
-        check(it == 0) {
-          "__typename not present in first position"
-        }
-      }
-      val __typename = reader.nextString()!!
+      val __typename = reader.readTypename()
       return when(__typename) {
         "Human",
         -> CharacterData.fromJson(reader, customScalarAdapters, __typename)

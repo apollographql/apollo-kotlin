@@ -519,7 +519,6 @@ private fun ResponseField.toIrProperty(): IrProperty {
       override = override,
       condition = BooleanExpression.True,
       requiresBuffering = false,
-      hidden = false
   )
 }
 

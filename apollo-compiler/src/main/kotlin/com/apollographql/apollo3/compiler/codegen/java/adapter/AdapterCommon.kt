@@ -35,8 +35,13 @@ import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName
 import javax.lang.model.element.Modifier
 
-internal fun responseNamesFieldSpec(model: IrModel): FieldSpec {
-  val initializer = model.properties.filter { !it.isSynthetic }.map {
+internal fun responseNamesFieldSpec(model: IrModel): FieldSpec? {
+  val regularProperties = model.properties.filter { !it.isSynthetic }
+  if (regularProperties.isEmpty()) {
+    return null
+  }
+
+  val initializer = regularProperties.map {
     CodeBlock.of(S, it.info.responseName)
   }.toListInitializerCodeblock()
 
@@ -70,24 +75,28 @@ internal fun readFromResponseCodeBlock(
   /**
    * Read the regular properties
    */
-  val loop = CodeBlock.builder()
-      .add("loop:\n")
-      .beginControlFlow("while(true)")
-      .beginControlFlow("switch ($reader.selectName($RESPONSE_NAMES))")
-      .add(
-          regularProperties.mapIndexed { index, property ->
-            CodeBlock.of(
-                "case $L: $L = $L.$fromJson($reader, $customScalarAdapters); break;",
-                index,
-                context.layout.variableName(property.info.responseName),
-                context.resolver.adapterInitializer(property.info.type, property.requiresBuffering)
-            )
-          }.joinToCode(separator = "\n", suffix = "\n")
-      )
-      .addStatement("default: break loop")
-      .endControlFlow()
-      .endControlFlow()
-      .build()
+  val loop = if (regularProperties.isNotEmpty()) {
+    CodeBlock.builder()
+        .add("loop:\n")
+        .beginControlFlow("while(true)")
+        .beginControlFlow("switch ($reader.selectName($RESPONSE_NAMES))")
+        .add(
+            regularProperties.mapIndexed { index, property ->
+              CodeBlock.of(
+                  "case $L: $L = $L.$fromJson($reader, $customScalarAdapters); break;",
+                  index,
+                  context.layout.variableName(property.info.responseName),
+                  context.resolver.adapterInitializer(property.info.type, property.requiresBuffering)
+              )
+            }.joinToCode(separator = "\n", suffix = "\n")
+        )
+        .addStatement("default: break loop")
+        .endControlFlow()
+        .endControlFlow()
+        .build()
+  } else {
+    CodeBlock.of("")
+  }
 
   val checkedProperties = mutableSetOf<String>()
 
@@ -135,7 +144,7 @@ internal fun readFromResponseCodeBlock(
         .build()
   }.joinToCode("\n")
 
-  val visibleProperties = model.properties.filter { !it.hidden }
+  val visibleProperties = model.properties
 
   val checks = CodeBlock.builder()
       .add(
@@ -189,7 +198,7 @@ private fun IrType.modelPath(): String {
 }
 
 internal fun writeToResponseCodeBlock(model: IrModel, context: JavaContext): CodeBlock {
-  return model.properties.filter { !it.hidden }.map { it.writeToResponseCodeBlock(context) }.joinToCode("\n")
+  return model.properties.map { it.writeToResponseCodeBlock(context) }.joinToCode("\n")
 }
 
 private fun IrProperty.writeToResponseCodeBlock(context: JavaContext): CodeBlock {

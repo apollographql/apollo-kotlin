@@ -1,6 +1,8 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin
 
 import com.apollographql.apollo3.compiler.codegen.ClassNames
+import com.apollographql.apollo3.compiler.codegen.ClassNames.apolloApiJsonPackageName
+import com.apollographql.apollo3.compiler.codegen.ClassNames.apolloApiPackageName
 import com.apollographql.apollo3.compiler.codegen.ClassNames.apolloApiTestPackageName
 import com.apollographql.apollo3.compiler.codegen.ResolverClassName
 import com.squareup.kotlinpoet.ClassName
@@ -68,23 +70,26 @@ internal object KotlinSymbols {
   val Map = ClassName("kotlin.collections", "Map")
   val Array = ClassName("kotlin", "Array")
 
+  val Suppress = ClassName("kotlin", "Suppress")
   /**
    * Adapters
    */
-  val AnyAdapter = MemberName(ClassNames.apolloApiPackageName, "AnyAdapter")
-  val BooleanAdapter = MemberName(ClassNames.apolloApiPackageName, "BooleanAdapter")
-  val DoubleAdapter = MemberName(ClassNames.apolloApiPackageName, "DoubleAdapter")
-  val IntAdapter = MemberName(ClassNames.apolloApiPackageName, "IntAdapter")
-  val StringAdapter = MemberName(ClassNames.apolloApiPackageName, "StringAdapter")
-  val NullableAnyAdapter = MemberName(ClassNames.apolloApiPackageName, "NullableAnyAdapter")
-  val NullableBooleanAdapter = MemberName(ClassNames.apolloApiPackageName, "NullableBooleanAdapter")
-  val NullableDoubleAdapter = MemberName(ClassNames.apolloApiPackageName, "NullableDoubleAdapter")
-  val NullableIntAdapter = MemberName(ClassNames.apolloApiPackageName, "NullableIntAdapter")
-  val NullableStringAdapter = MemberName(ClassNames.apolloApiPackageName, "NullableStringAdapter")
+  val AnyAdapter = MemberName(apolloApiPackageName, "AnyAdapter")
+  val BooleanAdapter = MemberName(apolloApiPackageName, "BooleanAdapter")
+  val DoubleAdapter = MemberName(apolloApiPackageName, "DoubleAdapter")
+  val IntAdapter = MemberName(apolloApiPackageName, "IntAdapter")
+  val StringAdapter = MemberName(apolloApiPackageName, "StringAdapter")
+  val NullableAnyAdapter = MemberName(apolloApiPackageName, "NullableAnyAdapter")
+  val NullableBooleanAdapter = MemberName(apolloApiPackageName, "NullableBooleanAdapter")
+  val NullableDoubleAdapter = MemberName(apolloApiPackageName, "NullableDoubleAdapter")
+  val NullableIntAdapter = MemberName(apolloApiPackageName, "NullableIntAdapter")
+  val NullableStringAdapter = MemberName(apolloApiPackageName, "NullableStringAdapter")
 }
 
 fun ResolverClassName.toKotlinPoetClassName(): ClassName = ClassName(packageName, simpleNames)
 
 object KotlinMemberNames {
   val withTestResolver = MemberName(apolloApiTestPackageName, "withTestResolver")
+  val obj = MemberName(apolloApiPackageName, "obj")
+  val readTypename = MemberName(apolloApiJsonPackageName, "readTypename")
 }

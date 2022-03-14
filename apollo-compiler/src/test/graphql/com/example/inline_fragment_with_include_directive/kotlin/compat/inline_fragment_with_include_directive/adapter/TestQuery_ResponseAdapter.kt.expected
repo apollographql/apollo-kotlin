@@ -89,7 +89,7 @@ public object TestQuery_ResponseAdapter {
 
       reader.rewind()
       var asCharacter: TestQuery.AsCharacter? = null
-      if (variable("withDetails").evaluate(customScalarAdapters.variables(), __typename)) {
+      if (variable("withDetails").evaluate(customScalarAdapters.variables(), null)) {
         asCharacter = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.AsCharacter.fromJson(reader,
             customScalarAdapters)
       }
