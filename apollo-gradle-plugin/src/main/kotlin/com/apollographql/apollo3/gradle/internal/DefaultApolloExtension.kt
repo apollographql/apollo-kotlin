@@ -571,6 +571,13 @@ abstract class DefaultApolloExtension(
     }
   }
 
+  /**
+   * XXX: this returns an absolute path, which might be an issue for the build cache.
+   * I don't think this is much of an issue because tasks like ApolloDownloadSchemaTask don't have any
+   * outputs and are therefore never up-to-date so the build cache will not help much.
+   *
+   * If that ever becomes an issue, making the path relative to the project root might be a good idea.
+   */
   private fun lazySchemaFileForDownload(service: DefaultService, schemaFile: RegularFileProperty): String {
     if (schemaFile.isPresent) {
       return schemaFile.get().asFile.absolutePath
