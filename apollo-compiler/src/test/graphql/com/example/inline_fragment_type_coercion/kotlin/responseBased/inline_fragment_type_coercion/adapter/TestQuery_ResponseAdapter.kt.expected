@@ -25,11 +25,14 @@ public object TestQuery_ResponseAdapter {
         TestQuery.Data {
       var foo: TestQuery.Data.Foo? = null
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
+      while (true) {
+        val __nameIdx = reader.selectName(RESPONSE_NAMES)
+        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+        when (__nameIdx) {
           0 -> foo = Foo.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
+        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return TestQuery.Data(
@@ -89,13 +92,16 @@ public object TestQuery_ResponseAdapter {
         var foo: String? = null
         var bar: String? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
+        while (true) {
+          val __nameIdx = reader.selectName(RESPONSE_NAMES)
+          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+          when (__nameIdx) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> foo = StringAdapter.fromJson(reader, customScalarAdapters)
             2 -> bar = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
+          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return TestQuery.Data.BarFoo(
@@ -132,12 +138,15 @@ public object TestQuery_ResponseAdapter {
         var __typename: String? = typename
         var foo: String? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
+        while (true) {
+          val __nameIdx = reader.selectName(RESPONSE_NAMES)
+          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+          when (__nameIdx) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> foo = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
+          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return TestQuery.Data.OtherFoo(

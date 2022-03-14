@@ -34,11 +34,14 @@ public object TestOperation_ResponseAdapter {
         TestOperation.Data {
       var random: TestOperation.Data.Random? = null
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
+      while (true) {
+        val __nameIdx = reader.selectName(RESPONSE_NAMES)
+        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+        when (__nameIdx) {
           0 -> random = Random.obj(true).fromJson(reader, customScalarAdapters)
           else -> break
         }
+        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return TestOperation.Data(
@@ -62,11 +65,14 @@ public object TestOperation_ResponseAdapter {
           TestOperation.Data.Random {
         var __typename: String? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
+        while (true) {
+          val __nameIdx = reader.selectName(RESPONSE_NAMES)
+          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+          when (__nameIdx) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
+          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         check(__typename != null) {
@@ -122,13 +128,16 @@ public object TestOperation_ResponseAdapter {
           var name: String? = null
           var friends: List<TestOperation.Data.Random.OnBeing.Friend>? = null
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
+          while (true) {
+            val __nameIdx = reader.selectName(RESPONSE_NAMES)
+            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+            when (__nameIdx) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
               2 -> friends = Friend.obj(true).list().fromJson(reader, customScalarAdapters)
               else -> break
             }
+            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           check(__typename != null) {
@@ -179,12 +188,15 @@ public object TestOperation_ResponseAdapter {
             var __typename: String? = null
             var name: String? = null
 
-            while(true) {
-              when (reader.selectName(RESPONSE_NAMES)) {
+            while (true) {
+              val __nameIdx = reader.selectName(RESPONSE_NAMES)
+              if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+              when (__nameIdx) {
                 0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
+              customScalarAdapters.adapterContext.currentPath.pop()
             }
 
             check(__typename != null) {
@@ -230,11 +242,14 @@ public object TestOperation_ResponseAdapter {
                 TestOperation.Data.Random.OnBeing.Friend.OnWookie {
               var lifeExpectancy: Double? = null
 
-              while(true) {
-                when (reader.selectName(RESPONSE_NAMES)) {
+              while (true) {
+                val __nameIdx = reader.selectName(RESPONSE_NAMES)
+                if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+                when (__nameIdx) {
                   0 -> lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
+                customScalarAdapters.adapterContext.currentPath.pop()
               }
 
               return TestOperation.Data.Random.OnBeing.Friend.OnWookie(
@@ -262,13 +277,16 @@ public object TestOperation_ResponseAdapter {
             var profilePictureUrl: String? = null
             var friends: List<TestOperation.Data.Random.OnBeing.OnHuman.Friend>? = null
 
-            while(true) {
-              when (reader.selectName(RESPONSE_NAMES)) {
+            while (true) {
+              val __nameIdx = reader.selectName(RESPONSE_NAMES)
+              if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+              when (__nameIdx) {
                 0 -> profilePictureUrl = NullableStringAdapter.fromJson(reader,
                     customScalarAdapters)
                 1 -> friends = Friend.obj(true).list().fromJson(reader, customScalarAdapters)
                 else -> break
               }
+              customScalarAdapters.adapterContext.currentPath.pop()
             }
 
             return TestOperation.Data.Random.OnBeing.OnHuman(
@@ -298,12 +316,15 @@ public object TestOperation_ResponseAdapter {
               var __typename: String? = null
               var isFamous: Boolean? = null
 
-              while(true) {
-                when (reader.selectName(RESPONSE_NAMES)) {
+              while (true) {
+                val __nameIdx = reader.selectName(RESPONSE_NAMES)
+                if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+                when (__nameIdx) {
                   0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                   1 -> isFamous = NullableBooleanAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
+                customScalarAdapters.adapterContext.currentPath.pop()
               }
 
               check(__typename != null) {
@@ -350,11 +371,14 @@ public object TestOperation_ResponseAdapter {
                   TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie {
                 var race: Race? = null
 
-                while(true) {
-                  when (reader.selectName(RESPONSE_NAMES)) {
+                while (true) {
+                  val __nameIdx = reader.selectName(RESPONSE_NAMES)
+                  if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+                  when (__nameIdx) {
                     0 -> race = Race_ResponseAdapter.fromJson(reader, customScalarAdapters)
                     else -> break
                   }
+                  customScalarAdapters.adapterContext.currentPath.pop()
                 }
 
                 return TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie(
@@ -383,12 +407,15 @@ public object TestOperation_ResponseAdapter {
           var race: Race? = null
           var friends: List<TestOperation.Data.Random.OnWookie.Friend>? = null
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
+          while (true) {
+            val __nameIdx = reader.selectName(RESPONSE_NAMES)
+            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+            when (__nameIdx) {
               0 -> race = Race_ResponseAdapter.fromJson(reader, customScalarAdapters)
               1 -> friends = Friend.obj().list().fromJson(reader, customScalarAdapters)
               else -> break
             }
+            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           return TestOperation.Data.Random.OnWookie(
@@ -417,11 +444,14 @@ public object TestOperation_ResponseAdapter {
               TestOperation.Data.Random.OnWookie.Friend {
             var lifeExpectancy: Double? = null
 
-            while(true) {
-              when (reader.selectName(RESPONSE_NAMES)) {
+            while (true) {
+              val __nameIdx = reader.selectName(RESPONSE_NAMES)
+              if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+              when (__nameIdx) {
                 0 -> lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
+              customScalarAdapters.adapterContext.currentPath.pop()
             }
 
             return TestOperation.Data.Random.OnWookie.Friend(

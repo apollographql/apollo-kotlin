@@ -25,12 +25,15 @@ public object DroidDetailsImpl_ResponseAdapter {
       var name: String? = null
       var primaryFunction: String? = null
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
+      while (true) {
+        val __nameIdx = reader.selectName(RESPONSE_NAMES)
+        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+        when (__nameIdx) {
           0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
+        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return com.example.fragment_with_inline_fragment.fragment.DroidDetails(

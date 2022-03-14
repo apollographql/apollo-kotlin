@@ -29,12 +29,15 @@ public object TestQuery_ResponseAdapter {
       var r2: TestQuery.Data.R2? = null
       var luke: TestQuery.Data.Luke? = null
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
+      while (true) {
+        val __nameIdx = reader.selectName(RESPONSE_NAMES)
+        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+        when (__nameIdx) {
           0 -> r2 = R2.obj().nullable().fromJson(reader, customScalarAdapters)
           1 -> luke = Luke.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
+        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return TestQuery.Data(
@@ -101,13 +104,16 @@ public object TestQuery_ResponseAdapter {
         var name: String? = null
         var height: Double? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
+        while (true) {
+          val __nameIdx = reader.selectName(RESPONSE_NAMES)
+          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+          when (__nameIdx) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
             2 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
+          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return TestQuery.Data.HumanR2(
@@ -145,13 +151,16 @@ public object TestQuery_ResponseAdapter {
         var name: String? = null
         var primaryFunction: String? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
+        while (true) {
+          val __nameIdx = reader.selectName(RESPONSE_NAMES)
+          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+          when (__nameIdx) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
             2 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
+          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return TestQuery.Data.DroidR2(
@@ -187,11 +196,14 @@ public object TestQuery_ResponseAdapter {
       ): TestQuery.Data.OtherR2 {
         var __typename: String? = typename
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
+        while (true) {
+          val __nameIdx = reader.selectName(RESPONSE_NAMES)
+          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+          when (__nameIdx) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
+          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return TestQuery.Data.OtherR2(
@@ -255,13 +267,16 @@ public object TestQuery_ResponseAdapter {
         var name: String? = null
         var height: Double? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
+        while (true) {
+          val __nameIdx = reader.selectName(RESPONSE_NAMES)
+          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+          when (__nameIdx) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
             2 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
+          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return TestQuery.Data.HumanLuke(
@@ -299,13 +314,16 @@ public object TestQuery_ResponseAdapter {
         var name: String? = null
         var primaryFunction: String? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
+        while (true) {
+          val __nameIdx = reader.selectName(RESPONSE_NAMES)
+          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+          when (__nameIdx) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
             2 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
+          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return TestQuery.Data.DroidLuke(
@@ -341,11 +359,14 @@ public object TestQuery_ResponseAdapter {
       ): TestQuery.Data.OtherLuke {
         var __typename: String? = typename
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
+        while (true) {
+          val __nameIdx = reader.selectName(RESPONSE_NAMES)
+          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+          when (__nameIdx) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
+          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return TestQuery.Data.OtherLuke(

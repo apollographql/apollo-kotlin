@@ -27,11 +27,14 @@ public object GetPage_ResponseAdapter {
         GetPage.Data {
       var collection: GetPage.Collection? = null
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
+      while (true) {
+        val __nameIdx = reader.selectName(RESPONSE_NAMES)
+        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+        when (__nameIdx) {
           0 -> collection = Collection.obj(true).fromJson(reader, customScalarAdapters)
           else -> break
         }
+        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return GetPage.Data(
@@ -57,12 +60,15 @@ public object GetPage_ResponseAdapter {
       var __typename: String? = null
       var items: List<GetPage.Item1>? = null
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
+      while (true) {
+        val __nameIdx = reader.selectName(RESPONSE_NAMES)
+        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+        when (__nameIdx) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> items = Item1.obj().list().fromJson(reader, customScalarAdapters)
           else -> break
         }
+        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       check(__typename != null) {
@@ -108,11 +114,14 @@ public object GetPage_ResponseAdapter {
         GetPage.Item1 {
       var title: String? = null
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
+      while (true) {
+        val __nameIdx = reader.selectName(RESPONSE_NAMES)
+        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+        when (__nameIdx) {
           0 -> title = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
+        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return GetPage.Item1(
@@ -138,12 +147,15 @@ public object GetPage_ResponseAdapter {
       var __typename: String? = null
       var items: List<GetPage.Item>? = null
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
+      while (true) {
+        val __nameIdx = reader.selectName(RESPONSE_NAMES)
+        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+        when (__nameIdx) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> items = Item.obj(true).list().fromJson(reader, customScalarAdapters)
           else -> break
         }
+        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return GetPage.AsParticularCollection(
@@ -173,12 +185,15 @@ public object GetPage_ResponseAdapter {
       var title: String? = null
       var __typename: String? = null
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
+      while (true) {
+        val __nameIdx = reader.selectName(RESPONSE_NAMES)
+        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+        when (__nameIdx) {
           0 -> title = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
+        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       check(__typename != null) {
@@ -226,13 +241,16 @@ public object GetPage_ResponseAdapter {
       var __typename: String? = null
       var image: String? = null
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
+      while (true) {
+        val __nameIdx = reader.selectName(RESPONSE_NAMES)
+        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+        when (__nameIdx) {
           0 -> title = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           2 -> image = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
+        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return GetPage.AsParticularItem(

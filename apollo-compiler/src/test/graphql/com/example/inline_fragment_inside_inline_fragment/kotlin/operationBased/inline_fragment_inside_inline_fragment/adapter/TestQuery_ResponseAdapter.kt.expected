@@ -29,12 +29,15 @@ public object TestQuery_ResponseAdapter {
         TestQuery.Data {
       var search: List<TestQuery.Data.Search?>? = null
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
+      while (true) {
+        val __nameIdx = reader.selectName(RESPONSE_NAMES)
+        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+        when (__nameIdx) {
           0 -> search = Search.obj(true).nullable().list().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
+        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return TestQuery.Data(
@@ -59,11 +62,14 @@ public object TestQuery_ResponseAdapter {
           TestQuery.Data.Search {
         var __typename: String? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
+        while (true) {
+          val __nameIdx = reader.selectName(RESPONSE_NAMES)
+          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+          when (__nameIdx) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
+          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         check(__typename != null) {
@@ -105,12 +111,15 @@ public object TestQuery_ResponseAdapter {
           var __typename: String? = null
           var name: String? = null
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
+          while (true) {
+            val __nameIdx = reader.selectName(RESPONSE_NAMES)
+            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+            when (__nameIdx) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
+            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           check(__typename != null) {
@@ -169,11 +178,14 @@ public object TestQuery_ResponseAdapter {
               TestQuery.Data.Search.OnCharacter.OnHuman {
             var homePlanet: String? = null
 
-            while(true) {
-              when (reader.selectName(RESPONSE_NAMES)) {
+            while (true) {
+              val __nameIdx = reader.selectName(RESPONSE_NAMES)
+              if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+              when (__nameIdx) {
                 0 -> homePlanet = NullableStringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
+              customScalarAdapters.adapterContext.currentPath.pop()
             }
 
             return TestQuery.Data.Search.OnCharacter.OnHuman(
@@ -199,11 +211,14 @@ public object TestQuery_ResponseAdapter {
               TestQuery.Data.Search.OnCharacter.OnDroid {
             var primaryFunction: String? = null
 
-            while(true) {
-              when (reader.selectName(RESPONSE_NAMES)) {
+            while (true) {
+              val __nameIdx = reader.selectName(RESPONSE_NAMES)
+              if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+              when (__nameIdx) {
                 0 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
+              customScalarAdapters.adapterContext.currentPath.pop()
             }
 
             return TestQuery.Data.Search.OnCharacter.OnDroid(

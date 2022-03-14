@@ -29,13 +29,16 @@ public object HumanDetailsImpl_ResponseAdapter {
       var profileLink: Any? = null
       var friendsConnection: HumanDetailsImpl.Data.FriendsConnection? = null
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
+      while (true) {
+        val __nameIdx = reader.selectName(RESPONSE_NAMES)
+        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+        when (__nameIdx) {
           0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> profileLink = AnyAdapter.fromJson(reader, customScalarAdapters)
           2 -> friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
+        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return HumanDetailsImpl.Data(
@@ -67,12 +70,15 @@ public object HumanDetailsImpl_ResponseAdapter {
           HumanDetailsImpl.Data.FriendsConnection {
         var edges: List<HumanDetailsImpl.Data.FriendsConnection.Edge?>? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
+        while (true) {
+          val __nameIdx = reader.selectName(RESPONSE_NAMES)
+          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+          when (__nameIdx) {
             0 -> edges = Edge.obj().nullable().list().nullable().fromJson(reader,
                 customScalarAdapters)
             else -> break
           }
+          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return HumanDetailsImpl.Data.FriendsConnection(
@@ -97,11 +103,14 @@ public object HumanDetailsImpl_ResponseAdapter {
             HumanDetailsImpl.Data.FriendsConnection.Edge {
           var node: HumanDetailsImpl.Data.FriendsConnection.Edge.Node? = null
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
+          while (true) {
+            val __nameIdx = reader.selectName(RESPONSE_NAMES)
+            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+            when (__nameIdx) {
               0 -> node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
               else -> break
             }
+            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           return HumanDetailsImpl.Data.FriendsConnection.Edge(
@@ -126,11 +135,14 @@ public object HumanDetailsImpl_ResponseAdapter {
               HumanDetailsImpl.Data.FriendsConnection.Edge.Node {
             var name: String? = null
 
-            while(true) {
-              when (reader.selectName(RESPONSE_NAMES)) {
+            while (true) {
+              val __nameIdx = reader.selectName(RESPONSE_NAMES)
+              if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+              when (__nameIdx) {
                 0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
+              customScalarAdapters.adapterContext.currentPath.pop()
             }
 
             return HumanDetailsImpl.Data.FriendsConnection.Edge.Node(

@@ -26,11 +26,14 @@ public object TestQuery_ResponseAdapter {
         TestQuery.Data {
       var iface1: TestQuery.Data.Iface1? = null
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
+      while (true) {
+        val __nameIdx = reader.selectName(RESPONSE_NAMES)
+        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+        when (__nameIdx) {
           0 -> iface1 = Iface1.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
+        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return TestQuery.Data(
@@ -89,12 +92,15 @@ public object TestQuery_ResponseAdapter {
         var __typename: String? = typename
         var iface2: TestQuery.Data.Impl1Iface1.Iface2? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
+        while (true) {
+          val __nameIdx = reader.selectName(RESPONSE_NAMES)
+          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+          when (__nameIdx) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> iface2 = Iface2.obj().nullable().fromJson(reader, customScalarAdapters)
             else -> break
           }
+          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return TestQuery.Data.Impl1Iface1(
@@ -163,8 +169,10 @@ public object TestQuery_ResponseAdapter {
           var scalar3: String? = null
           var scalar4: String? = null
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
+          while (true) {
+            val __nameIdx = reader.selectName(RESPONSE_NAMES)
+            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+            when (__nameIdx) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               1 -> scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               2 -> scalar2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
@@ -172,6 +180,7 @@ public object TestQuery_ResponseAdapter {
               4 -> scalar4 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
+            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           return TestQuery.Data.Impl1Iface1.Impl2Iface2(
@@ -217,13 +226,16 @@ public object TestQuery_ResponseAdapter {
           var scalar1: String? = null
           var scalar3: String? = null
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
+          while (true) {
+            val __nameIdx = reader.selectName(RESPONSE_NAMES)
+            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+            when (__nameIdx) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               1 -> scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               2 -> scalar3 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
+            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           return TestQuery.Data.Impl1Iface1.OtherIface2(
@@ -261,12 +273,15 @@ public object TestQuery_ResponseAdapter {
         var __typename: String? = typename
         var iface2: TestQuery.Data.OtherIface1.Iface2? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
+        while (true) {
+          val __nameIdx = reader.selectName(RESPONSE_NAMES)
+          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+          when (__nameIdx) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> iface2 = Iface2.obj().nullable().fromJson(reader, customScalarAdapters)
             else -> break
           }
+          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return TestQuery.Data.OtherIface1(
@@ -332,13 +347,16 @@ public object TestQuery_ResponseAdapter {
           var scalar1: String? = null
           var scalar2: String? = null
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
+          while (true) {
+            val __nameIdx = reader.selectName(RESPONSE_NAMES)
+            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+            when (__nameIdx) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               1 -> scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               2 -> scalar2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
+            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           return TestQuery.Data.OtherIface1.Impl2Iface2(
@@ -375,12 +393,15 @@ public object TestQuery_ResponseAdapter {
           var __typename: String? = typename
           var scalar1: String? = null
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
+          while (true) {
+            val __nameIdx = reader.selectName(RESPONSE_NAMES)
+            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+            when (__nameIdx) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               1 -> scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
+            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           return TestQuery.Data.OtherIface1.OtherIface2(

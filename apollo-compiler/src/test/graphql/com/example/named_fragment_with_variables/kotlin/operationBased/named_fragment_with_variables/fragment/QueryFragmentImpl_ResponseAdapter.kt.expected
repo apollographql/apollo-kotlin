@@ -26,11 +26,14 @@ public object QueryFragmentImpl_ResponseAdapter {
         com.example.named_fragment_with_variables.fragment.QueryFragment {
       var organization: com.example.named_fragment_with_variables.fragment.QueryFragment.Organization? = null
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
+      while (true) {
+        val __nameIdx = reader.selectName(RESPONSE_NAMES)
+        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+        when (__nameIdx) {
           0 -> organization = Organization.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
+        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return com.example.named_fragment_with_variables.fragment.QueryFragment(
@@ -56,12 +59,15 @@ public object QueryFragmentImpl_ResponseAdapter {
         var id: String? = null
         var user: List<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User>? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
+        while (true) {
+          val __nameIdx = reader.selectName(RESPONSE_NAMES)
+          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+          when (__nameIdx) {
             0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> user = User.obj(true).list().fromJson(reader, customScalarAdapters)
             else -> break
           }
+          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return com.example.named_fragment_with_variables.fragment.QueryFragment.Organization(
@@ -92,11 +98,14 @@ public object QueryFragmentImpl_ResponseAdapter {
             com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User {
           var __typename: String? = null
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
+          while (true) {
+            val __nameIdx = reader.selectName(RESPONSE_NAMES)
+            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+            when (__nameIdx) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
+            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           check(__typename != null) {

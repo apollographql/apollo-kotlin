@@ -25,11 +25,14 @@ public object AnimalFragmentImpl_ResponseAdapter {
         com.example.deprecated_merged_field.fragment.AnimalFragment {
       var __typename: String? = null
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
+      while (true) {
+        val __nameIdx = reader.selectName(RESPONSE_NAMES)
+        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+        when (__nameIdx) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
+        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       check(__typename != null) {
@@ -85,12 +88,15 @@ public object AnimalFragmentImpl_ResponseAdapter {
       var __typename: String? = null
       var name: String? = null
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
+      while (true) {
+        val __nameIdx = reader.selectName(RESPONSE_NAMES)
+        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+        when (__nameIdx) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
+        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return com.example.deprecated_merged_field.fragment.AnimalFragment.AsCat(
@@ -120,12 +126,15 @@ public object AnimalFragmentImpl_ResponseAdapter {
       var __typename: String? = null
       var name: String? = null
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
+      while (true) {
+        val __nameIdx = reader.selectName(RESPONSE_NAMES)
+        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+        when (__nameIdx) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
+        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return com.example.deprecated_merged_field.fragment.AnimalFragment.AsDog(

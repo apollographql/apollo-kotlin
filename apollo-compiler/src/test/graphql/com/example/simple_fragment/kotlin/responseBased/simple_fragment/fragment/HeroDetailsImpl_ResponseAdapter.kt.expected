@@ -57,12 +57,15 @@ internal object HeroDetailsImpl_ResponseAdapter {
       var __typename: String? = typename
       var name: String? = null
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
+      while (true) {
+        val __nameIdx = reader.selectName(RESPONSE_NAMES)
+        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+        when (__nameIdx) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
+        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return HeroDetailsImpl.HumanData(
@@ -94,11 +97,14 @@ internal object HeroDetailsImpl_ResponseAdapter {
     ): HeroDetailsImpl.OtherData {
       var __typename: String? = typename
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
+      while (true) {
+        val __nameIdx = reader.selectName(RESPONSE_NAMES)
+        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+        when (__nameIdx) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
+        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return HeroDetailsImpl.OtherData(

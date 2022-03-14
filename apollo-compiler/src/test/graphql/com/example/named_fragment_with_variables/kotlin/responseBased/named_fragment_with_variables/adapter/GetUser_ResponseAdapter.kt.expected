@@ -27,12 +27,15 @@ public object GetUser_ResponseAdapter {
       var __typename: String? = null
       var organization: GetUser.Data.Organization? = null
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
+      while (true) {
+        val __nameIdx = reader.selectName(RESPONSE_NAMES)
+        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+        when (__nameIdx) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> organization = Organization.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
+        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return GetUser.Data(
@@ -61,12 +64,15 @@ public object GetUser_ResponseAdapter {
         var id: String? = null
         var user: List<GetUser.Data.Organization.User>? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
+        while (true) {
+          val __nameIdx = reader.selectName(RESPONSE_NAMES)
+          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+          when (__nameIdx) {
             0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> user = User.obj().list().fromJson(reader, customScalarAdapters)
             else -> break
           }
+          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return GetUser.Data.Organization(
@@ -98,14 +104,17 @@ public object GetUser_ResponseAdapter {
           var lastName: String? = null
           var avatar: String? = null
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
+          while (true) {
+            val __nameIdx = reader.selectName(RESPONSE_NAMES)
+            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+            when (__nameIdx) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               1 -> firstName = StringAdapter.fromJson(reader, customScalarAdapters)
               2 -> lastName = StringAdapter.fromJson(reader, customScalarAdapters)
               3 -> avatar = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
+            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           return GetUser.Data.Organization.User(

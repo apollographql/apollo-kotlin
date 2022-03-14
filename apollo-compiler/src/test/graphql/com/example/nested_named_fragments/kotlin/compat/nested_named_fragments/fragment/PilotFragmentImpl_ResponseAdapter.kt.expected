@@ -26,12 +26,15 @@ public object PilotFragmentImpl_ResponseAdapter {
       var name: String? = null
       var homeworld: com.example.nested_named_fragments.fragment.PilotFragment.Homeworld? = null
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
+      while (true) {
+        val __nameIdx = reader.selectName(RESPONSE_NAMES)
+        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+        when (__nameIdx) {
           0 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           1 -> homeworld = Homeworld.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
+        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return com.example.nested_named_fragments.fragment.PilotFragment(
@@ -61,11 +64,14 @@ public object PilotFragmentImpl_ResponseAdapter {
         com.example.nested_named_fragments.fragment.PilotFragment.Homeworld {
       var __typename: String? = null
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
+      while (true) {
+        val __nameIdx = reader.selectName(RESPONSE_NAMES)
+        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+        when (__nameIdx) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
+        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       check(__typename != null) {
@@ -102,11 +108,14 @@ public object PilotFragmentImpl_ResponseAdapter {
           com.example.nested_named_fragments.fragment.PilotFragment.Homeworld.Fragments {
         var __typename: String? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
+        while (true) {
+          val __nameIdx = reader.selectName(RESPONSE_NAMES)
+          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+          when (__nameIdx) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
+          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         check(__typename != null) {

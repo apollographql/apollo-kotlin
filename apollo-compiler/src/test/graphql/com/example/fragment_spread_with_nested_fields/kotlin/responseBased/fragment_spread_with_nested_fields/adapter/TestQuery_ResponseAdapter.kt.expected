@@ -28,11 +28,14 @@ public object TestQuery_ResponseAdapter {
         TestQuery.Data {
       var hero: TestQuery.Data.Hero? = null
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
+      while (true) {
+        val __nameIdx = reader.selectName(RESPONSE_NAMES)
+        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+        when (__nameIdx) {
           0 -> hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
+        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return TestQuery.Data(
@@ -58,13 +61,16 @@ public object TestQuery_ResponseAdapter {
         var name: String? = null
         var friendsConnection: TestQuery.Data.Hero.FriendsConnection? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
+        while (true) {
+          val __nameIdx = reader.selectName(RESPONSE_NAMES)
+          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+          when (__nameIdx) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
             2 -> friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
             else -> break
           }
+          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return TestQuery.Data.Hero(
@@ -97,13 +103,16 @@ public object TestQuery_ResponseAdapter {
           var totalCount: Int? = null
           var edges: List<TestQuery.Data.Hero.FriendsConnection.Edge?>? = null
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
+          while (true) {
+            val __nameIdx = reader.selectName(RESPONSE_NAMES)
+            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+            when (__nameIdx) {
               0 -> totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
               1 -> edges = Edge.obj().nullable().list().nullable().fromJson(reader,
                   customScalarAdapters)
               else -> break
             }
+            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           return TestQuery.Data.Hero.FriendsConnection(
@@ -132,11 +141,14 @@ public object TestQuery_ResponseAdapter {
               TestQuery.Data.Hero.FriendsConnection.Edge {
             var node: TestQuery.Data.Hero.FriendsConnection.Edge.Node? = null
 
-            while(true) {
-              when (reader.selectName(RESPONSE_NAMES)) {
+            while (true) {
+              val __nameIdx = reader.selectName(RESPONSE_NAMES)
+              if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+              when (__nameIdx) {
                 0 -> node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
                 else -> break
               }
+              customScalarAdapters.adapterContext.currentPath.pop()
             }
 
             return TestQuery.Data.Hero.FriendsConnection.Edge(
@@ -161,11 +173,14 @@ public object TestQuery_ResponseAdapter {
                 TestQuery.Data.Hero.FriendsConnection.Edge.Node {
               var name: String? = null
 
-              while(true) {
-                when (reader.selectName(RESPONSE_NAMES)) {
+              while (true) {
+                val __nameIdx = reader.selectName(RESPONSE_NAMES)
+                if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+                when (__nameIdx) {
                   0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
+                customScalarAdapters.adapterContext.currentPath.pop()
               }
 
               return TestQuery.Data.Hero.FriendsConnection.Edge.Node(

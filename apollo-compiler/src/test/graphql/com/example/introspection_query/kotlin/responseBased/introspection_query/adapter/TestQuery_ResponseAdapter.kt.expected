@@ -26,12 +26,15 @@ public object TestQuery_ResponseAdapter {
       var __schema: TestQuery.Data.__Schema? = null
       var __type: TestQuery.Data.__Type? = null
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
+      while (true) {
+        val __nameIdx = reader.selectName(RESPONSE_NAMES)
+        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+        when (__nameIdx) {
           0 -> __schema = __Schema.obj().fromJson(reader, customScalarAdapters)
           1 -> __type = __Type.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
+        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return TestQuery.Data(
@@ -60,12 +63,15 @@ public object TestQuery_ResponseAdapter {
         var queryType: TestQuery.Data.__Schema.QueryType? = null
         var types: List<TestQuery.Data.__Schema.Type>? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
+        while (true) {
+          val __nameIdx = reader.selectName(RESPONSE_NAMES)
+          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+          when (__nameIdx) {
             0 -> queryType = QueryType.obj().fromJson(reader, customScalarAdapters)
             1 -> types = Type.obj().list().fromJson(reader, customScalarAdapters)
             else -> break
           }
+          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return TestQuery.Data.__Schema(
@@ -93,11 +99,14 @@ public object TestQuery_ResponseAdapter {
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.__Schema.QueryType {
           var name: String? = null
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
+          while (true) {
+            val __nameIdx = reader.selectName(RESPONSE_NAMES)
+            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+            when (__nameIdx) {
               0 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
+            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           return TestQuery.Data.__Schema.QueryType(
@@ -122,11 +131,14 @@ public object TestQuery_ResponseAdapter {
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.__Schema.Type {
           var name: String? = null
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
+          while (true) {
+            val __nameIdx = reader.selectName(RESPONSE_NAMES)
+            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+            when (__nameIdx) {
               0 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
+            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           return TestQuery.Data.__Schema.Type(
@@ -152,11 +164,14 @@ public object TestQuery_ResponseAdapter {
           TestQuery.Data.__Type {
         var name: String? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
+        while (true) {
+          val __nameIdx = reader.selectName(RESPONSE_NAMES)
+          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+          when (__nameIdx) {
             0 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
+          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return TestQuery.Data.__Type(

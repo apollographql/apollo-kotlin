@@ -29,12 +29,15 @@ public object TestQuery_ResponseAdapter {
       var r2: TestQuery.Data.R2? = null
       var luke: TestQuery.Data.Luke? = null
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
+      while (true) {
+        val __nameIdx = reader.selectName(RESPONSE_NAMES)
+        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+        when (__nameIdx) {
           0 -> r2 = R2.obj().nullable().fromJson(reader, customScalarAdapters)
           1 -> luke = Luke.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
+        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return TestQuery.Data(
@@ -63,12 +66,15 @@ public object TestQuery_ResponseAdapter {
         var name: String? = null
         var friendsConnection: TestQuery.Data.R2.FriendsConnection? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
+        while (true) {
+          val __nameIdx = reader.selectName(RESPONSE_NAMES)
+          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+          when (__nameIdx) {
             0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
             else -> break
           }
+          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return TestQuery.Data.R2(
@@ -97,13 +103,16 @@ public object TestQuery_ResponseAdapter {
           var totalCount: Int? = null
           var edges: List<TestQuery.Data.R2.FriendsConnection.Edge?>? = null
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
+          while (true) {
+            val __nameIdx = reader.selectName(RESPONSE_NAMES)
+            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+            when (__nameIdx) {
               0 -> totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
               1 -> edges = Edge.obj().nullable().list().nullable().fromJson(reader,
                   customScalarAdapters)
               else -> break
             }
+            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           return TestQuery.Data.R2.FriendsConnection(
@@ -132,11 +141,14 @@ public object TestQuery_ResponseAdapter {
               TestQuery.Data.R2.FriendsConnection.Edge {
             var node: TestQuery.Data.R2.FriendsConnection.Edge.Node? = null
 
-            while(true) {
-              when (reader.selectName(RESPONSE_NAMES)) {
+            while (true) {
+              val __nameIdx = reader.selectName(RESPONSE_NAMES)
+              if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+              when (__nameIdx) {
                 0 -> node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
                 else -> break
               }
+              customScalarAdapters.adapterContext.currentPath.pop()
             }
 
             return TestQuery.Data.R2.FriendsConnection.Edge(
@@ -161,11 +173,14 @@ public object TestQuery_ResponseAdapter {
                 TestQuery.Data.R2.FriendsConnection.Edge.Node {
               var name: String? = null
 
-              while(true) {
-                when (reader.selectName(RESPONSE_NAMES)) {
+              while (true) {
+                val __nameIdx = reader.selectName(RESPONSE_NAMES)
+                if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+                when (__nameIdx) {
                   0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
+                customScalarAdapters.adapterContext.currentPath.pop()
               }
 
               return TestQuery.Data.R2.FriendsConnection.Edge.Node(
@@ -195,13 +210,16 @@ public object TestQuery_ResponseAdapter {
         var name: String? = null
         var friendsConnection: TestQuery.Data.Luke.FriendsConnection? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
+        while (true) {
+          val __nameIdx = reader.selectName(RESPONSE_NAMES)
+          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+          when (__nameIdx) {
             0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
             2 -> friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
             else -> break
           }
+          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return TestQuery.Data.Luke(
@@ -234,13 +252,16 @@ public object TestQuery_ResponseAdapter {
           var totalCount: Int? = null
           var edges: List<TestQuery.Data.Luke.FriendsConnection.Edge?>? = null
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
+          while (true) {
+            val __nameIdx = reader.selectName(RESPONSE_NAMES)
+            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+            when (__nameIdx) {
               0 -> totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
               1 -> edges = Edge.obj().nullable().list().nullable().fromJson(reader,
                   customScalarAdapters)
               else -> break
             }
+            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           return TestQuery.Data.Luke.FriendsConnection(
@@ -269,11 +290,14 @@ public object TestQuery_ResponseAdapter {
               TestQuery.Data.Luke.FriendsConnection.Edge {
             var node: TestQuery.Data.Luke.FriendsConnection.Edge.Node? = null
 
-            while(true) {
-              when (reader.selectName(RESPONSE_NAMES)) {
+            while (true) {
+              val __nameIdx = reader.selectName(RESPONSE_NAMES)
+              if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+              when (__nameIdx) {
                 0 -> node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
                 else -> break
               }
+              customScalarAdapters.adapterContext.currentPath.pop()
             }
 
             return TestQuery.Data.Luke.FriendsConnection.Edge(
@@ -298,11 +322,14 @@ public object TestQuery_ResponseAdapter {
                 TestQuery.Data.Luke.FriendsConnection.Edge.Node {
               var name: String? = null
 
-              while(true) {
-                when (reader.selectName(RESPONSE_NAMES)) {
+              while (true) {
+                val __nameIdx = reader.selectName(RESPONSE_NAMES)
+                if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
+                when (__nameIdx) {
                   0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
+                customScalarAdapters.adapterContext.currentPath.pop()
               }
 
               return TestQuery.Data.Luke.FriendsConnection.Edge.Node(
