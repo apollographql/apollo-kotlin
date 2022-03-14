@@ -16,5 +16,6 @@ annotation class ApolloDeprecatedSince(val version: Version) {
   enum class Version {
     v3_0_0,
     v3_0_1,
+    v3_1_1,
   }
 }
