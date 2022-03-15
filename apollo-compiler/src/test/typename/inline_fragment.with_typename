@@ -1,5 +1,5 @@
 query TestQuery {
-  hero @__apolloTypenameField {
+  hero {
     __typename
     ... on Droid {
       name

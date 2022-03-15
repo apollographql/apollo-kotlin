@@ -1,12 +1,12 @@
 query TestQuery {
-  hero @__apolloTypenameField {
+  hero {
     __typename
     ... on Droid {
       name
       primaryFunction
       friendsConnection {
         edges {
-          node @__apolloTypenameField {
+          node {
             __typename
             ... on Human {
               name
