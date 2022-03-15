@@ -1,6 +1,9 @@
 {
   "title": "Client (Kotlin)",
   "version": "v3",
+  "algoliaFilters": [
+    "docset:android"
+  ],
   "sidebar": {
     "Introduction": "/",
     "Migrating to v3": "/migration/3.0",
