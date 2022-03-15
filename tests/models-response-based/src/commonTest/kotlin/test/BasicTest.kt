@@ -1,7 +1,6 @@
 package test
 
 import IdCacheKeyGenerator
-import codegen.models.BirthdateQuery
 import codegen.models.HeroHumanOrDroidQuery
 import codegen.models.HeroParentTypeDependentFieldQuery
 import codegen.models.HeroParentTypeDependentFieldQuery.Data.DroidHero.Friend.Companion.asHuman
@@ -105,13 +104,5 @@ class BasicTest {
       is HeroHumanOrDroidQuery.Data.OtherHero -> hero.name
     }
     assertEquals(name, "R2-D2")
-  }
-
-  @Test
-  fun equalsAndHashCodeAreCorrect() = runTest {
-    val query1 = BirthdateQuery()
-    val query2 = BirthdateQuery()
-    assertTrue(query1.equals(query2))
-    assertEquals(query1.hashCode(), query2.hashCode())
   }
 }
