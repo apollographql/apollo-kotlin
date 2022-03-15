@@ -1,6 +1,9 @@
 {
   "title": "Client (Android)",
   "version": "v2",
+  "algoliaFilters": [
+    "docset:android"
+  ],
   "sidebar": {
     "Introduction to Apollo Android": "/",
     "Get started with Kotlin": "/essentials/get-started-kotlin",
