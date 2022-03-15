@@ -14,11 +14,17 @@ import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_delegate.fragment.selections.HumanDetailsSelections
 import com.example.named_fragment_delegate.type.Human
 import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlin.Unit
 import kotlin.collections.List
 
 public class HumanDetailsImpl() : Fragment<HumanDetailsImpl.Data> {
+  public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+
+  public override fun hashCode(): Int = this::class.hashCode()
+
   public override fun serializeVariables(writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters): Unit {
     // This fragment doesn't have any variable

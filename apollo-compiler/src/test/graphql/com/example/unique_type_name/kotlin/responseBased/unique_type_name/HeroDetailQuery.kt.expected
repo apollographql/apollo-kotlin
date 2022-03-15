@@ -15,6 +15,8 @@ import com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter
 import com.example.unique_type_name.fragment.HeroDetails
 import com.example.unique_type_name.selections.HeroDetailQuerySelections
 import com.example.unique_type_name.type.Episode
+import kotlin.Any
+import kotlin.Boolean
 import kotlin.Double
 import kotlin.Int
 import kotlin.String
@@ -22,6 +24,10 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public class HeroDetailQuery() : Query<HeroDetailQuery.Data> {
+  public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+
+  public override fun hashCode(): Int = this::class.hashCode()
+
   public override fun id(): String = OPERATION_ID
 
   public override fun document(): String = OPERATION_DOCUMENT

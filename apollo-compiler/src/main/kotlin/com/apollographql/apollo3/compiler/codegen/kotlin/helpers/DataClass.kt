@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
 
+import com.apollographql.apollo3.compiler.codegen.Identifier
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -14,9 +16,13 @@ import com.squareup.kotlinpoet.TypeSpec
 fun TypeSpec.Builder.makeDataClass(
     parameters: List<ParameterSpec>,
     addJvmOverloads: Boolean = false,
-) = apply {
+): TypeSpec.Builder {
   if (parameters.isNotEmpty()) {
     addModifiers(KModifier.DATA)
+  } else {
+    // Can't use a data class: manually add equals/hashCode based on the class type
+    addFunction(equalsFunSpec())
+    addFunction(hashCodeFunSpec())
   }
   primaryConstructor(FunSpec.constructorBuilder()
       .apply {
@@ -36,6 +42,7 @@ fun TypeSpec.Builder.makeDataClass(
         .initializer(CodeBlock.of(it.name))
         .build())
   }
+  return this
 }
 
 fun TypeSpec.Builder.makeDataClassFromProperties(properties: List<PropertySpec>) = apply {
@@ -57,3 +64,16 @@ fun TypeSpec.Builder.makeDataClassFromProperties(properties: List<PropertySpec>)
     )
   }
 }
+
+private fun equalsFunSpec() = FunSpec.builder(Identifier.equals)
+    .addModifiers(KModifier.OVERRIDE)
+    .addParameter("other", KotlinSymbols.Any.copy(nullable = true))
+    .returns(KotlinSymbols.Boolean)
+    .addStatement("return other != null && other::class == this::class")
+    .build()
+
+private fun hashCodeFunSpec() = FunSpec.builder(Identifier.hashCode)
+    .addModifiers(KModifier.OVERRIDE)
+    .returns(KotlinSymbols.Int)
+    .addStatement("return this::class.hashCode()")
+    .build()
