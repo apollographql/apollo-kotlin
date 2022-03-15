@@ -14,12 +14,19 @@ import com.apollographql.apollo3.api.obj
 import com.example.simple_fragment_with_inline_fragments.adapter.TestQuery_ResponseAdapter
 import com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails
 import com.example.simple_fragment_with_inline_fragments.selections.TestQuerySelections
+import kotlin.Any
+import kotlin.Boolean
 import kotlin.Double
+import kotlin.Int
 import kotlin.String
 import kotlin.Unit
 import kotlin.collections.List
 
 public class TestQuery() : Query<TestQuery.Data> {
+  public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+
+  public override fun hashCode(): Int = this::class.hashCode()
+
   public override fun id(): String = OPERATION_ID
 
   public override fun document(): String = OPERATION_DOCUMENT

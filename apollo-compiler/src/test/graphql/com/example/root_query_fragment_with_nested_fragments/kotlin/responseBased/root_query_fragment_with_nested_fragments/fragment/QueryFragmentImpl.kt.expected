@@ -13,10 +13,17 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.root_query_fragment_with_nested_fragments.fragment.selections.QueryFragmentSelections
 import com.example.root_query_fragment_with_nested_fragments.type.Query
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlin.Unit
 
 public class QueryFragmentImpl() : Fragment<QueryFragmentImpl.Data> {
+  public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+
+  public override fun hashCode(): Int = this::class.hashCode()
+
   public override fun serializeVariables(writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters): Unit {
     // This fragment doesn't have any variable
