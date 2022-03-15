@@ -82,18 +82,23 @@ abstract class DefaultApolloExtension(
      */
     project.tasks.register(ModelNames.downloadApolloSchema(), ApolloDownloadSchemaTask::class.java) { task ->
       task.group = TASK_GROUP
+      task.projectRootDir = project.rootDir.absolutePath
     }
+
     /**
      * A simple task to be used from the command line to ease the schema upload
      */
     project.tasks.register(ModelNames.pushApolloSchema(), ApolloPushSchemaTask::class.java) { task ->
       task.group = TASK_GROUP
+      task.projectRootDir = project.rootDir.absolutePath
     }
+    
     /**
      * A simple task to be used from the command line to ease schema conversion
      */
     project.tasks.register(ModelNames.convertApolloSchema(), ApolloConvertSchemaTask::class.java) { task ->
       task.group = TASK_GROUP
+      task.projectRootDir = project.rootDir.absolutePath
     }
 
     project.afterEvaluate {
@@ -566,6 +571,13 @@ abstract class DefaultApolloExtension(
     }
   }
 
+  /**
+   * XXX: this returns an absolute path, which might be an issue for the build cache.
+   * I don't think this is much of an issue because tasks like ApolloDownloadSchemaTask don't have any
+   * outputs and are therefore never up-to-date so the build cache will not help much.
+   *
+   * If that ever becomes an issue, making the path relative to the project root might be a good idea.
+   */
   private fun lazySchemaFileForDownload(service: DefaultService, schemaFile: RegularFileProperty): String {
     if (schemaFile.isPresent) {
       return schemaFile.get().asFile.absolutePath
@@ -588,6 +600,7 @@ abstract class DefaultApolloExtension(
       project.tasks.register(ModelNames.downloadApolloSchemaIntrospection(service), ApolloDownloadSchemaTask::class.java) { task ->
 
         task.group = TASK_GROUP
+        task.projectRootDir = project.rootDir.absolutePath
         task.endpoint.set(introspection.endpointUrl)
         task.header = introspection.headers.get().map { "${it.key}: ${it.value}" }
         task.schema.set(project.provider { lazySchemaFileForDownload(service, introspection.schemaFile) })
@@ -598,6 +611,7 @@ abstract class DefaultApolloExtension(
       project.tasks.register(ModelNames.downloadApolloSchemaRegistry(service), ApolloDownloadSchemaTask::class.java) { task ->
 
         task.group = TASK_GROUP
+        task.projectRootDir = project.rootDir.absolutePath
         task.graph.set(registry.graph)
         task.key.set(registry.key)
         task.graphVariant.set(registry.graphVariant)

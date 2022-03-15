@@ -11,11 +11,14 @@ import com.apollographql.apollo3.compiler.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.compiler.toJson
 import okio.Buffer
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
+import java.io.File
 
 /**
  * A task to download a schema either from introspection or from the registry.
@@ -50,9 +53,11 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
   abstract val registryUrl: Property<String>
 
   @get:Input
-  @get:Optional
   @get:Option(option = "schema", description = "path where the schema will be downloaded, relative to the current working directory")
   abstract val schema: Property<String>
+
+  @get:Internal
+  abstract var projectRootDir: String
 
   @get:Optional
   @get:Input
@@ -75,10 +80,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
 
     // Schema file is relative to the root project. It is not possible in a consistent way to have it relative to the current
     // working directory where the gradle command was started
-    val schema = schema.orNull?.let { project.rootProject.file(it) }
-    check(schema != null) {
-      "Apollo: no schema property"
-    }
+    val schema = File(projectRootDir).resolve(schema.get())
     val headers = header.toMap()
 
     var introspectionSchema: IntrospectionSchema? = null

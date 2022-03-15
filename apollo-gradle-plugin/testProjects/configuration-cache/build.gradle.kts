@@ -9,4 +9,8 @@ apply(plugin = "com.apollographql.apollo3")
 
 configure<ApolloExtension> {
   packageName.set("com.example")
+  introspection {
+    this.endpointUrl.set("ENDPOINT")
+    this.schemaFile.set(file("schema.json"))
+  }
 }
