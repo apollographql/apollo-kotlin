@@ -41,7 +41,7 @@ Here's the current matrix of supported features per platform:
 |  | `jvm` | Apple¹ | `js` | `linuxX64`
 | --- | :---: | :---: | :---: | :---: |
 | `apollo-api` (models)|✅|✅|✅|✅|
-| `apollo-runtime` (network, query batching, apq, ...) |✅|✅|✅²|🚫|
+| `apollo-runtime` (network, query batching, apq, ...) |✅|✅|✅|🚫|
 | `apollo-normalized-cache` |✅|✅|✅|🚫|
 | `apollo-adapters` |✅|✅|✅|🚫|
 | `apollo-normalized-cache-sqlite` |✅|✅|🚫|🚫|
@@ -59,8 +59,6 @@ Here's the current matrix of supported features per platform:
 - `tvosArm64`
 - `tvosX64`
 - `tvosSimulatorArm64`
-
-²: WebSockets are currently not supported on `js`
 
 ## Documentation
 
