@@ -16,7 +16,7 @@ import com.squareup.kotlinpoet.TypeSpec
 fun TypeSpec.Builder.makeDataClass(
     parameters: List<ParameterSpec>,
     addJvmOverloads: Boolean = false,
-): TypeSpec.Builder {
+) = apply {
   if (parameters.isNotEmpty()) {
     addModifiers(KModifier.DATA)
   } else {
@@ -42,7 +42,6 @@ fun TypeSpec.Builder.makeDataClass(
         .initializer(CodeBlock.of(it.name))
         .build())
   }
-  return this
 }
 
 fun TypeSpec.Builder.makeDataClassFromProperties(properties: List<PropertySpec>) = apply {
