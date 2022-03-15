@@ -1,4 +1,4 @@
-rootProject.name = "tests"
+rootProject.name = "apollo-tests"
 
 // Include all tests
 rootProject.projectDir
