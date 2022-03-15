@@ -7,7 +7,7 @@ Because your [normalized cache](./normalized-cache/) can deduplicate your GraphQ
 
 When executing an operation, you can use the `ApolloCall.watch` method to automatically notify that operation whenever its associated cached data changes:
 
-```kotlin{2}
+```kotlin {2}
 apolloClient.query(TodoDetailsQuery())
   .watch()
   .collect { response ->
@@ -21,8 +21,6 @@ Let's look at some examples.
 ## Watching a query
 
 Let's say we're building a collaborative todo list app that executes these two queries:
-
-import { CodeColumns } from 'gatsby-theme-apollo-docs';
 
 <CodeColumns>
 
@@ -80,7 +78,7 @@ When someone selects a particular item in the UI, the app executes `TodoDetails`
 
 In this case, the `TodoDetails` query might return something like this:
 
-```json{6-7}
+```json {6-7}
 {
   "data": {
     "item": {
@@ -97,7 +95,7 @@ With a [normalized cache](./normalized-cache) and [properly configured cache IDs
 
 To handle this, we can call `watch()` when we execute any query:
 
-```kotlin{2}
+```kotlin {2}
 apolloClient.query(TodoDetailsQuery())
   .watch()
   .collect { response ->
@@ -144,7 +142,7 @@ It's often possible to predict the most likely result of a mutation _before_ you
 
 You provide optimistic data with the `optimisticUpdates` method, like so:
 
-```kotlin{2-7}
+```kotlin {2-7}
 apolloClient.mutation(SetTodocompletedMutation(id = "1", completed = true))
   .optimisticUpdates(
     SetTodocompletedMutation.Data(

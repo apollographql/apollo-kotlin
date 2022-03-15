@@ -1,9 +1,6 @@
 ---
 title: Mutations in Apollo Kotlin
-sidebar_title: Mutations
 ---
-
-import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
 **Mutations** are GraphQL operations that _modify_ back-end data. As a convention in GraphQL, [queries](./queries/) are read operations and mutations are write operations.
 
@@ -11,7 +8,7 @@ import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
 You define a mutation in your app just like you define a query, except you use the `mutation` keyword. Here's an example mutation for upvoting a post:
 
-```graphql:title=UpvotePost.graphql
+```graphql title="UpvotePost.graphql"
 mutation UpvotePost($postId: Int!) {
   upvotePost(postId: $postId) {
     id
@@ -22,7 +19,7 @@ mutation UpvotePost($postId: Int!) {
 
 And here's an example schema snippet that supports this mutation:
 
-```graphql:title=schema.graphql
+```graphql title="schema.graphql"
 type Mutation {
   upvotePost(postId: Int!): Post
 }
@@ -78,7 +75,7 @@ val response = try {
 
 ## Using fragments in mutation results
 
-In many cases, you'll want to use mutation results to update your UI. [Fragments](./named-fragments) are a great way to share result handling between queries and mutations:
+In many cases, you'll want to use mutation results to update your UI. [Fragments](./fragments/#named-fragments) are a great way to share result handling between queries and mutations:
 
 ```graphql
 mutation UpvotePost($postId: Int!) {

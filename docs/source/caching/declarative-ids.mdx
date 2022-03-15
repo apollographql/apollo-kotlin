@@ -1,6 +1,5 @@
 ---
 title: Declarative cache IDs in Apollo Kotlin
-sidebar_title: Declarative cache IDs
 ---
 
 When using a [normalized cache](./normalized-cache/) in Apollo Kotlin, it's recommended that you specify a **cache ID** for each object type in your schema. If you don't, objects are assigned a _default_ cache ID, but that ID can lead to undesirable duplication of data.
@@ -32,7 +31,7 @@ The `@typePolicy` directive enables you to specify an object's cache ID from **k
 
 For example, let's say our app's `schema.graphqls` file includes the following definition:
 
-```graphql:title=schema.graphqls
+```graphql title="schema.graphqls"
 type Book {
   id: String!
   author: Author!
@@ -42,7 +41,7 @@ type Book {
 
 We can add the following definition to an `extra.graphqls` file in the same directory as our schema:
 
-```graphql:title=extra.graphqls
+```graphql title="extra.graphqls"
 extend type Book @typePolicy(keyFields: "id")
 ```
 
@@ -51,7 +50,7 @@ Apollo Kotlin now knows to use the `id` field of a `Book` type to generate its c
 You can specify _multiple_ key fields for an object if they're all required to uniquely identify a particular cache entry:
 
 
-```graphql:title=extra.graphqls
+```graphql title="extra.graphqls"
 extend type Author @typePolicy(keyFields: "firstName lastName")
 ```
 
@@ -66,7 +65,7 @@ The `@fieldPolicy` directive enables you to specify an object's cache ID from th
 
 For example, let's say our app's `schema.graphqls` file includes the following definition:
 
-```graphql:title=schema.graphqls
+```graphql title="schema.graphqls"
 type Query {
   book(id: String!): Book
 }
@@ -76,7 +75,7 @@ We happen to know that this query returns whichever `Book` object has an `id` fi
 
 We can add the following definition to an `extra.graphqls` file in the same directory as our schema:
 
-```graphql:title=extra.graphqls
+```graphql title="extra.graphqls"
 extend type Query @fieldPolicy(forField: "book", keyArgs: "id")
 ```
 
@@ -86,7 +85,7 @@ Apollo Kotlin now knows to check the cache for a `Book` object with the provided
 
 You can specify _multiple_ key arguments for a field if they're all required to uniquely identify a particular cache entry:
 
-```graphql:title=extra.graphqls
+```graphql title="extra.graphqls"
 extend type Query @fieldPolicy(forField: "author", keyArgs: "firstName lastName")
 ```
 

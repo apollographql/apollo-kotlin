@@ -1,6 +1,5 @@
 ---
 title: GraphQL file types in Apollo Kotlin
-sidebar_title: File types
 ---
 
 Apollo Kotlin supports the following file types for GraphQL definitions:
@@ -19,7 +18,7 @@ A GraphQL **schema** describes a graph's data types and the relationships betwee
 
 You can obtain a GraphQL server's schema via a special [introspection query](https://graphql.org/learn/introspection/) (assuming the server enables introspection). Like any other GraphQL server response, the returned schema is provided as JSON similar to the following:
 
-```json:title=schema.json
+```json title="schema.json"
 {
   "data": {
     "__schema": {
@@ -51,7 +50,7 @@ JSON introspection schemas are verbose and difficult to read or modify. For simp
 
 SDL (Schema Definition Language) is the canonical language for defining GraphQL schemas as defined in the [GraphQL spec](https://spec.graphql.org/October2021/). It's much cleaner and more expressive than [JSON](#introspection-schemas-json) for understanding a schema's structure. It also supports directives, unlike the JSON representation (see [this issue](https://github.com/graphql/graphql-spec/issues/300)):
 
-```graphql:title=schema.graphqls
+```graphql title="schema.graphqls"
 type schema {
   query: Query
   mutation: Mutation
@@ -65,7 +64,7 @@ type Query {
 
 You can't use introspection to download an SDL schema directly from a GraphQL endpoint. However, Apollo Kotlin can convert an introspection schema to SDL automatically if you specify the `.graphqls` extension in the `--schema` option:
 
-```bash{3}
+```bash {3}
 ./gradlew :app:downloadApolloSchema \
   --endpoint "https://example.com/graphql" \
   --schema schema.graphqls
@@ -79,7 +78,7 @@ GraphQL **operations** are executed against a graph to fetch or modify data.
 
 In Apollo Kotlin, operation files use the `.graphql` (without `'s'`) extension. These files only contain [executable definitions](https://spec.graphql.org/draft/#ExecutableDefinition) (queries, mutations, subscriptions, and/or fragments):
 
-```graphql:title=MyQuery.graphql
+```graphql title="MyQuery.graphql"
 query MyQuery {
   field1
   field2

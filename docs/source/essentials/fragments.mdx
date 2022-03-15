@@ -1,9 +1,8 @@
 ---
 title: Fragments in Apollo Kotlin
-sidebar_title: Fragments
 ---
 
-> **Note:** This article describes the behavior of fragments when using the default `operationBased` codegen in Apollo Kotlin. For the `responseBased` codegen, see [this page](../../advanced/response-based-codegen).
+> **Note:** This article describes the behavior of fragments when using the default `operationBased` codegen in Apollo Kotlin. For the `responseBased` codegen, see [this page](../advanced/response-based-codegen).
 
 Apollo Kotlin supports both forms of [GraphQL fragments](https://graphql.org/learn/queries/#fragments):
 
@@ -15,7 +14,7 @@ Apollo Kotlin supports both forms of [GraphQL fragments](https://graphql.org/lea
 
 Take a look at the following GraphQL definitions:
 
-```graphql:title=Launch.graphql
+```graphql title="Launch.graphql"
 # Declaration of named fragment
 fragment launchFragment on Launch {
   id
@@ -35,7 +34,7 @@ query LaunchDetails($id:ID!) {
 
 Based on the `fragment` definition, Apollo Kotlin generates the following `LaunchFragment` class that you can reuse in different queries:
 
-```kotlin:title=LaunchFragment.kt
+```kotlin title="LaunchFragment.kt"
 data class LaunchFragment(
   val id: String,
   val site: String?,
@@ -53,7 +52,7 @@ println("Mission site: ${launch.launchFragment?.site}")
 
 You can reuse the fragment in any number of operations:
 
-```graphql:title=Launch.graphql
+```graphql title="Launch.graphql"
  # ...previous definitions...
 
 query LaunchList {
@@ -71,7 +70,7 @@ You can even use a fragment in operations that are defined in a different `.grap
 
 Take a look at this query definition that uses two inline fragments:
 
-```graphql{4-9}:title=HeroQuery.graphql
+```graphql {4-9} title="HeroQuery.graphql"
 query HeroForEpisode($ep: Episode!) {
   hero(episode: $ep) {
     name
