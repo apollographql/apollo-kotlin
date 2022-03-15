@@ -8,7 +8,7 @@ To execute your first query, you need to create an instance of `ApolloClient` an
 
 Create a new file named Apollo.kt in the `com.example.rocketreserver` package and create an instance of `ApolloClient` in it:
 
-```kotlin:title=app/src/main/java/com/example/rocketreserver/Apollo.kt
+```kotlin title="app/src/main/java/com/example/rocketreserver/Apollo.kt"
 val apolloClient = ApolloClient.builder()
     .serverUrl("https://apollo-fullstack-tutorial.herokuapp.com")
     .build()
@@ -22,7 +22,7 @@ Creating the ApolloClient is as simple as giving it the endpoint of your GraphQL
 
 Open `LaunchListFragment.kt`, override `onViewCreated` and launch a new coroutine. Use the apolloClient and the generated `LaunchListQuery` to execute a new query:
 
-```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchListFragment.kt
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchListFragment.kt"
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

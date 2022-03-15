@@ -1,15 +1,12 @@
 ---
 title: Using the client without apollo-runtime
-sidebar_title: Using without apollo-runtime
 ---
-
-import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
 `apollo-runtime` and `ApolloClient` provides support for doing the network requests and interacting with the cache but you can use the generated queries without the runtime if you want.
 
 For this, remove the `com.apollographql.apollo:apollo-runtime`dependency and replace it with:
 
-```kotlin:title=build.gradle
+```kotlin title="build.gradle"
 implementation("com.apollographql.apollo:apollo-api:x.y.z")
 ```
 
@@ -84,7 +81,7 @@ Response<Operation.Data> response = new Query().parse(httpResponse.body().source
 
 With Kotlin Multiplatform support, you can use Swift's `NSData` type to parse the response
 
-```kotlin:title=Kotlin-Common
+```kotlin title="Kotlin-Common"
 val data: NSData = ...;
 
 val response = query.parse(data.toByteString())

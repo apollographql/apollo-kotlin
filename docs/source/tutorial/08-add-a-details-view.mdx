@@ -8,7 +8,7 @@ In this section, you'll write a second GraphQL query that requests details about
 
 In `LaunchListAdapter.kt`, add a click listener:
 
-```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchListAdapter.kt
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchListAdapter.kt"
     var onEndOfListReached: (() -> Unit)? = null
     var onItemClicked: ((LaunchListQuery.Launch) -> Unit)? = null
 
@@ -24,7 +24,7 @@ In `LaunchListAdapter.kt`, add a click listener:
 
 In `LaunchListFragment.kt`, register a click listener and navigate to the details screen:
 
-```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchListFragment.kt
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchListFragment.kt"
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         // ...
@@ -45,7 +45,7 @@ As you did for `$cursor`, add a variable named `id`. Notice that this variable i
 
 Because it's a details view, request the `LARGE` size for the missionPatch. Also request the rocket type and name:
 
-```graphql:title=app/src/main/graphql/com/example/rocketreserver/LaunchDetails.graphql
+```graphql title="app/src/main/graphql/com/example/rocketreserver/LaunchDetails.graphql"
 query LaunchDetails($id:ID!) {
   launch(id: $id) {
     id
@@ -71,7 +71,7 @@ In `LaunchDetailsFragment.kt`, override `onViewCreated` and launch a new corouti
 
 This time, display a progressBar while the query executes:
 
-```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchDetailsFragment.kt
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetailsFragment.kt"
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -114,7 +114,7 @@ This is good! But it's not enough. Even if the request executes correctly at the
 
 To handle application errors, you can check `response.hasErrors`:
 
-```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchDetailsFragment.kt
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetailsFragment.kt"
             val launch = response.data?.launch
             if (launch == null || response.hasErrors()) {
                 binding.progressBar.visibility = View.GONE
@@ -163,7 +163,7 @@ Restore the correct launch ID: `LaunchDetailsQuery(id = args.launchId)` before d
 
 If no errors occurred, hide the progressBar and display the detailed information:
 
-```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchDetailsFragment.kt
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetailsFragment.kt"
             binding.progressBar.visibility = View.GONE
 
             binding.missionPatch.load(launch.mission?.missionPatch) {
@@ -181,7 +181,7 @@ If no errors occurred, hide the progressBar and display the detailed information
 
 Add a `configureButton` method that redirects to the login page:
 
-```kotlin:title=app/src/main/java/com/example/rocketreserver/LaunchDetailsFragment.kt
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetailsFragment.kt"
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

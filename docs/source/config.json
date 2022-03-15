@@ -1,0 +1,54 @@
+{
+  "title": "Client (Android)",
+  "version": "v2",
+  "algoliaFilters": [
+    "docset:android"
+  ],
+  "sidebar": {
+    "Introduction to Apollo Android": "/",
+    "Get started with Kotlin": "/essentials/get-started-kotlin",
+    "Get started with Java": "/essentials/get-started-java",
+    "Get started with Multiplatform (Experimental)": "/essentials/get-started-multiplatform",
+    "Tutorial": {
+      "0. Introduction": "/tutorial/00-introduction",
+      "1. Configure your project": "/tutorial/01-configure-project",
+      "2. Add the GraphQL schema": "/tutorial/02-add-the-graphql-schema",
+      "3. Write your first query": "/tutorial/03-write-your-first-query",
+      "4. Execute your first query": "/tutorial/04-execute-the-query",
+      "5. Connect your queries to your UI": "/tutorial/05-connect-queries-to-your-ui",
+      "6. Add more info to the list": "/tutorial/06-add-more-info",
+      "7. Paginate results": "/tutorial/07-paginate-results",
+      "8. Add a details view": "/tutorial/08-add-a-details-view",
+      "9. Write your first mutation": "/tutorial/09-write-your-first-mutation",
+      "10. Authenticate your queries": "/tutorial/10-authenticate-your-queries",
+      "11. Write your first subscription": "/tutorial/11-subscriptions"
+    },
+    "Fetching data": {
+      "Queries": "/essentials/queries",
+      "Mutations": "/essentials/mutations",
+      "Normalized cache": "/essentials/normalized-cache",
+      "HTTP cache": "/essentials/http-cache",
+      "Persisted queries": "/advanced/persisted-queries",
+      "Using aliases": "/essentials/using-aliases",
+      "Multi Modules (experimental)": "/advanced/multi-modules",
+      "Client Awareness": "/advanced/client-awareness"
+    },
+    "Languages & Extensions": {
+      "Kotlin coroutines": "/advanced/coroutines",
+      "RxJava2": "/advanced/rxjava2",
+      "RxJava3": "/advanced/rxjava3",
+      "Reactor": "/advanced/reactor",
+      "Mutiny": "/advanced/mutiny"
+    },
+    "Reference": {
+      "Gradle configuration options": "/essentials/plugin-configuration",
+      "UI Tests": "/advanced/ui-tests",
+      "Custom scalar types": "/essentials/custom-scalar-types",
+      "Using without apollo-runtime": "/advanced/no-runtime",
+      "Fragments": "/essentials/fragments",
+      "Inline Fragments": "/essentials/inline-fragments",
+      "Migration guides": "/essentials/migration",
+      "Operation safelisting (enterprise only)": "/advanced/operation-safelisting"
+    }
+  }
+}

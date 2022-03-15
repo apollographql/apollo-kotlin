@@ -2,8 +2,6 @@
 title: Mutations
 ---
 
-import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
-
 Queries are useful to fetch data from a server, but client-server communication may also require sending data to the server. This is where Mutations become handy.
 Just like REST, any request might end up causing some side-effects on the server, but by convention it's suggested that one doesn't use GET requests to modify data. GraphQL is similar - technically any query could be implemented to cause a data write.
 However, it's useful to establish a convention that any operations that cause writes should be sent explicitly via a *mutation*.
@@ -182,7 +180,7 @@ apollo {
 
 **Note2** While Apollo Android doesn't use reflection for regular operations, it does for file upload. If you're using Proguard/R8, you need to keep everything inheriting from `InputType`:
 
-```proguard:title=proguard-rules.pro
+```proguard title="proguard-rules.pro"
 -keep class * implements com.apollographql.apollo.api.InputType { *; }
 ```
 

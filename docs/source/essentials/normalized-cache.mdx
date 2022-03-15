@@ -2,8 +2,6 @@
 title: Normalized cache
 ---
 
-import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
-
 Apollo Android provides two different kinds of caches: an HTTP cache and a normalized cache. The HTTP cache is easier to set up but also has more limitations. This page focuses on the normalized cache. If you're looking for a simpler albeit coarser cache, take a look at the [HTTP cache](http-cache).
 
 ## Data Normalization:
@@ -41,7 +39,7 @@ Apollo Android comes with an `LruNormalizedCache` that will store your data in m
 
 <MultiCodeBlock>
 
-```kotlin:title=Kotlin
+```kotlin title="Kotlin"
 // Create a 10MB NormalizedCacheFactory
 val cacheFactory = LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(10 * 1024 * 1024).build())
 
@@ -52,7 +50,7 @@ val apolloClient = ApolloClient.builder()
   .build())
 ```
 
-```java:title=Java
+```java title="Java"
 // Create a 10MB NormalizedCacheFactory
 NormalizedCacheFactory cacheFactory = new LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(10 * 1024 * 1024).build());
 
@@ -69,7 +67,7 @@ ApolloClient apolloClient = ApolloClient.builder()
 
 If the amount of data you store becomes too big to fit in memory or if you want your data to persist between app restarts, you can also use a `SqlNormalizedCacheFactory`. A `SqlNormalizedCacheFactory` will store your data in a [SQLDelight](https://github.com/cashapp/sqldelight) database and is defined in a separate dependency:
 
-```kotlin:title=build.gradle.kts
+```kotlin title="build.gradle.kts"
 dependencies {
   implementation("com.apollographql.apollo:apollo-normalized-cache-sqlite:x.y.z")
 }
@@ -79,7 +77,7 @@ dependencies {
 
 <MultiCodeBlock>
 
-```kotlin:title=build.gradle
+```kotlin title="build.gradle"
 android {
   buildTypes {
     create("custom") {
@@ -90,7 +88,7 @@ android {
 }
 ```
 
-```groovy:title=build.gradle
+```groovy title="build.gradle"
 android {
   buildTypes {
     custom {
@@ -143,7 +141,7 @@ To get the best of both caches, you can chain an `LruNormalizedCacheFactory` wit
 
 <MultiCodeBlock>
 
-```kotlin:title=Kotlin
+```kotlin title="Kotlin"
 
 val sqlCacheFactory = SqlNormalizedCacheFactory(context, "db_name")
 val memoryFirstThenSqlCacheFactory = LruNormalizedCacheFactory(
@@ -152,7 +150,7 @@ val memoryFirstThenSqlCacheFactory = LruNormalizedCacheFactory(
 
 ```
 
-```java:title=Java
+```java title="Java"
 
 NormalizedCacheFactory sqlCacheFactory = new SqlNormalizedCacheFactory(context, "db_name");
 NormalizedCacheFactory memoryFirstThenSqlCacheFactory = new LruNormalizedCacheFactory(
@@ -206,7 +204,7 @@ To do this, specify a `CacheKeyResolver` when configuring your `NormalizedCacheF
 
 <MultiCodeBlock>
 
-```kotlin:title=Kotlin
+```kotlin title="Kotlin"
 val resolver: CacheKeyResolver = object : CacheKeyResolver() {
   override fun fromFieldRecordSet(field: ResponseField, recordSet: Map<String, Any>): CacheKey {
     // Retrieve the id from the object itself
@@ -228,7 +226,7 @@ val apolloClient = ApolloClient.builder()
     .build()
 ```
 
-```java:title=Java
+```java title="Java"
 CacheKeyResolver resolver = new CacheKeyResolver() {
    @NotNull @Override
    public CacheKey fromFieldRecordSet(@NotNull ResponseField field, @NotNull Map<String, Object> recordSet) {

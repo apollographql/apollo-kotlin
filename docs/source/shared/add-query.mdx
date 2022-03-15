@@ -2,7 +2,7 @@
 2. Add your `schema.json` to the directory: `src/main/graphql/com/example/schema.json`
 3. Put your query in a `.graphql` file, next to the schema: `src/main/graphql/com/example/LaunchDetails.graphql`
 
-```graphql:title=src/main/graphql/com/example/LaunchDetails.graphql
+```graphql title="src/main/graphql/com/example/LaunchDetails.graphql"
 query LaunchDetails($id:ID!) {
   launch(id: $id) {
     id
