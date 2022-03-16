@@ -28,7 +28,7 @@ import com.apollographql.apollo3.exception.JsonDataException
  */
 class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
 
-  private var peekedToken: JsonReader.Token = JsonReader.Token.END_OBJECT
+  private var peekedToken: JsonReader.Token
 
   /**
    * Depending on what [peekedToken] is, [peekedData] can be safely cast to a Map, Entry
