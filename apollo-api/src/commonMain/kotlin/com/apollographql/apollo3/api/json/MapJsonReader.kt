@@ -44,11 +44,13 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
    * - null if peekedToken is BEGIN_OBJECT
    */
   private val path = arrayOfNulls<Any>(MAX_STACK_SIZE)
+
   /**
    * The current object memorized in case we need to rewind
    */
   private var containerStack = arrayOfNulls<Map<String, Any?>>(MAX_STACK_SIZE)
   private val iteratorStack = arrayOfNulls<Iterator<*>>(MAX_STACK_SIZE)
+  private val nameIndexStack = IntArray(MAX_STACK_SIZE)
 
   private var stackSize = 0
 
@@ -315,10 +317,31 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   override fun close() {
   }
 
+  private fun findName(needle: String, haystack: List<String>): Int {
+    val expectedIndex = nameIndexStack[stackSize - 1]
+    if (haystack[expectedIndex] == needle) {
+      // our guess succeeded
+      nameIndexStack[stackSize - 1] = (nameIndexStack[stackSize - 1] + 1) % haystack.size
+      return expectedIndex
+    } else {
+      // guess failed, go back to full search
+      val index = haystack.indexOf(needle)
+      if (index != -1) {
+        // reset the prediction
+        nameIndexStack[stackSize - 1] = (index + 1) % haystack.size
+      }
+      return index
+    }
+  }
+
   override fun selectName(names: List<String>): Int {
+    if (names.isEmpty()) {
+      return -1
+    }
+
     while (hasNext()) {
       val name = nextName()
-      val index = names.indexOf(name)
+      val index = findName(name, names)
       if (index != -1) {
         return index
       }
@@ -337,13 +360,14 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
     val container = containerStack[stackSize - 1]
     path[stackSize - 1] = null
     iteratorStack[stackSize - 1] = container!!.iterator()
+    nameIndexStack[stackSize - 1] = 0
     advanceIterator()
   }
 
   override fun getPath(): String {
     return buildString {
       for (index in 0.until(stackSize)) {
-        val element  = path[index]
+        val element = path[index]
         if (element is String) {
           if (index > 0) {
             append('.')
@@ -355,10 +379,8 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
           // unterminated object
           append('.')
         }
-
       }
     }
-
   }
 
   companion object {
