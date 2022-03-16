@@ -155,6 +155,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
     stackSize--
     iteratorStack[stackSize] = null // allow garbage collection
     path[stackSize] = null // allow garbage collection
+    containerStack[stackSize] = null // allow garbage collection
     advanceIterator()
   }
 
