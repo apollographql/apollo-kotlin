@@ -173,6 +173,11 @@ interface JsonReader : Closeable {
   fun rewind()
 
   /**
+   * Returns the current path of the JSON being read.
+   */
+  fun getPath(): String
+
+  /**
    * A structure, name, or value type in a JSON-encoded string.
    */
   enum class Token {
@@ -180,6 +185,7 @@ interface JsonReader : Closeable {
      * The opening of a JSON array. Written using [JsonWriter.beginArray] and read using [JsonReader.beginArray].
      */
     BEGIN_ARRAY,
+
     /**
      * The closing of a JSON array. Written using [JsonWriter.endArray] and read using [JsonReader.endArray].
      */
