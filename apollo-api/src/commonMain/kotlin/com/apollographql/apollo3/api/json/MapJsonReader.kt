@@ -101,7 +101,11 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
 
     val currentValue = peekedData as List<Any?>
 
+    check(stackSize < MAX_STACK_SIZE) {
+      "Nesting too deep"
+    }
     stackSize++
+
     path[stackSize - 1] = 0
     iteratorStack[stackSize - 1] = currentValue.iterator()
     advanceIterator()
@@ -124,6 +128,10 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
 
     @Suppress("UNCHECKED_CAST")
     container = peekedData as Map<String, Any?>
+
+    check(stackSize < MAX_STACK_SIZE) {
+      "Nesting too deep"
+    }
     stackSize++
 
     rewind()
