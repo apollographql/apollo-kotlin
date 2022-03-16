@@ -85,13 +85,13 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
 
     val currentIterator = iteratorStack[stackSize - 1]!!
 
+    if (path[stackSize - 1] is Int) {
+      path[stackSize - 1] = (path[stackSize - 1] as Int) + 1
+    }
+
     if (currentIterator.hasNext()) {
       val next = currentIterator.next()
       peekedData = next
-
-      if (path[stackSize - 1] is Int) {
-        path[stackSize - 1] = (path[stackSize - 1] as Int) + 1
-      }
 
       peekedToken = when (next) {
         is Map.Entry<*, *> -> JsonReader.Token.NAME
@@ -118,7 +118,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
     }
     stackSize++
 
-    path[stackSize - 1] = 0
+    path[stackSize - 1] = -1
     iteratorStack[stackSize - 1] = currentValue.iterator()
     advanceIterator()
   }
@@ -366,19 +366,16 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   }
 
   override fun getPath(): String {
+    var isRoot = true
     return buildString {
       for (index in 0.until(stackSize)) {
         val element = path[index]
-        if (element is String) {
-          if (index > 0) {
-            append('.')
-          }
-          append(element)
-        } else if (element is Int) {
-          append("[$element]")
-        } else {
-          // unterminated object
+        if (!isRoot) {
           append('.')
+        }
+        if (element != null) {
+          append(element.toString())
+          isRoot = false
         }
       }
     }
