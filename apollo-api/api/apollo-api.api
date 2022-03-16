@@ -854,6 +854,7 @@ public final class com/apollographql/apollo3/api/json/BufferedSourceJsonReader :
 	public fun close ()V
 	public fun endArray ()Lcom/apollographql/apollo3/api/json/JsonReader;
 	public fun endObject ()Lcom/apollographql/apollo3/api/json/JsonReader;
+	public fun getPath ()Ljava/lang/String;
 	public fun hasNext ()Z
 	public fun nextBoolean ()Z
 	public fun nextDouble ()D
@@ -882,6 +883,7 @@ public abstract interface class com/apollographql/apollo3/api/json/JsonReader : 
 	public abstract fun beginObject ()Lcom/apollographql/apollo3/api/json/JsonReader;
 	public abstract fun endArray ()Lcom/apollographql/apollo3/api/json/JsonReader;
 	public abstract fun endObject ()Lcom/apollographql/apollo3/api/json/JsonReader;
+	public abstract fun getPath ()Ljava/lang/String;
 	public abstract fun hasNext ()Z
 	public abstract fun nextBoolean ()Z
 	public abstract fun nextDouble ()D
@@ -947,6 +949,7 @@ public final class com/apollographql/apollo3/api/json/MapJsonReader : com/apollo
 	public fun endArray ()Lcom/apollographql/apollo3/api/json/MapJsonReader;
 	public synthetic fun endObject ()Lcom/apollographql/apollo3/api/json/JsonReader;
 	public fun endObject ()Lcom/apollographql/apollo3/api/json/MapJsonReader;
+	public fun getPath ()Ljava/lang/String;
 	public final fun getRoot ()Ljava/util/Map;
 	public fun hasNext ()Z
 	public fun nextBoolean ()Z
