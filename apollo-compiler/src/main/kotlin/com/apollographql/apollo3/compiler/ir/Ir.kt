@@ -186,7 +186,8 @@ data class IrProperty(
     get() = info.gqlType == null
 
   /**
-   *
+   * whether this field requires a typename to determine if we should parse it or not.
+   * This is true for synthetic fragment fields on polymorphic fields
    */
   val requiresTypename: Boolean
     get() = condition.containsPossibleTypes()
