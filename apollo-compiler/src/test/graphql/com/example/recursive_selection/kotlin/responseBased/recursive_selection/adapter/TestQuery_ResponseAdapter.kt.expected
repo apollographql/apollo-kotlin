@@ -26,14 +26,11 @@ public object TestQuery_ResponseAdapter {
         TestQuery.Data {
       var tree: TestQuery.Data.Tree? = null
 
-      while (true) {
-        val __nameIdx = reader.selectName(RESPONSE_NAMES)
-        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-        when (__nameIdx) {
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
           0 -> tree = Tree.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
-        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return TestQuery.Data(
@@ -59,16 +56,13 @@ public object TestQuery_ResponseAdapter {
         var children: List<TestQuery.Data.Tree.Child>? = null
         var parent: TestQuery.Data.Tree.Parent? = null
 
-        while (true) {
-          val __nameIdx = reader.selectName(RESPONSE_NAMES)
-          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-          when (__nameIdx) {
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
             0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> children = Child.obj().list().fromJson(reader, customScalarAdapters)
             2 -> parent = Parent.obj().nullable().fromJson(reader, customScalarAdapters)
             else -> break
           }
-          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return TestQuery.Data.Tree(
@@ -100,14 +94,11 @@ public object TestQuery_ResponseAdapter {
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Tree.Child {
           var name: String? = null
 
-          while (true) {
-            val __nameIdx = reader.selectName(RESPONSE_NAMES)
-            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-            when (__nameIdx) {
+          while(true) {
+            when (reader.selectName(RESPONSE_NAMES)) {
               0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
-            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           return TestQuery.Data.Tree.Child(
@@ -132,14 +123,11 @@ public object TestQuery_ResponseAdapter {
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Tree.Parent {
           var name: String? = null
 
-          while (true) {
-            val __nameIdx = reader.selectName(RESPONSE_NAMES)
-            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-            when (__nameIdx) {
+          while(true) {
+            when (reader.selectName(RESPONSE_NAMES)) {
               0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
-            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           return TestQuery.Data.Tree.Parent(

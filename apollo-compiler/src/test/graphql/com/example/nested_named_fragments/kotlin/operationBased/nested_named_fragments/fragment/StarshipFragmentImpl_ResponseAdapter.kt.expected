@@ -29,17 +29,14 @@ public object StarshipFragmentImpl_ResponseAdapter {
       var name: String? = null
       var pilotConnection: com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection? = null
 
-      while (true) {
-        val __nameIdx = reader.selectName(RESPONSE_NAMES)
-        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-        when (__nameIdx) {
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
           0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           2 -> pilotConnection = PilotConnection.obj().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
-        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return com.example.nested_named_fragments.fragment.StarshipFragment(
@@ -72,15 +69,12 @@ public object StarshipFragmentImpl_ResponseAdapter {
           com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection {
         var edges: List<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge?>? = null
 
-        while (true) {
-          val __nameIdx = reader.selectName(RESPONSE_NAMES)
-          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-          when (__nameIdx) {
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
             0 -> edges = Edge.obj().nullable().list().nullable().fromJson(reader,
                 customScalarAdapters)
             else -> break
           }
-          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection(
@@ -107,14 +101,11 @@ public object StarshipFragmentImpl_ResponseAdapter {
             com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge {
           var node: com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge.Node? = null
 
-          while (true) {
-            val __nameIdx = reader.selectName(RESPONSE_NAMES)
-            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-            when (__nameIdx) {
+          while(true) {
+            when (reader.selectName(RESPONSE_NAMES)) {
               0 -> node = Node.obj(true).nullable().fromJson(reader, customScalarAdapters)
               else -> break
             }
-            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           return com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge(
@@ -141,14 +132,11 @@ public object StarshipFragmentImpl_ResponseAdapter {
               com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge.Node {
             var __typename: String? = null
 
-            while (true) {
-              val __nameIdx = reader.selectName(RESPONSE_NAMES)
-              if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-              when (__nameIdx) {
+            while(true) {
+              when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
-              customScalarAdapters.adapterContext.currentPath.pop()
             }
 
             check(__typename != null) {

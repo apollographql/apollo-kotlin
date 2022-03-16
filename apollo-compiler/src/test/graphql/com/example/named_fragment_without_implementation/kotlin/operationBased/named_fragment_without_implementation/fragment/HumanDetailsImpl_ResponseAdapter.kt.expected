@@ -24,14 +24,11 @@ public object HumanDetailsImpl_ResponseAdapter {
         com.example.named_fragment_without_implementation.fragment.HumanDetails {
       var height: Double? = null
 
-      while (true) {
-        val __nameIdx = reader.selectName(RESPONSE_NAMES)
-        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-        when (__nameIdx) {
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
           0 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
-        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return com.example.named_fragment_without_implementation.fragment.HumanDetails(

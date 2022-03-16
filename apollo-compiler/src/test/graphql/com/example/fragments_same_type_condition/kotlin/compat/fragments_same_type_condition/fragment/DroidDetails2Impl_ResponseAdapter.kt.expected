@@ -23,14 +23,11 @@ public object DroidDetails2Impl_ResponseAdapter {
         com.example.fragments_same_type_condition.fragment.DroidDetails2 {
       var primaryFunction: String? = null
 
-      while (true) {
-        val __nameIdx = reader.selectName(RESPONSE_NAMES)
-        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-        when (__nameIdx) {
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
           0 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
-        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return com.example.fragments_same_type_condition.fragment.DroidDetails2(

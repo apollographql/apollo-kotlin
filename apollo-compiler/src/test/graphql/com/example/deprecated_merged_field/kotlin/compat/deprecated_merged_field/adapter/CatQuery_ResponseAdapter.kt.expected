@@ -28,14 +28,11 @@ public object CatQuery_ResponseAdapter {
         CatQuery.Data {
       var cat: CatQuery.Cat? = null
 
-      while (true) {
-        val __nameIdx = reader.selectName(RESPONSE_NAMES)
-        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-        when (__nameIdx) {
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
           0 -> cat = Cat.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
-        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return CatQuery.Data(
@@ -60,14 +57,11 @@ public object CatQuery_ResponseAdapter {
         CatQuery.Cat {
       var __typename: String? = null
 
-      while (true) {
-        val __nameIdx = reader.selectName(RESPONSE_NAMES)
-        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-        when (__nameIdx) {
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
-        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       check(__typename != null) {
@@ -103,14 +97,11 @@ public object CatQuery_ResponseAdapter {
           CatQuery.Cat.Fragments {
         var __typename: String? = null
 
-        while (true) {
-          val __nameIdx = reader.selectName(RESPONSE_NAMES)
-          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-          when (__nameIdx) {
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
-          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         check(__typename != null) {

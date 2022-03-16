@@ -27,15 +27,12 @@ public object TestQuery_ResponseAdapter {
         TestQuery.Data {
       var heroWithReview: TestQuery.Data.HeroWithReview? = null
 
-      while (true) {
-        val __nameIdx = reader.selectName(RESPONSE_NAMES)
-        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-        when (__nameIdx) {
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
           0 -> heroWithReview = HeroWithReview.obj().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
-        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return TestQuery.Data(
@@ -60,15 +57,12 @@ public object TestQuery_ResponseAdapter {
         var name: String? = null
         var height: Double? = null
 
-        while (true) {
-          val __nameIdx = reader.selectName(RESPONSE_NAMES)
-          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-          when (__nameIdx) {
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
             0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
-          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return TestQuery.Data.HeroWithReview(

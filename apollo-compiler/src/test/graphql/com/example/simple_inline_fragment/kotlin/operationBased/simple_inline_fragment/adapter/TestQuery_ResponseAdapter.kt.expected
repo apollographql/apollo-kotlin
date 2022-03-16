@@ -30,14 +30,11 @@ public object TestQuery_ResponseAdapter {
         TestQuery.Data {
       var hero: TestQuery.Data.Hero? = null
 
-      while (true) {
-        val __nameIdx = reader.selectName(RESPONSE_NAMES)
-        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-        when (__nameIdx) {
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
           0 -> hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
-        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return TestQuery.Data(
@@ -61,14 +58,11 @@ public object TestQuery_ResponseAdapter {
           TestQuery.Data.Hero {
         var __typename: String? = null
 
-        while (true) {
-          val __nameIdx = reader.selectName(RESPONSE_NAMES)
-          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-          when (__nameIdx) {
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
-          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         check(__typename != null) {
@@ -131,15 +125,12 @@ public object TestQuery_ResponseAdapter {
           var __typename: String? = null
           var id: String? = null
 
-          while (true) {
-            val __nameIdx = reader.selectName(RESPONSE_NAMES)
-            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-            when (__nameIdx) {
+          while(true) {
+            when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               1 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
-            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           check(__typename != null) {
@@ -180,14 +171,11 @@ public object TestQuery_ResponseAdapter {
               TestQuery.Data.Hero.OnCharacter.OnCharacter {
             var name: String? = null
 
-            while (true) {
-              val __nameIdx = reader.selectName(RESPONSE_NAMES)
-              if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-              when (__nameIdx) {
+            while(true) {
+              when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
-              customScalarAdapters.adapterContext.currentPath.pop()
             }
 
             return TestQuery.Data.Hero.OnCharacter.OnCharacter(
@@ -213,14 +201,11 @@ public object TestQuery_ResponseAdapter {
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero.OnHuman {
           var height: Double? = null
 
-          while (true) {
-            val __nameIdx = reader.selectName(RESPONSE_NAMES)
-            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-            when (__nameIdx) {
+          while(true) {
+            when (reader.selectName(RESPONSE_NAMES)) {
               0 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
-            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           return TestQuery.Data.Hero.OnHuman(
@@ -245,14 +230,11 @@ public object TestQuery_ResponseAdapter {
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero.OnDroid {
           var primaryFunction: String? = null
 
-          while (true) {
-            val __nameIdx = reader.selectName(RESPONSE_NAMES)
-            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-            when (__nameIdx) {
+          while(true) {
+            when (reader.selectName(RESPONSE_NAMES)) {
               0 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
-            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           return TestQuery.Data.Hero.OnDroid(

@@ -28,17 +28,14 @@ public object StarshipFragmentImpl_ResponseAdapter {
       var name: String? = null
       var pilotConnection: StarshipFragmentImpl.Data.PilotConnection? = null
 
-      while (true) {
-        val __nameIdx = reader.selectName(RESPONSE_NAMES)
-        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-        when (__nameIdx) {
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
           0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           2 -> pilotConnection = PilotConnection.obj().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
-        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return StarshipFragmentImpl.Data(
@@ -70,15 +67,12 @@ public object StarshipFragmentImpl_ResponseAdapter {
           StarshipFragmentImpl.Data.PilotConnection {
         var edges: List<StarshipFragmentImpl.Data.PilotConnection.Edge?>? = null
 
-        while (true) {
-          val __nameIdx = reader.selectName(RESPONSE_NAMES)
-          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-          when (__nameIdx) {
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
             0 -> edges = Edge.obj().nullable().list().nullable().fromJson(reader,
                 customScalarAdapters)
             else -> break
           }
-          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return StarshipFragmentImpl.Data.PilotConnection(
@@ -103,14 +97,11 @@ public object StarshipFragmentImpl_ResponseAdapter {
             StarshipFragmentImpl.Data.PilotConnection.Edge {
           var node: StarshipFragmentImpl.Data.PilotConnection.Edge.Node? = null
 
-          while (true) {
-            val __nameIdx = reader.selectName(RESPONSE_NAMES)
-            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-            when (__nameIdx) {
+          while(true) {
+            when (reader.selectName(RESPONSE_NAMES)) {
               0 -> node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
               else -> break
             }
-            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           return StarshipFragmentImpl.Data.PilotConnection.Edge(
@@ -137,16 +128,13 @@ public object StarshipFragmentImpl_ResponseAdapter {
             var name: String? = null
             var homeworld: StarshipFragmentImpl.Data.PilotConnection.Edge.Node.Homeworld? = null
 
-            while (true) {
-              val __nameIdx = reader.selectName(RESPONSE_NAMES)
-              if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-              when (__nameIdx) {
+            while(true) {
+              when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 1 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
                 2 -> homeworld = Homeworld.obj().nullable().fromJson(reader, customScalarAdapters)
                 else -> break
               }
-              customScalarAdapters.adapterContext.currentPath.pop()
             }
 
             return StarshipFragmentImpl.Data.PilotConnection.Edge.Node(
@@ -181,15 +169,12 @@ public object StarshipFragmentImpl_ResponseAdapter {
               var __typename: String? = null
               var name: String? = null
 
-              while (true) {
-                val __nameIdx = reader.selectName(RESPONSE_NAMES)
-                if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-                when (__nameIdx) {
+              while(true) {
+                when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                   1 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
-                customScalarAdapters.adapterContext.currentPath.pop()
               }
 
               return StarshipFragmentImpl.Data.PilotConnection.Edge.Node.Homeworld(

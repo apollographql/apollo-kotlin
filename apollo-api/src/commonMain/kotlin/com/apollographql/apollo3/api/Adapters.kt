@@ -25,16 +25,12 @@ import kotlin.native.concurrent.SharedImmutable
  */
 class ListAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<List<@JvmSuppressWildcards T>> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): List<T> {
-    val path = customScalarAdapters.adapterContext.currentPath
-    path.push(-1)
     reader.beginArray()
     val list = mutableListOf<T>()
     while (reader.hasNext()) {
-      path.incrementArrayIndex()
       list.add(wrappedAdapter.fromJson(reader, customScalarAdapters))
     }
     reader.endArray()
-    path.pop()
     return list
   }
 

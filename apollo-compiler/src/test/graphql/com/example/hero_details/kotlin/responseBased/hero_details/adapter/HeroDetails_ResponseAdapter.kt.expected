@@ -30,14 +30,11 @@ public object HeroDetails_ResponseAdapter {
         HeroDetails.Data {
       var hero: HeroDetails.Data.Hero? = null
 
-      while (true) {
-        val __nameIdx = reader.selectName(RESPONSE_NAMES)
-        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-        when (__nameIdx) {
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
           0 -> hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
-        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return HeroDetails.Data(
@@ -63,16 +60,13 @@ public object HeroDetails_ResponseAdapter {
         var name: String? = null
         var friendsConnection: HeroDetails.Data.Hero.FriendsConnection? = null
 
-        while (true) {
-          val __nameIdx = reader.selectName(RESPONSE_NAMES)
-          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-          when (__nameIdx) {
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
             0 -> type = hero_type_ResponseAdapter.fromJson(reader, customScalarAdapters)
             1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
             2 -> friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
             else -> break
           }
-          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return HeroDetails.Data.Hero(
@@ -105,16 +99,13 @@ public object HeroDetails_ResponseAdapter {
           var totalCount: Int? = null
           var edges: List<HeroDetails.Data.Hero.FriendsConnection.Edge?>? = null
 
-          while (true) {
-            val __nameIdx = reader.selectName(RESPONSE_NAMES)
-            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-            when (__nameIdx) {
+          while(true) {
+            when (reader.selectName(RESPONSE_NAMES)) {
               0 -> totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
               1 -> edges = Edge.obj().nullable().list().nullable().fromJson(reader,
                   customScalarAdapters)
               else -> break
             }
-            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           return HeroDetails.Data.Hero.FriendsConnection(
@@ -143,14 +134,11 @@ public object HeroDetails_ResponseAdapter {
               HeroDetails.Data.Hero.FriendsConnection.Edge {
             var node: HeroDetails.Data.Hero.FriendsConnection.Edge.Node? = null
 
-            while (true) {
-              val __nameIdx = reader.selectName(RESPONSE_NAMES)
-              if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-              when (__nameIdx) {
+            while(true) {
+              when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
                 else -> break
               }
-              customScalarAdapters.adapterContext.currentPath.pop()
             }
 
             return HeroDetails.Data.Hero.FriendsConnection.Edge(
@@ -175,14 +163,11 @@ public object HeroDetails_ResponseAdapter {
                 HeroDetails.Data.Hero.FriendsConnection.Edge.Node {
               var name: String? = null
 
-              while (true) {
-                val __nameIdx = reader.selectName(RESPONSE_NAMES)
-                if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-                when (__nameIdx) {
+              while(true) {
+                when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
-                customScalarAdapters.adapterContext.currentPath.pop()
               }
 
               return HeroDetails.Data.Hero.FriendsConnection.Edge.Node(

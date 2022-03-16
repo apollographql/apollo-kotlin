@@ -27,14 +27,11 @@ public object AllStarships_ResponseAdapter {
         com.example.nested_named_fragments.AllStarships.Data {
       var allStarships: com.example.nested_named_fragments.AllStarships.Data.AllStarships? = null
 
-      while (true) {
-        val __nameIdx = reader.selectName(RESPONSE_NAMES)
-        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-        when (__nameIdx) {
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
           0 -> allStarships = AllStarships.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
-        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return com.example.nested_named_fragments.AllStarships.Data(
@@ -59,15 +56,12 @@ public object AllStarships_ResponseAdapter {
           com.example.nested_named_fragments.AllStarships.Data.AllStarships {
         var edges: List<com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge?>? = null
 
-        while (true) {
-          val __nameIdx = reader.selectName(RESPONSE_NAMES)
-          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-          when (__nameIdx) {
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
             0 -> edges = Edge.obj().nullable().list().nullable().fromJson(reader,
                 customScalarAdapters)
             else -> break
           }
-          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return com.example.nested_named_fragments.AllStarships.Data.AllStarships(
@@ -93,14 +87,11 @@ public object AllStarships_ResponseAdapter {
             com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge {
           var node: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node? = null
 
-          while (true) {
-            val __nameIdx = reader.selectName(RESPONSE_NAMES)
-            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-            when (__nameIdx) {
+          while(true) {
+            when (reader.selectName(RESPONSE_NAMES)) {
               0 -> node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
               else -> break
             }
-            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           return com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge(
@@ -130,10 +121,8 @@ public object AllStarships_ResponseAdapter {
             var name: String? = null
             var pilotConnection: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection? = null
 
-            while (true) {
-              val __nameIdx = reader.selectName(RESPONSE_NAMES)
-              if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-              when (__nameIdx) {
+            while(true) {
+              when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 1 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
                 2 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
@@ -141,7 +130,6 @@ public object AllStarships_ResponseAdapter {
                     customScalarAdapters)
                 else -> break
               }
-              customScalarAdapters.adapterContext.currentPath.pop()
             }
 
             return com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node(
@@ -181,15 +169,12 @@ public object AllStarships_ResponseAdapter {
                 com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection {
               var edges: List<com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection.Edge?>? = null
 
-              while (true) {
-                val __nameIdx = reader.selectName(RESPONSE_NAMES)
-                if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-                when (__nameIdx) {
+              while(true) {
+                when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> edges = Edge.obj().nullable().list().nullable().fromJson(reader,
                       customScalarAdapters)
                   else -> break
                 }
-                customScalarAdapters.adapterContext.currentPath.pop()
               }
 
               return com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection(
@@ -217,14 +202,11 @@ public object AllStarships_ResponseAdapter {
                   com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection.Edge {
                 var node: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection.Edge.Node? = null
 
-                while (true) {
-                  val __nameIdx = reader.selectName(RESPONSE_NAMES)
-                  if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-                  when (__nameIdx) {
+                while(true) {
+                  when (reader.selectName(RESPONSE_NAMES)) {
                     0 -> node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
                     else -> break
                   }
-                  customScalarAdapters.adapterContext.currentPath.pop()
                 }
 
                 return com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection.Edge(
@@ -253,17 +235,14 @@ public object AllStarships_ResponseAdapter {
                   var name: String? = null
                   var homeworld: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection.Edge.Node.Homeworld? = null
 
-                  while (true) {
-                    val __nameIdx = reader.selectName(RESPONSE_NAMES)
-                    if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-                    when (__nameIdx) {
+                  while(true) {
+                    when (reader.selectName(RESPONSE_NAMES)) {
                       0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                       1 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
                       2 -> homeworld = Homeworld.obj().nullable().fromJson(reader,
                           customScalarAdapters)
                       else -> break
                     }
-                    customScalarAdapters.adapterContext.currentPath.pop()
                   }
 
                   return com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection.Edge.Node(
@@ -299,15 +278,12 @@ public object AllStarships_ResponseAdapter {
                     var __typename: String? = null
                     var name: String? = null
 
-                    while (true) {
-                      val __nameIdx = reader.selectName(RESPONSE_NAMES)
-                      if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-                      when (__nameIdx) {
+                    while(true) {
+                      when (reader.selectName(RESPONSE_NAMES)) {
                         0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                         1 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
                         else -> break
                       }
-                      customScalarAdapters.adapterContext.currentPath.pop()
                     }
 
                     return com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection.Edge.Node.Homeworld(

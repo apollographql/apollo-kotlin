@@ -30,14 +30,11 @@ public object TestQuery_ResponseAdapter {
         TestQuery.Data {
       var hero: TestQuery.Data.Hero? = null
 
-      while (true) {
-        val __nameIdx = reader.selectName(RESPONSE_NAMES)
-        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-        when (__nameIdx) {
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
           0 -> hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
-        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return TestQuery.Data(
@@ -62,15 +59,12 @@ public object TestQuery_ResponseAdapter {
         var __typename: String? = null
         var name: String? = null
 
-        while (true) {
-          val __nameIdx = reader.selectName(RESPONSE_NAMES)
-          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-          when (__nameIdx) {
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
-          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         check(__typename != null) {
@@ -128,15 +122,12 @@ public object TestQuery_ResponseAdapter {
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero.OnHuman {
           var friends: List<TestQuery.Data.Hero.OnHuman.Friend?>? = null
 
-          while (true) {
-            val __nameIdx = reader.selectName(RESPONSE_NAMES)
-            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-            when (__nameIdx) {
+          while(true) {
+            when (reader.selectName(RESPONSE_NAMES)) {
               0 -> friends = Friend.obj(true).nullable().list().nullable().fromJson(reader,
                   customScalarAdapters)
               else -> break
             }
-            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           return TestQuery.Data.Hero.OnHuman(
@@ -162,15 +153,12 @@ public object TestQuery_ResponseAdapter {
             var __typename: String? = null
             var name: String? = null
 
-            while (true) {
-              val __nameIdx = reader.selectName(RESPONSE_NAMES)
-              if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-              when (__nameIdx) {
+            while(true) {
+              when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
-              customScalarAdapters.adapterContext.currentPath.pop()
             }
 
             check(__typename != null) {
@@ -216,14 +204,11 @@ public object TestQuery_ResponseAdapter {
                 TestQuery.Data.Hero.OnHuman.Friend.OnHuman {
               var height: Double? = null
 
-              while (true) {
-                val __nameIdx = reader.selectName(RESPONSE_NAMES)
-                if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-                when (__nameIdx) {
+              while(true) {
+                when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
-                customScalarAdapters.adapterContext.currentPath.pop()
               }
 
               return TestQuery.Data.Hero.OnHuman.Friend.OnHuman(
@@ -250,15 +235,12 @@ public object TestQuery_ResponseAdapter {
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero.OnDroid {
           var friends: List<TestQuery.Data.Hero.OnDroid.Friend?>? = null
 
-          while (true) {
-            val __nameIdx = reader.selectName(RESPONSE_NAMES)
-            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-            when (__nameIdx) {
+          while(true) {
+            when (reader.selectName(RESPONSE_NAMES)) {
               0 -> friends = Friend.obj(true).nullable().list().nullable().fromJson(reader,
                   customScalarAdapters)
               else -> break
             }
-            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           return TestQuery.Data.Hero.OnDroid(
@@ -284,15 +266,12 @@ public object TestQuery_ResponseAdapter {
             var __typename: String? = null
             var name: String? = null
 
-            while (true) {
-              val __nameIdx = reader.selectName(RESPONSE_NAMES)
-              if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-              when (__nameIdx) {
+            while(true) {
+              when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
-              customScalarAdapters.adapterContext.currentPath.pop()
             }
 
             check(__typename != null) {
@@ -338,14 +317,11 @@ public object TestQuery_ResponseAdapter {
                 TestQuery.Data.Hero.OnDroid.Friend.OnHuman {
               var height: Double? = null
 
-              while (true) {
-                val __nameIdx = reader.selectName(RESPONSE_NAMES)
-                if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-                when (__nameIdx) {
+              while(true) {
+                when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
-                customScalarAdapters.adapterContext.currentPath.pop()
               }
 
               return TestQuery.Data.Hero.OnDroid.Friend.OnHuman(

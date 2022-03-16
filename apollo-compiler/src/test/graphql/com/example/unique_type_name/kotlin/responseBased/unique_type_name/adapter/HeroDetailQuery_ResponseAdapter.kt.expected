@@ -32,15 +32,12 @@ public object HeroDetailQuery_ResponseAdapter {
         com.example.unique_type_name.HeroDetailQuery.Data {
       var heroDetailQuery: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery? = null
 
-      while (true) {
-        val __nameIdx = reader.selectName(RESPONSE_NAMES)
-        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-        when (__nameIdx) {
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
           0 -> heroDetailQuery = HeroDetailQuery.obj().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
-        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return com.example.unique_type_name.HeroDetailQuery.Data(
@@ -104,10 +101,8 @@ public object HeroDetailQuery_ResponseAdapter {
         var friends: List<com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend?>? = null
         var height: Double? = null
 
-        while (true) {
-          val __nameIdx = reader.selectName(RESPONSE_NAMES)
-          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-          when (__nameIdx) {
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
             2 -> friends = Friend.obj().nullable().list().nullable().fromJson(reader,
@@ -115,7 +110,6 @@ public object HeroDetailQuery_ResponseAdapter {
             3 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
-          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery(
@@ -156,10 +150,8 @@ public object HeroDetailQuery_ResponseAdapter {
           var appearsIn: List<Episode?>? = null
           var friends: List<com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend.Friend?>? = null
 
-          while (true) {
-            val __nameIdx = reader.selectName(RESPONSE_NAMES)
-            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-            when (__nameIdx) {
+          while(true) {
+            when (reader.selectName(RESPONSE_NAMES)) {
               0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
               1 -> appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
                   customScalarAdapters)
@@ -167,7 +159,6 @@ public object HeroDetailQuery_ResponseAdapter {
                   customScalarAdapters)
               else -> break
             }
-            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           return com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend(
@@ -207,17 +198,14 @@ public object HeroDetailQuery_ResponseAdapter {
             var name: String? = null
             var friendsConnection: com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend.Friend.FriendsConnection? = null
 
-            while (true) {
-              val __nameIdx = reader.selectName(RESPONSE_NAMES)
-              if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-              when (__nameIdx) {
+            while(true) {
+              when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                 2 -> friendsConnection = FriendsConnection.obj().fromJson(reader,
                     customScalarAdapters)
                 else -> break
               }
-              customScalarAdapters.adapterContext.currentPath.pop()
             }
 
             return com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend.Friend(
@@ -253,16 +241,13 @@ public object HeroDetailQuery_ResponseAdapter {
               var totalCount: Int? = null
               var edges: List<com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend.Friend.FriendsConnection.Edge?>? = null
 
-              while (true) {
-                val __nameIdx = reader.selectName(RESPONSE_NAMES)
-                if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-                when (__nameIdx) {
+              while(true) {
+                when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
                   1 -> edges = Edge.obj().nullable().list().nullable().fromJson(reader,
                       customScalarAdapters)
                   else -> break
                 }
-                customScalarAdapters.adapterContext.currentPath.pop()
               }
 
               return com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend.Friend.FriendsConnection(
@@ -294,14 +279,11 @@ public object HeroDetailQuery_ResponseAdapter {
                   com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend.Friend.FriendsConnection.Edge {
                 var node: com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend.Friend.FriendsConnection.Edge.Node? = null
 
-                while (true) {
-                  val __nameIdx = reader.selectName(RESPONSE_NAMES)
-                  if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-                  when (__nameIdx) {
+                while(true) {
+                  when (reader.selectName(RESPONSE_NAMES)) {
                     0 -> node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
                     else -> break
                   }
-                  customScalarAdapters.adapterContext.currentPath.pop()
                 }
 
                 return com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend.Friend.FriendsConnection.Edge(
@@ -328,14 +310,11 @@ public object HeroDetailQuery_ResponseAdapter {
                     com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend.Friend.FriendsConnection.Edge.Node {
                   var name: String? = null
 
-                  while (true) {
-                    val __nameIdx = reader.selectName(RESPONSE_NAMES)
-                    if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-                    when (__nameIdx) {
+                  while(true) {
+                    when (reader.selectName(RESPONSE_NAMES)) {
                       0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                       else -> break
                     }
-                    customScalarAdapters.adapterContext.currentPath.pop()
                   }
 
                   return com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend.Friend.FriendsConnection.Edge.Node(
@@ -370,17 +349,14 @@ public object HeroDetailQuery_ResponseAdapter {
         var name: String? = null
         var friends: List<com.example.unique_type_name.HeroDetailQuery.Data.OtherHeroDetailQuery.Friend?>? = null
 
-        while (true) {
-          val __nameIdx = reader.selectName(RESPONSE_NAMES)
-          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-          when (__nameIdx) {
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
             2 -> friends = Friend.obj().nullable().list().nullable().fromJson(reader,
                 customScalarAdapters)
             else -> break
           }
-          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return com.example.unique_type_name.HeroDetailQuery.Data.OtherHeroDetailQuery(
@@ -415,14 +391,11 @@ public object HeroDetailQuery_ResponseAdapter {
             com.example.unique_type_name.HeroDetailQuery.Data.OtherHeroDetailQuery.Friend {
           var name: String? = null
 
-          while (true) {
-            val __nameIdx = reader.selectName(RESPONSE_NAMES)
-            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-            when (__nameIdx) {
+          while(true) {
+            when (reader.selectName(RESPONSE_NAMES)) {
               0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
-            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           return com.example.unique_type_name.HeroDetailQuery.Data.OtherHeroDetailQuery.Friend(

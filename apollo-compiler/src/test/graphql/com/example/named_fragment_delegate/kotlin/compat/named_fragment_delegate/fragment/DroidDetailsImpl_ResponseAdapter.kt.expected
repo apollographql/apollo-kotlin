@@ -28,17 +28,14 @@ public object DroidDetailsImpl_ResponseAdapter {
       var primaryFunction: String? = null
       var friends: List<com.example.named_fragment_delegate.fragment.DroidDetails.Friend?>? = null
 
-      while (true) {
-        val __nameIdx = reader.selectName(RESPONSE_NAMES)
-        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-        when (__nameIdx) {
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
           0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           2 -> friends = Friend.obj().nullable().list().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
-        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return com.example.named_fragment_delegate.fragment.DroidDetails(
@@ -71,14 +68,11 @@ public object DroidDetailsImpl_ResponseAdapter {
         com.example.named_fragment_delegate.fragment.DroidDetails.Friend {
       var name: String? = null
 
-      while (true) {
-        val __nameIdx = reader.selectName(RESPONSE_NAMES)
-        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-        when (__nameIdx) {
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
           0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
-        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return com.example.named_fragment_delegate.fragment.DroidDetails.Friend(

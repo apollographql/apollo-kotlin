@@ -24,16 +24,13 @@ public object UserFragmentImpl_ResponseAdapter {
       var lastName: String? = null
       var avatar: String? = null
 
-      while (true) {
-        val __nameIdx = reader.selectName(RESPONSE_NAMES)
-        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-        when (__nameIdx) {
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
           0 -> firstName = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> lastName = StringAdapter.fromJson(reader, customScalarAdapters)
           2 -> avatar = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
-        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return UserFragmentImpl.Data(

@@ -27,14 +27,11 @@ public object CreateReviewForEpisodeMutation_ResponseAdapter {
         CreateReviewForEpisodeMutation.Data {
       var createReview: CreateReviewForEpisodeMutation.Data.CreateReview? = null
 
-      while (true) {
-        val __nameIdx = reader.selectName(RESPONSE_NAMES)
-        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-        when (__nameIdx) {
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
           0 -> createReview = CreateReview.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
-        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return CreateReviewForEpisodeMutation.Data(
@@ -59,15 +56,12 @@ public object CreateReviewForEpisodeMutation_ResponseAdapter {
         var stars: Int? = null
         var commentary: String? = null
 
-        while (true) {
-          val __nameIdx = reader.selectName(RESPONSE_NAMES)
-          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-          when (__nameIdx) {
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
             0 -> stars = IntAdapter.fromJson(reader, customScalarAdapters)
             1 -> commentary = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
-          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return CreateReviewForEpisodeMutation.Data.CreateReview(

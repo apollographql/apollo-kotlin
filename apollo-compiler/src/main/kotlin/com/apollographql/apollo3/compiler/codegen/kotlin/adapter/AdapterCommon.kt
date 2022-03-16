@@ -4,10 +4,7 @@ import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.RESPONSE_NAMES
-import com.apollographql.apollo3.compiler.codegen.Identifier.__nameIdx
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
-import com.apollographql.apollo3.compiler.codegen.Identifier.adapterContext
-import com.apollographql.apollo3.compiler.codegen.Identifier.currentPath
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
@@ -66,10 +63,8 @@ internal fun readFromResponseCodeBlock(
    * Read the regular properties
    */
   val loop = CodeBlock.builder()
-      .beginControlFlow("while·(true)")
-      .add("val·$__nameIdx·=·$reader.selectName($RESPONSE_NAMES)\n")
-      .add("if·($__nameIdx·!=·-1)·$customScalarAdapters.$adapterContext.$currentPath.push($RESPONSE_NAMES[$__nameIdx])\n")
-      .beginControlFlow("when·($__nameIdx)")
+      .beginControlFlow("while(true)")
+      .beginControlFlow("when·($reader.selectName($RESPONSE_NAMES))")
       .add(
           regularProperties.mapIndexed { index, property ->
             CodeBlock.of(
@@ -82,7 +77,6 @@ internal fun readFromResponseCodeBlock(
       )
       .addStatement("else -> break")
       .endControlFlow()
-      .add("$customScalarAdapters.$adapterContext.$currentPath.pop()\n")
       .endControlFlow()
       .build()
 

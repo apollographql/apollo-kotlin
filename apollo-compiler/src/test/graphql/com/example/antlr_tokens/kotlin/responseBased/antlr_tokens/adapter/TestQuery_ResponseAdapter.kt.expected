@@ -25,15 +25,12 @@ public object TestQuery_ResponseAdapter {
         TestQuery.Data {
       var typeWithGraphQLKeywords: TestQuery.Data.TypeWithGraphQLKeywords? = null
 
-      while (true) {
-        val __nameIdx = reader.selectName(RESPONSE_NAMES)
-        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-        when (__nameIdx) {
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
           0 -> typeWithGraphQLKeywords = TypeWithGraphQLKeywords.obj().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
-        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return TestQuery.Data(
@@ -60,16 +57,13 @@ public object TestQuery_ResponseAdapter {
         var `null`: String? = null
         var alias: String? = null
 
-        while (true) {
-          val __nameIdx = reader.selectName(RESPONSE_NAMES)
-          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-          when (__nameIdx) {
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
             0 -> on = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             1 -> `null` = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             2 -> alias = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
-          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return TestQuery.Data.TypeWithGraphQLKeywords(

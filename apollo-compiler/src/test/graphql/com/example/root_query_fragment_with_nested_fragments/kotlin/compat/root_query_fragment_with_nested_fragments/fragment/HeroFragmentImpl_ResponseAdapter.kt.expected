@@ -23,14 +23,11 @@ public object HeroFragmentImpl_ResponseAdapter {
         com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragment {
       var name: String? = null
 
-      while (true) {
-        val __nameIdx = reader.selectName(RESPONSE_NAMES)
-        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-        when (__nameIdx) {
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
           0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
-        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragment(

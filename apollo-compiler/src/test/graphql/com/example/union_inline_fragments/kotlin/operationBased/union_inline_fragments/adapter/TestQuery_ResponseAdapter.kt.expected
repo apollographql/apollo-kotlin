@@ -31,15 +31,12 @@ public object TestQuery_ResponseAdapter {
         TestQuery.Data {
       var search: List<TestQuery.Data.Search?>? = null
 
-      while (true) {
-        val __nameIdx = reader.selectName(RESPONSE_NAMES)
-        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-        when (__nameIdx) {
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
           0 -> search = Search.obj(true).nullable().list().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
-        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return TestQuery.Data(
@@ -64,14 +61,11 @@ public object TestQuery_ResponseAdapter {
           TestQuery.Data.Search {
         var __typename: String? = null
 
-        while (true) {
-          val __nameIdx = reader.selectName(RESPONSE_NAMES)
-          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-          when (__nameIdx) {
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
-          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         check(__typename != null) {
@@ -127,17 +121,14 @@ public object TestQuery_ResponseAdapter {
           var name: String? = null
           var friends: List<TestQuery.Data.Search.OnCharacter.Friend?>? = null
 
-          while (true) {
-            val __nameIdx = reader.selectName(RESPONSE_NAMES)
-            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-            when (__nameIdx) {
+          while(true) {
+            when (reader.selectName(RESPONSE_NAMES)) {
               0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
               1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
               2 -> friends = Friend.obj(true).nullable().list().nullable().fromJson(reader,
                   customScalarAdapters)
               else -> break
             }
-            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           return TestQuery.Data.Search.OnCharacter(
@@ -171,14 +162,11 @@ public object TestQuery_ResponseAdapter {
               TestQuery.Data.Search.OnCharacter.Friend {
             var __typename: String? = null
 
-            while (true) {
-              val __nameIdx = reader.selectName(RESPONSE_NAMES)
-              if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-              when (__nameIdx) {
+            while(true) {
+              when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
-              customScalarAdapters.adapterContext.currentPath.pop()
             }
 
             check(__typename != null) {
@@ -242,14 +230,11 @@ public object TestQuery_ResponseAdapter {
                 TestQuery.Data.Search.OnCharacter.Friend.OnCharacter {
               var name: String? = null
 
-              while (true) {
-                val __nameIdx = reader.selectName(RESPONSE_NAMES)
-                if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-                when (__nameIdx) {
+              while(true) {
+                when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
-                customScalarAdapters.adapterContext.currentPath.pop()
               }
 
               return TestQuery.Data.Search.OnCharacter.Friend.OnCharacter(
@@ -276,16 +261,13 @@ public object TestQuery_ResponseAdapter {
               var homePlanet: String? = null
               var friends: List<TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend?>? = null
 
-              while (true) {
-                val __nameIdx = reader.selectName(RESPONSE_NAMES)
-                if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-                when (__nameIdx) {
+              while(true) {
+                when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> homePlanet = NullableStringAdapter.fromJson(reader, customScalarAdapters)
                   1 -> friends = Friend.obj(true).nullable().list().nullable().fromJson(reader,
                       customScalarAdapters)
                   else -> break
                 }
-                customScalarAdapters.adapterContext.currentPath.pop()
               }
 
               return TestQuery.Data.Search.OnCharacter.Friend.OnHuman(
@@ -316,14 +298,11 @@ public object TestQuery_ResponseAdapter {
                   TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend {
                 var __typename: String? = null
 
-                while (true) {
-                  val __nameIdx = reader.selectName(RESPONSE_NAMES)
-                  if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-                  when (__nameIdx) {
+                while(true) {
+                  when (reader.selectName(RESPONSE_NAMES)) {
                     0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                     else -> break
                   }
-                  customScalarAdapters.adapterContext.currentPath.pop()
                 }
 
                 check(__typename != null) {
@@ -361,15 +340,12 @@ public object TestQuery_ResponseAdapter {
                     TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend.OnCharacter {
                   var firstAppearsIn: Episode? = null
 
-                  while (true) {
-                    val __nameIdx = reader.selectName(RESPONSE_NAMES)
-                    if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-                    when (__nameIdx) {
+                  while(true) {
+                    when (reader.selectName(RESPONSE_NAMES)) {
                       0 -> firstAppearsIn = Episode_ResponseAdapter.fromJson(reader,
                           customScalarAdapters)
                       else -> break
                     }
-                    customScalarAdapters.adapterContext.currentPath.pop()
                   }
 
                   return TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend.OnCharacter(
@@ -398,17 +374,14 @@ public object TestQuery_ResponseAdapter {
               var primaryFunction: String? = null
               var friends: List<TestQuery.Data.Search.OnCharacter.Friend.OnDroid.Friend?>? = null
 
-              while (true) {
-                val __nameIdx = reader.selectName(RESPONSE_NAMES)
-                if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-                when (__nameIdx) {
+              while(true) {
+                when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> primaryFunction = NullableStringAdapter.fromJson(reader,
                       customScalarAdapters)
                   1 -> friends = Friend.obj().nullable().list().nullable().fromJson(reader,
                       customScalarAdapters)
                   else -> break
                 }
-                customScalarAdapters.adapterContext.currentPath.pop()
               }
 
               return TestQuery.Data.Search.OnCharacter.Friend.OnDroid(
@@ -439,14 +412,11 @@ public object TestQuery_ResponseAdapter {
                   TestQuery.Data.Search.OnCharacter.Friend.OnDroid.Friend {
                 var id: String? = null
 
-                while (true) {
-                  val __nameIdx = reader.selectName(RESPONSE_NAMES)
-                  if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-                  when (__nameIdx) {
+                while(true) {
+                  when (reader.selectName(RESPONSE_NAMES)) {
                     0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
                     else -> break
                   }
-                  customScalarAdapters.adapterContext.currentPath.pop()
                 }
 
                 return TestQuery.Data.Search.OnCharacter.Friend.OnDroid.Friend(
@@ -474,14 +444,11 @@ public object TestQuery_ResponseAdapter {
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Search.OnStarship {
           var name: String? = null
 
-          while (true) {
-            val __nameIdx = reader.selectName(RESPONSE_NAMES)
-            if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-            when (__nameIdx) {
+          while(true) {
+            when (reader.selectName(RESPONSE_NAMES)) {
               0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
-            customScalarAdapters.adapterContext.currentPath.pop()
           }
 
           return TestQuery.Data.Search.OnStarship(

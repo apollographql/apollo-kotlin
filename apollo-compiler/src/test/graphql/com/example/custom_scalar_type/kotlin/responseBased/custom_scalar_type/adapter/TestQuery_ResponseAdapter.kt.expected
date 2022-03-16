@@ -30,14 +30,11 @@ public object TestQuery_ResponseAdapter {
         TestQuery.Data {
       var hero: TestQuery.Data.Hero? = null
 
-      while (true) {
-        val __nameIdx = reader.selectName(RESPONSE_NAMES)
-        if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-        when (__nameIdx) {
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
           0 -> hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
-        customScalarAdapters.adapterContext.currentPath.pop()
       }
 
       return TestQuery.Data(
@@ -68,10 +65,8 @@ public object TestQuery_ResponseAdapter {
         var profileLink: java.lang.String? = null
         var links: List<java.lang.String>? = null
 
-        while (true) {
-          val __nameIdx = reader.selectName(RESPONSE_NAMES)
-          if (__nameIdx != -1) customScalarAdapters.adapterContext.currentPath.push(RESPONSE_NAMES[__nameIdx])
-          when (__nameIdx) {
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
             0 -> id = customScalarAdapters.responseAdapterFor<Long>(GraphQLID.type).fromJson(reader,
                 customScalarAdapters)
             1 -> name = com.example.MyStringAdapter().fromJson(reader, customScalarAdapters)
@@ -84,7 +79,6 @@ public object TestQuery_ResponseAdapter {
             6 -> links = com.example.UrlAdapter.list().fromJson(reader, customScalarAdapters)
             else -> break
           }
-          customScalarAdapters.adapterContext.currentPath.pop()
         }
 
         return TestQuery.Data.Hero(
