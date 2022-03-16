@@ -50,4 +50,27 @@ class MapJsonReaderTest {
     assertEquals(name, "Luke")
     assertEquals(appearsIn, "Episode3")
   }
+
+  @Test
+  fun canRewingInMap() {
+    val map = mapOf(
+        "key1" to "value1",
+        "key2" to "value2",
+    )
+
+    val jsonReader = MapJsonReader(map)
+
+    jsonReader.beginObject()
+    assertEquals("key1", jsonReader.nextName())
+    assertEquals("value1", jsonReader.nextString())
+    assertEquals("key2", jsonReader.nextName())
+    assertEquals("value2", jsonReader.nextString())
+    jsonReader.rewind()
+    assertEquals("key1", jsonReader.nextName())
+    assertEquals("value1", jsonReader.nextString())
+    jsonReader.skipValue()
+    jsonReader.endObject()
+
+    assertEquals(jsonReader.peek(), JsonReader.Token.END_DOCUMENT)
+  }
 }

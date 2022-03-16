@@ -103,7 +103,6 @@ internal fun readFromResponseCodeBlock(
 
   val syntheticLoop = syntheticProperties.map { property ->
     CodeBlock.builder()
-        .add("$reader.rewind();\n")
         .apply {
           if (property.condition != BooleanExpression.True) {
             add(
@@ -117,8 +116,10 @@ internal fun readFromResponseCodeBlock(
                 property.condition.codeBlock(),
                 JavaClassNames.Collections
             )
+            add("$reader.rewind();\n")
           } else {
             checkedProperties.add(property.info.responseName)
+            add("$reader.rewind();\n")
             add("$T ", context.resolver.resolveIrType(property.info.type))
           }
         }

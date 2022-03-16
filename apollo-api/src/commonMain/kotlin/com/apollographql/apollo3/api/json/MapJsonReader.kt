@@ -30,6 +30,8 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
 
   private var peekedToken: JsonReader.Token = JsonReader.Token.END_OBJECT
   private var peekedData: Any? = null
+  private var container: Map<String, Any?>? = null
+
   private val path = arrayOfNulls<Any>(MAX_STACK_SIZE)
   private val iteratorStack = arrayOfNulls<Iterator<*>>(MAX_STACK_SIZE)
 
@@ -121,12 +123,10 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
     }
 
     @Suppress("UNCHECKED_CAST")
-    val currentValue = peekedData as Map<String, Any?>
-
+    container = peekedData as Map<String, Any?>
     stackSize++
-    path[stackSize - 1] = null
-    iteratorStack[stackSize - 1] = currentValue.iterator()
-    advanceIterator()
+
+    rewind()
   }
 
   override fun endObject() = apply {
@@ -317,12 +317,15 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
    * Rewinds to the beginning of the current object.
    */
   override fun rewind() {
-    TODO()
+    path[stackSize - 1] = null
+    iteratorStack[stackSize - 1] = container!!.iterator()
+    advanceIterator()
   }
 
   override fun getPath(): String {
     return buildString {
-      path.forEachIndexed { index, element ->
+      for (index in 0.until(stackSize)) {
+        val element  = path[index]
         if (element is String) {
           if (index > 0) {
             append('.')
@@ -334,6 +337,7 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
           // unterminated object
           append('.')
         }
+
       }
     }
 
