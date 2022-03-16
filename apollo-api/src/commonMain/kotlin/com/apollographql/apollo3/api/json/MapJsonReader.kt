@@ -30,7 +30,7 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
 
   private var peekedToken: JsonReader.Token = JsonReader.Token.END_OBJECT
   private var peekedData: Any? = null
-  private val indexStack = IntArray(MAX_STACK_SIZE)
+  private val path = arrayOfNulls<Any>(MAX_STACK_SIZE)
   private val iteratorStack = arrayOfNulls<Iterator<*>>(MAX_STACK_SIZE)
 
   private var stackSize = 0
@@ -75,8 +75,8 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
       val next = currentIterator.next()
       peekedData = next
 
-      if (indexStack[stackSize - 1] >= 0) {
-        indexStack[stackSize - 1]++
+      if (path[stackSize - 1] is Int) {
+        path[stackSize - 1] = (path[stackSize - 1] as Int) + 1
       }
 
       peekedToken = when (next) {
@@ -84,7 +84,7 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
         else -> anyToToken(next)
       }
     } else {
-      peekedToken = if (indexStack[stackSize - 1] >= 0) {
+      peekedToken = if (path[stackSize - 1] is Int) {
         JsonReader.Token.END_ARRAY
       } else {
         JsonReader.Token.END_OBJECT
@@ -100,7 +100,7 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
     val currentValue = peekedData as List<Any?>
 
     stackSize++
-    indexStack[stackSize - 1] = 0
+    path[stackSize - 1] = 0
     iteratorStack[stackSize - 1] = currentValue.iterator()
     advanceIterator()
   }
@@ -122,7 +122,7 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
     val currentValue = peekedData as Map<String, Any?>
 
     stackSize++
-    indexStack[stackSize - 1] = -1
+    path[stackSize - 1] = null
     iteratorStack[stackSize - 1] = currentValue.iterator()
     advanceIterator()
   }
@@ -154,6 +154,7 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
     @Suppress("UNCHECKED_CAST")
     val data = peekedData as Map.Entry<String, Any?>
 
+    path[stackSize - 1] = data.key
     peekedData = data.value
     peekedToken = anyToToken(data.value)
     return data.key
@@ -317,8 +318,21 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
 
   override fun getPath(): String {
     return buildString {
-
+      path.forEachIndexed { index, element ->
+        if (element is String) {
+          if (index > 0) {
+            append('.')
+          }
+          append(element)
+        } else if (element is Int) {
+          append("[$element]")
+        } else {
+          // unterminated object
+          append('.')
+        }
+      }
     }
+
   }
 
   companion object {
