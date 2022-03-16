@@ -26,7 +26,7 @@ import com.apollographql.apollo3.exception.JsonDataException
  *
  * To read from a [okio.BufferedSource], see also [BufferedSourceJsonReader]
  */
-class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
+class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
 
   private var peekedToken: JsonReader.Token = JsonReader.Token.END_OBJECT
 
@@ -36,10 +36,6 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
    */
   private var peekedData: Any? = null
 
-  /**
-   * The current object memorized in case we need to rewind
-   */
-  private var container: Map<String, Any?>? = null
 
   /**
    * Can contain either:
@@ -48,6 +44,10 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
    * - null if peekedToken is BEGIN_OBJECT
    */
   private val path = arrayOfNulls<Any>(MAX_STACK_SIZE)
+  /**
+   * The current object memorized in case we need to rewind
+   */
+  private var containerStack = arrayOfNulls<Map<String, Any?>>(MAX_STACK_SIZE)
   private val iteratorStack = arrayOfNulls<Iterator<*>>(MAX_STACK_SIZE)
 
   private var stackSize = 0
@@ -136,13 +136,12 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
       throw JsonDataException("Expected BEGIN_OBJECT but was ${peek()} at path ${getPath()}")
     }
 
-    @Suppress("UNCHECKED_CAST")
-    container = peekedData as Map<String, Any?>
-
     check(stackSize < MAX_STACK_SIZE) {
       "Nesting too deep"
     }
     stackSize++
+    @Suppress("UNCHECKED_CAST")
+    containerStack[stackSize - 1] = peekedData as Map<String, Any?>
 
     rewind()
   }
@@ -335,6 +334,7 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
    * Rewinds to the beginning of the current object.
    */
   override fun rewind() {
+    val container = containerStack[stackSize - 1]
     path[stackSize - 1] = null
     iteratorStack[stackSize - 1] = container!!.iterator()
     advanceIterator()
