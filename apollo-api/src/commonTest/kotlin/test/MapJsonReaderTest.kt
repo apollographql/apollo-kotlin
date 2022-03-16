@@ -1,16 +1,17 @@
 package test
 
+import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.MapJsonReader
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class NormalizedCacheCoMapJsonReaderTest {
+class MapJsonReaderTest {
   @Test
   fun canReadMap() {
     val map = mapOf(
         "hero" to mapOf(
             "name" to "Luke",
-            "appearsIn" to "Episode1"
+            "appearsIn" to listOf("Episode1", "Episode2", "Episode3")
         )
     )
 
@@ -29,7 +30,11 @@ class NormalizedCacheCoMapJsonReaderTest {
                 name = jsonReader.nextString()
               }
               "appearsIn" -> {
-                appearsIn = jsonReader.nextString()
+                jsonReader.beginArray()
+                while (jsonReader.hasNext()) {
+                  appearsIn = jsonReader.nextString()
+                }
+                jsonReader.endArray()
               }
               else -> jsonReader.skipValue()
             }
@@ -41,7 +46,8 @@ class NormalizedCacheCoMapJsonReaderTest {
     }
     jsonReader.endObject()
 
+    assertEquals(jsonReader.peek(), JsonReader.Token.END_DOCUMENT)
     assertEquals(name, "Luke")
-    assertEquals(appearsIn, "Episode1")
+    assertEquals(appearsIn, "Episode3")
   }
 }
