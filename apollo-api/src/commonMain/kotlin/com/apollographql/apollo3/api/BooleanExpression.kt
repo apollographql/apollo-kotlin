@@ -140,7 +140,7 @@ fun <T : Any> BooleanExpression<T>.containsPossibleTypes(): Boolean {
   return when (this) {
     BooleanExpression.True -> false
     BooleanExpression.False -> false
-    is BooleanExpression.Not -> !operand.containsPossibleTypes()
+    is BooleanExpression.Not -> operand.containsPossibleTypes()
     is BooleanExpression.Or -> operands.any { it.containsPossibleTypes() }
     is BooleanExpression.And -> operands.any { it.containsPossibleTypes() }
     is BooleanExpression.Element -> value is BPossibleTypes
