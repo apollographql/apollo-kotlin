@@ -133,16 +133,12 @@ public object TestQuery_ResponseAdapter {
             }
           }
 
-          check(__typename != null) {
-            "__typename was not found"
-          }
-
           reader.rewind()
           val onCharacter = com.example.simple_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.OnCharacter.fromJson(reader,
               customScalarAdapters)
 
           return TestQuery.Data.Hero.OnCharacter(
-            __typename = __typename,
+            __typename = __typename!!,
             id = id!!,
             onCharacter = onCharacter
           )

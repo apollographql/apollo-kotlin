@@ -24,7 +24,7 @@ internal class OperationBasedModelGroupBuilder(
     private val schema: Schema,
     private val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val fieldMerger: FieldMerger,
-    private val compat: Boolean
+    private val compat: Boolean,
 ) : ModelGroupBuilder {
   private val insertFragmentSyntheticField = compat
   private val collectAllInlineFragmentFields = compat
@@ -154,7 +154,6 @@ internal class OperationBasedModelGroupBuilder(
           info = info,
           condition = condition,
           fieldSet = null,
-          hide = false,
       )
     }
 
@@ -341,7 +340,7 @@ internal class OperationBasedModelGroupBuilder(
           id = childPath,
           // No need to resolve the nameclashes here, "Fragments" are never flattened
           modelName = modelName(fragmentsFieldInfo),
-          fields = listOf(hiddenTypenameField) + fragmentSpreadFields
+          fields = fragmentSpreadFields,
       )
 
       listOf(
@@ -349,7 +348,6 @@ internal class OperationBasedModelGroupBuilder(
               info = fragmentsFieldInfo,
               condition = BooleanExpression.True,
               fieldSet = fragmentsFieldSet,
-              hide = false
           )
       )
     } else {
@@ -384,7 +382,7 @@ internal class OperationBasedModelGroupBuilder(
     val fieldSet = OperationFieldSet(
         id = selfPath,
         modelName = modelName,
-        fields = fields + inlineFragmentsFields + fragmentsFields
+        fields = fields + inlineFragmentsFields + fragmentsFields,
     )
 
     val patchedInfo = info.copy(
@@ -400,29 +398,11 @@ internal class OperationBasedModelGroupBuilder(
         info = patchedInfo,
         condition = condition,
         fieldSet = fieldSet,
-        hide = false
     )
   }
 
   companion object {
     const val FRAGMENTS_SYNTHETIC_FIELD = "fragments"
-
-    private val hiddenTypenameField by lazy {
-      val info = IrFieldInfo(
-          responseName = "__typename",
-          description = null,
-          deprecationReason = null,
-          type = IrNonNullType(IrScalarType("String")),
-          gqlType = GQLNamedType(name = "String")
-      )
-      OperationField(
-          info = info,
-          condition = BooleanExpression.True,
-          fieldSet = null,
-          hide = true
-      )
-    }
-
   }
 }
 
@@ -430,7 +410,6 @@ private class OperationField(
     val info: IrFieldInfo,
     val condition: BooleanExpression<BTerm>,
     val fieldSet: OperationFieldSet?,
-    val hide: Boolean,
 ) {
   val isSynthetic: Boolean
     get() = info.gqlType == null
@@ -476,6 +455,5 @@ private fun OperationField.toProperty(): IrProperty {
       override = false,
       condition = condition,
       requiresBuffering = fieldSet?.fields?.any { it.isSynthetic } ?: false,
-      hidden = hide
   )
 }

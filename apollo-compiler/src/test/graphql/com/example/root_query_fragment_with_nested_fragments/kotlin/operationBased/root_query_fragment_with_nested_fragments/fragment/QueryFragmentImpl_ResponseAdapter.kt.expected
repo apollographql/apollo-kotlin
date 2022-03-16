@@ -80,16 +80,12 @@ public object QueryFragmentImpl_ResponseAdapter {
           }
         }
 
-        check(__typename != null) {
-          "__typename was not found"
-        }
-
         reader.rewind()
         val heroFragment = com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.fromJson(reader,
             customScalarAdapters)
 
         return com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero(
-          __typename = __typename,
+          __typename = __typename!!,
           heroFragment = heroFragment
         )
       }
@@ -123,16 +119,12 @@ public object QueryFragmentImpl_ResponseAdapter {
           }
         }
 
-        check(__typename != null) {
-          "__typename was not found"
-        }
-
         reader.rewind()
         val droidFragment = com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.fromJson(reader,
             customScalarAdapters)
 
         return com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid(
-          __typename = __typename,
+          __typename = __typename!!,
           droidFragment = droidFragment
         )
       }
@@ -166,16 +158,12 @@ public object QueryFragmentImpl_ResponseAdapter {
           }
         }
 
-        check(__typename != null) {
-          "__typename was not found"
-        }
-
         reader.rewind()
         val onHuman = com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.Human.OnHuman.fromJson(reader,
             customScalarAdapters)
 
         return com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human(
-          __typename = __typename,
+          __typename = __typename!!,
           onHuman = onHuman
         )
       }

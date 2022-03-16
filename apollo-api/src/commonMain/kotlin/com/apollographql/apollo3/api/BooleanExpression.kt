@@ -109,7 +109,7 @@ fun <T : Any> BooleanExpression<T>.evaluate(block: (T) -> Boolean): Boolean {
   }
 }
 
-fun BooleanExpression<BTerm>.evaluate(variables: Set<String>, typename: String): Boolean {
+fun BooleanExpression<BTerm>.evaluate(variables: Set<String>, typename: String?): Boolean {
   return evaluate {
     when(it) {
       is BVariable -> variables.contains(it.name)
@@ -135,3 +135,14 @@ data class BPossibleTypes(val possibleTypes: Set<String>) : BTerm() {
   constructor(vararg types: String): this(types.toSet())
 }
 
+
+fun <T : Any> BooleanExpression<T>.containsPossibleTypes(): Boolean {
+  return when (this) {
+    BooleanExpression.True -> false
+    BooleanExpression.False -> false
+    is BooleanExpression.Not -> operand.containsPossibleTypes()
+    is BooleanExpression.Or -> operands.any { it.containsPossibleTypes() }
+    is BooleanExpression.And -> operands.any { it.containsPossibleTypes() }
+    is BooleanExpression.Element -> value is BPossibleTypes
+  }
+}

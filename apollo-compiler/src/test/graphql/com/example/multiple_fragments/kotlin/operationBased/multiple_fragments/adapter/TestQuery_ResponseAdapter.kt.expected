@@ -60,16 +60,12 @@ public object TestQuery_ResponseAdapter {
           }
         }
 
-        check(__typename != null) {
-          "__typename was not found"
-        }
-
         reader.rewind()
         val aFragment = com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.fromJson(reader,
             customScalarAdapters)
 
         return TestQuery.Data.A(
-          __typename = __typename,
+          __typename = __typename!!,
           aFragment = aFragment
         )
       }

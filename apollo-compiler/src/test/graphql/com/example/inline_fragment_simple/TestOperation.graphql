@@ -1,0 +1,7 @@
+query TestQuery {
+  hero {
+    ... on Human {
+      height
+    }
+  }
+}

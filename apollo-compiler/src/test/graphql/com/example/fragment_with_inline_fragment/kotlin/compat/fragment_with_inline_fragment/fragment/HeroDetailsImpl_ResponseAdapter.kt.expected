@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.json.readTypename
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
@@ -90,22 +91,12 @@ public object HeroDetailsImpl_ResponseAdapter {
 
     private object Fragments :
         Adapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails.Fragments> {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.fragment_with_inline_fragment.fragment.HeroDetails.Fragments {
-        var __typename: String? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            else -> break
-          }
-        }
 
-        check(__typename != null) {
-          "__typename was not found"
-        }
+        reader.rewind()
+        val __typename = reader.readTypename()
 
         reader.rewind()
         var humanDetails: HumanDetails? = null
@@ -248,16 +239,12 @@ public object HeroDetailsImpl_ResponseAdapter {
         }
       }
 
-      check(__typename != null) {
-        "__typename was not found"
-      }
-
       reader.rewind()
       val fragments = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.AsDroid.Fragments.fromJson(reader,
           customScalarAdapters)
 
       return com.example.fragment_with_inline_fragment.fragment.HeroDetails.AsDroid(
-        __typename = __typename,
+        __typename = __typename!!,
         name = name!!,
         friendsConnection = friendsConnection!!,
         fragments = fragments
@@ -284,22 +271,9 @@ public object HeroDetailsImpl_ResponseAdapter {
 
     private object Fragments :
         Adapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails.AsDroid.Fragments> {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.fragment_with_inline_fragment.fragment.HeroDetails.AsDroid.Fragments {
-        var __typename: String? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            else -> break
-          }
-        }
-
-        check(__typename != null) {
-          "__typename was not found"
-        }
 
         reader.rewind()
         val droidDetails = com.example.fragment_with_inline_fragment.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,

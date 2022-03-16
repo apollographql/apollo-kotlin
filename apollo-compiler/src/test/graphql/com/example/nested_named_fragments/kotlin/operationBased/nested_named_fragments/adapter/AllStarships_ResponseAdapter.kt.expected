@@ -123,16 +123,12 @@ public object AllStarships_ResponseAdapter {
               }
             }
 
-            check(__typename != null) {
-              "__typename was not found"
-            }
-
             reader.rewind()
             val starshipFragment = com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.StarshipFragment.fromJson(reader,
                 customScalarAdapters)
 
             return com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node(
-              __typename = __typename,
+              __typename = __typename!!,
               starshipFragment = starshipFragment
             )
           }
