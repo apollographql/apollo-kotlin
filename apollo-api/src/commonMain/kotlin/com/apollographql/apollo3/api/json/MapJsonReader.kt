@@ -28,18 +28,17 @@ import com.apollographql.apollo3.exception.JsonDataException
  */
 class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
 
-  private val tokenStack = arrayOfNulls<JsonReader.Token>(MAX_STACK_SIZE)
-  private val dataStack = arrayOfNulls<Any>(MAX_STACK_SIZE)
+  private var peekedToken: JsonReader.Token = JsonReader.Token.END_OBJECT
+  private var peekedData: Any? = null
   private val indexStack = IntArray(MAX_STACK_SIZE)
   private val iteratorStack = arrayOfNulls<Iterator<*>>(MAX_STACK_SIZE)
-
-
+  
   private var stackSize = 1
 
   private fun reset() {
     root.entries
-    tokenStack[stackSize] = JsonReader.Token.BEGIN_OBJECT
-    dataStack[stackSize] = root
+    peekedToken = JsonReader.Token.BEGIN_OBJECT
+    peekedData = root
     indexStack[stackSize] = -1
     iteratorStack[stackSize] = null // Should never be called
 
@@ -70,7 +69,7 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
    */
   private fun advanceIterator() {
     if (stackSize == 1) {
-      tokenStack[stackSize - 1] = JsonReader.Token.END_DOCUMENT
+      peekedToken = JsonReader.Token.END_DOCUMENT
       return
     }
 
@@ -78,18 +77,18 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
 
     if (currentIterator.hasNext()) {
       val next = currentIterator.next()
-      dataStack[stackSize - 1] = next
+      peekedData = next
 
       if (indexStack[stackSize - 1] >= 0) {
         indexStack[stackSize - 1]++
       }
 
-      tokenStack[stackSize - 1] = when (next) {
+      peekedToken = when (next) {
         is Map.Entry<*, *> -> JsonReader.Token.NAME
         else -> anyToToken(next)
       }
     } else {
-      tokenStack[stackSize - 1] = if (indexStack[stackSize - 1] >= 0) {
+      peekedToken = if (indexStack[stackSize - 1] >= 0) {
         JsonReader.Token.END_ARRAY
       } else {
         JsonReader.Token.END_OBJECT
@@ -102,7 +101,7 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
       throw JsonDataException("Expected BEGIN_ARRAY but was ${peek()} at path ${getPath()}")
     }
 
-    val currentValue = dataStack[stackSize - 1] as List<Any?>
+    val currentValue = peekedData as List<Any?>
 
     stackSize++
     indexStack[stackSize - 1] = 0
@@ -124,7 +123,7 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
     }
 
     @Suppress("UNCHECKED_CAST")
-    val currentValue = dataStack[stackSize - 1] as Map<String, Any?>
+    val currentValue = peekedData as Map<String, Any?>
 
     stackSize++
     indexStack[stackSize - 1] = -1
@@ -149,7 +148,7 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
   }
 
   override fun peek(): JsonReader.Token {
-    return tokenStack[stackSize - 1]!!
+    return peekedToken
   }
 
   override fun nextName(): String {
@@ -157,10 +156,10 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
       throw JsonDataException("Expected NAME but was ${peek()} at path ${getPath()}")
     }
     @Suppress("UNCHECKED_CAST")
-    val data = dataStack[stackSize - 1] as Map.Entry<String, Any?>
+    val data = peekedData as Map.Entry<String, Any?>
 
-    dataStack[stackSize - 1] = data.value
-    tokenStack[stackSize - 1] = anyToToken(data.value)
+    peekedData = data.value
+    peekedToken = anyToToken(data.value)
     return data.key
   }
 
@@ -176,7 +175,7 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
       }
     }
 
-    return (dataStack[stackSize - 1]!!.toString()).also {
+    return (peekedData!!.toString()).also {
       advanceIterator()
     }
   }
@@ -186,7 +185,7 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
       throw JsonDataException("Expected BOOLEAN but was ${peek()} at path ${getPath()}")
     }
 
-    return (dataStack[stackSize - 1] as Boolean).also {
+    return (peekedData as Boolean).also {
       advanceIterator()
     }
   }
@@ -212,7 +211,7 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
       }
     }
 
-    return when (val value = dataStack[stackSize - 1]) {
+    return when (val value = peekedData) {
       is Int -> value.toDouble()
       is Long -> value.toDoubleExact()
       is Double -> value
@@ -235,7 +234,7 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
       }
     }
 
-    return when (val value = dataStack[stackSize - 1]) {
+    return when (val value = peekedData) {
       is Int -> value
       is Long -> value.toIntExact()
       is Double -> value.toIntExact()
@@ -258,7 +257,7 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
       }
     }
 
-    return when (val value = dataStack[stackSize - 1]) {
+    return when (val value = peekedData) {
       is Int -> value.toLong()
       is Long -> value
       is Double -> value.toLongExact()
@@ -281,7 +280,7 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
       }
     }
 
-    return when (val value = dataStack[stackSize - 1]) {
+    return when (val value = peekedData) {
       is Int, is Long, is Double -> JsonNumber(value.toString())
       is String -> JsonNumber(value) // assert value is a valid number
       is JsonNumber -> value
@@ -317,34 +316,12 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
    * Rewinds to the beginning of the current object.
    */
   override fun rewind() {
-    if (stackSize > 1) {
-      val currentValue = dataStack[stackSize - 2]
-      when (currentValue) {
-        is List<*> -> {
-          indexStack[stackSize - 1] = 0
-          iteratorStack[stackSize - 1] = currentValue.iterator()
-        }
-        is Map<*, *> -> {
-          indexStack[stackSize - 1] = -1
-          iteratorStack[stackSize - 1] = currentValue.iterator()
-        }
-      }
-      advanceIterator()
-    } else {
-      reset()
-    }
+    TODO()
   }
 
   override fun getPath(): String {
     return buildString {
-      for (i in 0.until(stackSize - 1)) {
-        if (indexStack[i] >= 0) {
-          append("[$indexStack[$i]]")
-        } else {
-          append(".")
-          append(dataStack[i] as Map<S>.toString())
-        }
-      }
+
     }
   }
 
