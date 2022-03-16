@@ -90,9 +90,12 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   private fun consumeValue() {
     pendingName = null
     indexStack[stackSize - 1]++
+    incrementPathIndex()
   }
 
   override fun beginArray() = apply {
+    path += "."
+    path += -1
     val list = nextValue()
     check(list is List<*>)
     consumeValue()
@@ -101,9 +104,12 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
 
   override fun endArray() = apply {
     pop()
+    rewindPath()
+    incrementPathIndex()
   }
 
   override fun beginObject() = apply {
+    path += "."
     val map = nextValue()
     check(map is Map<*, *>)
     consumeValue()
@@ -112,6 +118,8 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
 
   override fun endObject() = apply {
     pop()
+    rewindPath()
+    incrementPathIndex()
   }
 
   private fun anyToToken(any: Any?) = when (any) {
@@ -172,6 +180,9 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
     check(data is OrderedMap)
     check(pendingName == null)
     pendingName = data.entries[indexStack[stackSize - 1]].key
+    rewindPath()
+    path += "."
+    path += pendingName!!
     return pendingName!!
   }
 
@@ -302,6 +313,23 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   override fun rewind() {
     indexStack[stackSize - 1] = 0
     nameIndexStack[stackSize - 1] = 0
+    rewindPath()
+  }
+
+  private val path = mutableListOf<Any>()
+
+  override fun getPath(): String {
+    // Drop the first "."
+    return path.drop(1).joinToString("")
+  }
+
+  private fun incrementPathIndex() {
+    if (path.lastOrNull() is Int) path[path.lastIndex] = (path.last() as Int) + 1
+  }
+
+  private fun rewindPath() {
+    while (path.isNotEmpty() && path.last() != ".") path.removeLast()
+    path.removeLastOrNull()
   }
 
   companion object {
