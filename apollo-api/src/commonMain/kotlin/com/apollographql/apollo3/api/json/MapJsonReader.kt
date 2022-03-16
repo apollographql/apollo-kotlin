@@ -32,17 +32,13 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
   private var peekedData: Any? = null
   private val indexStack = IntArray(MAX_STACK_SIZE)
   private val iteratorStack = arrayOfNulls<Iterator<*>>(MAX_STACK_SIZE)
-  
-  private var stackSize = 1
+
+  private var stackSize = 0
 
   private fun reset() {
     root.entries
     peekedToken = JsonReader.Token.BEGIN_OBJECT
     peekedData = root
-    indexStack[stackSize] = -1
-    iteratorStack[stackSize] = null // Should never be called
-
-    stackSize = 1
   }
 
   init {
@@ -68,7 +64,7 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
    * Requires iteratorStack and indexStack
    */
   private fun advanceIterator() {
-    if (stackSize == 1) {
+    if (stackSize == 0) {
       peekedToken = JsonReader.Token.END_DOCUMENT
       return
     }
