@@ -29,22 +29,32 @@ import com.apollographql.apollo3.exception.JsonDataException
 class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
 
   private var peekedToken: JsonReader.Token = JsonReader.Token.END_OBJECT
+
+  /**
+   * Depending what [peekedToken] is, [peekedData] can be safely cast to a Map, Entry
+   * or other values
+   */
   private var peekedData: Any? = null
+
+  /**
+   * The current object memorized in case we need to rewind
+   */
   private var container: Map<String, Any?>? = null
 
+  /**
+   * Can contain either:
+   * - an Int representing the next index to be read in a List
+   * - a String representing the current key to be read in a Map
+   * - null if peekedToken is BEGIN_OBJECT
+   */
   private val path = arrayOfNulls<Any>(MAX_STACK_SIZE)
   private val iteratorStack = arrayOfNulls<Iterator<*>>(MAX_STACK_SIZE)
 
   private var stackSize = 0
 
-  private fun reset() {
-    root.entries
+  init {
     peekedToken = JsonReader.Token.BEGIN_OBJECT
     peekedData = root
-  }
-
-  init {
-    reset()
   }
 
   private fun anyToToken(any: Any?) = when (any) {
@@ -61,9 +71,9 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
   }
 
   /**
-   * Updates the current token and data
+   * Updates [peekedToken] and [peekedData]
    *
-   * Requires iteratorStack and indexStack
+   * Requires [iteratorStack] and [path]
    */
   private fun advanceIterator() {
     if (stackSize == 0) {
