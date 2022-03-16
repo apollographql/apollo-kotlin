@@ -67,14 +67,11 @@ private fun JsonReader.guessNumber(): Any {
 }
 
 
-fun JsonReader.readTypename(assertFirst: Boolean = true): String {
-  while (hasNext()) {
-    if (nextName() == "__typename") {
-      return nextString() ?: "__typename is null"
-    }
-    if (assertFirst) {
-      error("__typename not found in first position")
-    }
+fun JsonReader.readTypename(): String {
+  val names = listOf("__typename")
+  val index = selectName(names)
+  check(index == 0) {
+    error("__typename not found")
   }
-  error("__typename not found")
+  return nextString() ?: error("__typename is null")
 }
