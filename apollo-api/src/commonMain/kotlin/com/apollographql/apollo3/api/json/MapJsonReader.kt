@@ -64,7 +64,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
     is List<*> -> JsonReader.Token.BEGIN_ARRAY
     is Map<*, *> -> JsonReader.Token.BEGIN_OBJECT
     is Int -> JsonReader.Token.NUMBER
-    is Long -> JsonReader.Token.NUMBER
+    is Long -> JsonReader.Token.LONG
     is Double -> JsonReader.Token.NUMBER
     is JsonNumber -> JsonReader.Token.NUMBER
     is String -> JsonReader.Token.STRING
