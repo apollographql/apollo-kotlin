@@ -31,7 +31,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   private var peekedToken: JsonReader.Token = JsonReader.Token.END_OBJECT
 
   /**
-   * Depending what [peekedToken] is, [peekedData] can be safely cast to a Map, Entry
+   * Depending on what [peekedToken] is, [peekedData] can be safely cast to a Map, Entry
    * or other values
    */
   private var peekedData: Any? = null
