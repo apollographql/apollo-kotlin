@@ -110,6 +110,8 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
       throw JsonDataException("Expected END_ARRAY but was ${peek()} at path ${getPath()}")
     }
     stackSize--
+    iteratorStack[stackSize] = null // allow garbage collection
+    path[stackSize] = null // allow garbage collection
     advanceIterator()
   }
 
@@ -132,6 +134,8 @@ class MapJsonReader(private val root: Map<String, Any?>) : JsonReader {
       throw JsonDataException("Expected END_OBJECT but was ${peek()} at path ${getPath()}")
     }
     stackSize--
+    iteratorStack[stackSize] = null // allow garbage collection
+    path[stackSize] = null // allow garbage collection
     advanceIterator()
   }
 
