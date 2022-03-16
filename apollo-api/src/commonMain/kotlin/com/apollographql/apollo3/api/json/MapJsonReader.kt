@@ -320,26 +320,28 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
 
   private fun findName(needle: String, haystack: List<String>): Int {
     val expectedIndex = nameIndexStack[stackSize - 1]
-    if (haystack[expectedIndex] == needle) {
-      // our guess succeeded
-      nameIndexStack[stackSize - 1] = (nameIndexStack[stackSize - 1] + 1) % haystack.size
+    if (expectedIndex < haystack.size && haystack[expectedIndex] == needle) {
+      /**
+       * Our guess succeeded
+       *
+       * Note that for a same object, haystack might have different size.
+       * For an example, for responseBased codegen and polymorphic fields, this is going
+       * to be called once with just ["__typename"] and then later on with ["__typename", "id", "name"]
+       */
+      nameIndexStack[stackSize - 1] = nameIndexStack[stackSize - 1] + 1
       return expectedIndex
     } else {
       // guess failed, go back to full search
       val index = haystack.indexOf(needle)
       if (index != -1) {
         // reset the prediction
-        nameIndexStack[stackSize - 1] = (index + 1) % haystack.size
+        nameIndexStack[stackSize - 1] = index + 1
       }
       return index
     }
   }
 
   override fun selectName(names: List<String>): Int {
-    if (names.isEmpty()) {
-      return -1
-    }
-
     while (hasNext()) {
       val name = nextName()
       val index = findName(name, names)
