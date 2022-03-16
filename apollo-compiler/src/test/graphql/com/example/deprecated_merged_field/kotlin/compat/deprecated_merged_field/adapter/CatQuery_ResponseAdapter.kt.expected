@@ -108,9 +108,9 @@ public object CatQuery_ResponseAdapter {
           "__typename was not found"
         }
 
-        reader.rewind()
         var animalFragment: AnimalFragment? = null
         if (possibleTypes("Cat","Dog").evaluate(customScalarAdapters.variables(), __typename)) {
+          reader.rewind()
           animalFragment = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.fromJson(reader,
               customScalarAdapters)
         }

@@ -109,16 +109,16 @@ public object AnimalQuery_ResponseAdapter {
           "__typename was not found"
         }
 
-        reader.rewind()
         var catFragment: CatFragment? = null
         if (possibleTypes("Cat").evaluate(customScalarAdapters.variables(), __typename)) {
+          reader.rewind()
           catFragment = com.example.simple_union.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.fromJson(reader,
               customScalarAdapters)
         }
 
-        reader.rewind()
         var dogFragment: DogFragment? = null
         if (possibleTypes("Dog").evaluate(customScalarAdapters.variables(), __typename)) {
+          reader.rewind()
           dogFragment = com.example.simple_union.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.fromJson(reader,
               customScalarAdapters)
         }

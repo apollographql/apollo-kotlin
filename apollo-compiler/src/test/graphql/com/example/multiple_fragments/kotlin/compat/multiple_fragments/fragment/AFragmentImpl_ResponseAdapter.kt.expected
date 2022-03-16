@@ -107,16 +107,16 @@ public object AFragmentImpl_ResponseAdapter {
           "__typename was not found"
         }
 
-        reader.rewind()
         var fragment1: Fragment1? = null
         if (possibleTypes("ANode").evaluate(customScalarAdapters.variables(), __typename)) {
+          reader.rewind()
           fragment1 = com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.fromJson(reader,
               customScalarAdapters)
         }
 
-        reader.rewind()
         var fragment2: Fragment2? = null
         if (possibleTypes("ANode").evaluate(customScalarAdapters.variables(), __typename)) {
+          reader.rewind()
           fragment2 = com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.fromJson(reader,
               customScalarAdapters)
         }

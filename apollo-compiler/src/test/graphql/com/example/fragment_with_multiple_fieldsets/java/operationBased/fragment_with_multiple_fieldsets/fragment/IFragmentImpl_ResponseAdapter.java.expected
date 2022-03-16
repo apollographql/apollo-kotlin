@@ -42,9 +42,9 @@ public class IFragmentImpl_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      reader.rewind();
       com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA onA = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("A")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         onA = com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.OnA.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 

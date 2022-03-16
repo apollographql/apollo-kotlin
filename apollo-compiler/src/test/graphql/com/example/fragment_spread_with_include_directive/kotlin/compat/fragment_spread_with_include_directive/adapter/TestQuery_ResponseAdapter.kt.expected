@@ -118,16 +118,16 @@ public object TestQuery_ResponseAdapter {
           "__typename was not found"
         }
 
-        reader.rewind()
         var heroDetails: HeroDetails? = null
         if (and(variable("withDetails"),not(variable("skipHumanDetails"))).evaluate(customScalarAdapters.variables(), __typename)) {
+          reader.rewind()
           heroDetails = com.example.fragment_spread_with_include_directive.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
               customScalarAdapters)
         }
 
-        reader.rewind()
         var humanDetails: HumanDetails? = null
         if (and(possibleTypes("Human"),variable("withDetails")).evaluate(customScalarAdapters.variables(), __typename)) {
+          reader.rewind()
           humanDetails = com.example.fragment_spread_with_include_directive.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
               customScalarAdapters)
         }

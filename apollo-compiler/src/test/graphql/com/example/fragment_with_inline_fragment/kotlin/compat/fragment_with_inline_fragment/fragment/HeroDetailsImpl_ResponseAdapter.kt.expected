@@ -45,9 +45,9 @@ public object HeroDetailsImpl_ResponseAdapter {
         "__typename was not found"
       }
 
-      reader.rewind()
       var asDroid: com.example.fragment_with_inline_fragment.fragment.HeroDetails.AsDroid? = null
       if (possibleTypes("Droid").evaluate(customScalarAdapters.variables(), __typename)) {
+        reader.rewind()
         asDroid = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.AsDroid.fromJson(reader,
             customScalarAdapters)
       }
@@ -107,9 +107,9 @@ public object HeroDetailsImpl_ResponseAdapter {
           "__typename was not found"
         }
 
-        reader.rewind()
         var humanDetails: HumanDetails? = null
         if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+          reader.rewind()
           humanDetails = com.example.fragment_with_inline_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
               customScalarAdapters)
         }

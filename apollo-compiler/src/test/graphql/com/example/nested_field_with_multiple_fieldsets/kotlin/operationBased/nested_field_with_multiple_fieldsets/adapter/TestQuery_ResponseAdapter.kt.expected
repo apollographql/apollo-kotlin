@@ -71,9 +71,9 @@ public object TestQuery_ResponseAdapter {
         val onIface1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.fromJson(reader,
             customScalarAdapters)
 
-        reader.rewind()
         var onImpl1: TestQuery.Data.Iface1.OnImpl1? = null
         if (possibleTypes("Impl1").evaluate(customScalarAdapters.variables(), __typename)) {
+          reader.rewind()
           onImpl1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.fromJson(reader,
               customScalarAdapters)
         }
@@ -152,9 +152,9 @@ public object TestQuery_ResponseAdapter {
             val onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnIface2.fromJson(reader,
                 customScalarAdapters)
 
-            reader.rewind()
             var onImpl2: TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2? = null
             if (possibleTypes("Impl2").evaluate(customScalarAdapters.variables(), __typename)) {
+              reader.rewind()
               onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnImpl2.fromJson(reader,
                   customScalarAdapters)
             }
@@ -295,9 +295,9 @@ public object TestQuery_ResponseAdapter {
             val onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnIface2.fromJson(reader,
                 customScalarAdapters)
 
-            reader.rewind()
             var onImpl2: TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2? = null
             if (possibleTypes("Impl2").evaluate(customScalarAdapters.variables(), __typename)) {
+              reader.rewind()
               onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnImpl2.fromJson(reader,
                   customScalarAdapters)
             }
