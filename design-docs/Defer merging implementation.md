@@ -429,61 +429,9 @@ return com.example.fragment.ComputerFields.Screen(
 )
 ```
 
-**How to keep track of the current path**
+To keep track of the current path we can use `JsonReader.getPath()`.
 
-Here too, we can use the `CustomScalarAdapters` as a context:
-- Add a property `currentPath: List<Any>` to `CustomScalarAdapters` (or better, a dedicated class encapsulating the list)
-- In the generated Adapter code, append the field name to the path before parsing it
-
-For instance, here's a snippet of generated Adapter code:
-
-_Before_:
-```kotlin
-    public val RESPONSE_NAMES: List<String> = listOf("computers")
-
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        Query1Query.Data {
-      var computers: List<Query1Query.Computer>? = null
-
-      while (true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> computers = Computer.obj(true).list().fromJson(reader, customScalarAdapters)
-          else -> break
-        }
-
-      return Query1Query.Data(
-        computers = computers!!
-      )
-    }
-```
-
-_After_:
-```kotlin
-    public val RESPONSE_NAMES: List<String> = listOf("computers")
-
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        Query1Query.Data {
-      var computers: List<Query1Query.Computer>? = null
-
-      while (true) {
-        val __nameIdx = reader.selectName(RESPONSE_NAMES)
-        if (__nameIdx != -1) customScalarAdapters.currentPath.push(RESPONSE_NAMES[__nameIdx])
-        when (__nameIdx) {
-          0 -> computers = Computer.obj(true).list().fromJson(reader, customScalarAdapters)
-          else -> break
-        }
-        customScalarAdapters.currentPath.pop()}
-
-      return Query1Query.Data(
-        computers = computers!!
-      )
-    }
-```
-
-For arrays, no need to update the generated code: we can add the index to the path in a generic way, directly
-inside `ListAdapter`.
-
-Note: I propose we move `variables`, `deferredFragmentIdentifiers` and `currentPath` to an `AdapterContext` class
+Note: I propose we move `variables`, `deferredFragmentIdentifiers` to an `AdapterContext` class
 instead of keeping them directly in `CustomScalarAdapters`.
 
 ### Comparison of both approaches
