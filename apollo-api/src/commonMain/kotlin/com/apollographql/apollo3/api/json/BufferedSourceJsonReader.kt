@@ -23,7 +23,6 @@ import okio.BufferedSource
 import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
 import okio.EOFException
-import okio.IOException
 
 /**
  * A [JsonWriter] that reads json from an okio [BufferedSource]
@@ -887,7 +886,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     return false
   }
 
-  private fun getPath(): String = JsonScope.getPath(stackSize, stack, pathNames, pathIndices)
+  override fun getPath(): String = JsonScope.getPath(stackSize, stack, pathNames, pathIndices)
 
   /**
    * Unescapes the character identified by the character or characters that immediately follow a backslash. The backslash '\' should have
