@@ -78,10 +78,18 @@ class Schema(
   }
 
 
+  /**
+   * List all types (types, interfaces, unions) implemented by a given type
+   */
   fun implementedTypes(name: String): Set<String> {
     val typeDefinition = typeDefinition(name)
     return when (typeDefinition) {
-      is GQLObjectTypeDefinition -> typeDefinition.implementsInterfaces.flatMap { implementedTypes(it) }.toSet() + name
+      is GQLObjectTypeDefinition -> {
+        val enums = typeDefinitions.values.filterIsInstance<GQLUnionTypeDefinition>().filter {
+          it.memberTypes.map { it.name }.toSet().contains(typeDefinition.name)
+        }.map { it.name }
+        typeDefinition.implementsInterfaces.flatMap { implementedTypes(it) }.toSet() + name + enums
+      }
       is GQLInterfaceTypeDefinition -> typeDefinition.implementsInterfaces.flatMap { implementedTypes(it) }.toSet() + name
       is GQLUnionTypeDefinition,
       is GQLScalarTypeDefinition,
