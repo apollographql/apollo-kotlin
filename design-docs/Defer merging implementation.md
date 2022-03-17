@@ -434,6 +434,390 @@ To keep track of the current path we can use `JsonReader.getPath()`.
 Note: I propose we move `variables`, `deferredFragmentIdentifiers` to an `AdapterContext` class
 instead of keeping them directly in `CustomScalarAdapters`.
 
+#### About the merging of fragment synthetic fields
+
+Currently, the codegen will: 
+- merge (have only 1 field for) spreads referencing the same fragment
+- merge inline fragments with the same type condition and skip/include condition
+
+With `@defer`, this needs to be adjusted.
+
+##### Fragment spreads
+
+We can still merge deferred fragment spreads referencig the same fragment, and even merge them with the non-deferred
+ones.
+
+Examples:
+
+<table><tr><td>
+
+```graphql
+query Query1 {
+  computers {
+    ...ComputerFields
+  }
+}
+```
+</td><td>
+
+```kotlin
+data class Computer(
+    val computerFields: ComputerFields
+)
+```
+</td></tr><tr><td>
+
+```graphql
+query Query2 {
+  computers {
+    ...ComputerFields
+    ...ComputerFields
+  }
+}
+```
+</td><td>
+
+```kotlin
+data class Computer(
+    val computerFields: ComputerFields
+)
+```
+
+</td></tr><tr><td>
+
+```graphql
+query Query3 {
+  computers {
+    ...ComputerFields @defer
+  }
+}
+```
+</td><td>
+
+```kotlin
+data class Computer(
+    val computerFields: ComputerFields?
+)
+```
+
+</td></tr><tr><td>
+
+```graphql
+query Query4 {
+  computers {
+    ...ComputerFields @defer
+    ...ComputerFields @defer
+  }
+}
+```
+</td><td>
+
+```kotlin
+data class Computer(
+    val computerFields: ComputerFields?
+)
+```
+
+</td></tr><tr><td>
+
+```graphql
+query Query5 {
+  computers {
+    ...ComputerFields
+    ...ComputerFields @defer
+  }
+}
+```
+</td><td>
+
+```kotlin
+data class Computer(
+    val computerFields: ComputerFields
+)
+```
+
+</td></tr><tr><td>
+
+```graphql
+query Query6($a: Boolean!) {
+  computers {
+    ...ComputerFields
+    ...ComputerFields @skip(if: $a)
+    ...ComputerFields @include(if: $a)
+    ...ComputerFields @defer
+    ...ComputerFields @defer @skip(if: $a)
+    ...ComputerFields @defer @include(if: $a)
+  }
+}
+```
+</td><td>
+
+```kotlin
+data class Computer(
+    val computerFields: ComputerFields
+)
+```
+
+
+</td></tr></table>
+
+Nullability: if at least one field could be non-null before merging, then the result is non-null (and the generated
+adapter must read the fields).
+
+
+##### Inline fragments
+
+Inline fragments with the same type and skip/include conditions must not be merged if they are deferred, because the
+fields for each can either be present or not in the document to parse.
+
+Examples:
+
+<table><tr><td>
+
+```graphql
+query Query10 {
+  computers {
+    ... on Computer {
+      cpu
+    }
+    ... on Computer {
+      id
+    }
+  }
+}
+```
+</td><td>
+
+```kotlin
+data class Computer(
+    val onComputer: OnComputer
+)
+
+data class OnComputer(
+    val cpu: String,
+    val id: String
+)
+```
+</td></tr><tr><td>
+
+```graphql
+query Query11($a: Boolean!) {
+  computers {
+    ... on Computer {
+      id
+    }
+    ... on Computer @include(if: $a) {
+      cpu
+    }
+    ... on Computer @skip(if: $a) {
+      year
+    }
+  }
+}
+```
+</td><td>
+
+```kotlin
+data class Computer(
+    val onComputer: OnComputer,
+    val onComputerIfA: OnComputerIfA?,
+    val onComputerIfNotA: OnComputerIfNotA?
+)
+
+data class OnComputer(
+    val id: String
+)
+
+data class OnComputerIfA(
+    val cpu: String
+)
+
+data class OnComputerIfNotA(
+    val year: Int
+)
+
+```
+
+</td></tr><tr><td>
+
+```graphql
+query Query12 {
+  computers {
+    ... on Computer @defer {
+      id
+    }
+  }
+}
+```
+</td><td>
+
+```kotlin
+data class Computer(
+    val onComputer: OnComputer
+)
+
+data class OnComputer(
+    val id: String
+)
+```
+
+</td></tr><tr><td>
+
+```graphql
+query Query13 {
+  computers {
+    ... on Computer {
+      id
+    }
+
+    ... on Computer @defer {
+      cpu
+    }
+  }
+}
+
+```
+</td><td>
+
+```kotlin
+data class Computer(
+    val onComputer: OnComputer,
+    val onComputerDefer: OnComputerDefer?
+)
+
+data class OnComputer(
+    val id: String
+)
+
+data class OnComputerDefer(
+    val cpu: String
+)
+```
+
+</td></tr><tr><td>
+
+```graphql
+query Query14 {
+  computers {
+    ... on Computer {
+      id
+    }
+
+    ... on Computer @defer {
+      id
+    }
+  }
+}
+```
+</td><td>
+
+```kotlin
+data class Computer(
+    val onComputer: OnComputer,
+    val onComputerDefer: OnComputerDefer?
+)
+
+data class OnComputer(
+    val id: String
+)
+
+data class OnComputerDefer(
+    val id: String
+)
+```
+
+Note: here we could also merge the 2 fields since they have the same shape. But this may not be expected on the user
+side (it's kind of a special case)?
+
+</td></tr><tr><td>
+
+```graphql
+query Query15 {
+  computers {
+    ... on Computer {
+      id
+    }
+
+    ... on Computer @defer {
+      cpu
+    }
+
+    ... on Computer @defer {
+      year
+    }
+  }
+}
+
+```
+</td><td>
+
+```kotlin
+data class Computer(
+    val onComputer: OnComputer,
+    val onComputerDefer: OnComputerDefer?,
+    val onComputerDefer2: OnComputerDefer2?
+)
+
+data class OnComputer(
+    val id: String
+)
+
+data class OnComputerDefer(
+    val cpu: String
+)
+
+data class OnComputerDefer2(
+    val year: Int
+)
+```
+
+Note: using an incrementing index suffix to distinguish the fields/models.
+
+</td></tr><tr><td>
+
+```graphql
+query Query16($a: Boolean!) {
+  computers {
+    ... on Computer {
+      id
+    }
+
+    ... on Computer @defer @include(if: $a) {
+      cpu
+    }
+
+    ... on Computer @defer @skip(if: $a) {
+      year
+    }
+  }
+}
+```
+</td><td>
+
+```kotlin
+data class Computer(
+    val onComputer: OnComputer,
+    val onComputerDefer: OnComputerDefer?,
+    val onComputerDefer2: OnComputerDefer2?
+)
+
+data class OnComputer(
+    val id: String
+)
+
+data class OnComputerDefer(
+    val cpu: String
+)
+
+data class OnComputerDefer2(
+    val year: Int
+)
+```
+
+Note: no need to name them `ifA` and `ifNotA` because their name is already distinct.
+
+</td></tr></table>
+
 ### Comparison of both approaches
 
 Approach A:
