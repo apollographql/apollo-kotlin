@@ -224,6 +224,7 @@ internal class OperationBasedModelGroupBuilder(
                   InlineFragmentKey(typeCondition, BooleanExpression.True).toName()
                 }
 
+                // The 'isTypeASuperTypeOf' part is only there to support addTypename = "ifFragments" because this over-adds typename
                 var childCondition: BooleanExpression<BTerm> = if (!hasTypename || schema.isTypeASuperTypeOf(typeCondition, parentTypeCondition)) {
                   BooleanExpression.True
                 } else {
@@ -286,6 +287,7 @@ internal class OperationBasedModelGroupBuilder(
            */
           val parentTypeCondition = values.first().parent
 
+          // The 'isTypeASuperTypeOf' part is only there to support addTypename = "ifFragments" because this over-adds typename
           var childCondition: BooleanExpression<BTerm> = if (!hasTypename || schema.isTypeASuperTypeOf(typeCondition, parentTypeCondition)) {
             BooleanExpression.True
           } else {

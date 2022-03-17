@@ -13,15 +13,25 @@ import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.leafType
 import com.apollographql.apollo3.ast.rootTypeDefinition
 
-internal fun addRequiredFields(operation: GQLOperationDefinition, schema: Schema): GQLOperationDefinition {
+private class AddResult2(val hasTypename: Boolean, val selectionSet: GQLSelectionSet)
+
+internal fun addRequiredFields2(
+    operation: GQLOperationDefinition,
+    fragments: Map<String, GQLFragmentDefinition>,
+    schema: Schema,
+): GQLOperationDefinition {
   val parentType = operation.rootTypeDefinition(schema)!!.name
   return operation.copy(
-      selectionSet = operation.selectionSet.addRequiredFields(schema, parentType, emptySet()).selectionSet
+      selectionSet = operation.selectionSet.addRequiredFields(schema, fragments, parentType, emptySet(), false).selectionSet
   )
 }
 
-internal fun addRequiredFields(fragmentDefinition: GQLFragmentDefinition, schema: Schema): GQLFragmentDefinition {
-  val result = fragmentDefinition.selectionSet.addRequiredFields(schema, fragmentDefinition.typeCondition.name, emptySet())
+internal fun addRequiredFields2(
+    fragmentDefinition: GQLFragmentDefinition,
+    fragments: Map<String, GQLFragmentDefinition>,
+    schema: Schema,
+): GQLFragmentDefinition {
+  val result = fragmentDefinition.selectionSet.addRequiredFields(schema, fragments, fragmentDefinition.typeCondition.name, emptySet(), true)
 
   val directives = if (result.hasTypename) {
     fragmentDefinition.directives + hasTypenameDirective
@@ -34,18 +44,44 @@ internal fun addRequiredFields(fragmentDefinition: GQLFragmentDefinition, schema
   )
 }
 
-private class AddResult(val hasTypename: Boolean, val selectionSet: GQLSelectionSet)
+private fun GQLSelectionSet.requiresTypename(schema: Schema, fragments: Map<String, GQLFragmentDefinition>, rootType: String): Boolean {
+  return selections.any {
+    when (it) {
+      is GQLField -> false
+      is GQLInlineFragment -> !schema.isTypeASuperTypeOf(it.typeCondition.name, rootType) || it.selectionSet.requiresTypename(schema, fragments, rootType)
+      is GQLFragmentSpread -> {
+        val fragmentDefinition = fragments[it.name] ?: error("cannot find fragment ${it.name}")
+        /**
+         * If we were only looking at operationBased codegen, we wouldn't need to look inside fragment definitions but responseBased requires
+         * the __typename at the root of the field to determine the shape
+         */
+        !schema.isTypeASuperTypeOf(fragmentDefinition.typeCondition.name, rootType) || fragmentDefinition.selectionSet.requiresTypename(schema, fragments, rootType)
+      }
+    }
+  }
+}
 
-private fun GQLSelectionSet.addRequiredFields(schema: Schema, parentType: String, parentFields: Set<String>): AddResult {
+/**
+ * @param isRoot: whether this selection set is considered a valid root for adding __typename
+ * This is the case for field selection sets but also fragments since fragments can be executed from the cache
+ */
+private fun GQLSelectionSet.addRequiredFields(
+    schema: Schema,
+    fragments: Map<String, GQLFragmentDefinition>,
+    parentType: String,
+    parentFields: Set<String>,
+    isRoot: Boolean,
+): AddResult2 {
   val selectionSet = this
-  val hasFragment = selectionSet.selections.any { it is GQLFragmentSpread || it is GQLInlineFragment }
+
+  val requiresTypename = isRoot && requiresTypename(schema, fragments, parentType)
   val requiredFieldNames = schema.keyFields(parentType).toMutableSet()
 
-  if (requiredFieldNames.isNotEmpty()) {
+  if (requiredFieldNames.isNotEmpty() || requiresTypename) {
     requiredFieldNames.add("__typename")
   }
 
-  val fieldNames = parentFields + selectionSet.selections.filterIsInstance<GQLField>().map { it.name }.toSet()
+  val fieldNames = requiredFieldNames + parentFields + selectionSet.selections.filterIsInstance<GQLField>().map { it.name }.toSet()
 
   var newSelections = selectionSet.selections.map {
     when (it) {
@@ -53,20 +89,19 @@ private fun GQLSelectionSet.addRequiredFields(schema: Schema, parentType: String
         it.copy(
             selectionSet = it.selectionSet.addRequiredFields(
                 schema,
+                fragments,
                 it.typeCondition.name,
-                fieldNames + requiredFieldNames
+                fieldNames + requiredFieldNames,
+                false
             ).selectionSet
         )
       }
       is GQLFragmentSpread -> it
-      is GQLField -> it.addRequiredFields(schema, parentType)
+      is GQLField -> it.addRequiredFields(schema, fragments, parentType)
     }
   }
 
   val fieldNamesToAdd = (requiredFieldNames - fieldNames).toMutableList()
-  if (hasFragment) {
-    fieldNamesToAdd.add("__typename")
-  }
 
   newSelections.filterIsInstance<GQLField>().forEach {
     /**
@@ -79,29 +114,31 @@ private fun GQLSelectionSet.addRequiredFields(schema: Schema, parentType: String
   }
   newSelections = newSelections + fieldNamesToAdd.map { buildField(it) }
 
-  newSelections = if (hasFragment) {
+  newSelections = if (requiresTypename) {
     // remove the __typename if it exists
     // and add it again at the top, so we're guaranteed to have it at the beginning of json parsing
-    val typeNameField = newSelections.firstOrNull { (it as? GQLField)?.name == "__typename" }
-    listOfNotNull(typeNameField) + newSelections.filter { (it as? GQLField)?.name != "__typename" }
+    // also remove any @include/@skip directive on __typename
+    listOf(buildField("__typename")) + newSelections.filter { (it as? GQLField)?.name != "__typename" }
   } else {
     newSelections
   }
 
-  return AddResult(
-      hasTypename = hasFragment,
+  return AddResult2(
+      hasTypename = requiresTypename,
       selectionSet = selectionSet.copy(
           selections = newSelections
       )
   )
 }
 
-private fun GQLField.addRequiredFields(schema: Schema, parentType: String): GQLField {
+private fun GQLField.addRequiredFields(schema: Schema, fragments: Map<String, GQLFragmentDefinition>, parentType: String): GQLField {
   val typeDefinition = definitionFromScope(schema, parentType)!!
   val result = selectionSet?.addRequiredFields(
       schema,
+      fragments,
       typeDefinition.type.leafType().name,
-      emptySet()
+      emptySet(),
+      true
   )
 
   val directives = if (result?.hasTypename == true) {

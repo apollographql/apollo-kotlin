@@ -87,7 +87,7 @@ class Schema(
   }
 
   /**
-   * List all types (types, interfaces, unions) implemented by a given type
+   * List all types (types, interfaces, unions) implemented by a given type (including itself)
    */
   fun implementedTypes(name: String): Set<String> {
     val typeDefinition = typeDefinition(name)
