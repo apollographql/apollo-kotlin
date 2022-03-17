@@ -79,7 +79,6 @@ class NormalizationTest() {
         Issue2818Query(),
         Issue2818Query.Data(
             Issue2818Query.Home(
-                __typename = "Home",
                 sectionA = Issue2818Query.SectionA(
                     name = "section-name",
                 ),

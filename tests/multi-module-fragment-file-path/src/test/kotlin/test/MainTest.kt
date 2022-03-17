@@ -9,7 +9,6 @@ class MainTest {
   @Test
   fun testFragment() {
     GetLong3Query.Data(
-        __typename = "",
         queryDetails = QueryDetails(0),
         queryDetails3 = QueryDetails3(0)
     )
