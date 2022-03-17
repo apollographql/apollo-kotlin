@@ -22,7 +22,7 @@ import java.lang.String;
 import java.util.List;
 
 public class AllStarships implements Query<AllStarships.Data> {
-  public static final String OPERATION_ID = "a76ec26a83546f1113b4f2d763d67118a12a70958ef57d44d3f33dedaf90ff72";
+  public static final String OPERATION_ID = "c913380a1b7ffa9165b8a66cfb6704d7296f6f0889c8ac71afb2b17aca4ee415";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -32,7 +32,6 @@ public class AllStarships implements Query<AllStarships.Data> {
    *   allStarships(first: 7) {
    *     edges {
    *       node {
-   *         __typename
    *         ...starshipFragment
    *       }
    *     }
@@ -46,7 +45,6 @@ public class AllStarships implements Query<AllStarships.Data> {
    * fragment pilotFragment on Person {
    *   name
    *   homeworld {
-   *     __typename
    *     ...planetFragment
    *   }
    * }
@@ -57,14 +55,13 @@ public class AllStarships implements Query<AllStarships.Data> {
    *   pilotConnection {
    *     edges {
    *       node {
-   *         __typename
    *         ...pilotFragment
    *       }
    *     }
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query AllStarships { allStarships(first: 7) { edges { node { __typename ...starshipFragment } } } }  fragment planetFragment on Planet { name }  fragment pilotFragment on Person { name homeworld { __typename ...planetFragment } }  fragment starshipFragment on Starship { id name pilotConnection { edges { node { __typename ...pilotFragment } } } }";
+  public static final String OPERATION_DOCUMENT = "query AllStarships { allStarships(first: 7) { edges { node { ...starshipFragment } } } }  fragment planetFragment on Planet { name }  fragment pilotFragment on Person { name homeworld { ...planetFragment } }  fragment starshipFragment on Starship { id name pilotConnection { edges { node { ...pilotFragment } } } }";
 
   public static final String OPERATION_NAME = "AllStarships";
 
@@ -295,8 +292,6 @@ public class AllStarships implements Query<AllStarships.Data> {
   }
 
   public static class Node {
-    public String __typename;
-
     /**
      * Synthetic field for 'starshipFragment'
      */
@@ -308,8 +303,7 @@ public class AllStarships implements Query<AllStarships.Data> {
 
     private transient volatile String $toString;
 
-    public Node(String __typename, StarshipFragment starshipFragment) {
-      this.__typename = __typename;
+    public Node(StarshipFragment starshipFragment) {
       this.starshipFragment = starshipFragment;
     }
 
@@ -320,8 +314,7 @@ public class AllStarships implements Query<AllStarships.Data> {
       }
       if (o instanceof Node) {
         Node that = (Node) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.starshipFragment == null) ? (that.starshipFragment == null) : this.starshipFragment.equals(that.starshipFragment));
+        return ((this.starshipFragment == null) ? (that.starshipFragment == null) : this.starshipFragment.equals(that.starshipFragment));
       }
       return false;
     }
@@ -330,8 +323,6 @@ public class AllStarships implements Query<AllStarships.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (starshipFragment == null) ? 0 : starshipFragment.hashCode();
         $hashCode = h;
@@ -344,7 +335,6 @@ public class AllStarships implements Query<AllStarships.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Node{"
-          + "__typename=" + __typename + ", "
           + "starshipFragment=" + starshipFragment
           + "}";
       }

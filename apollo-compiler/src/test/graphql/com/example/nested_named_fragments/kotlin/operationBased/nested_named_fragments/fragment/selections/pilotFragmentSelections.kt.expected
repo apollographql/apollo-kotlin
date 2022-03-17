@@ -8,17 +8,12 @@ package com.example.nested_named_fragments.fragment.selections
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.notNull
 import com.example.nested_named_fragments.type.GraphQLString
 import com.example.nested_named_fragments.type.Planet
 import kotlin.collections.List
 
 public object pilotFragmentSelections {
   private val homeworld: List<CompiledSelection> = listOf(
-        CompiledField.Builder(
-          name = "__typename",
-          type = GraphQLString.type.notNull()
-        ).build(),
         CompiledFragment.Builder(
           typeCondition = "Planet",
           possibleTypes = (listOf("Planet"))

@@ -21,7 +21,7 @@ import java.lang.String;
 import java.util.List;
 
 public class TestQuery implements Query<TestQuery.Data> {
-  public static final String OPERATION_ID = "2c2de063c729a4ce1b51648279b6afd6372ac91ae33c304f4e33d20fb098cfc6";
+  public static final String OPERATION_ID = "ae55ac1276d47b97dc450882d0c8ee2e470beac46211d35f0236c1b34c508509";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -41,7 +41,6 @@ public class TestQuery implements Query<TestQuery.Data> {
    *         ... on Human {
    *           homePlanet
    *           friends {
-   *             __typename
    *             ... on Character {
    *               firstAppearsIn
    *             }
@@ -61,7 +60,7 @@ public class TestQuery implements Query<TestQuery.Data> {
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery { search(text: \"test\") { __typename ... on Character { id name friends { __typename ... on Character { name } ... on Human { homePlanet friends { __typename ... on Character { firstAppearsIn } } } ... on Droid { primaryFunction friends { id } } } } ... on Starship { name } } }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery { search(text: \"test\") { __typename ... on Character { id name friends { __typename ... on Character { name } ... on Human { homePlanet friends { ... on Character { firstAppearsIn } } } ... on Droid { primaryFunction friends { id } } } } ... on Starship { name } } }";
 
   public static final String OPERATION_NAME = "TestQuery";
 
@@ -519,8 +518,6 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Friend1 {
-    public String __typename;
-
     /**
      * Synthetic field for inline fragment on Character
      */
@@ -532,8 +529,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Friend1(String __typename, OnCharacter2 onCharacter) {
-      this.__typename = __typename;
+    public Friend1(OnCharacter2 onCharacter) {
       this.onCharacter = onCharacter;
     }
 
@@ -544,8 +540,7 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof Friend1) {
         Friend1 that = (Friend1) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.onCharacter == null) ? (that.onCharacter == null) : this.onCharacter.equals(that.onCharacter));
+        return ((this.onCharacter == null) ? (that.onCharacter == null) : this.onCharacter.equals(that.onCharacter));
       }
       return false;
     }
@@ -554,8 +549,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (onCharacter == null) ? 0 : onCharacter.hashCode();
         $hashCode = h;
@@ -568,7 +561,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Friend1{"
-          + "__typename=" + __typename + ", "
           + "onCharacter=" + onCharacter
           + "}";
       }

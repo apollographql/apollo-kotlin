@@ -13,10 +13,10 @@ import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.JsonReaders;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
+import com.apollographql.apollo3.api.json.JsonReaders;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fieldset_with_multiple_super.TestQuery;
 import java.io.IOException;
@@ -130,8 +130,8 @@ public class TestQuery_ResponseAdapter {
         }
       }
 
-      reader.rewind()
-      String __typename = JsonReaders.readTypename(reader)
+      reader.rewind();
+      String __typename = JsonReaders.readTypename(reader);
 
       reader.rewind();
       TestQuery.OnB onB = null;
@@ -206,8 +206,8 @@ public class TestQuery_ResponseAdapter {
         }
       }
 
-      reader.rewind()
-      String __typename = JsonReaders.readTypename(reader)
+      reader.rewind();
+      String __typename = JsonReaders.readTypename(reader);
 
       reader.rewind();
       TestQuery.OnA1 onA = null;

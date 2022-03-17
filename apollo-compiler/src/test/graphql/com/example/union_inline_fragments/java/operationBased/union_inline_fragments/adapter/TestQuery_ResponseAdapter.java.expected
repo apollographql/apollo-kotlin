@@ -293,28 +293,15 @@ public class TestQuery_ResponseAdapter {
   public enum Friend1 implements Adapter<TestQuery.Friend1> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
-
     @Override
     public TestQuery.Friend1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String __typename = null;
 
-      loop:
-      while(true) {
-        switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          default: break loop;
-        }
-      }
 
       reader.rewind();
       TestQuery.OnCharacter2 onCharacter = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnCharacter2.INSTANCE.fromJson(reader, customScalarAdapters);
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
-
       return new TestQuery.Friend1(
-        __typename,
         onCharacter
       );
     }
@@ -322,9 +309,6 @@ public class TestQuery_ResponseAdapter {
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Friend1 value) throws IOException {
-      writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
-
       com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnCharacter2.INSTANCE.toJson(writer, customScalarAdapters, value.onCharacter);
     }
   }

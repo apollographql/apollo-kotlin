@@ -7,7 +7,6 @@ package com.example.simple_fragment_with_inline_fragments.adapter
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -48,25 +47,15 @@ public object TestQuery_ResponseAdapter {
   }
 
   public object Hero : Adapter<TestQuery.Hero> {
-    public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Hero {
-      var __typename: String? = null
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          else -> break
-        }
-      }
 
       reader.rewind()
       val fragments = com.example.simple_fragment_with_inline_fragments.adapter.TestQuery_ResponseAdapter.Hero.Fragments.fromJson(reader,
           customScalarAdapters)
 
       return TestQuery.Hero(
-        __typename = __typename!!,
         fragments = fragments
       )
     }
@@ -76,9 +65,6 @@ public object TestQuery_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Hero
     ): Unit {
-      writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
       com.example.simple_fragment_with_inline_fragments.adapter.TestQuery_ResponseAdapter.Hero.Fragments.toJson(writer,
           customScalarAdapters, value.fragments)
     }

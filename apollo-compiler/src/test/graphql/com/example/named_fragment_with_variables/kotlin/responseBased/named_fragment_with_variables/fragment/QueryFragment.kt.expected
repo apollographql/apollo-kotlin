@@ -17,8 +17,6 @@ public interface QueryFragment {
     public val user: List<User>
 
     public interface User : UserFragment {
-      public val __typename: String
-
       public override val firstName: String
 
       public override val lastName: String

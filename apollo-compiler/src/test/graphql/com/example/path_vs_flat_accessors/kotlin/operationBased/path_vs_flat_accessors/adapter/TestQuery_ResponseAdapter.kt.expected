@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.json.readTypename
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
@@ -108,22 +109,12 @@ public object TestQuery_ResponseAdapter {
       }
 
       private object OnA : Adapter<TestQuery.Data.Root.OnA> {
-        public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Root.OnA {
-          var __typename: String? = null
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              else -> break
-            }
-          }
 
-          check(__typename != null) {
-            "__typename was not found"
-          }
+          reader.rewind()
+          val __typename = reader.readTypename()
 
           reader.rewind()
           var onB: TestQuery.Data.Root.OnA.OnB? = null
@@ -133,7 +124,6 @@ public object TestQuery_ResponseAdapter {
           }
 
           return TestQuery.Data.Root.OnA(
-            __typename = __typename,
             onB = onB
           )
         }
@@ -143,9 +133,6 @@ public object TestQuery_ResponseAdapter {
           customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.Root.OnA
         ): Unit {
-          writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
           if (value.onB != null) {
             com.example.path_vs_flat_accessors.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.OnB.toJson(writer,
                 customScalarAdapters, value.onB)

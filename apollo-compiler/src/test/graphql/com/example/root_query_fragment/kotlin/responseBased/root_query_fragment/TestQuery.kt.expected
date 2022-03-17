@@ -65,14 +65,13 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "9c53d7ef056cfcd269d1bfd4137fdb5a41ced7343ed524f03ec915c7a8d6f483"
+        "d5b79961c9b2c52219a9d91924a4571373d7f9da08eaf744f4edfec3c64478ec"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
      * query TestQuery {
-     *   __typename
      *   ...QueryFragment
      * }
      *
@@ -84,7 +83,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query TestQuery { __typename ...QueryFragment }  fragment QueryFragment on Query { __typename hero { name } }"
+        "query TestQuery { ...QueryFragment }  fragment QueryFragment on Query { __typename hero { name } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

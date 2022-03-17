@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.json.readTypename
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
@@ -98,24 +99,21 @@ public object TestQuery_ResponseAdapter {
       }
 
       private object OnCharacter : Adapter<TestQuery.Data.Search.OnCharacter> {
-        public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
+        public val RESPONSE_NAMES: List<String> = listOf("name")
 
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Search.OnCharacter {
-          var __typename: String? = null
           var name: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
-          check(__typename != null) {
-            "__typename was not found"
-          }
+          reader.rewind()
+          val __typename = reader.readTypename()
 
           reader.rewind()
           var onHuman: TestQuery.Data.Search.OnCharacter.OnHuman? = null
@@ -132,7 +130,6 @@ public object TestQuery_ResponseAdapter {
           }
 
           return TestQuery.Data.Search.OnCharacter(
-            __typename = __typename,
             name = name!!,
             onHuman = onHuman,
             onDroid = onDroid
@@ -144,9 +141,6 @@ public object TestQuery_ResponseAdapter {
           customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.Search.OnCharacter
         ): Unit {
-          writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
           writer.name("name")
           StringAdapter.toJson(writer, customScalarAdapters, value.name)
 

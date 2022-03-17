@@ -46,7 +46,6 @@ public class TestOperationSelections {
   );
 
   private static List<CompiledSelection> onBeing = Arrays.asList(
-    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("friends", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Being.type)))).selections(friends).build(),
     new CompiledFragment.Builder("Human", Arrays.asList("Human")).selections(onHuman).build()

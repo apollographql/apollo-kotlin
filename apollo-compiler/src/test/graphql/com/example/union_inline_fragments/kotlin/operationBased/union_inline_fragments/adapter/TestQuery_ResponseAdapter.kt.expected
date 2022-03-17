@@ -291,26 +291,16 @@ public object TestQuery_ResponseAdapter {
 
             private object Friend : Adapter<TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend>
                 {
-              public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
               public override fun fromJson(reader: JsonReader,
                   customScalarAdapters: CustomScalarAdapters):
                   TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend {
-                var __typename: String? = null
 
-                while(true) {
-                  when (reader.selectName(RESPONSE_NAMES)) {
-                    0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-                    else -> break
-                  }
-                }
 
                 reader.rewind()
                 val onCharacter = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnHuman.Friend.OnCharacter.fromJson(reader,
                     customScalarAdapters)
 
                 return TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend(
-                  __typename = __typename!!,
                   onCharacter = onCharacter
                 )
               }
@@ -320,9 +310,6 @@ public object TestQuery_ResponseAdapter {
                 customScalarAdapters: CustomScalarAdapters,
                 `value`: TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend
               ): Unit {
-                writer.name("__typename")
-                StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
                 com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnHuman.Friend.OnCharacter.toJson(writer,
                     customScalarAdapters, value.onCharacter)
               }

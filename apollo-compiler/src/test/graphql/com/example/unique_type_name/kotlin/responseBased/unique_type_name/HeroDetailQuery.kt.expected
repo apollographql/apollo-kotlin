@@ -115,7 +115,6 @@ public class HeroDetailQuery() : Query<HeroDetailQuery.Data> {
         public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
         public data class Friend(
-          public val __typename: String,
           /**
            * The name of the character
            */
@@ -183,7 +182,7 @@ public class HeroDetailQuery() : Query<HeroDetailQuery.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "9e49497791948cf0840e8353d87b142b6474e023a2082a3fe414b312565599de"
+        "760e2be3d685493eff8b6f8c1f0a2a2a18e8f977771a268eeb85ae4f9dc30108"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -201,7 +200,6 @@ public class HeroDetailQuery() : Query<HeroDetailQuery.Data> {
      *       friends {
      *         appearsIn
      *         friends {
-     *           __typename
      *           ...HeroDetails
      *         }
      *       }
@@ -222,7 +220,7 @@ public class HeroDetailQuery() : Query<HeroDetailQuery.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query HeroDetailQuery { heroDetailQuery { __typename name friends { name } ... on Human { height friends { appearsIn friends { __typename ...HeroDetails } } } } }  fragment HeroDetails on Character { name friendsConnection { totalCount edges { node { name } } } }"
+        "query HeroDetailQuery { heroDetailQuery { __typename name friends { name } ... on Human { height friends { appearsIn friends { ...HeroDetails } } } } }  fragment HeroDetails on Character { name friendsConnection { totalCount edges { node { name } } } }"
 
     public const val OPERATION_NAME: String = "HeroDetailQuery"
   }

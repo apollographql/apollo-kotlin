@@ -22,14 +22,13 @@ import java.lang.String;
 import java.util.List;
 
 public class TestQuery implements Query<TestQuery.Data> {
-  public static final String OPERATION_ID = "25584d760eab0f41189b9f2bbdbba3c0ec491aced65ef23924ecdc8f41ffe78c";
+  public static final String OPERATION_ID = "990e6c8e5f746470c39b4112a696aa5db45034d7cd4593a244d1df0649257d3c";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
    * The un-minimized version is:
    *
    * query TestQuery {
-   *   __typename
    *   ... on Query {
    *     __typename
    *     hero {
@@ -41,7 +40,6 @@ public class TestQuery implements Query<TestQuery.Data> {
    *       }
    *     }
    *     droid(id: 1) {
-   *       __typename
    *       ... on Droid {
    *         name
    *         primaryFunction
@@ -50,7 +48,7 @@ public class TestQuery implements Query<TestQuery.Data> {
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery { __typename ... on Query { __typename hero { __typename name appearsIn ... on Human { height } } droid(id: 1) { __typename ... on Droid { name primaryFunction } } } }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery { ... on Query { __typename hero { __typename name appearsIn ... on Human { height } } droid(id: 1) { ... on Droid { name primaryFunction } } } }";
 
   public static final String OPERATION_NAME = "TestQuery";
 
@@ -131,8 +129,6 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
-    public String __typename;
-
     /**
      * Synthetic field for inline fragment on Query
      */
@@ -144,8 +140,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(String __typename, OnQuery onQuery) {
-      this.__typename = __typename;
+    public Data(OnQuery onQuery) {
       this.onQuery = onQuery;
     }
 
@@ -156,8 +151,7 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof Data) {
         Data that = (Data) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.onQuery == null) ? (that.onQuery == null) : this.onQuery.equals(that.onQuery));
+        return ((this.onQuery == null) ? (that.onQuery == null) : this.onQuery.equals(that.onQuery));
       }
       return false;
     }
@@ -166,8 +160,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (onQuery == null) ? 0 : onQuery.hashCode();
         $hashCode = h;
@@ -180,7 +172,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Data{"
-          + "__typename=" + __typename + ", "
           + "onQuery=" + onQuery
           + "}";
       }
@@ -380,8 +371,6 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Droid {
-    public String __typename;
-
     /**
      * Synthetic field for inline fragment on Droid
      */
@@ -393,8 +382,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Droid(String __typename, OnDroid onDroid) {
-      this.__typename = __typename;
+    public Droid(OnDroid onDroid) {
       this.onDroid = onDroid;
     }
 
@@ -405,8 +393,7 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof Droid) {
         Droid that = (Droid) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.onDroid == null) ? (that.onDroid == null) : this.onDroid.equals(that.onDroid));
+        return ((this.onDroid == null) ? (that.onDroid == null) : this.onDroid.equals(that.onDroid));
       }
       return false;
     }
@@ -415,8 +402,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (onDroid == null) ? 0 : onDroid.hashCode();
         $hashCode = h;
@@ -429,7 +414,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Droid{"
-          + "__typename=" + __typename + ", "
           + "onDroid=" + onDroid
           + "}";
       }

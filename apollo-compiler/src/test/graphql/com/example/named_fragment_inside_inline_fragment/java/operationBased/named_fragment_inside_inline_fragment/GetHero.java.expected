@@ -21,7 +21,7 @@ import java.lang.Override;
 import java.lang.String;
 
 public class GetHero implements Query<GetHero.Data> {
-  public static final String OPERATION_ID = "9885eef2193cd56885e6e1bacd7f02b712820858880de6fb29b3f3b04458c831";
+  public static final String OPERATION_ID = "301b4cc3fece94453fbe4b6d8562541547229559f4a0394200351721a2768365";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -29,9 +29,7 @@ public class GetHero implements Query<GetHero.Data> {
    *
    * query GetHero {
    *   hero {
-   *     __typename
    *     ... on Character {
-   *       __typename
    *       ...characterName
    *       ...characterAppearsIn
    *     }
@@ -46,7 +44,7 @@ public class GetHero implements Query<GetHero.Data> {
    *   appearsIn
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query GetHero { hero { __typename ... on Character { __typename ...characterName ...characterAppearsIn } } }  fragment characterName on Character { name }  fragment characterAppearsIn on Character { appearsIn }";
+  public static final String OPERATION_DOCUMENT = "query GetHero { hero { ... on Character { ...characterName ...characterAppearsIn } } }  fragment characterName on Character { name }  fragment characterAppearsIn on Character { appearsIn }";
 
   public static final String OPERATION_NAME = "GetHero";
 
@@ -175,8 +173,6 @@ public class GetHero implements Query<GetHero.Data> {
   }
 
   public static class Hero {
-    public String __typename;
-
     /**
      * Synthetic field for inline fragment on Character
      */
@@ -188,8 +184,7 @@ public class GetHero implements Query<GetHero.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(String __typename, OnCharacter onCharacter) {
-      this.__typename = __typename;
+    public Hero(OnCharacter onCharacter) {
       this.onCharacter = onCharacter;
     }
 
@@ -200,8 +195,7 @@ public class GetHero implements Query<GetHero.Data> {
       }
       if (o instanceof Hero) {
         Hero that = (Hero) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.onCharacter == null) ? (that.onCharacter == null) : this.onCharacter.equals(that.onCharacter));
+        return ((this.onCharacter == null) ? (that.onCharacter == null) : this.onCharacter.equals(that.onCharacter));
       }
       return false;
     }
@@ -210,8 +204,6 @@ public class GetHero implements Query<GetHero.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (onCharacter == null) ? 0 : onCharacter.hashCode();
         $hashCode = h;
@@ -224,7 +216,6 @@ public class GetHero implements Query<GetHero.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Hero{"
-          + "__typename=" + __typename + ", "
           + "onCharacter=" + onCharacter
           + "}";
       }
@@ -233,8 +224,6 @@ public class GetHero implements Query<GetHero.Data> {
   }
 
   public static class OnCharacter {
-    public String __typename;
-
     /**
      * Synthetic field for 'characterName'
      */
@@ -251,9 +240,7 @@ public class GetHero implements Query<GetHero.Data> {
 
     private transient volatile String $toString;
 
-    public OnCharacter(String __typename, CharacterName characterName,
-        CharacterAppearsIn characterAppearsIn) {
-      this.__typename = __typename;
+    public OnCharacter(CharacterName characterName, CharacterAppearsIn characterAppearsIn) {
       this.characterName = characterName;
       this.characterAppearsIn = characterAppearsIn;
     }
@@ -265,8 +252,7 @@ public class GetHero implements Query<GetHero.Data> {
       }
       if (o instanceof OnCharacter) {
         OnCharacter that = (OnCharacter) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.characterName == null) ? (that.characterName == null) : this.characterName.equals(that.characterName))
+        return ((this.characterName == null) ? (that.characterName == null) : this.characterName.equals(that.characterName))
          &&((this.characterAppearsIn == null) ? (that.characterAppearsIn == null) : this.characterAppearsIn.equals(that.characterAppearsIn));
       }
       return false;
@@ -276,8 +262,6 @@ public class GetHero implements Query<GetHero.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (characterName == null) ? 0 : characterName.hashCode();
         h *= 1000003;
@@ -292,7 +276,6 @@ public class GetHero implements Query<GetHero.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "OnCharacter{"
-          + "__typename=" + __typename + ", "
           + "characterName=" + characterName + ", "
           + "characterAppearsIn=" + characterAppearsIn
           + "}";

@@ -50,8 +50,6 @@ public class TestQuery() : Query<TestQuery.Data> {
     public val cat: Cat
   ) : Query.Data {
     public sealed interface Cat {
-      public val __typename: String
-
       public companion object {
         public fun Cat.asNode() = this as? NodeCat
 
@@ -59,23 +57,18 @@ public class TestQuery() : Query<TestQuery.Data> {
       }
     }
 
-    public sealed interface NodeCat : Cat {
-      public override val __typename: String
-    }
+    public sealed interface NodeCat : Cat
 
     public data class AnimalNodeCat(
-      public override val __typename: String,
       public val species: String
     ) : NodeCat
 
-    public data class OtherCat(
-      public override val __typename: String
-    ) : Cat
+    public class OtherCat() : Cat
   }
 
   public companion object {
     public const val OPERATION_ID: String =
-        "fd42891d34246c8eb8c35ffcfa1c8b99282f5a90e7e43ffcab1cdd5a13d8a241"
+        "8e968280c9053647813f16d3881bc48bf53ac56e1affb65d4596c69ad67ae275"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -83,9 +76,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      *
      * query TestQuery {
      *   cat {
-     *     __typename
      *     ... on Node {
-     *       __typename
      *       ... on Animal {
      *         species
      *       }
@@ -94,7 +85,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query TestQuery { cat { __typename ... on Node { __typename ... on Animal { species } } } }"
+        "query TestQuery { cat { ... on Node { ... on Animal { species } } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

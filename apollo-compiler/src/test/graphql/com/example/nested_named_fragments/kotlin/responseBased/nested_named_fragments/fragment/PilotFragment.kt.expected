@@ -19,8 +19,6 @@ public interface PilotFragment {
   public val homeworld: Homeworld?
 
   public interface Homeworld : PlanetFragment {
-    public val __typename: String
-
     /**
      * The name of this planet.
      */

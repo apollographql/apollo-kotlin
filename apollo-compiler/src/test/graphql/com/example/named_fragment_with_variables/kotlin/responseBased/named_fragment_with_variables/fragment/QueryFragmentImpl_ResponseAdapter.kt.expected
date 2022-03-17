@@ -81,28 +81,24 @@ public object QueryFragmentImpl_ResponseAdapter {
       }
 
       private object User : Adapter<QueryFragmentImpl.Data.Organization.User> {
-        public val RESPONSE_NAMES: List<String> = listOf("__typename", "firstName", "lastName",
-            "avatar")
+        public val RESPONSE_NAMES: List<String> = listOf("firstName", "lastName", "avatar")
 
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): QueryFragmentImpl.Data.Organization.User {
-          var __typename: String? = null
           var firstName: String? = null
           var lastName: String? = null
           var avatar: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> firstName = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> lastName = StringAdapter.fromJson(reader, customScalarAdapters)
-              3 -> avatar = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> firstName = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> lastName = StringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> avatar = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return QueryFragmentImpl.Data.Organization.User(
-            __typename = __typename!!,
             firstName = firstName!!,
             lastName = lastName!!,
             avatar = avatar!!
@@ -114,9 +110,6 @@ public object QueryFragmentImpl_ResponseAdapter {
           customScalarAdapters: CustomScalarAdapters,
           `value`: QueryFragmentImpl.Data.Organization.User
         ): Unit {
-          writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
           writer.name("firstName")
           StringAdapter.toJson(writer, customScalarAdapters, value.firstName)
 

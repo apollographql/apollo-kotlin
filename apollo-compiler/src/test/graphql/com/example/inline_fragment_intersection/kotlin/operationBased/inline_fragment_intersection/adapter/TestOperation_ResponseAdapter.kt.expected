@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.json.readTypename
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
@@ -114,26 +115,23 @@ public object TestOperation_ResponseAdapter {
       }
 
       private object OnBeing : Adapter<TestOperation.Data.Random.OnBeing> {
-        public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friends")
+        public val RESPONSE_NAMES: List<String> = listOf("name", "friends")
 
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Random.OnBeing {
-          var __typename: String? = null
           var name: String? = null
           var friends: List<TestOperation.Data.Random.OnBeing.Friend>? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> friends = Friend.obj(true).list().fromJson(reader, customScalarAdapters)
+              0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> friends = Friend.obj(true).list().fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
-          check(__typename != null) {
-            "__typename was not found"
-          }
+          reader.rewind()
+          val __typename = reader.readTypename()
 
           reader.rewind()
           var onHuman: TestOperation.Data.Random.OnBeing.OnHuman? = null
@@ -143,7 +141,6 @@ public object TestOperation_ResponseAdapter {
           }
 
           return TestOperation.Data.Random.OnBeing(
-            __typename = __typename,
             name = name!!,
             friends = friends!!,
             onHuman = onHuman
@@ -155,9 +152,6 @@ public object TestOperation_ResponseAdapter {
           customScalarAdapters: CustomScalarAdapters,
           `value`: TestOperation.Data.Random.OnBeing
         ): Unit {
-          writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
           writer.name("name")
           StringAdapter.toJson(writer, customScalarAdapters, value.name)
 

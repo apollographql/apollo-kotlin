@@ -20,7 +20,7 @@ import java.lang.Override;
 import java.lang.String;
 
 public class TestQuery implements Query<TestQuery.Data> {
-  public static final String OPERATION_ID = "17957893a92546c5a6a6c22ea23453c05b06d4bf74f3be7e2ecec5d89338e14c";
+  public static final String OPERATION_ID = "c9b7ab5bc9f30ca2d45533d5fd8f1a7298a153b093b2191077638e7b7faa81d3";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -28,7 +28,6 @@ public class TestQuery implements Query<TestQuery.Data> {
    *
    * query TestQuery {
    *   a {
-   *     __typename
    *     ...aFragment
    *   }
    * }
@@ -49,7 +48,7 @@ public class TestQuery implements Query<TestQuery.Data> {
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery { a { __typename ...aFragment } }  fragment fragment1 on ANode { field1 }  fragment fragment2 on ANode { field2 }  fragment aFragment on A { node { __typename ...fragment1 ...fragment2 } }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery { a { ...aFragment } }  fragment fragment1 on ANode { field1 }  fragment fragment2 on ANode { field2 }  fragment aFragment on A { node { __typename ...fragment1 ...fragment2 } }";
 
   public static final String OPERATION_NAME = "TestQuery";
 
@@ -178,8 +177,6 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class A {
-    public String __typename;
-
     /**
      * Synthetic field for 'aFragment'
      */
@@ -191,8 +188,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public A(String __typename, AFragment aFragment) {
-      this.__typename = __typename;
+    public A(AFragment aFragment) {
       this.aFragment = aFragment;
     }
 
@@ -203,8 +199,7 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof A) {
         A that = (A) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.aFragment == null) ? (that.aFragment == null) : this.aFragment.equals(that.aFragment));
+        return ((this.aFragment == null) ? (that.aFragment == null) : this.aFragment.equals(that.aFragment));
       }
       return false;
     }
@@ -213,8 +208,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (aFragment == null) ? 0 : aFragment.hashCode();
         $hashCode = h;
@@ -227,7 +220,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "A{"
-          + "__typename=" + __typename + ", "
           + "aFragment=" + aFragment
           + "}";
       }

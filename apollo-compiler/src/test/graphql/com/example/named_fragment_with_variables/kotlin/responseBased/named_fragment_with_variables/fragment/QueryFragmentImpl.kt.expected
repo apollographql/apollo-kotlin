@@ -49,7 +49,6 @@ public data class QueryFragmentImpl(
       public override val user: List<User>
     ) : QueryFragment.Organization {
       public data class User(
-        public override val __typename: String,
         public override val firstName: String,
         public override val lastName: String,
         public override val avatar: String

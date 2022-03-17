@@ -277,23 +277,20 @@ public object TestQuery_ResponseAdapter {
   }
 
   public object Friend : Adapter<TestQuery.Friend> {
-    public val RESPONSE_NAMES: List<String> = listOf("__typename", "firstAppearsIn")
+    public val RESPONSE_NAMES: List<String> = listOf("firstAppearsIn")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Friend {
-      var __typename: String? = null
       var firstAppearsIn: Episode? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> firstAppearsIn = Episode_ResponseAdapter.fromJson(reader, customScalarAdapters)
+          0 -> firstAppearsIn = Episode_ResponseAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Friend(
-        __typename = __typename!!,
         firstAppearsIn = firstAppearsIn!!
       )
     }
@@ -303,9 +300,6 @@ public object TestQuery_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Friend
     ): Unit {
-      writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
       writer.name("firstAppearsIn")
       Episode_ResponseAdapter.toJson(writer, customScalarAdapters, value.firstAppearsIn)
     }

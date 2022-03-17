@@ -47,7 +47,6 @@ public class QueryFragmentImpl() : Fragment<QueryFragmentImpl.Data> {
     public override val human: Human?
   ) : QueryFragment, Fragment.Data {
     public data class Hero(
-      public override val __typename: String,
       /**
        * The name of the character
        */
@@ -59,7 +58,6 @@ public class QueryFragmentImpl() : Fragment<QueryFragmentImpl.Data> {
     }
 
     public data class Droid(
-      public override val __typename: String,
       /**
        * What others call this droid
        */
@@ -75,7 +73,6 @@ public class QueryFragmentImpl() : Fragment<QueryFragmentImpl.Data> {
     }
 
     public data class Human(
-      public override val __typename: String,
       /**
        * What this human calls themselves
        */

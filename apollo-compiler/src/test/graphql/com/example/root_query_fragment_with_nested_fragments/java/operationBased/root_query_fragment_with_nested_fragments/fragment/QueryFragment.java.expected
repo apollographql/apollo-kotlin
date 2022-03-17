@@ -79,8 +79,6 @@ public class QueryFragment implements Fragment.Data {
   }
 
   public static class Hero {
-    public String __typename;
-
     /**
      * Synthetic field for 'heroFragment'
      */
@@ -92,8 +90,7 @@ public class QueryFragment implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public Hero(String __typename, HeroFragment heroFragment) {
-      this.__typename = __typename;
+    public Hero(HeroFragment heroFragment) {
       this.heroFragment = heroFragment;
     }
 
@@ -104,8 +101,7 @@ public class QueryFragment implements Fragment.Data {
       }
       if (o instanceof Hero) {
         Hero that = (Hero) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.heroFragment == null) ? (that.heroFragment == null) : this.heroFragment.equals(that.heroFragment));
+        return ((this.heroFragment == null) ? (that.heroFragment == null) : this.heroFragment.equals(that.heroFragment));
       }
       return false;
     }
@@ -114,8 +110,6 @@ public class QueryFragment implements Fragment.Data {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (heroFragment == null) ? 0 : heroFragment.hashCode();
         $hashCode = h;
@@ -128,7 +122,6 @@ public class QueryFragment implements Fragment.Data {
     public String toString() {
       if ($toString == null) {
         $toString = "Hero{"
-          + "__typename=" + __typename + ", "
           + "heroFragment=" + heroFragment
           + "}";
       }
@@ -137,8 +130,6 @@ public class QueryFragment implements Fragment.Data {
   }
 
   public static class Droid {
-    public String __typename;
-
     /**
      * Synthetic field for 'droidFragment'
      */
@@ -150,8 +141,7 @@ public class QueryFragment implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public Droid(String __typename, DroidFragment droidFragment) {
-      this.__typename = __typename;
+    public Droid(DroidFragment droidFragment) {
       this.droidFragment = droidFragment;
     }
 
@@ -162,8 +152,7 @@ public class QueryFragment implements Fragment.Data {
       }
       if (o instanceof Droid) {
         Droid that = (Droid) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.droidFragment == null) ? (that.droidFragment == null) : this.droidFragment.equals(that.droidFragment));
+        return ((this.droidFragment == null) ? (that.droidFragment == null) : this.droidFragment.equals(that.droidFragment));
       }
       return false;
     }
@@ -172,8 +161,6 @@ public class QueryFragment implements Fragment.Data {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (droidFragment == null) ? 0 : droidFragment.hashCode();
         $hashCode = h;
@@ -186,7 +173,6 @@ public class QueryFragment implements Fragment.Data {
     public String toString() {
       if ($toString == null) {
         $toString = "Droid{"
-          + "__typename=" + __typename + ", "
           + "droidFragment=" + droidFragment
           + "}";
       }
@@ -195,8 +181,6 @@ public class QueryFragment implements Fragment.Data {
   }
 
   public static class Human {
-    public String __typename;
-
     /**
      * Synthetic field for inline fragment on Human
      */
@@ -208,8 +192,7 @@ public class QueryFragment implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public Human(String __typename, OnHuman onHuman) {
-      this.__typename = __typename;
+    public Human(OnHuman onHuman) {
       this.onHuman = onHuman;
     }
 
@@ -220,8 +203,7 @@ public class QueryFragment implements Fragment.Data {
       }
       if (o instanceof Human) {
         Human that = (Human) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.onHuman == null) ? (that.onHuman == null) : this.onHuman.equals(that.onHuman));
+        return ((this.onHuman == null) ? (that.onHuman == null) : this.onHuman.equals(that.onHuman));
       }
       return false;
     }
@@ -230,8 +212,6 @@ public class QueryFragment implements Fragment.Data {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (onHuman == null) ? 0 : onHuman.hashCode();
         $hashCode = h;
@@ -244,7 +224,6 @@ public class QueryFragment implements Fragment.Data {
     public String toString() {
       if ($toString == null) {
         $toString = "Human{"
-          + "__typename=" + __typename + ", "
           + "onHuman=" + onHuman
           + "}";
       }

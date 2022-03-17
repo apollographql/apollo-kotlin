@@ -15,7 +15,6 @@ public data class QueryFragment(
   public val human: Human?
 ) : Fragment.Data {
   public data class Hero(
-    public val __typename: String,
     /**
      * Synthetic field for 'heroFragment'
      */
@@ -23,7 +22,6 @@ public data class QueryFragment(
   )
 
   public data class Droid(
-    public val __typename: String,
     /**
      * Synthetic field for 'droidFragment'
      */
@@ -31,7 +29,6 @@ public data class QueryFragment(
   )
 
   public data class Human(
-    public val __typename: String,
     /**
      * Synthetic field for inline fragment on Human
      */

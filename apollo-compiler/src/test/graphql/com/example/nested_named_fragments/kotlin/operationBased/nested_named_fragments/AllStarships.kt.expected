@@ -67,7 +67,6 @@ public class AllStarships() : Query<AllStarships.Data> {
         public val node: Node?
       ) {
         public data class Node(
-          public val __typename: String,
           /**
            * Synthetic field for 'starshipFragment'
            */
@@ -79,7 +78,7 @@ public class AllStarships() : Query<AllStarships.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "a76ec26a83546f1113b4f2d763d67118a12a70958ef57d44d3f33dedaf90ff72"
+        "c913380a1b7ffa9165b8a66cfb6704d7296f6f0889c8ac71afb2b17aca4ee415"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -89,7 +88,6 @@ public class AllStarships() : Query<AllStarships.Data> {
      *   allStarships(first: 7) {
      *     edges {
      *       node {
-     *         __typename
      *         ...starshipFragment
      *       }
      *     }
@@ -103,7 +101,6 @@ public class AllStarships() : Query<AllStarships.Data> {
      * fragment pilotFragment on Person {
      *   name
      *   homeworld {
-     *     __typename
      *     ...planetFragment
      *   }
      * }
@@ -114,7 +111,6 @@ public class AllStarships() : Query<AllStarships.Data> {
      *   pilotConnection {
      *     edges {
      *       node {
-     *         __typename
      *         ...pilotFragment
      *       }
      *     }
@@ -122,7 +118,7 @@ public class AllStarships() : Query<AllStarships.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query AllStarships { allStarships(first: 7) { edges { node { __typename ...starshipFragment } } } }  fragment planetFragment on Planet { name }  fragment pilotFragment on Person { name homeworld { __typename ...planetFragment } }  fragment starshipFragment on Starship { id name pilotConnection { edges { node { __typename ...pilotFragment } } } }"
+        "query AllStarships { allStarships(first: 7) { edges { node { ...starshipFragment } } } }  fragment planetFragment on Planet { name }  fragment pilotFragment on Person { name homeworld { ...planetFragment } }  fragment starshipFragment on Starship { id name pilotConnection { edges { node { ...pilotFragment } } } }"
 
     public const val OPERATION_NAME: String = "AllStarships"
   }

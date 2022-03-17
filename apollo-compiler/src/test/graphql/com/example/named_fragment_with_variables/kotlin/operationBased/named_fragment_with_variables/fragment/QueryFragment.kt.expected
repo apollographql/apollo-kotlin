@@ -17,7 +17,6 @@ public data class QueryFragment(
     public val user: List<User>
   ) {
     public data class User(
-      public val __typename: String,
       /**
        * Synthetic field for 'UserFragment'
        */

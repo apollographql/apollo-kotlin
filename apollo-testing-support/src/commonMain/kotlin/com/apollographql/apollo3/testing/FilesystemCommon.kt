@@ -1,4 +1,5 @@
 @file:JvmName("-FileSystemCommon")
+
 package com.apollographql.apollo3.testing
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
@@ -7,6 +8,7 @@ import com.apollographql.apollo3.api.json.jsonReader
 import okio.IOException
 import okio.Path.Companion.toPath
 import okio.buffer
+import okio.use
 import kotlin.jvm.JvmName
 
 /**
@@ -34,11 +36,19 @@ fun checkFile(actualText: String, path: String) {
 
   if (actualText != expectedText) {
     if (updateTestFixtures) {
-      HostFileSystem.openReadWrite(expected).sink().buffer().writeUtf8(actualText)
+      HostFileSystem.delete(expected)
+      HostFileSystem.openReadWrite(
+          file = expected,
+      ).use {
+        it.sink().buffer().use {
+          it.writeUtf8(actualText)
+        }
+      }
     } else {
       throw Exception("""generatedText doesn't match the expectedText.
       |If you changed the compiler recently, you need to update the testFixtures.
-      |Run the tests with `-DupdateTestFixtures=true` to do so.
+      |Run the tests with `updateTestFixtures=true` as an environment variable
+      |to do so (updateTestFixtures=true ./gradlew jvmTest ...).
       |generatedText: $actualText
       |expectedText : $expectedText""".trimMargin())
     }

@@ -16,6 +16,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
+import com.apollographql.apollo3.api.json.JsonReaders;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.inline_fragment_intersection.TestOperation;
 import com.example.inline_fragment_intersection.type.Race;
@@ -120,26 +121,26 @@ public class TestOperation_ResponseAdapter {
   public enum OnBeing implements Adapter<TestOperation.OnBeing> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name", "friends");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "friends");
 
     @Override
     public TestOperation.OnBeing fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String __typename = null;
       String name = null;
       List<TestOperation.Friend> friends = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: friends = new ListAdapter<>(new ObjectAdapter<TestOperation.Friend>(Friend.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: friends = new ListAdapter<>(new ObjectAdapter<TestOperation.Friend>(Friend.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
+      reader.rewind();
+      String __typename = JsonReaders.readTypename(reader);
+
       reader.rewind();
       TestOperation.OnHuman onHuman = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), Collections.emptySet(), __typename)) {
@@ -150,7 +151,6 @@ public class TestOperation_ResponseAdapter {
       Assertions.checkFieldNotMissing(friends, "friends");
 
       return new TestOperation.OnBeing(
-        __typename,
         name,
         friends,
         onHuman
@@ -160,9 +160,6 @@ public class TestOperation_ResponseAdapter {
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestOperation.OnBeing value) throws IOException {
-      writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
-
       writer.name("name");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
 

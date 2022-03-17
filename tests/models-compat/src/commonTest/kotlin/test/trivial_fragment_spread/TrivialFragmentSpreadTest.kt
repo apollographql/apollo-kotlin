@@ -10,7 +10,6 @@ class TrivialFragmentSpreadTest {
   fun trivialFragmentSpreadIsGeneratedNonNull() {
     val data = GetAnimalQuery.Data(
         animal = GetAnimalQuery.Animal(
-            __typename = "Animal",
             fragments = GetAnimalQuery.Animal.Fragments(
                 animalFragment = AnimalFragment("Kitty")
             )

@@ -17,7 +17,6 @@ class AdapterBijectionTest {
       HeroAndFriendsWithFragmentsQuery(),
       HeroAndFriendsWithFragmentsQuery.Data(
           HeroAndFriendsWithFragmentsQuery.Hero(
-              __typename = "Droid",
               fragments = HeroAndFriendsWithFragmentsQuery.Hero.Fragments(
                   heroWithFriendsFragment = HeroWithFriendsFragment(
                       id = "2001",

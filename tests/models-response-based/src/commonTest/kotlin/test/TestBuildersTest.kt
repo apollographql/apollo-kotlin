@@ -135,7 +135,6 @@ class TestBuildersTest {
         allPlanets = AllPlanetsQuery.Data.AllPlanets(
             planets = listOf(
                 AllPlanetsQuery.Data.AllPlanets.Planet(
-                    __typename = "Planet",
                     name = defaultString,
                     climates = listOf(defaultString),
                     surfaceWater = defaultFloat,
@@ -143,7 +142,6 @@ class TestBuildersTest {
                         totalCount = defaultInt,
                         films = listOf(
                             AllPlanetsQuery.Data.AllPlanets.Planet.FilmConnection.Film(
-                                __typename = "Film",
                                 title = defaultString,
                                 producers = listOf(defaultString)
                             )
@@ -186,7 +184,6 @@ class TestBuildersTest {
         allPlanets = AllPlanetsQuery.Data.AllPlanets(
             planets = listOf(
                 AllPlanetsQuery.Data.AllPlanets.Planet(
-                    __typename = "Planet",
                     name = defaultString,
                     climates = listOf(defaultString),
                     surfaceWater = defaultFloat,
@@ -194,7 +191,6 @@ class TestBuildersTest {
                         totalCount = defaultInt,
                         films = listOf(
                             AllPlanetsQuery.Data.AllPlanets.Planet.FilmConnection.Film(
-                                __typename = "Film",
                                 title = defaultString,
                                 producers = listOf(defaultString)
                             )

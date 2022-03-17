@@ -81,7 +81,7 @@ private fun GQLSelectionSet.addRequiredFields(
     requiredFieldNames.add("__typename")
   }
 
-  val fieldNames = requiredFieldNames + parentFields + selectionSet.selections.filterIsInstance<GQLField>().map { it.name }.toSet()
+  val fieldNames = parentFields + selectionSet.selections.filterIsInstance<GQLField>().map { it.name }.toSet()
 
   var newSelections = selectionSet.selections.map {
     when (it) {

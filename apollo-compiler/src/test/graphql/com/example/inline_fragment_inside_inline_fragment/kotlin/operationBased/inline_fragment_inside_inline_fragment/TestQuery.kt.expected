@@ -60,7 +60,6 @@ public class TestQuery() : Query<TestQuery.Data> {
       public val onCharacter: OnCharacter?
     ) {
       public data class OnCharacter(
-        public val __typename: String,
         /**
          * The name of the character
          */
@@ -93,7 +92,7 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "4f32ea4bdd2a95a29bde61273602c22c698cd333f1701001d1a339fb276c6438"
+        "3c54ce10c582a5f966f49f34c79bf29783a36bf95a363500bdc089fc2c785300"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -103,7 +102,6 @@ public class TestQuery() : Query<TestQuery.Data> {
      *   search(text: "bla-bla") {
      *     __typename
      *     ... on Character {
-     *       __typename
      *       name
      *       ... on Human {
      *         homePlanet
@@ -116,7 +114,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query TestQuery { search(text: \"bla-bla\") { __typename ... on Character { __typename name ... on Human { homePlanet } ... on Droid { primaryFunction } } } }"
+        "query TestQuery { search(text: \"bla-bla\") { __typename ... on Character { name ... on Human { homePlanet } ... on Droid { primaryFunction } } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

@@ -19,10 +19,6 @@ import kotlin.collections.List
 
 public object QueryFragmentSelections {
   private val user: List<CompiledSelection> = listOf(
-        CompiledField.Builder(
-          name = "__typename",
-          type = GraphQLString.type.notNull()
-        ).build(),
         CompiledFragment.Builder(
           typeCondition = "User",
           possibleTypes = (listOf("User"))

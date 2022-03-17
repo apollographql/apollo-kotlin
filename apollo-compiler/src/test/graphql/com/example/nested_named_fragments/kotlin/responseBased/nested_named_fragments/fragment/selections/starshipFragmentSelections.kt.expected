@@ -19,10 +19,6 @@ import kotlin.collections.List
 
 public object starshipFragmentSelections {
   private val node: List<CompiledSelection> = listOf(
-        CompiledField.Builder(
-          name = "__typename",
-          type = GraphQLString.type.notNull()
-        ).build(),
         CompiledFragment.Builder(
           typeCondition = "Person",
           possibleTypes = (listOf("Person"))

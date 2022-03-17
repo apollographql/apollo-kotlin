@@ -67,7 +67,6 @@ public class StarshipFragmentImpl() : Fragment<StarshipFragmentImpl.Data> {
         public override val node: Node?
       ) : StarshipFragment.PilotConnection.Edge {
         public data class Node(
-          public override val __typename: String,
           /**
            * The name of this person.
            */
@@ -78,7 +77,6 @@ public class StarshipFragmentImpl() : Fragment<StarshipFragmentImpl.Data> {
           public override val homeworld: Homeworld?
         ) : PilotFragment, StarshipFragment.PilotConnection.Edge.Node {
           public data class Homeworld(
-            public override val __typename: String,
             /**
              * The name of this planet.
              */

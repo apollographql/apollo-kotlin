@@ -1,5 +1,6 @@
 package test
 
+import checkTestFixture
 import codegen.models.AllPlanetsQuery
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.composeJsonResponse
@@ -47,15 +48,18 @@ class ParseResponseBodyTest {
   @Throws(Exception::class)
   fun operationJsonWriter() {
     val expected = testFixtureToUtf8("OperationJsonWriter.json")
+
     val query = AllPlanetsQuery()
-    val data = query.parseJsonResponse(testFixtureToJsonReader("OperationJsonWriter.json")).data
-    val actual = buildJsonString {
+    val data = query.parseJsonResponse(Buffer().writeUtf8(expected).jsonReader()).data
+    val actual = buildJsonString(indent = "  ") {
       query.composeJsonResponse(this, data!!)
     }
 
     /**
      * operationBased models do not respect the order of fields
      * when fragments are involved so just check for Map equivalence
+     *
+     * If this fails, you can update "OperationJsonWriter.json" in models-response-based
      */
     @OptIn(ApolloInternal::class)
     val expectedMap = Buffer().writeUtf8(expected).jsonReader().readAny()

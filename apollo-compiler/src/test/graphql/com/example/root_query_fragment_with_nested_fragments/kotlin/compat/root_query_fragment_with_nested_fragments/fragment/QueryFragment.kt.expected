@@ -15,7 +15,6 @@ public data class QueryFragment(
   public val human: Human?
 ) : Fragment.Data {
   public data class Hero(
-    public val __typename: String,
     /**
      * Synthetic field for grouping fragments
      */
@@ -30,7 +29,6 @@ public data class QueryFragment(
   }
 
   public data class Droid(
-    public val __typename: String,
     /**
      * Synthetic field for grouping fragments
      */
@@ -45,7 +43,6 @@ public data class QueryFragment(
   }
 
   public data class Human(
-    public val __typename: String,
     /**
      * What this human calls themselves
      */

@@ -10,6 +10,10 @@ import java.io.FileNotFoundException
 actual val HostFileSystem = FileSystem.SYSTEM
 
 actual fun shouldUpdateTestFixtures(): Boolean {
+  if (System.getenv("updateTestFixtures") != null) {
+    return true
+  }
+  File("").writeText("")
   return when (System.getProperty("updateTestFixtures")?.trim()) {
     "on", "true", "1" -> true
     else -> false

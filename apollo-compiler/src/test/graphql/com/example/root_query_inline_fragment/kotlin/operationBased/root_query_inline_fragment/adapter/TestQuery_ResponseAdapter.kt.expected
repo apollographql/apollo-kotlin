@@ -27,25 +27,15 @@ import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
-    public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var __typename: String? = null
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          else -> break
-        }
-      }
 
       reader.rewind()
       val onQuery = com.example.root_query_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.OnQuery.fromJson(reader,
           customScalarAdapters)
 
       return TestQuery.Data(
-        __typename = __typename!!,
         onQuery = onQuery
       )
     }
@@ -55,9 +45,6 @@ public object TestQuery_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data
     ): Unit {
-      writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
       com.example.root_query_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.OnQuery.toJson(writer,
           customScalarAdapters, value.onQuery)
     }
@@ -192,25 +179,15 @@ public object TestQuery_ResponseAdapter {
       }
 
       private object Droid : Adapter<TestQuery.Data.OnQuery.Droid> {
-        public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.OnQuery.Droid {
-          var __typename: String? = null
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              else -> break
-            }
-          }
 
           reader.rewind()
           val onDroid = com.example.root_query_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.OnQuery.Droid.OnDroid.fromJson(reader,
               customScalarAdapters)
 
           return TestQuery.Data.OnQuery.Droid(
-            __typename = __typename!!,
             onDroid = onDroid
           )
         }
@@ -220,9 +197,6 @@ public object TestQuery_ResponseAdapter {
           customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.OnQuery.Droid
         ): Unit {
-          writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
           com.example.root_query_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.OnQuery.Droid.OnDroid.toJson(writer,
               customScalarAdapters, value.onDroid)
         }

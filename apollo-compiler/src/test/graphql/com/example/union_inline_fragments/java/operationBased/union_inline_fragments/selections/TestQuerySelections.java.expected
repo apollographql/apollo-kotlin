@@ -29,7 +29,6 @@ public class TestQuerySelections {
   );
 
   private static List<CompiledSelection> friends1 = Arrays.asList(
-    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(onCharacter2).build()
   );
 

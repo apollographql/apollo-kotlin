@@ -48,7 +48,6 @@ public data class GetUser(
   .build()
 
   public data class Data(
-    public val __typename: String,
     /**
      * Synthetic field for 'QueryFragment'
      */
@@ -57,14 +56,13 @@ public data class GetUser(
 
   public companion object {
     public const val OPERATION_ID: String =
-        "1314916fa3163a17df2b7a0173e55fef34621507824242308b3006e9ab4740b4"
+        "8134e4209f27496e1cff8ed16dfd50a4001ef33ef83b82646519a05ad9ebaa19"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
      * query GetUser($organizationId: String!, $query: UserQuery!, $size: Int!) {
-     *   __typename
      *   ...QueryFragment
      * }
      *
@@ -78,14 +76,13 @@ public data class GetUser(
      *   organization(id: $organizationId) {
      *     id
      *     user(query: $query) {
-     *       __typename
      *       ...UserFragment
      *     }
      *   }
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query GetUser(${'$'}organizationId: String!, ${'$'}query: UserQuery!, ${'$'}size: Int!) { __typename ...QueryFragment }  fragment UserFragment on User { firstName lastName avatar(size: ${'$'}size) }  fragment QueryFragment on Query { organization(id: ${'$'}organizationId) { id user(query: ${'$'}query) { __typename ...UserFragment } } }"
+        "query GetUser(${'$'}organizationId: String!, ${'$'}query: UserQuery!, ${'$'}size: Int!) { ...QueryFragment }  fragment UserFragment on User { firstName lastName avatar(size: ${'$'}size) }  fragment QueryFragment on Query { organization(id: ${'$'}organizationId) { id user(query: ${'$'}query) { ...UserFragment } } }"
 
     public const val OPERATION_NAME: String = "GetUser"
   }

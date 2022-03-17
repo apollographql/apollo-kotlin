@@ -26,7 +26,6 @@ public class TestQuerySelections {
   );
 
   private static List<CompiledSelection> onCharacter = Arrays.asList(
-    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledFragment.Builder("Human", Arrays.asList("Human")).selections(onHuman).build(),
     new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(onDroid).build()

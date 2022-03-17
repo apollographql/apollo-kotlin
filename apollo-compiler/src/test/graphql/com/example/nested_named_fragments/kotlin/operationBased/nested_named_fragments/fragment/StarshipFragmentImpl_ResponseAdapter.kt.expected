@@ -125,26 +125,16 @@ public object StarshipFragmentImpl_ResponseAdapter {
         private object Node :
             Adapter<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge.Node>
             {
-          public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
           public override fun fromJson(reader: JsonReader,
               customScalarAdapters: CustomScalarAdapters):
               com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge.Node {
-            var __typename: String? = null
 
-            while(true) {
-              when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-                else -> break
-              }
-            }
 
             reader.rewind()
             val pilotFragment = com.example.nested_named_fragments.fragment.PilotFragmentImpl_ResponseAdapter.PilotFragment.fromJson(reader,
                 customScalarAdapters)
 
             return com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge.Node(
-              __typename = __typename!!,
               pilotFragment = pilotFragment
             )
           }
@@ -154,9 +144,6 @@ public object StarshipFragmentImpl_ResponseAdapter {
             customScalarAdapters: CustomScalarAdapters,
             `value`: com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge.Node
           ): Unit {
-            writer.name("__typename")
-            StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
             com.example.nested_named_fragments.fragment.PilotFragmentImpl_ResponseAdapter.PilotFragment.toJson(writer,
                 customScalarAdapters, value.pilotFragment)
           }

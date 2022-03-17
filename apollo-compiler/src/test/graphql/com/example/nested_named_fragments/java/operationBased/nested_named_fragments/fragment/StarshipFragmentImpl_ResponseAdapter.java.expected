@@ -133,28 +133,15 @@ public class StarshipFragmentImpl_ResponseAdapter {
   public enum Node implements Adapter<com.example.nested_named_fragments.fragment.StarshipFragment.Node> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
-
     @Override
     public com.example.nested_named_fragments.fragment.StarshipFragment.Node fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String __typename = null;
 
-      loop:
-      while(true) {
-        switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          default: break loop;
-        }
-      }
 
       reader.rewind();
       PilotFragment pilotFragment = com.example.nested_named_fragments.fragment.PilotFragmentImpl_ResponseAdapter.PilotFragment.INSTANCE.fromJson(reader, customScalarAdapters);
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
-
       return new com.example.nested_named_fragments.fragment.StarshipFragment.Node(
-        __typename,
         pilotFragment
       );
     }
@@ -163,9 +150,6 @@ public class StarshipFragmentImpl_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         com.example.nested_named_fragments.fragment.StarshipFragment.Node value) throws
         IOException {
-      writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
-
       com.example.nested_named_fragments.fragment.PilotFragmentImpl_ResponseAdapter.PilotFragment.INSTANCE.toJson(writer, customScalarAdapters, value.pilotFragment);
     }
   }
