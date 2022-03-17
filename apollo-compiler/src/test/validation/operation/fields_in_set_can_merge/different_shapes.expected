@@ -1,0 +1,5 @@
+ERROR: ValidationError (4:12)
+`meow` cannot be merged with `meow` (at different_shapes.graphql: (7, 13)): they have different shapes. Use different aliases on the fields to fetch both if this was intentional.
+------------
+ERROR: ValidationError (7:12)
+`meow` cannot be merged with `meow` (at different_shapes.graphql: (4, 13)): they have different shapes. Use different aliases on the fields to fetch both if this was intentional.
