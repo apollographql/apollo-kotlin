@@ -738,11 +738,11 @@ query Query15 {
       id
     }
 
-    ... on Computer @defer {
+    ... on Computer @defer(label: "x") {
       cpu
     }
 
-    ... on Computer @defer {
+    ... on Computer @defer(label: "y") {
       year
     }
   }
@@ -754,24 +754,24 @@ query Query15 {
 ```kotlin
 data class Computer(
     val onComputer: OnComputer,
-    val onComputerDefer: OnComputerDefer?,
-    val onComputerDefer2: OnComputerDefer2?
+    val onComputerDeferX: OnComputerDeferX?,
+    val onComputerDeferY: OnComputerDeferY?
 )
 
 data class OnComputer(
     val id: String
 )
 
-data class OnComputerDefer(
+data class OnComputerDeferX(
     val cpu: String
 )
 
-data class OnComputerDefer2(
+data class OnComputerDeferY(
     val year: Int
 )
 ```
 
-Note: using an incrementing index suffix to distinguish the fields/models.
+Note: using the label as a suffix to distinguish the fields/models. We'll have a validation rule making the label mandatory in this case (same path).
 
 </td></tr><tr><td>
 
@@ -782,11 +782,11 @@ query Query16($a: Boolean!) {
       id
     }
 
-    ... on Computer @defer @include(if: $a) {
+    ... on Computer @defer(label: "x") @include(if: $a) {
       cpu
     }
 
-    ... on Computer @defer @skip(if: $a) {
+    ... on Computer @defer(label: "y") @skip(if: $a) {
       year
     }
   }
@@ -797,19 +797,19 @@ query Query16($a: Boolean!) {
 ```kotlin
 data class Computer(
     val onComputer: OnComputer,
-    val onComputerDefer: OnComputerDefer?,
-    val onComputerDefer2: OnComputerDefer2?
+    val onComputerDeferX: OnComputerDeferX?,
+    val onComputerDeferY: OnComputerDeferY?
 )
 
 data class OnComputer(
     val id: String
 )
 
-data class OnComputerDefer(
+data class OnComputerDeferX(
     val cpu: String
 )
 
-data class OnComputerDefer2(
+data class OnComputerDeferY(
     val year: Int
 )
 ```
