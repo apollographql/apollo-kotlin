@@ -802,10 +802,6 @@ public final class com/apollographql/apollo3/api/http/HttpResponse$Builder {
 public final class com/apollographql/apollo3/api/json/-JsonReaders {
 	public static final fun jsonReader (Ljava/util/Map;)Lcom/apollographql/apollo3/api/json/JsonReader;
 	public static final fun jsonReader (Lokio/BufferedSource;)Lcom/apollographql/apollo3/api/json/JsonReader;
-<<<<<<< HEAD
-	public static final fun readTypename (Lcom/apollographql/apollo3/api/json/JsonReader;)Ljava/lang/String;
-=======
->>>>>>> ba8b6e9df (update apiDump)
 }
 
 public final class com/apollographql/apollo3/api/json/-JsonWriters {
