@@ -1,0 +1,10 @@
+query GetAnimal {
+    animal {
+        ... on Cat {
+            meow
+        }
+        ... on Dog {
+            meow: id
+        }
+    }
+}

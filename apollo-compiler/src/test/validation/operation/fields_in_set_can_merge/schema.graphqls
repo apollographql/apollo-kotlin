@@ -1,8 +1,10 @@
 type Query {
     character: Character
+    animal: Animal
 }
 
 type Character {
+    id: ID!
     name: String
     address: Address
 }
@@ -12,6 +14,19 @@ type Address {
     number: Int
 }
 
+interface Animal {
+    id: ID!
+}
+
+type Cat implements Animal {
+    id: ID!
+    meow: String
+}
+
+type Dog implements Animal {
+    id: ID!
+    barf: String
+}
 
 
 
