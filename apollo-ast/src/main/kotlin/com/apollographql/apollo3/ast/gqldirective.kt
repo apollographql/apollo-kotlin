@@ -26,5 +26,6 @@ fun List<GQLDirective>.optionalValue(): Boolean? {
 }
 
 fun List<GQLDirective>.findNonnull() = any { it.name == "nonnull" }
+fun List<GQLDirective>.hasTypename() = any { it.name == "_apolloHasTypename" }
 
-fun GQLDirective.isApollo() = name in listOf("optional", "nonnull")
+fun GQLDirective.isApollo() = name in listOf("optional", "nonnull", "_apolloHasTypename")

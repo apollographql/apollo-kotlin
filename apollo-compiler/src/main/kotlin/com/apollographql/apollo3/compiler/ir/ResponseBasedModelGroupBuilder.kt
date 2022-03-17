@@ -10,6 +10,7 @@ import com.apollographql.apollo3.ast.GQLNamedType
 import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.ast.hasTypename
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.modelName
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.upperCamelCaseIgnoringNonLetters
 
@@ -124,7 +125,8 @@ private class FieldNodeBuilder(
         description = null,
         type = IrModelType(MODEL_UNKNOWN),
         deprecationReason = null,
-        gqlType = GQLNonNullType(type = GQLNamedType(name = rawTypeName))
+        gqlType = GQLNonNullType(type = GQLNamedType(name = rawTypeName)),
+        hasTypename = false
     )
 
     return buildFieldNode(
@@ -147,7 +149,8 @@ private class FieldNodeBuilder(
           description = null,
           type = IrModelType(MODEL_UNKNOWN),
           deprecationReason = null,
-          gqlType = GQLNonNullType(type = fragment.typeCondition)
+          gqlType = GQLNonNullType(type = fragment.typeCondition),
+          hasTypename = false,
       )
 
       return buildFieldNode(
@@ -171,7 +174,8 @@ private class FieldNodeBuilder(
         description = null,
         type = IrModelType(MODEL_UNKNOWN),
         deprecationReason = null,
-        gqlType = GQLNonNullType(type = fragment.typeCondition)
+        gqlType = GQLNonNullType(type = fragment.typeCondition),
+        hasTypename = fragment.directives.hasTypename()
     )
 
     return buildFieldNode(

@@ -124,6 +124,10 @@ data class IrFieldInfo(
      * from the fieldDefinition directives
      */
     val deprecationReason: String?,
+    /**
+     * true if any of the merged field has __typename at its root
+     */
+    val hasTypename: Boolean,
 )
 
 sealed class IrAccessor {

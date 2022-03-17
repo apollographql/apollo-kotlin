@@ -62,7 +62,7 @@ public class CatQuery() : Query<CatQuery.Data> {
       /**
        * Synthetic field for 'AnimalFragment'
        */
-      public val animalFragment: AnimalFragment?
+      public val animalFragment: AnimalFragment
     )
   }
 

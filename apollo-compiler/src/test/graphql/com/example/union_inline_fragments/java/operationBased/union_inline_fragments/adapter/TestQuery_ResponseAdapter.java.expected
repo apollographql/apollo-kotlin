@@ -308,9 +308,10 @@ public class TestQuery_ResponseAdapter {
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
       TestQuery.OnCharacter2 onCharacter = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.OnCharacter2.INSTANCE.fromJson(reader, customScalarAdapters);
+
+      Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new TestQuery.Friend1(
         __typename,

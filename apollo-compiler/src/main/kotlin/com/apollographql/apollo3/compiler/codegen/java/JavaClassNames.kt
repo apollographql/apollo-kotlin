@@ -70,6 +70,7 @@ internal object JavaClassNames {
   val CompiledGraphQL = ClassName.get(apolloApiPackageName, "CompiledGraphQL")
   val BooleanExpressions = ClassName.get(apolloApiPackageName, "BooleanExpressions")
   val Assertions = ClassName.get(apolloApiPackageName, "Assertions")
+  val JsonReaders = ClassName.get(apolloApiPackageName, "JsonReaders")
   val PossibleTypes = ClassName.get(apolloApiPackageName, "PossibleTypes")
 
   /**

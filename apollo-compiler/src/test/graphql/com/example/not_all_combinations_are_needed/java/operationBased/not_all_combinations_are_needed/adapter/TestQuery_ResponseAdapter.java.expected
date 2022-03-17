@@ -168,9 +168,10 @@ public class TestQuery_ResponseAdapter {
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
       BFragment bFragment = com.example.not_all_combinations_are_needed.fragment.BFragmentImpl_ResponseAdapter.BFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+
+      Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new TestQuery.OnB(
         __typename,

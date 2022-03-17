@@ -76,10 +76,10 @@ public class TestQuery_ResponseAdapter {
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
       TestQuery.OnCharacter onCharacter = com.example.inline_fragment_merge_fields.adapter.TestQuery_ResponseAdapter.OnCharacter.INSTANCE.fromJson(reader, customScalarAdapters);
 
+      Assertions.checkFieldNotMissing(__typename, "__typename");
       Assertions.checkFieldNotMissing(name, "name");
       Assertions.checkFieldNotMissing(friendsConnection, "friendsConnection");
 

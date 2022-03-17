@@ -133,9 +133,10 @@ public class AllStarships_ResponseAdapter {
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
       StarshipFragment starshipFragment = com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.StarshipFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+
+      Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new com.example.nested_named_fragments.AllStarships.Node(
         __typename,

@@ -111,9 +111,10 @@ public class QueryFragmentImpl_ResponseAdapter {
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
       UserFragment userFragment = com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+
+      Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new com.example.named_fragment_with_variables.fragment.QueryFragment.User(
         __typename,

@@ -66,12 +66,3 @@ private fun JsonReader.guessNumber(): Any {
   return nextNumber()
 }
 
-
-fun JsonReader.readTypename(): String {
-  val names = listOf("__typename")
-  val index = selectName(names)
-  check(index == 0) {
-    error("__typename not found")
-  }
-  return nextString() ?: error("__typename is null")
-}

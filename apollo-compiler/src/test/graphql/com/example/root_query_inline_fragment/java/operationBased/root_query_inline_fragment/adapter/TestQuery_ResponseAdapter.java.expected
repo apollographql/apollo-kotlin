@@ -48,9 +48,10 @@ public class TestQuery_ResponseAdapter {
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
       TestQuery.OnQuery onQuery = com.example.root_query_inline_fragment.adapter.TestQuery_ResponseAdapter.OnQuery.INSTANCE.fromJson(reader, customScalarAdapters);
+
+      Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new TestQuery.Data(
         __typename,
@@ -220,9 +221,10 @@ public class TestQuery_ResponseAdapter {
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
       TestQuery.OnDroid onDroid = com.example.root_query_inline_fragment.adapter.TestQuery_ResponseAdapter.OnDroid.INSTANCE.fromJson(reader, customScalarAdapters);
+
+      Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new TestQuery.Droid(
         __typename,

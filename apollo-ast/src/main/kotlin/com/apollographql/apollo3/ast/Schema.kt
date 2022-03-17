@@ -78,6 +78,14 @@ class Schema(
   }
 
 
+  fun isTypeASubTypeOf(type: String, superType: String): Boolean {
+    return implementedTypes(type).contains(superType)
+  }
+
+  fun isTypeASuperTypeOf(type: String, subType: String): Boolean {
+    return implementedTypes(subType).contains(type)
+  }
+
   /**
    * List all types (types, interfaces, unions) implemented by a given type
    */

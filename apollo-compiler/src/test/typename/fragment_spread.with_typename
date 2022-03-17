@@ -1,11 +1,11 @@
 query TestQuery {
-  hero {
+  hero @_apolloHasTypename {
     __typename
     ...heroFragment
   }
 }
 
-fragment heroFragment on Character {
+fragment heroFragment on Character @_apolloHasTypename {
   __typename
   name
   ... on Droid {

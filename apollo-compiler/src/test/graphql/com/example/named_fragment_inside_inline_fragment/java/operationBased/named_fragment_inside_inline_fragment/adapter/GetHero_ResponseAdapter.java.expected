@@ -72,9 +72,10 @@ public class GetHero_ResponseAdapter {
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
       GetHero.OnCharacter onCharacter = com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.OnCharacter.INSTANCE.fromJson(reader, customScalarAdapters);
+
+      Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new GetHero.Hero(
         __typename,
@@ -110,12 +111,13 @@ public class GetHero_ResponseAdapter {
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
       CharacterName characterName = com.example.named_fragment_inside_inline_fragment.fragment.CharacterNameImpl_ResponseAdapter.CharacterName.INSTANCE.fromJson(reader, customScalarAdapters);
 
       reader.rewind();
       CharacterAppearsIn characterAppearsIn = com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsInImpl_ResponseAdapter.CharacterAppearsIn.INSTANCE.fromJson(reader, customScalarAdapters);
+
+      Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new GetHero.OnCharacter(
         __typename,

@@ -38,9 +38,10 @@ public class GetUser_ResponseAdapter {
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
       QueryFragment queryFragment = com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+
+      Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new GetUser.Data(
         __typename,

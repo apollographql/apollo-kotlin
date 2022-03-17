@@ -8,15 +8,11 @@ package com.example.deprecated_merged_field.adapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
-import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.json.readTypename
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.possibleTypes
 import com.example.deprecated_merged_field.CatQuery
-import com.example.deprecated_merged_field.fragment.AnimalFragment
 import kotlin.String
 import kotlin.Unit
 import kotlin.collections.List
@@ -93,14 +89,8 @@ public object CatQuery_ResponseAdapter {
 
 
         reader.rewind()
-        val __typename = reader.readTypename()
-
-        reader.rewind()
-        var animalFragment: AnimalFragment? = null
-        if (possibleTypes("Cat","Dog").evaluate(customScalarAdapters.variables(), __typename)) {
-          animalFragment = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.fromJson(reader,
-              customScalarAdapters)
-        }
+        val animalFragment = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.fromJson(reader,
+            customScalarAdapters)
 
         return CatQuery.Cat.Fragments(
           animalFragment = animalFragment
@@ -112,10 +102,8 @@ public object CatQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         `value`: CatQuery.Cat.Fragments
       ): Unit {
-        if (value.animalFragment != null) {
-          com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.toJson(writer,
-              customScalarAdapters, value.animalFragment)
-        }
+        com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.toJson(writer,
+            customScalarAdapters, value.animalFragment)
       }
     }
   }

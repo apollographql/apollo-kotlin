@@ -90,9 +90,10 @@ public class QueryFragmentImpl_ResponseAdapter {
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
       HeroFragment heroFragment = com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+
+      Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero(
         __typename,
@@ -129,9 +130,10 @@ public class QueryFragmentImpl_ResponseAdapter {
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
       DroidFragment droidFragment = com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+
+      Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid(
         __typename,
@@ -168,9 +170,10 @@ public class QueryFragmentImpl_ResponseAdapter {
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
       com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.OnHuman onHuman = com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, customScalarAdapters);
+
+      Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human(
         __typename,

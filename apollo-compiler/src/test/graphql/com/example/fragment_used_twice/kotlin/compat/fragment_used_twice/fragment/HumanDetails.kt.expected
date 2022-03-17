@@ -23,6 +23,6 @@ public data class HumanDetails(
     /**
      * Synthetic field for 'CharacterDetails'
      */
-    public val characterDetails: CharacterDetails?
+    public val characterDetails: CharacterDetails
   )
 }

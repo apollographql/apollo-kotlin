@@ -71,9 +71,10 @@ public class TestQuery_ResponseAdapter {
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
       AFragment aFragment = com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+
+      Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new TestQuery.A(
         __typename,

@@ -1,0 +1,2 @@
+# Internal directives that are only used by the codegen as a way to transport information between the different codegen steps
+directive @_apolloHasTypename on FIELD | FRAGMENT_DEFINITION

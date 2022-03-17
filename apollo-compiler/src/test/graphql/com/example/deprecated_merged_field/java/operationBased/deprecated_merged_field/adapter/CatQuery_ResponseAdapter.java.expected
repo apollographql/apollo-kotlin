@@ -8,10 +8,6 @@ package com.example.deprecated_merged_field.adapter;
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.BPossibleTypes;
-import com.apollographql.apollo3.api.BTerm;
-import com.apollographql.apollo3.api.BooleanExpression;
-import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -23,7 +19,6 @@ import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class CatQuery_ResponseAdapter {
@@ -76,12 +71,10 @@ public class CatQuery_ResponseAdapter {
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
-      AnimalFragment animalFragment = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Cat","Dog")), Collections.emptySet(), __typename)) {
-        animalFragment = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.INSTANCE.fromJson(reader, customScalarAdapters);
-      }
+      AnimalFragment animalFragment = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+
+      Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new CatQuery.Cat(
         __typename,
@@ -95,9 +88,7 @@ public class CatQuery_ResponseAdapter {
       writer.name("__typename");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
-      if (value.animalFragment != null) {
-        com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.INSTANCE.toJson(writer, customScalarAdapters, value.animalFragment);
-      }
+      com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.INSTANCE.toJson(writer, customScalarAdapters, value.animalFragment);
     }
   }
 }
