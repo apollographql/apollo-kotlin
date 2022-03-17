@@ -1,5 +1,5 @@
 ERROR: ValidationError (4:12)
-`foo` cannot be merged with `foo`: they have different types
+`foo` cannot be merged with `foo` (at multiple_merged_fields.graphql: (9, 13)): they have different types. Use different aliases on the fields to fetch both if this was intentional.
 ------------
 ERROR: ValidationError (9:12)
-`foo` cannot be merged with `foo`: they have different types
+`foo` cannot be merged with `foo` (at multiple_merged_fields.graphql: (4, 13)): they have different types. Use different aliases on the fields to fetch both if this was intentional.
