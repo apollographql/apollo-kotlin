@@ -53,7 +53,7 @@ internal fun responseNamesFieldSpec(model: IrModel): FieldSpec? {
 
 private fun javaTypenameFromReaderCodeBlock(): CodeBlock {
   return CodeBlock.builder()
-      .add("String $__typename = $T.readTypename($reader)\n", JavaClassNames.JsonReaders)
+      .add("String $__typename = $T.readTypename($reader);\n", JavaClassNames.JsonReaders)
       .build()
 }
 
@@ -116,7 +116,7 @@ internal fun readFromResponseCodeBlock(
         .apply {
           if (regularProperties.none { it.info.responseName == "__typename" }) {
             // We are in a nested fragment that needs access to __typename, get it from the buffered reader
-            add("$reader.rewind()\n")
+            add("$reader.rewind();\n")
             add(javaTypenameFromReaderCodeBlock())
           } else {
             add("$T.checkFieldNotMissing($__typename, $S);", JavaClassNames.Assertions, __typename)

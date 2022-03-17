@@ -23,10 +23,6 @@ public object TestQuerySelections {
 
   private val onA: List<CompiledSelection> = listOf(
         CompiledField.Builder(
-          name = "__typename",
-          type = GraphQLString.type.notNull()
-        ).build(),
-        CompiledField.Builder(
           name = "fieldA1",
           type = GraphQLString.type
         ).build(),
@@ -45,10 +41,6 @@ public object TestQuerySelections {
       )
 
   private val onB1: List<CompiledSelection> = listOf(
-        CompiledField.Builder(
-          name = "__typename",
-          type = GraphQLString.type.notNull()
-        ).build(),
         CompiledField.Builder(
           name = "fieldB2",
           type = GraphQLString.type

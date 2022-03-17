@@ -52,7 +52,6 @@ public class TestQuery() : Query<TestQuery.Data> {
   ) : Query.Data
 
   public data class Hero(
-    public val __typename: String,
     /**
      * Synthetic field for grouping fragments
      */
@@ -68,7 +67,7 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "e21794a17c37fd41b0530e7df079fae9a579bc77435bb811a2e869909de32a55"
+        "eaf7354acff246ad79741f3c2354f1f4b4e175d9267568710b14fa71aec5f473"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -76,7 +75,6 @@ public class TestQuery() : Query<TestQuery.Data> {
      *
      * query TestQuery {
      *   hero {
-     *     __typename
      *     ...HeroDetails
      *   }
      * }
@@ -94,7 +92,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query TestQuery { hero { __typename ...HeroDetails } }  fragment HeroDetails on Character { name friendsConnection { totalCount edges { node { name } } } }"
+        "query TestQuery { hero { ...HeroDetails } }  fragment HeroDetails on Character { name friendsConnection { totalCount edges { node { name } } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

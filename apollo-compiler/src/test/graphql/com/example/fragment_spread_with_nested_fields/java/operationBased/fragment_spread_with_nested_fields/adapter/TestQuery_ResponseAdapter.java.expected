@@ -6,8 +6,6 @@
 package com.example.fragment_spread_with_nested_fields.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -56,28 +54,15 @@ public class TestQuery_ResponseAdapter {
   public enum Hero implements Adapter<TestQuery.Hero> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
-
     @Override
     public TestQuery.Hero fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String __typename = null;
 
-      loop:
-      while(true) {
-        switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          default: break loop;
-        }
-      }
 
       reader.rewind();
       HeroDetails heroDetails = com.example.fragment_spread_with_nested_fields.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.INSTANCE.fromJson(reader, customScalarAdapters);
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
-
       return new TestQuery.Hero(
-        __typename,
         heroDetails
       );
     }
@@ -85,9 +70,6 @@ public class TestQuery_ResponseAdapter {
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Hero value) throws IOException {
-      writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
-
       com.example.fragment_spread_with_nested_fields.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.INSTANCE.toJson(writer, customScalarAdapters, value.heroDetails);
     }
   }

@@ -162,8 +162,6 @@ public class HeroDetails implements Fragment.Data {
   }
 
   public static class OnDroid {
-    public String __typename;
-
     /**
      * Synthetic field for 'DroidDetails'
      */
@@ -175,8 +173,7 @@ public class HeroDetails implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public OnDroid(String __typename, DroidDetails droidDetails) {
-      this.__typename = __typename;
+    public OnDroid(DroidDetails droidDetails) {
       this.droidDetails = droidDetails;
     }
 
@@ -187,8 +184,7 @@ public class HeroDetails implements Fragment.Data {
       }
       if (o instanceof OnDroid) {
         OnDroid that = (OnDroid) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.droidDetails == null) ? (that.droidDetails == null) : this.droidDetails.equals(that.droidDetails));
+        return ((this.droidDetails == null) ? (that.droidDetails == null) : this.droidDetails.equals(that.droidDetails));
       }
       return false;
     }
@@ -197,8 +193,6 @@ public class HeroDetails implements Fragment.Data {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (droidDetails == null) ? 0 : droidDetails.hashCode();
         $hashCode = h;
@@ -211,7 +205,6 @@ public class HeroDetails implements Fragment.Data {
     public String toString() {
       if ($toString == null) {
         $toString = "OnDroid{"
-          + "__typename=" + __typename + ", "
           + "droidDetails=" + droidDetails
           + "}";
       }

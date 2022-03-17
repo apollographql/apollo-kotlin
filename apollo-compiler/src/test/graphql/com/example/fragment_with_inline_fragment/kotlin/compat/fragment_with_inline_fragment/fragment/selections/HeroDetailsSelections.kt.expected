@@ -19,10 +19,6 @@ import kotlin.collections.List
 
 public object HeroDetailsSelections {
   private val onDroid: List<CompiledSelection> = listOf(
-        CompiledField.Builder(
-          name = "__typename",
-          type = GraphQLString.type.notNull()
-        ).build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = (listOf("Droid"))
