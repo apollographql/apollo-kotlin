@@ -436,6 +436,15 @@ interface Service {
   val codegenModels: Property<String>
 
   /**
+   * When to add __typename. One of "ifFragments" or "ifPolymorphic"
+   *
+   * Default value: "ifPolymorphic"
+   */
+  @Deprecated("This is used during the transition to ifPolymorphic and will be eventually removed")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_1_1)
+  val addTypename: Property<String>
+
+  /**
    * Whether to flatten the models. File paths are limited on MacOSX to 256 chars and flattening can help keeping the path length manageable
    * The drawback is that some classes may nameclash in which case they will be suffixed with a number
    *

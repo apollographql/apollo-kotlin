@@ -13,14 +13,14 @@ import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.leafType
 import com.apollographql.apollo3.ast.rootTypeDefinition
 
-internal fun addRequiredFields(operation: GQLOperationDefinition, schema: Schema): GQLOperationDefinition {
+fun addRequiredFields(operation: GQLOperationDefinition, schema: Schema): GQLOperationDefinition {
   val parentType = operation.rootTypeDefinition(schema)!!.name
   return operation.copy(
       selectionSet = operation.selectionSet.addRequiredFields(schema, parentType, emptySet()).selectionSet
   )
 }
 
-internal fun addRequiredFields(fragmentDefinition: GQLFragmentDefinition, schema: Schema): GQLFragmentDefinition {
+fun addRequiredFields(fragmentDefinition: GQLFragmentDefinition, schema: Schema): GQLFragmentDefinition {
   val result = fragmentDefinition.selectionSet.addRequiredFields(schema, fragmentDefinition.typeCondition.name, emptySet())
 
   val directives = if (result.hasTypename) {

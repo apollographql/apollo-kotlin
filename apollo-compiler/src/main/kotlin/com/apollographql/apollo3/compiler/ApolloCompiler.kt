@@ -13,6 +13,7 @@ import com.apollographql.apollo3.ast.checkKeyFields
 import com.apollographql.apollo3.ast.checkNoErrors
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.transformation.addRequiredFields
+import com.apollographql.apollo3.ast.transformation.addRequiredFieldsIfPolymorphic
 import com.apollographql.apollo3.ast.validateAsExecutable
 import com.apollographql.apollo3.compiler.codegen.java.JavaCodeGen
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinCodeGen
@@ -104,13 +105,21 @@ object ApolloCompiler {
     /**
      * Step 3, Modify the AST to add typename and key fields
      */
-
+    val fragmentDefinitions =  (definitions.filterIsInstance<GQLFragmentDefinition>() + incomingFragments).associateBy { it.name }
     val fragments = definitions.filterIsInstance<GQLFragmentDefinition>().map {
-      addRequiredFields(it, options.schema)
+      if (options.addTypename == ADD_TYPENAME_IF_POLYMORPHIC) {
+        addRequiredFieldsIfPolymorphic(it, options.schema, fragmentDefinitions)
+      } else {
+        addRequiredFields(it, options.schema)
+      }
     }
 
     val operations = definitions.filterIsInstance<GQLOperationDefinition>().map {
-      addRequiredFields(it, options.schema)
+      if (options.addTypename == ADD_TYPENAME_IF_POLYMORPHIC) {
+        addRequiredFieldsIfPolymorphic(it, options.schema, fragmentDefinitions)
+      } else {
+        addRequiredFields(it, options.schema)
+      }
     }
 
     // Remember the fragments with the possibly updated fragments

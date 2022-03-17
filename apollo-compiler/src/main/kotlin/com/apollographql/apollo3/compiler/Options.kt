@@ -22,6 +22,9 @@ const val MODELS_OPERATION_BASED = "operationBased"
 @ApolloDeprecatedSince(v3_0_0)
 const val MODELS_COMPAT = "compat"
 
+const val ADD_TYPENAME_IF_FRAGMENTS = "ifFragments"
+const val ADD_TYPENAME_IF_POLYMORPHIC = "ifPolymorphic"
+
 enum class TargetLanguage {
   // The order is important. See [isTargetLanguageVersionAtLeast]
   JAVA,
@@ -176,6 +179,7 @@ class Options(
      * Default: false
      */
     val addJvmOverloads: Boolean = false,
+    val addTypename: String = defaultAddTypename
 ) {
 
   /**
@@ -231,6 +235,7 @@ class Options(
       sealedClassesForEnumsMatching: List<String> = this.sealedClassesForEnumsMatching,
       generateOptionalOperationVariables: Boolean = this.generateOptionalOperationVariables,
       addJvmOverloads: Boolean = this.addJvmOverloads,
+      addTypename: String = this.addTypename,
   ) = Options(
       executableFiles = executableFiles,
       schema = schema,
@@ -264,6 +269,7 @@ class Options(
       sealedClassesForEnumsMatching = sealedClassesForEnumsMatching,
       generateOptionalOperationVariables = generateOptionalOperationVariables,
       addJvmOverloads = addJvmOverloads,
+      addTypename = addTypename,
   )
 
   companion object {
@@ -282,6 +288,7 @@ class Options(
     const val defaultGenerateQueryDocument = true
     const val defaultModuleName = "apollographql"
     const val defaultCodegenModels = MODELS_OPERATION_BASED
+    const val defaultAddTypename = ADD_TYPENAME_IF_POLYMORPHIC
     const val defaultFlattenModels = true
     val defaultTargetLanguage = TargetLanguage.KOTLIN_1_5
     const val defaultGenerateSchema = false

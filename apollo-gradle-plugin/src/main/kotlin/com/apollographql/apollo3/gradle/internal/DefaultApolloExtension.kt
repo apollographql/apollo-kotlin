@@ -120,6 +120,7 @@ abstract class DefaultApolloExtension(
             && defaultService.generateApolloMetadata.isPresent.not()
             && defaultService.generateAsInternal.isPresent.not()
             && defaultService.codegenModels.isPresent.not()
+            && defaultService.addTypename.isPresent.not()
             && defaultService.generateFragmentImplementations.isPresent.not()
         ) {
           """
@@ -560,6 +561,7 @@ abstract class DefaultApolloExtension(
       task.generateSchema.set(service.generateSchema)
       task.generatedSchemaName.set(service.generatedSchemaName)
       task.codegenModels.set(service.codegenModels)
+      task.addTypename.set(service.addTypename)
       task.flattenModels.set(service.flattenModels)
       @OptIn(ApolloExperimental::class)
       task.generateTestBuilders.set(service.generateTestBuilders)

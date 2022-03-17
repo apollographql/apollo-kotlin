@@ -15,10 +15,10 @@ import com.apollographql.apollo3.ast.rootTypeDefinition
 
 private class AddResult2(val hasTypename: Boolean, val selectionSet: GQLSelectionSet)
 
-internal fun addRequiredFields2(
+fun addRequiredFieldsIfPolymorphic(
     operation: GQLOperationDefinition,
-    fragments: Map<String, GQLFragmentDefinition>,
     schema: Schema,
+    fragments: Map<String, GQLFragmentDefinition>,
 ): GQLOperationDefinition {
   val parentType = operation.rootTypeDefinition(schema)!!.name
   return operation.copy(
@@ -26,10 +26,10 @@ internal fun addRequiredFields2(
   )
 }
 
-internal fun addRequiredFields2(
+fun addRequiredFieldsIfPolymorphic(
     fragmentDefinition: GQLFragmentDefinition,
-    fragments: Map<String, GQLFragmentDefinition>,
     schema: Schema,
+    fragments: Map<String, GQLFragmentDefinition>,
 ): GQLFragmentDefinition {
   val result = fragmentDefinition.selectionSet.addRequiredFields(schema, fragments, fragmentDefinition.typeCondition.name, emptySet(), true)
 

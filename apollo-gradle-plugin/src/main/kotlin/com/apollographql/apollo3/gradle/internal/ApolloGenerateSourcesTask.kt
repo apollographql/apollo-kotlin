@@ -13,6 +13,7 @@ import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.Options
 import com.apollographql.apollo3.compiler.Options.Companion.defaultAddJvmOverloads
+import com.apollographql.apollo3.compiler.Options.Companion.defaultAddTypename
 import com.apollographql.apollo3.compiler.Options.Companion.defaultAlwaysGenerateTypesMatching
 import com.apollographql.apollo3.compiler.Options.Companion.defaultCodegenModels
 import com.apollographql.apollo3.compiler.Options.Companion.defaultFailOnWarnings
@@ -170,6 +171,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Input
   @get:Optional
+  abstract val addTypename: Property<String>
+
+  @get:Input
+  @get:Optional
   abstract val flattenModels: Property<Boolean>
 
   @get:Input
@@ -287,6 +292,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         incomingCompilerMetadata = metadata.map { it.compilerMetadata },
         schema = commonMetadata.schema,
         codegenModels = codegenModels,
+        addTypename = addTypename.getOrElse(defaultAddTypename),
         schemaPackageName = commonMetadata.schemaPackageName,
         useSchemaPackageNameForFragments = useSchemaPackageNameForFragments.getOrElse(defaultUseSchemaPackageNameForFragments),
         scalarMapping = commonMetadata.scalarMapping,
@@ -294,7 +300,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         generateTestBuilders = generateTestBuilders.getOrElse(defaultGenerateTestBuilders),
         sealedClassesForEnumsMatching = sealedClassesForEnumsMatching.getOrElse(defaultSealedClassesForEnumsMatching),
         generateOptionalOperationVariables = generateOptionalOperationVariables.getOrElse(defaultGenerateOptionalOperationVariables),
-        addJvmOverloads = addJvmOverloads.getOrElse(defaultAddJvmOverloads)
+        addJvmOverloads = addJvmOverloads.getOrElse(defaultAddJvmOverloads),
     )
 
     val outputCompilerMetadata = ApolloCompiler.write(options)
