@@ -13,7 +13,7 @@ actual fun shouldUpdateTestFixtures(): Boolean {
   if (System.getenv("updateTestFixtures") != null) {
     return true
   }
-  File("").writeText("")
+
   return when (System.getProperty("updateTestFixtures")?.trim()) {
     "on", "true", "1" -> true
     else -> false
