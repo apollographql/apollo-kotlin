@@ -6,17 +6,12 @@ import com.apollographql.apollo3.api.composeJsonResponse
 import com.apollographql.apollo3.api.json.buildJsonString
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueueMultipart
-import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.testing.runTest
 import defer.Query1Query
-import defer.Query2Query
 import defer.fragment.ComputerFields
 import defer.fragment.ScreenFields
-import defer.test.Query1Query_TestBuilder.Data
-import defer.test.Query2Query_TestBuilder.Data
 import kotlinx.coroutines.flow.toList
 import kotlin.test.Test
-import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
 @OptIn(ApolloExperimental::class)
@@ -86,22 +81,4 @@ class DeferTest {
     val actualDataList = apolloClient.query(query).toFlow().toList().map { it.dataAssertNoErrors }
     assertEquals(expectedDataList, actualDataList)
   }
-
-  @Test
-  fun deferDirectivesHaveLabelArgument() = runTest(before = { setUp() }, after = { tearDown() }) {
-    val query1 = Query1Query()
-    mockServer.enqueue(query1, Query1Query.Data { })
-    apolloClient.query(query1).execute()
-    var request = mockServer.takeRequest().body.utf8()
-    assertContains(request, """...ComputerFields @defer(label: \"query:Query1:0\")""")
-    assertContains(request, """...ScreenFields @defer(label: \"fragment:ComputerFields:0\")""")
-
-    val query2 = Query2Query()
-    mockServer.enqueue(query2, Query2Query.Data { })
-    apolloClient.query(query2).execute()
-    request = mockServer.takeRequest().body.utf8()
-    assertContains(request, """on Computer @defer(label: \"query:Query2:0\")""")
-    assertContains(request, """on Screen @defer(label: \"query:Query2:1\")""")
-  }
-
 }
