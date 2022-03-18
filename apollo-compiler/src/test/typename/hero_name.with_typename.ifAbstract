@@ -1,9 +1,9 @@
 query TestQuery {
-  hero @_apolloHasTypename {
+  hero {
     __typename
     name
   }
-  hero @_apolloHasTypename {
+  hero {
     __typename
     id
     name

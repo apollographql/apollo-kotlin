@@ -8,11 +8,9 @@ package com.example.monomorphic.adapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
-import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.possibleTypes
 import com.example.monomorphic.TestQuery
 import kotlin.String
 import kotlin.Unit
@@ -99,19 +97,12 @@ public object TestQuery_ResponseAdapter {
         }
       }
 
-      check(__typename != null) {
-        "__typename was not found"
-      }
-
       reader.rewind()
-      var asAnimal: TestQuery.AsAnimal? = null
-      if (possibleTypes("Cat","Dog").evaluate(customScalarAdapters.variables(), __typename)) {
-        asAnimal = com.example.monomorphic.adapter.TestQuery_ResponseAdapter.AsAnimal.fromJson(reader,
-            customScalarAdapters)
-      }
+      val asAnimal = com.example.monomorphic.adapter.TestQuery_ResponseAdapter.AsAnimal.fromJson(reader,
+          customScalarAdapters)
 
       return TestQuery.AsNode(
-        __typename = __typename,
+        __typename = __typename!!,
         asAnimal = asAnimal
       )
     }
@@ -124,10 +115,8 @@ public object TestQuery_ResponseAdapter {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-      if (value.asAnimal != null) {
-        com.example.monomorphic.adapter.TestQuery_ResponseAdapter.AsAnimal.toJson(writer,
-            customScalarAdapters, value.asAnimal)
-      }
+      com.example.monomorphic.adapter.TestQuery_ResponseAdapter.AsAnimal.toJson(writer,
+          customScalarAdapters, value.asAnimal)
     }
   }
 

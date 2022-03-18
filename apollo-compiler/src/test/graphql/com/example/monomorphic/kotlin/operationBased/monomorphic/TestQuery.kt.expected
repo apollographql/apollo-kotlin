@@ -61,7 +61,7 @@ public class TestQuery() : Query<TestQuery.Data> {
         /**
          * Synthetic field for inline fragment on Animal
          */
-        public val onAnimal: OnAnimal?
+        public val onAnimal: OnAnimal
       ) {
         public data class OnAnimal(
           public val species: String

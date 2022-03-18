@@ -40,7 +40,6 @@ import com.apollographql.apollo3.ast.coerceInSchemaContextOrThrow
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.findDeprecationReason
 import com.apollographql.apollo3.ast.findNonnull
-import com.apollographql.apollo3.ast.hasTypename
 import com.apollographql.apollo3.ast.inferVariables
 import com.apollographql.apollo3.ast.isApollo
 import com.apollographql.apollo3.ast.isFieldNonNull
@@ -465,7 +464,6 @@ internal class IrBuilder(
       val condition: BooleanExpression<BVariable>,
       val selections: List<GQLSelection>,
       val parentType: String,
-      val hasTypename: Boolean,
   ) {
     val responseName = alias ?: name
   }
@@ -492,7 +490,6 @@ internal class IrBuilder(
           forceNonNull = forceNonNull,
           forceOptional = gqlField.directives.optionalValue() == true,
           parentType = fieldWithParent.parentType,
-          hasTypename = gqlField.directives.hasTypename(),
       )
     }.groupBy {
       it.responseName
@@ -551,7 +548,6 @@ internal class IrBuilder(
           deprecationReason = deprecationReason,
           type = irType,
           gqlType = first.type,
-          hasTypename = fieldsWithSameResponseName.any { it.hasTypename }
       )
 
       MergedField(

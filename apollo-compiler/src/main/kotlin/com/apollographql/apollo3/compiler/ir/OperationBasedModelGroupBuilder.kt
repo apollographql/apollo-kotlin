@@ -13,7 +13,6 @@ import com.apollographql.apollo3.ast.GQLNamedType
 import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.hasTypename
 import com.apollographql.apollo3.ast.transformation.mergeTrivialInlineFragments
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.lowerCamelCaseIgnoringNonLetters
@@ -53,7 +52,6 @@ internal class OperationBasedModelGroupBuilder(
         type = IrNonNullType(IrModelType(MODEL_UNKNOWN)),
         deprecationReason = null,
         gqlType = GQLNonNullType(type = GQLNamedType(name = rawTypeName)),
-        hasTypename = false
     )
 
     val mergedSelections = if (mergeTrivialInlineFragments) {
@@ -68,7 +66,7 @@ internal class OperationBasedModelGroupBuilder(
         selections = mergedSelections.map { SelectionWithParent(it, rawTypeName) },
         condition = BooleanExpression.True,
         usedNames = usedNames,
-        hasTypename = info.hasTypename,
+        parentTypeConditions = listOf(rawTypeName),
     ).toModelGroup()!!
   }
 
@@ -90,7 +88,6 @@ internal class OperationBasedModelGroupBuilder(
         type = IrNonNullType(IrModelType(MODEL_UNKNOWN)),
         deprecationReason = null,
         gqlType = GQLNonNullType(type = fragmentDefinition.typeCondition),
-        hasTypename = fragmentDefinition.directives.hasTypename()
     )
 
 
@@ -108,7 +105,7 @@ internal class OperationBasedModelGroupBuilder(
         selections = mergedSelections.map { SelectionWithParent(it, fragmentDefinition.typeCondition.name) },
         condition = BooleanExpression.True,
         usedNames = usedNames,
-        hasTypename = info.hasTypename
+        parentTypeConditions = listOf(fragmentDefinition.typeCondition.name),
     ).toModelGroup()!!
   }
 
@@ -138,14 +135,13 @@ internal class OperationBasedModelGroupBuilder(
   private class SelectionWithParent(val selection: GQLSelection, val parent: String)
 
   /**
-   * @param kind the [IrKind] used to identify the resulting model
    * @param path the path up to but not including this field
    * @param info information about this field
    * @param selections the sub-selections of this fields. If [collectAllInlineFragmentFields] is true, might contain parent fields that
    * might not all be on the same parent type. Hence [SelectionWithParent]
    * @param condition the condition for this field. Might be a mix of include directives and type conditions
    * @param usedNames the used names for 2.x compat name conflicts resolution
-   * @param modelName the modelName to use for this field
+   * @param parentTypeConditions the list of the different typeCondition going through all inline fragments
    */
   private fun buildField(
       path: String,
@@ -153,7 +149,7 @@ internal class OperationBasedModelGroupBuilder(
       selections: List<SelectionWithParent>,
       condition: BooleanExpression<BTerm>,
       usedNames: MutableSet<String>,
-      hasTypename: Boolean,
+      parentTypeConditions: List<String>,
   ): OperationField {
     if (selections.isEmpty()) {
       return OperationField(
@@ -212,8 +208,6 @@ internal class OperationBasedModelGroupBuilder(
            * Because fragments are not merged regardless of [collectAllInlineFragmentFields], all inline fragments
            * should have the same parentType here
            */
-          val parentTypeCondition = it.value.first().parent
-
           inlineFragmentsWithSameTypeCondition.groupBy { it.directives.toBooleanExpression() }
               .entries.map { entry ->
                 val prefix = if (collectAllInlineFragmentFields) "as" else "on"
@@ -224,8 +218,10 @@ internal class OperationBasedModelGroupBuilder(
                   InlineFragmentKey(typeCondition, BooleanExpression.True).toName()
                 }
 
-                // The 'isTypeASuperTypeOf' part is only there to support addTypename = "ifFragments" because this over-adds typename
-                var childCondition: BooleanExpression<BTerm> = if (!hasTypename || schema.isTypeASuperTypeOf(typeCondition, parentTypeCondition)) {
+                var childCondition: BooleanExpression<BTerm> = if (parentTypeConditions.any { schema.isTypeASubTypeOf(it, typeCondition) }) {
+                  /**
+                   * If any of the parent types is a subtype (e.g. Cat is a subtype of Animal) then we can skip checking the typename
+                   */
                   BooleanExpression.True
                 } else {
                   val possibleTypes = schema.possibleTypes(typeCondition)
@@ -244,7 +240,6 @@ internal class OperationBasedModelGroupBuilder(
                     deprecationReason = null,
                     type = type,
                     gqlType = null,
-                    hasTypename = false,
                 )
 
                 var childSelections = entry.value.flatMap {
@@ -261,7 +256,7 @@ internal class OperationBasedModelGroupBuilder(
                     selections = childSelections,
                     condition = childCondition,
                     usedNames = usedNames,
-                    hasTypename = hasTypename,
+                    parentTypeConditions = parentTypeConditions + typeCondition,
                 )
               }
         }
@@ -281,14 +276,10 @@ internal class OperationBasedModelGroupBuilder(
           val fragmentDefinition = allFragmentDefinitions[first.name]!!
           val typeCondition = fragmentDefinition.typeCondition.name
 
-          /**
-           * Because fragments are not merged regardless of [collectAllInlineFragmentFields], all inline fragments
-           * should have the same parentType here
-           */
-          val parentTypeCondition = values.first().parent
-
-          // The 'isTypeASuperTypeOf' part is only there to support addTypename = "ifFragments" because this over-adds typename
-          var childCondition: BooleanExpression<BTerm> = if (!hasTypename || schema.isTypeASuperTypeOf(typeCondition, parentTypeCondition)) {
+          var childCondition: BooleanExpression<BTerm> = if (parentTypeConditions.any { schema.isTypeASubTypeOf(it, typeCondition) }) {
+            /**
+             * If any of the parent types is a subtype (e.g. Cat is a subtype of Animal) then we can skip checking the typename
+             */
             BooleanExpression.True
           } else {
             val possibleTypes = schema.possibleTypes(typeCondition)
@@ -316,7 +307,6 @@ internal class OperationBasedModelGroupBuilder(
               deprecationReason = null,
               type = type,
               gqlType = null,
-              hasTypename = false,
           )
 
           val p = if (insertFragmentSyntheticField) {
@@ -330,7 +320,7 @@ internal class OperationBasedModelGroupBuilder(
               selections = emptyList(), // Don't create a model for fragments spreads
               condition = childCondition,
               usedNames = usedNames,
-              hasTypename = fragmentDefinition.directives.hasTypename()
+              parentTypeConditions = emptyList() // this is not used because this field has no sub selections
           )
         }
 
@@ -346,7 +336,6 @@ internal class OperationBasedModelGroupBuilder(
           deprecationReason = null,
           type = IrNonNullType(IrModelType(childPath)),
           gqlType = null,
-          hasTypename = false,
       )
 
       val fragmentsFieldSet = OperationFieldSet(
@@ -389,7 +378,7 @@ internal class OperationBasedModelGroupBuilder(
           selections = mergedField.selections.map { SelectionWithParent(it, mergedField.rawTypeName) },
           condition = BooleanExpression.True,
           usedNames = usedNames,
-          hasTypename = mergedField.info.hasTypename
+          parentTypeConditions = listOf(mergedField.rawTypeName)
       )
     }
 

@@ -63,7 +63,7 @@ public class TestQuery() : Query<TestQuery.Data> {
     /**
      * Synthetic field for inline fragment on Animal
      */
-    public val asAnimal: AsAnimal?
+    public val asAnimal: AsAnimal
   )
 
   public data class AsAnimal(
