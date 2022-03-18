@@ -1,7 +1,7 @@
-query Query1($a: Boolean!) {
+query Query1 {
   computers {
     id
-    ...ComputerFields @defer(if: $a) @skip(if: $a)
+    ...ComputerFields @defer
   }
 }
 fragment ComputerFields on Computer {

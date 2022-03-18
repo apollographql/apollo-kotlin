@@ -80,8 +80,7 @@ internal class IrBuilder(
 
   private val builder = when (codegenModels) {
     @Suppress("DEPRECATION")
-    MODELS_COMPAT,
-    -> OperationBasedModelGroupBuilder(
+    MODELS_COMPAT -> OperationBasedModelGroupBuilder(
         schema = schema,
         allFragmentDefinitions = allFragmentDefinitions,
         fieldMerger = this,

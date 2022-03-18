@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.ir
 
+import com.apollographql.apollo3.api.BDefer
 import com.apollographql.apollo3.api.BPossibleTypes
 import com.apollographql.apollo3.api.BTerm
 import com.apollographql.apollo3.api.BVariable
@@ -19,6 +20,7 @@ import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.lowerC
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.modelName
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
+import kotlin.reflect.KClass
 
 internal class OperationBasedModelGroupBuilder(
     private val schema: Schema,
@@ -112,23 +114,44 @@ internal class OperationBasedModelGroupBuilder(
   /**
    * A grouping key for fragments
    */
-  private data class InlineFragmentKey(val typeCondition: String, val condition: BooleanExpression<BVariable>)
+  private data class InlineFragmentKey(val typeCondition: String, val condition: BooleanExpression<BTerm>)
 
-  private fun BooleanExpression<BVariable>.toName(): String = when (this) {
+  private fun BooleanExpression<BTerm>.toName(): String = when (this) {
     is BooleanExpression.True -> "True"
     is BooleanExpression.False -> "False"
     is BooleanExpression.And -> this.operands.joinToString("And") { it.toName() }
     is BooleanExpression.Or -> this.operands.joinToString("Or") { it.toName() }
     is BooleanExpression.Not -> "Not${this.operand.toName()}"
-    is BooleanExpression.Element -> this.value.name.capitalizeFirstLetter()
-    else -> error("")
+    is BooleanExpression.Element -> {
+      val bVariable = this.value as? BVariable ?: error("Unexpected term type in toName")
+      bVariable.name.capitalizeFirstLetter()
+    }
+    else -> error("Unexpected boolean expression type in toName")
   }
 
   private fun InlineFragmentKey.toName(): String = buildString {
     append(typeCondition.capitalizeFirstLetter())
     if (condition != BooleanExpression.True) {
-      append("If")
-      append(condition.toName())
+      // If at least one condition is a BDefer, it is enough to make a unique name, because the label is unique
+      val deferCondition: BDefer? = condition.firstElementOfType(BDefer::class)
+      if (deferCondition != null) {
+        append("Defer")
+        deferCondition.label?.let { append(it.capitalizeFirstLetter()) }
+      } else {
+        append("If")
+        append((condition).toName())
+      }
+    }
+  }
+
+  private fun <T : Any, U : Any> BooleanExpression<T>.firstElementOfType(type: KClass<U>): U? {
+    return when (this) {
+      BooleanExpression.True -> null
+      BooleanExpression.False -> null
+      is BooleanExpression.Element -> @Suppress("UNCHECKED_CAST") if (type.isInstance(this.value)) this.value as U else null
+      is BooleanExpression.Not -> this.operand.firstElementOfType(type)
+      is BooleanExpression.And -> (this.operands.firstOrNull { it.firstElementOfType(type) != null } as BooleanExpression.Element?)?.firstElementOfType(type)
+      is BooleanExpression.Or -> (this.operands.firstOrNull { it.firstElementOfType(type) != null } as BooleanExpression.Element?)?.firstElementOfType(type)
     }
   }
 
@@ -208,7 +231,7 @@ internal class OperationBasedModelGroupBuilder(
            * Because fragments are not merged regardless of [collectAllInlineFragmentFields], all inline fragments
            * should have the same parentType here
            */
-          inlineFragmentsWithSameTypeCondition.groupBy { it.directives.toBooleanExpression() }
+          inlineFragmentsWithSameTypeCondition.groupBy { it.directives.toIncludeAndDeferBooleanExpression() }
               .entries.map { entry ->
                 val prefix = if (collectAllInlineFragmentFields) "as" else "on"
 
