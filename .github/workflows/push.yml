@@ -5,7 +5,7 @@ on:
     branches: [ main ]
 
 jobs:
-  publish:
+  deploy:
     runs-on: macos-11
     if: github.repository == 'apollographql/apollo-kotlin'
     steps:
