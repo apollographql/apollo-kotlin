@@ -48,6 +48,7 @@ public class TestQuery() : Query<TestQuery.Data> {
   .build()
 
   public data class Data(
+    public val __typename: String,
     /**
      * Synthetic field for 'QueryFragment'
      */
@@ -56,26 +57,26 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "0b1af5d186e819125909757834596c14046e0c9779ba7ba4c467339b84415366"
+        "9c53d7ef056cfcd269d1bfd4137fdb5a41ced7343ed524f03ec915c7a8d6f483"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
      * query TestQuery {
+     *   __typename
      *   ...QueryFragment
      * }
      *
      * fragment QueryFragment on Query {
      *   __typename
      *   hero {
-     *     __typename
      *     name
      *   }
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query TestQuery { ...QueryFragment }  fragment QueryFragment on Query { __typename hero { __typename name } }"
+        "query TestQuery { __typename ...QueryFragment }  fragment QueryFragment on Query { __typename hero { name } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

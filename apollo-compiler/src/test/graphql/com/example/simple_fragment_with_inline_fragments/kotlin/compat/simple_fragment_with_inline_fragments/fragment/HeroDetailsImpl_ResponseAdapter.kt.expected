@@ -25,26 +25,23 @@ import kotlin.collections.List
 public object HeroDetailsImpl_ResponseAdapter {
   public object HeroDetails :
       Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails> {
-    public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friends")
+    public val RESPONSE_NAMES: List<String> = listOf("name", "friends")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails {
-      var __typename: String? = null
       var name: String? = null
       var friends: List<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend?>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> friends = Friend.obj(true).nullable().list().nullable().fromJson(reader,
+          0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> friends = Friend.obj(true).nullable().list().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails(
-        __typename = __typename!!,
         name = name!!,
         friends = friends
       )
@@ -55,9 +52,6 @@ public object HeroDetailsImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails
     ): Unit {
-      writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
 

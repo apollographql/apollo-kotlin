@@ -50,7 +50,6 @@ public data class TestQuery(
     public val hero: Hero?
   ) : Query.Data {
     public data class Hero(
-      public val __typename: String,
       /**
        * The name of the character
        */
@@ -70,7 +69,7 @@ public data class TestQuery(
 
   public companion object {
     public const val OPERATION_ID: String =
-        "8f4a8c01b4bf0eb76356829f8062621ff66c3b53b6bf92753661cca41ef3ade4"
+        "6a8dd101c1681dc829d72040868fdf394c52bacb692da3549bc73e9504013470"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -78,7 +77,6 @@ public data class TestQuery(
      *
      * query TestQuery($episode: Episode) {
      *   hero(episode: $episode) {
-     *     __typename
      *     name
      *     deprecated
      *     deprecatedBool
@@ -86,7 +84,7 @@ public data class TestQuery(
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query TestQuery(${'$'}episode: Episode) { hero(episode: ${'$'}episode) { __typename name deprecated deprecatedBool } }"
+        "query TestQuery(${'$'}episode: Episode) { hero(episode: ${'$'}episode) { name deprecated deprecatedBool } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

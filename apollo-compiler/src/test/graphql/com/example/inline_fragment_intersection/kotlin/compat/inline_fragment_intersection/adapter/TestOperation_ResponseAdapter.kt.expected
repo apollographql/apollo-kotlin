@@ -468,23 +468,20 @@ public object TestOperation_ResponseAdapter {
   }
 
   public object Friend2 : Adapter<TestOperation.Friend2> {
-    public val RESPONSE_NAMES: List<String> = listOf("__typename", "lifeExpectancy")
+    public val RESPONSE_NAMES: List<String> = listOf("lifeExpectancy")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.Friend2 {
-      var __typename: String? = null
       var lifeExpectancy: Double? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+          0 -> lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestOperation.Friend2(
-        __typename = __typename!!,
         lifeExpectancy = lifeExpectancy
       )
     }
@@ -494,9 +491,6 @@ public object TestOperation_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       `value`: TestOperation.Friend2
     ): Unit {
-      writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
       writer.name("lifeExpectancy")
       NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lifeExpectancy)
     }

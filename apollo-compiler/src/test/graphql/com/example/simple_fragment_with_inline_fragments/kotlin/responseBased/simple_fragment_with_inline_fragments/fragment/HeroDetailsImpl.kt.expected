@@ -43,7 +43,6 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
   .build()
 
   public data class Data(
-    public override val __typename: String,
     /**
      * The name of the character
      */

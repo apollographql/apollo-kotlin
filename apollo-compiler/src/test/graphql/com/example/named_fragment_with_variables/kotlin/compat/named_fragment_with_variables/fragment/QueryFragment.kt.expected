@@ -18,6 +18,7 @@ public data class QueryFragment(
   )
 
   public data class User(
+    public val __typename: String,
     /**
      * Synthetic field for grouping fragments
      */

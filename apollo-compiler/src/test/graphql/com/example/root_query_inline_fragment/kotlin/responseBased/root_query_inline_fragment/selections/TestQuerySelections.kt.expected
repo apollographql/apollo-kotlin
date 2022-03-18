@@ -58,6 +58,10 @@ public object TestQuerySelections {
       )
 
   private val droid: List<CompiledSelection> = listOf(
+        CompiledField.Builder(
+          name = "__typename",
+          type = GraphQLString.type.notNull()
+        ).build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
@@ -86,6 +90,10 @@ public object TestQuerySelections {
       )
 
   public val root: List<CompiledSelection> = listOf(
+        CompiledField.Builder(
+          name = "__typename",
+          type = GraphQLString.type.notNull()
+        ).build(),
         CompiledFragment.Builder(
           typeCondition = "Query",
           possibleTypes = listOf("Query")

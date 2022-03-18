@@ -16,7 +16,6 @@ import java.util.List;
 
 public class DroidDetailsSelections {
   private static List<CompiledSelection> friends = Arrays.asList(
-    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build()
   );
 

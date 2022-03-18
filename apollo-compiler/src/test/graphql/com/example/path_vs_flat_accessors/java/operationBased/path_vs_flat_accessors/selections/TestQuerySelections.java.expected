@@ -20,6 +20,7 @@ public class TestQuerySelections {
   );
 
   private static List<CompiledSelection> onA = Arrays.asList(
+    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledFragment.Builder("B", Arrays.asList("ABC", "BC")).selections(onB).build()
   );
 

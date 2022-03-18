@@ -12,8 +12,10 @@ class ConditionalInlineFragmentTest {
      * be easy to miss a change in the class structure and parameters
      */
     GetFieldQuery.Data(
+        __typename = "Query",
         field1 = "banana",
         asQuery = GetFieldQuery.AsQuery(
+            __typename = "Query",
             field1 = "banana",
             field2 = "croissant"
         )

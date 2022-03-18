@@ -16,7 +16,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
-import com.apollographql.apollo3.api.json.JsonReaders;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fieldset_with_multiple_super.TestQuery;
 import java.io.IOException;
@@ -115,24 +114,24 @@ public class TestQuery_ResponseAdapter {
   public enum OnA implements Adapter<TestQuery.OnA> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("fieldA1");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "fieldA1");
 
     @Override
     public TestQuery.OnA fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
+      String __typename = null;
       String fieldA1 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: fieldA1 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: fieldA1 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      reader.rewind();
-      String __typename = JsonReaders.readTypename(reader);
-
+      Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
       TestQuery.OnB onB = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","BC")), Collections.emptySet(), __typename)) {
@@ -140,6 +139,7 @@ public class TestQuery_ResponseAdapter {
       }
 
       return new TestQuery.OnA(
+        __typename,
         fieldA1,
         onB
       );
@@ -148,6 +148,9 @@ public class TestQuery_ResponseAdapter {
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.OnA value) throws IOException {
+      writer.name("__typename");
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+
       writer.name("fieldA1");
       Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldA1);
 
@@ -191,24 +194,24 @@ public class TestQuery_ResponseAdapter {
   public enum OnB1 implements Adapter<TestQuery.OnB1> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("fieldB2");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "fieldB2");
 
     @Override
     public TestQuery.OnB1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
+      String __typename = null;
       String fieldB2 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: fieldB2 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: fieldB2 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      reader.rewind();
-      String __typename = JsonReaders.readTypename(reader);
-
+      Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
       TestQuery.OnA1 onA = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","AC")), Collections.emptySet(), __typename)) {
@@ -216,6 +219,7 @@ public class TestQuery_ResponseAdapter {
       }
 
       return new TestQuery.OnB1(
+        __typename,
         fieldB2,
         onA
       );
@@ -224,6 +228,9 @@ public class TestQuery_ResponseAdapter {
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.OnB1 value) throws IOException {
+      writer.name("__typename");
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+
       writer.name("fieldB2");
       Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldB2);
 

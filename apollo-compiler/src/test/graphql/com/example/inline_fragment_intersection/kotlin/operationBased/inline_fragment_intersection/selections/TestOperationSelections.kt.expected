@@ -79,6 +79,10 @@ public object TestOperationSelections {
 
   private val onBeing: List<CompiledSelection> = listOf(
         CompiledField.Builder(
+          name = "__typename",
+          type = GraphQLString.type.notNull()
+        ).build(),
+        CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build(),
@@ -95,10 +99,6 @@ public object TestOperationSelections {
       )
 
   private val friends2: List<CompiledSelection> = listOf(
-        CompiledField.Builder(
-          name = "__typename",
-          type = GraphQLString.type.notNull()
-        ).build(),
         CompiledField.Builder(
           name = "lifeExpectancy",
           type = GraphQLFloat.type

@@ -35,6 +35,7 @@ public data class StarshipFragment(
   )
 
   public data class Node(
+    public val __typename: String,
     /**
      * Synthetic field for grouping fragments
      */

@@ -123,28 +123,24 @@ public class CreateReviewForEpisode_ResponseAdapter {
   public enum ListOfListOfObject implements Adapter<CreateReviewForEpisode.ListOfListOfObject> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
     public CreateReviewForEpisode.ListOfListOfObject fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String __typename = null;
       String name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = new com.example.MyStringAdapter().fromJson(reader, customScalarAdapters); break;
-          case 1: name = new com.example.MyStringAdapter().fromJson(reader, customScalarAdapters); break;
+          case 0: name = new com.example.MyStringAdapter().fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
       Assertions.checkFieldNotMissing(name, "name");
 
       return new CreateReviewForEpisode.ListOfListOfObject(
-        __typename,
         name
       );
     }
@@ -152,9 +148,6 @@ public class CreateReviewForEpisode_ResponseAdapter {
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         CreateReviewForEpisode.ListOfListOfObject value) throws IOException {
-      writer.name("__typename");
-      new com.example.MyStringAdapter().toJson(writer, customScalarAdapters, value.__typename);
-
       writer.name("name");
       new com.example.MyStringAdapter().toJson(writer, customScalarAdapters, value.name);
     }

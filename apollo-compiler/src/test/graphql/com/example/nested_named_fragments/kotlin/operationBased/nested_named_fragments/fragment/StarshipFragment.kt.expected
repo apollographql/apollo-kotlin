@@ -33,6 +33,7 @@ public data class StarshipFragment(
       public val node: Node?
     ) {
       public data class Node(
+        public val __typename: String,
         /**
          * Synthetic field for 'pilotFragment'
          */

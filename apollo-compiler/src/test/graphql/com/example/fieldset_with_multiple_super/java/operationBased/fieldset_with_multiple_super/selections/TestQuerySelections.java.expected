@@ -20,6 +20,7 @@ public class TestQuerySelections {
   );
 
   private static List<CompiledSelection> onA = Arrays.asList(
+    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("fieldA1", GraphQLString.type).build(),
     new CompiledFragment.Builder("B", Arrays.asList("ABC", "BC")).selections(onB).build()
   );
@@ -29,6 +30,7 @@ public class TestQuerySelections {
   );
 
   private static List<CompiledSelection> onB1 = Arrays.asList(
+    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("fieldB2", GraphQLString.type).build(),
     new CompiledFragment.Builder("A", Arrays.asList("ABC", "AC")).selections(onA1).build()
   );

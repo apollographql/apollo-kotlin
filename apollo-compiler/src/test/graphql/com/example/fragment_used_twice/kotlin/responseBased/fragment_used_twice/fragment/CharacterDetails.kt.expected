@@ -9,8 +9,6 @@ import kotlin.Any
 import kotlin.String
 
 public interface CharacterDetails {
-  public val __typename: String
-
   /**
    * The name of the character
    */

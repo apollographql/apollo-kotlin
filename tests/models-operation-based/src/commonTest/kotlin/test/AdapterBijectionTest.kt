@@ -17,6 +17,7 @@ class AdapterBijectionTest {
       HeroAndFriendsWithFragmentsQuery(),
       HeroAndFriendsWithFragmentsQuery.Data(
           HeroAndFriendsWithFragmentsQuery.Hero(
+              "Droid",
               HeroWithFriendsFragment(
                   "2001",
                   "R222-D222",

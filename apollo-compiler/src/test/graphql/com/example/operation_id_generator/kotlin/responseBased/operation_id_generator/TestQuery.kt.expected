@@ -50,7 +50,6 @@ public class TestQuery() : Query<TestQuery.Data> {
     public val hero: Hero?
   ) : Query.Data {
     public data class Hero(
-      public val __typename: String,
       /**
        * The ID of the character
        */
@@ -71,13 +70,12 @@ public class TestQuery() : Query<TestQuery.Data> {
      *
      * query TestQuery {
      *   hero {
-     *     __typename
      *     id
      *     name
      *   }
      * }
      */
-    public const val OPERATION_DOCUMENT: String = "query TestQuery { hero { __typename id name } }"
+    public const val OPERATION_DOCUMENT: String = "query TestQuery { hero { id name } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

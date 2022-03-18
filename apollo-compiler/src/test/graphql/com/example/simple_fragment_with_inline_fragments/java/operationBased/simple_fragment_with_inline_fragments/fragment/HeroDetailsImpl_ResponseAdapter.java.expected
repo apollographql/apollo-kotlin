@@ -30,30 +30,26 @@ public class HeroDetailsImpl_ResponseAdapter {
   public enum HeroDetails implements Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name", "friends");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "friends");
 
     @Override
     public com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String __typename = null;
       String name = null;
       List<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend> friends = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend>(Friend.INSTANCE, true)))).fromJson(reader, customScalarAdapters); break;
+          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend>(Friend.INSTANCE, true)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
       Assertions.checkFieldNotMissing(name, "name");
 
       return new com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails(
-        __typename,
         name,
         friends
       );
@@ -63,9 +59,6 @@ public class HeroDetailsImpl_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails value) throws
         IOException {
-      writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
-
       writer.name("name");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
 

@@ -58,6 +58,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       public val onA: OnA?
     ) {
       public data class OnA(
+        public val __typename: String,
         public val fieldA1: String?,
         /**
          * Synthetic field for inline fragment on B
@@ -65,6 +66,7 @@ public class TestQuery() : Query<TestQuery.Data> {
         public val onB: OnB?
       ) {
         public data class OnB(
+          public val __typename: String,
           /**
            * Synthetic field for 'bFragment'
            */
@@ -76,7 +78,7 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "efeec94b5f644270b60f0665fd2ea25275dc5559a6a8cad52670e096417a3017"
+        "16500a4d2f3e21ea2357fd3532aff655fc2b37e893570d1e8d1944c4af4f9f1d"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -86,8 +88,10 @@ public class TestQuery() : Query<TestQuery.Data> {
      *   root {
      *     __typename
      *     ... on A {
+     *       __typename
      *       fieldA1
      *       ... on B {
+     *         __typename
      *         ...bFragment
      *       }
      *     }
@@ -95,12 +99,11 @@ public class TestQuery() : Query<TestQuery.Data> {
      * }
      *
      * fragment bFragment on B {
-     *   __typename
      *   fieldB1
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query TestQuery { root { __typename ... on A { fieldA1 ... on B { ...bFragment } } } }  fragment bFragment on B { __typename fieldB1 }"
+        "query TestQuery { root { __typename ... on A { __typename fieldA1 ... on B { __typename ...bFragment } } } }  fragment bFragment on B { fieldB1 }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

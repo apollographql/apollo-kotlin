@@ -21,10 +21,6 @@ import kotlin.collections.List
 public object TestQuerySelections {
   private val node: List<CompiledSelection> = listOf(
         CompiledField.Builder(
-          name = "__typename",
-          type = GraphQLString.type.notNull()
-        ).build(),
-        CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build()
@@ -52,10 +48,6 @@ public object TestQuerySelections {
 
   private val r2: List<CompiledSelection> = listOf(
         CompiledField.Builder(
-          name = "__typename",
-          type = GraphQLString.type.notNull()
-        ).build(),
-        CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build(),
@@ -67,10 +59,6 @@ public object TestQuerySelections {
       )
 
   private val node1: List<CompiledSelection> = listOf(
-        CompiledField.Builder(
-          name = "__typename",
-          type = GraphQLString.type.notNull()
-        ).build(),
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
@@ -98,10 +86,6 @@ public object TestQuerySelections {
       )
 
   private val luke: List<CompiledSelection> = listOf(
-        CompiledField.Builder(
-          name = "__typename",
-          type = GraphQLString.type.notNull()
-        ).build(),
         CompiledField.Builder(
           name = "id",
           type = GraphQLID.type.notNull()

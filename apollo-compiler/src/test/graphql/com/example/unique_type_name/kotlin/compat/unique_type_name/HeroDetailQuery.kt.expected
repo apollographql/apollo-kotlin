@@ -73,7 +73,6 @@ public class HeroDetailQuery() : Query<HeroDetailQuery.Data> {
   }
 
   public data class Friend2(
-    public val __typename: String,
     /**
      * The name of the character
      */
@@ -100,7 +99,6 @@ public class HeroDetailQuery() : Query<HeroDetailQuery.Data> {
   }
 
   public data class Friend(
-    public val __typename: String,
     /**
      * The name of the character
      */
@@ -136,7 +134,7 @@ public class HeroDetailQuery() : Query<HeroDetailQuery.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "471568e6a9a0c74b3824d5c8154bde4c6e5d57dfb897e1332bf34155df2bf5a3"
+        "9e49497791948cf0840e8353d87b142b6474e023a2082a3fe414b312565599de"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -147,13 +145,11 @@ public class HeroDetailQuery() : Query<HeroDetailQuery.Data> {
      *     __typename
      *     name
      *     friends {
-     *       __typename
      *       name
      *     }
      *     ... on Human {
      *       height
      *       friends {
-     *         __typename
      *         appearsIn
      *         friends {
      *           __typename
@@ -165,13 +161,11 @@ public class HeroDetailQuery() : Query<HeroDetailQuery.Data> {
      * }
      *
      * fragment HeroDetails on Character {
-     *   __typename
      *   name
      *   friendsConnection {
      *     totalCount
      *     edges {
      *       node {
-     *         __typename
      *         name
      *       }
      *     }
@@ -179,7 +173,7 @@ public class HeroDetailQuery() : Query<HeroDetailQuery.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query HeroDetailQuery { heroDetailQuery { __typename name friends { __typename name } ... on Human { height friends { __typename appearsIn friends { __typename ...HeroDetails } } } } }  fragment HeroDetails on Character { __typename name friendsConnection { totalCount edges { node { __typename name } } } }"
+        "query HeroDetailQuery { heroDetailQuery { __typename name friends { name } ... on Human { height friends { appearsIn friends { __typename ...HeroDetails } } } } }  fragment HeroDetails on Character { name friendsConnection { totalCount edges { node { name } } } }"
 
     public const val OPERATION_NAME: String = "HeroDetailQuery"
   }

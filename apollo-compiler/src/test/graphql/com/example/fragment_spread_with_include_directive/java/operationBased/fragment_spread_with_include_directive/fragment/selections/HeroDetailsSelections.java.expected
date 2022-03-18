@@ -14,7 +14,6 @@ import java.util.List;
 
 public class HeroDetailsSelections {
   public static List<CompiledSelection> root = Arrays.asList(
-    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build()
   );
 }

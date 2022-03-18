@@ -23,26 +23,23 @@ import kotlin.collections.List
 
 public object HeroDetailsImpl_ResponseAdapter {
   public object Data : Adapter<HeroDetailsImpl.Data> {
-    public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friends")
+    public val RESPONSE_NAMES: List<String> = listOf("name", "friends")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         HeroDetailsImpl.Data {
-      var __typename: String? = null
       var name: String? = null
       var friends: List<HeroDetailsImpl.Data.Friend?>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> friends = Friend.obj().nullable().list().nullable().fromJson(reader,
+          0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> friends = Friend.obj().nullable().list().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
       }
 
       return HeroDetailsImpl.Data(
-        __typename = __typename!!,
         name = name!!,
         friends = friends
       )
@@ -53,9 +50,6 @@ public object HeroDetailsImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       `value`: HeroDetailsImpl.Data
     ): Unit {
-      writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
 

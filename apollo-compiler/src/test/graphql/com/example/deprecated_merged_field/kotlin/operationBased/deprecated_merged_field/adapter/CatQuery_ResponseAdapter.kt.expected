@@ -7,6 +7,7 @@ package com.example.deprecated_merged_field.adapter
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -46,15 +47,25 @@ public object CatQuery_ResponseAdapter {
     }
 
     private object Cat : Adapter<CatQuery.Data.Cat> {
+      public val RESPONSE_NAMES: List<String> = listOf("__typename")
+
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           CatQuery.Data.Cat {
+        var __typename: String? = null
 
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            else -> break
+          }
+        }
 
         reader.rewind()
         val animalFragment = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.fromJson(reader,
             customScalarAdapters)
 
         return CatQuery.Data.Cat(
+          __typename = __typename!!,
           animalFragment = animalFragment
         )
       }
@@ -64,6 +75,9 @@ public object CatQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         `value`: CatQuery.Data.Cat
       ): Unit {
+        writer.name("__typename")
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
         com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.toJson(writer,
             customScalarAdapters, value.animalFragment)
       }

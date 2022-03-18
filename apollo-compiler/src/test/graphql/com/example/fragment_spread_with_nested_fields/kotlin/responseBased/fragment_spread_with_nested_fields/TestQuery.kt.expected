@@ -52,7 +52,7 @@ public class TestQuery() : Query<TestQuery.Data> {
     public val hero: Hero?
   ) : Query.Data {
     public data class Hero(
-      public override val __typename: String,
+      public val __typename: String,
       /**
        * The name of the character
        */
@@ -81,7 +81,6 @@ public class TestQuery() : Query<TestQuery.Data> {
           public override val node: Node?
         ) : HeroDetails.FriendsConnection.Edge {
           public data class Node(
-            public override val __typename: String,
             /**
              * The name of the character
              */
@@ -98,7 +97,7 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "1bba165489aca103762680e2fb4c0a8962f6b6b2a90f6311d3ed0785a8374a85"
+        "e21794a17c37fd41b0530e7df079fae9a579bc77435bb811a2e869909de32a55"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -112,13 +111,11 @@ public class TestQuery() : Query<TestQuery.Data> {
      * }
      *
      * fragment HeroDetails on Character {
-     *   __typename
      *   name
      *   friendsConnection {
      *     totalCount
      *     edges {
      *       node {
-     *         __typename
      *         name
      *       }
      *     }
@@ -126,7 +123,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query TestQuery { hero { __typename ...HeroDetails } }  fragment HeroDetails on Character { __typename name friendsConnection { totalCount edges { node { __typename name } } } }"
+        "query TestQuery { hero { __typename ...HeroDetails } }  fragment HeroDetails on Character { name friendsConnection { totalCount edges { node { name } } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

@@ -13,8 +13,6 @@ import java.lang.String;
 import java.util.List;
 
 public class HeroDetails implements Fragment.Data {
-  public String __typename;
-
   /**
    * The name of the character
    */
@@ -31,8 +29,7 @@ public class HeroDetails implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public HeroDetails(String __typename, String name, List<Friend> friends) {
-    this.__typename = __typename;
+  public HeroDetails(String name, List<Friend> friends) {
     this.name = name;
     this.friends = friends;
   }
@@ -44,8 +41,7 @@ public class HeroDetails implements Fragment.Data {
     }
     if (o instanceof HeroDetails) {
       HeroDetails that = (HeroDetails) o;
-      return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-       &&((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+      return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
        &&((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends));
     }
     return false;
@@ -55,8 +51,6 @@ public class HeroDetails implements Fragment.Data {
   public int hashCode() {
     if (!$hashCodeMemoized) {
       int h = 1;
-      h *= 1000003;
-      h ^= (__typename == null) ? 0 : __typename.hashCode();
       h *= 1000003;
       h ^= (name == null) ? 0 : name.hashCode();
       h *= 1000003;
@@ -71,7 +65,6 @@ public class HeroDetails implements Fragment.Data {
   public String toString() {
     if ($toString == null) {
       $toString = "HeroDetails{"
-        + "__typename=" + __typename + ", "
         + "name=" + name + ", "
         + "friends=" + friends
         + "}";

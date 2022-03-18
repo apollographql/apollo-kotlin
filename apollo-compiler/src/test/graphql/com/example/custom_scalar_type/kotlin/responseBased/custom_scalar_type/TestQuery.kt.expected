@@ -53,7 +53,6 @@ public class TestQuery() : Query<TestQuery.Data> {
     public val hero: Hero?
   ) : Query.Data {
     public data class Hero(
-      public val __typename: java.lang.String,
       /**
        * The ID of the character
        */
@@ -87,7 +86,7 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "63f3827b69a3e52c2a2aa8925397d989fd43a5a044a96db7bba889f5421a72cd"
+        "1d5498a23394700442413af8ec1b8edce1445ce533afdb2e9d5ec9c0ed40a9e3"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -95,7 +94,6 @@ public class TestQuery() : Query<TestQuery.Data> {
      *
      * query TestQuery {
      *   hero {
-     *     __typename
      *     id
      *     name
      *     birthDate
@@ -107,7 +105,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query TestQuery { hero { __typename id name birthDate appearanceDates fieldWithUnsupportedType profileLink links } }"
+        "query TestQuery { hero { id name birthDate appearanceDates fieldWithUnsupportedType profileLink links } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

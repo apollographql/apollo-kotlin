@@ -3,12 +3,14 @@
     "allPlanets": {
       "planets": [
         {
+          "__typename": "Planet",
           "name": "Tatooine",
           "climates": null,
           "surfaceWater": 1.0,
           "filmConnection": null
         },
         {
+          "__typename": "Planet",
           "name": "Alderaan",
           "climates": [
             "temperate"
@@ -18,6 +20,7 @@
             "totalCount": 2,
             "films": [
               {
+                "__typename": "Film",
                 "title": "A New Hope",
                 "producers": [
                   "Gary Kurtz",
@@ -25,6 +28,7 @@
                 ]
               },
               {
+                "__typename": "Film",
                 "title": "Revenge of the Sith",
                 "producers": [
                   "Rick McCallum"
@@ -34,6 +38,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Yavin IV",
           "climates": [
             "temperate",
@@ -44,6 +49,7 @@
             "totalCount": 1,
             "films": [
               {
+                "__typename": "Film",
                 "title": "A New Hope",
                 "producers": [
                   "Gary Kurtz",
@@ -54,6 +60,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Hoth",
           "climates": [
             "frozen"
@@ -63,6 +70,7 @@
             "totalCount": 1,
             "films": [
               {
+                "__typename": "Film",
                 "title": "The Empire Strikes Back",
                 "producers": [
                   "Gary Kutz",
@@ -73,6 +81,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Dagobah",
           "climates": [
             "murky"
@@ -82,6 +91,7 @@
             "totalCount": 3,
             "films": [
               {
+                "__typename": "Film",
                 "title": "The Empire Strikes Back",
                 "producers": [
                   "Gary Kutz",
@@ -89,6 +99,7 @@
                 ]
               },
               {
+                "__typename": "Film",
                 "title": "Return of the Jedi",
                 "producers": [
                   "Howard G. Kazanjian",
@@ -97,6 +108,7 @@
                 ]
               },
               {
+                "__typename": "Film",
                 "title": "Revenge of the Sith",
                 "producers": [
                   "Rick McCallum"
@@ -106,6 +118,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Bespin",
           "climates": [
             "temperate"
@@ -115,6 +128,7 @@
             "totalCount": 1,
             "films": [
               {
+                "__typename": "Film",
                 "title": "The Empire Strikes Back",
                 "producers": [
                   "Gary Kutz",
@@ -125,6 +139,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Endor",
           "climates": [
             "temperate"
@@ -134,6 +149,7 @@
             "totalCount": 1,
             "films": [
               {
+                "__typename": "Film",
                 "title": "Return of the Jedi",
                 "producers": [
                   "Howard G. Kazanjian",
@@ -145,6 +161,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Naboo",
           "climates": [
             "temperate"
@@ -154,6 +171,7 @@
             "totalCount": 4,
             "films": [
               {
+                "__typename": "Film",
                 "title": "Return of the Jedi",
                 "producers": [
                   "Howard G. Kazanjian",
@@ -162,18 +180,21 @@
                 ]
               },
               {
+                "__typename": "Film",
                 "title": "The Phantom Menace",
                 "producers": [
                   "Rick McCallum"
                 ]
               },
               {
+                "__typename": "Film",
                 "title": "Attack of the Clones",
                 "producers": [
                   "Rick McCallum"
                 ]
               },
               {
+                "__typename": "Film",
                 "title": "Revenge of the Sith",
                 "producers": [
                   "Rick McCallum"
@@ -183,6 +204,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Coruscant",
           "climates": [
             "temperate"
@@ -192,6 +214,7 @@
             "totalCount": 4,
             "films": [
               {
+                "__typename": "Film",
                 "title": "Return of the Jedi",
                 "producers": [
                   "Howard G. Kazanjian",
@@ -200,18 +223,21 @@
                 ]
               },
               {
+                "__typename": "Film",
                 "title": "The Phantom Menace",
                 "producers": [
                   "Rick McCallum"
                 ]
               },
               {
+                "__typename": "Film",
                 "title": "Attack of the Clones",
                 "producers": [
                   "Rick McCallum"
                 ]
               },
               {
+                "__typename": "Film",
                 "title": "Revenge of the Sith",
                 "producers": [
                   "Rick McCallum"
@@ -221,6 +247,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Kamino",
           "climates": [
             "temperate"
@@ -230,6 +257,7 @@
             "totalCount": 1,
             "films": [
               {
+                "__typename": "Film",
                 "title": "Attack of the Clones",
                 "producers": [
                   "Rick McCallum"
@@ -239,6 +267,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Geonosis",
           "climates": [
             "temperate",
@@ -249,6 +278,7 @@
             "totalCount": 1,
             "films": [
               {
+                "__typename": "Film",
                 "title": "Attack of the Clones",
                 "producers": [
                   "Rick McCallum"
@@ -258,6 +288,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Utapau",
           "climates": [
             "temperate",
@@ -269,6 +300,7 @@
             "totalCount": 1,
             "films": [
               {
+                "__typename": "Film",
                 "title": "Revenge of the Sith",
                 "producers": [
                   "Rick McCallum"
@@ -278,6 +310,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Mustafar",
           "climates": [
             "hot"
@@ -287,6 +320,7 @@
             "totalCount": 1,
             "films": [
               {
+                "__typename": "Film",
                 "title": "Revenge of the Sith",
                 "producers": [
                   "Rick McCallum"
@@ -296,6 +330,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Kashyyyk",
           "climates": [
             "tropical"
@@ -305,6 +340,7 @@
             "totalCount": 1,
             "films": [
               {
+                "__typename": "Film",
                 "title": "Revenge of the Sith",
                 "producers": [
                   "Rick McCallum"
@@ -314,6 +350,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Polis Massa",
           "climates": [
             "artificial temperate"
@@ -323,6 +360,7 @@
             "totalCount": 1,
             "films": [
               {
+                "__typename": "Film",
                 "title": "Revenge of the Sith",
                 "producers": [
                   "Rick McCallum"
@@ -332,6 +370,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Mygeeto",
           "climates": [
             "frigid"
@@ -341,6 +380,7 @@
             "totalCount": 1,
             "films": [
               {
+                "__typename": "Film",
                 "title": "Revenge of the Sith",
                 "producers": [
                   "Rick McCallum"
@@ -350,6 +390,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Felucia",
           "climates": [
             "hot",
@@ -360,6 +401,7 @@
             "totalCount": 1,
             "films": [
               {
+                "__typename": "Film",
                 "title": "Revenge of the Sith",
                 "producers": [
                   "Rick McCallum"
@@ -369,6 +411,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Cato Neimoidia",
           "climates": [
             "temperate",
@@ -379,6 +422,7 @@
             "totalCount": 1,
             "films": [
               {
+                "__typename": "Film",
                 "title": "Revenge of the Sith",
                 "producers": [
                   "Rick McCallum"
@@ -388,6 +432,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Saleucami",
           "climates": [
             "hot"
@@ -397,6 +442,7 @@
             "totalCount": 1,
             "films": [
               {
+                "__typename": "Film",
                 "title": "Revenge of the Sith",
                 "producers": [
                   "Rick McCallum"
@@ -406,6 +452,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Stewjon",
           "climates": [
             "temperate"
@@ -417,6 +464,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Eriadu",
           "climates": [
             "polluted"
@@ -428,6 +476,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Corellia",
           "climates": [
             "temperate"
@@ -439,6 +488,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Rodia",
           "climates": [
             "hot"
@@ -450,6 +500,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Nal Hutta",
           "climates": [
             "temperate"
@@ -461,6 +512,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Dantooine",
           "climates": [
             "temperate"
@@ -472,6 +524,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Bestine IV",
           "climates": [
             "temperate"
@@ -483,6 +536,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Ord Mantell",
           "climates": [
             "temperate"
@@ -492,6 +546,7 @@
             "totalCount": 1,
             "films": [
               {
+                "__typename": "Film",
                 "title": "The Empire Strikes Back",
                 "producers": [
                   "Gary Kutz",
@@ -502,6 +557,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "unknown",
           "climates": [
             "unknown"
@@ -513,6 +569,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Trandosha",
           "climates": [
             "arid"
@@ -524,6 +581,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Socorro",
           "climates": [
             "arid"
@@ -535,6 +593,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Mon Cala",
           "climates": [
             "temperate"
@@ -546,6 +605,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Chandrila",
           "climates": [
             "temperate"
@@ -557,6 +617,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Sullust",
           "climates": [
             "superheated"
@@ -568,6 +629,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Toydaria",
           "climates": [
             "temperate"
@@ -579,6 +641,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Malastare",
           "climates": [
             "arid",
@@ -592,6 +655,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Dathomir",
           "climates": [
             "temperate"
@@ -603,6 +667,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Ryloth",
           "climates": [
             "temperate",
@@ -616,6 +681,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Aleen Minor",
           "climates": [
             "unknown"
@@ -627,6 +693,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Vulpter",
           "climates": [
             "temperate",
@@ -639,6 +706,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Troiken",
           "climates": [
             "unknown"
@@ -650,6 +718,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Tund",
           "climates": [
             "unknown"
@@ -661,6 +730,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Haruun Kal",
           "climates": [
             "temperate"
@@ -672,6 +742,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Cerea",
           "climates": [
             "temperate"
@@ -683,6 +754,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Glee Anselm",
           "climates": [
             "tropical",
@@ -695,6 +767,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Iridonia",
           "climates": [
             "unknown"
@@ -706,6 +779,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Tholoth",
           "climates": [
             "unknown"
@@ -717,6 +791,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Iktotch",
           "climates": [
             "arid",
@@ -730,6 +805,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Quermia",
           "climates": [
             "unknown"
@@ -741,6 +817,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Dorin",
           "climates": [
             "temperate"
@@ -752,6 +829,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Champala",
           "climates": [
             "temperate"
@@ -763,6 +841,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Mirial",
           "climates": [
             "unknown"
@@ -774,6 +853,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Serenno",
           "climates": [
             "unknown"
@@ -785,6 +865,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Concord Dawn",
           "climates": [
             "unknown"
@@ -796,6 +877,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Zolan",
           "climates": [
             "unknown"
@@ -807,6 +889,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Ojom",
           "climates": [
             "frigid"
@@ -818,6 +901,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Skako",
           "climates": [
             "temperate"
@@ -829,6 +913,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Muunilinst",
           "climates": [
             "temperate"
@@ -840,6 +925,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Shili",
           "climates": [
             "temperate"
@@ -851,6 +937,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Kalee",
           "climates": [
             "arid",
@@ -864,6 +951,7 @@
           }
         },
         {
+          "__typename": "Planet",
           "name": "Umbara",
           "climates": [
             "unknown"

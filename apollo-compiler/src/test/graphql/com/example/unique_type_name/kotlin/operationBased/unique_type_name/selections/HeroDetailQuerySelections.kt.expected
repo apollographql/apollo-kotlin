@@ -20,10 +20,6 @@ import kotlin.collections.List
 public object HeroDetailQuerySelections {
   private val friends: List<CompiledSelection> = listOf(
         CompiledField.Builder(
-          name = "__typename",
-          type = GraphQLString.type.notNull()
-        ).build(),
-        CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build()
@@ -42,10 +38,6 @@ public object HeroDetailQuerySelections {
       )
 
   private val friends1: List<CompiledSelection> = listOf(
-        CompiledField.Builder(
-          name = "__typename",
-          type = GraphQLString.type.notNull()
-        ).build(),
         CompiledField.Builder(
           name = "appearsIn",
           type = Episode.type.list().notNull()

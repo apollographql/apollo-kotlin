@@ -66,7 +66,7 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "2a899639bd451a2ce7f21eeee61dccc0865bef0e129ccaf6b0829d55e21c24f6"
+        "73b2c830dc5cf246957890f00500cb83e254c050a6e6ad3ab8e6d9e4e26dbd60"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -84,7 +84,6 @@ public class TestQuery() : Query<TestQuery.Data> {
      *   name
      *   primaryFunction
      *   friends {
-     *     __typename
      *     name
      *   }
      * }
@@ -95,7 +94,6 @@ public class TestQuery() : Query<TestQuery.Data> {
      *   friendsConnection {
      *     edges {
      *       node {
-     *         __typename
      *         name
      *       }
      *     }
@@ -103,7 +101,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query TestQuery { hero { __typename ...DroidDetails ...HumanDetails } }  fragment DroidDetails on Droid { name primaryFunction friends { __typename name } }  fragment HumanDetails on Human { name profileLink friendsConnection { edges { node { __typename name } } } }"
+        "query TestQuery { hero { __typename ...DroidDetails ...HumanDetails } }  fragment DroidDetails on Droid { name primaryFunction friends { name } }  fragment HumanDetails on Human { name profileLink friendsConnection { edges { node { name } } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

@@ -145,7 +145,6 @@ public class TestQuery() : Query<TestQuery.Data> {
   }
 
   public data class Friend1(
-    public val __typename: String,
     /**
      * The ID of the character
      */
@@ -162,7 +161,7 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "5450032fd838d0216d8b419846d25e09f98228b403e520aacd7eb68cd838f4da"
+        "2c2de063c729a4ce1b51648279b6afd6372ac91ae33c304f4e33d20fb098cfc6"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -191,7 +190,6 @@ public class TestQuery() : Query<TestQuery.Data> {
      *         ... on Droid {
      *           primaryFunction
      *           friends {
-     *             __typename
      *             id
      *           }
      *         }
@@ -204,7 +202,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query TestQuery { search(text: \"test\") { __typename ... on Character { id name friends { __typename ... on Character { name } ... on Human { homePlanet friends { __typename ... on Character { firstAppearsIn } } } ... on Droid { primaryFunction friends { __typename id } } } } ... on Starship { name } } }"
+        "query TestQuery { search(text: \"test\") { __typename ... on Character { id name friends { __typename ... on Character { name } ... on Human { homePlanet friends { __typename ... on Character { firstAppearsIn } } } ... on Droid { primaryFunction friends { id } } } } ... on Starship { name } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

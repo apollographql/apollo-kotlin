@@ -10,7 +10,9 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.notNull
 import com.example.nested_named_fragments.fragment.selections.starshipFragmentSelections
+import com.example.nested_named_fragments.type.GraphQLString
 import com.example.nested_named_fragments.type.Starship
 import com.example.nested_named_fragments.type.StarshipsConnection
 import com.example.nested_named_fragments.type.StarshipsEdge
@@ -18,6 +20,10 @@ import kotlin.collections.List
 
 public object AllStarshipsSelections {
   private val node: List<CompiledSelection> = listOf(
+        CompiledField.Builder(
+          name = "__typename",
+          type = GraphQLString.type.notNull()
+        ).build(),
         CompiledFragment.Builder(
           typeCondition = "Starship",
           possibleTypes = (listOf("Starship"))

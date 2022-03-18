@@ -54,6 +54,8 @@ public class CatQuery() : Query<CatQuery.Data> {
     public val cat: Cat?
   ) : Query.Data {
     public sealed interface Cat {
+      public val __typename: String
+
       public companion object {
         public fun Cat.animalFragment() = this as? AnimalFragment
 
@@ -76,7 +78,9 @@ public class CatQuery() : Query<CatQuery.Data> {
       public override val name: String
     }
 
-    public class OtherCat() : Cat
+    public data class OtherCat(
+      public override val __typename: String
+    ) : Cat
 
     public data class OtherAnimalCat(
       public override val __typename: String,
@@ -86,7 +90,7 @@ public class CatQuery() : Query<CatQuery.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "bf375798e3fa2a4145a51cd4bb5a3057e2e1575f6cb07f31ba6429e977a27919"
+        "1339b44a5c30437b050faa2883275f02a22fffe77aa08983f50bccdab674d7ed"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -94,6 +98,7 @@ public class CatQuery() : Query<CatQuery.Data> {
      *
      * query CatQuery {
      *   cat {
+     *     __typename
      *     ...AnimalFragment
      *   }
      * }
@@ -109,7 +114,7 @@ public class CatQuery() : Query<CatQuery.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query CatQuery { cat { ...AnimalFragment } }  fragment AnimalFragment on Animal { __typename ... on Cat { name } ... on Dog { name } }"
+        "query CatQuery { cat { __typename ...AnimalFragment } }  fragment AnimalFragment on Animal { __typename ... on Cat { name } ... on Dog { name } }"
 
     public const val OPERATION_NAME: String = "CatQuery"
   }

@@ -20,7 +20,7 @@ import java.lang.String;
 import java.util.List;
 
 public class TestQuery implements Query<TestQuery.Data> {
-  public static final String OPERATION_ID = "3c54ce10c582a5f966f49f34c79bf29783a36bf95a363500bdc089fc2c785300";
+  public static final String OPERATION_ID = "4f32ea4bdd2a95a29bde61273602c22c698cd333f1701001d1a339fb276c6438";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -30,6 +30,7 @@ public class TestQuery implements Query<TestQuery.Data> {
    *   search(text: "bla-bla") {
    *     __typename
    *     ... on Character {
+   *       __typename
    *       name
    *       ... on Human {
    *         homePlanet
@@ -41,7 +42,7 @@ public class TestQuery implements Query<TestQuery.Data> {
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery { search(text: \"bla-bla\") { __typename ... on Character { name ... on Human { homePlanet } ... on Droid { primaryFunction } } } }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery { search(text: \"bla-bla\") { __typename ... on Character { __typename name ... on Human { homePlanet } ... on Droid { primaryFunction } } } }";
 
   public static final String OPERATION_NAME = "TestQuery";
 
@@ -228,6 +229,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class OnCharacter {
+    public String __typename;
+
     /**
      * The name of the character
      */
@@ -249,7 +252,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnCharacter(String name, OnHuman onHuman, OnDroid onDroid) {
+    public OnCharacter(String __typename, String name, OnHuman onHuman, OnDroid onDroid) {
+      this.__typename = __typename;
       this.name = name;
       this.onHuman = onHuman;
       this.onDroid = onDroid;
@@ -262,7 +266,8 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof OnCharacter) {
         OnCharacter that = (OnCharacter) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.name == null) ? (that.name == null) : this.name.equals(that.name))
          &&((this.onHuman == null) ? (that.onHuman == null) : this.onHuman.equals(that.onHuman))
          &&((this.onDroid == null) ? (that.onDroid == null) : this.onDroid.equals(that.onDroid));
       }
@@ -273,6 +278,8 @@ public class TestQuery implements Query<TestQuery.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         h *= 1000003;
@@ -289,6 +296,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "OnCharacter{"
+          + "__typename=" + __typename + ", "
           + "name=" + name + ", "
           + "onHuman=" + onHuman + ", "
           + "onDroid=" + onDroid

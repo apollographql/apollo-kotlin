@@ -20,25 +20,25 @@ import java.lang.Override;
 import java.lang.String;
 
 public class TestQuery implements Query<TestQuery.Data> {
-  public static final String OPERATION_ID = "0b1af5d186e819125909757834596c14046e0c9779ba7ba4c467339b84415366";
+  public static final String OPERATION_ID = "9c53d7ef056cfcd269d1bfd4137fdb5a41ced7343ed524f03ec915c7a8d6f483";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
    * The un-minimized version is:
    *
    * query TestQuery {
+   *   __typename
    *   ...QueryFragment
    * }
    *
    * fragment QueryFragment on Query {
    *   __typename
    *   hero {
-   *     __typename
    *     name
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery { ...QueryFragment }  fragment QueryFragment on Query { __typename hero { __typename name } }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery { __typename ...QueryFragment }  fragment QueryFragment on Query { __typename hero { name } }";
 
   public static final String OPERATION_NAME = "TestQuery";
 
@@ -119,6 +119,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
+    public String __typename;
+
     /**
      * Synthetic field for 'QueryFragment'
      */
@@ -130,7 +132,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(QueryFragment queryFragment) {
+    public Data(String __typename, QueryFragment queryFragment) {
+      this.__typename = __typename;
       this.queryFragment = queryFragment;
     }
 
@@ -141,7 +144,8 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof Data) {
         Data that = (Data) o;
-        return ((this.queryFragment == null) ? (that.queryFragment == null) : this.queryFragment.equals(that.queryFragment));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.queryFragment == null) ? (that.queryFragment == null) : this.queryFragment.equals(that.queryFragment));
       }
       return false;
     }
@@ -150,6 +154,8 @@ public class TestQuery implements Query<TestQuery.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (queryFragment == null) ? 0 : queryFragment.hashCode();
         $hashCode = h;
@@ -162,6 +168,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Data{"
+          + "__typename=" + __typename + ", "
           + "queryFragment=" + queryFragment
           + "}";
       }

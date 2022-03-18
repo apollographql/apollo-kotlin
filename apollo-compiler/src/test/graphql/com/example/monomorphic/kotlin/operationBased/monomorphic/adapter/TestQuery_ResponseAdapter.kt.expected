@@ -8,9 +8,11 @@ package com.example.monomorphic.adapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo3.api.possibleTypes
 import com.example.monomorphic.TestQuery
 import kotlin.String
 import kotlin.Unit
@@ -46,15 +48,25 @@ public object TestQuery_ResponseAdapter {
     }
 
     private object Cat : Adapter<TestQuery.Data.Cat> {
+      public val RESPONSE_NAMES: List<String> = listOf("__typename")
+
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Cat {
+        var __typename: String? = null
 
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            else -> break
+          }
+        }
 
         reader.rewind()
         val onNode = com.example.monomorphic.adapter.TestQuery_ResponseAdapter.Data.Cat.OnNode.fromJson(reader,
             customScalarAdapters)
 
         return TestQuery.Data.Cat(
+          __typename = __typename!!,
           onNode = onNode
         )
       }
@@ -64,20 +76,40 @@ public object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Cat
       ): Unit {
+        writer.name("__typename")
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
         com.example.monomorphic.adapter.TestQuery_ResponseAdapter.Data.Cat.OnNode.toJson(writer,
             customScalarAdapters, value.onNode)
       }
 
       private object OnNode : Adapter<TestQuery.Data.Cat.OnNode> {
+        public val RESPONSE_NAMES: List<String> = listOf("__typename")
+
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Cat.OnNode {
+          var __typename: String? = null
 
+          while(true) {
+            when (reader.selectName(RESPONSE_NAMES)) {
+              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              else -> break
+            }
+          }
+
+          check(__typename != null) {
+            "__typename was not found"
+          }
 
           reader.rewind()
-          val onAnimal = com.example.monomorphic.adapter.TestQuery_ResponseAdapter.Data.Cat.OnNode.OnAnimal.fromJson(reader,
-              customScalarAdapters)
+          var onAnimal: TestQuery.Data.Cat.OnNode.OnAnimal? = null
+          if (possibleTypes("Cat","Dog").evaluate(customScalarAdapters.variables(), __typename)) {
+            onAnimal = com.example.monomorphic.adapter.TestQuery_ResponseAdapter.Data.Cat.OnNode.OnAnimal.fromJson(reader,
+                customScalarAdapters)
+          }
 
           return TestQuery.Data.Cat.OnNode(
+            __typename = __typename,
             onAnimal = onAnimal
           )
         }
@@ -87,8 +119,13 @@ public object TestQuery_ResponseAdapter {
           customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.Cat.OnNode
         ): Unit {
-          com.example.monomorphic.adapter.TestQuery_ResponseAdapter.Data.Cat.OnNode.OnAnimal.toJson(writer,
-              customScalarAdapters, value.onAnimal)
+          writer.name("__typename")
+          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+          if (value.onAnimal != null) {
+            com.example.monomorphic.adapter.TestQuery_ResponseAdapter.Data.Cat.OnNode.OnAnimal.toJson(writer,
+                customScalarAdapters, value.onAnimal)
+          }
         }
 
         private object OnAnimal : Adapter<TestQuery.Data.Cat.OnNode.OnAnimal> {

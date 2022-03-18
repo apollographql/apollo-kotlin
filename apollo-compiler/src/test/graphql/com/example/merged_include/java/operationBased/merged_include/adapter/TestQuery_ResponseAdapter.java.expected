@@ -55,31 +55,27 @@ public class TestQuery_ResponseAdapter {
   public enum Hero implements Adapter<TestQuery.Hero> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name", "id");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "id");
 
     @Override
     public TestQuery.Hero fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String __typename = null;
       String name = null;
       String id = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
       Assertions.checkFieldNotMissing(name, "name");
       Assertions.checkFieldNotMissing(id, "id");
 
       return new TestQuery.Hero(
-        __typename,
         name,
         id
       );
@@ -88,9 +84,6 @@ public class TestQuery_ResponseAdapter {
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Hero value) throws IOException {
-      writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
-
       writer.name("name");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
 

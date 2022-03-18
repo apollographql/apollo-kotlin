@@ -17,7 +17,7 @@ public interface QueryFragment {
   public val human: Human?
 
   public interface Hero : HeroFragment {
-    public override val __typename: String
+    public val __typename: String
 
     /**
      * The name of the character
@@ -30,6 +30,8 @@ public interface QueryFragment {
   }
 
   public interface Droid : DroidFragment {
+    public val __typename: String
+
     /**
      * What others call this droid
      */
@@ -46,6 +48,8 @@ public interface QueryFragment {
   }
 
   public interface Human {
+    public val __typename: String
+
     /**
      * What this human calls themselves
      */

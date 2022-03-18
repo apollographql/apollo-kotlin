@@ -50,7 +50,6 @@ public class TestQuery() : Query<TestQuery.Data> {
     public val hero: Hero
   ) : Query.Data {
     public data class Hero(
-      public val __typename: String,
       /**
        * The name of the character
        */
@@ -60,7 +59,7 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "5dabcda7860fa40868ba3c5cd47249360e94edfcf370e50b9c5533179d5d9500"
+        "80edf9806419cf2cc984f0c70d2322ee692e8b96d4b0a8c13b67f19fe63b56e4"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -68,12 +67,11 @@ public class TestQuery() : Query<TestQuery.Data> {
      *
      * query TestQuery {
      *   hero {
-     *     __typename
      *     name
      *   }
      * }
      */
-    public const val OPERATION_DOCUMENT: String = "query TestQuery { hero { __typename name } }"
+    public const val OPERATION_DOCUMENT: String = "query TestQuery { hero { name } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

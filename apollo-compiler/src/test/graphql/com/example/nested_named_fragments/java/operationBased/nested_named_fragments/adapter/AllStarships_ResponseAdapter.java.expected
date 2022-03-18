@@ -6,6 +6,8 @@
 package com.example.nested_named_fragments.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
@@ -116,15 +118,28 @@ public class AllStarships_ResponseAdapter {
   public enum Node implements Adapter<com.example.nested_named_fragments.AllStarships.Node> {
     INSTANCE;
 
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
+
     @Override
     public com.example.nested_named_fragments.AllStarships.Node fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
+      String __typename = null;
 
+      loop:
+      while(true) {
+        switch (reader.selectName(RESPONSE_NAMES)) {
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          default: break loop;
+        }
+      }
 
       reader.rewind();
       StarshipFragment starshipFragment = com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.StarshipFragment.INSTANCE.fromJson(reader, customScalarAdapters);
 
+      Assertions.checkFieldNotMissing(__typename, "__typename");
+
       return new com.example.nested_named_fragments.AllStarships.Node(
+        __typename,
         starshipFragment
       );
     }
@@ -132,6 +147,9 @@ public class AllStarships_ResponseAdapter {
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         com.example.nested_named_fragments.AllStarships.Node value) throws IOException {
+      writer.name("__typename");
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+
       com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.StarshipFragment.INSTANCE.toJson(writer, customScalarAdapters, value.starshipFragment);
     }
   }

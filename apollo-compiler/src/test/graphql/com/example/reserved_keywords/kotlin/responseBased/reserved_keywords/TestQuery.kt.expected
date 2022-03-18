@@ -54,7 +54,6 @@ public class TestQuery() : Query<TestQuery.Data> {
     public fun objectsFilterNotNull(): List<Object>? = objects?.filterNotNull()
 
     public data class Yield(
-      public val __typename: String,
       /**
        * The ID of the character
        */
@@ -88,7 +87,7 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "661205a8ce510c7ae6c9bebb1faef39c6fbd0cebbc3cf3cdae9bc70b8f5f7e2f"
+        "d2f555fdc0bd9ea0a928c39aa7818ac66b0c0a0870772b1fb57387c3c3cf8577"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -96,7 +95,6 @@ public class TestQuery() : Query<TestQuery.Data> {
      *
      * query TestQuery {
      *   yield: hero {
-     *     __typename
      *     while: id
      *     it: name
      *   }
@@ -109,7 +107,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query TestQuery { yield: hero { __typename while: id it: name } objects: search(text: \"abc\") { __typename ... on Character { name } } }"
+        "query TestQuery { yield: hero { while: id it: name } objects: search(text: \"abc\") { __typename ... on Character { name } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

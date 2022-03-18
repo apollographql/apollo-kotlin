@@ -123,15 +123,25 @@ public object StarshipFragmentImpl_ResponseAdapter {
   }
 
   public object Node : Adapter<com.example.nested_named_fragments.fragment.StarshipFragment.Node> {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename")
+
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.nested_named_fragments.fragment.StarshipFragment.Node {
+      var __typename: String? = null
 
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
+        }
+      }
 
       reader.rewind()
       val fragments = com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.Node.Fragments.fromJson(reader,
           customScalarAdapters)
 
       return com.example.nested_named_fragments.fragment.StarshipFragment.Node(
+        __typename = __typename!!,
         fragments = fragments
       )
     }
@@ -141,6 +151,9 @@ public object StarshipFragmentImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.nested_named_fragments.fragment.StarshipFragment.Node
     ): Unit {
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
       com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.Node.Fragments.toJson(writer,
           customScalarAdapters, value.fragments)
     }

@@ -46,7 +46,6 @@ public data class HeroDetails(
       public val node: Node?
     ) {
       public data class Node(
-        public val __typename: String,
         /**
          * The name of the character
          */
@@ -56,6 +55,7 @@ public data class HeroDetails(
   }
 
   public data class OnDroid(
+    public val __typename: String,
     /**
      * Synthetic field for 'DroidDetails'
      */

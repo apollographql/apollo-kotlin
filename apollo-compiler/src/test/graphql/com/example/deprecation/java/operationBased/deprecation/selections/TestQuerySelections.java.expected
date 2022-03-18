@@ -18,7 +18,6 @@ import java.util.List;
 
 public class TestQuerySelections {
   private static List<CompiledSelection> hero = Arrays.asList(
-    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("deprecated", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("deprecatedBool", new CompiledNotNullType(GraphQLBoolean.type)).build()

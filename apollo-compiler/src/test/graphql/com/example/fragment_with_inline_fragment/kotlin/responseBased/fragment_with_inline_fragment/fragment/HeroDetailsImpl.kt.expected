@@ -72,8 +72,6 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
         public override val node: Node?
 
         public interface Node : HeroDetails.FriendsConnection.Edge.Node {
-          public override val __typename: String
-
           /**
            * The name of the character
            */
@@ -124,7 +122,6 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
         public override val node: Node?
       ) : Data.FriendsConnection.Edge, HumanHeroDetails.FriendsConnection.Edge {
         public data class Node(
-          public override val __typename: String,
           /**
            * The name of the character
            */
@@ -169,7 +166,6 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
         public override val node: Node?
       ) : Data.FriendsConnection.Edge, DroidHeroDetails.FriendsConnection.Edge {
         public data class Node(
-          public override val __typename: String,
           /**
            * The name of the character
            */
@@ -209,7 +205,6 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
         public override val node: Node?
       ) : Data.FriendsConnection.Edge, HeroDetails.FriendsConnection.Edge {
         public data class Node(
-          public override val __typename: String,
           /**
            * The name of the character
            */

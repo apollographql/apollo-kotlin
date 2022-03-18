@@ -20,18 +20,18 @@ import java.lang.Override;
 import java.lang.String;
 
 public class TestQuery implements Query<TestQuery.Data> {
-  public static final String OPERATION_ID = "6a4cce4a28779ff18dc6de5de086c1f740a04089960faa882cbaba36a240daac";
+  public static final String OPERATION_ID = "28a70b2a9a393b236756d92edea600a8d90d3e5cfb24cdfeda92fec1b5778794";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
    * The un-minimized version is:
    *
    * query TestQuery {
+   *   __typename
    *   ...QueryFragment
    * }
    *
    * fragment heroFragment on Character {
-   *   __typename
    *   name
    * }
    *
@@ -47,9 +47,11 @@ public class TestQuery implements Query<TestQuery.Data> {
    *     ...heroFragment
    *   }
    *   droid(id: 1) {
+   *     __typename
    *     ...droidFragment
    *   }
    *   human(id: 1) {
+   *     __typename
    *     ... on Human {
    *       name
    *       homePlanet
@@ -57,7 +59,7 @@ public class TestQuery implements Query<TestQuery.Data> {
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery { ...QueryFragment }  fragment heroFragment on Character { __typename name }  fragment droidFragment on Droid { name primaryFunction }  fragment QueryFragment on Query { __typename hero { __typename ...heroFragment } droid(id: 1) { ...droidFragment } human(id: 1) { ... on Human { name homePlanet } } }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery { __typename ...QueryFragment }  fragment heroFragment on Character { name }  fragment droidFragment on Droid { name primaryFunction }  fragment QueryFragment on Query { __typename hero { __typename ...heroFragment } droid(id: 1) { __typename ...droidFragment } human(id: 1) { __typename ... on Human { name homePlanet } } }";
 
   public static final String OPERATION_NAME = "TestQuery";
 
@@ -138,6 +140,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
+    public String __typename;
+
     /**
      * Synthetic field for 'QueryFragment'
      */
@@ -149,7 +153,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(QueryFragment queryFragment) {
+    public Data(String __typename, QueryFragment queryFragment) {
+      this.__typename = __typename;
       this.queryFragment = queryFragment;
     }
 
@@ -160,7 +165,8 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof Data) {
         Data that = (Data) o;
-        return ((this.queryFragment == null) ? (that.queryFragment == null) : this.queryFragment.equals(that.queryFragment));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.queryFragment == null) ? (that.queryFragment == null) : this.queryFragment.equals(that.queryFragment));
       }
       return false;
     }
@@ -169,6 +175,8 @@ public class TestQuery implements Query<TestQuery.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (queryFragment == null) ? 0 : queryFragment.hashCode();
         $hashCode = h;
@@ -181,6 +189,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Data{"
+          + "__typename=" + __typename + ", "
           + "queryFragment=" + queryFragment
           + "}";
       }

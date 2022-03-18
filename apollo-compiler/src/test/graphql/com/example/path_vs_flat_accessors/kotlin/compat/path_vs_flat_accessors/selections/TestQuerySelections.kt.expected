@@ -22,6 +22,10 @@ public object TestQuerySelections {
       )
 
   private val onA: List<CompiledSelection> = listOf(
+        CompiledField.Builder(
+          name = "__typename",
+          type = GraphQLString.type.notNull()
+        ).build(),
         CompiledFragment.Builder(
           typeCondition = "B",
           possibleTypes = listOf("ABC", "BC")

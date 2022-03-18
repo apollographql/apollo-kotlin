@@ -51,7 +51,6 @@ public class TestQuery() : Query<TestQuery.Data> {
     public val luke: Luke?
   ) : Query.Data {
     public data class R2(
-      public val __typename: String,
       /**
        * The name of the character
        */
@@ -59,7 +58,6 @@ public class TestQuery() : Query<TestQuery.Data> {
     )
 
     public data class Luke(
-      public val __typename: String,
       /**
        * The ID of the character
        */
@@ -73,7 +71,7 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "266f79f66749232e217afd9b47a628fd7096d4c48345bc245a7f63105be9e75d"
+        "0a808c27d1275380ed06d359e1dd1f2a890ab67186df249f66c1afec47972e22"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -81,18 +79,16 @@ public class TestQuery() : Query<TestQuery.Data> {
      *
      * query TestQuery {
      *   r2: hero {
-     *     __typename
      *     name
      *   }
      *   luke: hero(episode: EMPIRE) {
-     *     __typename
      *     id
      *     name
      *   }
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query TestQuery { r2: hero { __typename name } luke: hero(episode: EMPIRE) { __typename id name } }"
+        "query TestQuery { r2: hero { name } luke: hero(episode: EMPIRE) { id name } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

@@ -137,6 +137,8 @@ public class QueryFragment implements Fragment.Data {
   }
 
   public static class Droid {
+    public String __typename;
+
     /**
      * Synthetic field for 'droidFragment'
      */
@@ -148,7 +150,8 @@ public class QueryFragment implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public Droid(DroidFragment droidFragment) {
+    public Droid(String __typename, DroidFragment droidFragment) {
+      this.__typename = __typename;
       this.droidFragment = droidFragment;
     }
 
@@ -159,7 +162,8 @@ public class QueryFragment implements Fragment.Data {
       }
       if (o instanceof Droid) {
         Droid that = (Droid) o;
-        return ((this.droidFragment == null) ? (that.droidFragment == null) : this.droidFragment.equals(that.droidFragment));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.droidFragment == null) ? (that.droidFragment == null) : this.droidFragment.equals(that.droidFragment));
       }
       return false;
     }
@@ -168,6 +172,8 @@ public class QueryFragment implements Fragment.Data {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (droidFragment == null) ? 0 : droidFragment.hashCode();
         $hashCode = h;
@@ -180,6 +186,7 @@ public class QueryFragment implements Fragment.Data {
     public String toString() {
       if ($toString == null) {
         $toString = "Droid{"
+          + "__typename=" + __typename + ", "
           + "droidFragment=" + droidFragment
           + "}";
       }
@@ -188,6 +195,8 @@ public class QueryFragment implements Fragment.Data {
   }
 
   public static class Human {
+    public String __typename;
+
     /**
      * Synthetic field for inline fragment on Human
      */
@@ -199,7 +208,8 @@ public class QueryFragment implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public Human(OnHuman onHuman) {
+    public Human(String __typename, OnHuman onHuman) {
+      this.__typename = __typename;
       this.onHuman = onHuman;
     }
 
@@ -210,7 +220,8 @@ public class QueryFragment implements Fragment.Data {
       }
       if (o instanceof Human) {
         Human that = (Human) o;
-        return ((this.onHuman == null) ? (that.onHuman == null) : this.onHuman.equals(that.onHuman));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.onHuman == null) ? (that.onHuman == null) : this.onHuman.equals(that.onHuman));
       }
       return false;
     }
@@ -219,6 +230,8 @@ public class QueryFragment implements Fragment.Data {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (onHuman == null) ? 0 : onHuman.hashCode();
         $hashCode = h;
@@ -231,6 +244,7 @@ public class QueryFragment implements Fragment.Data {
     public String toString() {
       if ($toString == null) {
         $toString = "Human{"
+          + "__typename=" + __typename + ", "
           + "onHuman=" + onHuman
           + "}";
       }

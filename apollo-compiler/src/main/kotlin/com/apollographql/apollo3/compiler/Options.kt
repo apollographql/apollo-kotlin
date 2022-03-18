@@ -23,12 +23,6 @@ const val MODELS_OPERATION_BASED = "operationBased"
 @ApolloDeprecatedSince(v3_0_0)
 const val MODELS_COMPAT = "compat"
 
-
-@Deprecated(
-    "MODELS_COMPAT is provided for compatibility and will be removed in a future version.",
-    replaceWith = ReplaceWith("ADD_TYPENAME_IF_ABSTRACT")
-)
-@ApolloDeprecatedSince(v3_1_1)
 const val ADD_TYPENAME_IF_FRAGMENTS = "ifFragments"
 const val ADD_TYPENAME_IF_POLYMORPHIC = "ifPolymorphic"
 const val ADD_TYPENAME_IF_ABSTRACT = "ifAbstract"
@@ -296,7 +290,7 @@ class Options(
     const val defaultGenerateQueryDocument = true
     const val defaultModuleName = "apollographql"
     const val defaultCodegenModels = MODELS_OPERATION_BASED
-    const val defaultAddTypename = ADD_TYPENAME_IF_ABSTRACT
+    const val defaultAddTypename = ADD_TYPENAME_IF_FRAGMENTS
     const val defaultFlattenModels = true
     val defaultTargetLanguage = TargetLanguage.KOTLIN_1_5
     const val defaultGenerateSchema = false

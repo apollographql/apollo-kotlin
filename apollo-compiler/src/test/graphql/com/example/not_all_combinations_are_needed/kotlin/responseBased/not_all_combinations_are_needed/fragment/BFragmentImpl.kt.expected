@@ -41,7 +41,6 @@ public class BFragmentImpl() : Fragment<BFragmentImpl.Data> {
   .build()
 
   public data class Data(
-    public override val __typename: String,
     public override val fieldB1: String?
   ) : BFragment, Fragment.Data
 }

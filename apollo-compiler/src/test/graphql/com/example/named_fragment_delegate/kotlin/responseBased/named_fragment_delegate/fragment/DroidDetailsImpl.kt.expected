@@ -58,7 +58,6 @@ public class DroidDetailsImpl() : Fragment<DroidDetailsImpl.Data> {
     public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
     public data class Friend(
-      public override val __typename: String,
       /**
        * The name of the character
        */

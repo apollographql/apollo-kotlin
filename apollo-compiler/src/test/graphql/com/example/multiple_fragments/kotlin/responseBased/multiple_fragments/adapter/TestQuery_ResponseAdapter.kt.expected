@@ -49,20 +49,23 @@ public object TestQuery_ResponseAdapter {
     }
 
     private object A : Adapter<TestQuery.Data.A> {
-      public val RESPONSE_NAMES: List<String> = listOf("node")
+      public val RESPONSE_NAMES: List<String> = listOf("__typename", "node")
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.A {
+        var __typename: String? = null
         var node: TestQuery.Data.A.Node? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.A(
+          __typename = __typename!!,
           node = node
         )
       }
@@ -72,6 +75,9 @@ public object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.A
       ): Unit {
+        writer.name("__typename")
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
         writer.name("node")
         Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
       }

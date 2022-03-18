@@ -34,6 +34,8 @@ public interface StarshipFragment {
       public val node: Node?
 
       public interface Node : PilotFragment {
+        public val __typename: String
+
         /**
          * The name of this person.
          */
@@ -45,6 +47,8 @@ public interface StarshipFragment {
         public override val homeworld: Homeworld?
 
         public interface Homeworld : PlanetFragment, PilotFragment.Homeworld {
+          public override val __typename: String
+
           /**
            * The name of this planet.
            */

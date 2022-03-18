@@ -188,22 +188,25 @@ public object TestQuery_ResponseAdapter {
     }
 
     private object Droid : Adapter<TestQuery.Data.Droid> {
-      public val RESPONSE_NAMES: List<String> = listOf("name", "primaryFunction")
+      public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "primaryFunction")
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Droid {
+        var __typename: String? = null
         var name: String? = null
         var primaryFunction: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.Droid(
+          __typename = __typename!!,
           name = name!!,
           primaryFunction = primaryFunction
         )
@@ -214,6 +217,9 @@ public object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Droid
       ): Unit {
+        writer.name("__typename")
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
         writer.name("name")
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
 

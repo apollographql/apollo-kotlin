@@ -19,7 +19,7 @@ import java.lang.String;
 import java.util.List;
 
 public class TestQuery implements Query<TestQuery.Data> {
-  public static final String OPERATION_ID = "661205a8ce510c7ae6c9bebb1faef39c6fbd0cebbc3cf3cdae9bc70b8f5f7e2f";
+  public static final String OPERATION_ID = "d2f555fdc0bd9ea0a928c39aa7818ac66b0c0a0870772b1fb57387c3c3cf8577";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -27,7 +27,6 @@ public class TestQuery implements Query<TestQuery.Data> {
    *
    * query TestQuery {
    *   yield: hero {
-   *     __typename
    *     while: id
    *     it: name
    *   }
@@ -39,7 +38,7 @@ public class TestQuery implements Query<TestQuery.Data> {
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery { yield: hero { __typename while: id it: name } objects: search(text: \"abc\") { __typename ... on Character { name } } }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery { yield: hero { while: id it: name } objects: search(text: \"abc\") { __typename ... on Character { name } } }";
 
   public static final String OPERATION_NAME = "TestQuery";
 
@@ -175,8 +174,6 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Yield {
-    public String __typename;
-
     /**
      * The ID of the character
      */
@@ -193,8 +190,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Yield(String __typename, String while_, String it) {
-      this.__typename = __typename;
+    public Yield(String while_, String it) {
       this.while_ = while_;
       this.it = it;
     }
@@ -206,8 +202,7 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof Yield) {
         Yield that = (Yield) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.while_ == null) ? (that.while_ == null) : this.while_.equals(that.while_))
+        return ((this.while_ == null) ? (that.while_ == null) : this.while_.equals(that.while_))
          &&((this.it == null) ? (that.it == null) : this.it.equals(that.it));
       }
       return false;
@@ -217,8 +212,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (while_ == null) ? 0 : while_.hashCode();
         h *= 1000003;
@@ -233,7 +226,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Yield{"
-          + "__typename=" + __typename + ", "
           + "while_=" + while_ + ", "
           + "it=" + it
           + "}";

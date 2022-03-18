@@ -13,8 +13,6 @@ import java.lang.String;
 import java.util.List;
 
 public class CharacterAppearsIn implements Fragment.Data {
-  public String __typename;
-
   /**
    * The movies this character appears in
    */
@@ -26,8 +24,7 @@ public class CharacterAppearsIn implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public CharacterAppearsIn(String __typename, List<Episode> appearsIn) {
-    this.__typename = __typename;
+  public CharacterAppearsIn(List<Episode> appearsIn) {
     this.appearsIn = appearsIn;
   }
 
@@ -38,8 +35,7 @@ public class CharacterAppearsIn implements Fragment.Data {
     }
     if (o instanceof CharacterAppearsIn) {
       CharacterAppearsIn that = (CharacterAppearsIn) o;
-      return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-       &&((this.appearsIn == null) ? (that.appearsIn == null) : this.appearsIn.equals(that.appearsIn));
+      return ((this.appearsIn == null) ? (that.appearsIn == null) : this.appearsIn.equals(that.appearsIn));
     }
     return false;
   }
@@ -48,8 +44,6 @@ public class CharacterAppearsIn implements Fragment.Data {
   public int hashCode() {
     if (!$hashCodeMemoized) {
       int h = 1;
-      h *= 1000003;
-      h ^= (__typename == null) ? 0 : __typename.hashCode();
       h *= 1000003;
       h ^= (appearsIn == null) ? 0 : appearsIn.hashCode();
       $hashCode = h;
@@ -62,7 +56,6 @@ public class CharacterAppearsIn implements Fragment.Data {
   public String toString() {
     if ($toString == null) {
       $toString = "CharacterAppearsIn{"
-        + "__typename=" + __typename + ", "
         + "appearsIn=" + appearsIn
         + "}";
     }

@@ -20,11 +20,11 @@ import java.util.List;
 
 public class HeroDetailsSelections {
   private static List<CompiledSelection> onDroid = Arrays.asList(
+    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(DroidDetailsSelections.root).build()
   );
 
   private static List<CompiledSelection> node = Arrays.asList(
-    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build()
   );
 

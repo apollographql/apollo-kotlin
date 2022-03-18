@@ -53,23 +53,20 @@ public object TestQuery_ResponseAdapter {
     }
 
     private object R2 : Adapter<TestQuery.Data.R2> {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
+      public val RESPONSE_NAMES: List<String> = listOf("name")
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.R2 {
-        var __typename: String? = null
         var name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.R2(
-          __typename = __typename!!,
           name = name!!
         )
       }
@@ -79,34 +76,28 @@ public object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.R2
       ): Unit {
-        writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
         writer.name("name")
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
       }
     }
 
     private object Luke : Adapter<TestQuery.Data.Luke> {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename", "id", "name")
+      public val RESPONSE_NAMES: List<String> = listOf("id", "name")
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Luke {
-        var __typename: String? = null
         var id: String? = null
         var name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.Luke(
-          __typename = __typename!!,
           id = id!!,
           name = name!!
         )
@@ -117,9 +108,6 @@ public object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Luke
       ): Unit {
-        writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
         writer.name("id")
         StringAdapter.toJson(writer, customScalarAdapters, value.id)
 

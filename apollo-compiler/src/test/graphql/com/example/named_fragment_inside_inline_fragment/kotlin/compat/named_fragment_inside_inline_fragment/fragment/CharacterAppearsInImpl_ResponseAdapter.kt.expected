@@ -7,7 +7,6 @@ package com.example.named_fragment_inside_inline_fragment.fragment
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -21,24 +20,21 @@ import kotlin.collections.List
 public object CharacterAppearsInImpl_ResponseAdapter {
   public object CharacterAppearsIn :
       Adapter<com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn> {
-    public val RESPONSE_NAMES: List<String> = listOf("__typename", "appearsIn")
+    public val RESPONSE_NAMES: List<String> = listOf("appearsIn")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn {
-      var __typename: String? = null
       var appearsIn: List<Episode?>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
+          0 -> appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn(
-        __typename = __typename!!,
         appearsIn = appearsIn!!
       )
     }
@@ -48,9 +44,6 @@ public object CharacterAppearsInImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn
     ): Unit {
-      writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
       writer.name("appearsIn")
       Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,
           value.appearsIn)

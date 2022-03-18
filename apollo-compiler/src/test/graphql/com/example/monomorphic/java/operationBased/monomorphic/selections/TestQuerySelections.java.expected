@@ -20,10 +20,12 @@ public class TestQuerySelections {
   );
 
   private static List<CompiledSelection> onNode = Arrays.asList(
+    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledFragment.Builder("Animal", Arrays.asList("Cat", "Dog")).selections(onAnimal).build()
   );
 
   private static List<CompiledSelection> cat = Arrays.asList(
+    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledFragment.Builder("Node", Arrays.asList("Cat", "Dog")).selections(onNode).build()
   );
 

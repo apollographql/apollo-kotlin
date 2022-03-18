@@ -61,7 +61,6 @@ public class GetPage() : Query<GetPage.Data> {
   )
 
   public data class Item1(
-    public val __typename: String,
     public val title: String
   )
 
@@ -71,8 +70,8 @@ public class GetPage() : Query<GetPage.Data> {
   )
 
   public data class Item(
-    public val __typename: String,
     public val title: String,
+    public val __typename: String,
     /**
      * Synthetic field for inline fragment on ParticularItem
      */
@@ -80,14 +79,14 @@ public class GetPage() : Query<GetPage.Data> {
   )
 
   public data class AsParticularItem(
-    public val __typename: String,
     public val title: String,
+    public val __typename: String,
     public val image: String
   )
 
   public companion object {
     public const val OPERATION_ID: String =
-        "09c2f7755e4c0be866863ec0d0af37acd3cdedf89bb6384d838019477611707e"
+        "09dd0a176a2233eccc3b2d3a76f25a1083460354f399f8b1aaf172c18cfc202b"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -97,7 +96,6 @@ public class GetPage() : Query<GetPage.Data> {
      *   collection {
      *     __typename
      *     items {
-     *       __typename
      *       title
      *     }
      *     ... on ParticularCollection {
@@ -112,7 +110,7 @@ public class GetPage() : Query<GetPage.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query GetPage { collection { __typename items { __typename title } ... on ParticularCollection { items { __typename ... on ParticularItem { image } } } } }"
+        "query GetPage { collection { __typename items { title } ... on ParticularCollection { items { __typename ... on ParticularItem { image } } } } }"
 
     public const val OPERATION_NAME: String = "GetPage"
   }

@@ -19,6 +19,7 @@ public data class PilotFragment(
   public val homeworld: Homeworld?
 ) : Fragment.Data {
   public data class Homeworld(
+    public val __typename: String,
     /**
      * Synthetic field for 'planetFragment'
      */

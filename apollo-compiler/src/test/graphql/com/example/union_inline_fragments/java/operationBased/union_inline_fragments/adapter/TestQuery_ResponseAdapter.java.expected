@@ -402,28 +402,24 @@ public class TestQuery_ResponseAdapter {
   public enum Friend2 implements Adapter<TestQuery.Friend2> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "id");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("id");
 
     @Override
     public TestQuery.Friend2 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String __typename = null;
       String id = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
       Assertions.checkFieldNotMissing(id, "id");
 
       return new TestQuery.Friend2(
-        __typename,
         id
       );
     }
@@ -431,9 +427,6 @@ public class TestQuery_ResponseAdapter {
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Friend2 value) throws IOException {
-      writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
-
       writer.name("id");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.id);
     }

@@ -72,23 +72,26 @@ public object TestQuery_ResponseAdapter {
     }
 
     public object AnimalNodeCat {
-      public val RESPONSE_NAMES: List<String> = listOf("species")
+      public val RESPONSE_NAMES: List<String> = listOf("__typename", "species")
 
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
         typename: String
       ): TestQuery.Data.AnimalNodeCat {
+        var __typename: String? = typename
         var species: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> species = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> species = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.AnimalNodeCat(
+          __typename = __typename!!,
           species = species!!
         )
       }
@@ -98,21 +101,33 @@ public object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.AnimalNodeCat
       ): Unit {
+        writer.name("__typename")
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
         writer.name("species")
         StringAdapter.toJson(writer, customScalarAdapters, value.species)
       }
     }
 
     public object OtherCat {
+      public val RESPONSE_NAMES: List<String> = listOf("__typename")
+
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
         typename: String
       ): TestQuery.Data.OtherCat {
+        var __typename: String? = typename
 
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            else -> break
+          }
+        }
 
         return TestQuery.Data.OtherCat(
-
+          __typename = __typename!!
         )
       }
 
@@ -121,6 +136,8 @@ public object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.OtherCat
       ): Unit {
+        writer.name("__typename")
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
       }
     }
   }

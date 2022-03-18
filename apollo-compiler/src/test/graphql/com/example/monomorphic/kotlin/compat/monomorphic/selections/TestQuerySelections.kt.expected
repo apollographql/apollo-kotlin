@@ -22,6 +22,10 @@ public object TestQuerySelections {
       )
 
   private val onNode: List<CompiledSelection> = listOf(
+        CompiledField.Builder(
+          name = "__typename",
+          type = GraphQLString.type.notNull()
+        ).build(),
         CompiledFragment.Builder(
           typeCondition = "Animal",
           possibleTypes = listOf("Cat", "Dog")
@@ -30,6 +34,10 @@ public object TestQuerySelections {
       )
 
   private val cat: List<CompiledSelection> = listOf(
+        CompiledField.Builder(
+          name = "__typename",
+          type = GraphQLString.type.notNull()
+        ).build(),
         CompiledFragment.Builder(
           typeCondition = "Node",
           possibleTypes = listOf("Cat", "Dog")

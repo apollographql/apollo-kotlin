@@ -23,7 +23,7 @@ import java.lang.String;
 import java.util.List;
 
 public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
-  public static final String OPERATION_ID = "471568e6a9a0c74b3824d5c8154bde4c6e5d57dfb897e1332bf34155df2bf5a3";
+  public static final String OPERATION_ID = "9e49497791948cf0840e8353d87b142b6474e023a2082a3fe414b312565599de";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -34,13 +34,11 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
    *     __typename
    *     name
    *     friends {
-   *       __typename
    *       name
    *     }
    *     ... on Human {
    *       height
    *       friends {
-   *         __typename
    *         appearsIn
    *         friends {
    *           __typename
@@ -52,20 +50,18 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
    * }
    *
    * fragment HeroDetails on Character {
-   *   __typename
    *   name
    *   friendsConnection {
    *     totalCount
    *     edges {
    *       node {
-   *         __typename
    *         name
    *       }
    *     }
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query HeroDetailQuery { heroDetailQuery { __typename name friends { __typename name } ... on Human { height friends { __typename appearsIn friends { __typename ...HeroDetails } } } } }  fragment HeroDetails on Character { __typename name friendsConnection { totalCount edges { node { __typename name } } } }";
+  public static final String OPERATION_DOCUMENT = "query HeroDetailQuery { heroDetailQuery { __typename name friends { name } ... on Human { height friends { appearsIn friends { __typename ...HeroDetails } } } } }  fragment HeroDetails on Character { name friendsConnection { totalCount edges { node { name } } } }";
 
   public static final String OPERATION_NAME = "HeroDetailQuery";
 
@@ -272,8 +268,6 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
   }
 
   public static class Friend {
-    public String __typename;
-
     /**
      * The name of the character
      */
@@ -285,8 +279,7 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Friend(String __typename, String name) {
-      this.__typename = __typename;
+    public Friend(String name) {
       this.name = name;
     }
 
@@ -297,8 +290,7 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
       }
       if (o instanceof Friend) {
         Friend that = (Friend) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
       }
       return false;
     }
@@ -307,8 +299,6 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         $hashCode = h;
@@ -321,7 +311,6 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Friend{"
-          + "__typename=" + __typename + ", "
           + "name=" + name
           + "}";
       }
@@ -391,8 +380,6 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
   }
 
   public static class Friend1 {
-    public String __typename;
-
     /**
      * The movies this character appears in
      */
@@ -409,8 +396,7 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Friend1(String __typename, List<Episode> appearsIn, List<Friend2> friends) {
-      this.__typename = __typename;
+    public Friend1(List<Episode> appearsIn, List<Friend2> friends) {
       this.appearsIn = appearsIn;
       this.friends = friends;
     }
@@ -422,8 +408,7 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
       }
       if (o instanceof Friend1) {
         Friend1 that = (Friend1) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.appearsIn == null) ? (that.appearsIn == null) : this.appearsIn.equals(that.appearsIn))
+        return ((this.appearsIn == null) ? (that.appearsIn == null) : this.appearsIn.equals(that.appearsIn))
          &&((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends));
       }
       return false;
@@ -433,8 +418,6 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (appearsIn == null) ? 0 : appearsIn.hashCode();
         h *= 1000003;
@@ -449,7 +432,6 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Friend1{"
-          + "__typename=" + __typename + ", "
           + "appearsIn=" + appearsIn + ", "
           + "friends=" + friends
           + "}";

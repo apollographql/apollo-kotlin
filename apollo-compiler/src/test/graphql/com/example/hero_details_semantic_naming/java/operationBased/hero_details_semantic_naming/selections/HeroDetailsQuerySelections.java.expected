@@ -19,7 +19,6 @@ import java.util.List;
 
 public class HeroDetailsQuerySelections {
   private static List<CompiledSelection> node = Arrays.asList(
-    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build()
   );
 
@@ -33,7 +32,6 @@ public class HeroDetailsQuerySelections {
   );
 
   private static List<CompiledSelection> hero = Arrays.asList(
-    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("friendsConnection", new CompiledNotNullType(FriendsConnection.type)).selections(friendsConnection).build()
   );

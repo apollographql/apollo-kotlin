@@ -22,31 +22,27 @@ public class CharacterDetailsImpl_ResponseAdapter {
   public enum CharacterDetails implements Adapter<com.example.fragment_used_twice.fragment.CharacterDetails> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name", "birthDate");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "birthDate");
 
     @Override
     public com.example.fragment_used_twice.fragment.CharacterDetails fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String __typename = null;
       String name = null;
       Object birthDate = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: birthDate = Adapters.AnyAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: birthDate = Adapters.AnyAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
       Assertions.checkFieldNotMissing(name, "name");
       Assertions.checkFieldNotMissing(birthDate, "birthDate");
 
       return new com.example.fragment_used_twice.fragment.CharacterDetails(
-        __typename,
         name,
         birthDate
       );
@@ -55,9 +51,6 @@ public class CharacterDetailsImpl_ResponseAdapter {
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         com.example.fragment_used_twice.fragment.CharacterDetails value) throws IOException {
-      writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
-
       writer.name("name");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
 

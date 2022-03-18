@@ -68,6 +68,7 @@ public class TestQuery() : Query<TestQuery.Data> {
     }
 
     public data class Droid(
+      public override val __typename: String,
       /**
        * What others call this droid
        */
@@ -83,6 +84,7 @@ public class TestQuery() : Query<TestQuery.Data> {
     }
 
     public data class Human(
+      public override val __typename: String,
       /**
        * What this human calls themselves
        */
@@ -100,18 +102,18 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "6a4cce4a28779ff18dc6de5de086c1f740a04089960faa882cbaba36a240daac"
+        "28a70b2a9a393b236756d92edea600a8d90d3e5cfb24cdfeda92fec1b5778794"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
      * query TestQuery {
+     *   __typename
      *   ...QueryFragment
      * }
      *
      * fragment heroFragment on Character {
-     *   __typename
      *   name
      * }
      *
@@ -127,9 +129,11 @@ public class TestQuery() : Query<TestQuery.Data> {
      *     ...heroFragment
      *   }
      *   droid(id: 1) {
+     *     __typename
      *     ...droidFragment
      *   }
      *   human(id: 1) {
+     *     __typename
      *     ... on Human {
      *       name
      *       homePlanet
@@ -138,7 +142,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query TestQuery { ...QueryFragment }  fragment heroFragment on Character { __typename name }  fragment droidFragment on Droid { name primaryFunction }  fragment QueryFragment on Query { __typename hero { __typename ...heroFragment } droid(id: 1) { ...droidFragment } human(id: 1) { ... on Human { name homePlanet } } }"
+        "query TestQuery { __typename ...QueryFragment }  fragment heroFragment on Character { name }  fragment droidFragment on Droid { name primaryFunction }  fragment QueryFragment on Query { __typename hero { __typename ...heroFragment } droid(id: 1) { __typename ...droidFragment } human(id: 1) { __typename ... on Human { name homePlanet } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

@@ -18,6 +18,7 @@ import java.util.List;
 
 public class GetHeroSelections {
   private static List<CompiledSelection> onCharacter = Arrays.asList(
+    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(characterNameSelections.root).build(),
     new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(characterAppearsInSelections.root).build()
   );

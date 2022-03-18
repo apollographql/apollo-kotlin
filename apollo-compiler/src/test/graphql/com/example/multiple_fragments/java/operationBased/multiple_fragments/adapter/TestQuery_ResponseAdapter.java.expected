@@ -6,6 +6,8 @@
 package com.example.multiple_fragments.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -54,15 +56,28 @@ public class TestQuery_ResponseAdapter {
   public enum A implements Adapter<TestQuery.A> {
     INSTANCE;
 
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
+
     @Override
     public TestQuery.A fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
         IOException {
+      String __typename = null;
 
+      loop:
+      while(true) {
+        switch (reader.selectName(RESPONSE_NAMES)) {
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          default: break loop;
+        }
+      }
 
       reader.rewind();
       AFragment aFragment = com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.INSTANCE.fromJson(reader, customScalarAdapters);
 
+      Assertions.checkFieldNotMissing(__typename, "__typename");
+
       return new TestQuery.A(
+        __typename,
         aFragment
       );
     }
@@ -70,6 +85,9 @@ public class TestQuery_ResponseAdapter {
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.A value) throws IOException {
+      writer.name("__typename");
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+
       com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.INSTANCE.toJson(writer, customScalarAdapters, value.aFragment);
     }
   }

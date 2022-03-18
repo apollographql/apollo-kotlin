@@ -19,7 +19,7 @@ import java.lang.Override;
 import java.lang.String;
 
 public class TestQuery implements Query<TestQuery.Data> {
-  public static final String OPERATION_ID = "31bd914653e7e9c0462a5ef9c6b3d38256fb69dffcef82356dbfdaf4997d76ed";
+  public static final String OPERATION_ID = "3b184fcb2cc03c785d68f3c22a4b89ef1a8240023d73c5dbd5f28223aee7d042";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -29,6 +29,7 @@ public class TestQuery implements Query<TestQuery.Data> {
    *   root {
    *     __typename
    *     ... on A {
+   *       __typename
    *       ... on B {
    *         fieldB1
    *       }
@@ -39,7 +40,7 @@ public class TestQuery implements Query<TestQuery.Data> {
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery { root { __typename ... on A { ... on B { fieldB1 } } ... on B { fieldB2 } } }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery { root { __typename ... on A { __typename ... on B { fieldB1 } } ... on B { fieldB2 } } }";
 
   public static final String OPERATION_NAME = "TestQuery";
 
@@ -236,6 +237,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class OnA {
+    public String __typename;
+
     /**
      * Synthetic field for inline fragment on B
      */
@@ -247,7 +250,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnA(OnB onB) {
+    public OnA(String __typename, OnB onB) {
+      this.__typename = __typename;
       this.onB = onB;
     }
 
@@ -258,7 +262,8 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof OnA) {
         OnA that = (OnA) o;
-        return ((this.onB == null) ? (that.onB == null) : this.onB.equals(that.onB));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.onB == null) ? (that.onB == null) : this.onB.equals(that.onB));
       }
       return false;
     }
@@ -267,6 +272,8 @@ public class TestQuery implements Query<TestQuery.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (onB == null) ? 0 : onB.hashCode();
         $hashCode = h;
@@ -279,6 +286,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "OnA{"
+          + "__typename=" + __typename + ", "
           + "onB=" + onB
           + "}";
       }

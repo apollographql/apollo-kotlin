@@ -37,6 +37,7 @@ public class TestQuerySelections {
   );
 
   private static List<CompiledSelection> droid = Arrays.asList(
+    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(onDroid).build()
   );
 
@@ -47,6 +48,7 @@ public class TestQuerySelections {
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
+    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledFragment.Builder("Query", Arrays.asList("Query")).selections(onQuery).build()
   );
 }

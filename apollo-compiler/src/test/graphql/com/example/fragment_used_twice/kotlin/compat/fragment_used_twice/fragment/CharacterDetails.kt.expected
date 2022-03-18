@@ -10,7 +10,6 @@ import kotlin.Any
 import kotlin.String
 
 public data class CharacterDetails(
-  public val __typename: String,
   /**
    * The name of the character
    */

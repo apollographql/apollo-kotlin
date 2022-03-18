@@ -10,15 +10,10 @@ import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.named_fragment_inside_inline_fragment.type.Episode
-import com.example.named_fragment_inside_inline_fragment.type.GraphQLString
 import kotlin.collections.List
 
 public object characterAppearsInSelections {
   public val root: List<CompiledSelection> = listOf(
-        CompiledField.Builder(
-          name = "__typename",
-          type = GraphQLString.type.notNull()
-        ).build(),
         CompiledField.Builder(
           name = "appearsIn",
           type = Episode.type.list().notNull()

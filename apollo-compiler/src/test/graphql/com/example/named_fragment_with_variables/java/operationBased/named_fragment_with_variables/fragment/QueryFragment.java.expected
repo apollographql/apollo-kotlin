@@ -114,6 +114,8 @@ public class QueryFragment implements Fragment.Data {
   }
 
   public static class User {
+    public String __typename;
+
     /**
      * Synthetic field for 'UserFragment'
      */
@@ -125,7 +127,8 @@ public class QueryFragment implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public User(UserFragment userFragment) {
+    public User(String __typename, UserFragment userFragment) {
+      this.__typename = __typename;
       this.userFragment = userFragment;
     }
 
@@ -136,7 +139,8 @@ public class QueryFragment implements Fragment.Data {
       }
       if (o instanceof User) {
         User that = (User) o;
-        return ((this.userFragment == null) ? (that.userFragment == null) : this.userFragment.equals(that.userFragment));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.userFragment == null) ? (that.userFragment == null) : this.userFragment.equals(that.userFragment));
       }
       return false;
     }
@@ -145,6 +149,8 @@ public class QueryFragment implements Fragment.Data {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (userFragment == null) ? 0 : userFragment.hashCode();
         $hashCode = h;
@@ -157,6 +163,7 @@ public class QueryFragment implements Fragment.Data {
     public String toString() {
       if ($toString == null) {
         $toString = "User{"
+          + "__typename=" + __typename + ", "
           + "userFragment=" + userFragment
           + "}";
       }

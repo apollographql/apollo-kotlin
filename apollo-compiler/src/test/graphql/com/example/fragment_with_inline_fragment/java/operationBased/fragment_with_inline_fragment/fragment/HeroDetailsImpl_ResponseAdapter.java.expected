@@ -169,28 +169,24 @@ public class HeroDetailsImpl_ResponseAdapter {
   public enum Node implements Adapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails.Node> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
     public com.example.fragment_with_inline_fragment.fragment.HeroDetails.Node fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String __typename = null;
       String name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
       Assertions.checkFieldNotMissing(name, "name");
 
       return new com.example.fragment_with_inline_fragment.fragment.HeroDetails.Node(
-        __typename,
         name
       );
     }
@@ -199,9 +195,6 @@ public class HeroDetailsImpl_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         com.example.fragment_with_inline_fragment.fragment.HeroDetails.Node value) throws
         IOException {
-      writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
-
       writer.name("name");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
     }
@@ -210,15 +203,28 @@ public class HeroDetailsImpl_ResponseAdapter {
   public enum OnDroid implements Adapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid> {
     INSTANCE;
 
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
+
     @Override
     public com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+      String __typename = null;
 
+      loop:
+      while(true) {
+        switch (reader.selectName(RESPONSE_NAMES)) {
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          default: break loop;
+        }
+      }
 
       reader.rewind();
       DroidDetails droidDetails = com.example.fragment_with_inline_fragment.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.fromJson(reader, customScalarAdapters);
 
+      Assertions.checkFieldNotMissing(__typename, "__typename");
+
       return new com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid(
+        __typename,
         droidDetails
       );
     }
@@ -227,6 +233,9 @@ public class HeroDetailsImpl_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid value) throws
         IOException {
+      writer.name("__typename");
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+
       com.example.fragment_with_inline_fragment.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.toJson(writer, customScalarAdapters, value.droidDetails);
     }
   }

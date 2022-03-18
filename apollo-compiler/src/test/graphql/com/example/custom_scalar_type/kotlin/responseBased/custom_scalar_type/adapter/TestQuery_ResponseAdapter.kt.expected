@@ -52,12 +52,11 @@ public object TestQuery_ResponseAdapter {
     }
 
     private object Hero : Adapter<TestQuery.Data.Hero> {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename", "id", "name", "birthDate",
-          "appearanceDates", "fieldWithUnsupportedType", "profileLink", "links")
+      public val RESPONSE_NAMES: List<String> = listOf("id", "name", "birthDate", "appearanceDates",
+          "fieldWithUnsupportedType", "profileLink", "links")
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Hero {
-        var __typename: java.lang.String? = null
         var id: Long? = null
         var name: java.lang.String? = null
         var birthDate: Date? = null
@@ -68,23 +67,21 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = com.example.MyStringAdapter().fromJson(reader, customScalarAdapters)
-            1 -> id = customScalarAdapters.responseAdapterFor<Long>(GraphQLID.type).fromJson(reader,
+            0 -> id = customScalarAdapters.responseAdapterFor<Long>(GraphQLID.type).fromJson(reader,
                 customScalarAdapters)
-            2 -> name = com.example.MyStringAdapter().fromJson(reader, customScalarAdapters)
-            3 -> birthDate = customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).fromJson(reader,
+            1 -> name = com.example.MyStringAdapter().fromJson(reader, customScalarAdapters)
+            2 -> birthDate = customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).fromJson(reader,
                 customScalarAdapters)
-            4 -> appearanceDates = customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).list().fromJson(reader,
+            3 -> appearanceDates = customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).list().fromJson(reader,
                 customScalarAdapters)
-            5 -> fieldWithUnsupportedType = AnyAdapter.fromJson(reader, customScalarAdapters)
-            6 -> profileLink = com.example.UrlAdapter.fromJson(reader, customScalarAdapters)
-            7 -> links = com.example.UrlAdapter.list().fromJson(reader, customScalarAdapters)
+            4 -> fieldWithUnsupportedType = AnyAdapter.fromJson(reader, customScalarAdapters)
+            5 -> profileLink = com.example.UrlAdapter.fromJson(reader, customScalarAdapters)
+            6 -> links = com.example.UrlAdapter.list().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.Hero(
-          __typename = __typename!!,
           id = id!!,
           name = name!!,
           birthDate = birthDate!!,
@@ -100,9 +97,6 @@ public object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Hero
       ): Unit {
-        writer.name("__typename")
-        com.example.MyStringAdapter().toJson(writer, customScalarAdapters, value.__typename)
-
         writer.name("id")
         customScalarAdapters.responseAdapterFor<Long>(GraphQLID.type).toJson(writer,
             customScalarAdapters, value.id)

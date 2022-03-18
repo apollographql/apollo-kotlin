@@ -10,8 +10,6 @@ import kotlin.String
 import kotlin.collections.List
 
 public interface HeroDetails {
-  public val __typename: String
-
   /**
    * The name of the character
    */
@@ -40,8 +38,6 @@ public interface HeroDetails {
       public val node: Node?
 
       public interface Node {
-        public val __typename: String
-
         /**
          * The name of the character
          */

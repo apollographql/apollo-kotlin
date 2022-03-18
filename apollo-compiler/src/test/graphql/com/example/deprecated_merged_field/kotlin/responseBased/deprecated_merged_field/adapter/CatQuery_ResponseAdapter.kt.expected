@@ -73,15 +73,24 @@ public object CatQuery_ResponseAdapter {
     }
 
     public object OtherCat {
+      public val RESPONSE_NAMES: List<String> = listOf("__typename")
+
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
         typename: String
       ): CatQuery.Data.OtherCat {
+        var __typename: String? = typename
 
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            else -> break
+          }
+        }
 
         return CatQuery.Data.OtherCat(
-
+          __typename = __typename!!
         )
       }
 
@@ -90,6 +99,8 @@ public object CatQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         `value`: CatQuery.Data.OtherCat
       ): Unit {
+        writer.name("__typename")
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
       }
     }
 

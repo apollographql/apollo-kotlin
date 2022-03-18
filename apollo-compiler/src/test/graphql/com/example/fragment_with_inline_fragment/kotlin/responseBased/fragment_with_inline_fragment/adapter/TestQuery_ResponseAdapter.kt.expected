@@ -198,24 +198,21 @@ public object TestQuery_ResponseAdapter {
           }
 
           private object Node : Adapter<TestQuery.Data.HumanHero.FriendsConnection.Edge.Node> {
-            public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
+            public val RESPONSE_NAMES: List<String> = listOf("name")
 
             public override fun fromJson(reader: JsonReader,
                 customScalarAdapters: CustomScalarAdapters):
                 TestQuery.Data.HumanHero.FriendsConnection.Edge.Node {
-              var __typename: String? = null
               var name: String? = null
 
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-                  1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+                  0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
 
               return TestQuery.Data.HumanHero.FriendsConnection.Edge.Node(
-                __typename = __typename!!,
                 name = name!!
               )
             }
@@ -225,9 +222,6 @@ public object TestQuery_ResponseAdapter {
               customScalarAdapters: CustomScalarAdapters,
               `value`: TestQuery.Data.HumanHero.FriendsConnection.Edge.Node
             ): Unit {
-              writer.name("__typename")
-              StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
               writer.name("name")
               StringAdapter.toJson(writer, customScalarAdapters, value.name)
             }
@@ -360,24 +354,21 @@ public object TestQuery_ResponseAdapter {
           }
 
           private object Node : Adapter<TestQuery.Data.DroidHero.FriendsConnection.Edge.Node> {
-            public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
+            public val RESPONSE_NAMES: List<String> = listOf("name")
 
             public override fun fromJson(reader: JsonReader,
                 customScalarAdapters: CustomScalarAdapters):
                 TestQuery.Data.DroidHero.FriendsConnection.Edge.Node {
-              var __typename: String? = null
               var name: String? = null
 
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-                  1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+                  0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
 
               return TestQuery.Data.DroidHero.FriendsConnection.Edge.Node(
-                __typename = __typename!!,
                 name = name!!
               )
             }
@@ -387,9 +378,6 @@ public object TestQuery_ResponseAdapter {
               customScalarAdapters: CustomScalarAdapters,
               `value`: TestQuery.Data.DroidHero.FriendsConnection.Edge.Node
             ): Unit {
-              writer.name("__typename")
-              StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
               writer.name("name")
               StringAdapter.toJson(writer, customScalarAdapters, value.name)
             }
@@ -516,24 +504,21 @@ public object TestQuery_ResponseAdapter {
           }
 
           private object Node : Adapter<TestQuery.Data.OtherHero.FriendsConnection.Edge.Node> {
-            public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
+            public val RESPONSE_NAMES: List<String> = listOf("name")
 
             public override fun fromJson(reader: JsonReader,
                 customScalarAdapters: CustomScalarAdapters):
                 TestQuery.Data.OtherHero.FriendsConnection.Edge.Node {
-              var __typename: String? = null
               var name: String? = null
 
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-                  1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+                  0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
 
               return TestQuery.Data.OtherHero.FriendsConnection.Edge.Node(
-                __typename = __typename!!,
                 name = name!!
               )
             }
@@ -543,9 +528,6 @@ public object TestQuery_ResponseAdapter {
               customScalarAdapters: CustomScalarAdapters,
               `value`: TestQuery.Data.OtherHero.FriendsConnection.Edge.Node
             ): Unit {
-              writer.name("__typename")
-              StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
               writer.name("name")
               StringAdapter.toJson(writer, customScalarAdapters, value.name)
             }

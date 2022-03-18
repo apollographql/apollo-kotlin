@@ -78,7 +78,6 @@ public data class HeroDetails(
   )
 
   public data class Node1(
-    public val __typename: String,
     /**
      * The name of the character
      */
@@ -104,7 +103,6 @@ public data class HeroDetails(
   )
 
   public data class Node(
-    public val __typename: String,
     /**
      * The name of the character
      */

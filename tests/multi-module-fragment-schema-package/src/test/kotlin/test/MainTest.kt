@@ -10,6 +10,7 @@ class MainTest {
   @Test
   fun testFragment() {
     GetLong4Query.Data(
+        __typename = "",
         queryDetails = QueryDetails(0),
         queryDetails4 = QueryDetails4(0)
     )

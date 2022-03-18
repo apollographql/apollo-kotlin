@@ -22,7 +22,7 @@ import java.lang.String;
 import java.util.List;
 
 public class TestQuery implements Query<TestQuery.Data> {
-  public static final String OPERATION_ID = "6a20c9553e5f209b6cc63f98b9d154b5d5917cdea11a903e5dc7f8f420f949b6";
+  public static final String OPERATION_ID = "43bfea6068cd77041d723551dd119f0676f6c333620dd281a668eca49d14fcb5";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -35,21 +35,19 @@ public class TestQuery implements Query<TestQuery.Data> {
    *     ... on Human {
    *       height
    *       friends {
-   *         __typename
    *         appearsIn
    *       }
    *     }
    *     ... on Droid {
    *       primaryFunction
    *       friends {
-   *         __typename
    *         id
    *       }
    *     }
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery { hero { __typename name ... on Human { height friends { __typename appearsIn } } ... on Droid { primaryFunction friends { __typename id } } } }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery { hero { __typename name ... on Human { height friends { appearsIn } } ... on Droid { primaryFunction friends { id } } } }";
 
   public static final String OPERATION_NAME = "TestQuery";
 
@@ -317,8 +315,6 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Friend {
-    public String __typename;
-
     /**
      * The movies this character appears in
      */
@@ -330,8 +326,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Friend(String __typename, List<Episode> appearsIn) {
-      this.__typename = __typename;
+    public Friend(List<Episode> appearsIn) {
       this.appearsIn = appearsIn;
     }
 
@@ -342,8 +337,7 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof Friend) {
         Friend that = (Friend) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.appearsIn == null) ? (that.appearsIn == null) : this.appearsIn.equals(that.appearsIn));
+        return ((this.appearsIn == null) ? (that.appearsIn == null) : this.appearsIn.equals(that.appearsIn));
       }
       return false;
     }
@@ -352,8 +346,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (appearsIn == null) ? 0 : appearsIn.hashCode();
         $hashCode = h;
@@ -366,7 +358,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Friend{"
-          + "__typename=" + __typename + ", "
           + "appearsIn=" + appearsIn
           + "}";
       }
@@ -436,8 +427,6 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Friend1 {
-    public String __typename;
-
     /**
      * The ID of the character
      */
@@ -449,8 +438,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Friend1(String __typename, String id) {
-      this.__typename = __typename;
+    public Friend1(String id) {
       this.id = id;
     }
 
@@ -461,8 +449,7 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof Friend1) {
         Friend1 that = (Friend1) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.id == null) ? (that.id == null) : this.id.equals(that.id));
+        return ((this.id == null) ? (that.id == null) : this.id.equals(that.id));
       }
       return false;
     }
@@ -471,8 +458,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (id == null) ? 0 : id.hashCode();
         $hashCode = h;
@@ -485,7 +470,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Friend1{"
-          + "__typename=" + __typename + ", "
           + "id=" + id
           + "}";
       }

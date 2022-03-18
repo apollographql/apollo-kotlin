@@ -83,9 +83,18 @@ public object GetHero_ResponseAdapter {
       }
 
       private object OnCharacter : Adapter<GetHero.Data.Hero.OnCharacter> {
+        public val RESPONSE_NAMES: List<String> = listOf("__typename")
+
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): GetHero.Data.Hero.OnCharacter {
+          var __typename: String? = null
 
+          while(true) {
+            when (reader.selectName(RESPONSE_NAMES)) {
+              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              else -> break
+            }
+          }
 
           reader.rewind()
           val characterName = com.example.named_fragment_inside_inline_fragment.fragment.CharacterNameImpl_ResponseAdapter.CharacterName.fromJson(reader,
@@ -96,6 +105,7 @@ public object GetHero_ResponseAdapter {
               customScalarAdapters)
 
           return GetHero.Data.Hero.OnCharacter(
+            __typename = __typename!!,
             characterName = characterName,
             characterAppearsIn = characterAppearsIn
           )
@@ -106,6 +116,9 @@ public object GetHero_ResponseAdapter {
           customScalarAdapters: CustomScalarAdapters,
           `value`: GetHero.Data.Hero.OnCharacter
         ): Unit {
+          writer.name("__typename")
+          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
           com.example.named_fragment_inside_inline_fragment.fragment.CharacterNameImpl_ResponseAdapter.CharacterName.toJson(writer,
               customScalarAdapters, value.characterName)
 

@@ -8,6 +8,7 @@ package com.example.nested_named_fragments.fragment
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -53,15 +54,25 @@ public object PilotFragmentImpl_ResponseAdapter {
 
     private object Homeworld :
         Adapter<com.example.nested_named_fragments.fragment.PilotFragment.Homeworld> {
+      public val RESPONSE_NAMES: List<String> = listOf("__typename")
+
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.nested_named_fragments.fragment.PilotFragment.Homeworld {
+        var __typename: String? = null
 
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            else -> break
+          }
+        }
 
         reader.rewind()
         val planetFragment = com.example.nested_named_fragments.fragment.PlanetFragmentImpl_ResponseAdapter.PlanetFragment.fromJson(reader,
             customScalarAdapters)
 
         return com.example.nested_named_fragments.fragment.PilotFragment.Homeworld(
+          __typename = __typename!!,
           planetFragment = planetFragment
         )
       }
@@ -71,6 +82,9 @@ public object PilotFragmentImpl_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         `value`: com.example.nested_named_fragments.fragment.PilotFragment.Homeworld
       ): Unit {
+        writer.name("__typename")
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
         com.example.nested_named_fragments.fragment.PlanetFragmentImpl_ResponseAdapter.PlanetFragment.toJson(writer,
             customScalarAdapters, value.planetFragment)
       }

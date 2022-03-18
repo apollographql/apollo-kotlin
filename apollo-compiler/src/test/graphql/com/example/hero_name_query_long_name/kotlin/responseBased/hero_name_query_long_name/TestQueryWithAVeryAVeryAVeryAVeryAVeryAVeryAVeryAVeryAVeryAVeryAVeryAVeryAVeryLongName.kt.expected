@@ -54,7 +54,6 @@ public data class
     public val heroAVeryAVeryAVeryAVeryAVeryAVeryAV: HeroAVeryAVeryAVeryAVeryAVeryAVeryAV?
   ) : Query.Data {
     public data class HeroAVeryAVeryAVeryAVeryAVeryAVeryAV(
-      public val __typename: String,
       /**
        * The name of the character
        */
@@ -66,7 +65,7 @@ public data class
 
   public companion object {
     public const val OPERATION_ID: String =
-        "6cf42f0449039e384d15a5d7d11c379b685940aeae503276ec8cd0a282bf669b"
+        "164dc148c38451cf968e075d4fd3114b0e03f4e5d8e126be67cf7156ef4cda9c"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -77,14 +76,13 @@ public data class
      * Episode) {
      *   heroAVeryAVeryAVeryAVeryAVeryAVeryAV: hero(episode:
      * $episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName) {
-     *     __typename
      *     nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName:
      * name
      *   }
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName(${'$'}episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName: Episode) { heroAVeryAVeryAVeryAVeryAVeryAVeryAV: hero(episode: ${'$'}episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName) { __typename nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName: name } }"
+        "query TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName(${'$'}episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName: Episode) { heroAVeryAVeryAVeryAVeryAVeryAVeryAV: hero(episode: ${'$'}episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName) { nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName: name } }"
 
     public const val OPERATION_NAME: String =
         "TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName"

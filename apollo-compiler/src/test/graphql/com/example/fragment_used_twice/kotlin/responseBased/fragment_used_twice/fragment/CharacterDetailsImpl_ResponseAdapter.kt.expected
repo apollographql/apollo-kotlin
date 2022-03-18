@@ -18,25 +18,22 @@ import kotlin.collections.List
 
 public object CharacterDetailsImpl_ResponseAdapter {
   public object Data : Adapter<CharacterDetailsImpl.Data> {
-    public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "birthDate")
+    public val RESPONSE_NAMES: List<String> = listOf("name", "birthDate")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         CharacterDetailsImpl.Data {
-      var __typename: String? = null
       var name: String? = null
       var birthDate: Any? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> birthDate = AnyAdapter.fromJson(reader, customScalarAdapters)
+          0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> birthDate = AnyAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return CharacterDetailsImpl.Data(
-        __typename = __typename!!,
         name = name!!,
         birthDate = birthDate!!
       )
@@ -47,9 +44,6 @@ public object CharacterDetailsImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       `value`: CharacterDetailsImpl.Data
     ): Unit {
-      writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
 

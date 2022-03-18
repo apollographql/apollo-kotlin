@@ -52,23 +52,20 @@ public object QueryFragmentImpl_ResponseAdapter {
     }
 
     private object Hero : Adapter<com.example.root_query_fragment.fragment.QueryFragment.Hero> {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
+      public val RESPONSE_NAMES: List<String> = listOf("name")
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.root_query_fragment.fragment.QueryFragment.Hero {
-        var __typename: String? = null
         var name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return com.example.root_query_fragment.fragment.QueryFragment.Hero(
-          __typename = __typename!!,
           name = name!!
         )
       }
@@ -78,9 +75,6 @@ public object QueryFragmentImpl_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         `value`: com.example.root_query_fragment.fragment.QueryFragment.Hero
       ): Unit {
-        writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
         writer.name("name")
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
       }

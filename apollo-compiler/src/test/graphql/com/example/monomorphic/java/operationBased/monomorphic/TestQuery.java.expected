@@ -19,7 +19,7 @@ import java.lang.Override;
 import java.lang.String;
 
 public class TestQuery implements Query<TestQuery.Data> {
-  public static final String OPERATION_ID = "8e968280c9053647813f16d3881bc48bf53ac56e1affb65d4596c69ad67ae275";
+  public static final String OPERATION_ID = "fd42891d34246c8eb8c35ffcfa1c8b99282f5a90e7e43ffcab1cdd5a13d8a241";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -27,7 +27,9 @@ public class TestQuery implements Query<TestQuery.Data> {
    *
    * query TestQuery {
    *   cat {
+   *     __typename
    *     ... on Node {
+   *       __typename
    *       ... on Animal {
    *         species
    *       }
@@ -35,7 +37,7 @@ public class TestQuery implements Query<TestQuery.Data> {
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery { cat { ... on Node { ... on Animal { species } } } }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery { cat { __typename ... on Node { __typename ... on Animal { species } } } }";
 
   public static final String OPERATION_NAME = "TestQuery";
 
@@ -164,6 +166,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Cat {
+    public String __typename;
+
     /**
      * Synthetic field for inline fragment on Node
      */
@@ -175,7 +179,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Cat(OnNode onNode) {
+    public Cat(String __typename, OnNode onNode) {
+      this.__typename = __typename;
       this.onNode = onNode;
     }
 
@@ -186,7 +191,8 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof Cat) {
         Cat that = (Cat) o;
-        return ((this.onNode == null) ? (that.onNode == null) : this.onNode.equals(that.onNode));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.onNode == null) ? (that.onNode == null) : this.onNode.equals(that.onNode));
       }
       return false;
     }
@@ -195,6 +201,8 @@ public class TestQuery implements Query<TestQuery.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (onNode == null) ? 0 : onNode.hashCode();
         $hashCode = h;
@@ -207,6 +215,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Cat{"
+          + "__typename=" + __typename + ", "
           + "onNode=" + onNode
           + "}";
       }
@@ -215,6 +224,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class OnNode {
+    public String __typename;
+
     /**
      * Synthetic field for inline fragment on Animal
      */
@@ -226,7 +237,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnNode(OnAnimal onAnimal) {
+    public OnNode(String __typename, OnAnimal onAnimal) {
+      this.__typename = __typename;
       this.onAnimal = onAnimal;
     }
 
@@ -237,7 +249,8 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof OnNode) {
         OnNode that = (OnNode) o;
-        return ((this.onAnimal == null) ? (that.onAnimal == null) : this.onAnimal.equals(that.onAnimal));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.onAnimal == null) ? (that.onAnimal == null) : this.onAnimal.equals(that.onAnimal));
       }
       return false;
     }
@@ -246,6 +259,8 @@ public class TestQuery implements Query<TestQuery.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (onAnimal == null) ? 0 : onAnimal.hashCode();
         $hashCode = h;
@@ -258,6 +273,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "OnNode{"
+          + "__typename=" + __typename + ", "
           + "onAnimal=" + onAnimal
           + "}";
       }

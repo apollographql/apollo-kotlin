@@ -41,7 +41,6 @@ public class CharacterNameImpl() : Fragment<CharacterNameImpl.Data> {
   .build()
 
   public data class Data(
-    public override val __typename: String,
     /**
      * The name of the character
      */

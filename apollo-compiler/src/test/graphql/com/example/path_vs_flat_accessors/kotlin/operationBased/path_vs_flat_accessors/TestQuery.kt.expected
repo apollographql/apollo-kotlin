@@ -61,6 +61,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       public val onB: OnB?
     ) {
       public data class OnA(
+        public val __typename: String,
         /**
          * Synthetic field for inline fragment on B
          */
@@ -79,7 +80,7 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "31bd914653e7e9c0462a5ef9c6b3d38256fb69dffcef82356dbfdaf4997d76ed"
+        "3b184fcb2cc03c785d68f3c22a4b89ef1a8240023d73c5dbd5f28223aee7d042"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -89,6 +90,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      *   root {
      *     __typename
      *     ... on A {
+     *       __typename
      *       ... on B {
      *         fieldB1
      *       }
@@ -100,7 +102,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query TestQuery { root { __typename ... on A { ... on B { fieldB1 } } ... on B { fieldB2 } } }"
+        "query TestQuery { root { __typename ... on A { __typename ... on B { fieldB1 } } ... on B { fieldB2 } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

@@ -63,31 +63,27 @@ public class TestQuery_ResponseAdapter {
   public enum R2 implements Adapter<TestQuery.R2> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name", "friendsConnection");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "friendsConnection");
 
     @Override
     public TestQuery.R2 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String __typename = null;
       String name = null;
       TestQuery.FriendsConnection friendsConnection = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: friendsConnection = new ObjectAdapter<TestQuery.FriendsConnection>(FriendsConnection.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
+          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: friendsConnection = new ObjectAdapter<TestQuery.FriendsConnection>(FriendsConnection.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
       Assertions.checkFieldNotMissing(name, "name");
       Assertions.checkFieldNotMissing(friendsConnection, "friendsConnection");
 
       return new TestQuery.R2(
-        __typename,
         name,
         friendsConnection
       );
@@ -96,9 +92,6 @@ public class TestQuery_ResponseAdapter {
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.R2 value) throws IOException {
-      writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
-
       writer.name("name");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
 
@@ -178,28 +171,24 @@ public class TestQuery_ResponseAdapter {
   public enum Node implements Adapter<TestQuery.Node> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
     public TestQuery.Node fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String __typename = null;
       String name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
       Assertions.checkFieldNotMissing(name, "name");
 
       return new TestQuery.Node(
-        __typename,
         name
       );
     }
@@ -207,9 +196,6 @@ public class TestQuery_ResponseAdapter {
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Node value) throws IOException {
-      writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
-
       writer.name("name");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
     }
@@ -218,12 +204,11 @@ public class TestQuery_ResponseAdapter {
   public enum Luke implements Adapter<TestQuery.Luke> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "id", "name", "friendsConnection");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("id", "name", "friendsConnection");
 
     @Override
     public TestQuery.Luke fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String __typename = null;
       String id = null;
       String name = null;
       TestQuery.FriendsConnection1 friendsConnection = null;
@@ -231,21 +216,18 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 3: friendsConnection = new ObjectAdapter<TestQuery.FriendsConnection1>(FriendsConnection1.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
+          case 0: id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 2: friendsConnection = new ObjectAdapter<TestQuery.FriendsConnection1>(FriendsConnection1.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
       Assertions.checkFieldNotMissing(id, "id");
       Assertions.checkFieldNotMissing(name, "name");
       Assertions.checkFieldNotMissing(friendsConnection, "friendsConnection");
 
       return new TestQuery.Luke(
-        __typename,
         id,
         name,
         friendsConnection
@@ -255,9 +237,6 @@ public class TestQuery_ResponseAdapter {
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Luke value) throws IOException {
-      writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
-
       writer.name("id");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.id);
 
@@ -340,28 +319,24 @@ public class TestQuery_ResponseAdapter {
   public enum Node1 implements Adapter<TestQuery.Node1> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
     public TestQuery.Node1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String __typename = null;
       String name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
       Assertions.checkFieldNotMissing(name, "name");
 
       return new TestQuery.Node1(
-        __typename,
         name
       );
     }
@@ -369,9 +344,6 @@ public class TestQuery_ResponseAdapter {
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Node1 value) throws IOException {
-      writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
-
       writer.name("name");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
     }
