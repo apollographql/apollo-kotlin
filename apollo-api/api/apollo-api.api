@@ -352,6 +352,7 @@ public final class com/apollographql/apollo3/api/CustomScalarAdapters : com/apol
 	public final fun newBuilder ()Lcom/apollographql/apollo3/api/CustomScalarAdapters$Builder;
 	public fun plus (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ExecutionContext;
 	public final fun responseAdapterFor (Lcom/apollographql/apollo3/api/CustomScalarType;)Lcom/apollographql/apollo3/api/Adapter;
+	public final fun variables ()Ljava/util/Set;
 }
 
 public final class com/apollographql/apollo3/api/CustomScalarAdapters$Builder {
@@ -362,6 +363,7 @@ public final class com/apollographql/apollo3/api/CustomScalarAdapters$Builder {
 	public final fun addAll (Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/api/CustomScalarAdapters$Builder;
 	public final fun build ()Lcom/apollographql/apollo3/api/CustomScalarAdapters;
 	public final fun clear ()V
+	public final fun variables (Lcom/apollographql/apollo3/api/Executable$Variables;)Lcom/apollographql/apollo3/api/CustomScalarAdapters$Builder;
 }
 
 public final class com/apollographql/apollo3/api/CustomScalarAdapters$Key : com/apollographql/apollo3/api/ExecutionContext$Key {
