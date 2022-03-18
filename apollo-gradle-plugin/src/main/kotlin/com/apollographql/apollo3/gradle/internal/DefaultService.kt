@@ -118,10 +118,6 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   override fun useVersion2Compat(rootPackageName: String?) {
     packageNamesFromFilePaths(rootPackageName)
     codegenModels.set(MODELS_COMPAT)
-    // This isn't really exact. We could add a 3rd mode that matches 1:1 what 2.x is doing but
-    // ADD_TYPENAME_IF_FRAGMENTS is closer than ADD_TYPENAME_IF_POLYMORPHIC
-    addTypename.set(ADD_TYPENAME_IF_FRAGMENTS)
-
     useSchemaPackageNameForFragments.set(true)
   }
 
