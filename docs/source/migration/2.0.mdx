@@ -3,8 +3,6 @@ title: Migrating to 2.0
 description: Migrate to Apollo Android 2.0
 ---
 
-import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
-
 ### Kotlin Multiplatform
 
 We are really excited to announce that with this release it is possible to build Kotlin Multiplatform apps with Apollo. The supported
@@ -40,7 +38,7 @@ recommended adding the following dependency explicitly: `implementation("com.apo
 
 `SqlNormalizedCache` is moved to its own module. If you added `apollo-android-support` for disk cache, replace it with new dependency.
 
-```kotlin:title=build.gradle
+```kotlin title="build.gradle"
 // Replace:
 implementation("com.apollographql.apollo3:deprecated-apollo-android-support:x.y.z")
 
@@ -76,5 +74,5 @@ NormalizedCacheFactory cacheFactory = new SqlNormalizedCacheFactory(context, "db
 
 ### Deprecated Gradle Plugin
 
-The deprecated Gradle Plugin is now removed. Please refer to [the migration guide](/essentials/migration/#gradle-plugin-changes) from previous releases before upgrading to 2.0.
+The deprecated Gradle Plugin is now removed. Please refer to [the migration guide](./1.3/#gradle-plugin-changes) from previous releases before upgrading to 2.0.
 

@@ -430,14 +430,19 @@ internal class ExecutableValidationScope(
     return true
   }
 
+  private fun buildMessage(fieldA: GQLField, fieldB: GQLField, message: String): String {
+    return "`${fieldA.responseName()}` cannot be merged with `${fieldB.responseName()}` (at ${fieldB.sourceLocation.pretty()}): " +
+        "$message. Use different aliases on the fields to fetch both if this was intentional."
+  }
+
   private fun addFieldMergingIssue(fieldA: GQLField, fieldB: GQLField, message: String) {
     registerIssue(
-        message = "`${fieldA.responseName()}` cannot be merged with `${fieldB.responseName()}`: $message",
+        message = buildMessage(fieldA, fieldB, message),
         sourceLocation = fieldA.sourceLocation
     )
     // Also add the symmetrical error
     registerIssue(
-        message = "`${fieldB.responseName()}` cannot be merged with `${fieldA.responseName()}`: $message",
+        message = buildMessage(fieldB, fieldA, message),
         sourceLocation = fieldB.sourceLocation
     )
   }

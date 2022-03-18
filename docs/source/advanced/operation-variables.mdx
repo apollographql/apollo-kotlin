@@ -1,6 +1,5 @@
 ---
 title: Using GraphQL variables in Apollo Kotlin
-sidebar_title: GraphQL variables
 ---
 
 GraphQL supports passing argument values to your operations with [variables](https://graphql.org/graphql-js/passing-arguments/). This enables you to write a single query that you can reuse with multiple variable values (this is a [recommended best practice](https://www.apollographql.com/docs/react/data/operation-best-practices/#use-variables-to-provide-graphql-arguments)).
@@ -67,7 +66,7 @@ If you pass `null` as the value for either of these variables, Apollo Kotlin sen
 
 While doing this could simplify your code globally, you may still need to omit variables in certain cases. To that effect, optional can be opted back in on a per-variable basis, by setting the `@optional` directive:
 
-```graphql{1}
+```graphql {1}
 query GetTodos($first: Int @optional, $offset: Int @optional) {
   todos(first: $first, offset: $offset) {
     id

@@ -1,9 +1,9 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClass
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toNamedType
@@ -22,7 +22,8 @@ class FragmentBuilder(
     private val generateFilterNotNull: Boolean,
     private val fragment: IrNamedFragment,
     flatten: Boolean,
-) : CgOutputFileBuilder {
+    private val addJvmOverloads: Boolean,
+) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.fragmentPackageName(fragment.filePath)
   private val simpleName = layout.fragmentName(fragment.name)
@@ -64,7 +65,7 @@ class FragmentBuilder(
     return TypeSpec.classBuilder(simpleName)
         .addSuperinterface(superInterfaceType())
         .maybeAddDescription(description)
-        .makeDataClass(variables.map { it.toNamedType().toParameterSpec(context) })
+        .makeDataClass(variables.map { it.toNamedType().toParameterSpec(context) }, addJvmOverloads)
         .addFunction(serializeVariablesFunSpec())
         .addFunction(adapterFunSpec())
         .addFunction(rootFieldFunSpec())

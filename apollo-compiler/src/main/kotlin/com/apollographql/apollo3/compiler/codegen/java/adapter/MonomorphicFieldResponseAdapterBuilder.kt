@@ -50,7 +50,12 @@ class MonomorphicFieldResponseAdapterBuilder(
         .apply {
           addModifiers(if (public) Modifier.PUBLIC else Modifier.PRIVATE)
         }
-        .addField(responseNamesFieldSpec(model))
+        .apply {
+          val responseNames = responseNamesFieldSpec(model)
+          if (responseNames != null) {
+            addField(responseNames)
+          }
+        }
         .addEnumConstant("INSTANCE")
         .addMethod(readFromResponseMethodSpec())
         .addMethod(writeToResponseMethodSpec())

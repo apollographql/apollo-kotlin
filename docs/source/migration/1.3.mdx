@@ -3,8 +3,6 @@ title: Migrating to 1.3
 description: Migrate to Apollo Android 1.3
 ---
 
-import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
-
 Apollo Android version 1.3.0 introduces some fixes and improvements that are incompatible with 1.2.x. Updating should be transparent for
 simple use cases and your project should compile fine. If you're using more advanced features such as custom schema/graphql files location,
 Kotlin Gradle scripts and/or transformed queries, or if you encounter a build error after updating, read on for details about the changes.
@@ -12,7 +10,7 @@ Kotlin Gradle scripts and/or transformed queries, or if you encounter a build er
 ### Gradle plugin changes
 
 The plugin has been rewritten in Kotlin to make it more maintainable and have better support for multiple GraphQL endpoints.  Below are the
-main changes. Read [plugin-configuration.md](/essentials/plugin-configuration/) for a reference of the
+main changes. Read [plugin-configuration.md](../advanced/plugin-configuration/) for a reference of the
 different options.
 
 #### New plugin ID
@@ -53,7 +51,7 @@ src/main/graphql/com/starwars/GetHeroes.graphql
 
 You will need to define 2 services:
 
-```kotlin:title=build.gradle
+```kotlin title="build.gradle"
 apollo {
   service("github") {
     sourceFolder.set("com/github")
@@ -71,7 +69,7 @@ apollo {
 The root `schemaFilePath`, `outputPackageName` and `sourceSets.graphql` are removed and will throw an error if you try to use them. Instead
 you can use [CompilationUnit] to control what files the compiler will use as inputs.
 
-```groovy:title=build.gradle
+```groovy title="build.gradle"
 // Replace:
 sourceSets {
   main.graphql.srcDirs += "/path/to/your/graphql/queries/dir"
@@ -85,7 +83,7 @@ apollo {
 // highlight-end
 ```
 
-```groovy:title=build.gradle
+```groovy title="build.gradle"
 // Replace
 apollo {
   sourceSet {
@@ -111,7 +109,7 @@ The plugin uses Gradle [Properties](https://docs.gradle.org/current/javadoc/org/
 If you're using Groovy `build.gradle` build scripts it should work transparently but Kotlin `build.gradle.kts` build scripts will require
 you to use the [Property.set](https://docs.gradle.org/current/javadoc/org/gradle/api/provider/Property.html#set-T-) API:
 
-```kotlin:title=build.gradle
+```kotlin title="build.gradle"
 apollo {
   // Replace:
   setGenerateKotlinModels(true)
@@ -238,9 +236,9 @@ Idling Resources integration is moved to AndroidX! This is a potential breaking 
 you haven't you can still use the 1.2.x version in your test code.
 
 The artifact is also renamed to make its intention more obvious. Documentation for idling resource can be found
-[here](/advanced/android/#apolloidlingresource)
+[here](../testing/ui-tests/)
 
-```groovy:title=build.gradle
+```groovy title="build.gradle"
   // Replace:
   androidTestImplementation("com.apollographql.apollo3:apollo-espresso-support:x.y.z")
 

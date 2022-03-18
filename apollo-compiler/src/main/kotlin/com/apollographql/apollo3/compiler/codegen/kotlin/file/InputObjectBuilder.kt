@@ -1,10 +1,9 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.compiler.applyIf
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClass
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toParameterSpec
@@ -15,7 +14,7 @@ import com.squareup.kotlinpoet.TypeSpec
 class InputObjectBuilder(
     val context: KotlinContext,
     val inputObject: IrInputObject
-): CgOutputFileBuilder {
+): CgFileBuilder {
   private val packageName = context.layout.typePackageName()
   private val simpleName = context.layout.inputObjectName(inputObject.name)
 

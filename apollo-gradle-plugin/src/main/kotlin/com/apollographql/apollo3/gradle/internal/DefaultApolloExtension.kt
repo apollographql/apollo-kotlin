@@ -23,14 +23,19 @@ import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.attributes.Usage
+import org.gradle.api.component.AdhocComponentWithVariants
+import org.gradle.api.component.SoftwareComponentFactory
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.provider.Property
+import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import java.io.File
 import java.util.concurrent.Callable
+import javax.inject.Inject
 
 abstract class DefaultApolloExtension(
     private val project: Project,
@@ -42,6 +47,10 @@ abstract class DefaultApolloExtension(
   private val apolloConfiguration: Configuration
   private val rootProvider: TaskProvider<Task>
   private var registerDefaultService = true
+  private var adhocComponentWithVariants: AdhocComponentWithVariants? = null
+
+  @get:Inject
+  protected abstract val softwareComponentFactory: SoftwareComponentFactory
 
   // Called when the plugin is applied
   init {
@@ -73,18 +82,23 @@ abstract class DefaultApolloExtension(
      */
     project.tasks.register(ModelNames.downloadApolloSchema(), ApolloDownloadSchemaTask::class.java) { task ->
       task.group = TASK_GROUP
+      task.projectRootDir = project.rootDir.absolutePath
     }
+
     /**
      * A simple task to be used from the command line to ease the schema upload
      */
     project.tasks.register(ModelNames.pushApolloSchema(), ApolloPushSchemaTask::class.java) { task ->
       task.group = TASK_GROUP
+      task.projectRootDir = project.rootDir.absolutePath
     }
+    
     /**
      * A simple task to be used from the command line to ease schema conversion
      */
     project.tasks.register(ModelNames.convertApolloSchema(), ApolloConvertSchemaTask::class.java) { task ->
       task.group = TASK_GROUP
+      task.projectRootDir = project.rootDir.absolutePath
     }
 
     project.afterEvaluate {
@@ -202,7 +216,7 @@ abstract class DefaultApolloExtension(
 
     val producerConfigurationName = ModelNames.producerConfiguration(service)
 
-    project.configurations.create(producerConfigurationName) {
+    val producerConfiguration = project.configurations.create(producerConfigurationName) {
       it.isCanBeConsumed = true
       it.isCanBeResolved = false
 
@@ -233,8 +247,11 @@ abstract class DefaultApolloExtension(
 
     project.afterEvaluate {
       if (shouldGenerateMetadata(service)) {
+        maybeSetupPublishingForConfiguration(producerConfiguration)
         project.artifacts {
-          it.add(producerConfigurationName, codegenProvider.flatMap { it.metadataOutputFile })
+          it.add(producerConfigurationName, codegenProvider.flatMap { it.metadataOutputFile }) {
+            it.classifier = service.name
+          }
         }
       }
     }
@@ -294,6 +311,20 @@ abstract class DefaultApolloExtension(
 
     registerDownloadSchemaTasks(service)
     maybeRegisterRegisterOperationsTasks(project, service, codegenProvider)
+  }
+
+  private fun maybeSetupPublishingForConfiguration(producerConfiguration: Configuration) {
+    val publishing = project.extensions.findByType(PublishingExtension::class.java) ?: return
+
+    if (adhocComponentWithVariants == null) {
+      adhocComponentWithVariants = softwareComponentFactory.adhoc("apollo")
+
+      publishing.publications.create("apollo", MavenPublication::class.java) {
+        it.from(adhocComponentWithVariants)
+        it.artifactId = "${project.name}-apollo"
+      }
+    }
+    adhocComponentWithVariants!!.addVariantsFromConfiguration(producerConfiguration) {}
   }
 
   private fun maybeRegisterRegisterOperationsTasks(
@@ -533,12 +564,20 @@ abstract class DefaultApolloExtension(
       @OptIn(ApolloExperimental::class)
       task.generateTestBuilders.set(service.generateTestBuilders)
       task.useSchemaPackageNameForFragments.set(service.useSchemaPackageNameForFragments)
+      task.addJvmOverloads.set(service.addJvmOverloads)
       task.sealedClassesForEnumsMatching.set(service.sealedClassesForEnumsMatching)
       task.generateOptionalOperationVariables.set(service.generateOptionalOperationVariables)
       task.languageVersion.set(service.languageVersion)
     }
   }
 
+  /**
+   * XXX: this returns an absolute path, which might be an issue for the build cache.
+   * I don't think this is much of an issue because tasks like ApolloDownloadSchemaTask don't have any
+   * outputs and are therefore never up-to-date so the build cache will not help much.
+   *
+   * If that ever becomes an issue, making the path relative to the project root might be a good idea.
+   */
   private fun lazySchemaFileForDownload(service: DefaultService, schemaFile: RegularFileProperty): String {
     if (schemaFile.isPresent) {
       return schemaFile.get().asFile.absolutePath
@@ -561,6 +600,7 @@ abstract class DefaultApolloExtension(
       project.tasks.register(ModelNames.downloadApolloSchemaIntrospection(service), ApolloDownloadSchemaTask::class.java) { task ->
 
         task.group = TASK_GROUP
+        task.projectRootDir = project.rootDir.absolutePath
         task.endpoint.set(introspection.endpointUrl)
         task.header = introspection.headers.get().map { "${it.key}: ${it.value}" }
         task.schema.set(project.provider { lazySchemaFileForDownload(service, introspection.schemaFile) })
@@ -571,6 +611,7 @@ abstract class DefaultApolloExtension(
       project.tasks.register(ModelNames.downloadApolloSchemaRegistry(service), ApolloDownloadSchemaTask::class.java) { task ->
 
         task.group = TASK_GROUP
+        task.projectRootDir = project.rootDir.absolutePath
         task.graph.set(registry.graph)
         task.key.set(registry.key)
         task.graphVariant.set(registry.graphVariant)
@@ -641,7 +682,7 @@ abstract class DefaultApolloExtension(
             .filter {
               // the "_" check is for refreshVersions,
               // see https://github.com/jmfayard/refreshVersions/issues/507
-              it.group == "com.apollographql.apollo3"  && it.version != "_"
+              it.group == "com.apollographql.apollo3" && it.version != "_"
             }.map { dependency ->
               dependency.version
             }.filterNotNull()

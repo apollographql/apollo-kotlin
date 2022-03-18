@@ -5,6 +5,7 @@ import com.apollographql.apollo3.ast.GQLFragmentSpread
 import com.apollographql.apollo3.ast.GQLInlineFragment
 import com.apollographql.apollo3.ast.GQLNode
 import com.apollographql.apollo3.ast.parseAsGQLDocument
+import com.apollographql.apollo3.compiler.Options.Companion.defaultAddJvmOverloads
 import com.apollographql.apollo3.compiler.TargetLanguage.JAVA
 import com.apollographql.apollo3.compiler.TargetLanguage.KOTLIN_1_5
 import com.apollographql.apollo3.compiler.TestUtils.checkTestFixture
@@ -330,6 +331,11 @@ class CodegenTest {
         emptyMap()
       }
 
+      val addJvmOverloads = when (folder.name) {
+        "variable_default_value" -> true
+        else -> defaultAddJvmOverloads
+      }
+
       return Options(
           executableFiles = graphqlFiles,
           schemaFile = schemaFile,
@@ -348,6 +354,7 @@ class CodegenTest {
           moduleName = folder.name,
           targetLanguage = targetLanguage,
           sealedClassesForEnumsMatching = sealedClassesForEnumsMatching,
+          addJvmOverloads = addJvmOverloads,
       )
     }
 

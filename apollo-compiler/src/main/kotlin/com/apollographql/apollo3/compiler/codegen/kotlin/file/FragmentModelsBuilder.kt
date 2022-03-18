@@ -1,9 +1,9 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.model.ModelBuilder
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.ir.IrModelGroup
@@ -15,7 +15,7 @@ class FragmentModelsBuilder(
     modelGroup: IrModelGroup,
     private val addSuperInterface: Boolean,
     flatten: Boolean,
-) : CgOutputFileBuilder {
+) : CgFileBuilder {
 
   private val packageName = context.layout.fragmentPackageName(fragment.filePath)
 

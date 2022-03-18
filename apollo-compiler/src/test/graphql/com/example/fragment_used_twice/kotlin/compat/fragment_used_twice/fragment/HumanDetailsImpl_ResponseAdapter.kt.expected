@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.json.readTypename
 import com.apollographql.apollo3.api.possibleTypes
 import kotlin.String
 import kotlin.Unit
@@ -33,16 +34,12 @@ public object HumanDetailsImpl_ResponseAdapter {
         }
       }
 
-      check(__typename != null) {
-        "__typename was not found"
-      }
-
       reader.rewind()
       val fragments = com.example.fragment_used_twice.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.Fragments.fromJson(reader,
           customScalarAdapters)
 
       return com.example.fragment_used_twice.fragment.HumanDetails(
-        __typename = __typename,
+        __typename = __typename!!,
         name = name!!,
         fragments = fragments
       )
@@ -65,22 +62,12 @@ public object HumanDetailsImpl_ResponseAdapter {
 
     private object Fragments :
         Adapter<com.example.fragment_used_twice.fragment.HumanDetails.Fragments> {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.fragment_used_twice.fragment.HumanDetails.Fragments {
-        var __typename: String? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            else -> break
-          }
-        }
 
-        check(__typename != null) {
-          "__typename was not found"
-        }
+        reader.rewind()
+        val __typename = reader.readTypename()
 
         reader.rewind()
         var characterDetails: CharacterDetails? = null

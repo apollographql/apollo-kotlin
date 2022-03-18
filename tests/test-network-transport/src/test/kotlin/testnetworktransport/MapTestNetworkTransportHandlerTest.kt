@@ -105,4 +105,11 @@ class MapTestNetworkTransportHandlerTest {
     val actual = apolloClient.query(query).execute().data!!
     assertEquals(testData.hero.name, actual.hero.name)
   }
+
+  @Test
+  fun registeredOperationWithoutArgumentsIsFoundInMap() = runTest(before = { setUp() }, after = { tearDown() }) {
+    apolloClient.registerTestResponse(GetHeroNameOnlyQuery(), GetHeroNameOnlyQuery.Data(GetHeroNameOnlyQuery.Hero(name = "Darth Vader")))
+    val response: ApolloResponse<GetHeroNameOnlyQuery.Data> = apolloClient.query(GetHeroNameOnlyQuery()).execute()
+    assertEquals("Darth Vader", response.data!!.hero.name)
+  }
 }

@@ -75,14 +75,14 @@ public object TestQuery_ResponseAdapter {
 
         reader.rewind()
         var heroDetails: HeroDetails? = null
-        if (and(variable("withDetails"),not(variable("skipHumanDetails"))).evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+        if (and(variable("withDetails"),not(variable("skipHumanDetails"))).evaluate(customScalarAdapters.variables(), null)) {
           heroDetails = com.example.fragment_spread_with_include_directive.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
               customScalarAdapters)
         }
 
         reader.rewind()
         var humanDetails: HumanDetails? = null
-        if (and(possibleTypes("Human"),variable("withDetails")).evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+        if (and(possibleTypes("Human"),variable("withDetails")).evaluate(customScalarAdapters.variables(), __typename)) {
           humanDetails = com.example.fragment_spread_with_include_directive.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
               customScalarAdapters)
         }

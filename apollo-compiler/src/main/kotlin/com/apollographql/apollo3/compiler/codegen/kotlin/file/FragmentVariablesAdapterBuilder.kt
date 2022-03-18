@@ -1,19 +1,18 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
-import com.apollographql.apollo3.compiler.ir.IrNamedFragment
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.inputAdapterTypeSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toNamedType
+import com.apollographql.apollo3.compiler.ir.IrNamedFragment
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.TypeSpec
 
 class FragmentVariablesAdapterBuilder(
     val context: KotlinContext,
     val fragment: IrNamedFragment
-): CgOutputFileBuilder {
+): CgFileBuilder {
   private val packageName = context.layout.fragmentAdapterPackageName(fragment.filePath)
   private val simpleName = context.layout.fragmentVariablesAdapterName(fragment.name)
 

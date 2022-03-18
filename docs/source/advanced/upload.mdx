@@ -1,13 +1,12 @@
 ---
 title: Uploading files
 ---
-import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
 Apollo Kotlin supports file uploads via the [GraphQL multipart request specification](https://github.com/jaydenseric/graphql-multipart-request-spec).
 
 First, add the following custom scalar mapping to the Apollo Gradle plugin configuration:
 
-```kotlin:title=build.gradle[.kts]
+```kotlin title="build.gradle[.kts]"
 apollo {
   mapScalarToUpload("Upload")
 }

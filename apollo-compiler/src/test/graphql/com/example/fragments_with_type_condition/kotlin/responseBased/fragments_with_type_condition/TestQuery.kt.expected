@@ -15,11 +15,18 @@ import com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapt
 import com.example.fragments_with_type_condition.fragment.DroidDetails
 import com.example.fragments_with_type_condition.fragment.HumanDetails
 import com.example.fragments_with_type_condition.selections.TestQuerySelections
+import kotlin.Any
+import kotlin.Boolean
 import kotlin.Double
+import kotlin.Int
 import kotlin.String
 import kotlin.Unit
 
 public class TestQuery() : Query<TestQuery.Data> {
+  public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+
+  public override fun hashCode(): Int = this::class.hashCode()
+
   public override fun id(): String = OPERATION_ID
 
   public override fun document(): String = OPERATION_DOCUMENT

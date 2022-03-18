@@ -31,16 +31,12 @@ public object HeroDetailsImpl_ResponseAdapter {
         }
       }
 
-      check(__typename != null) {
-        "__typename was not found"
-      }
-
       reader.rewind()
       val characterDetails = com.example.fragment_used_twice.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.fromJson(reader,
           customScalarAdapters)
 
       return com.example.fragment_used_twice.fragment.HeroDetails(
-        __typename = __typename,
+        __typename = __typename!!,
         name = name!!,
         characterDetails = characterDetails
       )

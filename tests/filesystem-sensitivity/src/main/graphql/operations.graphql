@@ -1,0 +1,10 @@
+query GetField(
+  $Foo: Foo,
+  $foO: foo,
+  $FOO: FOO,
+  $url: url,
+  $URL: URL,
+) {
+  field(foo: $foO, FOO: $FOO, Foo: $Foo, url: $url, URL: $URL)
+}
+

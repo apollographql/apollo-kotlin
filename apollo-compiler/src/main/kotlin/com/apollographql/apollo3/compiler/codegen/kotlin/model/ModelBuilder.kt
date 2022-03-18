@@ -51,7 +51,7 @@ class ModelBuilder(
   }
 
   fun IrModel.typeSpec(): TypeSpec {
-    val properties = properties.filter { !it.hidden }.map {
+    val properties = properties.map {
       PropertySpec.builder(
           context.layout.propertyName(it.info.responseName),
           context.resolver.resolveIrType(it.info.type)

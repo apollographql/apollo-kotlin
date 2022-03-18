@@ -9,7 +9,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapter
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.testResolver
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgTestFileBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinCodegenLayout
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinMemberNames
@@ -37,7 +37,7 @@ class TestBuildersBuilder(
     val dataModelGroup: IrModelGroup,
     val operation: IrOperation,
     val flatten: Boolean,
-) : CgTestFileBuilder {
+) : CgFileBuilder {
   private val packageName = context.layout.operationTestBuildersPackageName(operation.filePath)
   private val simpleName = context.layout.operationTestBuildersWrapperName(operation)
 
@@ -58,7 +58,8 @@ class TestBuildersBuilder(
     return CgFile(
         packageName = packageName,
         fileName = simpleName,
-        typeSpecs = listOf(typeSpec())
+        typeSpecs = listOf(typeSpec()),
+        isTest = true
     )
   }
 

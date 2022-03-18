@@ -1,6 +1,5 @@
 ---
 title: Normalized caches in Apollo Kotlin
-sidebar_title: Normalized caches
 ---
 
 Apollo Kotlin provides two built-in **normalized caches** for storing and reusing the results of GraphQL operations:
@@ -52,7 +51,7 @@ This query returns a `Book` object, which in turn includes an `Author` object. A
 
 A normalized cache does _not_ store this response directly. Instead, it breaks it up into the following entries by default:
 
-```json:title=Cache
+```json title="Cache"
 "favoriteBook": {"id": "bk123", "title": "Les guerriers du silence", "author": "ApolloCacheReference{favoriteBook.author}"
 "favoriteBook.author": {"id": "au456", "name": "Pierre Bordage"}
 "QUERY_ROOT": {"favoriteBook": "ApolloCacheReference{favoriteBook}"}
@@ -69,7 +68,7 @@ A normalized cache does _not_ store this response directly. Instead, it breaks i
 
 Apollo Kotlin's `MemoryCache` is a normalized, in-memory cache for storing objects from your GraphQL operations. To use it, first add the `apollo-normalized-cache` artifact to your dependencies in your `build.gradle[.kts]` file:
 
-```kotlin:title=build.gradle[.kts]
+```kotlin title="build.gradle[.kts]"
 dependencies {
   implementation("com.apollographql.apollo3:apollo-normalized-cache:3.1.0")
 }
@@ -77,7 +76,7 @@ dependencies {
 
 Then include the cache in your `ApolloClient` initialization, like so:
 
-```kotlin{1-2,6-7}
+```kotlin {1-2,6-7}
 // Creates a 10MB MemoryCacheFactory
 val cacheFactory = MemoryCacheFactory(maxSizeBytes = 10 * 1024 * 1024)
 // Build the ApolloClient
@@ -105,7 +104,7 @@ Apollo Kotlin's SQLite cache uses [SQLDelight](https://github.com/cashapp/sqldel
 
 To enable SQLite cache support, add the `apollo-normalized-cache-sqlite` dependency to your project's `build.gradle` file:
 
-```kotlin:title=build.gradle.kts
+```kotlin title="build.gradle.kts"
 dependencies {
   implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite:3.1.0")
 }
@@ -203,7 +202,7 @@ query GetFavoriteBook {
 }
 ```
 
-```json:title=Cache
+```json title="Cache"
 "favoriteBook": {"id": "bk123", "title": "Les guerriers du silence", "author": "ApolloCacheReference{favoriteBook.author}"
 "favoriteBook.author": {"id": "au456", "name": "Pierre Bordage"}
 "QUERY_ROOT": {"favoriteBook": "ApolloCacheReference{favoriteBook}"}
@@ -223,7 +222,7 @@ query AuthorById($id: String!) {
 
 After executing this query, our cache looks like this:
 
-```json{2-3}:title=Cache
+```json {2-3} title="Cache"
 "favoriteBook": {"id": "bk123", "title": "Les guerriers du silence", "author": "ApolloCacheReference{favoriteBook.author}"
 "favoriteBook.author": {"id": "au456", "name": "Pierre Bordage"}
 "author(\"id\": \"au456\")": {"id": "au456", "name": "Pierre Bordage"}
@@ -237,7 +236,7 @@ We're now caching two identical entries for the same `Author` object! This is un
 
 We want to deduplicate entries like these by making sure they're assigned the _same_ cache ID when they're written, resulting in a cache that looks more like this:
 
-```json:title=Cache
+```json title="Cache"
 "Book:bk123": {"id": "bk123", "title": "Les guerriers du silence", "author": "ApolloCacheReference{Author:au456}"
 "Author:au456": {"id": "au456", "name": "Pierre Bordage"}
 "QUERY_ROOT": {"favoriteBook": "ApolloCacheReference(Book:bk123)", "author(\"id\": \"au456\")": "ApolloCacheReference{Author:au456}"}

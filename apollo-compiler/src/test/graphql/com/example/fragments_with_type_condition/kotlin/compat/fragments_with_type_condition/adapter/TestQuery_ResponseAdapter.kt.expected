@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.json.readTypename
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
@@ -71,16 +72,12 @@ public object TestQuery_ResponseAdapter {
         }
       }
 
-      check(__typename != null) {
-        "__typename was not found"
-      }
-
       reader.rewind()
       val fragments = com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.R2.Fragments.fromJson(reader,
           customScalarAdapters)
 
       return TestQuery.R2(
-        __typename = __typename,
+        __typename = __typename!!,
         fragments = fragments
       )
     }
@@ -98,22 +95,12 @@ public object TestQuery_ResponseAdapter {
     }
 
     private object Fragments : Adapter<TestQuery.R2.Fragments> {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.R2.Fragments {
-        var __typename: String? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            else -> break
-          }
-        }
 
-        check(__typename != null) {
-          "__typename was not found"
-        }
+        reader.rewind()
+        val __typename = reader.readTypename()
 
         reader.rewind()
         var humanDetails: HumanDetails? = null
@@ -167,16 +154,12 @@ public object TestQuery_ResponseAdapter {
         }
       }
 
-      check(__typename != null) {
-        "__typename was not found"
-      }
-
       reader.rewind()
       val fragments = com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.Luke.Fragments.fromJson(reader,
           customScalarAdapters)
 
       return TestQuery.Luke(
-        __typename = __typename,
+        __typename = __typename!!,
         fragments = fragments
       )
     }
@@ -194,22 +177,12 @@ public object TestQuery_ResponseAdapter {
     }
 
     private object Fragments : Adapter<TestQuery.Luke.Fragments> {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Luke.Fragments {
-        var __typename: String? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            else -> break
-          }
-        }
 
-        check(__typename != null) {
-          "__typename was not found"
-        }
+        reader.rewind()
+        val __typename = reader.readTypename()
 
         reader.rewind()
         var humanDetails: HumanDetails? = null

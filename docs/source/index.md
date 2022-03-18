@@ -1,7 +1,6 @@
 ---
 title: Introduction to Apollo Kotlin
 description: A strongly-typed, caching GraphQL client for Java and Kotlin multiplatform
-sidebar_title: Introduction
 ---
 
 > 📣 **Apollo Kotlin 3 is generally available.** If you're using Apollo Android 2.x, see the [migration guide](./migration/3.0/). You can also [view the 2.x docs](https://www.apollographql.com/docs/kotlin/v2).
@@ -62,7 +61,7 @@ Here's the current matrix of supported features per platform:
 
 ## Getting started
 
-If you are new to GraphQL, check out [the tutorial](/tutorial/00-introduction/) that will guide you through building an Android app using Apollo, Kotlin and coroutines.
+If you are new to GraphQL, check out [the tutorial](./tutorial/00-introduction/) that will guide you through building an Android app using Apollo, Kotlin and coroutines.
 
 If you'd like to add Apollo Kotlin to an existing project, follow these steps:
 
@@ -131,7 +130,7 @@ Build your project. This will generate a `HeroQuery` class that you can use with
 
 * Execute your first [mutation](./essentials/mutations/)
 * Handle [custom scalar types](./essentials/custom-scalars/)
-* Factor common patterns using [fragments](./essentials/inline-fragments)
+* Factor common patterns using [fragments](./essentials/fragments/)
 
 ## Requirements
 
@@ -187,7 +186,7 @@ dependencies {
 
 Latest development changes are available in Sonatype's snapshots repository:
 
-```kotlin:title=build.gradle.kts
+```kotlin title="build.gradle.kts"
 repositories {
   maven {
     url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")

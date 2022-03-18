@@ -30,16 +30,12 @@ public object GetUser_ResponseAdapter {
         }
       }
 
-      check(__typename != null) {
-        "__typename was not found"
-      }
-
       reader.rewind()
       val queryFragment = com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.fromJson(reader,
           customScalarAdapters)
 
       return GetUser.Data(
-        __typename = __typename,
+        __typename = __typename!!,
         queryFragment = queryFragment
       )
     }

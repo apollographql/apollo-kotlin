@@ -3,7 +3,7 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.file
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.UNKNOWN__
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
@@ -21,7 +21,7 @@ import com.squareup.kotlinpoet.joinToCode
 class EnumAsEnumBuilder(
     private val context: KotlinContext,
     private val enum: IrEnum,
-) : CgOutputFileBuilder {
+) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
   private val simpleName = layout.enumName(name = enum.name)
@@ -95,7 +95,7 @@ class EnumAsEnumBuilder(
         .builder("safeValueOf")
         .addParameter("rawValue", String::
         class)
-        .returns(ClassName("", name))
+        .returns(ClassName("", simpleName))
         .addStatement("return values().find·{·it.rawValue·==·rawValue·} ?: $UNKNOWN__")
         .build()
   }

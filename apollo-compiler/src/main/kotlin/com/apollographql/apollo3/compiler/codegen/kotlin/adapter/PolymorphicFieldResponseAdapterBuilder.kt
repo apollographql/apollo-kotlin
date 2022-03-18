@@ -9,8 +9,8 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.reader
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.ir.IrModelGroup
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -40,9 +40,11 @@ class PolymorphicFieldResponseAdapterBuilder(
 
   private val implementationAdapterBuilders = implementations.map {
     ImplementationAdapterBuilder(
-        context,
-        it,
-        path
+        context = context,
+        model = it,
+        path = path,
+        addTypenameArgument = true,
+        public = true, // Should we switch to private here?
     )
   }
 
@@ -60,7 +62,7 @@ class PolymorphicFieldResponseAdapterBuilder(
   }
 
   override fun build(): List<TypeSpec> {
-    return listOf(typeSpec()) + implementationAdapterBuilders.map { it.build() }
+    return listOf(typeSpec()) + implementationAdapterBuilders.flatMap { it.build() }
   }
 
   private fun typeSpec(): TypeSpec {
@@ -71,15 +73,8 @@ class PolymorphicFieldResponseAdapterBuilder(
         .applyIf(!public) {
           addModifiers(KModifier.PRIVATE)
         }
-        .addProperty(responseNamesPropertySpec())
         .addFunction(readFromResponseFunSpec())
         .addFunction(writeToResponseFunSpec())
-        .build()
-  }
-
-  private fun responseNamesPropertySpec(): PropertySpec {
-    return PropertySpec.builder(Identifier.RESPONSE_NAMES, KotlinSymbols.List.parameterizedBy(KotlinSymbols.String))
-        .initializer("listOf(%S)", "__typename")
         .build()
   }
 
@@ -96,12 +91,7 @@ class PolymorphicFieldResponseAdapterBuilder(
   private fun readFromResponseCodeBlock(): CodeBlock {
     val builder = CodeBlock.builder()
 
-    builder.beginControlFlow("$reader.selectName(${Identifier.RESPONSE_NAMES}).also {")
-    builder.beginControlFlow("check(it == 0) {")
-    builder.addStatement("%S", "__typename not present in first position")
-    builder.endControlFlow()
-    builder.endControlFlow()
-    builder.addStatement("val $__typename = reader.nextString()!!")
+    builder.add(typenameFromReaderCodeBlock())
 
     builder.beginControlFlow("return when($__typename) {")
     implementations.sortedByDescending { it.typeSet.size }.forEach { model ->

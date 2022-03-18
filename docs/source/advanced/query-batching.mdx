@@ -10,7 +10,7 @@ Note that due to the waiting interval, batching adds some latency to operations.
 
 You enable batching when you initialize your `ApolloClient` instance, like so:
 
-```kotlin{3}
+```kotlin {3}
 val apolloClient = ApolloClient.Builder()
   .serverUrl("https://...")
   .httpBatching()
@@ -41,7 +41,7 @@ This is helpful if there's a particular operation that you always want to execut
 
 You can also require individual operations to _opt in_ to batching. To do so, you first call `canBeBatched(false)` while initializing your `ApolloClient` instance:
 
-```kotlin{4}
+```kotlin {4}
 val apolloClient = ApolloClient.Builder()
   .serverUrl("https://...")
   .httpBatching()

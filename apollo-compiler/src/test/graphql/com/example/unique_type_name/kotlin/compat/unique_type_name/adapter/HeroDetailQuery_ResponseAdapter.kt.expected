@@ -251,16 +251,12 @@ public object HeroDetailQuery_ResponseAdapter {
         }
       }
 
-      check(__typename != null) {
-        "__typename was not found"
-      }
-
       reader.rewind()
       val fragments = com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.Friend1.Fragments.fromJson(reader,
           customScalarAdapters)
 
       return com.example.unique_type_name.HeroDetailQuery.Friend1(
-        __typename = __typename,
+        __typename = __typename!!,
         fragments = fragments
       )
     }
@@ -279,22 +275,9 @@ public object HeroDetailQuery_ResponseAdapter {
 
     private object Fragments :
         Adapter<com.example.unique_type_name.HeroDetailQuery.Friend1.Fragments> {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.unique_type_name.HeroDetailQuery.Friend1.Fragments {
-        var __typename: String? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            else -> break
-          }
-        }
-
-        check(__typename != null) {
-          "__typename was not found"
-        }
 
         reader.rewind()
         val heroDetails = com.example.unique_type_name.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,

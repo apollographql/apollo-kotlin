@@ -209,16 +209,12 @@ public object HeroDetailsImpl_ResponseAdapter {
           }
         }
 
-        check(__typename != null) {
-          "__typename was not found"
-        }
-
         reader.rewind()
         val droidDetails = com.example.fragment_with_inline_fragment.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
             customScalarAdapters)
 
         return com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid(
-          __typename = __typename,
+          __typename = __typename!!,
           droidDetails = droidDetails
         )
       }

@@ -19,7 +19,7 @@ class GradleBuildCacheTests {
       File(System.getProperty("user.dir"), "testProjects/buildCache").copyRecursively(project1)
       File(System.getProperty("user.dir"), "testProjects/buildCache").copyRecursively(project2)
 
-      File(project2, "build.gradle.kts").replaceInText("../../../../", "../../../../../")
+      File(project2, "build.gradle.kts").replaceInText("../../..", "../../../..")
       File(project2, "settings.gradle.kts").replaceInText("../buildCache", "../../buildCache")
 
       println("Generate sources project1")

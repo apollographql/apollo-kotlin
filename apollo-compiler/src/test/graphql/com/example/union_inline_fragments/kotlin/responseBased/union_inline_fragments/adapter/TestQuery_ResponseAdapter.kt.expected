@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.json.readTypename
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
@@ -52,16 +53,9 @@ public object TestQuery_ResponseAdapter {
     }
 
     private object Search : Adapter<TestQuery.Data.Search> {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Search {
-        reader.selectName(RESPONSE_NAMES).also {
-          check(it == 0) {
-            "__typename not present in first position"
-          }
-        }
-        val __typename = reader.nextString()!!
+        val __typename = reader.readTypename()
         return when(__typename) {
           "Droid",
           "Human",
@@ -140,16 +134,9 @@ public object TestQuery_ResponseAdapter {
       }
 
       private object Friend : Adapter<TestQuery.Data.CharacterSearch.Friend> {
-        public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.CharacterSearch.Friend {
-          reader.selectName(RESPONSE_NAMES).also {
-            check(it == 0) {
-              "__typename not present in first position"
-            }
-          }
-          val __typename = reader.nextString()!!
+          val __typename = reader.readTypename()
           return when(__typename) {
             "Human",
             -> HumanFriend.fromJson(reader, customScalarAdapters, __typename)

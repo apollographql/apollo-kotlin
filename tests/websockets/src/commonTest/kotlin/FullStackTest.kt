@@ -21,5 +21,7 @@ class FullStackTest {
         .collect {
           println("trips booked: ${it.data?.tripsBooked}")
         }
+
+    apolloClient.dispose()
   }
 }

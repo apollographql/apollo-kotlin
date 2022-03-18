@@ -2,9 +2,9 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
-import com.apollographql.apollo3.compiler.codegen.kotlin.CgOutputFileBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.ir.IrInterface
 import com.apollographql.apollo3.compiler.ir.IrObject
 import com.apollographql.apollo3.compiler.ir.IrUnion
@@ -21,7 +21,7 @@ class SchemaBuilder(
     private val objects: List<IrObject>,
     private val interfaces: List<IrInterface>,
     private val unions: List<IrUnion>,
-) : CgOutputFileBuilder {
+) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
 

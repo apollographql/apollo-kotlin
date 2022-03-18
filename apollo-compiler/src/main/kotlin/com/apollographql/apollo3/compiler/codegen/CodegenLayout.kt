@@ -20,7 +20,8 @@ abstract class CodegenLayout(
     private val packageNameGenerator: PackageNameGenerator,
     private val schemaPackageName: String,
     private val useSemanticNaming: Boolean,
-    private val useSchemaPackageNameForFragments: Boolean
+    private val useSchemaPackageNameForFragments: Boolean,
+    private val nameToClassName: (String) -> String,
 ) {
   private val typePackageName = "$schemaPackageName.type"
 
@@ -51,9 +52,9 @@ abstract class CodegenLayout(
 
   // ------------------------ Names ---------------------------------
 
-  internal fun compiledTypeName(name: String) = capitalizedIdentifier(name)
+  internal fun compiledTypeName(name: String) = capitalizedIdentifier(nameToClassName(name))
 
-  internal fun enumName(name: String) = regularIdentifier(name)
+  internal fun enumName(name: String) = regularIdentifier(nameToClassName(name))
 
   internal fun enumResponseAdapterName(name: String) = enumName(name) + "_ResponseAdapter"
 
@@ -81,8 +82,8 @@ abstract class CodegenLayout(
   internal fun fragmentVariablesAdapterName(name: String) = fragmentName(name) + "_VariablesAdapter"
   internal fun fragmentSelectionsName(name: String) = regularIdentifier(name) + "Selections"
 
-  internal fun inputObjectName(name: String) = capitalizedIdentifier(name)
-  internal fun inputObjectAdapterName(name: String) = capitalizedIdentifier(name) + "_InputAdapter"
+  internal fun inputObjectName(name: String) = capitalizedIdentifier(nameToClassName(name))
+  internal fun inputObjectAdapterName(name: String) = inputObjectName(name) + "_InputAdapter"
 
   // variables keep the same case as their declared name
   internal fun variableName(name: String) = regularIdentifier(name)
@@ -92,7 +93,8 @@ abstract class CodegenLayout(
 
   abstract fun escapeReservedWord(word: String): String
 
-  internal fun regularIdentifier(name: String) = escapeReservedWord(name)
+  protected fun regularIdentifier(name: String) = escapeReservedWord(name)
+
   private fun capitalizedIdentifier(name: String): String {
     return escapeReservedWord(name.capitalizeFirstLetter())
   }

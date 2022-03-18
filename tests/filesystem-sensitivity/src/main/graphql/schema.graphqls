@@ -1,0 +1,19 @@
+type Query {
+  field(Foo: Foo, FOO: FOO, foo: foo, url: url, URL: URL,): Int!
+}
+
+scalar url
+scalar URL
+
+enum Foo {
+  Value1,
+  Value2
+}
+
+enum foo {
+  Value1,
+  Value2
+}
+input FOO {
+  field: String
+}

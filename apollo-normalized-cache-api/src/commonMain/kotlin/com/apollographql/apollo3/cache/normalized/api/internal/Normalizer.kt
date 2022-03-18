@@ -71,7 +71,7 @@ internal class Normalizer(
 
           val fieldKey = mergedField.nameWithArguments(variables)
 
-          val base = if (key == rootKey) {
+          val base = if (key == CacheKey.rootKey().key) {
             // If we're at the root level, skip `QUERY_ROOT` altogether to save a few bytes
             null
           } else {

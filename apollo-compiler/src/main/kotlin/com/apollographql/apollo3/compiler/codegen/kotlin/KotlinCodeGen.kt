@@ -26,6 +26,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.file.SchemaBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.TestBuildersBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.UnionBuilder
 import com.apollographql.apollo3.compiler.ir.Ir
+import com.apollographql.apollo3.compiler.maybeMakeNamesUnique
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
 import com.squareup.kotlinpoet.FileSpec
@@ -62,6 +63,8 @@ class KotlinCodeGen(
     private val sealedClassesForEnumsMatching: List<String>,
     private val targetLanguageVersion: TargetLanguage,
     private val scalarMapping: Map<String, ScalarInfo>,
+    private val nameToClassName: Map<String, String>,
+    private val addJvmOverloads: Boolean,
 ) {
   /**
    * @param outputDir: the directory where to write the Kotlin files
@@ -76,7 +79,8 @@ class KotlinCodeGen(
         useSemanticNaming = useSemanticNaming,
         packageNameGenerator = packageNameGenerator,
         schemaPackageName = schemaPackageName,
-        useSchemaPackageNameForFragments = useSchemaPackageNameForFragments
+        useSchemaPackageNameForFragments = useSchemaPackageNameForFragments,
+        nameToClassName = { nameToClassName[it] ?: error("unknown schema type: $it") }
     )
 
     val context = KotlinContext(
@@ -148,6 +152,7 @@ class KotlinCodeGen(
                     generateFilterNotNull,
                     fragment,
                     flatten,
+                    addJvmOverloads,
                 )
             )
             if (fragment.variables.isNotEmpty()) {
@@ -163,7 +168,7 @@ class KotlinCodeGen(
           }
 
           builders.add(OperationSelectionsBuilder(context, operation, ir.schema, ir.allFragmentDefinitions))
-          builders.add(OperationResponseAdapterBuilder(context, operation, flatten,))
+          builders.add(OperationResponseAdapterBuilder(context, operation, flatten))
 
           builders.add(
               OperationBuilder(
@@ -173,6 +178,7 @@ class KotlinCodeGen(
                   generateQueryDocument,
                   operation,
                   flatten,
+                  addJvmOverloads,
               )
           )
 
@@ -192,11 +198,16 @@ class KotlinCodeGen(
       builders.add(SchemaBuilder(context, generatedSchemaName, ir.objects, ir.interfaces, ir.unions))
     }
 
+    /**
+     * 1st pass: call prepare on all builders
+     */
     builders.forEach { it.prepare() }
-    builders
-        .forEach { cgFileBuilder ->
-          val cgFile = cgFileBuilder.build()
 
+    /**
+     * 2nd pass: build the [CgFile]s
+     */
+    builders.map { it.build() }
+        .forEach { cgFile ->
           val builder = FileSpec.builder(
               packageName = cgFile.packageName,
               fileName = cgFile.fileName
@@ -214,10 +225,12 @@ class KotlinCodeGen(
             builder.addType(typeSpec)
           }
 
-          val dir = when(cgFileBuilder) {
-            is CgOutputFileBuilder -> outputDir
-            is CgTestFileBuilder ->testDir
+          val dir = if (cgFile.isTest) {
+            testDir
+          } else {
+            outputDir
           }
+
           builder
               .build()
               .writeTo(dir)

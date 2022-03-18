@@ -17,10 +17,16 @@ import com.example.fragment_used_twice.fragment.HeroDetails
 import com.example.fragment_used_twice.fragment.HumanDetails
 import com.example.fragment_used_twice.selections.TestQuerySelections
 import kotlin.Any
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlin.Unit
 
 public class TestQuery() : Query<TestQuery.Data> {
+  public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
+
+  public override fun hashCode(): Int = this::class.hashCode()
+
   public override fun id(): String = OPERATION_ID
 
   public override fun document(): String = OPERATION_DOCUMENT

@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.json.readTypename
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.obj
 import com.example.inline_fragment_intersection.TestOperation
@@ -54,16 +55,9 @@ public object TestOperation_ResponseAdapter {
     }
 
     private object Random : Adapter<TestOperation.Data.Random> {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestOperation.Data.Random {
-        reader.selectName(RESPONSE_NAMES).also {
-          check(it == 0) {
-            "__typename not present in first position"
-          }
-        }
-        val __typename = reader.nextString()!!
+        val __typename = reader.readTypename()
         return when(__typename) {
           "Human",
           -> BeingHumanRandom.fromJson(reader, customScalarAdapters, __typename)
@@ -141,17 +135,10 @@ public object TestOperation_ResponseAdapter {
       }
 
       private object Friend : Adapter<TestOperation.Data.BeingHumanRandom.Friend> {
-        public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters):
             TestOperation.Data.BeingHumanRandom.Friend {
-          reader.selectName(RESPONSE_NAMES).also {
-            check(it == 0) {
-              "__typename not present in first position"
-            }
-          }
-          val __typename = reader.nextString()!!
+          val __typename = reader.readTypename()
           return when(__typename) {
             "Wookie",
             -> WookieFriend.fromJson(reader, customScalarAdapters, __typename)
@@ -326,17 +313,10 @@ public object TestOperation_ResponseAdapter {
       }
 
       private object Friend : Adapter<TestOperation.Data.BeingWookieRandom.Friend> {
-        public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters):
             TestOperation.Data.BeingWookieRandom.Friend {
-          reader.selectName(RESPONSE_NAMES).also {
-            check(it == 0) {
-              "__typename not present in first position"
-            }
-          }
-          val __typename = reader.nextString()!!
+          val __typename = reader.readTypename()
           return when(__typename) {
             "Wookie",
             -> WookieFriend.fromJson(reader, customScalarAdapters, __typename)

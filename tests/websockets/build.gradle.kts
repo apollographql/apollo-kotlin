@@ -6,6 +6,17 @@ plugins {
 configureMppTestsDefaults()
 
 kotlin {
+  js {
+    nodejs {
+      testTask {
+        useMocha {
+          // Override default timeout (needed for tests like FullStackTest that require interacting with the backend manually)
+          timeout = "120s"
+        }
+      }
+    }
+  }
+
   sourceSets {
     val commonMain by getting {
       dependencies {

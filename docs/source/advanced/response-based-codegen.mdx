@@ -1,6 +1,5 @@
 ---
 title: Code generation methods in Apollo Kotlin
-sidebar_title: Codegen methods
 ---
 
 Apollo Kotlin provides multiple code generation engines (**codegens**) that you can choose from depending on your use case:
@@ -17,7 +16,7 @@ Apollo Kotlin provides multiple code generation engines (**codegens**) that you 
 
 To use a particular codegen, configure `codegenModels` in your Gradle scripts:
 
-```kotlin:title=build.gradle.kts
+```kotlin title="build.gradle.kts"
 apollo {
     // ...
     codegenModels.set("responseBased")
@@ -39,7 +38,7 @@ Let's look at examples using fragments to highlight some of these differences.
 
 Consider this query:
 
-```graphql{4-9}:title=HeroQuery.graphql
+```graphql {4-9} title="HeroQuery.graphql"
 query HeroForEpisode($ep: Episode!) {
   hero(episode: $ep) {
     name
@@ -86,7 +85,7 @@ val height = hero2.asHuman().height
 
 Consider this example:
 
-```graphql{9-15}:title=HeroQuery.graphql
+```graphql {9-15} title="HeroQuery.graphql"
 query HeroForEpisode($ep: Episode!) {
     hero(episode: $ep) {
         name
@@ -119,7 +118,7 @@ interface HumanFields {
 These interfaces are implemented by subclasses of the generated `HeroForEpisodeQuery.Data.Hero` (and other models for any operations using
 these fragments):
 
-```kotlin:title=HeroForEpisodeQuery.kt
+```kotlin title="HeroForEpisodeQuery.kt"
 interface Hero {
   val name: String
 }

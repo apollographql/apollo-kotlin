@@ -19,6 +19,7 @@ internal object Identifier {
   const val serializeVariables = "serializeVariables"
   const val fields = "fields"
   const val rootField = "rootField"
+
   @Suppress("ObjectPropertyName")
   const val __typename = "__typename"
   const val typename = "typename"
@@ -29,6 +30,8 @@ internal object Identifier {
   const val root = "root"
   const val selections = "selections"
   const val document = "document"
+  const val equals = "equals"
+  const val hashCode = "hashCode"
   const val Data = "Data"
 
   const val cacheKeyForObject = "cacheKeyForObject"
@@ -46,6 +49,7 @@ internal object Identifier {
    */
   const val safeValueOf = "safeValueOf"
   const val knownValues = "knownValues"
+
   // extra underscores at the end to prevent potential name clashes
   const val UNKNOWN__ = "UNKNOWN__"
   const val rawValue = "rawValue"

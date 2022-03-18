@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.json.readTypename
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
@@ -62,16 +63,12 @@ public object AFragmentImpl_ResponseAdapter {
         }
       }
 
-      check(__typename != null) {
-        "__typename was not found"
-      }
-
       reader.rewind()
       val fragments = com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.Node.Fragments.fromJson(reader,
           customScalarAdapters)
 
       return com.example.multiple_fragments.fragment.AFragment.Node(
-        __typename = __typename,
+        __typename = __typename!!,
         fragments = fragments
       )
     }
@@ -90,22 +87,12 @@ public object AFragmentImpl_ResponseAdapter {
 
     private object Fragments :
         Adapter<com.example.multiple_fragments.fragment.AFragment.Node.Fragments> {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename")
-
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.multiple_fragments.fragment.AFragment.Node.Fragments {
-        var __typename: String? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            else -> break
-          }
-        }
 
-        check(__typename != null) {
-          "__typename was not found"
-        }
+        reader.rewind()
+        val __typename = reader.readTypename()
 
         reader.rewind()
         var fragment1: Fragment1? = null
