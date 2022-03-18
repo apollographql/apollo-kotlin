@@ -104,7 +104,7 @@ object ApolloCompiler {
     /**
      * Step 3, Modify the AST to add typename and key fields
      */
-    val fragmentDefinitions =  (definitions.filterIsInstance<GQLFragmentDefinition>() + incomingFragments).associateBy { it.name }
+    val fragmentDefinitions = (definitions.filterIsInstance<GQLFragmentDefinition>() + incomingFragments).associateBy { it.name }
     val fragments = definitions.filterIsInstance<GQLFragmentDefinition>().map {
       addRequiredFields(it, options.addTypename, options.schema, fragmentDefinitions)
     }
