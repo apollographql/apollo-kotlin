@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.Fragment
 import kotlin.String
 
 public data class CharacterName(
+  public val __typename: String,
   /**
    * The name of the character
    */

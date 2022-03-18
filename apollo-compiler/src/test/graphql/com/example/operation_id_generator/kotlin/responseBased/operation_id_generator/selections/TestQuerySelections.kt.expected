@@ -16,6 +16,10 @@ import kotlin.collections.List
 public object TestQuerySelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
+          name = "__typename",
+          type = GraphQLString.type.notNull()
+        ).build(),
+        CompiledField.Builder(
           name = "id",
           type = GraphQLID.type.notNull()
         ).build(),

@@ -119,21 +119,24 @@ public object HumanDetailsImpl_ResponseAdapter {
         }
 
         private object Node : Adapter<HumanDetailsImpl.Data.FriendsConnection.Edge.Node> {
-          public val RESPONSE_NAMES: List<String> = listOf("name")
+          public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
           public override fun fromJson(reader: JsonReader,
               customScalarAdapters: CustomScalarAdapters):
               HumanDetailsImpl.Data.FriendsConnection.Edge.Node {
+            var __typename: String? = null
             var name: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+                1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
 
             return HumanDetailsImpl.Data.FriendsConnection.Edge.Node(
+              __typename = __typename!!,
               name = name!!
             )
           }
@@ -143,6 +146,9 @@ public object HumanDetailsImpl_ResponseAdapter {
             customScalarAdapters: CustomScalarAdapters,
             `value`: HumanDetailsImpl.Data.FriendsConnection.Edge.Node
           ): Unit {
+            writer.name("__typename")
+            StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
             writer.name("name")
             StringAdapter.toJson(writer, customScalarAdapters, value.name)
           }

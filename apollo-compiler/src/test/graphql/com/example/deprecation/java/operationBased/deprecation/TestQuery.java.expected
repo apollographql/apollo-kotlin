@@ -24,7 +24,7 @@ import java.lang.Override;
 import java.lang.String;
 
 public class TestQuery implements Query<TestQuery.Data> {
-  public static final String OPERATION_ID = "6a8dd101c1681dc829d72040868fdf394c52bacb692da3549bc73e9504013470";
+  public static final String OPERATION_ID = "8f4a8c01b4bf0eb76356829f8062621ff66c3b53b6bf92753661cca41ef3ade4";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -32,13 +32,14 @@ public class TestQuery implements Query<TestQuery.Data> {
    *
    * query TestQuery($episode: Episode) {
    *   hero(episode: $episode) {
+   *     __typename
    *     name
    *     deprecated
    *     deprecatedBool
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery($episode: Episode) { hero(episode: $episode) { name deprecated deprecatedBool } }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery($episode: Episode) { hero(episode: $episode) { __typename name deprecated deprecatedBool } }";
 
   public static final String OPERATION_NAME = "TestQuery";
 
@@ -173,6 +174,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Hero {
+    public String __typename;
+
     /**
      * The name of the character
      */
@@ -198,7 +201,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(String name, String deprecated, Boolean deprecatedBool) {
+    public Hero(String __typename, String name, String deprecated, Boolean deprecatedBool) {
+      this.__typename = __typename;
       this.name = name;
       this.deprecated = deprecated;
       this.deprecatedBool = deprecatedBool;
@@ -211,7 +215,8 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof Hero) {
         Hero that = (Hero) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.name == null) ? (that.name == null) : this.name.equals(that.name))
          &&((this.deprecated == null) ? (that.deprecated == null) : this.deprecated.equals(that.deprecated))
          &&((this.deprecatedBool == null) ? (that.deprecatedBool == null) : this.deprecatedBool.equals(that.deprecatedBool));
       }
@@ -222,6 +227,8 @@ public class TestQuery implements Query<TestQuery.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         h *= 1000003;
@@ -238,6 +245,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Hero{"
+          + "__typename=" + __typename + ", "
           + "name=" + name + ", "
           + "deprecated=" + deprecated + ", "
           + "deprecatedBool=" + deprecatedBool

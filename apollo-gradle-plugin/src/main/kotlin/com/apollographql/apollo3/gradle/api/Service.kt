@@ -436,12 +436,10 @@ interface Service {
   val codegenModels: Property<String>
 
   /**
-   * When to add __typename. One of "ifFragments" or "ifPolymorphic"
+   * When to add __typename. One of "ifFragments", "ifAbstract" or "ifPolymorphic"
    *
-   * Default value: "ifPolymorphic"
+   * Default value: "ifAbstract"
    */
-  @Deprecated("This is used during the transition to ifPolymorphic and will be eventually removed")
-  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_1_1)
   val addTypename: Property<String>
 
   /**

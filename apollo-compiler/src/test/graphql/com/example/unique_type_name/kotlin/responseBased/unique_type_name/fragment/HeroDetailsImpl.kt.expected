@@ -42,6 +42,7 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
   .build()
 
   public data class Data(
+    public override val __typename: String,
     /**
      * The name of the character
      */
@@ -70,6 +71,7 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
         public override val node: Node?
       ) : HeroDetails.FriendsConnection.Edge {
         public data class Node(
+          public override val __typename: String,
           /**
            * The name of the character
            */

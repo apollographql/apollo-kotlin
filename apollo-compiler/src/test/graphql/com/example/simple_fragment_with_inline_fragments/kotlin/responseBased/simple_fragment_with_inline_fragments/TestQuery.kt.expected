@@ -53,6 +53,7 @@ public class TestQuery() : Query<TestQuery.Data> {
     public val hero: Hero?
   ) : Query.Data {
     public data class Hero(
+      public override val __typename: String,
       /**
        * The name of the character
        */
@@ -119,7 +120,7 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "0cb9da751a31418c7f299897275b5ac6dc633d204f8fa0c462d20f0575370223"
+        "2e03099e987360fde4cb351ec8abd57db53e5e1bfabb4efb9e31f4fcf8555168"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -127,11 +128,13 @@ public class TestQuery() : Query<TestQuery.Data> {
      *
      * query TestQuery {
      *   hero {
+     *     __typename
      *     ...HeroDetails
      *   }
      * }
      *
      * fragment HeroDetails on Character {
+     *   __typename
      *   name
      *   friends {
      *     __typename
@@ -146,7 +149,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query TestQuery { hero { ...HeroDetails } }  fragment HeroDetails on Character { name friends { __typename name ... on Human { height } ... on Droid { primaryFunction } } }"
+        "query TestQuery { hero { __typename ...HeroDetails } }  fragment HeroDetails on Character { __typename name friends { __typename name ... on Human { height } ... on Droid { primaryFunction } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

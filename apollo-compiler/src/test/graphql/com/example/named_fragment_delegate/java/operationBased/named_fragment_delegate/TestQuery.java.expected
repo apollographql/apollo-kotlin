@@ -21,7 +21,7 @@ import java.lang.Override;
 import java.lang.String;
 
 public class TestQuery implements Query<TestQuery.Data> {
-  public static final String OPERATION_ID = "73b2c830dc5cf246957890f00500cb83e254c050a6e6ad3ab8e6d9e4e26dbd60";
+  public static final String OPERATION_ID = "2a899639bd451a2ce7f21eeee61dccc0865bef0e129ccaf6b0829d55e21c24f6";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -39,6 +39,7 @@ public class TestQuery implements Query<TestQuery.Data> {
    *   name
    *   primaryFunction
    *   friends {
+   *     __typename
    *     name
    *   }
    * }
@@ -49,13 +50,14 @@ public class TestQuery implements Query<TestQuery.Data> {
    *   friendsConnection {
    *     edges {
    *       node {
+   *         __typename
    *         name
    *       }
    *     }
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery { hero { __typename ...DroidDetails ...HumanDetails } }  fragment DroidDetails on Droid { name primaryFunction friends { name } }  fragment HumanDetails on Human { name profileLink friendsConnection { edges { node { name } } } }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery { hero { __typename ...DroidDetails ...HumanDetails } }  fragment DroidDetails on Droid { name primaryFunction friends { __typename name } }  fragment HumanDetails on Human { name profileLink friendsConnection { edges { node { __typename name } } } }";
 
   public static final String OPERATION_NAME = "TestQuery";
 

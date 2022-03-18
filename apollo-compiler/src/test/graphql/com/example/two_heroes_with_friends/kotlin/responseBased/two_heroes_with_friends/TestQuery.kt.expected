@@ -52,6 +52,7 @@ public class TestQuery() : Query<TestQuery.Data> {
     public val luke: Luke?
   ) : Query.Data {
     public data class R2(
+      public val __typename: String,
       /**
        * The name of the character
        */
@@ -80,6 +81,7 @@ public class TestQuery() : Query<TestQuery.Data> {
           public val node: Node?
         ) {
           public data class Node(
+            public val __typename: String,
             /**
              * The name of the character
              */
@@ -90,6 +92,7 @@ public class TestQuery() : Query<TestQuery.Data> {
     }
 
     public data class Luke(
+      public val __typename: String,
       /**
        * The ID of the character
        */
@@ -122,6 +125,7 @@ public class TestQuery() : Query<TestQuery.Data> {
           public val node: Node?
         ) {
           public data class Node(
+            public val __typename: String,
             /**
              * The name of the character
              */
@@ -134,7 +138,7 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "28b644b6fcd59e0677f51136035c5fc1deb6419f12b819bff2e6bf4c5f659916"
+        "176af87da046a31397a764485fd36894e0aa761a90471ab308c0f73b4f470e04"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -142,23 +146,27 @@ public class TestQuery() : Query<TestQuery.Data> {
      *
      * query TestQuery {
      *   r2: hero {
+     *     __typename
      *     name
      *     friendsConnection {
      *       totalCount
      *       edges {
      *         node {
+     *           __typename
      *           name
      *         }
      *       }
      *     }
      *   }
      *   luke: hero(episode: EMPIRE) {
+     *     __typename
      *     id
      *     name
      *     friendsConnection {
      *       totalCount
      *       edges {
      *         node {
+     *           __typename
      *           name
      *         }
      *       }
@@ -167,7 +175,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query TestQuery { r2: hero { name friendsConnection { totalCount edges { node { name } } } } luke: hero(episode: EMPIRE) { id name friendsConnection { totalCount edges { node { name } } } } }"
+        "query TestQuery { r2: hero { __typename name friendsConnection { totalCount edges { node { __typename name } } } } luke: hero(episode: EMPIRE) { __typename id name friendsConnection { totalCount edges { node { __typename name } } } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

@@ -22,7 +22,7 @@ import java.lang.String;
 import java.util.List;
 
 public class TestQuery implements Query<TestQuery.Data> {
-  public static final String OPERATION_ID = "dcc19f08df9030a7cbad59420a3e74b43c17498187c99a1a533ccb9c44b7583b";
+  public static final String OPERATION_ID = "0ac19751dbfbe43cb3f2d94f9fc69da1b1c2b79583ad7b5d1a19882acdae8ee9";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -57,13 +57,14 @@ public class TestQuery implements Query<TestQuery.Data> {
    *     totalCount
    *     edges {
    *       node {
+   *         __typename
    *         name
    *       }
    *     }
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery { hero { __typename name ...HeroDetails appearsIn } }  fragment HumanDetails on Human { name }  fragment DroidDetails on Droid { name primaryFunction }  fragment HeroDetails on Character { __typename ...HumanDetails ... on Droid { ...DroidDetails } name friendsConnection { totalCount edges { node { name } } } }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery { hero { __typename name ...HeroDetails appearsIn } }  fragment HumanDetails on Human { name }  fragment DroidDetails on Droid { name primaryFunction }  fragment HeroDetails on Character { __typename ...HumanDetails ... on Droid { ...DroidDetails } name friendsConnection { totalCount edges { node { __typename name } } } }";
 
   public static final String OPERATION_NAME = "TestQuery";
 

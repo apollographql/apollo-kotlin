@@ -20,7 +20,7 @@ import java.lang.Override;
 import java.lang.String;
 
 public class CatQuery implements Query<CatQuery.Data> {
-  public static final String OPERATION_ID = "1339b44a5c30437b050faa2883275f02a22fffe77aa08983f50bccdab674d7ed";
+  public static final String OPERATION_ID = "bf375798e3fa2a4145a51cd4bb5a3057e2e1575f6cb07f31ba6429e977a27919";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -28,7 +28,6 @@ public class CatQuery implements Query<CatQuery.Data> {
    *
    * query CatQuery {
    *   cat {
-   *     __typename
    *     ...AnimalFragment
    *   }
    * }
@@ -43,7 +42,7 @@ public class CatQuery implements Query<CatQuery.Data> {
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query CatQuery { cat { __typename ...AnimalFragment } }  fragment AnimalFragment on Animal { __typename ... on Cat { name } ... on Dog { name } }";
+  public static final String OPERATION_DOCUMENT = "query CatQuery { cat { ...AnimalFragment } }  fragment AnimalFragment on Animal { __typename ... on Cat { name } ... on Dog { name } }";
 
   public static final String OPERATION_NAME = "CatQuery";
 
@@ -172,8 +171,6 @@ public class CatQuery implements Query<CatQuery.Data> {
   }
 
   public static class Cat {
-    public String __typename;
-
     /**
      * Synthetic field for 'AnimalFragment'
      */
@@ -185,8 +182,7 @@ public class CatQuery implements Query<CatQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Cat(String __typename, AnimalFragment animalFragment) {
-      this.__typename = __typename;
+    public Cat(AnimalFragment animalFragment) {
       this.animalFragment = animalFragment;
     }
 
@@ -197,8 +193,7 @@ public class CatQuery implements Query<CatQuery.Data> {
       }
       if (o instanceof Cat) {
         Cat that = (Cat) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.animalFragment == null) ? (that.animalFragment == null) : this.animalFragment.equals(that.animalFragment));
+        return ((this.animalFragment == null) ? (that.animalFragment == null) : this.animalFragment.equals(that.animalFragment));
       }
       return false;
     }
@@ -207,8 +202,6 @@ public class CatQuery implements Query<CatQuery.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (animalFragment == null) ? 0 : animalFragment.hashCode();
         $hashCode = h;
@@ -221,7 +214,6 @@ public class CatQuery implements Query<CatQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Cat{"
-          + "__typename=" + __typename + ", "
           + "animalFragment=" + animalFragment
           + "}";
       }

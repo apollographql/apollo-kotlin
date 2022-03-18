@@ -22,7 +22,7 @@ import java.lang.Override;
 import java.lang.String;
 
 public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName implements Query<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data> {
-  public static final String OPERATION_ID = "164dc148c38451cf968e075d4fd3114b0e03f4e5d8e126be67cf7156ef4cda9c";
+  public static final String OPERATION_ID = "6cf42f0449039e384d15a5d7d11c379b685940aeae503276ec8cd0a282bf669b";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -30,11 +30,12 @@ public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVer
    *
    * query TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName($episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName: Episode) {
    *   heroAVeryAVeryAVeryAVeryAVeryAVeryAV: hero(episode: $episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName) {
+   *     __typename
    *     nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName: name
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName($episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName: Episode) { heroAVeryAVeryAVeryAVeryAVeryAVeryAV: hero(episode: $episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName) { nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName: name } }";
+  public static final String OPERATION_DOCUMENT = "query TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName($episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName: Episode) { heroAVeryAVeryAVeryAVeryAVeryAVeryAV: hero(episode: $episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName) { __typename nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName: name } }";
 
   public static final String OPERATION_NAME = "TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName";
 
@@ -170,6 +171,8 @@ public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVer
   }
 
   public static class HeroAVeryAVeryAVeryAVeryAVeryAVeryAV {
+    public String __typename;
+
     /**
      * The name of the character
      */
@@ -181,8 +184,9 @@ public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVer
 
     private transient volatile String $toString;
 
-    public HeroAVeryAVeryAVeryAVeryAVeryAVeryAV(
+    public HeroAVeryAVeryAVeryAVeryAVeryAVeryAV(String __typename,
         String nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName) {
+      this.__typename = __typename;
       this.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName;
     }
 
@@ -193,7 +197,8 @@ public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVer
       }
       if (o instanceof HeroAVeryAVeryAVeryAVeryAVeryAVeryAV) {
         HeroAVeryAVeryAVeryAVeryAVeryAVeryAV that = (HeroAVeryAVeryAVeryAVeryAVeryAVeryAV) o;
-        return ((this.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName == null) ? (that.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName == null) : this.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.equals(that.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName == null) ? (that.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName == null) : this.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.equals(that.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName));
       }
       return false;
     }
@@ -202,6 +207,8 @@ public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVer
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName == null) ? 0 : nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.hashCode();
         $hashCode = h;
@@ -214,6 +221,7 @@ public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVer
     public String toString() {
       if ($toString == null) {
         $toString = "HeroAVeryAVeryAVeryAVeryAVeryAVeryAV{"
+          + "__typename=" + __typename + ", "
           + "nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName=" + nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName
           + "}";
       }

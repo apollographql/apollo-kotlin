@@ -67,15 +67,25 @@ public object QueryFragmentImpl_ResponseAdapter {
 
     private object Hero :
         Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero> {
+      public val RESPONSE_NAMES: List<String> = listOf("__typename")
+
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero {
+        var __typename: String? = null
 
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            else -> break
+          }
+        }
 
         reader.rewind()
         val heroFragment = com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.fromJson(reader,
             customScalarAdapters)
 
         return com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero(
+          __typename = __typename!!,
           heroFragment = heroFragment
         )
       }
@@ -85,6 +95,9 @@ public object QueryFragmentImpl_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         `value`: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero
       ): Unit {
+        writer.name("__typename")
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
         com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.toJson(writer,
             customScalarAdapters, value.heroFragment)
       }

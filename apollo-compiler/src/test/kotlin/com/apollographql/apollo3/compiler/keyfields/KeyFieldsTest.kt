@@ -1,10 +1,13 @@
 package com.apollographql.apollo3.compiler.keyfields
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLOperationDefinition
 import com.apollographql.apollo3.ast.checkKeyFields
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.transformation.addRequiredFields
+import com.apollographql.apollo3.compiler.ADD_TYPENAME_IF_ABSTRACT
+import com.apollographql.apollo3.compiler.Options.Companion.defaultAddTypename
 import com.apollographql.apollo3.compiler.introspection.toSchema
 import okio.buffer
 import okio.source
@@ -18,16 +21,20 @@ class KeyFieldsTest {
   fun test() {
     val schema = File("src/test/kotlin/com/apollographql/apollo3/compiler/keyfields/schema.graphqls").toSchema()
 
-    val operation = File("src/test/kotlin/com/apollographql/apollo3/compiler/keyfields/operations.graphql")
+    val definitions = File("src/test/kotlin/com/apollographql/apollo3/compiler/keyfields/operations.graphql")
         .source()
         .buffer()
         .parseAsGQLDocument()
         .valueAssertNoErrors()
         .definitions
+
+    val fragments = definitions.filterIsInstance<GQLFragmentDefinition>().associateBy { it.name }
+
+    val operation = definitions
         .filterIsInstance<GQLOperationDefinition>()
         .first()
         .let {
-          addRequiredFields(it, schema)
+          addRequiredFields(it, defaultAddTypename, schema, fragments)
         }
 
     try {

@@ -18,6 +18,10 @@ import kotlin.collections.List
 public object GetPageSelections {
   private val items: List<CompiledSelection> = listOf(
         CompiledField.Builder(
+          name = "__typename",
+          type = GraphQLString.type.notNull()
+        ).build(),
+        CompiledField.Builder(
           name = "title",
           type = GraphQLString.type.notNull()
         ).build()

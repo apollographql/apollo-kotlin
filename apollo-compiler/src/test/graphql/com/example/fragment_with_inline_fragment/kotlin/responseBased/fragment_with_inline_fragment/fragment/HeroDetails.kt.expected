@@ -40,6 +40,8 @@ public interface HeroDetails {
       public val node: Node?
 
       public interface Node {
+        public val __typename: String
+
         /**
          * The name of the character
          */
@@ -91,6 +93,8 @@ public interface HumanHeroDetails : HeroDetails, HumanDetails {
       public override val node: Node?
 
       public interface Node : HeroDetails.FriendsConnection.Edge.Node {
+        public override val __typename: String
+
         /**
          * The name of the character
          */
@@ -137,6 +141,8 @@ public interface DroidHeroDetails : HeroDetails, DroidDetails {
       public override val node: Node?
 
       public interface Node : HeroDetails.FriendsConnection.Edge.Node {
+        public override val __typename: String
+
         /**
          * The name of the character
          */

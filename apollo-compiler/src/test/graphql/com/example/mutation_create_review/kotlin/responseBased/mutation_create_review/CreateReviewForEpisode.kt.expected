@@ -78,6 +78,7 @@ internal data class CreateReviewForEpisode(
       public val listOfListOfObject: List<List<ListOfListOfObject>>?
     ) {
       public data class ListOfListOfObject(
+        public val __typename: java.lang.String,
         /**
          * The name of the character
          */
@@ -88,7 +89,7 @@ internal data class CreateReviewForEpisode(
 
   public companion object {
     public const val OPERATION_ID: String =
-        "b333ec8237cdc346478f07c98169eeb782c4afac1a0a8b94c62dfbcb27275b21"
+        "53f785551a280d503be53433c710ba01dd23df258877f0945fe5b5819a6ed726"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -102,13 +103,14 @@ internal data class CreateReviewForEpisode(
      *     listOfListOfEnum
      *     listOfListOfCustom
      *     listOfListOfObject {
+     *       __typename
      *       name
      *     }
      *   }
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) { createReview(episode: ${'$'}ep, review: ${'$'}review) { stars commentary listOfListOfString listOfListOfEnum listOfListOfCustom listOfListOfObject { name } } }"
+        "mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) { createReview(episode: ${'$'}ep, review: ${'$'}review) { stars commentary listOfListOfString listOfListOfEnum listOfListOfCustom listOfListOfObject { __typename name } } }"
 
     public const val OPERATION_NAME: String = "CreateReviewForEpisode"
   }

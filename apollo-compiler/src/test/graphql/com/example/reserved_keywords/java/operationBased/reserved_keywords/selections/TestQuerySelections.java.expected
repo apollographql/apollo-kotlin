@@ -20,6 +20,7 @@ import java.util.List;
 
 public class TestQuerySelections {
   private static List<CompiledSelection> yield = Arrays.asList(
+    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("id", new CompiledNotNullType(GraphQLID.type)).alias("while").build(),
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).alias("it").build()
   );

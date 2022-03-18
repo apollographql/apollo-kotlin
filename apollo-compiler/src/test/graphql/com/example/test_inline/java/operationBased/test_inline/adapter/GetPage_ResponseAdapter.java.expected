@@ -113,24 +113,28 @@ public class GetPage_ResponseAdapter {
   public enum Item implements Adapter<GetPage.Item> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("title");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "title");
 
     @Override
     public GetPage.Item fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
+      String __typename = null;
       String title = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: title = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: title = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
+      Assertions.checkFieldNotMissing(__typename, "__typename");
       Assertions.checkFieldNotMissing(title, "title");
 
       return new GetPage.Item(
+        __typename,
         title
       );
     }
@@ -138,6 +142,9 @@ public class GetPage_ResponseAdapter {
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         GetPage.Item value) throws IOException {
+      writer.name("__typename");
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+
       writer.name("title");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.title);
     }

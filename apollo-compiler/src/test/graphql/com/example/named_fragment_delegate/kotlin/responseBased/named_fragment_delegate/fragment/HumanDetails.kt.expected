@@ -38,6 +38,8 @@ public interface HumanDetails {
       public val node: Node?
 
       public interface Node {
+        public val __typename: String
+
         /**
          * The name of the character
          */

@@ -17,6 +17,7 @@ import com.example.named_fragment_inside_inline_fragment.type.Episode
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
+import kotlin.String
 import kotlin.Unit
 import kotlin.collections.List
 
@@ -42,6 +43,7 @@ public class CharacterAppearsInImpl() : Fragment<CharacterAppearsInImpl.Data> {
   .build()
 
   public data class Data(
+    public override val __typename: String,
     /**
      * The movies this character appears in
      */

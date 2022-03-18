@@ -69,24 +69,28 @@ public class DroidDetailsImpl_ResponseAdapter {
   public enum Friend implements Adapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name");
 
     @Override
     public com.example.named_fragment_delegate.fragment.DroidDetails.Friend fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+      String __typename = null;
       String name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
+      Assertions.checkFieldNotMissing(__typename, "__typename");
       Assertions.checkFieldNotMissing(name, "name");
 
       return new com.example.named_fragment_delegate.fragment.DroidDetails.Friend(
+        __typename,
         name
       );
     }
@@ -94,6 +98,9 @@ public class DroidDetailsImpl_ResponseAdapter {
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         com.example.named_fragment_delegate.fragment.DroidDetails.Friend value) throws IOException {
+      writer.name("__typename");
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+
       writer.name("name");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
     }

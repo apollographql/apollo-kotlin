@@ -52,6 +52,7 @@ public class HeroDetails() : Query<HeroDetails.Data> {
     public val hero: Hero?
   ) : Query.Data {
     public data class Hero(
+      public val __typename: String,
       /**
        * Hero type
        */
@@ -84,6 +85,7 @@ public class HeroDetails() : Query<HeroDetails.Data> {
           public val node: Node?
         ) {
           public data class Node(
+            public val __typename: String,
             /**
              * The name of the character
              */
@@ -96,7 +98,7 @@ public class HeroDetails() : Query<HeroDetails.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "8f6f2c3852a89d45ea7eaa08a249906a1fb8f1733c4f2326d0fb8fb75c4af1e3"
+        "d5e2d9b7a0c6c11ba6a13627646f3532123ec73e1d144cfc25e6b7d6fcd509bd"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -104,12 +106,14 @@ public class HeroDetails() : Query<HeroDetails.Data> {
      *
      * query HeroDetails {
      *   hero {
+     *     __typename
      *     type
      *     name
      *     friendsConnection {
      *       totalCount
      *       edges {
      *         node {
+     *           __typename
      *           name
      *         }
      *       }
@@ -118,7 +122,7 @@ public class HeroDetails() : Query<HeroDetails.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query HeroDetails { hero { type name friendsConnection { totalCount edges { node { name } } } } }"
+        "query HeroDetails { hero { __typename type name friendsConnection { totalCount edges { node { __typename name } } } } }"
 
     public const val OPERATION_NAME: String = "HeroDetails"
   }

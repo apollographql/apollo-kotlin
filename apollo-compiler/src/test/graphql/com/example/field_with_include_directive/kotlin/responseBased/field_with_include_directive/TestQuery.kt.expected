@@ -49,6 +49,7 @@ public data class TestQuery(
     public val hero: Hero?
   ) : Query.Data {
     public data class Hero(
+      public val __typename: String,
       /**
        * The name of the character
        */
@@ -69,7 +70,7 @@ public data class TestQuery(
 
   public companion object {
     public const val OPERATION_ID: String =
-        "7d815b13df95ab484c7b20cb8059c07e3a8688d1ea0a251bff6d3f0b6fdb1cb7"
+        "b2e7ca0beb46849c5d4a9240e8cd3d5fb9d34b88d00cfbab1db516d57bde0362"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -78,6 +79,7 @@ public data class TestQuery(
      * query TestQuery($includeName: Boolean!, $skipFriends: Boolean!) @operationDirective(dummy:
      * "hello") {
      *   hero {
+     *     __typename
      *     name @include(if: $includeName)
      *     friendsConnection @skip(if: $skipFriends) {
      *       totalCount
@@ -86,7 +88,7 @@ public data class TestQuery(
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query TestQuery(${'$'}includeName: Boolean!, ${'$'}skipFriends: Boolean!) @operationDirective(dummy: \"hello\") { hero { name @include(if: ${'$'}includeName) friendsConnection @skip(if: ${'$'}skipFriends) { totalCount } } }"
+        "query TestQuery(${'$'}includeName: Boolean!, ${'$'}skipFriends: Boolean!) @operationDirective(dummy: \"hello\") { hero { __typename name @include(if: ${'$'}includeName) friendsConnection @skip(if: ${'$'}skipFriends) { totalCount } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

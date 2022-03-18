@@ -52,6 +52,7 @@ public class TestOperationSelections {
   );
 
   private static List<CompiledSelection> friends2 = Arrays.asList(
+    new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("lifeExpectancy", GraphQLFloat.type).build()
   );
 

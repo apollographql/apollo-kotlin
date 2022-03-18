@@ -100,20 +100,23 @@ public object GetPage_ResponseAdapter {
       }
 
       private object Item : Adapter<GetPage.Data.Collection.Item> {
-        public val RESPONSE_NAMES: List<String> = listOf("title")
+        public val RESPONSE_NAMES: List<String> = listOf("__typename", "title")
 
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): GetPage.Data.Collection.Item {
+          var __typename: String? = null
           var title: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> title = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> title = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return GetPage.Data.Collection.Item(
+            __typename = __typename!!,
             title = title!!
           )
         }
@@ -123,6 +126,9 @@ public object GetPage_ResponseAdapter {
           customScalarAdapters: CustomScalarAdapters,
           `value`: GetPage.Data.Collection.Item
         ): Unit {
+          writer.name("__typename")
+          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
           writer.name("title")
           StringAdapter.toJson(writer, customScalarAdapters, value.title)
         }

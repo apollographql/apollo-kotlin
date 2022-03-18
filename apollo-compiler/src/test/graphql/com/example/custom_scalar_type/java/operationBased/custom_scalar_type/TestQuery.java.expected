@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.List;
 
 public class TestQuery implements Query<TestQuery.Data> {
-  public static final String OPERATION_ID = "1d5498a23394700442413af8ec1b8edce1445ce533afdb2e9d5ec9c0ed40a9e3";
+  public static final String OPERATION_ID = "63f3827b69a3e52c2a2aa8925397d989fd43a5a044a96db7bba889f5421a72cd";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -30,6 +30,7 @@ public class TestQuery implements Query<TestQuery.Data> {
    *
    * query TestQuery {
    *   hero {
+   *     __typename
    *     id
    *     name
    *     birthDate
@@ -40,7 +41,7 @@ public class TestQuery implements Query<TestQuery.Data> {
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery { hero { id name birthDate appearanceDates fieldWithUnsupportedType profileLink links } }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery { hero { __typename id name birthDate appearanceDates fieldWithUnsupportedType profileLink links } }";
 
   public static final String OPERATION_NAME = "TestQuery";
 
@@ -169,6 +170,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Hero {
+    public String __typename;
+
     /**
      * The ID of the character
      */
@@ -210,8 +213,9 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(Long id, String name, Date birthDate, List<Date> appearanceDates,
+    public Hero(String __typename, Long id, String name, Date birthDate, List<Date> appearanceDates,
         Object fieldWithUnsupportedType, String profileLink, List<String> links) {
+      this.__typename = __typename;
       this.id = id;
       this.name = name;
       this.birthDate = birthDate;
@@ -228,7 +232,8 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof Hero) {
         Hero that = (Hero) o;
-        return ((this.id == null) ? (that.id == null) : this.id.equals(that.id))
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.id == null) ? (that.id == null) : this.id.equals(that.id))
          &&((this.name == null) ? (that.name == null) : this.name.equals(that.name))
          &&((this.birthDate == null) ? (that.birthDate == null) : this.birthDate.equals(that.birthDate))
          &&((this.appearanceDates == null) ? (that.appearanceDates == null) : this.appearanceDates.equals(that.appearanceDates))
@@ -243,6 +248,8 @@ public class TestQuery implements Query<TestQuery.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (id == null) ? 0 : id.hashCode();
         h *= 1000003;
@@ -267,6 +274,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Hero{"
+          + "__typename=" + __typename + ", "
           + "id=" + id + ", "
           + "name=" + name + ", "
           + "birthDate=" + birthDate + ", "

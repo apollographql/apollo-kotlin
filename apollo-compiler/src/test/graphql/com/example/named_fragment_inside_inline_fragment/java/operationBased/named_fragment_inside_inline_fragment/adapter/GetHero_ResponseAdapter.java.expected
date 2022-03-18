@@ -6,6 +6,8 @@
 package com.example.named_fragment_inside_inline_fragment.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -55,15 +57,28 @@ public class GetHero_ResponseAdapter {
   public enum Hero implements Adapter<GetHero.Hero> {
     INSTANCE;
 
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
+
     @Override
     public GetHero.Hero fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
+      String __typename = null;
 
+      loop:
+      while(true) {
+        switch (reader.selectName(RESPONSE_NAMES)) {
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          default: break loop;
+        }
+      }
 
       reader.rewind();
       GetHero.OnCharacter onCharacter = com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.OnCharacter.INSTANCE.fromJson(reader, customScalarAdapters);
 
+      Assertions.checkFieldNotMissing(__typename, "__typename");
+
       return new GetHero.Hero(
+        __typename,
         onCharacter
       );
     }
@@ -71,6 +86,9 @@ public class GetHero_ResponseAdapter {
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         GetHero.Hero value) throws IOException {
+      writer.name("__typename");
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+
       com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.OnCharacter.INSTANCE.toJson(writer, customScalarAdapters, value.onCharacter);
     }
   }

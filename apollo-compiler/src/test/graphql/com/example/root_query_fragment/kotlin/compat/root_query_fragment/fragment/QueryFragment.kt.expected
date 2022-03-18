@@ -13,6 +13,7 @@ public data class QueryFragment(
   public val hero: Hero?
 ) : Fragment.Data {
   public data class Hero(
+    public val __typename: String,
     /**
      * The name of the character
      */

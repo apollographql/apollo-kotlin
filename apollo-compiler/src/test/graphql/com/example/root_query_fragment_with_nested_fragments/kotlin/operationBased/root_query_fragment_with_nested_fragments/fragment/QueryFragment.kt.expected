@@ -15,6 +15,7 @@ public data class QueryFragment(
   public val human: Human?
 ) : Fragment.Data {
   public data class Hero(
+    public val __typename: String,
     /**
      * Synthetic field for 'heroFragment'
      */

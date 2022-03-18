@@ -157,21 +157,24 @@ public object HeroDetailsImpl_ResponseAdapter {
         }
 
         private object Node : Adapter<HeroDetailsImpl.HumanData.FriendsConnection.Edge.Node> {
-          public val RESPONSE_NAMES: List<String> = listOf("name")
+          public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
           public override fun fromJson(reader: JsonReader,
               customScalarAdapters: CustomScalarAdapters):
               HeroDetailsImpl.HumanData.FriendsConnection.Edge.Node {
+            var __typename: String? = null
             var name: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+                1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
 
             return HeroDetailsImpl.HumanData.FriendsConnection.Edge.Node(
+              __typename = __typename!!,
               name = name!!
             )
           }
@@ -181,6 +184,9 @@ public object HeroDetailsImpl_ResponseAdapter {
             customScalarAdapters: CustomScalarAdapters,
             `value`: HeroDetailsImpl.HumanData.FriendsConnection.Edge.Node
           ): Unit {
+            writer.name("__typename")
+            StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
             writer.name("name")
             StringAdapter.toJson(writer, customScalarAdapters, value.name)
           }
@@ -304,21 +310,24 @@ public object HeroDetailsImpl_ResponseAdapter {
         }
 
         private object Node : Adapter<HeroDetailsImpl.DroidData.FriendsConnection.Edge.Node> {
-          public val RESPONSE_NAMES: List<String> = listOf("name")
+          public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
           public override fun fromJson(reader: JsonReader,
               customScalarAdapters: CustomScalarAdapters):
               HeroDetailsImpl.DroidData.FriendsConnection.Edge.Node {
+            var __typename: String? = null
             var name: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+                1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
 
             return HeroDetailsImpl.DroidData.FriendsConnection.Edge.Node(
+              __typename = __typename!!,
               name = name!!
             )
           }
@@ -328,6 +337,9 @@ public object HeroDetailsImpl_ResponseAdapter {
             customScalarAdapters: CustomScalarAdapters,
             `value`: HeroDetailsImpl.DroidData.FriendsConnection.Edge.Node
           ): Unit {
+            writer.name("__typename")
+            StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
             writer.name("name")
             StringAdapter.toJson(writer, customScalarAdapters, value.name)
           }
@@ -444,21 +456,24 @@ public object HeroDetailsImpl_ResponseAdapter {
         }
 
         private object Node : Adapter<HeroDetailsImpl.OtherData.FriendsConnection.Edge.Node> {
-          public val RESPONSE_NAMES: List<String> = listOf("name")
+          public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
           public override fun fromJson(reader: JsonReader,
               customScalarAdapters: CustomScalarAdapters):
               HeroDetailsImpl.OtherData.FriendsConnection.Edge.Node {
+            var __typename: String? = null
             var name: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+                1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
 
             return HeroDetailsImpl.OtherData.FriendsConnection.Edge.Node(
+              __typename = __typename!!,
               name = name!!
             )
           }
@@ -468,6 +483,9 @@ public object HeroDetailsImpl_ResponseAdapter {
             customScalarAdapters: CustomScalarAdapters,
             `value`: HeroDetailsImpl.OtherData.FriendsConnection.Edge.Node
           ): Unit {
+            writer.name("__typename")
+            StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
             writer.name("name")
             StringAdapter.toJson(writer, customScalarAdapters, value.name)
           }

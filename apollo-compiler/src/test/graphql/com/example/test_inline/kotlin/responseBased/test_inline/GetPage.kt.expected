@@ -56,6 +56,8 @@ public class GetPage() : Query<GetPage.Data> {
       public val items: List<Item>
 
       public sealed interface Item {
+        public val __typename: String
+
         public val title: String
       }
 
@@ -69,9 +71,9 @@ public class GetPage() : Query<GetPage.Data> {
       public override val items: List<Item>
     ) : Collection {
       public sealed interface Item : Collection.Item {
-        public override val title: String
+        public override val __typename: String
 
-        public val __typename: String
+        public override val title: String
 
         public companion object {
           public fun Item.asParticularItem() = this as? ParticularItemItem
@@ -79,14 +81,14 @@ public class GetPage() : Query<GetPage.Data> {
       }
 
       public data class ParticularItemItem(
-        public override val title: String,
         public override val __typename: String,
+        public override val title: String,
         public val image: String
       ) : Item, Collection.Item
 
       public data class OtherItem(
-        public override val title: String,
-        public override val __typename: String
+        public override val __typename: String,
+        public override val title: String
       ) : Item, Collection.Item
     }
 
@@ -95,6 +97,7 @@ public class GetPage() : Query<GetPage.Data> {
       public override val items: List<Item>
     ) : Collection {
       public data class Item(
+        public override val __typename: String,
         public override val title: String
       ) : Collection.Item
     }
@@ -102,7 +105,7 @@ public class GetPage() : Query<GetPage.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "09dd0a176a2233eccc3b2d3a76f25a1083460354f399f8b1aaf172c18cfc202b"
+        "09c2f7755e4c0be866863ec0d0af37acd3cdedf89bb6384d838019477611707e"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -112,6 +115,7 @@ public class GetPage() : Query<GetPage.Data> {
      *   collection {
      *     __typename
      *     items {
+     *       __typename
      *       title
      *     }
      *     ... on ParticularCollection {
@@ -126,7 +130,7 @@ public class GetPage() : Query<GetPage.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query GetPage { collection { __typename items { title } ... on ParticularCollection { items { __typename ... on ParticularItem { image } } } } }"
+        "query GetPage { collection { __typename items { __typename title } ... on ParticularCollection { items { __typename ... on ParticularItem { image } } } } }"
 
     public const val OPERATION_NAME: String = "GetPage"
   }

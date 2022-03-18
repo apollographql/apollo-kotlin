@@ -20,7 +20,7 @@ import java.lang.String;
 import java.util.List;
 
 public class GetPage implements Query<GetPage.Data> {
-  public static final String OPERATION_ID = "09dd0a176a2233eccc3b2d3a76f25a1083460354f399f8b1aaf172c18cfc202b";
+  public static final String OPERATION_ID = "09c2f7755e4c0be866863ec0d0af37acd3cdedf89bb6384d838019477611707e";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -30,6 +30,7 @@ public class GetPage implements Query<GetPage.Data> {
    *   collection {
    *     __typename
    *     items {
+   *       __typename
    *       title
    *     }
    *     ... on ParticularCollection {
@@ -43,7 +44,7 @@ public class GetPage implements Query<GetPage.Data> {
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query GetPage { collection { __typename items { title } ... on ParticularCollection { items { __typename ... on ParticularItem { image } } } } }";
+  public static final String OPERATION_DOCUMENT = "query GetPage { collection { __typename items { __typename title } ... on ParticularCollection { items { __typename ... on ParticularItem { image } } } } }";
 
   public static final String OPERATION_NAME = "GetPage";
 
@@ -238,6 +239,8 @@ public class GetPage implements Query<GetPage.Data> {
   }
 
   public static class Item {
+    public String __typename;
+
     public String title;
 
     private transient volatile int $hashCode;
@@ -246,7 +249,8 @@ public class GetPage implements Query<GetPage.Data> {
 
     private transient volatile String $toString;
 
-    public Item(String title) {
+    public Item(String __typename, String title) {
+      this.__typename = __typename;
       this.title = title;
     }
 
@@ -257,7 +261,8 @@ public class GetPage implements Query<GetPage.Data> {
       }
       if (o instanceof Item) {
         Item that = (Item) o;
-        return ((this.title == null) ? (that.title == null) : this.title.equals(that.title));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.title == null) ? (that.title == null) : this.title.equals(that.title));
       }
       return false;
     }
@@ -266,6 +271,8 @@ public class GetPage implements Query<GetPage.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (title == null) ? 0 : title.hashCode();
         $hashCode = h;
@@ -278,6 +285,7 @@ public class GetPage implements Query<GetPage.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Item{"
+          + "__typename=" + __typename + ", "
           + "title=" + title
           + "}";
       }

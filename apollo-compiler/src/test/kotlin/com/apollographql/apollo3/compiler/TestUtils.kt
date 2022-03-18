@@ -10,16 +10,17 @@ import java.io.File
 @OptIn(ApolloExperimental::class)
 internal object TestUtils {
   internal fun shouldUpdateTestFixtures(): Boolean {
+    if (System.getenv("updateTestFixtures") != null) {
+      return true
+    }
+
     return when (System.getProperty("updateTestFixtures")?.trim()) {
       "on", "true", "1" -> true
       else -> false
     }
   }
   internal fun shouldUpdateMeasurements(): Boolean {
-    return when (System.getProperty("updateTestFixtures")?.trim()) {
-      "on", "true", "1" -> true
-      else -> false
-    }
+    return shouldUpdateTestFixtures()
   }
 
   internal fun checkTestFixture(actual: File, expected: File) {

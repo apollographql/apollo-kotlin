@@ -8,9 +8,11 @@ package com.example.named_fragment_inside_inline_fragment.selections
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.notNull
 import com.example.named_fragment_inside_inline_fragment.fragment.selections.characterAppearsInSelections
 import com.example.named_fragment_inside_inline_fragment.fragment.selections.characterNameSelections
 import com.example.named_fragment_inside_inline_fragment.type.Character
+import com.example.named_fragment_inside_inline_fragment.type.GraphQLString
 import kotlin.collections.List
 
 public object GetHeroSelections {
@@ -28,6 +30,10 @@ public object GetHeroSelections {
       )
 
   private val hero: List<CompiledSelection> = listOf(
+        CompiledField.Builder(
+          name = "__typename",
+          type = GraphQLString.type.notNull()
+        ).build(),
         CompiledFragment.Builder(
           typeCondition = "Character",
           possibleTypes = listOf("Droid", "Human")

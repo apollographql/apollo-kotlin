@@ -20,6 +20,10 @@ import kotlin.collections.List
 public object HeroDetailsSelections {
   private val node: List<CompiledSelection> = listOf(
         CompiledField.Builder(
+          name = "__typename",
+          type = GraphQLString.type.notNull()
+        ).build(),
+        CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build()
@@ -46,6 +50,10 @@ public object HeroDetailsSelections {
       )
 
   private val hero: List<CompiledSelection> = listOf(
+        CompiledField.Builder(
+          name = "__typename",
+          type = GraphQLString.type.notNull()
+        ).build(),
         CompiledField.Builder(
           name = "type",
           type = hero_type.type.notNull()

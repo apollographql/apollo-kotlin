@@ -52,6 +52,7 @@ public class TestQuery() : Query<TestQuery.Data> {
   ) : Query.Data
 
   public data class Hero(
+    public val __typename: String,
     /**
      * The name of the character
      */
@@ -83,6 +84,7 @@ public class TestQuery() : Query<TestQuery.Data> {
   )
 
   public data class Node(
+    public val __typename: String,
     /**
      * The name of the character
      */
@@ -91,7 +93,7 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "9989ec482e68ff5ccaf2aff28a397b62a88317a6fe3dc4c943ccab856f5b0857"
+        "8150f7d7d8e4e709d68f0f2facc10398e206da11c2076f83f52019629172135b"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -99,10 +101,12 @@ public class TestQuery() : Query<TestQuery.Data> {
      *
      * query TestQuery {
      *   hero {
+     *     __typename
      *     name
      *     friendsConnection {
      *       edges {
      *         node {
+     *           __typename
      *           name
      *         }
      *       }
@@ -113,6 +117,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      *       friendsConnection {
      *         edges {
      *           node {
+     *             __typename
      *             name
      *           }
      *         }
@@ -122,7 +127,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query TestQuery { hero { name friendsConnection { edges { node { name } } } ... on Character { name profileLink friendsConnection { edges { node { name } } } } } }"
+        "query TestQuery { hero { __typename name friendsConnection { edges { node { __typename name } } } ... on Character { name profileLink friendsConnection { edges { node { __typename name } } } } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

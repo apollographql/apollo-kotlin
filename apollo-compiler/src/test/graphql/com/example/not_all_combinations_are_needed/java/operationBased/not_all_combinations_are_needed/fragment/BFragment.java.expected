@@ -11,6 +11,8 @@ import java.lang.Override;
 import java.lang.String;
 
 public class BFragment implements Fragment.Data {
+  public String __typename;
+
   public String fieldB1;
 
   private transient volatile int $hashCode;
@@ -19,7 +21,8 @@ public class BFragment implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public BFragment(String fieldB1) {
+  public BFragment(String __typename, String fieldB1) {
+    this.__typename = __typename;
     this.fieldB1 = fieldB1;
   }
 
@@ -30,7 +33,8 @@ public class BFragment implements Fragment.Data {
     }
     if (o instanceof BFragment) {
       BFragment that = (BFragment) o;
-      return ((this.fieldB1 == null) ? (that.fieldB1 == null) : this.fieldB1.equals(that.fieldB1));
+      return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+       &&((this.fieldB1 == null) ? (that.fieldB1 == null) : this.fieldB1.equals(that.fieldB1));
     }
     return false;
   }
@@ -39,6 +43,8 @@ public class BFragment implements Fragment.Data {
   public int hashCode() {
     if (!$hashCodeMemoized) {
       int h = 1;
+      h *= 1000003;
+      h ^= (__typename == null) ? 0 : __typename.hashCode();
       h *= 1000003;
       h ^= (fieldB1 == null) ? 0 : fieldB1.hashCode();
       $hashCode = h;
@@ -51,6 +57,7 @@ public class BFragment implements Fragment.Data {
   public String toString() {
     if ($toString == null) {
       $toString = "BFragment{"
+        + "__typename=" + __typename + ", "
         + "fieldB1=" + fieldB1
         + "}";
     }

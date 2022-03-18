@@ -56,24 +56,28 @@ public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVer
   public enum HeroAVeryAVeryAVeryAVeryAVeryAVeryAV implements Adapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName");
 
     @Override
     public TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+      String __typename = null;
       String nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
+      Assertions.checkFieldNotMissing(__typename, "__typename");
       Assertions.checkFieldNotMissing(nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName, "nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName");
 
       return new TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV(
+        __typename,
         nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName
       );
     }
@@ -82,6 +86,9 @@ public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVer
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV value)
         throws IOException {
+      writer.name("__typename");
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+
       writer.name("nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName);
     }

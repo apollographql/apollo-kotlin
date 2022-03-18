@@ -22,7 +22,7 @@ import java.lang.Override;
 import java.lang.String;
 
 public class TestQuery implements Query<TestQuery.Data> {
-  public static final String OPERATION_ID = "7d815b13df95ab484c7b20cb8059c07e3a8688d1ea0a251bff6d3f0b6fdb1cb7";
+  public static final String OPERATION_ID = "b2e7ca0beb46849c5d4a9240e8cd3d5fb9d34b88d00cfbab1db516d57bde0362";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -30,6 +30,7 @@ public class TestQuery implements Query<TestQuery.Data> {
    *
    * query TestQuery($includeName: Boolean!, $skipFriends: Boolean!) @operationDirective(dummy: "hello") {
    *   hero {
+   *     __typename
    *     name @include(if: $includeName)
    *     friendsConnection @skip(if: $skipFriends) {
    *       totalCount
@@ -37,7 +38,7 @@ public class TestQuery implements Query<TestQuery.Data> {
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery($includeName: Boolean!, $skipFriends: Boolean!) @operationDirective(dummy: \"hello\") { hero { name @include(if: $includeName) friendsConnection @skip(if: $skipFriends) { totalCount } } }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery($includeName: Boolean!, $skipFriends: Boolean!) @operationDirective(dummy: \"hello\") { hero { __typename name @include(if: $includeName) friendsConnection @skip(if: $skipFriends) { totalCount } } }";
 
   public static final String OPERATION_NAME = "TestQuery";
 
@@ -179,6 +180,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Hero {
+    public String __typename;
+
     /**
      * The name of the character
      */
@@ -195,7 +198,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(String name, FriendsConnection friendsConnection) {
+    public Hero(String __typename, String name, FriendsConnection friendsConnection) {
+      this.__typename = __typename;
       this.name = name;
       this.friendsConnection = friendsConnection;
     }
@@ -207,7 +211,8 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof Hero) {
         Hero that = (Hero) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.name == null) ? (that.name == null) : this.name.equals(that.name))
          &&((this.friendsConnection == null) ? (that.friendsConnection == null) : this.friendsConnection.equals(that.friendsConnection));
       }
       return false;
@@ -217,6 +222,8 @@ public class TestQuery implements Query<TestQuery.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         h *= 1000003;
@@ -231,6 +238,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Hero{"
+          + "__typename=" + __typename + ", "
           + "name=" + name + ", "
           + "friendsConnection=" + friendsConnection
           + "}";

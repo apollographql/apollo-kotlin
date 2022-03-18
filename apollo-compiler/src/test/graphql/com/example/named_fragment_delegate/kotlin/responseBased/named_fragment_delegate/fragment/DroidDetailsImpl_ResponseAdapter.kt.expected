@@ -61,20 +61,23 @@ public object DroidDetailsImpl_ResponseAdapter {
     }
 
     private object Friend : Adapter<DroidDetailsImpl.Data.Friend> {
-      public val RESPONSE_NAMES: List<String> = listOf("name")
+      public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           DroidDetailsImpl.Data.Friend {
+        var __typename: String? = null
         var name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return DroidDetailsImpl.Data.Friend(
+          __typename = __typename!!,
           name = name!!
         )
       }
@@ -84,6 +87,9 @@ public object DroidDetailsImpl_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         `value`: DroidDetailsImpl.Data.Friend
       ): Unit {
+        writer.name("__typename")
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
         writer.name("name")
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
       }

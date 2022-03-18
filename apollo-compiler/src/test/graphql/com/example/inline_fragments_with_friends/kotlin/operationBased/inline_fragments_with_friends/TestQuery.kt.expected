@@ -80,6 +80,7 @@ public class TestQuery() : Query<TestQuery.Data> {
         public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
         public data class Friend(
+          public val __typename: String,
           /**
            * The movies this character appears in
            */
@@ -102,6 +103,7 @@ public class TestQuery() : Query<TestQuery.Data> {
         public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
         public data class Friend(
+          public val __typename: String,
           /**
            * The ID of the character
            */
@@ -113,7 +115,7 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "43bfea6068cd77041d723551dd119f0676f6c333620dd281a668eca49d14fcb5"
+        "6a20c9553e5f209b6cc63f98b9d154b5d5917cdea11a903e5dc7f8f420f949b6"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -126,12 +128,14 @@ public class TestQuery() : Query<TestQuery.Data> {
      *     ... on Human {
      *       height
      *       friends {
+     *         __typename
      *         appearsIn
      *       }
      *     }
      *     ... on Droid {
      *       primaryFunction
      *       friends {
+     *         __typename
      *         id
      *       }
      *     }
@@ -139,7 +143,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query TestQuery { hero { __typename name ... on Human { height friends { appearsIn } } ... on Droid { primaryFunction friends { id } } } }"
+        "query TestQuery { hero { __typename name ... on Human { height friends { __typename appearsIn } } ... on Droid { primaryFunction friends { __typename id } } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

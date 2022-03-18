@@ -20,7 +20,7 @@ import java.lang.Override;
 import java.lang.String;
 
 public class TestQuery implements Query<TestQuery.Data> {
-  public static final String OPERATION_ID = "d5b79961c9b2c52219a9d91924a4571373d7f9da08eaf744f4edfec3c64478ec";
+  public static final String OPERATION_ID = "0b1af5d186e819125909757834596c14046e0c9779ba7ba4c467339b84415366";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -33,11 +33,12 @@ public class TestQuery implements Query<TestQuery.Data> {
    * fragment QueryFragment on Query {
    *   __typename
    *   hero {
+   *     __typename
    *     name
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery { ...QueryFragment }  fragment QueryFragment on Query { __typename hero { name } }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery { ...QueryFragment }  fragment QueryFragment on Query { __typename hero { __typename name } }";
 
   public static final String OPERATION_NAME = "TestQuery";
 

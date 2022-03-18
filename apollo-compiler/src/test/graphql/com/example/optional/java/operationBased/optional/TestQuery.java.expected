@@ -21,7 +21,7 @@ import java.lang.String;
 import java.util.List;
 
 public class TestQuery implements Query<TestQuery.Data> {
-  public static final String OPERATION_ID = "9438477e508a2037f377e235bb022f24d375a02a5bb3dc6116c20c52e30ff026";
+  public static final String OPERATION_ID = "f3fecfc10d569c8917b542f9513d7a391011070ddf233c01363d596a38667c0b";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -29,12 +29,13 @@ public class TestQuery implements Query<TestQuery.Data> {
    *
    * query TestQuery {
    *   hero {
+   *     __typename
    *     name
    *     appearsIn
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery { hero { name appearsIn } }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery { hero { __typename name appearsIn } }";
 
   public static final String OPERATION_NAME = "TestQuery";
 
@@ -163,6 +164,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Hero {
+    public String __typename;
+
     /**
      * The name of the character
      */
@@ -179,7 +182,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(String name, List<Episode> appearsIn) {
+    public Hero(String __typename, String name, List<Episode> appearsIn) {
+      this.__typename = __typename;
       this.name = name;
       this.appearsIn = appearsIn;
     }
@@ -191,7 +195,8 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof Hero) {
         Hero that = (Hero) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.name == null) ? (that.name == null) : this.name.equals(that.name))
          &&((this.appearsIn == null) ? (that.appearsIn == null) : this.appearsIn.equals(that.appearsIn));
       }
       return false;
@@ -201,6 +206,8 @@ public class TestQuery implements Query<TestQuery.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         h *= 1000003;
@@ -215,6 +222,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Hero{"
+          + "__typename=" + __typename + ", "
           + "name=" + name + ", "
           + "appearsIn=" + appearsIn
           + "}";

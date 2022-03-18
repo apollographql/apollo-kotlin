@@ -39,6 +39,7 @@ public data class HumanDetails(
   )
 
   public data class Node(
+    public val __typename: String,
     /**
      * The name of the character
      */

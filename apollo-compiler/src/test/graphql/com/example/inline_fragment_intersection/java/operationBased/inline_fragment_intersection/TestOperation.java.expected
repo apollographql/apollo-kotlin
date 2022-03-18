@@ -23,7 +23,7 @@ import java.lang.String;
 import java.util.List;
 
 public class TestOperation implements Query<TestOperation.Data> {
-  public static final String OPERATION_ID = "34e1bab0973fc9b12667523185f43283ba7c800196dcceae43c788e31a7d67f6";
+  public static final String OPERATION_ID = "41156b750eef7a8ae6d87799752cd5a929aec5d8a3a5717cb0f91aa0ac91c13e";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -55,6 +55,7 @@ public class TestOperation implements Query<TestOperation.Data> {
    *     ... on Wookie {
    *       race
    *       friends {
+   *         __typename
    *         lifeExpectancy
    *       }
    *     }
@@ -69,7 +70,7 @@ public class TestOperation implements Query<TestOperation.Data> {
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestOperation { random { __typename ... on Being { name friends { __typename name ... on Wookie { lifeExpectancy } } ... on Human { profilePictureUrl friends { __typename isFamous ... on Wookie { race } } } } ... on Wookie { race friends { lifeExpectancy } } ... on Being { friends { __typename ... on Wookie { lifeExpectancy } } } } }";
+  public static final String OPERATION_DOCUMENT = "query TestOperation { random { __typename ... on Being { name friends { __typename name ... on Wookie { lifeExpectancy } } ... on Human { profilePictureUrl friends { __typename isFamous ... on Wookie { race } } } } ... on Wookie { race friends { __typename lifeExpectancy } } ... on Being { friends { __typename ... on Wookie { lifeExpectancy } } } } }";
 
   public static final String OPERATION_NAME = "TestOperation";
 
@@ -667,6 +668,8 @@ public class TestOperation implements Query<TestOperation.Data> {
   }
 
   public static class Friend2 {
+    public String __typename;
+
     public Double lifeExpectancy;
 
     private transient volatile int $hashCode;
@@ -675,7 +678,8 @@ public class TestOperation implements Query<TestOperation.Data> {
 
     private transient volatile String $toString;
 
-    public Friend2(Double lifeExpectancy) {
+    public Friend2(String __typename, Double lifeExpectancy) {
+      this.__typename = __typename;
       this.lifeExpectancy = lifeExpectancy;
     }
 
@@ -686,7 +690,8 @@ public class TestOperation implements Query<TestOperation.Data> {
       }
       if (o instanceof Friend2) {
         Friend2 that = (Friend2) o;
-        return ((this.lifeExpectancy == null) ? (that.lifeExpectancy == null) : this.lifeExpectancy.equals(that.lifeExpectancy));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.lifeExpectancy == null) ? (that.lifeExpectancy == null) : this.lifeExpectancy.equals(that.lifeExpectancy));
       }
       return false;
     }
@@ -695,6 +700,8 @@ public class TestOperation implements Query<TestOperation.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (lifeExpectancy == null) ? 0 : lifeExpectancy.hashCode();
         $hashCode = h;
@@ -707,6 +714,7 @@ public class TestOperation implements Query<TestOperation.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Friend2{"
+          + "__typename=" + __typename + ", "
           + "lifeExpectancy=" + lifeExpectancy
           + "}";
       }

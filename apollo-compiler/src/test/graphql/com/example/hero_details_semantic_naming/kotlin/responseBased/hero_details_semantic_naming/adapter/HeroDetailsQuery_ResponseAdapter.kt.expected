@@ -50,22 +50,25 @@ public object HeroDetailsQuery_ResponseAdapter {
     }
 
     private object Hero : Adapter<HeroDetailsQuery.Data.Hero> {
-      public val RESPONSE_NAMES: List<String> = listOf("name", "friendsConnection")
+      public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friendsConnection")
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           HeroDetailsQuery.Data.Hero {
+        var __typename: String? = null
         var name: String? = null
         var friendsConnection: HeroDetailsQuery.Data.Hero.FriendsConnection? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return HeroDetailsQuery.Data.Hero(
+          __typename = __typename!!,
           name = name!!,
           friendsConnection = friendsConnection!!
         )
@@ -76,6 +79,9 @@ public object HeroDetailsQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         `value`: HeroDetailsQuery.Data.Hero
       ): Unit {
+        writer.name("__typename")
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
         writer.name("name")
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
@@ -149,21 +155,24 @@ public object HeroDetailsQuery_ResponseAdapter {
           }
 
           private object Node : Adapter<HeroDetailsQuery.Data.Hero.FriendsConnection.Edge.Node> {
-            public val RESPONSE_NAMES: List<String> = listOf("name")
+            public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
             public override fun fromJson(reader: JsonReader,
                 customScalarAdapters: CustomScalarAdapters):
                 HeroDetailsQuery.Data.Hero.FriendsConnection.Edge.Node {
+              var __typename: String? = null
               var name: String? = null
 
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+                  0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+                  1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
 
               return HeroDetailsQuery.Data.Hero.FriendsConnection.Edge.Node(
+                __typename = __typename!!,
                 name = name!!
               )
             }
@@ -173,6 +182,9 @@ public object HeroDetailsQuery_ResponseAdapter {
               customScalarAdapters: CustomScalarAdapters,
               `value`: HeroDetailsQuery.Data.Hero.FriendsConnection.Edge.Node
             ): Unit {
+              writer.name("__typename")
+              StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
               writer.name("name")
               StringAdapter.toJson(writer, customScalarAdapters, value.name)
             }

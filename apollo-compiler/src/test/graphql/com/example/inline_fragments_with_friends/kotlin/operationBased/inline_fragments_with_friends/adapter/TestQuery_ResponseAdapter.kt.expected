@@ -155,21 +155,24 @@ public object TestQuery_ResponseAdapter {
         }
 
         private object Friend : Adapter<TestQuery.Data.Hero.OnHuman.Friend> {
-          public val RESPONSE_NAMES: List<String> = listOf("appearsIn")
+          public val RESPONSE_NAMES: List<String> = listOf("__typename", "appearsIn")
 
           public override fun fromJson(reader: JsonReader,
               customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero.OnHuman.Friend {
+            var __typename: String? = null
             var appearsIn: List<Episode?>? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
+                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+                1 -> appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
                     customScalarAdapters)
                 else -> break
               }
             }
 
             return TestQuery.Data.Hero.OnHuman.Friend(
+              __typename = __typename!!,
               appearsIn = appearsIn!!
             )
           }
@@ -179,6 +182,9 @@ public object TestQuery_ResponseAdapter {
             customScalarAdapters: CustomScalarAdapters,
             `value`: TestQuery.Data.Hero.OnHuman.Friend
           ): Unit {
+            writer.name("__typename")
+            StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
             writer.name("appearsIn")
             Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,
                 value.appearsIn)
@@ -223,20 +229,23 @@ public object TestQuery_ResponseAdapter {
         }
 
         private object Friend : Adapter<TestQuery.Data.Hero.OnDroid.Friend> {
-          public val RESPONSE_NAMES: List<String> = listOf("id")
+          public val RESPONSE_NAMES: List<String> = listOf("__typename", "id")
 
           public override fun fromJson(reader: JsonReader,
               customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero.OnDroid.Friend {
+            var __typename: String? = null
             var id: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+                1 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
 
             return TestQuery.Data.Hero.OnDroid.Friend(
+              __typename = __typename!!,
               id = id!!
             )
           }
@@ -246,6 +255,9 @@ public object TestQuery_ResponseAdapter {
             customScalarAdapters: CustomScalarAdapters,
             `value`: TestQuery.Data.Hero.OnDroid.Friend
           ): Unit {
+            writer.name("__typename")
+            StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
             writer.name("id")
             StringAdapter.toJson(writer, customScalarAdapters, value.id)
           }

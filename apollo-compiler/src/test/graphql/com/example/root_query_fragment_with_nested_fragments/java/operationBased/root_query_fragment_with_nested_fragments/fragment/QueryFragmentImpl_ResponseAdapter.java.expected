@@ -75,15 +75,28 @@ public class QueryFragmentImpl_ResponseAdapter {
   public enum Hero implements Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero> {
     INSTANCE;
 
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
+
     @Override
     public com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+      String __typename = null;
 
+      loop:
+      while(true) {
+        switch (reader.selectName(RESPONSE_NAMES)) {
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          default: break loop;
+        }
+      }
 
       reader.rewind();
       HeroFragment heroFragment = com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.INSTANCE.fromJson(reader, customScalarAdapters);
 
+      Assertions.checkFieldNotMissing(__typename, "__typename");
+
       return new com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero(
+        __typename,
         heroFragment
       );
     }
@@ -92,6 +105,9 @@ public class QueryFragmentImpl_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero value)
         throws IOException {
+      writer.name("__typename");
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+
       com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.INSTANCE.toJson(writer, customScalarAdapters, value.heroFragment);
     }
   }

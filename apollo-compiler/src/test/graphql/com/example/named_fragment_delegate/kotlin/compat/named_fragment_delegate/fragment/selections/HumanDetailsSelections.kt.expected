@@ -19,6 +19,10 @@ import kotlin.collections.List
 public object HumanDetailsSelections {
   private val node: List<CompiledSelection> = listOf(
         CompiledField.Builder(
+          name = "__typename",
+          type = GraphQLString.type.notNull()
+        ).build(),
+        CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build()

@@ -25,27 +25,31 @@ public class HeroDetailsImpl_ResponseAdapter {
   public enum HeroDetails implements Adapter<com.example.unique_type_name.fragment.HeroDetails> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "friendsConnection");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name", "friendsConnection");
 
     @Override
     public com.example.unique_type_name.fragment.HeroDetails fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
+      String __typename = null;
       String name = null;
       com.example.unique_type_name.fragment.HeroDetails.FriendsConnection friendsConnection = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: friendsConnection = new ObjectAdapter<com.example.unique_type_name.fragment.HeroDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 2: friendsConnection = new ObjectAdapter<com.example.unique_type_name.fragment.HeroDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
+      Assertions.checkFieldNotMissing(__typename, "__typename");
       Assertions.checkFieldNotMissing(name, "name");
       Assertions.checkFieldNotMissing(friendsConnection, "friendsConnection");
 
       return new com.example.unique_type_name.fragment.HeroDetails(
+        __typename,
         name,
         friendsConnection
       );
@@ -54,6 +58,9 @@ public class HeroDetailsImpl_ResponseAdapter {
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         com.example.unique_type_name.fragment.HeroDetails value) throws IOException {
+      writer.name("__typename");
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+
       writer.name("name");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
 
@@ -134,24 +141,28 @@ public class HeroDetailsImpl_ResponseAdapter {
   public enum Node implements Adapter<com.example.unique_type_name.fragment.HeroDetails.Node> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name");
 
     @Override
     public com.example.unique_type_name.fragment.HeroDetails.Node fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
+      String __typename = null;
       String name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
+      Assertions.checkFieldNotMissing(__typename, "__typename");
       Assertions.checkFieldNotMissing(name, "name");
 
       return new com.example.unique_type_name.fragment.HeroDetails.Node(
+        __typename,
         name
       );
     }
@@ -159,6 +170,9 @@ public class HeroDetailsImpl_ResponseAdapter {
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         com.example.unique_type_name.fragment.HeroDetails.Node value) throws IOException {
+      writer.name("__typename");
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+
       writer.name("name");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
     }

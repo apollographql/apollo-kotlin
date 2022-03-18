@@ -8,5 +8,7 @@ package com.example.not_all_combinations_are_needed.fragment
 import kotlin.String
 
 public interface BFragment {
+  public val __typename: String
+
   public val fieldB1: String?
 }

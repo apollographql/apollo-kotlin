@@ -54,6 +54,7 @@ public class GetHero() : Query<GetHero.Data> {
     public val hero: Hero?
   ) : Query.Data {
     public data class Hero(
+      public override val __typename: String,
       /**
        * The name of the character
        */
@@ -75,7 +76,7 @@ public class GetHero() : Query<GetHero.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "301b4cc3fece94453fbe4b6d8562541547229559f4a0394200351721a2768365"
+        "f5debd52aa210b49e6f56d81fa0eeff97b17ba877ced89660ede858524cf9819"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -83,6 +84,7 @@ public class GetHero() : Query<GetHero.Data> {
      *
      * query GetHero {
      *   hero {
+     *     __typename
      *     ... on Character {
      *       ...characterName
      *       ...characterAppearsIn
@@ -91,15 +93,17 @@ public class GetHero() : Query<GetHero.Data> {
      * }
      *
      * fragment characterName on Character {
+     *   __typename
      *   name
      * }
      *
      * fragment characterAppearsIn on Character {
+     *   __typename
      *   appearsIn
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query GetHero { hero { ... on Character { ...characterName ...characterAppearsIn } } }  fragment characterName on Character { name }  fragment characterAppearsIn on Character { appearsIn }"
+        "query GetHero { hero { __typename ... on Character { ...characterName ...characterAppearsIn } } }  fragment characterName on Character { __typename name }  fragment characterAppearsIn on Character { __typename appearsIn }"
 
     public const val OPERATION_NAME: String = "GetHero"
   }

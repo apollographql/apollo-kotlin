@@ -70,6 +70,7 @@ public class HumanDetailsImpl() : Fragment<HumanDetailsImpl.Data> {
         public override val node: Node?
       ) : HumanDetails.FriendsConnection.Edge {
         public data class Node(
+          public override val __typename: String,
           /**
            * The name of the character
            */

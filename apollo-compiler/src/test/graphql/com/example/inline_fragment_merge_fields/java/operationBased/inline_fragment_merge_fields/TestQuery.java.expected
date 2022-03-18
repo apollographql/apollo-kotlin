@@ -20,7 +20,7 @@ import java.lang.String;
 import java.util.List;
 
 public class TestQuery implements Query<TestQuery.Data> {
-  public static final String OPERATION_ID = "9989ec482e68ff5ccaf2aff28a397b62a88317a6fe3dc4c943ccab856f5b0857";
+  public static final String OPERATION_ID = "8150f7d7d8e4e709d68f0f2facc10398e206da11c2076f83f52019629172135b";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -28,10 +28,12 @@ public class TestQuery implements Query<TestQuery.Data> {
    *
    * query TestQuery {
    *   hero {
+   *     __typename
    *     name
    *     friendsConnection {
    *       edges {
    *         node {
+   *           __typename
    *           name
    *         }
    *       }
@@ -42,6 +44,7 @@ public class TestQuery implements Query<TestQuery.Data> {
    *       friendsConnection {
    *         edges {
    *           node {
+   *             __typename
    *             name
    *           }
    *         }
@@ -50,7 +53,7 @@ public class TestQuery implements Query<TestQuery.Data> {
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery { hero { name friendsConnection { edges { node { name } } } ... on Character { name profileLink friendsConnection { edges { node { name } } } } } }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery { hero { __typename name friendsConnection { edges { node { __typename name } } } ... on Character { name profileLink friendsConnection { edges { node { __typename name } } } } } }";
 
   public static final String OPERATION_NAME = "TestQuery";
 
@@ -179,6 +182,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Hero {
+    public String __typename;
+
     /**
      * The name of the character
      */
@@ -200,7 +205,9 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(String name, FriendsConnection friendsConnection, OnCharacter onCharacter) {
+    public Hero(String __typename, String name, FriendsConnection friendsConnection,
+        OnCharacter onCharacter) {
+      this.__typename = __typename;
       this.name = name;
       this.friendsConnection = friendsConnection;
       this.onCharacter = onCharacter;
@@ -213,7 +220,8 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof Hero) {
         Hero that = (Hero) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.name == null) ? (that.name == null) : this.name.equals(that.name))
          &&((this.friendsConnection == null) ? (that.friendsConnection == null) : this.friendsConnection.equals(that.friendsConnection))
          &&((this.onCharacter == null) ? (that.onCharacter == null) : this.onCharacter.equals(that.onCharacter));
       }
@@ -224,6 +232,8 @@ public class TestQuery implements Query<TestQuery.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         h *= 1000003;
@@ -240,6 +250,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Hero{"
+          + "__typename=" + __typename + ", "
           + "name=" + name + ", "
           + "friendsConnection=" + friendsConnection + ", "
           + "onCharacter=" + onCharacter
@@ -352,6 +363,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Node {
+    public String __typename;
+
     /**
      * The name of the character
      */
@@ -363,7 +376,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Node(String name) {
+    public Node(String __typename, String name) {
+      this.__typename = __typename;
       this.name = name;
     }
 
@@ -374,7 +388,8 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof Node) {
         Node that = (Node) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.name == null) ? (that.name == null) : this.name.equals(that.name));
       }
       return false;
     }
@@ -383,6 +398,8 @@ public class TestQuery implements Query<TestQuery.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         $hashCode = h;
@@ -395,6 +412,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Node{"
+          + "__typename=" + __typename + ", "
           + "name=" + name
           + "}";
       }
@@ -576,6 +594,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Node1 {
+    public String __typename;
+
     /**
      * The name of the character
      */
@@ -587,7 +607,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Node1(String name) {
+    public Node1(String __typename, String name) {
+      this.__typename = __typename;
       this.name = name;
     }
 
@@ -598,7 +619,8 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof Node1) {
         Node1 that = (Node1) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.name == null) ? (that.name == null) : this.name.equals(that.name));
       }
       return false;
     }
@@ -607,6 +629,8 @@ public class TestQuery implements Query<TestQuery.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         $hashCode = h;
@@ -619,6 +643,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Node1{"
+          + "__typename=" + __typename + ", "
           + "name=" + name
           + "}";
       }

@@ -34,6 +34,10 @@ public object TestQuerySelections {
       )
 
   private val friends1: List<CompiledSelection> = listOf(
+        CompiledField.Builder(
+          name = "__typename",
+          type = GraphQLString.type.notNull()
+        ).build(),
         CompiledFragment.Builder(
           typeCondition = "Character",
           possibleTypes = listOf("Droid", "Human")
@@ -54,6 +58,10 @@ public object TestQuerySelections {
       )
 
   private val friends2: List<CompiledSelection> = listOf(
+        CompiledField.Builder(
+          name = "__typename",
+          type = GraphQLString.type.notNull()
+        ).build(),
         CompiledField.Builder(
           name = "id",
           type = GraphQLID.type.notNull()

@@ -2,6 +2,7 @@ package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_1_1
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.toSchema
@@ -22,8 +23,15 @@ const val MODELS_OPERATION_BASED = "operationBased"
 @ApolloDeprecatedSince(v3_0_0)
 const val MODELS_COMPAT = "compat"
 
+
+@Deprecated(
+    "MODELS_COMPAT is provided for compatibility and will be removed in a future version.",
+    replaceWith = ReplaceWith("ADD_TYPENAME_IF_ABSTRACT")
+)
+@ApolloDeprecatedSince(v3_1_1)
 const val ADD_TYPENAME_IF_FRAGMENTS = "ifFragments"
 const val ADD_TYPENAME_IF_POLYMORPHIC = "ifPolymorphic"
+const val ADD_TYPENAME_IF_ABSTRACT = "ifAbstract"
 
 enum class TargetLanguage {
   // The order is important. See [isTargetLanguageVersionAtLeast]
@@ -288,7 +296,7 @@ class Options(
     const val defaultGenerateQueryDocument = true
     const val defaultModuleName = "apollographql"
     const val defaultCodegenModels = MODELS_OPERATION_BASED
-    const val defaultAddTypename = ADD_TYPENAME_IF_POLYMORPHIC
+    const val defaultAddTypename = ADD_TYPENAME_IF_ABSTRACT
     const val defaultFlattenModels = true
     val defaultTargetLanguage = TargetLanguage.KOTLIN_1_5
     const val defaultGenerateSchema = false

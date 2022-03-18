@@ -1,0 +1,9 @@
+query TestQuery {
+  hero @_apolloHasTypename {
+    __typename
+    ... on Droid {
+      name
+      primaryFunction
+    }
+  }
+}

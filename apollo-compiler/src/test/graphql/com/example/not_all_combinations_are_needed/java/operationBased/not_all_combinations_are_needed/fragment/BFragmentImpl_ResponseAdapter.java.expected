@@ -7,6 +7,7 @@ package com.example.not_all_combinations_are_needed.fragment;
 
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -20,22 +21,27 @@ public class BFragmentImpl_ResponseAdapter {
   public enum BFragment implements Adapter<com.example.not_all_combinations_are_needed.fragment.BFragment> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("fieldB1");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "fieldB1");
 
     @Override
     public com.example.not_all_combinations_are_needed.fragment.BFragment fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+      String __typename = null;
       String fieldB1 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: fieldB1 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: fieldB1 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
+      Assertions.checkFieldNotMissing(__typename, "__typename");
+
       return new com.example.not_all_combinations_are_needed.fragment.BFragment(
+        __typename,
         fieldB1
       );
     }
@@ -43,6 +49,9 @@ public class BFragmentImpl_ResponseAdapter {
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         com.example.not_all_combinations_are_needed.fragment.BFragment value) throws IOException {
+      writer.name("__typename");
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+
       writer.name("fieldB1");
       Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldB1);
     }

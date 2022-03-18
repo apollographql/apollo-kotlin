@@ -49,6 +49,7 @@ public data class TestQuery @JvmOverloads constructor(
     public val hero: Hero?
   ) : Query.Data {
     public data class Hero(
+      public val __typename: String,
       /**
        * The name of the character
        */
@@ -58,7 +59,7 @@ public data class TestQuery @JvmOverloads constructor(
 
   public companion object {
     public const val OPERATION_ID: String =
-        "7bba59b12a0090dd1fbc4c409ea7e72bd6885a6b31d442bfeb86f4a67e5b62d9"
+        "dd0d3e58d18ffac454c7f37e2c30392917d7a983b987e42872863c2a97411cd3"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -66,12 +67,13 @@ public data class TestQuery @JvmOverloads constructor(
      *
      * query TestQuery($episode: Episode! = JEDI ) {
      *   hero(episode: $episode) {
+     *     __typename
      *     name
      *   }
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query TestQuery(${'$'}episode: Episode! = JEDI ) { hero(episode: ${'$'}episode) { name } }"
+        "query TestQuery(${'$'}episode: Episode! = JEDI ) { hero(episode: ${'$'}episode) { __typename name } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

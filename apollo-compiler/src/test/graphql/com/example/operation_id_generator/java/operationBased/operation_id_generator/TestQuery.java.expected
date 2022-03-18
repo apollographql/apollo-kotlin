@@ -27,12 +27,13 @@ public class TestQuery implements Query<TestQuery.Data> {
    *
    * query TestQuery {
    *   hero {
+   *     __typename
    *     id
    *     name
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery { hero { id name } }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery { hero { __typename id name } }";
 
   public static final String OPERATION_NAME = "TestQuery";
 
@@ -161,6 +162,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Hero {
+    public String __typename;
+
     /**
      * The ID of the character
      */
@@ -177,7 +180,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(String id, String name) {
+    public Hero(String __typename, String id, String name) {
+      this.__typename = __typename;
       this.id = id;
       this.name = name;
     }
@@ -189,7 +193,8 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof Hero) {
         Hero that = (Hero) o;
-        return ((this.id == null) ? (that.id == null) : this.id.equals(that.id))
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.id == null) ? (that.id == null) : this.id.equals(that.id))
          &&((this.name == null) ? (that.name == null) : this.name.equals(that.name));
       }
       return false;
@@ -199,6 +204,8 @@ public class TestQuery implements Query<TestQuery.Data> {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (id == null) ? 0 : id.hashCode();
         h *= 1000003;
@@ -213,6 +220,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Hero{"
+          + "__typename=" + __typename + ", "
           + "id=" + id + ", "
           + "name=" + name
           + "}";

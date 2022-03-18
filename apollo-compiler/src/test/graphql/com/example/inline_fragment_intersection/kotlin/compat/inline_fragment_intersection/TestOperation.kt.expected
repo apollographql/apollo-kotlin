@@ -122,12 +122,13 @@ public class TestOperation() : Query<TestOperation.Data> {
   )
 
   public data class Friend2(
+    public val __typename: String,
     public val lifeExpectancy: Double?
   )
 
   public companion object {
     public const val OPERATION_ID: String =
-        "34e1bab0973fc9b12667523185f43283ba7c800196dcceae43c788e31a7d67f6"
+        "41156b750eef7a8ae6d87799752cd5a929aec5d8a3a5717cb0f91aa0ac91c13e"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -159,6 +160,7 @@ public class TestOperation() : Query<TestOperation.Data> {
      *     ... on Wookie {
      *       race
      *       friends {
+     *         __typename
      *         lifeExpectancy
      *       }
      *     }
@@ -174,7 +176,7 @@ public class TestOperation() : Query<TestOperation.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query TestOperation { random { __typename ... on Being { name friends { __typename name ... on Wookie { lifeExpectancy } } ... on Human { profilePictureUrl friends { __typename isFamous ... on Wookie { race } } } } ... on Wookie { race friends { lifeExpectancy } } ... on Being { friends { __typename ... on Wookie { lifeExpectancy } } } } }"
+        "query TestOperation { random { __typename ... on Being { name friends { __typename name ... on Wookie { lifeExpectancy } } ... on Human { profilePictureUrl friends { __typename isFamous ... on Wookie { race } } } } ... on Wookie { race friends { __typename lifeExpectancy } } ... on Being { friends { __typename ... on Wookie { lifeExpectancy } } } } }"
 
     public const val OPERATION_NAME: String = "TestOperation"
   }

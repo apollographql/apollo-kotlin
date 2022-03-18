@@ -113,6 +113,7 @@ public class TestQuery() : Query<TestQuery.Data> {
         public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
         public data class Friend(
+          public val __typename: String,
           /**
            * The movie this character first appears in
            */
@@ -138,6 +139,7 @@ public class TestQuery() : Query<TestQuery.Data> {
         public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
         public data class Friend(
+          public val __typename: String,
           /**
            * The ID of the character
            */
@@ -169,7 +171,7 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "ae55ac1276d47b97dc450882d0c8ee2e470beac46211d35f0236c1b34c508509"
+        "5450032fd838d0216d8b419846d25e09f98228b403e520aacd7eb68cd838f4da"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -189,6 +191,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      *         ... on Human {
      *           homePlanet
      *           friends {
+     *             __typename
      *             ... on Character {
      *               firstAppearsIn
      *             }
@@ -197,6 +200,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      *         ... on Droid {
      *           primaryFunction
      *           friends {
+     *             __typename
      *             id
      *           }
      *         }
@@ -209,7 +213,7 @@ public class TestQuery() : Query<TestQuery.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query TestQuery { search(text: \"test\") { __typename ... on Character { id name friends { __typename ... on Character { name } ... on Human { homePlanet friends { ... on Character { firstAppearsIn } } } ... on Droid { primaryFunction friends { id } } } } ... on Starship { name } } }"
+        "query TestQuery { search(text: \"test\") { __typename ... on Character { id name friends { __typename ... on Character { name } ... on Human { homePlanet friends { __typename ... on Character { firstAppearsIn } } } ... on Droid { primaryFunction friends { __typename id } } } } ... on Starship { name } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

@@ -18,6 +18,10 @@ import kotlin.collections.List
 
 public object QueryFragmentSelections {
   private val hero: List<CompiledSelection> = listOf(
+        CompiledField.Builder(
+          name = "__typename",
+          type = GraphQLString.type.notNull()
+        ).build(),
         CompiledFragment.Builder(
           typeCondition = "Character",
           possibleTypes = (listOf("Droid", "Human"))

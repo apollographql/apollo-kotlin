@@ -51,24 +51,28 @@ public object TestQuery_ResponseAdapter {
   }
 
   public object Hero : Adapter<TestQuery.Hero> {
-    public val RESPONSE_NAMES: List<String> = listOf("name", "friendsConnection", "profileLink")
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friendsConnection",
+        "profileLink")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Hero {
+      var __typename: String? = null
       var name: String? = null
       var friendsConnection: TestQuery.FriendsConnection? = null
       var profileLink: Any? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
-          2 -> profileLink = AnyAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
+          3 -> profileLink = AnyAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Hero(
+        __typename = __typename!!,
         name = name!!,
         friendsConnection = friendsConnection!!,
         profileLink = profileLink!!
@@ -80,6 +84,9 @@ public object TestQuery_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Hero
     ): Unit {
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
@@ -151,20 +158,23 @@ public object TestQuery_ResponseAdapter {
   }
 
   public object Node : Adapter<TestQuery.Node> {
-    public val RESPONSE_NAMES: List<String> = listOf("name")
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Node {
+      var __typename: String? = null
       var name: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Node(
+        __typename = __typename!!,
         name = name!!
       )
     }
@@ -174,6 +184,9 @@ public object TestQuery_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Node
     ): Unit {
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
     }

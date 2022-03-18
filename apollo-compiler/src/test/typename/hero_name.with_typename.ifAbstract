@@ -1,0 +1,11 @@
+query TestQuery {
+  hero @_apolloHasTypename {
+    __typename
+    name
+  }
+  hero @_apolloHasTypename {
+    __typename
+    id
+    name
+  }
+}

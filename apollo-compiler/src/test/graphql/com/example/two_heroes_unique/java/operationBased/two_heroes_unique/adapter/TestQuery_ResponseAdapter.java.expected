@@ -61,24 +61,28 @@ public class TestQuery_ResponseAdapter {
   public enum R2 implements Adapter<TestQuery.R2> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name");
 
     @Override
     public TestQuery.R2 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
+      String __typename = null;
       String name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
+      Assertions.checkFieldNotMissing(__typename, "__typename");
       Assertions.checkFieldNotMissing(name, "name");
 
       return new TestQuery.R2(
+        __typename,
         name
       );
     }
@@ -86,6 +90,9 @@ public class TestQuery_ResponseAdapter {
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.R2 value) throws IOException {
+      writer.name("__typename");
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+
       writer.name("name");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
     }
@@ -94,27 +101,31 @@ public class TestQuery_ResponseAdapter {
   public enum Luke implements Adapter<TestQuery.Luke> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("id", "name");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "id", "name");
 
     @Override
     public TestQuery.Luke fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
+      String __typename = null;
       String id = null;
       String name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 2: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
+      Assertions.checkFieldNotMissing(__typename, "__typename");
       Assertions.checkFieldNotMissing(id, "id");
       Assertions.checkFieldNotMissing(name, "name");
 
       return new TestQuery.Luke(
+        __typename,
         id,
         name
       );
@@ -123,6 +134,9 @@ public class TestQuery_ResponseAdapter {
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Luke value) throws IOException {
+      writer.name("__typename");
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+
       writer.name("id");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.id);
 

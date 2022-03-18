@@ -25,6 +25,8 @@ public interface DroidDetails {
   public val friends: List<Friend?>?
 
   public interface Friend {
+    public val __typename: String
+
     /**
      * The name of the character
      */

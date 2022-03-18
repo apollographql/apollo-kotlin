@@ -163,24 +163,28 @@ public class TestQuery_ResponseAdapter {
   public enum Friend implements Adapter<TestQuery.Friend> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("appearsIn");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "appearsIn");
 
     @Override
     public TestQuery.Friend fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
+      String __typename = null;
       List<Episode> appearsIn = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: appearsIn = new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: appearsIn = new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
+      Assertions.checkFieldNotMissing(__typename, "__typename");
       Assertions.checkFieldNotMissing(appearsIn, "appearsIn");
 
       return new TestQuery.Friend(
+        __typename,
         appearsIn
       );
     }
@@ -188,6 +192,9 @@ public class TestQuery_ResponseAdapter {
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Friend value) throws IOException {
+      writer.name("__typename");
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+
       writer.name("appearsIn");
       new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, customScalarAdapters, value.appearsIn);
     }
@@ -233,24 +240,28 @@ public class TestQuery_ResponseAdapter {
   public enum Friend1 implements Adapter<TestQuery.Friend1> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("id");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "id");
 
     @Override
     public TestQuery.Friend1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
+      String __typename = null;
       String id = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
+      Assertions.checkFieldNotMissing(__typename, "__typename");
       Assertions.checkFieldNotMissing(id, "id");
 
       return new TestQuery.Friend1(
+        __typename,
         id
       );
     }
@@ -258,6 +269,9 @@ public class TestQuery_ResponseAdapter {
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         TestQuery.Friend1 value) throws IOException {
+      writer.name("__typename");
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+
       writer.name("id");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.id);
     }

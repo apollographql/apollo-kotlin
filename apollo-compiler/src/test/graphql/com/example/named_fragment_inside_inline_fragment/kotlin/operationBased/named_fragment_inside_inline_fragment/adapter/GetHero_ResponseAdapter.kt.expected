@@ -7,6 +7,7 @@ package com.example.named_fragment_inside_inline_fragment.adapter
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -46,15 +47,25 @@ public object GetHero_ResponseAdapter {
     }
 
     private object Hero : Adapter<GetHero.Data.Hero> {
+      public val RESPONSE_NAMES: List<String> = listOf("__typename")
+
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           GetHero.Data.Hero {
+        var __typename: String? = null
 
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            else -> break
+          }
+        }
 
         reader.rewind()
         val onCharacter = com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.Data.Hero.OnCharacter.fromJson(reader,
             customScalarAdapters)
 
         return GetHero.Data.Hero(
+          __typename = __typename!!,
           onCharacter = onCharacter
         )
       }
@@ -64,6 +75,9 @@ public object GetHero_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         `value`: GetHero.Data.Hero
       ): Unit {
+        writer.name("__typename")
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
         com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.Data.Hero.OnCharacter.toJson(writer,
             customScalarAdapters, value.onCharacter)
       }
