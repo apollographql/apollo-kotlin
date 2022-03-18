@@ -32,7 +32,7 @@ jobs:
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
-      - uses: actions/upload-artifact@v2.2.4
+      - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: tests-gradle.zip
@@ -57,7 +57,7 @@ jobs:
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
-      - uses: actions/upload-artifact@v2.2.4
+      - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: tests-no-gradle.zip
@@ -82,7 +82,7 @@ jobs:
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
-      - uses: actions/upload-artifact@v2.2.4
+      - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: tests-integration.zip
@@ -107,7 +107,7 @@ jobs:
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
-      - uses: actions/upload-artifact@v2.2.4
+      - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: tests-integration.zip

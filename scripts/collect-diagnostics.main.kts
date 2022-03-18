@@ -7,7 +7,7 @@
  *      - name: Collect Diagnostics
  *        if: always()
  *        run: ./scripts/collect-diagnostics.main.kts
- *      - uses: actions/upload-artifact@v2.2.4
+ *      - uses: actions/upload-artifact@v3
  *        if: always()
  *        with:
  *          name: diagnostics
