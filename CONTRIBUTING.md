@@ -165,7 +165,7 @@ following events:
 
 **Job:**
 
-- `publish`
+- `deploy`
     - Runs on macOS
     - Slow
     - Run all tests
