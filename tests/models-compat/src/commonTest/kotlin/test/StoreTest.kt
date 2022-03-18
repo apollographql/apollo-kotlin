@@ -89,6 +89,7 @@ class StoreTest {
     mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNamesWithIDs.json"))
     val query = HeroAndFriendsWithFragmentsQuery()
     var response = apolloClient.query(query).execute()
+    assertEquals(response.data?.hero?.__typename, "Droid")
     assertEquals(response.data?.hero?.fragments?.heroWithFriendsFragment?.id, "2001")
     assertEquals(response.data?.hero?.fragments?.heroWithFriendsFragment?.name, "R2-D2")
     assertEquals(response.data?.hero?.fragments?.heroWithFriendsFragment?.friends?.size, 3)
@@ -139,6 +140,7 @@ class StoreTest {
 
     // Values should have changed
     response = apolloClient.query(query).execute()
+    assertEquals(response.data?.hero?.__typename, "Droid")
     assertEquals(response.data?.hero?.fragments?.heroWithFriendsFragment?.id, "2001")
     assertEquals(response.data?.hero?.fragments?.heroWithFriendsFragment?.name, "R222-D222")
     assertEquals(response.data?.hero?.fragments?.heroWithFriendsFragment?.friends?.size, 2)
