@@ -438,7 +438,7 @@ interface Service {
   /**
    * When to add __typename. One of "ifFragments", "ifAbstract" or "ifPolymorphic"
    *
-   * Default value: "ifAbstract"
+   * Default value: "ifFragments"
    */
   val addTypename: Property<String>
 
