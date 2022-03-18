@@ -37,6 +37,7 @@ jobs:
         with:
           name: tests-gradle.zip
           path: diagnostics.zip
+
   tests-no-gradle:
     runs-on: macos-11
     steps:
@@ -62,6 +63,7 @@ jobs:
         with:
           name: tests-no-gradle.zip
           path: diagnostics.zip
+
   tests-integration:
     runs-on: macos-11
     steps:
@@ -87,6 +89,7 @@ jobs:
         with:
           name: tests-integration.zip
           path: diagnostics.zip
+
   tests-java9:
     runs-on: ubuntu-20.04
     steps:
