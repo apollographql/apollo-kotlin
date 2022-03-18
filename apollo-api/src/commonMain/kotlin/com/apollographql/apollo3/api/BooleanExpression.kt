@@ -33,7 +33,7 @@ sealed class BooleanExpression<out T : Any> {
   }
 
   data class Or<T : Any>(val operands: Set<BooleanExpression<T>>) : BooleanExpression<T>() {
-    constructor(vararg operands: BooleanExpression<T>): this(operands.toSet())
+    constructor(vararg operands: BooleanExpression<T>) : this(operands.toSet())
 
     init {
       check(operands.isNotEmpty()) {
@@ -59,7 +59,7 @@ sealed class BooleanExpression<out T : Any> {
   }
 
   data class And<T : Any>(val operands: Set<BooleanExpression<T>>) : BooleanExpression<T>() {
-    constructor(vararg operands: BooleanExpression<T>): this(operands.toSet())
+    constructor(vararg operands: BooleanExpression<T>) : this(operands.toSet())
 
     init {
       check(operands.isNotEmpty()) {
@@ -96,6 +96,7 @@ fun <T : Any> or(vararg other: BooleanExpression<T>): BooleanExpression<T> = Boo
 fun <T : Any> and(vararg other: BooleanExpression<T>): BooleanExpression<T> = BooleanExpression.And((other.toList()).toSet())
 fun <T : Any> not(other: BooleanExpression<T>): BooleanExpression<T> = BooleanExpression.Not(other)
 fun variable(name: String): BooleanExpression<BVariable> = BooleanExpression.Element(BVariable(name))
+fun defer(ifVariable: String?, label: String?): BooleanExpression<BDefer> = BooleanExpression.Element(BDefer(ifVariable, label))
 fun possibleTypes(vararg typenames: String): BooleanExpression<BPossibleTypes> = BooleanExpression.Element(BPossibleTypes(typenames.toSet()))
 
 fun <T : Any> BooleanExpression<T>.evaluate(block: (T) -> Boolean): Boolean {
@@ -109,10 +110,16 @@ fun <T : Any> BooleanExpression<T>.evaluate(block: (T) -> Boolean): Boolean {
   }
 }
 
-fun BooleanExpression<BTerm>.evaluate(variables: Set<String>, typename: String?): Boolean {
+fun BooleanExpression<BTerm>.evaluate(variables: Set<String>, typename: String?, adapterContext: AdapterContext, path: String): Boolean {
   return evaluate {
-    when(it) {
+    when (it) {
       is BVariable -> variables.contains(it.name)
+      is BDefer -> {
+        val isDefer = it.ifVariable == null || variables.contains(it.ifVariable)
+        val fragmentFieldsPresent = adapterContext.hasDeferredFragment(path, it.label)
+        // Read the fields if the fragment is not defer, or if it is and the fragment has been received
+        !isDefer || fragmentFieldsPresent
+      }
       is BPossibleTypes -> it.possibleTypes.contains(typename)
     }
   }
@@ -125,14 +132,21 @@ sealed class BTerm
 
 /**
  * A term that comes from @include/@skip directives and that needs to be matched against operation variables
+ * TODO rename to BInclude
  */
 data class BVariable(val name: String) : BTerm()
+
+/**
+ * A term that comes from @defer directives and that needs to be matched against operation variables, label, and path
+ * @param ifVariable if `null` it means the value of `if` was `true` (or not present), otherwise it is a variable name
+ */
+data class BDefer(val ifVariable: String?, val label: String?) : BTerm()
 
 /**
  * A term that comes from a fragment type condition and that needs to be matched against __typename
  */
 data class BPossibleTypes(val possibleTypes: Set<String>) : BTerm() {
-  constructor(vararg types: String): this(types.toSet())
+  constructor(vararg types: String) : this(types.toSet())
 }
 
 

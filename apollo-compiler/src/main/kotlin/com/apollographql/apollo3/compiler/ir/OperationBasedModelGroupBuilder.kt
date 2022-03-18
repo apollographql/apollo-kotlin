@@ -289,7 +289,7 @@ internal class OperationBasedModelGroupBuilder(
           /**
            * That's more involved than the inline fragment case because fragment spreads have different @include/@skip directives get merged together
            */
-          childCondition = BooleanExpression.Or(fragmentSpreadsWithSameName.map { it.directives.toBooleanExpression() }.toSet())
+          childCondition = BooleanExpression.Or(fragmentSpreadsWithSameName.map { it.directives.toIncludeAndDeferBooleanExpression() }.toSet())
               .simplify()
               .and(childCondition)
               .simplify()

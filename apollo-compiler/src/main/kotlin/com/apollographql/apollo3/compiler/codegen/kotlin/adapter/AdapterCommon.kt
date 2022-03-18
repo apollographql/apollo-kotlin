@@ -121,7 +121,7 @@ internal fun readFromResponseCodeBlock(
             } else {
               "null"
             }
-            beginControlFlow("if·(%L.%M($customScalarAdapters.adapterContext.variables(),·$typenameLiteral))", property.condition.codeBlock(), evaluate)
+            beginControlFlow("if·(%L.%M($customScalarAdapters.adapterContext.variables(),·$typenameLiteral,·$customScalarAdapters.adapterContext,·$reader.getPath()))", property.condition.codeBlock(), evaluate)
             add("$reader.rewind()\n")
           } else {
             checkedProperties.add(property.info.responseName)
