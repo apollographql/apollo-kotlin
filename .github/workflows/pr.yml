@@ -15,7 +15,7 @@ jobs:
   tests-gradle:
     runs-on: macos-11
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: set up JDK 1.8
         uses: actions/setup-java@v1
         with:
@@ -39,7 +39,7 @@ jobs:
   tests-no-gradle:
     runs-on: macos-11
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: set up JDK 1.8
         uses: actions/setup-java@v1
         with:
@@ -63,7 +63,7 @@ jobs:
   tests-integration:
     runs-on: macos-11
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: set up JDK 1.8
         uses: actions/setup-java@v1
         with:
@@ -87,7 +87,7 @@ jobs:
   tests-java9:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: set up JDK 11
         uses: actions/setup-java@v2
         with:
