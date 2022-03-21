@@ -534,3 +534,17 @@ internal fun <D : Operation.Data> ApolloRequest.Builder<D>.fetchFromCache(fetchF
 internal val <D : Operation.Data> ApolloRequest<D>.fetchFromCache
   get() = executionContext[FetchFromCacheContext]?.value ?: false
 
+
+internal val <D : Operation.Data> ApolloResponse<D>.isLast
+  get() = executionContext[IsLastResponse.Key] != null
+
+internal fun <D : Operation.Data> ApolloResponse.Builder<D>.setLast() = apply {
+  addExecutionContext(IsLastResponse)
+}
+
+private object IsLastResponse : ExecutionContext.Element {
+  override val key: ExecutionContext.Key<*>
+    get() = Key
+
+  object Key : ExecutionContext.Key<WatchContext>
+}

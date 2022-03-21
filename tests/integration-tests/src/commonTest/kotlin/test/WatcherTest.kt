@@ -19,8 +19,11 @@ import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameWithIdQue
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
 import com.apollographql.apollo3.integration.normalizer.StarshipByIdQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
+import com.apollographql.apollo3.mockserver.MockResponse
+import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.testing.MapTestNetworkTransport
 import com.apollographql.apollo3.testing.QueueTestNetworkTransport
+import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.testing.enqueueTestNetworkError
 import com.apollographql.apollo3.testing.enqueueTestResponse
 import com.apollographql.apollo3.testing.receiveOrTimeout
@@ -33,10 +36,12 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -499,6 +504,34 @@ class WatcherTest {
 
     job.cancel()
   }
+
+  @Test
+  fun cacheAndNetworkEmitsCacheImmediately() = runTest {
+    // This doesn't use TestNetworkTransport because we need timing control
+    val mockServer = MockServer()
+    val apolloClient = ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .build()
+
+    val query = EpisodeHeroNameQuery(Episode.EMPIRE)
+
+    // Set up the cache with a "R2-D2" name
+    mockServer.enqueue(query, episodeHeroNameData)
+    apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
+
+    // Prepare next call to be a network error
+    mockServer.enqueue(MockResponse(delayMillis = Long.MAX_VALUE))
+
+    withTimeout(500) {
+      // make sure we get the cache only result
+      val response = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).watch().first()
+      assertEquals("R2-D2", response.data?.hero?.name)
+    }
+
+    mockServer.stop()
+    apolloClient.dispose()
+  }
+
 
   /**
    * watchCacheAndNetwork() with a network error on the initial call
