@@ -73,23 +73,23 @@ public object TestQuery_ResponseAdapter {
         "__typename was not found"
       }
 
-      reader.rewind()
       var asHuman: TestQuery.AsHuman? = null
       if (and(possibleTypes("Human"),and(variable("withDetails"),not(variable("skipHumanDetails")))).evaluate(customScalarAdapters.variables(), __typename)) {
+        reader.rewind()
         asHuman = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.AsHuman.fromJson(reader,
             customScalarAdapters)
       }
 
-      reader.rewind()
       var asDroid: TestQuery.AsDroid? = null
       if (and(possibleTypes("Droid"),variable("withDetails")).evaluate(customScalarAdapters.variables(), __typename)) {
+        reader.rewind()
         asDroid = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.AsDroid.fromJson(reader,
             customScalarAdapters)
       }
 
-      reader.rewind()
       var asCharacter: TestQuery.AsCharacter? = null
       if (variable("withDetails").evaluate(customScalarAdapters.variables(), null)) {
+        reader.rewind()
         asCharacter = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.AsCharacter.fromJson(reader,
             customScalarAdapters)
       }

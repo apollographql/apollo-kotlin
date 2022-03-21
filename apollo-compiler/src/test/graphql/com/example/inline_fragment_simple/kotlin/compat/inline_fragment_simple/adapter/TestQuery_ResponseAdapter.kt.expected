@@ -69,9 +69,9 @@ public object TestQuery_ResponseAdapter {
         "__typename was not found"
       }
 
-      reader.rewind()
       var asHuman: TestQuery.AsHuman? = null
       if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+        reader.rewind()
         asHuman = com.example.inline_fragment_simple.adapter.TestQuery_ResponseAdapter.AsHuman.fromJson(reader,
             customScalarAdapters)
       }
