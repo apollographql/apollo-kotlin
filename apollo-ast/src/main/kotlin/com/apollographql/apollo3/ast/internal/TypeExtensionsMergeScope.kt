@@ -30,12 +30,12 @@ internal fun ValidationScope.mergeExtensions(definitions: List<GQLDefinition>): 
   return extensions.fold(otherDefinitions) { acc, extension ->
     when (extension) {
       is GQLSchemaExtension -> mergeSchemaExtension(acc, schemaExtension = extension)
-      is GQLScalarTypeExtension -> merge<GQLScalarTypeDefinition, GQLScalarTypeExtension>(acc, extension) { merge(it, extension) }
-      is GQLInterfaceTypeExtension -> merge<GQLInterfaceTypeDefinition, GQLInterfaceTypeExtension>(acc, extension) { merge(it, extension) }
-      is GQLObjectTypeExtension -> merge<GQLObjectTypeDefinition, GQLObjectTypeExtension>(acc, extension) { merge(it, extension) }
-      is GQLInputObjectTypeExtension -> merge<GQLInputObjectTypeDefinition, GQLInputObjectTypeExtension>(acc, extension) { merge(it, extension) }
-      is GQLEnumTypeExtension -> merge<GQLEnumTypeDefinition, GQLEnumTypeExtension>(acc, extension) { merge(it, extension) }
-      is GQLUnionTypeExtension -> merge<GQLUnionTypeDefinition, GQLUnionTypeExtension>(acc, extension) { merge(it, extension) }
+      is GQLScalarTypeExtension -> merge<GQLScalarTypeDefinition, GQLScalarTypeExtension>(acc, extension, "scalar") { merge(it, extension) }
+      is GQLInterfaceTypeExtension -> merge<GQLInterfaceTypeDefinition, GQLInterfaceTypeExtension>(acc, extension, "interface") { merge(it, extension) }
+      is GQLObjectTypeExtension -> merge<GQLObjectTypeDefinition, GQLObjectTypeExtension>(acc, extension, "object") { merge(it, extension) }
+      is GQLInputObjectTypeExtension -> merge<GQLInputObjectTypeDefinition, GQLInputObjectTypeExtension>(acc, extension, "input") { merge(it, extension) }
+      is GQLEnumTypeExtension -> merge<GQLEnumTypeDefinition, GQLEnumTypeExtension>(acc, extension, "enum") { merge(it, extension) }
+      is GQLUnionTypeExtension -> merge<GQLUnionTypeDefinition, GQLUnionTypeExtension>(acc, extension, "union") { merge(it, extension) }
       else -> throw UnrecognizedAntlrRule("Unrecognized type system extension", extension.sourceLocation)
     }
   }
@@ -124,6 +124,7 @@ private fun ValidationScope.merge(
 private inline fun <reified T, E> ValidationScope.merge(
     definitions: List<GQLDefinition>,
     extension: E,
+    extra: String,
     merge: (T) -> T,
 ): List<GQLDefinition> where T : GQLDefinition, T : GQLNamed, E : GQLNamed, E : GQLNode = with(definitions) {
   var found = false
@@ -140,7 +141,7 @@ private inline fun <reified T, E> ValidationScope.merge(
     }
   }
   if (!found) {
-    issues.add(Issue.ValidationError("Cannot find type `${extension.name}` to apply extension", extension.sourceLocation))
+    issues.add(Issue.ValidationError("Cannot find $extra type `${extension.name}` to apply extension", extension.sourceLocation))
   }
   return newDefinitions
 }
