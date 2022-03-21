@@ -41,6 +41,9 @@ actual class DefaultWebSocketEngine : WebSocketEngine {
         }
       }
     }
+    socket.onclose = {
+      messageChannel.close()
+    }
     return object : WebSocketConnection {
       override suspend fun receive(): String {
         return messageChannel.receive()
