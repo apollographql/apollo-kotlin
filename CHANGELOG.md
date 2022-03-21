@@ -1,5 +1,62 @@
 Change Log
 ==========
+# Version 3.x.y
+
+_2022-XX-YY_
+
+## ✨️ [new] Fine grained `__typename` control (#3939)
+
+This version generates non-nullable fragments when it knows the fragment is always present:
+
+```graphql
+{
+  cat {
+    # Because Animal is a supertype of Cat this condition will always be true
+    ... on Animal {
+      species
+    }
+  }
+}
+```
+
+In addition, it introduces a `addTypename` Gradle option to have better control over when to add the `__typename` field
+
+```kotlin
+apollo {
+  /**
+   * Add '__typename' for abstract fields, i.e. fields that are of union or interface type
+   *
+   * `"ifAbstract"` is a good and simple value that will work most of the times.
+   *
+   * Note: It also adds '__typename' on fragment definitions that satisfy the same property because fragments
+   * could be read from the cache and we don't have a containing field in that case.
+   **/
+  addTypename.set("ifAbstract")
+
+  /**
+   * Add '__typename' for polymorphic fields, i.e. fields that contains a subfragment
+   * (inline or named) whose type condition isn't a super type of the field type.
+   * If a field is monomorphic, no '__typename' will be added.
+   *
+   * `"ifPolymorphic"` adds the bare minimum number of `__typename`. If you're using the cache it can lead
+   * to some extra cache misses because of a missing `__typename` so test before you opt-in
+   * 
+   * Note: It also adds '__typename' on fragment definitions that satisfy the same property because fragments
+   * could be read from the cache and we don't have a containing field in that case.
+   **/
+  addTypename.set("ifPolymorphic")
+
+
+  /**
+   * Add '__typename' for every selection set that contains fragments (inline or named) (Default)
+   *
+   * `"ifFragments"` is adding a lot more '__typename' than the above "ifPolymorphic" and "isAbstract" and will be removed in
+   * a future version. If you require '__typename' explicitely, you should add it to your queries.
+   **/
+  addTypename.set("ifFragments")
+}
+```
+
 
 # Version 3.1.0
 
