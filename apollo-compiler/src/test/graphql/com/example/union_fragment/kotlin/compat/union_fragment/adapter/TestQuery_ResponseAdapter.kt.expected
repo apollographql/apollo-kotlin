@@ -72,9 +72,9 @@ public object TestQuery_ResponseAdapter {
         "__typename was not found"
       }
 
-      reader.rewind()
       var asStarship: TestQuery.AsStarship? = null
       if (possibleTypes("Starship").evaluate(customScalarAdapters.variables(), __typename)) {
+        reader.rewind()
         asStarship = com.example.union_fragment.adapter.TestQuery_ResponseAdapter.AsStarship.fromJson(reader,
             customScalarAdapters)
       }
@@ -115,9 +115,9 @@ public object TestQuery_ResponseAdapter {
         reader.rewind()
         val __typename = reader.readTypename()
 
-        reader.rewind()
         var starship: Starship? = null
         if (possibleTypes("Starship").evaluate(customScalarAdapters.variables(), __typename)) {
+          reader.rewind()
           starship = com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter.Starship.fromJson(reader,
               customScalarAdapters)
         }

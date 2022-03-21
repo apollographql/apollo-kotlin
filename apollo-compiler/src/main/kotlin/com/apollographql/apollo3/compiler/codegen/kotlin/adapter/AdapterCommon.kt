@@ -109,7 +109,6 @@ internal fun readFromResponseCodeBlock(
   val syntheticLoop = syntheticProperties.map { property ->
     val evaluate = MemberName("com.apollographql.apollo3.api", "evaluate")
     CodeBlock.builder()
-        .add("$reader.rewind()\n")
         .apply {
           if (property.condition != BooleanExpression.True) {
             add(
@@ -123,8 +122,10 @@ internal fun readFromResponseCodeBlock(
               "null"
             }
             beginControlFlow("if·(%L.%M($customScalarAdapters.variables(),·$typenameLiteral))", property.condition.codeBlock(), evaluate)
+            add("$reader.rewind()\n")
           } else {
             checkedProperties.add(property.info.responseName)
+            add("$reader.rewind()\n")
             add("val·")
           }
         }

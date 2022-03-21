@@ -78,15 +78,15 @@ public class TestQuery_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      reader.rewind();
       DroidDetails droidDetails = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         droidDetails = com.example.named_fragment_delegate.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
-      reader.rewind();
       HumanDetails humanDetails = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         humanDetails = com.example.named_fragment_delegate.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 

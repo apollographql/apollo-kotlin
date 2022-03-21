@@ -80,9 +80,9 @@ public class GetPage_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      reader.rewind();
       GetPage.OnParticularCollection onParticularCollection = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ParticularCollection")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         onParticularCollection = com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularCollection.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
@@ -195,9 +195,9 @@ public class GetPage_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      reader.rewind();
       GetPage.OnParticularItem onParticularItem = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ParticularItem")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         onParticularItem = com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularItem.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 

@@ -81,9 +81,9 @@ public class TestQuery_ResponseAdapter {
       reader.rewind();
       HeroDetails heroDetails = com.example.fragment_used_twice.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.INSTANCE.fromJson(reader, customScalarAdapters);
 
-      reader.rewind();
       HumanDetails humanDetails = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         humanDetails = com.example.fragment_used_twice.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 

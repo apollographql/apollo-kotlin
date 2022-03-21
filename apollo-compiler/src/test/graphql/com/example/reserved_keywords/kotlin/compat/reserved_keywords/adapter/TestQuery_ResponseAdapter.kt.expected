@@ -111,9 +111,9 @@ public object TestQuery_ResponseAdapter {
         "__typename was not found"
       }
 
-      reader.rewind()
       var asCharacter: TestQuery.AsCharacter? = null
       if (possibleTypes("Droid","Human").evaluate(customScalarAdapters.variables(), __typename)) {
+        reader.rewind()
         asCharacter = com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.AsCharacter.fromJson(reader,
             customScalarAdapters)
       }

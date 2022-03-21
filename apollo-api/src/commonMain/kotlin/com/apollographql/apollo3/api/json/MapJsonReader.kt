@@ -5,6 +5,7 @@ import com.apollographql.apollo3.api.json.BufferedSourceJsonReader.Companion.MAX
 import com.apollographql.apollo3.api.json.internal.toDoubleExact
 import com.apollographql.apollo3.api.json.internal.toIntExact
 import com.apollographql.apollo3.api.json.internal.toLongExact
+import com.apollographql.apollo3.exception.JsonDataException
 
 /**
  * A [JsonReader] that reads data from a regular [Map<String, Any?>]
@@ -23,103 +24,39 @@ import com.apollographql.apollo3.api.json.internal.toLongExact
  *
  * @param root the root [Map] to read from
  *
- * Because it's mostly used internally the checks/verifications are very slim.
  * To read from a [okio.BufferedSource], see also [BufferedSourceJsonReader]
  */
 class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
-  // Like a Map but easier to access sequentially
-  // Could be optimized
-  private class OrderedMap(val entries: List<Entry>)
-  private class Entry(val key: String, val value: Any?)
 
-  private val dataStack = arrayOfNulls<Any>(MAX_STACK_SIZE)
-  private val indexStack = IntArray(MAX_STACK_SIZE)
+  private var peekedToken: JsonReader.Token
+
+  /**
+   * Depending on what [peekedToken] is, [peekedData] can be safely cast to a Map, Entry
+   * or other values
+   */
+  private var peekedData: Any? = null
+
+
+  /**
+   * Can contain either:
+   * - an Int representing the next index to be read in a List
+   * - a String representing the current key to be read in a Map
+   * - null if peekedToken is BEGIN_OBJECT
+   */
+  private val path = arrayOfNulls<Any>(MAX_STACK_SIZE)
+
+  /**
+   * The current object memorized in case we need to rewind
+   */
+  private var containerStack = arrayOfNulls<Map<String, Any?>>(MAX_STACK_SIZE)
+  private val iteratorStack = arrayOfNulls<Iterator<*>>(MAX_STACK_SIZE)
   private val nameIndexStack = IntArray(MAX_STACK_SIZE)
 
   private var stackSize = 0
 
-  // Will be non-null if a name has been read and is reset when a value is read
-  // No need to stack this, when we pop, we know we have to read a new name
-  private var pendingName: String? = null
-
   init {
-    /**
-     * We only allow Maps at the root of the Json. Initialize the state accordingly
-     */
-    push(OrderedMap(listOf(Entry("root", root))))
-    pendingName = "root"
-  }
-
-  private fun push(data: Any) {
-    check(stackSize < MAX_STACK_SIZE) {
-      "Nesting too deep"
-    }
-
-    dataStack[stackSize] = data
-    indexStack[stackSize] = 0
-    nameIndexStack[stackSize] = 0
-
-    stackSize++
-    pendingName = null
-  }
-
-  private fun pop() {
-    // Allow garbage collection
-    dataStack[stackSize] = null
-    stackSize--
-    pendingName = null
-  }
-
-  /**
-   * Calls to this method must be followed by calling [consumeValue] in the normal case. This permits retrying reading the same value in the
-   * exceptional case.
-   */
-  private fun nextValue(): Any? {
-    return when (val data = dataStack[stackSize - 1]) {
-      is List<*> -> {
-        data[indexStack[stackSize - 1]]
-      }
-      is OrderedMap -> {
-        check(pendingName != null)
-        data.entries[indexStack[stackSize - 1]].value
-      }
-      else -> error("")
-    }
-  }
-
-  private fun consumeValue() {
-    pendingName = null
-    indexStack[stackSize - 1]++
-    incrementPathIndex()
-  }
-
-  override fun beginArray() = apply {
-    path += "."
-    path += -1
-    val list = nextValue()
-    check(list is List<*>)
-    consumeValue()
-    push(list)
-  }
-
-  override fun endArray() = apply {
-    pop()
-    rewindPath()
-    incrementPathIndex()
-  }
-
-  override fun beginObject() = apply {
-    path += "."
-    val map = nextValue()
-    check(map is Map<*, *>)
-    consumeValue()
-    push(OrderedMap(map.entries.map { Entry(it.key as String, it.value) }))
-  }
-
-  override fun endObject() = apply {
-    pop()
-    rewindPath()
-    incrementPathIndex()
+    peekedToken = JsonReader.Token.BEGIN_OBJECT
+    peekedData = root
   }
 
   private fun anyToToken(any: Any?) = when (any) {
@@ -127,114 +64,221 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
     is List<*> -> JsonReader.Token.BEGIN_ARRAY
     is Map<*, *> -> JsonReader.Token.BEGIN_OBJECT
     is Int -> JsonReader.Token.NUMBER
-    is Long -> JsonReader.Token.NUMBER
+    is Long -> JsonReader.Token.LONG
     is Double -> JsonReader.Token.NUMBER
+    is JsonNumber -> JsonReader.Token.NUMBER
     is String -> JsonReader.Token.STRING
     is Boolean -> JsonReader.Token.BOOLEAN
     else -> error("Unsupported value $any")
   }
 
+  /**
+   * Updates [peekedToken] and [peekedData]
+   *
+   * Requires [iteratorStack] and [path]
+   */
+  private fun advanceIterator() {
+    if (stackSize == 0) {
+      peekedToken = JsonReader.Token.END_DOCUMENT
+      return
+    }
+
+    val currentIterator = iteratorStack[stackSize - 1]!!
+
+    if (path[stackSize - 1] is Int) {
+      path[stackSize - 1] = (path[stackSize - 1] as Int) + 1
+    }
+
+    if (currentIterator.hasNext()) {
+      val next = currentIterator.next()
+      peekedData = next
+
+      peekedToken = when (next) {
+        is Map.Entry<*, *> -> JsonReader.Token.NAME
+        else -> anyToToken(next)
+      }
+    } else {
+      peekedToken = if (path[stackSize - 1] is Int) {
+        JsonReader.Token.END_ARRAY
+      } else {
+        JsonReader.Token.END_OBJECT
+      }
+    }
+  }
+
+  override fun beginArray() = apply {
+    if (peek() != JsonReader.Token.BEGIN_ARRAY) {
+      throw JsonDataException("Expected BEGIN_ARRAY but was ${peek()} at path ${getPath()}")
+    }
+
+    val currentValue = peekedData as List<Any?>
+
+    check(stackSize < MAX_STACK_SIZE) {
+      "Nesting too deep"
+    }
+    stackSize++
+
+    path[stackSize - 1] = -1
+    iteratorStack[stackSize - 1] = currentValue.iterator()
+    advanceIterator()
+  }
+
+  override fun endArray() = apply {
+    if (peek() != JsonReader.Token.END_ARRAY) {
+      throw JsonDataException("Expected END_ARRAY but was ${peek()} at path ${getPath()}")
+    }
+    stackSize--
+    iteratorStack[stackSize] = null // allow garbage collection
+    path[stackSize] = null // allow garbage collection
+    advanceIterator()
+  }
+
+  override fun beginObject() = apply {
+    if (peek() != JsonReader.Token.BEGIN_OBJECT) {
+      throw JsonDataException("Expected BEGIN_OBJECT but was ${peek()} at path ${getPath()}")
+    }
+
+    check(stackSize < MAX_STACK_SIZE) {
+      "Nesting too deep"
+    }
+    stackSize++
+    @Suppress("UNCHECKED_CAST")
+    containerStack[stackSize - 1] = peekedData as Map<String, Any?>
+
+    rewind()
+  }
+
+  override fun endObject() = apply {
+    if (peek() != JsonReader.Token.END_OBJECT) {
+      throw JsonDataException("Expected END_OBJECT but was ${peek()} at path ${getPath()}")
+    }
+    stackSize--
+    iteratorStack[stackSize] = null // allow garbage collection
+    path[stackSize] = null // allow garbage collection
+    containerStack[stackSize] = null // allow garbage collection
+    advanceIterator()
+  }
+
   override fun hasNext(): Boolean {
-    return when (val data = dataStack[stackSize - 1]) {
-      is List<*> -> {
-        indexStack[stackSize - 1] < data.size
-      }
-      is OrderedMap -> {
-        indexStack[stackSize - 1] < data.entries.size
-      }
-      else -> error("")
+    return when (peek()) {
+      JsonReader.Token.END_OBJECT -> false
+      JsonReader.Token.END_ARRAY -> false
+      else -> true
     }
   }
 
   override fun peek(): JsonReader.Token {
-    if (stackSize == 1 && indexStack[0] == 1) {
-      return JsonReader.Token.END_DOCUMENT
-    }
-    return when (val data = dataStack[stackSize - 1]) {
-      is List<*> -> {
-        if (indexStack[stackSize - 1] < data.size) {
-          anyToToken(data[indexStack[stackSize - 1]])
-        } else {
-          JsonReader.Token.END_ARRAY
-        }
-      }
-      is OrderedMap -> {
-        if (indexStack[stackSize - 1] < data.entries.size) {
-          if (pendingName == null) {
-            JsonReader.Token.NAME
-          } else {
-            check(pendingName == data.entries[indexStack[stackSize - 1]].key)
-            val value = data.entries[indexStack[stackSize - 1]].value
-            anyToToken(value)
-          }
-        } else {
-          JsonReader.Token.END_OBJECT
-        }
-      }
-      else -> error("")
-    }
+    return peekedToken
   }
 
   override fun nextName(): String {
-    val data = dataStack[stackSize - 1]
-    check(data is OrderedMap)
-    check(pendingName == null)
-    pendingName = data.entries[indexStack[stackSize - 1]].key
-    rewindPath()
-    path += "."
-    path += pendingName!!
-    return pendingName!!
+    if (peek() != JsonReader.Token.NAME) {
+      throw JsonDataException("Expected NAME but was ${peek()} at path ${getPath()}")
+    }
+    @Suppress("UNCHECKED_CAST")
+    val data = peekedData as Map.Entry<String, Any?>
+
+    path[stackSize - 1] = data.key
+    peekedData = data.value
+    peekedToken = anyToToken(data.value)
+    return data.key
   }
 
   override fun nextString(): String? {
-    // nextValue can be an Int or Double too
-    return (nextValue()?.toString()).also {
-      consumeValue()
+    // If we have a number, we convert it to a string
+    when (peek()) {
+      JsonReader.Token.STRING,
+      JsonReader.Token.NUMBER,
+      JsonReader.Token.LONG,
+      -> Unit
+      else -> {
+        throw JsonDataException("Expected a String but was ${peek()} at path ${getPath()}")
+      }
+    }
+
+    return (peekedData!!.toString()).also {
+      advanceIterator()
     }
   }
 
   override fun nextBoolean(): Boolean {
-    return (nextValue() as Boolean).also {
-      consumeValue()
+    if (peek() != JsonReader.Token.BOOLEAN) {
+      throw JsonDataException("Expected BOOLEAN but was ${peek()} at path ${getPath()}")
+    }
+
+    return (peekedData as Boolean).also {
+      advanceIterator()
     }
   }
 
   override fun nextNull(): Nothing? {
-    nextValue().also {
-      check(it == null)
-      consumeValue()
+    if (peek() != JsonReader.Token.NULL) {
+      throw JsonDataException("Expected NULL but was ${peek()} at path ${getPath()}")
     }
+
+    advanceIterator()
+
     return null
   }
 
   override fun nextDouble(): Double {
-    return when (val value = nextValue()) {
+    when (peek()) {
+      JsonReader.Token.STRING,
+      JsonReader.Token.NUMBER,
+      JsonReader.Token.LONG,
+      -> Unit
+      else -> {
+        throw JsonDataException("Expected a Double but was ${peek()} at path ${getPath()}")
+      }
+    }
+
+    return when (val value = peekedData) {
       is Int -> value.toDouble()
       is Long -> value.toDoubleExact()
       is Double -> value
       is String -> value.toDouble()
       is JsonNumber -> value.value.toDouble()
-      else -> error("Expected Double but got $value instead")
+      else -> error("Expected a Double but got $value instead")
     }.also {
-      consumeValue()
+      advanceIterator()
     }
   }
 
   override fun nextInt(): Int {
-    return when (val value = nextValue()) {
+    when (peek()) {
+      JsonReader.Token.STRING,
+      JsonReader.Token.NUMBER,
+      JsonReader.Token.LONG,
+      -> Unit
+      else -> {
+        throw JsonDataException("Expected an Int but was ${peek()} at path ${getPath()}")
+      }
+    }
+
+    return when (val value = peekedData) {
       is Int -> value
       is Long -> value.toIntExact()
       is Double -> value.toIntExact()
       is String -> value.toInt()
       is JsonNumber -> value.value.toInt()
-      else -> error("Expected Int but got $value instead")
+      else -> error("Expected an Int but got $value instead")
     }.also {
-      consumeValue()
+      advanceIterator()
     }
   }
 
   override fun nextLong(): Long {
-    return when (val value = nextValue()) {
+    when (peek()) {
+      JsonReader.Token.STRING,
+      JsonReader.Token.NUMBER,
+      JsonReader.Token.LONG,
+      -> Unit
+      else -> {
+        throw JsonDataException("Expected a Long but was ${peek()} at path ${getPath()}")
+      }
+    }
+
+    return when (val value = peekedData) {
       is Int -> value.toLong()
       is Long -> value
       is Double -> value.toLongExact()
@@ -242,66 +286,71 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
       is JsonNumber -> value.value.toLong()
       else -> error("Expected Int but got $value instead")
     }.also {
-      consumeValue()
+      advanceIterator()
     }
   }
 
   override fun nextNumber(): JsonNumber {
-    return when (val value = nextValue()) {
+    when (peek()) {
+      JsonReader.Token.STRING,
+      JsonReader.Token.NUMBER,
+      JsonReader.Token.LONG,
+      -> Unit
+      else -> {
+        throw JsonDataException("Expected a Number but was ${peek()} at path ${getPath()}")
+      }
+    }
+
+    return when (val value = peekedData) {
       is Int, is Long, is Double -> JsonNumber(value.toString())
       is String -> JsonNumber(value) // assert value is a valid number
       is JsonNumber -> value
       else -> error("Expected JsonNumber but got $value instead")
     }.also {
-      consumeValue()
+      advanceIterator()
     }
   }
 
   override fun skipValue() {
-    consumeValue()
+    advanceIterator()
   }
 
   override fun close() {
   }
 
-  override fun selectName(names: List<String>): Int {
-    if (names.isEmpty()) {
-      return -1
+  private fun findName(needle: String, haystack: List<String>): Int {
+    val expectedIndex = nameIndexStack[stackSize - 1]
+    if (expectedIndex < haystack.size && haystack[expectedIndex] == needle) {
+      /**
+       * Our guess succeeded
+       *
+       * Note that for a same object, haystack might have different size.
+       * For an example, for responseBased codegen and polymorphic fields, this is going
+       * to be called once with just ["__typename"] and then later on with ["__typename", "id", "name"]
+       */
+      nameIndexStack[stackSize - 1] = nameIndexStack[stackSize - 1] + 1
+      return expectedIndex
+    } else {
+      // guess failed, go back to full search
+      val index = haystack.indexOf(needle)
+      if (index != -1) {
+        // reset the prediction
+        nameIndexStack[stackSize - 1] = index + 1
+      }
+      return index
     }
+  }
 
+  override fun selectName(names: List<String>): Int {
     while (hasNext()) {
       val name = nextName()
-      val expectedIndex = nameIndexStack[stackSize - 1]
-      if (names[expectedIndex] == name) {
-        return expectedIndex.also {
-          nameIndexStack[stackSize - 1] = expectedIndex + 1
-          if (nameIndexStack[stackSize - 1] == names.size) {
-            nameIndexStack[stackSize - 1] = 0
-          }
-        }
-      } else {
-        // guess failed, fallback to full search
-        var index = expectedIndex
-        while (true) {
-          index++
-          if (index == names.size) {
-            index = 0
-          }
-          if (index == expectedIndex) {
-            break
-          }
-          if (names[index] == name) {
-            return index.also {
-              nameIndexStack[stackSize - 1] = index + 1
-              if (nameIndexStack[stackSize - 1] == names.size) {
-                nameIndexStack[stackSize - 1] = 0
-              }
-            }
-          }
-        }
-
-        skipValue()
+      val index = findName(name, names)
+      if (index != -1) {
+        return index
       }
+
+      // A name was present in the json but not in the expected list
+      skipValue()
     }
 
     return -1
@@ -311,25 +360,27 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
    * Rewinds to the beginning of the current object.
    */
   override fun rewind() {
-    indexStack[stackSize - 1] = 0
+    val container = containerStack[stackSize - 1]
+    path[stackSize - 1] = null
+    iteratorStack[stackSize - 1] = container!!.iterator()
     nameIndexStack[stackSize - 1] = 0
-    rewindPath()
+    advanceIterator()
   }
-
-  private val path = mutableListOf<Any>()
 
   override fun getPath(): String {
-    // Drop the first "."
-    return path.drop(1).joinToString("")
-  }
-
-  private fun incrementPathIndex() {
-    if (path.lastOrNull() is Int) path[path.lastIndex] = (path.last() as Int) + 1
-  }
-
-  private fun rewindPath() {
-    while (path.isNotEmpty() && path.last() != ".") path.removeLast()
-    path.removeLastOrNull()
+    var isRoot = true
+    return buildString {
+      for (index in 0.until(stackSize)) {
+        val element = path[index]
+        if (!isRoot) {
+          append('.')
+        }
+        if (element != null) {
+          append(element.toString())
+          isRoot = false
+        }
+      }
+    }
   }
 
   companion object {

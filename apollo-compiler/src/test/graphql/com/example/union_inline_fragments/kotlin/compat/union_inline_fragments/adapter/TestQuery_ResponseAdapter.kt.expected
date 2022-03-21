@@ -73,16 +73,16 @@ public object TestQuery_ResponseAdapter {
         "__typename was not found"
       }
 
-      reader.rewind()
       var asCharacter: TestQuery.AsCharacter? = null
       if (possibleTypes("Droid","Human").evaluate(customScalarAdapters.variables(), __typename)) {
+        reader.rewind()
         asCharacter = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.AsCharacter.fromJson(reader,
             customScalarAdapters)
       }
 
-      reader.rewind()
       var asStarship: TestQuery.AsStarship? = null
       if (possibleTypes("Starship").evaluate(customScalarAdapters.variables(), __typename)) {
+        reader.rewind()
         asStarship = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.AsStarship.fromJson(reader,
             customScalarAdapters)
       }
@@ -183,16 +183,16 @@ public object TestQuery_ResponseAdapter {
         "__typename was not found"
       }
 
-      reader.rewind()
       var asHuman: TestQuery.AsHuman? = null
       if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+        reader.rewind()
         asHuman = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.AsHuman.fromJson(reader,
             customScalarAdapters)
       }
 
-      reader.rewind()
       var asDroid: TestQuery.AsDroid? = null
       if (possibleTypes("Droid").evaluate(customScalarAdapters.variables(), __typename)) {
+        reader.rewind()
         asDroid = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.AsDroid.fromJson(reader,
             customScalarAdapters)
       }

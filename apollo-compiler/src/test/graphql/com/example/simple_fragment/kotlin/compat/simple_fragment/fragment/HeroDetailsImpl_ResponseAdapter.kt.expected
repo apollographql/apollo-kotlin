@@ -62,9 +62,9 @@ internal object HeroDetailsImpl_ResponseAdapter {
         reader.rewind()
         val __typename = reader.readTypename()
 
-        reader.rewind()
         var humanDetails: HumanDetails? = null
         if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+          reader.rewind()
           humanDetails = com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
               customScalarAdapters)
         }

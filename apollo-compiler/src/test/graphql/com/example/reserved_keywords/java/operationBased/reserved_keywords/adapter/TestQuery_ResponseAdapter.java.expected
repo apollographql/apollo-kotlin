@@ -123,9 +123,9 @@ public class TestQuery_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      reader.rewind();
       TestQuery.OnCharacter onCharacter = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid","Human")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         onCharacter = com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.OnCharacter.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 

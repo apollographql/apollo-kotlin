@@ -102,16 +102,16 @@ public object TestQuery_ResponseAdapter {
         reader.rewind()
         val __typename = reader.readTypename()
 
-        reader.rewind()
         var humanDetails: HumanDetails? = null
         if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+          reader.rewind()
           humanDetails = com.example.named_fragment_without_implementation.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
               customScalarAdapters)
         }
 
-        reader.rewind()
         var droidDetails: DroidDetails? = null
         if (possibleTypes("Droid").evaluate(customScalarAdapters.variables(), __typename)) {
+          reader.rewind()
           droidDetails = com.example.named_fragment_without_implementation.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
               customScalarAdapters)
         }

@@ -78,15 +78,15 @@ public class AnimalQuery_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      reader.rewind();
       CatFragment catFragment = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Cat")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         catFragment = com.example.simple_union.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
-      reader.rewind();
       DogFragment dogFragment = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Dog")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         dogFragment = com.example.simple_union.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 

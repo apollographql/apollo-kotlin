@@ -71,9 +71,9 @@ internal object TestQuery_ResponseAdapter {
         val heroDetails = com.example.simple_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
             customScalarAdapters)
 
-        reader.rewind()
         var humanDetails: HumanDetails? = null
         if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+          reader.rewind()
           humanDetails = com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
               customScalarAdapters)
         }

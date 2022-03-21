@@ -67,9 +67,9 @@ public object TestQuery_ResponseAdapter {
           "__typename was not found"
         }
 
-        reader.rewind()
         var onA: TestQuery.Data.Root.OnA? = null
         if (possibleTypes("ABC").evaluate(customScalarAdapters.variables(), __typename)) {
+          reader.rewind()
           onA = com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.fromJson(reader,
               customScalarAdapters)
         }
@@ -114,9 +114,9 @@ public object TestQuery_ResponseAdapter {
             "__typename was not found"
           }
 
-          reader.rewind()
           var onB: TestQuery.Data.Root.OnA.OnB? = null
           if (possibleTypes("ABC","SomeBC").evaluate(customScalarAdapters.variables(), __typename)) {
+            reader.rewind()
             onB = com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.OnB.fromJson(reader,
                 customScalarAdapters)
           }

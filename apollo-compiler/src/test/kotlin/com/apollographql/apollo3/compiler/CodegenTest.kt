@@ -181,7 +181,10 @@ class CodegenTest {
           .filter { it.isDirectory }
           .sortedBy { it.name }
           .map { file ->
-            val queryFile = checkNotNull(file.walk().find { it.extension == "graphql" })
+            val queryFile = file.walk().find { it.extension == "graphql" }
+            check(queryFile != null) {
+              "Cannot find query file in ${file.absolutePath}"
+            }
             val hasFragments = queryFile.source().buffer().parseAsGQLDocument().valueAssertNoErrors().hasFragments()
 
             when {
