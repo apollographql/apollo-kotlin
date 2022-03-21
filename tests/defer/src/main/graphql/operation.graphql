@@ -1,0 +1,35 @@
+query Query1 {
+  computers {
+    id
+    ...ComputerFields @defer
+  }
+}
+fragment ComputerFields on Computer {
+  cpu
+  year
+  screen {
+    resolution
+    ...ScreenFields @defer
+  }
+}
+fragment ScreenFields on Screen {
+  isColor
+}
+
+
+
+query Query2 {
+  computers {
+    id
+    ... on Computer @defer {
+      cpu
+      year
+      screen {
+        resolution
+        ... on Screen @defer {
+          isColor
+        }
+      }
+    }
+  }
+}
