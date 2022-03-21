@@ -74,16 +74,16 @@ public object TestQuery_ResponseAdapter {
           "__typename was not found"
         }
 
-        reader.rewind()
         var onHuman: TestQuery.Data.Hero.OnHuman? = null
         if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+          reader.rewind()
           onHuman = com.example.inline_fragments_with_friends.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.fromJson(reader,
               customScalarAdapters)
         }
 
-        reader.rewind()
         var onDroid: TestQuery.Data.Hero.OnDroid? = null
         if (possibleTypes("Droid").evaluate(customScalarAdapters.variables(), __typename)) {
+          reader.rewind()
           onDroid = com.example.inline_fragments_with_friends.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.fromJson(reader,
               customScalarAdapters)
         }

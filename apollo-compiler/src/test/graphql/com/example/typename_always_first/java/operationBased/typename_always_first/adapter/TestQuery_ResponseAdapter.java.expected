@@ -85,15 +85,15 @@ public class TestQuery_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      reader.rewind();
       TestQuery.OnHuman onHuman = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         onHuman = com.example.typename_always_first.adapter.TestQuery_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
-      reader.rewind();
       TestQuery.OnDroid onDroid = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         onDroid = com.example.typename_always_first.adapter.TestQuery_ResponseAdapter.OnDroid.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 

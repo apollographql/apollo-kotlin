@@ -69,9 +69,9 @@ public object TestQuery_ResponseAdapter {
           "__typename was not found"
         }
 
-        reader.rewind()
         var onHuman: TestQuery.Data.NonOptionalHero.OnHuman? = null
         if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+          reader.rewind()
           onHuman = com.example.inline_fragment_for_non_optional_field.adapter.TestQuery_ResponseAdapter.Data.NonOptionalHero.OnHuman.fromJson(reader,
               customScalarAdapters)
         }

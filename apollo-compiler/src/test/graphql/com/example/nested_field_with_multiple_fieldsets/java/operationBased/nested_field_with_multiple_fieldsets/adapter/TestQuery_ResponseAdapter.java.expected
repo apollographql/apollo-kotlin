@@ -79,9 +79,9 @@ public class TestQuery_ResponseAdapter {
       reader.rewind();
       TestQuery.OnIface1 onIface1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface1.INSTANCE.fromJson(reader, customScalarAdapters);
 
-      reader.rewind();
       TestQuery.OnImpl1 onImpl1 = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl1")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         onImpl1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl1.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
@@ -159,9 +159,9 @@ public class TestQuery_ResponseAdapter {
       reader.rewind();
       TestQuery.OnIface2 onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface2.INSTANCE.fromJson(reader, customScalarAdapters);
 
-      reader.rewind();
       TestQuery.OnImpl2 onImpl2 = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl2")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl2.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
@@ -301,9 +301,9 @@ public class TestQuery_ResponseAdapter {
       reader.rewind();
       TestQuery.OnIface21 onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface21.INSTANCE.fromJson(reader, customScalarAdapters);
 
-      reader.rewind();
       TestQuery.OnImpl21 onImpl2 = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl2")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl21.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 

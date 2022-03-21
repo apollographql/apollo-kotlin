@@ -72,16 +72,16 @@ public object TestQuery_ResponseAdapter {
         "__typename was not found"
       }
 
-      reader.rewind()
       var asHuman: TestQuery.AsHuman? = null
       if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+        reader.rewind()
         asHuman = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.AsHuman.fromJson(reader,
             customScalarAdapters)
       }
 
-      reader.rewind()
       var asDroid: TestQuery.AsDroid? = null
       if (possibleTypes("Droid").evaluate(customScalarAdapters.variables(), __typename)) {
+        reader.rewind()
         asDroid = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.AsDroid.fromJson(reader,
             customScalarAdapters)
       }
@@ -180,9 +180,9 @@ public object TestQuery_ResponseAdapter {
         "__typename was not found"
       }
 
-      reader.rewind()
       var asHuman1: TestQuery.AsHuman1? = null
       if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+        reader.rewind()
         asHuman1 = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.AsHuman1.fromJson(reader,
             customScalarAdapters)
       }
@@ -316,9 +316,9 @@ public object TestQuery_ResponseAdapter {
         "__typename was not found"
       }
 
-      reader.rewind()
       var asHuman2: TestQuery.AsHuman2? = null
       if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+        reader.rewind()
         asHuman2 = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.AsHuman2.fromJson(reader,
             customScalarAdapters)
       }

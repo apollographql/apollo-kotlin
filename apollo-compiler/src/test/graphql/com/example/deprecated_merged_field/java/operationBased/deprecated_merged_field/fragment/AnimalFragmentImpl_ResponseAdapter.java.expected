@@ -42,15 +42,15 @@ public class AnimalFragmentImpl_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      reader.rewind();
       com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat onCat = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Cat")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         onCat = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.OnCat.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
-      reader.rewind();
       com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog onDog = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Dog")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         onDog = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.OnDog.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 

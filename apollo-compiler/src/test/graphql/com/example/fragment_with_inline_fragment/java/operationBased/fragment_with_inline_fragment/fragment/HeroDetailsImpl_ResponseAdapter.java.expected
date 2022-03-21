@@ -50,15 +50,15 @@ public class HeroDetailsImpl_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      reader.rewind();
       com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid onDroid = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         onDroid = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.OnDroid.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
-      reader.rewind();
       HumanDetails humanDetails = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         humanDetails = com.example.fragment_with_inline_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 

@@ -76,15 +76,15 @@ public class TestQuery_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      reader.rewind();
       TestQuery.OnA onA = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","AC")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnA.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
-      reader.rewind();
       TestQuery.OnB1 onB = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","BC")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnB1.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
@@ -132,9 +132,9 @@ public class TestQuery_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      reader.rewind();
       TestQuery.OnB onB = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","BC")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnB.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
@@ -212,9 +212,9 @@ public class TestQuery_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      reader.rewind();
       TestQuery.OnA1 onA = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","AC")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnA1.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
