@@ -1,0 +1,13 @@
+type Query {
+  computers: [Computer!]!
+}
+type Computer {
+  id: ID!
+  cpu: String!
+  year: Int!
+  screen: Screen!
+}
+type Screen {
+  resolution: String!
+  isColor: Boolean!
+}
