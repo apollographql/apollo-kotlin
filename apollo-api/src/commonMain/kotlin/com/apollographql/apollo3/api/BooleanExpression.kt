@@ -96,7 +96,7 @@ fun <T : Any> or(vararg other: BooleanExpression<T>): BooleanExpression<T> = Boo
 fun <T : Any> and(vararg other: BooleanExpression<T>): BooleanExpression<T> = BooleanExpression.And((other.toList()).toSet())
 fun <T : Any> not(other: BooleanExpression<T>): BooleanExpression<T> = BooleanExpression.Not(other)
 fun variable(name: String): BooleanExpression<BVariable> = BooleanExpression.Element(BVariable(name))
-fun defer(ifVariable: String?, label: String?): BooleanExpression<BDefer> = BooleanExpression.Element(BDefer(ifVariable, label))
+fun label(label: String?): BooleanExpression<BLabel> = BooleanExpression.Element(BLabel(label))
 fun possibleTypes(vararg typenames: String): BooleanExpression<BPossibleTypes> = BooleanExpression.Element(BPossibleTypes(typenames.toSet()))
 
 fun <T : Any> BooleanExpression<T>.evaluate(block: (T) -> Boolean): Boolean {
@@ -114,12 +114,7 @@ fun BooleanExpression<BTerm>.evaluate(variables: Set<String>, typename: String?,
   return evaluate {
     when (it) {
       is BVariable -> variables.contains(it.name)
-      is BDefer -> {
-        val isDefer = it.ifVariable == null || variables.contains(it.ifVariable)
-        val fragmentFieldsPresent = adapterContext.hasDeferredFragment(path, it.label)
-        // Read the fields if the fragment is not defer, or if it is and the fragment has been received
-        !isDefer || fragmentFieldsPresent
-      }
+      is BLabel -> adapterContext.hasDeferredFragment(path, it.label)
       is BPossibleTypes -> it.possibleTypes.contains(typename)
     }
   }
@@ -131,16 +126,14 @@ fun BooleanExpression<BTerm>.evaluate(variables: Set<String>, typename: String?,
 sealed class BTerm
 
 /**
- * A term that comes from @include/@skip directives and that needs to be matched against operation variables
- * TODO rename to BInclude
+ * A term that comes from @include/@skip or @defer directives and that needs to be matched against operation variables
  */
 data class BVariable(val name: String) : BTerm()
 
 /**
- * A term that comes from @defer directives and that needs to be matched against operation variables, label, and path
- * @param ifVariable if `null` it means the value of `if` was `true` (or not present), otherwise it is a variable name
+ * A term that comes from @defer directives and that needs to be matched against label and current JSON path
  */
-data class BDefer(val ifVariable: String?, val label: String?) : BTerm()
+data class BLabel(val label: String?) : BTerm()
 
 /**
  * A term that comes from a fragment type condition and that needs to be matched against __typename

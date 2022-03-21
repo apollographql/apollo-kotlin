@@ -9,10 +9,10 @@ import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.and
-import com.apollographql.apollo3.api.defer
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.label
 import com.apollographql.apollo3.api.not
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
@@ -87,32 +87,28 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
 
       reader.rewind()
       var asDroidDeferFirst: InlineMultipleWithDeferAndInclude.AsDroidDeferFirst? = null
-      if (and(possibleTypes("Droid"),defer(null,
-          "first")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+      if (and(possibleTypes("Droid"),label("first")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
         asDroidDeferFirst = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.AsDroidDeferFirst.fromJson(reader,
             customScalarAdapters)
       }
 
       reader.rewind()
       var asDroidDeferSecond: InlineMultipleWithDeferAndInclude.AsDroidDeferSecond? = null
-      if (and(possibleTypes("Droid"),defer(null,
-          "second")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+      if (and(possibleTypes("Droid"),label("second")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
         asDroidDeferSecond = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.AsDroidDeferSecond.fromJson(reader,
             customScalarAdapters)
       }
 
       reader.rewind()
       var asDroidDeferThird: InlineMultipleWithDeferAndInclude.AsDroidDeferThird? = null
-      if (and(possibleTypes("Droid"),and(defer(null,
-          "third"),variable("cond3"))).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+      if (and(possibleTypes("Droid"),and(label("third"),variable("cond3"))).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
         asDroidDeferThird = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.AsDroidDeferThird.fromJson(reader,
             customScalarAdapters)
       }
 
       reader.rewind()
       var asDroidDeferFourth: InlineMultipleWithDeferAndInclude.AsDroidDeferFourth? = null
-      if (and(possibleTypes("Droid"),and(defer(null,
-          "fourth"),not(variable("cond4")))).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+      if (and(possibleTypes("Droid"),and(label("fourth"),not(variable("cond4")))).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
         asDroidDeferFourth = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.AsDroidDeferFourth.fromJson(reader,
             customScalarAdapters)
       }

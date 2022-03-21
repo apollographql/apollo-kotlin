@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
 
-import com.apollographql.apollo3.api.BDefer
+import com.apollographql.apollo3.api.BLabel
 import com.apollographql.apollo3.api.BPossibleTypes
 import com.apollographql.apollo3.api.BTerm
 import com.apollographql.apollo3.api.BVariable
@@ -49,11 +49,10 @@ internal fun BooleanExpression<BTerm>.codeBlock(): CodeBlock {
               v.name
           )
         }
-        is BDefer -> {
+        is BLabel -> {
           CodeBlock.of(
-              "%M(%S, %S)",
-              MemberName("com.apollographql.apollo3.api", "defer"),
-              v.ifVariable,
+              "%M(%S)",
+              MemberName("com.apollographql.apollo3.api", "label"),
               v.label
           )
         }

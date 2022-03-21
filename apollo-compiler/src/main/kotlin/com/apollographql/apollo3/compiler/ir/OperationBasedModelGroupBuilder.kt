@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.compiler.ir
 
-import com.apollographql.apollo3.api.BDefer
+import com.apollographql.apollo3.api.BLabel
 import com.apollographql.apollo3.api.BPossibleTypes
 import com.apollographql.apollo3.api.BTerm
 import com.apollographql.apollo3.api.BVariable
@@ -132,8 +132,8 @@ internal class OperationBasedModelGroupBuilder(
   private fun InlineFragmentKey.toName(): String = buildString {
     append(typeCondition.capitalizeFirstLetter())
     if (condition != BooleanExpression.True) {
-      // If at least one condition is a BDefer, it is enough to make a unique name, because the label is unique
-      val deferCondition: BDefer? = condition.firstElementOfType(BDefer::class)
+      // If at least one condition is a BLabel, it is enough to make a unique name, because the label is unique
+      val deferCondition: BLabel? = condition.firstElementOfType(BLabel::class)
       if (deferCondition != null) {
         append("Defer")
         deferCondition.label?.let { append(it.capitalizeFirstLetter()) }

@@ -8,12 +8,15 @@ package com.example.fragments_with_defer_and_include_directives.adapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
-import com.apollographql.apollo3.api.defer
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.label
+import com.apollographql.apollo3.api.not
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo3.api.or
+import com.apollographql.apollo3.api.variable
 import com.example.fragments_with_defer_and_include_directives.InlineMultipleWithDeferWithIf
 import kotlin.String
 import kotlin.Unit
@@ -69,16 +72,14 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
 
       reader.rewind()
       var asCharacterDeferSecond: InlineMultipleWithDeferWithIf.AsCharacterDeferSecond? = null
-      if (defer(null,
-          "second").evaluate(customScalarAdapters.adapterContext.variables(), null, customScalarAdapters.adapterContext, reader.getPath())) {
+      if (label("second").evaluate(customScalarAdapters.adapterContext.variables(), null, customScalarAdapters.adapterContext, reader.getPath())) {
         asCharacterDeferSecond = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.AsCharacterDeferSecond.fromJson(reader,
             customScalarAdapters)
       }
 
       reader.rewind()
       var asCharacterDeferThird: InlineMultipleWithDeferWithIf.AsCharacterDeferThird? = null
-      if (defer("cond",
-          "third").evaluate(customScalarAdapters.adapterContext.variables(), null, customScalarAdapters.adapterContext, reader.getPath())) {
+      if (or(not(variable("cond")),label("third")).evaluate(customScalarAdapters.adapterContext.variables(), null, customScalarAdapters.adapterContext, reader.getPath())) {
         asCharacterDeferThird = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.AsCharacterDeferThird.fromJson(reader,
             customScalarAdapters)
       }

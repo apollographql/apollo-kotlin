@@ -9,13 +9,16 @@ import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.and
-import com.apollographql.apollo3.api.defer
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.label
+import com.apollographql.apollo3.api.not
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo3.api.or
 import com.apollographql.apollo3.api.possibleTypes
+import com.apollographql.apollo3.api.variable
 import com.example.fragments_with_defer_and_include_directives.SpreadMultipleWithDeferWithIf
 import com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails
 import com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2
@@ -80,16 +83,14 @@ public object SpreadMultipleWithDeferWithIf_ResponseAdapter {
 
         reader.rewind()
         var characterDetails2: CharacterDetails2? = null
-        if (and(possibleTypes("Droid"),defer(null,
-            "second")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+        if (and(possibleTypes("Droid"),label("second")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
           characterDetails2 = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2Impl_ResponseAdapter.CharacterDetails2.fromJson(reader,
               customScalarAdapters)
         }
 
         reader.rewind()
         var characterDetails3: CharacterDetails3? = null
-        if (and(possibleTypes("Droid"),defer("cond",
-            "third")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+        if (and(possibleTypes("Droid"),or(not(variable("cond")),label("third"))).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
           characterDetails3 = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3Impl_ResponseAdapter.CharacterDetails3.fromJson(reader,
               customScalarAdapters)
         }

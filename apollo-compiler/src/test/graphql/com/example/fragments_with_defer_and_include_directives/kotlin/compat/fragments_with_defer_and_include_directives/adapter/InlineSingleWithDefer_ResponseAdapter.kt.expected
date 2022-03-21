@@ -9,10 +9,10 @@ import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.and
-import com.apollographql.apollo3.api.defer
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.label
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
@@ -71,8 +71,7 @@ public object InlineSingleWithDefer_ResponseAdapter {
 
       reader.rewind()
       var asDroid: InlineSingleWithDefer.AsDroid? = null
-      if (and(possibleTypes("Droid"),defer(null,
-          null)).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+      if (and(possibleTypes("Droid"),label(null)).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
         asDroid = com.example.fragments_with_defer_and_include_directives.adapter.InlineSingleWithDefer_ResponseAdapter.AsDroid.fromJson(reader,
             customScalarAdapters)
       }
