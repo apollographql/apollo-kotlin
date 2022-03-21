@@ -374,13 +374,13 @@ val apolloClient = apolloClientBuilder.addCustomScalarAdapter(Date.type, dateAda
 
 This method takes a type-safe generated class from `Types`, along with its corresponding adapter.
 
-### Caching
-
-#### Normalized cache
+### Normalized Cache
 
 The Apollo Android 2.x runtime has a dependency on the normalized cache APIs, and it's possible to call cache methods even if no cache implementation is in the classpath.
 
 The Apollo Kotlin 3.x runtime is more modular and doesn't know anything about normalized cache by default. To add normalized cache support, add the dependencies to your gradle file:
+
+#### Configuration
 
 ```kotlin
 dependencies {
@@ -429,48 +429,18 @@ val response = apolloClient.query(request)
                       .execute()
 ```
 
-#### HTTP cache
+#### Watchers
 
-To add http cache support, add the dependency to your gradle file:
-
-```kotlin
-dependencies {
-  // Add
-  implementation("com.apollographql.apollo3:apollo-http-cache:$version") // Gives access to `httpCache` and `httpFetchPolicy`
-}
-```
-
-Similarly, the HTTP cache is configurable through extension functions:
+Watchers now default to a `CacheOnly` refetchPolicy instead `CACHE_FIRST`. To keep behaviour unchanged, set a `refetchPolicy` on your watchers:
 
 ```kotlin
-// Replace
-val cacheStore = DiskLruHttpCacheStore()
-val apolloClient = ApolloClient.builder()
-    .serverUrl("/")
-    .httpCache(ApolloHttpCache(cacheStore))
-    .build()
+val response = apolloClient.subscribe(subscription)
+                      .toFlow()
 
 // With
-val apolloClient = ApolloClient.Builder()
-    .serverUrl("https://...")
-    .httpCache(File(cacheDir, "apolloCache"), 1024 * 1024)
-    .build()
-```
-
-Configuring the HTTP fetch policy is now made on an `ApolloCall` instance:
-
-```kotlin
-// Replace
-val response = apolloClient.query(query)
-                      .toBuilder()
-                      .httpCachePolicy(HttpCachePolicy.CACHE_FIRST)
-                      .build()
-                      .await()
-
-// With
-val response = apolloClient.query(request)
-                      .httpFetchPolicy(CacheFirst)
-                      .execute()
+val response = apolloClient.subscription(subscription)
+                      .refetchPolicy(CacheFirst)
+                      .toFlow()
 ```
 
 #### `CacheKeyResolver`
@@ -544,6 +514,50 @@ try {
 } catch (e: ApolloException) {
   // handle error
 }
+```
+
+### HTTP cache
+
+To add http cache support, add the dependency to your gradle file:
+
+```kotlin
+dependencies {
+  // Add
+  implementation("com.apollographql.apollo3:apollo-http-cache:$version") // Gives access to `httpCache` and `httpFetchPolicy`
+}
+```
+
+Similarly, the HTTP cache is configurable through extension functions:
+
+```kotlin
+// Replace
+val cacheStore = DiskLruHttpCacheStore()
+val apolloClient = ApolloClient.builder()
+    .serverUrl("/")
+    .httpCache(ApolloHttpCache(cacheStore))
+    .build()
+
+// With
+val apolloClient = ApolloClient.Builder()
+    .serverUrl("https://...")
+    .httpCache(File(cacheDir, "apolloCache"), 1024 * 1024)
+    .build()
+```
+
+Configuring the HTTP fetch policy is now made on an `ApolloCall` instance:
+
+```kotlin
+// Replace
+val response = apolloClient.query(query)
+                      .toBuilder()
+                      .httpCachePolicy(HttpCachePolicy.CACHE_FIRST)
+                      .build()
+                      .await()
+
+// With
+val response = apolloClient.query(request)
+                      .httpFetchPolicy(CacheFirst)
+                      .execute()
 ```
 
 ### Optional values
