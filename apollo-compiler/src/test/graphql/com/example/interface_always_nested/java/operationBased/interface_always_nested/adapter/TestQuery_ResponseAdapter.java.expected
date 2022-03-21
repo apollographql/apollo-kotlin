@@ -76,9 +76,9 @@ public class TestQuery_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      reader.rewind();
       TestQuery.OnA onA = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","AC")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         onA = com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.OnA.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
@@ -121,9 +121,9 @@ public class TestQuery_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      reader.rewind();
       TestQuery.OnB onB = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","BC")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         onB = com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.OnB.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 

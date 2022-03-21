@@ -68,9 +68,9 @@ public object TestQuery_ResponseAdapter {
           "__typename was not found"
         }
 
-        reader.rewind()
         var onBar: TestQuery.Data.Foo.OnBar? = null
         if (possibleTypes("BarObject","FooBar").evaluate(customScalarAdapters.variables(), __typename)) {
+          reader.rewind()
           onBar = com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.Data.Foo.OnBar.fromJson(reader,
               customScalarAdapters)
         }

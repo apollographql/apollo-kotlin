@@ -114,9 +114,9 @@ public object GetHuman_ResponseAdapter {
           "__typename was not found"
         }
 
-        reader.rewind()
         var onHuman: GetHuman.Data.Node.OnHuman? = null
         if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+          reader.rewind()
           onHuman = com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.Data.Node.OnHuman.fromJson(reader,
               customScalarAdapters)
         }

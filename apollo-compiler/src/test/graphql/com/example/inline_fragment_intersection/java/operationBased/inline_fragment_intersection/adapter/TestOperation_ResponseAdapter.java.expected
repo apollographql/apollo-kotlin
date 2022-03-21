@@ -82,15 +82,15 @@ public class TestOperation_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      reader.rewind();
       TestOperation.OnBeing onBeing = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human","Wookie")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         onBeing = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnBeing.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
-      reader.rewind();
       TestOperation.OnWookie2 onWookie = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Wookie")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie2.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
@@ -140,9 +140,9 @@ public class TestOperation_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      reader.rewind();
       TestOperation.OnHuman onHuman = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         onHuman = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
@@ -196,9 +196,9 @@ public class TestOperation_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      reader.rewind();
       TestOperation.OnWookie onWookie = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Wookie")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
@@ -317,9 +317,9 @@ public class TestOperation_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      reader.rewind();
       TestOperation.OnWookie1 onWookie = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Wookie")), Collections.emptySet(), __typename)) {
+        reader.rewind();
         onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie1.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
