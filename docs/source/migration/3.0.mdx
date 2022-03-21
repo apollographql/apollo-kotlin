@@ -699,3 +699,16 @@ For cache misses, you can use the convenience `ApolloClient.Builder.logCacheMiss
         .normalizedCache(MemoryCacheFactory())
         .build()
 ```
+
+### Subscriptions
+
+Apollo Android 2.x had a `SubscriptionManager` class. This class exposed a lot of methods and data about the Websocket state management. While very flexible, it was hard to maintain and evolve.
+
+Apollo Android 3.x instead uses `WebsocketNetworkTransport` to expose a simplified API:
+
+- `protocolFactory` allows using `graphql-ws` or AppSync (or your custom one) as a lowlevel protocol instead of the default.
+- `reopenWhen` allows to automatically re-subscribe in case of a network error or another error.
+
+If you were previously using `apolloClient.subscriptionManager.reconnect()` to force a Websocket reconnect (for an example to send new authentication parameters), you should now create a new `ApolloClient`.
+
+If you feel some API is missing from `SubscriptionManager`, please [reach out](https://github.com/apollographql/apollo-kotlin/issues/new?assignees=&labels=%3Asparkles%3A+Type%3A+Feature&template=feature_request.md&title=) so we can discuss the best way to add them.
