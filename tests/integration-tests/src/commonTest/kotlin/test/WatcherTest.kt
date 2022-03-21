@@ -10,6 +10,7 @@ import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
+import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.cache.normalized.refetchPolicy
 import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.cache.normalized.watch
@@ -510,6 +511,7 @@ class WatcherTest {
     // This doesn't use TestNetworkTransport because we need timing control
     val mockServer = MockServer()
     val apolloClient = ApolloClient.Builder()
+        .normalizedCache(MemoryCacheFactory())
         .serverUrl(mockServer.url())
         .build()
 

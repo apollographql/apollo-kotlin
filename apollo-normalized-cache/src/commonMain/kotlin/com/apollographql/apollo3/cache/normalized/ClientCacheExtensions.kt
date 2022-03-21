@@ -133,15 +133,13 @@ fun <D : Query.Data> ApolloCall<D>.watch(
     fetchThrows: Boolean = false,
     refetchThrows: Boolean = false,
 ): Flow<ApolloResponse<D>> {
-  return flow {
+  val flow = flow {
     var lastResponse: ApolloResponse<D>? = null
     toFlow()
         .catch {
           if (it !is ApolloException || fetchThrows) throw it
         }.collect {
-          if (lastResponse != null) {
-            emit(lastResponse!!)
-          }
+          emit(it)
           lastResponse = it
         }
 
@@ -150,13 +148,20 @@ fun <D : Query.Data> ApolloCall<D>.watch(
             .watch(lastResponse?.data) { _, _ ->
               // If the exception is ignored (refetchThrows is false), we should continue watching - so retry
               !refetchThrows
-            }.onStart {
-              if (lastResponse != null) {
-                emit(lastResponse!!)
-              }
             }
     )
   }
+
+  /**
+   * We buffer the returned flow so that the subscription to the store happens in the same stacktrace as the last element is
+   * received and *before* the last element is emitted downstream.
+   *
+   * This allows callers to use the last element as a synchronisation point to modify the store and still have the watcher
+   * receive subsequent updates
+   *
+   * See https://github.com/apollographql/apollo-kotlin/pull/3853
+   */
+  return flow.buffer(2)
 }
 
 /**
@@ -310,6 +315,9 @@ fun <D : Mutation.Data> ApolloCall<D>.optimisticUpdates(data: D) = addExecutionC
 )
 
 internal val <D : Operation.Data> ApolloRequest<D>.fetchPolicyInterceptor
+  get() = executionContext[FetchPolicyContext]?.interceptor ?: CacheFirstInterceptor
+
+internal val <D : Operation.Data> ApolloCall<D>.fetchPolicyInterceptor
   get() = executionContext[FetchPolicyContext]?.interceptor ?: CacheFirstInterceptor
 
 private val <T> MutableExecutionOptions<T>.refetchPolicyInterceptor
@@ -533,18 +541,3 @@ internal fun <D : Operation.Data> ApolloRequest.Builder<D>.fetchFromCache(fetchF
 
 internal val <D : Operation.Data> ApolloRequest<D>.fetchFromCache
   get() = executionContext[FetchFromCacheContext]?.value ?: false
-
-
-internal val <D : Operation.Data> ApolloResponse<D>.isLast
-  get() = executionContext[IsLastResponse.Key] != null
-
-internal fun <D : Operation.Data> ApolloResponse.Builder<D>.setLast() = apply {
-  addExecutionContext(IsLastResponse)
-}
-
-private object IsLastResponse : ExecutionContext.Element {
-  override val key: ExecutionContext.Key<*>
-    get() = Key
-
-  object Key : ExecutionContext.Key<WatchContext>
-}
