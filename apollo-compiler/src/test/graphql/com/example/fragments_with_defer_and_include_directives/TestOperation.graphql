@@ -1,0 +1,71 @@
+query SpreadSingleWithDefer {
+  hero {
+    ...HeroDetails @defer
+  }
+}
+
+query SpreadMultipleWithDefer {
+  hero {
+    ...HeroDetails @defer(label: "first")
+    ...HeroDetails @defer(label: "second")
+  }
+}
+
+query SpreadMultipleWithDeferAndInclude($cond1: Boolean!, $cond2: Boolean!, $cond3: Boolean!, $cond4: Boolean!) {
+  hero {
+    ...HeroDetails @include(if: $cond1)
+    ...HeroDetails @skip(if: $cond2)
+    ...HeroDetails @defer(label: "first")
+    ...HeroDetails @defer(label: "second")
+    ...HeroDetails @defer(label: "third") @include(if: $cond3)
+    ...HeroDetails @defer(label: "fourth") @skip(if: $cond4)
+  }
+}
+
+fragment HeroDetails on Droid {
+  name
+}
+
+
+query InlineSingleWithDefer {
+  hero {
+    ... on Droid @defer {
+      name
+    }
+  }
+}
+
+query InlineMultipleWithDefer {
+  hero {
+    ... on Droid @defer(label: "first") {
+      name
+    }
+
+    ... on Droid @defer(label: "second") {
+      id
+    }
+  }
+}
+
+query InlineMultipleWithDeferAndInclude($cond1: Boolean!, $cond2: Boolean!, $cond3: Boolean!, $cond4: Boolean!) {
+  hero {
+    ... on Droid @include(if: $cond1) {
+      name
+    }
+    ... on Droid @skip(if: $cond2) {
+      id
+    }
+    ... on Droid @defer(label: "first") {
+      name
+    }
+    ... on Droid @defer(label: "second") {
+      id
+    }
+    ... on Droid @defer(label: "third") @include(if: $cond3) {
+      name
+    }
+    ... on Droid @defer(label: "fourth") @skip(if: $cond4) {
+      id
+    }
+  }
+}
