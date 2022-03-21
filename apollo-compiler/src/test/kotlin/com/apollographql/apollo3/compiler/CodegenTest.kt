@@ -196,7 +196,7 @@ class CodegenTest {
                 )
 
                 if (file.name in listOf("inline_fragment_with_include_directive", "fragment_spread_with_include_directive", "fragments_with_defer_and_include_directives")) {
-                  // These do not support responseBased models because of include directives on fragments
+                  // These do not support responseBased models because of include or defer directives on fragments
                   list
                 } else {
                   list + listOf(Parameters(file, MODELS_RESPONSE_BASED, true))
