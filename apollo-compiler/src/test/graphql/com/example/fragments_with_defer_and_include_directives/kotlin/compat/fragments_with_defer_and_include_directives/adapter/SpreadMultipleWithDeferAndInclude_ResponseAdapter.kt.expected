@@ -21,7 +21,7 @@ import com.apollographql.apollo3.api.or
 import com.apollographql.apollo3.api.possibleTypes
 import com.apollographql.apollo3.api.variable
 import com.example.fragments_with_defer_and_include_directives.SpreadMultipleWithDeferAndInclude
-import com.example.fragments_with_defer_and_include_directives.fragment.HeroDetails
+import com.example.fragments_with_defer_and_include_directives.fragment.DroidDetails
 import kotlin.String
 import kotlin.Unit
 import kotlin.collections.List
@@ -101,17 +101,17 @@ public object SpreadMultipleWithDeferAndInclude_ResponseAdapter {
         val __typename = reader.readTypename()
 
         reader.rewind()
-        var heroDetails: HeroDetails? = null
+        var droidDetails: DroidDetails? = null
         if (and(possibleTypes("Droid"),or(variable("cond1"),not(variable("cond2")),defer(null,
             "first"),defer(null, "second"),and(defer(null,
             "third"),variable("cond3")),and(defer(null,
             "fourth"),not(variable("cond4"))))).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
-          heroDetails = com.example.fragments_with_defer_and_include_directives.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
+          droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
               customScalarAdapters)
         }
 
         return SpreadMultipleWithDeferAndInclude.Hero.Fragments(
-          heroDetails = heroDetails
+          droidDetails = droidDetails
         )
       }
 
@@ -120,9 +120,9 @@ public object SpreadMultipleWithDeferAndInclude_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         `value`: SpreadMultipleWithDeferAndInclude.Hero.Fragments
       ): Unit {
-        if (value.heroDetails != null) {
-          com.example.fragments_with_defer_and_include_directives.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer,
-              customScalarAdapters, value.heroDetails)
+        if (value.droidDetails != null) {
+          com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,
+              customScalarAdapters, value.droidDetails)
         }
       }
     }

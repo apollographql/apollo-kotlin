@@ -8,14 +8,14 @@ package com.example.fragments_with_defer_and_include_directives.fragment.selecti
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
-import com.example.fragments_with_defer_and_include_directives.type.GraphQLString
+import com.example.fragments_with_defer_and_include_directives.type.GraphQLID
 import kotlin.collections.List
 
-public object HeroDetailsSelections {
+public object CharacterDetails2Selections {
   public val root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
-          name = "name",
-          type = GraphQLString.type.notNull()
+          name = "id",
+          type = GraphQLID.type.notNull()
         ).build()
       )
 }

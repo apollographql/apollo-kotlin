@@ -18,7 +18,7 @@ import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.or
 import com.apollographql.apollo3.api.possibleTypes
 import com.example.fragments_with_defer_and_include_directives.SpreadMultipleWithDefer
-import com.example.fragments_with_defer_and_include_directives.fragment.HeroDetails
+import com.example.fragments_with_defer_and_include_directives.fragment.DroidDetails
 import kotlin.String
 import kotlin.Unit
 import kotlin.collections.List
@@ -71,16 +71,16 @@ public object SpreadMultipleWithDefer_ResponseAdapter {
         }
 
         reader.rewind()
-        var heroDetails: HeroDetails? = null
+        var droidDetails: DroidDetails? = null
         if (and(possibleTypes("Droid"),or(defer(null, "first"),defer(null,
             "second"))).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
-          heroDetails = com.example.fragments_with_defer_and_include_directives.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
+          droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
               customScalarAdapters)
         }
 
         return SpreadMultipleWithDefer.Data.Hero(
           __typename = __typename,
-          heroDetails = heroDetails
+          droidDetails = droidDetails
         )
       }
 
@@ -92,9 +92,9 @@ public object SpreadMultipleWithDefer_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        if (value.heroDetails != null) {
-          com.example.fragments_with_defer_and_include_directives.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer,
-              customScalarAdapters, value.heroDetails)
+        if (value.droidDetails != null) {
+          com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,
+              customScalarAdapters, value.droidDetails)
         }
       }
     }

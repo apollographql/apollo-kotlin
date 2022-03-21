@@ -13,7 +13,7 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.fragments_with_defer_and_include_directives.adapter.SpreadMultipleWithDeferAndInclude_ResponseAdapter
 import com.example.fragments_with_defer_and_include_directives.adapter.SpreadMultipleWithDeferAndInclude_VariablesAdapter
-import com.example.fragments_with_defer_and_include_directives.fragment.HeroDetails
+import com.example.fragments_with_defer_and_include_directives.fragment.DroidDetails
 import com.example.fragments_with_defer_and_include_directives.selections.SpreadMultipleWithDeferAndIncludeSelections
 import kotlin.Boolean
 import kotlin.String
@@ -60,15 +60,15 @@ public data class SpreadMultipleWithDeferAndInclude(
   ) {
     public data class Fragments(
       /**
-       * Synthetic field for 'HeroDetails'
+       * Synthetic field for 'DroidDetails'
        */
-      public val heroDetails: HeroDetails?
+      public val droidDetails: DroidDetails?
     )
   }
 
   public companion object {
     public const val OPERATION_ID: String =
-        "4b14bfd272e7ad5590d7d3a2dbefc515867ce301cb7161594457bfc344128c32"
+        "2aedb5156687ce37c5e59915fa6c0216159f4b442d229efe311f0bdc79c07384"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -78,21 +78,21 @@ public data class SpreadMultipleWithDeferAndInclude(
      * $cond4: Boolean!) {
      *   hero {
      *     __typename
-     *     ...HeroDetails @include(if: $cond1)
-     *     ...HeroDetails @skip(if: $cond2)
-     *     ...HeroDetails @defer(label: "first")
-     *     ...HeroDetails @defer(label: "second")
-     *     ...HeroDetails @defer(label: "third") @include(if: $cond3)
-     *     ...HeroDetails @defer(label: "fourth") @skip(if: $cond4)
+     *     ...DroidDetails @include(if: $cond1)
+     *     ...DroidDetails @skip(if: $cond2)
+     *     ...DroidDetails @defer(label: "first")
+     *     ...DroidDetails @defer(label: "second")
+     *     ...DroidDetails @defer(label: "third") @include(if: $cond3)
+     *     ...DroidDetails @defer(label: "fourth") @skip(if: $cond4)
      *   }
      * }
      *
-     * fragment HeroDetails on Droid {
+     * fragment DroidDetails on Droid {
      *   name
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query SpreadMultipleWithDeferAndInclude(${'$'}cond1: Boolean!, ${'$'}cond2: Boolean!, ${'$'}cond3: Boolean!, ${'$'}cond4: Boolean!) { hero { __typename ...HeroDetails @include(if: ${'$'}cond1) ...HeroDetails @skip(if: ${'$'}cond2) ...HeroDetails @defer(label: \"first\") ...HeroDetails @defer(label: \"second\") ...HeroDetails @defer(label: \"third\") @include(if: ${'$'}cond3) ...HeroDetails @defer(label: \"fourth\") @skip(if: ${'$'}cond4) } }  fragment HeroDetails on Droid { name }"
+        "query SpreadMultipleWithDeferAndInclude(${'$'}cond1: Boolean!, ${'$'}cond2: Boolean!, ${'$'}cond3: Boolean!, ${'$'}cond4: Boolean!) { hero { __typename ...DroidDetails @include(if: ${'$'}cond1) ...DroidDetails @skip(if: ${'$'}cond2) ...DroidDetails @defer(label: \"first\") ...DroidDetails @defer(label: \"second\") ...DroidDetails @defer(label: \"third\") @include(if: ${'$'}cond3) ...DroidDetails @defer(label: \"fourth\") @skip(if: ${'$'}cond4) } }  fragment DroidDetails on Droid { name }"
 
     public const val OPERATION_NAME: String = "SpreadMultipleWithDeferAndInclude"
   }

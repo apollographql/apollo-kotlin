@@ -1,31 +1,50 @@
 query SpreadSingleWithDefer {
   hero {
-    ...HeroDetails @defer
+    ...DroidDetails @defer
   }
 }
 
 query SpreadMultipleWithDefer {
   hero {
-    ...HeroDetails @defer(label: "first")
-    ...HeroDetails @defer(label: "second")
+    ...DroidDetails @defer(label: "first")
+    ...DroidDetails @defer(label: "second")
   }
 }
 
 query SpreadMultipleWithDeferAndInclude($cond1: Boolean!, $cond2: Boolean!, $cond3: Boolean!, $cond4: Boolean!) {
   hero {
-    ...HeroDetails @include(if: $cond1)
-    ...HeroDetails @skip(if: $cond2)
-    ...HeroDetails @defer(label: "first")
-    ...HeroDetails @defer(label: "second")
-    ...HeroDetails @defer(label: "third") @include(if: $cond3)
-    ...HeroDetails @defer(label: "fourth") @skip(if: $cond4)
+    ...DroidDetails @include(if: $cond1)
+    ...DroidDetails @skip(if: $cond2)
+    ...DroidDetails @defer(label: "first")
+    ...DroidDetails @defer(label: "second")
+    ...DroidDetails @defer(label: "third") @include(if: $cond3)
+    ...DroidDetails @defer(label: "fourth") @skip(if: $cond4)
   }
 }
 
-fragment HeroDetails on Droid {
+fragment DroidDetails on Droid {
   name
 }
 
+query SpreadMultipleWithDeferWithIf($cond: Boolean!) {
+  hero {
+    ...CharacterDetails @defer(label: "first" if: false)
+    ...CharacterDetails2 @defer(label: "second" if: true)
+    ...CharacterDetails3 @defer(label: "third" if: $cond)
+  }
+}
+
+fragment CharacterDetails on Droid {
+  name
+}
+
+fragment CharacterDetails2 on Droid {
+  id
+}
+
+fragment CharacterDetails3 on Droid {
+  birthDate
+}
 
 query InlineSingleWithDefer {
   hero {
@@ -66,6 +85,22 @@ query InlineMultipleWithDeferAndInclude($cond1: Boolean!, $cond2: Boolean!, $con
     }
     ... on Droid @defer(label: "fourth") @skip(if: $cond4) {
       id
+    }
+  }
+}
+
+query InlineMultipleWithDeferWithIf($cond: Boolean!) {
+  hero {
+    ... on Character @defer(label: "first" if: false) {
+      id
+    }
+
+    ... on Character @defer(label: "second" if: true) {
+      name
+    }
+
+    ... on Character @defer(label: "third" if: $cond) {
+      name
     }
   }
 }

@@ -12,7 +12,7 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.fragments_with_defer_and_include_directives.adapter.SpreadMultipleWithDefer_ResponseAdapter
-import com.example.fragments_with_defer_and_include_directives.fragment.HeroDetails
+import com.example.fragments_with_defer_and_include_directives.fragment.DroidDetails
 import com.example.fragments_with_defer_and_include_directives.selections.SpreadMultipleWithDeferSelections
 import kotlin.Any
 import kotlin.Boolean
@@ -60,15 +60,15 @@ public class SpreadMultipleWithDefer() : Query<SpreadMultipleWithDefer.Data> {
   ) {
     public data class Fragments(
       /**
-       * Synthetic field for 'HeroDetails'
+       * Synthetic field for 'DroidDetails'
        */
-      public val heroDetails: HeroDetails?
+      public val droidDetails: DroidDetails?
     )
   }
 
   public companion object {
     public const val OPERATION_ID: String =
-        "704cf4139811843a8325eede3abe7293eb3550c727afca1f7c94e290f4324775"
+        "deb86b6b7f1f827e315d919340c6dea1897df6bfe197b6735990891b23aee6d7"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -77,17 +77,17 @@ public class SpreadMultipleWithDefer() : Query<SpreadMultipleWithDefer.Data> {
      * query SpreadMultipleWithDefer {
      *   hero {
      *     __typename
-     *     ...HeroDetails @defer(label: "first")
-     *     ...HeroDetails @defer(label: "second")
+     *     ...DroidDetails @defer(label: "first")
+     *     ...DroidDetails @defer(label: "second")
      *   }
      * }
      *
-     * fragment HeroDetails on Droid {
+     * fragment DroidDetails on Droid {
      *   name
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query SpreadMultipleWithDefer { hero { __typename ...HeroDetails @defer(label: \"first\") ...HeroDetails @defer(label: \"second\") } }  fragment HeroDetails on Droid { name }"
+        "query SpreadMultipleWithDefer { hero { __typename ...DroidDetails @defer(label: \"first\") ...DroidDetails @defer(label: \"second\") } }  fragment DroidDetails on Droid { name }"
 
     public const val OPERATION_NAME: String = "SpreadMultipleWithDefer"
   }

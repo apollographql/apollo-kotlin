@@ -12,7 +12,7 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.fragments_with_defer_and_include_directives.adapter.SpreadSingleWithDefer_ResponseAdapter
-import com.example.fragments_with_defer_and_include_directives.fragment.HeroDetails
+import com.example.fragments_with_defer_and_include_directives.fragment.DroidDetails
 import com.example.fragments_with_defer_and_include_directives.selections.SpreadSingleWithDeferSelections
 import kotlin.Any
 import kotlin.Boolean
@@ -53,15 +53,15 @@ public class SpreadSingleWithDefer() : Query<SpreadSingleWithDefer.Data> {
     public data class Hero(
       public val __typename: String,
       /**
-       * Synthetic field for 'HeroDetails'
+       * Synthetic field for 'DroidDetails'
        */
-      public val heroDetails: HeroDetails?
+      public val droidDetails: DroidDetails?
     )
   }
 
   public companion object {
     public const val OPERATION_ID: String =
-        "20fe1ea936cae6c0dec9d3b1b05ad8c07d4ff5264a830a37ec9118639ad13649"
+        "fad1c3622a6f35d5fa4ad7b5e4a8d50525c350d4688837022f0f7a6f0aed2ba0"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -70,16 +70,16 @@ public class SpreadSingleWithDefer() : Query<SpreadSingleWithDefer.Data> {
      * query SpreadSingleWithDefer {
      *   hero {
      *     __typename
-     *     ...HeroDetails @defer
+     *     ...DroidDetails @defer
      *   }
      * }
      *
-     * fragment HeroDetails on Droid {
+     * fragment DroidDetails on Droid {
      *   name
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query SpreadSingleWithDefer { hero { __typename ...HeroDetails @defer } }  fragment HeroDetails on Droid { name }"
+        "query SpreadSingleWithDefer { hero { __typename ...DroidDetails @defer } }  fragment DroidDetails on Droid { name }"
 
     public const val OPERATION_NAME: String = "SpreadSingleWithDefer"
   }

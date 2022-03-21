@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
-import com.example.fragments_with_defer_and_include_directives.fragment.selections.HeroDetailsSelections
+import com.example.fragments_with_defer_and_include_directives.fragment.selections.DroidDetailsSelections
 import com.example.fragments_with_defer_and_include_directives.type.Character
 import com.example.fragments_with_defer_and_include_directives.type.GraphQLString
 import kotlin.collections.List
@@ -23,7 +23,7 @@ public object SpreadSingleWithDeferSelections {
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = (listOf("Droid"))
-        ).selections(HeroDetailsSelections.root)
+        ).selections(DroidDetailsSelections.root)
         .build()
       )
 

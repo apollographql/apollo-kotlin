@@ -9,12 +9,14 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
-import com.example.fragments_with_defer_and_include_directives.fragment.selections.DroidDetailsSelections
+import com.example.fragments_with_defer_and_include_directives.fragment.selections.CharacterDetails2Selections
+import com.example.fragments_with_defer_and_include_directives.fragment.selections.CharacterDetails3Selections
+import com.example.fragments_with_defer_and_include_directives.fragment.selections.CharacterDetailsSelections
 import com.example.fragments_with_defer_and_include_directives.type.Character
 import com.example.fragments_with_defer_and_include_directives.type.GraphQLString
 import kotlin.collections.List
 
-public object SpreadSingleWithDeferSelections {
+public object SpreadMultipleWithDeferWithIfSelections {
   private val hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
@@ -23,7 +25,17 @@ public object SpreadSingleWithDeferSelections {
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = (listOf("Droid"))
-        ).selections(DroidDetailsSelections.root)
+        ).selections(CharacterDetailsSelections.root)
+        .build(),
+        CompiledFragment.Builder(
+          typeCondition = "Droid",
+          possibleTypes = (listOf("Droid"))
+        ).selections(CharacterDetails2Selections.root)
+        .build(),
+        CompiledFragment.Builder(
+          typeCondition = "Droid",
+          possibleTypes = (listOf("Droid"))
+        ).selections(CharacterDetails3Selections.root)
         .build()
       )
 
