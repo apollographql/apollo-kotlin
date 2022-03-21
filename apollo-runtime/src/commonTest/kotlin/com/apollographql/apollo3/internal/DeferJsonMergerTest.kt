@@ -3,6 +3,7 @@
 package com.apollographql.apollo3.internal
 
 import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo3.api.DeferredFragmentIdentifier
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.readAny
 import okio.Buffer
@@ -39,7 +40,7 @@ class DeferJsonMergerTest {
     """
     deferredJsonMerger.merge(payload1.buffer())
     assertEquals(jsonToMap(payload1), deferredJsonMerger.merged)
-    assertEquals(setOf(), deferredJsonMerger.mergedFragmentLabels)
+    assertEquals(setOf(), deferredJsonMerger.mergedFragmentIds)
 
 
     val payload2 = """
@@ -97,7 +98,9 @@ class DeferJsonMergerTest {
     """
     deferredJsonMerger.merge(payload2.buffer())
     assertEquals(jsonToMap(mergedPayloads_1_2), deferredJsonMerger.merged)
-    assertEquals(setOf("query:Query1:0"), deferredJsonMerger.mergedFragmentLabels)
+    assertEquals(setOf(
+        DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
+    ), deferredJsonMerger.mergedFragmentIds)
 
 
     val payload3 = """
@@ -158,7 +161,10 @@ class DeferJsonMergerTest {
     """
     deferredJsonMerger.merge(payload3.buffer())
     assertEquals(jsonToMap(mergedPayloads_1_2_3), deferredJsonMerger.merged)
-    assertEquals(setOf("query:Query1:0"), deferredJsonMerger.mergedFragmentLabels)
+    assertEquals(setOf(
+        DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
+        DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
+    ), deferredJsonMerger.mergedFragmentIds)
 
 
     val payload4 = """
@@ -236,7 +242,10 @@ class DeferJsonMergerTest {
     """
     deferredJsonMerger.merge(payload4.buffer())
     assertEquals(jsonToMap(mergedPayloads_1_2_3_4), deferredJsonMerger.merged)
-    assertEquals(setOf("query:Query1:0"), deferredJsonMerger.mergedFragmentLabels)
+    assertEquals(setOf(
+        DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
+        DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
+    ), deferredJsonMerger.mergedFragmentIds)
 
     val payload5 = """
       {
@@ -318,7 +327,11 @@ class DeferJsonMergerTest {
     """
     deferredJsonMerger.merge(payload5.buffer())
     assertEquals(jsonToMap(mergedPayloads_1_2_3_4_5), deferredJsonMerger.merged)
-    assertEquals(setOf("query:Query1:0", "fragment:ComputerFields:0"), deferredJsonMerger.mergedFragmentLabels)
+    assertEquals(setOf(
+        DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
+        DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
+        DeferredFragmentIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
+    ), deferredJsonMerger.mergedFragmentIds)
   }
 }
 
