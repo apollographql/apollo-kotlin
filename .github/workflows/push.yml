@@ -14,7 +14,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '11'
-      - uses: gradle/gradle-build-action@v2
+      - uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee #v2.1.4
       - name: Build with Gradle
         run: |
           ulimit -c unlimited
@@ -40,7 +40,7 @@ jobs:
           name: push.zip
           path: push.zip
       - name: Deploy Kdoc to github pages
-        uses: JamesIves/github-pages-deploy-action@v4.2.5
+        uses: JamesIves/github-pages-deploy-action@830e6a4f7c81743c52f3fed0ac67428feff9620a #v4.2.5
         with:
           branch: gh-pages # The branch the action should deploy to.
           folder: build/dokkaHtml # The folder the action should deploy.
