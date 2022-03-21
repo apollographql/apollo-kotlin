@@ -161,13 +161,11 @@ following events:
 
 ### On pushes to `main` branch
 
-_(Will be replaced to "on pushes to `main` branch" after v3 is released.)_
-
 **Workflow:** [`push.yml`](https://github.com/apollographql/apollo-android/blob/main/.github/workflows/push.yml)
 
 **Job:**
 
-- `push`
+- `deploy`
     - Runs on macOS
     - Slow
     - Run all tests

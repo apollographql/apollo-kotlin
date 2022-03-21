@@ -15,11 +15,12 @@ jobs:
   tests-gradle:
     runs-on: macos-11
     steps:
-      - uses: actions/checkout@v2
-      - name: set up JDK 1.8
-        uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
-          java-version: 1.8
+          distribution: 'temurin'
+          java-version: 8
+      - uses: gradle/gradle-build-action@v2
       - name: Build with Gradle
         run: |
           ulimit -c unlimited
@@ -31,19 +32,21 @@ jobs:
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
-      - uses: actions/upload-artifact@v2.2.4
+      - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: tests-gradle.zip
           path: diagnostics.zip
+
   tests-no-gradle:
     runs-on: macos-11
     steps:
-      - uses: actions/checkout@v2
-      - name: set up JDK 1.8
-        uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
-          java-version: 1.8
+          distribution: 'temurin'
+          java-version: 8
+      - uses: gradle/gradle-build-action@v2
       - name: Build with Gradle
         run: |
           ulimit -c unlimited
@@ -55,19 +58,21 @@ jobs:
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
-      - uses: actions/upload-artifact@v2.2.4
+      - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: tests-no-gradle.zip
           path: diagnostics.zip
+
   tests-integration:
     runs-on: macos-11
     steps:
-      - uses: actions/checkout@v2
-      - name: set up JDK 1.8
-        uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
-          java-version: 1.8
+          distribution: 'temurin'
+          java-version: 8
+      - uses: gradle/gradle-build-action@v2
       - name: Build with Gradle
         run: |
           ulimit -c unlimited
@@ -79,20 +84,21 @@ jobs:
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
-      - uses: actions/upload-artifact@v2.2.4
+      - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: tests-integration.zip
           path: diagnostics.zip
+
   tests-java9:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-      - name: set up JDK 11
-        uses: actions/setup-java@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '11'
+      - uses: gradle/gradle-build-action@v2
       - name: Build with Gradle
         run: |
           ulimit -c unlimited
@@ -104,7 +110,7 @@ jobs:
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
-      - uses: actions/upload-artifact@v2.2.4
+      - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: tests-integration.zip

@@ -5,15 +5,16 @@ on:
     branches: [ main ]
 
 jobs:
-  push:
+  deploy:
     runs-on: macos-11
+    if: github.repository == 'apollographql/apollo-kotlin'
     steps:
-      - uses: actions/checkout@v2
-      - name: set up JDK 11
-        uses: actions/setup-java@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '11'
+      - uses: gradle/gradle-build-action@v2
       - name: Build with Gradle
         run: |
           ulimit -c unlimited
@@ -33,13 +34,13 @@ jobs:
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
-      - uses: actions/upload-artifact@v2.2.4
+      - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: push.zip
           path: push.zip
       - name: Deploy Kdoc to github pages
-        uses: JamesIves/github-pages-deploy-action@4.1.4
+        uses: JamesIves/github-pages-deploy-action@4
         with:
           branch: gh-pages # The branch the action should deploy to.
           folder: build/dokkaHtml # The folder the action should deploy.
