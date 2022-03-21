@@ -1,4 +1,5 @@
 @file:JvmName("Operations")
+
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.annotations.ApolloInternal
@@ -60,7 +61,9 @@ fun <D : Operation.Data> Operation<D>.parseJsonResponse(
       jsonReader,
       this,
       customScalarAdapters.newBuilder()
-          .variables(variables)
+          .adapterContext(customScalarAdapters.adapterContext.newBuilder()
+              .variables(variables)
+              .build())
           .build()
   )
 }

@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.internal
 
 import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo3.api.DeferredFragmentIdentifier
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.readAny
 import okio.BufferedSource
@@ -8,8 +9,8 @@ import okio.BufferedSource
 /**
  * Utility class for merging GraphQL JSON payloads received in multiple chunks when using the `@defer` directive.
  *
- * Each call to [merge] will merge the given chunk into the [merged] Map, and will also update the [mergedFragmentLabels] Set with the
- * value of its `label` field (if present).
+ * Each call to [merge] will merge the given chunk into the [merged] Map, and will also update the [mergedFragmentIds] Set with the
+ * value of its `path` and `label` field.
  *
  * The fields in `data` are merged into the node found in [merged] at `path` (for the first call to [merge], the payload is
  * copied to [merged] as-is).
@@ -21,8 +22,8 @@ class DeferredJsonMerger {
   private val _merged = mutableMapOf<String, Any?>()
   val merged: Map<String, Any?> = _merged
 
-  private val _mergedFragmentLabels = mutableSetOf<String>()
-  val mergedFragmentLabels: Set<String> = _mergedFragmentLabels
+  private val _mergedFragmentIds = mutableSetOf<DeferredFragmentIdentifier>()
+  val mergedFragmentIds: Set<DeferredFragmentIdentifier> = _mergedFragmentIds
 
   fun merge(payload: BufferedSource): Map<String, Any?> {
     val payloadMap = jsonToMap(payload)
@@ -58,7 +59,7 @@ class DeferredJsonMerger {
       val nodeToMergeInto = nodeAtPath(mergedData, payloadPath) as MutableMap<String, Any?>
       deepMerge(nodeToMergeInto, payloadData)
 
-      (payloadMap["label"] as String?)?.let { _mergedFragmentLabels += it }
+      _mergedFragmentIds += DeferredFragmentIdentifier(path = payloadPath, label = payloadMap["label"] as String?)
     }
   }
 
