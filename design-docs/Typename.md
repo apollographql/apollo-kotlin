@@ -1,4 +1,4 @@
-This page gives some context about how __typename is add in queries.
+This page gives some context about how __typename is added in queries.
 
 Historically, __typename was added on most of the selection sets. While this makes working with fragments and cache easier (because typename is always available), it also created some confusion and overhead (see https://github.com/apollographql/apollo-kotlin/issues/1458).
 
