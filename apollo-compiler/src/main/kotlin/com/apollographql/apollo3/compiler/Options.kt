@@ -2,6 +2,7 @@ package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_1_1
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.toSchema
@@ -21,6 +22,10 @@ const val MODELS_OPERATION_BASED = "operationBased"
 )
 @ApolloDeprecatedSince(v3_0_0)
 const val MODELS_COMPAT = "compat"
+
+const val ADD_TYPENAME_IF_FRAGMENTS = "ifFragments"
+const val ADD_TYPENAME_IF_POLYMORPHIC = "ifPolymorphic"
+const val ADD_TYPENAME_IF_ABSTRACT = "ifAbstract"
 
 enum class TargetLanguage {
   // The order is important. See [isTargetLanguageVersionAtLeast]
@@ -176,6 +181,7 @@ class Options(
      * Default: false
      */
     val addJvmOverloads: Boolean = false,
+    val addTypename: String = defaultAddTypename
 ) {
 
   /**
@@ -231,6 +237,7 @@ class Options(
       sealedClassesForEnumsMatching: List<String> = this.sealedClassesForEnumsMatching,
       generateOptionalOperationVariables: Boolean = this.generateOptionalOperationVariables,
       addJvmOverloads: Boolean = this.addJvmOverloads,
+      addTypename: String = this.addTypename,
   ) = Options(
       executableFiles = executableFiles,
       schema = schema,
@@ -264,6 +271,7 @@ class Options(
       sealedClassesForEnumsMatching = sealedClassesForEnumsMatching,
       generateOptionalOperationVariables = generateOptionalOperationVariables,
       addJvmOverloads = addJvmOverloads,
+      addTypename = addTypename,
   )
 
   companion object {
@@ -282,6 +290,7 @@ class Options(
     const val defaultGenerateQueryDocument = true
     const val defaultModuleName = "apollographql"
     const val defaultCodegenModels = MODELS_OPERATION_BASED
+    const val defaultAddTypename = ADD_TYPENAME_IF_FRAGMENTS
     const val defaultFlattenModels = true
     val defaultTargetLanguage = TargetLanguage.KOTLIN_1_5
     const val defaultGenerateSchema = false

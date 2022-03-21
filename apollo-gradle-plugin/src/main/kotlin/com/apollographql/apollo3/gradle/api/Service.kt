@@ -436,6 +436,31 @@ interface Service {
   val codegenModels: Property<String>
 
   /**
+   * When to add __typename. One of "ifFragments", "ifAbstract" or "ifPolymorphic"
+   *
+   * - "ifFragments": Add '__typename' for every selection set that contains fragments (inline or named)
+   * This is adding a lot more '__typename' than the other solutions and will be certainly removed in
+   * a future version. If you require '__typename' explicitly, you can add it to your queries.
+   *
+   * - "ifAbstract": Add '__typename' for abstract fields, i.e. fields that are of union or interface type
+   * Note: It also adds '__typename' on fragment definitions that satisfy the same property because fragments
+   * could be read from the cache and we don't have a containing field in that case.
+   *
+   * - "ifPolymorphic": Add '__typename' for polymorphic fields, i.e. fields that contains a subfragment
+   * (inline or named) whose type condition isn't a super type of the field type.
+   * If a field is monomorphic, no '__typename' will be added.
+   * This adds the bare minimum amount of __typename but the logic is substantially more complex and
+   * it could cause cache misses when using fragments on monomorphic fields because __typename can be
+   * required in some cases.
+   *
+   * Note: It also adds '__typename' on fragment definitions that satisfy the same property because fragments
+   * could be read from the cache and we don't have a containing field in that case.
+   *
+   * Default value: "ifFragments"
+   */
+  val addTypename: Property<String>
+
+  /**
    * Whether to flatten the models. File paths are limited on MacOSX to 256 chars and flattening can help keeping the path length manageable
    * The drawback is that some classes may nameclash in which case they will be suffixed with a number
    *

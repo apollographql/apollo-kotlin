@@ -489,7 +489,7 @@ internal class IrBuilder(
           deprecationReason = fieldDefinition.directives.findDeprecationReason(),
           forceNonNull = forceNonNull,
           forceOptional = gqlField.directives.optionalValue() == true,
-          parentType = fieldWithParent.parentType
+          parentType = fieldWithParent.parentType,
       )
     }.groupBy {
       it.responseName
@@ -547,7 +547,7 @@ internal class IrBuilder(
           description = description,
           deprecationReason = deprecationReason,
           type = irType,
-          gqlType = first.type
+          gqlType = first.type,
       )
 
       MergedField(

@@ -118,7 +118,7 @@ class CodegenTest {
         else -> {
           /**
            * Some tests generate warnings.
-           * Most of the time because they are using deprecated fields.
+           * Most of the time because they are using deprecated fields and/or unused arguments
            * Fine tune this list as we go.
            */
           val expectedWarnings = folder.name in listOf(
@@ -145,6 +145,7 @@ class CodegenTest {
               "union_inline_fragments",
               "unique_type_name",
               "variable_default_value",
+              "monomorphic",
               "__schema"
           )
 

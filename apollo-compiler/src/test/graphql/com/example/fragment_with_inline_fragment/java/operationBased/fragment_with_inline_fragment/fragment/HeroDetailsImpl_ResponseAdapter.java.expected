@@ -218,9 +218,10 @@ public class HeroDetailsImpl_ResponseAdapter {
         }
       }
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
       DroidDetails droidDetails = com.example.fragment_with_inline_fragment.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.fromJson(reader, customScalarAdapters);
+
+      Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid(
         __typename,

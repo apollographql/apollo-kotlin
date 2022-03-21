@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.java
 
 import com.apollographql.apollo3.compiler.codegen.ClassNames
+import com.apollographql.apollo3.compiler.codegen.ClassNames.apolloApiJsonPackageName
 import com.apollographql.apollo3.compiler.codegen.ClassNames.apolloApiPackageName
 import com.apollographql.apollo3.compiler.codegen.ResolverClassName
 import com.squareup.javapoet.ClassName
@@ -70,6 +71,7 @@ internal object JavaClassNames {
   val CompiledGraphQL = ClassName.get(apolloApiPackageName, "CompiledGraphQL")
   val BooleanExpressions = ClassName.get(apolloApiPackageName, "BooleanExpressions")
   val Assertions = ClassName.get(apolloApiPackageName, "Assertions")
+  val JsonReaders = ClassName.get(apolloApiJsonPackageName, "JsonReaders")
   val PossibleTypes = ClassName.get(apolloApiPackageName, "PossibleTypes")
 
   /**

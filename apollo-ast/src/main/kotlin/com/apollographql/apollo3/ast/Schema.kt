@@ -78,10 +78,26 @@ class Schema(
   }
 
 
+  fun isTypeASubTypeOf(type: String, superType: String): Boolean {
+    return implementedTypes(type).contains(superType)
+  }
+
+  fun isTypeASuperTypeOf(type: String, subType: String): Boolean {
+    return implementedTypes(subType).contains(type)
+  }
+
+  /**
+   * List all types (types, interfaces, unions) implemented by a given type (including itself)
+   */
   fun implementedTypes(name: String): Set<String> {
     val typeDefinition = typeDefinition(name)
     return when (typeDefinition) {
-      is GQLObjectTypeDefinition -> typeDefinition.implementsInterfaces.flatMap { implementedTypes(it) }.toSet() + name
+      is GQLObjectTypeDefinition -> {
+        val enums = typeDefinitions.values.filterIsInstance<GQLUnionTypeDefinition>().filter {
+          it.memberTypes.map { it.name }.toSet().contains(typeDefinition.name)
+        }.map { it.name }
+        typeDefinition.implementsInterfaces.flatMap { implementedTypes(it) }.toSet() + name + enums
+      }
       is GQLInterfaceTypeDefinition -> typeDefinition.implementsInterfaces.flatMap { implementedTypes(it) }.toSet() + name
       is GQLUnionTypeDefinition,
       is GQLScalarTypeDefinition,

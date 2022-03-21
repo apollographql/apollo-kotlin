@@ -48,18 +48,22 @@ class ParseResponseBodyTest {
   @Throws(Exception::class)
   fun operationJsonWriter() {
     val expected = testFixtureToUtf8("OperationJsonWriter.json")
+
     val query = AllPlanetsQuery()
-    val data = query.parseJsonResponse(testFixtureToJsonReader("OperationJsonWriter.json")).data
-    val actual = buildJsonString {
+    val data = query.parseJsonResponse(Buffer().writeUtf8(expected).jsonReader()).data
+    val actual = buildJsonString(indent = "  ") {
       query.composeJsonResponse(this, data!!)
     }
 
     /**
-     * In theory, we could compare 'expected' and 'actual'
      * operationBased models do not respect the order of fields
      * when fragments are involved so just check for Map equivalence
+     *
+     * If this fails, you can update "OperationJsonWriter.json" in models-response-based
      */
+    @OptIn(ApolloInternal::class)
     val expectedMap = Buffer().writeUtf8(expected).jsonReader().readAny()
+    @OptIn(ApolloInternal::class)
     val actualMap = Buffer().writeUtf8(actual).jsonReader().readAny()
 
     assertEquals(expectedMap, actualMap)

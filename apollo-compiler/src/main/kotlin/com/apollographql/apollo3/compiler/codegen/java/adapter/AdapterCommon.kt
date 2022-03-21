@@ -51,6 +51,12 @@ internal fun responseNamesFieldSpec(model: IrModel): FieldSpec? {
       .build()
 }
 
+private fun javaTypenameFromReaderCodeBlock(): CodeBlock {
+  return CodeBlock.builder()
+      .add("String $__typename = $T.readTypename($reader);\n", JavaClassNames.JsonReaders)
+      .build()
+}
+
 internal fun readFromResponseCodeBlock(
     model: IrModel,
     context: JavaContext,
@@ -60,7 +66,7 @@ internal fun readFromResponseCodeBlock(
   val prefix = regularProperties.map { property ->
     val variableInitializer = when {
       hasTypenameArgument && property.info.responseName == "__typename" -> CodeBlock.of(typename)
-      (property.info.type is IrNonNullType && property.info.type.ofType is IrOptionalType) -> CodeBlock.of("$T", JavaClassNames.Absent)
+      (property.info.type is IrNonNullType && property.info.type.ofType is IrOptionalType) -> CodeBlock.of(T, JavaClassNames.Absent)
       else -> CodeBlock.of("null")
     }
 
@@ -103,9 +109,19 @@ internal fun readFromResponseCodeBlock(
   /**
    * Read the synthetic properties
    */
-  val checkTypename = if (syntheticProperties.isNotEmpty()) {
+  val typenameCodeBlock = if (syntheticProperties.any { it.requiresTypename }) {
     checkedProperties.add(__typename)
-    CodeBlock.of("$T.checkFieldNotMissing($__typename, $S);", JavaClassNames.Assertions, __typename)
+
+    CodeBlock.builder()
+        .apply {
+          if (regularProperties.none { it.info.responseName == "__typename" }) {
+            // We are in a nested fragment that needs access to __typename, get it from the buffered reader
+            add("$reader.rewind();\n")
+            add(javaTypenameFromReaderCodeBlock())
+          } else {
+            add("$T.checkFieldNotMissing($__typename, $S);", JavaClassNames.Assertions, __typename)
+          }
+        }.build()
   } else {
     CodeBlock.of("")
   }
@@ -179,8 +195,8 @@ internal fun readFromResponseCodeBlock(
       .applyIf(prefix.isNotEmpty()) { add("\n") }
       .add(loop)
       .applyIf(loop.isNotEmpty()) { add("\n") }
-      .add(checkTypename)
-      .applyIf(checkTypename.isNotEmpty()) { add("\n") }
+      .add(typenameCodeBlock)
+      .applyIf(typenameCodeBlock.isNotEmpty()) { add("\n") }
       .add(syntheticLoop)
       .applyIf(syntheticLoop.isNotEmpty()) { add("\n") }
       .add(checks)

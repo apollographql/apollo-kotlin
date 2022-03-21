@@ -7,6 +7,7 @@ import com.apollographql.apollo3.ast.internal.buffer
 internal fun GQLTypeDefinition.sharesPossibleTypesWith(other: GQLTypeDefinition, schema: Schema): Boolean {
   return schema.possibleTypes(this).intersect(schema.possibleTypes(other)).isNotEmpty()
 }
+
 fun GQLTypeDefinition.possibleTypes(schema: Schema): Set<String> {
   return schema.possibleTypes(this)
 }
@@ -30,4 +31,13 @@ fun GQLTypeDefinition.isFieldNonNull(fieldName: String): Boolean {
   return selections.filterIsInstance<GQLField>()
       .map { it.name }
       .contains(fieldName)
+}
+
+fun GQLTypeDefinition.isAbstract(): Boolean {
+  return when (this) {
+    is GQLUnionTypeDefinition,
+    is GQLInterfaceTypeDefinition,
+    -> true
+    else -> false
+  }
 }

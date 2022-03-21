@@ -4,7 +4,7 @@
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
       <option name="externalSystemIdString" value="GRADLE" />
-      <option name="scriptParameters" value="-DtestFilter=kotlin-responseBased-custom_scalar_type -DupdateTestFixtures=true" />
+      <option name="scriptParameters" value="-DtestFilter=kotlin-operationBased-fragment_used_twice -DupdateTestFixtures=true" />
       <option name="taskDescriptions">
         <list />
       </option>

@@ -1,0 +1,24 @@
+type Query {
+  cat: Cat!
+}
+
+interface Node {
+  id: ID!
+}
+
+interface Animal implements Node {
+  id: ID!
+  species: String!
+}
+
+type Cat implements Animal {
+  id: ID!
+  species: String!
+  meow: String!
+}
+
+type Dog implements Animal {
+  id: ID!
+  species: String!
+  barf: String!
+}

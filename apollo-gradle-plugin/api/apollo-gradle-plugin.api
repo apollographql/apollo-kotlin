@@ -61,6 +61,7 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Registry {
 
 public abstract interface class com/apollographql/apollo3/gradle/api/Service {
 	public abstract fun getAddJvmOverloads ()Lorg/gradle/api/provider/Property;
+	public abstract fun getAddTypename ()Lorg/gradle/api/provider/Property;
 	public abstract fun getAlwaysGenerateTypesMatching ()Lorg/gradle/api/provider/SetProperty;
 	public abstract fun getCodegenModels ()Lorg/gradle/api/provider/Property;
 	public abstract fun getCustomScalarsMapping ()Lorg/gradle/api/provider/MapProperty;

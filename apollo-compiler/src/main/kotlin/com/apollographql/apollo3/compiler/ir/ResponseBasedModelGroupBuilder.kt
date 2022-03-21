@@ -124,7 +124,7 @@ private class FieldNodeBuilder(
         description = null,
         type = IrModelType(MODEL_UNKNOWN),
         deprecationReason = null,
-        gqlType = GQLNonNullType(type = GQLNamedType(name = rawTypeName))
+        gqlType = GQLNonNullType(type = GQLNamedType(name = rawTypeName)),
     )
 
     return buildFieldNode(
@@ -147,7 +147,7 @@ private class FieldNodeBuilder(
           description = null,
           type = IrModelType(MODEL_UNKNOWN),
           deprecationReason = null,
-          gqlType = GQLNonNullType(type = fragment.typeCondition)
+          gqlType = GQLNonNullType(type = fragment.typeCondition),
       )
 
       return buildFieldNode(
@@ -171,7 +171,7 @@ private class FieldNodeBuilder(
         description = null,
         type = IrModelType(MODEL_UNKNOWN),
         deprecationReason = null,
-        gqlType = GQLNonNullType(type = fragment.typeCondition)
+        gqlType = GQLNonNullType(type = fragment.typeCondition),
     )
 
     return buildFieldNode(
