@@ -76,14 +76,14 @@ public object TestQuery_ResponseAdapter {
       }
 
       var asHuman: TestQuery.AsHuman? = null
-      if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+      if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
         reader.rewind()
         asHuman = com.example.inline_fragments_with_friends.adapter.TestQuery_ResponseAdapter.AsHuman.fromJson(reader,
             customScalarAdapters)
       }
 
       var asDroid: TestQuery.AsDroid? = null
-      if (possibleTypes("Droid").evaluate(customScalarAdapters.variables(), __typename)) {
+      if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
         reader.rewind()
         asDroid = com.example.inline_fragments_with_friends.adapter.TestQuery_ResponseAdapter.AsDroid.fromJson(reader,
             customScalarAdapters)

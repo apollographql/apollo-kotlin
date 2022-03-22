@@ -75,7 +75,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       var asDroid: TestQuery.AsDroid? = null
-      if (possibleTypes("Droid").evaluate(customScalarAdapters.variables(), __typename)) {
+      if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
         reader.rewind()
         asDroid = com.example.hero_name.adapter.TestQuery_ResponseAdapter.AsDroid.fromJson(reader,
             customScalarAdapters)

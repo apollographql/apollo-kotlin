@@ -71,7 +71,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       var asHuman: TestQuery.AsHuman? = null
-      if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+      if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
         reader.rewind()
         asHuman = com.example.inline_fragment_for_non_optional_field.adapter.TestQuery_ResponseAdapter.AsHuman.fromJson(reader,
             customScalarAdapters)

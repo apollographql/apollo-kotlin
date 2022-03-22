@@ -74,14 +74,14 @@ public object TestQuery_ResponseAdapter {
             customScalarAdapters)
 
         var onHuman: TestQuery.Data.Hero.OnHuman? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
           reader.rewind()
           onHuman = com.example.simple_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.fromJson(reader,
               customScalarAdapters)
         }
 
         var onDroid: TestQuery.Data.Hero.OnDroid? = null
-        if (possibleTypes("Droid").evaluate(customScalarAdapters.variables(), __typename)) {
+        if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
           reader.rewind()
           onDroid = com.example.simple_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.fromJson(reader,
               customScalarAdapters)

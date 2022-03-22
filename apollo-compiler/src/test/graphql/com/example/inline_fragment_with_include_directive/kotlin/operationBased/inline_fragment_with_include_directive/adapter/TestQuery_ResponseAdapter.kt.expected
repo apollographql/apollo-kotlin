@@ -73,21 +73,21 @@ public object TestQuery_ResponseAdapter {
         }
 
         var onHuman: TestQuery.Data.Hero.OnHuman? = null
-        if (and(possibleTypes("Human"),and(variable("withDetails"),not(variable("skipHumanDetails")))).evaluate(customScalarAdapters.variables(), __typename)) {
+        if (and(possibleTypes("Human"),and(variable("withDetails"),not(variable("skipHumanDetails")))).evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
           reader.rewind()
           onHuman = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.fromJson(reader,
               customScalarAdapters)
         }
 
         var onDroid: TestQuery.Data.Hero.OnDroid? = null
-        if (and(possibleTypes("Droid"),variable("withDetails")).evaluate(customScalarAdapters.variables(), __typename)) {
+        if (and(possibleTypes("Droid"),variable("withDetails")).evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
           reader.rewind()
           onDroid = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.fromJson(reader,
               customScalarAdapters)
         }
 
         var onCharacter: TestQuery.Data.Hero.OnCharacter? = null
-        if (variable("withDetails").evaluate(customScalarAdapters.variables(), null)) {
+        if (variable("withDetails").evaluate(customScalarAdapters.adapterContext.variables(), null)) {
           reader.rewind()
           onCharacter = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.fromJson(reader,
               customScalarAdapters)
