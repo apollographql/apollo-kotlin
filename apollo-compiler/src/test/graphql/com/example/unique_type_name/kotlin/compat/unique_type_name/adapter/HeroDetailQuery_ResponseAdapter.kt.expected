@@ -80,7 +80,7 @@ public object HeroDetailQuery_ResponseAdapter {
       }
 
       var asHuman: com.example.unique_type_name.HeroDetailQuery.AsHuman? = null
-      if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+      if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
         reader.rewind()
         asHuman = com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.AsHuman.fromJson(reader,
             customScalarAdapters)

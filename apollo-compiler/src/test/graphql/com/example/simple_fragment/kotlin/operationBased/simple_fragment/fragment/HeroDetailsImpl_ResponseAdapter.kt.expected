@@ -36,7 +36,7 @@ internal object HeroDetailsImpl_ResponseAdapter {
       }
 
       var humanDetails: HumanDetails? = null
-      if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+      if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
         reader.rewind()
         humanDetails = com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
             customScalarAdapters)

@@ -112,7 +112,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       var asCharacter: TestQuery.AsCharacter? = null
-      if (possibleTypes("Droid","Human").evaluate(customScalarAdapters.variables(), __typename)) {
+      if (possibleTypes("Droid","Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
         reader.rewind()
         asCharacter = com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.AsCharacter.fromJson(reader,
             customScalarAdapters)

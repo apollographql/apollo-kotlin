@@ -68,7 +68,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         var onA: TestQuery.Data.Root.OnA? = null
-        if (possibleTypes("ABC","AC").evaluate(customScalarAdapters.variables(), __typename)) {
+        if (possibleTypes("ABC","AC").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
           reader.rewind()
           onA = com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.fromJson(reader,
               customScalarAdapters)
@@ -115,7 +115,7 @@ public object TestQuery_ResponseAdapter {
           }
 
           var onB: TestQuery.Data.Root.OnA.OnB? = null
-          if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.variables(), __typename)) {
+          if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
             reader.rewind()
             onB = com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.OnB.fromJson(reader,
                 customScalarAdapters)

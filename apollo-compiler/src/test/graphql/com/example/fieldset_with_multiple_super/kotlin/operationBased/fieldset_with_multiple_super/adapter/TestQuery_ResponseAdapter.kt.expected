@@ -68,14 +68,14 @@ public object TestQuery_ResponseAdapter {
         }
 
         var onA: TestQuery.Data.C.OnA? = null
-        if (possibleTypes("ABC","AC").evaluate(customScalarAdapters.variables(), __typename)) {
+        if (possibleTypes("ABC","AC").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
           reader.rewind()
           onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnA.fromJson(reader,
               customScalarAdapters)
         }
 
         var onB: TestQuery.Data.C.OnB? = null
-        if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.variables(), __typename)) {
+        if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
           reader.rewind()
           onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnB.fromJson(reader,
               customScalarAdapters)
@@ -128,7 +128,7 @@ public object TestQuery_ResponseAdapter {
           }
 
           var onB: TestQuery.Data.C.OnA.OnB? = null
-          if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.variables(), __typename)) {
+          if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
             reader.rewind()
             onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnA.OnB.fromJson(reader,
                 customScalarAdapters)
@@ -209,7 +209,7 @@ public object TestQuery_ResponseAdapter {
           }
 
           var onA: TestQuery.Data.C.OnB.OnA? = null
-          if (possibleTypes("ABC","AC").evaluate(customScalarAdapters.variables(), __typename)) {
+          if (possibleTypes("ABC","AC").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
             reader.rewind()
             onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnB.OnA.fromJson(reader,
                 customScalarAdapters)

@@ -71,7 +71,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         var onCharacter: TestQuery.Data.Search.OnCharacter? = null
-        if (possibleTypes("Droid","Human").evaluate(customScalarAdapters.variables(), __typename)) {
+        if (possibleTypes("Droid","Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
           reader.rewind()
           onCharacter = com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.fromJson(reader,
               customScalarAdapters)
@@ -118,14 +118,14 @@ public object TestQuery_ResponseAdapter {
           }
 
           var onHuman: TestQuery.Data.Search.OnCharacter.OnHuman? = null
-          if (possibleTypes("Human").evaluate(customScalarAdapters.variables(), __typename)) {
+          if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
             reader.rewind()
             onHuman = com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.OnHuman.fromJson(reader,
                 customScalarAdapters)
           }
 
           var onDroid: TestQuery.Data.Search.OnCharacter.OnDroid? = null
-          if (possibleTypes("Droid").evaluate(customScalarAdapters.variables(), __typename)) {
+          if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
             reader.rewind()
             onDroid = com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.OnDroid.fromJson(reader,
                 customScalarAdapters)

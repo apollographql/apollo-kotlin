@@ -71,7 +71,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       var asImpl1: TestQuery.AsImpl1? = null
-      if (possibleTypes("Impl1").evaluate(customScalarAdapters.variables(), __typename)) {
+      if (possibleTypes("Impl1").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
         reader.rewind()
         asImpl1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.AsImpl1.fromJson(reader,
             customScalarAdapters)
@@ -123,7 +123,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       var asImpl21: TestQuery.AsImpl21? = null
-      if (possibleTypes("Impl2").evaluate(customScalarAdapters.variables(), __typename)) {
+      if (possibleTypes("Impl2").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
         reader.rewind()
         asImpl21 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.AsImpl21.fromJson(reader,
             customScalarAdapters)
@@ -253,7 +253,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       var asImpl2: TestQuery.AsImpl2? = null
-      if (possibleTypes("Impl2").evaluate(customScalarAdapters.variables(), __typename)) {
+      if (possibleTypes("Impl2").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
         reader.rewind()
         asImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.AsImpl2.fromJson(reader,
             customScalarAdapters)
