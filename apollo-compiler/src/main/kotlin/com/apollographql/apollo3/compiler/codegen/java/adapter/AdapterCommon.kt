@@ -136,10 +136,9 @@ internal fun readFromResponseCodeBlock(
                 context.layout.variableName(property.info.responseName),
             )
             beginControlFlow(
-                "if ($T.$evaluate($L, $T.emptySet(), $__typename))",
+                "if ($T.$evaluate($L, $customScalarAdapters.getAdapterContext().variables(), $__typename, $customScalarAdapters.getAdapterContext(), $reader.getPath()))",
                 JavaClassNames.BooleanExpressions,
                 property.condition.codeBlock(),
-                JavaClassNames.Collections
             )
             add("$reader.rewind();\n")
           } else {
