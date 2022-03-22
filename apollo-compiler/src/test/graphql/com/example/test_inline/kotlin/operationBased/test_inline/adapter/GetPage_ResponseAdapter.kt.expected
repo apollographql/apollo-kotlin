@@ -69,7 +69,7 @@ public object GetPage_ResponseAdapter {
         }
 
         var onParticularCollection: GetPage.Data.Collection.OnParticularCollection? = null
-        if (possibleTypes("ParticularCollection").evaluate(customScalarAdapters.variables(), __typename)) {
+        if (possibleTypes("ParticularCollection").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
           reader.rewind()
           onParticularCollection = com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.fromJson(reader,
               customScalarAdapters)
@@ -178,7 +178,7 @@ public object GetPage_ResponseAdapter {
             }
 
             var onParticularItem: GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem? = null
-            if (possibleTypes("ParticularItem").evaluate(customScalarAdapters.variables(), __typename)) {
+            if (possibleTypes("ParticularItem").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
               reader.rewind()
               onParticularItem = com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.Item.OnParticularItem.fromJson(reader,
                   customScalarAdapters)
