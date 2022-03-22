@@ -2,6 +2,8 @@
 
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_1_1
 import kotlin.jvm.JvmName
 
 /**
@@ -107,6 +109,19 @@ fun <T : Any> BooleanExpression<T>.evaluate(block: (T) -> Boolean): Boolean {
     is BooleanExpression.Or -> operands.any { it.evaluate(block) }
     is BooleanExpression.And -> operands.all { it.evaluate(block) }
     is BooleanExpression.Element -> block(value)
+  }
+}
+
+@Deprecated("Kept for binary compatibility with generated code from older versions")
+@ApolloDeprecatedSince(v3_1_1)
+@Suppress("DeprecatedCallableAddReplaceWith")
+fun BooleanExpression<BTerm>.evaluate(variables: Set<String>, typename: String?): Boolean {
+  return evaluate {
+    when (it) {
+      is BVariable -> variables.contains(it.name)
+      is BPossibleTypes -> it.possibleTypes.contains(typename)
+      is BLabel -> error("Unexpected boolean expression term type")
+    }
   }
 }
 
