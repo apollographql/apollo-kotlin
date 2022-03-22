@@ -28,8 +28,8 @@ class AdapterContext private constructor(
       this.variables = variables
     }
 
-    fun deferredFragmentLabels(deferredFragmentLabels: Set<DeferredFragmentIdentifier>) = apply {
-      this.deferredFragmentIdentifiers = deferredFragmentLabels
+    fun deferredFragmentIds(deferredFragmentIds: Set<DeferredFragmentIdentifier>) = apply {
+      this.deferredFragmentIdentifiers = deferredFragmentIds
     }
 
     fun build(): AdapterContext {
