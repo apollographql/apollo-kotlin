@@ -116,7 +116,7 @@ public object GetHuman_ResponseAdapter {
       }
 
       var asHuman: GetHuman.AsHuman? = null
-      if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+      if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
         reader.rewind()
         asHuman = com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.AsHuman.fromJson(reader,
             customScalarAdapters)

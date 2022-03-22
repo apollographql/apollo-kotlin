@@ -69,16 +69,16 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
         val onCharacter = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.Data.Hero.OnCharacter.fromJson(reader,
             customScalarAdapters)
 
-        reader.rewind()
         var onCharacterDeferSecond: InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferSecond? = null
         if (label("second").evaluate(customScalarAdapters.adapterContext.variables(), null, customScalarAdapters.adapterContext, reader.getPath())) {
+          reader.rewind()
           onCharacterDeferSecond = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.Data.Hero.OnCharacterDeferSecond.fromJson(reader,
               customScalarAdapters)
         }
 
-        reader.rewind()
         var onCharacterDeferThird: InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferThird? = null
         if (or(not(variable("cond")),label("third")).evaluate(customScalarAdapters.adapterContext.variables(), null, customScalarAdapters.adapterContext, reader.getPath())) {
+          reader.rewind()
           onCharacterDeferThird = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.Data.Hero.OnCharacterDeferThird.fromJson(reader,
               customScalarAdapters)
         }

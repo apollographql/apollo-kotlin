@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
@@ -79,13 +78,13 @@ public class TestQuery_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestQuery.OnStarship onStarship = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Starship")), Collections.emptySet(), __typename)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Starship")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), reader.getPath())) {
         reader.rewind();
         onStarship = com.example.union_fragment.adapter.TestQuery_ResponseAdapter.OnStarship.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       Starship starship = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Starship")), Collections.emptySet(), __typename)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Starship")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), reader.getPath())) {
         reader.rewind();
         starship = com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter.Starship.INSTANCE.fromJson(reader, customScalarAdapters);
       }

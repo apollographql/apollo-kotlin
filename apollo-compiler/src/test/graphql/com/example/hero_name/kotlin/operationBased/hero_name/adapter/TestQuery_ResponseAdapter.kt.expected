@@ -74,7 +74,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         var onDroid: TestQuery.Data.Hero.OnDroid? = null
-        if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+        if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
           reader.rewind()
           onDroid = com.example.hero_name.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.fromJson(reader,
               customScalarAdapters)

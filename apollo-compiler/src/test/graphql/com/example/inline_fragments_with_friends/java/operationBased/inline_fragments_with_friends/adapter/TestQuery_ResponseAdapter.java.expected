@@ -26,7 +26,6 @@ import java.lang.Double;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
@@ -83,13 +82,13 @@ public class TestQuery_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestQuery.OnHuman onHuman = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), Collections.emptySet(), __typename)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), reader.getPath())) {
         reader.rewind();
         onHuman = com.example.inline_fragments_with_friends.adapter.TestQuery_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       TestQuery.OnDroid onDroid = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), Collections.emptySet(), __typename)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), reader.getPath())) {
         reader.rewind();
         onDroid = com.example.inline_fragments_with_friends.adapter.TestQuery_ResponseAdapter.OnDroid.INSTANCE.fromJson(reader, customScalarAdapters);
       }

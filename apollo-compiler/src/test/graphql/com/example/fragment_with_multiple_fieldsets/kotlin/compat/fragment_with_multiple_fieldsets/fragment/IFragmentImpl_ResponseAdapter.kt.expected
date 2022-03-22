@@ -38,7 +38,7 @@ public object IFragmentImpl_ResponseAdapter {
       }
 
       var asA: com.example.fragment_with_multiple_fieldsets.fragment.IFragment.AsA? = null
-      if (possibleTypes("A").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+      if (possibleTypes("A").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
         reader.rewind()
         asA = com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.AsA.fromJson(reader,
             customScalarAdapters)

@@ -37,14 +37,14 @@ public object AnimalFragmentImpl_ResponseAdapter {
       }
 
       var asCat: com.example.deprecated_merged_field.fragment.AnimalFragment.AsCat? = null
-      if (possibleTypes("Cat").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+      if (possibleTypes("Cat").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
         reader.rewind()
         asCat = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AsCat.fromJson(reader,
             customScalarAdapters)
       }
 
       var asDog: com.example.deprecated_merged_field.fragment.AnimalFragment.AsDog? = null
-      if (possibleTypes("Dog").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+      if (possibleTypes("Dog").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
         reader.rewind()
         asDog = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AsDog.fromJson(reader,
             customScalarAdapters)

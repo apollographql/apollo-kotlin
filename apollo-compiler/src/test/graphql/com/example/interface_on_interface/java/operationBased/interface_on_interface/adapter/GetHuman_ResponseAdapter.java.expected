@@ -22,7 +22,6 @@ import java.lang.Double;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class GetHuman_ResponseAdapter {
@@ -133,7 +132,7 @@ public class GetHuman_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       GetHuman.OnHuman onHuman = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), Collections.emptySet(), __typename)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), reader.getPath())) {
         reader.rewind();
         onHuman = com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, customScalarAdapters);
       }

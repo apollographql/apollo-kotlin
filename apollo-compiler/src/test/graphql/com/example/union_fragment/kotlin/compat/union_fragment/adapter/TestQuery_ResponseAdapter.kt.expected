@@ -73,7 +73,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       var asStarship: TestQuery.AsStarship? = null
-      if (possibleTypes("Starship").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+      if (possibleTypes("Starship").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
         reader.rewind()
         asStarship = com.example.union_fragment.adapter.TestQuery_ResponseAdapter.AsStarship.fromJson(reader,
             customScalarAdapters)
@@ -116,7 +116,7 @@ public object TestQuery_ResponseAdapter {
         val __typename = reader.readTypename()
 
         var starship: Starship? = null
-        if (possibleTypes("Starship").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+        if (possibleTypes("Starship").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
           reader.rewind()
           starship = com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter.Starship.fromJson(reader,
               customScalarAdapters)

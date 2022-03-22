@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class HeroDetailsImpl_ResponseAdapter {
@@ -43,7 +42,7 @@ public class HeroDetailsImpl_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       HumanDetails humanDetails = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), Collections.emptySet(), __typename)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), reader.getPath())) {
         reader.rewind();
         humanDetails = com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.fromJson(reader, customScalarAdapters);
       }

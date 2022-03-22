@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class GetPage_ResponseAdapter {
@@ -81,7 +80,7 @@ public class GetPage_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       GetPage.OnParticularCollection onParticularCollection = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ParticularCollection")), Collections.emptySet(), __typename)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ParticularCollection")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), reader.getPath())) {
         reader.rewind();
         onParticularCollection = com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularCollection.INSTANCE.fromJson(reader, customScalarAdapters);
       }
@@ -196,7 +195,7 @@ public class GetPage_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       GetPage.OnParticularItem onParticularItem = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ParticularItem")), Collections.emptySet(), __typename)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ParticularItem")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), reader.getPath())) {
         reader.rewind();
         onParticularItem = com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularItem.INSTANCE.fromJson(reader, customScalarAdapters);
       }

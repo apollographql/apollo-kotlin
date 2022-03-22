@@ -68,9 +68,9 @@ public object InlineSingleWithDefer_ResponseAdapter {
           "__typename was not found"
         }
 
-        reader.rewind()
         var onDroid: InlineSingleWithDefer.Data.Hero.OnDroid? = null
         if (and(possibleTypes("Droid"),label(null)).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+          reader.rewind()
           onDroid = com.example.fragments_with_defer_and_include_directives.adapter.InlineSingleWithDefer_ResponseAdapter.Data.Hero.OnDroid.fromJson(reader,
               customScalarAdapters)
         }

@@ -69,7 +69,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       var asA: TestQuery.AsA? = null
-      if (possibleTypes("ABC").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+      if (possibleTypes("ABC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
         reader.rewind()
         asA = com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.AsA.fromJson(reader,
             customScalarAdapters)
@@ -117,7 +117,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       var asB: TestQuery.AsB? = null
-      if (possibleTypes("ABC","SomeBC").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+      if (possibleTypes("ABC","SomeBC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
         reader.rewind()
         asB = com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.AsB.fromJson(reader,
             customScalarAdapters)

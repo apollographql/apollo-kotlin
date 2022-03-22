@@ -69,7 +69,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         var onBar: TestQuery.Data.Foo.OnBar? = null
-        if (possibleTypes("BarObject","FooBar").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+        if (possibleTypes("BarObject","FooBar").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
           reader.rewind()
           onBar = com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.Data.Foo.OnBar.fromJson(reader,
               customScalarAdapters)
