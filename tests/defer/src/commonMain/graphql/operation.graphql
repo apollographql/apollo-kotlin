@@ -1,4 +1,4 @@
-query Query1 {
+query WithFragmentSpreads {
   computers {
     id
     ...ComputerFields @defer
@@ -9,7 +9,7 @@ fragment ComputerFields on Computer {
   year
   screen {
     resolution
-    ...ScreenFields @defer
+    ...ScreenFields @defer(label: "b")
   }
 }
 fragment ScreenFields on Screen {
@@ -18,7 +18,7 @@ fragment ScreenFields on Screen {
 
 
 
-query Query2 {
+query WithInlineFragments {
   computers {
     id
     ... on Computer @defer {
@@ -26,7 +26,7 @@ query Query2 {
       year
       screen {
         resolution
-        ... on Screen @defer {
+        ... on Screen @defer(label: "b") {
           isColor
         }
       }
