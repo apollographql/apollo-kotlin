@@ -159,7 +159,7 @@ private constructor(
   private fun CustomScalarAdapters.withDeferredFragmentIds(deferredFragmentIds: Set<DeferredFragmentIdentifier>) = newBuilder()
       .adapterContext(
           adapterContext.newBuilder()
-              .deferredFragmentIds(deferredFragmentIds)
+              .mergedDeferredFragmentIds(deferredFragmentIds)
               .build()
       )
       .build()
