@@ -60,6 +60,7 @@ public object TestQuery_ResponseAdapter {
         var __typename: String? = null
         var id: String? = null
 
+        val __path = reader.getPath()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -73,21 +74,21 @@ public object TestQuery_ResponseAdapter {
         }
 
         var onHuman: TestQuery.Data.Hero.OnHuman? = null
-        if (and(possibleTypes("Human"),and(variable("withDetails"),not(variable("skipHumanDetails")))).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+        if (and(possibleTypes("Human"),and(variable("withDetails"),not(variable("skipHumanDetails")))).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           onHuman = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.fromJson(reader,
               customScalarAdapters)
         }
 
         var onDroid: TestQuery.Data.Hero.OnDroid? = null
-        if (and(possibleTypes("Droid"),variable("withDetails")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+        if (and(possibleTypes("Droid"),variable("withDetails")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           onDroid = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.fromJson(reader,
               customScalarAdapters)
         }
 
         var onCharacter: TestQuery.Data.Hero.OnCharacter? = null
-        if (variable("withDetails").evaluate(customScalarAdapters.adapterContext.variables(), null, customScalarAdapters.adapterContext, reader.getPath())) {
+        if (variable("withDetails").evaluate(customScalarAdapters.adapterContext.variables(), null, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           onCharacter = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.fromJson(reader,
               customScalarAdapters)

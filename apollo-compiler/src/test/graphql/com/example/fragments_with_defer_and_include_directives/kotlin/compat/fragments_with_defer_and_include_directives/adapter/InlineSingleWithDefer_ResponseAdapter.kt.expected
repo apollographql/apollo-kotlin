@@ -58,6 +58,7 @@ public object InlineSingleWithDefer_ResponseAdapter {
         InlineSingleWithDefer.Hero {
       var __typename: String? = null
 
+      val __path = reader.getPath()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -70,7 +71,7 @@ public object InlineSingleWithDefer_ResponseAdapter {
       }
 
       var asDroid: InlineSingleWithDefer.AsDroid? = null
-      if (and(possibleTypes("Droid"),label(null)).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+      if (and(possibleTypes("Droid"),label(null)).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
         reader.rewind()
         asDroid = com.example.fragments_with_defer_and_include_directives.adapter.InlineSingleWithDefer_ResponseAdapter.AsDroid.fromJson(reader,
             customScalarAdapters)

@@ -66,6 +66,7 @@ public class TestQuery_ResponseAdapter {
         throws IOException {
       String __typename = null;
 
+      String __path = reader.getPath();
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
@@ -79,7 +80,7 @@ public class TestQuery_ResponseAdapter {
       TestQuery.OnIface1 onIface1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface1.INSTANCE.fromJson(reader, customScalarAdapters);
 
       TestQuery.OnImpl1 onImpl1 = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl1")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), reader.getPath())) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl1")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         onImpl1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl1.INSTANCE.fromJson(reader, customScalarAdapters);
       }
@@ -146,6 +147,7 @@ public class TestQuery_ResponseAdapter {
         throws IOException {
       String __typename = null;
 
+      String __path = reader.getPath();
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
@@ -159,7 +161,7 @@ public class TestQuery_ResponseAdapter {
       TestQuery.OnIface2 onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface2.INSTANCE.fromJson(reader, customScalarAdapters);
 
       TestQuery.OnImpl2 onImpl2 = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl2")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), reader.getPath())) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl2")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl2.INSTANCE.fromJson(reader, customScalarAdapters);
       }
@@ -288,6 +290,7 @@ public class TestQuery_ResponseAdapter {
         throws IOException {
       String __typename = null;
 
+      String __path = reader.getPath();
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
@@ -301,7 +304,7 @@ public class TestQuery_ResponseAdapter {
       TestQuery.OnIface21 onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface21.INSTANCE.fromJson(reader, customScalarAdapters);
 
       TestQuery.OnImpl21 onImpl2 = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl2")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), reader.getPath())) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl2")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl21.INSTANCE.fromJson(reader, customScalarAdapters);
       }

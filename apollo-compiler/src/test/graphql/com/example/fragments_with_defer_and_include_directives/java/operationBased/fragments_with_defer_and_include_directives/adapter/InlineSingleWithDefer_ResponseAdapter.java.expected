@@ -67,6 +67,7 @@ public class InlineSingleWithDefer_ResponseAdapter {
         CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
 
+      String __path = reader.getPath();
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
@@ -77,7 +78,7 @@ public class InlineSingleWithDefer_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       InlineSingleWithDefer.OnDroid onDroid = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel(null))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), reader.getPath())) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel(null))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         onDroid = com.example.fragments_with_defer_and_include_directives.adapter.InlineSingleWithDefer_ResponseAdapter.OnDroid.INSTANCE.fromJson(reader, customScalarAdapters);
       }

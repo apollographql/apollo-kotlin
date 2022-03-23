@@ -59,6 +59,7 @@ public object TestQuery_ResponseAdapter {
         var __typename: String? = null
         var name: String? = null
 
+        val __path = reader.getPath()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -72,14 +73,14 @@ public object TestQuery_ResponseAdapter {
         }
 
         var onHuman: TestQuery.Data.Hero.OnHuman? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           onHuman = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.fromJson(reader,
               customScalarAdapters)
         }
 
         var onDroid: TestQuery.Data.Hero.OnDroid? = null
-        if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+        if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           onDroid = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.fromJson(reader,
               customScalarAdapters)
@@ -153,6 +154,7 @@ public object TestQuery_ResponseAdapter {
             var __typename: String? = null
             var name: String? = null
 
+            val __path = reader.getPath()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -166,7 +168,7 @@ public object TestQuery_ResponseAdapter {
             }
 
             var onHuman: TestQuery.Data.Hero.OnHuman.Friend.OnHuman? = null
-            if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+            if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
               reader.rewind()
               onHuman = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.Friend.OnHuman.fromJson(reader,
                   customScalarAdapters)
@@ -266,6 +268,7 @@ public object TestQuery_ResponseAdapter {
             var __typename: String? = null
             var name: String? = null
 
+            val __path = reader.getPath()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -279,7 +282,7 @@ public object TestQuery_ResponseAdapter {
             }
 
             var onHuman: TestQuery.Data.Hero.OnDroid.Friend.OnHuman? = null
-            if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+            if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
               reader.rewind()
               onHuman = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.Friend.OnHuman.fromJson(reader,
                   customScalarAdapters)

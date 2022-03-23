@@ -58,6 +58,7 @@ public object InlineMultipleWithDefer_ResponseAdapter {
         InlineMultipleWithDefer.Hero {
       var __typename: String? = null
 
+      val __path = reader.getPath()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -70,14 +71,14 @@ public object InlineMultipleWithDefer_ResponseAdapter {
       }
 
       var asDroidDeferFirst: InlineMultipleWithDefer.AsDroidDeferFirst? = null
-      if (and(possibleTypes("Droid"),label("first")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+      if (and(possibleTypes("Droid"),label("first")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
         reader.rewind()
         asDroidDeferFirst = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.AsDroidDeferFirst.fromJson(reader,
             customScalarAdapters)
       }
 
       var asDroidDeferSecond: InlineMultipleWithDefer.AsDroidDeferSecond? = null
-      if (and(possibleTypes("Droid"),label("second")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+      if (and(possibleTypes("Droid"),label("second")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
         reader.rewind()
         asDroidDeferSecond = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.AsDroidDeferSecond.fromJson(reader,
             customScalarAdapters)

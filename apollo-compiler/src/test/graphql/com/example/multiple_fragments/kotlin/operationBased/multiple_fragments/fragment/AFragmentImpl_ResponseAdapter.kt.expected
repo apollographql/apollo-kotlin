@@ -54,6 +54,7 @@ public object AFragmentImpl_ResponseAdapter {
           com.example.multiple_fragments.fragment.AFragment.Node {
         var __typename: String? = null
 
+        val __path = reader.getPath()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -66,14 +67,14 @@ public object AFragmentImpl_ResponseAdapter {
         }
 
         var fragment1: Fragment1? = null
-        if (possibleTypes("ANode").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+        if (possibleTypes("ANode").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           fragment1 = com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.fromJson(reader,
               customScalarAdapters)
         }
 
         var fragment2: Fragment2? = null
-        if (possibleTypes("ANode").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+        if (possibleTypes("ANode").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           fragment2 = com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.fromJson(reader,
               customScalarAdapters)

@@ -77,6 +77,7 @@ public class HeroDetailsImpl_ResponseAdapter {
       String __typename = null;
       String name = null;
 
+      String __path = reader.getPath();
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
@@ -88,13 +89,13 @@ public class HeroDetailsImpl_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnHuman onHuman = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), reader.getPath())) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         onHuman = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnDroid onDroid = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), reader.getPath())) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         onDroid = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.OnDroid.INSTANCE.fromJson(reader, customScalarAdapters);
       }

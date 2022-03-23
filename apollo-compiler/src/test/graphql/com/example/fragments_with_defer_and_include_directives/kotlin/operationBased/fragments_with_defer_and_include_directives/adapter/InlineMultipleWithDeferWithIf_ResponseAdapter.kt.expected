@@ -58,6 +58,7 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
           InlineMultipleWithDeferWithIf.Data.Hero {
         var __typename: String? = null
 
+        val __path = reader.getPath()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -70,14 +71,14 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
             customScalarAdapters)
 
         var onCharacterDeferSecond: InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferSecond? = null
-        if (label("second").evaluate(customScalarAdapters.adapterContext.variables(), null, customScalarAdapters.adapterContext, reader.getPath())) {
+        if (label("second").evaluate(customScalarAdapters.adapterContext.variables(), null, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           onCharacterDeferSecond = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.Data.Hero.OnCharacterDeferSecond.fromJson(reader,
               customScalarAdapters)
         }
 
         var onCharacterDeferThird: InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferThird? = null
-        if (or(not(variable("cond")),label("third")).evaluate(customScalarAdapters.adapterContext.variables(), null, customScalarAdapters.adapterContext, reader.getPath())) {
+        if (or(not(variable("cond")),label("third")).evaluate(customScalarAdapters.adapterContext.variables(), null, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           onCharacterDeferThird = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.Data.Hero.OnCharacterDeferThird.fromJson(reader,
               customScalarAdapters)

@@ -57,6 +57,7 @@ public object TestQuery_ResponseAdapter {
       var __typename: String? = null
       var foo: String? = null
 
+      val __path = reader.getPath()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -70,7 +71,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       var asBar: TestQuery.AsBar? = null
-      if (possibleTypes("BarObject","FooBar").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+      if (possibleTypes("BarObject","FooBar").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
         reader.rewind()
         asBar = com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.AsBar.fromJson(reader,
             customScalarAdapters)

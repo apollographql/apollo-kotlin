@@ -94,11 +94,12 @@ public object SpreadSingleWithDefer_ResponseAdapter {
           SpreadSingleWithDefer.Hero.Fragments {
 
 
+        val __path = reader.getPath()
         reader.rewind()
         val __typename = reader.readTypename()
 
         var droidDetails: DroidDetails? = null
-        if (and(possibleTypes("Droid"),label(null)).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+        if (and(possibleTypes("Droid"),label(null)).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
               customScalarAdapters)

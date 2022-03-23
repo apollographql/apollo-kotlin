@@ -67,6 +67,7 @@ public class TestQuery_ResponseAdapter {
         throws IOException {
       String __typename = null;
 
+      String __path = reader.getPath();
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
@@ -80,13 +81,13 @@ public class TestQuery_ResponseAdapter {
       TestQuery.OnCharacter onCharacter = com.example.simple_inline_fragment.adapter.TestQuery_ResponseAdapter.OnCharacter.INSTANCE.fromJson(reader, customScalarAdapters);
 
       TestQuery.OnHuman onHuman = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), reader.getPath())) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         onHuman = com.example.simple_inline_fragment.adapter.TestQuery_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       TestQuery.OnDroid onDroid = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), reader.getPath())) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         onDroid = com.example.simple_inline_fragment.adapter.TestQuery_ResponseAdapter.OnDroid.INSTANCE.fromJson(reader, customScalarAdapters);
       }

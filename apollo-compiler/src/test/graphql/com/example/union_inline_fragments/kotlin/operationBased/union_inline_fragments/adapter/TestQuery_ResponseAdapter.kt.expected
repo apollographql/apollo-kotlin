@@ -61,6 +61,7 @@ public object TestQuery_ResponseAdapter {
           TestQuery.Data.Search {
         var __typename: String? = null
 
+        val __path = reader.getPath()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -73,14 +74,14 @@ public object TestQuery_ResponseAdapter {
         }
 
         var onCharacter: TestQuery.Data.Search.OnCharacter? = null
-        if (possibleTypes("Droid","Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+        if (possibleTypes("Droid","Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           onCharacter = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.fromJson(reader,
               customScalarAdapters)
         }
 
         var onStarship: TestQuery.Data.Search.OnStarship? = null
-        if (possibleTypes("Starship").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+        if (possibleTypes("Starship").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           onStarship = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnStarship.fromJson(reader,
               customScalarAdapters)
@@ -162,6 +163,7 @@ public object TestQuery_ResponseAdapter {
               TestQuery.Data.Search.OnCharacter.Friend {
             var __typename: String? = null
 
+            val __path = reader.getPath()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -178,14 +180,14 @@ public object TestQuery_ResponseAdapter {
                 customScalarAdapters)
 
             var onHuman: TestQuery.Data.Search.OnCharacter.Friend.OnHuman? = null
-            if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+            if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
               reader.rewind()
               onHuman = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnHuman.fromJson(reader,
                   customScalarAdapters)
             }
 
             var onDroid: TestQuery.Data.Search.OnCharacter.Friend.OnDroid? = null
-            if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+            if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
               reader.rewind()
               onDroid = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnDroid.fromJson(reader,
                   customScalarAdapters)

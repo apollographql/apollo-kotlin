@@ -57,6 +57,7 @@ public object InlineMultipleWithDefer_ResponseAdapter {
           InlineMultipleWithDefer.Data.Hero {
         var __typename: String? = null
 
+        val __path = reader.getPath()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -69,14 +70,14 @@ public object InlineMultipleWithDefer_ResponseAdapter {
         }
 
         var onDroidDeferFirst: InlineMultipleWithDefer.Data.Hero.OnDroidDeferFirst? = null
-        if (and(possibleTypes("Droid"),label("first")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+        if (and(possibleTypes("Droid"),label("first")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           onDroidDeferFirst = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.Data.Hero.OnDroidDeferFirst.fromJson(reader,
               customScalarAdapters)
         }
 
         var onDroidDeferSecond: InlineMultipleWithDefer.Data.Hero.OnDroidDeferSecond? = null
-        if (and(possibleTypes("Droid"),label("second")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+        if (and(possibleTypes("Droid"),label("second")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           onDroidDeferSecond = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.Data.Hero.OnDroidDeferSecond.fromJson(reader,
               customScalarAdapters)

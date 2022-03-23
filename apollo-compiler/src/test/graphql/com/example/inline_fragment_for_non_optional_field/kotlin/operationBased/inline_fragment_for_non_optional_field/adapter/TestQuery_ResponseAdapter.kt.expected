@@ -57,6 +57,7 @@ public object TestQuery_ResponseAdapter {
         var __typename: String? = null
         var name: String? = null
 
+        val __path = reader.getPath()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -70,7 +71,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         var onHuman: TestQuery.Data.NonOptionalHero.OnHuman? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           onHuman = com.example.inline_fragment_for_non_optional_field.adapter.TestQuery_ResponseAdapter.Data.NonOptionalHero.OnHuman.fromJson(reader,
               customScalarAdapters)

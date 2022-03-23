@@ -57,6 +57,7 @@ public object TestQuery_ResponseAdapter {
         TestQuery.Root {
       var __typename: String? = null
 
+      val __path = reader.getPath()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -69,7 +70,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       var asA: TestQuery.AsA? = null
-      if (possibleTypes("ABC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+      if (possibleTypes("ABC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
         reader.rewind()
         asA = com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.AsA.fromJson(reader,
             customScalarAdapters)
@@ -104,6 +105,7 @@ public object TestQuery_ResponseAdapter {
       var __typename: String? = null
       var fieldA1: String? = null
 
+      val __path = reader.getPath()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -117,7 +119,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       var asB: TestQuery.AsB? = null
-      if (possibleTypes("ABC","SomeBC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+      if (possibleTypes("ABC","SomeBC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
         reader.rewind()
         asB = com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.AsB.fromJson(reader,
             customScalarAdapters)

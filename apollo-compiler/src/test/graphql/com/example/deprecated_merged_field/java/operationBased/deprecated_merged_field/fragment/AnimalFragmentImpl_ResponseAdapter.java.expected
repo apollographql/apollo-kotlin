@@ -32,6 +32,7 @@ public class AnimalFragmentImpl_ResponseAdapter {
         CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
 
+      String __path = reader.getPath();
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
@@ -42,13 +43,13 @@ public class AnimalFragmentImpl_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat onCat = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Cat")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), reader.getPath())) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Cat")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         onCat = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.OnCat.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog onDog = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Dog")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), reader.getPath())) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Dog")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         onDog = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.OnDog.INSTANCE.fromJson(reader, customScalarAdapters);
       }

@@ -69,6 +69,7 @@ public class GetPage_ResponseAdapter {
       String __typename = null;
       List<GetPage.Item> items = null;
 
+      String __path = reader.getPath();
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
@@ -80,7 +81,7 @@ public class GetPage_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       GetPage.OnParticularCollection onParticularCollection = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ParticularCollection")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), reader.getPath())) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ParticularCollection")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         onParticularCollection = com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularCollection.INSTANCE.fromJson(reader, customScalarAdapters);
       }
@@ -185,6 +186,7 @@ public class GetPage_ResponseAdapter {
         throws IOException {
       String __typename = null;
 
+      String __path = reader.getPath();
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
@@ -195,7 +197,7 @@ public class GetPage_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       GetPage.OnParticularItem onParticularItem = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ParticularItem")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), reader.getPath())) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ParticularItem")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         onParticularItem = com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularItem.INSTANCE.fromJson(reader, customScalarAdapters);
       }

@@ -58,6 +58,7 @@ public object TestQuery_ResponseAdapter {
       var __typename: String? = null
       var iface2: TestQuery.Iface21? = null
 
+      val __path = reader.getPath()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -71,7 +72,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       var asImpl1: TestQuery.AsImpl1? = null
-      if (possibleTypes("Impl1").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+      if (possibleTypes("Impl1").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
         reader.rewind()
         asImpl1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.AsImpl1.fromJson(reader,
             customScalarAdapters)
@@ -110,6 +111,7 @@ public object TestQuery_ResponseAdapter {
       var __typename: String? = null
       var scalar1: String? = null
 
+      val __path = reader.getPath()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -123,7 +125,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       var asImpl21: TestQuery.AsImpl21? = null
-      if (possibleTypes("Impl2").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+      if (possibleTypes("Impl2").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
         reader.rewind()
         asImpl21 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.AsImpl21.fromJson(reader,
             customScalarAdapters)
@@ -239,6 +241,7 @@ public object TestQuery_ResponseAdapter {
       var scalar1: String? = null
       var scalar3: String? = null
 
+      val __path = reader.getPath()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -253,7 +256,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       var asImpl2: TestQuery.AsImpl2? = null
-      if (possibleTypes("Impl2").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, reader.getPath())) {
+      if (possibleTypes("Impl2").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
         reader.rewind()
         asImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.AsImpl2.fromJson(reader,
             customScalarAdapters)

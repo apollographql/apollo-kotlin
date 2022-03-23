@@ -32,6 +32,7 @@ public class IFragmentImpl_ResponseAdapter {
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
 
+      String __path = reader.getPath();
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
@@ -42,7 +43,7 @@ public class IFragmentImpl_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA onA = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("A")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), reader.getPath())) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("A")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         onA = com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.OnA.INSTANCE.fromJson(reader, customScalarAdapters);
       }
