@@ -26,13 +26,9 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
@@ -133,35 +129,51 @@ fun <D : Query.Data> ApolloCall<D>.watch(
     fetchThrows: Boolean = false,
     refetchThrows: Boolean = false,
 ): Flow<ApolloResponse<D>> {
-  val flow = flow {
+  return flow {
     var lastResponse: ApolloResponse<D>? = null
+    var response: ApolloResponse<D>? = null
+
     toFlow()
         .catch {
           if (it !is ApolloException || fetchThrows) throw it
         }.collect {
-          emit(it)
-          lastResponse = it
+          response = it
+
+          if (it.isLast) {
+            if (lastResponse != null) {
+              /**
+               * If we ever come here it means some interceptors built a new Flow and forgot to reset the isLast flag
+               * Better safe than sorry: emit them when we realize that. This will introduce a delay in the response.
+               */
+              println("ApolloGraphQL: extra response received after the last one")
+              emit(lastResponse!!)
+            }
+            /**
+             * Remember the last response so that we can send it after we subscribe to the store
+             *
+             * This allows callers to use the last element as a synchronisation point to modify the store and still have the watcher
+             * receive subsequent updates
+             *
+             * See https://github.com/apollographql/apollo-kotlin/pull/3853
+             */
+            lastResponse = it
+          } else {
+            emit(it)
+          }
         }
 
-    emitAll(
-        copy().fetchPolicyInterceptor(refetchPolicyInterceptor)
-            .watch(lastResponse?.data) { _, _ ->
-              // If the exception is ignored (refetchThrows is false), we should continue watching - so retry
-              !refetchThrows
-            }
-    )
+    copy().fetchPolicyInterceptor(refetchPolicyInterceptor)
+        .watch(response?.data) { _, _ ->
+          // If the exception is ignored (refetchThrows is false), we should continue watching - so retry
+          !refetchThrows
+        }.onStart {
+          if (lastResponse != null) {
+            emit(lastResponse!!)
+          }
+        }.collect {
+          emit(it)
+        }
   }
-
-  /**
-   * We buffer the returned flow so that the subscription to the store happens in the same stacktrace as the last element is
-   * received and *before* the last element is emitted downstream.
-   *
-   * This allows callers to use the last element as a synchronisation point to modify the store and still have the watcher
-   * receive subsequent updates
-   *
-   * See https://github.com/apollographql/apollo-kotlin/pull/3853
-   */
-  return flow.buffer(2)
 }
 
 /**

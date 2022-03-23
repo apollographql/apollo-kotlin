@@ -28,7 +28,8 @@ class QueueTestNetworkTransport : NetworkTransport {
     val response = lock.withLock { queue.removeFirstOrNull() } ?: error("No more responses in queue")
     if (response is TestResponse.NetworkError) throw ApolloNetworkException("Network error queued in QueueTestNetworkTransport")
     @Suppress("UNCHECKED_CAST")
-    return flowOf((response as TestResponse.Response).response as ApolloResponse<D>)
+    val apolloResponse = (response as TestResponse.Response).response as ApolloResponse<D>
+    return flowOf(apolloResponse.newBuilder().isLast(true).build())
   }
 
   fun <D : Operation.Data> enqueue(response: ApolloResponse<D>) {
@@ -56,7 +57,8 @@ class MapTestNetworkTransport : NetworkTransport {
         ?: error("No response registered for operation ${request.operation}")
     if (response is TestResponse.NetworkError) throw ApolloNetworkException("Network error queued in QueueTestNetworkTransport")
     @Suppress("UNCHECKED_CAST")
-    return flowOf((response as TestResponse.Response).response as ApolloResponse<D>)
+    val apolloResponse = (response as TestResponse.Response).response as ApolloResponse<D>
+    return flowOf(apolloResponse.newBuilder().isLast(true).build())
   }
 
   fun <D : Operation.Data> register(operation: Operation<D>, response: ApolloResponse<D>) {

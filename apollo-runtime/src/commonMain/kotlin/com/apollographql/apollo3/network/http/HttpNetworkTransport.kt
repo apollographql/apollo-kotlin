@@ -86,7 +86,7 @@ private constructor(
 
       emitAll(
           bodies.map { body ->
-            // On native, body will be freezed in worker.doWork, but reading a BufferedSource is a mutating operation.
+            // On native, body will be frozen in worker.doWork, but reading a BufferedSource is a mutating operation.
             // So we read the bytes into a ByteString first, and create a new BufferedSource from it after freezing.
             val bodyByteString = if (platform() == Platform.Native) body.readByteString() else null
             // Do not capture request
@@ -124,6 +124,7 @@ private constructor(
                         headers = httpResponse.headers
                     )
                 )
+                .isLast(true)
                 .build()
           }
       )
