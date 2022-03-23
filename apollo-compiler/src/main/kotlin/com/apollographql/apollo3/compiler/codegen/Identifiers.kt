@@ -16,6 +16,7 @@ internal object Identifier {
   const val writer = "writer"
   const val toJson = "toJson"
   const val fromJson = "fromJson"
+  const val getPath = "getPath"
   const val serializeVariables = "serializeVariables"
   const val fields = "fields"
   const val rootField = "rootField"
@@ -37,6 +38,7 @@ internal object Identifier {
   const val cacheKeyForObject = "cacheKeyForObject"
   const val field = "field"
   const val __map = "__map"
+  const val __path = "__path"
 
 
   const val OPERATION_DOCUMENT = "OPERATION_DOCUMENT"

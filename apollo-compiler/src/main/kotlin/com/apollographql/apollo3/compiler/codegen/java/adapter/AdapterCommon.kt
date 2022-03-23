@@ -2,7 +2,9 @@ package com.apollographql.apollo3.compiler.codegen.java.adapter
 
 import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.compiler.applyIf
+import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.RESPONSE_NAMES
+import com.apollographql.apollo3.compiler.codegen.Identifier.__path
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.evaluate
@@ -78,6 +80,12 @@ internal fun readFromResponseCodeBlock(
     )
   }.joinToCode(separator = "\n", suffix = "\n")
 
+  val path = if (syntheticProperties.any { it.condition != BooleanExpression.True }) {
+    CodeBlock.of("String $__path = $reader.${Identifier.getPath}();")
+  } else {
+    CodeBlock.of("")
+  }
+
   /**
    * Read the regular properties
    */
@@ -136,7 +144,7 @@ internal fun readFromResponseCodeBlock(
                 context.layout.variableName(property.info.responseName),
             )
             beginControlFlow(
-                "if ($T.$evaluate($L, $customScalarAdapters.getAdapterContext().variables(), $__typename, $customScalarAdapters.getAdapterContext(), $reader.getPath()))",
+                "if ($T.$evaluate($L, $customScalarAdapters.getAdapterContext().variables(), $__typename, $customScalarAdapters.getAdapterContext(), $__path))",
                 JavaClassNames.BooleanExpressions,
                 property.condition.codeBlock(),
             )
@@ -193,6 +201,8 @@ internal fun readFromResponseCodeBlock(
   return CodeBlock.builder()
       .add(prefix)
       .applyIf(prefix.isNotEmpty()) { add("\n") }
+      .add(path)
+      .applyIf(path.isNotEmpty()) { add("\n") }
       .add(loop)
       .applyIf(loop.isNotEmpty()) { add("\n") }
       .add(typenameCodeBlock)
