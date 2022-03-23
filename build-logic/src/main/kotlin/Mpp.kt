@@ -80,18 +80,7 @@ fun Project.configureMppDefaults(withJs: Boolean = true, withLinux: Boolean = tr
 
     addTestDependencies(withJs)
 
-    if (System.getProperty("idea.sync.active") == null) {
-      /**
-       * Evil tasks to fool IntelliJ into running the appropriate tests when clicking the green triangle in the gutter
-       * IntelliJ "sees" apple during sync but the actual tasks are macosX64
-       */
-      tasks.register("cleanAppleTest") {
-        it.dependsOn("cleanMacosX64Test")
-      }
-      tasks.register("appleTest") {
-        it.dependsOn("macosX64Test")
-      }
-    }
+    registerAppleTasks()
   }
 }
 
@@ -114,13 +103,37 @@ fun Project.configureMppTestsDefaults(withJs: Boolean = true) {
         nodejs()
       }
     }
-    if (hostArchitecture() == "arm64") {
-      macosArm64("apple")
-    } else {
-      macosX64("apple")
+
+    val appleMain = sourceSets.create("appleMain")
+    val appleTest = sourceSets.create("appleTest")
+
+    macosX64().apply {
+      compilations.getByName("main").source(appleMain)
+      compilations.getByName("test").source(appleTest)
+    }
+    macosArm64().apply {
+      compilations.getByName("main").source(appleMain)
+      compilations.getByName("test").source(appleTest)
     }
 
     addTestDependencies(withJs)
+
+    registerAppleTasks()
+  }
+}
+
+private fun Project.registerAppleTasks() {
+  if (System.getProperty("idea.sync.active") == null) {
+    /**
+     * Evil tasks to fool IntelliJ into running the appropriate tests when clicking the green triangle in the gutter
+     * IntelliJ "sees" apple during sync but the actual tasks are macosX64
+     */
+    tasks.register("cleanAppleTest") {
+      it.dependsOn("cleanMacosX64Test", "cleanMacosArm64Test")
+    }
+    tasks.register("appleTest") {
+      it.dependsOn("macosX64Test", "macosArm64Test")
+    }
   }
 }
 
@@ -143,18 +156,4 @@ fun KotlinMultiplatformExtension.addTestDependencies(withJs: Boolean) {
       implementation(kotlin("test-junit"))
     }
   }
-}
-
-fun Project.hostArchitecture(): String {
-  var hostArchitecture = rootProject.extensions.extraProperties.properties["hostArchitecture"] as String?
-  if (hostArchitecture == null) {
-    val output = ByteArrayOutputStream()
-    exec {
-      it.commandLine = listOf("uname", "-m")
-      it.standardOutput = output
-    }
-    hostArchitecture = output.toString().trim()
-    rootProject.extensions.extraProperties.set("hostArchitecture", hostArchitecture)
-  }
-  return hostArchitecture
 }
