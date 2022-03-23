@@ -1,5 +1,6 @@
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import java.io.ByteArrayOutputStream
 
 fun Project.configureMppDefaults(withJs: Boolean = true, withLinux: Boolean = true) {
   // See https://kotlinlang.org/docs/mpp-dsl-reference.html#targets
@@ -113,7 +114,11 @@ fun Project.configureMppTestsDefaults(withJs: Boolean = true) {
         nodejs()
       }
     }
-    macosX64("apple")
+    if (hostArchitecture() == "arm64") {
+      macosArm64("apple")
+    } else {
+      macosX64("apple")
+    }
 
     addTestDependencies(withJs)
   }
@@ -138,4 +143,18 @@ fun KotlinMultiplatformExtension.addTestDependencies(withJs: Boolean) {
       implementation(kotlin("test-junit"))
     }
   }
+}
+
+fun Project.hostArchitecture(): String {
+  var hostArchitecture = rootProject.extensions.extraProperties.properties["hostArchitecture"] as String?
+  if (hostArchitecture == null) {
+    val output = ByteArrayOutputStream()
+    exec {
+      it.commandLine = listOf("uname", "-m")
+      it.standardOutput = output
+    }
+    hostArchitecture = output.toString().trim()
+    rootProject.extensions.extraProperties.set("hostArchitecture", hostArchitecture)
+  }
+  return hostArchitecture
 }
