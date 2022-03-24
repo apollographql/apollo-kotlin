@@ -102,16 +102,12 @@ class HttpCacheMissException(message: String, cause: Exception? = null) : Apollo
  * [cause] might change to null and second exception will also be added as suppressed exception
  */
 class ApolloCompositeException(
-    private val firstException: Throwable?, private val secondException: Throwable?
+    firstException: Throwable?, secondException: Throwable?,
 ) : ApolloException(message = "multiple exceptions happened", secondException) {
 
-  val first: ApolloException
-    @Throws(RuntimeException::class)
-    get() = (firstException as? ApolloException) ?: throw RuntimeException("unexpected first exception", firstException)
+  val first = (firstException as? ApolloException) ?: throw RuntimeException("unexpected first exception", firstException)
 
-  val second: ApolloException
-    @Throws(RuntimeException::class)
-    get() = (secondException as? ApolloException) ?: throw RuntimeException("unexpected second exception", secondException)
+  val second = (secondException as? ApolloException) ?: throw RuntimeException("unexpected second exception", secondException)
 
   init {
     if (firstException != null && secondException != null) addSuppressed(firstException)
