@@ -195,8 +195,8 @@ fun <D : Query.Data> ApolloCall<D>.executeCacheAndNetwork(): Flow<ApolloResponse
 
     if (cacheException != null && networkException != null) {
       throw ApolloCompositeException(
-          cacheException,
-          networkException
+          original = cacheException,
+          suppressed = networkException
       )
     }
   }

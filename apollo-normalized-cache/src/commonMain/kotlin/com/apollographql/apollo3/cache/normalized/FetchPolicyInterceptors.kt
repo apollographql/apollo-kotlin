@@ -89,8 +89,8 @@ val CacheFirstInterceptor = object : ApolloInterceptor {
       }
 
       throw ApolloCompositeException(
-          cacheException,
-          networkException
+          original = cacheException,
+          suppressed = networkException
       )
     }
   }
@@ -145,8 +145,8 @@ val NetworkFirstInterceptor = object : ApolloInterceptor {
       }
 
       throw ApolloCompositeException(
-          networkException,
-          cacheException,
+          original = networkException,
+          suppressed = cacheException,
       )
     }
   }
@@ -203,8 +203,8 @@ val CacheAndNetworkInterceptor = object : ApolloInterceptor {
       }
       if (cacheException != null) {
         throw ApolloCompositeException(
-            cacheException,
-            networkException
+            original = cacheException,
+            suppressed = networkException
         )
       }
       throw networkException!!

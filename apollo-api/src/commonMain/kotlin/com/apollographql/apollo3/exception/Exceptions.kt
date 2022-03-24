@@ -98,11 +98,24 @@ class CacheMissException(val key: String, val fieldName: String? = null) : Apoll
 class HttpCacheMissException(message: String, cause: Exception? = null) : ApolloException(message = message, cause = cause)
 
 /**
- * Multiple exceptions happened, for an exemple with a [CacheFirst] fetch policy
+ * Multiple exceptions happened, for an example with a [CacheFirst] fetch policy
  */
-class ApolloCompositeException(first: Throwable?, second: Throwable?) : ApolloException(message = "multiple exceptions happened", second) {
-  val first = (first as? ApolloException) ?: throw RuntimeException("unexpected first exception", first)
-  val second = (second as? ApolloException) ?: throw RuntimeException("unexpected second exception", second)
+class ApolloCompositeException(
+    private val original: Throwable?, private val suppressed: Throwable?
+) : ApolloException(message = "multiple exceptions happened", original ?: suppressed) {
+
+  val first
+    @Throws(RuntimeException::class)
+    get() = (original as? ApolloException) ?: throw RuntimeException("unexpected first exception", original)
+
+  val second
+    @Throws(RuntimeException::class)
+    get() = (suppressed as? ApolloException) ?: throw RuntimeException("unexpected second exception", suppressed)
+
+  init {
+    if (original != null && suppressed != null) addSuppressed(suppressed)
+  }
+
 }
 
 class AutoPersistedQueriesNotSupported : ApolloException(message = "The server does not support auto persisted queries")
