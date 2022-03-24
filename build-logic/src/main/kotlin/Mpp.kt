@@ -103,16 +103,23 @@ fun Project.configureMppTestsDefaults(withJs: Boolean = true) {
       }
     }
 
-    val appleMain = sourceSets.create("appleMain")
-    val appleTest = sourceSets.create("appleTest")
+    if (System.getProperty("idea.sync.active") == null) {
 
-    macosX64().apply {
-      compilations.getByName("main").source(appleMain)
-      compilations.getByName("test").source(appleTest)
-    }
-    macosArm64().apply {
-      compilations.getByName("main").source(appleMain)
-      compilations.getByName("test").source(appleTest)
+      val appleMain = sourceSets.create("appleMain")
+      val appleTest = sourceSets.create("appleTest")
+
+      macosX64().apply {
+        compilations.getByName("main").source(appleMain)
+        compilations.getByName("test").source(appleTest)
+      }
+      macosArm64().apply {
+        compilations.getByName("main").source(appleMain)
+        compilations.getByName("test").source(appleTest)
+      }
+    } else {
+      // We are in intelliJ
+      // Make intelliJ believe we have a single target with all the code in "apple" sourceSets
+      macosX64("apple")
     }
 
     addTestDependencies(withJs)
