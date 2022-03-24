@@ -7,6 +7,7 @@ import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.http.valueOf
+import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.HttpCacheMissException
 import com.apollographql.apollo3.network.http.HttpInterceptor
@@ -63,14 +64,16 @@ class CachingHttpInterceptor(
         try {
           return cacheMightThrow(request, cacheKey)
         } catch (cacheMissException: HttpCacheMissException) {
+          // In case of response status code not in 200..299 throw cache miss exception
+          if (networkException == null) throw cacheMissException
+
           // In case of exception thrown by network request,
           // ApolloException is the root cause and cache miss exception will be suppressed
-          networkException?.addSuppressed(cacheMissException)
-
-          // Throw network exception, but in case of response status code not in 200..299 throw cache miss exception
-          throw networkException ?: cacheMissException
+          throw ApolloCompositeException(
+              original = networkException,
+              suppressed = cacheMissException
+          )
         }
-
       }
       else -> {
         error("Unknown HTTP fetch policy: $policy")
