@@ -1,6 +1,5 @@
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import java.io.ByteArrayOutputStream
 
 fun Project.configureMppDefaults(withJs: Boolean = true, withLinux: Boolean = true) {
   // See https://kotlinlang.org/docs/mpp-dsl-reference.html#targets
