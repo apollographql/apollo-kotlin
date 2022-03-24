@@ -13,7 +13,7 @@ public final class com/apollographql/apollo3/api/AdapterContext {
 public final class com/apollographql/apollo3/api/AdapterContext$Builder {
 	public fun <init> ()V
 	public final fun build ()Lcom/apollographql/apollo3/api/AdapterContext;
-	public final fun deferredFragmentLabels (Ljava/util/Set;)Lcom/apollographql/apollo3/api/AdapterContext$Builder;
+	public final fun mergedDeferredFragmentIds (Ljava/util/Set;)Lcom/apollographql/apollo3/api/AdapterContext$Builder;
 	public final fun variables (Lcom/apollographql/apollo3/api/Executable$Variables;)Lcom/apollographql/apollo3/api/AdapterContext$Builder;
 }
 

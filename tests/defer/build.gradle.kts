@@ -6,6 +6,13 @@ plugins {
 configureMppTestsDefaults()
 
 kotlin {
+  /**
+   * Extra target to test the java codegen
+   */
+  jvm("javaCodegen") {
+    withJava()
+  }
+
   sourceSets {
     val commonMain by getting {
       dependencies {
@@ -24,6 +31,31 @@ kotlin {
 }
 
 apollo {
-  packageName.set("defer")
-  generateTestBuilders.set(true)
+  service("kotlin") {
+    packageName.set("defer")
+    generateKotlinModels.set(true)
+    configureConnection(true)
+  }
+  service("java") {
+    packageName.set("defer")
+    generateKotlinModels.set(false)
+    configureConnection(false)
+  }
+}
+
+fun com.apollographql.apollo3.gradle.api.Service.configureConnection(generateKotlinModels: Boolean) {
+  outputDirConnection {
+    if (System.getProperty("idea.sync.active") == null) {
+      if (generateKotlinModels) {
+        connectToKotlinSourceSet("jvmTest")
+        connectToKotlinSourceSet("jsTest")
+        connectToKotlinSourceSet("appleTest")
+      } else {
+        connectToJavaSourceSet("main")
+      }
+    } else {
+      // For autocomplete to work
+      connectToKotlinSourceSet("commonTest")
+    }
+  }
 }
