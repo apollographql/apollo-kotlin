@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.http.valueOf
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.HttpCacheMissException
 import com.apollographql.apollo3.network.http.HttpInterceptor
 import com.apollographql.apollo3.network.http.HttpInterceptorChain
@@ -49,14 +50,19 @@ class CachingHttpInterceptor(
         return networkMightThrow(request, chain, cacheKey)
       }
       NETWORK_FIRST -> {
-        var networkException: ApolloException? = null
+        val networkException: ApolloException
         try {
           val response = networkMightThrow(request, chain, cacheKey)
           if (response.statusCode in 200..299) {
             //  let HTTP errors through
             return response
           } else {
-            throw ApolloHttpException(response.statusCode, response.headers)
+            throw ApolloHttpException(
+                statusCode = response.statusCode,
+                headers = response.headers,
+                body = null,
+                message = "Http request failed with status code `${response.statusCode}`"
+            )
           }
         } catch (e: ApolloException) {
           // Original cause of network request failure
@@ -66,9 +72,6 @@ class CachingHttpInterceptor(
         try {
           return cacheMightThrow(request, cacheKey)
         } catch (cacheMissException: HttpCacheMissException) {
-          // In case of response status code not in 200..299 throw cache miss exception
-          if (networkException == null) throw cacheMissException
-
           // In case of exception thrown by network request,
           // ApolloException is the root cause and cache miss exception will be suppressed
           throw ApolloCompositeException(
