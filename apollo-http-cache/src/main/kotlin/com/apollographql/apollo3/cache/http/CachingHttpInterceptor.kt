@@ -48,6 +48,7 @@ class CachingHttpInterceptor(
         return networkMightThrow(request, chain, cacheKey)
       }
       NETWORK_FIRST -> {
+        var networkException: ApolloException? = null
         try {
           val response = networkMightThrow(request, chain, cacheKey)
           if (response.statusCode in 200..299) {
@@ -55,10 +56,21 @@ class CachingHttpInterceptor(
             return response
           }
         } catch (e: ApolloException) {
-
+          // Original cause of network request failure
+          networkException = e
         }
 
-        return cacheMightThrow(request, cacheKey)
+        try {
+          return cacheMightThrow(request, cacheKey)
+        } catch (cacheMissException: HttpCacheMissException) {
+          // In case of exception thrown by network request,
+          // ApolloException is the root cause and cache miss exception will be suppressed
+          networkException?.addSuppressed(cacheMissException)
+
+          // Throw network exception, but in case of response status code not in 200..299 throw cache miss exception
+          throw networkException ?: cacheMissException
+        }
+
       }
       else -> {
         error("Unknown HTTP fetch policy: $policy")
