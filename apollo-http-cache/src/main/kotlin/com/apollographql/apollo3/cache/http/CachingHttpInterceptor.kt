@@ -55,6 +55,8 @@ class CachingHttpInterceptor(
           if (response.statusCode in 200..299) {
             //  let HTTP errors through
             return response
+          } else {
+            throw ApolloHttpException(response.statusCode, response.headers)
           }
         } catch (e: ApolloException) {
           // Original cause of network request failure
