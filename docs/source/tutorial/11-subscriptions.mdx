@@ -58,6 +58,7 @@ subscription TripsBooked {
 ```
 
 ## Configure your ApolloClient to use subscriptions
+> By default, Apollo Kotlin uses the [`subscriptions-transport-ws`](https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md) library to set up subscriptions. **This library is no longer actively maintained.** We recommend using the [`graphql-ws`](https://www.npmjs.com/package/graphql-ws) library instead, which implements its own WebSocket subprotocol, `GraphQLWsProtocol`. Note that the two libraries do not use the same WebSocket subprotocol, so you need to ensure that your servers, clients, and tools use the **same library and subprotocol**. For more information and examples, see [GraphQL over WebSocket protocols](../essentials/subscriptions/#customizing-your-websocket-protocol).
 
 In `Apollo.kt`, configure a `webSocketServerUrl` for your `ApolloClient`:
 
