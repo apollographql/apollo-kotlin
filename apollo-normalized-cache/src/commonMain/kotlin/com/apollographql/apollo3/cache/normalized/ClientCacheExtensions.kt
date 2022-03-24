@@ -26,13 +26,10 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
@@ -195,8 +192,8 @@ fun <D : Query.Data> ApolloCall<D>.executeCacheAndNetwork(): Flow<ApolloResponse
 
     if (cacheException != null && networkException != null) {
       throw ApolloCompositeException(
-          firstException = cacheException,
-          secondException = networkException
+          first = cacheException,
+          second = networkException
       )
     }
   }
