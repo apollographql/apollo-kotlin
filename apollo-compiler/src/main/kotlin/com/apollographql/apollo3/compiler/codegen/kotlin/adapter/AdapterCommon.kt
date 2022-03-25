@@ -4,16 +4,18 @@ import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.RESPONSE_NAMES
+import com.apollographql.apollo3.compiler.codegen.Identifier.__path
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
+import com.apollographql.apollo3.compiler.codegen.Identifier.getPath
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
 import com.apollographql.apollo3.compiler.codegen.Identifier.typename
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinMemberNames
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.codeBlock
 import com.apollographql.apollo3.compiler.ir.IrModel
 import com.apollographql.apollo3.compiler.ir.IrModelType
@@ -25,8 +27,6 @@ import com.apollographql.apollo3.compiler.ir.isOptional
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.MemberName
-import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.joinToCode
 
 
@@ -55,6 +55,12 @@ internal fun readFromResponseCodeBlock(
         variableInitializer
     )
   }.joinToCode(separator = "\n", suffix = "\n")
+
+  val path = if (syntheticProperties.any { it.condition != BooleanExpression.True }) {
+    CodeBlock.of("val $__path = $reader.$getPath()")
+  } else {
+    CodeBlock.of("")
+  }
 
   /**
    * Read the regular properties
@@ -121,7 +127,7 @@ internal fun readFromResponseCodeBlock(
             } else {
               "null"
             }
-            beginControlFlow("if·(%L.%M($customScalarAdapters.adapterContext.variables(),·$typenameLiteral))", property.condition.codeBlock(), evaluate)
+            beginControlFlow("if·(%L.%M($customScalarAdapters.adapterContext.variables(),·$typenameLiteral,·$customScalarAdapters.adapterContext,·$__path))", property.condition.codeBlock(), evaluate)
             add("$reader.rewind()\n")
           } else {
             checkedProperties.add(property.info.responseName)
@@ -169,6 +175,8 @@ internal fun readFromResponseCodeBlock(
   return CodeBlock.builder()
       .add(prefix)
       .applyIf(prefix.isNotEmpty()) { add("\n") }
+      .add(path)
+      .applyIf(path.isNotEmpty()) { add("\n") }
       .add(loop)
       .applyIf(loop.isNotEmpty()) { add("\n") }
       .add(typenameCodeBlock)

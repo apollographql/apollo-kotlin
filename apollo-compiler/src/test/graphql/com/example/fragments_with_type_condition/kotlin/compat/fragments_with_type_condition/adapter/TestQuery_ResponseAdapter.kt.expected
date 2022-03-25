@@ -99,18 +99,19 @@ public object TestQuery_ResponseAdapter {
           TestQuery.R2.Fragments {
 
 
+        val __path = reader.getPath()
         reader.rewind()
         val __typename = reader.readTypename()
 
         var humanDetails: HumanDetails? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           humanDetails = com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
               customScalarAdapters)
         }
 
         var droidDetails: DroidDetails? = null
-        if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+        if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           droidDetails = com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
               customScalarAdapters)
@@ -181,18 +182,19 @@ public object TestQuery_ResponseAdapter {
           TestQuery.Luke.Fragments {
 
 
+        val __path = reader.getPath()
         reader.rewind()
         val __typename = reader.readTypename()
 
         var humanDetails: HumanDetails? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           humanDetails = com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
               customScalarAdapters)
         }
 
         var droidDetails: DroidDetails? = null
-        if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+        if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           droidDetails = com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
               customScalarAdapters)

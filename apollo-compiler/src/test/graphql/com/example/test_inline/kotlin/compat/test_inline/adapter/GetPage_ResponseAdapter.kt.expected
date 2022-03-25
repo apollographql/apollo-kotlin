@@ -57,6 +57,7 @@ public object GetPage_ResponseAdapter {
       var __typename: String? = null
       var items: List<GetPage.Item1>? = null
 
+      val __path = reader.getPath()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -70,7 +71,7 @@ public object GetPage_ResponseAdapter {
       }
 
       var asParticularCollection: GetPage.AsParticularCollection? = null
-      if (possibleTypes("ParticularCollection").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+      if (possibleTypes("ParticularCollection").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
         reader.rewind()
         asParticularCollection = com.example.test_inline.adapter.GetPage_ResponseAdapter.AsParticularCollection.fromJson(reader,
             customScalarAdapters)
@@ -173,6 +174,7 @@ public object GetPage_ResponseAdapter {
       var title: String? = null
       var __typename: String? = null
 
+      val __path = reader.getPath()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> title = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -186,7 +188,7 @@ public object GetPage_ResponseAdapter {
       }
 
       var asParticularItem: GetPage.AsParticularItem? = null
-      if (possibleTypes("ParticularItem").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+      if (possibleTypes("ParticularItem").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
         reader.rewind()
         asParticularItem = com.example.test_inline.adapter.GetPage_ResponseAdapter.AsParticularItem.fromJson(reader,
             customScalarAdapters)

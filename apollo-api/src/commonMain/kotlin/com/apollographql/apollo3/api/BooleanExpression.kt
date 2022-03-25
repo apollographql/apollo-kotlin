@@ -2,6 +2,8 @@
 
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_1_1
 import kotlin.jvm.JvmName
 
 /**
@@ -33,7 +35,7 @@ sealed class BooleanExpression<out T : Any> {
   }
 
   data class Or<T : Any>(val operands: Set<BooleanExpression<T>>) : BooleanExpression<T>() {
-    constructor(vararg operands: BooleanExpression<T>): this(operands.toSet())
+    constructor(vararg operands: BooleanExpression<T>) : this(operands.toSet())
 
     init {
       check(operands.isNotEmpty()) {
@@ -59,7 +61,7 @@ sealed class BooleanExpression<out T : Any> {
   }
 
   data class And<T : Any>(val operands: Set<BooleanExpression<T>>) : BooleanExpression<T>() {
-    constructor(vararg operands: BooleanExpression<T>): this(operands.toSet())
+    constructor(vararg operands: BooleanExpression<T>) : this(operands.toSet())
 
     init {
       check(operands.isNotEmpty()) {
@@ -96,6 +98,7 @@ fun <T : Any> or(vararg other: BooleanExpression<T>): BooleanExpression<T> = Boo
 fun <T : Any> and(vararg other: BooleanExpression<T>): BooleanExpression<T> = BooleanExpression.And((other.toList()).toSet())
 fun <T : Any> not(other: BooleanExpression<T>): BooleanExpression<T> = BooleanExpression.Not(other)
 fun variable(name: String): BooleanExpression<BVariable> = BooleanExpression.Element(BVariable(name))
+fun label(label: String?): BooleanExpression<BLabel> = BooleanExpression.Element(BLabel(label))
 fun possibleTypes(vararg typenames: String): BooleanExpression<BPossibleTypes> = BooleanExpression.Element(BPossibleTypes(typenames.toSet()))
 
 fun <T : Any> BooleanExpression<T>.evaluate(block: (T) -> Boolean): Boolean {
@@ -109,10 +112,24 @@ fun <T : Any> BooleanExpression<T>.evaluate(block: (T) -> Boolean): Boolean {
   }
 }
 
+@Deprecated("Kept for binary compatibility with generated code from older versions")
+@ApolloDeprecatedSince(v3_1_1)
+@Suppress("DeprecatedCallableAddReplaceWith")
 fun BooleanExpression<BTerm>.evaluate(variables: Set<String>, typename: String?): Boolean {
   return evaluate {
-    when(it) {
+    when (it) {
       is BVariable -> variables.contains(it.name)
+      is BPossibleTypes -> it.possibleTypes.contains(typename)
+      is BLabel -> error("Unexpected boolean expression term type")
+    }
+  }
+}
+
+fun BooleanExpression<BTerm>.evaluate(variables: Set<String>, typename: String?, adapterContext: AdapterContext, path: String): Boolean {
+  return evaluate {
+    when (it) {
+      is BVariable -> variables.contains(it.name)
+      is BLabel -> adapterContext.hasDeferredFragment(path, it.label)
       is BPossibleTypes -> it.possibleTypes.contains(typename)
     }
   }
@@ -124,15 +141,20 @@ fun BooleanExpression<BTerm>.evaluate(variables: Set<String>, typename: String?)
 sealed class BTerm
 
 /**
- * A term that comes from @include/@skip directives and that needs to be matched against operation variables
+ * A term that comes from @include/@skip or @defer directives and that needs to be matched against operation variables
  */
 data class BVariable(val name: String) : BTerm()
+
+/**
+ * A term that comes from @defer directives and that needs to be matched against label and current JSON path
+ */
+data class BLabel(val label: String?) : BTerm()
 
 /**
  * A term that comes from a fragment type condition and that needs to be matched against __typename
  */
 data class BPossibleTypes(val possibleTypes: Set<String>) : BTerm() {
-  constructor(vararg types: String): this(types.toSet())
+  constructor(vararg types: String) : this(types.toSet())
 }
 
 

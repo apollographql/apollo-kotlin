@@ -59,6 +59,7 @@ public object TestQuery_ResponseAdapter {
           TestQuery.Data.Search {
         var __typename: String? = null
 
+        val __path = reader.getPath()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -71,14 +72,14 @@ public object TestQuery_ResponseAdapter {
         }
 
         var onStarship: TestQuery.Data.Search.OnStarship? = null
-        if (possibleTypes("Starship").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+        if (possibleTypes("Starship").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           onStarship = com.example.union_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnStarship.fromJson(reader,
               customScalarAdapters)
         }
 
         var starship: Starship? = null
-        if (possibleTypes("Starship").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+        if (possibleTypes("Starship").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           starship = com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter.Starship.fromJson(reader,
               customScalarAdapters)

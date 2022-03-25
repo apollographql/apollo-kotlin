@@ -1,9 +1,13 @@
 package com.apollographql.apollo3.compiler.ir
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.api.BLabel
+import com.apollographql.apollo3.api.BTerm
 import com.apollographql.apollo3.api.BVariable
 import com.apollographql.apollo3.api.BooleanExpression
+import com.apollographql.apollo3.api.and
 import com.apollographql.apollo3.api.not
+import com.apollographql.apollo3.api.or
 import com.apollographql.apollo3.ast.GQLBooleanValue
 import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
@@ -70,12 +74,12 @@ internal class IrBuilder(
   private val usedTypes = mutableListOf<String>()
 
   private val responseBasedBuilder = ResponseBasedModelGroupBuilder(
-        schema,
-        allFragmentDefinitions,
-        this
-    )
+      schema,
+      allFragmentDefinitions,
+      this
+  )
 
-  private val builder = when(codegenModels) {
+  private val builder = when (codegenModels) {
     @Suppress("DEPRECATION")
     MODELS_COMPAT -> OperationBasedModelGroupBuilder(
         schema = schema,
@@ -92,6 +96,7 @@ internal class IrBuilder(
     MODELS_RESPONSE_BASED -> responseBasedBuilder
     else -> error("codegenModels='$codegenModels' is not supported")
   }
+
   private fun shouldAlwaysGenerate(name: String) = alwaysGenerateTypesMatching.map { Regex(it) }.any { it.matches(name) }
 
   fun build(): Ir {
@@ -586,10 +591,12 @@ internal fun GQLValue.toIrValue(): IrValue {
  * - False
  * - (!)Variable
  * - (!)Variable & (!)Variable
+ *
+ * TODO: rename to toIncludeBooleanExpression
  */
 internal fun List<GQLDirective>.toBooleanExpression(): BooleanExpression<BVariable> {
   val conditions = mapNotNull {
-    it.toBooleanExpression()
+    it.toIncludeBooleanExpression()
   }
   return if (conditions.isEmpty()) {
     BooleanExpression.True
@@ -604,7 +611,7 @@ internal fun List<GQLDirective>.toBooleanExpression(): BooleanExpression<BVariab
   }
 }
 
-internal fun GQLDirective.toBooleanExpression(): BooleanExpression<BVariable>? {
+internal fun GQLDirective.toIncludeBooleanExpression(): BooleanExpression<BVariable>? {
   if (setOf("skip", "include").contains(name).not()) {
     // not a condition directive
     return null
@@ -623,6 +630,48 @@ internal fun GQLDirective.toBooleanExpression(): BooleanExpression<BVariable>? {
     else -> throw IllegalStateException("Apollo: cannot pass ${value.toUtf8()} to '$name' directive")
   }.let {
     if (name == "skip") not(it) else it
+  }
+}
+
+/**
+ * A combination of the result of [toBooleanExpression] and either `True` or a [BLabel].
+ */
+internal fun List<GQLDirective>.toIncludeAndDeferBooleanExpression(): BooleanExpression<BTerm> {
+  val deferBooleanConditions = mapNotNull {
+    it.toDeferBooleanExpression()
+  }
+  val deferBooleanExpression = if (deferBooleanConditions.isEmpty()) {
+    BooleanExpression.True
+  } else {
+    check(deferBooleanConditions.size == 1) {
+      "Apollo: duplicate @defer directives are not allowed"
+    }
+    deferBooleanConditions.first()
+  }
+  return toBooleanExpression().and(deferBooleanExpression).simplify()
+}
+
+internal fun GQLDirective.toDeferBooleanExpression(): BooleanExpression<BTerm>? {
+  if (name != "defer") return null
+  val ifArgumentValue = arguments?.arguments?.firstOrNull { it.name == "if" }?.value ?: GQLBooleanValue(value = true)
+
+  val labelArgumentValue = arguments?.arguments?.firstOrNull { it.name == "label" }?.value
+  if (labelArgumentValue != null && labelArgumentValue !is GQLStringValue) throw IllegalStateException("Apollo: cannot pass ${labelArgumentValue.toUtf8()} to 'label' argument of 'defer' directive")
+  val label = (labelArgumentValue as GQLStringValue?)?.value
+  return when (ifArgumentValue) {
+    is GQLBooleanValue -> {
+      if (!ifArgumentValue.value) {
+        // @defer(if: false) means we should parse
+        BooleanExpression.True
+      } else {
+        BooleanExpression.Element(BLabel(label))
+      }
+    }
+    is GQLVariableValue -> {
+      // @defer(label: $lbl1, if: $var1) can be translated to BLabel("lbl1") || !BVariable("var1")
+      BooleanExpression.Element(BLabel(label)).or(not(BooleanExpression.Element(BVariable(ifArgumentValue.name))))
+    }
+    else -> throw IllegalStateException("Apollo: cannot pass ${ifArgumentValue.toUtf8()} to 'if' argument of 'defer' directive")
   }
 }
 

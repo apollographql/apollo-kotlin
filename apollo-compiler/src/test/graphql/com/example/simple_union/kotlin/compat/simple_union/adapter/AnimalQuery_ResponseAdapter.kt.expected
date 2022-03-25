@@ -93,18 +93,19 @@ public object AnimalQuery_ResponseAdapter {
           AnimalQuery.Animal.Fragments {
 
 
+        val __path = reader.getPath()
         reader.rewind()
         val __typename = reader.readTypename()
 
         var catFragment: CatFragment? = null
-        if (possibleTypes("Cat").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+        if (possibleTypes("Cat").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           catFragment = com.example.simple_union.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.fromJson(reader,
               customScalarAdapters)
         }
 
         var dogFragment: DogFragment? = null
-        if (possibleTypes("Dog").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+        if (possibleTypes("Dog").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           dogFragment = com.example.simple_union.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.fromJson(reader,
               customScalarAdapters)

@@ -10,7 +10,7 @@ import com.apollographql.apollo3.ast.GQLOperationDefinition
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.internal.IssuesScope
-import com.apollographql.apollo3.compiler.ir.toBooleanExpression
+import com.apollographql.apollo3.compiler.ir.toIncludeAndDeferBooleanExpression
 
 
 internal fun findConditionalFragments(definitions: List<GQLDefinition>): List<Issue> {
@@ -29,18 +29,18 @@ internal fun findConditionalFragments(definitions: List<GQLDefinition>): List<Is
 }
 
 /**
- * Fragments with @include/@skip directives are hard to generate as responseBased models because they would
- * need multiple shapes depending on the @include condition. This is not supported at the moment
+ * Fragments with @include/@skip or @defer directives are hard to generate as responseBased models because they would
+ * need multiple shapes depending on the condition. This is not supported at the moment
  */
 private fun IssuesScope.findConditionalFragments(selections: List<GQLSelection>) {
   selections.forEach {
     when (it) {
       is GQLField -> findConditionalFragments(it.selectionSet?.selections ?: emptyList())
       is GQLInlineFragment -> {
-        if (it.directives.toBooleanExpression() != BooleanExpression.True) {
+        if (it.directives.toIncludeAndDeferBooleanExpression() != BooleanExpression.True) {
           issues.add(
               Issue.ConditionalFragment(
-                  message = "'responseBased' models do not support @include/@skip directives on fragments",
+                  message = "'responseBased' models do not support @include/@skip and @defer directives on fragments",
                   sourceLocation = it.sourceLocation
               )
           )
@@ -48,10 +48,10 @@ private fun IssuesScope.findConditionalFragments(selections: List<GQLSelection>)
         findConditionalFragments(it.selectionSet.selections)
       }
       is GQLFragmentSpread -> {
-        if (it.directives.toBooleanExpression() != BooleanExpression.True) {
+        if (it.directives.toIncludeAndDeferBooleanExpression() != BooleanExpression.True) {
           issues.add(
               Issue.ConditionalFragment(
-                  message = "'responseBased' models do not support @include/@skip directives on fragments",
+                  message = "'responseBased' models do not support @include/@skip and @defer directives on fragments",
                   sourceLocation = it.sourceLocation
               )
           )

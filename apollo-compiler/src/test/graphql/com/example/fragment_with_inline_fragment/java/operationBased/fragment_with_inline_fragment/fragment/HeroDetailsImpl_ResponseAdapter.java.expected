@@ -23,7 +23,6 @@ import java.lang.Integer;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class HeroDetailsImpl_ResponseAdapter {
@@ -39,6 +38,7 @@ public class HeroDetailsImpl_ResponseAdapter {
       String name = null;
       com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection friendsConnection = null;
 
+      String __path = reader.getPath();
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
@@ -51,13 +51,13 @@ public class HeroDetailsImpl_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid onDroid = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), Collections.emptySet(), __typename)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         onDroid = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.OnDroid.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       HumanDetails humanDetails = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), Collections.emptySet(), __typename)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         humanDetails = com.example.fragment_with_inline_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.fromJson(reader, customScalarAdapters);
       }
