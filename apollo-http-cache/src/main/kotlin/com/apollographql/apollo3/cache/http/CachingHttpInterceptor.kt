@@ -7,7 +7,9 @@ import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.http.valueOf
+import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.HttpCacheMissException
 import com.apollographql.apollo3.network.http.HttpInterceptor
 import com.apollographql.apollo3.network.http.HttpInterceptorChain
@@ -48,17 +50,36 @@ class CachingHttpInterceptor(
         return networkMightThrow(request, chain, cacheKey)
       }
       NETWORK_FIRST -> {
+        val networkException: ApolloException
         try {
           val response = networkMightThrow(request, chain, cacheKey)
           if (response.statusCode in 200..299) {
             //  let HTTP errors through
             return response
+          } else {
+            throw ApolloHttpException(
+                statusCode = response.statusCode,
+                headers = response.headers,
+                body = null,
+                message = "Http request failed with status code `${response.statusCode}`"
+            )
           }
         } catch (e: ApolloException) {
-
+          // Original cause of network request failure
+          networkException = e
         }
 
-        return cacheMightThrow(request, cacheKey)
+        try {
+          return cacheMightThrow(request, cacheKey)
+        } catch (cacheMissException: HttpCacheMissException) {
+          // In case of exception thrown by network request,
+          // ApolloException will be suppressed and HttpCacheMissException will throw as cause
+          // this behavior might change in future where both will be treated as suppressed
+          throw ApolloCompositeException(
+              first = networkException,
+              second = cacheMissException
+          )
+        }
       }
       else -> {
         error("Unknown HTTP fetch policy: $policy")
