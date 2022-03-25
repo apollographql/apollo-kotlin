@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.BTerm
 import com.apollographql.apollo3.api.BVariable
 import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.api.and
+import com.apollographql.apollo3.api.firstElementOfType
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLFragmentSpread
@@ -141,17 +142,6 @@ internal class OperationBasedModelGroupBuilder(
         append("If")
         append((condition).toName())
       }
-    }
-  }
-
-  private fun <T : Any, U : Any> BooleanExpression<T>.firstElementOfType(type: KClass<U>): U? {
-    return when (this) {
-      BooleanExpression.True -> null
-      BooleanExpression.False -> null
-      is BooleanExpression.Element -> @Suppress("UNCHECKED_CAST") if (type.isInstance(this.value)) this.value as U else null
-      is BooleanExpression.Not -> this.operand.firstElementOfType(type)
-      is BooleanExpression.And -> (this.operands.firstOrNull { it.firstElementOfType(type) != null } as BooleanExpression.Element?)?.firstElementOfType(type)
-      is BooleanExpression.Or -> (this.operands.firstOrNull { it.firstElementOfType(type) != null } as BooleanExpression.Element?)?.firstElementOfType(type)
     }
   }
 

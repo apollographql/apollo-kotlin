@@ -1,6 +1,8 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
+import com.apollographql.apollo3.api.BLabel
 import com.apollographql.apollo3.api.BooleanExpression
+import com.apollographql.apollo3.api.firstElementOfType
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.RESPONSE_NAMES
@@ -56,7 +58,7 @@ internal fun readFromResponseCodeBlock(
     )
   }.joinToCode(separator = "\n", suffix = "\n")
 
-  val path = if (syntheticProperties.any { it.condition != BooleanExpression.True }) {
+  val path = if (syntheticProperties.any { it.condition.firstElementOfType(BLabel::class) != null }) {
     CodeBlock.of("val $__path = $reader.$getPath()")
   } else {
     CodeBlock.of("")
@@ -127,7 +129,12 @@ internal fun readFromResponseCodeBlock(
             } else {
               "null"
             }
-            beginControlFlow("if·(%L.%M($customScalarAdapters.adapterContext.variables(),·$typenameLiteral,·$customScalarAdapters.adapterContext,·$__path))", property.condition.codeBlock(), evaluate)
+            val pathLiteral = if(path.isNotEmpty()) {
+              __path
+            } else {
+              "null"
+            }
+            beginControlFlow("if·(%L.%M($customScalarAdapters.adapterContext.variables(),·$typenameLiteral,·$customScalarAdapters.adapterContext,·$pathLiteral))", property.condition.codeBlock(), evaluate)
             add("$reader.rewind()\n")
           } else {
             checkedProperties.add(property.info.responseName)

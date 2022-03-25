@@ -5,6 +5,7 @@ package com.apollographql.apollo3.api
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_1_1
 import kotlin.jvm.JvmName
+import kotlin.reflect.KClass
 
 /**
  * A boolean expression
@@ -125,11 +126,11 @@ fun BooleanExpression<BTerm>.evaluate(variables: Set<String>, typename: String?)
   }
 }
 
-fun BooleanExpression<BTerm>.evaluate(variables: Set<String>, typename: String?, adapterContext: AdapterContext, path: String): Boolean {
+fun BooleanExpression<BTerm>.evaluate(variables: Set<String>, typename: String?, adapterContext: AdapterContext, path: String?): Boolean {
   return evaluate {
     when (it) {
       is BVariable -> variables.contains(it.name)
-      is BLabel -> adapterContext.hasDeferredFragment(path, it.label)
+      is BLabel -> adapterContext.hasDeferredFragment(path!!, it.label)
       is BPossibleTypes -> it.possibleTypes.contains(typename)
     }
   }
@@ -166,5 +167,16 @@ fun <T : Any> BooleanExpression<T>.containsPossibleTypes(): Boolean {
     is BooleanExpression.Or -> operands.any { it.containsPossibleTypes() }
     is BooleanExpression.And -> operands.any { it.containsPossibleTypes() }
     is BooleanExpression.Element -> value is BPossibleTypes
+  }
+}
+
+fun <T : Any, U : Any> BooleanExpression<T>.firstElementOfType(type: KClass<U>): U? {
+  return when (this) {
+    BooleanExpression.True -> null
+    BooleanExpression.False -> null
+    is BooleanExpression.Element -> @Suppress("UNCHECKED_CAST") if (type.isInstance(this.value)) this.value as U else null
+    is BooleanExpression.Not -> this.operand.firstElementOfType(type)
+    is BooleanExpression.And -> (this.operands.firstOrNull { it.firstElementOfType(type) != null })?.firstElementOfType(type)
+    is BooleanExpression.Or -> (this.operands.firstOrNull { it.firstElementOfType(type) != null })?.firstElementOfType(type)
   }
 }

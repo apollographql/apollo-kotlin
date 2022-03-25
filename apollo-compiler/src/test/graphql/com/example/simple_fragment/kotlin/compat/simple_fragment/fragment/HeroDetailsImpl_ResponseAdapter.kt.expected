@@ -59,12 +59,11 @@ internal object HeroDetailsImpl_ResponseAdapter {
           com.example.simple_fragment.fragment.HeroDetails.Fragments {
 
 
-        val __path = reader.getPath()
         reader.rewind()
         val __typename = reader.readTypename()
 
         var humanDetails: HumanDetails? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
           humanDetails = com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
               customScalarAdapters)
