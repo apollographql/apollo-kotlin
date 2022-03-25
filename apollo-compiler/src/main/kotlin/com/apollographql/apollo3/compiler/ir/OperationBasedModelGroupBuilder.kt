@@ -21,7 +21,6 @@ import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.lowerC
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.modelName
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
-import kotlin.reflect.KClass
 
 internal class OperationBasedModelGroupBuilder(
     private val schema: Schema,
@@ -221,7 +220,7 @@ internal class OperationBasedModelGroupBuilder(
            * Because fragments are not merged regardless of [collectAllInlineFragmentFields], all inline fragments
            * should have the same parentType here
            */
-          inlineFragmentsWithSameTypeCondition.groupBy { it.directives.toIncludeAndDeferBooleanExpression() }
+          inlineFragmentsWithSameTypeCondition.groupBy { it.directives.toBooleanExpression() }
               .entries.map { entry ->
                 val prefix = if (collectAllInlineFragmentFields) "as" else "on"
 
@@ -302,7 +301,7 @@ internal class OperationBasedModelGroupBuilder(
           /**
            * That's more involved than the inline fragment case because fragment spreads have different @include/@skip directives get merged together
            */
-          childCondition = BooleanExpression.Or(fragmentSpreadsWithSameName.map { it.directives.toIncludeAndDeferBooleanExpression() }.toSet())
+          childCondition = BooleanExpression.Or(fragmentSpreadsWithSameName.map { it.directives.toBooleanExpression() }.toSet())
               .simplify()
               .and(childCondition)
               .simplify()
