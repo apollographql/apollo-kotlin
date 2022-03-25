@@ -11,6 +11,7 @@ import defer.Query1Query
 import defer.fragment.ComputerFields
 import defer.fragment.ScreenFields
 import kotlinx.coroutines.flow.toList
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -31,7 +32,9 @@ class DeferTest {
   /**
    * TODO: This tests the preliminary Multipart support in HttpNetworkTransport which can receive several **full** payloads for now.
    * This can never happen in real life - this test must be updated when partial responses with @defer are supported.
+   * Thus, ignoring this test for now.
    */
+  @Ignore("Needs to be updated when partial responses with @defer are supported")
   @Test
   fun multipleBodies() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = Query1Query()

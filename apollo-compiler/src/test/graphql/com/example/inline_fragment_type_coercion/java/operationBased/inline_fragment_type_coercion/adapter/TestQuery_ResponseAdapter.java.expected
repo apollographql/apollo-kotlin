@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
@@ -68,6 +67,7 @@ public class TestQuery_ResponseAdapter {
       String __typename = null;
       String foo = null;
 
+      String __path = reader.getPath();
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
@@ -79,7 +79,7 @@ public class TestQuery_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestQuery.OnBar onBar = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("BarObject","FooBar")), Collections.emptySet(), __typename)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("BarObject","FooBar")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         onBar = com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.OnBar.INSTANCE.fromJson(reader, customScalarAdapters);
       }

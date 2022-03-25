@@ -1,4 +1,4 @@
-query GetFields($withDetails: Boolean!) {
+query QueryWithInclude($withDetails: Boolean!) {
   field1
   ... on Query @include(if: $withDetails) {
     field2

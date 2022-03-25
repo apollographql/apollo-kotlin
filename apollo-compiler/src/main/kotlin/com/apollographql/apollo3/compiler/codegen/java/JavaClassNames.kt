@@ -57,6 +57,7 @@ internal object JavaClassNames {
   val BTerm = ClassName.get(apolloApiPackageName, "BTerm")
   val BVariable = ClassName.get(apolloApiPackageName, "BVariable")
   val BPossibleTypes = ClassName.get(apolloApiPackageName, "BPossibleTypes")
+  val BLabel = ClassName.get(apolloApiPackageName, "BLabel")
   val ImmutableMapBuilder = ClassName.get(apolloApiPackageName, "ImmutableMapBuilder")
   val NullableAdapter = ClassName.get(apolloApiPackageName, "NullableAdapter")
   val ListAdapter = ClassName.get(apolloApiPackageName, "ListAdapter")
