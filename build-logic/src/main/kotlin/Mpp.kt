@@ -79,18 +79,7 @@ fun Project.configureMppDefaults(withJs: Boolean = true, withLinux: Boolean = tr
 
     addTestDependencies(withJs)
 
-    if (System.getProperty("idea.sync.active") == null) {
-      /**
-       * Evil tasks to fool IntelliJ into running the appropriate tests when clicking the green triangle in the gutter
-       * IntelliJ "sees" apple during sync but the actual tasks are macosX64
-       */
-      tasks.register("cleanAppleTest") {
-        it.dependsOn("cleanMacosX64Test")
-      }
-      tasks.register("appleTest") {
-        it.dependsOn("macosX64Test")
-      }
-    }
+    registerAppleTasks()
   }
 }
 
@@ -113,9 +102,44 @@ fun Project.configureMppTestsDefaults(withJs: Boolean = true) {
         nodejs()
       }
     }
-    macosX64("apple")
+
+    if (System.getProperty("idea.sync.active") == null) {
+
+      val appleMain = sourceSets.create("appleMain")
+      val appleTest = sourceSets.create("appleTest")
+
+      macosX64().apply {
+        compilations.getByName("main").source(appleMain)
+        compilations.getByName("test").source(appleTest)
+      }
+      macosArm64().apply {
+        compilations.getByName("main").source(appleMain)
+        compilations.getByName("test").source(appleTest)
+      }
+    } else {
+      // We are in intelliJ
+      // Make intelliJ believe we have a single target with all the code in "apple" sourceSets
+      macosX64("apple")
+    }
 
     addTestDependencies(withJs)
+
+    registerAppleTasks()
+  }
+}
+
+private fun Project.registerAppleTasks() {
+  if (System.getProperty("idea.sync.active") == null) {
+    /**
+     * Evil tasks to fool IntelliJ into running the appropriate tests when clicking the green triangle in the gutter
+     * IntelliJ "sees" apple during sync but the actual tasks are macosX64
+     */
+    tasks.register("cleanAppleTest") {
+      it.dependsOn("cleanMacosX64Test", "cleanMacosArm64Test")
+    }
+    tasks.register("appleTest") {
+      it.dependsOn("macosX64Test", "macosArm64Test")
+    }
   }
 }
 
