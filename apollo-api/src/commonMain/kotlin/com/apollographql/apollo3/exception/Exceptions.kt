@@ -103,12 +103,25 @@ class HttpCacheMissException(message: String, cause: Exception? = null) : Apollo
  */
 class ApolloCompositeException(first: Throwable?, second: Throwable?) : ApolloException(message = "multiple exceptions happened", second) {
 
-  val first = (first as? ApolloException) ?: throw RuntimeException("unexpected first exception", first)
+  @get:Deprecated("Use suppressedExceptions instead", ReplaceWith("suppressedExceptions.first()"))
+  val first: ApolloException
+    get() {
+      val firstException = suppressedExceptions.firstOrNull()
+      return (firstException as? ApolloException) ?: throw RuntimeException("unexpected first exception", firstException)
+    }
 
-  val second = (second as? ApolloException) ?: throw RuntimeException("unexpected second exception", second)
+  @get:Deprecated("Use suppressedExceptions instead", ReplaceWith("suppressedExceptions.getOrNull(1)"))
+  val second: ApolloException
+    get() {
+      val secondException = suppressedExceptions.getOrNull(1)
+      return (secondException as? ApolloException) ?: throw RuntimeException("unexpected second exception", secondException)
+    }
 
   init {
-    if (first != null && second != null) addSuppressed(first)
+    if (first != null && second != null) {
+      addSuppressed(first)
+      addSuppressed(second)
+    }
   }
 
 }
