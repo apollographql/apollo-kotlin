@@ -47,6 +47,21 @@ private constructor(
      */
     @JvmField
     val executionContext: ExecutionContext,
+
+    /**
+     * Indicates that this [ApolloResponse] is the last [ApolloResponse] in a given [Flow] and that no
+     * other items are expected.
+     *
+     * This is used as a hint by the watchers to make sure to subscribe before the last item is emitted.
+     *
+     * There can be false negatives where [isLast] is false if the producer does not know in advance if
+     * other items are emitted. For an example, the CacheAndNetwork fetch policy doesn't emit the network
+     * item if it fails.
+     *
+     * There must not be false positives. If [isLast] is true, no other items must follow.
+     */
+    @JvmField
+    val isLast: Boolean,
 ) {
 
   /**
@@ -72,6 +87,7 @@ private constructor(
         .errors(errors)
         .extensions(extensions)
         .addExecutionContext(executionContext)
+        .isLast(isLast)
   }
 
   class Builder<D : Operation.Data>(
@@ -82,6 +98,7 @@ private constructor(
     private var executionContext: ExecutionContext = ExecutionContext.Empty
     private var errors: List<Error>? = null
     private var extensions: Map<String, Any?>? = null
+    private var isLast = false
 
     fun addExecutionContext(executionContext: ExecutionContext) = apply {
       this.executionContext = this.executionContext + executionContext
@@ -99,6 +116,10 @@ private constructor(
       this.requestUuid = requestUuid
     }
 
+    fun isLast(isLast: Boolean) = apply {
+      this.isLast = isLast
+    }
+
     fun build(): ApolloResponse<D> {
       @Suppress("DEPRECATION")
       return ApolloResponse(
@@ -107,7 +128,8 @@ private constructor(
           data = data,
           executionContext = executionContext,
           extensions = extensions ?: emptyMap(),
-          errors = errors ,
+          errors = errors,
+          isLast = isLast,
       )
     }
   }

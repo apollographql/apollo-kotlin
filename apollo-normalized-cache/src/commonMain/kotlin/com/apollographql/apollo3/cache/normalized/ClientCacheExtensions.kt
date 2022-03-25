@@ -26,13 +26,9 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
@@ -135,27 +131,48 @@ fun <D : Query.Data> ApolloCall<D>.watch(
 ): Flow<ApolloResponse<D>> {
   return flow {
     var lastResponse: ApolloResponse<D>? = null
+    var response: ApolloResponse<D>? = null
+
     toFlow()
         .catch {
           if (it !is ApolloException || fetchThrows) throw it
         }.collect {
+          response = it
+
+          if (it.isLast) {
+            if (lastResponse != null) {
+              /**
+               * If we ever come here it means some interceptors built a new Flow and forgot to reset the isLast flag
+               * Better safe than sorry: emit them when we realize that. This will introduce a delay in the response.
+               */
+              println("ApolloGraphQL: extra response received after the last one")
+              emit(lastResponse!!)
+            }
+            /**
+             * Remember the last response so that we can send it after we subscribe to the store
+             *
+             * This allows callers to use the last element as a synchronisation point to modify the store and still have the watcher
+             * receive subsequent updates
+             *
+             * See https://github.com/apollographql/apollo-kotlin/pull/3853
+             */
+            lastResponse = it
+          } else {
+            emit(it)
+          }
+        }
+
+    copy().fetchPolicyInterceptor(refetchPolicyInterceptor)
+        .watch(response?.data) { _, _ ->
+          // If the exception is ignored (refetchThrows is false), we should continue watching - so retry
+          !refetchThrows
+        }.onStart {
           if (lastResponse != null) {
             emit(lastResponse!!)
           }
-          lastResponse = it
+        }.collect {
+          emit(it)
         }
-
-    emitAll(
-        copy().fetchPolicyInterceptor(refetchPolicyInterceptor)
-            .watch(lastResponse?.data) { _, _ ->
-              // If the exception is ignored (refetchThrows is false), we should continue watching - so retry
-              !refetchThrows
-            }.onStart {
-              if (lastResponse != null) {
-                emit(lastResponse!!)
-              }
-            }
-    )
   }
 }
 
@@ -310,6 +327,9 @@ fun <D : Mutation.Data> ApolloCall<D>.optimisticUpdates(data: D) = addExecutionC
 )
 
 internal val <D : Operation.Data> ApolloRequest<D>.fetchPolicyInterceptor
+  get() = executionContext[FetchPolicyContext]?.interceptor ?: CacheFirstInterceptor
+
+internal val <D : Operation.Data> ApolloCall<D>.fetchPolicyInterceptor
   get() = executionContext[FetchPolicyContext]?.interceptor ?: CacheFirstInterceptor
 
 private val <T> MutableExecutionOptions<T>.refetchPolicyInterceptor
@@ -533,4 +553,3 @@ internal fun <D : Operation.Data> ApolloRequest.Builder<D>.fetchFromCache(fetchF
 
 internal val <D : Operation.Data> ApolloRequest<D>.fetchFromCache
   get() = executionContext[FetchFromCacheContext]?.value ?: false
-

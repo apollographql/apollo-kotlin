@@ -196,6 +196,7 @@ internal class ApolloCacheInterceptor(
                 .cacheHit(true)
                 .build()
         )
+        .isLast(true)
         .build()
   }
 

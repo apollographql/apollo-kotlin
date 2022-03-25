@@ -176,7 +176,7 @@ val CacheAndNetworkInterceptor = object : ApolloInterceptor {
       }.singleOrNull()
 
       if (cacheResponse != null) {
-        emit(cacheResponse)
+        emit(cacheResponse.newBuilder().isLast(false).build())
       }
 
       val networkResponse = chain.proceed(request)
