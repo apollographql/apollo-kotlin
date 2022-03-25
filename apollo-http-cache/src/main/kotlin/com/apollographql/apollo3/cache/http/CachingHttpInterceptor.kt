@@ -35,13 +35,21 @@ class CachingHttpInterceptor(
 
     when (policy) {
       CACHE_FIRST -> {
+        val cacheException: ApolloException
         try {
           return cacheMightThrow(request, cacheKey)
         } catch (e: ApolloException) {
-          //
+          cacheException = e
         }
 
-        return networkMightThrow(request, chain, cacheKey)
+        try {
+          return networkMightThrow(request, chain, cacheKey)
+        } catch (e: ApolloException) {
+          throw ApolloCompositeException(
+              first = cacheException,
+              second = e
+          )
+        }
       }
       CACHE_ONLY -> {
         return cacheMightThrow(request, cacheKey)
