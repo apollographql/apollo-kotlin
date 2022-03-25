@@ -2,6 +2,7 @@ package com.apollographql.apollo3.ast.internal
 
 import com.apollographql.apollo3.ast.GQLArgument
 import com.apollographql.apollo3.ast.GQLBooleanValue
+import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLEnumValue
@@ -28,6 +29,7 @@ import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.VariableUsage
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.findDeprecationReason
@@ -55,6 +57,9 @@ internal class ExecutableValidationScope(
    */
   override val variableUsages = mutableListOf<VariableUsage>()
 
+  private val deferDirectiveLabels = mutableSetOf<String>()
+  private val deferDirectivePathAndLabels = mutableSetOf<String>()
+
   fun validate(document: GQLDocument): List<Issue> {
     document.validateExecutable()
 
@@ -68,6 +73,11 @@ internal class ExecutableValidationScope(
     operations.checkDuplicateOperations()
     operations.forEach {
       it.validate()
+    }
+
+    deferDirectiveLabels.clear()
+    operations.forEach {
+      it.validateDeferDirectives()
     }
 
     return issues
@@ -308,6 +318,111 @@ internal class ExecutableValidationScope(
         ))
       }
     }
+  }
+
+  private fun GQLOperationDefinition.validateDeferDirectives() {
+    deferDirectivePathAndLabels.clear()
+    selectionSet.validateDeferDirectives("")
+  }
+
+  /**
+   * If a label is passed to a `@defer` directive, it must not be a variable, and it must be unique within all other `@defer` directives in
+   * the document.
+   *
+   * Also ensure that any `@defer` directive found when walking fragments on an operation have a unique path + label (Apollo-specific
+   * validation).
+   *
+   * For instance: this is invalid:
+   * ```
+   * query Query1 {
+   *   computers {
+   *   ...ComputerFields @defer  # path is computer
+   *   ...ComputerFields @defer  # path is computer
+   *   }
+   * }
+   * ```
+   *
+   * Also invalid:
+   * ```
+   * query Query2 {
+   *   computers {
+   *     ...ComputerFields
+   *     ...ComputerFields2
+   *     }
+   *   }
+   *
+   *   fragment ComputerFields on Computer {
+   *     screen {
+   *       ...ScreenFields @defer  # path is computer.screen
+   *     }
+   *   }
+   *
+   *   fragment ComputerFields2 on Computer {
+   *     screen {
+   *       ...ScreenFields @defer  # path is computer.screen
+   *     }
+   * }
+   * ```
+   */
+  private fun GQLSelectionSet.validateDeferDirectives(path: String) {
+    for (selection in selections) {
+      when (selection) {
+        is GQLField -> {
+          val fieldPath = if (path.isEmpty()) selection.name else "$path.${selection.name}"
+          selection.selectionSet?.validateDeferDirectives(fieldPath)
+        }
+        is GQLInlineFragment -> {
+          val deferDirective = selection.children.firstOrNull { it is GQLDirective && it.name == "defer" } as GQLDirective?
+          if (deferDirective != null && deferDirective.validateDeferDirective(path, deferDirective.sourceLocation)) return
+          selection.selectionSet.validateDeferDirectives(path)
+        }
+        is GQLFragmentSpread -> {
+          val deferDirective = selection.children.firstOrNull { it.name == "defer" }
+          if (deferDirective != null && deferDirective.validateDeferDirective(path, deferDirective.sourceLocation)) return
+          fragmentDefinitions[selection.name]!!.selectionSet.validateDeferDirectives(path)
+        }
+      }
+    }
+  }
+
+  /**
+   * @return true if an issue was found, false otherwise
+   */
+  private fun GQLDirective.validateDeferDirective(path: String, sourceLocation: SourceLocation): Boolean {
+    val label = arguments?.arguments?.firstOrNull { it.name == "label" }?.value
+    if (label is GQLVariableValue) {
+      registerIssue(
+          message = "@defer label argument must not be a variable",
+          sourceLocation = sourceLocation
+      )
+      return true
+    }
+
+    var labelStringValue = ""
+    if (label != null) {
+      labelStringValue = (label as GQLStringValue).value
+      if (labelStringValue in deferDirectiveLabels) {
+        registerIssue(
+            message = "@defer label '$labelStringValue' must be unique within all other @defer directives in the document",
+            sourceLocation = sourceLocation
+        )
+        return true
+      }
+      deferDirectiveLabels += labelStringValue
+    }
+
+    val pathAndLabel = "$path/$labelStringValue"
+    if (pathAndLabel in deferDirectivePathAndLabels) {
+      val labelMessage = if (labelStringValue.isEmpty()) "no label" else "label '$labelStringValue'"
+      registerIssue(
+          message = "A @defer directive with the same path '$path' and $labelMessage is already defined. Set a unique label to distinguish them.",
+          sourceLocation = sourceLocation
+      )
+      return true
+    }
+    deferDirectivePathAndLabels.add(pathAndLabel)
+
+    return false
   }
 
   private fun GQLSelectionSet.validate(typeDefinitionInScope: GQLTypeDefinition) {
