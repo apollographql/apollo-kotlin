@@ -122,8 +122,10 @@ private constructor(
     val jsonMerger = DeferredJsonMerger()
     return multipartBodyFlow(httpResponse).map { part ->
       try {
-        // On native, components of jsonMerger are frozen inside worker.doWork, making mutability impossible.
+        // On native, we cannot pass `jsonMerger._merge` to `worker.doWork` or it will become frozen making
+        // any subsequent payload merge throw.
         // So we clone them before they are captured.
+        // XXX: revisit with the new memory model
         val mustClone = platform() == Platform.Native
         val merged = jsonMerger.merge(part).let { if (mustClone) it.deepCopy() else it }
         val deferredFragmentIds = jsonMerger.mergedFragmentIds.let { if (mustClone) it.toSet() else it }
