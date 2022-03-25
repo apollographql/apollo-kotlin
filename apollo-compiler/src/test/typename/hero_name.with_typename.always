@@ -1,0 +1,11 @@
+query TestQuery {
+  hero {
+    __typename
+    name
+  }
+  hero {
+    __typename
+    id
+    name
+  }
+}
