@@ -22,7 +22,7 @@ public object hero_type_ResponseAdapter : Adapter<hero_type> {
   public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    `value`: hero_type
+    `value`: hero_type,
   ): Unit {
     writer.value(value.rawValue)
   }

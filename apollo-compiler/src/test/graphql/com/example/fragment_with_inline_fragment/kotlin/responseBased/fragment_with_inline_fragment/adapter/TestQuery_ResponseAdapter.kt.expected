@@ -47,7 +47,7 @@ public object TestQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: TestQuery.Data
+      `value`: TestQuery.Data,
     ): Unit {
       writer.name("hero")
       Hero.obj().nullable().toJson(writer, customScalarAdapters, value.hero)
@@ -70,7 +70,7 @@ public object TestQuery_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.Hero
+        `value`: TestQuery.Data.Hero,
       ): Unit {
         when(value) {
           is TestQuery.Data.HumanHero -> HumanHero.toJson(writer, customScalarAdapters, value)
@@ -87,7 +87,7 @@ public object TestQuery_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): TestQuery.Data.HumanHero {
         var __typename: String? = typename
         var name: String? = null
@@ -116,7 +116,7 @@ public object TestQuery_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.HumanHero
+        `value`: TestQuery.Data.HumanHero,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -159,7 +159,7 @@ public object TestQuery_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: TestQuery.Data.HumanHero.FriendsConnection
+          `value`: TestQuery.Data.HumanHero.FriendsConnection,
         ): Unit {
           writer.name("totalCount")
           NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount)
@@ -191,7 +191,7 @@ public object TestQuery_ResponseAdapter {
           public override fun toJson(
             writer: JsonWriter,
             customScalarAdapters: CustomScalarAdapters,
-            `value`: TestQuery.Data.HumanHero.FriendsConnection.Edge
+            `value`: TestQuery.Data.HumanHero.FriendsConnection.Edge,
           ): Unit {
             writer.name("node")
             Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
@@ -220,7 +220,7 @@ public object TestQuery_ResponseAdapter {
             public override fun toJson(
               writer: JsonWriter,
               customScalarAdapters: CustomScalarAdapters,
-              `value`: TestQuery.Data.HumanHero.FriendsConnection.Edge.Node
+              `value`: TestQuery.Data.HumanHero.FriendsConnection.Edge.Node,
             ): Unit {
               writer.name("name")
               StringAdapter.toJson(writer, customScalarAdapters, value.name)
@@ -237,7 +237,7 @@ public object TestQuery_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): TestQuery.Data.DroidHero {
         var __typename: String? = typename
         var name: String? = null
@@ -269,7 +269,7 @@ public object TestQuery_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.DroidHero
+        `value`: TestQuery.Data.DroidHero,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -315,7 +315,7 @@ public object TestQuery_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: TestQuery.Data.DroidHero.FriendsConnection
+          `value`: TestQuery.Data.DroidHero.FriendsConnection,
         ): Unit {
           writer.name("totalCount")
           NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount)
@@ -347,7 +347,7 @@ public object TestQuery_ResponseAdapter {
           public override fun toJson(
             writer: JsonWriter,
             customScalarAdapters: CustomScalarAdapters,
-            `value`: TestQuery.Data.DroidHero.FriendsConnection.Edge
+            `value`: TestQuery.Data.DroidHero.FriendsConnection.Edge,
           ): Unit {
             writer.name("node")
             Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
@@ -376,7 +376,7 @@ public object TestQuery_ResponseAdapter {
             public override fun toJson(
               writer: JsonWriter,
               customScalarAdapters: CustomScalarAdapters,
-              `value`: TestQuery.Data.DroidHero.FriendsConnection.Edge.Node
+              `value`: TestQuery.Data.DroidHero.FriendsConnection.Edge.Node,
             ): Unit {
               writer.name("name")
               StringAdapter.toJson(writer, customScalarAdapters, value.name)
@@ -393,7 +393,7 @@ public object TestQuery_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): TestQuery.Data.OtherHero {
         var __typename: String? = typename
         var name: String? = null
@@ -422,7 +422,7 @@ public object TestQuery_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.OtherHero
+        `value`: TestQuery.Data.OtherHero,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -465,7 +465,7 @@ public object TestQuery_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: TestQuery.Data.OtherHero.FriendsConnection
+          `value`: TestQuery.Data.OtherHero.FriendsConnection,
         ): Unit {
           writer.name("totalCount")
           NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount)
@@ -497,7 +497,7 @@ public object TestQuery_ResponseAdapter {
           public override fun toJson(
             writer: JsonWriter,
             customScalarAdapters: CustomScalarAdapters,
-            `value`: TestQuery.Data.OtherHero.FriendsConnection.Edge
+            `value`: TestQuery.Data.OtherHero.FriendsConnection.Edge,
           ): Unit {
             writer.name("node")
             Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
@@ -526,7 +526,7 @@ public object TestQuery_ResponseAdapter {
             public override fun toJson(
               writer: JsonWriter,
               customScalarAdapters: CustomScalarAdapters,
-              `value`: TestQuery.Data.OtherHero.FriendsConnection.Edge.Node
+              `value`: TestQuery.Data.OtherHero.FriendsConnection.Edge.Node,
             ): Unit {
               writer.name("name")
               StringAdapter.toJson(writer, customScalarAdapters, value.name)

@@ -49,14 +49,14 @@ public class GetHero() : Query<GetHero.Data> {
   .build()
 
   public data class Data(
-    public val hero: Hero?
+    public val hero: Hero?,
   ) : Query.Data {
     public data class Hero(
       public val __typename: String,
       /**
        * Synthetic field for inline fragment on Character
        */
-      public val onCharacter: OnCharacter
+      public val onCharacter: OnCharacter,
     ) {
       public data class OnCharacter(
         public val __typename: String,
@@ -67,7 +67,7 @@ public class GetHero() : Query<GetHero.Data> {
         /**
          * Synthetic field for 'characterAppearsIn'
          */
-        public val characterAppearsIn: CharacterAppearsIn
+        public val characterAppearsIn: CharacterAppearsIn,
       )
     }
   }

@@ -42,7 +42,7 @@ public object CharacterAppearsInImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn
+      `value`: com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn,
     ): Unit {
       writer.name("appearsIn")
       Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,

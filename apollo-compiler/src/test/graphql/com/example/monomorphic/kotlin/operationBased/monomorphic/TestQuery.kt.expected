@@ -47,24 +47,24 @@ public class TestQuery() : Query<TestQuery.Data> {
   .build()
 
   public data class Data(
-    public val cat: Cat
+    public val cat: Cat,
   ) : Query.Data {
     public data class Cat(
       public val __typename: String,
       /**
        * Synthetic field for inline fragment on Node
        */
-      public val onNode: OnNode
+      public val onNode: OnNode,
     ) {
       public data class OnNode(
         public val __typename: String,
         /**
          * Synthetic field for inline fragment on Animal
          */
-        public val onAnimal: OnAnimal
+        public val onAnimal: OnAnimal,
       ) {
         public data class OnAnimal(
-          public val species: String
+          public val species: String,
         )
       }
     }

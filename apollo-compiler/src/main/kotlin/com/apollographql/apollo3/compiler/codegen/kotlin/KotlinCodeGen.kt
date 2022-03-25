@@ -211,7 +211,7 @@ class KotlinCodeGen(
           val builder = FileSpec.builder(
               packageName = cgFile.packageName,
               fileName = cgFile.fileName
-          ).addComment(
+          ).addFileComment(
               """
                 
                 AUTO-GENERATED FILE. DO NOT MODIFY.

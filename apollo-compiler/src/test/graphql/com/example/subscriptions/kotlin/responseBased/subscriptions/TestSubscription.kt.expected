@@ -19,7 +19,7 @@ import kotlin.String
 import kotlin.Unit
 
 public data class TestSubscription(
-  public val repo: String
+  public val repo: String,
 ) : Subscription<TestSubscription.Data> {
   public override fun id(): String = OPERATION_ID
 
@@ -47,7 +47,7 @@ public data class TestSubscription(
     /**
      * Subscription fires on every comment added
      */
-    public val commentAdded: CommentAdded?
+    public val commentAdded: CommentAdded?,
   ) : Subscription.Data {
     public data class CommentAdded(
       /**
@@ -57,7 +57,7 @@ public data class TestSubscription(
       /**
        * The text of the comment
        */
-      public val content: String
+      public val content: String,
     )
   }
 

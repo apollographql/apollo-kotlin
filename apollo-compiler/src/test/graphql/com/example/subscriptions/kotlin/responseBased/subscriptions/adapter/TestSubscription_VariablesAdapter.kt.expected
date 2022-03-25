@@ -21,7 +21,7 @@ public object TestSubscription_VariablesAdapter : Adapter<TestSubscription> {
   public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    `value`: TestSubscription
+    `value`: TestSubscription,
   ): Unit {
     writer.name("repo")
     StringAdapter.toJson(writer, customScalarAdapters, value.repo)

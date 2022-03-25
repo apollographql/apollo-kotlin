@@ -40,7 +40,7 @@ public object CatQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: CatQuery.Data
+      `value`: CatQuery.Data,
     ): Unit {
       writer.name("cat")
       Cat.obj(true).nullable().toJson(writer, customScalarAdapters, value.cat)
@@ -74,7 +74,7 @@ public object CatQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: CatQuery.Cat
+      `value`: CatQuery.Cat,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -100,7 +100,7 @@ public object CatQuery_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: CatQuery.Cat.Fragments
+        `value`: CatQuery.Cat.Fragments,
       ): Unit {
         com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.toJson(writer,
             customScalarAdapters, value.animalFragment)

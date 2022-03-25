@@ -20,7 +20,7 @@ import kotlin.String
 import kotlin.Unit
 
 public data class TestQuery(
-  public val ep: Episode
+  public val ep: Episode,
 ) : Mutation<TestQuery.Data> {
   public override fun id(): String = OPERATION_ID
 
@@ -45,7 +45,7 @@ public data class TestQuery(
   .build()
 
   public data class Data(
-    public val createReview: CreateReview?
+    public val createReview: CreateReview?,
   ) : Mutation.Data {
     public data class CreateReview(
       /**
@@ -55,7 +55,7 @@ public data class TestQuery(
       /**
        * Comment about the movie
        */
-      public val commentary: String?
+      public val commentary: String?,
     )
   }
 

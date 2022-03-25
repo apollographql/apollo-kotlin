@@ -48,7 +48,7 @@ public object DroidDetailsImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: DroidDetailsImpl.Data
+      `value`: DroidDetailsImpl.Data,
     ): Unit {
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
@@ -82,7 +82,7 @@ public object DroidDetailsImpl_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: DroidDetailsImpl.Data.Friend
+        `value`: DroidDetailsImpl.Data.Friend,
       ): Unit {
         writer.name("name")
         StringAdapter.toJson(writer, customScalarAdapters, value.name)

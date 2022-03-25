@@ -50,10 +50,10 @@ public class IFragmentImpl() : Fragment<IFragmentImpl.Data> {
 
   public data class AData(
     public override val __typename: String,
-    public override val fieldA: String?
+    public override val fieldA: String?,
   ) : Data, AIFragment
 
   public data class OtherData(
-    public override val __typename: String
+    public override val __typename: String,
   ) : Data, IFragment
 }

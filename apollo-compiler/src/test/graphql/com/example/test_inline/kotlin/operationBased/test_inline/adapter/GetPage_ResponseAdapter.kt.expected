@@ -42,7 +42,7 @@ public object GetPage_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: GetPage.Data
+      `value`: GetPage.Data,
     ): Unit {
       writer.name("collection")
       Collection.obj(true).toJson(writer, customScalarAdapters, value.collection)
@@ -85,7 +85,7 @@ public object GetPage_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: GetPage.Data.Collection
+        `value`: GetPage.Data.Collection,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -121,7 +121,7 @@ public object GetPage_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: GetPage.Data.Collection.Item
+          `value`: GetPage.Data.Collection.Item,
         ): Unit {
           writer.name("title")
           StringAdapter.toJson(writer, customScalarAdapters, value.title)
@@ -152,7 +152,7 @@ public object GetPage_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: GetPage.Data.Collection.OnParticularCollection
+          `value`: GetPage.Data.Collection.OnParticularCollection,
         ): Unit {
           writer.name("items")
           Item.obj(true).list().toJson(writer, customScalarAdapters, value.items)
@@ -193,7 +193,7 @@ public object GetPage_ResponseAdapter {
           public override fun toJson(
             writer: JsonWriter,
             customScalarAdapters: CustomScalarAdapters,
-            `value`: GetPage.Data.Collection.OnParticularCollection.Item
+            `value`: GetPage.Data.Collection.OnParticularCollection.Item,
           ): Unit {
             writer.name("__typename")
             StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -228,7 +228,7 @@ public object GetPage_ResponseAdapter {
             public override fun toJson(
               writer: JsonWriter,
               customScalarAdapters: CustomScalarAdapters,
-              `value`: GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem
+              `value`: GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem,
             ): Unit {
               writer.name("image")
               StringAdapter.toJson(writer, customScalarAdapters, value.image)

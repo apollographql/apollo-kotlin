@@ -41,7 +41,7 @@ public object AllStarships_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.nested_named_fragments.AllStarships.Data
+      `value`: com.example.nested_named_fragments.AllStarships.Data,
     ): Unit {
       writer.name("allStarships")
       AllStarships.obj().nullable().toJson(writer, customScalarAdapters, value.allStarships)
@@ -71,7 +71,7 @@ public object AllStarships_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: com.example.nested_named_fragments.AllStarships.Data.AllStarships
+        `value`: com.example.nested_named_fragments.AllStarships.Data.AllStarships,
       ): Unit {
         writer.name("edges")
         Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
@@ -101,7 +101,7 @@ public object AllStarships_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge
+          `value`: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge,
         ): Unit {
           writer.name("node")
           Node.obj(true).nullable().toJson(writer, customScalarAdapters, value.node)
@@ -136,7 +136,7 @@ public object AllStarships_ResponseAdapter {
           public override fun toJson(
             writer: JsonWriter,
             customScalarAdapters: CustomScalarAdapters,
-            `value`: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node
+            `value`: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node,
           ): Unit {
             writer.name("__typename")
             StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

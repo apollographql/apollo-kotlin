@@ -48,7 +48,7 @@ public class TestQuery() : Query<TestQuery.Data> {
   .build()
 
   public data class Data(
-    public val nonOptionalHero: NonOptionalHero
+    public val nonOptionalHero: NonOptionalHero,
   ) : Query.Data {
     public data class NonOptionalHero(
       public val __typename: String,
@@ -59,13 +59,13 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * Synthetic field for inline fragment on Human
        */
-      public val onHuman: OnHuman?
+      public val onHuman: OnHuman?,
     ) {
       public data class OnHuman(
         /**
          * Height in the preferred unit, default is meters
          */
-        public val height: Double?
+        public val height: Double?,
       )
     }
   }

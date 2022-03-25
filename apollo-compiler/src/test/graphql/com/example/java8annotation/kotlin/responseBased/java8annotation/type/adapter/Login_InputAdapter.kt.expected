@@ -21,7 +21,7 @@ public object Login_InputAdapter : Adapter<Login> {
   public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    `value`: Login
+    `value`: Login,
   ): Unit {
     writer.name("email")
     StringAdapter.toJson(writer, customScalarAdapters, value.email)

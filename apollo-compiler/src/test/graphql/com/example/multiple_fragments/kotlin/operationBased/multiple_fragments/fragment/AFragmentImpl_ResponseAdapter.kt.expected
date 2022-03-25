@@ -41,7 +41,7 @@ public object AFragmentImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.multiple_fragments.fragment.AFragment
+      `value`: com.example.multiple_fragments.fragment.AFragment,
     ): Unit {
       writer.name("node")
       Node.obj(true).nullable().toJson(writer, customScalarAdapters, value.node)
@@ -89,7 +89,7 @@ public object AFragmentImpl_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: com.example.multiple_fragments.fragment.AFragment.Node
+        `value`: com.example.multiple_fragments.fragment.AFragment.Node,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

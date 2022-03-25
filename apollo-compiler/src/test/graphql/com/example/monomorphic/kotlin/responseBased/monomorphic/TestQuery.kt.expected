@@ -47,7 +47,7 @@ public class TestQuery() : Query<TestQuery.Data> {
   .build()
 
   public data class Data(
-    public val cat: Cat
+    public val cat: Cat,
   ) : Query.Data {
     public sealed interface Cat {
       public val __typename: String
@@ -65,11 +65,11 @@ public class TestQuery() : Query<TestQuery.Data> {
 
     public data class AnimalNodeCat(
       public override val __typename: String,
-      public val species: String
+      public val species: String,
     ) : NodeCat
 
     public data class OtherCat(
-      public override val __typename: String
+      public override val __typename: String,
     ) : Cat
   }
 

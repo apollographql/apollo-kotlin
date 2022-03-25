@@ -11,5 +11,5 @@ import kotlin.String
 
 public data class UserQuery(
   public val name: String,
-  public val isAdmin: Optional<Boolean?> = Optional.Absent
+  public val isAdmin: Optional<Boolean?> = Optional.Absent,
 )

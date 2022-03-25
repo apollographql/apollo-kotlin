@@ -13,5 +13,5 @@ internal data class HumanDetails(
   /**
    * What this human calls themselves
    */
-  public val name: String
+  public val name: String,
 ) : Fragment.Data

@@ -52,13 +52,13 @@ public class AllStarships() : Query<AllStarships.Data> {
   .build()
 
   public data class Data(
-    public val allStarships: AllStarships?
+    public val allStarships: AllStarships?,
   ) : Query.Data {
     public data class AllStarships(
       /**
        * A list of edges.
        */
-      public val edges: List<Edge?>?
+      public val edges: List<Edge?>?,
     ) {
       public fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
@@ -66,7 +66,7 @@ public class AllStarships() : Query<AllStarships.Data> {
         /**
          * The item at the end of the edge
          */
-        public val node: Node?
+        public val node: Node?,
       ) {
         public data class Node(
           public val __typename: String,
@@ -78,13 +78,13 @@ public class AllStarships() : Query<AllStarships.Data> {
            * The name of this starship. The common name, such as "Death Star".
            */
           public override val name: String?,
-          public override val pilotConnection: PilotConnection?
+          public override val pilotConnection: PilotConnection?,
         ) : StarshipFragment {
           public data class PilotConnection(
             /**
              * A list of edges.
              */
-            public override val edges: List<Edge?>?
+            public override val edges: List<Edge?>?,
           ) : StarshipFragment.PilotConnection {
             public fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
@@ -92,7 +92,7 @@ public class AllStarships() : Query<AllStarships.Data> {
               /**
                * The item at the end of the edge
                */
-              public override val node: Node?
+              public override val node: Node?,
             ) : StarshipFragment.PilotConnection.Edge {
               public data class Node(
                 public override val __typename: String,
@@ -103,14 +103,14 @@ public class AllStarships() : Query<AllStarships.Data> {
                 /**
                  * A planet that this person was born on or inhabits.
                  */
-                public override val homeworld: Homeworld?
+                public override val homeworld: Homeworld?,
               ) : PilotFragment, StarshipFragment.PilotConnection.Edge.Node {
                 public data class Homeworld(
                   public override val __typename: String,
                   /**
                    * The name of this planet.
                    */
-                  public override val name: String?
+                  public override val name: String?,
                 ) : PlanetFragment, PilotFragment.Homeworld,
                     StarshipFragment.PilotConnection.Edge.Node.Homeworld {
                   public companion object {

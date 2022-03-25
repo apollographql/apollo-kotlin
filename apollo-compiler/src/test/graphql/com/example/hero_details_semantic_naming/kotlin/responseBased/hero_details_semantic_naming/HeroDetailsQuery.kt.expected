@@ -48,7 +48,7 @@ public class HeroDetailsQuery() : Query<HeroDetailsQuery.Data> {
   .build()
 
   public data class Data(
-    public val hero: Hero?
+    public val hero: Hero?,
   ) : Query.Data {
     public data class Hero(
       /**
@@ -58,7 +58,7 @@ public class HeroDetailsQuery() : Query<HeroDetailsQuery.Data> {
       /**
        * The friends of the character exposed as a connection with edges
        */
-      public val friendsConnection: FriendsConnection
+      public val friendsConnection: FriendsConnection,
     ) {
       public data class FriendsConnection(
         /**
@@ -68,7 +68,7 @@ public class HeroDetailsQuery() : Query<HeroDetailsQuery.Data> {
         /**
          * The edges for each of the character's friends.
          */
-        public val edges: List<Edge?>?
+        public val edges: List<Edge?>?,
       ) {
         public fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
@@ -76,13 +76,13 @@ public class HeroDetailsQuery() : Query<HeroDetailsQuery.Data> {
           /**
            * The character represented by this friendship edge
            */
-          public val node: Node?
+          public val node: Node?,
         ) {
           public data class Node(
             /**
              * The name of the character
              */
-            public val name: String
+            public val name: String,
           )
         }
       }

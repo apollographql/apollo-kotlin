@@ -48,14 +48,14 @@ public class CatQuery() : Query<CatQuery.Data> {
   .build()
 
   public data class Data(
-    public val cat: Cat?
+    public val cat: Cat?,
   ) : Query.Data {
     public data class Cat(
       public val __typename: String,
       /**
        * Synthetic field for 'AnimalFragment'
        */
-      public val animalFragment: AnimalFragment
+      public val animalFragment: AnimalFragment,
     )
   }
 

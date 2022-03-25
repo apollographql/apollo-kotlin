@@ -49,13 +49,13 @@ public class GetHuman() : Query<GetHuman.Data> {
 
   public data class Data(
     public val human: Human,
-    public val node: Node
+    public val node: Node,
   ) : Query.Data
 
   public data class Human(
     public val id: String,
     public val name: String,
-    public val height: Double
+    public val height: Double,
   )
 
   public data class Node(
@@ -63,12 +63,12 @@ public class GetHuman() : Query<GetHuman.Data> {
     /**
      * Synthetic field for inline fragment on Human
      */
-    public val asHuman: AsHuman?
+    public val asHuman: AsHuman?,
   )
 
   public data class AsHuman(
     public val __typename: String,
-    public val height: Double
+    public val height: Double,
   )
 
   public companion object {

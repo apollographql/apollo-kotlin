@@ -45,7 +45,7 @@ public object HeroDetails_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: HeroDetails.Data
+      `value`: HeroDetails.Data,
     ): Unit {
       writer.name("hero")
       Hero.obj().nullable().toJson(writer, customScalarAdapters, value.hero)
@@ -79,7 +79,7 @@ public object HeroDetails_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: HeroDetails.Data.Hero
+        `value`: HeroDetails.Data.Hero,
       ): Unit {
         writer.name("type")
         hero_type_ResponseAdapter.toJson(writer, customScalarAdapters, value.type)
@@ -117,7 +117,7 @@ public object HeroDetails_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: HeroDetails.Data.Hero.FriendsConnection
+          `value`: HeroDetails.Data.Hero.FriendsConnection,
         ): Unit {
           writer.name("totalCount")
           NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount)
@@ -149,7 +149,7 @@ public object HeroDetails_ResponseAdapter {
           public override fun toJson(
             writer: JsonWriter,
             customScalarAdapters: CustomScalarAdapters,
-            `value`: HeroDetails.Data.Hero.FriendsConnection.Edge
+            `value`: HeroDetails.Data.Hero.FriendsConnection.Edge,
           ): Unit {
             writer.name("node")
             Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
@@ -178,7 +178,7 @@ public object HeroDetails_ResponseAdapter {
             public override fun toJson(
               writer: JsonWriter,
               customScalarAdapters: CustomScalarAdapters,
-              `value`: HeroDetails.Data.Hero.FriendsConnection.Edge.Node
+              `value`: HeroDetails.Data.Hero.FriendsConnection.Edge.Node,
             ): Unit {
               writer.name("name")
               StringAdapter.toJson(writer, customScalarAdapters, value.name)

@@ -47,7 +47,7 @@ public object TestQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: TestQuery.Data
+      `value`: TestQuery.Data,
     ): Unit {
       writer.name("search")
       Search.obj(true).nullable().list().nullable().toJson(writer, customScalarAdapters,
@@ -96,7 +96,7 @@ public object TestQuery_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.Search
+        `value`: TestQuery.Data.Search,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -141,7 +141,7 @@ public object TestQuery_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: TestQuery.Data.Search.OnCharacter
+          `value`: TestQuery.Data.Search.OnCharacter,
         ): Unit {
           writer.name("id")
           StringAdapter.toJson(writer, customScalarAdapters, value.id)
@@ -202,7 +202,7 @@ public object TestQuery_ResponseAdapter {
           public override fun toJson(
             writer: JsonWriter,
             customScalarAdapters: CustomScalarAdapters,
-            `value`: TestQuery.Data.Search.OnCharacter.Friend
+            `value`: TestQuery.Data.Search.OnCharacter.Friend,
           ): Unit {
             writer.name("__typename")
             StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -245,7 +245,7 @@ public object TestQuery_ResponseAdapter {
             public override fun toJson(
               writer: JsonWriter,
               customScalarAdapters: CustomScalarAdapters,
-              `value`: TestQuery.Data.Search.OnCharacter.Friend.OnCharacter
+              `value`: TestQuery.Data.Search.OnCharacter.Friend.OnCharacter,
             ): Unit {
               writer.name("name")
               StringAdapter.toJson(writer, customScalarAdapters, value.name)
@@ -279,7 +279,7 @@ public object TestQuery_ResponseAdapter {
             public override fun toJson(
               writer: JsonWriter,
               customScalarAdapters: CustomScalarAdapters,
-              `value`: TestQuery.Data.Search.OnCharacter.Friend.OnHuman
+              `value`: TestQuery.Data.Search.OnCharacter.Friend.OnHuman,
             ): Unit {
               writer.name("homePlanet")
               NullableStringAdapter.toJson(writer, customScalarAdapters, value.homePlanet)
@@ -318,7 +318,7 @@ public object TestQuery_ResponseAdapter {
               public override fun toJson(
                 writer: JsonWriter,
                 customScalarAdapters: CustomScalarAdapters,
-                `value`: TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend
+                `value`: TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend,
               ): Unit {
                 writer.name("__typename")
                 StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -352,7 +352,7 @@ public object TestQuery_ResponseAdapter {
                 public override fun toJson(
                   writer: JsonWriter,
                   customScalarAdapters: CustomScalarAdapters,
-                  `value`: TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend.OnCharacter
+                  `value`: TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend.OnCharacter,
                 ): Unit {
                   writer.name("firstAppearsIn")
                   Episode_ResponseAdapter.toJson(writer, customScalarAdapters, value.firstAppearsIn)
@@ -389,7 +389,7 @@ public object TestQuery_ResponseAdapter {
             public override fun toJson(
               writer: JsonWriter,
               customScalarAdapters: CustomScalarAdapters,
-              `value`: TestQuery.Data.Search.OnCharacter.Friend.OnDroid
+              `value`: TestQuery.Data.Search.OnCharacter.Friend.OnDroid,
             ): Unit {
               writer.name("primaryFunction")
               NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
@@ -423,7 +423,7 @@ public object TestQuery_ResponseAdapter {
               public override fun toJson(
                 writer: JsonWriter,
                 customScalarAdapters: CustomScalarAdapters,
-                `value`: TestQuery.Data.Search.OnCharacter.Friend.OnDroid.Friend
+                `value`: TestQuery.Data.Search.OnCharacter.Friend.OnDroid.Friend,
               ): Unit {
                 writer.name("id")
                 StringAdapter.toJson(writer, customScalarAdapters, value.id)
@@ -455,7 +455,7 @@ public object TestQuery_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: TestQuery.Data.Search.OnStarship
+          `value`: TestQuery.Data.Search.OnStarship,
         ): Unit {
           writer.name("name")
           StringAdapter.toJson(writer, customScalarAdapters, value.name)

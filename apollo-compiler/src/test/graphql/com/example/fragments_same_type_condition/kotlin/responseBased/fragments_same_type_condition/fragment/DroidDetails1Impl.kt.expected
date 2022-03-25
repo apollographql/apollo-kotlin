@@ -44,6 +44,6 @@ public class DroidDetails1Impl() : Fragment<DroidDetails1Impl.Data> {
     /**
      * What others call this droid
      */
-    public override val name: String
+    public override val name: String,
   ) : DroidDetails1, Fragment.Data
 }

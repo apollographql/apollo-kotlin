@@ -37,7 +37,7 @@ public object HeroFragmentImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: HeroFragmentImpl.Data
+      `value`: HeroFragmentImpl.Data,
     ): Unit {
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)

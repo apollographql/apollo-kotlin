@@ -47,7 +47,7 @@ public class TestQuery() : Query<TestQuery.Data> {
   .build()
 
   public data class Data(
-    public val iface1: Iface1?
+    public val iface1: Iface1?,
   ) : Query.Data {
     public data class Iface1(
       public val __typename: String,
@@ -58,10 +58,10 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * Synthetic field for inline fragment on Impl1
        */
-      public val onImpl1: OnImpl1?
+      public val onImpl1: OnImpl1?,
     ) {
       public data class OnIface1(
-        public val iface2: Iface2?
+        public val iface2: Iface2?,
       ) {
         public data class Iface2(
           public val __typename: String,
@@ -72,20 +72,20 @@ public class TestQuery() : Query<TestQuery.Data> {
           /**
            * Synthetic field for inline fragment on Impl2
            */
-          public val onImpl2: OnImpl2?
+          public val onImpl2: OnImpl2?,
         ) {
           public data class OnIface2(
-            public val scalar1: String?
+            public val scalar1: String?,
           )
 
           public data class OnImpl2(
-            public val scalar2: String?
+            public val scalar2: String?,
           )
         }
       }
 
       public data class OnImpl1(
-        public val iface2: Iface2?
+        public val iface2: Iface2?,
       ) {
         public data class Iface2(
           public val __typename: String,
@@ -96,14 +96,14 @@ public class TestQuery() : Query<TestQuery.Data> {
           /**
            * Synthetic field for inline fragment on Impl2
            */
-          public val onImpl2: OnImpl2?
+          public val onImpl2: OnImpl2?,
         ) {
           public data class OnIface2(
-            public val scalar3: String?
+            public val scalar3: String?,
           )
 
           public data class OnImpl2(
-            public val scalar4: String?
+            public val scalar4: String?,
           )
         }
       }

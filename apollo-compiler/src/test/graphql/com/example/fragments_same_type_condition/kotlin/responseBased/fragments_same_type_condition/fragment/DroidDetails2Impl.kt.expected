@@ -44,6 +44,6 @@ public class DroidDetails2Impl() : Fragment<DroidDetails2Impl.Data> {
     /**
      * This droid's primary function
      */
-    public override val primaryFunction: String?
+    public override val primaryFunction: String?,
   ) : DroidDetails2, Fragment.Data
 }

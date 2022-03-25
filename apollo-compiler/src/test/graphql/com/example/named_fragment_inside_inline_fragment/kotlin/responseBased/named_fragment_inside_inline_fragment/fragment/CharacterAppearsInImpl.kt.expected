@@ -45,7 +45,7 @@ public class CharacterAppearsInImpl() : Fragment<CharacterAppearsInImpl.Data> {
     /**
      * The movies this character appears in
      */
-    public override val appearsIn: List<Episode?>
+    public override val appearsIn: List<Episode?>,
   ) : CharacterAppearsIn, Fragment.Data {
     public fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
   }

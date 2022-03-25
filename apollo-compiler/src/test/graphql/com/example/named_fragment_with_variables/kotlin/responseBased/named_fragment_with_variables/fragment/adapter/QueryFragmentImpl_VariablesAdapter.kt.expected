@@ -24,7 +24,7 @@ public object QueryFragmentImpl_VariablesAdapter : Adapter<QueryFragmentImpl> {
   public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    `value`: QueryFragmentImpl
+    `value`: QueryFragmentImpl,
   ): Unit {
     writer.name("organizationId")
     StringAdapter.toJson(writer, customScalarAdapters, value.organizationId)

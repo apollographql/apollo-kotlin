@@ -39,7 +39,7 @@ public object HumanDetailsImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.named_fragment_without_implementation.fragment.HumanDetails
+      `value`: com.example.named_fragment_without_implementation.fragment.HumanDetails,
     ): Unit {
       writer.name("height")
       NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)

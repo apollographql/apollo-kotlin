@@ -49,7 +49,7 @@ public object QueryFragmentImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: QueryFragmentImpl.Data
+      `value`: QueryFragmentImpl.Data,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -89,7 +89,7 @@ public object QueryFragmentImpl_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: QueryFragmentImpl.Data.Hero
+        `value`: QueryFragmentImpl.Data.Hero,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -127,7 +127,7 @@ public object QueryFragmentImpl_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: QueryFragmentImpl.Data.Droid
+        `value`: QueryFragmentImpl.Data.Droid,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -168,7 +168,7 @@ public object QueryFragmentImpl_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: QueryFragmentImpl.Data.Human
+        `value`: QueryFragmentImpl.Data.Human,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

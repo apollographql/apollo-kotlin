@@ -44,7 +44,7 @@ public object TestQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: TestQuery.Data
+      `value`: TestQuery.Data,
     ): Unit {
       writer.name("search")
       Search.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.search)
@@ -67,7 +67,7 @@ public object TestQuery_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.Search
+        `value`: TestQuery.Data.Search,
       ): Unit {
         when(value) {
           is TestQuery.Data.CharacterHumanSearch -> CharacterHumanSearch.toJson(writer,
@@ -85,7 +85,7 @@ public object TestQuery_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): TestQuery.Data.CharacterHumanSearch {
         var __typename: String? = typename
         var name: String? = null
@@ -110,7 +110,7 @@ public object TestQuery_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.CharacterHumanSearch
+        `value`: TestQuery.Data.CharacterHumanSearch,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -129,7 +129,7 @@ public object TestQuery_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): TestQuery.Data.CharacterDroidSearch {
         var __typename: String? = typename
         var name: String? = null
@@ -154,7 +154,7 @@ public object TestQuery_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.CharacterDroidSearch
+        `value`: TestQuery.Data.CharacterDroidSearch,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -173,7 +173,7 @@ public object TestQuery_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): TestQuery.Data.OtherSearch {
         var __typename: String? = typename
 
@@ -192,7 +192,7 @@ public object TestQuery_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.OtherSearch
+        `value`: TestQuery.Data.OtherSearch,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

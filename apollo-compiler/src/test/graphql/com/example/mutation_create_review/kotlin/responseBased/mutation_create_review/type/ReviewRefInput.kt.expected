@@ -11,5 +11,5 @@ import com.apollographql.apollo3.api.Optional
  * Circle ref to review input
  */
 internal data class ReviewRefInput(
-  public val reviewInput: Optional<ReviewInput?> = Optional.Absent
+  public val reviewInput: Optional<ReviewInput?> = Optional.Absent,
 )

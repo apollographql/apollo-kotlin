@@ -43,7 +43,7 @@ public object TestQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: TestQuery.Data
+      `value`: TestQuery.Data,
     ): Unit {
       writer.name("c")
       C.obj(true).nullable().toJson(writer, customScalarAdapters, value.c)
@@ -91,7 +91,7 @@ public object TestQuery_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.C
+        `value`: TestQuery.Data.C,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -144,7 +144,7 @@ public object TestQuery_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: TestQuery.Data.C.OnA
+          `value`: TestQuery.Data.C.OnA,
         ): Unit {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -180,7 +180,7 @@ public object TestQuery_ResponseAdapter {
           public override fun toJson(
             writer: JsonWriter,
             customScalarAdapters: CustomScalarAdapters,
-            `value`: TestQuery.Data.C.OnA.OnB
+            `value`: TestQuery.Data.C.OnA.OnB,
           ): Unit {
             writer.name("fieldB1")
             NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldB1)
@@ -225,7 +225,7 @@ public object TestQuery_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: TestQuery.Data.C.OnB
+          `value`: TestQuery.Data.C.OnB,
         ): Unit {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -261,7 +261,7 @@ public object TestQuery_ResponseAdapter {
           public override fun toJson(
             writer: JsonWriter,
             customScalarAdapters: CustomScalarAdapters,
-            `value`: TestQuery.Data.C.OnB.OnA
+            `value`: TestQuery.Data.C.OnB.OnA,
           ): Unit {
             writer.name("fieldA2")
             NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldA2)

@@ -48,7 +48,7 @@ public object TestOperation_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: TestOperation.Data
+      `value`: TestOperation.Data,
     ): Unit {
       writer.name("random")
       Random.obj().toJson(writer, customScalarAdapters, value.random)
@@ -71,7 +71,7 @@ public object TestOperation_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestOperation.Data.Random
+        `value`: TestOperation.Data.Random,
       ): Unit {
         when(value) {
           is TestOperation.Data.BeingHumanRandom -> BeingHumanRandom.toJson(writer,
@@ -91,7 +91,7 @@ public object TestOperation_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): TestOperation.Data.BeingHumanRandom {
         var __typename: String? = typename
         var name: String? = null
@@ -119,7 +119,7 @@ public object TestOperation_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestOperation.Data.BeingHumanRandom
+        `value`: TestOperation.Data.BeingHumanRandom,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -150,7 +150,7 @@ public object TestOperation_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: TestOperation.Data.BeingHumanRandom.Friend
+          `value`: TestOperation.Data.BeingHumanRandom.Friend,
         ): Unit {
           when(value) {
             is TestOperation.Data.BeingHumanRandom.WookieFriend -> WookieFriend.toJson(writer,
@@ -168,7 +168,7 @@ public object TestOperation_ResponseAdapter {
         public fun fromJson(
           reader: JsonReader,
           customScalarAdapters: CustomScalarAdapters,
-          typename: String
+          typename: String,
         ): TestOperation.Data.BeingHumanRandom.WookieFriend {
           var __typename: String? = typename
           var name: String? = null
@@ -199,7 +199,7 @@ public object TestOperation_ResponseAdapter {
         public fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: TestOperation.Data.BeingHumanRandom.WookieFriend
+          `value`: TestOperation.Data.BeingHumanRandom.WookieFriend,
         ): Unit {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -224,7 +224,7 @@ public object TestOperation_ResponseAdapter {
         public fun fromJson(
           reader: JsonReader,
           customScalarAdapters: CustomScalarAdapters,
-          typename: String
+          typename: String,
         ): TestOperation.Data.BeingHumanRandom.OtherFriend {
           var __typename: String? = typename
           var name: String? = null
@@ -249,7 +249,7 @@ public object TestOperation_ResponseAdapter {
         public fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: TestOperation.Data.BeingHumanRandom.OtherFriend
+          `value`: TestOperation.Data.BeingHumanRandom.OtherFriend,
         ): Unit {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -269,7 +269,7 @@ public object TestOperation_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): TestOperation.Data.BeingWookieRandom {
         var __typename: String? = typename
         var name: String? = null
@@ -297,7 +297,7 @@ public object TestOperation_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestOperation.Data.BeingWookieRandom
+        `value`: TestOperation.Data.BeingWookieRandom,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -328,7 +328,7 @@ public object TestOperation_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: TestOperation.Data.BeingWookieRandom.Friend
+          `value`: TestOperation.Data.BeingWookieRandom.Friend,
         ): Unit {
           when(value) {
             is TestOperation.Data.BeingWookieRandom.WookieFriend -> WookieFriend.toJson(writer,
@@ -345,7 +345,7 @@ public object TestOperation_ResponseAdapter {
         public fun fromJson(
           reader: JsonReader,
           customScalarAdapters: CustomScalarAdapters,
-          typename: String
+          typename: String,
         ): TestOperation.Data.BeingWookieRandom.WookieFriend {
           var __typename: String? = typename
           var name: String? = null
@@ -370,7 +370,7 @@ public object TestOperation_ResponseAdapter {
         public fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: TestOperation.Data.BeingWookieRandom.WookieFriend
+          `value`: TestOperation.Data.BeingWookieRandom.WookieFriend,
         ): Unit {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -389,7 +389,7 @@ public object TestOperation_ResponseAdapter {
         public fun fromJson(
           reader: JsonReader,
           customScalarAdapters: CustomScalarAdapters,
-          typename: String
+          typename: String,
         ): TestOperation.Data.BeingWookieRandom.OtherFriend {
           var __typename: String? = typename
           var name: String? = null
@@ -414,7 +414,7 @@ public object TestOperation_ResponseAdapter {
         public fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: TestOperation.Data.BeingWookieRandom.OtherFriend
+          `value`: TestOperation.Data.BeingWookieRandom.OtherFriend,
         ): Unit {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -434,7 +434,7 @@ public object TestOperation_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): TestOperation.Data.OtherRandom {
         var __typename: String? = typename
 
@@ -453,7 +453,7 @@ public object TestOperation_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestOperation.Data.OtherRandom
+        `value`: TestOperation.Data.OtherRandom,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

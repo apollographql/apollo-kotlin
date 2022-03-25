@@ -22,7 +22,7 @@ public object LoginBarber_VariablesAdapter : Adapter<LoginBarber> {
   public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    `value`: LoginBarber
+    `value`: LoginBarber,
   ): Unit {
     writer.name("input")
     Login_InputAdapter.obj().toJson(writer, customScalarAdapters, value.input)

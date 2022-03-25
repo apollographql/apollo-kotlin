@@ -42,7 +42,7 @@ public object AllStarships_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.nested_named_fragments.AllStarships.Data
+      `value`: com.example.nested_named_fragments.AllStarships.Data,
     ): Unit {
       writer.name("allStarships")
       AllStarships.obj().nullable().toJson(writer, customScalarAdapters, value.allStarships)
@@ -72,7 +72,7 @@ public object AllStarships_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: com.example.nested_named_fragments.AllStarships.Data.AllStarships
+        `value`: com.example.nested_named_fragments.AllStarships.Data.AllStarships,
       ): Unit {
         writer.name("edges")
         Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
@@ -102,7 +102,7 @@ public object AllStarships_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge
+          `value`: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge,
         ): Unit {
           writer.name("node")
           Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
@@ -143,7 +143,7 @@ public object AllStarships_ResponseAdapter {
           public override fun toJson(
             writer: JsonWriter,
             customScalarAdapters: CustomScalarAdapters,
-            `value`: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node
+            `value`: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node,
           ): Unit {
             writer.name("__typename")
             StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -185,7 +185,7 @@ public object AllStarships_ResponseAdapter {
             public override fun toJson(
               writer: JsonWriter,
               customScalarAdapters: CustomScalarAdapters,
-              `value`: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection
+              `value`: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection,
             ): Unit {
               writer.name("edges")
               Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters,
@@ -217,7 +217,7 @@ public object AllStarships_ResponseAdapter {
               public override fun toJson(
                 writer: JsonWriter,
                 customScalarAdapters: CustomScalarAdapters,
-                `value`: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection.Edge
+                `value`: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection.Edge,
               ): Unit {
                 writer.name("node")
                 Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
@@ -255,7 +255,7 @@ public object AllStarships_ResponseAdapter {
                 public override fun toJson(
                   writer: JsonWriter,
                   customScalarAdapters: CustomScalarAdapters,
-                  `value`: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection.Edge.Node
+                  `value`: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection.Edge.Node,
                 ): Unit {
                   writer.name("__typename")
                   StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -295,7 +295,7 @@ public object AllStarships_ResponseAdapter {
                   public override fun toJson(
                     writer: JsonWriter,
                     customScalarAdapters: CustomScalarAdapters,
-                    `value`: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection.Edge.Node.Homeworld
+                    `value`: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection.Edge.Node.Homeworld,
                   ): Unit {
                     writer.name("__typename")
                     StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

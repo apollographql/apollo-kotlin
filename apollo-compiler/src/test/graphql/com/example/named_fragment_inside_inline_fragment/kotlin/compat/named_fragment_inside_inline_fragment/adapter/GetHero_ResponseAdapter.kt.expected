@@ -40,7 +40,7 @@ public object GetHero_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: GetHero.Data
+      `value`: GetHero.Data,
     ): Unit {
       writer.name("hero")
       Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
@@ -74,7 +74,7 @@ public object GetHero_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: GetHero.Hero
+      `value`: GetHero.Hero,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -105,7 +105,7 @@ public object GetHero_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: GetHero.Hero.Fragments
+        `value`: GetHero.Hero.Fragments,
       ): Unit {
         com.example.named_fragment_inside_inline_fragment.fragment.CharacterNameImpl_ResponseAdapter.CharacterName.toJson(writer,
             customScalarAdapters, value.characterName)

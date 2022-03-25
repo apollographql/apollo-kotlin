@@ -43,7 +43,7 @@ public object TestQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: TestQuery.Data
+      `value`: TestQuery.Data,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -69,7 +69,7 @@ public object TestQuery_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.Fragments
+        `value`: TestQuery.Data.Fragments,
       ): Unit {
         com.example.root_query_fragment.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.toJson(writer,
             customScalarAdapters, value.queryFragment)

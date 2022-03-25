@@ -14,7 +14,7 @@ import kotlin.Int
 import kotlin.String
 
 public sealed class Enum(
-  public val rawValue: String
+  public val rawValue: String,
 ) {
   public companion object {
     public val type: EnumType = EnumType("Enum")
@@ -54,7 +54,7 @@ public sealed class Enum(
    * An enum value that wasn't known at compile time.
    */
   public class UNKNOWN__(
-    rawValue: String
+    rawValue: String,
   ) : Enum(rawValue = rawValue) {
     public override fun equals(other: Any?): Boolean {
       if (other !is UNKNOWN__) return false

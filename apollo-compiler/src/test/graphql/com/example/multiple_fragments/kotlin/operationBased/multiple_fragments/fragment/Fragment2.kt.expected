@@ -9,5 +9,5 @@ import com.apollographql.apollo3.api.Fragment
 import kotlin.String
 
 public data class Fragment2(
-  public val field2: String?
+  public val field2: String?,
 ) : Fragment.Data

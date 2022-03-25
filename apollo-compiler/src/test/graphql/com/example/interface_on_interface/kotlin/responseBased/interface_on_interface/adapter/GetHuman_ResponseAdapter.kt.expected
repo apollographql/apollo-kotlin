@@ -45,7 +45,7 @@ public object GetHuman_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: GetHuman.Data
+      `value`: GetHuman.Data,
     ): Unit {
       writer.name("human")
       Human.obj().toJson(writer, customScalarAdapters, value.human)
@@ -82,7 +82,7 @@ public object GetHuman_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: GetHuman.Data.Human
+        `value`: GetHuman.Data.Human,
       ): Unit {
         writer.name("id")
         StringAdapter.toJson(writer, customScalarAdapters, value.id)
@@ -110,7 +110,7 @@ public object GetHuman_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: GetHuman.Data.Node
+        `value`: GetHuman.Data.Node,
       ): Unit {
         when(value) {
           is GetHuman.Data.HumanNode -> HumanNode.toJson(writer, customScalarAdapters, value)
@@ -125,7 +125,7 @@ public object GetHuman_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): GetHuman.Data.HumanNode {
         var __typename: String? = typename
         var height: Double? = null
@@ -147,7 +147,7 @@ public object GetHuman_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: GetHuman.Data.HumanNode
+        `value`: GetHuman.Data.HumanNode,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -163,7 +163,7 @@ public object GetHuman_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): GetHuman.Data.OtherNode {
         var __typename: String? = typename
 
@@ -182,7 +182,7 @@ public object GetHuman_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: GetHuman.Data.OtherNode
+        `value`: GetHuman.Data.OtherNode,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

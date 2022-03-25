@@ -22,7 +22,7 @@ import kotlin.Unit
 
 public data class CreateReviewForEpisodeMutation(
   public val ep: Episode,
-  public val review: ReviewInput
+  public val review: ReviewInput,
 ) : Mutation<CreateReviewForEpisodeMutation.Data> {
   public override fun id(): String = OPERATION_ID
 
@@ -47,7 +47,7 @@ public data class CreateReviewForEpisodeMutation(
   .build()
 
   public data class Data(
-    public val createReview: CreateReview?
+    public val createReview: CreateReview?,
   ) : Mutation.Data {
     public data class CreateReview(
       /**
@@ -57,7 +57,7 @@ public data class CreateReviewForEpisodeMutation(
       /**
        * Comment about the movie
        */
-      public val commentary: String?
+      public val commentary: String?,
     )
   }
 

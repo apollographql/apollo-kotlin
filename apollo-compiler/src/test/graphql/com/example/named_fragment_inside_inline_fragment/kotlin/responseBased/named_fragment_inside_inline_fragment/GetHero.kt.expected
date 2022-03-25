@@ -51,7 +51,7 @@ public class GetHero() : Query<GetHero.Data> {
   .build()
 
   public data class Data(
-    public val hero: Hero?
+    public val hero: Hero?,
   ) : Query.Data {
     public data class Hero(
       public val __typename: String,
@@ -62,7 +62,7 @@ public class GetHero() : Query<GetHero.Data> {
       /**
        * The movies this character appears in
        */
-      public override val appearsIn: List<Episode?>
+      public override val appearsIn: List<Episode?>,
     ) : CharacterName, CharacterAppearsIn {
       public fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
 

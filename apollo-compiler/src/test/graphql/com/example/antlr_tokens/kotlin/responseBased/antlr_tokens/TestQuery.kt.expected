@@ -19,7 +19,7 @@ import kotlin.String
 import kotlin.Unit
 
 public data class TestQuery(
-  public val operation: Optional<String?> = Optional.Absent
+  public val operation: Optional<String?> = Optional.Absent,
 ) : Query<TestQuery.Data> {
   public override fun id(): String = OPERATION_ID
 
@@ -44,12 +44,12 @@ public data class TestQuery(
   .build()
 
   public data class Data(
-    public val typeWithGraphQLKeywords: TypeWithGraphQLKeywords?
+    public val typeWithGraphQLKeywords: TypeWithGraphQLKeywords?,
   ) : Query.Data {
     public data class TypeWithGraphQLKeywords(
       public val on: String?,
       public val `null`: String?,
-      public val alias: String?
+      public val alias: String?,
     )
   }
 

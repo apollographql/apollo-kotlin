@@ -39,7 +39,7 @@ public object HeroDetailsImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: HeroDetailsImpl.Data
+      `value`: HeroDetailsImpl.Data,
     ): Unit {
       when(value) {
         is HeroDetailsImpl.HumanData -> HumanData.toJson(writer, customScalarAdapters, value)
@@ -55,7 +55,7 @@ public object HeroDetailsImpl_ResponseAdapter {
     public fun fromJson(
       reader: JsonReader,
       customScalarAdapters: CustomScalarAdapters,
-      typename: String
+      typename: String,
     ): HeroDetailsImpl.HumanData {
       var __typename: String? = typename
       var name: String? = null
@@ -80,7 +80,7 @@ public object HeroDetailsImpl_ResponseAdapter {
     public fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: HeroDetailsImpl.HumanData
+      `value`: HeroDetailsImpl.HumanData,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -118,7 +118,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: HeroDetailsImpl.HumanData.FriendsConnection
+        `value`: HeroDetailsImpl.HumanData.FriendsConnection,
       ): Unit {
         writer.name("totalCount")
         NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount)
@@ -150,7 +150,7 @@ public object HeroDetailsImpl_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: HeroDetailsImpl.HumanData.FriendsConnection.Edge
+          `value`: HeroDetailsImpl.HumanData.FriendsConnection.Edge,
         ): Unit {
           writer.name("node")
           Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
@@ -179,7 +179,7 @@ public object HeroDetailsImpl_ResponseAdapter {
           public override fun toJson(
             writer: JsonWriter,
             customScalarAdapters: CustomScalarAdapters,
-            `value`: HeroDetailsImpl.HumanData.FriendsConnection.Edge.Node
+            `value`: HeroDetailsImpl.HumanData.FriendsConnection.Edge.Node,
           ): Unit {
             writer.name("name")
             StringAdapter.toJson(writer, customScalarAdapters, value.name)
@@ -196,7 +196,7 @@ public object HeroDetailsImpl_ResponseAdapter {
     public fun fromJson(
       reader: JsonReader,
       customScalarAdapters: CustomScalarAdapters,
-      typename: String
+      typename: String,
     ): HeroDetailsImpl.DroidData {
       var __typename: String? = typename
       var name: String? = null
@@ -224,7 +224,7 @@ public object HeroDetailsImpl_ResponseAdapter {
     public fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: HeroDetailsImpl.DroidData
+      `value`: HeroDetailsImpl.DroidData,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -265,7 +265,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: HeroDetailsImpl.DroidData.FriendsConnection
+        `value`: HeroDetailsImpl.DroidData.FriendsConnection,
       ): Unit {
         writer.name("totalCount")
         NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount)
@@ -297,7 +297,7 @@ public object HeroDetailsImpl_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: HeroDetailsImpl.DroidData.FriendsConnection.Edge
+          `value`: HeroDetailsImpl.DroidData.FriendsConnection.Edge,
         ): Unit {
           writer.name("node")
           Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
@@ -326,7 +326,7 @@ public object HeroDetailsImpl_ResponseAdapter {
           public override fun toJson(
             writer: JsonWriter,
             customScalarAdapters: CustomScalarAdapters,
-            `value`: HeroDetailsImpl.DroidData.FriendsConnection.Edge.Node
+            `value`: HeroDetailsImpl.DroidData.FriendsConnection.Edge.Node,
           ): Unit {
             writer.name("name")
             StringAdapter.toJson(writer, customScalarAdapters, value.name)
@@ -342,7 +342,7 @@ public object HeroDetailsImpl_ResponseAdapter {
     public fun fromJson(
       reader: JsonReader,
       customScalarAdapters: CustomScalarAdapters,
-      typename: String
+      typename: String,
     ): HeroDetailsImpl.OtherData {
       var __typename: String? = typename
       var name: String? = null
@@ -367,7 +367,7 @@ public object HeroDetailsImpl_ResponseAdapter {
     public fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: HeroDetailsImpl.OtherData
+      `value`: HeroDetailsImpl.OtherData,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -405,7 +405,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: HeroDetailsImpl.OtherData.FriendsConnection
+        `value`: HeroDetailsImpl.OtherData.FriendsConnection,
       ): Unit {
         writer.name("totalCount")
         NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount)
@@ -437,7 +437,7 @@ public object HeroDetailsImpl_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: HeroDetailsImpl.OtherData.FriendsConnection.Edge
+          `value`: HeroDetailsImpl.OtherData.FriendsConnection.Edge,
         ): Unit {
           writer.name("node")
           Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
@@ -466,7 +466,7 @@ public object HeroDetailsImpl_ResponseAdapter {
           public override fun toJson(
             writer: JsonWriter,
             customScalarAdapters: CustomScalarAdapters,
-            `value`: HeroDetailsImpl.OtherData.FriendsConnection.Edge.Node
+            `value`: HeroDetailsImpl.OtherData.FriendsConnection.Edge.Node,
           ): Unit {
             writer.name("name")
             StringAdapter.toJson(writer, customScalarAdapters, value.name)

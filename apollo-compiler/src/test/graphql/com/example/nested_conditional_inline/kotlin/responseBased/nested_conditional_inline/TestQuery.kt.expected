@@ -22,7 +22,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public data class TestQuery(
-  public val episode: Optional<Episode?> = Optional.Absent
+  public val episode: Optional<Episode?> = Optional.Absent,
 ) : Query<TestQuery.Data> {
   public override fun id(): String = OPERATION_ID
 
@@ -47,7 +47,7 @@ public data class TestQuery(
   .build()
 
   public data class Data(
-    public val hero: Hero?
+    public val hero: Hero?,
   ) : Query.Data {
     public sealed interface Hero {
       public val __typename: String
@@ -73,7 +73,7 @@ public data class TestQuery(
       /**
        * This human's friends, or an empty list if they have none
        */
-      public val friends: List<Friend?>?
+      public val friends: List<Friend?>?,
     ) : Hero {
       public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
@@ -99,7 +99,7 @@ public data class TestQuery(
         /**
          * Height in the preferred unit, default is meters
          */
-        public val height: Double?
+        public val height: Double?,
       ) : Friend
 
       public data class OtherFriend(
@@ -107,7 +107,7 @@ public data class TestQuery(
         /**
          * The name of the character
          */
-        public override val name: String
+        public override val name: String,
       ) : Friend
     }
 
@@ -120,7 +120,7 @@ public data class TestQuery(
       /**
        * This droid's friends, or an empty list if they have none
        */
-      public val friends: List<Friend?>?
+      public val friends: List<Friend?>?,
     ) : Hero {
       public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
@@ -146,7 +146,7 @@ public data class TestQuery(
         /**
          * Height in the preferred unit, default is meters
          */
-        public val height: Double?
+        public val height: Double?,
       ) : Friend
 
       public data class OtherFriend(
@@ -154,7 +154,7 @@ public data class TestQuery(
         /**
          * The name of the character
          */
-        public override val name: String
+        public override val name: String,
       ) : Friend
     }
 
@@ -163,7 +163,7 @@ public data class TestQuery(
       /**
        * The name of the character
        */
-      public override val name: String
+      public override val name: String,
     ) : Hero
   }
 

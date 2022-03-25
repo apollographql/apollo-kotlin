@@ -20,7 +20,7 @@ import kotlin.Unit
 
 public data class TestQuery(
   public val withDetails: Boolean,
-  public val skipHumanDetails: Boolean
+  public val skipHumanDetails: Boolean,
 ) : Query<TestQuery.Data> {
   public override fun id(): String = OPERATION_ID
 
@@ -45,7 +45,7 @@ public data class TestQuery(
   .build()
 
   public data class Data(
-    public val hero: Hero?
+    public val hero: Hero?,
   ) : Query.Data
 
   public data class Hero(
@@ -65,7 +65,7 @@ public data class TestQuery(
     /**
      * Synthetic field for inline fragment on Character
      */
-    public val asCharacter: AsCharacter?
+    public val asCharacter: AsCharacter?,
   )
 
   public data class AsHuman(
@@ -81,7 +81,7 @@ public data class TestQuery(
     /**
      * The home planet of the human, or null if unknown
      */
-    public val homePlanet: String?
+    public val homePlanet: String?,
   )
 
   public data class AsDroid(
@@ -97,7 +97,7 @@ public data class TestQuery(
     /**
      * This droid's primary function
      */
-    public val primaryFunction: String?
+    public val primaryFunction: String?,
   )
 
   public data class AsCharacter(
@@ -109,7 +109,7 @@ public data class TestQuery(
     /**
      * The name of the character
      */
-    public val name: String
+    public val name: String,
   )
 
   public companion object {

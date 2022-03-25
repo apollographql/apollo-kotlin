@@ -48,7 +48,7 @@ public object HumanDetailsImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.named_fragment_delegate.fragment.HumanDetails
+      `value`: com.example.named_fragment_delegate.fragment.HumanDetails,
     ): Unit {
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
@@ -84,7 +84,7 @@ public object HumanDetailsImpl_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection
+        `value`: com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection,
       ): Unit {
         writer.name("edges")
         Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
@@ -115,7 +115,7 @@ public object HumanDetailsImpl_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge
+          `value`: com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge,
         ): Unit {
           writer.name("node")
           Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
@@ -146,7 +146,7 @@ public object HumanDetailsImpl_ResponseAdapter {
           public override fun toJson(
             writer: JsonWriter,
             customScalarAdapters: CustomScalarAdapters,
-            `value`: com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge.Node
+            `value`: com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge.Node,
           ): Unit {
             writer.name("name")
             StringAdapter.toJson(writer, customScalarAdapters, value.name)

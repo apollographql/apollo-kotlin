@@ -54,12 +54,12 @@ public class TestQuery() : Query<TestQuery.Data> {
     /**
      * Synthetic field for inline fragment on Query
      */
-    public val onQuery: OnQuery
+    public val onQuery: OnQuery,
   ) : Query.Data {
     public data class OnQuery(
       public val __typename: String,
       public val hero: Hero?,
-      public val droid: Droid?
+      public val droid: Droid?,
     ) {
       public data class Hero(
         public val __typename: String,
@@ -74,7 +74,7 @@ public class TestQuery() : Query<TestQuery.Data> {
         /**
          * Synthetic field for inline fragment on Human
          */
-        public val onHuman: OnHuman?
+        public val onHuman: OnHuman?,
       ) {
         public fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
 
@@ -82,7 +82,7 @@ public class TestQuery() : Query<TestQuery.Data> {
           /**
            * Height in the preferred unit, default is meters
            */
-          public val height: Double?
+          public val height: Double?,
         )
       }
 
@@ -91,7 +91,7 @@ public class TestQuery() : Query<TestQuery.Data> {
         /**
          * Synthetic field for inline fragment on Droid
          */
-        public val onDroid: OnDroid
+        public val onDroid: OnDroid,
       ) {
         public data class OnDroid(
           /**
@@ -101,7 +101,7 @@ public class TestQuery() : Query<TestQuery.Data> {
           /**
            * This droid's primary function
            */
-          public val primaryFunction: String?
+          public val primaryFunction: String?,
         )
       }
     }

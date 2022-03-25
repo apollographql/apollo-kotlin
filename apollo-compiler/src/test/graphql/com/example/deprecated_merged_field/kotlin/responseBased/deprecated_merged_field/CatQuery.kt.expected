@@ -51,7 +51,7 @@ public class CatQuery() : Query<CatQuery.Data> {
   .build()
 
   public data class Data(
-    public val cat: Cat?
+    public val cat: Cat?,
   ) : Query.Data {
     public sealed interface Cat {
       public val __typename: String
@@ -79,12 +79,12 @@ public class CatQuery() : Query<CatQuery.Data> {
     }
 
     public data class OtherCat(
-      public override val __typename: String
+      public override val __typename: String,
     ) : Cat
 
     public data class OtherAnimalCat(
       public override val __typename: String,
-      public override val name: String
+      public override val name: String,
     ) : AnimalCat, CatAnimalFragment
   }
 

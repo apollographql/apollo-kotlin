@@ -43,7 +43,7 @@ public object HumanDetailsImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.fragments_with_type_condition.fragment.HumanDetails
+      `value`: com.example.fragments_with_type_condition.fragment.HumanDetails,
     ): Unit {
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)

@@ -54,7 +54,7 @@ internal class TestQuery() : Query<TestQuery.Data> {
   .build()
 
   public data class Data(
-    public val hero: Hero?
+    public val hero: Hero?,
   ) : Query.Data {
     public sealed interface Hero : HeroDetails {
       public override val __typename: String
@@ -73,11 +73,11 @@ internal class TestQuery() : Query<TestQuery.Data> {
       /**
        * What this human calls themselves
        */
-      public override val name: String
+      public override val name: String,
     ) : Hero, HumanHeroDetails, HumanDetails
 
     public data class OtherHero(
-      public override val __typename: String
+      public override val __typename: String,
     ) : Hero, HeroDetails
   }
 

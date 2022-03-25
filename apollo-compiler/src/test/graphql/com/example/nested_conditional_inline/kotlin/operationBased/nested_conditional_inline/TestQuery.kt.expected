@@ -22,7 +22,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public data class TestQuery(
-  public val episode: Optional<Episode?> = Optional.Absent
+  public val episode: Optional<Episode?> = Optional.Absent,
 ) : Query<TestQuery.Data> {
   public override fun id(): String = OPERATION_ID
 
@@ -47,7 +47,7 @@ public data class TestQuery(
   .build()
 
   public data class Data(
-    public val hero: Hero?
+    public val hero: Hero?,
   ) : Query.Data {
     public data class Hero(
       public val __typename: String,
@@ -62,13 +62,13 @@ public data class TestQuery(
       /**
        * Synthetic field for inline fragment on Droid
        */
-      public val onDroid: OnDroid?
+      public val onDroid: OnDroid?,
     ) {
       public data class OnHuman(
         /**
          * This human's friends, or an empty list if they have none
          */
-        public val friends: List<Friend?>?
+        public val friends: List<Friend?>?,
       ) {
         public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
@@ -81,13 +81,13 @@ public data class TestQuery(
           /**
            * Synthetic field for inline fragment on Human
            */
-          public val onHuman: OnHuman?
+          public val onHuman: OnHuman?,
         ) {
           public data class OnHuman(
             /**
              * Height in the preferred unit, default is meters
              */
-            public val height: Double?
+            public val height: Double?,
           )
         }
       }
@@ -96,7 +96,7 @@ public data class TestQuery(
         /**
          * This droid's friends, or an empty list if they have none
          */
-        public val friends: List<Friend?>?
+        public val friends: List<Friend?>?,
       ) {
         public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
@@ -109,13 +109,13 @@ public data class TestQuery(
           /**
            * Synthetic field for inline fragment on Human
            */
-          public val onHuman: OnHuman?
+          public val onHuman: OnHuman?,
         ) {
           public data class OnHuman(
             /**
              * Height in the preferred unit, default is meters
              */
-            public val height: Double?
+            public val height: Double?,
           )
         }
       }

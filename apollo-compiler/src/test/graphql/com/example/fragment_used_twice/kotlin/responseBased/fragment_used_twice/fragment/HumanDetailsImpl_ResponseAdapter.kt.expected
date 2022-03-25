@@ -33,7 +33,7 @@ public object HumanDetailsImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: HumanDetailsImpl.Data
+      `value`: HumanDetailsImpl.Data,
     ): Unit {
       when(value) {
         is HumanDetailsImpl.CharacterData -> CharacterData.toJson(writer, customScalarAdapters,
@@ -49,7 +49,7 @@ public object HumanDetailsImpl_ResponseAdapter {
     public fun fromJson(
       reader: JsonReader,
       customScalarAdapters: CustomScalarAdapters,
-      typename: String
+      typename: String,
     ): HumanDetailsImpl.CharacterData {
       var __typename: String? = typename
       var name: String? = null
@@ -74,7 +74,7 @@ public object HumanDetailsImpl_ResponseAdapter {
     public fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: HumanDetailsImpl.CharacterData
+      `value`: HumanDetailsImpl.CharacterData,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -93,7 +93,7 @@ public object HumanDetailsImpl_ResponseAdapter {
     public fun fromJson(
       reader: JsonReader,
       customScalarAdapters: CustomScalarAdapters,
-      typename: String
+      typename: String,
     ): HumanDetailsImpl.OtherData {
       var __typename: String? = typename
       var name: String? = null
@@ -115,7 +115,7 @@ public object HumanDetailsImpl_ResponseAdapter {
     public fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: HumanDetailsImpl.OtherData
+      `value`: HumanDetailsImpl.OtherData,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

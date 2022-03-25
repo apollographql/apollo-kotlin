@@ -21,7 +21,7 @@ import kotlin.Unit
 
 public data class TestQuery(
   public val includeName: Boolean,
-  public val skipFriends: Boolean
+  public val skipFriends: Boolean,
 ) : Query<TestQuery.Data> {
   public override fun id(): String = OPERATION_ID
 
@@ -46,7 +46,7 @@ public data class TestQuery(
   .build()
 
   public data class Data(
-    public val hero: Hero?
+    public val hero: Hero?,
   ) : Query.Data {
     public data class Hero(
       /**
@@ -56,13 +56,13 @@ public data class TestQuery(
       /**
        * The friends of the character exposed as a connection with edges
        */
-      public val friendsConnection: FriendsConnection?
+      public val friendsConnection: FriendsConnection?,
     ) {
       public data class FriendsConnection(
         /**
          * The total number of friends
          */
-        public val totalCount: Int?
+        public val totalCount: Int?,
       )
     }
   }

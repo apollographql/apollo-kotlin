@@ -37,7 +37,7 @@ public object DroidDetails2Impl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: DroidDetails2Impl.Data
+      `value`: DroidDetails2Impl.Data,
     ): Unit {
       writer.name("primaryFunction")
       NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)

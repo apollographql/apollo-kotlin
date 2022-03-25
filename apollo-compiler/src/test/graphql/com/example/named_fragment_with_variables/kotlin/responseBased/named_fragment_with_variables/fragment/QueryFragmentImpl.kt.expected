@@ -23,7 +23,7 @@ import kotlin.collections.List
 public data class QueryFragmentImpl(
   public val organizationId: String,
   public val query: UserQuery,
-  public val size: Int
+  public val size: Int,
 ) : Fragment<QueryFragmentImpl.Data> {
   public override fun serializeVariables(writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters): Unit {
@@ -42,17 +42,17 @@ public data class QueryFragmentImpl(
   .build()
 
   public data class Data(
-    public override val organization: Organization?
+    public override val organization: Organization?,
   ) : QueryFragment, Fragment.Data {
     public data class Organization(
       public override val id: String,
-      public override val user: List<User>
+      public override val user: List<User>,
     ) : QueryFragment.Organization {
       public data class User(
         public override val __typename: String,
         public override val firstName: String,
         public override val lastName: String,
-        public override val avatar: String
+        public override val avatar: String,
       ) : UserFragment, QueryFragment.Organization.User {
         public companion object {
           public fun User.userFragment() = this as? UserFragment

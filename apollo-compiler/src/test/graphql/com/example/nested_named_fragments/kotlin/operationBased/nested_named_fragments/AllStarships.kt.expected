@@ -50,13 +50,13 @@ public class AllStarships() : Query<AllStarships.Data> {
   .build()
 
   public data class Data(
-    public val allStarships: AllStarships?
+    public val allStarships: AllStarships?,
   ) : Query.Data {
     public data class AllStarships(
       /**
        * A list of edges.
        */
-      public val edges: List<Edge?>?
+      public val edges: List<Edge?>?,
     ) {
       public fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
@@ -64,14 +64,14 @@ public class AllStarships() : Query<AllStarships.Data> {
         /**
          * The item at the end of the edge
          */
-        public val node: Node?
+        public val node: Node?,
       ) {
         public data class Node(
           public val __typename: String,
           /**
            * Synthetic field for 'starshipFragment'
            */
-          public val starshipFragment: StarshipFragment
+          public val starshipFragment: StarshipFragment,
         )
       }
     }

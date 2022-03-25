@@ -17,12 +17,12 @@ public data class HeroDetails(
   /**
    * Synthetic field for grouping fragments
    */
-  public val fragments: Fragments
+  public val fragments: Fragments,
 ) : Fragment.Data {
   public data class Fragments(
     /**
      * Synthetic field for 'CharacterDetails'
      */
-    public val characterDetails: CharacterDetails
+    public val characterDetails: CharacterDetails,
   )
 }

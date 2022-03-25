@@ -50,7 +50,7 @@ public object HeroDetailsImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails
+      `value`: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails,
     ): Unit {
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
@@ -106,7 +106,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend
+        `value`: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -150,7 +150,7 @@ public object HeroDetailsImpl_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnHuman
+          `value`: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnHuman,
         ): Unit {
           writer.name("height")
           NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
@@ -182,7 +182,7 @@ public object HeroDetailsImpl_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnDroid
+          `value`: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnDroid,
         ): Unit {
           writer.name("primaryFunction")
           NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)

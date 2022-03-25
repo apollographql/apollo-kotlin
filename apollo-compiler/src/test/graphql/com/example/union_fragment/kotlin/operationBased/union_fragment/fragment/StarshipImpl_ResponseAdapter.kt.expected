@@ -37,7 +37,7 @@ public object StarshipImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.union_fragment.fragment.Starship
+      `value`: com.example.union_fragment.fragment.Starship,
     ): Unit {
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)

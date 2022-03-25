@@ -41,7 +41,7 @@ public object AnimalQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: AnimalQuery.Data
+      `value`: AnimalQuery.Data,
     ): Unit {
       writer.name("animal")
       Animal.obj().nullable().toJson(writer, customScalarAdapters, value.animal)
@@ -64,7 +64,7 @@ public object AnimalQuery_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: AnimalQuery.Data.Animal
+        `value`: AnimalQuery.Data.Animal,
       ): Unit {
         when(value) {
           is AnimalQuery.Data.CatAnimal -> CatAnimal.toJson(writer, customScalarAdapters, value)
@@ -80,7 +80,7 @@ public object AnimalQuery_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): AnimalQuery.Data.CatAnimal {
         var __typename: String? = typename
         var meow: String? = null
@@ -102,7 +102,7 @@ public object AnimalQuery_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: AnimalQuery.Data.CatAnimal
+        `value`: AnimalQuery.Data.CatAnimal,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -118,7 +118,7 @@ public object AnimalQuery_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): AnimalQuery.Data.DogAnimal {
         var __typename: String? = typename
         var woof: String? = null
@@ -140,7 +140,7 @@ public object AnimalQuery_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: AnimalQuery.Data.DogAnimal
+        `value`: AnimalQuery.Data.DogAnimal,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -156,7 +156,7 @@ public object AnimalQuery_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): AnimalQuery.Data.OtherAnimal {
         var __typename: String? = typename
 
@@ -175,7 +175,7 @@ public object AnimalQuery_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: AnimalQuery.Data.OtherAnimal
+        `value`: AnimalQuery.Data.OtherAnimal,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

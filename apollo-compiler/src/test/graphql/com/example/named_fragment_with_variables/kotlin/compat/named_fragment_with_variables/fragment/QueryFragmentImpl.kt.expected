@@ -22,7 +22,7 @@ import kotlin.Unit
 public data class QueryFragmentImpl(
   public val organizationId: String,
   public val query: UserQuery,
-  public val size: Int
+  public val size: Int,
 ) : Fragment<QueryFragment> {
   public override fun serializeVariables(writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters): Unit {

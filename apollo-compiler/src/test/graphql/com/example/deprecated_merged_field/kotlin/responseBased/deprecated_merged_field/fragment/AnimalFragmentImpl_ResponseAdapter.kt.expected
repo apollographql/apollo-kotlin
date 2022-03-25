@@ -33,7 +33,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: AnimalFragmentImpl.Data
+      `value`: AnimalFragmentImpl.Data,
     ): Unit {
       when(value) {
         is AnimalFragmentImpl.CatData -> CatData.toJson(writer, customScalarAdapters, value)
@@ -49,7 +49,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
     public fun fromJson(
       reader: JsonReader,
       customScalarAdapters: CustomScalarAdapters,
-      typename: String
+      typename: String,
     ): AnimalFragmentImpl.CatData {
       var __typename: String? = typename
       var name: String? = null
@@ -71,7 +71,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
     public fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: AnimalFragmentImpl.CatData
+      `value`: AnimalFragmentImpl.CatData,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -87,7 +87,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
     public fun fromJson(
       reader: JsonReader,
       customScalarAdapters: CustomScalarAdapters,
-      typename: String
+      typename: String,
     ): AnimalFragmentImpl.DogData {
       var __typename: String? = typename
       var name: String? = null
@@ -109,7 +109,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
     public fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: AnimalFragmentImpl.DogData
+      `value`: AnimalFragmentImpl.DogData,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -125,7 +125,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
     public fun fromJson(
       reader: JsonReader,
       customScalarAdapters: CustomScalarAdapters,
-      typename: String
+      typename: String,
     ): AnimalFragmentImpl.OtherData {
       var __typename: String? = typename
 
@@ -144,7 +144,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
     public fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: AnimalFragmentImpl.OtherData
+      `value`: AnimalFragmentImpl.OtherData,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

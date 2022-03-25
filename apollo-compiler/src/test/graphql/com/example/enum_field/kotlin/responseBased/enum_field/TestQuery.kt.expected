@@ -48,7 +48,7 @@ public class TestQuery() : Query<TestQuery.Data> {
   .build()
 
   public data class Data(
-    public val gravity: Gravity?
+    public val gravity: Gravity?,
   ) : Query.Data
 
   public companion object {

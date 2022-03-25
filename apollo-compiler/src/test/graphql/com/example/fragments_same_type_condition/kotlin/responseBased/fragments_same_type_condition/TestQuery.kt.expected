@@ -49,7 +49,7 @@ public class TestQuery() : Query<TestQuery.Data> {
   .build()
 
   public data class Data(
-    public val hero: Hero?
+    public val hero: Hero?,
   ) : Query.Data {
     public sealed interface Hero {
       public val __typename: String
@@ -72,11 +72,11 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * This droid's primary function
        */
-      public override val primaryFunction: String?
+      public override val primaryFunction: String?,
     ) : Hero, DroidDetails1, DroidDetails2
 
     public data class OtherHero(
-      public override val __typename: String
+      public override val __typename: String,
     ) : Hero
   }
 

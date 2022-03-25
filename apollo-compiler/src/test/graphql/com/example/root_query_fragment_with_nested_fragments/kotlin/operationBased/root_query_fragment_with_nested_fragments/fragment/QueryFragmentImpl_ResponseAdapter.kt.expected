@@ -50,7 +50,7 @@ public object QueryFragmentImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment
+      `value`: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -93,7 +93,7 @@ public object QueryFragmentImpl_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero
+        `value`: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -132,7 +132,7 @@ public object QueryFragmentImpl_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid
+        `value`: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -171,7 +171,7 @@ public object QueryFragmentImpl_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human
+        `value`: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -208,7 +208,7 @@ public object QueryFragmentImpl_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human.OnHuman
+          `value`: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human.OnHuman,
         ): Unit {
           writer.name("name")
           StringAdapter.toJson(writer, customScalarAdapters, value.name)

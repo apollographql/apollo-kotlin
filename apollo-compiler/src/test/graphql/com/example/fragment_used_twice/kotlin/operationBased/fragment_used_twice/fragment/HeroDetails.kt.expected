@@ -17,5 +17,5 @@ public data class HeroDetails(
   /**
    * Synthetic field for 'CharacterDetails'
    */
-  public val characterDetails: CharacterDetails
+  public val characterDetails: CharacterDetails,
 ) : Fragment.Data

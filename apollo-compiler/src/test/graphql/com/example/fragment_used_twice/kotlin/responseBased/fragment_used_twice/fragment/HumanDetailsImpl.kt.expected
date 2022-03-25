@@ -65,7 +65,7 @@ public class HumanDetailsImpl() : Fragment<HumanDetailsImpl.Data> {
     /**
      * The date character was born.
      */
-    public override val birthDate: Any
+    public override val birthDate: Any,
   ) : Data, CharacterDetails, CharacterHumanDetails
 
   public data class OtherData(
@@ -73,6 +73,6 @@ public class HumanDetailsImpl() : Fragment<HumanDetailsImpl.Data> {
     /**
      * What this human calls themselves
      */
-    public override val name: String
+    public override val name: String,
   ) : Data, HumanDetails
 }

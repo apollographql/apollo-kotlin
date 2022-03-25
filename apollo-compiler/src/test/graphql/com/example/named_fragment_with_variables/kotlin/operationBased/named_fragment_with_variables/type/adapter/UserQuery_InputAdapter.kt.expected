@@ -24,7 +24,7 @@ public object UserQuery_InputAdapter : Adapter<UserQuery> {
   public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    `value`: UserQuery
+    `value`: UserQuery,
   ): Unit {
     writer.name("name")
     StringAdapter.toJson(writer, customScalarAdapters, value.name)

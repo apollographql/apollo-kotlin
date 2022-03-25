@@ -48,7 +48,7 @@ public class TestQuery() : Query<TestQuery.Data> {
   .build()
 
   public data class Data(
-    public val search: List<Search?>?
+    public val search: List<Search?>?,
   ) : Query.Data {
     public fun searchFilterNotNull(): List<Search>? = search?.filterNotNull()
 
@@ -57,7 +57,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * Synthetic field for inline fragment on Character
        */
-      public val onCharacter: OnCharacter?
+      public val onCharacter: OnCharacter?,
     ) {
       public data class OnCharacter(
         public val __typename: String,
@@ -72,20 +72,20 @@ public class TestQuery() : Query<TestQuery.Data> {
         /**
          * Synthetic field for inline fragment on Droid
          */
-        public val onDroid: OnDroid?
+        public val onDroid: OnDroid?,
       ) {
         public data class OnHuman(
           /**
            * The home planet of the human, or null if unknown
            */
-          public val homePlanet: String?
+          public val homePlanet: String?,
         )
 
         public data class OnDroid(
           /**
            * This droid's primary function
            */
-          public val primaryFunction: String?
+          public val primaryFunction: String?,
         )
       }
     }

@@ -25,7 +25,7 @@ public object CreateReviewForEpisodeMutation_VariablesAdapter :
   public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    `value`: CreateReviewForEpisodeMutation
+    `value`: CreateReviewForEpisodeMutation,
   ): Unit {
     writer.name("ep")
     Episode_ResponseAdapter.toJson(writer, customScalarAdapters, value.ep)

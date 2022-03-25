@@ -47,7 +47,7 @@ public class TestQuery() : Query<TestQuery.Data> {
   .build()
 
   public data class Data(
-    public val iface1: Iface1?
+    public val iface1: Iface1?,
   ) : Query.Data
 
   public data class Iface1(
@@ -56,7 +56,7 @@ public class TestQuery() : Query<TestQuery.Data> {
     /**
      * Synthetic field for inline fragment on Impl1
      */
-    public val asImpl1: AsImpl1?
+    public val asImpl1: AsImpl1?,
   )
 
   public data class Iface21(
@@ -65,18 +65,18 @@ public class TestQuery() : Query<TestQuery.Data> {
     /**
      * Synthetic field for inline fragment on Impl2
      */
-    public val asImpl21: AsImpl21?
+    public val asImpl21: AsImpl21?,
   )
 
   public data class AsImpl21(
     public val __typename: String,
     public val scalar1: String?,
-    public val scalar2: String?
+    public val scalar2: String?,
   )
 
   public data class AsImpl1(
     public val __typename: String,
-    public val iface2: Iface2?
+    public val iface2: Iface2?,
   )
 
   public data class Iface2(
@@ -86,7 +86,7 @@ public class TestQuery() : Query<TestQuery.Data> {
     /**
      * Synthetic field for inline fragment on Impl2
      */
-    public val asImpl2: AsImpl2?
+    public val asImpl2: AsImpl2?,
   )
 
   public data class AsImpl2(
@@ -94,7 +94,7 @@ public class TestQuery() : Query<TestQuery.Data> {
     public val scalar1: String?,
     public val scalar3: String?,
     public val scalar2: String?,
-    public val scalar4: String?
+    public val scalar4: String?,
   )
 
   public companion object {

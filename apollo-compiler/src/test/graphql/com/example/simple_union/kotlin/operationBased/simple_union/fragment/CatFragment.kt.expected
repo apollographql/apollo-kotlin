@@ -9,5 +9,5 @@ import com.apollographql.apollo3.api.Fragment
 import kotlin.String
 
 public data class CatFragment(
-  public val meow: String
+  public val meow: String,
 ) : Fragment.Data

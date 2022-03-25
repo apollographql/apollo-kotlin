@@ -45,7 +45,7 @@ public object HumanDetailsImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.fragment_used_twice.fragment.HumanDetails
+      `value`: com.example.fragment_used_twice.fragment.HumanDetails,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -75,7 +75,7 @@ public object HumanDetailsImpl_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: com.example.fragment_used_twice.fragment.HumanDetails.Fragments
+        `value`: com.example.fragment_used_twice.fragment.HumanDetails.Fragments,
       ): Unit {
         com.example.fragment_used_twice.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.toJson(writer,
             customScalarAdapters, value.characterDetails)

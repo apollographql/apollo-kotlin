@@ -10,7 +10,7 @@ import kotlin.Array
 import kotlin.String
 
 public enum class Race(
-  public val rawValue: String
+  public val rawValue: String,
 ) {
   WOOKIE("WOOKIE"),
   GUMGAN("GUMGAN"),

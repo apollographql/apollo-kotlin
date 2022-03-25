@@ -103,5 +103,5 @@ public data class ReviewInput(
   /**
    * for test purpose only
    */
-  public val CapitalizedInt: Optional<Int?> = Optional.Absent
+  public val CapitalizedInt: Optional<Int?> = Optional.Absent,
 )

@@ -17,5 +17,5 @@ public data class CharacterDetails(
   /**
    * The date character was born.
    */
-  public val birthDate: Any
+  public val birthDate: Any,
 ) : Fragment.Data

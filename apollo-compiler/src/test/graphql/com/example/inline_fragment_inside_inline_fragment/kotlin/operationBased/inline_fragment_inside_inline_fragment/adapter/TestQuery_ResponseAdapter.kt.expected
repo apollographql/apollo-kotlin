@@ -45,7 +45,7 @@ public object TestQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: TestQuery.Data
+      `value`: TestQuery.Data,
     ): Unit {
       writer.name("search")
       Search.obj(true).nullable().list().nullable().toJson(writer, customScalarAdapters,
@@ -86,7 +86,7 @@ public object TestQuery_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.Search
+        `value`: TestQuery.Data.Search,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -142,7 +142,7 @@ public object TestQuery_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: TestQuery.Data.Search.OnCharacter
+          `value`: TestQuery.Data.Search.OnCharacter,
         ): Unit {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -184,7 +184,7 @@ public object TestQuery_ResponseAdapter {
           public override fun toJson(
             writer: JsonWriter,
             customScalarAdapters: CustomScalarAdapters,
-            `value`: TestQuery.Data.Search.OnCharacter.OnHuman
+            `value`: TestQuery.Data.Search.OnCharacter.OnHuman,
           ): Unit {
             writer.name("homePlanet")
             NullableStringAdapter.toJson(writer, customScalarAdapters, value.homePlanet)
@@ -214,7 +214,7 @@ public object TestQuery_ResponseAdapter {
           public override fun toJson(
             writer: JsonWriter,
             customScalarAdapters: CustomScalarAdapters,
-            `value`: TestQuery.Data.Search.OnCharacter.OnDroid
+            `value`: TestQuery.Data.Search.OnCharacter.OnDroid,
           ): Unit {
             writer.name("primaryFunction")
             NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)

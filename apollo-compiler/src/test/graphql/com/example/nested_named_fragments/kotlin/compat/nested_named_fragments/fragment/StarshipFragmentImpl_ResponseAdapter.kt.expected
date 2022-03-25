@@ -49,7 +49,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.nested_named_fragments.fragment.StarshipFragment
+      `value`: com.example.nested_named_fragments.fragment.StarshipFragment,
     ): Unit {
       writer.name("id")
       StringAdapter.toJson(writer, customScalarAdapters, value.id)
@@ -86,7 +86,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection
+      `value`: com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection,
     ): Unit {
       writer.name("edges")
       Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
@@ -115,7 +115,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.nested_named_fragments.fragment.StarshipFragment.Edge
+      `value`: com.example.nested_named_fragments.fragment.StarshipFragment.Edge,
     ): Unit {
       writer.name("node")
       Node.obj(true).nullable().toJson(writer, customScalarAdapters, value.node)
@@ -149,7 +149,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.nested_named_fragments.fragment.StarshipFragment.Node
+      `value`: com.example.nested_named_fragments.fragment.StarshipFragment.Node,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -176,7 +176,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: com.example.nested_named_fragments.fragment.StarshipFragment.Node.Fragments
+        `value`: com.example.nested_named_fragments.fragment.StarshipFragment.Node.Fragments,
       ): Unit {
         com.example.nested_named_fragments.fragment.PilotFragmentImpl_ResponseAdapter.PilotFragment.toJson(writer,
             customScalarAdapters, value.pilotFragment)

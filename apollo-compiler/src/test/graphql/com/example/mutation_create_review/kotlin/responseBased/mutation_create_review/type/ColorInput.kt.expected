@@ -32,5 +32,5 @@ internal data class ColorInput(
   /**
    * Circle ref to review input
    */
-  public val reviewRefInput: Optional<ReviewRefInput?> = Optional.Absent
+  public val reviewRefInput: Optional<ReviewRefInput?> = Optional.Absent,
 )

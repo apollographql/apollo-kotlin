@@ -40,7 +40,7 @@ public object TestQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: TestQuery.Data
+      `value`: TestQuery.Data,
     ): Unit {
       writer.name("a")
       A.obj(true).nullable().toJson(writer, customScalarAdapters, value.a)
@@ -74,7 +74,7 @@ public object TestQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: TestQuery.A
+      `value`: TestQuery.A,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -100,7 +100,7 @@ public object TestQuery_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.A.Fragments
+        `value`: TestQuery.A.Fragments,
       ): Unit {
         com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.toJson(writer,
             customScalarAdapters, value.aFragment)

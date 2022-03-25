@@ -23,7 +23,7 @@ public data class
     TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName(
   public
       val episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName:
-      Optional<Episode?> = Optional.Absent
+      Optional<Episode?> = Optional.Absent,
 ) :
     Query<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data>
     {
@@ -51,7 +51,7 @@ public data class
   .build()
 
   public data class Data(
-    public val heroAVeryAVeryAVeryAVeryAVeryAVeryAV: HeroAVeryAVeryAVeryAVeryAVeryAVeryAV?
+    public val heroAVeryAVeryAVeryAVeryAVeryAVeryAV: HeroAVeryAVeryAVeryAVeryAVeryAVeryAV?,
   ) : Query.Data {
     public data class HeroAVeryAVeryAVeryAVeryAVeryAVeryAV(
       /**
@@ -59,7 +59,7 @@ public data class
        */
       public
           val nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName:
-          String
+          String,
     )
   }
 

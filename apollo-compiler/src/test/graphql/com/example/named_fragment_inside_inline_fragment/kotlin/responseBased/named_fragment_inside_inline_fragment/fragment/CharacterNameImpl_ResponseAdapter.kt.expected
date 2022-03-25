@@ -37,7 +37,7 @@ public object CharacterNameImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: CharacterNameImpl.Data
+      `value`: CharacterNameImpl.Data,
     ): Unit {
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)

@@ -49,7 +49,7 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public data class Data(
     public val reviews: List<Review?>?,
-    public val testNullableArguments: Int
+    public val testNullableArguments: Int,
   ) : Query.Data {
     public fun reviewsFilterNotNull(): List<Review>? = reviews?.filterNotNull()
 
@@ -61,7 +61,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * Comment about the movie
        */
-      public val commentary: String?
+      public val commentary: String?,
     )
   }
 

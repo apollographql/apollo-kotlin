@@ -25,7 +25,7 @@ import kotlin.collections.List
 public data class GetUser(
   public val organizationId: String,
   public val query: UserQuery,
-  public val size: Int
+  public val size: Int,
 ) : Query<GetUser.Data> {
   public override fun id(): String = OPERATION_ID
 
@@ -51,17 +51,17 @@ public data class GetUser(
 
   public data class Data(
     public val __typename: String,
-    public override val organization: Organization?
+    public override val organization: Organization?,
   ) : QueryFragment, Query.Data {
     public data class Organization(
       public override val id: String,
-      public override val user: List<User>
+      public override val user: List<User>,
     ) : QueryFragment.Organization {
       public data class User(
         public override val __typename: String,
         public override val firstName: String,
         public override val lastName: String,
-        public override val avatar: String
+        public override val avatar: String,
       ) : UserFragment, QueryFragment.Organization.User {
         public companion object {
           public fun User.userFragment() = this as? UserFragment

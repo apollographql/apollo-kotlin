@@ -18,7 +18,7 @@ import kotlin.Int
 import kotlin.Unit
 
 public data class UserFragmentImpl(
-  public val size: Int
+  public val size: Int,
 ) : Fragment<UserFragment> {
   public override fun serializeVariables(writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters): Unit {

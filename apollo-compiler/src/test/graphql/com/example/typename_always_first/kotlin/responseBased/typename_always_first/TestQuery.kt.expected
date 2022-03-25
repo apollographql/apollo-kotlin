@@ -49,7 +49,7 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public data class Data(
     public val hero: Hero?,
-    public val __typename: String
+    public val __typename: String,
   ) : Query.Data {
     public sealed interface Hero {
       public val __typename: String
@@ -66,7 +66,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * Height in the preferred unit, default is meters
        */
-      public val height: Double?
+      public val height: Double?,
     ) : Hero
 
     public data class DroidHero(
@@ -78,11 +78,11 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * This droid's primary function
        */
-      public val primaryFunction: String?
+      public val primaryFunction: String?,
     ) : Hero
 
     public data class OtherHero(
-      public override val __typename: String
+      public override val __typename: String,
     ) : Hero
   }
 

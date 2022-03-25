@@ -22,7 +22,7 @@ import kotlin.Unit
 
 public data class TestQuery(
   public val withDetails: Boolean,
-  public val skipHumanDetails: Boolean
+  public val skipHumanDetails: Boolean,
 ) : Query<TestQuery.Data> {
   public override fun id(): String = OPERATION_ID
 
@@ -47,7 +47,7 @@ public data class TestQuery(
   .build()
 
   public data class Data(
-    public val hero: Hero?
+    public val hero: Hero?,
   ) : Query.Data
 
   public data class Hero(
@@ -59,7 +59,7 @@ public data class TestQuery(
     /**
      * Synthetic field for grouping fragments
      */
-    public val fragments: Fragments
+    public val fragments: Fragments,
   ) {
     public data class Fragments(
       /**
@@ -69,7 +69,7 @@ public data class TestQuery(
       /**
        * Synthetic field for 'HumanDetails'
        */
-      public val humanDetails: HumanDetails?
+      public val humanDetails: HumanDetails?,
     )
   }
 

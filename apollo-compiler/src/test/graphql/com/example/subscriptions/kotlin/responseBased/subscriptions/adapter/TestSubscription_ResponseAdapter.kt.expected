@@ -42,7 +42,7 @@ public object TestSubscription_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: TestSubscription.Data
+      `value`: TestSubscription.Data,
     ): Unit {
       writer.name("commentAdded")
       CommentAdded.obj().nullable().toJson(writer, customScalarAdapters, value.commentAdded)
@@ -73,7 +73,7 @@ public object TestSubscription_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestSubscription.Data.CommentAdded
+        `value`: TestSubscription.Data.CommentAdded,
       ): Unit {
         writer.name("id")
         IntAdapter.toJson(writer, customScalarAdapters, value.id)

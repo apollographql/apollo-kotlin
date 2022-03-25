@@ -49,7 +49,7 @@ public class AnimalQuery() : Query<AnimalQuery.Data> {
   .build()
 
   public data class Data(
-    public val animal: Animal?
+    public val animal: Animal?,
   ) : Query.Data
 
   public data class Animal(
@@ -57,7 +57,7 @@ public class AnimalQuery() : Query<AnimalQuery.Data> {
     /**
      * Synthetic field for grouping fragments
      */
-    public val fragments: Fragments
+    public val fragments: Fragments,
   ) {
     public data class Fragments(
       /**
@@ -67,7 +67,7 @@ public class AnimalQuery() : Query<AnimalQuery.Data> {
       /**
        * Synthetic field for 'DogFragment'
        */
-      public val dogFragment: DogFragment?
+      public val dogFragment: DogFragment?,
     )
   }
 

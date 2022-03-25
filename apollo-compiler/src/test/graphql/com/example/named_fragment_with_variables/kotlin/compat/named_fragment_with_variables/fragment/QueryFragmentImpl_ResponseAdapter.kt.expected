@@ -41,7 +41,7 @@ public object QueryFragmentImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.named_fragment_with_variables.fragment.QueryFragment
+      `value`: com.example.named_fragment_with_variables.fragment.QueryFragment,
     ): Unit {
       writer.name("organization")
       Organization.obj().nullable().toJson(writer, customScalarAdapters, value.organization)
@@ -74,7 +74,7 @@ public object QueryFragmentImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.named_fragment_with_variables.fragment.QueryFragment.Organization
+      `value`: com.example.named_fragment_with_variables.fragment.QueryFragment.Organization,
     ): Unit {
       writer.name("id")
       StringAdapter.toJson(writer, customScalarAdapters, value.id)
@@ -112,7 +112,7 @@ public object QueryFragmentImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.named_fragment_with_variables.fragment.QueryFragment.User
+      `value`: com.example.named_fragment_with_variables.fragment.QueryFragment.User,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -139,7 +139,7 @@ public object QueryFragmentImpl_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: com.example.named_fragment_with_variables.fragment.QueryFragment.User.Fragments
+        `value`: com.example.named_fragment_with_variables.fragment.QueryFragment.User.Fragments,
       ): Unit {
         com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.toJson(writer,
             customScalarAdapters, value.userFragment)

@@ -12,5 +12,5 @@ public data class CharacterName(
   /**
    * The name of the character
    */
-  public val name: String
+  public val name: String,
 ) : Fragment.Data

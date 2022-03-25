@@ -23,7 +23,7 @@ internal object CreateReviewForEpisode_VariablesAdapter : Adapter<CreateReviewFo
   public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    `value`: CreateReviewForEpisode
+    `value`: CreateReviewForEpisode,
   ): Unit {
     writer.name("ep")
     Episode_ResponseAdapter.toJson(writer, customScalarAdapters, value.ep)

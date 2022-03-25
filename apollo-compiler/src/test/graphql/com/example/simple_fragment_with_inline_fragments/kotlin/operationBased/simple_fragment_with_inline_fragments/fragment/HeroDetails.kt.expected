@@ -18,7 +18,7 @@ public data class HeroDetails(
   /**
    * The friends of the character, or an empty list if they have none
    */
-  public val friends: List<Friend?>?
+  public val friends: List<Friend?>?,
 ) : Fragment.Data {
   public data class Friend(
     public val __typename: String,
@@ -33,20 +33,20 @@ public data class HeroDetails(
     /**
      * Synthetic field for inline fragment on Droid
      */
-    public val onDroid: OnDroid?
+    public val onDroid: OnDroid?,
   ) {
     public data class OnHuman(
       /**
        * Height in the preferred unit, default is meters
        */
-      public val height: Double?
+      public val height: Double?,
     )
 
     public data class OnDroid(
       /**
        * This droid's primary function
        */
-      public val primaryFunction: String?
+      public val primaryFunction: String?,
     )
   }
 }

@@ -49,7 +49,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.nested_named_fragments.fragment.StarshipFragment
+      `value`: com.example.nested_named_fragments.fragment.StarshipFragment,
     ): Unit {
       writer.name("id")
       StringAdapter.toJson(writer, customScalarAdapters, value.id)
@@ -85,7 +85,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection
+        `value`: com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection,
       ): Unit {
         writer.name("edges")
         Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
@@ -116,7 +116,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge
+          `value`: com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge,
         ): Unit {
           writer.name("node")
           Node.obj(true).nullable().toJson(writer, customScalarAdapters, value.node)
@@ -152,7 +152,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
           public override fun toJson(
             writer: JsonWriter,
             customScalarAdapters: CustomScalarAdapters,
-            `value`: com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge.Node
+            `value`: com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge.Node,
           ): Unit {
             writer.name("__typename")
             StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

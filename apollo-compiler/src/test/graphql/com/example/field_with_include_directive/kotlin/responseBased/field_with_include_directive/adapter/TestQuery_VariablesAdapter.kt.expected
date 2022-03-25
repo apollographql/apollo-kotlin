@@ -21,7 +21,7 @@ public object TestQuery_VariablesAdapter : Adapter<TestQuery> {
   public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    `value`: TestQuery
+    `value`: TestQuery,
   ): Unit {
     writer.name("includeName")
     BooleanAdapter.toJson(writer, customScalarAdapters, value.includeName)

@@ -38,7 +38,7 @@ public object CharacterNameImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.named_fragment_inside_inline_fragment.fragment.CharacterName
+      `value`: com.example.named_fragment_inside_inline_fragment.fragment.CharacterName,
     ): Unit {
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)

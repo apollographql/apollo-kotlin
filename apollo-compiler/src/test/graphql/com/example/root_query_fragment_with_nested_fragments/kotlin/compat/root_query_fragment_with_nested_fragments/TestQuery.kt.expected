@@ -52,13 +52,13 @@ public class TestQuery() : Query<TestQuery.Data> {
     /**
      * Synthetic field for grouping fragments
      */
-    public val fragments: Fragments
+    public val fragments: Fragments,
   ) : Query.Data {
     public data class Fragments(
       /**
        * Synthetic field for 'QueryFragment'
        */
-      public val queryFragment: QueryFragment
+      public val queryFragment: QueryFragment,
     )
   }
 

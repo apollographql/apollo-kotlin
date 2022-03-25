@@ -45,7 +45,7 @@ public object HeroDetailsImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.unique_type_name.fragment.HeroDetails
+      `value`: com.example.unique_type_name.fragment.HeroDetails,
     ): Unit {
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
@@ -81,7 +81,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: com.example.unique_type_name.fragment.HeroDetails.FriendsConnection
+        `value`: com.example.unique_type_name.fragment.HeroDetails.FriendsConnection,
       ): Unit {
         writer.name("totalCount")
         NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount)
@@ -114,7 +114,7 @@ public object HeroDetailsImpl_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge
+          `value`: com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge,
         ): Unit {
           writer.name("node")
           Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
@@ -144,7 +144,7 @@ public object HeroDetailsImpl_ResponseAdapter {
           public override fun toJson(
             writer: JsonWriter,
             customScalarAdapters: CustomScalarAdapters,
-            `value`: com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge.Node
+            `value`: com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge.Node,
           ): Unit {
             writer.name("name")
             StringAdapter.toJson(writer, customScalarAdapters, value.name)

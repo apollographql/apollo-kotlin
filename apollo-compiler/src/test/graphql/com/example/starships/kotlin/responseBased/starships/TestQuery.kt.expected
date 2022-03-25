@@ -20,7 +20,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public data class TestQuery(
-  public val id: String
+  public val id: String,
 ) : Query<TestQuery.Data> {
   public override fun id(): String = OPERATION_ID
 
@@ -45,7 +45,7 @@ public data class TestQuery(
   .build()
 
   public data class Data(
-    public val starship: Starship?
+    public val starship: Starship?,
   ) : Query.Data {
     public data class Starship(
       /**
@@ -56,7 +56,7 @@ public data class TestQuery(
        * The name of the starship
        */
       public val name: String,
-      public val coordinates: List<List<Double>>?
+      public val coordinates: List<List<Double>>?,
     )
   }
 

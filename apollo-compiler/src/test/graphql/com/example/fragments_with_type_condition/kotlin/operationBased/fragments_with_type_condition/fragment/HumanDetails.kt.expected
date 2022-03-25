@@ -17,5 +17,5 @@ public data class HumanDetails(
   /**
    * Height in the preferred unit, default is meters
    */
-  public val height: Double?
+  public val height: Double?,
 ) : Fragment.Data

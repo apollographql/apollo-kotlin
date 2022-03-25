@@ -42,7 +42,7 @@ public object TestQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: TestQuery.Data
+      `value`: TestQuery.Data,
     ): Unit {
       writer.name("a")
       A.obj().nullable().toJson(writer, customScalarAdapters, value.a)
@@ -73,7 +73,7 @@ public object TestQuery_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.A
+        `value`: TestQuery.Data.A,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -97,7 +97,7 @@ public object TestQuery_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: TestQuery.Data.A.Node
+          `value`: TestQuery.Data.A.Node,
         ): Unit {
           when(value) {
             is TestQuery.Data.A.ANodeNode -> ANodeNode.toJson(writer, customScalarAdapters, value)
@@ -112,7 +112,7 @@ public object TestQuery_ResponseAdapter {
         public fun fromJson(
           reader: JsonReader,
           customScalarAdapters: CustomScalarAdapters,
-          typename: String
+          typename: String,
         ): TestQuery.Data.A.ANodeNode {
           var __typename: String? = typename
           var field1: String? = null
@@ -137,7 +137,7 @@ public object TestQuery_ResponseAdapter {
         public fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: TestQuery.Data.A.ANodeNode
+          `value`: TestQuery.Data.A.ANodeNode,
         ): Unit {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -156,7 +156,7 @@ public object TestQuery_ResponseAdapter {
         public fun fromJson(
           reader: JsonReader,
           customScalarAdapters: CustomScalarAdapters,
-          typename: String
+          typename: String,
         ): TestQuery.Data.A.OtherNode {
           var __typename: String? = typename
 
@@ -175,7 +175,7 @@ public object TestQuery_ResponseAdapter {
         public fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: TestQuery.Data.A.OtherNode
+          `value`: TestQuery.Data.A.OtherNode,
         ): Unit {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

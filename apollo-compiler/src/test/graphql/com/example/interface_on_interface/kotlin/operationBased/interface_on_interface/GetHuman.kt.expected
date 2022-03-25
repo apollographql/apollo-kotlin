@@ -49,12 +49,12 @@ public class GetHuman() : Query<GetHuman.Data> {
 
   public data class Data(
     public val human: Human,
-    public val node: Node
+    public val node: Node,
   ) : Query.Data {
     public data class Human(
       public val id: String,
       public val name: String,
-      public val height: Double
+      public val height: Double,
     )
 
     public data class Node(
@@ -62,10 +62,10 @@ public class GetHuman() : Query<GetHuman.Data> {
       /**
        * Synthetic field for inline fragment on Human
        */
-      public val onHuman: OnHuman?
+      public val onHuman: OnHuman?,
     ) {
       public data class OnHuman(
-        public val height: Double
+        public val height: Double,
       )
     }
   }

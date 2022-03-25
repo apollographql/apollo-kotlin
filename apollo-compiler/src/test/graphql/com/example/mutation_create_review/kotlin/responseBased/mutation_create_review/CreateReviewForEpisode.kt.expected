@@ -24,7 +24,7 @@ import kotlin.collections.List
 
 internal data class CreateReviewForEpisode(
   public val ep: Episode,
-  public val review: ReviewInput
+  public val review: ReviewInput,
 ) : Mutation<CreateReviewForEpisode.Data> {
   public override fun id(): String = OPERATION_ID
 
@@ -49,7 +49,7 @@ internal data class CreateReviewForEpisode(
   .build()
 
   public data class Data(
-    public val createReview: CreateReview?
+    public val createReview: CreateReview?,
   ) : Mutation.Data {
     public data class CreateReview(
       /**
@@ -75,13 +75,13 @@ internal data class CreateReviewForEpisode(
       /**
        * for test purpose only
        */
-      public val listOfListOfObject: List<List<ListOfListOfObject>>?
+      public val listOfListOfObject: List<List<ListOfListOfObject>>?,
     ) {
       public data class ListOfListOfObject(
         /**
          * The name of the character
          */
-        public val name: java.lang.String
+        public val name: java.lang.String,
       )
     }
   }
