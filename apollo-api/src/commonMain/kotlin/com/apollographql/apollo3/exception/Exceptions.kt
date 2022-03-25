@@ -118,10 +118,8 @@ class ApolloCompositeException(first: Throwable?, second: Throwable?) : ApolloEx
     }
 
   init {
-    if (first != null && second != null) {
-      addSuppressed(first)
-      addSuppressed(second)
-    }
+    if (first != null) addSuppressed(first)
+    if (second != null) addSuppressed(second)
   }
 
 }
