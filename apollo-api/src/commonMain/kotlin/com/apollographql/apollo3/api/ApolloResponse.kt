@@ -58,7 +58,7 @@ private constructor(
      * other items are emitted. For an example, the CacheAndNetwork fetch policy doesn't emit the network
      * item if it fails.
      *
-     * There must not be false positives. If [isLast] is true, then no other items must follow.
+     * There must not be false positives. If [isLast] is true, no other items must follow.
      */
     @JvmField
     val isLast: Boolean,
