@@ -1,0 +1,6 @@
+query QueryWithSkip($withDetails: Boolean!) {
+  field1
+  ... on Query @skip(if: $withDetails) {
+    field2
+  }
+}

@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
@@ -69,6 +68,7 @@ public class TestQuery_ResponseAdapter {
       String __typename = null;
       String id = null;
 
+      String __path = reader.getPath();
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
@@ -80,19 +80,19 @@ public class TestQuery_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestQuery.OnHuman onHuman = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")),new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("withDetails")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("skipHumanDetails"))))), Collections.emptySet(), __typename)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")),new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("withDetails")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("skipHumanDetails"))))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         onHuman = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       TestQuery.OnDroid onDroid = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BVariable("withDetails"))), Collections.emptySet(), __typename)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BVariable("withDetails"))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         onDroid = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.OnDroid.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       TestQuery.OnCharacter onCharacter = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BVariable("withDetails")), Collections.emptySet(), __typename)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BVariable("withDetails")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         onCharacter = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.OnCharacter.INSTANCE.fromJson(reader, customScalarAdapters);
       }

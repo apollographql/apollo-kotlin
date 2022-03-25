@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.java.helpers
 
+import com.apollographql.apollo3.api.BLabel
 import com.apollographql.apollo3.api.BPossibleTypes
 import com.apollographql.apollo3.api.BTerm
 import com.apollographql.apollo3.api.BVariable
@@ -13,7 +14,7 @@ import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.ParameterizedTypeName
 
 internal fun BooleanExpression<BTerm>.codeBlock(): CodeBlock {
-  return when(this) {
+  return when (this) {
     is BooleanExpression.False -> CodeBlock.of("$T.INSTANCE", JavaClassNames.False)
     is BooleanExpression.True -> CodeBlock.of("$T.INSTANCE", JavaClassNames.True)
     is BooleanExpression.And -> {
@@ -43,12 +44,19 @@ internal fun BooleanExpression<BTerm>.codeBlock(): CodeBlock {
         operand.codeBlock()
     )
     is BooleanExpression.Element -> {
-      val params = when(val v = value) {
+      val params = when (val v = value) {
         is BVariable -> {
           CodeBlock.of(
               "new $T($S)",
               JavaClassNames.BVariable,
               v.name
+          )
+        }
+        is BLabel -> {
+          CodeBlock.of(
+              "new $T($S)",
+              JavaClassNames.BLabel,
+              v.label
           )
         }
         is BPossibleTypes -> {

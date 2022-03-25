@@ -62,6 +62,7 @@ public object TestOperation_ResponseAdapter {
           TestOperation.Data.Random {
         var __typename: String? = null
 
+        val __path = reader.getPath()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -74,14 +75,14 @@ public object TestOperation_ResponseAdapter {
         }
 
         var onBeing: TestOperation.Data.Random.OnBeing? = null
-        if (possibleTypes("Human","Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+        if (possibleTypes("Human","Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           onBeing = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.fromJson(reader,
               customScalarAdapters)
         }
 
         var onWookie: TestOperation.Data.Random.OnWookie? = null
-        if (possibleTypes("Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+        if (possibleTypes("Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnWookie.fromJson(reader,
               customScalarAdapters)
@@ -122,6 +123,7 @@ public object TestOperation_ResponseAdapter {
           var name: String? = null
           var friends: List<TestOperation.Data.Random.OnBeing.Friend>? = null
 
+          val __path = reader.getPath()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -136,7 +138,7 @@ public object TestOperation_ResponseAdapter {
           }
 
           var onHuman: TestOperation.Data.Random.OnBeing.OnHuman? = null
-          if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+          if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
             reader.rewind()
             onHuman = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.fromJson(reader,
                 customScalarAdapters)
@@ -179,6 +181,7 @@ public object TestOperation_ResponseAdapter {
             var __typename: String? = null
             var name: String? = null
 
+            val __path = reader.getPath()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -192,7 +195,7 @@ public object TestOperation_ResponseAdapter {
             }
 
             var onWookie: TestOperation.Data.Random.OnBeing.Friend.OnWookie? = null
-            if (possibleTypes("Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+            if (possibleTypes("Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
               reader.rewind()
               onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.Friend.OnWookie.fromJson(reader,
                   customScalarAdapters)
@@ -298,6 +301,7 @@ public object TestOperation_ResponseAdapter {
               var __typename: String? = null
               var isFamous: Boolean? = null
 
+              val __path = reader.getPath()
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -311,7 +315,7 @@ public object TestOperation_ResponseAdapter {
               }
 
               var onWookie: TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie? = null
-              if (possibleTypes("Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+              if (possibleTypes("Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
                 reader.rewind()
                 onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.Friend.OnWookie.fromJson(reader,
                     customScalarAdapters)

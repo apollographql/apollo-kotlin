@@ -103,6 +103,7 @@ public object GetHuman_ResponseAdapter {
           GetHuman.Data.Node {
         var __typename: String? = null
 
+        val __path = reader.getPath()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -115,7 +116,7 @@ public object GetHuman_ResponseAdapter {
         }
 
         var onHuman: GetHuman.Data.Node.OnHuman? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           onHuman = com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.Data.Node.OnHuman.fromJson(reader,
               customScalarAdapters)

@@ -65,6 +65,7 @@ public object HeroDetailQuery_ResponseAdapter {
         var name: String? = null
         var friends: List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.Friend?>? = null
 
+        val __path = reader.getPath()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -80,7 +81,7 @@ public object HeroDetailQuery_ResponseAdapter {
         }
 
         var onHuman: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           onHuman = com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.Data.HeroDetailQuery.OnHuman.fromJson(reader,
               customScalarAdapters)

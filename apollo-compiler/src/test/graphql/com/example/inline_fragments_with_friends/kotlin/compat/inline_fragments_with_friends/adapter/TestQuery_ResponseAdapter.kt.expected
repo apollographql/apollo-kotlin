@@ -63,6 +63,7 @@ public object TestQuery_ResponseAdapter {
       var __typename: String? = null
       var name: String? = null
 
+      val __path = reader.getPath()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -76,14 +77,14 @@ public object TestQuery_ResponseAdapter {
       }
 
       var asHuman: TestQuery.AsHuman? = null
-      if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+      if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
         reader.rewind()
         asHuman = com.example.inline_fragments_with_friends.adapter.TestQuery_ResponseAdapter.AsHuman.fromJson(reader,
             customScalarAdapters)
       }
 
       var asDroid: TestQuery.AsDroid? = null
-      if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+      if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
         reader.rewind()
         asDroid = com.example.inline_fragments_with_friends.adapter.TestQuery_ResponseAdapter.AsDroid.fromJson(reader,
             customScalarAdapters)

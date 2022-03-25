@@ -61,6 +61,7 @@ public object TestQuery_ResponseAdapter {
         var __typename: String? = null
         var id: String? = null
 
+        val __path = reader.getPath()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -74,14 +75,14 @@ public object TestQuery_ResponseAdapter {
         }
 
         var heroDetails: HeroDetails? = null
-        if (and(variable("withDetails"),not(variable("skipHumanDetails"))).evaluate(customScalarAdapters.adapterContext.variables(), null)) {
+        if (and(variable("withDetails"),not(variable("skipHumanDetails"))).evaluate(customScalarAdapters.adapterContext.variables(), null, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           heroDetails = com.example.fragment_spread_with_include_directive.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
               customScalarAdapters)
         }
 
         var humanDetails: HumanDetails? = null
-        if (and(possibleTypes("Human"),variable("withDetails")).evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+        if (and(possibleTypes("Human"),variable("withDetails")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           humanDetails = com.example.fragment_spread_with_include_directive.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
               customScalarAdapters)

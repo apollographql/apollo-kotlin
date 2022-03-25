@@ -99,6 +99,7 @@ public object TestQuery_ResponseAdapter {
           TestQuery.Data.Object {
         var __typename: String? = null
 
+        val __path = reader.getPath()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -111,7 +112,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         var onCharacter: TestQuery.Data.Object.OnCharacter? = null
-        if (possibleTypes("Droid","Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+        if (possibleTypes("Droid","Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           onCharacter = com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.Data.Object.OnCharacter.fromJson(reader,
               customScalarAdapters)

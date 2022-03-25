@@ -99,18 +99,19 @@ public object TestQuery_ResponseAdapter {
           TestQuery.Hero.Fragments {
 
 
+        val __path = reader.getPath()
         reader.rewind()
         val __typename = reader.readTypename()
 
         var humanDetails: HumanDetails? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           humanDetails = com.example.named_fragment_without_implementation.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
               customScalarAdapters)
         }
 
         var droidDetails: DroidDetails? = null
-        if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename)) {
+        if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           droidDetails = com.example.named_fragment_without_implementation.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
               customScalarAdapters)
