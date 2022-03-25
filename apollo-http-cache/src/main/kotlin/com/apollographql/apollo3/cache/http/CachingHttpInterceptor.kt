@@ -73,7 +73,8 @@ class CachingHttpInterceptor(
           return cacheMightThrow(request, cacheKey)
         } catch (cacheMissException: HttpCacheMissException) {
           // In case of exception thrown by network request,
-          // ApolloException is the root cause and cache miss exception will be suppressed
+          // ApolloException will be suppressed and HttpCacheMissException will throw as cause
+          // this behavior might change in future where both will be treated as suppressed
           throw ApolloCompositeException(
               first = networkException,
               second = cacheMissException

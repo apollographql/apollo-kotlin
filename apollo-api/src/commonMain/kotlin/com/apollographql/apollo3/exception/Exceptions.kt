@@ -99,7 +99,7 @@ class HttpCacheMissException(message: String, cause: Exception? = null) : Apollo
 
 /**
  * Multiple exceptions happened, for an example with a [CacheFirst] fetch policy
- * [cause] might change to null and second exception will also be added as suppressed exception
+ * [cause] might change in future where both exceptions will be added as suppressed exception
  */
 class ApolloCompositeException(first: Throwable?, second: Throwable?) : ApolloException(message = "multiple exceptions happened", second) {
 
