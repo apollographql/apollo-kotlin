@@ -116,7 +116,7 @@ constructor(
 
   override fun beginArray() = apply {
     if (peek() != JsonReader.Token.BEGIN_ARRAY) {
-      throw JsonDataException("Expected BEGIN_ARRAY but was ${peek()} at path ${getPath()}")
+      throw JsonDataException("Expected BEGIN_ARRAY but was ${peek()} at path ${getPathAsString()}")
     }
 
     val currentValue = peekedData as List<Any?>
@@ -133,7 +133,7 @@ constructor(
 
   override fun endArray() = apply {
     if (peek() != JsonReader.Token.END_ARRAY) {
-      throw JsonDataException("Expected END_ARRAY but was ${peek()} at path ${getPath()}")
+      throw JsonDataException("Expected END_ARRAY but was ${peek()} at path ${getPathAsString()}")
     }
     stackSize--
     iteratorStack[stackSize] = null // allow garbage collection
@@ -143,7 +143,7 @@ constructor(
 
   override fun beginObject() = apply {
     if (peek() != JsonReader.Token.BEGIN_OBJECT) {
-      throw JsonDataException("Expected BEGIN_OBJECT but was ${peek()} at path ${getPath()}")
+      throw JsonDataException("Expected BEGIN_OBJECT but was ${peek()} at path ${getPathAsString()}")
     }
 
     check(stackSize < MAX_STACK_SIZE) {
@@ -158,7 +158,7 @@ constructor(
 
   override fun endObject() = apply {
     if (peek() != JsonReader.Token.END_OBJECT) {
-      throw JsonDataException("Expected END_OBJECT but was ${peek()} at path ${getPath()}")
+      throw JsonDataException("Expected END_OBJECT but was ${peek()} at path ${getPathAsString()}")
     }
     stackSize--
     iteratorStack[stackSize] = null // allow garbage collection
@@ -181,7 +181,7 @@ constructor(
 
   override fun nextName(): String {
     if (peek() != JsonReader.Token.NAME) {
-      throw JsonDataException("Expected NAME but was ${peek()} at path ${getPath()}")
+      throw JsonDataException("Expected NAME but was ${peek()} at path ${getPathAsString()}")
     }
     @Suppress("UNCHECKED_CAST")
     val data = peekedData as Map.Entry<String, Any?>
@@ -200,7 +200,7 @@ constructor(
       JsonReader.Token.LONG,
       -> Unit
       else -> {
-        throw JsonDataException("Expected a String but was ${peek()} at path ${getPath()}")
+        throw JsonDataException("Expected a String but was ${peek()} at path ${getPathAsString()}")
       }
     }
 
@@ -211,7 +211,7 @@ constructor(
 
   override fun nextBoolean(): Boolean {
     if (peek() != JsonReader.Token.BOOLEAN) {
-      throw JsonDataException("Expected BOOLEAN but was ${peek()} at path ${getPath()}")
+      throw JsonDataException("Expected BOOLEAN but was ${peek()} at path ${getPathAsString()}")
     }
 
     return (peekedData as Boolean).also {
@@ -221,7 +221,7 @@ constructor(
 
   override fun nextNull(): Nothing? {
     if (peek() != JsonReader.Token.NULL) {
-      throw JsonDataException("Expected NULL but was ${peek()} at path ${getPath()}")
+      throw JsonDataException("Expected NULL but was ${peek()} at path ${getPathAsString()}")
     }
 
     advanceIterator()
@@ -236,7 +236,7 @@ constructor(
       JsonReader.Token.LONG,
       -> Unit
       else -> {
-        throw JsonDataException("Expected a Double but was ${peek()} at path ${getPath()}")
+        throw JsonDataException("Expected a Double but was ${peek()} at path ${getPathAsString()}")
       }
     }
 
@@ -259,7 +259,7 @@ constructor(
       JsonReader.Token.LONG,
       -> Unit
       else -> {
-        throw JsonDataException("Expected an Int but was ${peek()} at path ${getPath()}")
+        throw JsonDataException("Expected an Int but was ${peek()} at path ${getPathAsString()}")
       }
     }
 
@@ -282,7 +282,7 @@ constructor(
       JsonReader.Token.LONG,
       -> Unit
       else -> {
-        throw JsonDataException("Expected a Long but was ${peek()} at path ${getPath()}")
+        throw JsonDataException("Expected a Long but was ${peek()} at path ${getPathAsString()}")
       }
     }
 
@@ -305,7 +305,7 @@ constructor(
       JsonReader.Token.LONG,
       -> Unit
       else -> {
-        throw JsonDataException("Expected a Number but was ${peek()} at path ${getPath()}")
+        throw JsonDataException("Expected a Number but was ${peek()} at path ${getPathAsString()}")
       }
     }
 
@@ -383,6 +383,8 @@ constructor(
     }
     return result
   }
+
+  private fun getPathAsString() = getPath().joinToString(".")
 
   companion object {
 
