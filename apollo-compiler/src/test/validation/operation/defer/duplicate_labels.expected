@@ -1,0 +1,2 @@
+ERROR: ValidationError (14:20)
+@defer label 'foobar' must be unique within all other @defer directives in the document
