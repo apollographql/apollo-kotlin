@@ -1,6 +1,8 @@
 package com.apollographql.apollo3.compiler.codegen.java.adapter
 
+import com.apollographql.apollo3.api.BLabel
 import com.apollographql.apollo3.api.BooleanExpression
+import com.apollographql.apollo3.api.firstElementOfType
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.RESPONSE_NAMES
@@ -80,7 +82,7 @@ internal fun readFromResponseCodeBlock(
     )
   }.joinToCode(separator = "\n", suffix = "\n")
 
-  val path = if (syntheticProperties.any { it.condition != BooleanExpression.True }) {
+  val path = if (syntheticProperties.any { it.condition.firstElementOfType(BLabel::class) != null }) {
     CodeBlock.of("String $__path = $reader.${Identifier.getPath}();")
   } else {
     CodeBlock.of("")
@@ -143,8 +145,13 @@ internal fun readFromResponseCodeBlock(
                 context.resolver.resolveIrType(property.info.type),
                 context.layout.variableName(property.info.responseName),
             )
+            val pathLiteral = if(path.isNotEmpty()) {
+              __path
+            } else {
+              "null"
+            }
             beginControlFlow(
-                "if ($T.$evaluate($L, $customScalarAdapters.getAdapterContext().variables(), $__typename, $customScalarAdapters.getAdapterContext(), $__path))",
+                "if ($T.$evaluate($L, $customScalarAdapters.getAdapterContext().variables(), $__typename, $customScalarAdapters.getAdapterContext(), $pathLiteral))",
                 JavaClassNames.BooleanExpressions,
                 property.condition.codeBlock(),
             )

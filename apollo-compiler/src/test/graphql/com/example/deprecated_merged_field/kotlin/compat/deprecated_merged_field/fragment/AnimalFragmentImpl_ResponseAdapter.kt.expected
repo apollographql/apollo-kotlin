@@ -25,7 +25,6 @@ public object AnimalFragmentImpl_ResponseAdapter {
         com.example.deprecated_merged_field.fragment.AnimalFragment {
       var __typename: String? = null
 
-      val __path = reader.getPath()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -38,14 +37,14 @@ public object AnimalFragmentImpl_ResponseAdapter {
       }
 
       var asCat: com.example.deprecated_merged_field.fragment.AnimalFragment.AsCat? = null
-      if (possibleTypes("Cat").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+      if (possibleTypes("Cat").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
         asCat = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AsCat.fromJson(reader,
             customScalarAdapters)
       }
 
       var asDog: com.example.deprecated_merged_field.fragment.AnimalFragment.AsDog? = null
-      if (possibleTypes("Dog").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+      if (possibleTypes("Dog").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
         asDog = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AsDog.fromJson(reader,
             customScalarAdapters)

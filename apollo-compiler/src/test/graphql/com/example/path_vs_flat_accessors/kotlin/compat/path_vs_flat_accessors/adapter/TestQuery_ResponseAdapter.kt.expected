@@ -57,7 +57,6 @@ public object TestQuery_ResponseAdapter {
         TestQuery.Root {
       var __typename: String? = null
 
-      val __path = reader.getPath()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -70,14 +69,14 @@ public object TestQuery_ResponseAdapter {
       }
 
       var asA: TestQuery.AsA? = null
-      if (possibleTypes("ABC","AC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+      if (possibleTypes("ABC","AC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
         asA = com.example.path_vs_flat_accessors.adapter.TestQuery_ResponseAdapter.AsA.fromJson(reader,
             customScalarAdapters)
       }
 
       var asB1: TestQuery.AsB1? = null
-      if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+      if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
         asB1 = com.example.path_vs_flat_accessors.adapter.TestQuery_ResponseAdapter.AsB1.fromJson(reader,
             customScalarAdapters)
@@ -117,7 +116,6 @@ public object TestQuery_ResponseAdapter {
         TestQuery.AsA {
       var __typename: String? = null
 
-      val __path = reader.getPath()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -130,7 +128,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       var asB: TestQuery.AsB? = null
-      if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+      if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
         asB = com.example.path_vs_flat_accessors.adapter.TestQuery_ResponseAdapter.AsB.fromJson(reader,
             customScalarAdapters)
