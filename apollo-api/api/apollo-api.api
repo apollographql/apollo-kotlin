@@ -845,8 +845,9 @@ public final class com/apollographql/apollo3/api/http/HttpResponse$Builder {
 }
 
 public final class com/apollographql/apollo3/api/json/-JsonReaders {
-	public static final fun jsonReader (Ljava/util/Map;)Lcom/apollographql/apollo3/api/json/JsonReader;
+	public static final fun jsonReader (Ljava/util/Map;Z)Lcom/apollographql/apollo3/api/json/JsonReader;
 	public static final fun jsonReader (Lokio/BufferedSource;)Lcom/apollographql/apollo3/api/json/JsonReader;
+	public static synthetic fun jsonReader$default (Ljava/util/Map;ZILjava/lang/Object;)Lcom/apollographql/apollo3/api/json/JsonReader;
 }
 
 public final class com/apollographql/apollo3/api/json/-JsonWriters {
@@ -983,6 +984,9 @@ public abstract interface class com/apollographql/apollo3/api/json/JsonWriter : 
 public final class com/apollographql/apollo3/api/json/MapJsonReader : com/apollographql/apollo3/api/json/JsonReader {
 	public static final field Companion Lcom/apollographql/apollo3/api/json/MapJsonReader$Companion;
 	public fun <init> (Ljava/util/Map;)V
+	public fun <init> (Ljava/util/Map;Ljava/lang/String;)V
+	public fun <init> (Ljava/util/Map;Ljava/lang/String;Z)V
+	public synthetic fun <init> (Ljava/util/Map;Ljava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun beginArray ()Lcom/apollographql/apollo3/api/json/JsonReader;
 	public fun beginArray ()Lcom/apollographql/apollo3/api/json/MapJsonReader;
 	public synthetic fun beginObject ()Lcom/apollographql/apollo3/api/json/JsonReader;

@@ -7,6 +7,7 @@ import com.apollographql.apollo3.api.json.internal.toDoubleExact
 import com.apollographql.apollo3.api.json.internal.toIntExact
 import com.apollographql.apollo3.api.json.internal.toLongExact
 import com.apollographql.apollo3.exception.JsonDataException
+import kotlin.jvm.JvmOverloads
 
 /**
  * A [JsonReader] that reads data from a regular [Map<String, Any?>]
@@ -30,7 +31,9 @@ import com.apollographql.apollo3.exception.JsonDataException
  * @param skipPathRoot whether to skip the path root (first element of the returned path) when calling [getPath]. Useful to omit `data` from
  * the path of GraphQL payloads.
  */
-class MapJsonReader(
+class MapJsonReader
+@JvmOverloads
+constructor(
     val root: Map<String, Any?>,
     private val pathRoot: String = "",
     private val skipPathRoot: Boolean = false,
