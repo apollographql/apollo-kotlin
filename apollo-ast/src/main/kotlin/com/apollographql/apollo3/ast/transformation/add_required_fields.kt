@@ -74,7 +74,6 @@ private fun GQLSelectionSet.addRequiredFields(
     "ifPolymorphic" -> isRoot && isPolymorphic(schema, fragments, parentType)
     "ifFragments" -> selectionSet.selections.any { it is GQLFragmentSpread || it is GQLInlineFragment }
     "ifAbstract" -> isRoot && schema.typeDefinition(parentType).isAbstract()
-    "ifImplementsAbstractType" -> isRoot && (schema.typeDefinition(parentType).implementsAbstractType(schema))
     "always" -> isRoot
     else -> error("Unknown addTypename option: $addTypename")
   }

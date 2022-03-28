@@ -26,7 +26,6 @@ const val MODELS_COMPAT = "compat"
 const val ADD_TYPENAME_IF_FRAGMENTS = "ifFragments"
 const val ADD_TYPENAME_IF_POLYMORPHIC = "ifPolymorphic"
 const val ADD_TYPENAME_IF_ABSTRACT = "ifAbstract"
-const val ADD_TYPENAME_IF_IMPLEMENTS_ABSTRACT_TYPE = "ifImplementsAbstractType"
 const val ADD_TYPENAME_ALWAYS = "always"
 
 enum class TargetLanguage {

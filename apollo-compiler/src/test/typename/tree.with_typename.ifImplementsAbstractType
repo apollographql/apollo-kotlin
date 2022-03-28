@@ -1,5 +1,0 @@
-query TestQuery {
-  tree {
-    name
-  }
-}

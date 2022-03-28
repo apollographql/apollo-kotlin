@@ -22,7 +22,7 @@ import java.io.File
 @OptIn(ApolloExperimental::class)
 class TypenameTest(
     @TestParameter(valuesProvider = GraphQLFileValuesProvider::class) private val graphQLFile: File,
-    @TestParameter("always", "ifFragments", "ifImplementsAbstractType", "ifAbstract", "ifPolymorphic") private val addTypename: String,
+    @TestParameter("always", "ifFragments", "ifAbstract", "ifPolymorphic") private val addTypename: String,
 ) {
 
   @Test

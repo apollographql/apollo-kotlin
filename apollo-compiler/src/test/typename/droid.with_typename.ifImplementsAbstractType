@@ -1,6 +1,0 @@
-query TestQuery {
-  droid(id: "") {
-    __typename
-    id
-  }
-}

@@ -436,18 +436,13 @@ interface Service {
   val codegenModels: Property<String>
 
   /**
-   * When to add __typename. One of "always", "ifFragments", "ifImplementsAbstractType", "ifAbstract" or "ifPolymorphic"
+   * When to add __typename. One of "always", "ifFragments", "ifAbstract" or "ifPolymorphic"
    *
    * - "always": Add '__typename' for every compound field
    *
    * - "ifFragments": Add '__typename' for every selection set that contains fragments (inline or named)
    * This causes cache misses when introducing fragments where no fragment was present before and will be certainly removed in
    * a future version.
-   *
-   * - "ifImplementsAbstractType": Add '__typename' for fields of abstract type or implementing an abstract type
-   * (interface or union). This is useful when using the cache because these types can be accessed through their
-   * concrete type (that doesn't require '__typename') but also through an interface or union type where `__typename`
-   * will be required
    *
    * - "ifAbstract": Add '__typename' for abstract fields, i.e. fields that are of union or interface type
    * Note: It also adds '__typename' on fragment definitions that satisfy the same property because fragments
