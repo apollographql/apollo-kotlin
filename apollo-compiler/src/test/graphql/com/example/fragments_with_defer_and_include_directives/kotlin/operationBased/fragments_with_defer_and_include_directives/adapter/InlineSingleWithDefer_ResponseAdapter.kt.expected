@@ -17,6 +17,9 @@ import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
 import com.example.fragments_with_defer_and_include_directives.InlineSingleWithDefer
+import kotlin.String
+import kotlin.Unit
+import kotlin.collections.List
 
 public object InlineSingleWithDefer_ResponseAdapter {
   public object Data : Adapter<InlineSingleWithDefer.Data> {
@@ -67,7 +70,7 @@ public object InlineSingleWithDefer_ResponseAdapter {
         }
 
         var onDroid: InlineSingleWithDefer.Data.Hero.OnDroid? = null
-        if (and(possibleTypes("Droid"), label()).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+        if (and(possibleTypes("Droid"),label()).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           onDroid = com.example.fragments_with_defer_and_include_directives.adapter.InlineSingleWithDefer_ResponseAdapter.Data.Hero.OnDroid.fromJson(reader,
               customScalarAdapters)
