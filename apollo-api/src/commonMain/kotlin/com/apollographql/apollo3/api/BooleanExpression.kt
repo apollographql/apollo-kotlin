@@ -99,7 +99,7 @@ fun <T : Any> or(vararg other: BooleanExpression<T>): BooleanExpression<T> = Boo
 fun <T : Any> and(vararg other: BooleanExpression<T>): BooleanExpression<T> = BooleanExpression.And((other.toList()).toSet())
 fun <T : Any> not(other: BooleanExpression<T>): BooleanExpression<T> = BooleanExpression.Not(other)
 fun variable(name: String): BooleanExpression<BVariable> = BooleanExpression.Element(BVariable(name))
-fun label(label: String?): BooleanExpression<BLabel> = BooleanExpression.Element(BLabel(label))
+fun label(label: String? = null): BooleanExpression<BLabel> = BooleanExpression.Element(BLabel(label))
 fun possibleTypes(vararg typenames: String): BooleanExpression<BPossibleTypes> = BooleanExpression.Element(BPossibleTypes(typenames.toSet()))
 
 fun <T : Any> BooleanExpression<T>.evaluate(block: (T) -> Boolean): Boolean {

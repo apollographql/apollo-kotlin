@@ -18,9 +18,6 @@ import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
 import com.example.fragments_with_defer_and_include_directives.SpreadSingleWithDefer
 import com.example.fragments_with_defer_and_include_directives.fragment.DroidDetails
-import kotlin.String
-import kotlin.Unit
-import kotlin.collections.List
 
 public object SpreadSingleWithDefer_ResponseAdapter {
   public object Data : Adapter<SpreadSingleWithDefer.Data> {
@@ -71,7 +68,7 @@ public object SpreadSingleWithDefer_ResponseAdapter {
         }
 
         var droidDetails: DroidDetails? = null
-        if (and(possibleTypes("Droid"),label(null)).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+        if (and(possibleTypes("Droid"), label()).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
               customScalarAdapters)
