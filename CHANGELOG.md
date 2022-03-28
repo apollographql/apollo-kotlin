@@ -1,8 +1,27 @@
 Change Log
 ==========
-# Version 3.x.y
+# Version 3.2.0
 
 _2022-XX-YY_
+
+💙 Thanks to @undermark5, @demoritas, @rkoron007, @akshay253101, @StylianosGakis, @Goooler, @jeffreydecker, @theBradfo, @anderssandven and @olivierg13 for contributing to this release.
+
+This version adds JS WebSocket support, more options to deal with `__typename` amongst other features and bugfixes.
+
+## ✨️ [new] JS WebSocket support (#3913)
+
+Version 3.2.0 now has WebSocket support for Javascript targets courtesy of @undermark5! This is a huge milestone and means the JS target is now even closer to its JVM and iOS counterparts.
+
+|  | `jvm` | Apple | `js` | `linuxX64`
+| --- | :---: |:-----:|:----:| :---: |
+| `apollo-api` (models)|✅|   ✅   |  ✅   |✅|
+| `apollo-runtime` (network, query batching, apq, ...) |✅|   ✅   |  ✅   |🚫|
+| `apollo-normalized-cache` |✅|   ✅   |  ✅   |🚫|
+| `apollo-adapters` |✅|   ✅   |  ✅   |🚫|
+| `apollo-normalized-cache-sqlite` |✅|   ✅   |  🚫  |🚫|
+| `apollo-http-cache` |✅|  🚫   |  🚫  |🚫|
+
+The implementation is based on the [`ws`](https://github.com/websockets/ws) library on Node and the [`WebSocket` API](https://websockets.spec.whatwg.org//) on the browser and largely inspired by [Ktor](https://ktor.io/).
 
 ## ✨️ [new] Fine grained `__typename` control (#3939)
 
@@ -19,44 +38,108 @@ This version generates non-nullable fragments when it knows the fragment is alwa
 }
 ```
 
-In addition, it introduces a `addTypename` Gradle option to have better control over when to add the `__typename` field
+In addition, it introduces a `addTypename` Gradle option to have better control over when to add the `__typename` field:
 
 ```kotlin
-apollo {
   /**
-   * Add '__typename' for abstract fields, i.e. fields that are of union or interface type
-   *
-   * `"ifAbstract"` is a good and simple value that will work most of the times.
-   *
-   * Note: It also adds '__typename' on fragment definitions that satisfy the same property because fragments
-   * could be read from the cache and we don't have a containing field in that case.
-   **/
-  addTypename.set("ifAbstract")
+ * When to add __typename. One of "ifFragments", "ifAbstract" or "ifPolymorphic"
+ * When to add __typename. One of "always", "ifFragments", "ifAbstract" or "ifPolymorphic"
+ *
+ * - "always": Add '__typename' for every compound field
+ *
+ * - "ifFragments": Add '__typename' for every selection set that contains fragments (inline or named)
+ * This is adding a lot more '__typename' than the other solutions and will be certainly removed in
+ * a future version. If you require '__typename' explicitly, you can add it to your queries.
+ * This causes cache misses when introducing fragments where no fragment was present before and will be certainly removed in
+ * a future version.
+ *
+ * - "ifAbstract": Add '__typename' for abstract fields, i.e. fields that are of union or interface type
+ * Note: It also adds '__typename' on fragment definitions that satisfy the same property because fragments
+ * could be read from the cache and we don't have a containing field in that case.
+ *
+ * - "ifPolymorphic": Add '__typename' for polymorphic fields, i.e. fields that contains a subfragment
+ * (inline or named) whose type condition isn't a super type of the field type.
+ * If a field is monomorphic, no '__typename' will be added.
+ * This adds the bare minimum amount of __typename but the logic is substantially more complex and
+ * it could cause cache misses when using fragments on monomorphic fields because __typename can be
+ * required in some cases.
+ *
+ * Note: It also adds '__typename' on fragment definitions that satisfy the same property because fragments
+ * could be read from the cache and we don't have a containing field in that case.
+ *
+ * Default value: "ifFragments"
+ */
+```
 
-  /**
-   * Add '__typename' for polymorphic fields, i.e. fields that contains a subfragment
-   * (inline or named) whose type condition isn't a super type of the field type.
-   * If a field is monomorphic, no '__typename' will be added.
-   *
-   * `"ifPolymorphic"` adds the bare minimum number of `__typename`. If you're using the cache it can lead
-   * to some extra cache misses because of a missing `__typename` so test before you opt-in
-   * 
-   * Note: It also adds '__typename' on fragment definitions that satisfy the same property because fragments
-   * could be read from the cache and we don't have a containing field in that case.
-   **/
-  addTypename.set("ifPolymorphic")
+You can read more in the corresponding [Typename.md](https://github.com/apollographql/apollo-kotlin/blob/main/design-docs/Typename.md) design document.
 
 
-  /**
-   * Add '__typename' for every selection set that contains fragments (inline or named) (Default)
-   *
-   * `"ifFragments"` is adding a lot more '__typename' than the above "ifPolymorphic" and "isAbstract" and will be removed in
-   * a future version. If you require '__typename' explicitely, you should add it to your queries.
-   **/
-  addTypename.set("ifFragments")
+## ✨️ [new] Maven publishing for multi-module apollo metadata (#3904)
+
+The Apollo Gradle plugin now creates a new "apollo" publication if `maven-publish` is found. This means you can now publish the Apollo metadata to a maven repository:
+
+```bash
+# In your producer project
+./gradlew publishApolloPublicationTo[SomeRepository]
+``` 
+
+Assuming your producer project is using `com.example:project:version` for maven coordinates, the Apollo metadata will be published at `com.example:project-apollo:version`:
+
+```kotlin
+// In your consumer project
+dependencies {
+  implementation("com.example:project:version")
+  apolloMetadata("com.example:project-apollo:version")
 }
 ```
 
+**Note**: There are absolutely no forward/backward compatibility guarantees for Apollo metadata yet. The Apollo version used in the consumer **must** be the same as the one used in the producer.
+
+## ✨️ [new] `addJvmOverloads` Gradle option (#3907)
+
+For better Java interop, you can now opt-in `addJvmOverloads`. `addJvmOverloads` will add the `@JvmOverloads` to your Kotlin operations:
+
+```kotlin
+@JvmOverloads
+class GetHeroQuery(val id: String, val episode: Optional<Episode> = Optional.Absent) {
+  // ...
+}
+```
+
+Meaning you can now create a new query from Java without having to specify `episode`: `new GetHeroQuery("1002")`
+
+## 👷‍ All changes 
+
+* 📖 Add note to tutorial about `graphql-ws` library to tutorial (#3961)
+* Use ApolloCompositeException for HTTP CachePolicies (#3967)
+* 🖋️ bump kotlin poet to 1.11.0 (#3970)
+* Add underlying exceptions as suppressed exceptions in ApolloCompositeException (#3957)
+* Add macosArm64 and macosX64 targets (#3954)
+* JS Websockets: handle remote close (#3952)
+* ⚙️ Introduce addTypename Gradle parameter (#3939)
+* Optimize CI a bit (#3942)
+* Add more field merging diagnostics (#3937)
+* ⚙️ Make adapters code work without relying on having a` __typename` IrProperty (#3930)
+* Add equals and hashCode implementations for models with no properties (#3928)
+* 🐘 Unbreak Gradle configuration cache (#3918)
+* WebSocket support for JS targets (#3913)
+* 🗄️ add apolloClient.httpCache (#3919)
+* ⚙️ Detect case insensitive filesystems (like MacOS default one) and rename classes when that happens (#3911)
+* Fix exceptions where not caught when reading the body of a batched query (#3910)
+* 🗄️ Fix writing fragments programmatically was using the wrong cache key (#3905)
+* 📦 Maven publishing for Apollo metadata (#3904)
+* Add addJvmOverloads Gradle option for better Java interop (#3907)
+* 🐘 Fix using refreshVersions (#3898)
+* add support for triple quotes escapes (#3895)
+* 👷 Test Builders: Fix enums in test resolver (#3894)
+* Validation: Detect missing arguments when there are no arguments at all (#3893)
+* Add support for receiving multiple bodies with multipart (#3889)
+* ✅  Validation: allow nullable variables in non-null locations if there is a default value (#3879)
+* 🗄️  HttpCache: do not cache mutations by default (#3873)
+* Chunked Transfer-Encoding support in MockServer (#3870)
+* Fix -1 body length in BatchingHttpInterceptor (#3874)
+* Fix issue in Java codegen where selectors returned ImmutableMapBuilder instances instead of Map (#3861)
+* Make watchers subscribe to the store earlier (#3853)
 
 # Version 3.1.0
 
