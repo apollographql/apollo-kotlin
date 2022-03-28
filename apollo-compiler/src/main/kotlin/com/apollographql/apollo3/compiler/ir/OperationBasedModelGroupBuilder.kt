@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.BTerm
 import com.apollographql.apollo3.api.BVariable
 import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.api.and
+import com.apollographql.apollo3.api.firstElementOfType
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLFragmentSpread
@@ -20,7 +21,6 @@ import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.lowerC
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.modelName
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
-import kotlin.reflect.KClass
 
 internal class OperationBasedModelGroupBuilder(
     private val schema: Schema,
@@ -144,17 +144,6 @@ internal class OperationBasedModelGroupBuilder(
     }
   }
 
-  private fun <T : Any, U : Any> BooleanExpression<T>.firstElementOfType(type: KClass<U>): U? {
-    return when (this) {
-      BooleanExpression.True -> null
-      BooleanExpression.False -> null
-      is BooleanExpression.Element -> @Suppress("UNCHECKED_CAST") if (type.isInstance(this.value)) this.value as U else null
-      is BooleanExpression.Not -> this.operand.firstElementOfType(type)
-      is BooleanExpression.And -> (this.operands.firstOrNull { it.firstElementOfType(type) != null } as BooleanExpression.Element?)?.firstElementOfType(type)
-      is BooleanExpression.Or -> (this.operands.firstOrNull { it.firstElementOfType(type) != null } as BooleanExpression.Element?)?.firstElementOfType(type)
-    }
-  }
-
   private class SelectionWithParent(val selection: GQLSelection, val parent: String)
 
   /**
@@ -231,7 +220,7 @@ internal class OperationBasedModelGroupBuilder(
            * Because fragments are not merged regardless of [collectAllInlineFragmentFields], all inline fragments
            * should have the same parentType here
            */
-          inlineFragmentsWithSameTypeCondition.groupBy { it.directives.toIncludeAndDeferBooleanExpression() }
+          inlineFragmentsWithSameTypeCondition.groupBy { it.directives.toBooleanExpression() }
               .entries.map { entry ->
                 val prefix = if (collectAllInlineFragmentFields) "as" else "on"
 
@@ -312,7 +301,7 @@ internal class OperationBasedModelGroupBuilder(
           /**
            * That's more involved than the inline fragment case because fragment spreads have different @include/@skip directives get merged together
            */
-          childCondition = BooleanExpression.Or(fragmentSpreadsWithSameName.map { it.directives.toIncludeAndDeferBooleanExpression() }.toSet())
+          childCondition = BooleanExpression.Or(fragmentSpreadsWithSameName.map { it.directives.toBooleanExpression() }.toSet())
               .simplify()
               .and(childCondition)
               .simplify()

@@ -92,7 +92,6 @@ internal object TestQuery_ResponseAdapter {
           TestQuery.Hero.Fragments {
 
 
-        val __path = reader.getPath()
         reader.rewind()
         val __typename = reader.readTypename()
 
@@ -101,7 +100,7 @@ internal object TestQuery_ResponseAdapter {
             customScalarAdapters)
 
         var humanDetails: HumanDetails? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
           humanDetails = com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
               customScalarAdapters)

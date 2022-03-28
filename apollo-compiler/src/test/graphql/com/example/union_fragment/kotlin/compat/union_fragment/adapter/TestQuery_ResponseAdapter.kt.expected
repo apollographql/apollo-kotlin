@@ -61,7 +61,6 @@ public object TestQuery_ResponseAdapter {
         TestQuery.Search {
       var __typename: String? = null
 
-      val __path = reader.getPath()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -74,7 +73,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       var asStarship: TestQuery.AsStarship? = null
-      if (possibleTypes("Starship").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+      if (possibleTypes("Starship").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
         asStarship = com.example.union_fragment.adapter.TestQuery_ResponseAdapter.AsStarship.fromJson(reader,
             customScalarAdapters)
@@ -113,12 +112,11 @@ public object TestQuery_ResponseAdapter {
           TestQuery.Search.Fragments {
 
 
-        val __path = reader.getPath()
         reader.rewind()
         val __typename = reader.readTypename()
 
         var starship: Starship? = null
-        if (possibleTypes("Starship").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+        if (possibleTypes("Starship").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
           starship = com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter.Starship.fromJson(reader,
               customScalarAdapters)

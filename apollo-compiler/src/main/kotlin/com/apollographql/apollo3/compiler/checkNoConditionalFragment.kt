@@ -10,7 +10,7 @@ import com.apollographql.apollo3.ast.GQLOperationDefinition
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.internal.IssuesScope
-import com.apollographql.apollo3.compiler.ir.toIncludeAndDeferBooleanExpression
+import com.apollographql.apollo3.compiler.ir.toBooleanExpression
 
 
 internal fun findConditionalFragments(definitions: List<GQLDefinition>): List<Issue> {
@@ -37,7 +37,7 @@ private fun IssuesScope.findConditionalFragments(selections: List<GQLSelection>)
     when (it) {
       is GQLField -> findConditionalFragments(it.selectionSet?.selections ?: emptyList())
       is GQLInlineFragment -> {
-        if (it.directives.toIncludeAndDeferBooleanExpression() != BooleanExpression.True) {
+        if (it.directives.toBooleanExpression() != BooleanExpression.True) {
           issues.add(
               Issue.ConditionalFragment(
                   message = "'responseBased' models do not support @include/@skip and @defer directives on fragments",
@@ -48,7 +48,7 @@ private fun IssuesScope.findConditionalFragments(selections: List<GQLSelection>)
         findConditionalFragments(it.selectionSet.selections)
       }
       is GQLFragmentSpread -> {
-        if (it.directives.toIncludeAndDeferBooleanExpression() != BooleanExpression.True) {
+        if (it.directives.toBooleanExpression() != BooleanExpression.True) {
           issues.add(
               Issue.ConditionalFragment(
                   message = "'responseBased' models do not support @include/@skip and @defer directives on fragments",

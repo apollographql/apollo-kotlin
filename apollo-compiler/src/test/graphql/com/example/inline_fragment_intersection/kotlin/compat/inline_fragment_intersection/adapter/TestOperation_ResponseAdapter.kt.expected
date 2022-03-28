@@ -63,7 +63,6 @@ public object TestOperation_ResponseAdapter {
         TestOperation.Random {
       var __typename: String? = null
 
-      val __path = reader.getPath()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -76,14 +75,14 @@ public object TestOperation_ResponseAdapter {
       }
 
       var asBeing: TestOperation.AsBeing? = null
-      if (possibleTypes("Human","Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+      if (possibleTypes("Human","Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
         asBeing = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.AsBeing.fromJson(reader,
             customScalarAdapters)
       }
 
       var asWookie2: TestOperation.AsWookie2? = null
-      if (possibleTypes("Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+      if (possibleTypes("Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
         asWookie2 = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.AsWookie2.fromJson(reader,
             customScalarAdapters)
@@ -125,7 +124,6 @@ public object TestOperation_ResponseAdapter {
       var name: String? = null
       var friends: List<TestOperation.Friend1>? = null
 
-      val __path = reader.getPath()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -140,7 +138,7 @@ public object TestOperation_ResponseAdapter {
       }
 
       var asHuman: TestOperation.AsHuman? = null
-      if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+      if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
         asHuman = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.AsHuman.fromJson(reader,
             customScalarAdapters)
@@ -183,7 +181,6 @@ public object TestOperation_ResponseAdapter {
       var __typename: String? = null
       var name: String? = null
 
-      val __path = reader.getPath()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -197,7 +194,7 @@ public object TestOperation_ResponseAdapter {
       }
 
       var asWookie1: TestOperation.AsWookie1? = null
-      if (possibleTypes("Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+      if (possibleTypes("Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
         asWookie1 = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.AsWookie1.fromJson(reader,
             customScalarAdapters)
@@ -326,7 +323,6 @@ public object TestOperation_ResponseAdapter {
       var name: String? = null
       var isFamous: Boolean? = null
 
-      val __path = reader.getPath()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -341,7 +337,7 @@ public object TestOperation_ResponseAdapter {
       }
 
       var asWookie: TestOperation.AsWookie? = null
-      if (possibleTypes("Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+      if (possibleTypes("Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
         asWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.AsWookie.fromJson(reader,
             customScalarAdapters)
