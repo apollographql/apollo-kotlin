@@ -21,7 +21,7 @@ Version 3.2.0 now has WebSocket support for Javascript targets courtesy of @unde
 | `apollo-normalized-cache-sqlite` |✅|   ✅   |  🚫  |🚫|
 | `apollo-http-cache` |✅|  🚫   |  🚫  |🚫|
 
-The implementation is based on the [`ws`](https://github.com/websockets/ws) library on Node and the [`WebSocket` API](https://websockets.spec.whatwg.org//) on the browser and largely inspired by [Ktor](https://ktor.io/).
+The implementation is based on the [`ws`](https://github.com/websockets/ws) library on Node and the [`WebSocket` API](https://websockets.spec.whatwg.org//) on the browser and inspired by [Ktor](https://ktor.io/).
 
 ## ✨️ [new] Fine grained `__typename` control (#3939)
 
@@ -41,8 +41,7 @@ This version generates non-nullable fragments when it knows the fragment is alwa
 In addition, it introduces a `addTypename` Gradle option to have better control over when to add the `__typename` field:
 
 ```kotlin
-  /**
- * When to add __typename. One of "ifFragments", "ifAbstract" or "ifPolymorphic"
+/**
  * When to add __typename. One of "always", "ifFragments", "ifAbstract" or "ifPolymorphic"
  *
  * - "always": Add '__typename' for every compound field
