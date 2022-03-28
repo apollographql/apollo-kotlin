@@ -10,8 +10,8 @@ fun BufferedSource.jsonReader(): JsonReader {
   return BufferedSourceJsonReader(this)
 }
 
-fun Map<String, Any?>.jsonReader(): JsonReader {
-  return MapJsonReader(this)
+fun Map<String, Any?>.jsonReader(skipPathRoot: Boolean = false): JsonReader {
+  return MapJsonReader(root = this, skipPathRoot = skipPathRoot)
 }
 
 /**

@@ -2,6 +2,7 @@ package com.apollographql.apollo3.api.json
 
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader.Companion.MAX_STACK_SIZE
+import com.apollographql.apollo3.api.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.internal.toDoubleExact
 import com.apollographql.apollo3.api.json.internal.toIntExact
 import com.apollographql.apollo3.api.json.internal.toLongExact
@@ -22,11 +23,18 @@ import com.apollographql.apollo3.exception.JsonDataException
  *
  * Anything else is undefined
  *
- * @param root the root [Map] to read from
- *
  * To read from a [okio.BufferedSource], see also [BufferedSourceJsonReader]
+ *
+ * @param root the root [Map] to read from
+ * @param pathRoot the path root to be prefixed to the returned path when calling [getPath]. Useful for [buffer]
+ * @param skipPathRoot whether to skip the path root (first element of the returned path) when calling [getPath]. Useful to omit `data` from
+ * the path of GraphQL payloads.
  */
-class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
+class MapJsonReader(
+    val root: Map<String, Any?>,
+    private val pathRoot: String = "",
+    private val skipPathRoot: Boolean = false,
+) : JsonReader {
 
   private var peekedToken: JsonReader.Token
 
@@ -368,9 +376,12 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   }
 
   override fun getPath(): String {
-    var isRoot = true
+    val firstIndex = if (skipPathRoot) 1 else 0
+    // Skip first '.', unless we have a pathRoot (and we're not skipping it)
+    var isRoot = pathRoot.isEmpty() || skipPathRoot
     return buildString {
-      for (index in 0.until(stackSize)) {
+      if (!skipPathRoot) append(pathRoot)
+      for (index in firstIndex until stackSize) {
         val element = path[index]
         if (!isRoot) {
           append('.')
@@ -398,10 +409,12 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
         "Failed to buffer json reader, expected `BEGIN_OBJECT` but found `$token` json token"
       }
 
+      val pathRoot = getPath()
+
       @Suppress("UNCHECKED_CAST")
       @OptIn(ApolloInternal::class)
       val data = this.readAny() as Map<String, Any?>
-      return MapJsonReader(data)
+      return MapJsonReader(root = data, pathRoot = pathRoot)
     }
   }
 }

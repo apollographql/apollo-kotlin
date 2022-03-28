@@ -19,7 +19,7 @@ class AdapterContext private constructor(
   }
 
   fun hasDeferredFragment(path: String, label: String?): Boolean {
-    val sanitizedPath = path.removePrefix("data.").trim('.')
+    val sanitizedPath = path.trim('.')
     return mergedDeferredFragmentIds?.contains(DeferredFragmentIdentifier(sanitizedPath, label)) == true
   }
 

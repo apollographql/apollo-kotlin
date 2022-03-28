@@ -1,5 +1,6 @@
 package test
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonReader.Token.BEGIN_ARRAY
@@ -13,7 +14,9 @@ import com.apollographql.apollo3.api.json.JsonReader.Token.NAME
 import com.apollographql.apollo3.api.json.JsonReader.Token.NULL
 import com.apollographql.apollo3.api.json.JsonReader.Token.NUMBER
 import com.apollographql.apollo3.api.json.JsonReader.Token.STRING
+import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.json.MapJsonReader.Companion.buffer
+import com.apollographql.apollo3.api.json.readAny
 import okio.Buffer
 import okio.ByteString.Companion.encodeUtf8
 import kotlin.test.Test
@@ -213,5 +216,36 @@ class PathTest {
   fun mapJsonReaderPath() {
     val mapJsonReader = BufferedSourceJsonReader(Buffer().write(jsonStr.encodeUtf8())).buffer()
     testPath(mapJsonReader)
+  }
+
+  @Test
+  fun pathWithBuffer() {
+    val bufferedSourceJsonReader = BufferedSourceJsonReader(Buffer().write(jsonStr.encodeUtf8()))
+    bufferedSourceJsonReader.beginObject() // root
+    bufferedSourceJsonReader.nextName() // menu
+    bufferedSourceJsonReader.beginObject() // menu.
+    bufferedSourceJsonReader.nextName() // menu.id
+    bufferedSourceJsonReader.nextString() // menu.id
+    bufferedSourceJsonReader.nextName() // menu.value
+    bufferedSourceJsonReader.nextBoolean() // menu.value
+    bufferedSourceJsonReader.nextName() // menu.popup
+    val mapJsonReader = bufferedSourceJsonReader.buffer()
+    assertEquals("menu.popup", mapJsonReader.getPath())
+    mapJsonReader.beginObject() // menu.popup.
+    assertEquals("menu.popup.", mapJsonReader.getPath())
+    mapJsonReader.nextName() // menu.popup.menuitem
+    assertEquals("menu.popup.menuitem", mapJsonReader.getPath())
+  }
+
+  @Test
+  @OptIn(ApolloInternal::class)
+  fun skipPathRoot() {
+    @Suppress("UNCHECKED_CAST") val root = BufferedSourceJsonReader(Buffer().write(jsonStr.encodeUtf8())).readAny() as Map<String, Any?>
+    val mapJsonReader = MapJsonReader(root, skipPathRoot = true)
+    mapJsonReader.beginObject() // root
+    mapJsonReader.nextName() // menu
+    mapJsonReader.beginObject() // menu.
+    mapJsonReader.nextName() // menu.id
+    assertEquals("id", mapJsonReader.getPath())
   }
 }
