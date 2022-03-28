@@ -18,9 +18,8 @@ class AdapterContext private constructor(
     }.keys
   }
 
-  fun hasDeferredFragment(path: String, label: String?): Boolean {
-    val sanitizedPath = path.trim('.')
-    return mergedDeferredFragmentIds?.contains(DeferredFragmentIdentifier(sanitizedPath, label)) == true
+  fun hasDeferredFragment(path: List<Any>, label: String?): Boolean {
+    return mergedDeferredFragmentIds?.contains(DeferredFragmentIdentifier(path, label)) == true
   }
 
   class Builder {

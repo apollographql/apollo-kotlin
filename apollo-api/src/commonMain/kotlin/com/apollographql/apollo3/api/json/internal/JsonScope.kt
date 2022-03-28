@@ -45,24 +45,17 @@ internal object JsonScope {
    * in that array. Otherwise the value is undefined, and we take advantage of that by incrementing
    * pathIndices when doing so isn't useful.
    */
-  fun getPath(stackSize: Int, stack: IntArray, pathNames: Array<String?>, pathIndices: IntArray): String {
-    val result = StringBuilder()
-    var isRoot = true
+  fun getPath(stackSize: Int, stack: IntArray, pathNames: Array<String?>, pathIndices: IntArray): List<Any> {
+    val result = mutableListOf<Any>()
     for (i in 0 until stackSize) {
       when (stack[i]) {
-        EMPTY_ARRAY, NONEMPTY_ARRAY -> result.append('.').append(pathIndices[i])
+        EMPTY_ARRAY, NONEMPTY_ARRAY -> result += pathIndices[i]
         EMPTY_OBJECT, DANGLING_NAME, NONEMPTY_OBJECT -> {
-          if (!isRoot) {
-            result.append('.')
-          }
-          if (pathNames[i] != null) {
-            result.append(pathNames[i])
-            isRoot = false
-          }
+          pathNames[i]?.let { result += it }
         }
         NONEMPTY_DOCUMENT, EMPTY_DOCUMENT, CLOSED -> Unit
       }
     }
-    return result.toString()
+    return result
   }
 }

@@ -27,16 +27,13 @@ import kotlin.jvm.JvmOverloads
  * To read from a [okio.BufferedSource], see also [BufferedSourceJsonReader]
  *
  * @param root the root [Map] to read from
- * @param pathRoot the path root to be prefixed to the returned path when calling [getPath]. Useful for [buffer]
- * @param skipPathRoot whether to skip the path root (first element of the returned path) when calling [getPath]. Useful to omit `data` from
- * the path of GraphQL payloads.
+ * @param pathRoot the path root to be prefixed to the returned path when calling [getPath]. Useful for [buffer].
  */
 class MapJsonReader
 @JvmOverloads
 constructor(
     val root: Map<String, Any?>,
-    private val pathRoot: String = "",
-    private val skipPathRoot: Boolean = false,
+    private val pathRoot: List<Any> = emptyList(),
 ) : JsonReader {
 
   private var peekedToken: JsonReader.Token
@@ -378,23 +375,13 @@ constructor(
     advanceIterator()
   }
 
-  override fun getPath(): String {
-    val firstIndex = if (skipPathRoot) 1 else 0
-    // Skip first '.', unless we have a pathRoot (and we're not skipping it)
-    var isRoot = pathRoot.isEmpty() || skipPathRoot
-    return buildString {
-      if (!skipPathRoot) append(pathRoot)
-      for (index in firstIndex until stackSize) {
-        val element = path[index]
-        if (!isRoot) {
-          append('.')
-        }
-        if (element != null) {
-          append(element.toString())
-          isRoot = false
-        }
-      }
+  override fun getPath(): List<Any> {
+    val result = mutableListOf<Any>()
+    result.addAll(pathRoot)
+    for (index in 0 until stackSize) {
+      path[index]?.let { result += it }
     }
+    return result
   }
 
   companion object {

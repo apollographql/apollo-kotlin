@@ -131,7 +131,7 @@ private constructor(
         val deferredFragmentIds = jsonMerger.mergedFragmentIds.let { if (mustClone) it.toSet() else it }
         worker.doWork {
           operation.parseJsonResponse(
-              jsonReader = merged.jsonReader(skipPathRoot = true),
+              jsonReader = merged.jsonReader(),
               customScalarAdapters = customScalarAdapters.withDeferredFragmentIds(deferredFragmentIds)
           )
         }

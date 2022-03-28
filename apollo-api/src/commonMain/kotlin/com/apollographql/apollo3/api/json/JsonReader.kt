@@ -173,9 +173,9 @@ interface JsonReader : Closeable {
   fun rewind()
 
   /**
-   * Returns the current path of the JSON being read.
+   * Returns the current path of the JSON being read, as a List. The elements can either be Strings (names) or Integers (array indices).
    */
-  fun getPath(): String
+  fun getPath(): List<Any>
 
   /**
    * A structure, name, or value type in a JSON-encoded string.
@@ -190,39 +190,48 @@ interface JsonReader : Closeable {
      * The closing of a JSON array. Written using [JsonWriter.endArray] and read using [JsonReader.endArray].
      */
     END_ARRAY,
+
     /**
      * The opening of a JSON object. Written using [JsonWriter.beginObject] and read using [JsonReader.beginObject].
      */
     BEGIN_OBJECT,
+
     /**
      * The closing of a JSON object. Written using [JsonWriter.endObject] and read using [JsonReader.endObject].
      */
     END_OBJECT,
+
     /**
      * A JSON property name. Within objects, tokens alternate between names and their values. Written using [JsonWriter.name] and read
      * using [JsonReader.nextName]
      */
     NAME,
+
     /**
      * A JSON string.
      */
     STRING,
+
     /**
      * A JSON number represented in this API by a Java `double`, `long`, or `int`.
      */
     NUMBER,
+
     /**
      * A JSON number represented in this API by a `long`.
      */
     LONG,
+
     /**
      * A JSON `true` or `false`.
      */
     BOOLEAN,
+
     /**
      * A JSON `null`.
      */
     NULL,
+
     /**
      * The end of the JSON stream. This sentinel value is returned by [JsonReader.peek] to signal that the JSON-encoded value has no
      * more tokens.
