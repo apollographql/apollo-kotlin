@@ -72,7 +72,6 @@ public class HeroDetailQuery_ResponseAdapter {
       String name = null;
       List<com.example.unique_type_name.HeroDetailQuery.Friend> friends = null;
 
-      String __path = reader.getPath();
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
@@ -85,7 +84,7 @@ public class HeroDetailQuery_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       com.example.unique_type_name.HeroDetailQuery.OnHuman onHuman = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
         onHuman = com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, customScalarAdapters);
       }

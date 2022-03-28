@@ -489,7 +489,7 @@ internal class IrBuilder(
       CollectedField(
           name = gqlField.name,
           alias = gqlField.alias,
-          condition = gqlField.directives.toBooleanExpression(),
+          condition = gqlField.directives.toIncludeBooleanExpression(),
           selections = gqlField.selectionSet?.selections ?: emptyList(),
           type = fieldDefinition.type,
           description = fieldDefinition.description,
@@ -591,10 +591,8 @@ internal fun GQLValue.toIrValue(): IrValue {
  * - False
  * - (!)Variable
  * - (!)Variable & (!)Variable
- *
- * TODO: rename to toIncludeBooleanExpression
  */
-internal fun List<GQLDirective>.toBooleanExpression(): BooleanExpression<BVariable> {
+internal fun List<GQLDirective>.toIncludeBooleanExpression(): BooleanExpression<BVariable> {
   val conditions = mapNotNull {
     it.toIncludeBooleanExpression()
   }
@@ -634,9 +632,9 @@ internal fun GQLDirective.toIncludeBooleanExpression(): BooleanExpression<BVaria
 }
 
 /**
- * A combination of the result of [toBooleanExpression] and either `True` or a [BLabel].
+ * A combination of the result of [toIncludeBooleanExpression] and either `True` or a [BLabel].
  */
-internal fun List<GQLDirective>.toIncludeAndDeferBooleanExpression(): BooleanExpression<BTerm> {
+internal fun List<GQLDirective>.toBooleanExpression(): BooleanExpression<BTerm> {
   val deferBooleanConditions = mapNotNull {
     it.toDeferBooleanExpression()
   }
@@ -648,7 +646,7 @@ internal fun List<GQLDirective>.toIncludeAndDeferBooleanExpression(): BooleanExp
     }
     deferBooleanConditions.first()
   }
-  return toBooleanExpression().and(deferBooleanExpression).simplify()
+  return toIncludeBooleanExpression().and(deferBooleanExpression).simplify()
 }
 
 internal fun GQLDirective.toDeferBooleanExpression(): BooleanExpression<BTerm>? {

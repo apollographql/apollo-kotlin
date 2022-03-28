@@ -31,7 +31,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.root
 import com.apollographql.apollo3.compiler.codegen.keyArgs
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
-import com.apollographql.apollo3.compiler.ir.toBooleanExpression
+import com.apollographql.apollo3.compiler.ir.toIncludeBooleanExpression
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.MemberName
@@ -122,7 +122,7 @@ class CompiledSelectionsBuilder(
   }
 
   private fun GQLField.walk(private: Boolean, parentType: String): SelectionResult? {
-    val expression = directives.toBooleanExpression()
+    val expression = directives.toIncludeBooleanExpression()
     if (expression == BooleanExpression.False) {
       return null
     }
@@ -161,7 +161,7 @@ class CompiledSelectionsBuilder(
   }
 
   private fun GQLInlineFragment.walk(private: Boolean): SelectionResult? {
-    val expression = directives.toBooleanExpression()
+    val expression = directives.toIncludeBooleanExpression()
     if (expression == BooleanExpression.False) {
       return null
     }
@@ -190,7 +190,7 @@ class CompiledSelectionsBuilder(
   }
 
   private fun GQLFragmentSpread.walk(): SelectionResult? {
-    val expression = directives.toBooleanExpression()
+    val expression = directives.toIncludeBooleanExpression()
     if (expression == BooleanExpression.False) {
       return null
     }

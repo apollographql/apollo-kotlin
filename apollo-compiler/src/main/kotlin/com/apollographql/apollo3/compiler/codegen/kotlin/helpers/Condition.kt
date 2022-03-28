@@ -50,11 +50,15 @@ internal fun BooleanExpression<BTerm>.codeBlock(): CodeBlock {
           )
         }
         is BLabel -> {
-          CodeBlock.of(
-              "%M(%S)",
-              MemberName("com.apollographql.apollo3.api", "label"),
-              v.label
-          )
+          if (v.label == null) {
+            CodeBlock.of("%M()", MemberName("com.apollographql.apollo3.api", "label"))
+          } else {
+            CodeBlock.of(
+                "%M(%S)",
+                MemberName("com.apollographql.apollo3.api", "label"),
+                v.label
+            )
+          }
         }
         is BPossibleTypes -> {
           CodeBlock.of(
