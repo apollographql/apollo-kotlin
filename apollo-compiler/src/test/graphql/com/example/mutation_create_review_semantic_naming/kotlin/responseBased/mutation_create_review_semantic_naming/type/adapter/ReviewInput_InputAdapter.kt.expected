@@ -32,7 +32,7 @@ public object ReviewInput_InputAdapter : Adapter<ReviewInput> {
   public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    `value`: ReviewInput
+    `value`: ReviewInput,
   ): Unit {
     writer.name("stars")
     IntAdapter.toJson(writer, customScalarAdapters, value.stars)

@@ -41,7 +41,7 @@ public object TestQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: TestQuery.Data
+      `value`: TestQuery.Data,
     ): Unit {
       writer.name("createReview")
       CreateReview.obj().nullable().toJson(writer, customScalarAdapters, value.createReview)
@@ -73,7 +73,7 @@ public object TestQuery_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.CreateReview
+        `value`: TestQuery.Data.CreateReview,
       ): Unit {
         writer.name("stars")
         IntAdapter.toJson(writer, customScalarAdapters, value.stars)

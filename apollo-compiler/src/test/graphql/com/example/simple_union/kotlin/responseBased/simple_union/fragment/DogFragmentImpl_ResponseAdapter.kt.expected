@@ -37,7 +37,7 @@ public object DogFragmentImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: DogFragmentImpl.Data
+      `value`: DogFragmentImpl.Data,
     ): Unit {
       writer.name("woof")
       StringAdapter.toJson(writer, customScalarAdapters, value.woof)

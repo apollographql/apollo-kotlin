@@ -41,7 +41,7 @@ public object GetPage_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: GetPage.Data
+      `value`: GetPage.Data,
     ): Unit {
       writer.name("collection")
       Collection.obj().toJson(writer, customScalarAdapters, value.collection)
@@ -62,7 +62,7 @@ public object GetPage_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: GetPage.Data.Collection
+        `value`: GetPage.Data.Collection,
       ): Unit {
         when(value) {
           is GetPage.Data.ParticularCollectionCollection ->
@@ -79,7 +79,7 @@ public object GetPage_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): GetPage.Data.ParticularCollectionCollection {
         var __typename: String? = typename
         var items: List<GetPage.Data.ParticularCollectionCollection.Item>? = null
@@ -101,7 +101,7 @@ public object GetPage_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: GetPage.Data.ParticularCollectionCollection
+        `value`: GetPage.Data.ParticularCollectionCollection,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -126,7 +126,7 @@ public object GetPage_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: GetPage.Data.ParticularCollectionCollection.Item
+          `value`: GetPage.Data.ParticularCollectionCollection.Item,
         ): Unit {
           when(value) {
             is GetPage.Data.ParticularCollectionCollection.ParticularItemItem ->
@@ -143,7 +143,7 @@ public object GetPage_ResponseAdapter {
         public fun fromJson(
           reader: JsonReader,
           customScalarAdapters: CustomScalarAdapters,
-          typename: String
+          typename: String,
         ): GetPage.Data.ParticularCollectionCollection.ParticularItemItem {
           var title: String? = null
           var __typename: String? = typename
@@ -168,7 +168,7 @@ public object GetPage_ResponseAdapter {
         public fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: GetPage.Data.ParticularCollectionCollection.ParticularItemItem
+          `value`: GetPage.Data.ParticularCollectionCollection.ParticularItemItem,
         ): Unit {
           writer.name("title")
           StringAdapter.toJson(writer, customScalarAdapters, value.title)
@@ -187,7 +187,7 @@ public object GetPage_ResponseAdapter {
         public fun fromJson(
           reader: JsonReader,
           customScalarAdapters: CustomScalarAdapters,
-          typename: String
+          typename: String,
         ): GetPage.Data.ParticularCollectionCollection.OtherItem {
           var title: String? = null
           var __typename: String? = typename
@@ -209,7 +209,7 @@ public object GetPage_ResponseAdapter {
         public fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: GetPage.Data.ParticularCollectionCollection.OtherItem
+          `value`: GetPage.Data.ParticularCollectionCollection.OtherItem,
         ): Unit {
           writer.name("title")
           StringAdapter.toJson(writer, customScalarAdapters, value.title)
@@ -226,7 +226,7 @@ public object GetPage_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): GetPage.Data.OtherCollection {
         var __typename: String? = typename
         var items: List<GetPage.Data.OtherCollection.Item>? = null
@@ -248,7 +248,7 @@ public object GetPage_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: GetPage.Data.OtherCollection
+        `value`: GetPage.Data.OtherCollection,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -279,7 +279,7 @@ public object GetPage_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: GetPage.Data.OtherCollection.Item
+          `value`: GetPage.Data.OtherCollection.Item,
         ): Unit {
           writer.name("title")
           StringAdapter.toJson(writer, customScalarAdapters, value.title)

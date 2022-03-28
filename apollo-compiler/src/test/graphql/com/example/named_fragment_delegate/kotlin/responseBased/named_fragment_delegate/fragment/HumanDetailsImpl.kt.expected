@@ -53,13 +53,13 @@ public class HumanDetailsImpl() : Fragment<HumanDetailsImpl.Data> {
     /**
      * The friends of the human exposed as a connection with edges
      */
-    public override val friendsConnection: FriendsConnection
+    public override val friendsConnection: FriendsConnection,
   ) : HumanDetails, Fragment.Data {
     public data class FriendsConnection(
       /**
        * The edges for each of the character's friends.
        */
-      public override val edges: List<Edge?>?
+      public override val edges: List<Edge?>?,
     ) : HumanDetails.FriendsConnection {
       public fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
@@ -67,13 +67,13 @@ public class HumanDetailsImpl() : Fragment<HumanDetailsImpl.Data> {
         /**
          * The character represented by this friendship edge
          */
-        public override val node: Node?
+        public override val node: Node?,
       ) : HumanDetails.FriendsConnection.Edge {
         public data class Node(
           /**
            * The name of the character
            */
-          public override val name: String
+          public override val name: String,
         ) : HumanDetails.FriendsConnection.Edge.Node
       }
     }

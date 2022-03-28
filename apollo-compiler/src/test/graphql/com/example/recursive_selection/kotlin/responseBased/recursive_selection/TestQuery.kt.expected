@@ -48,19 +48,19 @@ public class TestQuery() : Query<TestQuery.Data> {
   .build()
 
   public data class Data(
-    public val tree: Tree?
+    public val tree: Tree?,
   ) : Query.Data {
     public data class Tree(
       public val name: String,
       public val children: List<Child>,
-      public val parent: Parent?
+      public val parent: Parent?,
     ) {
       public data class Child(
-        public val name: String
+        public val name: String,
       )
 
       public data class Parent(
-        public val name: String
+        public val name: String,
       )
     }
   }

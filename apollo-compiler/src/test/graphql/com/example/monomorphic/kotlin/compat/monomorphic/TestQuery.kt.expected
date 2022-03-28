@@ -47,7 +47,7 @@ public class TestQuery() : Query<TestQuery.Data> {
   .build()
 
   public data class Data(
-    public val cat: Cat
+    public val cat: Cat,
   ) : Query.Data
 
   public data class Cat(
@@ -55,7 +55,7 @@ public class TestQuery() : Query<TestQuery.Data> {
     /**
      * Synthetic field for inline fragment on Node
      */
-    public val asNode: AsNode
+    public val asNode: AsNode,
   )
 
   public data class AsNode(
@@ -63,12 +63,12 @@ public class TestQuery() : Query<TestQuery.Data> {
     /**
      * Synthetic field for inline fragment on Animal
      */
-    public val asAnimal: AsAnimal
+    public val asAnimal: AsAnimal,
   )
 
   public data class AsAnimal(
     public val __typename: String,
-    public val species: String
+    public val species: String,
   )
 
   public companion object {

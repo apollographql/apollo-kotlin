@@ -19,7 +19,7 @@ import kotlin.String
 import kotlin.Unit
 
 public data class LoginBarber(
-  public val input: Login
+  public val input: Login,
 ) : Mutation<LoginBarber.Data> {
   public override fun id(): String = OPERATION_ID
 
@@ -44,10 +44,10 @@ public data class LoginBarber(
   .build()
 
   public data class Data(
-    public val login: Login
+    public val login: Login,
   ) : Mutation.Data {
     public data class Login(
-      public val response: String
+      public val response: String,
     )
   }
 

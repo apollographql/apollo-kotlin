@@ -27,7 +27,7 @@ internal object ColorInput_InputAdapter : Adapter<ColorInput> {
   public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    `value`: ColorInput
+    `value`: ColorInput,
   ): Unit {
     if (value.red is Optional.Present) {
       writer.name("red")

@@ -21,7 +21,7 @@ public object UserFragmentImpl_VariablesAdapter : Adapter<UserFragmentImpl> {
   public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    `value`: UserFragmentImpl
+    `value`: UserFragmentImpl,
   ): Unit {
     writer.name("size")
     IntAdapter.toJson(writer, customScalarAdapters, value.size)

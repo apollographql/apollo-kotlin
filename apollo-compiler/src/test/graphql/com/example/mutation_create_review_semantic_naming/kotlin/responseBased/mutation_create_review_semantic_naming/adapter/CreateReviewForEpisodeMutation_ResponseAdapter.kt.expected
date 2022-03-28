@@ -42,7 +42,7 @@ public object CreateReviewForEpisodeMutation_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: CreateReviewForEpisodeMutation.Data
+      `value`: CreateReviewForEpisodeMutation.Data,
     ): Unit {
       writer.name("createReview")
       CreateReview.obj().nullable().toJson(writer, customScalarAdapters, value.createReview)
@@ -73,7 +73,7 @@ public object CreateReviewForEpisodeMutation_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: CreateReviewForEpisodeMutation.Data.CreateReview
+        `value`: CreateReviewForEpisodeMutation.Data.CreateReview,
       ): Unit {
         writer.name("stars")
         IntAdapter.toJson(writer, customScalarAdapters, value.stars)

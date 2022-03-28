@@ -51,7 +51,7 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public data class Data(
     public val r2: R2?,
-    public val luke: Luke?
+    public val luke: Luke?,
   ) : Query.Data {
     public sealed interface R2 {
       public val __typename: String
@@ -76,7 +76,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * Height in the preferred unit, default is meters
        */
-      public override val height: Double?
+      public override val height: Double?,
     ) : R2, HumanDetails
 
     public data class DroidR2(
@@ -88,11 +88,11 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * This droid's primary function
        */
-      public override val primaryFunction: String?
+      public override val primaryFunction: String?,
     ) : R2, DroidDetails
 
     public data class OtherR2(
-      public override val __typename: String
+      public override val __typename: String,
     ) : R2
 
     public sealed interface Luke {
@@ -118,7 +118,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * Height in the preferred unit, default is meters
        */
-      public override val height: Double?
+      public override val height: Double?,
     ) : Luke, HumanDetails
 
     public data class DroidLuke(
@@ -130,11 +130,11 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * This droid's primary function
        */
-      public override val primaryFunction: String?
+      public override val primaryFunction: String?,
     ) : Luke, DroidDetails
 
     public data class OtherLuke(
-      public override val __typename: String
+      public override val __typename: String,
     ) : Luke
   }
 

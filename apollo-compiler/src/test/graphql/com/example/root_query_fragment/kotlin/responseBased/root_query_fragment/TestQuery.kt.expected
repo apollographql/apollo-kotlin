@@ -49,13 +49,13 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public data class Data(
     public override val __typename: String,
-    public override val hero: Hero?
+    public override val hero: Hero?,
   ) : QueryFragment, Query.Data {
     public data class Hero(
       /**
        * The name of the character
        */
-      public override val name: String
+      public override val name: String,
     ) : QueryFragment.Hero
 
     public companion object {

@@ -45,7 +45,7 @@ public object AnimalQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: AnimalQuery.Data
+      `value`: AnimalQuery.Data,
     ): Unit {
       writer.name("animal")
       Animal.obj(true).nullable().toJson(writer, customScalarAdapters, value.animal)
@@ -79,7 +79,7 @@ public object AnimalQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: AnimalQuery.Animal
+      `value`: AnimalQuery.Animal,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -119,7 +119,7 @@ public object AnimalQuery_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: AnimalQuery.Animal.Fragments
+        `value`: AnimalQuery.Animal.Fragments,
       ): Unit {
         if (value.catFragment != null) {
           com.example.simple_union.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.toJson(writer,

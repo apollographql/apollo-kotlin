@@ -48,14 +48,14 @@ public class TestQuery() : Query<TestQuery.Data> {
   .build()
 
   public data class Data(
-    public val a: A?
+    public val a: A?,
   ) : Query.Data {
     public data class A(
       public val __typename: String,
       /**
        * Synthetic field for 'aFragment'
        */
-      public val aFragment: AFragment
+      public val aFragment: AFragment,
     )
   }
 

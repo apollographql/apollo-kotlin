@@ -18,14 +18,14 @@ public data class AnimalFragment(
   /**
    * Synthetic field for inline fragment on Dog
    */
-  public val onDog: OnDog?
+  public val onDog: OnDog?,
 ) : Fragment.Data {
   public data class OnCat(
-    public val name: String
+    public val name: String,
   )
 
   public data class OnDog(
     @Deprecated(message = "No longer supported")
-    public val name: String
+    public val name: String,
   )
 }

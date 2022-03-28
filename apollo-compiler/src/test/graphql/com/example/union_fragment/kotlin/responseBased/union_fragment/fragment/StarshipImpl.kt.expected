@@ -43,6 +43,6 @@ public class StarshipImpl() : Fragment<StarshipImpl.Data> {
     /**
      * The name of the starship
      */
-    public override val name: String
+    public override val name: String,
   ) : Starship, Fragment.Data
 }

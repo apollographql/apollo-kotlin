@@ -43,7 +43,7 @@ public object UserFragmentImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: UserFragmentImpl.Data
+      `value`: UserFragmentImpl.Data,
     ): Unit {
       writer.name("firstName")
       StringAdapter.toJson(writer, customScalarAdapters, value.firstName)

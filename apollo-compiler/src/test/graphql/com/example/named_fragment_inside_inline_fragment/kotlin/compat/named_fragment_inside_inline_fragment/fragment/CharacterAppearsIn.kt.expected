@@ -13,5 +13,5 @@ public data class CharacterAppearsIn(
   /**
    * The movies this character appears in
    */
-  public val appearsIn: List<Episode?>
+  public val appearsIn: List<Episode?>,
 ) : Fragment.Data

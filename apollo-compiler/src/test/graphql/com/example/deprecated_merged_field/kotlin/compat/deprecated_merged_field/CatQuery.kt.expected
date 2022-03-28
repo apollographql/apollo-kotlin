@@ -48,7 +48,7 @@ public class CatQuery() : Query<CatQuery.Data> {
   .build()
 
   public data class Data(
-    public val cat: Cat?
+    public val cat: Cat?,
   ) : Query.Data
 
   public data class Cat(
@@ -56,13 +56,13 @@ public class CatQuery() : Query<CatQuery.Data> {
     /**
      * Synthetic field for grouping fragments
      */
-    public val fragments: Fragments
+    public val fragments: Fragments,
   ) {
     public data class Fragments(
       /**
        * Synthetic field for 'AnimalFragment'
        */
-      public val animalFragment: AnimalFragment
+      public val animalFragment: AnimalFragment,
     )
   }
 

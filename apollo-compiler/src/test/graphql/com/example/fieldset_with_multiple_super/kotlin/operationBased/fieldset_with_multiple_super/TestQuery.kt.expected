@@ -47,7 +47,7 @@ public class TestQuery() : Query<TestQuery.Data> {
   .build()
 
   public data class Data(
-    public val c: C?
+    public val c: C?,
   ) : Query.Data {
     public data class C(
       public val __typename: String,
@@ -58,7 +58,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * Synthetic field for inline fragment on B
        */
-      public val onB: OnB?
+      public val onB: OnB?,
     ) {
       public data class OnA(
         public val __typename: String,
@@ -66,10 +66,10 @@ public class TestQuery() : Query<TestQuery.Data> {
         /**
          * Synthetic field for inline fragment on B
          */
-        public val onB: OnB?
+        public val onB: OnB?,
       ) {
         public data class OnB(
-          public val fieldB1: String?
+          public val fieldB1: String?,
         )
       }
 
@@ -79,10 +79,10 @@ public class TestQuery() : Query<TestQuery.Data> {
         /**
          * Synthetic field for inline fragment on A
          */
-        public val onA: OnA?
+        public val onA: OnA?,
       ) {
         public data class OnA(
-          public val fieldA2: String?
+          public val fieldA2: String?,
         )
       }
     }

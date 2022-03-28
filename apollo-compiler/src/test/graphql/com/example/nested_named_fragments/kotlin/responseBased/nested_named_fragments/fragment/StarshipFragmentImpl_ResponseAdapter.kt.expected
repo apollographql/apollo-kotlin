@@ -48,7 +48,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: StarshipFragmentImpl.Data
+      `value`: StarshipFragmentImpl.Data,
     ): Unit {
       writer.name("id")
       StringAdapter.toJson(writer, customScalarAdapters, value.id)
@@ -83,7 +83,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: StarshipFragmentImpl.Data.PilotConnection
+        `value`: StarshipFragmentImpl.Data.PilotConnection,
       ): Unit {
         writer.name("edges")
         Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
@@ -112,7 +112,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: StarshipFragmentImpl.Data.PilotConnection.Edge
+          `value`: StarshipFragmentImpl.Data.PilotConnection.Edge,
         ): Unit {
           writer.name("node")
           Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
@@ -147,7 +147,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
           public override fun toJson(
             writer: JsonWriter,
             customScalarAdapters: CustomScalarAdapters,
-            `value`: StarshipFragmentImpl.Data.PilotConnection.Edge.Node
+            `value`: StarshipFragmentImpl.Data.PilotConnection.Edge.Node,
           ): Unit {
             writer.name("__typename")
             StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -186,7 +186,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
             public override fun toJson(
               writer: JsonWriter,
               customScalarAdapters: CustomScalarAdapters,
-              `value`: StarshipFragmentImpl.Data.PilotConnection.Edge.Node.Homeworld
+              `value`: StarshipFragmentImpl.Data.PilotConnection.Edge.Node.Homeworld,
             ): Unit {
               writer.name("__typename")
               StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

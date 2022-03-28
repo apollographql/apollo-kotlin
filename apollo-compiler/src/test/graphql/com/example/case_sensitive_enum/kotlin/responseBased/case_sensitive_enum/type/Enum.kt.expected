@@ -11,7 +11,7 @@ import kotlin.Deprecated
 import kotlin.String
 
 public enum class Enum(
-  public val rawValue: String
+  public val rawValue: String,
 ) {
   @Deprecated(message = "No longer supported")
   north("north"),

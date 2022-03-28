@@ -50,7 +50,7 @@ public class TestOperation() : Query<TestOperation.Data> {
   .build()
 
   public data class Data(
-    public val random: Random
+    public val random: Random,
   ) : Query.Data {
     public data class Random(
       public val __typename: String,
@@ -61,7 +61,7 @@ public class TestOperation() : Query<TestOperation.Data> {
       /**
        * Synthetic field for inline fragment on Wookie
        */
-      public val onWookie: OnWookie?
+      public val onWookie: OnWookie?,
     ) {
       public data class OnBeing(
         public val __typename: String,
@@ -70,7 +70,7 @@ public class TestOperation() : Query<TestOperation.Data> {
         /**
          * Synthetic field for inline fragment on Human
          */
-        public val onHuman: OnHuman?
+        public val onHuman: OnHuman?,
       ) {
         public data class Friend(
           public val __typename: String,
@@ -78,16 +78,16 @@ public class TestOperation() : Query<TestOperation.Data> {
           /**
            * Synthetic field for inline fragment on Wookie
            */
-          public val onWookie: OnWookie?
+          public val onWookie: OnWookie?,
         ) {
           public data class OnWookie(
-            public val lifeExpectancy: Double?
+            public val lifeExpectancy: Double?,
           )
         }
 
         public data class OnHuman(
           public val profilePictureUrl: String?,
-          public val friends: List<Friend>
+          public val friends: List<Friend>,
         ) {
           public data class Friend(
             public val __typename: String,
@@ -95,10 +95,10 @@ public class TestOperation() : Query<TestOperation.Data> {
             /**
              * Synthetic field for inline fragment on Wookie
              */
-            public val onWookie: OnWookie?
+            public val onWookie: OnWookie?,
           ) {
             public data class OnWookie(
-              public val race: Race
+              public val race: Race,
             )
           }
         }
@@ -106,10 +106,10 @@ public class TestOperation() : Query<TestOperation.Data> {
 
       public data class OnWookie(
         public val race: Race,
-        public val friends: List<Friend>
+        public val friends: List<Friend>,
       ) {
         public data class Friend(
-          public val lifeExpectancy: Double?
+          public val lifeExpectancy: Double?,
         )
       }
     }

@@ -48,7 +48,7 @@ public class TestQuery() : Query<TestQuery.Data> {
   .build()
 
   public data class Data(
-    public val nonOptionalHero: NonOptionalHero
+    public val nonOptionalHero: NonOptionalHero,
   ) : Query.Data {
     public sealed interface NonOptionalHero {
       public val __typename: String
@@ -72,7 +72,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * Height in the preferred unit, default is meters
        */
-      public val height: Double?
+      public val height: Double?,
     ) : NonOptionalHero
 
     public data class OtherNonOptionalHero(
@@ -80,7 +80,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * The name of the character
        */
-      public override val name: String
+      public override val name: String,
     ) : NonOptionalHero
   }
 

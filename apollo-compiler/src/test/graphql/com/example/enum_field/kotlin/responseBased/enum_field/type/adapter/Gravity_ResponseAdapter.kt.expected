@@ -22,7 +22,7 @@ public object Gravity_ResponseAdapter : Adapter<Gravity> {
   public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    `value`: Gravity
+    `value`: Gravity,
   ): Unit {
     writer.value(value.rawValue)
   }

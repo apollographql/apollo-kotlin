@@ -50,7 +50,7 @@ public class TestQuery() : Query<TestQuery.Data> {
   .build()
 
   public data class Data(
-    public val hero: Hero?
+    public val hero: Hero?,
   ) : Query.Data {
     public data class Hero(
       public val __typename: String,
@@ -65,7 +65,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * Synthetic field for inline fragment on Droid
        */
-      public val onDroid: OnDroid?
+      public val onDroid: OnDroid?,
     ) {
       public data class OnHuman(
         /**
@@ -75,7 +75,7 @@ public class TestQuery() : Query<TestQuery.Data> {
         /**
          * This human's friends, or an empty list if they have none
          */
-        public val friends: List<Friend?>?
+        public val friends: List<Friend?>?,
       ) {
         public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
@@ -83,7 +83,7 @@ public class TestQuery() : Query<TestQuery.Data> {
           /**
            * The movies this character appears in
            */
-          public val appearsIn: List<Episode?>
+          public val appearsIn: List<Episode?>,
         ) {
           public fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
         }
@@ -97,7 +97,7 @@ public class TestQuery() : Query<TestQuery.Data> {
         /**
          * This droid's friends, or an empty list if they have none
          */
-        public val friends: List<Friend?>?
+        public val friends: List<Friend?>?,
       ) {
         public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
@@ -105,7 +105,7 @@ public class TestQuery() : Query<TestQuery.Data> {
           /**
            * The ID of the character
            */
-          public val id: String
+          public val id: String,
         )
       }
     }

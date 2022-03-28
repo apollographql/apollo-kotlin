@@ -49,7 +49,7 @@ public class AnimalQuery() : Query<AnimalQuery.Data> {
   .build()
 
   public data class Data(
-    public val animal: Animal?
+    public val animal: Animal?,
   ) : Query.Data {
     public sealed interface Animal {
       public val __typename: String
@@ -67,16 +67,16 @@ public class AnimalQuery() : Query<AnimalQuery.Data> {
 
     public data class CatAnimal(
       public override val __typename: String,
-      public override val meow: String
+      public override val meow: String,
     ) : Animal, CatFragment
 
     public data class DogAnimal(
       public override val __typename: String,
-      public override val woof: String
+      public override val woof: String,
     ) : Animal, DogFragment
 
     public data class OtherAnimal(
-      public override val __typename: String
+      public override val __typename: String,
     ) : Animal
   }
 

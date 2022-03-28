@@ -47,7 +47,7 @@ public class TestQuery() : Query<TestQuery.Data> {
   .build()
 
   public data class Data(
-    public val root: Root?
+    public val root: Root?,
   ) : Query.Data {
     public sealed interface Root {
       public val __typename: String
@@ -68,16 +68,16 @@ public class TestQuery() : Query<TestQuery.Data> {
     public data class ABRoot(
       public override val __typename: String,
       public override val fieldA1: String?,
-      public val fieldB1: String?
+      public val fieldB1: String?,
     ) : ARoot
 
     public data class OtherRoot(
-      public override val __typename: String
+      public override val __typename: String,
     ) : Root
 
     public data class OtherARoot(
       public override val __typename: String,
-      public override val fieldA1: String?
+      public override val fieldA1: String?,
     ) : ARoot
   }
 

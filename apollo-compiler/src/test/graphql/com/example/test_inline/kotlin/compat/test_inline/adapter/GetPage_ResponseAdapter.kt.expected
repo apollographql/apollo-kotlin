@@ -42,7 +42,7 @@ public object GetPage_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: GetPage.Data
+      `value`: GetPage.Data,
     ): Unit {
       writer.name("collection")
       Collection.obj(true).toJson(writer, customScalarAdapters, value.collection)
@@ -86,7 +86,7 @@ public object GetPage_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: GetPage.Collection
+      `value`: GetPage.Collection,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -123,7 +123,7 @@ public object GetPage_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: GetPage.Item1
+      `value`: GetPage.Item1,
     ): Unit {
       writer.name("title")
       StringAdapter.toJson(writer, customScalarAdapters, value.title)
@@ -155,7 +155,7 @@ public object GetPage_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: GetPage.AsParticularCollection
+      `value`: GetPage.AsParticularCollection,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -202,7 +202,7 @@ public object GetPage_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: GetPage.Item
+      `value`: GetPage.Item,
     ): Unit {
       writer.name("title")
       StringAdapter.toJson(writer, customScalarAdapters, value.title)
@@ -245,7 +245,7 @@ public object GetPage_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: GetPage.AsParticularItem
+      `value`: GetPage.AsParticularItem,
     ): Unit {
       writer.name("title")
       StringAdapter.toJson(writer, customScalarAdapters, value.title)

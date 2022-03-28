@@ -45,7 +45,7 @@ public object TestQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: TestQuery.Data
+      `value`: TestQuery.Data,
     ): Unit {
       writer.name("hero")
       Hero.obj().nullable().toJson(writer, customScalarAdapters, value.hero)
@@ -80,7 +80,7 @@ public object TestQuery_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.Hero
+        `value`: TestQuery.Data.Hero,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -110,7 +110,7 @@ public object TestQuery_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: TestQuery.Data.Hero.Friend
+          `value`: TestQuery.Data.Hero.Friend,
         ): Unit {
           when(value) {
             is TestQuery.Data.Hero.HumanFriend -> HumanFriend.toJson(writer, customScalarAdapters,
@@ -129,7 +129,7 @@ public object TestQuery_ResponseAdapter {
         public fun fromJson(
           reader: JsonReader,
           customScalarAdapters: CustomScalarAdapters,
-          typename: String
+          typename: String,
         ): TestQuery.Data.Hero.HumanFriend {
           var __typename: String? = typename
           var name: String? = null
@@ -154,7 +154,7 @@ public object TestQuery_ResponseAdapter {
         public fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: TestQuery.Data.Hero.HumanFriend
+          `value`: TestQuery.Data.Hero.HumanFriend,
         ): Unit {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -173,7 +173,7 @@ public object TestQuery_ResponseAdapter {
         public fun fromJson(
           reader: JsonReader,
           customScalarAdapters: CustomScalarAdapters,
-          typename: String
+          typename: String,
         ): TestQuery.Data.Hero.DroidFriend {
           var __typename: String? = typename
           var name: String? = null
@@ -198,7 +198,7 @@ public object TestQuery_ResponseAdapter {
         public fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: TestQuery.Data.Hero.DroidFriend
+          `value`: TestQuery.Data.Hero.DroidFriend,
         ): Unit {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -217,7 +217,7 @@ public object TestQuery_ResponseAdapter {
         public fun fromJson(
           reader: JsonReader,
           customScalarAdapters: CustomScalarAdapters,
-          typename: String
+          typename: String,
         ): TestQuery.Data.Hero.OtherFriend {
           var __typename: String? = typename
           var name: String? = null
@@ -239,7 +239,7 @@ public object TestQuery_ResponseAdapter {
         public fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: TestQuery.Data.Hero.OtherFriend
+          `value`: TestQuery.Data.Hero.OtherFriend,
         ): Unit {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

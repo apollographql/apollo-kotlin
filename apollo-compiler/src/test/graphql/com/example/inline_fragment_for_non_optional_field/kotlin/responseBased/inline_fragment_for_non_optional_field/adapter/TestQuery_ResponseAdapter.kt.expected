@@ -42,7 +42,7 @@ public object TestQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: TestQuery.Data
+      `value`: TestQuery.Data,
     ): Unit {
       writer.name("nonOptionalHero")
       NonOptionalHero.obj().toJson(writer, customScalarAdapters, value.nonOptionalHero)
@@ -63,7 +63,7 @@ public object TestQuery_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.NonOptionalHero
+        `value`: TestQuery.Data.NonOptionalHero,
       ): Unit {
         when(value) {
           is TestQuery.Data.HumanNonOptionalHero -> HumanNonOptionalHero.toJson(writer,
@@ -80,7 +80,7 @@ public object TestQuery_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): TestQuery.Data.HumanNonOptionalHero {
         var __typename: String? = typename
         var name: String? = null
@@ -105,7 +105,7 @@ public object TestQuery_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.HumanNonOptionalHero
+        `value`: TestQuery.Data.HumanNonOptionalHero,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -124,7 +124,7 @@ public object TestQuery_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): TestQuery.Data.OtherNonOptionalHero {
         var __typename: String? = typename
         var name: String? = null
@@ -146,7 +146,7 @@ public object TestQuery_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.OtherNonOptionalHero
+        `value`: TestQuery.Data.OtherNonOptionalHero,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

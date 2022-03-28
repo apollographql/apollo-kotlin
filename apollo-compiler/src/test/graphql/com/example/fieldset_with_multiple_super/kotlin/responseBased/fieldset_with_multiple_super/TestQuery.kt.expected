@@ -47,7 +47,7 @@ public class TestQuery() : Query<TestQuery.Data> {
   .build()
 
   public data class Data(
-    public val c: C?
+    public val c: C?,
   ) : Query.Data {
     public sealed interface C {
       public val __typename: String
@@ -78,21 +78,21 @@ public class TestQuery() : Query<TestQuery.Data> {
       public override val fieldA1: String?,
       public val fieldB1: String?,
       public override val fieldB2: String?,
-      public val fieldA2: String?
+      public val fieldA2: String?,
     ) : AC, BC
 
     public data class OtherC(
-      public override val __typename: String
+      public override val __typename: String,
     ) : C
 
     public data class OtherAC(
       public override val __typename: String,
-      public override val fieldA1: String?
+      public override val fieldA1: String?,
     ) : AC
 
     public data class OtherBC(
       public override val __typename: String,
-      public override val fieldB2: String?
+      public override val fieldB2: String?,
     ) : BC
   }
 

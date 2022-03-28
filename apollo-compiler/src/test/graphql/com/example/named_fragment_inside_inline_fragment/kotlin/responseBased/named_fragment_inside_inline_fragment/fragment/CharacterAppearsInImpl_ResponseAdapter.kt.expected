@@ -41,7 +41,7 @@ public object CharacterAppearsInImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: CharacterAppearsInImpl.Data
+      `value`: CharacterAppearsInImpl.Data,
     ): Unit {
       writer.name("appearsIn")
       Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,

@@ -18,7 +18,7 @@ public data class HeroDetails(
   /**
    * The friends of the character exposed as a connection with edges
    */
-  public val friendsConnection: FriendsConnection
+  public val friendsConnection: FriendsConnection,
 ) : Fragment.Data {
   public data class FriendsConnection(
     /**
@@ -28,20 +28,20 @@ public data class HeroDetails(
     /**
      * The edges for each of the character's friends.
      */
-    public val edges: List<Edge?>?
+    public val edges: List<Edge?>?,
   )
 
   public data class Edge(
     /**
      * The character represented by this friendship edge
      */
-    public val node: Node?
+    public val node: Node?,
   )
 
   public data class Node(
     /**
      * The name of the character
      */
-    public val name: String
+    public val name: String,
   )
 }

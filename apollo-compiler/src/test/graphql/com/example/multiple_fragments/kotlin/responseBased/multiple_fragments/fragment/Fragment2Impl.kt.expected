@@ -41,6 +41,6 @@ public class Fragment2Impl() : Fragment<Fragment2Impl.Data> {
   .build()
 
   public data class Data(
-    public override val field2: String?
+    public override val field2: String?,
   ) : Fragment2, Fragment.Data
 }

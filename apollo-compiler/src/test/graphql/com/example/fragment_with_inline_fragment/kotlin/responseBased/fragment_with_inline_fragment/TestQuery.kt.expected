@@ -52,7 +52,7 @@ public class TestQuery() : Query<TestQuery.Data> {
   .build()
 
   public data class Data(
-    public val hero: Hero?
+    public val hero: Hero?,
   ) : Query.Data {
     public sealed interface Hero : HeroDetails {
       public override val __typename: String
@@ -121,7 +121,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * The movies this character appears in
        */
-      public override val appearsIn: List<Episode?>
+      public override val appearsIn: List<Episode?>,
     ) : Hero, HumanHeroDetails {
       public fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
 
@@ -133,7 +133,7 @@ public class TestQuery() : Query<TestQuery.Data> {
         /**
          * The edges for each of the character's friends.
          */
-        public override val edges: List<Edge?>?
+        public override val edges: List<Edge?>?,
       ) : Hero.FriendsConnection, HumanHeroDetails.FriendsConnection {
         public fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
@@ -141,13 +141,13 @@ public class TestQuery() : Query<TestQuery.Data> {
           /**
            * The character represented by this friendship edge
            */
-          public override val node: Node?
+          public override val node: Node?,
         ) : Hero.FriendsConnection.Edge, HumanHeroDetails.FriendsConnection.Edge {
           public data class Node(
             /**
              * The name of the character
              */
-            public override val name: String
+            public override val name: String,
           ) : Hero.FriendsConnection.Edge.Node, HumanHeroDetails.FriendsConnection.Edge.Node
         }
       }
@@ -171,7 +171,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * The movies this character appears in
        */
-      public override val appearsIn: List<Episode?>
+      public override val appearsIn: List<Episode?>,
     ) : Hero, DroidHeroDetails {
       public fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
 
@@ -183,7 +183,7 @@ public class TestQuery() : Query<TestQuery.Data> {
         /**
          * The edges for each of the character's friends.
          */
-        public override val edges: List<Edge?>?
+        public override val edges: List<Edge?>?,
       ) : Hero.FriendsConnection, DroidHeroDetails.FriendsConnection {
         public fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
@@ -191,13 +191,13 @@ public class TestQuery() : Query<TestQuery.Data> {
           /**
            * The character represented by this friendship edge
            */
-          public override val node: Node?
+          public override val node: Node?,
         ) : Hero.FriendsConnection.Edge, DroidHeroDetails.FriendsConnection.Edge {
           public data class Node(
             /**
              * The name of the character
              */
-            public override val name: String
+            public override val name: String,
           ) : Hero.FriendsConnection.Edge.Node, DroidHeroDetails.FriendsConnection.Edge.Node
         }
       }
@@ -216,7 +216,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * The movies this character appears in
        */
-      public override val appearsIn: List<Episode?>
+      public override val appearsIn: List<Episode?>,
     ) : Hero, HeroDetails {
       public fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
 
@@ -228,7 +228,7 @@ public class TestQuery() : Query<TestQuery.Data> {
         /**
          * The edges for each of the character's friends.
          */
-        public override val edges: List<Edge?>?
+        public override val edges: List<Edge?>?,
       ) : Hero.FriendsConnection, HeroDetails.FriendsConnection {
         public fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
@@ -236,13 +236,13 @@ public class TestQuery() : Query<TestQuery.Data> {
           /**
            * The character represented by this friendship edge
            */
-          public override val node: Node?
+          public override val node: Node?,
         ) : Hero.FriendsConnection.Edge, HeroDetails.FriendsConnection.Edge {
           public data class Node(
             /**
              * The name of the character
              */
-            public override val name: String
+            public override val name: String,
           ) : Hero.FriendsConnection.Edge.Node, HeroDetails.FriendsConnection.Edge.Node
         }
       }

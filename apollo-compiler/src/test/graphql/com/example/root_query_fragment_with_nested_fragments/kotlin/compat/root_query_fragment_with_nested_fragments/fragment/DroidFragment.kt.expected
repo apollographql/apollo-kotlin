@@ -16,5 +16,5 @@ public data class DroidFragment(
   /**
    * This droid's primary function
    */
-  public val primaryFunction: String?
+  public val primaryFunction: String?,
 ) : Fragment.Data

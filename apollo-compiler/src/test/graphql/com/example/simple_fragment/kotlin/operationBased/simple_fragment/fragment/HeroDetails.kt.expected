@@ -13,5 +13,5 @@ internal data class HeroDetails(
   /**
    * Synthetic field for 'HumanDetails'
    */
-  public val humanDetails: HumanDetails?
+  public val humanDetails: HumanDetails?,
 ) : Fragment.Data

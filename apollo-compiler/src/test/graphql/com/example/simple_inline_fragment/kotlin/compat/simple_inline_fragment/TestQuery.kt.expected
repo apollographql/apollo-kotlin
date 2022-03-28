@@ -48,7 +48,7 @@ public class TestQuery() : Query<TestQuery.Data> {
   .build()
 
   public data class Data(
-    public val hero: Hero?
+    public val hero: Hero?,
   ) : Query.Data
 
   public data class Hero(
@@ -68,7 +68,7 @@ public class TestQuery() : Query<TestQuery.Data> {
     /**
      * Synthetic field for inline fragment on Droid
      */
-    public val asDroid: AsDroid?
+    public val asDroid: AsDroid?,
   )
 
   public data class AsHuman(
@@ -84,7 +84,7 @@ public class TestQuery() : Query<TestQuery.Data> {
     /**
      * Height in the preferred unit, default is meters
      */
-    public val height: Double?
+    public val height: Double?,
   )
 
   public data class AsDroid(
@@ -100,7 +100,7 @@ public class TestQuery() : Query<TestQuery.Data> {
     /**
      * This droid's primary function
      */
-    public val primaryFunction: String?
+    public val primaryFunction: String?,
   )
 
   public companion object {

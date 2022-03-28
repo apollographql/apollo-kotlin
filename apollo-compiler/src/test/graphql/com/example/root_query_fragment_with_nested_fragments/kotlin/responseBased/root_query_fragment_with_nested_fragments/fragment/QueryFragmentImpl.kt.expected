@@ -44,14 +44,14 @@ public class QueryFragmentImpl() : Fragment<QueryFragmentImpl.Data> {
     public override val __typename: String,
     public override val hero: Hero?,
     public override val droid: Droid?,
-    public override val human: Human?
+    public override val human: Human?,
   ) : QueryFragment, Fragment.Data {
     public data class Hero(
       public override val __typename: String,
       /**
        * The name of the character
        */
-      public override val name: String
+      public override val name: String,
     ) : HeroFragment, QueryFragment.Hero {
       public companion object {
         public fun Hero.heroFragment() = this as? HeroFragment
@@ -67,7 +67,7 @@ public class QueryFragmentImpl() : Fragment<QueryFragmentImpl.Data> {
       /**
        * This droid's primary function
        */
-      public override val primaryFunction: String?
+      public override val primaryFunction: String?,
     ) : DroidFragment, QueryFragment.Droid {
       public companion object {
         public fun Droid.droidFragment() = this as? DroidFragment
@@ -83,7 +83,7 @@ public class QueryFragmentImpl() : Fragment<QueryFragmentImpl.Data> {
       /**
        * The home planet of the human, or null if unknown
        */
-      public override val homePlanet: String?
+      public override val homePlanet: String?,
     ) : QueryFragment.Human
   }
 }

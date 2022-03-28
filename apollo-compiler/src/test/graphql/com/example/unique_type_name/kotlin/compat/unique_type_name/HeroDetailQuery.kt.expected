@@ -51,7 +51,7 @@ public class HeroDetailQuery() : Query<HeroDetailQuery.Data> {
   .build()
 
   public data class Data(
-    public val heroDetailQuery: HeroDetailQuery?
+    public val heroDetailQuery: HeroDetailQuery?,
   ) : Query.Data
 
   public data class HeroDetailQuery(
@@ -67,7 +67,7 @@ public class HeroDetailQuery() : Query<HeroDetailQuery.Data> {
     /**
      * Synthetic field for inline fragment on Human
      */
-    public val asHuman: AsHuman?
+    public val asHuman: AsHuman?,
   ) {
     public fun friendsFilterNotNull(): List<Friend2>? = friends?.filterNotNull()
   }
@@ -76,7 +76,7 @@ public class HeroDetailQuery() : Query<HeroDetailQuery.Data> {
     /**
      * The name of the character
      */
-    public val name: String
+    public val name: String,
   )
 
   public data class AsHuman(
@@ -93,7 +93,7 @@ public class HeroDetailQuery() : Query<HeroDetailQuery.Data> {
     /**
      * Height in the preferred unit, default is meters
      */
-    public val height: Double?
+    public val height: Double?,
   ) {
     public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
   }
@@ -110,7 +110,7 @@ public class HeroDetailQuery() : Query<HeroDetailQuery.Data> {
     /**
      * The friends of the character, or an empty list if they have none
      */
-    public val friends: List<Friend1?>?
+    public val friends: List<Friend1?>?,
   ) {
     public fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
 
@@ -122,13 +122,13 @@ public class HeroDetailQuery() : Query<HeroDetailQuery.Data> {
     /**
      * Synthetic field for grouping fragments
      */
-    public val fragments: Fragments
+    public val fragments: Fragments,
   ) {
     public data class Fragments(
       /**
        * Synthetic field for 'HeroDetails'
        */
-      public val heroDetails: HeroDetails
+      public val heroDetails: HeroDetails,
     )
   }
 

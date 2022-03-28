@@ -48,7 +48,7 @@ public object HeroDetailsImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: HeroDetailsImpl.Data
+      `value`: HeroDetailsImpl.Data,
     ): Unit {
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
@@ -74,7 +74,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: HeroDetailsImpl.Data.Friend
+        `value`: HeroDetailsImpl.Data.Friend,
       ): Unit {
         when(value) {
           is HeroDetailsImpl.Data.HumanFriend -> HumanFriend.toJson(writer, customScalarAdapters,
@@ -93,7 +93,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): HeroDetailsImpl.Data.HumanFriend {
         var __typename: String? = typename
         var name: String? = null
@@ -118,7 +118,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: HeroDetailsImpl.Data.HumanFriend
+        `value`: HeroDetailsImpl.Data.HumanFriend,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -137,7 +137,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): HeroDetailsImpl.Data.DroidFriend {
         var __typename: String? = typename
         var name: String? = null
@@ -162,7 +162,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: HeroDetailsImpl.Data.DroidFriend
+        `value`: HeroDetailsImpl.Data.DroidFriend,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -181,7 +181,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): HeroDetailsImpl.Data.OtherFriend {
         var __typename: String? = typename
         var name: String? = null
@@ -203,7 +203,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: HeroDetailsImpl.Data.OtherFriend
+        `value`: HeroDetailsImpl.Data.OtherFriend,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

@@ -50,7 +50,7 @@ public class TestQuery() : Query<TestQuery.Data> {
     /**
      * For testing fragment type coercion
      */
-    public val foo: Foo?
+    public val foo: Foo?,
   ) : Query.Data
 
   public data class Foo(
@@ -59,13 +59,13 @@ public class TestQuery() : Query<TestQuery.Data> {
     /**
      * Synthetic field for inline fragment on Bar
      */
-    public val asBar: AsBar?
+    public val asBar: AsBar?,
   )
 
   public data class AsBar(
     public val __typename: String,
     public val foo: String,
-    public val bar: String
+    public val bar: String,
   )
 
   public companion object {

@@ -18,20 +18,20 @@ public data class StarshipFragment(
    * The name of this starship. The common name, such as "Death Star".
    */
   public val name: String?,
-  public val pilotConnection: PilotConnection?
+  public val pilotConnection: PilotConnection?,
 ) : Fragment.Data {
   public data class PilotConnection(
     /**
      * A list of edges.
      */
-    public val edges: List<Edge?>?
+    public val edges: List<Edge?>?,
   )
 
   public data class Edge(
     /**
      * The item at the end of the edge
      */
-    public val node: Node?
+    public val node: Node?,
   )
 
   public data class Node(
@@ -39,13 +39,13 @@ public data class StarshipFragment(
     /**
      * Synthetic field for grouping fragments
      */
-    public val fragments: Fragments
+    public val fragments: Fragments,
   ) {
     public data class Fragments(
       /**
        * Synthetic field for 'pilotFragment'
        */
-      public val pilotFragment: PilotFragment
+      public val pilotFragment: PilotFragment,
     )
   }
 }

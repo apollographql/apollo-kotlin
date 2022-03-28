@@ -48,7 +48,7 @@ public object HeroDetailQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.unique_type_name.HeroDetailQuery.Data
+      `value`: com.example.unique_type_name.HeroDetailQuery.Data,
     ): Unit {
       writer.name("heroDetailQuery")
       HeroDetailQuery.obj(true).nullable().toJson(writer, customScalarAdapters,
@@ -97,7 +97,7 @@ public object HeroDetailQuery_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery
+        `value`: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -139,7 +139,7 @@ public object HeroDetailQuery_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.Friend
+          `value`: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.Friend,
         ): Unit {
           writer.name("name")
           StringAdapter.toJson(writer, customScalarAdapters, value.name)
@@ -174,7 +174,7 @@ public object HeroDetailQuery_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman
+          `value`: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman,
         ): Unit {
           writer.name("height")
           NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
@@ -214,7 +214,7 @@ public object HeroDetailQuery_ResponseAdapter {
           public override fun toJson(
             writer: JsonWriter,
             customScalarAdapters: CustomScalarAdapters,
-            `value`: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend
+            `value`: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend,
           ): Unit {
             writer.name("appearsIn")
             Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,
@@ -255,7 +255,7 @@ public object HeroDetailQuery_ResponseAdapter {
             public override fun toJson(
               writer: JsonWriter,
               customScalarAdapters: CustomScalarAdapters,
-              `value`: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend.Friend
+              `value`: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend.Friend,
             ): Unit {
               writer.name("__typename")
               StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

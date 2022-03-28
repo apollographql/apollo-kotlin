@@ -50,7 +50,7 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
     /**
      * The friends of the character, or an empty list if they have none
      */
-    public override val friends: List<Friend?>?
+    public override val friends: List<Friend?>?,
   ) : HeroDetails, Fragment.Data {
     public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
 
@@ -78,7 +78,7 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
       /**
        * Height in the preferred unit, default is meters
        */
-      public override val height: Double?
+      public override val height: Double?,
     ) : Friend, HeroDetails.HumanFriend
 
     public data class DroidFriend(
@@ -90,7 +90,7 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
       /**
        * This droid's primary function
        */
-      public override val primaryFunction: String?
+      public override val primaryFunction: String?,
     ) : Friend, HeroDetails.DroidFriend
 
     public data class OtherFriend(
@@ -98,7 +98,7 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
       /**
        * The name of the character
        */
-      public override val name: String
+      public override val name: String,
     ) : Friend, HeroDetails.Friend
   }
 }

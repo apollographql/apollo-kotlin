@@ -48,7 +48,7 @@ public class GetPage() : Query<GetPage.Data> {
   .build()
 
   public data class Data(
-    public val collection: Collection
+    public val collection: Collection,
   ) : Query.Data {
     public sealed interface Collection {
       public val __typename: String
@@ -66,7 +66,7 @@ public class GetPage() : Query<GetPage.Data> {
 
     public data class ParticularCollectionCollection(
       public override val __typename: String,
-      public override val items: List<Item>
+      public override val items: List<Item>,
     ) : Collection {
       public sealed interface Item : Collection.Item {
         public override val title: String
@@ -81,21 +81,21 @@ public class GetPage() : Query<GetPage.Data> {
       public data class ParticularItemItem(
         public override val title: String,
         public override val __typename: String,
-        public val image: String
+        public val image: String,
       ) : Item, Collection.Item
 
       public data class OtherItem(
         public override val title: String,
-        public override val __typename: String
+        public override val __typename: String,
       ) : Item, Collection.Item
     }
 
     public data class OtherCollection(
       public override val __typename: String,
-      public override val items: List<Item>
+      public override val items: List<Item>,
     ) : Collection {
       public data class Item(
-        public override val title: String
+        public override val title: String,
       ) : Collection.Item
     }
   }

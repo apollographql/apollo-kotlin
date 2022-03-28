@@ -48,7 +48,7 @@ public class GetPage() : Query<GetPage.Data> {
   .build()
 
   public data class Data(
-    public val collection: Collection
+    public val collection: Collection,
   ) : Query.Data {
     public data class Collection(
       public val __typename: String,
@@ -56,24 +56,24 @@ public class GetPage() : Query<GetPage.Data> {
       /**
        * Synthetic field for inline fragment on ParticularCollection
        */
-      public val onParticularCollection: OnParticularCollection?
+      public val onParticularCollection: OnParticularCollection?,
     ) {
       public data class Item(
-        public val title: String
+        public val title: String,
       )
 
       public data class OnParticularCollection(
-        public val items: List<Item>
+        public val items: List<Item>,
       ) {
         public data class Item(
           public val __typename: String,
           /**
            * Synthetic field for inline fragment on ParticularItem
            */
-          public val onParticularItem: OnParticularItem?
+          public val onParticularItem: OnParticularItem?,
         ) {
           public data class OnParticularItem(
-            public val image: String
+            public val image: String,
           )
         }
       }

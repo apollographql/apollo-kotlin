@@ -10,12 +10,12 @@ import kotlin.String
 
 public data class QueryFragment(
   public val __typename: String,
-  public val hero: Hero?
+  public val hero: Hero?,
 ) : Fragment.Data {
   public data class Hero(
     /**
      * The name of the character
      */
-    public val name: String
+    public val name: String,
   )
 }

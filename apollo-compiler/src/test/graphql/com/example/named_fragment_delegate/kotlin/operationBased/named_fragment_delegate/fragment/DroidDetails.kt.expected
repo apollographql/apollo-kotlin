@@ -21,12 +21,12 @@ public data class DroidDetails(
   /**
    * This droid's friends, or an empty list if they have none
    */
-  public val friends: List<Friend?>?
+  public val friends: List<Friend?>?,
 ) : Fragment.Data {
   public data class Friend(
     /**
      * The name of the character
      */
-    public val name: String
+    public val name: String,
   )
 }

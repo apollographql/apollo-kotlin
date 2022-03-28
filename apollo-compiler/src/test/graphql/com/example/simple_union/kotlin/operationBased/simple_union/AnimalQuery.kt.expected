@@ -49,7 +49,7 @@ public class AnimalQuery() : Query<AnimalQuery.Data> {
   .build()
 
   public data class Data(
-    public val animal: Animal?
+    public val animal: Animal?,
   ) : Query.Data {
     public data class Animal(
       public val __typename: String,
@@ -60,7 +60,7 @@ public class AnimalQuery() : Query<AnimalQuery.Data> {
       /**
        * Synthetic field for 'DogFragment'
        */
-      public val dogFragment: DogFragment?
+      public val dogFragment: DogFragment?,
     )
   }
 

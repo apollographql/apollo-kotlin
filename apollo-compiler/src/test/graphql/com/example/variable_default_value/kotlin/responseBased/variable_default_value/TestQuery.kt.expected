@@ -21,7 +21,7 @@ import kotlin.Unit
 import kotlin.jvm.JvmOverloads
 
 public data class TestQuery @JvmOverloads constructor(
-  public val episode: Optional<Episode> = Optional.Absent
+  public val episode: Optional<Episode> = Optional.Absent,
 ) : Query<TestQuery.Data> {
   public override fun id(): String = OPERATION_ID
 
@@ -46,13 +46,13 @@ public data class TestQuery @JvmOverloads constructor(
   .build()
 
   public data class Data(
-    public val hero: Hero?
+    public val hero: Hero?,
   ) : Query.Data {
     public data class Hero(
       /**
        * The name of the character
        */
-      public val name: String
+      public val name: String,
     )
   }
 

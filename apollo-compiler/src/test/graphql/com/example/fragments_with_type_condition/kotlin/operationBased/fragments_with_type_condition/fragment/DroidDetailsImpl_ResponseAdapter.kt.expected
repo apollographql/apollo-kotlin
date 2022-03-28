@@ -42,7 +42,7 @@ public object DroidDetailsImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.fragments_with_type_condition.fragment.DroidDetails
+      `value`: com.example.fragments_with_type_condition.fragment.DroidDetails,
     ): Unit {
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)

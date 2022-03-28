@@ -48,13 +48,13 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public data class Data(
     public val r2: R2?,
-    public val luke: Luke?
+    public val luke: Luke?,
   ) : Query.Data {
     public data class R2(
       /**
        * The name of the character
        */
-      public val name: String
+      public val name: String,
     )
 
     public data class Luke(
@@ -65,7 +65,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * The name of the character
        */
-      public val name: String
+      public val name: String,
     )
   }
 

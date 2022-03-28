@@ -38,7 +38,7 @@ public object HumanDetailsImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.fragment_spread_with_include_directive.fragment.HumanDetails
+      `value`: com.example.fragment_spread_with_include_directive.fragment.HumanDetails,
     ): Unit {
       writer.name("homePlanet")
       NullableStringAdapter.toJson(writer, customScalarAdapters, value.homePlanet)

@@ -24,7 +24,7 @@ public object TestQuery_VariablesAdapter : Adapter<TestQuery> {
   public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    `value`: TestQuery
+    `value`: TestQuery,
   ): Unit {
     if (value.episode is Optional.Present) {
       writer.name("episode")

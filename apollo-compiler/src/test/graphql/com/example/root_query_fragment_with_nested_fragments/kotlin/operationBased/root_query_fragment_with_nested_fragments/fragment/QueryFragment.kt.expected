@@ -12,14 +12,14 @@ public data class QueryFragment(
   public val __typename: String,
   public val hero: Hero?,
   public val droid: Droid?,
-  public val human: Human?
+  public val human: Human?,
 ) : Fragment.Data {
   public data class Hero(
     public val __typename: String,
     /**
      * Synthetic field for 'heroFragment'
      */
-    public val heroFragment: HeroFragment
+    public val heroFragment: HeroFragment,
   )
 
   public data class Droid(
@@ -27,7 +27,7 @@ public data class QueryFragment(
     /**
      * Synthetic field for 'droidFragment'
      */
-    public val droidFragment: DroidFragment
+    public val droidFragment: DroidFragment,
   )
 
   public data class Human(
@@ -35,7 +35,7 @@ public data class QueryFragment(
     /**
      * Synthetic field for inline fragment on Human
      */
-    public val onHuman: OnHuman
+    public val onHuman: OnHuman,
   ) {
     public data class OnHuman(
       /**
@@ -45,7 +45,7 @@ public data class QueryFragment(
       /**
        * The home planet of the human, or null if unknown
        */
-      public val homePlanet: String?
+      public val homePlanet: String?,
     )
   }
 }

@@ -13,7 +13,7 @@ import kotlin.String
  * Lower case enum type name
  */
 public enum class hero_type(
-  public val rawValue: String
+  public val rawValue: String,
 ) {
   human("human"),
   droid("droid"),

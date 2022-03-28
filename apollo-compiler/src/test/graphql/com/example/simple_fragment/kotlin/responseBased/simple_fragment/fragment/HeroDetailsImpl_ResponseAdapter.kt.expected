@@ -31,7 +31,7 @@ internal object HeroDetailsImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: HeroDetailsImpl.Data
+      `value`: HeroDetailsImpl.Data,
     ): Unit {
       when(value) {
         is HeroDetailsImpl.HumanData -> HumanData.toJson(writer, customScalarAdapters, value)
@@ -46,7 +46,7 @@ internal object HeroDetailsImpl_ResponseAdapter {
     public fun fromJson(
       reader: JsonReader,
       customScalarAdapters: CustomScalarAdapters,
-      typename: String
+      typename: String,
     ): HeroDetailsImpl.HumanData {
       var __typename: String? = typename
       var name: String? = null
@@ -68,7 +68,7 @@ internal object HeroDetailsImpl_ResponseAdapter {
     public fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: HeroDetailsImpl.HumanData
+      `value`: HeroDetailsImpl.HumanData,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -84,7 +84,7 @@ internal object HeroDetailsImpl_ResponseAdapter {
     public fun fromJson(
       reader: JsonReader,
       customScalarAdapters: CustomScalarAdapters,
-      typename: String
+      typename: String,
     ): HeroDetailsImpl.OtherData {
       var __typename: String? = typename
 
@@ -103,7 +103,7 @@ internal object HeroDetailsImpl_ResponseAdapter {
     public fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: HeroDetailsImpl.OtherData
+      `value`: HeroDetailsImpl.OtherData,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

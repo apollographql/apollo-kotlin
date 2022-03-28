@@ -13,7 +13,7 @@ import kotlin.String
  * Units of height
  */
 public enum class LengthUnit(
-  public val rawValue: String
+  public val rawValue: String,
 ) {
   /**
    * The standard unit around the world

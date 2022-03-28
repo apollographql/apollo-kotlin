@@ -32,7 +32,7 @@ public object IFragmentImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: IFragmentImpl.Data
+      `value`: IFragmentImpl.Data,
     ): Unit {
       when(value) {
         is IFragmentImpl.AData -> AData.toJson(writer, customScalarAdapters, value)
@@ -47,7 +47,7 @@ public object IFragmentImpl_ResponseAdapter {
     public fun fromJson(
       reader: JsonReader,
       customScalarAdapters: CustomScalarAdapters,
-      typename: String
+      typename: String,
     ): IFragmentImpl.AData {
       var __typename: String? = typename
       var fieldA: String? = null
@@ -69,7 +69,7 @@ public object IFragmentImpl_ResponseAdapter {
     public fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: IFragmentImpl.AData
+      `value`: IFragmentImpl.AData,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -85,7 +85,7 @@ public object IFragmentImpl_ResponseAdapter {
     public fun fromJson(
       reader: JsonReader,
       customScalarAdapters: CustomScalarAdapters,
-      typename: String
+      typename: String,
     ): IFragmentImpl.OtherData {
       var __typename: String? = typename
 
@@ -104,7 +104,7 @@ public object IFragmentImpl_ResponseAdapter {
     public fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: IFragmentImpl.OtherData
+      `value`: IFragmentImpl.OtherData,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

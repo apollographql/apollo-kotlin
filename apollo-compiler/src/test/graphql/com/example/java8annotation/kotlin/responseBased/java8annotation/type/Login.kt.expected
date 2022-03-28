@@ -8,5 +8,5 @@ package com.example.java8annotation.type
 import kotlin.String
 
 public data class Login(
-  public val email: String
+  public val email: String,
 )

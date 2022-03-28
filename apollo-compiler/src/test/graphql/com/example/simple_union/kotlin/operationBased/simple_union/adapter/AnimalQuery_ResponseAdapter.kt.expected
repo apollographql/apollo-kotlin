@@ -44,7 +44,7 @@ public object AnimalQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: AnimalQuery.Data
+      `value`: AnimalQuery.Data,
     ): Unit {
       writer.name("animal")
       Animal.obj(true).nullable().toJson(writer, customScalarAdapters, value.animal)
@@ -92,7 +92,7 @@ public object AnimalQuery_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: AnimalQuery.Data.Animal
+        `value`: AnimalQuery.Data.Animal,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

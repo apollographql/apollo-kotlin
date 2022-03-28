@@ -22,7 +22,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public data class TestQuery(
-  public val episode: Optional<Episode?> = Optional.Absent
+  public val episode: Optional<Episode?> = Optional.Absent,
 ) : Query<TestQuery.Data> {
   public override fun id(): String = OPERATION_ID
 
@@ -47,7 +47,7 @@ public data class TestQuery(
   .build()
 
   public data class Data(
-    public val hero: Hero?
+    public val hero: Hero?,
   ) : Query.Data
 
   public data class Hero(
@@ -63,7 +63,7 @@ public data class TestQuery(
     /**
      * Synthetic field for inline fragment on Droid
      */
-    public val asDroid: AsDroid?
+    public val asDroid: AsDroid?,
   )
 
   public data class AsHuman(
@@ -75,7 +75,7 @@ public data class TestQuery(
     /**
      * This human's friends, or an empty list if they have none
      */
-    public val friends: List<Friend?>?
+    public val friends: List<Friend?>?,
   ) {
     public fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
   }
@@ -89,7 +89,7 @@ public data class TestQuery(
     /**
      * Synthetic field for inline fragment on Human
      */
-    public val asHuman1: AsHuman1?
+    public val asHuman1: AsHuman1?,
   )
 
   public data class AsHuman1(
@@ -101,7 +101,7 @@ public data class TestQuery(
     /**
      * Height in the preferred unit, default is meters
      */
-    public val height: Double?
+    public val height: Double?,
   )
 
   public data class AsDroid(
@@ -113,7 +113,7 @@ public data class TestQuery(
     /**
      * This droid's friends, or an empty list if they have none
      */
-    public val friends: List<Friend1?>?
+    public val friends: List<Friend1?>?,
   ) {
     public fun friendsFilterNotNull(): List<Friend1>? = friends?.filterNotNull()
   }
@@ -127,7 +127,7 @@ public data class TestQuery(
     /**
      * Synthetic field for inline fragment on Human
      */
-    public val asHuman2: AsHuman2?
+    public val asHuman2: AsHuman2?,
   )
 
   public data class AsHuman2(
@@ -139,7 +139,7 @@ public data class TestQuery(
     /**
      * Height in the preferred unit, default is meters
      */
-    public val height: Double?
+    public val height: Double?,
   )
 
   public companion object {

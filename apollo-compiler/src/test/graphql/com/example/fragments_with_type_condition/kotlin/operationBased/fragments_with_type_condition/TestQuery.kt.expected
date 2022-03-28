@@ -50,7 +50,7 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public data class Data(
     public val r2: R2?,
-    public val luke: Luke?
+    public val luke: Luke?,
   ) : Query.Data {
     public data class R2(
       public val __typename: String,
@@ -61,7 +61,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * Synthetic field for 'DroidDetails'
        */
-      public val droidDetails: DroidDetails?
+      public val droidDetails: DroidDetails?,
     )
 
     public data class Luke(
@@ -73,7 +73,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * Synthetic field for 'DroidDetails'
        */
-      public val droidDetails: DroidDetails?
+      public val droidDetails: DroidDetails?,
     )
   }
 

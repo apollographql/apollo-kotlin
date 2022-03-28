@@ -39,7 +39,7 @@ public object TestQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: TestQuery.Data
+      `value`: TestQuery.Data,
     ): Unit {
       writer.name("cat")
       Cat.obj(true).toJson(writer, customScalarAdapters, value.cat)
@@ -72,7 +72,7 @@ public object TestQuery_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.Cat
+        `value`: TestQuery.Data.Cat,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -108,7 +108,7 @@ public object TestQuery_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: TestQuery.Data.Cat.OnNode
+          `value`: TestQuery.Data.Cat.OnNode,
         ): Unit {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -139,7 +139,7 @@ public object TestQuery_ResponseAdapter {
           public override fun toJson(
             writer: JsonWriter,
             customScalarAdapters: CustomScalarAdapters,
-            `value`: TestQuery.Data.Cat.OnNode.OnAnimal
+            `value`: TestQuery.Data.Cat.OnNode.OnAnimal,
           ): Unit {
             writer.name("species")
             StringAdapter.toJson(writer, customScalarAdapters, value.species)

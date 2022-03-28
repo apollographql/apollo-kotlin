@@ -50,11 +50,11 @@ public class TestQuery() : Query<TestQuery.Data> {
   .build()
 
   public data class Data(
-    public val a: A?
+    public val a: A?,
   ) : Query.Data {
     public data class A(
       public val __typename: String,
-      public override val node: Node?
+      public override val node: Node?,
     ) : AFragment {
       public sealed interface Node : AFragment.Node {
         public override val __typename: String
@@ -71,11 +71,11 @@ public class TestQuery() : Query<TestQuery.Data> {
       public data class ANodeNode(
         public override val __typename: String,
         public override val field1: String?,
-        public override val field2: String?
+        public override val field2: String?,
       ) : Node, Fragment1, Fragment2, AFragment.ANodeNode
 
       public data class OtherNode(
-        public override val __typename: String
+        public override val __typename: String,
       ) : Node, AFragment.Node
 
       public companion object {

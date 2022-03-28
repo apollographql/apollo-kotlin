@@ -37,7 +37,7 @@ public object BFragmentImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: BFragmentImpl.Data
+      `value`: BFragmentImpl.Data,
     ): Unit {
       writer.name("fieldB1")
       NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldB1)

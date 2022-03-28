@@ -41,7 +41,7 @@ public object AFragmentImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: AFragmentImpl.Data
+      `value`: AFragmentImpl.Data,
     ): Unit {
       writer.name("node")
       Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
@@ -62,7 +62,7 @@ public object AFragmentImpl_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: AFragmentImpl.Data.Node
+        `value`: AFragmentImpl.Data.Node,
       ): Unit {
         when(value) {
           is AFragmentImpl.Data.ANodeNode -> ANodeNode.toJson(writer, customScalarAdapters, value)
@@ -77,7 +77,7 @@ public object AFragmentImpl_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): AFragmentImpl.Data.ANodeNode {
         var __typename: String? = typename
         var field1: String? = null
@@ -102,7 +102,7 @@ public object AFragmentImpl_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: AFragmentImpl.Data.ANodeNode
+        `value`: AFragmentImpl.Data.ANodeNode,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -121,7 +121,7 @@ public object AFragmentImpl_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): AFragmentImpl.Data.OtherNode {
         var __typename: String? = typename
 
@@ -140,7 +140,7 @@ public object AFragmentImpl_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: AFragmentImpl.Data.OtherNode
+        `value`: AFragmentImpl.Data.OtherNode,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

@@ -50,7 +50,7 @@ public class TestQuery() : Query<TestQuery.Data> {
   .build()
 
   public data class Data(
-    public val hero: Hero?
+    public val hero: Hero?,
   ) : Query.Data {
     public data class Hero(
       public val __typename: String,
@@ -65,7 +65,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * Synthetic field for 'HeroDetails'
        */
-      public val heroDetails: HeroDetails
+      public val heroDetails: HeroDetails,
     ) {
       public fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
     }

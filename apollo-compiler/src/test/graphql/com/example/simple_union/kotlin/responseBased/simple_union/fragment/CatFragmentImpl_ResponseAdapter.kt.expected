@@ -37,7 +37,7 @@ public object CatFragmentImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: CatFragmentImpl.Data
+      `value`: CatFragmentImpl.Data,
     ): Unit {
       writer.name("meow")
       StringAdapter.toJson(writer, customScalarAdapters, value.meow)

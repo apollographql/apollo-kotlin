@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.Fragment
 import kotlin.String
 
 public data class AFragment(
-  public val node: Node?
+  public val node: Node?,
 ) : Fragment.Data {
   public data class Node(
     public val __typename: String,
@@ -20,6 +20,6 @@ public data class AFragment(
     /**
      * Synthetic field for 'fragment2'
      */
-    public val fragment2: Fragment2?
+    public val fragment2: Fragment2?,
   )
 }

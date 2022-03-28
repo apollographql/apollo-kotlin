@@ -50,7 +50,7 @@ public class TestOperation() : Query<TestOperation.Data> {
   .build()
 
   public data class Data(
-    public val random: Random
+    public val random: Random,
   ) : Query.Data {
     public sealed interface BeingRandom : Random {
       public override val __typename: String
@@ -108,7 +108,7 @@ public class TestOperation() : Query<TestOperation.Data> {
       public override val __typename: String,
       public override val name: String,
       public override val friends: List<Friend>,
-      public val profilePictureUrl: String?
+      public val profilePictureUrl: String?,
     ) : BeingRandom {
       public sealed interface Friend : BeingRandom.Friend {
         public override val __typename: String
@@ -127,13 +127,13 @@ public class TestOperation() : Query<TestOperation.Data> {
         public override val name: String,
         public override val lifeExpectancy: Double?,
         public override val isFamous: Boolean?,
-        public val race: Race
+        public val race: Race,
       ) : Friend, BeingRandom.WookieFriend
 
       public data class OtherFriend(
         public override val __typename: String,
         public override val name: String,
-        public override val isFamous: Boolean?
+        public override val isFamous: Boolean?,
       ) : Friend, BeingRandom.Friend
     }
 
@@ -141,7 +141,7 @@ public class TestOperation() : Query<TestOperation.Data> {
       public override val __typename: String,
       public override val name: String,
       public override val friends: List<Friend>,
-      public override val race: Race
+      public override val race: Race,
     ) : BeingRandom, WookieRandom {
       public sealed interface Friend : BeingRandom.Friend, WookieRandom.Friend {
         public override val __typename: String
@@ -158,18 +158,18 @@ public class TestOperation() : Query<TestOperation.Data> {
       public data class WookieFriend(
         public override val __typename: String,
         public override val name: String,
-        public override val lifeExpectancy: Double?
+        public override val lifeExpectancy: Double?,
       ) : Friend, BeingRandom.WookieFriend, WookieRandom.Friend
 
       public data class OtherFriend(
         public override val __typename: String,
         public override val name: String,
-        public override val lifeExpectancy: Double?
+        public override val lifeExpectancy: Double?,
       ) : Friend, BeingRandom.Friend, WookieRandom.Friend
     }
 
     public data class OtherRandom(
-      public override val __typename: String
+      public override val __typename: String,
     ) : Random
   }
 

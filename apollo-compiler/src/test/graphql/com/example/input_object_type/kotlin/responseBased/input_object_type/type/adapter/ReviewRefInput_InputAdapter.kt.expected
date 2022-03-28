@@ -24,7 +24,7 @@ public object ReviewRefInput_InputAdapter : Adapter<ReviewRefInput> {
   public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    `value`: ReviewRefInput
+    `value`: ReviewRefInput,
   ): Unit {
     if (value.reviewInput is Optional.Present) {
       writer.name("reviewInput")

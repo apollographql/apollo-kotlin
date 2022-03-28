@@ -11,7 +11,7 @@ import kotlin.Deprecated
 import kotlin.String
 
 public enum class Gravity(
-  public val rawValue: String
+  public val rawValue: String,
 ) {
   TOP("TOP"),
   CENTER("CENTER"),

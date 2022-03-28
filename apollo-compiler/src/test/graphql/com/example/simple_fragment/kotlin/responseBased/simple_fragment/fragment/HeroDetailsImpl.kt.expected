@@ -59,10 +59,10 @@ internal class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
     /**
      * What this human calls themselves
      */
-    public override val name: String
+    public override val name: String,
   ) : Data, HumanDetails, HumanHeroDetails
 
   public data class OtherData(
-    public override val __typename: String
+    public override val __typename: String,
   ) : Data, HeroDetails
 }

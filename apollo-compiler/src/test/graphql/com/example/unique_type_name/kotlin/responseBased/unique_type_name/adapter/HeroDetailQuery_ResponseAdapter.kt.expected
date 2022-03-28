@@ -49,7 +49,7 @@ public object HeroDetailQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.unique_type_name.HeroDetailQuery.Data
+      `value`: com.example.unique_type_name.HeroDetailQuery.Data,
     ): Unit {
       writer.name("heroDetailQuery")
       HeroDetailQuery.obj().nullable().toJson(writer, customScalarAdapters, value.heroDetailQuery)
@@ -71,7 +71,7 @@ public object HeroDetailQuery_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery
+        `value`: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery,
       ): Unit {
         when(value) {
           is com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery ->
@@ -88,7 +88,7 @@ public object HeroDetailQuery_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery {
         var __typename: String? = typename
         var name: String? = null
@@ -117,7 +117,7 @@ public object HeroDetailQuery_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery
+        `value`: com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -165,7 +165,7 @@ public object HeroDetailQuery_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend
+          `value`: com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend,
         ): Unit {
           writer.name("name")
           StringAdapter.toJson(writer, customScalarAdapters, value.name)
@@ -212,7 +212,7 @@ public object HeroDetailQuery_ResponseAdapter {
           public override fun toJson(
             writer: JsonWriter,
             customScalarAdapters: CustomScalarAdapters,
-            `value`: com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend.Friend
+            `value`: com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend.Friend,
           ): Unit {
             writer.name("__typename")
             StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -253,7 +253,7 @@ public object HeroDetailQuery_ResponseAdapter {
             public override fun toJson(
               writer: JsonWriter,
               customScalarAdapters: CustomScalarAdapters,
-              `value`: com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend.Friend.FriendsConnection
+              `value`: com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend.Friend.FriendsConnection,
             ): Unit {
               writer.name("totalCount")
               NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount)
@@ -288,7 +288,7 @@ public object HeroDetailQuery_ResponseAdapter {
               public override fun toJson(
                 writer: JsonWriter,
                 customScalarAdapters: CustomScalarAdapters,
-                `value`: com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend.Friend.FriendsConnection.Edge
+                `value`: com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend.Friend.FriendsConnection.Edge,
               ): Unit {
                 writer.name("node")
                 Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
@@ -319,7 +319,7 @@ public object HeroDetailQuery_ResponseAdapter {
                 public override fun toJson(
                   writer: JsonWriter,
                   customScalarAdapters: CustomScalarAdapters,
-                  `value`: com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend.Friend.FriendsConnection.Edge.Node
+                  `value`: com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend.Friend.FriendsConnection.Edge.Node,
                 ): Unit {
                   writer.name("name")
                   StringAdapter.toJson(writer, customScalarAdapters, value.name)
@@ -337,7 +337,7 @@ public object HeroDetailQuery_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): com.example.unique_type_name.HeroDetailQuery.Data.OtherHeroDetailQuery {
         var __typename: String? = typename
         var name: String? = null
@@ -363,7 +363,7 @@ public object HeroDetailQuery_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: com.example.unique_type_name.HeroDetailQuery.Data.OtherHeroDetailQuery
+        `value`: com.example.unique_type_name.HeroDetailQuery.Data.OtherHeroDetailQuery,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -400,7 +400,7 @@ public object HeroDetailQuery_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: com.example.unique_type_name.HeroDetailQuery.Data.OtherHeroDetailQuery.Friend
+          `value`: com.example.unique_type_name.HeroDetailQuery.Data.OtherHeroDetailQuery.Friend,
         ): Unit {
           writer.name("name")
           StringAdapter.toJson(writer, customScalarAdapters, value.name)

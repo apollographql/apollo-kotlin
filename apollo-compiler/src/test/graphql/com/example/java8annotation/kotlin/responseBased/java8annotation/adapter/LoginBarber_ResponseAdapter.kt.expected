@@ -39,7 +39,7 @@ public object LoginBarber_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: LoginBarber.Data
+      `value`: LoginBarber.Data,
     ): Unit {
       writer.name("login")
       Login.obj().toJson(writer, customScalarAdapters, value.login)
@@ -67,7 +67,7 @@ public object LoginBarber_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: LoginBarber.Data.Login
+        `value`: LoginBarber.Data.Login,
       ): Unit {
         writer.name("response")
         StringAdapter.toJson(writer, customScalarAdapters, value.response)

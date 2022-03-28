@@ -45,7 +45,7 @@ internal object CreateReviewForEpisode_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: CreateReviewForEpisode.Data
+      `value`: CreateReviewForEpisode.Data,
     ): Unit {
       writer.name("createReview")
       CreateReview.obj().nullable().toJson(writer, customScalarAdapters, value.createReview)
@@ -94,7 +94,7 @@ internal object CreateReviewForEpisode_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: CreateReviewForEpisode.Data.CreateReview
+        `value`: CreateReviewForEpisode.Data.CreateReview,
       ): Unit {
         writer.name("stars")
         IntAdapter.toJson(writer, customScalarAdapters, value.stars)
@@ -144,7 +144,7 @@ internal object CreateReviewForEpisode_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject
+          `value`: CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject,
         ): Unit {
           writer.name("name")
           com.example.MyStringAdapter().toJson(writer, customScalarAdapters, value.name)

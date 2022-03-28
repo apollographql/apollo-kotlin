@@ -44,7 +44,7 @@ public object UserFragmentImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.named_fragment_with_variables.fragment.UserFragment
+      `value`: com.example.named_fragment_with_variables.fragment.UserFragment,
     ): Unit {
       writer.name("firstName")
       StringAdapter.toJson(writer, customScalarAdapters, value.firstName)

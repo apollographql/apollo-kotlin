@@ -38,7 +38,7 @@ public object HeroDetailsImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.fragment_spread_with_include_directive.fragment.HeroDetails
+      `value`: com.example.fragment_spread_with_include_directive.fragment.HeroDetails,
     ): Unit {
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)

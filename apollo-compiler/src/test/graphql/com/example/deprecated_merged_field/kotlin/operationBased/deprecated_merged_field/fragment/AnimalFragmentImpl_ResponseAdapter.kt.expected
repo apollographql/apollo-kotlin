@@ -60,7 +60,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.deprecated_merged_field.fragment.AnimalFragment
+      `value`: com.example.deprecated_merged_field.fragment.AnimalFragment,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -99,7 +99,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat
+        `value`: com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat,
       ): Unit {
         writer.name("name")
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
@@ -129,7 +129,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog
+        `value`: com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog,
       ): Unit {
         writer.name("name")
         StringAdapter.toJson(writer, customScalarAdapters, value.name)

@@ -37,7 +37,7 @@ public object PlanetFragmentImpl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: PlanetFragmentImpl.Data
+      `value`: PlanetFragmentImpl.Data,
     ): Unit {
       writer.name("name")
       NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)

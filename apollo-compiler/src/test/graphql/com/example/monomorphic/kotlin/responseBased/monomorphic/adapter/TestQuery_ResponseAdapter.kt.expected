@@ -40,7 +40,7 @@ public object TestQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: TestQuery.Data
+      `value`: TestQuery.Data,
     ): Unit {
       writer.name("cat")
       Cat.obj().toJson(writer, customScalarAdapters, value.cat)
@@ -61,7 +61,7 @@ public object TestQuery_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.Cat
+        `value`: TestQuery.Data.Cat,
       ): Unit {
         when(value) {
           is TestQuery.Data.AnimalNodeCat -> AnimalNodeCat.toJson(writer, customScalarAdapters,
@@ -77,7 +77,7 @@ public object TestQuery_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): TestQuery.Data.AnimalNodeCat {
         var __typename: String? = typename
         var species: String? = null
@@ -99,7 +99,7 @@ public object TestQuery_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.AnimalNodeCat
+        `value`: TestQuery.Data.AnimalNodeCat,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -115,7 +115,7 @@ public object TestQuery_ResponseAdapter {
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
-        typename: String
+        typename: String,
       ): TestQuery.Data.OtherCat {
         var __typename: String? = typename
 
@@ -134,7 +134,7 @@ public object TestQuery_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.OtherCat
+        `value`: TestQuery.Data.OtherCat,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

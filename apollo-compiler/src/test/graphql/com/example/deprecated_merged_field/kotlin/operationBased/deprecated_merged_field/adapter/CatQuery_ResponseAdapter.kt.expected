@@ -40,7 +40,7 @@ public object CatQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: CatQuery.Data
+      `value`: CatQuery.Data,
     ): Unit {
       writer.name("cat")
       Cat.obj(true).nullable().toJson(writer, customScalarAdapters, value.cat)
@@ -73,7 +73,7 @@ public object CatQuery_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: CatQuery.Data.Cat
+        `value`: CatQuery.Data.Cat,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

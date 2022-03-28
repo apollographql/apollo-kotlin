@@ -43,7 +43,7 @@ public object TestQuery_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: TestQuery.Data
+      `value`: TestQuery.Data,
     ): Unit {
       writer.name("__schema")
       __Schema.obj().toJson(writer, customScalarAdapters, value.__schema)
@@ -77,7 +77,7 @@ public object TestQuery_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.__Schema
+        `value`: TestQuery.Data.__Schema,
       ): Unit {
         writer.name("queryType")
         QueryType.obj().toJson(writer, customScalarAdapters, value.queryType)
@@ -108,7 +108,7 @@ public object TestQuery_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: TestQuery.Data.__Schema.QueryType
+          `value`: TestQuery.Data.__Schema.QueryType,
         ): Unit {
           writer.name("name")
           NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
@@ -137,7 +137,7 @@ public object TestQuery_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: TestQuery.Data.__Schema.Type
+          `value`: TestQuery.Data.__Schema.Type,
         ): Unit {
           writer.name("name")
           NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
@@ -167,7 +167,7 @@ public object TestQuery_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.__Type
+        `value`: TestQuery.Data.__Type,
       ): Unit {
         writer.name("name")
         NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)

@@ -46,7 +46,7 @@ public object GetHuman_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: GetHuman.Data
+      `value`: GetHuman.Data,
     ): Unit {
       writer.name("human")
       Human.obj().toJson(writer, customScalarAdapters, value.human)
@@ -83,7 +83,7 @@ public object GetHuman_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: GetHuman.Data.Human
+        `value`: GetHuman.Data.Human,
       ): Unit {
         writer.name("id")
         StringAdapter.toJson(writer, customScalarAdapters, value.id)
@@ -130,7 +130,7 @@ public object GetHuman_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: GetHuman.Data.Node
+        `value`: GetHuman.Data.Node,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -163,7 +163,7 @@ public object GetHuman_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: GetHuman.Data.Node.OnHuman
+          `value`: GetHuman.Data.Node.OnHuman,
         ): Unit {
           writer.name("height")
           DoubleAdapter.toJson(writer, customScalarAdapters, value.height)

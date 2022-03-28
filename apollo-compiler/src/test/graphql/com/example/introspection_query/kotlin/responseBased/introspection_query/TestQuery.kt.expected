@@ -49,23 +49,23 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public data class Data(
     public val __schema: __Schema,
-    public val __type: __Type
+    public val __type: __Type,
   ) : Query.Data {
     public data class __Schema(
       public val queryType: QueryType,
-      public val types: List<Type>
+      public val types: List<Type>,
     ) {
       public data class QueryType(
-        public val name: String?
+        public val name: String?,
       )
 
       public data class Type(
-        public val name: String?
+        public val name: String?,
       )
     }
 
     public data class __Type(
-      public val name: String?
+      public val name: String?,
     )
   }
 

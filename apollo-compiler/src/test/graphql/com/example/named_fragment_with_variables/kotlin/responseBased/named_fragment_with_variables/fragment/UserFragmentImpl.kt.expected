@@ -19,7 +19,7 @@ import kotlin.String
 import kotlin.Unit
 
 public data class UserFragmentImpl(
-  public val size: Int
+  public val size: Int,
 ) : Fragment<UserFragmentImpl.Data> {
   public override fun serializeVariables(writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters): Unit {
@@ -40,6 +40,6 @@ public data class UserFragmentImpl(
   public data class Data(
     public override val firstName: String,
     public override val lastName: String,
-    public override val avatar: String
+    public override val avatar: String,
   ) : UserFragment, Fragment.Data
 }

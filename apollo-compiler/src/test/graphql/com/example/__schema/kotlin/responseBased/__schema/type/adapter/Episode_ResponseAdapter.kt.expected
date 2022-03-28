@@ -22,7 +22,7 @@ public object Episode_ResponseAdapter : Adapter<Episode> {
   public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    `value`: Episode
+    `value`: Episode,
   ): Unit {
     writer.value(value.rawValue)
   }

@@ -23,7 +23,7 @@ import kotlin.Unit
 public data class GetUser(
   public val organizationId: String,
   public val query: UserQuery,
-  public val size: Int
+  public val size: Int,
 ) : Query<GetUser.Data> {
   public override fun id(): String = OPERATION_ID
 
@@ -52,7 +52,7 @@ public data class GetUser(
     /**
      * Synthetic field for 'QueryFragment'
      */
-    public val queryFragment: QueryFragment
+    public val queryFragment: QueryFragment,
   ) : Query.Data
 
   public companion object {
