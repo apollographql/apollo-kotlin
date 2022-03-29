@@ -69,17 +69,11 @@ internal class ExecutableValidationScope(
       it.validate()
     }
 
+    deferDirectiveLabels.clear()
     val operations = document.definitions.filterIsInstance<GQLOperationDefinition>()
     operations.checkDuplicateOperations()
     operations.forEach {
       it.validate()
-    }
-
-    if (issues.isNotEmpty()) return issues
-
-    deferDirectiveLabels.clear()
-    operations.forEach {
-      it.validateDeferDirectives()
     }
 
     return issues
@@ -293,6 +287,7 @@ internal class ExecutableValidationScope(
 
   private fun GQLOperationDefinition.validate() {
     variableUsages.clear()
+    deferDirectivePathAndLabels.clear()
 
     val rootTypeDefinition = rootTypeDefinition(schema)
 
@@ -320,11 +315,9 @@ internal class ExecutableValidationScope(
         ))
       }
     }
-  }
 
-  private fun GQLOperationDefinition.validateDeferDirectives() {
-    deferDirectivePathAndLabels.clear()
-    selectionSet.validateDeferDirectives("")
+    if (issues.isNotEmpty()) return
+    selectionSet.validateDeferDirectives()
   }
 
   /**
@@ -366,8 +359,8 @@ internal class ExecutableValidationScope(
    * }
    * ```
    */
-  private fun GQLSelectionSet.validateDeferDirectives(path: String) {
-    for (selection in selections) {
+  private fun GQLSelectionSet.validateDeferDirectives(path: String = "") {
+    selections.forEach { selection ->
       when (selection) {
         is GQLField -> {
           val fieldPath = if (path.isEmpty()) selection.name else "$path.${selection.name}"
@@ -402,6 +395,7 @@ internal class ExecutableValidationScope(
 
     var labelStringValue = ""
     if (label != null) {
+      // label is guaranteed to be a GQLStringValue here thanks to pior validation
       labelStringValue = (label as GQLStringValue).value
       if (labelStringValue in deferDirectiveLabels) {
         registerIssue(
