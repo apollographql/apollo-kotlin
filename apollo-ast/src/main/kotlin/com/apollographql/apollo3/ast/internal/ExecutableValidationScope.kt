@@ -75,6 +75,8 @@ internal class ExecutableValidationScope(
       it.validate()
     }
 
+    if (issues.isNotEmpty()) return issues
+
     deferDirectiveLabels.clear()
     operations.forEach {
       it.validateDeferDirectives()
