@@ -324,6 +324,8 @@ internal class ExecutableValidationScope(
    * If a label is passed to a `@defer` directive, it must not be a variable, and it must be unique within all other `@defer` directives in
    * the document.
    *
+   * Also ensure that the label can be used as part of an identifier name (Apollo-specific validation).
+   *
    * Also ensure that any `@defer` directive found when walking fragments on an operation have a unique path + label (Apollo-specific
    * validation).
    *
@@ -397,6 +399,16 @@ internal class ExecutableValidationScope(
     if (label != null) {
       // label is guaranteed to be a GQLStringValue here thanks to pior validation
       labelStringValue = (label as GQLStringValue).value
+
+      // We use the label in part of the synthetic field's name in the generated model, so it needs to be a valid Kotlin/Java identifier
+      if (!labelStringValue.matches(Regex("[a-zA-Z0-9_]+"))) {
+        registerIssue(
+            message = "@defer label '$labelStringValue' must only contain letters, numbers, or underscores",
+            sourceLocation = sourceLocation
+        )
+        return true
+      }
+
       if (labelStringValue in deferDirectiveLabels) {
         registerIssue(
             message = "@defer label '$labelStringValue' must be unique within all other @defer directives in the document",
