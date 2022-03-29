@@ -2,7 +2,7 @@ Change Log
 ==========
 # Version 3.2.0
 
-_2022-XX-YY_
+_2022-03-29_
 
 💙 Thanks to @undermark5, @demoritas, @rkoron007, @akshay253101, @StylianosGakis, @Goooler, @jeffreydecker, @theBradfo, @anderssandven and @olivierg13 for contributing to this release.
 
