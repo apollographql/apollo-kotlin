@@ -372,12 +372,12 @@ internal class ExecutableValidationScope(
           selection.selectionSet?.validateDeferDirectives(fieldPath)
         }
         is GQLInlineFragment -> {
-          val deferDirective = selection.children.firstOrNull { it is GQLDirective && it.name == "defer" } as GQLDirective?
+          val deferDirective = selection.directives.firstOrNull { it.name == "defer" }
           if (deferDirective != null && deferDirective.validateDeferDirective(path, deferDirective.sourceLocation)) return
           selection.selectionSet.validateDeferDirectives(path)
         }
         is GQLFragmentSpread -> {
-          val deferDirective = selection.children.firstOrNull { it.name == "defer" }
+          val deferDirective = selection.directives.firstOrNull { it.name == "defer" }
           if (deferDirective != null && deferDirective.validateDeferDirective(path, deferDirective.sourceLocation)) return
           fragmentDefinitions[selection.name]!!.selectionSet.validateDeferDirectives(path)
         }
