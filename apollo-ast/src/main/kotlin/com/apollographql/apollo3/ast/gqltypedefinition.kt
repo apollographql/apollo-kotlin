@@ -41,3 +41,8 @@ fun GQLTypeDefinition.isAbstract(): Boolean {
     else -> false
   }
 }
+fun GQLTypeDefinition.implementsAbstractType(schema: Schema): Boolean {
+  return schema.implementedTypes(name).any {
+    schema.typeDefinition(it).isAbstract()
+  }
+}

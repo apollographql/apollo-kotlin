@@ -58,11 +58,11 @@ fragment fooData on Foo {
 
 shouldn't cause any cache miss
 
-## Cache reading (?)
+## Cache reading fields read through an interface
 
 ```graphql
 query Hero1 {
-  hero {
+  droid { # the same would happen with hero
     id
     name
   }
@@ -81,11 +81,50 @@ query Hero2 {
 }
 ```
 
-Here, `Hero2` will not be readable from the cache even if `Hero1` was fetched successfully before. I'm not 100% sure how much of a problem that is.
+Here, `Hero2` will not be readable from the cache even if `Hero1` was fetched successfully before.
 
-If it is a problem, adding `__typename` should be opt-in in all cases so that it doesn't impact non-cache users.
+This happens every time a field implements an interface and could potentially be accessed through it. We considered adding `__typename` for these fields (fields that are either abstract or implement an abstract type) but this would be robust to schema changes (see below)
 
-# Proposed algorithm
+## Schema changes adding interfaces to a type
+
+It is a non-breaking change to add an interface to a type.
+
+Schema1:
+
+```graphql
+type Cat {
+  id: ID!
+  meow: String
+}
+```
+
+Schema2: 
+
+```graphql
+interface Node {
+  id: ID!
+}
+type Cat implements Node {
+  id: ID!
+  meow: String
+}
+```
+
+If schema2 has a `node` root field and the data is in cache, it is desirable to return the cached data:
+
+```graphql
+{
+    node(id: $id) {
+      # here we have all the data in cache but we also need __typename even though Cat was 
+      # always monomorphic in the previous version of the schema
+      ... on Cat {
+         meow
+      }
+    }
+}
+
+```
+# Proposed algorithm for polymorphic fields
 
 Only add typename for polymorphic fields.
 
@@ -141,35 +180,9 @@ interface Animal implements Node
 
 This is the bare minimum __typename needed for parsing. Without these cases, it's not possible to know how to parse fragments. 
 
-When using the cache this can lead to some cache misses because __typename is missing. For an example:
+When using the cache this can lead to some cache misses because __typename is missing.
 
-First query:
-```graphql
-{
-  animal {
-    id
-    species
-    legs
-    isEndangered
-  }  
-}
-```
-
-Second query:
-
-```graphql
-{
-  animal {
-    # this query will require __typename even though everything is in cache already
-    id
-    ... on Cat {
-      species
-    }
-  }  
-}
-```
-
-For this reason, we're also adding an option to add fragments on all abstract fields (fields of union or interface type). 
+For this reason, we're also adding an option to add fragments on all fields. 
 
 
 # Implementation notes

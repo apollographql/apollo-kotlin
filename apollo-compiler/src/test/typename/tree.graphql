@@ -1,0 +1,7 @@
+query TestQuery {
+    # this is a concrete type that has no interface so only "always" should add "__typename"
+    tree {
+        name
+    }
+}
+

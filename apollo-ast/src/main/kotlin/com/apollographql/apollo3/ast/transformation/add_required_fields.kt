@@ -9,6 +9,7 @@ import com.apollographql.apollo3.ast.GQLSelectionSet
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.definitionFromScope
+import com.apollographql.apollo3.ast.implementsAbstractType
 import com.apollographql.apollo3.ast.isAbstract
 import com.apollographql.apollo3.ast.leafType
 import com.apollographql.apollo3.ast.rootTypeDefinition
@@ -73,6 +74,7 @@ private fun GQLSelectionSet.addRequiredFields(
     "ifPolymorphic" -> isRoot && isPolymorphic(schema, fragments, parentType)
     "ifFragments" -> selectionSet.selections.any { it is GQLFragmentSpread || it is GQLInlineFragment }
     "ifAbstract" -> isRoot && schema.typeDefinition(parentType).isAbstract()
+    "always" -> isRoot
     else -> error("Unknown addTypename option: $addTypename")
   }
   val requiredFieldNames = schema.keyFields(parentType).toMutableSet()

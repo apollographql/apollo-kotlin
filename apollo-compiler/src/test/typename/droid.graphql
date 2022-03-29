@@ -1,0 +1,7 @@
+query TestQuery {
+    # this is a concrete type that has an interface so could potentially be queried through its interface
+    droid(id: "") {
+        id
+    }
+}
+

@@ -1,0 +1,14 @@
+query TestQuery {
+  hero {
+    __typename
+    ...heroFragment
+  }
+}
+
+fragment heroFragment on Character {
+  __typename
+  name
+  ... on Droid {
+    primaryFunction
+  }
+}
