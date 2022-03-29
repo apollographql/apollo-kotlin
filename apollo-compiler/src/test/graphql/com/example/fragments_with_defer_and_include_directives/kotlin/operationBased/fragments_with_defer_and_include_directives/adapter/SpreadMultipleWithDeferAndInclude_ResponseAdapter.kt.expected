@@ -74,7 +74,7 @@ public object SpreadMultipleWithDeferAndInclude_ResponseAdapter {
         }
 
         var droidDetails: DroidDetails? = null
-        if (and(possibleTypes("Droid"),or(variable("cond1"),not(variable("cond2")),label("first"),label("second"),and(label("third"),variable("cond3")),and(label("fourth"),not(variable("cond4"))))).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+        if (and(possibleTypes("Droid"),or(variable("cond1"),not(variable("cond2")),label("b_first"),label("b_second"),and(label("b_third"),variable("cond3")),and(label("b_fourth"),not(variable("cond4"))))).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
               customScalarAdapters)

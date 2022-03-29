@@ -21,7 +21,7 @@ import java.lang.Override;
 import java.lang.String;
 
 public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWithDeferAndInclude.Data> {
-  public static final String OPERATION_ID = "62a5b82967659385f084ee5ed37dfa5ec6e659ccc89e419d150c38f08db17bb6";
+  public static final String OPERATION_ID = "f159c1ac4f33a49c5c9833e06a2606e2fc7ede812e119909eb45f95dc2aa01fc";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -36,22 +36,22 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
    *     ... on Droid @skip(if: $cond2) {
    *       id
    *     }
-   *     ... on Droid @defer(label: "first") {
+   *     ... on Droid @defer(label: "e_first") {
    *       name
    *     }
-   *     ... on Droid @defer(label: "second") {
+   *     ... on Droid @defer(label: "e_second") {
    *       id
    *     }
-   *     ... on Droid @defer(label: "third") @include(if: $cond3) {
+   *     ... on Droid @defer(label: "e_third") @include(if: $cond3) {
    *       name
    *     }
-   *     ... on Droid @defer(label: "fourth") @skip(if: $cond4) {
+   *     ... on Droid @defer(label: "e_fourth") @skip(if: $cond4) {
    *       id
    *     }
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query InlineMultipleWithDeferAndInclude($cond1: Boolean!, $cond2: Boolean!, $cond3: Boolean!, $cond4: Boolean!) { hero { __typename ... on Droid @include(if: $cond1) { name } ... on Droid @skip(if: $cond2) { id } ... on Droid @defer(label: \"first\") { name } ... on Droid @defer(label: \"second\") { id } ... on Droid @defer(label: \"third\") @include(if: $cond3) { name } ... on Droid @defer(label: \"fourth\") @skip(if: $cond4) { id } } }";
+  public static final String OPERATION_DOCUMENT = "query InlineMultipleWithDeferAndInclude($cond1: Boolean!, $cond2: Boolean!, $cond3: Boolean!, $cond4: Boolean!) { hero { __typename ... on Droid @include(if: $cond1) { name } ... on Droid @skip(if: $cond2) { id } ... on Droid @defer(label: \"e_first\") { name } ... on Droid @defer(label: \"e_second\") { id } ... on Droid @defer(label: \"e_third\") @include(if: $cond3) { name } ... on Droid @defer(label: \"e_fourth\") @skip(if: $cond4) { id } } }";
 
   public static final String OPERATION_NAME = "InlineMultipleWithDeferAndInclude";
 
@@ -223,22 +223,22 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
     /**
      * Synthetic field for inline fragment on Droid
      */
-    public OnDroidDeferFirst onDroidDeferFirst;
+    public OnDroidDeferE_first onDroidDeferE_first;
 
     /**
      * Synthetic field for inline fragment on Droid
      */
-    public OnDroidDeferSecond onDroidDeferSecond;
+    public OnDroidDeferE_second onDroidDeferE_second;
 
     /**
      * Synthetic field for inline fragment on Droid
      */
-    public OnDroidDeferThird onDroidDeferThird;
+    public OnDroidDeferE_third onDroidDeferE_third;
 
     /**
      * Synthetic field for inline fragment on Droid
      */
-    public OnDroidDeferFourth onDroidDeferFourth;
+    public OnDroidDeferE_fourth onDroidDeferE_fourth;
 
     private transient volatile int $hashCode;
 
@@ -247,16 +247,16 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
     private transient volatile String $toString;
 
     public Hero(String __typename, OnDroidIfCond1 onDroidIfCond1,
-        OnDroidIfNotCond2 onDroidIfNotCond2, OnDroidDeferFirst onDroidDeferFirst,
-        OnDroidDeferSecond onDroidDeferSecond, OnDroidDeferThird onDroidDeferThird,
-        OnDroidDeferFourth onDroidDeferFourth) {
+        OnDroidIfNotCond2 onDroidIfNotCond2, OnDroidDeferE_first onDroidDeferE_first,
+        OnDroidDeferE_second onDroidDeferE_second, OnDroidDeferE_third onDroidDeferE_third,
+        OnDroidDeferE_fourth onDroidDeferE_fourth) {
       this.__typename = __typename;
       this.onDroidIfCond1 = onDroidIfCond1;
       this.onDroidIfNotCond2 = onDroidIfNotCond2;
-      this.onDroidDeferFirst = onDroidDeferFirst;
-      this.onDroidDeferSecond = onDroidDeferSecond;
-      this.onDroidDeferThird = onDroidDeferThird;
-      this.onDroidDeferFourth = onDroidDeferFourth;
+      this.onDroidDeferE_first = onDroidDeferE_first;
+      this.onDroidDeferE_second = onDroidDeferE_second;
+      this.onDroidDeferE_third = onDroidDeferE_third;
+      this.onDroidDeferE_fourth = onDroidDeferE_fourth;
     }
 
     @Override
@@ -269,10 +269,10 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
         return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
          &&((this.onDroidIfCond1 == null) ? (that.onDroidIfCond1 == null) : this.onDroidIfCond1.equals(that.onDroidIfCond1))
          &&((this.onDroidIfNotCond2 == null) ? (that.onDroidIfNotCond2 == null) : this.onDroidIfNotCond2.equals(that.onDroidIfNotCond2))
-         &&((this.onDroidDeferFirst == null) ? (that.onDroidDeferFirst == null) : this.onDroidDeferFirst.equals(that.onDroidDeferFirst))
-         &&((this.onDroidDeferSecond == null) ? (that.onDroidDeferSecond == null) : this.onDroidDeferSecond.equals(that.onDroidDeferSecond))
-         &&((this.onDroidDeferThird == null) ? (that.onDroidDeferThird == null) : this.onDroidDeferThird.equals(that.onDroidDeferThird))
-         &&((this.onDroidDeferFourth == null) ? (that.onDroidDeferFourth == null) : this.onDroidDeferFourth.equals(that.onDroidDeferFourth));
+         &&((this.onDroidDeferE_first == null) ? (that.onDroidDeferE_first == null) : this.onDroidDeferE_first.equals(that.onDroidDeferE_first))
+         &&((this.onDroidDeferE_second == null) ? (that.onDroidDeferE_second == null) : this.onDroidDeferE_second.equals(that.onDroidDeferE_second))
+         &&((this.onDroidDeferE_third == null) ? (that.onDroidDeferE_third == null) : this.onDroidDeferE_third.equals(that.onDroidDeferE_third))
+         &&((this.onDroidDeferE_fourth == null) ? (that.onDroidDeferE_fourth == null) : this.onDroidDeferE_fourth.equals(that.onDroidDeferE_fourth));
       }
       return false;
     }
@@ -288,13 +288,13 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
         h *= 1000003;
         h ^= (onDroidIfNotCond2 == null) ? 0 : onDroidIfNotCond2.hashCode();
         h *= 1000003;
-        h ^= (onDroidDeferFirst == null) ? 0 : onDroidDeferFirst.hashCode();
+        h ^= (onDroidDeferE_first == null) ? 0 : onDroidDeferE_first.hashCode();
         h *= 1000003;
-        h ^= (onDroidDeferSecond == null) ? 0 : onDroidDeferSecond.hashCode();
+        h ^= (onDroidDeferE_second == null) ? 0 : onDroidDeferE_second.hashCode();
         h *= 1000003;
-        h ^= (onDroidDeferThird == null) ? 0 : onDroidDeferThird.hashCode();
+        h ^= (onDroidDeferE_third == null) ? 0 : onDroidDeferE_third.hashCode();
         h *= 1000003;
-        h ^= (onDroidDeferFourth == null) ? 0 : onDroidDeferFourth.hashCode();
+        h ^= (onDroidDeferE_fourth == null) ? 0 : onDroidDeferE_fourth.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -308,10 +308,10 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
           + "__typename=" + __typename + ", "
           + "onDroidIfCond1=" + onDroidIfCond1 + ", "
           + "onDroidIfNotCond2=" + onDroidIfNotCond2 + ", "
-          + "onDroidDeferFirst=" + onDroidDeferFirst + ", "
-          + "onDroidDeferSecond=" + onDroidDeferSecond + ", "
-          + "onDroidDeferThird=" + onDroidDeferThird + ", "
-          + "onDroidDeferFourth=" + onDroidDeferFourth
+          + "onDroidDeferE_first=" + onDroidDeferE_first + ", "
+          + "onDroidDeferE_second=" + onDroidDeferE_second + ", "
+          + "onDroidDeferE_third=" + onDroidDeferE_third + ", "
+          + "onDroidDeferE_fourth=" + onDroidDeferE_fourth
           + "}";
       }
       return $toString;
@@ -420,7 +420,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
     }
   }
 
-  public static class OnDroidDeferFirst {
+  public static class OnDroidDeferE_first {
     /**
      * What others call this droid
      */
@@ -432,7 +432,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
 
     private transient volatile String $toString;
 
-    public OnDroidDeferFirst(String name) {
+    public OnDroidDeferE_first(String name) {
       this.name = name;
     }
 
@@ -441,8 +441,8 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
       if (o == this) {
         return true;
       }
-      if (o instanceof OnDroidDeferFirst) {
-        OnDroidDeferFirst that = (OnDroidDeferFirst) o;
+      if (o instanceof OnDroidDeferE_first) {
+        OnDroidDeferE_first that = (OnDroidDeferE_first) o;
         return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
       }
       return false;
@@ -463,7 +463,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "OnDroidDeferFirst{"
+        $toString = "OnDroidDeferE_first{"
           + "name=" + name
           + "}";
       }
@@ -471,7 +471,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
     }
   }
 
-  public static class OnDroidDeferSecond {
+  public static class OnDroidDeferE_second {
     /**
      * The ID of the droid
      */
@@ -483,7 +483,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
 
     private transient volatile String $toString;
 
-    public OnDroidDeferSecond(String id) {
+    public OnDroidDeferE_second(String id) {
       this.id = id;
     }
 
@@ -492,8 +492,8 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
       if (o == this) {
         return true;
       }
-      if (o instanceof OnDroidDeferSecond) {
-        OnDroidDeferSecond that = (OnDroidDeferSecond) o;
+      if (o instanceof OnDroidDeferE_second) {
+        OnDroidDeferE_second that = (OnDroidDeferE_second) o;
         return ((this.id == null) ? (that.id == null) : this.id.equals(that.id));
       }
       return false;
@@ -514,7 +514,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "OnDroidDeferSecond{"
+        $toString = "OnDroidDeferE_second{"
           + "id=" + id
           + "}";
       }
@@ -522,7 +522,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
     }
   }
 
-  public static class OnDroidDeferThird {
+  public static class OnDroidDeferE_third {
     /**
      * What others call this droid
      */
@@ -534,7 +534,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
 
     private transient volatile String $toString;
 
-    public OnDroidDeferThird(String name) {
+    public OnDroidDeferE_third(String name) {
       this.name = name;
     }
 
@@ -543,8 +543,8 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
       if (o == this) {
         return true;
       }
-      if (o instanceof OnDroidDeferThird) {
-        OnDroidDeferThird that = (OnDroidDeferThird) o;
+      if (o instanceof OnDroidDeferE_third) {
+        OnDroidDeferE_third that = (OnDroidDeferE_third) o;
         return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
       }
       return false;
@@ -565,7 +565,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "OnDroidDeferThird{"
+        $toString = "OnDroidDeferE_third{"
           + "name=" + name
           + "}";
       }
@@ -573,7 +573,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
     }
   }
 
-  public static class OnDroidDeferFourth {
+  public static class OnDroidDeferE_fourth {
     /**
      * The ID of the droid
      */
@@ -585,7 +585,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
 
     private transient volatile String $toString;
 
-    public OnDroidDeferFourth(String id) {
+    public OnDroidDeferE_fourth(String id) {
       this.id = id;
     }
 
@@ -594,8 +594,8 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
       if (o == this) {
         return true;
       }
-      if (o instanceof OnDroidDeferFourth) {
-        OnDroidDeferFourth that = (OnDroidDeferFourth) o;
+      if (o instanceof OnDroidDeferE_fourth) {
+        OnDroidDeferE_fourth that = (OnDroidDeferE_fourth) o;
         return ((this.id == null) ? (that.id == null) : this.id.equals(that.id));
       }
       return false;
@@ -616,7 +616,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "OnDroidDeferFourth{"
+        $toString = "OnDroidDeferE_fourth{"
           + "id=" + id
           + "}";
       }

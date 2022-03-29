@@ -83,14 +83,14 @@ public object SpreadMultipleWithDeferWithIf_ResponseAdapter {
         }
 
         var characterDetails2: CharacterDetails2? = null
-        if (and(possibleTypes("Droid"),label("second")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+        if (and(possibleTypes("Droid"),label("c_second")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           characterDetails2 = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2Impl_ResponseAdapter.CharacterDetails2.fromJson(reader,
               customScalarAdapters)
         }
 
         var characterDetails3: CharacterDetails3? = null
-        if (and(possibleTypes("Droid"),or(not(variable("cond")),label("third"))).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+        if (and(possibleTypes("Droid"),or(not(variable("cond")),label("c_third"))).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           characterDetails3 = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3Impl_ResponseAdapter.CharacterDetails3.fromJson(reader,
               customScalarAdapters)

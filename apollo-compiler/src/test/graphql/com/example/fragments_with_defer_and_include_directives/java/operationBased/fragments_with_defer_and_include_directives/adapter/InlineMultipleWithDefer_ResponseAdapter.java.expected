@@ -77,22 +77,22 @@ public class InlineMultipleWithDefer_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      InlineMultipleWithDefer.OnDroidDeferFirst onDroidDeferFirst = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel("first"))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
+      InlineMultipleWithDefer.OnDroidDeferD_first onDroidDeferD_first = null;
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel("d_first"))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
-        onDroidDeferFirst = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.OnDroidDeferFirst.INSTANCE.fromJson(reader, customScalarAdapters);
+        onDroidDeferD_first = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.OnDroidDeferD_first.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
-      InlineMultipleWithDefer.OnDroidDeferSecond onDroidDeferSecond = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel("second"))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
+      InlineMultipleWithDefer.OnDroidDeferD_second onDroidDeferD_second = null;
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel("d_second"))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
-        onDroidDeferSecond = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.OnDroidDeferSecond.INSTANCE.fromJson(reader, customScalarAdapters);
+        onDroidDeferD_second = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.OnDroidDeferD_second.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new InlineMultipleWithDefer.Hero(
         __typename,
-        onDroidDeferFirst,
-        onDroidDeferSecond
+        onDroidDeferD_first,
+        onDroidDeferD_second
       );
     }
 
@@ -102,23 +102,23 @@ public class InlineMultipleWithDefer_ResponseAdapter {
       writer.name("__typename");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
 
-      if (value.onDroidDeferFirst != null) {
-        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.OnDroidDeferFirst.INSTANCE.toJson(writer, customScalarAdapters, value.onDroidDeferFirst);
+      if (value.onDroidDeferD_first != null) {
+        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.OnDroidDeferD_first.INSTANCE.toJson(writer, customScalarAdapters, value.onDroidDeferD_first);
       }
 
-      if (value.onDroidDeferSecond != null) {
-        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.OnDroidDeferSecond.INSTANCE.toJson(writer, customScalarAdapters, value.onDroidDeferSecond);
+      if (value.onDroidDeferD_second != null) {
+        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.OnDroidDeferD_second.INSTANCE.toJson(writer, customScalarAdapters, value.onDroidDeferD_second);
       }
     }
   }
 
-  public enum OnDroidDeferFirst implements Adapter<InlineMultipleWithDefer.OnDroidDeferFirst> {
+  public enum OnDroidDeferD_first implements Adapter<InlineMultipleWithDefer.OnDroidDeferD_first> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public InlineMultipleWithDefer.OnDroidDeferFirst fromJson(JsonReader reader,
+    public InlineMultipleWithDefer.OnDroidDeferD_first fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
       String name = null;
 
@@ -132,26 +132,26 @@ public class InlineMultipleWithDefer_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(name, "name");
 
-      return new InlineMultipleWithDefer.OnDroidDeferFirst(
+      return new InlineMultipleWithDefer.OnDroidDeferD_first(
         name
       );
     }
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        InlineMultipleWithDefer.OnDroidDeferFirst value) throws IOException {
+        InlineMultipleWithDefer.OnDroidDeferD_first value) throws IOException {
       writer.name("name");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
     }
   }
 
-  public enum OnDroidDeferSecond implements Adapter<InlineMultipleWithDefer.OnDroidDeferSecond> {
+  public enum OnDroidDeferD_second implements Adapter<InlineMultipleWithDefer.OnDroidDeferD_second> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id");
 
     @Override
-    public InlineMultipleWithDefer.OnDroidDeferSecond fromJson(JsonReader reader,
+    public InlineMultipleWithDefer.OnDroidDeferD_second fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
       String id = null;
 
@@ -165,14 +165,14 @@ public class InlineMultipleWithDefer_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(id, "id");
 
-      return new InlineMultipleWithDefer.OnDroidDeferSecond(
+      return new InlineMultipleWithDefer.OnDroidDeferD_second(
         id
       );
     }
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        InlineMultipleWithDefer.OnDroidDeferSecond value) throws IOException {
+        InlineMultipleWithDefer.OnDroidDeferD_second value) throws IOException {
       writer.name("id");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.id);
     }

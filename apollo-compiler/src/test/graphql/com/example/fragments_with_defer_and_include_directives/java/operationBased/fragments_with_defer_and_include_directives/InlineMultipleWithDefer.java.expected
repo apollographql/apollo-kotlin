@@ -19,7 +19,7 @@ import java.lang.Override;
 import java.lang.String;
 
 public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Data> {
-  public static final String OPERATION_ID = "28903c0b8591c0eed5b62eddfc57d8fe1b0795ff46a5e369bea8a55d624fa137";
+  public static final String OPERATION_ID = "9331f0c719bafb010d29f76c720d4488f45c5196bf3fb8908b2be30bc546e355";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -28,16 +28,16 @@ public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Da
    * query InlineMultipleWithDefer {
    *   hero {
    *     __typename
-   *     ... on Droid @defer(label: "first") {
+   *     ... on Droid @defer(label: "d_first") {
    *       name
    *     }
-   *     ... on Droid @defer(label: "second") {
+   *     ... on Droid @defer(label: "d_second") {
    *       id
    *     }
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query InlineMultipleWithDefer { hero { __typename ... on Droid @defer(label: \"first\") { name } ... on Droid @defer(label: \"second\") { id } } }";
+  public static final String OPERATION_DOCUMENT = "query InlineMultipleWithDefer { hero { __typename ... on Droid @defer(label: \"d_first\") { name } ... on Droid @defer(label: \"d_second\") { id } } }";
 
   public static final String OPERATION_NAME = "InlineMultipleWithDefer";
 
@@ -171,12 +171,12 @@ public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Da
     /**
      * Synthetic field for inline fragment on Droid
      */
-    public OnDroidDeferFirst onDroidDeferFirst;
+    public OnDroidDeferD_first onDroidDeferD_first;
 
     /**
      * Synthetic field for inline fragment on Droid
      */
-    public OnDroidDeferSecond onDroidDeferSecond;
+    public OnDroidDeferD_second onDroidDeferD_second;
 
     private transient volatile int $hashCode;
 
@@ -184,11 +184,11 @@ public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Da
 
     private transient volatile String $toString;
 
-    public Hero(String __typename, OnDroidDeferFirst onDroidDeferFirst,
-        OnDroidDeferSecond onDroidDeferSecond) {
+    public Hero(String __typename, OnDroidDeferD_first onDroidDeferD_first,
+        OnDroidDeferD_second onDroidDeferD_second) {
       this.__typename = __typename;
-      this.onDroidDeferFirst = onDroidDeferFirst;
-      this.onDroidDeferSecond = onDroidDeferSecond;
+      this.onDroidDeferD_first = onDroidDeferD_first;
+      this.onDroidDeferD_second = onDroidDeferD_second;
     }
 
     @Override
@@ -199,8 +199,8 @@ public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Da
       if (o instanceof Hero) {
         Hero that = (Hero) o;
         return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         &&((this.onDroidDeferFirst == null) ? (that.onDroidDeferFirst == null) : this.onDroidDeferFirst.equals(that.onDroidDeferFirst))
-         &&((this.onDroidDeferSecond == null) ? (that.onDroidDeferSecond == null) : this.onDroidDeferSecond.equals(that.onDroidDeferSecond));
+         &&((this.onDroidDeferD_first == null) ? (that.onDroidDeferD_first == null) : this.onDroidDeferD_first.equals(that.onDroidDeferD_first))
+         &&((this.onDroidDeferD_second == null) ? (that.onDroidDeferD_second == null) : this.onDroidDeferD_second.equals(that.onDroidDeferD_second));
       }
       return false;
     }
@@ -212,9 +212,9 @@ public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Da
         h *= 1000003;
         h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
-        h ^= (onDroidDeferFirst == null) ? 0 : onDroidDeferFirst.hashCode();
+        h ^= (onDroidDeferD_first == null) ? 0 : onDroidDeferD_first.hashCode();
         h *= 1000003;
-        h ^= (onDroidDeferSecond == null) ? 0 : onDroidDeferSecond.hashCode();
+        h ^= (onDroidDeferD_second == null) ? 0 : onDroidDeferD_second.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -226,15 +226,15 @@ public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Da
       if ($toString == null) {
         $toString = "Hero{"
           + "__typename=" + __typename + ", "
-          + "onDroidDeferFirst=" + onDroidDeferFirst + ", "
-          + "onDroidDeferSecond=" + onDroidDeferSecond
+          + "onDroidDeferD_first=" + onDroidDeferD_first + ", "
+          + "onDroidDeferD_second=" + onDroidDeferD_second
           + "}";
       }
       return $toString;
     }
   }
 
-  public static class OnDroidDeferFirst {
+  public static class OnDroidDeferD_first {
     /**
      * What others call this droid
      */
@@ -246,7 +246,7 @@ public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Da
 
     private transient volatile String $toString;
 
-    public OnDroidDeferFirst(String name) {
+    public OnDroidDeferD_first(String name) {
       this.name = name;
     }
 
@@ -255,8 +255,8 @@ public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Da
       if (o == this) {
         return true;
       }
-      if (o instanceof OnDroidDeferFirst) {
-        OnDroidDeferFirst that = (OnDroidDeferFirst) o;
+      if (o instanceof OnDroidDeferD_first) {
+        OnDroidDeferD_first that = (OnDroidDeferD_first) o;
         return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
       }
       return false;
@@ -277,7 +277,7 @@ public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Da
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "OnDroidDeferFirst{"
+        $toString = "OnDroidDeferD_first{"
           + "name=" + name
           + "}";
       }
@@ -285,7 +285,7 @@ public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Da
     }
   }
 
-  public static class OnDroidDeferSecond {
+  public static class OnDroidDeferD_second {
     /**
      * The ID of the droid
      */
@@ -297,7 +297,7 @@ public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Da
 
     private transient volatile String $toString;
 
-    public OnDroidDeferSecond(String id) {
+    public OnDroidDeferD_second(String id) {
       this.id = id;
     }
 
@@ -306,8 +306,8 @@ public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Da
       if (o == this) {
         return true;
       }
-      if (o instanceof OnDroidDeferSecond) {
-        OnDroidDeferSecond that = (OnDroidDeferSecond) o;
+      if (o instanceof OnDroidDeferD_second) {
+        OnDroidDeferD_second that = (OnDroidDeferD_second) o;
         return ((this.id == null) ? (that.id == null) : this.id.equals(that.id));
       }
       return false;
@@ -328,7 +328,7 @@ public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Da
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "OnDroidDeferSecond{"
+        $toString = "OnDroidDeferD_second{"
           + "id=" + id
           + "}";
       }

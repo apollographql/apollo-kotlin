@@ -21,7 +21,7 @@ import java.lang.Override;
 import java.lang.String;
 
 public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDeferWithIf.Data> {
-  public static final String OPERATION_ID = "5b00be478e8052ac841db6890f937f8c56de7665b63ad6723da0572c0198f92d";
+  public static final String OPERATION_ID = "9dc79c78df7375c3d860d16df3ea839ea45c7f8420976f63414610d338f0caf1";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -30,19 +30,19 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
    * query InlineMultipleWithDeferWithIf($cond: Boolean!) {
    *   hero {
    *     __typename
-   *     ... on Character @defer(label: "first", if: false) {
+   *     ... on Character @defer(label: "f_first", if: false) {
    *       id
    *     }
-   *     ... on Character @defer(label: "second", if: true) {
+   *     ... on Character @defer(label: "f_second", if: true) {
    *       name
    *     }
-   *     ... on Character @defer(label: "third", if: $cond) {
+   *     ... on Character @defer(label: "f_third", if: $cond) {
    *       name
    *     }
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query InlineMultipleWithDeferWithIf($cond: Boolean!) { hero { __typename ... on Character @defer(label: \"first\", if: false) { id } ... on Character @defer(label: \"second\", if: true) { name } ... on Character @defer(label: \"third\", if: $cond) { name } } }";
+  public static final String OPERATION_DOCUMENT = "query InlineMultipleWithDeferWithIf($cond: Boolean!) { hero { __typename ... on Character @defer(label: \"f_first\", if: false) { id } ... on Character @defer(label: \"f_second\", if: true) { name } ... on Character @defer(label: \"f_third\", if: $cond) { name } } }";
 
   public static final String OPERATION_NAME = "InlineMultipleWithDeferWithIf";
 
@@ -187,12 +187,12 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
     /**
      * Synthetic field for inline fragment on Character
      */
-    public OnCharacterDeferSecond onCharacterDeferSecond;
+    public OnCharacterDeferF_second onCharacterDeferF_second;
 
     /**
      * Synthetic field for inline fragment on Character
      */
-    public OnCharacterDeferThird onCharacterDeferThird;
+    public OnCharacterDeferF_third onCharacterDeferF_third;
 
     private transient volatile int $hashCode;
 
@@ -201,12 +201,12 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
     private transient volatile String $toString;
 
     public Hero(String __typename, OnCharacter onCharacter,
-        OnCharacterDeferSecond onCharacterDeferSecond,
-        OnCharacterDeferThird onCharacterDeferThird) {
+        OnCharacterDeferF_second onCharacterDeferF_second,
+        OnCharacterDeferF_third onCharacterDeferF_third) {
       this.__typename = __typename;
       this.onCharacter = onCharacter;
-      this.onCharacterDeferSecond = onCharacterDeferSecond;
-      this.onCharacterDeferThird = onCharacterDeferThird;
+      this.onCharacterDeferF_second = onCharacterDeferF_second;
+      this.onCharacterDeferF_third = onCharacterDeferF_third;
     }
 
     @Override
@@ -218,8 +218,8 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
         Hero that = (Hero) o;
         return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
          &&((this.onCharacter == null) ? (that.onCharacter == null) : this.onCharacter.equals(that.onCharacter))
-         &&((this.onCharacterDeferSecond == null) ? (that.onCharacterDeferSecond == null) : this.onCharacterDeferSecond.equals(that.onCharacterDeferSecond))
-         &&((this.onCharacterDeferThird == null) ? (that.onCharacterDeferThird == null) : this.onCharacterDeferThird.equals(that.onCharacterDeferThird));
+         &&((this.onCharacterDeferF_second == null) ? (that.onCharacterDeferF_second == null) : this.onCharacterDeferF_second.equals(that.onCharacterDeferF_second))
+         &&((this.onCharacterDeferF_third == null) ? (that.onCharacterDeferF_third == null) : this.onCharacterDeferF_third.equals(that.onCharacterDeferF_third));
       }
       return false;
     }
@@ -233,9 +233,9 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
         h *= 1000003;
         h ^= (onCharacter == null) ? 0 : onCharacter.hashCode();
         h *= 1000003;
-        h ^= (onCharacterDeferSecond == null) ? 0 : onCharacterDeferSecond.hashCode();
+        h ^= (onCharacterDeferF_second == null) ? 0 : onCharacterDeferF_second.hashCode();
         h *= 1000003;
-        h ^= (onCharacterDeferThird == null) ? 0 : onCharacterDeferThird.hashCode();
+        h ^= (onCharacterDeferF_third == null) ? 0 : onCharacterDeferF_third.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -248,8 +248,8 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
         $toString = "Hero{"
           + "__typename=" + __typename + ", "
           + "onCharacter=" + onCharacter + ", "
-          + "onCharacterDeferSecond=" + onCharacterDeferSecond + ", "
-          + "onCharacterDeferThird=" + onCharacterDeferThird
+          + "onCharacterDeferF_second=" + onCharacterDeferF_second + ", "
+          + "onCharacterDeferF_third=" + onCharacterDeferF_third
           + "}";
       }
       return $toString;
@@ -307,7 +307,7 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
     }
   }
 
-  public static class OnCharacterDeferSecond {
+  public static class OnCharacterDeferF_second {
     /**
      * The name of the character
      */
@@ -319,7 +319,7 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
 
     private transient volatile String $toString;
 
-    public OnCharacterDeferSecond(String name) {
+    public OnCharacterDeferF_second(String name) {
       this.name = name;
     }
 
@@ -328,8 +328,8 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
       if (o == this) {
         return true;
       }
-      if (o instanceof OnCharacterDeferSecond) {
-        OnCharacterDeferSecond that = (OnCharacterDeferSecond) o;
+      if (o instanceof OnCharacterDeferF_second) {
+        OnCharacterDeferF_second that = (OnCharacterDeferF_second) o;
         return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
       }
       return false;
@@ -350,7 +350,7 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "OnCharacterDeferSecond{"
+        $toString = "OnCharacterDeferF_second{"
           + "name=" + name
           + "}";
       }
@@ -358,7 +358,7 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
     }
   }
 
-  public static class OnCharacterDeferThird {
+  public static class OnCharacterDeferF_third {
     /**
      * The name of the character
      */
@@ -370,7 +370,7 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
 
     private transient volatile String $toString;
 
-    public OnCharacterDeferThird(String name) {
+    public OnCharacterDeferF_third(String name) {
       this.name = name;
     }
 
@@ -379,8 +379,8 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
       if (o == this) {
         return true;
       }
-      if (o instanceof OnCharacterDeferThird) {
-        OnCharacterDeferThird that = (OnCharacterDeferThird) o;
+      if (o instanceof OnCharacterDeferF_third) {
+        OnCharacterDeferF_third that = (OnCharacterDeferF_third) o;
         return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
       }
       return false;
@@ -401,7 +401,7 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "OnCharacterDeferThird{"
+        $toString = "OnCharacterDeferF_third{"
           + "name=" + name
           + "}";
       }
