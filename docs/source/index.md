@@ -36,13 +36,13 @@ Apollo Kotlin is a [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatf
 Here's the current matrix of supported features per platform:
 
 |  | `jvm` | Apple¹ | `js` | `linuxX64`
-| --- | :---: | :---: | :---: | :---: |
-| `apollo-api` (models)|✅|✅|✅|✅|
-| `apollo-runtime` (network, query batching, apq, ...) |✅|✅|✅²|🚫|
-| `apollo-normalized-cache` |✅|✅|✅|🚫|
-| `apollo-adapters` |✅|✅|✅|🚫|
-| `apollo-normalized-cache-sqlite` |✅|✅|🚫|🚫|
-| `apollo-http-cache` |✅|🚫|🚫|🚫|
+| --- | :---: | :---: |:----:| :---: |
+| `apollo-api` (models)|✅|✅|  ✅   |✅|
+| `apollo-runtime` (network, query batching, apq, ...) |✅|✅|  ✅   |🚫|
+| `apollo-normalized-cache` |✅|✅|  ✅   |🚫|
+| `apollo-adapters` |✅|✅|  ✅   |🚫|
+| `apollo-normalized-cache-sqlite` |✅|✅|  🚫  |🚫|
+| `apollo-http-cache` |✅|🚫|  🚫  |🚫|
 
 ¹: Apple currently includes:
 
@@ -56,8 +56,6 @@ Here's the current matrix of supported features per platform:
 - `tvosArm64`
 - `tvosX64`
 - `tvosSimulatorArm64`
-
-²: WebSockets are currently not supported on `js`
 
 ## Getting started
 
