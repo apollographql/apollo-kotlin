@@ -2,6 +2,7 @@ package com.apollographql.apollo3.ast.internal
 
 import com.apollographql.apollo3.ast.GQLArgument
 import com.apollographql.apollo3.ast.GQLBooleanValue
+import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLEnumValue
@@ -28,6 +29,7 @@ import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.VariableUsage
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.findDeprecationReason
@@ -55,6 +57,9 @@ internal class ExecutableValidationScope(
    */
   override val variableUsages = mutableListOf<VariableUsage>()
 
+  private val deferDirectiveLabels = mutableMapOf<String, SourceLocation>()
+  private val deferDirectivePathAndLabels = mutableMapOf<String, SourceLocation>()
+
   fun validate(document: GQLDocument): List<Issue> {
     document.validateExecutable()
 
@@ -64,6 +69,7 @@ internal class ExecutableValidationScope(
       it.validate()
     }
 
+    deferDirectiveLabels.clear()
     val operations = document.definitions.filterIsInstance<GQLOperationDefinition>()
     operations.checkDuplicateOperations()
     operations.forEach {
@@ -118,7 +124,7 @@ internal class ExecutableValidationScope(
     return name.firstOrNull { it.isLetter() }?.isUpperCase() ?: true
   }
 
-  private fun GQLField.validate(typeDefinitionInScope: GQLTypeDefinition) {
+  private fun GQLField.validate(typeDefinitionInScope: GQLTypeDefinition, path: String) {
     val fieldDefinition = definitionFromScope(schema, typeDefinitionInScope)
     if (fieldDefinition == null) {
       registerIssue(
@@ -174,7 +180,8 @@ internal class ExecutableValidationScope(
         )
         return
       }
-      selectionSet.validate(leafTypeDefinition)
+      val fieldPath = if (path.isEmpty()) name else "$path.$name"
+      selectionSet.validate(leafTypeDefinition, fieldPath)
     } else {
       if (selectionSet != null) {
         registerIssue(
@@ -191,7 +198,7 @@ internal class ExecutableValidationScope(
   }
 
 
-  private fun GQLInlineFragment.validate(typeDefinitionInScope: GQLTypeDefinition) {
+  private fun GQLInlineFragment.validate(typeDefinitionInScope: GQLTypeDefinition, path: String) {
     val inlineFragmentTypeDefinition = typeDefinitions[typeCondition.name]
     if (inlineFragmentTypeDefinition == null) {
       registerIssue(
@@ -209,14 +216,15 @@ internal class ExecutableValidationScope(
       return
     }
 
-    selectionSet.validate(inlineFragmentTypeDefinition)
+    selectionSet.validate(inlineFragmentTypeDefinition, path)
 
     directives.forEach {
       validateDirective(it, this)
+      if (it.name == "defer" && !path.startsWith('-')) it.validateDeferDirective(path)
     }
   }
 
-  private fun GQLFragmentSpread.validate(typeDefinitionInScope: GQLTypeDefinition) {
+  private fun GQLFragmentSpread.validate(typeDefinitionInScope: GQLTypeDefinition, path: String) {
     val fragmentDefinition = fragmentDefinitions[name]
     if (fragmentDefinition == null) {
       registerIssue(
@@ -243,10 +251,11 @@ internal class ExecutableValidationScope(
       return
     }
 
-    fragmentDefinition.selectionSet.validate(fragmentTypeDefinition)
+    fragmentDefinition.selectionSet.validate(fragmentTypeDefinition, path)
 
     directives.forEach {
       validateDirective(it, this)
+      if (it.name == "defer" && !path.startsWith('-')) it.validateDeferDirective(path)
     }
   }
 
@@ -272,15 +281,18 @@ internal class ExecutableValidationScope(
      * Validate the fragment outside the context of an operation
      * This can be helpful to show warnings in the IDE while editing fragments of a parent module and the fragment may appear unused
      * This will not catch field merging conflicts and missing variables so ultimately, validation
-     * against all fragments is required
+     * against all fragments is required.
+     * Use "-" for the path as a signal to skip @defer specific validation, which is only relevant when considering the fragment in the
+     * context of an operation.
      */
-    selectionSet.validate(fragmentRootTypeDefinition)
+    selectionSet.validate(fragmentRootTypeDefinition, path = "-")
 
     fieldsInSetCanMerge(selectionSet.collectFields(fragmentRootTypeDefinition.name))
   }
 
   private fun GQLOperationDefinition.validate() {
     variableUsages.clear()
+    deferDirectivePathAndLabels.clear()
 
     val rootTypeDefinition = rootTypeDefinition(schema)
 
@@ -310,7 +322,96 @@ internal class ExecutableValidationScope(
     }
   }
 
-  private fun GQLSelectionSet.validate(typeDefinitionInScope: GQLTypeDefinition) {
+  /**
+   * If a label is passed to a `@defer` directive, it must not be a variable, and it must be unique within all other `@defer` directives in
+   * the document.
+   *
+   * Also ensure that the label can be used as part of an identifier name (Apollo-specific validation).
+   *
+   * Also ensure that any `@defer` directive found when walking fragments on an operation have a unique path + label (Apollo-specific
+   * validation).
+   *
+   * For instance: this is invalid:
+   * ```
+   * query Query1 {
+   *   computers {
+   *   ...ComputerFields @defer  # path is computer
+   *   ...ComputerFields @defer  # path is computer
+   *   }
+   * }
+   * ```
+   *
+   * Also invalid:
+   * ```
+   * query Query2 {
+   *   computers {
+   *     ...ComputerFields
+   *     ...ComputerFields2
+   *     }
+   *   }
+   *
+   *   fragment ComputerFields on Computer {
+   *     screen {
+   *       ...ScreenFields @defer  # path is computer.screen
+   *     }
+   *   }
+   *
+   *   fragment ComputerFields2 on Computer {
+   *     screen {
+   *       ...ScreenFields @defer  # path is computer.screen
+   *     }
+   * }
+   * ```
+   */
+  private fun GQLDirective.validateDeferDirective(path: String) {
+    val label = arguments?.arguments?.firstOrNull { it.name == "label" }?.value
+    if (label is GQLVariableValue) {
+      registerIssue(
+          message = "@defer label argument must not be a variable",
+          sourceLocation = sourceLocation
+      )
+      return
+    }
+
+    var labelStringValue = ""
+    if (label != null) {
+      // If label is not a GQLStringValue, prior validation will have issued an error already, so we can ignore this one
+      if (label !is GQLStringValue) return
+      labelStringValue = label.value
+
+      // We use the label in part of the synthetic field's name in the generated model, so it needs to be a valid Kotlin/Java identifier
+      if (!labelStringValue.matches(Regex("[a-zA-Z0-9_]+"))) {
+        registerIssue(
+            message = "@defer label '$labelStringValue' must only contain letters, numbers, or underscores",
+            sourceLocation = sourceLocation
+        )
+      }
+
+      if (labelStringValue in deferDirectiveLabels) {
+        registerIssue(
+            message = "@defer label '$labelStringValue' must be unique within all other @defer directives in the document. " +
+                "Same label found in ${deferDirectiveLabels[labelStringValue]!!.pretty()}",
+            sourceLocation = sourceLocation
+        )
+        return
+      }
+      deferDirectiveLabels[labelStringValue] = sourceLocation
+    }
+
+    val pathAndLabel = "$path/$labelStringValue"
+    if (pathAndLabel in deferDirectivePathAndLabels) {
+      val labelMessage = if (labelStringValue.isEmpty()) "no label" else "label '$labelStringValue'"
+      registerIssue(
+          message = "A @defer directive with the same path '$path' and $labelMessage is already defined in ${deferDirectivePathAndLabels[pathAndLabel]!!.pretty()}. " +
+              "Set a unique label to distinguish them.",
+          sourceLocation = sourceLocation
+      )
+      return
+    }
+    deferDirectivePathAndLabels[pathAndLabel] = sourceLocation
+  }
+
+  private fun GQLSelectionSet.validate(typeDefinitionInScope: GQLTypeDefinition, path: String = "") {
     if (selections.isEmpty()) {
       // This will never happen from parsing documents but is kept for reference and to catch bad manual document modifications
       registerIssue(
@@ -322,9 +423,9 @@ internal class ExecutableValidationScope(
 
     selections.forEach {
       when (it) {
-        is GQLField -> it.validate(typeDefinitionInScope)
-        is GQLInlineFragment -> it.validate(typeDefinitionInScope)
-        is GQLFragmentSpread -> it.validate(typeDefinitionInScope)
+        is GQLField -> it.validate(typeDefinitionInScope, path)
+        is GQLInlineFragment -> it.validate(typeDefinitionInScope, path)
+        is GQLFragmentSpread -> it.validate(typeDefinitionInScope, path)
       }
     }
   }

@@ -74,7 +74,7 @@ public data class SpreadMultipleWithDeferWithIf(
 
   public companion object {
     public const val OPERATION_ID: String =
-        "a2f5463c1ebb6a320b7b05343918a19ac8552ee1bdc140c044c35e5971b235a4"
+        "ecdac17ca37d6cbf3a6e5059904fabfd96193cbe0720eb27880026b518feec9f"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -83,9 +83,9 @@ public data class SpreadMultipleWithDeferWithIf(
      * query SpreadMultipleWithDeferWithIf($cond: Boolean!) {
      *   hero {
      *     __typename
-     *     ...CharacterDetails @defer(label: "first", if: false)
-     *     ...CharacterDetails2 @defer(label: "second", if: true)
-     *     ...CharacterDetails3 @defer(label: "third", if: $cond)
+     *     ...CharacterDetails @defer(label: "c_first", if: false)
+     *     ...CharacterDetails2 @defer(label: "c_second", if: true)
+     *     ...CharacterDetails3 @defer(label: "c_third", if: $cond)
      *   }
      * }
      *
@@ -102,7 +102,7 @@ public data class SpreadMultipleWithDeferWithIf(
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query SpreadMultipleWithDeferWithIf(${'$'}cond: Boolean!) { hero { __typename ...CharacterDetails @defer(label: \"first\", if: false) ...CharacterDetails2 @defer(label: \"second\", if: true) ...CharacterDetails3 @defer(label: \"third\", if: ${'$'}cond) } }  fragment CharacterDetails on Droid { name }  fragment CharacterDetails2 on Droid { id }  fragment CharacterDetails3 on Droid { birthDate }"
+        "query SpreadMultipleWithDeferWithIf(${'$'}cond: Boolean!) { hero { __typename ...CharacterDetails @defer(label: \"c_first\", if: false) ...CharacterDetails2 @defer(label: \"c_second\", if: true) ...CharacterDetails3 @defer(label: \"c_third\", if: ${'$'}cond) } }  fragment CharacterDetails on Droid { name }  fragment CharacterDetails2 on Droid { id }  fragment CharacterDetails3 on Droid { birthDate }"
 
     public const val OPERATION_NAME: String = "SpreadMultipleWithDeferWithIf"
   }

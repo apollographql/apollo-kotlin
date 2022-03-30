@@ -1,0 +1,18 @@
+query WithInlineFragments {
+  computers {
+    id
+    ... on Computer {
+      cpu
+      year
+      screen {
+        resolution
+        ... on Screen @defer {
+          isColor
+        }
+        ... on HasId @defer {
+          id
+        }
+      }
+    }
+  }
+}

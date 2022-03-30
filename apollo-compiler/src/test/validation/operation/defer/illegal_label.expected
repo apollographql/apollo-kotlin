@@ -1,0 +1,2 @@
+ERROR: ValidationError (3:15)
+@defer label 'a/b' must only contain letters, numbers, or underscores

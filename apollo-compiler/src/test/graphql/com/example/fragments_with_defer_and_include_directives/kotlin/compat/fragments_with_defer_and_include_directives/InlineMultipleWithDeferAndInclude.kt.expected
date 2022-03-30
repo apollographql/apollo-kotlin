@@ -62,19 +62,19 @@ public data class InlineMultipleWithDeferAndInclude(
     /**
      * Synthetic field for inline fragment on Droid
      */
-    public val asDroidDeferFirst: AsDroidDeferFirst?,
+    public val asDroidDeferE_first: AsDroidDeferE_first?,
     /**
      * Synthetic field for inline fragment on Droid
      */
-    public val asDroidDeferSecond: AsDroidDeferSecond?,
+    public val asDroidDeferE_second: AsDroidDeferE_second?,
     /**
      * Synthetic field for inline fragment on Droid
      */
-    public val asDroidDeferThird: AsDroidDeferThird?,
+    public val asDroidDeferE_third: AsDroidDeferE_third?,
     /**
      * Synthetic field for inline fragment on Droid
      */
-    public val asDroidDeferFourth: AsDroidDeferFourth?,
+    public val asDroidDeferE_fourth: AsDroidDeferE_fourth?,
   )
 
   public data class AsDroidIfCond1(
@@ -93,7 +93,7 @@ public data class InlineMultipleWithDeferAndInclude(
     public val id: String,
   )
 
-  public data class AsDroidDeferFirst(
+  public data class AsDroidDeferE_first(
     public val __typename: String,
     /**
      * What others call this droid
@@ -101,7 +101,7 @@ public data class InlineMultipleWithDeferAndInclude(
     public val name: String,
   )
 
-  public data class AsDroidDeferSecond(
+  public data class AsDroidDeferE_second(
     public val __typename: String,
     /**
      * The ID of the droid
@@ -109,7 +109,7 @@ public data class InlineMultipleWithDeferAndInclude(
     public val id: String,
   )
 
-  public data class AsDroidDeferThird(
+  public data class AsDroidDeferE_third(
     public val __typename: String,
     /**
      * What others call this droid
@@ -117,7 +117,7 @@ public data class InlineMultipleWithDeferAndInclude(
     public val name: String,
   )
 
-  public data class AsDroidDeferFourth(
+  public data class AsDroidDeferE_fourth(
     public val __typename: String,
     /**
      * The ID of the droid
@@ -127,7 +127,7 @@ public data class InlineMultipleWithDeferAndInclude(
 
   public companion object {
     public const val OPERATION_ID: String =
-        "62a5b82967659385f084ee5ed37dfa5ec6e659ccc89e419d150c38f08db17bb6"
+        "f159c1ac4f33a49c5c9833e06a2606e2fc7ede812e119909eb45f95dc2aa01fc"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -143,23 +143,23 @@ public data class InlineMultipleWithDeferAndInclude(
      *     ... on Droid @skip(if: $cond2) {
      *       id
      *     }
-     *     ... on Droid @defer(label: "first") {
+     *     ... on Droid @defer(label: "e_first") {
      *       name
      *     }
-     *     ... on Droid @defer(label: "second") {
+     *     ... on Droid @defer(label: "e_second") {
      *       id
      *     }
-     *     ... on Droid @defer(label: "third") @include(if: $cond3) {
+     *     ... on Droid @defer(label: "e_third") @include(if: $cond3) {
      *       name
      *     }
-     *     ... on Droid @defer(label: "fourth") @skip(if: $cond4) {
+     *     ... on Droid @defer(label: "e_fourth") @skip(if: $cond4) {
      *       id
      *     }
      *   }
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query InlineMultipleWithDeferAndInclude(${'$'}cond1: Boolean!, ${'$'}cond2: Boolean!, ${'$'}cond3: Boolean!, ${'$'}cond4: Boolean!) { hero { __typename ... on Droid @include(if: ${'$'}cond1) { name } ... on Droid @skip(if: ${'$'}cond2) { id } ... on Droid @defer(label: \"first\") { name } ... on Droid @defer(label: \"second\") { id } ... on Droid @defer(label: \"third\") @include(if: ${'$'}cond3) { name } ... on Droid @defer(label: \"fourth\") @skip(if: ${'$'}cond4) { id } } }"
+        "query InlineMultipleWithDeferAndInclude(${'$'}cond1: Boolean!, ${'$'}cond2: Boolean!, ${'$'}cond3: Boolean!, ${'$'}cond4: Boolean!) { hero { __typename ... on Droid @include(if: ${'$'}cond1) { name } ... on Droid @skip(if: ${'$'}cond2) { id } ... on Droid @defer(label: \"e_first\") { name } ... on Droid @defer(label: \"e_second\") { id } ... on Droid @defer(label: \"e_third\") @include(if: ${'$'}cond3) { name } ... on Droid @defer(label: \"e_fourth\") @skip(if: ${'$'}cond4) { id } } }"
 
     public const val OPERATION_NAME: String = "InlineMultipleWithDeferAndInclude"
   }

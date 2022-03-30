@@ -88,13 +88,13 @@ public class SpreadMultipleWithDeferWithIf_ResponseAdapter {
       }
 
       CharacterDetails2 characterDetails2 = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel("second"))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel("c_second"))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         characterDetails2 = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2Impl_ResponseAdapter.CharacterDetails2.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       CharacterDetails3 characterDetails3 = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Or<BTerm>(new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond"))),new BooleanExpression.Element<BTerm>(new BLabel("third")))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Or<BTerm>(new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond"))),new BooleanExpression.Element<BTerm>(new BLabel("c_third")))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         characterDetails3 = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3Impl_ResponseAdapter.CharacterDetails3.INSTANCE.fromJson(reader, customScalarAdapters);
       }

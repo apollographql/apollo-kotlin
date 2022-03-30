@@ -1,0 +1,2 @@
+ERROR: ValidationError (3:15)
+@defer label argument must not be a variable

@@ -20,7 +20,7 @@ import java.lang.Override;
 import java.lang.String;
 
 public class SpreadMultipleWithDefer implements Query<SpreadMultipleWithDefer.Data> {
-  public static final String OPERATION_ID = "deb86b6b7f1f827e315d919340c6dea1897df6bfe197b6735990891b23aee6d7";
+  public static final String OPERATION_ID = "7cd4d1b6a14f96cff4bbbdbd3b3ab1aa365ffc65e1515ff6e22935010543ad71";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -29,8 +29,8 @@ public class SpreadMultipleWithDefer implements Query<SpreadMultipleWithDefer.Da
    * query SpreadMultipleWithDefer {
    *   hero {
    *     __typename
-   *     ...DroidDetails @defer(label: "first")
-   *     ...DroidDetails @defer(label: "second")
+   *     ...DroidDetails @defer(label: "a_first")
+   *     ...DroidDetails @defer(label: "a_second")
    *   }
    * }
    *
@@ -38,7 +38,7 @@ public class SpreadMultipleWithDefer implements Query<SpreadMultipleWithDefer.Da
    *   name
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query SpreadMultipleWithDefer { hero { __typename ...DroidDetails @defer(label: \"first\") ...DroidDetails @defer(label: \"second\") } }  fragment DroidDetails on Droid { name }";
+  public static final String OPERATION_DOCUMENT = "query SpreadMultipleWithDefer { hero { __typename ...DroidDetails @defer(label: \"a_first\") ...DroidDetails @defer(label: \"a_second\") } }  fragment DroidDetails on Droid { name }";
 
   public static final String OPERATION_NAME = "SpreadMultipleWithDefer";
 

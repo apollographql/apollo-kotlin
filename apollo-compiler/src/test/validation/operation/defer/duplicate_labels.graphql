@@ -1,0 +1,18 @@
+query GetAnimal {
+  animal {
+    ... on Cat @defer(label: "foobar") {
+      meow
+    }
+    ... on Dog {
+      id
+    }
+  }
+}
+
+query GetComputers {
+  computers {
+    ... on Computer @defer(label: "foobar") {
+      id
+    }
+  }
+}
