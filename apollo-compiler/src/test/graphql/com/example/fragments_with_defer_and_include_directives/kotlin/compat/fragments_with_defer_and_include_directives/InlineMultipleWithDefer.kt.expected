@@ -53,14 +53,14 @@ public class InlineMultipleWithDefer() : Query<InlineMultipleWithDefer.Data> {
     /**
      * Synthetic field for inline fragment on Droid
      */
-    public val asDroidDeferFirst: AsDroidDeferFirst?,
+    public val asDroidDeferD_first: AsDroidDeferD_first?,
     /**
      * Synthetic field for inline fragment on Droid
      */
-    public val asDroidDeferSecond: AsDroidDeferSecond?,
+    public val asDroidDeferD_second: AsDroidDeferD_second?,
   )
 
-  public data class AsDroidDeferFirst(
+  public data class AsDroidDeferD_first(
     public val __typename: String,
     /**
      * What others call this droid
@@ -68,7 +68,7 @@ public class InlineMultipleWithDefer() : Query<InlineMultipleWithDefer.Data> {
     public val name: String,
   )
 
-  public data class AsDroidDeferSecond(
+  public data class AsDroidDeferD_second(
     public val __typename: String,
     /**
      * The ID of the droid
@@ -78,7 +78,7 @@ public class InlineMultipleWithDefer() : Query<InlineMultipleWithDefer.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "28903c0b8591c0eed5b62eddfc57d8fe1b0795ff46a5e369bea8a55d624fa137"
+        "9331f0c719bafb010d29f76c720d4488f45c5196bf3fb8908b2be30bc546e355"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -87,17 +87,17 @@ public class InlineMultipleWithDefer() : Query<InlineMultipleWithDefer.Data> {
      * query InlineMultipleWithDefer {
      *   hero {
      *     __typename
-     *     ... on Droid @defer(label: "first") {
+     *     ... on Droid @defer(label: "d_first") {
      *       name
      *     }
-     *     ... on Droid @defer(label: "second") {
+     *     ... on Droid @defer(label: "d_second") {
      *       id
      *     }
      *   }
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query InlineMultipleWithDefer { hero { __typename ... on Droid @defer(label: \"first\") { name } ... on Droid @defer(label: \"second\") { id } } }"
+        "query InlineMultipleWithDefer { hero { __typename ... on Droid @defer(label: \"d_first\") { name } ... on Droid @defer(label: \"d_second\") { id } } }"
 
     public const val OPERATION_NAME: String = "InlineMultipleWithDefer"
   }

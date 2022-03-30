@@ -71,25 +71,25 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
       val asCharacter = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.AsCharacter.fromJson(reader,
           customScalarAdapters)
 
-      var asCharacterDeferSecond: InlineMultipleWithDeferWithIf.AsCharacterDeferSecond? = null
-      if (label("second").evaluate(customScalarAdapters.adapterContext.variables(), null, customScalarAdapters.adapterContext, __path)) {
+      var asCharacterDeferF_second: InlineMultipleWithDeferWithIf.AsCharacterDeferF_second? = null
+      if (label("f_second").evaluate(customScalarAdapters.adapterContext.variables(), null, customScalarAdapters.adapterContext, __path)) {
         reader.rewind()
-        asCharacterDeferSecond = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.AsCharacterDeferSecond.fromJson(reader,
+        asCharacterDeferF_second = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.AsCharacterDeferF_second.fromJson(reader,
             customScalarAdapters)
       }
 
-      var asCharacterDeferThird: InlineMultipleWithDeferWithIf.AsCharacterDeferThird? = null
-      if (or(not(variable("cond")),label("third")).evaluate(customScalarAdapters.adapterContext.variables(), null, customScalarAdapters.adapterContext, __path)) {
+      var asCharacterDeferF_third: InlineMultipleWithDeferWithIf.AsCharacterDeferF_third? = null
+      if (or(not(variable("cond")),label("f_third")).evaluate(customScalarAdapters.adapterContext.variables(), null, customScalarAdapters.adapterContext, __path)) {
         reader.rewind()
-        asCharacterDeferThird = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.AsCharacterDeferThird.fromJson(reader,
+        asCharacterDeferF_third = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.AsCharacterDeferF_third.fromJson(reader,
             customScalarAdapters)
       }
 
       return InlineMultipleWithDeferWithIf.Hero(
         __typename = __typename!!,
         asCharacter = asCharacter,
-        asCharacterDeferSecond = asCharacterDeferSecond,
-        asCharacterDeferThird = asCharacterDeferThird
+        asCharacterDeferF_second = asCharacterDeferF_second,
+        asCharacterDeferF_third = asCharacterDeferF_third
       )
     }
 
@@ -104,14 +104,14 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
       com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.AsCharacter.toJson(writer,
           customScalarAdapters, value.asCharacter)
 
-      if (value.asCharacterDeferSecond != null) {
-        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.AsCharacterDeferSecond.toJson(writer,
-            customScalarAdapters, value.asCharacterDeferSecond)
+      if (value.asCharacterDeferF_second != null) {
+        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.AsCharacterDeferF_second.toJson(writer,
+            customScalarAdapters, value.asCharacterDeferF_second)
       }
 
-      if (value.asCharacterDeferThird != null) {
-        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.AsCharacterDeferThird.toJson(writer,
-            customScalarAdapters, value.asCharacterDeferThird)
+      if (value.asCharacterDeferF_third != null) {
+        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.AsCharacterDeferF_third.toJson(writer,
+            customScalarAdapters, value.asCharacterDeferF_third)
       }
     }
   }
@@ -151,12 +151,12 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
     }
   }
 
-  public object AsCharacterDeferSecond :
-      Adapter<InlineMultipleWithDeferWithIf.AsCharacterDeferSecond> {
+  public object AsCharacterDeferF_second :
+      Adapter<InlineMultipleWithDeferWithIf.AsCharacterDeferF_second> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        InlineMultipleWithDeferWithIf.AsCharacterDeferSecond {
+        InlineMultipleWithDeferWithIf.AsCharacterDeferF_second {
       var __typename: String? = null
       var name: String? = null
 
@@ -168,7 +168,7 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
         }
       }
 
-      return InlineMultipleWithDeferWithIf.AsCharacterDeferSecond(
+      return InlineMultipleWithDeferWithIf.AsCharacterDeferF_second(
         __typename = __typename!!,
         name = name!!
       )
@@ -177,7 +177,7 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: InlineMultipleWithDeferWithIf.AsCharacterDeferSecond,
+      `value`: InlineMultipleWithDeferWithIf.AsCharacterDeferF_second,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -187,12 +187,12 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
     }
   }
 
-  public object AsCharacterDeferThird : Adapter<InlineMultipleWithDeferWithIf.AsCharacterDeferThird>
-      {
+  public object AsCharacterDeferF_third :
+      Adapter<InlineMultipleWithDeferWithIf.AsCharacterDeferF_third> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        InlineMultipleWithDeferWithIf.AsCharacterDeferThird {
+        InlineMultipleWithDeferWithIf.AsCharacterDeferF_third {
       var __typename: String? = null
       var name: String? = null
 
@@ -204,7 +204,7 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
         }
       }
 
-      return InlineMultipleWithDeferWithIf.AsCharacterDeferThird(
+      return InlineMultipleWithDeferWithIf.AsCharacterDeferF_third(
         __typename = __typename!!,
         name = name!!
       )
@@ -213,7 +213,7 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: InlineMultipleWithDeferWithIf.AsCharacterDeferThird,
+      `value`: InlineMultipleWithDeferWithIf.AsCharacterDeferF_third,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

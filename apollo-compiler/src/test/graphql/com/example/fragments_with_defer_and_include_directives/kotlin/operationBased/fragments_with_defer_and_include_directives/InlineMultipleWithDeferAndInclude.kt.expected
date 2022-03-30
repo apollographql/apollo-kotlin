@@ -61,19 +61,19 @@ public data class InlineMultipleWithDeferAndInclude(
       /**
        * Synthetic field for inline fragment on Droid
        */
-      public val onDroidDeferFirst: OnDroidDeferFirst?,
+      public val onDroidDeferE_first: OnDroidDeferE_first?,
       /**
        * Synthetic field for inline fragment on Droid
        */
-      public val onDroidDeferSecond: OnDroidDeferSecond?,
+      public val onDroidDeferE_second: OnDroidDeferE_second?,
       /**
        * Synthetic field for inline fragment on Droid
        */
-      public val onDroidDeferThird: OnDroidDeferThird?,
+      public val onDroidDeferE_third: OnDroidDeferE_third?,
       /**
        * Synthetic field for inline fragment on Droid
        */
-      public val onDroidDeferFourth: OnDroidDeferFourth?,
+      public val onDroidDeferE_fourth: OnDroidDeferE_fourth?,
     ) {
       public data class OnDroidIfCond1(
         /**
@@ -89,28 +89,28 @@ public data class InlineMultipleWithDeferAndInclude(
         public val id: String,
       )
 
-      public data class OnDroidDeferFirst(
+      public data class OnDroidDeferE_first(
         /**
          * What others call this droid
          */
         public val name: String,
       )
 
-      public data class OnDroidDeferSecond(
+      public data class OnDroidDeferE_second(
         /**
          * The ID of the droid
          */
         public val id: String,
       )
 
-      public data class OnDroidDeferThird(
+      public data class OnDroidDeferE_third(
         /**
          * What others call this droid
          */
         public val name: String,
       )
 
-      public data class OnDroidDeferFourth(
+      public data class OnDroidDeferE_fourth(
         /**
          * The ID of the droid
          */
@@ -121,7 +121,7 @@ public data class InlineMultipleWithDeferAndInclude(
 
   public companion object {
     public const val OPERATION_ID: String =
-        "62a5b82967659385f084ee5ed37dfa5ec6e659ccc89e419d150c38f08db17bb6"
+        "f159c1ac4f33a49c5c9833e06a2606e2fc7ede812e119909eb45f95dc2aa01fc"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -137,23 +137,23 @@ public data class InlineMultipleWithDeferAndInclude(
      *     ... on Droid @skip(if: $cond2) {
      *       id
      *     }
-     *     ... on Droid @defer(label: "first") {
+     *     ... on Droid @defer(label: "e_first") {
      *       name
      *     }
-     *     ... on Droid @defer(label: "second") {
+     *     ... on Droid @defer(label: "e_second") {
      *       id
      *     }
-     *     ... on Droid @defer(label: "third") @include(if: $cond3) {
+     *     ... on Droid @defer(label: "e_third") @include(if: $cond3) {
      *       name
      *     }
-     *     ... on Droid @defer(label: "fourth") @skip(if: $cond4) {
+     *     ... on Droid @defer(label: "e_fourth") @skip(if: $cond4) {
      *       id
      *     }
      *   }
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query InlineMultipleWithDeferAndInclude(${'$'}cond1: Boolean!, ${'$'}cond2: Boolean!, ${'$'}cond3: Boolean!, ${'$'}cond4: Boolean!) { hero { __typename ... on Droid @include(if: ${'$'}cond1) { name } ... on Droid @skip(if: ${'$'}cond2) { id } ... on Droid @defer(label: \"first\") { name } ... on Droid @defer(label: \"second\") { id } ... on Droid @defer(label: \"third\") @include(if: ${'$'}cond3) { name } ... on Droid @defer(label: \"fourth\") @skip(if: ${'$'}cond4) { id } } }"
+        "query InlineMultipleWithDeferAndInclude(${'$'}cond1: Boolean!, ${'$'}cond2: Boolean!, ${'$'}cond3: Boolean!, ${'$'}cond4: Boolean!) { hero { __typename ... on Droid @include(if: ${'$'}cond1) { name } ... on Droid @skip(if: ${'$'}cond2) { id } ... on Droid @defer(label: \"e_first\") { name } ... on Droid @defer(label: \"e_second\") { id } ... on Droid @defer(label: \"e_third\") @include(if: ${'$'}cond3) { name } ... on Droid @defer(label: \"e_fourth\") @skip(if: ${'$'}cond4) { id } } }"
 
     public const val OPERATION_NAME: String = "InlineMultipleWithDeferAndInclude"
   }
