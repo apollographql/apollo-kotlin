@@ -57,8 +57,8 @@ internal class ExecutableValidationScope(
    */
   override val variableUsages = mutableListOf<VariableUsage>()
 
-  private val deferDirectiveLabels = mutableSetOf<String>()
-  private val deferDirectivePathAndLabels = mutableSetOf<String>()
+  private val deferDirectiveLabels = mutableMapOf<String, SourceLocation>()
+  private val deferDirectivePathAndLabels = mutableMapOf<String, SourceLocation>()
 
   fun validate(document: GQLDocument): List<Issue> {
     document.validateExecutable()
@@ -397,7 +397,7 @@ internal class ExecutableValidationScope(
 
     var labelStringValue = ""
     if (label != null) {
-      // label is guaranteed to be a GQLStringValue here thanks to pior validation
+      // label is guaranteed to be a GQLStringValue here thanks to prior validation
       labelStringValue = (label as GQLStringValue).value
 
       // We use the label in part of the synthetic field's name in the generated model, so it needs to be a valid Kotlin/Java identifier
@@ -411,24 +411,26 @@ internal class ExecutableValidationScope(
 
       if (labelStringValue in deferDirectiveLabels) {
         registerIssue(
-            message = "@defer label '$labelStringValue' must be unique within all other @defer directives in the document",
+            message = "@defer label '$labelStringValue' must be unique within all other @defer directives in the document. " +
+                "Same label found in ${deferDirectiveLabels[labelStringValue]!!.pretty()}",
             sourceLocation = sourceLocation
         )
         return true
       }
-      deferDirectiveLabels += labelStringValue
+      deferDirectiveLabels[labelStringValue] = sourceLocation
     }
 
     val pathAndLabel = "$path/$labelStringValue"
     if (pathAndLabel in deferDirectivePathAndLabels) {
       val labelMessage = if (labelStringValue.isEmpty()) "no label" else "label '$labelStringValue'"
       registerIssue(
-          message = "A @defer directive with the same path '$path' and $labelMessage is already defined. Set a unique label to distinguish them.",
+          message = "A @defer directive with the same path '$path' and $labelMessage is already defined in ${deferDirectivePathAndLabels[pathAndLabel]!!.pretty()}. " +
+              "Set a unique label to distinguish them.",
           sourceLocation = sourceLocation
       )
       return true
     }
-    deferDirectivePathAndLabels.add(pathAndLabel)
+    deferDirectivePathAndLabels[pathAndLabel] = sourceLocation
 
     return false
   }

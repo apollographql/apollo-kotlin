@@ -1,2 +1,2 @@
 ERROR: ValidationError (12:21)
-A @defer directive with the same path 'computers.screen' and no label is already defined. Set a unique label to distinguish them.
+A @defer directive with the same path 'computers.screen' and no label is already defined in duplicate_path_and_labels_inline.graphql: (9, 23). Set a unique label to distinguish them.
