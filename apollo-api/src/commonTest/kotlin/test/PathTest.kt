@@ -17,7 +17,7 @@ import com.apollographql.apollo3.api.json.MapJsonReader.Companion.buffer
 import okio.Buffer
 import okio.ByteString.Companion.encodeUtf8
 import kotlin.test.Test
-import kotlin.test.assertEquals
+import kotlin.test.assertContentEquals
 
 class PathTest {
   private val jsonStr = """
@@ -88,119 +88,119 @@ class PathTest {
 
     val expected = mutableListOf<Any>(
         BEGIN_OBJECT,
-        "",
+        emptyList<Any>(),
         NAME,
-        "menu",
+        listOf("menu"),
         BEGIN_OBJECT,
-        "menu.",
+        listOf("menu"),
         NAME,
-        "menu.id",
+        listOf("menu","id"),
         STRING,
-        "menu.id",
+        listOf("menu","id"),
         NAME,
-        "menu.value",
+        listOf("menu","value"),
         BOOLEAN,
-        "menu.value",
+        listOf("menu","value"),
         NAME,
-        "menu.popup",
+        listOf("menu","popup"),
         BEGIN_OBJECT,
-        "menu.popup.",
+        listOf("menu","popup"),
         NAME,
-        "menu.popup.menuitem",
+        listOf("menu","popup","menuitem"),
         BEGIN_ARRAY,
-        "menu.popup.menuitem.0",
+        listOf("menu","popup","menuitem",0),
         BEGIN_OBJECT,
-        "menu.popup.menuitem.0.",
+        listOf("menu","popup","menuitem",0),
         NAME,
-        "menu.popup.menuitem.0.value",
+        listOf("menu","popup","menuitem",0,"value"),
         STRING,
-        "menu.popup.menuitem.0.value",
+        listOf("menu","popup","menuitem",0,"value"),
         NAME,
-        "menu.popup.menuitem.0.onclick",
+        listOf("menu","popup","menuitem",0,"onclick"),
         STRING,
-        "menu.popup.menuitem.0.onclick",
+        listOf("menu","popup","menuitem",0,"onclick"),
         NAME,
-        "menu.popup.menuitem.0.template",
+        listOf("menu","popup","menuitem",0,"template"),
         BEGIN_OBJECT,
-        "menu.popup.menuitem.0.template.",
+        listOf("menu","popup","menuitem",0,"template"),
         NAME,
-        "menu.popup.menuitem.0.template.id",
+        listOf("menu","popup","menuitem",0,"template","id"),
         STRING,
-        "menu.popup.menuitem.0.template.id",
+        listOf("menu","popup","menuitem",0,"template","id"),
         END_OBJECT,
-        "menu.popup.menuitem.0.template",
+        listOf("menu","popup","menuitem",0,"template"),
         END_OBJECT,
-        "menu.popup.menuitem.1",
+        listOf("menu","popup","menuitem",1),
         BEGIN_OBJECT,
-        "menu.popup.menuitem.1.",
+        listOf("menu","popup","menuitem",1),
         NAME,
-        "menu.popup.menuitem.1.value",
+        listOf("menu","popup","menuitem",1,"value"),
         STRING,
-        "menu.popup.menuitem.1.value",
+        listOf("menu","popup","menuitem",1,"value"),
         NAME,
-        "menu.popup.menuitem.1.onclick",
+        listOf("menu","popup","menuitem",1,"onclick"),
         STRING,
-        "menu.popup.menuitem.1.onclick",
+        listOf("menu","popup","menuitem",1,"onclick"),
         NAME,
-        "menu.popup.menuitem.1.template",
+        listOf("menu","popup","menuitem",1,"template"),
         BEGIN_OBJECT,
-        "menu.popup.menuitem.1.template.",
+        listOf("menu","popup","menuitem",1,"template"),
         NAME,
-        "menu.popup.menuitem.1.template.id",
+        listOf("menu","popup","menuitem",1,"template","id"),
         STRING,
-        "menu.popup.menuitem.1.template.id",
+        listOf("menu","popup","menuitem",1,"template","id"),
         END_OBJECT,
-        "menu.popup.menuitem.1.template",
+        listOf("menu","popup","menuitem",1,"template"),
         END_OBJECT,
-        "menu.popup.menuitem.2",
+        listOf("menu","popup","menuitem",2),
         END_ARRAY,
-        "menu.popup.menuitem",
+        listOf("menu","popup","menuitem"),
         NAME,
-        "menu.popup.booleanList",
+        listOf("menu","popup","booleanList"),
         BEGIN_ARRAY,
-        "menu.popup.booleanList.0",
+        listOf("menu","popup","booleanList",0),
         BOOLEAN,
-        "menu.popup.booleanList.1",
+        listOf("menu","popup","booleanList",1),
         BOOLEAN,
-        "menu.popup.booleanList.2",
+        listOf("menu","popup","booleanList",2),
         BOOLEAN,
-        "menu.popup.booleanList.3",
+        listOf("menu","popup","booleanList",3),
         END_ARRAY,
-        "menu.popup.booleanList",
+        listOf("menu","popup","booleanList"),
         NAME,
-        "menu.popup.arrayList",
+        listOf("menu","popup","arrayList"),
         BEGIN_ARRAY,
-        "menu.popup.arrayList.0",
+        listOf("menu","popup","arrayList",0),
         BEGIN_ARRAY,
-        "menu.popup.arrayList.0.0",
+        listOf("menu","popup","arrayList",0,0),
         STRING,
-        "menu.popup.arrayList.0.1",
+        listOf("menu","popup","arrayList",0,1),
         STRING,
-        "menu.popup.arrayList.0.2",
+        listOf("menu","popup","arrayList",0,2),
         STRING,
-        "menu.popup.arrayList.0.3",
+        listOf("menu","popup","arrayList",0,3),
         END_ARRAY,
-        "menu.popup.arrayList.1",
+        listOf("menu","popup","arrayList",1),
         BEGIN_ARRAY,
-        "menu.popup.arrayList.1.0",
+        listOf("menu","popup","arrayList",1,0),
         STRING,
-        "menu.popup.arrayList.1.1",
+        listOf("menu","popup","arrayList",1,1),
         STRING,
-        "menu.popup.arrayList.1.2",
+        listOf("menu","popup","arrayList",1,2),
         STRING,
-        "menu.popup.arrayList.1.3",
+        listOf("menu","popup","arrayList",1,3),
         END_ARRAY,
-        "menu.popup.arrayList.2",
+        listOf("menu","popup","arrayList",2),
         END_ARRAY,
-        "menu.popup.arrayList",
+        listOf("menu","popup","arrayList"),
         END_OBJECT,
-        "menu.popup",
+        listOf("menu","popup"),
         END_OBJECT,
-        "menu",
+        listOf("menu"),
         END_OBJECT,
-        "",
+        emptyList<Any>()
     )
-    assertEquals(expected, tokensAndPaths)
+    assertContentEquals(expected, tokensAndPaths)
   }
 
   @Test
@@ -213,5 +213,24 @@ class PathTest {
   fun mapJsonReaderPath() {
     val mapJsonReader = BufferedSourceJsonReader(Buffer().write(jsonStr.encodeUtf8())).buffer()
     testPath(mapJsonReader)
+  }
+
+  @Test
+  fun pathWithBuffer() {
+    val bufferedSourceJsonReader = BufferedSourceJsonReader(Buffer().write(jsonStr.encodeUtf8()))
+    bufferedSourceJsonReader.beginObject() // root
+    bufferedSourceJsonReader.nextName() // menu
+    bufferedSourceJsonReader.beginObject() // menu.
+    bufferedSourceJsonReader.nextName() // menu.id
+    bufferedSourceJsonReader.nextString() // menu.id
+    bufferedSourceJsonReader.nextName() // menu.value
+    bufferedSourceJsonReader.nextBoolean() // menu.value
+    bufferedSourceJsonReader.nextName() // menu.popup
+    val mapJsonReader = bufferedSourceJsonReader.buffer()
+    assertContentEquals(listOf("menu", "popup"), mapJsonReader.getPath())
+    mapJsonReader.beginObject() // menu.popup.
+    assertContentEquals(listOf("menu", "popup"), mapJsonReader.getPath())
+    mapJsonReader.nextName() // menu.popup.menuitem
+    assertContentEquals(listOf("menu", "popup", "menuitem"), mapJsonReader.getPath())
   }
 }

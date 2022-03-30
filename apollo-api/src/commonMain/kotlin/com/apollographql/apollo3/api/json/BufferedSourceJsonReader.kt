@@ -78,7 +78,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
       pathIndices[stackSize - 1] = 0
       peeked = PEEKED_NONE
     } else {
-      throw JsonDataException("Expected BEGIN_ARRAY but was ${peek()} at path ${getPath()}")
+      throw JsonDataException("Expected BEGIN_ARRAY but was ${peek()} at path ${getPathAsString()}")
     }
   }
 
@@ -89,7 +89,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
       pathIndices[stackSize - 1]++
       peeked = PEEKED_NONE
     } else {
-      throw JsonDataException("Expected END_ARRAY but was ${peek()} at path ${getPath()}")
+      throw JsonDataException("Expected END_ARRAY but was ${peek()} at path ${getPathAsString()}")
     }
   }
 
@@ -102,7 +102,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
       indexStackSize++
       indexStack[indexStackSize - 1] = 0
     } else {
-      throw JsonDataException("Expected BEGIN_OBJECT but was ${peek()} at path ${getPath()}")
+      throw JsonDataException("Expected BEGIN_OBJECT but was ${peek()} at path ${getPathAsString()}")
     }
   }
 
@@ -116,7 +116,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
 
       indexStackSize--
     } else {
-      throw JsonDataException("Expected END_OBJECT but was ${peek()} at path ${getPath()}")
+      throw JsonDataException("Expected END_OBJECT but was ${peek()} at path ${getPathAsString()}")
     }
   }
 
@@ -451,7 +451,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
       PEEKED_UNQUOTED_NAME -> nextUnquotedValue()
       PEEKED_DOUBLE_QUOTED_NAME -> nextQuotedValue(DOUBLE_QUOTE_OR_SLASH)
       PEEKED_SINGLE_QUOTED_NAME -> nextQuotedValue(SINGLE_QUOTE_OR_SLASH)
-      else -> throw JsonDataException("Expected a name but was ${peek()} at path ${getPath()}")
+      else -> throw JsonDataException("Expected a name but was ${peek()} at path ${getPathAsString()}")
     }
     peeked = PEEKED_NONE
     pathNames[stackSize - 1] = result
@@ -466,7 +466,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
       PEEKED_BUFFERED -> peekedString?.also { peekedString = null }
       PEEKED_LONG -> peekedLong.toString()
       PEEKED_NUMBER -> buffer.readUtf8(peekedNumberLength.toLong())
-      else -> throw JsonDataException("Expected a string but was ${peek()} at path ${getPath()}")
+      else -> throw JsonDataException("Expected a string but was ${peek()} at path ${getPathAsString()}")
     }
     peeked = PEEKED_NONE
     pathIndices[stackSize - 1]++
@@ -487,7 +487,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
         false
       }
 
-      else -> throw JsonDataException("Expected a boolean but was ${peek()} at path ${getPath()}")
+      else -> throw JsonDataException("Expected a boolean but was ${peek()} at path ${getPathAsString()}")
     }
   }
 
@@ -499,7 +499,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
         null
       }
 
-      else -> throw JsonDataException("Expected null but was ${peek()} at path ${getPath()}")
+      else -> throw JsonDataException("Expected null but was ${peek()} at path ${getPathAsString()}")
     }
   }
 
@@ -523,7 +523,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
       p == PEEKED_UNQUOTED -> {
         peekedString = nextUnquotedValue()
       }
-      p != PEEKED_BUFFERED -> throw JsonDataException("Expected a double but was ${peek()} at path ${getPath()}")
+      p != PEEKED_BUFFERED -> throw JsonDataException("Expected a double but was ${peek()} at path ${getPathAsString()}")
     }
 
     peeked = PEEKED_BUFFERED
@@ -531,11 +531,11 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     val result = try {
       peekedString!!.toDouble()
     } catch (e: NumberFormatException) {
-      throw JsonDataException("Expected a double but was $peekedString at path ${getPath()}")
+      throw JsonDataException("Expected a double but was $peekedString at path ${getPathAsString()}")
     }
 
     if (!lenient && (result.isNaN() || result.isInfinite())) {
-      throw JsonEncodingException("JSON forbids NaN and infinities: $result at path ${getPath()}")
+      throw JsonEncodingException("JSON forbids NaN and infinities: $result at path ${getPathAsString()}")
     }
 
     peekedString = null
@@ -565,7 +565,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
         } catch (ignored: NumberFormatException) { // Fall back to parse as a double below.
         }
       }
-      p != PEEKED_BUFFERED -> throw JsonDataException("Expected a long but was ${peek()} at path ${getPath()}")
+      p != PEEKED_BUFFERED -> throw JsonDataException("Expected a long but was ${peek()} at path ${getPathAsString()}")
     }
 
     peeked = PEEKED_BUFFERED
@@ -573,12 +573,12 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     val asDouble: Double = try {
       peekedString!!.toDouble()
     } catch (e: NumberFormatException) {
-      throw JsonDataException("Expected a long but was $peekedString at path ${getPath()}")
+      throw JsonDataException("Expected a long but was $peekedString at path ${getPathAsString()}")
     }
 
     val result = asDouble.toLong()
     if (result.toDouble() != asDouble) { // Make sure no precision was lost casting to 'long'.
-      throw JsonDataException("Expected a long but was $peekedString at path ${getPath()}")
+      throw JsonDataException("Expected a long but was $peekedString at path ${getPathAsString()}")
     }
     peekedString = null
     peeked = PEEKED_NONE
@@ -675,7 +675,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
         }
       }
       p != PEEKED_BUFFERED -> {
-        throw JsonDataException("Expected an int but was ${peek()} at path ${getPath()}")
+        throw JsonDataException("Expected an int but was ${peek()} at path ${getPathAsString()}")
       }
     }
 
@@ -684,12 +684,12 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     val asDouble: Double = try {
       peekedString!!.toDouble()
     } catch (e: NumberFormatException) {
-      throw JsonDataException("Expected an int but was $peekedString at path ${getPath()}")
+      throw JsonDataException("Expected an int but was $peekedString at path ${getPathAsString()}")
     }
 
     val result = asDouble.toInt()
     if (result.toDouble() != asDouble) { // Make sure no precision was lost casting to 'int'.
-      throw JsonDataException("Expected an int but was $peekedString at path ${getPath()}")
+      throw JsonDataException("Expected an int but was $peekedString at path ${getPathAsString()}")
     }
 
     peekedString = null
@@ -886,7 +886,9 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     return false
   }
 
-  override fun getPath(): String = JsonScope.getPath(stackSize, stack, pathNames, pathIndices)
+  override fun getPath(): List<Any> = JsonScope.getPath(stackSize, stack, pathNames, pathIndices)
+
+  private fun getPathAsString() = getPath().joinToString(".")
 
   /**
    * Unescapes the character identified by the character or characters that immediately follow a backslash. The backslash '\' should have

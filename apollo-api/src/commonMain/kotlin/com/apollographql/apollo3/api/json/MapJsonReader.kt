@@ -2,10 +2,12 @@ package com.apollographql.apollo3.api.json
 
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader.Companion.MAX_STACK_SIZE
+import com.apollographql.apollo3.api.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.internal.toDoubleExact
 import com.apollographql.apollo3.api.json.internal.toIntExact
 import com.apollographql.apollo3.api.json.internal.toLongExact
 import com.apollographql.apollo3.exception.JsonDataException
+import kotlin.jvm.JvmOverloads
 
 /**
  * A [JsonReader] that reads data from a regular [Map<String, Any?>]
@@ -22,11 +24,17 @@ import com.apollographql.apollo3.exception.JsonDataException
  *
  * Anything else is undefined
  *
- * @param root the root [Map] to read from
- *
  * To read from a [okio.BufferedSource], see also [BufferedSourceJsonReader]
+ *
+ * @param root the root [Map] to read from
+ * @param pathRoot the path root to be prefixed to the returned path when calling [getPath]. Useful for [buffer].
  */
-class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
+class MapJsonReader
+@JvmOverloads
+constructor(
+    val root: Map<String, Any?>,
+    private val pathRoot: List<Any> = emptyList(),
+) : JsonReader {
 
   private var peekedToken: JsonReader.Token
 
@@ -108,7 +116,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
 
   override fun beginArray() = apply {
     if (peek() != JsonReader.Token.BEGIN_ARRAY) {
-      throw JsonDataException("Expected BEGIN_ARRAY but was ${peek()} at path ${getPath()}")
+      throw JsonDataException("Expected BEGIN_ARRAY but was ${peek()} at path ${getPathAsString()}")
     }
 
     val currentValue = peekedData as List<Any?>
@@ -125,7 +133,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
 
   override fun endArray() = apply {
     if (peek() != JsonReader.Token.END_ARRAY) {
-      throw JsonDataException("Expected END_ARRAY but was ${peek()} at path ${getPath()}")
+      throw JsonDataException("Expected END_ARRAY but was ${peek()} at path ${getPathAsString()}")
     }
     stackSize--
     iteratorStack[stackSize] = null // allow garbage collection
@@ -135,7 +143,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
 
   override fun beginObject() = apply {
     if (peek() != JsonReader.Token.BEGIN_OBJECT) {
-      throw JsonDataException("Expected BEGIN_OBJECT but was ${peek()} at path ${getPath()}")
+      throw JsonDataException("Expected BEGIN_OBJECT but was ${peek()} at path ${getPathAsString()}")
     }
 
     check(stackSize < MAX_STACK_SIZE) {
@@ -150,7 +158,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
 
   override fun endObject() = apply {
     if (peek() != JsonReader.Token.END_OBJECT) {
-      throw JsonDataException("Expected END_OBJECT but was ${peek()} at path ${getPath()}")
+      throw JsonDataException("Expected END_OBJECT but was ${peek()} at path ${getPathAsString()}")
     }
     stackSize--
     iteratorStack[stackSize] = null // allow garbage collection
@@ -173,7 +181,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
 
   override fun nextName(): String {
     if (peek() != JsonReader.Token.NAME) {
-      throw JsonDataException("Expected NAME but was ${peek()} at path ${getPath()}")
+      throw JsonDataException("Expected NAME but was ${peek()} at path ${getPathAsString()}")
     }
     @Suppress("UNCHECKED_CAST")
     val data = peekedData as Map.Entry<String, Any?>
@@ -192,7 +200,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
       JsonReader.Token.LONG,
       -> Unit
       else -> {
-        throw JsonDataException("Expected a String but was ${peek()} at path ${getPath()}")
+        throw JsonDataException("Expected a String but was ${peek()} at path ${getPathAsString()}")
       }
     }
 
@@ -203,7 +211,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
 
   override fun nextBoolean(): Boolean {
     if (peek() != JsonReader.Token.BOOLEAN) {
-      throw JsonDataException("Expected BOOLEAN but was ${peek()} at path ${getPath()}")
+      throw JsonDataException("Expected BOOLEAN but was ${peek()} at path ${getPathAsString()}")
     }
 
     return (peekedData as Boolean).also {
@@ -213,7 +221,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
 
   override fun nextNull(): Nothing? {
     if (peek() != JsonReader.Token.NULL) {
-      throw JsonDataException("Expected NULL but was ${peek()} at path ${getPath()}")
+      throw JsonDataException("Expected NULL but was ${peek()} at path ${getPathAsString()}")
     }
 
     advanceIterator()
@@ -228,7 +236,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
       JsonReader.Token.LONG,
       -> Unit
       else -> {
-        throw JsonDataException("Expected a Double but was ${peek()} at path ${getPath()}")
+        throw JsonDataException("Expected a Double but was ${peek()} at path ${getPathAsString()}")
       }
     }
 
@@ -251,7 +259,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
       JsonReader.Token.LONG,
       -> Unit
       else -> {
-        throw JsonDataException("Expected an Int but was ${peek()} at path ${getPath()}")
+        throw JsonDataException("Expected an Int but was ${peek()} at path ${getPathAsString()}")
       }
     }
 
@@ -274,7 +282,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
       JsonReader.Token.LONG,
       -> Unit
       else -> {
-        throw JsonDataException("Expected a Long but was ${peek()} at path ${getPath()}")
+        throw JsonDataException("Expected a Long but was ${peek()} at path ${getPathAsString()}")
       }
     }
 
@@ -297,7 +305,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
       JsonReader.Token.LONG,
       -> Unit
       else -> {
-        throw JsonDataException("Expected a Number but was ${peek()} at path ${getPath()}")
+        throw JsonDataException("Expected a Number but was ${peek()} at path ${getPathAsString()}")
       }
     }
 
@@ -367,21 +375,16 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
     advanceIterator()
   }
 
-  override fun getPath(): String {
-    var isRoot = true
-    return buildString {
-      for (index in 0.until(stackSize)) {
-        val element = path[index]
-        if (!isRoot) {
-          append('.')
-        }
-        if (element != null) {
-          append(element.toString())
-          isRoot = false
-        }
-      }
+  override fun getPath(): List<Any> {
+    val result = mutableListOf<Any>()
+    result.addAll(pathRoot)
+    for (index in 0 until stackSize) {
+      path[index]?.let { result += it }
     }
+    return result
   }
+
+  private fun getPathAsString() = getPath().joinToString(".")
 
   companion object {
 
@@ -398,10 +401,12 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
         "Failed to buffer json reader, expected `BEGIN_OBJECT` but found `$token` json token"
       }
 
+      val pathRoot = getPath()
+
       @Suppress("UNCHECKED_CAST")
       @OptIn(ApolloInternal::class)
       val data = this.readAny() as Map<String, Any?>
-      return MapJsonReader(data)
+      return MapJsonReader(root = data, pathRoot = pathRoot)
     }
   }
 }

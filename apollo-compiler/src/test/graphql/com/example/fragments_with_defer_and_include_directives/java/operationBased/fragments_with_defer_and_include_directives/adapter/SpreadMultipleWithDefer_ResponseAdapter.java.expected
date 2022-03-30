@@ -68,7 +68,7 @@ public class SpreadMultipleWithDefer_ResponseAdapter {
         CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
 
-      String __path = reader.getPath();
+      List<Object> __path = reader.getPath();
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
