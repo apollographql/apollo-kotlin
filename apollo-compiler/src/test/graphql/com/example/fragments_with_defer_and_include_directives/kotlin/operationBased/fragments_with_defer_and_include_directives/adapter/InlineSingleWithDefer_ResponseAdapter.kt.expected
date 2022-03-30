@@ -44,7 +44,7 @@ public object InlineSingleWithDefer_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: InlineSingleWithDefer.Data
+      `value`: InlineSingleWithDefer.Data,
     ): Unit {
       writer.name("hero")
       Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
@@ -85,7 +85,7 @@ public object InlineSingleWithDefer_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: InlineSingleWithDefer.Data.Hero
+        `value`: InlineSingleWithDefer.Data.Hero,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -118,7 +118,7 @@ public object InlineSingleWithDefer_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: InlineSingleWithDefer.Data.Hero.OnDroid
+          `value`: InlineSingleWithDefer.Data.Hero.OnDroid,
         ): Unit {
           writer.name("name")
           StringAdapter.toJson(writer, customScalarAdapters, value.name)

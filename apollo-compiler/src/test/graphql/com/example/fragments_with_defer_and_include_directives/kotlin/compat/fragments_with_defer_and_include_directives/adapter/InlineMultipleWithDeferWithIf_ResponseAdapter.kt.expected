@@ -45,7 +45,7 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: InlineMultipleWithDeferWithIf.Data
+      `value`: InlineMultipleWithDeferWithIf.Data,
     ): Unit {
       writer.name("hero")
       Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
@@ -96,7 +96,7 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: InlineMultipleWithDeferWithIf.Hero
+      `value`: InlineMultipleWithDeferWithIf.Hero,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -141,7 +141,7 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: InlineMultipleWithDeferWithIf.AsCharacter
+      `value`: InlineMultipleWithDeferWithIf.AsCharacter,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -177,7 +177,7 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: InlineMultipleWithDeferWithIf.AsCharacterDeferSecond
+      `value`: InlineMultipleWithDeferWithIf.AsCharacterDeferSecond,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -213,7 +213,7 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: InlineMultipleWithDeferWithIf.AsCharacterDeferThird
+      `value`: InlineMultipleWithDeferWithIf.AsCharacterDeferThird,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

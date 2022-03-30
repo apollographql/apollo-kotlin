@@ -23,7 +23,7 @@ public object SpreadMultipleWithDeferWithIf_VariablesAdapter :
   public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    `value`: SpreadMultipleWithDeferWithIf
+    `value`: SpreadMultipleWithDeferWithIf,
   ): Unit {
     writer.name("cond")
     BooleanAdapter.toJson(writer, customScalarAdapters, value.cond)

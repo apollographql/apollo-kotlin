@@ -35,9 +35,7 @@ public class InlineMultipleWithDefer() : Query<InlineMultipleWithDefer.Data> {
     // This operation doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<Data> {
-    return InlineMultipleWithDefer_ResponseAdapter.Data.obj()
-  }
+  public override fun adapter(): Adapter<Data> = InlineMultipleWithDefer_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
@@ -47,7 +45,7 @@ public class InlineMultipleWithDefer() : Query<InlineMultipleWithDefer.Data> {
   .build()
 
   public data class Data(
-    public val hero: Hero?
+    public val hero: Hero?,
   ) : Query.Data {
     public data class Hero(
       public val __typename: String,
@@ -58,20 +56,20 @@ public class InlineMultipleWithDefer() : Query<InlineMultipleWithDefer.Data> {
       /**
        * Synthetic field for inline fragment on Droid
        */
-      public val onDroidDeferSecond: OnDroidDeferSecond?
+      public val onDroidDeferSecond: OnDroidDeferSecond?,
     ) {
       public data class OnDroidDeferFirst(
         /**
          * What others call this droid
          */
-        public val name: String
+        public val name: String,
       )
 
       public data class OnDroidDeferSecond(
         /**
          * The ID of the droid
          */
-        public val id: String
+        public val id: String,
       )
     }
   }

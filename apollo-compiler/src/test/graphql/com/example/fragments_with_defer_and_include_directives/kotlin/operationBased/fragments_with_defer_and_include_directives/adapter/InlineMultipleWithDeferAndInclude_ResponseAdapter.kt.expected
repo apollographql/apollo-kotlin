@@ -46,7 +46,7 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: InlineMultipleWithDeferAndInclude.Data
+      `value`: InlineMultipleWithDeferAndInclude.Data,
     ): Unit {
       writer.name("hero")
       Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
@@ -127,7 +127,7 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: InlineMultipleWithDeferAndInclude.Data.Hero
+        `value`: InlineMultipleWithDeferAndInclude.Data.Hero,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -187,7 +187,7 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfCond1
+          `value`: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfCond1,
         ): Unit {
           writer.name("name")
           StringAdapter.toJson(writer, customScalarAdapters, value.name)
@@ -218,7 +218,7 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfNotCond2
+          `value`: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfNotCond2,
         ): Unit {
           writer.name("id")
           StringAdapter.toJson(writer, customScalarAdapters, value.id)
@@ -249,7 +249,7 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferFirst
+          `value`: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferFirst,
         ): Unit {
           writer.name("name")
           StringAdapter.toJson(writer, customScalarAdapters, value.name)
@@ -280,7 +280,7 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferSecond
+          `value`: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferSecond,
         ): Unit {
           writer.name("id")
           StringAdapter.toJson(writer, customScalarAdapters, value.id)
@@ -311,7 +311,7 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferThird
+          `value`: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferThird,
         ): Unit {
           writer.name("name")
           StringAdapter.toJson(writer, customScalarAdapters, value.name)
@@ -342,7 +342,7 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferFourth
+          `value`: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferFourth,
         ): Unit {
           writer.name("id")
           StringAdapter.toJson(writer, customScalarAdapters, value.id)

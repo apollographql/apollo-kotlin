@@ -46,7 +46,7 @@ public object SpreadSingleWithDefer_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: SpreadSingleWithDefer.Data
+      `value`: SpreadSingleWithDefer.Data,
     ): Unit {
       writer.name("hero")
       Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
@@ -80,7 +80,7 @@ public object SpreadSingleWithDefer_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: SpreadSingleWithDefer.Hero
+      `value`: SpreadSingleWithDefer.Hero,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -113,7 +113,7 @@ public object SpreadSingleWithDefer_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: SpreadSingleWithDefer.Hero.Fragments
+        `value`: SpreadSingleWithDefer.Hero.Fragments,
       ): Unit {
         if (value.droidDetails != null) {
           com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,

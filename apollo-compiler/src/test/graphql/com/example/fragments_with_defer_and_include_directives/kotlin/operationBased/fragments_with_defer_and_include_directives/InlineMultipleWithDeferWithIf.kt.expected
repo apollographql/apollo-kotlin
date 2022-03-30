@@ -19,7 +19,7 @@ import kotlin.String
 import kotlin.Unit
 
 public data class InlineMultipleWithDeferWithIf(
-  public val cond: Boolean
+  public val cond: Boolean,
 ) : Query<InlineMultipleWithDeferWithIf.Data> {
   public override fun id(): String = OPERATION_ID
 
@@ -32,9 +32,8 @@ public data class InlineMultipleWithDeferWithIf(
     InlineMultipleWithDeferWithIf_VariablesAdapter.toJson(writer, customScalarAdapters, this)
   }
 
-  public override fun adapter(): Adapter<Data> {
-    return InlineMultipleWithDeferWithIf_ResponseAdapter.Data.obj()
-  }
+  public override fun adapter(): Adapter<Data> =
+      InlineMultipleWithDeferWithIf_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
@@ -44,7 +43,7 @@ public data class InlineMultipleWithDeferWithIf(
   .build()
 
   public data class Data(
-    public val hero: Hero?
+    public val hero: Hero?,
   ) : Query.Data {
     public data class Hero(
       public val __typename: String,
@@ -59,27 +58,27 @@ public data class InlineMultipleWithDeferWithIf(
       /**
        * Synthetic field for inline fragment on Character
        */
-      public val onCharacterDeferThird: OnCharacterDeferThird?
+      public val onCharacterDeferThird: OnCharacterDeferThird?,
     ) {
       public data class OnCharacter(
         /**
          * The ID of the character
          */
-        public val id: String
+        public val id: String,
       )
 
       public data class OnCharacterDeferSecond(
         /**
          * The name of the character
          */
-        public val name: String
+        public val name: String,
       )
 
       public data class OnCharacterDeferThird(
         /**
          * The name of the character
          */
-        public val name: String
+        public val name: String,
       )
     }
   }

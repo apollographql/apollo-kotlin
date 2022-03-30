@@ -23,7 +23,7 @@ public object InlineMultipleWithDeferAndInclude_VariablesAdapter :
   public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    `value`: InlineMultipleWithDeferAndInclude
+    `value`: InlineMultipleWithDeferAndInclude,
   ): Unit {
     writer.name("cond1")
     BooleanAdapter.toJson(writer, customScalarAdapters, value.cond1)
