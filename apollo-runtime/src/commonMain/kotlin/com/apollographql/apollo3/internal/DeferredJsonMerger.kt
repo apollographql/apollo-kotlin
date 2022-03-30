@@ -25,6 +25,9 @@ class DeferredJsonMerger {
   private val _mergedFragmentIds = mutableSetOf<DeferredFragmentIdentifier>()
   val mergedFragmentIds: Set<DeferredFragmentIdentifier> = _mergedFragmentIds
 
+  var hasNext: Boolean = true
+    private set
+
   fun merge(payload: BufferedSource): Map<String, Any?> {
     val payloadMap = jsonToMap(payload)
     if (merged.isEmpty()) {
@@ -53,6 +56,7 @@ class DeferredJsonMerger {
     val payloadData = payloadMap["data"] as Map<String, Any?>?
     val payloadPath = payloadMap["path"] as List<Any>
     val mergedData = merged["data"] as Map<String, Any?>
+    hasNext = payloadMap["hasNext"] as Boolean? ?: false
 
     // payloadData can be null if there are errors
     if (payloadData != null) {
