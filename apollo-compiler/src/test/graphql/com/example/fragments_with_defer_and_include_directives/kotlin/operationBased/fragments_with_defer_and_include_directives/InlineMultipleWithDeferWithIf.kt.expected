@@ -54,11 +54,11 @@ public data class InlineMultipleWithDeferWithIf(
       /**
        * Synthetic field for inline fragment on Character
        */
-      public val onCharacterDeferSecond: OnCharacterDeferSecond?,
+      public val onCharacterDeferF_second: OnCharacterDeferF_second?,
       /**
        * Synthetic field for inline fragment on Character
        */
-      public val onCharacterDeferThird: OnCharacterDeferThird?,
+      public val onCharacterDeferF_third: OnCharacterDeferF_third?,
     ) {
       public data class OnCharacter(
         /**
@@ -67,14 +67,14 @@ public data class InlineMultipleWithDeferWithIf(
         public val id: String,
       )
 
-      public data class OnCharacterDeferSecond(
+      public data class OnCharacterDeferF_second(
         /**
          * The name of the character
          */
         public val name: String,
       )
 
-      public data class OnCharacterDeferThird(
+      public data class OnCharacterDeferF_third(
         /**
          * The name of the character
          */
@@ -85,7 +85,7 @@ public data class InlineMultipleWithDeferWithIf(
 
   public companion object {
     public const val OPERATION_ID: String =
-        "5b00be478e8052ac841db6890f937f8c56de7665b63ad6723da0572c0198f92d"
+        "9dc79c78df7375c3d860d16df3ea839ea45c7f8420976f63414610d338f0caf1"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -94,20 +94,20 @@ public data class InlineMultipleWithDeferWithIf(
      * query InlineMultipleWithDeferWithIf($cond: Boolean!) {
      *   hero {
      *     __typename
-     *     ... on Character @defer(label: "first", if: false) {
+     *     ... on Character @defer(label: "f_first", if: false) {
      *       id
      *     }
-     *     ... on Character @defer(label: "second", if: true) {
+     *     ... on Character @defer(label: "f_second", if: true) {
      *       name
      *     }
-     *     ... on Character @defer(label: "third", if: $cond) {
+     *     ... on Character @defer(label: "f_third", if: $cond) {
      *       name
      *     }
      *   }
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query InlineMultipleWithDeferWithIf(${'$'}cond: Boolean!) { hero { __typename ... on Character @defer(label: \"first\", if: false) { id } ... on Character @defer(label: \"second\", if: true) { name } ... on Character @defer(label: \"third\", if: ${'$'}cond) { name } } }"
+        "query InlineMultipleWithDeferWithIf(${'$'}cond: Boolean!) { hero { __typename ... on Character @defer(label: \"f_first\", if: false) { id } ... on Character @defer(label: \"f_second\", if: true) { name } ... on Character @defer(label: \"f_third\", if: ${'$'}cond) { name } } }"
 
     public const val OPERATION_NAME: String = "InlineMultipleWithDeferWithIf"
   }

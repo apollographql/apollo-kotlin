@@ -9,7 +9,7 @@ fragment ComputerFields on Computer {
   year
   screen {
     resolution
-    ...ScreenFields @defer(label: "b")
+    ...ScreenFields @defer(label: "a")
   }
 }
 fragment ScreenFields on Screen {

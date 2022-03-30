@@ -22,7 +22,7 @@ import java.lang.Override;
 import java.lang.String;
 
 public class SpreadMultipleWithDeferAndInclude implements Query<SpreadMultipleWithDeferAndInclude.Data> {
-  public static final String OPERATION_ID = "2aedb5156687ce37c5e59915fa6c0216159f4b442d229efe311f0bdc79c07384";
+  public static final String OPERATION_ID = "1c9d61b4af65df2bfed92353244efbb66d20a35daf747507e66ed9d20dcd1517";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -33,10 +33,10 @@ public class SpreadMultipleWithDeferAndInclude implements Query<SpreadMultipleWi
    *     __typename
    *     ...DroidDetails @include(if: $cond1)
    *     ...DroidDetails @skip(if: $cond2)
-   *     ...DroidDetails @defer(label: "first")
-   *     ...DroidDetails @defer(label: "second")
-   *     ...DroidDetails @defer(label: "third") @include(if: $cond3)
-   *     ...DroidDetails @defer(label: "fourth") @skip(if: $cond4)
+   *     ...DroidDetails @defer(label: "b_first")
+   *     ...DroidDetails @defer(label: "b_second")
+   *     ...DroidDetails @defer(label: "b_third") @include(if: $cond3)
+   *     ...DroidDetails @defer(label: "b_fourth") @skip(if: $cond4)
    *   }
    * }
    *
@@ -44,7 +44,7 @@ public class SpreadMultipleWithDeferAndInclude implements Query<SpreadMultipleWi
    *   name
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query SpreadMultipleWithDeferAndInclude($cond1: Boolean!, $cond2: Boolean!, $cond3: Boolean!, $cond4: Boolean!) { hero { __typename ...DroidDetails @include(if: $cond1) ...DroidDetails @skip(if: $cond2) ...DroidDetails @defer(label: \"first\") ...DroidDetails @defer(label: \"second\") ...DroidDetails @defer(label: \"third\") @include(if: $cond3) ...DroidDetails @defer(label: \"fourth\") @skip(if: $cond4) } }  fragment DroidDetails on Droid { name }";
+  public static final String OPERATION_DOCUMENT = "query SpreadMultipleWithDeferAndInclude($cond1: Boolean!, $cond2: Boolean!, $cond3: Boolean!, $cond4: Boolean!) { hero { __typename ...DroidDetails @include(if: $cond1) ...DroidDetails @skip(if: $cond2) ...DroidDetails @defer(label: \"b_first\") ...DroidDetails @defer(label: \"b_second\") ...DroidDetails @defer(label: \"b_third\") @include(if: $cond3) ...DroidDetails @defer(label: \"b_fourth\") @skip(if: $cond4) } }  fragment DroidDetails on Droid { name }";
 
   public static final String OPERATION_NAME = "SpreadMultipleWithDeferAndInclude";
 

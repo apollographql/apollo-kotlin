@@ -90,38 +90,38 @@ public class InlineMultipleWithDeferAndInclude_ResponseAdapter {
         onDroidIfNotCond2 = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.OnDroidIfNotCond2.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
-      InlineMultipleWithDeferAndInclude.OnDroidDeferFirst onDroidDeferFirst = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel("first"))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
+      InlineMultipleWithDeferAndInclude.OnDroidDeferE_first onDroidDeferE_first = null;
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel("e_first"))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
-        onDroidDeferFirst = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.OnDroidDeferFirst.INSTANCE.fromJson(reader, customScalarAdapters);
+        onDroidDeferE_first = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.OnDroidDeferE_first.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
-      InlineMultipleWithDeferAndInclude.OnDroidDeferSecond onDroidDeferSecond = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel("second"))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
+      InlineMultipleWithDeferAndInclude.OnDroidDeferE_second onDroidDeferE_second = null;
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel("e_second"))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
-        onDroidDeferSecond = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.OnDroidDeferSecond.INSTANCE.fromJson(reader, customScalarAdapters);
+        onDroidDeferE_second = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.OnDroidDeferE_second.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
-      InlineMultipleWithDeferAndInclude.OnDroidDeferThird onDroidDeferThird = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BLabel("third")),new BooleanExpression.Element<BTerm>(new BVariable("cond3")))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
+      InlineMultipleWithDeferAndInclude.OnDroidDeferE_third onDroidDeferE_third = null;
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BLabel("e_third")),new BooleanExpression.Element<BTerm>(new BVariable("cond3")))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
-        onDroidDeferThird = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.OnDroidDeferThird.INSTANCE.fromJson(reader, customScalarAdapters);
+        onDroidDeferE_third = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.OnDroidDeferE_third.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
-      InlineMultipleWithDeferAndInclude.OnDroidDeferFourth onDroidDeferFourth = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BLabel("fourth")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond4"))))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
+      InlineMultipleWithDeferAndInclude.OnDroidDeferE_fourth onDroidDeferE_fourth = null;
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BLabel("e_fourth")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond4"))))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
-        onDroidDeferFourth = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.OnDroidDeferFourth.INSTANCE.fromJson(reader, customScalarAdapters);
+        onDroidDeferE_fourth = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.OnDroidDeferE_fourth.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new InlineMultipleWithDeferAndInclude.Hero(
         __typename,
         onDroidIfCond1,
         onDroidIfNotCond2,
-        onDroidDeferFirst,
-        onDroidDeferSecond,
-        onDroidDeferThird,
-        onDroidDeferFourth
+        onDroidDeferE_first,
+        onDroidDeferE_second,
+        onDroidDeferE_third,
+        onDroidDeferE_fourth
       );
     }
 
@@ -139,20 +139,20 @@ public class InlineMultipleWithDeferAndInclude_ResponseAdapter {
         com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.OnDroidIfNotCond2.INSTANCE.toJson(writer, customScalarAdapters, value.onDroidIfNotCond2);
       }
 
-      if (value.onDroidDeferFirst != null) {
-        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.OnDroidDeferFirst.INSTANCE.toJson(writer, customScalarAdapters, value.onDroidDeferFirst);
+      if (value.onDroidDeferE_first != null) {
+        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.OnDroidDeferE_first.INSTANCE.toJson(writer, customScalarAdapters, value.onDroidDeferE_first);
       }
 
-      if (value.onDroidDeferSecond != null) {
-        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.OnDroidDeferSecond.INSTANCE.toJson(writer, customScalarAdapters, value.onDroidDeferSecond);
+      if (value.onDroidDeferE_second != null) {
+        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.OnDroidDeferE_second.INSTANCE.toJson(writer, customScalarAdapters, value.onDroidDeferE_second);
       }
 
-      if (value.onDroidDeferThird != null) {
-        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.OnDroidDeferThird.INSTANCE.toJson(writer, customScalarAdapters, value.onDroidDeferThird);
+      if (value.onDroidDeferE_third != null) {
+        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.OnDroidDeferE_third.INSTANCE.toJson(writer, customScalarAdapters, value.onDroidDeferE_third);
       }
 
-      if (value.onDroidDeferFourth != null) {
-        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.OnDroidDeferFourth.INSTANCE.toJson(writer, customScalarAdapters, value.onDroidDeferFourth);
+      if (value.onDroidDeferE_fourth != null) {
+        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.OnDroidDeferE_fourth.INSTANCE.toJson(writer, customScalarAdapters, value.onDroidDeferE_fourth);
       }
     }
   }
@@ -223,13 +223,13 @@ public class InlineMultipleWithDeferAndInclude_ResponseAdapter {
     }
   }
 
-  public enum OnDroidDeferFirst implements Adapter<InlineMultipleWithDeferAndInclude.OnDroidDeferFirst> {
+  public enum OnDroidDeferE_first implements Adapter<InlineMultipleWithDeferAndInclude.OnDroidDeferE_first> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public InlineMultipleWithDeferAndInclude.OnDroidDeferFirst fromJson(JsonReader reader,
+    public InlineMultipleWithDeferAndInclude.OnDroidDeferE_first fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
       String name = null;
 
@@ -243,26 +243,26 @@ public class InlineMultipleWithDeferAndInclude_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(name, "name");
 
-      return new InlineMultipleWithDeferAndInclude.OnDroidDeferFirst(
+      return new InlineMultipleWithDeferAndInclude.OnDroidDeferE_first(
         name
       );
     }
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        InlineMultipleWithDeferAndInclude.OnDroidDeferFirst value) throws IOException {
+        InlineMultipleWithDeferAndInclude.OnDroidDeferE_first value) throws IOException {
       writer.name("name");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
     }
   }
 
-  public enum OnDroidDeferSecond implements Adapter<InlineMultipleWithDeferAndInclude.OnDroidDeferSecond> {
+  public enum OnDroidDeferE_second implements Adapter<InlineMultipleWithDeferAndInclude.OnDroidDeferE_second> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id");
 
     @Override
-    public InlineMultipleWithDeferAndInclude.OnDroidDeferSecond fromJson(JsonReader reader,
+    public InlineMultipleWithDeferAndInclude.OnDroidDeferE_second fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
       String id = null;
 
@@ -276,26 +276,26 @@ public class InlineMultipleWithDeferAndInclude_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(id, "id");
 
-      return new InlineMultipleWithDeferAndInclude.OnDroidDeferSecond(
+      return new InlineMultipleWithDeferAndInclude.OnDroidDeferE_second(
         id
       );
     }
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        InlineMultipleWithDeferAndInclude.OnDroidDeferSecond value) throws IOException {
+        InlineMultipleWithDeferAndInclude.OnDroidDeferE_second value) throws IOException {
       writer.name("id");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.id);
     }
   }
 
-  public enum OnDroidDeferThird implements Adapter<InlineMultipleWithDeferAndInclude.OnDroidDeferThird> {
+  public enum OnDroidDeferE_third implements Adapter<InlineMultipleWithDeferAndInclude.OnDroidDeferE_third> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public InlineMultipleWithDeferAndInclude.OnDroidDeferThird fromJson(JsonReader reader,
+    public InlineMultipleWithDeferAndInclude.OnDroidDeferE_third fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
       String name = null;
 
@@ -309,26 +309,26 @@ public class InlineMultipleWithDeferAndInclude_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(name, "name");
 
-      return new InlineMultipleWithDeferAndInclude.OnDroidDeferThird(
+      return new InlineMultipleWithDeferAndInclude.OnDroidDeferE_third(
         name
       );
     }
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        InlineMultipleWithDeferAndInclude.OnDroidDeferThird value) throws IOException {
+        InlineMultipleWithDeferAndInclude.OnDroidDeferE_third value) throws IOException {
       writer.name("name");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
     }
   }
 
-  public enum OnDroidDeferFourth implements Adapter<InlineMultipleWithDeferAndInclude.OnDroidDeferFourth> {
+  public enum OnDroidDeferE_fourth implements Adapter<InlineMultipleWithDeferAndInclude.OnDroidDeferE_fourth> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id");
 
     @Override
-    public InlineMultipleWithDeferAndInclude.OnDroidDeferFourth fromJson(JsonReader reader,
+    public InlineMultipleWithDeferAndInclude.OnDroidDeferE_fourth fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
       String id = null;
 
@@ -342,14 +342,14 @@ public class InlineMultipleWithDeferAndInclude_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(id, "id");
 
-      return new InlineMultipleWithDeferAndInclude.OnDroidDeferFourth(
+      return new InlineMultipleWithDeferAndInclude.OnDroidDeferE_fourth(
         id
       );
     }
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        InlineMultipleWithDeferAndInclude.OnDroidDeferFourth value) throws IOException {
+        InlineMultipleWithDeferAndInclude.OnDroidDeferE_fourth value) throws IOException {
       writer.name("id");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.id);
     }

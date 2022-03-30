@@ -59,7 +59,7 @@ public class SpreadMultipleWithDefer() : Query<SpreadMultipleWithDefer.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "deb86b6b7f1f827e315d919340c6dea1897df6bfe197b6735990891b23aee6d7"
+        "7cd4d1b6a14f96cff4bbbdbd3b3ab1aa365ffc65e1515ff6e22935010543ad71"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -68,8 +68,8 @@ public class SpreadMultipleWithDefer() : Query<SpreadMultipleWithDefer.Data> {
      * query SpreadMultipleWithDefer {
      *   hero {
      *     __typename
-     *     ...DroidDetails @defer(label: "first")
-     *     ...DroidDetails @defer(label: "second")
+     *     ...DroidDetails @defer(label: "a_first")
+     *     ...DroidDetails @defer(label: "a_second")
      *   }
      * }
      *
@@ -78,7 +78,7 @@ public class SpreadMultipleWithDefer() : Query<SpreadMultipleWithDefer.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query SpreadMultipleWithDefer { hero { __typename ...DroidDetails @defer(label: \"first\") ...DroidDetails @defer(label: \"second\") } }  fragment DroidDetails on Droid { name }"
+        "query SpreadMultipleWithDefer { hero { __typename ...DroidDetails @defer(label: \"a_first\") ...DroidDetails @defer(label: \"a_second\") } }  fragment DroidDetails on Droid { name }"
 
     public const val OPERATION_NAME: String = "SpreadMultipleWithDefer"
   }

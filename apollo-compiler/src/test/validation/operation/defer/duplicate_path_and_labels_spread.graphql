@@ -1,0 +1,22 @@
+query WithFragmentSpreads {
+  computers {
+    ...ComputerFields
+    ...ComputerFields2
+  }
+}
+
+fragment ComputerFields on Computer {
+  screen {
+    ...ScreenFields @defer
+  }
+}
+
+fragment ComputerFields2 on Computer {
+  screen {
+    ...ScreenFields @defer
+  }
+}
+
+fragment ScreenFields on Screen {
+  resolution
+}

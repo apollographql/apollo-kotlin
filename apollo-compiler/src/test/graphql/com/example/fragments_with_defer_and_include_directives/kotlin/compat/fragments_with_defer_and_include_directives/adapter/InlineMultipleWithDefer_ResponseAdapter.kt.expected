@@ -70,24 +70,24 @@ public object InlineMultipleWithDefer_ResponseAdapter {
         "__typename was not found"
       }
 
-      var asDroidDeferFirst: InlineMultipleWithDefer.AsDroidDeferFirst? = null
-      if (and(possibleTypes("Droid"),label("first")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+      var asDroidDeferD_first: InlineMultipleWithDefer.AsDroidDeferD_first? = null
+      if (and(possibleTypes("Droid"),label("d_first")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
         reader.rewind()
-        asDroidDeferFirst = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.AsDroidDeferFirst.fromJson(reader,
+        asDroidDeferD_first = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.AsDroidDeferD_first.fromJson(reader,
             customScalarAdapters)
       }
 
-      var asDroidDeferSecond: InlineMultipleWithDefer.AsDroidDeferSecond? = null
-      if (and(possibleTypes("Droid"),label("second")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+      var asDroidDeferD_second: InlineMultipleWithDefer.AsDroidDeferD_second? = null
+      if (and(possibleTypes("Droid"),label("d_second")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
         reader.rewind()
-        asDroidDeferSecond = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.AsDroidDeferSecond.fromJson(reader,
+        asDroidDeferD_second = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.AsDroidDeferD_second.fromJson(reader,
             customScalarAdapters)
       }
 
       return InlineMultipleWithDefer.Hero(
         __typename = __typename,
-        asDroidDeferFirst = asDroidDeferFirst,
-        asDroidDeferSecond = asDroidDeferSecond
+        asDroidDeferD_first = asDroidDeferD_first,
+        asDroidDeferD_second = asDroidDeferD_second
       )
     }
 
@@ -99,23 +99,23 @@ public object InlineMultipleWithDefer_ResponseAdapter {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-      if (value.asDroidDeferFirst != null) {
-        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.AsDroidDeferFirst.toJson(writer,
-            customScalarAdapters, value.asDroidDeferFirst)
+      if (value.asDroidDeferD_first != null) {
+        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.AsDroidDeferD_first.toJson(writer,
+            customScalarAdapters, value.asDroidDeferD_first)
       }
 
-      if (value.asDroidDeferSecond != null) {
-        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.AsDroidDeferSecond.toJson(writer,
-            customScalarAdapters, value.asDroidDeferSecond)
+      if (value.asDroidDeferD_second != null) {
+        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.AsDroidDeferD_second.toJson(writer,
+            customScalarAdapters, value.asDroidDeferD_second)
       }
     }
   }
 
-  public object AsDroidDeferFirst : Adapter<InlineMultipleWithDefer.AsDroidDeferFirst> {
+  public object AsDroidDeferD_first : Adapter<InlineMultipleWithDefer.AsDroidDeferD_first> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        InlineMultipleWithDefer.AsDroidDeferFirst {
+        InlineMultipleWithDefer.AsDroidDeferD_first {
       var __typename: String? = null
       var name: String? = null
 
@@ -127,7 +127,7 @@ public object InlineMultipleWithDefer_ResponseAdapter {
         }
       }
 
-      return InlineMultipleWithDefer.AsDroidDeferFirst(
+      return InlineMultipleWithDefer.AsDroidDeferD_first(
         __typename = __typename!!,
         name = name!!
       )
@@ -136,7 +136,7 @@ public object InlineMultipleWithDefer_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: InlineMultipleWithDefer.AsDroidDeferFirst,
+      `value`: InlineMultipleWithDefer.AsDroidDeferD_first,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -146,11 +146,11 @@ public object InlineMultipleWithDefer_ResponseAdapter {
     }
   }
 
-  public object AsDroidDeferSecond : Adapter<InlineMultipleWithDefer.AsDroidDeferSecond> {
+  public object AsDroidDeferD_second : Adapter<InlineMultipleWithDefer.AsDroidDeferD_second> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "id")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        InlineMultipleWithDefer.AsDroidDeferSecond {
+        InlineMultipleWithDefer.AsDroidDeferD_second {
       var __typename: String? = null
       var id: String? = null
 
@@ -162,7 +162,7 @@ public object InlineMultipleWithDefer_ResponseAdapter {
         }
       }
 
-      return InlineMultipleWithDefer.AsDroidDeferSecond(
+      return InlineMultipleWithDefer.AsDroidDeferD_second(
         __typename = __typename!!,
         id = id!!
       )
@@ -171,7 +171,7 @@ public object InlineMultipleWithDefer_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: InlineMultipleWithDefer.AsDroidDeferSecond,
+      `value`: InlineMultipleWithDefer.AsDroidDeferD_second,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

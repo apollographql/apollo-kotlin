@@ -6,8 +6,8 @@ query SpreadSingleWithDefer {
 
 query SpreadMultipleWithDefer {
   hero {
-    ...DroidDetails @defer(label: "first")
-    ...DroidDetails @defer(label: "second")
+    ...DroidDetails @defer(label: "a_first")
+    ...DroidDetails @defer(label: "a_second")
   }
 }
 
@@ -15,10 +15,10 @@ query SpreadMultipleWithDeferAndInclude($cond1: Boolean!, $cond2: Boolean!, $con
   hero {
     ...DroidDetails @include(if: $cond1)
     ...DroidDetails @skip(if: $cond2)
-    ...DroidDetails @defer(label: "first")
-    ...DroidDetails @defer(label: "second")
-    ...DroidDetails @defer(label: "third") @include(if: $cond3)
-    ...DroidDetails @defer(label: "fourth") @skip(if: $cond4)
+    ...DroidDetails @defer(label: "b_first")
+    ...DroidDetails @defer(label: "b_second")
+    ...DroidDetails @defer(label: "b_third") @include(if: $cond3)
+    ...DroidDetails @defer(label: "b_fourth") @skip(if: $cond4)
   }
 }
 
@@ -28,9 +28,9 @@ fragment DroidDetails on Droid {
 
 query SpreadMultipleWithDeferWithIf($cond: Boolean!) {
   hero {
-    ...CharacterDetails @defer(label: "first" if: false)
-    ...CharacterDetails2 @defer(label: "second" if: true)
-    ...CharacterDetails3 @defer(label: "third" if: $cond)
+    ...CharacterDetails @defer(label: "c_first" if: false)
+    ...CharacterDetails2 @defer(label: "c_second" if: true)
+    ...CharacterDetails3 @defer(label: "c_third" if: $cond)
   }
 }
 
@@ -56,11 +56,11 @@ query InlineSingleWithDefer {
 
 query InlineMultipleWithDefer {
   hero {
-    ... on Droid @defer(label: "first") {
+    ... on Droid @defer(label: "d_first") {
       name
     }
 
-    ... on Droid @defer(label: "second") {
+    ... on Droid @defer(label: "d_second") {
       id
     }
   }
@@ -74,16 +74,16 @@ query InlineMultipleWithDeferAndInclude($cond1: Boolean!, $cond2: Boolean!, $con
     ... on Droid @skip(if: $cond2) {
       id
     }
-    ... on Droid @defer(label: "first") {
+    ... on Droid @defer(label: "e_first") {
       name
     }
-    ... on Droid @defer(label: "second") {
+    ... on Droid @defer(label: "e_second") {
       id
     }
-    ... on Droid @defer(label: "third") @include(if: $cond3) {
+    ... on Droid @defer(label: "e_third") @include(if: $cond3) {
       name
     }
-    ... on Droid @defer(label: "fourth") @skip(if: $cond4) {
+    ... on Droid @defer(label: "e_fourth") @skip(if: $cond4) {
       id
     }
   }
@@ -91,15 +91,15 @@ query InlineMultipleWithDeferAndInclude($cond1: Boolean!, $cond2: Boolean!, $con
 
 query InlineMultipleWithDeferWithIf($cond: Boolean!) {
   hero {
-    ... on Character @defer(label: "first" if: false) {
+    ... on Character @defer(label: "f_first" if: false) {
       id
     }
 
-    ... on Character @defer(label: "second" if: true) {
+    ... on Character @defer(label: "f_second" if: true) {
       name
     }
 
-    ... on Character @defer(label: "third" if: $cond) {
+    ... on Character @defer(label: "f_third" if: $cond) {
       name
     }
   }

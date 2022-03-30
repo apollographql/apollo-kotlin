@@ -24,7 +24,7 @@ import java.lang.Override;
 import java.lang.String;
 
 public class SpreadMultipleWithDeferWithIf implements Query<SpreadMultipleWithDeferWithIf.Data> {
-  public static final String OPERATION_ID = "a2f5463c1ebb6a320b7b05343918a19ac8552ee1bdc140c044c35e5971b235a4";
+  public static final String OPERATION_ID = "ecdac17ca37d6cbf3a6e5059904fabfd96193cbe0720eb27880026b518feec9f";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -33,9 +33,9 @@ public class SpreadMultipleWithDeferWithIf implements Query<SpreadMultipleWithDe
    * query SpreadMultipleWithDeferWithIf($cond: Boolean!) {
    *   hero {
    *     __typename
-   *     ...CharacterDetails @defer(label: "first", if: false)
-   *     ...CharacterDetails2 @defer(label: "second", if: true)
-   *     ...CharacterDetails3 @defer(label: "third", if: $cond)
+   *     ...CharacterDetails @defer(label: "c_first", if: false)
+   *     ...CharacterDetails2 @defer(label: "c_second", if: true)
+   *     ...CharacterDetails3 @defer(label: "c_third", if: $cond)
    *   }
    * }
    *
@@ -51,7 +51,7 @@ public class SpreadMultipleWithDeferWithIf implements Query<SpreadMultipleWithDe
    *   birthDate
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query SpreadMultipleWithDeferWithIf($cond: Boolean!) { hero { __typename ...CharacterDetails @defer(label: \"first\", if: false) ...CharacterDetails2 @defer(label: \"second\", if: true) ...CharacterDetails3 @defer(label: \"third\", if: $cond) } }  fragment CharacterDetails on Droid { name }  fragment CharacterDetails2 on Droid { id }  fragment CharacterDetails3 on Droid { birthDate }";
+  public static final String OPERATION_DOCUMENT = "query SpreadMultipleWithDeferWithIf($cond: Boolean!) { hero { __typename ...CharacterDetails @defer(label: \"c_first\", if: false) ...CharacterDetails2 @defer(label: \"c_second\", if: true) ...CharacterDetails3 @defer(label: \"c_third\", if: $cond) } }  fragment CharacterDetails on Droid { name }  fragment CharacterDetails2 on Droid { id }  fragment CharacterDetails3 on Droid { birthDate }";
 
   public static final String OPERATION_NAME = "SpreadMultipleWithDeferWithIf";
 

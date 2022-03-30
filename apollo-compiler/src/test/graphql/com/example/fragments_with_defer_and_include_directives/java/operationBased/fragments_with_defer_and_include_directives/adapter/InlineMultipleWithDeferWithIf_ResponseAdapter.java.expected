@@ -79,16 +79,16 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
       reader.rewind();
       InlineMultipleWithDeferWithIf.OnCharacter onCharacter = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacter.INSTANCE.fromJson(reader, customScalarAdapters);
 
-      InlineMultipleWithDeferWithIf.OnCharacterDeferSecond onCharacterDeferSecond = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BLabel("second")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
+      InlineMultipleWithDeferWithIf.OnCharacterDeferF_second onCharacterDeferF_second = null;
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BLabel("f_second")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
-        onCharacterDeferSecond = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacterDeferSecond.INSTANCE.fromJson(reader, customScalarAdapters);
+        onCharacterDeferF_second = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacterDeferF_second.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
-      InlineMultipleWithDeferWithIf.OnCharacterDeferThird onCharacterDeferThird = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Or<BTerm>(new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond"))),new BooleanExpression.Element<BTerm>(new BLabel("third"))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
+      InlineMultipleWithDeferWithIf.OnCharacterDeferF_third onCharacterDeferF_third = null;
+      if (BooleanExpressions.evaluate(new BooleanExpression.Or<BTerm>(new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond"))),new BooleanExpression.Element<BTerm>(new BLabel("f_third"))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
-        onCharacterDeferThird = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacterDeferThird.INSTANCE.fromJson(reader, customScalarAdapters);
+        onCharacterDeferF_third = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacterDeferF_third.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
@@ -96,8 +96,8 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
       return new InlineMultipleWithDeferWithIf.Hero(
         __typename,
         onCharacter,
-        onCharacterDeferSecond,
-        onCharacterDeferThird
+        onCharacterDeferF_second,
+        onCharacterDeferF_third
       );
     }
 
@@ -109,12 +109,12 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
 
       com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacter.INSTANCE.toJson(writer, customScalarAdapters, value.onCharacter);
 
-      if (value.onCharacterDeferSecond != null) {
-        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacterDeferSecond.INSTANCE.toJson(writer, customScalarAdapters, value.onCharacterDeferSecond);
+      if (value.onCharacterDeferF_second != null) {
+        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacterDeferF_second.INSTANCE.toJson(writer, customScalarAdapters, value.onCharacterDeferF_second);
       }
 
-      if (value.onCharacterDeferThird != null) {
-        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacterDeferThird.INSTANCE.toJson(writer, customScalarAdapters, value.onCharacterDeferThird);
+      if (value.onCharacterDeferF_third != null) {
+        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacterDeferF_third.INSTANCE.toJson(writer, customScalarAdapters, value.onCharacterDeferF_third);
       }
     }
   }
@@ -152,13 +152,13 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
     }
   }
 
-  public enum OnCharacterDeferSecond implements Adapter<InlineMultipleWithDeferWithIf.OnCharacterDeferSecond> {
+  public enum OnCharacterDeferF_second implements Adapter<InlineMultipleWithDeferWithIf.OnCharacterDeferF_second> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public InlineMultipleWithDeferWithIf.OnCharacterDeferSecond fromJson(JsonReader reader,
+    public InlineMultipleWithDeferWithIf.OnCharacterDeferF_second fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
       String name = null;
 
@@ -172,26 +172,26 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(name, "name");
 
-      return new InlineMultipleWithDeferWithIf.OnCharacterDeferSecond(
+      return new InlineMultipleWithDeferWithIf.OnCharacterDeferF_second(
         name
       );
     }
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        InlineMultipleWithDeferWithIf.OnCharacterDeferSecond value) throws IOException {
+        InlineMultipleWithDeferWithIf.OnCharacterDeferF_second value) throws IOException {
       writer.name("name");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
     }
   }
 
-  public enum OnCharacterDeferThird implements Adapter<InlineMultipleWithDeferWithIf.OnCharacterDeferThird> {
+  public enum OnCharacterDeferF_third implements Adapter<InlineMultipleWithDeferWithIf.OnCharacterDeferF_third> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public InlineMultipleWithDeferWithIf.OnCharacterDeferThird fromJson(JsonReader reader,
+    public InlineMultipleWithDeferWithIf.OnCharacterDeferF_third fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
       String name = null;
 
@@ -205,14 +205,14 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(name, "name");
 
-      return new InlineMultipleWithDeferWithIf.OnCharacterDeferThird(
+      return new InlineMultipleWithDeferWithIf.OnCharacterDeferF_third(
         name
       );
     }
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        InlineMultipleWithDeferWithIf.OnCharacterDeferThird value) throws IOException {
+        InlineMultipleWithDeferWithIf.OnCharacterDeferF_third value) throws IOException {
       writer.name("name");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
     }
