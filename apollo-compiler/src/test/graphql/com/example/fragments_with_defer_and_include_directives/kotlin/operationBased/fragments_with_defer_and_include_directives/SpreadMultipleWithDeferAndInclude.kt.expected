@@ -23,7 +23,7 @@ public data class SpreadMultipleWithDeferAndInclude(
   public val cond1: Boolean,
   public val cond2: Boolean,
   public val cond3: Boolean,
-  public val cond4: Boolean
+  public val cond4: Boolean,
 ) : Query<SpreadMultipleWithDeferAndInclude.Data> {
   public override fun id(): String = OPERATION_ID
 
@@ -36,9 +36,8 @@ public data class SpreadMultipleWithDeferAndInclude(
     SpreadMultipleWithDeferAndInclude_VariablesAdapter.toJson(writer, customScalarAdapters, this)
   }
 
-  public override fun adapter(): Adapter<Data> {
-    return SpreadMultipleWithDeferAndInclude_ResponseAdapter.Data.obj()
-  }
+  public override fun adapter(): Adapter<Data> =
+      SpreadMultipleWithDeferAndInclude_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
@@ -48,14 +47,14 @@ public data class SpreadMultipleWithDeferAndInclude(
   .build()
 
   public data class Data(
-    public val hero: Hero?
+    public val hero: Hero?,
   ) : Query.Data {
     public data class Hero(
       public val __typename: String,
       /**
        * Synthetic field for 'DroidDetails'
        */
-      public val droidDetails: DroidDetails?
+      public val droidDetails: DroidDetails?,
     )
   }
 

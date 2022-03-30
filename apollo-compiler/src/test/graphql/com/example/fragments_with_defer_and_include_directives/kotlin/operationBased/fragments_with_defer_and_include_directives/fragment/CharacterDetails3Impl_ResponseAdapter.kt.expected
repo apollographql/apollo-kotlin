@@ -39,7 +39,7 @@ public object CharacterDetails3Impl_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3
+      `value`: com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3,
     ): Unit {
       writer.name("birthDate")
       AnyAdapter.toJson(writer, customScalarAdapters, value.birthDate)

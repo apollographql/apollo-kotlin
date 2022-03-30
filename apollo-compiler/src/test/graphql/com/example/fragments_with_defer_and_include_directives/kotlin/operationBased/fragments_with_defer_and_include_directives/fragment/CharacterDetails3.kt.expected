@@ -12,5 +12,5 @@ public data class CharacterDetails3(
   /**
    * The date droid was created.
    */
-  public val birthDate: Any
+  public val birthDate: Any,
 ) : Fragment.Data

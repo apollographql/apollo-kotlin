@@ -12,5 +12,5 @@ public data class DroidDetails(
   /**
    * What others call this droid
    */
-  public val name: String
+  public val name: String,
 ) : Fragment.Data

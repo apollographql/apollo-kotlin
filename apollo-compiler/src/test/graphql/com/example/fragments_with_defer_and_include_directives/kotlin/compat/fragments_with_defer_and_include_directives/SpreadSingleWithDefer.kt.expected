@@ -36,9 +36,7 @@ public class SpreadSingleWithDefer() : Query<SpreadSingleWithDefer.Data> {
     // This operation doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<Data> {
-    return SpreadSingleWithDefer_ResponseAdapter.Data.obj()
-  }
+  public override fun adapter(): Adapter<Data> = SpreadSingleWithDefer_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
@@ -48,7 +46,7 @@ public class SpreadSingleWithDefer() : Query<SpreadSingleWithDefer.Data> {
   .build()
 
   public data class Data(
-    public val hero: Hero?
+    public val hero: Hero?,
   ) : Query.Data
 
   public data class Hero(
@@ -56,13 +54,13 @@ public class SpreadSingleWithDefer() : Query<SpreadSingleWithDefer.Data> {
     /**
      * Synthetic field for grouping fragments
      */
-    public val fragments: Fragments
+    public val fragments: Fragments,
   ) {
     public data class Fragments(
       /**
        * Synthetic field for 'DroidDetails'
        */
-      public val droidDetails: DroidDetails?
+      public val droidDetails: DroidDetails?,
     )
   }
 

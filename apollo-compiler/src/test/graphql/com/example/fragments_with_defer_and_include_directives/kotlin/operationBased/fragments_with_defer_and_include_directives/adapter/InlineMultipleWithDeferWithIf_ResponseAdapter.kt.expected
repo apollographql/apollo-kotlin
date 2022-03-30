@@ -45,7 +45,7 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: InlineMultipleWithDeferWithIf.Data
+      `value`: InlineMultipleWithDeferWithIf.Data,
     ): Unit {
       writer.name("hero")
       Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
@@ -95,7 +95,7 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: InlineMultipleWithDeferWithIf.Data.Hero
+        `value`: InlineMultipleWithDeferWithIf.Data.Hero,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -137,7 +137,7 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: InlineMultipleWithDeferWithIf.Data.Hero.OnCharacter
+          `value`: InlineMultipleWithDeferWithIf.Data.Hero.OnCharacter,
         ): Unit {
           writer.name("id")
           StringAdapter.toJson(writer, customScalarAdapters, value.id)
@@ -168,7 +168,7 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferSecond
+          `value`: InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferSecond,
         ): Unit {
           writer.name("name")
           StringAdapter.toJson(writer, customScalarAdapters, value.name)
@@ -199,7 +199,7 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
         public override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          `value`: InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferThird
+          `value`: InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferThird,
         ): Unit {
           writer.name("name")
           StringAdapter.toJson(writer, customScalarAdapters, value.name)

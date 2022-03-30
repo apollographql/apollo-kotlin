@@ -49,7 +49,7 @@ public object SpreadMultipleWithDeferAndInclude_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: SpreadMultipleWithDeferAndInclude.Data
+      `value`: SpreadMultipleWithDeferAndInclude.Data,
     ): Unit {
       writer.name("hero")
       Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
@@ -83,7 +83,7 @@ public object SpreadMultipleWithDeferAndInclude_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: SpreadMultipleWithDeferAndInclude.Hero
+      `value`: SpreadMultipleWithDeferAndInclude.Hero,
     ): Unit {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -116,7 +116,7 @@ public object SpreadMultipleWithDeferAndInclude_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: SpreadMultipleWithDeferAndInclude.Hero.Fragments
+        `value`: SpreadMultipleWithDeferAndInclude.Hero.Fragments,
       ): Unit {
         if (value.droidDetails != null) {
           com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,

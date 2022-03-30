@@ -22,7 +22,7 @@ public data class InlineMultipleWithDeferAndInclude(
   public val cond1: Boolean,
   public val cond2: Boolean,
   public val cond3: Boolean,
-  public val cond4: Boolean
+  public val cond4: Boolean,
 ) : Query<InlineMultipleWithDeferAndInclude.Data> {
   public override fun id(): String = OPERATION_ID
 
@@ -35,9 +35,8 @@ public data class InlineMultipleWithDeferAndInclude(
     InlineMultipleWithDeferAndInclude_VariablesAdapter.toJson(writer, customScalarAdapters, this)
   }
 
-  public override fun adapter(): Adapter<Data> {
-    return InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.obj()
-  }
+  public override fun adapter(): Adapter<Data> =
+      InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
@@ -47,7 +46,7 @@ public data class InlineMultipleWithDeferAndInclude(
   .build()
 
   public data class Data(
-    public val hero: Hero?
+    public val hero: Hero?,
   ) : Query.Data {
     public data class Hero(
       public val __typename: String,
@@ -74,48 +73,48 @@ public data class InlineMultipleWithDeferAndInclude(
       /**
        * Synthetic field for inline fragment on Droid
        */
-      public val onDroidDeferFourth: OnDroidDeferFourth?
+      public val onDroidDeferFourth: OnDroidDeferFourth?,
     ) {
       public data class OnDroidIfCond1(
         /**
          * What others call this droid
          */
-        public val name: String
+        public val name: String,
       )
 
       public data class OnDroidIfNotCond2(
         /**
          * The ID of the droid
          */
-        public val id: String
+        public val id: String,
       )
 
       public data class OnDroidDeferFirst(
         /**
          * What others call this droid
          */
-        public val name: String
+        public val name: String,
       )
 
       public data class OnDroidDeferSecond(
         /**
          * The ID of the droid
          */
-        public val id: String
+        public val id: String,
       )
 
       public data class OnDroidDeferThird(
         /**
          * What others call this droid
          */
-        public val name: String
+        public val name: String,
       )
 
       public data class OnDroidDeferFourth(
         /**
          * The ID of the droid
          */
-        public val id: String
+        public val id: String,
       )
     }
   }

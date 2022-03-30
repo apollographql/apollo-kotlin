@@ -45,7 +45,7 @@ public object SpreadSingleWithDefer_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: SpreadSingleWithDefer.Data
+      `value`: SpreadSingleWithDefer.Data,
     ): Unit {
       writer.name("hero")
       Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
@@ -86,7 +86,7 @@ public object SpreadSingleWithDefer_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: SpreadSingleWithDefer.Data.Hero
+        `value`: SpreadSingleWithDefer.Data.Hero,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)

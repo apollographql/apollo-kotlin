@@ -35,9 +35,7 @@ public class InlineSingleWithDefer() : Query<InlineSingleWithDefer.Data> {
     // This operation doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<Data> {
-    return InlineSingleWithDefer_ResponseAdapter.Data.obj()
-  }
+  public override fun adapter(): Adapter<Data> = InlineSingleWithDefer_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
@@ -47,7 +45,7 @@ public class InlineSingleWithDefer() : Query<InlineSingleWithDefer.Data> {
   .build()
 
   public data class Data(
-    public val hero: Hero?
+    public val hero: Hero?,
   ) : Query.Data
 
   public data class Hero(
@@ -55,7 +53,7 @@ public class InlineSingleWithDefer() : Query<InlineSingleWithDefer.Data> {
     /**
      * Synthetic field for inline fragment on Droid
      */
-    public val asDroid: AsDroid?
+    public val asDroid: AsDroid?,
   )
 
   public data class AsDroid(
@@ -63,7 +61,7 @@ public class InlineSingleWithDefer() : Query<InlineSingleWithDefer.Data> {
     /**
      * What others call this droid
      */
-    public val name: String
+    public val name: String,
   )
 
   public companion object {

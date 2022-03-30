@@ -46,7 +46,7 @@ public object SpreadMultipleWithDefer_ResponseAdapter {
     public override fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
-      `value`: SpreadMultipleWithDefer.Data
+      `value`: SpreadMultipleWithDefer.Data,
     ): Unit {
       writer.name("hero")
       Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
@@ -87,7 +87,7 @@ public object SpreadMultipleWithDefer_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: SpreadMultipleWithDefer.Data.Hero
+        `value`: SpreadMultipleWithDefer.Data.Hero,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
