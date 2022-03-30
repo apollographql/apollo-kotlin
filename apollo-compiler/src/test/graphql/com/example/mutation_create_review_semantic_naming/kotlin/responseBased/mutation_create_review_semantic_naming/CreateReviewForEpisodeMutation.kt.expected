@@ -35,9 +35,8 @@ public data class CreateReviewForEpisodeMutation(
     CreateReviewForEpisodeMutation_VariablesAdapter.toJson(writer, customScalarAdapters, this)
   }
 
-  public override fun adapter(): Adapter<Data> {
-    return CreateReviewForEpisodeMutation_ResponseAdapter.Data.obj()
-  }
+  public override fun adapter(): Adapter<Data> =
+      CreateReviewForEpisodeMutation_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

@@ -37,9 +37,7 @@ public class HeroDetails() : Query<HeroDetails.Data> {
     // This operation doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<Data> {
-    return HeroDetails_ResponseAdapter.Data.obj()
-  }
+  public override fun adapter(): Adapter<Data> = HeroDetails_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

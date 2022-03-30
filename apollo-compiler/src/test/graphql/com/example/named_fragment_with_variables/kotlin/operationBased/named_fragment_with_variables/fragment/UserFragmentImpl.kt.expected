@@ -25,9 +25,8 @@ public data class UserFragmentImpl(
     UserFragmentImpl_VariablesAdapter.toJson(writer, customScalarAdapters, this)
   }
 
-  public override fun adapter(): Adapter<UserFragment> {
-    return UserFragmentImpl_ResponseAdapter.UserFragment.obj()
-  }
+  public override fun adapter(): Adapter<UserFragment> =
+      UserFragmentImpl_ResponseAdapter.UserFragment.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

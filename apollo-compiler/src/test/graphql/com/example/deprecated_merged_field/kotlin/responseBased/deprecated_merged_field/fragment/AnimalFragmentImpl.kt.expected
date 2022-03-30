@@ -30,9 +30,7 @@ public class AnimalFragmentImpl() : Fragment<AnimalFragmentImpl.Data> {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<Data> {
-    return AnimalFragmentImpl_ResponseAdapter.Data.obj()
-  }
+  public override fun adapter(): Adapter<Data> = AnimalFragmentImpl_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

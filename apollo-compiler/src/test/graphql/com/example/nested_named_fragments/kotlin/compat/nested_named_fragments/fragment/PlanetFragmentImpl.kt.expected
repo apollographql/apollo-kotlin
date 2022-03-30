@@ -28,9 +28,8 @@ public class PlanetFragmentImpl() : Fragment<PlanetFragment> {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<PlanetFragment> {
-    return PlanetFragmentImpl_ResponseAdapter.PlanetFragment.obj()
-  }
+  public override fun adapter(): Adapter<PlanetFragment> =
+      PlanetFragmentImpl_ResponseAdapter.PlanetFragment.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

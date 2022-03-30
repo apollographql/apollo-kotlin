@@ -67,7 +67,7 @@ public class AnimalFragmentImpl implements Fragment<AnimalFragment> {
 
   @Override
   public Adapter<AnimalFragment> adapter() {
-    return new ObjectAdapter<AnimalFragment>(AnimalFragmentImpl_ResponseAdapter.AnimalFragment.INSTANCE, false);
+    return new ObjectAdapter<AnimalFragment>(AnimalFragmentImpl_ResponseAdapter.AnimalFragment.INSTANCE, true);
   }
 
   @Override

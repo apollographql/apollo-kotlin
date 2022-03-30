@@ -28,9 +28,8 @@ public class DogFragmentImpl() : Fragment<DogFragment> {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<DogFragment> {
-    return DogFragmentImpl_ResponseAdapter.DogFragment.obj()
-  }
+  public override fun adapter(): Adapter<DogFragment> =
+      DogFragmentImpl_ResponseAdapter.DogFragment.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

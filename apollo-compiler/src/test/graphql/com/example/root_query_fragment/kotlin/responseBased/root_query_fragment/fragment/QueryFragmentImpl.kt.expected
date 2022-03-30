@@ -29,9 +29,7 @@ public class QueryFragmentImpl() : Fragment<QueryFragmentImpl.Data> {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<Data> {
-    return QueryFragmentImpl_ResponseAdapter.Data.obj()
-  }
+  public override fun adapter(): Adapter<Data> = QueryFragmentImpl_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

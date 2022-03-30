@@ -67,7 +67,7 @@ public class IFragmentImpl implements Fragment<IFragment> {
 
   @Override
   public Adapter<IFragment> adapter() {
-    return new ObjectAdapter<IFragment>(IFragmentImpl_ResponseAdapter.IFragment.INSTANCE, false);
+    return new ObjectAdapter<IFragment>(IFragmentImpl_ResponseAdapter.IFragment.INSTANCE, true);
   }
 
   @Override

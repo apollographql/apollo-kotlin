@@ -36,9 +36,7 @@ public class GetPage() : Query<GetPage.Data> {
     // This operation doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<Data> {
-    return GetPage_ResponseAdapter.Data.obj()
-  }
+  public override fun adapter(): Adapter<Data> = GetPage_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
