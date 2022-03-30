@@ -110,7 +110,7 @@ private constructor(
       throw wrapThrowableIfNeeded(e)
     }
 
-    return response
+    return response.newBuilder().isLast(true).build()
   }
 
   @OptIn(ApolloInternal::class)
@@ -129,11 +129,12 @@ private constructor(
         val mustClone = platform() == Platform.Native
         val merged = jsonMerger.merge(part).let { if (mustClone) it.deepCopy() else it }
         val deferredFragmentIds = jsonMerger.mergedFragmentIds.let { if (mustClone) it.toSet() else it }
+        val isLast = !jsonMerger.hasNext
         worker.doWork {
           operation.parseJsonResponse(
               jsonReader = merged.jsonReader(),
               customScalarAdapters = customScalarAdapters.withDeferredFragmentIds(deferredFragmentIds)
-          )
+          ).newBuilder().isLast(isLast).build()
         }
       } catch (e: Exception) {
         throw wrapThrowableIfNeeded(e)
@@ -156,7 +157,6 @@ private constructor(
               headers = httpResponse.headers
           )
       )
-      .isLast(true)
       .build()
 
   private fun CustomScalarAdapters.withDeferredFragmentIds(deferredFragmentIds: Set<DeferredFragmentIdentifier>) = newBuilder()
