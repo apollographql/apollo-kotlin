@@ -59,7 +59,6 @@ Similar to queries, mutations are represented by instances of generated classes,
 Constructor arguments are used to define mutation variables. You pass a mutation object
 to `ApolloClient#mutation(mutation)` to send the mutation to the server, execute it, and receive typed results:
 
-<MultiCodeBlock>
 
 ```kotlin
 val upvotePostMutation = UpvotePostMutation(votes = 3)
@@ -70,8 +69,6 @@ val response = try {
   // handle error
 }
 ```
-
-</MultiCodeBlock>
 
 ## Using fragments in mutation results
 
@@ -98,8 +95,6 @@ mutation CreateReviewForEpisode($episode: Episode!, $review: ReviewInput!) {
 }
 ```
 
-<MultiCodeBlock>
-
 ```kotlin
 val reviewInput = ReviewInput(stars = 5, commentary = "This is a great movie!")
 
@@ -109,5 +104,3 @@ try {
   // handle exception
 }
 ```
-
-</MultiCodeBlock>
