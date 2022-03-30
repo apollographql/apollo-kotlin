@@ -124,7 +124,7 @@ internal class ExecutableValidationScope(
     return name.firstOrNull { it.isLetter() }?.isUpperCase() ?: true
   }
 
-  private fun GQLField.validate(typeDefinitionInScope: GQLTypeDefinition) {
+  private fun GQLField.validate(typeDefinitionInScope: GQLTypeDefinition, path: String) {
     val fieldDefinition = definitionFromScope(schema, typeDefinitionInScope)
     if (fieldDefinition == null) {
       registerIssue(
@@ -180,7 +180,8 @@ internal class ExecutableValidationScope(
         )
         return
       }
-      selectionSet.validate(leafTypeDefinition)
+      val fieldPath = if (path.isEmpty()) name else "$path.$name"
+      selectionSet.validate(leafTypeDefinition, fieldPath)
     } else {
       if (selectionSet != null) {
         registerIssue(
@@ -197,7 +198,7 @@ internal class ExecutableValidationScope(
   }
 
 
-  private fun GQLInlineFragment.validate(typeDefinitionInScope: GQLTypeDefinition) {
+  private fun GQLInlineFragment.validate(typeDefinitionInScope: GQLTypeDefinition, path: String) {
     val inlineFragmentTypeDefinition = typeDefinitions[typeCondition.name]
     if (inlineFragmentTypeDefinition == null) {
       registerIssue(
@@ -215,14 +216,15 @@ internal class ExecutableValidationScope(
       return
     }
 
-    selectionSet.validate(inlineFragmentTypeDefinition)
+    selectionSet.validate(inlineFragmentTypeDefinition, path)
 
     directives.forEach {
       validateDirective(it, this)
+      if (it.name == "defer" && !path.startsWith('-')) it.validateDeferDirective(path)
     }
   }
 
-  private fun GQLFragmentSpread.validate(typeDefinitionInScope: GQLTypeDefinition) {
+  private fun GQLFragmentSpread.validate(typeDefinitionInScope: GQLTypeDefinition, path: String) {
     val fragmentDefinition = fragmentDefinitions[name]
     if (fragmentDefinition == null) {
       registerIssue(
@@ -249,10 +251,11 @@ internal class ExecutableValidationScope(
       return
     }
 
-    fragmentDefinition.selectionSet.validate(fragmentTypeDefinition)
+    fragmentDefinition.selectionSet.validate(fragmentTypeDefinition, path)
 
     directives.forEach {
       validateDirective(it, this)
+      if (it.name == "defer" && !path.startsWith('-')) it.validateDeferDirective(path)
     }
   }
 
@@ -278,9 +281,11 @@ internal class ExecutableValidationScope(
      * Validate the fragment outside the context of an operation
      * This can be helpful to show warnings in the IDE while editing fragments of a parent module and the fragment may appear unused
      * This will not catch field merging conflicts and missing variables so ultimately, validation
-     * against all fragments is required
+     * against all fragments is required.
+     * Use "-" for the path as a signal to skip @defer specific validation, which is only relevant when considering the fragment in the
+     * context of an operation.
      */
-    selectionSet.validate(fragmentRootTypeDefinition)
+    selectionSet.validate(fragmentRootTypeDefinition, path = "-")
 
     fieldsInSetCanMerge(selectionSet.collectFields(fragmentRootTypeDefinition.name))
   }
@@ -315,8 +320,6 @@ internal class ExecutableValidationScope(
         ))
       }
     }
-
-    selectionSet.validateDeferDirectives()
   }
 
   /**
@@ -360,28 +363,7 @@ internal class ExecutableValidationScope(
    * }
    * ```
    */
-  private fun GQLSelectionSet.validateDeferDirectives(path: String = "") {
-    selections.forEach { selection ->
-      when (selection) {
-        is GQLField -> {
-          val fieldPath = if (path.isEmpty()) selection.name else "$path.${selection.name}"
-          selection.selectionSet?.validateDeferDirectives(fieldPath)
-        }
-        is GQLInlineFragment -> {
-          val deferDirective = selection.directives.firstOrNull { it.name == "defer" }
-          deferDirective?.validateDeferDirective(path, deferDirective.sourceLocation)
-          selection.selectionSet.validateDeferDirectives(path)
-        }
-        is GQLFragmentSpread -> {
-          val deferDirective = selection.directives.firstOrNull { it.name == "defer" }
-          deferDirective?.validateDeferDirective(path, deferDirective.sourceLocation)
-          fragmentDefinitions[selection.name]!!.selectionSet.validateDeferDirectives(path)
-        }
-      }
-    }
-  }
-
-  private fun GQLDirective.validateDeferDirective(path: String, sourceLocation: SourceLocation) {
+  private fun GQLDirective.validateDeferDirective(path: String) {
     val label = arguments?.arguments?.firstOrNull { it.name == "label" }?.value
     if (label is GQLVariableValue) {
       registerIssue(
@@ -429,7 +411,7 @@ internal class ExecutableValidationScope(
     deferDirectivePathAndLabels[pathAndLabel] = sourceLocation
   }
 
-  private fun GQLSelectionSet.validate(typeDefinitionInScope: GQLTypeDefinition) {
+  private fun GQLSelectionSet.validate(typeDefinitionInScope: GQLTypeDefinition, path: String = "") {
     if (selections.isEmpty()) {
       // This will never happen from parsing documents but is kept for reference and to catch bad manual document modifications
       registerIssue(
@@ -441,9 +423,9 @@ internal class ExecutableValidationScope(
 
     selections.forEach {
       when (it) {
-        is GQLField -> it.validate(typeDefinitionInScope)
-        is GQLInlineFragment -> it.validate(typeDefinitionInScope)
-        is GQLFragmentSpread -> it.validate(typeDefinitionInScope)
+        is GQLField -> it.validate(typeDefinitionInScope, path)
+        is GQLInlineFragment -> it.validate(typeDefinitionInScope, path)
+        is GQLFragmentSpread -> it.validate(typeDefinitionInScope, path)
       }
     }
   }
