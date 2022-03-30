@@ -4,7 +4,9 @@ class AdapterContext private constructor(
     private val variables: Executable.Variables?,
     private val mergedDeferredFragmentIds: Set<DeferredFragmentIdentifier>?,
 ) {
-  fun newBuilder() = Builder().variables(variables)
+  fun newBuilder() = Builder()
+      .variables(variables)
+      .mergedDeferredFragmentIds(mergedDeferredFragmentIds)
 
   fun variables(): Set<String> {
     if (variables == null) {
@@ -16,24 +18,24 @@ class AdapterContext private constructor(
     }.keys
   }
 
-  fun hasDeferredFragment(path: String, label: String?): Boolean {
+  fun hasDeferredFragment(path: List<Any>, label: String?): Boolean {
     return mergedDeferredFragmentIds?.contains(DeferredFragmentIdentifier(path, label)) == true
   }
 
   class Builder {
     private var variables: Executable.Variables? = null
-    private var deferredFragmentIdentifiers: Set<DeferredFragmentIdentifier>? = null
+    private var mergedDeferredFragmentIds: Set<DeferredFragmentIdentifier>? = null
 
     fun variables(variables: Executable.Variables?) = apply {
       this.variables = variables
     }
 
-    fun deferredFragmentLabels(deferredFragmentLabels: Set<DeferredFragmentIdentifier>) = apply {
-      this.deferredFragmentIdentifiers = deferredFragmentLabels
+    fun mergedDeferredFragmentIds(mergedDeferredFragmentIds: Set<DeferredFragmentIdentifier>?) = apply {
+      this.mergedDeferredFragmentIds = mergedDeferredFragmentIds
     }
 
     fun build(): AdapterContext {
-      return AdapterContext(variables = variables, mergedDeferredFragmentIds = deferredFragmentIdentifiers)
+      return AdapterContext(variables = variables, mergedDeferredFragmentIds = mergedDeferredFragmentIds)
     }
   }
 }

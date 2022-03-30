@@ -11,7 +11,7 @@ fun BufferedSource.jsonReader(): JsonReader {
 }
 
 fun Map<String, Any?>.jsonReader(): JsonReader {
-  return MapJsonReader(this)
+  return MapJsonReader(root = this)
 }
 
 /**

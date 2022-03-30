@@ -1,18 +1,61 @@
 plugins {
-  id("org.jetbrains.kotlin.jvm")
+  id("org.jetbrains.kotlin.multiplatform")
   id("com.apollographql.apollo3")
 }
 
-dependencies {
-  implementation("com.apollographql.apollo3:apollo-runtime")
+configureMppTestsDefaults()
 
-  testImplementation("com.apollographql.apollo3:apollo-mockserver")
-  testImplementation("com.apollographql.apollo3:apollo-testing-support")
-  testImplementation(groovy.util.Eval.x(project, "x.dep.kotlinJunit"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
+kotlin {
+  /**
+   * Extra target to test the java codegen
+   */
+  jvm("javaCodegen") {
+    withJava()
+  }
+
+  sourceSets {
+    val commonMain by getting {
+      dependencies {
+        implementation("com.apollographql.apollo3:apollo-runtime")
+      }
+    }
+
+    val commonTest by getting {
+      dependencies {
+        implementation("com.apollographql.apollo3:apollo-mockserver")
+        implementation("com.apollographql.apollo3:apollo-testing-support")
+        implementation(groovy.util.Eval.x(project, "x.dep.kotlinJunit"))
+      }
+    }
+  }
 }
 
 apollo {
-  packageName.set("defer")
-  generateTestBuilders.set(true)
+  service("kotlin") {
+    packageName.set("defer")
+    generateKotlinModels.set(true)
+    configureConnection(true)
+  }
+  service("java") {
+    packageName.set("defer")
+    generateKotlinModels.set(false)
+    configureConnection(false)
+  }
+}
+
+fun com.apollographql.apollo3.gradle.api.Service.configureConnection(generateKotlinModels: Boolean) {
+  outputDirConnection {
+    if (System.getProperty("idea.sync.active") == null) {
+      if (generateKotlinModels) {
+        connectToKotlinSourceSet("jvmTest")
+        connectToKotlinSourceSet("jsTest")
+        connectToKotlinSourceSet("appleTest")
+      } else {
+        connectToJavaSourceSet("main")
+      }
+    } else {
+      // For autocomplete to work
+      connectToKotlinSourceSet("commonTest")
+    }
+  }
 }

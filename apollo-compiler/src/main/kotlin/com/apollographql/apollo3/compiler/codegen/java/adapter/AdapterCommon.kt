@@ -83,7 +83,7 @@ internal fun readFromResponseCodeBlock(
   }.joinToCode(separator = "\n", suffix = "\n")
 
   val path = if (syntheticProperties.any { it.condition.firstElementOfType(BLabel::class) != null }) {
-    CodeBlock.of("String $__path = $reader.${Identifier.getPath}();")
+    CodeBlock.of("List<Object> $__path = $reader.${Identifier.getPath}();")
   } else {
     CodeBlock.of("")
   }

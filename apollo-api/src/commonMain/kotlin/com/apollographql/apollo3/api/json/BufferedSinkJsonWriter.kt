@@ -66,9 +66,10 @@ class BufferedSinkJsonWriter @JvmOverloads constructor(
    * - Remove the leading "$."
    * - Remove square brackets in lists. This isn't great because it doesn't allow distinguishing lists from "0" keys but
    * this is how File Upload works: https://github.com/jaydenseric/graphql-multipart-request-spec
+   * - Remove any trailing "."
    */
   override val path: String
-    get() = JsonScope.getPath(stackSize, scopes, pathNames, pathIndices)
+    get() = JsonScope.getPath(stackSize, scopes, pathNames, pathIndices).joinToString(".")
 
   init {
     pushScope(JsonScope.EMPTY_DOCUMENT)

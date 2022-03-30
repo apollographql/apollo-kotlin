@@ -1,8 +1,10 @@
 package com.apollographql.apollo3.network.http
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.DeferredFragmentIdentifier
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpHeader
@@ -14,20 +16,20 @@ import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloParseException
+import com.apollographql.apollo3.internal.DeferredJsonMerger
 import com.apollographql.apollo3.internal.NonMainWorker
+import com.apollographql.apollo3.internal.deepCopy
 import com.apollographql.apollo3.internal.isMultipart
 import com.apollographql.apollo3.internal.multipartBodyFlow
 import com.apollographql.apollo3.mpp.Platform
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.mpp.platform
 import com.apollographql.apollo3.network.NetworkTransport
+import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import okio.Buffer
-import okio.BufferedSource
 
 class HttpNetworkTransport
 private constructor(
@@ -78,58 +80,92 @@ private constructor(
 
       // When using @defer, the response contains multiple parts, using the multipart content type.
       // See https://github.com/graphql/graphql-over-http/blob/main/rfcs/IncrementalDelivery.md
-      val bodies: Flow<BufferedSource> = if (httpResponse.isMultipart) {
-        multipartBodyFlow(httpResponse)
+      if (httpResponse.isMultipart) {
+        emitAll(
+            multipleResponses(request.operation, customScalarAdapters, httpResponse)
+                .map { it.withHttpInfo(request.requestUuid, httpResponse, millisStart) }
+        )
       } else {
-        flowOf(httpResponse.body!!)
+        emit(
+            singleResponse(request.operation, customScalarAdapters, httpResponse)
+                .withHttpInfo(request.requestUuid, httpResponse, millisStart)
+        )
       }
-
-      emitAll(
-          bodies.map { body ->
-            // On native, body will be frozen in worker.doWork, but reading a BufferedSource is a mutating operation.
-            // So we read the bytes into a ByteString first, and create a new BufferedSource from it after freezing.
-            val bodyByteString = if (platform() == Platform.Native) body.readByteString() else null
-            // Do not capture request
-            val operation = request.operation
-            val response = try {
-              if (bodyByteString != null) {
-                // Native case, use bodyByteString
-                worker.doWork {
-                  operation.parseJsonResponse(
-                      jsonReader = Buffer().apply { write(bodyByteString) }.jsonReader(),
-                      customScalarAdapters = customScalarAdapters
-                  )
-                }
-              } else {
-                // Non-native case, use body
-                worker.doWork {
-                  operation.parseJsonResponse(
-                      jsonReader = body.jsonReader(),
-                      customScalarAdapters = customScalarAdapters
-                  )
-                }
-              }
-            } catch (e: Exception) {
-              throw wrapThrowableIfNeeded(e)
-            }
-
-            @Suppress("DEPRECATION")
-            response.newBuilder()
-                .requestUuid(request.requestUuid)
-                .addExecutionContext(
-                    HttpInfo(
-                        startMillis = millisStart,
-                        endMillis = currentTimeMillis(),
-                        statusCode = httpResponse.statusCode,
-                        headers = httpResponse.headers
-                    )
-                )
-                .isLast(true)
-                .build()
-          }
-      )
     }
   }
+
+  private suspend fun <D : Operation.Data> singleResponse(
+      operation: Operation<D>,
+      customScalarAdapters: CustomScalarAdapters,
+      httpResponse: HttpResponse,
+  ): ApolloResponse<D> {
+    val response = try {
+      worker.doWork {
+        operation.parseJsonResponse(
+            jsonReader = httpResponse.body!!.jsonReader(),
+            customScalarAdapters = customScalarAdapters
+        )
+      }
+    } catch (e: Exception) {
+      throw wrapThrowableIfNeeded(e)
+    }
+
+    return response
+  }
+
+  @OptIn(ApolloInternal::class)
+  private suspend fun <D : Operation.Data> multipleResponses(
+      operation: Operation<D>,
+      customScalarAdapters: CustomScalarAdapters,
+      httpResponse: HttpResponse,
+  ): Flow<ApolloResponse<D>> {
+    val jsonMerger = DeferredJsonMerger()
+    return multipartBodyFlow(httpResponse).map { part ->
+      try {
+        // On native, we cannot pass `jsonMerger._merge` to `worker.doWork` or it will become frozen making
+        // any subsequent payload merge throw.
+        // So we clone them before they are captured.
+        // XXX: revisit with the new memory model
+        val mustClone = platform() == Platform.Native
+        val merged = jsonMerger.merge(part).let { if (mustClone) it.deepCopy() else it }
+        val deferredFragmentIds = jsonMerger.mergedFragmentIds.let { if (mustClone) it.toSet() else it }
+        worker.doWork {
+          operation.parseJsonResponse(
+              jsonReader = merged.jsonReader(),
+              customScalarAdapters = customScalarAdapters.withDeferredFragmentIds(deferredFragmentIds)
+          )
+        }
+      } catch (e: Exception) {
+        throw wrapThrowableIfNeeded(e)
+      }
+    }
+  }
+
+  private fun <D : Operation.Data> ApolloResponse<D>.withHttpInfo(
+      requestUuid: Uuid,
+      httpResponse: HttpResponse,
+      millisStart: Long,
+  ) = newBuilder()
+      .requestUuid(requestUuid)
+      .addExecutionContext(
+          @Suppress("DEPRECATION")
+          HttpInfo(
+              startMillis = millisStart,
+              endMillis = currentTimeMillis(),
+              statusCode = httpResponse.statusCode,
+              headers = httpResponse.headers
+          )
+      )
+      .isLast(true)
+      .build()
+
+  private fun CustomScalarAdapters.withDeferredFragmentIds(deferredFragmentIds: Set<DeferredFragmentIdentifier>) = newBuilder()
+      .adapterContext(
+          adapterContext.newBuilder()
+              .mergedDeferredFragmentIds(deferredFragmentIds)
+              .build()
+      )
+      .build()
 
   inner class EngineInterceptor : HttpInterceptor {
     override suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse {
