@@ -37,9 +37,7 @@ internal data class CreateReviewForEpisode(
     CreateReviewForEpisode_VariablesAdapter.toJson(writer, customScalarAdapters, this)
   }
 
-  public override fun adapter(): Adapter<Data> {
-    return CreateReviewForEpisode_ResponseAdapter.Data.obj()
-  }
+  public override fun adapter(): Adapter<Data> = CreateReviewForEpisode_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

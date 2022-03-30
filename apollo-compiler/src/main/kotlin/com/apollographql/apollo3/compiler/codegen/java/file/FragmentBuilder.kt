@@ -68,7 +68,7 @@ class FragmentBuilder(
         .maybeAddDescription(description)
         .makeDataClassFromParameters(variables.map { it.toNamedType().toParameterSpec(context) })
         .addMethod(serializeVariablesMethodSpec())
-        .addMethod(adapterMethodSpec())
+        .addMethod(adapterMethodSpec(context.resolver, fragment.dataProperty))
         .addMethod(selectionsMethodSpec())
         // Fragments can have multiple data shapes
         .addTypes(dataTypeSpecs())
@@ -85,13 +85,6 @@ class FragmentBuilder(
       adapterClassName = context.resolver.resolveFragmentVariablesAdapter(name),
       emptyMessage = "This fragment doesn't have any variable",
   )
-
-  private fun IrNamedFragment.adapterMethodSpec(): MethodSpec {
-    return adapterMethodSpec(
-        adapterTypeName = context.resolver.resolveModelAdapter(dataModelGroup.baseModelId),
-        adaptedTypeName = context.resolver.resolveModel(dataModelGroup.baseModelId)
-    )
-  }
 
   private fun dataTypeSpecs(): List<TypeSpec> {
     return modelBuilders.map { it.build() }

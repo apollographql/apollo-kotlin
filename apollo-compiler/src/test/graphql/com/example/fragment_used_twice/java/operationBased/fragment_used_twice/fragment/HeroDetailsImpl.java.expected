@@ -67,7 +67,7 @@ public class HeroDetailsImpl implements Fragment<HeroDetails> {
 
   @Override
   public Adapter<HeroDetails> adapter() {
-    return new ObjectAdapter<HeroDetails>(HeroDetailsImpl_ResponseAdapter.HeroDetails.INSTANCE, false);
+    return new ObjectAdapter<HeroDetails>(HeroDetailsImpl_ResponseAdapter.HeroDetails.INSTANCE, true);
   }
 
   @Override

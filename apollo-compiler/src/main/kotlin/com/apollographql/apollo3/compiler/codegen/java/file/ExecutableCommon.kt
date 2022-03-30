@@ -9,10 +9,12 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
+import com.apollographql.apollo3.compiler.codegen.java.JavaResolver
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.adapter.singletonAdapterInitializer
+import com.apollographql.apollo3.compiler.ir.IrProperty
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.MethodSpec
@@ -22,7 +24,7 @@ import javax.lang.model.element.Modifier
 
 fun serializeVariablesMethodSpec(
     adapterClassName: TypeName?,
-    emptyMessage: String
+    emptyMessage: String,
 ): MethodSpec {
 
   val body = if (adapterClassName == null) {
@@ -41,20 +43,17 @@ fun serializeVariablesMethodSpec(
 }
 
 fun adapterMethodSpec(
-    adapterTypeName: TypeName,
-    adaptedTypeName: TypeName
+    resolver: JavaResolver,
+    property: IrProperty,
 ): MethodSpec {
+  val adaptedTypeName = resolver.resolveIrType(property.info.type)
   return MethodSpec.methodBuilder(Identifier.adapter)
       .addModifiers(Modifier.PUBLIC)
       .addAnnotation(JavaClassNames.Override)
       .returns(ParameterizedTypeName.get(JavaClassNames.Adapter, adaptedTypeName))
       .addCode(
           "return $L;\n",
-          singletonAdapterInitializer(
-              adapterTypeName,
-              adaptedTypeName,
-              false,
-          )
+          resolver.adapterInitializer(property.info.type, property.requiresBuffering)
       )
       .build()
 }

@@ -39,9 +39,7 @@ public class CatQuery() : Query<CatQuery.Data> {
     // This operation doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<Data> {
-    return CatQuery_ResponseAdapter.Data.obj()
-  }
+  public override fun adapter(): Adapter<Data> = CatQuery_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

@@ -137,7 +137,7 @@ public class GetUser implements Query<GetUser.Data> {
 
   @Override
   public Adapter<Data> adapter() {
-    return new ObjectAdapter<Data>(GetUser_ResponseAdapter.Data.INSTANCE, false);
+    return new ObjectAdapter<Data>(GetUser_ResponseAdapter.Data.INSTANCE, true);
   }
 
   @Override

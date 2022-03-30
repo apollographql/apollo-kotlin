@@ -37,9 +37,7 @@ public class AnimalQuery() : Query<AnimalQuery.Data> {
     // This operation doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<Data> {
-    return AnimalQuery_ResponseAdapter.Data.obj()
-  }
+  public override fun adapter(): Adapter<Data> = AnimalQuery_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

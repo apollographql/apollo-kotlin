@@ -28,9 +28,8 @@ public class PilotFragmentImpl() : Fragment<PilotFragment> {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<PilotFragment> {
-    return PilotFragmentImpl_ResponseAdapter.PilotFragment.obj()
-  }
+  public override fun adapter(): Adapter<PilotFragment> =
+      PilotFragmentImpl_ResponseAdapter.PilotFragment.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

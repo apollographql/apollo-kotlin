@@ -24,12 +24,13 @@ internal class ResponseBasedModelGroupBuilder(
       selections: List<GQLSelection>,
       rawTypeName: String,
       operationName: String,
-  ): IrModelGroup {
-    return fieldNodeBuilder.buildOperationData(
+  ): Pair<IrProperty, IrModelGroup> {
+    val field = fieldNodeBuilder.buildOperationData(
         selections,
         rawTypeName,
         operationName
-    ).toIrModelGroup()!!
+    )
+    return field.toIrProperty() to field.toIrModelGroup()!!
   }
 
   override fun buildFragmentInterface(
@@ -42,10 +43,11 @@ internal class ResponseBasedModelGroupBuilder(
 
   override fun buildFragmentData(
       fragmentName: String,
-  ): IrModelGroup {
-    return fieldNodeBuilder.buildFragmentData(
+  ): Pair<IrProperty, IrModelGroup> {
+    val field = fieldNodeBuilder.buildFragmentData(
         fragmentName
-    ).toIrModelGroup()!!
+    )
+    return field.toIrProperty() to field.toIrModelGroup()!!
   }
 }
 
@@ -122,7 +124,7 @@ private class FieldNodeBuilder(
     val info = IrFieldInfo(
         responseName = "data",
         description = null,
-        type = IrModelType(MODEL_UNKNOWN),
+        type = IrNonNullType(IrModelType(MODEL_UNKNOWN)),
         deprecationReason = null,
         gqlType = GQLNonNullType(type = GQLNamedType(name = rawTypeName)),
     )
@@ -169,7 +171,7 @@ private class FieldNodeBuilder(
     val info = IrFieldInfo(
         responseName = "data",
         description = null,
-        type = IrModelType(MODEL_UNKNOWN),
+        type = IrNonNullType(IrModelType(MODEL_UNKNOWN)),
         deprecationReason = null,
         gqlType = GQLNonNullType(type = fragment.typeCondition),
     )

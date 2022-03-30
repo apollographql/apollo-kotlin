@@ -32,9 +32,7 @@ public data class TestSubscription(
     TestSubscription_VariablesAdapter.toJson(writer, customScalarAdapters, this)
   }
 
-  public override fun adapter(): Adapter<Data> {
-    return TestSubscription_ResponseAdapter.Data.obj()
-  }
+  public override fun adapter(): Adapter<Data> = TestSubscription_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

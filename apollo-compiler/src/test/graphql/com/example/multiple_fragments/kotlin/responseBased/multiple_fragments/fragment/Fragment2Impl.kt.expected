@@ -29,9 +29,7 @@ public class Fragment2Impl() : Fragment<Fragment2Impl.Data> {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<Data> {
-    return Fragment2Impl_ResponseAdapter.Data.obj()
-  }
+  public override fun adapter(): Adapter<Data> = Fragment2Impl_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

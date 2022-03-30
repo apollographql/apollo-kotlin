@@ -86,7 +86,7 @@ class OperationBuilder(
         .addMethod(queryDocumentMethodSpec(generateQueryDocument))
         .addMethod(nameMethodSpec())
         .addMethod(serializeVariablesMethodSpec())
-        .addMethod(adapterMethodSpec())
+        .addMethod(adapterMethodSpec(context.resolver, operation.dataProperty))
         .addMethod(rootFieldMethodSpec())
         .addTypes(dataTypeSpecs())
         .addField(
@@ -128,13 +128,6 @@ class OperationBuilder(
       adapterClassName = context.resolver.resolveOperationVariablesAdapter(operation.name),
       emptyMessage = "This operation doesn't have any variable"
   )
-
-  private fun adapterMethodSpec(): MethodSpec {
-    return adapterMethodSpec(
-        adapterTypeName = context.resolver.resolveModelAdapter(operation.dataModelGroup.baseModelId),
-        adaptedTypeName = context.resolver.resolveModel(operation.dataModelGroup.baseModelId)
-    )
-  }
 
   private fun dataTypeSpecs(): List<TypeSpec> {
     return modelBuilders.map {

@@ -39,9 +39,8 @@ public data class
         customScalarAdapters, this)
   }
 
-  public override fun adapter(): Adapter<Data> {
-    return TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_ResponseAdapter.Data.obj()
-  }
+  public override fun adapter(): Adapter<Data> =
+      TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

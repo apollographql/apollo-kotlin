@@ -28,9 +28,8 @@ public class StarshipFragmentImpl() : Fragment<StarshipFragment> {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<StarshipFragment> {
-    return StarshipFragmentImpl_ResponseAdapter.StarshipFragment.obj()
-  }
+  public override fun adapter(): Adapter<StarshipFragment> =
+      StarshipFragmentImpl_ResponseAdapter.StarshipFragment.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

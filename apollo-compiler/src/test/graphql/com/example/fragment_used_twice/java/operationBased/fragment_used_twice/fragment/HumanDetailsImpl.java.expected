@@ -67,7 +67,7 @@ public class HumanDetailsImpl implements Fragment<HumanDetails> {
 
   @Override
   public Adapter<HumanDetails> adapter() {
-    return new ObjectAdapter<HumanDetails>(HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE, false);
+    return new ObjectAdapter<HumanDetails>(HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE, true);
   }
 
   @Override

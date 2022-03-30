@@ -32,9 +32,7 @@ public data class LoginBarber(
     LoginBarber_VariablesAdapter.toJson(writer, customScalarAdapters, this)
   }
 
-  public override fun adapter(): Adapter<Data> {
-    return LoginBarber_ResponseAdapter.Data.obj()
-  }
+  public override fun adapter(): Adapter<Data> = LoginBarber_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

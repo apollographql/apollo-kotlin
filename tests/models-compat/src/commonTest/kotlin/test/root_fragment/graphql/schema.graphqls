@@ -1,0 +1,7 @@
+type Query {
+  searchSomething: Search!
+}
+
+type Search {
+  name: String!
+}

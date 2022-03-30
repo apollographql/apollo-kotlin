@@ -28,9 +28,8 @@ public class CatFragmentImpl() : Fragment<CatFragment> {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<CatFragment> {
-    return CatFragmentImpl_ResponseAdapter.CatFragment.obj()
-  }
+  public override fun adapter(): Adapter<CatFragment> =
+      CatFragmentImpl_ResponseAdapter.CatFragment.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

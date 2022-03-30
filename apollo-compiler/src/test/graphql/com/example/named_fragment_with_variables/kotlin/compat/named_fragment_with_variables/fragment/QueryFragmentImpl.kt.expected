@@ -29,9 +29,8 @@ public data class QueryFragmentImpl(
     QueryFragmentImpl_VariablesAdapter.toJson(writer, customScalarAdapters, this)
   }
 
-  public override fun adapter(): Adapter<QueryFragment> {
-    return QueryFragmentImpl_ResponseAdapter.QueryFragment.obj()
-  }
+  public override fun adapter(): Adapter<QueryFragment> =
+      QueryFragmentImpl_ResponseAdapter.QueryFragment.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

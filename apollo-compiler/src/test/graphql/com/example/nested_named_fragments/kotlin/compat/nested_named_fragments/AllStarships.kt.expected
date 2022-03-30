@@ -38,9 +38,7 @@ public class AllStarships() : Query<AllStarships.Data> {
     // This operation doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<Data> {
-    return AllStarships_ResponseAdapter.Data.obj()
-  }
+  public override fun adapter(): Adapter<Data> = AllStarships_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

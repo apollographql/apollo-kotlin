@@ -28,9 +28,8 @@ public class HeroFragmentImpl() : Fragment<HeroFragment> {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<HeroFragment> {
-    return HeroFragmentImpl_ResponseAdapter.HeroFragment.obj()
-  }
+  public override fun adapter(): Adapter<HeroFragment> =
+      HeroFragmentImpl_ResponseAdapter.HeroFragment.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

@@ -21,6 +21,7 @@ import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.apollographql.apollo3.compiler.ir.IrOperationType
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
@@ -84,7 +85,7 @@ class OperationBuilder(
         .addFunction(queryDocumentFunSpec(generateQueryDocument))
         .addFunction(nameFunSpec())
         .addFunction(serializeVariablesFunSpec())
-        .addFunction(adapterFunSpec())
+        .addFunction(adapterFunSpec(context.resolver, operation.dataProperty))
         .addFunction(rootFieldFunSpec())
         .addTypes(dataTypeSpecs())
         .addType(companionTypeSpec())
@@ -96,13 +97,6 @@ class OperationBuilder(
       adapterClassName = context.resolver.resolveOperationVariablesAdapter(operation.name),
       emptyMessage = "This operation doesn't have any variable"
   )
-
-  private fun adapterFunSpec(): FunSpec {
-    return adapterFunSpec(
-        adapterTypeName = context.resolver.resolveModelAdapter(operation.dataModelGroup.baseModelId),
-        adaptedTypeName = context.resolver.resolveModel(operation.dataModelGroup.baseModelId)
-    )
-  }
 
   private fun dataTypeSpecs(): List<TypeSpec> {
     return modelBuilders.map {
