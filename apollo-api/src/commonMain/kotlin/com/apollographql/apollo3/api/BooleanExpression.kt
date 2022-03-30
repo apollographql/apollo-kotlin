@@ -126,15 +126,18 @@ fun BooleanExpression<BTerm>.evaluate(variables: Set<String>, typename: String?)
   }
 }
 
-fun BooleanExpression<BTerm>.evaluate(variables: Set<String>, typename: String?, adapterContext: AdapterContext, path: List<Any>?): Boolean {
+fun BooleanExpression<BTerm>.evaluate(
+    variables: Set<String>,
+    typename: String?,
+    adapterContext: AdapterContext,
+    path: List<Any>?,
+): Boolean {
+  // Remove "data" from the path
+  val croppedPath = path?.drop(1)
   return evaluate {
     when (it) {
       is BVariable -> variables.contains(it.name)
-      is BLabel -> {
-        // Remove "data" from the path
-        val croppedPath = path!!.drop(1)
-        adapterContext.hasDeferredFragment(croppedPath, it.label)
-      }
+      is BLabel -> adapterContext.hasDeferredFragment(croppedPath!!, it.label)
       is BPossibleTypes -> it.possibleTypes.contains(typename)
     }
   }
