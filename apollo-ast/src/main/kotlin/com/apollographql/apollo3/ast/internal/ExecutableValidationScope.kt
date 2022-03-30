@@ -316,7 +316,6 @@ internal class ExecutableValidationScope(
       }
     }
 
-    if (issues.isNotEmpty()) return
     selectionSet.validateDeferDirectives()
   }
 
@@ -370,35 +369,33 @@ internal class ExecutableValidationScope(
         }
         is GQLInlineFragment -> {
           val deferDirective = selection.directives.firstOrNull { it.name == "defer" }
-          if (deferDirective != null && deferDirective.validateDeferDirective(path, deferDirective.sourceLocation)) return
+          deferDirective?.validateDeferDirective(path, deferDirective.sourceLocation)
           selection.selectionSet.validateDeferDirectives(path)
         }
         is GQLFragmentSpread -> {
           val deferDirective = selection.directives.firstOrNull { it.name == "defer" }
-          if (deferDirective != null && deferDirective.validateDeferDirective(path, deferDirective.sourceLocation)) return
+          deferDirective?.validateDeferDirective(path, deferDirective.sourceLocation)
           fragmentDefinitions[selection.name]!!.selectionSet.validateDeferDirectives(path)
         }
       }
     }
   }
 
-  /**
-   * @return true if an issue was found, false otherwise
-   */
-  private fun GQLDirective.validateDeferDirective(path: String, sourceLocation: SourceLocation): Boolean {
+  private fun GQLDirective.validateDeferDirective(path: String, sourceLocation: SourceLocation) {
     val label = arguments?.arguments?.firstOrNull { it.name == "label" }?.value
     if (label is GQLVariableValue) {
       registerIssue(
           message = "@defer label argument must not be a variable",
           sourceLocation = sourceLocation
       )
-      return true
+      return
     }
 
     var labelStringValue = ""
     if (label != null) {
-      // label is guaranteed to be a GQLStringValue here thanks to prior validation
-      labelStringValue = (label as GQLStringValue).value
+      // If label is not a GQLStringValue, prior validation will have issued an error already, so we can ignore this one
+      if (label !is GQLStringValue) return
+      labelStringValue = label.value
 
       // We use the label in part of the synthetic field's name in the generated model, so it needs to be a valid Kotlin/Java identifier
       if (!labelStringValue.matches(Regex("[a-zA-Z0-9_]+"))) {
@@ -406,7 +403,6 @@ internal class ExecutableValidationScope(
             message = "@defer label '$labelStringValue' must only contain letters, numbers, or underscores",
             sourceLocation = sourceLocation
         )
-        return true
       }
 
       if (labelStringValue in deferDirectiveLabels) {
@@ -415,7 +411,7 @@ internal class ExecutableValidationScope(
                 "Same label found in ${deferDirectiveLabels[labelStringValue]!!.pretty()}",
             sourceLocation = sourceLocation
         )
-        return true
+        return
       }
       deferDirectiveLabels[labelStringValue] = sourceLocation
     }
@@ -428,11 +424,9 @@ internal class ExecutableValidationScope(
               "Set a unique label to distinguish them.",
           sourceLocation = sourceLocation
       )
-      return true
+      return
     }
     deferDirectivePathAndLabels[pathAndLabel] = sourceLocation
-
-    return false
   }
 
   private fun GQLSelectionSet.validate(typeDefinitionInScope: GQLTypeDefinition) {
