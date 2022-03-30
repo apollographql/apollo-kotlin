@@ -77,6 +77,7 @@ data class IrOperation(
     val sourceWithFragments: String,
     val filePath: String,
     val responseBasedDataModelGroup: IrModelGroup?,
+    val dataProperty: IrProperty,
     val dataModelGroup: IrModelGroup,
 )
 
@@ -92,6 +93,7 @@ data class IrNamedFragment(
     val typeCondition: String,
     val selections: List<GQLSelection>,
     val interfaceModelGroup: IrModelGroup?,
+    val dataProperty: IrProperty,
     val dataModelGroup: IrModelGroup,
 )
 

@@ -298,7 +298,7 @@ internal class IrBuilder(
       allFragmentDefinitions[fragmentName]!!.formatToString()
     }).trimEnd('\n')
 
-    val dataModelGroup = builder.buildOperationData(
+    val (dataProperty, dataModelGroup) = builder.buildOperationData(
         selections = selectionSet.selections,
         rawTypeName = typeDefinition.name,
         operationName = name!!
@@ -310,7 +310,7 @@ internal class IrBuilder(
           selections = selectionSet.selections,
           rawTypeName = typeDefinition.name,
           operationName = name!!
-      )
+      ).second
       else -> null
     }
 
@@ -323,6 +323,7 @@ internal class IrBuilder(
         selections = selectionSet.selections,
         sourceWithFragments = sourceWithFragments,
         filePath = sourceLocation.filePath!!,
+        dataProperty = dataProperty,
         dataModelGroup = dataModelGroup,
         responseBasedDataModelGroup = responseBasedModelGroup
     )
@@ -344,7 +345,7 @@ internal class IrBuilder(
         fragmentName = name
     )
 
-    val dataModelGroup = builder.buildFragmentData(
+    val (dataProperty, dataModelGroup) = builder.buildFragmentData(
         fragmentName = name
     )
 
@@ -356,6 +357,7 @@ internal class IrBuilder(
         variables = variableDefinitions.map { it.toIr() },
         selections = selectionSet.selections,
         interfaceModelGroup = interfaceModelGroup,
+        dataProperty = dataProperty,
         dataModelGroup = dataModelGroup,
     )
   }

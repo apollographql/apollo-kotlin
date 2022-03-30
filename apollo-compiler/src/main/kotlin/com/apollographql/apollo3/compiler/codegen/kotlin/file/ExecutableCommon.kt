@@ -9,9 +9,11 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinResolver
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.obj
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.patchKotlinNativeOptionalArrayProperties
+import com.apollographql.apollo3.compiler.ir.IrProperty
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -44,13 +46,20 @@ fun serializeVariablesFunSpec(
 }
 
 fun adapterFunSpec(
-    adapterTypeName: TypeName,
-    adaptedTypeName: TypeName,
+    resolver: KotlinResolver,
+    property: IrProperty,
 ): FunSpec {
+  val type = property.info.type
+
   return FunSpec.builder("adapter")
       .addModifiers(KModifier.OVERRIDE)
-      .returns(KotlinSymbols.Adapter.parameterizedBy(adaptedTypeName))
-      .addCode(CodeBlock.of("return·%T", adapterTypeName).obj(false))
+      .returns(KotlinSymbols.Adapter.parameterizedBy(resolver.resolveIrType(type)))
+      .addCode(
+          CodeBlock.of(
+              "return·%L",
+              resolver.adapterInitializer(type, property.requiresBuffering)
+          )
+      )
       .build()
 }
 

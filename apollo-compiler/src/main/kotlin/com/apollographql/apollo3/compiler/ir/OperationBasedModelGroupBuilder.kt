@@ -45,7 +45,7 @@ internal class OperationBasedModelGroupBuilder(
     return name
   }
 
-  override fun buildOperationData(selections: List<GQLSelection>, rawTypeName: String, operationName: String): IrModelGroup {
+  override fun buildOperationData(selections: List<GQLSelection>, rawTypeName: String, operationName: String): Pair<IrProperty, IrModelGroup> {
     val info = IrFieldInfo(
         responseName = "data",
         description = null,
@@ -60,21 +60,23 @@ internal class OperationBasedModelGroupBuilder(
       selections
     }
     val usedNames = mutableSetOf<String>()
-    return buildField(
+    val field = buildField(
         path = "${MODEL_OPERATION_DATA}.$operationName",
         info = info,
         selections = mergedSelections.map { SelectionWithParent(it, rawTypeName) },
         condition = BooleanExpression.True,
         usedNames = usedNames,
         parentTypeConditions = listOf(rawTypeName),
-    ).toModelGroup()!!
+    )
+
+    return field.toProperty() to field.toModelGroup()!!
   }
 
   override fun buildFragmentInterface(fragmentName: String): IrModelGroup? {
     return null
   }
 
-  override fun buildFragmentData(fragmentName: String): IrModelGroup {
+  override fun buildFragmentData(fragmentName: String): Pair<IrProperty, IrModelGroup> {
     val fragmentDefinition = allFragmentDefinitions[fragmentName]!!
 
     /**
@@ -99,14 +101,16 @@ internal class OperationBasedModelGroupBuilder(
 
     val usedNames = mutableSetOf<String>()
 
-    return buildField(
+    val field = buildField(
         path = "${MODEL_FRAGMENT_DATA}.$fragmentName",
         info = info,
         selections = mergedSelections.map { SelectionWithParent(it, fragmentDefinition.typeCondition.name) },
         condition = BooleanExpression.True,
         usedNames = usedNames,
         parentTypeConditions = listOf(fragmentDefinition.typeCondition.name),
-    ).toModelGroup()!!
+    )
+
+    return field.toProperty() to field.toModelGroup()!!
   }
 
   /**

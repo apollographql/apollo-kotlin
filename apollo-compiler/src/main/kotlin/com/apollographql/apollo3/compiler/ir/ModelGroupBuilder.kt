@@ -1,14 +1,13 @@
 package com.apollographql.apollo3.compiler.ir
 
 import com.apollographql.apollo3.ast.GQLSelection
-import com.apollographql.apollo3.ast.Schema
 
 interface ModelGroupBuilder {
   fun buildOperationData(
       selections: List<GQLSelection>,
       rawTypeName: String,
       operationName: String
-  ): IrModelGroup
+  ): Pair<IrProperty, IrModelGroup>
 
   fun buildFragmentInterface(
       fragmentName: String
@@ -16,6 +15,6 @@ interface ModelGroupBuilder {
 
   fun buildFragmentData(
       fragmentName: String
-  ): IrModelGroup
+  ): Pair<IrProperty, IrModelGroup>
 
 }

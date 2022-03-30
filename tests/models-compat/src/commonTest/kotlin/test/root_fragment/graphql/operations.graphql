@@ -1,0 +1,16 @@
+query SearchSomething {
+  ...Something
+  ...Something2
+}
+
+fragment Something on Query {
+  searchSomething {
+    name
+  }
+}
+
+fragment Something2 on Query {
+  searchSomething {
+    name
+  }
+}
