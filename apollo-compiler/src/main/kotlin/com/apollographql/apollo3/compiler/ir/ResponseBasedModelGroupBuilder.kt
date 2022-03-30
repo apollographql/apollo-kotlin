@@ -124,7 +124,7 @@ private class FieldNodeBuilder(
     val info = IrFieldInfo(
         responseName = "data",
         description = null,
-        type = IrModelType(MODEL_UNKNOWN),
+        type = IrNonNullType(IrModelType(MODEL_UNKNOWN)),
         deprecationReason = null,
         gqlType = GQLNonNullType(type = GQLNamedType(name = rawTypeName)),
     )
@@ -171,7 +171,7 @@ private class FieldNodeBuilder(
     val info = IrFieldInfo(
         responseName = "data",
         description = null,
-        type = IrModelType(MODEL_UNKNOWN),
+        type = IrNonNullType(IrModelType(MODEL_UNKNOWN)),
         deprecationReason = null,
         gqlType = GQLNonNullType(type = fragment.typeCondition),
     )
