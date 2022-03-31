@@ -15,6 +15,7 @@ import com.apollographql.apollo3.ast.GQLIntValue
 import com.apollographql.apollo3.ast.GQLListType
 import com.apollographql.apollo3.ast.GQLListValue
 import com.apollographql.apollo3.ast.GQLNamedType
+import com.apollographql.apollo3.ast.GQLNode
 import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLNullValue
 import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
@@ -181,7 +182,7 @@ internal class ExecutableValidationScope(
         return
       }
       val fieldPath = if (path.isEmpty()) name else "$path.$name"
-      selectionSet.validate(leafTypeDefinition, fieldPath)
+      selectionSet.validate(leafTypeDefinition, this@validate, fieldPath)
     } else {
       if (selectionSet != null) {
         registerIssue(
@@ -198,7 +199,7 @@ internal class ExecutableValidationScope(
   }
 
 
-  private fun GQLInlineFragment.validate(typeDefinitionInScope: GQLTypeDefinition, path: String) {
+  private fun GQLInlineFragment.validate(typeDefinitionInScope: GQLTypeDefinition, selectionSetParent: GQLNode, path: String) {
     val inlineFragmentTypeDefinition = typeDefinitions[typeCondition.name]
     if (inlineFragmentTypeDefinition == null) {
       registerIssue(
@@ -216,15 +217,15 @@ internal class ExecutableValidationScope(
       return
     }
 
-    selectionSet.validate(inlineFragmentTypeDefinition, path)
+    selectionSet.validate(inlineFragmentTypeDefinition, this@validate, path)
 
     directives.forEach {
       validateDirective(it, this)
-      if (it.name == "defer" && !path.startsWith('-')) it.validateDeferDirective(path)
+      if (it.name == "defer" && !path.startsWith('-')) it.validateDeferDirective(selectionSetParent, path)
     }
   }
 
-  private fun GQLFragmentSpread.validate(typeDefinitionInScope: GQLTypeDefinition, path: String) {
+  private fun GQLFragmentSpread.validate(typeDefinitionInScope: GQLTypeDefinition, selectionSetParent: GQLNode, path: String) {
     val fragmentDefinition = fragmentDefinitions[name]
     if (fragmentDefinition == null) {
       registerIssue(
@@ -251,11 +252,11 @@ internal class ExecutableValidationScope(
       return
     }
 
-    fragmentDefinition.selectionSet.validate(fragmentTypeDefinition, path)
+    fragmentDefinition.selectionSet.validate(fragmentTypeDefinition, this@validate, path)
 
     directives.forEach {
       validateDirective(it, this)
-      if (it.name == "defer" && !path.startsWith('-')) it.validateDeferDirective(path)
+      if (it.name == "defer" && !path.startsWith('-')) it.validateDeferDirective(selectionSetParent, path)
     }
   }
 
@@ -285,7 +286,7 @@ internal class ExecutableValidationScope(
      * Use "-" for the path as a signal to skip @defer specific validation, which is only relevant when considering the fragment in the
      * context of an operation.
      */
-    selectionSet.validate(fragmentRootTypeDefinition, path = "-")
+    selectionSet.validate(fragmentRootTypeDefinition, this, path = "-")
 
     fieldsInSetCanMerge(selectionSet.collectFields(fragmentRootTypeDefinition.name))
   }
@@ -304,7 +305,7 @@ internal class ExecutableValidationScope(
       return
     }
 
-    selectionSet.validate(rootTypeDefinition)
+    selectionSet.validate(rootTypeDefinition, this)
 
     fieldsInSetCanMerge(selectionSet.collectFields(rootTypeDefinition.name))
 
@@ -323,15 +324,12 @@ internal class ExecutableValidationScope(
   }
 
   /**
-   * If a label is passed to a `@defer` directive, it must not be a variable, and it must be unique within all other `@defer` directives in
+   * - If a label is passed to a `@defer` directive, it must not be a variable, and it must be unique within all other `@defer` directives in
    * the document.
-   *
-   * Also ensure that the label can be used as part of an identifier name (Apollo-specific validation).
-   *
-   * Also ensure that any `@defer` directive found when walking fragments on an operation have a unique path + label (Apollo-specific
-   * validation).
-   *
-   * For instance: this is invalid:
+   * - The @defer directive is not allowed to be used on root fields of the mutation or subscription type.
+   * - Check that the label can be used as part of an identifier name (Apollo-specific validation).
+   * - Check that any `@defer` directive found when walking fragments on an operation have a unique path + label (Apollo-specific
+   * validation). For instance: this is invalid:
    * ```
    * query Query1 {
    *   computers {
@@ -363,7 +361,7 @@ internal class ExecutableValidationScope(
    * }
    * ```
    */
-  private fun GQLDirective.validateDeferDirective(path: String) {
+  private fun GQLDirective.validateDeferDirective(selectionSetParent: GQLNode, path: String) {
     val label = arguments?.arguments?.firstOrNull { it.name == "label" }?.value
     if (label is GQLVariableValue) {
       registerIssue(
@@ -371,6 +369,13 @@ internal class ExecutableValidationScope(
           sourceLocation = sourceLocation
       )
       return
+    }
+
+    if (selectionSetParent is GQLOperationDefinition && (selectionSetParent.operationType == "mutation" || selectionSetParent.operationType == "subscription")) {
+      registerIssue(
+          message = "The @defer directive is not allowed to be used on root fields of mutations or subscriptions",
+          sourceLocation = sourceLocation
+      )
     }
 
     var labelStringValue = ""
@@ -411,7 +416,7 @@ internal class ExecutableValidationScope(
     deferDirectivePathAndLabels[pathAndLabel] = sourceLocation
   }
 
-  private fun GQLSelectionSet.validate(typeDefinitionInScope: GQLTypeDefinition, path: String = "") {
+  private fun GQLSelectionSet.validate(typeDefinitionInScope: GQLTypeDefinition, selectionSetParent: GQLNode, path: String = "") {
     if (selections.isEmpty()) {
       // This will never happen from parsing documents but is kept for reference and to catch bad manual document modifications
       registerIssue(
@@ -424,8 +429,8 @@ internal class ExecutableValidationScope(
     selections.forEach {
       when (it) {
         is GQLField -> it.validate(typeDefinitionInScope, path)
-        is GQLInlineFragment -> it.validate(typeDefinitionInScope, path)
-        is GQLFragmentSpread -> it.validate(typeDefinitionInScope, path)
+        is GQLInlineFragment -> it.validate(typeDefinitionInScope, selectionSetParent, path)
+        is GQLFragmentSpread -> it.validate(typeDefinitionInScope, selectionSetParent, path)
       }
     }
   }
