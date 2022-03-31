@@ -8,6 +8,7 @@ import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.emitCacheMisses
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.cache.normalized.refetchPolicy
@@ -41,6 +42,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import kotlin.test.fail
 
 @OptIn(ApolloExperimental::class)
@@ -104,6 +106,34 @@ class WatcherTest {
 
       job.cancel()
     }
+  }
+
+  @Test
+  fun emitCacheMissesIsWorking() = runTest(before = { setUp() }) {
+    val query = EpisodeHeroNameQuery(Episode.EMPIRE)
+    val channel = Channel<EpisodeHeroNameQuery.Data?>()
+
+    apolloClient.enqueueTestResponse(query, episodeHeroNameData)
+
+    val job = launch {
+      apolloClient.query(query)
+          .fetchPolicy(FetchPolicy.CacheOnly)
+          .emitCacheMisses(true)
+          .watch()
+          .collect {
+            channel.send(it.data)
+          }
+    }
+
+    val data = channel.receiveOrTimeout()
+    assertNull(data)
+
+    // Update the cache
+    apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
+
+    assertEquals(channel.receiveOrTimeout()?.hero?.name, "R2-D2")
+
+    job.cancel()
   }
 
 

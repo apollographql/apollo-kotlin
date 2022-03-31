@@ -13,11 +13,13 @@ import com.apollographql.apollo3.cache.normalized.CacheInfo
 import com.apollographql.apollo3.cache.normalized.cacheHeaders
 import com.apollographql.apollo3.cache.normalized.cacheInfo
 import com.apollographql.apollo3.cache.normalized.doNotStore
+import com.apollographql.apollo3.cache.normalized.emitCacheMisses
 import com.apollographql.apollo3.cache.normalized.fetchFromCache
 import com.apollographql.apollo3.cache.normalized.optimisticData
 import com.apollographql.apollo3.cache.normalized.storePartialResponses
 import com.apollographql.apollo3.cache.normalized.writeToCacheAsynchronously
 import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.mpp.currentTimeMillis
@@ -178,11 +180,33 @@ internal class ApolloCacheInterceptor(
     val operation = request.operation
     val startMillis = currentTimeMillis()
 
-    val data = store.readOperation(
-        operation = operation,
-        customScalarAdapters = customScalarAdapters,
-        cacheHeaders = request.cacheHeaders
-    )
+    val data = try {
+      store.readOperation(
+          operation = operation,
+          customScalarAdapters = customScalarAdapters,
+          cacheHeaders = request.cacheHeaders
+      )
+    } catch (e: CacheMissException) {
+      if (request.emitCacheMisses) {
+        return ApolloResponse.Builder(
+            requestUuid = request.requestUuid,
+            operation = operation,
+            data = null,
+        ).addExecutionContext(request.executionContext)
+            .cacheInfo(
+                CacheInfo.Builder()
+                    .cacheStartMillis(startMillis)
+                    .cacheEndMillis(currentTimeMillis())
+                    .cacheHit(false)
+                    .cacheMissException(e)
+                    .build()
+            )
+            .isLast(true)
+            .build()
+      } else {
+        throw e
+      }
+    }
 
     return ApolloResponse.Builder(
         requestUuid = request.requestUuid,
