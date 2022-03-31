@@ -1,0 +1,5 @@
+ERROR: ValidationError (10:22)
+The @defer directive is not allowed to be used on root fields of mutations or subscriptions
+------------
+ERROR: ValidationError (18:18)
+The @defer directive is not allowed to be used on root fields of mutations or subscriptions

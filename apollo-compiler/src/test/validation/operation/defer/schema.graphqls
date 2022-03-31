@@ -4,6 +4,14 @@ type Query {
     computers: [Computer!]!
 }
 
+type Subscription {
+    animal: Animal
+}
+
+type Mutation {
+    createSession: String!
+}
+
 interface HasId {
     id: ID!
 }
