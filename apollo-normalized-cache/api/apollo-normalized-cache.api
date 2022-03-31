@@ -106,6 +106,7 @@ public final class com/apollographql/apollo3/cache/normalized/NormalizedCache {
 	public static final fun configureApolloClientBuilder (Lcom/apollographql/apollo3/ApolloClient$Builder;Lcom/apollographql/apollo3/cache/normalized/api/NormalizedCacheFactory;Lcom/apollographql/apollo3/cache/normalized/api/CacheKeyGenerator;Lcom/apollographql/apollo3/cache/normalized/api/CacheResolver;Z)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public static synthetic fun configureApolloClientBuilder$default (Lcom/apollographql/apollo3/ApolloClient$Builder;Lcom/apollographql/apollo3/cache/normalized/api/NormalizedCacheFactory;Lcom/apollographql/apollo3/cache/normalized/api/CacheKeyGenerator;Lcom/apollographql/apollo3/cache/normalized/api/CacheResolver;ZILjava/lang/Object;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public static final fun doNotStore (Lcom/apollographql/apollo3/api/MutableExecutionOptions;Z)Ljava/lang/Object;
+	public static final fun emitCacheMisses (Lcom/apollographql/apollo3/api/MutableExecutionOptions;Z)Ljava/lang/Object;
 	public static final fun executeCacheAndNetwork (Lcom/apollographql/apollo3/ApolloCall;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun fetchPolicy (Lcom/apollographql/apollo3/api/MutableExecutionOptions;Lcom/apollographql/apollo3/cache/normalized/FetchPolicy;)Ljava/lang/Object;
 	public static final fun fetchPolicyInterceptor (Lcom/apollographql/apollo3/api/MutableExecutionOptions;Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;)Ljava/lang/Object;
