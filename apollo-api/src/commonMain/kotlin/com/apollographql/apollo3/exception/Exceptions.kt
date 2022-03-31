@@ -3,7 +3,7 @@ package com.apollographql.apollo3.exception
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_2_1
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_1_1
 import com.apollographql.apollo3.api.http.HttpHeader
 import okio.BufferedSource
 
@@ -105,7 +105,7 @@ class HttpCacheMissException(message: String, cause: Exception? = null) : Apollo
 class ApolloCompositeException(first: Throwable?, second: Throwable?) : ApolloException(message = "multiple exceptions happened", second) {
 
   @get:Deprecated("Use suppressedExceptions instead", ReplaceWith("suppressedExceptions.first()"))
-  @ApolloDeprecatedSince(v3_2_1)
+  @ApolloDeprecatedSince(v3_1_1)
   val first: ApolloException
     get() {
       val firstException = suppressedExceptions.firstOrNull()
@@ -113,7 +113,7 @@ class ApolloCompositeException(first: Throwable?, second: Throwable?) : ApolloEx
     }
 
   @get:Deprecated("Use suppressedExceptions instead", ReplaceWith("suppressedExceptions.getOrNull(1)"))
-  @ApolloDeprecatedSince(v3_2_1)
+  @ApolloDeprecatedSince(v3_1_1)
   val second: ApolloException
     get() {
       val secondException = suppressedExceptions.getOrNull(1)
