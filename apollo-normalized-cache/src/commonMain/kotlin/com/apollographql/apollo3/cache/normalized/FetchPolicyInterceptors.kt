@@ -13,7 +13,9 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.singleOrNull
 import kotlin.jvm.JvmName
 
@@ -72,26 +74,25 @@ val CacheFirstInterceptor = object : ApolloInterceptor {
         } else {
           throw it
         }
-      }.singleOrNull()
-
-      if (networkResponse != null) {
-        emit(
-            networkResponse.newBuilder()
-                .cacheInfo(
-                    networkResponse.cacheInfo!!
-                        .newBuilder()
-                        .cacheMissException(cacheException as? CacheMissException)
-                        .build()
-                )
-                .build()
-        )
-        return@flow
+      }.map { response ->
+        response.newBuilder()
+            .cacheInfo(
+                response.cacheInfo!!
+                    .newBuilder()
+                    .cacheMissException(cacheException as? CacheMissException)
+                    .build()
+            )
+            .build()
       }
 
-      throw ApolloCompositeException(
-          first = cacheException,
-          second = networkException
-      )
+      emitAll(networkResponse)
+
+      if (networkException != null) {
+        throw ApolloCompositeException(
+            first = cacheException,
+            second = networkException
+        )
+      }
     }
   }
 }
@@ -110,10 +111,10 @@ val NetworkFirstInterceptor = object : ApolloInterceptor {
         } else {
           throw it
         }
-      }.singleOrNull()
+      }
 
-      if (networkResponse != null) {
-        emit(networkResponse)
+      emitAll(networkResponse)
+      if (networkException == null) {
         return@flow
       }
 
@@ -186,28 +187,29 @@ val CacheAndNetworkInterceptor = object : ApolloInterceptor {
             } else {
               throw it
             }
-          }.singleOrNull()
-
-      if (networkResponse != null) {
-        emit(
-            networkResponse.newBuilder()
+          }
+          .map { response ->
+            response.newBuilder()
                 .cacheInfo(
-                    networkResponse.cacheInfo!!
+                    response.cacheInfo!!
                         .newBuilder()
                         .cacheMissException(cacheException as? CacheMissException)
                         .build()
                 )
                 .build()
-        )
-        return@flow
+          }
+
+      emitAll(networkResponse)
+
+      if (networkException != null) {
+        if (cacheException != null) {
+          throw ApolloCompositeException(
+              first = cacheException,
+              second = networkException
+          )
+        }
+        throw networkException!!
       }
-      if (cacheException != null) {
-        throw ApolloCompositeException(
-            first = cacheException,
-            second = networkException
-        )
-      }
-      throw networkException!!
     }
   }
 }

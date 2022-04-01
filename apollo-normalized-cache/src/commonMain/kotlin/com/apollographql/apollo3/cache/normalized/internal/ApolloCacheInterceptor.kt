@@ -26,10 +26,13 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 
 internal class ApolloCacheInterceptor(
@@ -143,26 +146,38 @@ internal class ApolloCacheInterceptor(
       /**
        * This doesn't use [readFromNetwork] so that we can publish all keys all at once after the keys have been rolled back
        */
-      var response: ApolloResponse<D>? = null
-      var exception: ApolloException? = null
-      try {
-        response = chain.proceed(request).single()
-      } catch (e: ApolloException) {
-        exception = e
-      }
+      var networkException: ApolloException? = null
+      val networkResponse: Flow<ApolloResponse<D>> = chain.proceed(request)
+          .catch {
+            if (it is ApolloException) {
+              networkException = it
+            } else {
+              throw it
+            }
+          }
 
-      val optimisticKeys = if (optimisticData != null) {
-        store.rollbackOptimisticUpdates(request.requestUuid, publish = false)
-      } else {
-        emptySet()
-      }
+      var optimisticKeys: Set<String>? = null
 
-      if (response != null) {
-        maybeWriteToCache(request, response, customScalarAdapters, optimisticKeys)
+      networkResponse.collect { response ->
+        if (optimisticKeys == null) optimisticKeys = if (optimisticData != null) {
+          store.rollbackOptimisticUpdates(request.requestUuid, publish = false)
+        } else {
+          emptySet()
+        }
+
+        maybeWriteToCache(request, response, customScalarAdapters, optimisticKeys!!)
         emit(response)
-      } else {
-        store.publish(optimisticKeys)
-        throw exception!!
+      }
+
+      if (networkException != null) {
+        if (optimisticKeys == null) optimisticKeys = if (optimisticData != null) {
+          store.rollbackOptimisticUpdates(request.requestUuid, publish = false)
+        } else {
+          emptySet()
+        }
+
+        store.publish(optimisticKeys!!)
+        throw networkException!!
       }
     }
   }
@@ -172,13 +187,11 @@ internal class ApolloCacheInterceptor(
     val fetchFromCache = request.fetchFromCache
 
     return flow {
-      emit(
-          if (fetchFromCache) {
-            readFromCache(request, customScalarAdapters)
-          } else {
-            readFromNetwork(request, chain, customScalarAdapters)
-          }
-      )
+      if (fetchFromCache) {
+        emit(readFromCache(request, customScalarAdapters))
+      } else {
+        emitAll(readFromNetwork(request, chain, customScalarAdapters))
+      }
     }
   }
 
@@ -238,18 +251,18 @@ internal class ApolloCacheInterceptor(
       request: ApolloRequest<D>,
       chain: ApolloInterceptorChain,
       customScalarAdapters: CustomScalarAdapters,
-  ): ApolloResponse<D> {
+  ): Flow<ApolloResponse<D>> {
     val startMillis = currentTimeMillis()
-    val networkResponse = chain.proceed(request).onEach {
+    return chain.proceed(request).onEach {
       maybeWriteToCache(request, it, customScalarAdapters)
-    }.single()
-
-    return networkResponse.newBuilder()
-        .cacheInfo(
-            CacheInfo.Builder()
-                .networkStartMillis(startMillis)
-                .networkEndMillis(currentTimeMillis())
-                .build()
-        ).build()
+    }.map { networkResponse ->
+      networkResponse.newBuilder()
+          .cacheInfo(
+              CacheInfo.Builder()
+                  .networkStartMillis(startMillis)
+                  .networkEndMillis(currentTimeMillis())
+                  .build()
+          ).build()
+    }
   }
 }
