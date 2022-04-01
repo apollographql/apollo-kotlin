@@ -33,7 +33,7 @@ sealed class BooleanExpression<out T : Any> {
   }
 
   data class Or<T : Any>(val operands: Set<BooleanExpression<T>>) : BooleanExpression<T>() {
-    constructor(vararg operands: BooleanExpression<T>): this(operands.toSet())
+    constructor(vararg operands: BooleanExpression<T>) : this(operands.toSet())
 
     init {
       check(operands.isNotEmpty()) {
@@ -59,7 +59,7 @@ sealed class BooleanExpression<out T : Any> {
   }
 
   data class And<T : Any>(val operands: Set<BooleanExpression<T>>) : BooleanExpression<T>() {
-    constructor(vararg operands: BooleanExpression<T>): this(operands.toSet())
+    constructor(vararg operands: BooleanExpression<T>) : this(operands.toSet())
 
     init {
       check(operands.isNotEmpty()) {
@@ -111,7 +111,7 @@ fun <T : Any> BooleanExpression<T>.evaluate(block: (T) -> Boolean): Boolean {
 
 fun BooleanExpression<BTerm>.evaluate(variables: Set<String>, typename: String?): Boolean {
   return evaluate {
-    when(it) {
+    when (it) {
       is BVariable -> variables.contains(it.name)
       is BPossibleTypes -> it.possibleTypes.contains(typename)
     }
@@ -132,7 +132,7 @@ data class BVariable(val name: String) : BTerm()
  * A term that comes from a fragment type condition and that needs to be matched against __typename
  */
 data class BPossibleTypes(val possibleTypes: Set<String>) : BTerm() {
-  constructor(vararg types: String): this(types.toSet())
+  constructor(vararg types: String) : this(types.toSet())
 }
 
 
