@@ -3,7 +3,7 @@
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_1_1
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_2_1
 import kotlin.jvm.JvmName
 import kotlin.reflect.KClass
 
@@ -114,7 +114,7 @@ fun <T : Any> BooleanExpression<T>.evaluate(block: (T) -> Boolean): Boolean {
 }
 
 @Deprecated("Kept for binary compatibility with generated code from older versions")
-@ApolloDeprecatedSince(v3_1_1)
+@ApolloDeprecatedSince(v3_2_1)
 @Suppress("DeprecatedCallableAddReplaceWith")
 fun BooleanExpression<BTerm>.evaluate(variables: Set<String>, typename: String?): Boolean {
   return evaluate {

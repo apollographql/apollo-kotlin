@@ -2,7 +2,7 @@ package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_1_1
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_2_1
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.internal.Version2CustomTypeAdapterToAdapter
 import kotlin.jvm.JvmField
@@ -59,7 +59,7 @@ class CustomScalarAdapters private constructor(
   }
 
   @Deprecated("Use adapterContext.variables() instead", ReplaceWith("adapterContext.variables()"))
-  @ApolloDeprecatedSince(v3_1_1)
+  @ApolloDeprecatedSince(v3_2_1)
   fun variables() = adapterContext.variables()
 
   override val key: ExecutionContext.Key<*>
@@ -113,7 +113,7 @@ class CustomScalarAdapters private constructor(
     }
 
     @Deprecated("Use AdapterContext.Builder.variables() instead")
-    @ApolloDeprecatedSince(v3_1_1)
+    @ApolloDeprecatedSince(v3_2_1)
     fun variables(variables: Executable.Variables): Builder = apply {
       adapterContext = adapterContext.newBuilder().variables(variables).build()
     }
