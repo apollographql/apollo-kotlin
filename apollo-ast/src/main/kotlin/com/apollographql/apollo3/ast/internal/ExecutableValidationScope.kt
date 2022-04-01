@@ -58,7 +58,7 @@ internal class ExecutableValidationScope(
    */
   override val variableUsages = mutableListOf<VariableUsage>()
 
-  private val deferDirectiveLabels = mutableMapOf<String, SourceLocation>()
+  private val deferDirectiveLabels = mutableMapOf<String, GQLDirective>()
   private val deferDirectivePathAndLabels = mutableMapOf<String, SourceLocation>()
 
   fun validate(document: GQLDocument): List<Issue> {
@@ -392,15 +392,15 @@ internal class ExecutableValidationScope(
         )
       }
 
-      if (labelStringValue in deferDirectiveLabels) {
+      if (labelStringValue in deferDirectiveLabels && deferDirectiveLabels[labelStringValue] != this) {
         registerIssue(
             message = "@defer label '$labelStringValue' must be unique within all other @defer directives in the document. " +
-                "Same label found in ${deferDirectiveLabels[labelStringValue]!!.pretty()}",
+                "Same label found in ${deferDirectiveLabels[labelStringValue]!!.sourceLocation.pretty()}",
             sourceLocation = sourceLocation
         )
         return
       }
-      deferDirectiveLabels[labelStringValue] = sourceLocation
+      deferDirectiveLabels[labelStringValue] = this
     }
 
     val pathAndLabel = "$path/$labelStringValue"

@@ -1,0 +1,28 @@
+query Query1 {
+  computers {
+    id
+    ...ComputerFields @defer
+  }
+}
+
+query Query2 {
+  computers {
+    id
+    ...ComputerFields @defer
+  }
+}
+
+fragment ComputerFields on Computer {
+  cpu
+  year
+  screen {
+    resolution
+    # This is traversed twice, but it's not a duplicate label
+    ...ScreenFields @defer(label: "a")
+  }
+}
+
+fragment ScreenFields on Screen {
+  isColor
+}
+
