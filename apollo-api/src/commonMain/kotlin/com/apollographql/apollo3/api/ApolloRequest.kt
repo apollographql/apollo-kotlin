@@ -23,8 +23,12 @@ private constructor(
     override val canBeBatched: Boolean?,
 ) : ExecutionOptions {
 
-  fun newBuilder(): Builder<D> {
-    return Builder(operation)
+  fun newBuilder(): Builder<D> = duplicate(Builder(operation))
+
+  fun copy(operation: Operation<D>): ApolloRequest<D> = duplicate(Builder(operation)).build()
+
+  private fun duplicate(builder: Builder<D>): Builder<D> {
+    return builder
         .requestUuid(requestUuid)
         .executionContext(executionContext)
         .httpMethod(httpMethod)
