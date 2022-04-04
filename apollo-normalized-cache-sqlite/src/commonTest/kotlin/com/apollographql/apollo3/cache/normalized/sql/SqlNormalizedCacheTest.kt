@@ -13,7 +13,7 @@ import kotlin.test.assertTrue
 
 class SqlNormalizedCacheTest {
 
-  private val cache: SqlNormalizedCache = SqlNormalizedCacheFactory(createDriver(), exceptionHandler = {}).create()
+  private val cache: SqlNormalizedCache = SqlNormalizedCacheFactory(createDriver()).create()
 
   @BeforeTest
   fun setUp() {

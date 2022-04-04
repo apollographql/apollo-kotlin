@@ -6,14 +6,11 @@ import com.squareup.sqldelight.drivers.native.NativeSqliteDriver
 
 actual class SqlNormalizedCacheFactory internal actual constructor(
     driver: SqlDriver,
-    private val exceptionHandler: (Throwable) -> Unit,
 ) : NormalizedCacheFactory() {
 
   constructor() : this("apollo.db")
 
-  constructor(name: String) : this(NativeSqliteDriver(ApolloDatabase.Schema, name), exceptionHandler = DEFAULT_EXCEPTION_HANDLER)
-
-  constructor(name: String, exceptionHandler: (Throwable) -> Unit) : this(NativeSqliteDriver(ApolloDatabase.Schema, name), exceptionHandler)
+  constructor(name: String) : this(NativeSqliteDriver(ApolloDatabase.Schema, name))
 
   private val apolloDatabase = ApolloDatabase(driver)
 

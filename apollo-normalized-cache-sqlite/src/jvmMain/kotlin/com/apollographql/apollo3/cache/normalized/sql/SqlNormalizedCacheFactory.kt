@@ -7,7 +7,6 @@ import java.util.Properties
 
 actual class SqlNormalizedCacheFactory internal actual constructor(
     driver: SqlDriver,
-    private val exceptionHandler: (Throwable) -> Unit,
 ) : NormalizedCacheFactory() {
 
   @JvmOverloads
@@ -18,15 +17,13 @@ actual class SqlNormalizedCacheFactory internal actual constructor(
        */
       url: String,
       properties: Properties = Properties(),
-      exceptionHandler: (Throwable) -> Unit = DEFAULT_EXCEPTION_HANDLER,
-  ) : this(createDriverAndDatabase(url, properties), exceptionHandler)
+  ) : this(createDriverAndDatabase(url, properties))
 
   private val apolloDatabase = ApolloDatabase(driver)
 
   override fun create(): SqlNormalizedCache {
     return SqlNormalizedCache(
         cacheQueries = apolloDatabase.cacheQueries,
-        exceptionHandler = exceptionHandler,
     )
   }
 

@@ -74,11 +74,6 @@ enum class FetchPolicy {
   CacheAndNetwork,
 }
 
-private val DEFAULT_ASYNC_EXCEPTION_HANDLER: (Throwable) -> Unit = {
-  println("Apollo: an unexpected exception occurred while writing to the cache asynchronously")
-  it.printStackTrace()
-}
-
 /**
  * Configures an [ApolloClient] with a normalized cache.
  *
@@ -91,9 +86,6 @@ private val DEFAULT_ASYNC_EXCEPTION_HANDLER: (Throwable) -> Unit = {
  *
  * @param writeToCacheAsynchronously set to true to write to the cache after the response has been emitted.
  * This allows to display results faster
- *
- * @param asyncExceptionHandler a callback to handle exceptions thrown when writing to the cache asynchronously. Used only if
- * [writeToCacheAsynchronously] is true.
  */
 @JvmOverloads
 @JvmName("configureApolloClientBuilder")
@@ -102,9 +94,8 @@ fun ApolloClient.Builder.normalizedCache(
     cacheKeyGenerator: CacheKeyGenerator = TypePolicyCacheKeyGenerator,
     cacheResolver: CacheResolver = FieldPolicyCacheResolver,
     writeToCacheAsynchronously: Boolean = false,
-    asyncExceptionHandler: (Throwable) -> Unit = DEFAULT_ASYNC_EXCEPTION_HANDLER,
 ): ApolloClient.Builder {
-  return store(ApolloStore(normalizedCacheFactory, cacheKeyGenerator, cacheResolver), writeToCacheAsynchronously, asyncExceptionHandler)
+  return store(ApolloStore(normalizedCacheFactory, cacheKeyGenerator, cacheResolver), writeToCacheAsynchronously)
 }
 
 @JvmName("-logCacheMisses")
@@ -117,15 +108,10 @@ fun ApolloClient.Builder.logCacheMisses(
   return addInterceptor(CacheMissLoggingInterceptor(log))
 }
 
-@JvmOverloads
-fun ApolloClient.Builder.store(
-    store: ApolloStore,
-    writeToCacheAsynchronously: Boolean = false,
-    asyncExceptionHandler: (Throwable) -> Unit = DEFAULT_ASYNC_EXCEPTION_HANDLER,
-): ApolloClient.Builder {
+fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: Boolean = false): ApolloClient.Builder {
   return addInterceptor(WatcherInterceptor(store))
       .addInterceptor(FetchPolicyRouterInterceptor)
-      .addInterceptor(ApolloCacheInterceptor(store, asyncExceptionHandler))
+      .addInterceptor(ApolloCacheInterceptor(store))
       .writeToCacheAsynchronously(writeToCacheAsynchronously)
 }
 

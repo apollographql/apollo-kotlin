@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.cache.normalized.sql
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders.EVICT_AFTER_READ
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
@@ -14,19 +15,20 @@ import com.apollographql.apollo3.cache.normalized.sql.internal.CacheQueriesHelpe
 import com.apollographql.apollo3.cache.normalized.sql.internal.CacheQueriesHelpers.selectRecords
 import com.apollographql.apollo3.cache.normalized.sql.internal.CacheQueriesHelpers.updateRecord
 import com.apollographql.apollo3.cache.normalized.sql.internal.CacheQueriesHelpers.updateRecords
+import com.apollographql.apollo3.exception.apolloExceptionHandler
 import kotlin.reflect.KClass
 
 class SqlNormalizedCache internal constructor(
     private val cacheQueries: CacheQueries,
-    private val exceptionHandler: (Throwable) -> Unit,
 ) : NormalizedCache() {
 
+  @OptIn(ApolloExperimental::class)
   override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
     val record = try {
       cacheQueries.selectRecord(key)
     } catch (e: Exception) {
       // Unable to read the record from the database, it is possibly corrupted - treat this as a cache miss
-      exceptionHandler(e)
+      apolloExceptionHandler(Exception("Unable to read a record from the database", e))
       null
     }
     if (record != null) {
@@ -41,12 +43,13 @@ class SqlNormalizedCache internal constructor(
     return nextCache?.loadRecord(key, cacheHeaders)
   }
 
+  @OptIn(ApolloExperimental::class)
   override fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
     val records = try {
       cacheQueries.selectRecords(keys)
     } catch (e: Exception) {
       // Unable to read the records from the database, it is possibly corrupted - treat this as a cache miss
-      exceptionHandler(e)
+      apolloExceptionHandler(Exception("Unable to read records from the database", e))
       emptyList()
     }
     if (cacheHeaders.hasHeader(EVICT_AFTER_READ)) {

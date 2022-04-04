@@ -1066,6 +1066,11 @@ public class com/apollographql/apollo3/exception/ApolloException : java/lang/Run
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
+public final class com/apollographql/apollo3/exception/ApolloExceptionHandlerKt {
+	public static final fun getApolloExceptionHandler ()Lkotlin/jvm/functions/Function1;
+	public static final fun setApolloExceptionHandler (Lkotlin/jvm/functions/Function1;)V
+}
+
 public final class com/apollographql/apollo3/exception/ApolloGenericException : com/apollographql/apollo3/exception/ApolloException {
 	public fun <init> ()V
 	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
