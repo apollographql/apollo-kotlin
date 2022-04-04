@@ -6,7 +6,8 @@ import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
 import java.util.Properties
 
 actual class SqlNormalizedCacheFactory internal actual constructor(
-    driver: SqlDriver
+    driver: SqlDriver,
+    private val exceptionHandler: (Throwable) -> Unit,
 ) : NormalizedCacheFactory() {
 
   @JvmOverloads
@@ -16,14 +17,16 @@ actual class SqlNormalizedCacheFactory internal actual constructor(
        * (creating an in-memory database) or a path to a file.
        */
       url: String,
-      properties: Properties = Properties()
-  ) : this(createDriverAndDatabase(url, properties))
+      properties: Properties = Properties(),
+      exceptionHandler: (Throwable) -> Unit = DEFAULT_EXCEPTION_HANDLER,
+  ) : this(createDriverAndDatabase(url, properties), exceptionHandler)
 
   private val apolloDatabase = ApolloDatabase(driver)
 
   override fun create(): SqlNormalizedCache {
     return SqlNormalizedCache(
         cacheQueries = apolloDatabase.cacheQueries,
+        exceptionHandler = exceptionHandler,
     )
   }
 

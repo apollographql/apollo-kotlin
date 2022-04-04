@@ -32,6 +32,7 @@ import kotlinx.coroutines.launch
 
 internal class ApolloCacheInterceptor(
     val store: ApolloStore,
+    val asyncExceptionHandler: (Throwable) -> Unit,
 ) : ApolloInterceptor {
   init {
     // The store has a MutableSharedFlow that doesn't like being frozen when using coroutines
@@ -42,7 +43,13 @@ internal class ApolloCacheInterceptor(
   private suspend fun <D : Operation.Data> maybeAsync(request: ApolloRequest<D>, block: suspend () -> Unit) {
     if (request.writeToCacheAsynchronously) {
       val scope = request.executionContext[ConcurrencyInfo]!!.coroutineScope
-      scope.launch { block() }
+      scope.launch {
+        try {
+          block()
+        } catch (e: Throwable) {
+          asyncExceptionHandler(e)
+        }
+      }
     } else {
       block()
     }

@@ -18,10 +18,17 @@ import kotlin.reflect.KClass
 
 class SqlNormalizedCache internal constructor(
     private val cacheQueries: CacheQueries,
+    private val exceptionHandler: (Throwable) -> Unit,
 ) : NormalizedCache() {
 
   override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
-    val record = cacheQueries.selectRecord(key)
+    val record = try {
+      cacheQueries.selectRecord(key)
+    } catch (e: Exception) {
+      // Unable to read the record from the database, it is possibly corrupted - treat this as a cache miss
+      exceptionHandler(e)
+      null
+    }
     if (record != null) {
       if (cacheHeaders.hasHeader(EVICT_AFTER_READ)) {
         cacheQueries.deleteRecord(
@@ -35,7 +42,13 @@ class SqlNormalizedCache internal constructor(
   }
 
   override fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
-    val records = cacheQueries.selectRecords(keys)
+    val records = try {
+      cacheQueries.selectRecords(keys)
+    } catch (e: Exception) {
+      // Unable to read the records from the database, it is possibly corrupted - treat this as a cache miss
+      exceptionHandler(e)
+      emptyList()
+    }
     if (cacheHeaders.hasHeader(EVICT_AFTER_READ)) {
       records.forEach { record ->
         cacheQueries.deleteRecord(

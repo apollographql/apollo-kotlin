@@ -80,7 +80,8 @@ public final class com/apollographql/apollo3/cache/normalized/sql/SqlNormalizedC
 	public static final field Companion Lcom/apollographql/apollo3/cache/normalized/sql/SqlNormalizedCacheFactory$Companion;
 	public fun <init> (Ljava/lang/String;)V
 	public fun <init> (Ljava/lang/String;Ljava/util/Properties;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/util/Properties;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;Ljava/util/Properties;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/util/Properties;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun create ()Lcom/apollographql/apollo3/cache/normalized/api/NormalizedCache;
 	public fun create ()Lcom/apollographql/apollo3/cache/normalized/sql/SqlNormalizedCache;
 }
