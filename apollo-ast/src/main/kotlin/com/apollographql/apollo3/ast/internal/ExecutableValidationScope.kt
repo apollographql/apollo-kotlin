@@ -58,7 +58,7 @@ internal class ExecutableValidationScope(
    */
   override val variableUsages = mutableListOf<VariableUsage>()
 
-  private val deferDirectiveLabels = mutableMapOf<String, GQLDirective>()
+  private val deferDirectiveLabels = mutableMapOf<String, SourceLocation>()
   private val deferDirectivePathAndLabels = mutableMapOf<String, SourceLocation>()
 
   fun validate(document: GQLDocument): List<Issue> {
@@ -70,7 +70,6 @@ internal class ExecutableValidationScope(
       it.validate()
     }
 
-    deferDirectiveLabels.clear()
     val operations = document.definitions.filterIsInstance<GQLOperationDefinition>()
     operations.checkDuplicateOperations()
     operations.forEach {
@@ -293,6 +292,7 @@ internal class ExecutableValidationScope(
 
   private fun GQLOperationDefinition.validate() {
     variableUsages.clear()
+    deferDirectiveLabels.clear()
     deferDirectivePathAndLabels.clear()
 
     val rootTypeDefinition = rootTypeDefinition(schema)
@@ -392,15 +392,15 @@ internal class ExecutableValidationScope(
         )
       }
 
-      if (labelStringValue in deferDirectiveLabels && deferDirectiveLabels[labelStringValue] != this) {
+      if (labelStringValue in deferDirectiveLabels) {
         registerIssue(
             message = "@defer label '$labelStringValue' must be unique within all other @defer directives in the document. " +
-                "Same label found in ${deferDirectiveLabels[labelStringValue]!!.sourceLocation.pretty()}",
+                "Same label found in ${deferDirectiveLabels[labelStringValue]!!.pretty()}",
             sourceLocation = sourceLocation
         )
         return
       }
-      deferDirectiveLabels[labelStringValue] = this
+      deferDirectiveLabels[labelStringValue] = sourceLocation
     }
 
     val pathAndLabel = "$path/$labelStringValue"
