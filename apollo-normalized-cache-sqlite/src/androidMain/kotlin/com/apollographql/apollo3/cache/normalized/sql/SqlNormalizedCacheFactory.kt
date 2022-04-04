@@ -8,7 +8,7 @@ import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
 
 actual class SqlNormalizedCacheFactory internal actual constructor(
-    driver: SqlDriver,
+    driver: SqlDriver
 ) : NormalizedCacheFactory() {
 
   /**
@@ -21,7 +21,7 @@ actual class SqlNormalizedCacheFactory internal actual constructor(
       context: Context,
       name: String? = "apollo.db",
       factory: SupportSQLiteOpenHelper.Factory = FrameworkSQLiteOpenHelperFactory(),
-      useNoBackupDirectory: Boolean = false,
+      useNoBackupDirectory: Boolean = false
   ) : this(
       AndroidSqliteDriver(
           ApolloDatabase.Schema, context.applicationContext, name, factory, useNoBackupDirectory = useNoBackupDirectory
