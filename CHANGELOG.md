@@ -44,7 +44,7 @@ Many thanks to @Krillsson and @aviewfromspace1 for the insights and raising the 
 ## 👷‍ All changes
 
 * Allow configuration of frame types used in SubscriptionWsProtocol and default to Text (#3992)
-* Creating a copy() function for the ApolloRequest  (#3988)
+* add `ApolloRequest.newBuilder(operation: Operation<E>)`  (#3988)
 * Add exception handlers to ApolloCacheInterceptor and SqlNormalizedCache (#3989)
 * 📠 Fix some @DeprecatedSince annotations (#3983)
 * 👓  add ApolloCall<D>.emitCacheMisses(Boolean) (#3980)
