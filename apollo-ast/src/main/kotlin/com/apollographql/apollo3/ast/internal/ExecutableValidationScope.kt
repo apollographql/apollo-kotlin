@@ -70,7 +70,6 @@ internal class ExecutableValidationScope(
       it.validate()
     }
 
-    deferDirectiveLabels.clear()
     val operations = document.definitions.filterIsInstance<GQLOperationDefinition>()
     operations.checkDuplicateOperations()
     operations.forEach {
@@ -293,6 +292,7 @@ internal class ExecutableValidationScope(
 
   private fun GQLOperationDefinition.validate() {
     variableUsages.clear()
+    deferDirectiveLabels.clear()
     deferDirectivePathAndLabels.clear()
 
     val rootTypeDefinition = rootTypeDefinition(schema)
