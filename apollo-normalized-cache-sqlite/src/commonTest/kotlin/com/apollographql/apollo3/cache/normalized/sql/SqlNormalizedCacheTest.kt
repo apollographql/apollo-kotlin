@@ -1,9 +1,12 @@
 package com.apollographql.apollo3.cache.normalized.sql
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.Record
+import com.apollographql.apollo3.exception.apolloExceptionHandler
+import com.squareup.sqldelight.Query
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -205,6 +208,24 @@ class SqlNormalizedCacheTest {
     assertNull(cache.loadRecord("%1", CacheHeaders.NONE))
   }
 
+  @OptIn(ApolloExperimental::class)
+  @Test
+  fun exceptionCallsExceptionHandler() {
+    val badCache = SqlNormalizedCache(BadCacheQueries())
+    var throwable: Throwable? = null
+    apolloExceptionHandler = {
+      throwable = it
+    }
+    badCache.loadRecord(STANDARD_KEY, CacheHeaders.NONE)
+    assertEquals("Unable to read a record from the database", throwable!!.message)
+    assertEquals("bad cache", throwable!!.cause!!.message)
+  }
+
+  private class BadCacheQueries(goodCacheQueries: CacheQueries = ApolloDatabase(createDriver()).cacheQueries) : CacheQueries by goodCacheQueries {
+    override fun recordForKey(key: String): Query<RecordForKey> {
+      throw Exception("bad cache")
+    }
+  }
 
   private fun createRecord(key: String) {
     cache.merge(

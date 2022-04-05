@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
 import com.apollographql.apollo3.ConcurrencyInfo
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -20,6 +21,7 @@ import com.apollographql.apollo3.cache.normalized.storePartialResponses
 import com.apollographql.apollo3.cache.normalized.writeToCacheAsynchronously
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.CacheMissException
+import com.apollographql.apollo3.exception.apolloExceptionHandler
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.mpp.currentTimeMillis
@@ -39,10 +41,17 @@ internal class ApolloCacheInterceptor(
     // ensureNeverFrozen(store)
   }
 
+  @OptIn(ApolloExperimental::class)
   private suspend fun <D : Operation.Data> maybeAsync(request: ApolloRequest<D>, block: suspend () -> Unit) {
     if (request.writeToCacheAsynchronously) {
       val scope = request.executionContext[ConcurrencyInfo]!!.coroutineScope
-      scope.launch { block() }
+      scope.launch {
+        try {
+          block()
+        } catch (e: Throwable) {
+          apolloExceptionHandler(Exception("An exception occurred while writing to the cache asynchronously", e))
+        }
+      }
     } else {
       block()
     }
