@@ -175,7 +175,10 @@ private constructor(
             val webSocketConnection = try {
               webSocketEngine.open(
                   url = serverUrl,
-                  headers = headers + HttpHeader("Sec-WebSocket-Protocol", protocolFactory.name),
+                  headers = if (headers.any { it.name == "Sec-WebSocket-Protocol" })
+                      headers
+                    else
+                      headers + HttpHeader("Sec-WebSocket-Protocol", protocolFactory.name),
               )
             } catch (e: Exception) {
               // Error opening the websocket
