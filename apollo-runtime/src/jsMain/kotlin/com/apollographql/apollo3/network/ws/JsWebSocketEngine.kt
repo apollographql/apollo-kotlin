@@ -67,6 +67,10 @@ actual class DefaultWebSocketEngine : WebSocketEngine {
     }
   }
 
+  @Deprecated("Use open(String, List<HttpHeader>) instead.", ReplaceWith("open(String, List<HttpHeader>)"))
+  override suspend fun open(url: String, headers: Map<String, String>): WebSocketConnection =
+      open(url, headers.map { HttpHeader(it.key, it.value) })
+
   /*
    * The function below works due to ktor being used for the HTTP engine
    * and how ktor imports ws, if this changes, ws would need to be added

@@ -101,6 +101,10 @@ actual class DefaultWebSocketEngine(
       throw e
     }
   }
+
+  @Deprecated("Use open(String, List<HttpHeader>) instead.", ReplaceWith("open(String, List<HttpHeader>)"))
+  override suspend fun open(url: String, headers: Map<String, String>): WebSocketConnection =
+      open(url, headers.map { HttpHeader(it.key, it.value) })
 }
 
 private class WebSocketConnectionImpl(

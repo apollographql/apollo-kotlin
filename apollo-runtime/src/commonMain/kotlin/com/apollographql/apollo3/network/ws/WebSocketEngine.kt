@@ -14,6 +14,15 @@ interface WebSocketEngine {
       url: String,
       headers: List<HttpHeader> = emptyList(),
   ): WebSocketConnection
+
+  /**
+   * Open the websocket. Suspends until the handshake is done
+   */
+  @Deprecated("Use open(String, List<HttpHeader>) instead.", ReplaceWith("open(String, List<HttpHeader>)"))
+  suspend fun open(
+      url: String,
+      headers: Map<String, String> = emptyMap(),
+  ): WebSocketConnection
 }
 
 interface WebSocketConnection {
