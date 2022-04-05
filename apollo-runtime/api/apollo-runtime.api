@@ -396,8 +396,11 @@ public final class com/apollographql/apollo3/network/ws/GraphQLWsProtocol$Factor
 }
 
 public final class com/apollographql/apollo3/network/ws/SubscriptionWsProtocol : com/apollographql/apollo3/network/ws/WsProtocol {
+	public fun <init> (Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;)V
+	public fun <init> (Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;J)V
 	public fun <init> (Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;JLkotlin/jvm/functions/Function1;)V
-	public synthetic fun <init> (Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;JLkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;JLkotlin/jvm/functions/Function1;Lcom/apollographql/apollo3/network/ws/WsFrameType;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;JLkotlin/jvm/functions/Function1;Lcom/apollographql/apollo3/network/ws/WsFrameType;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun connectionInit (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun handleServerMessage (Ljava/util/Map;)V
 	public fun startOperation (Lcom/apollographql/apollo3/api/ApolloRequest;)V
@@ -406,8 +409,10 @@ public final class com/apollographql/apollo3/network/ws/SubscriptionWsProtocol :
 
 public final class com/apollographql/apollo3/network/ws/SubscriptionWsProtocol$Factory : com/apollographql/apollo3/network/ws/WsProtocol$Factory {
 	public fun <init> ()V
+	public fun <init> (J)V
 	public fun <init> (JLkotlin/jvm/functions/Function1;)V
-	public synthetic fun <init> (JLkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (JLkotlin/jvm/functions/Function1;Lcom/apollographql/apollo3/network/ws/WsFrameType;)V
+	public synthetic fun <init> (JLkotlin/jvm/functions/Function1;Lcom/apollographql/apollo3/network/ws/WsFrameType;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun create (Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;Lkotlinx/coroutines/CoroutineScope;)Lcom/apollographql/apollo3/network/ws/WsProtocol;
 	public fun getName ()Ljava/lang/String;
 }

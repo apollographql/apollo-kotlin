@@ -6,13 +6,16 @@ import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withTimeout
+import kotlin.jvm.JvmOverloads
 
 /**
  * A [WsProtocol] for https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md
  *
  * Note: This protocol is no longer actively maintained, and [GraphQLWsProtocol] should be favored instead.
  */
-class SubscriptionWsProtocol(
+class SubscriptionWsProtocol
+@JvmOverloads
+constructor(
     webSocketConnection: WebSocketConnection,
     listener: Listener,
     private val connectionAcknowledgeTimeoutMs: Long = 10_000,
@@ -87,7 +90,9 @@ class SubscriptionWsProtocol(
    * @param connectionPayload a map of additional parameters to send in the "connection_init" message
    * @param frameType the type of the websocket frames to use. Default value: [WsFrameType.Text]
    */
-  class Factory(
+  class Factory
+  @JvmOverloads
+  constructor(
       private val connectionAcknowledgeTimeoutMs: Long = 10_000,
       private val connectionPayload: suspend () -> Map<String, Any?>? = { null },
       private val frameType: WsFrameType = WsFrameType.Text,
