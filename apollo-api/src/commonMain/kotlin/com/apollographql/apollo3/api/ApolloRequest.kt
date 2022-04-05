@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
@@ -23,12 +24,12 @@ private constructor(
     override val canBeBatched: Boolean?,
 ) : ExecutionOptions {
 
-  fun newBuilder(): Builder<D> = duplicate(Builder(operation))
+  @OptIn(ApolloExperimental::class)
+  fun newBuilder(): Builder<D> = newBuilder(operation)
 
-  fun copy(operation: Operation<D>): ApolloRequest<D> = duplicate(Builder(operation)).build()
-
-  private fun duplicate(builder: Builder<D>): Builder<D> {
-    return builder
+  @ApolloExperimental
+  fun <E: Operation.Data> newBuilder(operation: Operation<E>): Builder<E> {
+    return Builder(operation)
         .requestUuid(requestUuid)
         .executionContext(executionContext)
         .httpMethod(httpMethod)
@@ -37,6 +38,7 @@ private constructor(
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
+
   }
 
   class Builder<D : Operation.Data>(
