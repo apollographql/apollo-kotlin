@@ -12,8 +12,6 @@ import kotlinx.coroutines.withTimeout
 /**
  * An [WsProtocol] that uses https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md
  * It can carry queries in addition to subscriptions over the websocket
- *
- * @param connectionPayload a map of additional parameters to send in the "connection_init" message
  */
 class GraphQLWsProtocol(
     private val connectionPayload: Map<String, Any?>? = null,
@@ -108,12 +106,15 @@ class GraphQLWsProtocol(
   }
 
   /**
-   * A factory that for [WsProtocol]
+   * A factory for [GraphQLWsProtocol].
    *
+   * @param connectionPayload a map of additional parameters to send in the "connection_init" message
    * @param pingIntervalMillis the interval between two client-initiated pings or -1 to not send any ping.
    * Default value: -1
    * @param pingPayload the ping payload to send in "ping" messages or null to not send a payload
    * @param pongPayload the pong payload to send in "pong" messages or null to not send a payload
+   * @param connectionAcknowledgeTimeoutMs the timeout for receiving the "connection_ack" message, in milliseconds
+   * @param frameType the type of the websocket frames to use. Default value: [WsFrameType.Text]
    */
   class Factory(
       private val connectionPayload: Map<String, Any?>? = null,
