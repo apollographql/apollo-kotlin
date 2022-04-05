@@ -1,5 +1,60 @@
 Change Log
 ==========
+# Version 3.2.1
+
+_2022-04-05_
+
+This release introduces a few improvements and bug fixes.
+
+## ✨️ [new] `ApolloCall<D>.emitCacheMisses(Boolean)` (#3980)
+
+When observing the cache with `watch`, the behavior was to not emit cache misses at all, which may not desirable in certain cases. With this new option, you can now choose to emit them: in that case responses will be emitted with a null `data`.
+
+This can be used like so:
+
+```kotlin
+apolloClient.query(query)
+  .fetchPolicy(FetchPolicy.CacheOnly)
+  .emitCacheMisses(true)
+  .watch()
+  .collect { response ->
+    // response.data will be null in case of cache misses
+  }
+```
+
+This is also closer to the behavior that was in place in v2. Many thanks to @mateuszkwiecinski for the insights and raising the issue!
+
+## ⚙️ [breaking] Allow configuration of frame types used in `SubscriptionWsProtocol` and default to Text (#3992)
+
+When using subscriptions over WebSockets with `SubscriptionWsProtocol` (the default), the frames were sent in the binary format. It was reported that this was not compatible with certain servers ([DGS](https://netflix.github.io/dgs), [graphql-java-kickstart](https://github.com/graphql-java-kickstart/graphql-spring-boot)) that are expecting text frames. This is now fixed and the default is to send text frames.
+
+> ⚠️ This may be a breaking change if your server expects binary frames only! 
+
+If that is the case, you can use the new `frameType` option to configure the frame type to be sent:
+
+```kotlin
+client = ApolloClient.Builder()
+  .webSocketServerUrl("wss://...")
+  .wsProtocol(GraphQLWsProtocol.Factory(frameType = WsFrameType.Binary))
+  .build()
+```
+
+Many thanks to @Krillsson and @aviewfromspace1 for the insights and raising the issue!
+
+## 👷‍ All changes
+
+* Allow configuration of frame types used in SubscriptionWsProtocol and default to Text (#3992)
+* add `ApolloRequest.newBuilder(operation: Operation<E>)`  (#3988)
+* Add exception handlers to ApolloCacheInterceptor and SqlNormalizedCache (#3989)
+* 📠 Fix some @DeprecatedSince annotations (#3983)
+* 👓  add ApolloCall<D>.emitCacheMisses(Boolean) (#3980)
+* ⚙️  Fix fragments on the root query type in operationBased codegen (#3973)
+
+## ❤️ External contributors
+
+Many thanks to @AdamMTGreenberg and @Krillsson for the contributions! 🙏
+
+
 # Version 3.2.0
 
 _2022-03-29_
