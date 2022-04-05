@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.network.ws
 
+import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.internal.ChannelWrapper
 import com.apollographql.apollo3.mpp.assertMainThreadOnNative
@@ -59,14 +60,14 @@ actual class DefaultWebSocketEngine(
 
   override suspend fun open(
       url: String,
-      headers: Map<String, String>,
+      headers: List<HttpHeader>,
   ): WebSocketConnection {
     assertMainThreadOnNative()
 
     val serverUrl = NSURL(string = url)
 
     val request = NSMutableURLRequest.requestWithURL(serverUrl).apply {
-      headers.forEach { (key, value) -> setValue(value, forHTTPHeaderField = key) }
+      headers.forEach { setValue(it.value, forHTTPHeaderField = it.name) }
       setHTTPMethod("GET")
     }
 

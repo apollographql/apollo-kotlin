@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.network.ws
 
+import com.apollographql.apollo3.api.http.HttpHeader
 import okio.ByteString
 
 /**
@@ -11,7 +12,7 @@ interface WebSocketEngine {
    */
   suspend fun open(
       url: String,
-      headers: Map<String, String> = emptyMap(),
+      headers: List<HttpHeader> = emptyList(),
   ): WebSocketConnection
 }
 

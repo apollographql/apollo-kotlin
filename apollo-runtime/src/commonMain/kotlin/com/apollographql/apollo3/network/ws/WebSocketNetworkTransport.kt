@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.exception.ApolloNetworkException
@@ -52,6 +53,7 @@ import kotlinx.coroutines.launch
 class WebSocketNetworkTransport
 private constructor(
     private val serverUrl: String,
+    private val headers: List<HttpHeader>,
     private val webSocketEngine: WebSocketEngine = DefaultWebSocketEngine(),
     private val idleTimeoutMillis: Long = 60_000,
     private val protocolFactory: WsProtocol.Factory = SubscriptionWsProtocol.Factory(),
@@ -173,9 +175,7 @@ private constructor(
             val webSocketConnection = try {
               webSocketEngine.open(
                   url = serverUrl,
-                  headers = mapOf(
-                      "Sec-WebSocket-Protocol" to protocolFactory.name,
-                  )
+                  headers = headers + HttpHeader("Sec-WebSocket-Protocol", protocolFactory.name),
               )
             } catch (e: Exception) {
               // Error opening the websocket
@@ -285,6 +285,7 @@ private constructor(
 
   class Builder {
     private var serverUrl: String? = null
+    private var headers: MutableList<HttpHeader> = mutableListOf()
     private var webSocketEngine: WebSocketEngine? = null
     private var idleTimeoutMillis: Long? = null
     private var protocolFactory: WsProtocol.Factory? = null
@@ -292,6 +293,19 @@ private constructor(
 
     fun serverUrl(serverUrl: String) = apply {
       this.serverUrl = serverUrl
+    }
+
+    fun addHeader(name: String, value: String) = apply {
+      this.headers += HttpHeader(name, value)
+    }
+
+    fun addHeaders(headers: List<HttpHeader>) = apply {
+      this.headers.addAll(headers)
+    }
+
+    fun headers(headers: List<HttpHeader>) = apply {
+      this.headers.clear()
+      this.headers.addAll(headers)
     }
 
     @Suppress("DEPRECATION")
@@ -334,6 +348,7 @@ private constructor(
       @Suppress("DEPRECATION")
       return WebSocketNetworkTransport(
           serverUrl ?: error("No serverUrl specified"),
+          headers,
           webSocketEngine ?: DefaultWebSocketEngine(),
           idleTimeoutMillis ?: 60_000,
           protocolFactory ?: SubscriptionWsProtocol.Factory(),
