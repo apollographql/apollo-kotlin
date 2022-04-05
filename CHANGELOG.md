@@ -41,12 +41,14 @@ client = ApolloClient.Builder()
 
 Many thanks to @Krillsson and @aviewfromspace1 for the insights and raising the issue!
 
-## 👷‍ Other changes
+## 👷‍ All changes
 
-* ⚙️ Fix fragments on the root query type in operationBased codegen (#3973)
+* Allow configuration of frame types used in SubscriptionWsProtocol and default to Text (#3992)
+* Creating a copy() function for the ApolloRequest  (#3988)
 * Add exception handlers to ApolloCacheInterceptor and SqlNormalizedCache (#3989)
-* Creating a copy() function for the ApolloRequest (#3988)
-* Try to reduce allocations in MapJsonReader (#3935)
+* 📠 Fix some @DeprecatedSince annotations (#3983)
+* 👓  add ApolloCall<D>.emitCacheMisses(Boolean) (#3980)
+* ⚙️  Fix fragments on the root query type in operationBased codegen (#3973)
 
 ## ❤️ External contributors
 
