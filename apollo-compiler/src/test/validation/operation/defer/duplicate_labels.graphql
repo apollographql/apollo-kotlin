@@ -1,18 +1,15 @@
-query GetAnimal {
-  animal {
-    ... on Cat @defer(label: "foobar") {
-      meow
-    }
-    ... on Dog {
-      id
-    }
+query WithFragmentSpreads {
+  computers {
+    ...ComputerFields @defer(label: "foobar")
   }
 }
 
-query GetComputers {
-  computers {
-    ... on Computer @defer(label: "foobar") {
-      id
-    }
+fragment ComputerFields on Computer {
+  screen {
+    ...ScreenFields @defer(label: "foobar")
   }
+}
+
+fragment ScreenFields on Screen {
+  resolution
 }
