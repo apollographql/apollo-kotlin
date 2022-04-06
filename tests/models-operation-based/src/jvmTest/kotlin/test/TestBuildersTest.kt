@@ -7,6 +7,9 @@ import codegen.models.test.AllPlanetsQuery_TestBuilder.Data
 import codegen.models.test.HeroAndFriendsWithTypenameQuery_TestBuilder.Data
 import codegen.models.test.MergedFieldWithSameShapeQuery_TestBuilder.Data
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.api.test.DefaultTestResolver
+import com.apollographql.apollo3.api.test.withTestResolver
+import java.util.Date
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -16,13 +19,21 @@ import kotlin.test.fail
 class TestBuildersTest {
   @Test
   fun allPlanets() {
-    val data = AllPlanetsQuery.Data {
-      allPlanets = allPlanets {
-        planets = listOf(
-            planet {
-              name = "Tatoine"
-            }
-        )
+    val testResolver = object : DefaultTestResolver() {
+      override fun resolveCustomScalar(path: List<Any>): String {
+        // mock a custom scalar
+        return Date().toString()
+      }
+    }
+    val data = withTestResolver(testResolver) {
+      AllPlanetsQuery.Data {
+        allPlanets = allPlanets {
+          planets = listOf(
+              planet {
+                name = "Tatoine"
+              }
+          )
+        }
       }
     }
 
