@@ -10,7 +10,7 @@ import java.util.Date
 
 /**
  * An [Adapter] that converts an ISO 8601 String to/from a [java.util.Date]
- * When writing, it discards the time zone information.
+ * When writing, it discards the offset information.
  *
  * Examples:
  * - "2010-06-01T22:19:44.475Z"

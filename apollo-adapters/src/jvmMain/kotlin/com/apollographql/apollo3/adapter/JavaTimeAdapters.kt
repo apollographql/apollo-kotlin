@@ -12,7 +12,7 @@ import java.time.OffsetDateTime
 
 /**
  * An [Adapter] that converts an ISO 8601 String to/from a [java.time.Instant]
- * When writing, it discards the time zone information.
+ * When writing, it discards the offset information.
  *
  * Examples:
  * - "2010-06-01T22:19:44.475Z"
@@ -22,7 +22,7 @@ import java.time.OffsetDateTime
  */
 object JavaInstantAdapter : Adapter<Instant> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Instant {
-    // Instant.parse chokes on timezones (kotlinx.datetime.Instant doesn't)
+    // Instant.parse chokes on offset (kotlinx.datetime.Instant doesn't)
     return OffsetDateTime.parse(reader.nextString()!!).toInstant()
   }
 
@@ -32,7 +32,7 @@ object JavaInstantAdapter : Adapter<Instant> {
 }
 
 /**
- * An [Adapter] that converts a date and time without time zone information to/from [java.time.LocalDate]
+ * An [Adapter] that converts a date to/from [java.time.LocalDate]
  *
  * Examples:
  * - "2010-06-01"
@@ -50,7 +50,7 @@ object JavaLocalDateAdapter : Adapter<LocalDate> {
 }
 
 /**
- * An [Adapter] that converts a date and time without time zone information to/from [java.time.LocalDateTime]
+ * An [Adapter] that converts a date and time to/from [java.time.LocalDateTime]
  *
  * Examples:
  * - "2010-06-01T22:19:44.475"
