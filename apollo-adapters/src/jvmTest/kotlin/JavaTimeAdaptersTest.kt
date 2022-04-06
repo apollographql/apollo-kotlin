@@ -66,7 +66,7 @@ class JavaTimeAdaptersTest {
   @Test
   fun localDate() {
     val localDate = JavaLocalDateAdapter.fromJson("2010-06-01")
-    assertEquals(1275430784, localDate.toEpochSecond(LocalTime.parse("22:19:44.475"), ZoneOffset.UTC))
+    assertEquals(1275430784, localDate.atTime(LocalTime.parse("22:19:44.475")).toEpochSecond(ZoneOffset.UTC))
     assertEquals("2010-06-01", JavaLocalDateAdapter.toJson(localDate))
   }
 
