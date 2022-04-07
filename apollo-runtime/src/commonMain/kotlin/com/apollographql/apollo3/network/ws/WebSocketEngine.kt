@@ -20,7 +20,7 @@ interface WebSocketEngine {
   /**
    * Open the websocket. Suspends until the handshake is done
    */
-  @Deprecated("Use open(String, List<HttpHeader>) instead.", ReplaceWith("open(String, List<HttpHeader>)"))
+  @Deprecated("Use open(String, List<HttpHeader>) instead.")
   @ApolloDeprecatedSince(v3_2_2)
   suspend fun open(
       url: String,
