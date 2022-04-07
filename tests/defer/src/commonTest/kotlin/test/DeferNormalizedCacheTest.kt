@@ -10,8 +10,10 @@ import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
+import com.apollographql.apollo3.cache.normalized.optimisticUpdates
 import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.exception.ApolloCompositeException
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.CacheMissException
@@ -435,6 +437,26 @@ class DeferNormalizedCacheTest {
                 ScreenFields(false)))))
     )
     assertEquals(cacheExpected, cacheActual)
+  }
+
+  @Test
+  fun mutationWithOptimisticDataFails() = runTest(before = { setUp() }, after = { tearDown() }) {
+    val jsonList = listOf(
+        """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"}]},"hasNext":true}""",
+        """{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0],"hasNext":true,"label":"c"}""",
+        """{"data":{"isColor":false},"path":["computers",0,"screen"],"hasNext":false,"label":"a"}""",
+    )
+    mockServer.enqueueMultipart(jsonList)
+    val responses = apolloClient.mutation(WithFragmentSpreadsMutation()).optimisticUpdates(
+        WithFragmentSpreadsMutation.Data(
+            listOf(WithFragmentSpreadsMutation.Computer("Computer", "Computer1", null))
+        )
+    ).toFlow()
+
+    val exception = assertFailsWith<ApolloException> {
+      responses.collect()
+    }
+    assertEquals("Apollo: optimistic updates can only be applied with one network response", exception.message)
   }
 
 }

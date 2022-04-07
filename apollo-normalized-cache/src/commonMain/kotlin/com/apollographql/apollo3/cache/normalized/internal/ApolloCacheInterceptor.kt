@@ -158,7 +158,12 @@ internal class ApolloCacheInterceptor(
 
       var optimisticKeys: Set<String>? = null
 
+      var previousResponse: ApolloResponse<D>? = null
       networkResponses.collect { response ->
+        if (optimisticData != null && previousResponse != null) {
+          throw ApolloException("Apollo: optimistic updates can only be applied with one network response")
+        }
+        previousResponse = response
         if (optimisticKeys == null) optimisticKeys = if (optimisticData != null) {
           store.rollbackOptimisticUpdates(request.requestUuid, publish = false)
         } else {
