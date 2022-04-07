@@ -7,29 +7,35 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import java.time.OffsetDateTime
 
-private val formatter = DateTimeFormatter.ISO_INSTANT
 
 /**
- * An [Adapter] that converts an ISO 8601 String like "2010-06-01T22:19:44.475Z" to/from
- * a [java.time.Instant]
+ * An [Adapter] that converts an ISO 8601 String to/from a [java.time.Instant]
+ * When writing, it discards the offset information.
+ *
+ * Examples:
+ * - "2010-06-01T22:19:44.475Z"
+ * - "2010-06-01T23:19:44.475+01:00"
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
 object JavaInstantAdapter : Adapter<Instant> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Instant {
-    return formatter.parse(reader.nextString()!!, Instant::from)
+    // Instant.parse chokes on offset (kotlinx.datetime.Instant doesn't)
+    return OffsetDateTime.parse(reader.nextString()!!).toInstant()
   }
 
   override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Instant) {
-    writer.value(formatter.format(value))
+    writer.value(value.toString())
   }
 }
 
 /**
- * An [Adapter] that converts an ISO 8601 String like "2010-06-01" to/from
- * a [java.time.LocalDate]
+ * An [Adapter] that converts a date to/from [java.time.LocalDate]
+ *
+ * Examples:
+ * - "2010-06-01"
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
@@ -44,8 +50,10 @@ object JavaLocalDateAdapter : Adapter<LocalDate> {
 }
 
 /**
- * An [Adapter] that converts an ISO 8601 String without time zone information like "2010-06-01T22:19:44.475" to/from
- * a [java.time.LocalDateTime]
+ * An [Adapter] that converts a date and time to/from [java.time.LocalDateTime]
+ *
+ * Examples:
+ * - "2010-06-01T22:19:44.475"
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
