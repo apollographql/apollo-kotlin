@@ -216,8 +216,23 @@ class SqlNormalizedCacheTest {
     apolloExceptionHandler = {
       throwable = it
     }
+
     badCache.loadRecord(STANDARD_KEY, CacheHeaders.NONE)
     assertEquals("Unable to read a record from the database", throwable!!.message)
+    assertEquals("bad cache", throwable!!.cause!!.message)
+
+    throwable = null
+    badCache.merge(
+        record = Record(
+            key = STANDARD_KEY,
+            fields = mapOf(
+                "fieldKey" to "valueUpdated",
+                "newFieldKey" to true,
+            ),
+        ),
+        cacheHeaders = CacheHeaders.NONE,
+    )
+    assertEquals("Unable to merge a record from the database", throwable!!.message)
     assertEquals("bad cache", throwable!!.cause!!.message)
   }
 
