@@ -147,7 +147,7 @@ internal class ApolloCacheInterceptor(
        * This doesn't use [readFromNetwork] so that we can publish all keys all at once after the keys have been rolled back
        */
       var networkException: ApolloException? = null
-      val networkResponse: Flow<ApolloResponse<D>> = chain.proceed(request)
+      val networkResponses: Flow<ApolloResponse<D>> = chain.proceed(request)
           .catch {
             if (it is ApolloException) {
               networkException = it
@@ -158,7 +158,7 @@ internal class ApolloCacheInterceptor(
 
       var optimisticKeys: Set<String>? = null
 
-      networkResponse.collect { response ->
+      networkResponses.collect { response ->
         if (optimisticKeys == null) optimisticKeys = if (optimisticData != null) {
           store.rollbackOptimisticUpdates(request.requestUuid, publish = false)
         } else {

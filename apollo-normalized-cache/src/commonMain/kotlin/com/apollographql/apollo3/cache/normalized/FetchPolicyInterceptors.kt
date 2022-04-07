@@ -66,7 +66,7 @@ val CacheFirstInterceptor = object : ApolloInterceptor {
         return@flow
       }
 
-      val networkResponse = chain.proceed(
+      val networkResponses = chain.proceed(
           request = request
       ).catch {
         if (it is ApolloException) {
@@ -85,7 +85,7 @@ val CacheFirstInterceptor = object : ApolloInterceptor {
             .build()
       }
 
-      emitAll(networkResponse)
+      emitAll(networkResponses)
 
       if (networkException != null) {
         throw ApolloCompositeException(
@@ -103,7 +103,7 @@ val NetworkFirstInterceptor = object : ApolloInterceptor {
       var cacheException: ApolloException? = null
       var networkException: ApolloException? = null
 
-      val networkResponse = chain.proceed(
+      val networkResponses = chain.proceed(
           request = request
       ).catch {
         if (it is ApolloException) {
@@ -113,7 +113,7 @@ val NetworkFirstInterceptor = object : ApolloInterceptor {
         }
       }
 
-      emitAll(networkResponse)
+      emitAll(networkResponses)
       if (networkException == null) {
         return@flow
       }
@@ -180,7 +180,7 @@ val CacheAndNetworkInterceptor = object : ApolloInterceptor {
         emit(cacheResponse.newBuilder().isLast(false).build())
       }
 
-      val networkResponse = chain.proceed(request)
+      val networkResponses = chain.proceed(request)
           .catch {
             if (it is ApolloException) {
               networkException = it
@@ -199,7 +199,7 @@ val CacheAndNetworkInterceptor = object : ApolloInterceptor {
                 .build()
           }
 
-      emitAll(networkResponse)
+      emitAll(networkResponses)
 
       if (networkException != null) {
         if (cacheException != null) {
