@@ -1,5 +1,8 @@
 package com.apollographql.apollo3.network.ws
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_2_2
+import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.internal.ChannelWrapper
 import com.apollographql.apollo3.mpp.assertMainThreadOnNative
@@ -59,14 +62,14 @@ actual class DefaultWebSocketEngine(
 
   override suspend fun open(
       url: String,
-      headers: Map<String, String>,
+      headers: List<HttpHeader>,
   ): WebSocketConnection {
     assertMainThreadOnNative()
 
     val serverUrl = NSURL(string = url)
 
     val request = NSMutableURLRequest.requestWithURL(serverUrl).apply {
-      headers.forEach { (key, value) -> setValue(value, forHTTPHeaderField = key) }
+      headers.forEach { setValue(it.value, forHTTPHeaderField = it.name) }
       setHTTPMethod("GET")
     }
 
@@ -100,6 +103,17 @@ actual class DefaultWebSocketEngine(
       throw e
     }
   }
+
+  @Deprecated(
+      "Use open(String, List<HttpHeader>) instead.",
+      ReplaceWith(
+          "open(url, headers.map { HttpHeader(it.key, it.value })",
+          "com.apollographql.apollo3.api.http.HttpHeader"
+      )
+  )
+  @ApolloDeprecatedSince(v3_2_2)
+  override suspend fun open(url: String, headers: Map<String, String>): WebSocketConnection =
+      open(url, headers.map { HttpHeader(it.key, it.value) })
 }
 
 private class WebSocketConnectionImpl(

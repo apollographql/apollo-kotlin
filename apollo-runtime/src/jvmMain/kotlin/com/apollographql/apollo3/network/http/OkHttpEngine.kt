@@ -5,9 +5,9 @@ import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.network.toOkHttpHeaders
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
-import okhttp3.Headers
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -37,13 +37,7 @@ actual class DefaultHttpEngine constructor(
   override suspend fun execute(request: HttpRequest): HttpResponse = suspendCancellableCoroutine { continuation ->
     val httpRequest = Request.Builder()
         .url(request.url)
-        .headers(
-            Headers.Builder().apply {
-              request.headers.forEach {
-                this.add(it.name, it.value)
-              }
-            }.build()
-        )
+        .headers(request.headers.toOkHttpHeaders())
         .apply {
           if (request.method == HttpMethod.Get) {
             get()
