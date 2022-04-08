@@ -2,6 +2,7 @@ import com.apollographql.apollo3.adapter.DateAdapter
 import com.apollographql.apollo3.adapter.JavaInstantAdapter
 import com.apollographql.apollo3.adapter.JavaLocalDateAdapter
 import com.apollographql.apollo3.adapter.JavaLocalDateTimeAdapter
+import com.apollographql.apollo3.adapter.JavaOffsetDateTimeAdapter
 import com.apollographql.apollo3.adapter.KotlinxInstantAdapter
 import com.apollographql.apollo3.adapter.KotlinxLocalDateAdapter
 import com.apollographql.apollo3.adapter.KotlinxLocalDateTimeAdapter
@@ -42,6 +43,18 @@ class JavaTimeAdaptersTest {
     assertEquals(1275430784475, instant.toEpochMilli())
     // Time zone is lost
     assertEquals("2010-06-01T22:19:44.475Z", JavaInstantAdapter.toJson(instant))
+  }
+
+  @Test
+  fun offsetDateTime() {
+    var offsetDateTime = JavaOffsetDateTimeAdapter.fromJson("2010-06-01T23:19:44.475+01:00")
+    assertEquals(1275430784475, offsetDateTime.toInstant().toEpochMilli())
+    // Offset is retained
+    assertEquals("2010-06-01T23:19:44.475+01:00", JavaOffsetDateTimeAdapter.toJson(offsetDateTime))
+
+    offsetDateTime = JavaOffsetDateTimeAdapter.fromJson("2010-06-01T22:19:44.475Z")
+    assertEquals(1275430784475, offsetDateTime.toInstant().toEpochMilli())
+    assertEquals("2010-06-01T22:19:44.475Z", JavaOffsetDateTimeAdapter.toJson(offsetDateTime))
   }
 
   @Test
