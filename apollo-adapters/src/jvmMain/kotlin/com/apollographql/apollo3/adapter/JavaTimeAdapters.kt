@@ -8,6 +8,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 
 
 /**
@@ -64,5 +65,23 @@ object JavaLocalDateTimeAdapter : Adapter<LocalDateTime> {
 
   override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: LocalDateTime) {
     writer.value(value.toString())
+  }
+}
+
+/**
+ * An [Adapter] that converts a date and time to/from [java.time.OffsetDateTime]
+ *
+ * Examples:
+ * - "2010-06-01T22:19:44.475+01:00"
+ *
+ * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
+ */
+object JavaOffsetDateTimeAdapter : Adapter<OffsetDateTime> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): OffsetDateTime {
+    return OffsetDateTime.parse(reader.nextString()!!)
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: OffsetDateTime) {
+    writer.value(value.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME))
   }
 }
