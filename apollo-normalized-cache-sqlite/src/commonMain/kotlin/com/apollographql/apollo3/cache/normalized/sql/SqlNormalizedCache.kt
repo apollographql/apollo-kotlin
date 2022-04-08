@@ -82,22 +82,36 @@ class SqlNormalizedCache internal constructor(
     return selfRemoved + chainRemoved
   }
 
+  @OptIn(ApolloExperimental::class)
   override fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
       return emptySet()
     }
-    return cacheQueries.updateRecords(
-        records = records,
-    )
+    return try {
+      cacheQueries.updateRecords(
+          records = records,
+      )
+    } catch (e: Exception) {
+      // Unable to merge the records in the database, it is possibly corrupted - treat this as a cache miss
+      apolloExceptionHandler(Exception("Unable to merge records from the database", e))
+      emptySet()
+    }
   }
 
+  @OptIn(ApolloExperimental::class)
   override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
       return emptySet()
     }
-    return cacheQueries.updateRecord(
+    return try {
+      cacheQueries.updateRecord(
         record = record,
-    )
+      )
+    } catch (e: Exception) {
+      // Unable to merge the record in the database, it is possibly corrupted - treat this as a cache miss
+      apolloExceptionHandler(Exception("Unable to merge a record from the database", e))
+      emptySet()
+    }
   }
 
   override fun dump(): Map<KClass<*>, Map<String, Record>> {
