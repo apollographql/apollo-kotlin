@@ -395,16 +395,16 @@ private constructor(
      * Configures auto persisted queries.
      *
      * @param httpMethodForHashedQueries: the [HttpMethod] to use for the initial hashed query that does not send the actual Graphql document.
-     * [HttpMethod.Get] allows to use caching when available while [HttpMethod.Post] usually allows bigger document sizes.
+     * [HttpMethod.Get] allows to use caching when available while [HttpMethod.Post] usually allows bigger document sizes. Mutations are
+     * always sent using [HttpMethod.Post] regardless of this setting.
      * Default: [HttpMethod.Get]
      *
-     * @param httpMethodForDocumentQueries: the [HttpMethod] to use for the follow up query that sends the full document if the initial
-     * hashed query was not found.
+     * @param httpMethodForDocumentQueries: the [HttpMethod] to use for the follow-up query that sends the full document if the initial
+     * hashed query was not found. Mutations are always sent using [HttpMethod.Post] regardless of this setting.
      * Default: [HttpMethod.Post]
      *
-     * @param enableByDefault: whether to enable Auto Persisted Queries by default. If true, it will set httpMethodForHashedQueries,
-     * sendApqExtensions=true and sendDocument=false.
-     * If false it will leave them untouched. You can later use [enableAutoPersistedQueries] to enable them
+     * @param enableByDefault: whether to enable Auto Persisted Queries by default. You can later use
+     * [ApolloCall.enableAutoPersistedQueries] on to enable/disable them on individual calls.
      */
     @JvmOverloads
     fun autoPersistedQueries(

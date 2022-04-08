@@ -4,6 +4,7 @@ import com.apollographql.apollo3.AutoPersistedQueryInfo
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
+import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.exception.AutoPersistedQueriesNotSupported
@@ -23,9 +24,12 @@ internal class AutoPersistedQueryInterceptor(
       return chain.proceed(request)
     }
 
+    // Always use POST for mutations to avoid hitting HTTP caches
+    val isMutation = request.operation is Mutation
+
     @Suppress("NAME_SHADOWING")
     val request = request.newBuilder()
-        .httpMethod(httpMethodForHashedQueries)
+        .httpMethod(if (isMutation) HttpMethod.Post else httpMethodForHashedQueries)
         .sendDocument(false)
         .sendApqExtensions(true)
         .build()
@@ -37,7 +41,7 @@ internal class AutoPersistedQueryInterceptor(
         isPersistedQueryNotFound(response.errors) -> {
           val retryRequest = request
               .newBuilder()
-              .httpMethod(httpMethodForDocumentQueries)
+              .httpMethod(if (isMutation) HttpMethod.Post else httpMethodForDocumentQueries)
               .sendDocument(true)
               .sendApqExtensions(true)
               .build()
