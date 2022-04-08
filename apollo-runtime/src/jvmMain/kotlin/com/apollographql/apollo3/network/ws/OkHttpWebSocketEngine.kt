@@ -1,10 +1,13 @@
 package com.apollographql.apollo3.network.ws
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_2_2
+import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
 import com.apollographql.apollo3.internal.ChannelWrapper
+import com.apollographql.apollo3.network.toOkHttpHeaders
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.channels.Channel
-import okhttp3.Headers.Companion.toHeaders
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -22,7 +25,7 @@ actual class DefaultWebSocketEngine(
 
   override suspend fun open(
       url: String,
-      headers: Map<String, String>,
+      headers: List<HttpHeader>,
   ): WebSocketConnection {
     val messageChannel = ChannelWrapper(Channel<String>(Channel.UNLIMITED))
     val webSocketOpenResult = CompletableDeferred<Unit>()
@@ -30,7 +33,7 @@ actual class DefaultWebSocketEngine(
     //println("opening $url")
     val request = Request.Builder()
         .url(url)
-        .headers(headers.toHeaders())
+        .headers(headers.toOkHttpHeaders())
         .build()
 
     val webSocket = webSocketFactory.newWebSocket(request, object : WebSocketListener() {
@@ -105,4 +108,15 @@ actual class DefaultWebSocketEngine(
       }
     }
   }
+
+  @Deprecated(
+      "Use open(String, List<HttpHeader>) instead.",
+      ReplaceWith(
+          "open(url, headers.map { HttpHeader(it.key, it.value })",
+          "com.apollographql.apollo3.api.http.HttpHeader"
+      )
+  )
+  @ApolloDeprecatedSince(v3_2_2)
+  override suspend fun open(url: String, headers: Map<String, String>): WebSocketConnection =
+    open(url, headers.map { HttpHeader(it.key, it.value) })
 }

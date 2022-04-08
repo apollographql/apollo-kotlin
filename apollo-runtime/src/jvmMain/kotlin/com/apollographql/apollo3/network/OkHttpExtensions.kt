@@ -1,11 +1,13 @@
 package com.apollographql.apollo3.network
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.network.ws.DefaultWebSocketEngine
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import okhttp3.Call
+import okhttp3.Headers
 import okhttp3.OkHttpClient
 
 /**
@@ -46,3 +48,10 @@ fun HttpNetworkTransport.Builder.okHttpCallFactory(okHttpCallFactory: Call.Facto
 fun WebSocketNetworkTransport.Builder.okHttpClient(okHttpClient: OkHttpClient) = apply {
   webSocketEngine(DefaultWebSocketEngine(okHttpClient))
 }
+
+internal fun List<HttpHeader>.toOkHttpHeaders(): Headers =
+    Headers.Builder().also { headers ->
+      this.forEach {
+        headers.add(it.name, it.value)
+      }
+    }.build()

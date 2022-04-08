@@ -1,5 +1,8 @@
 package com.apollographql.apollo3.network.ws
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_2_2
+import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.internal.ChannelWrapper
 import io.ktor.http.Headers
 import io.ktor.http.URLProtocol
@@ -19,10 +22,10 @@ actual class DefaultWebSocketEngine : WebSocketEngine {
 
   override suspend fun open(
       url: String,
-      headers: Map<String, String>,
+      headers: List<HttpHeader>,
   ): WebSocketConnection = open(Url(url), headers)
 
-  private suspend fun open(url: Url, headers: Map<String, String>): WebSocketConnection {
+  private suspend fun open(url: Url, headers: List<HttpHeader>): WebSocketConnection {
     val newUrl = url.copy(
         protocol = when (url.protocol) {
           URLProtocol.HTTPS -> URLProtocol.WSS
@@ -30,7 +33,7 @@ actual class DefaultWebSocketEngine : WebSocketEngine {
           URLProtocol.WS, URLProtocol.WSS -> url.protocol
           /* URLProtocol.SOCKS */else -> throw UnsupportedOperationException("SOCKS is not a supported protocol")
       })
-    val socket = createWebSocket(newUrl.toString(), Headers.build { headers.forEach { append(it.key, it.value) } }).awaitConnection()
+    val socket = createWebSocket(newUrl.toString(), Headers.build { headers.forEach { append(it.name, it.value) } }).awaitConnection()
     val messageChannel = ChannelWrapper(Channel<String>(Channel.UNLIMITED))
     socket.onmessage = { messageEvent: MessageEvent ->
       val data = messageEvent.data
@@ -65,6 +68,17 @@ actual class DefaultWebSocketEngine : WebSocketEngine {
 
     }
   }
+
+  @Deprecated(
+      "Use open(String, List<HttpHeader>) instead.",
+      ReplaceWith(
+          "open(url, headers.map { HttpHeader(it.key, it.value })",
+          "com.apollographql.apollo3.api.http.HttpHeader"
+      )
+  )
+  @ApolloDeprecatedSince(v3_2_2)
+  override suspend fun open(url: String, headers: Map<String, String>): WebSocketConnection =
+      open(url, headers.map { HttpHeader(it.key, it.value) })
 
   /*
    * The function below works due to ktor being used for the HTTP engine
