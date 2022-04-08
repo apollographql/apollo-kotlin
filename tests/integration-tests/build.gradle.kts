@@ -88,6 +88,7 @@ fun configureApollo(generateKotlinModels: Boolean) {
                 customScalarsMapping.set(mapOf(
                     "Date" to "com.example.MyDate"
                 ))
+                addJvmOverloads.set(true)
               }
             }
 

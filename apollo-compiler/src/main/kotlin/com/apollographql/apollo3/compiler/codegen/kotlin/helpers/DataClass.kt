@@ -33,7 +33,7 @@ fun TypeSpec.Builder.makeDataClass(
         }
 
         if (addJvmOverloads && hasDefaultValues) {
-          addAnnotation(JvmOverloads::class)
+          addAnnotation(KotlinSymbols.JvmOverloads)
         }
       }
       .build())

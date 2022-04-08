@@ -1,10 +1,10 @@
-query LaunchDetails($id:ID!) {
+query LaunchDetails($id:ID!, $size: PatchSize! = LARGE) {
   launch(id: $id) {
     id
     site
     mission {
       name
-      missionPatch(size:LARGE)
+      missionPatch(size: $size)
     }
     rocket {
       name
