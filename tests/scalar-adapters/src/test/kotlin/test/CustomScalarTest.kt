@@ -77,7 +77,7 @@ class CustomScalarTest {
           "int": 1,
           "nullableInt": null,
           "string": "string",
-          "nullableString": null,
+          "nullableString": null
         }
       }
     """.trimIndent())
