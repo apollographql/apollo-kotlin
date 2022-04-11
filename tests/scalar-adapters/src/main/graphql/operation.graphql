@@ -1,20 +1,27 @@
-query GetAll {
+query CompileTimeAdapters {
+  int
+  nullableInt
+  string
+  nullableString
+}
+
+query BuiltInAdapters {
   id
   nullableId
   long
   float
   any
   geoPoints
-  string
-  nullableString
-  int
-  nullableInt
   boolean
   nullableBoolean
   notMapped
   nullableNotMapped
 }
 
-query GetAddress {
+query Address {
   address
+}
+
+query Decimal {
+  decimal
 }

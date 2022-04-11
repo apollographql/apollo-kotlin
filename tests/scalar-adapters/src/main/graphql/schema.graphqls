@@ -4,6 +4,7 @@ scalar Any
 scalar GeoPoint
 scalar Address
 scalar NotMapped
+scalar Decimal
 
 type Query {
   float: CustomFloat
@@ -21,5 +22,6 @@ type Query {
   nullableBoolean: Boolean
   notMapped: NotMapped!
   nullableNotMapped: NotMapped
+  decimal: Decimal
 }
 
