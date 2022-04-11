@@ -4,7 +4,7 @@ Change Log
 
 _2022-04-11_
 
-A maintenance release to fix the `addJvmOverloads` option added in 3.2.0 as well as other fixes.
+A maintenance release to fix the `addJvmOverloads` option added in 3.2.0 as well as other fixes. If you're using APQs, the mutations are now always send using `POST`. See [#4006](https://github.com/apollographql/apollo-kotlin/issues/4006#issuecomment-1092628783) for details and a way to override the behaviour if you really need to.
 
 Many thanks to @benedict-lim, @olivierg13, @konomae and @sproctor for their contributions 💙 
 
