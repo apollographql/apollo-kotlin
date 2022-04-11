@@ -4,7 +4,7 @@ title: Persisted queries in Apollo Kotlin
 
 ## Automatic persisted queries
 
-Apollo Kotlin supports [Automatic Persisted Queries](https://www.apollographql.com/docs/apollo-server/performance/apq/) (APQ). To take advantage of this support, your GraphQL server _also_ needs to support APQ (Apollo Server supports it out of the box).
+Apollo Kotlin supports [Automatic Persisted Queries](https://www.apollographql.com/docs/apollo-server/performance/apq/) (APQ). To take advantage of it, your GraphQL server _also_ needs to support APQ (Apollo Server supports it out of the box).
 
 Enable the feature when you initialize your `ApolloClient` instance, like so:
 
@@ -15,17 +15,25 @@ val apolloClient = ApolloClient.Builder()
   .build()
 ```
 
-You can optionally configure apollo-android to send GET HTTP verbs for queries, to benefit from caching if your server uses a CDN:
+You can optionally configure the HTTP methods to use. Using `GET` may take advantage of HTTP caching for instance when using a CDN:
 ```kotlin
 val apolloClient = ApolloClient.Builder()
     .serverUrl("https://...")
-    .autoPersistedQueries(httpMethodForDocumentQueries = HttpMethod.Get)
+    .autoPersistedQueries(
+        // For the initial hashed query that does not send the actual Graphql document
+        httpMethodForHashedQueries = HttpMethod.Get,
+        
+        // For the follow-up query that sends the full document if the initial hashed query was not found
+        httpMethodForDocumentQueries = HttpMethod.Get
+    )
     .build()
 ```
 
-## Disable persisted queries for some queries
+Note that mutations will always be sent as `POST` requests, regardless of these settings, as to avoid hitting caches.
 
-You may want to disable server side caching like for some users data that is updated often. In order to do that, set `hashedQuery` to false like:
+## Disable persisted queries for certain queries
+
+You may want to disable persisted queries for certain queries, for instance to avoid any caching when the data is updated often. In order to do that, set `enableAutoPersistedQueries` to false on the `ApolloCall`:
 ```kotlin
 apolloClient.query(myQuery).enableAutoPersistedQueries(false).toFlow()
 ```
