@@ -126,12 +126,12 @@ class EnumAsEnumBuilder(
   private val primaryConstructorSpec =
       FunSpec
           .constructorBuilder()
-          .addParameter("rawValue", String::class)
+          .addParameter("rawValue", KotlinSymbols.String)
           .build()
 
   private val rawValuePropertySpec =
       PropertySpec
-          .builder("rawValue", String::class)
+          .builder("rawValue", KotlinSymbols.String)
           .initializer("rawValue")
           .build()
 

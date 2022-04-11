@@ -1,0 +1,6 @@
+query GetPerson($id: ID = "0") {
+  person(id: $id) {
+    id
+    name
+  }
+}
