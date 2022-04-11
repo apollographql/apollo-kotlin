@@ -5,12 +5,14 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 
-val MyStringAdapter = object : Adapter<String> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): String {
-    return reader.nextString()!!
+class MyString(val value: String)
+
+val MyStringAdapter = object : Adapter<MyString> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): MyString {
+    return MyString(reader.nextString()!!)
   }
 
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: String) {
-    writer.value(value)
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: MyString) {
+    writer.value(value.value)
   }
 }

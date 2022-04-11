@@ -1,21 +1,30 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.adapter.BigDecimalAdapter
+import com.apollographql.apollo3.adapter.toNumber
 import com.apollographql.apollo3.api.CustomTypeAdapter
 import com.apollographql.apollo3.api.CustomTypeValue
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runTest
 import custom.scalars.Address
-import custom.scalars.GetAddressQuery
-import custom.scalars.GetAllQuery
+import custom.scalars.AddressQuery
+import custom.scalars.BuiltInAdaptersQuery
+import custom.scalars.CompileTimeAdaptersQuery
+import custom.scalars.DecimalQuery
+import custom.scalars.type.Decimal
 import org.junit.Test
+import java.math.BigDecimal
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 class CustomScalarTest {
+  /**
+   * scalar types that are going to reuse the built in adapters
+   */
   @Test
-  fun adaptersDontNeedToBeRegistered() = runTest {
+  fun builtInAdapters() = runTest {
     val server = MockServer()
     server.enqueue("""
       {
@@ -29,10 +38,6 @@ class CustomScalarTest {
             { "lat": 1, "lon": 2 },
             { "lat": 3, "lon": 4 }
           ],
-          "string": "string",
-          "nullableString": null,
-          "int": 1,
-          "nullableInt": null,
           "boolean": true,
           "nullableBoolean": null,
           "notMapped": { "key": "value" },
@@ -42,7 +47,7 @@ class CustomScalarTest {
     """.trimIndent())
 
     val data = ApolloClient.Builder().serverUrl(serverUrl = server.url()).build()
-        .query(GetAllQuery())
+        .query(BuiltInAdaptersQuery())
         .execute()
         .dataAssertNoErrors
     assertEquals(1L, data.id)
@@ -54,16 +59,65 @@ class CustomScalarTest {
         mapOf("lat" to 1, "lon" to 2),
         mapOf("lat" to 3, "lon" to 4),
     ), data.geoPoints)
-    assertEquals("string", data.string)
-    assertNull(data.nullableString)
-    assertEquals(1, data.int)
-    assertNull(data.nullableInt)
     assertEquals(true, data.boolean)
     assertNull(data.nullableBoolean)
     assertEquals(mapOf("key" to "value"), data.notMapped)
     assertNull(data.nullableNotMapped)
   }
 
+  /**
+   * compileTime
+   */
+  @Test
+  fun compileTimeAdapters() = runTest {
+    val server = MockServer()
+    server.enqueue("""
+      {
+        "data": {
+          "int": 1,
+          "nullableInt": null,
+          "string": "string",
+          "nullableString": null,
+        }
+      }
+    """.trimIndent())
+
+    val data = ApolloClient.Builder().serverUrl(serverUrl = server.url()).build()
+        .query(CompileTimeAdaptersQuery())
+        .execute()
+        .dataAssertNoErrors
+
+    assertEquals("string", data.string.value)
+    assertNull(data.nullableString)
+    assertEquals(1, data.int.value)
+    assertNull(data.nullableInt)
+
+  }
+
+  @Test
+  fun bigDecimal() = runTest {
+    val server = MockServer()
+    server.enqueue("""
+      {
+        "data": {
+          "decimal": 1000000000000000000000000000000000000000000
+        }
+      }
+    """.trimIndent())
+
+    val data = ApolloClient.Builder()
+        .serverUrl(serverUrl = server.url())
+        .build()
+        .query(DecimalQuery())
+        .execute()
+        .dataAssertNoErrors
+
+    assertEquals("1000000000000000000000000000000000000000000", data.decimal?.toString())
+  }
+
+  /**
+   * Test the backward compat `addCustomTypeAdapter`
+   */
   @Test
   fun addCustomTypeAdapter() = runTest {
     val server = MockServer()
@@ -102,7 +156,7 @@ class CustomScalarTest {
         .serverUrl(serverUrl = server.url())
         .addCustomTypeAdapter(custom.scalars.type.Address.type, customTypeAdapter)
         .build()
-        .query(GetAddressQuery())
+        .query(AddressQuery())
         .execute()
         .dataAssertNoErrors
 
