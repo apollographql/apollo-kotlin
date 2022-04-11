@@ -322,7 +322,8 @@ interface Service {
   val useSchemaPackageNameForFragments: Property<Boolean>
 
   /**
-   * Whether to generate kotlin constructors with @JvmOverloads for more graceful Java interop experience when default values are present.
+   * Whether to generate kotlin constructors with `@JvmOverloads` for more graceful Java interop experience when default values are present.
+   * Note: when enabled in a multi-platform setup, the generated code can only be used in the common or JVM sourcesets.
    *
    * Default value: false
    */
