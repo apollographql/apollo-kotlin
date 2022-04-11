@@ -1,5 +1,23 @@
 Change Log
 ==========
+# Version 3.2.2
+
+_2022-04-11_
+
+A maintenance release to fix the `addJvmOverloads` option added in 3.2.0 as well as other fixes. If you're using APQs, the mutations are now always send using `POST`. See [#4006](https://github.com/apollographql/apollo-kotlin/issues/4006#issuecomment-1092628783) for details and a way to override the behaviour if you really need to.
+
+Many thanks to @benedict-lim, @olivierg13, @konomae and @sproctor for their contributions 💙 
+
+## 👷‍ All changes
+
+* Use a constant for JvmOverloads to avoid a crash due to relocation (#4008)
+* Always use POST for Mutations in APQs (Auto Persisted Queries) (#4011)
+* Add configurable headers to WebSocketNetworkTransport (#3995)
+* Handle SqlNormalizedCache merge APIs Exceptions with ApolloExceptionHandler (#4002)
+* Add adapter for java.time.OffsetDateTime (#4007)
+* ⏰  Add tests for date adapters (#3999)
+* Fix wrong LocalDate and LocalDateTime formats in JavaTimeAdapters (#3997)
+
 # Version 3.2.1
 
 _2022-04-05_
