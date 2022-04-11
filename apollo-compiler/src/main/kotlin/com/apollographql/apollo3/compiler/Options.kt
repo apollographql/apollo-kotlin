@@ -2,7 +2,6 @@ package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_1_1
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.toSchema
@@ -177,12 +176,13 @@ class Options(
     val generateOptionalOperationVariables: Boolean = defaultGenerateOptionalOperationVariables,
 
     /**
-     * Whether to generate kotlin constructors with @JvmOverloads for more graceful Java interop experience when default values are present.
+     * Whether to generate kotlin constructors with `@JvmOverloads` for more graceful Java interop experience when default values are present.
+     * Note: when enabled in a multi-platform setup, the generated code can only be used in the common or JVM sourcesets.
      *
      * Default: false
      */
     val addJvmOverloads: Boolean = false,
-    val addTypename: String = defaultAddTypename
+    val addTypename: String = defaultAddTypename,
 ) {
 
   /**
