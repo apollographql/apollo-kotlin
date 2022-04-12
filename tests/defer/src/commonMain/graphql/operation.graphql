@@ -1,9 +1,10 @@
-query WithFragmentSpreads {
+query WithFragmentSpreadsQuery {
   computers {
     id
     ...ComputerFields @defer
   }
 }
+
 fragment ComputerFields on Computer {
   cpu
   year
@@ -12,13 +13,13 @@ fragment ComputerFields on Computer {
     ...ScreenFields @defer(label: "a")
   }
 }
+
 fragment ScreenFields on Screen {
   isColor
 }
 
 
-
-query WithInlineFragments {
+query WithInlineFragmentsQuery {
   computers {
     id
     ... on Computer @defer {
@@ -31,5 +32,13 @@ query WithInlineFragments {
         }
       }
     }
+  }
+}
+
+
+mutation WithFragmentSpreadsMutation {
+  computers {
+    id
+    ...ComputerFields @defer(label: "c")
   }
 }

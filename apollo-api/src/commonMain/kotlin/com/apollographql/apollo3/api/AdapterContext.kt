@@ -19,7 +19,11 @@ class AdapterContext private constructor(
   }
 
   fun hasDeferredFragment(path: List<Any>, label: String?): Boolean {
-    return mergedDeferredFragmentIds?.contains(DeferredFragmentIdentifier(path, label)) == true
+    if (mergedDeferredFragmentIds == null) {
+      // By default, parse all deferred fragments - this is the case when parsing from the normalized cache.
+      return true
+    }
+    return mergedDeferredFragmentIds.contains(DeferredFragmentIdentifier(path, label))
   }
 
   class Builder {

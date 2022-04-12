@@ -14,10 +14,7 @@ import defer.fragment.ComputerFields
 import defer.fragment.ScreenFields
 import kotlinx.coroutines.flow.toList
 import kotlin.test.Test
-import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 
 @OptIn(ApolloExperimental::class)
 class DeferTest {
@@ -242,30 +239,3 @@ class DeferTest {
     assertResponseListEquals(expectedDataList, actualResponseList)
   }
 }
-
-private fun assertResponseListEquals(expectedDataList: List<ApolloResponse<*>>, actualResponseList: List<ApolloResponse<*>>) {
-  assertContentEquals(expectedDataList, actualResponseList) { expectedResponse, actualResponse ->
-    assertEquals(expectedResponse.data, actualResponse.data)
-    assertContentEquals(expectedResponse.errors, actualResponse.errors) { expectedError, actualError ->
-      assertEquals(expectedError.message, actualError.message)
-      assertContentEquals(expectedError.path, actualError.path)
-      assertContentEquals(expectedError.locations, actualError.locations) { expectedLocation, actualLocation ->
-        assertEquals(expectedLocation.line, actualLocation.line)
-        assertEquals(expectedLocation.column, actualLocation.column)
-      }
-    }
-  }
-}
-
-private fun <T> assertContentEquals(expected: List<T>?, actual: List<T>?, assertEquals: (T, T) -> Unit) {
-  if (expected == null) {
-    assertNull(actual)
-    return
-  }
-  assertNotNull(actual)
-  assertEquals(expected.size, actual.size)
-  for (i in expected.indices) {
-    assertEquals(expected[i], actual[i])
-  }
-}
-
