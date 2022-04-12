@@ -11,7 +11,6 @@ import com.apollographql.apollo3.compiler.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.compiler.toJson
 import okio.Buffer
 import org.gradle.api.DefaultTask
-import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
@@ -64,6 +63,11 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
   @set:Option(option = "header", description = "headers in the form 'Name: Value'")
   var header = emptyList<String>() // cannot be abstract for @Option to work
 
+  @get:Optional
+  @get:Input
+  @get:Option(option = "insecure", description = "flag to disable endpoint TLS certificate verification")
+  abstract val insecure: Property<Boolean>
+
   init {
     /**
      * We cannot know in advance if the backend schema changed so don't cache or mark this task up-to-date
@@ -96,11 +100,13 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
       graph = key.split(":")[1]
     }
 
+    val insecure = insecure.getOrElse(false)
     when {
       endpointUrl != null -> {
         introspectionSchema = SchemaDownloader.downloadIntrospection(
             endpoint = endpointUrl,
             headers = headers,
+            insecure = insecure,
         ).toIntrospectionSchema()
       }
       graph != null -> {
@@ -111,7 +117,8 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
             graph = graph,
             key = key,
             variant = graphVariant ?: "current",
-            endpoint = registryUrl.orNull ?: "https://graphql.api.apollographql.com/api/graphql"
+            endpoint = registryUrl.getOrElse("https://graphql.api.apollographql.com/api/graphql"),
+            insecure = insecure,
         ).let { Buffer().writeUtf8(it) }.parseAsGQLDocument().valueAssertNoErrors()
       }
       else -> {

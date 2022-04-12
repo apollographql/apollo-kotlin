@@ -5,6 +5,8 @@ import com.apollographql.apollo3.gradle.util.TestUtils
 import com.apollographql.apollo3.gradle.util.TestUtils.withSimpleProject
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
+import okhttp3.tls.HandshakeCertificates
+import okhttp3.tls.HeldCertificate
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -114,6 +116,27 @@ class DownloadSchemaTests {
       TestUtils.executeGradle(dir, "downloadApolloSchema",
           "--schema=${schema.absolutePath}",
           "--endpoint=${mockServer.url("/")}")
+
+      assertEquals(schemaString1, schema.readText())
+    }
+  }
+
+  @Test
+  fun `manually downloading a schema from self signed endpoint is working`() {
+    withSimpleProject(apolloConfiguration = "") { dir ->
+      val mockResponse = MockResponse().setBody(schemaString1)
+      mockServer.enqueue(mockResponse)
+
+      val selfSignedCertificate = HeldCertificate.Builder().build()
+      val certs = HandshakeCertificates.Builder().heldCertificate(selfSignedCertificate).build()
+      mockServer.useHttps(certs.sslSocketFactory(), tunnelProxy = false)
+
+      val schema = File("build/testProject/schema.json")
+
+      TestUtils.executeGradle(dir, "downloadApolloSchema",
+          "--schema=${schema.absolutePath}",
+          "--endpoint=${mockServer.url("/")}",
+          "--insecure")
 
       assertEquals(schemaString1, schema.readText())
     }
