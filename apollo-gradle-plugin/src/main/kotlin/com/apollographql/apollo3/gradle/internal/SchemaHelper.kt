@@ -89,6 +89,9 @@ internal object SchemaHelper {
       val sslContext = try {
         SSLContext.getInstance("SSL")
       } catch (_: Exception) {
+        // get a SSLContext.
+        // There are a lot of subtle differences in the different protocols but this is used on the insecure path
+        // we are ok taking any of them
         Platform.get().newSSLContext()
       }
 
