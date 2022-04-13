@@ -5,14 +5,15 @@ import com.apollographql.apollo3.compiler.fromJson
 object SchemaDownloader {
   fun downloadIntrospection(
       endpoint: String,
-      headers: Map<String, String>
+      headers: Map<String, String>,
+      insecure: Boolean,
   ): String {
 
     val body = mapOf(
         "query" to introspectionQuery,
         "operationName" to "IntrospectionQuery"
     )
-    val response = SchemaHelper.executeQuery(body, endpoint, headers)
+    val response = SchemaHelper.executeQuery(body, endpoint, headers, insecure)
 
     return response.body.use { responseBody ->
       responseBody!!.string()
@@ -23,7 +24,8 @@ object SchemaDownloader {
       key: String,
       graph: String,
       variant: String,
-      endpoint: String = "https://graphql.api.apollographql.com/api/graphql"
+      endpoint: String = "https://graphql.api.apollographql.com/api/graphql",
+      insecure: Boolean,
   ): String {
     val query = """
     query DownloadSchema(${'$'}graphID: ID!, ${'$'}variant: String!) {
@@ -40,7 +42,7 @@ object SchemaDownloader {
   """.trimIndent()
     val variables = mapOf("graphID" to graph, "variant" to variant)
 
-    val response = SchemaHelper.executeQuery(query, variables, endpoint, mapOf("x-api-key" to key))
+    val response = SchemaHelper.executeQuery(query, variables, endpoint, mapOf("x-api-key" to key), insecure)
 
     val responseString = response.body.use { it?.string() }
 
