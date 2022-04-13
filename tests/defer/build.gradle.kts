@@ -28,6 +28,13 @@ kotlin {
         implementation(groovy.util.Eval.x(project, "x.dep.kotlinJunit"))
       }
     }
+
+    val jsTest by getting {
+      dependencies {
+        implementation(npm("graphql", "16.0.0-experimental-stream-defer.5"))
+        implementation(npm("graphql-helix", "1.12.0"))
+      }
+    }
   }
 }
 
