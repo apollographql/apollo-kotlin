@@ -61,7 +61,6 @@
       "Enforcing non-nullability": "/advanced/nonnull",
       "Gradle plugin configuration": "/advanced/plugin-configuration",
       "Multi Modules": "/advanced/multi-modules",
-      "Operation safelisting (enterprise only)": "/advanced/operation-safelisting",
       "Using aliases": "/advanced/using-aliases",
       "Client Awareness": "/advanced/client-awareness",
       "Codegen methods": "/advanced/response-based-codegen",
