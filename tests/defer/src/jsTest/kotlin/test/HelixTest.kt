@@ -3,6 +3,11 @@ package test
 import Buffer
 import NodeJS.get
 import com.apollographql.apollo3.testing.runTest
+import graphql.GraphQLBoolean
+import graphql.GraphQLID
+import graphql.GraphQLInt
+import graphql.GraphQLList
+import graphql.GraphQLNonNull
 import graphql.GraphQLObjectType
 import graphql.GraphQLObjectTypeConfig
 import graphql.GraphQLSchema
@@ -18,7 +23,7 @@ import helix.shouldRenderGraphiQL
 import http.createServer
 import url.URL
 import util.OutgoingHttpHeaders
-import util.jsObject
+import util.dynamicObject
 import util.objectFromEntries
 import kotlin.test.Test
 
@@ -35,10 +40,71 @@ class HelixTest {
               GraphQLObjectTypeConfig(
                   name = "Query",
                   fields = {
-                    jsObject {
-                      hello = jsObject {
-                        type = GraphQLString
+                    dynamicObject {
+                      hello = dynamicObject {
+                        type = GraphQLNonNull(GraphQLString)
                         resolve = { _: dynamic, _: dynamic -> "Hello, World!" }
+                      }
+
+                      computers = dynamicObject {
+                        type = GraphQLNonNull(GraphQLList(GraphQLNonNull(GraphQLObjectType(
+                            GraphQLObjectTypeConfig(
+                                name = "Computer",
+                                fields = {
+                                  dynamicObject {
+                                    id = dynamicObject {
+                                      type = GraphQLNonNull(GraphQLID)
+                                    }
+                                    cpu = dynamicObject {
+                                      type = GraphQLNonNull(GraphQLString)
+                                    }
+                                    year = dynamicObject {
+                                      type = GraphQLNonNull(GraphQLInt)
+                                    }
+                                    screen = dynamicObject {
+                                      type = GraphQLNonNull(GraphQLObjectType(GraphQLObjectTypeConfig(
+                                          name = "Screen",
+                                          fields = {
+                                            dynamicObject {
+                                              resolution = dynamicObject {
+                                                type = GraphQLNonNull(GraphQLString)
+                                              }
+                                              isColor = dynamicObject {
+                                                type = GraphQLNonNull(GraphQLBoolean)
+                                              }
+                                            }
+                                          }
+                                      )))
+                                    }
+                                  }
+                                }
+                            )
+                        ))))
+                        resolve = { _: dynamic, _: dynamic ->
+                          JSON.parse<Any>(
+                              //language=JSON
+                              """[
+                                  {
+                                    "id": "Computer1",
+                                    "cpu": "386",
+                                    "year": 1993,
+                                    "screen": {
+                                      "resolution": "640x480",
+                                      "isColor": false
+                                    }
+                                  },
+                                  {
+                                    "id": "Computer2",
+                                    "cpu": "486",
+                                    "year": 1996,
+                                    "screen": {
+                                      "resolution": "800x600",
+                                      "isColor": true
+                                    }
+                                  }
+                                ]""".trimIndent()
+                          )
+                        }
                       }
                     }
                   }

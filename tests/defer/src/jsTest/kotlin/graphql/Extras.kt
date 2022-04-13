@@ -1,10 +1,10 @@
 package graphql
 
-import util.jsObject
+import util.dynamicObject
 
-fun GraphQLSchemaConfig(query: GraphQLObjectType) = jsObject<GraphQLSchemaConfig> { this.query = query }
+fun GraphQLSchemaConfig(query: GraphQLObjectType) = dynamicObject<GraphQLSchemaConfig> { this.query = query }
 
 fun GraphQLObjectTypeConfig(
     name: String,
     fields: () -> dynamic,
-) = jsObject<GraphQLObjectTypeConfig> { this.name = name; this.fields = fields }
+) = dynamicObject<GraphQLObjectTypeConfig> { this.name = name; this.fields = fields }

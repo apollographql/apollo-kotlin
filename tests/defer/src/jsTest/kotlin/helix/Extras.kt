@@ -1,9 +1,9 @@
 package helix
 
 import graphql.GraphQLSchema
-import util.jsObject
+import util.dynamicObject
 
-fun Request(body: dynamic, headers: dynamic, method: String, query: dynamic) = jsObject<Request> {
+fun Request(body: dynamic, headers: dynamic, method: String, query: dynamic) = dynamicObject<Request> {
   this.body = body
   this.headers = headers
   this.method = method
@@ -16,7 +16,7 @@ fun ProcessRequestOptions(
     variables: dynamic,
     request: Request,
     schema: GraphQLSchema,
-) = jsObject<ProcessRequestOptions> {
+) = dynamicObject<ProcessRequestOptions> {
   this.operationName = operationName
   this.query = query
   this.variables = variables

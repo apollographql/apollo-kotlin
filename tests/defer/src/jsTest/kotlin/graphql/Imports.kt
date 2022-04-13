@@ -14,7 +14,9 @@ external interface GraphQLSchemaConfig {
 //    var directives: Array<GraphQLDirective>?
 }
 
-external class GraphQLObjectType(config: GraphQLObjectTypeConfig)
+external interface GraphQLType
+
+external class GraphQLObjectType(config: GraphQLObjectTypeConfig) : GraphQLType
 
 external interface GraphQLObjectTypeConfig {
     var name: String
@@ -29,8 +31,11 @@ external interface GraphQLFieldConfig {
     val resolve: (Any, Any) -> Any
 }
 
-external object GraphQLString
-external object GraphQLInt
-external object GraphQLFloat
-external object GraphQLBoolean
-external object GraphQLID
+external object GraphQLString : GraphQLType
+external object GraphQLInt : GraphQLType
+external object GraphQLFloat : GraphQLType
+external object GraphQLBoolean : GraphQLType
+external object GraphQLID : GraphQLType
+
+external class GraphQLList(ofType: GraphQLType) : GraphQLType
+external class GraphQLNonNull(ofType: GraphQLType) : GraphQLType
