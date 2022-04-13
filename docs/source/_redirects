@@ -5,6 +5,7 @@
 /essentials/ /docs/kotlin/essentials/file-types/
 /essentials/get-started* /docs/kotlin/tutorial/00-introduction/
 /fetching-queries/ /docs/kotlin/essentials/queries/
+/advanced/operation-safelisting/ /docs/kotlin/
 /advanced/coroutines/ /docs/kotlin/
 /essentials/using-aliases/ /docs/kotlin/advanced/using-aliases/
 /essentials/named-fragments/ /docs/kotlin/essentials/fragments/
