@@ -8,4 +8,7 @@ enum Gravity {
   BOTTOM
   # like BOTTOM but with different case instead
   bottom @deprecated(reason: "use BOTTOM instead")
+
+  # an enum that clashes with a Kotlin reserved keyword
+  is
 }

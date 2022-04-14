@@ -18,6 +18,7 @@ public enum class Gravity(
   BOTTOM("BOTTOM"),
   @Deprecated(message = "use BOTTOM instead")
   bottom("bottom"),
+  `is`("is"),
   /**
    * Auto generated constant for unknown enum values
    */
@@ -37,6 +38,7 @@ public enum class Gravity(
       TOP,
       CENTER,
       BOTTOM,
-      bottom)
+      bottom,
+      `is`)
   }
 }
