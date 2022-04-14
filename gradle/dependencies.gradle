@@ -100,7 +100,7 @@ ext.dep = [
     okio: "com.squareup.okio:okio", // Version resolved depending on whether HMPP is enabled or not
     okioNodeJs: "com.squareup.okio:okio-nodefilesystem", // Version resolved depending on whether HMPP is enabled or not
     poetJava: "com.squareup:javapoet:$versions.javaPoet",
-    poetKotlin: "com.squareup:kotlinpoet:1.11.0",
+    poetKotlin: "com.squareup:kotlinpoet:1.12.0",
     rx2: "io.reactivex.rxjava2:rxjava:$versions.rxjava",
     rx3: "io.reactivex.rxjava3:rxjava:$versions.rxjava3",
     sqldelightAndroid: "com.squareup.sqldelight:android-driver:$versions.sqldelight",
