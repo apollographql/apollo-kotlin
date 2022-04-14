@@ -10,13 +10,7 @@ fun Project.configureJavaAndKotlinCompilers() {
     // For Kotlin JVM projects
     tasks.withType(KotlinCompile::class.java) {
       it.kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs +
-            "-Xopt-in=kotlin.RequiresOptIn" +
-            // This is a workaround for https://youtrack.jetbrains.com/issue/KT-47000 (fixed in Koltin 1.6.20)
-            // Since we don't use @JvmDefault anywhere, the option has no effect, but suppresses the bogus compiler error
-            // See also https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-default/
-            // See also https://blog.jetbrains.com/kotlin/2020/07/kotlin-1-4-m3-generating-default-methods-in-interfaces/
-            "-Xjvm-default=compatibility"
+        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
         apiVersion = "1.5"
         languageVersion = "1.5"
       }
