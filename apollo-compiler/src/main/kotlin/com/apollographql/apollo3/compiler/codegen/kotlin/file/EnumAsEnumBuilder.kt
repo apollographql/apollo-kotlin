@@ -80,7 +80,7 @@ class EnumAsEnumBuilder(
                 .indent()
                 .add(
                     values.map {
-                      CodeBlock.of("%L", layout.enumAsEnumValueName(it.name))
+                      CodeBlock.of("%N", layout.enumAsEnumValueName(it.name))
                     }.joinToCode(",\n")
                 )
                 .unindent()
