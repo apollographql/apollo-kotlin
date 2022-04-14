@@ -4,10 +4,14 @@ plugins {
 }
 
 kotlin {
+  // Workaround for https://youtrack.jetbrains.com/issue/KT-51970
+  jvm()
   ios()
   sourceSets {
     val commonMain by getting {
       dependencies {
+        // Workaround for something else (but what?)
+        implementation("com.apollographql.apollo3:apollo-api")
         implementation("com.apollographql.apollo3:apollo-runtime")
         implementation("com.apollographql.apollo3:apollo-mockserver")
       }
