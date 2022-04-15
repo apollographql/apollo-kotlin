@@ -4,6 +4,7 @@ import okio.Buffer
 import okio.BufferedSink
 import okio.BufferedSource
 import okio.ByteString
+import kotlin.jvm.JvmOverloads
 
 enum class HttpMethod {
   Get, Post
@@ -39,7 +40,8 @@ private constructor(
     val body: HttpBody?,
 ) {
 
-  fun newBuilder() = Builder(
+  @JvmOverloads
+  fun newBuilder(url: String = this.url, method: HttpMethod = this.method) = Builder(
       method = method,
       url = url,
   ).apply {
