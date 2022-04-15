@@ -11,7 +11,7 @@ external interface GraphQLSchemaConfig {
 //    var mutation: GraphQLObjectType?
 //    var subscription: GraphQLObjectType?
 //    var types: Array<GraphQLNamedType>?
-//    var directives: Array<GraphQLDirective>?
+var directives: Array<GraphQLDirective>?
 }
 
 external interface GraphQLType
@@ -23,14 +23,6 @@ external interface GraphQLObjectTypeConfig {
     var fields: () -> dynamic
 }
 
-external class GraphQLField(config: GraphQLFieldConfig)
-
-external interface GraphQLFieldConfig {
-    val type: Any
-    val args: () -> Any
-    val resolve: (Any, Any) -> Any
-}
-
 external object GraphQLString : GraphQLType
 external object GraphQLInt : GraphQLType
 external object GraphQLFloat : GraphQLType
@@ -39,3 +31,11 @@ external object GraphQLID : GraphQLType
 
 external class GraphQLList(ofType: GraphQLType) : GraphQLType
 external class GraphQLNonNull(ofType: GraphQLType) : GraphQLType
+
+external interface GraphQLDirective
+
+external object GraphQLDeferDirective : GraphQLDirective
+external object GraphQLStreamDirective : GraphQLDirective
+
+external val specifiedDirectives: Array<GraphQLDirective>
+

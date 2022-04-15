@@ -31,7 +31,7 @@ kotlin {
 
     val jsTest by getting {
       dependencies {
-        implementation(npm("graphql", "16.0.0-experimental-stream-defer.5"))
+        implementation(npm("graphql", "canary-pr-2839"))
         implementation(npm("graphql-helix", "1.12.0"))
       }
     }
@@ -42,11 +42,13 @@ apollo {
   service("kotlin") {
     packageName.set("defer")
     generateKotlinModels.set(true)
+    generateTestBuilders.set(true)
     configureConnection(true)
   }
   service("java") {
     packageName.set("defer")
     generateKotlinModels.set(false)
+    generateTestBuilders.set(true)
     configureConnection(false)
   }
 }

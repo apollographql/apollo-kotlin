@@ -1,9 +1,11 @@
 package test
 
-import Buffer
-import NodeJS.get
+import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.testing.runTest
+import defer.WithInlineFragmentsQuery
 import graphql.GraphQLBoolean
+import graphql.GraphQLDeferDirective
+import graphql.GraphQLField
 import graphql.GraphQLID
 import graphql.GraphQLInt
 import graphql.GraphQLList
@@ -12,26 +14,25 @@ import graphql.GraphQLObjectType
 import graphql.GraphQLObjectTypeConfig
 import graphql.GraphQLSchema
 import graphql.GraphQLSchemaConfig
+import graphql.GraphQLStreamDirective
 import graphql.GraphQLString
-import helix.ProcessRequestOptions
-import helix.Request
-import helix.getGraphQLParameters
-import helix.processRequest
-import helix.renderGraphiQL
-import helix.sendResult
-import helix.shouldRenderGraphiQL
-import http.createServer
-import url.URL
-import util.OutgoingHttpHeaders
+import helix.HelixServer
+import kotlinx.coroutines.flow.toList
 import util.dynamicObject
-import util.objectFromEntries
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class HelixTest {
+  private lateinit var helixServer: HelixServer
+  private lateinit var apolloClient: ApolloClient
+
   private suspend fun setUp() {
+    helixServer = HelixServer(schema)
+    apolloClient = ApolloClient.Builder().serverUrl(helixServer.url()).build()
   }
 
   private suspend fun tearDown() {
+    helixServer.stop()
   }
 
   private val schema = GraphQLSchema(
@@ -39,47 +40,32 @@ class HelixTest {
           query = GraphQLObjectType(
               GraphQLObjectTypeConfig(
                   name = "Query",
-                  fields = {
-                    dynamicObject {
-                      hello = dynamicObject {
-                        type = GraphQLNonNull(GraphQLString)
+                  fields = dynamicObject {
+                    hello = GraphQLField(
+                        type = GraphQLNonNull(GraphQLString),
                         resolve = { _: dynamic, _: dynamic -> "Hello, World!" }
-                      }
+                    )
 
-                      computers = dynamicObject {
+                    computers = GraphQLField(
                         type = GraphQLNonNull(GraphQLList(GraphQLNonNull(GraphQLObjectType(
                             GraphQLObjectTypeConfig(
                                 name = "Computer",
-                                fields = {
-                                  dynamicObject {
-                                    id = dynamicObject {
-                                      type = GraphQLNonNull(GraphQLID)
-                                    }
-                                    cpu = dynamicObject {
-                                      type = GraphQLNonNull(GraphQLString)
-                                    }
-                                    year = dynamicObject {
-                                      type = GraphQLNonNull(GraphQLInt)
-                                    }
-                                    screen = dynamicObject {
-                                      type = GraphQLNonNull(GraphQLObjectType(GraphQLObjectTypeConfig(
+                                fields = dynamicObject {
+                                  id = GraphQLField(GraphQLNonNull(GraphQLID))
+                                  cpu = GraphQLField(GraphQLNonNull(GraphQLString))
+                                  year = GraphQLField(GraphQLNonNull(GraphQLInt))
+                                  screen = GraphQLField(
+                                      GraphQLNonNull(GraphQLObjectType(GraphQLObjectTypeConfig(
                                           name = "Screen",
-                                          fields = {
-                                            dynamicObject {
-                                              resolution = dynamicObject {
-                                                type = GraphQLNonNull(GraphQLString)
-                                              }
-                                              isColor = dynamicObject {
-                                                type = GraphQLNonNull(GraphQLBoolean)
-                                              }
-                                            }
+                                          fields = dynamicObject {
+                                            resolution = GraphQLField(GraphQLNonNull(GraphQLString))
+                                            isColor = GraphQLField(GraphQLNonNull(GraphQLBoolean))
                                           }
                                       )))
-                                    }
-                                  }
+                                  )
                                 }
                             )
-                        ))))
+                        )))),
                         resolve = { _: dynamic, _: dynamic ->
                           JSON.parse<Any>(
                               //language=JSON
@@ -105,66 +91,59 @@ class HelixTest {
                                 ]""".trimIndent()
                           )
                         }
-                      }
-                    }
+                    )
                   }
               )
-          )
+          ),
+          directives = arrayOf(GraphQLDeferDirective, GraphQLStreamDirective)
       )
   )
 
   @Test
-  fun helixText() = runTest(before = { setUp() }, after = { tearDown() }) {
-    println("Hello, World!")
-
-    val server = createServer { req, res ->
-      val url = URL(req.url, "http://${req.headers["Host"]}")
-
-      if (url.pathname != "/graphql") {
-        res.writeHead(404)
-        res.end("Not found")
-        return@createServer
-      }
-
-      val payload = StringBuilder()
-
-      req.on("data") { chunk ->
-        when (chunk) {
-          is String -> payload.append(chunk)
-          is Buffer -> payload.append(chunk.toString("utf8"))
-        }
-      }
-
-      req.on("end") { _ ->
-        val request = Request(
-            body = JSON.parse<Any>(payload.toString().ifBlank { "{}" }),
-            headers = req.headers,
-            method = req.method,
-            query = objectFromEntries(url.searchParams),
-        )
-
-        if (shouldRenderGraphiQL(request)) {
-          res.writeHead(200, OutgoingHttpHeaders("content-type" to "text/html"))
-          res.end(renderGraphiQL())
-        } else {
-          val graphQLParams = getGraphQLParameters(request)
-          processRequest(
-              ProcessRequestOptions(
-                  operationName = graphQLParams.operationName,
-                  query = graphQLParams.query,
-                  variables = graphQLParams.variables,
-                  request = request,
-                  schema = this@HelixTest.schema,
-              )
-          ).then { result ->
-            sendResult(result, res)
-          }
-        }
-      }
-    }
-
-    server.listen(4000) {
-      println("Listening on http://localhost:4000")
-    }
+  fun deferWithInlineFragments() = runTest(before = { setUp() }, after = { tearDown() }) {
+    val expectedDataList = listOf(
+        WithInlineFragmentsQuery.Data(
+            listOf(
+                WithInlineFragmentsQuery.Computer("Computer", "Computer1", null),
+                WithInlineFragmentsQuery.Computer("Computer", "Computer2", null),
+            )
+        ),
+        WithInlineFragmentsQuery.Data(
+            listOf(
+                WithInlineFragmentsQuery.Computer("Computer", "Computer1", WithInlineFragmentsQuery.OnComputer("386", 1993,
+                    WithInlineFragmentsQuery.Screen("Screen", "640x480", null))),
+                WithInlineFragmentsQuery.Computer("Computer", "Computer2", null),
+            )
+        ),
+        WithInlineFragmentsQuery.Data(
+            listOf(
+                WithInlineFragmentsQuery.Computer("Computer", "Computer1", WithInlineFragmentsQuery.OnComputer("386", 1993,
+                    WithInlineFragmentsQuery.Screen("Screen", "640x480", null))),
+                WithInlineFragmentsQuery.Computer("Computer", "Computer2", WithInlineFragmentsQuery.OnComputer("486", 1996,
+                    WithInlineFragmentsQuery.Screen("Screen", "800x600", null))),
+            )
+        ),
+        WithInlineFragmentsQuery.Data(
+            listOf(
+                WithInlineFragmentsQuery.Computer("Computer", "Computer1", WithInlineFragmentsQuery.OnComputer("386", 1993,
+                    WithInlineFragmentsQuery.Screen("Screen", "640x480",
+                        WithInlineFragmentsQuery.OnScreen(false)))),
+                WithInlineFragmentsQuery.Computer("Computer", "Computer2", WithInlineFragmentsQuery.OnComputer("486", 1996,
+                    WithInlineFragmentsQuery.Screen("Screen", "800x600", null))),
+            )
+        ),
+        WithInlineFragmentsQuery.Data(
+            listOf(
+                WithInlineFragmentsQuery.Computer("Computer", "Computer1", WithInlineFragmentsQuery.OnComputer("386", 1993,
+                    WithInlineFragmentsQuery.Screen("Screen", "640x480",
+                        WithInlineFragmentsQuery.OnScreen(false)))),
+                WithInlineFragmentsQuery.Computer("Computer", "Computer2", WithInlineFragmentsQuery.OnComputer("486", 1996,
+                    WithInlineFragmentsQuery.Screen("Screen", "800x600",
+                        WithInlineFragmentsQuery.OnScreen(true)))),
+            )
+        ),
+    )
+    val actualDataList = apolloClient.query(WithInlineFragmentsQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    assertEquals(expectedDataList, actualDataList)
   }
 }
