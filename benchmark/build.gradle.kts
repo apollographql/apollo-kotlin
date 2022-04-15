@@ -38,9 +38,10 @@ dependencies {
   add("implementation", "com.apollographql.apollo3:apollo-runtime:${properties.get("apolloVersion")}")
   add("implementation", "com.apollographql.apollo3:apollo-api:${properties.get("apolloVersion")}")
   add("implementation", "com.apollographql.apollo3:apollo-normalized-cache-sqlite:${properties.get("apolloVersion")}")
+  add("implementation", "com.apollographql.apollo3:apollo-normalized-cache:${properties.get("apolloVersion")}")
 
   add("implementation", groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
-  add("ksp", groovy.util.Eval.x(project, "x.dep.moshi.kotlinCodegen"))
+  add("ksp", groovy.util.Eval.x(project, "x.dep.moshi.ksp"))
 
   add("androidTestImplementation", "androidx.benchmark:benchmark-junit4:1.0.0")
 }
@@ -57,4 +58,6 @@ configure<com.android.build.gradle.LibraryExtension> {
   useLibrary("android.test.base")
 }
 
-
+configure<com.apollographql.apollo3.gradle.api.ApolloExtension> {
+  packageNamesFromFilePaths()
+}

@@ -4,18 +4,15 @@ import Utils.bufferedSource
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import androidx.test.platform.app.InstrumentationRegistry
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.fromResponse
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.json.jsonReader
+import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.benchmark.moshi.Query
-import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.api.CacheKeyResolver
-import com.apollographql.apollo3.cache.normalized.MemoryCache
+import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.api.Record
-import com.apollographql.apollo3.cache.normalized.internal.ApolloStore
-import com.apollographql.apollo3.cache.normalized.internal.normalize
-import com.apollographql.apollo3.cache.normalized.internal.readDataFromCache
+import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
+import com.apollographql.apollo3.cache.normalized.api.normalize
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.runBlocking
@@ -43,7 +40,7 @@ class Benchmark {
       bufferedSource()
     }
 
-    operation.fromResponse(bufferedSource, customScalarAdapters)
+    operation.parseJsonResponse(bufferedSource.jsonReader(), customScalarAdapters)
   }
 
   @Test
@@ -52,8 +49,8 @@ class Benchmark {
       bufferedSource()
     }
 
-    val data = operation.fromResponse(bufferedSource, customScalarAdapters).data!!
-    val records = operation.normalize(data, ResponseAdapterCache.DEFAULT)
+    val data = operation.parseJsonResponse(bufferedSource.jsonReader(), customScalarAdapters).data!!
+    val records = operation.normalize(data, customScalarAdapters, TypePolicyCacheKeyGenerator)
   }
 
   @Test
@@ -61,7 +58,7 @@ class Benchmark {
     runBlocking {
       sqlStore.readOperation(
           operation = operation,
-          responseAdapterCache = ResponseAdapterCache.DEFAULT,
+          customScalarAdapters = customScalarAdapters,
           cacheHeaders = CacheHeaders.NONE,
       )
     }
@@ -72,7 +69,7 @@ class Benchmark {
     runBlocking {
       memoryStore.readOperation(
           operation = operation,
-          responseAdapterCache = ResponseAdapterCache.DEFAULT,
+          customScalarAdapters = customScalarAdapters,
           cacheHeaders = CacheHeaders.NONE,
       )
     }
@@ -83,20 +80,20 @@ class Benchmark {
     lateinit var memoryStore: ApolloStore
     private val operation = GetResponseQuery()
     private val moshiAdapter = Moshi.Builder().build().adapter(Query::class.java)
-    private val customScalarAdapters = ResponseAdapterCache(emptyMap())
+    private val customScalarAdapters = CustomScalarAdapters.Empty
 
     @BeforeClass
     @JvmStatic
     fun setup() {
-      val data = operation.fromResponse(bufferedSource()).data!!
-      val records = operation.normalize(data, ResponseAdapterCache.DEFAULT, CacheKeyResolver.DEFAULT).values
+      val data = operation.parseJsonResponse(bufferedSource().jsonReader()).data!!
+      val records = operation.normalize(data, customScalarAdapters, TypePolicyCacheKeyGenerator).values
 
-      sqlStore = ApolloStore(SqlNormalizedCacheFactory(context = InstrumentationRegistry.getInstrumentation().context), CacheKeyResolver.DEFAULT)
+      sqlStore = ApolloStore(SqlNormalizedCacheFactory(context = InstrumentationRegistry.getInstrumentation().context))
       runBlocking {
         sqlStore.writeOperation(operation, data)
       }
 
-      memoryStore = ApolloStore(MemoryCacheFactory(), CacheKeyResolver.DEFAULT)
+      memoryStore = ApolloStore(MemoryCacheFactory())
       runBlocking {
         memoryStore.writeOperation(operation, data)
       }
