@@ -14,7 +14,7 @@ import kotlinx.coroutines.withTimeout
  * It can carry queries in addition to subscriptions over the websocket
  */
 class GraphQLWsProtocol(
-    private val connectionPayload: Map<String, Any?>? = null,
+    private val connectionPayload: suspend () -> Map<String, Any?>? = { null },
     private val pingPayload: Map<String, Any?>? = null,
     private val pongPayload: Map<String, Any?>? = null,
     private val connectionAcknowledgeTimeoutMs: Long,
@@ -30,8 +30,9 @@ class GraphQLWsProtocol(
         "type" to "connection_init",
     )
 
-    if (connectionPayload != null) {
-      message.put("payload", connectionPayload)
+    val payload = connectionPayload()
+    if (payload != null) {
+      message.put("payload", payload)
     }
 
     sendMessageMap(message, frameType)
@@ -117,7 +118,7 @@ class GraphQLWsProtocol(
    * @param frameType the type of the websocket frames to use. Default value: [WsFrameType.Text]
    */
   class Factory(
-      private val connectionPayload: Map<String, Any?>? = null,
+      private val connectionPayload:  suspend () -> Map<String, Any?>? = { null },
       private val pingIntervalMillis: Long = -1,
       private val pingPayload: Map<String, Any?>? = null,
       private val pongPayload: Map<String, Any?>? = null,
