@@ -16,6 +16,10 @@ buildscript {
   }
 }
 
+repositories {
+  mavenCentral()
+}
+
 subprojects {
   repositories {
     google()
