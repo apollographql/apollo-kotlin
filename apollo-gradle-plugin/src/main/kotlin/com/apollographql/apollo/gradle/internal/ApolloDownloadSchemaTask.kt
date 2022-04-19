@@ -1,5 +1,8 @@
 package com.apollographql.apollo.gradle.internal
 
+import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
+import com.apollographql.apollo.compiler.parser.introspection.toSDL
+import okio.Buffer
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
@@ -36,7 +39,12 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
     )
 
     schema.parentFile.mkdirs()
-    schema.writeText(introspection)
+
+    if (schema.extension == "json") {
+      schema.writeText(introspection)
+    } else {
+      IntrospectionSchema(Buffer().writeUtf8(introspection).inputStream()).toSDL(schema)
+    }
   }
 
   private fun List<String>.toMap(): Map<String, String> {

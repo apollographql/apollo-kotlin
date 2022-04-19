@@ -8,6 +8,8 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertThat
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.File
 
@@ -18,6 +20,17 @@ class DownloadSchemaTests {
       apollo {
         service("mock") {
           schemaPath = "com/example/schema.json"
+          introspection {
+            endpointUrl = "${mockServer.url("/").toUrl()}"
+          }
+        }
+      }
+    """.trimIndent()
+
+  val sdlConfiguration = """
+      apollo {
+        service("mock") {
+          schemaPath = "com/example/schema.sdl"
           introspection {
             endpointUrl = "${mockServer.url("/").toUrl()}"
           }
@@ -36,6 +49,19 @@ class DownloadSchemaTests {
       TestUtils.executeTask("downloadMockApolloSchema", dir)
 
       assertEquals(content, dir.child("src", "main", "graphql", "com", "example", "schema.json").readText())
+    }
+  }
+
+  @Test
+  fun `SDL schema is downloaded correctly`() {
+
+    withSimpleProject(apolloConfiguration = sdlConfiguration) { dir ->
+      val mockResponse = MockResponse().setBody(File("src/test/files/sdl/schema.json").readText())
+      mockServer.enqueue(mockResponse)
+
+      TestUtils.executeTask("downloadMockApolloSchema", dir)
+
+      assertTrue(dir.child("src", "main", "graphql", "com", "example", "schema.sdl").readText().contains("enum FeedType"))
     }
   }
 
