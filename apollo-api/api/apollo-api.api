@@ -811,6 +811,9 @@ public final class com/apollographql/apollo3/api/http/HttpRequest {
 	public final fun getMethod ()Lcom/apollographql/apollo3/api/http/HttpMethod;
 	public final fun getUrl ()Ljava/lang/String;
 	public final fun newBuilder ()Lcom/apollographql/apollo3/api/http/HttpRequest$Builder;
+	public final fun newBuilder (Lcom/apollographql/apollo3/api/http/HttpMethod;)Lcom/apollographql/apollo3/api/http/HttpRequest$Builder;
+	public final fun newBuilder (Lcom/apollographql/apollo3/api/http/HttpMethod;Ljava/lang/String;)Lcom/apollographql/apollo3/api/http/HttpRequest$Builder;
+	public static synthetic fun newBuilder$default (Lcom/apollographql/apollo3/api/http/HttpRequest;Lcom/apollographql/apollo3/api/http/HttpMethod;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/api/http/HttpRequest$Builder;
 }
 
 public final class com/apollographql/apollo3/api/http/HttpRequest$Builder {
