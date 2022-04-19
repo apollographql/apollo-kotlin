@@ -41,7 +41,7 @@ private constructor(
 ) {
 
   @JvmOverloads
-  fun newBuilder(url: String = this.url, method: HttpMethod = this.method) = Builder(
+  fun newBuilder(method: HttpMethod = this.method, url: String = this.url) = Builder(
       method = method,
       url = url,
   ).apply {
