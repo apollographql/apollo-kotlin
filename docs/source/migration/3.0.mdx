@@ -101,6 +101,10 @@ import com.apollographql.apollo3.ApolloClient
 
 ### Gradle configuration
 
+#### Task names
+
+The Gradle plugin has significantly changed in Apollo Kotlin 3.x to only generate model once for all Android variants. If you were previously using task names like "generateDebugServiceApolloSources", you can now drop the Android variant name and use "generateServiceApolloSources" instead.
+
 #### `generateKotlinModels`
 
 Apollo Kotlin 3.0 generates Kotlin models by default. You can safely remove this behavior:
@@ -728,3 +732,18 @@ Apollo Android 3.x instead uses `WebsocketNetworkTransport` to expose a simplifi
 If you were previously using `apolloClient.subscriptionManager.reconnect()` to force a Websocket reconnect (for an example to send new authentication parameters), you should now create a new `ApolloClient`.
 
 If you feel some API is missing from `SubscriptionManager`, please [reach out](https://github.com/apollographql/apollo-kotlin/issues/new?assignees=&labels=%3Asparkles%3A+Type%3A+Feature&template=feature_request.md&title=) so we can discuss the best way to add them.
+
+### Downloading schemas
+
+Because it is not possible to determine the Gradle current working directory reliably, the `downloadApolloSchema` task now uses paths relative to the root project directory:
+
+```
+# schema is now interpreted relative to the root project directory and
+# not the current working directory anymore. This example assumes there
+# is a 'app' module that applies the apollo plugin
+./gradlew downloadApolloSchema \
+  --endpoint="https://your.domain/graphql/endpoint" \
+  --schema="app/src/main/graphql/com/example/schema.graphqls"
+```
+
+If you configured the `introspection {}` or `registry {}` blocks in your Gradle scripts, you should now use `downloadServiceApolloSchemaFromIntrospection` or `downloadServiceApolloSchemaFromRegistry` 
