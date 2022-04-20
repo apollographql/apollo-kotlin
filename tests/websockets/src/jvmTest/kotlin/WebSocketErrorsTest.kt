@@ -219,7 +219,7 @@ class WebSocketErrorsTest {
   }
 
   @Test
-  fun reconnectReconnectsTheWebSocket2() = runBlocking {
+  fun closeConnectionReconnectsTheWebSocket() = runBlocking {
     class MyWebSocketReconnectException : Exception()
 
     var connectionInitCount = 0
