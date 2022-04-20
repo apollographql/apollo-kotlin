@@ -7,7 +7,7 @@ external class GraphQLSchema(config: GraphQLSchemaConfig)
 
 external interface GraphQLSchemaConfig {
     var query: GraphQLObjectType
-
+// Unused for now
 //    var mutation: GraphQLObjectType?
 //    var subscription: GraphQLObjectType?
 //    var types: Array<GraphQLNamedType>?

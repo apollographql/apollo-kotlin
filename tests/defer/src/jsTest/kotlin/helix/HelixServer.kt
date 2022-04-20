@@ -18,6 +18,7 @@ class HelixServer
 ) {
   private var url: String? = null
 
+  // Based on https://github.com/contra/graphql-helix/blob/main/examples/http/server.ts
   private val server = createServer { req, res ->
     val url = URL(req.url, "http://${req.headers["Host"]}")
 
