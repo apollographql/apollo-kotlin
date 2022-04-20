@@ -13,6 +13,7 @@ import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.internal.BackgroundDispatcher
 import com.apollographql.apollo3.internal.transformWhile
 import com.apollographql.apollo3.network.NetworkTransport
+import com.apollographql.apollo3.network.ws.internal.Close
 import com.apollographql.apollo3.network.ws.internal.Command
 import com.apollographql.apollo3.network.ws.internal.Dispose
 import com.apollographql.apollo3.network.ws.internal.Event
@@ -121,7 +122,7 @@ private constructor(
 
     /**
      * This happens:
-     * - when this coroutine receives a [Dispose] message
+     * - when this coroutine receives a [Dispose] or [Close] message
      * - when the idleJob completes
      * - when there is an error reading the WebSocket and this coroutine receives a [NetworkError] message
      */
@@ -135,9 +136,7 @@ private constructor(
     }
 
     while (true) {
-      val message = messages.receive()
-
-      when (message) {
+      when (val message = messages.receive()) {
         is Event -> {
           if (message is NetworkError) {
             closeProtocol()
@@ -166,6 +165,12 @@ private constructor(
             return
           }
 
+          if (message is Close) {
+            messages.trySend(NetworkError(message.reason))
+            closeProtocol()
+            continue
+          }
+
           if (protocol == null) {
             if (message !is StartOperation<*>) {
               // A stop was received, but we don't have a connection. Ignore it
@@ -175,10 +180,11 @@ private constructor(
             val webSocketConnection = try {
               webSocketEngine.open(
                   url = serverUrl,
-                  headers = if (headers.any { it.name == "Sec-WebSocket-Protocol" })
-                      headers
-                    else
-                      headers + HttpHeader("Sec-WebSocket-Protocol", protocolFactory.name),
+                  headers = if (headers.any { it.name == "Sec-WebSocket-Protocol" }) {
+                    headers
+                  } else {
+                    headers + HttpHeader("Sec-WebSocket-Protocol", protocolFactory.name)
+                  },
               )
             } catch (e: Exception) {
               // Error opening the websocket
@@ -219,6 +225,9 @@ private constructor(
             is StopOperation<*> -> {
               activeMessages.remove(message.request.requestUuid)
               protocol!!.stopOperation(message.request)
+            }
+            else -> {
+              // Other cases have been handled above
             }
           }
 
@@ -284,6 +293,18 @@ private constructor(
 
   override fun dispose() {
     messages.trySend(Dispose)
+  }
+
+  /**
+   * Close the connection to the server (if it's open).
+   *
+   * This can be used to force a reconnection to the server, for instance when new auth tokens should be passed to the headers.
+   *
+   * The given [reason] will be propagated to [Builder.reopenWhen] to determine if the connection should be reopened. If not, it will be
+   * propagated to any Flows waiting for responses.
+   */
+  fun closeConnection(reason: Throwable) {
+    messages.trySend(Close(reason))
   }
 
   class Builder {

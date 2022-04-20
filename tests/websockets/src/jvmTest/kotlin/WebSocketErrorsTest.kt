@@ -4,6 +4,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
 import com.apollographql.apollo3.network.ws.SubscriptionWsProtocol
+import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
@@ -215,5 +216,45 @@ class WebSocketErrorsTest {
         }
 
     apolloClient.dispose()
+  }
+
+  @Test
+  fun reconnectReconnectsTheWebSocket2() = runBlocking {
+    class MyWebSocketReconnectException : Exception()
+
+    var connectionInitCount = 0
+    val apolloClient = ApolloClient.Builder()
+        .httpServerUrl("http://localhost:8080/graphql")
+        .webSocketServerUrl("http://localhost:8080/subscriptions")
+        .wsProtocol(
+            SubscriptionWsProtocol.Factory(
+                connectionPayload = {
+                  connectionInitCount++
+                  mapOf("return" to "success")
+                }
+            )
+        )
+        .webSocketReopenWhen { e, _ ->
+          assertIs<MyWebSocketReconnectException>(e)
+          true
+        }
+        .build()
+
+    apolloClient.subscription(CountSubscription(2, 100))
+        .toFlow()
+        .test {
+          awaitItem() // 0
+
+          (apolloClient.subscriptionNetworkTransport as WebSocketNetworkTransport).closeConnection(MyWebSocketReconnectException())
+
+          awaitItem() // 0 again since we've re-subscribed
+          awaitItem() // 1
+          awaitComplete()
+        }
+
+    apolloClient.dispose()
+
+    // connectionInitCount is 2 since we returned true in webSocketReopenWhen
+    assertEquals(2, connectionInitCount)
   }
 }
