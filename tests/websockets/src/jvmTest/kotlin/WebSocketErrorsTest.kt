@@ -4,7 +4,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
 import com.apollographql.apollo3.network.ws.SubscriptionWsProtocol
-import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
+import com.apollographql.apollo3.network.ws.closeConnection
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
@@ -245,7 +245,7 @@ class WebSocketErrorsTest {
         .test {
           awaitItem() // 0
 
-          (apolloClient.subscriptionNetworkTransport as WebSocketNetworkTransport).closeConnection(MyWebSocketReconnectException())
+          apolloClient.subscriptionNetworkTransport.closeConnection(MyWebSocketReconnectException())
 
           awaitItem() // 0 again since we've re-subscribed
           awaitItem() // 1

@@ -474,6 +474,10 @@ public final class com/apollographql/apollo3/network/ws/WebSocketNetworkTranspor
 	public final fun webSocketEngine (Lcom/apollographql/apollo3/network/ws/WebSocketEngine;)Lcom/apollographql/apollo3/network/ws/WebSocketNetworkTransport$Builder;
 }
 
+public final class com/apollographql/apollo3/network/ws/WebSocketNetworkTransportKt {
+	public static final fun closeConnection (Lcom/apollographql/apollo3/network/NetworkTransport;Ljava/lang/Throwable;)V
+}
+
 public final class com/apollographql/apollo3/network/ws/WsFrameType : java/lang/Enum {
 	public static final field Binary Lcom/apollographql/apollo3/network/ws/WsFrameType;
 	public static final field Text Lcom/apollographql/apollo3/network/ws/WsFrameType;

@@ -374,3 +374,12 @@ private constructor(
     }
   }
 }
+
+/**
+ * A shorthand for [WebSocketNetworkTransport.closeConnection]. If the NetworkTransport is not a [WebSocketNetworkTransport], a
+ * NotImplementedError is thrown.
+ */
+fun NetworkTransport.closeConnection(reason: Throwable) {
+  (this as? WebSocketNetworkTransport
+      ?: throw NotImplementedError("closeConnection is only for WebSocketNetworkTransport")).closeConnection(reason)
+}
