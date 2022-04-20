@@ -121,7 +121,7 @@ private constructor(
 
     /**
      * This happens:
-     * - when this coroutine receives a [Dispose] or [Close] message
+     * - when this coroutine receives a [Dispose] message
      * - when the idleJob completes
      * - when there is an error reading the WebSocket and this coroutine receives a [NetworkError] message
      */
