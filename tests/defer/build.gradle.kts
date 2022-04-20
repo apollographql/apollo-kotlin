@@ -44,13 +44,11 @@ apollo {
   service("kotlin") {
     packageName.set("defer")
     generateKotlinModels.set(true)
-    generateTestBuilders.set(true)
     configureConnection(true)
   }
   service("java") {
     packageName.set("defer")
     generateKotlinModels.set(false)
-    generateTestBuilders.set(true)
     configureConnection(false)
   }
 }
