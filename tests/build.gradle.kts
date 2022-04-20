@@ -32,21 +32,6 @@ subprojects {
     }
   }
 
-  // Workaround for https://youtrack.jetbrains.com/issue/KT-51970
-  afterEvaluate {
-    afterEvaluate {
-      tasks.configureEach {
-        if (
-            name.startsWith("compile")
-            && name.endsWith("KotlinMetadata")
-        ) {
-          println("disabling ${this@subprojects}:$name")
-          enabled = false
-        }
-      }
-    }
-  }
-
   configureJavaAndKotlinCompilers()
 
   afterEvaluate {
