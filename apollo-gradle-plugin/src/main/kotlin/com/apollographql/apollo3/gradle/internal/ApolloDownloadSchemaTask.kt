@@ -33,26 +33,26 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
 
   @get:Optional
   @get:Input
-  @get:Option(option = "graph", description = "The identifier of the Apollo graph used to download the schema.")
+  @get:Option(option = "graph", description = "[Apollo Studio users only] The identifier of the Apollo graph used to download the schema.")
   abstract val graph: Property<String>
 
   @get:Optional
   @get:Input
-  @get:Option(option = "key", description = "The Apollo API key. See https://www.apollographql.com/docs/studio/api-keys/ for more information on how to get your API key.")
+  @get:Option(option = "key", description = "[Apollo Studio users only] The Apollo API key. See https://www.apollographql.com/docs/studio/api-keys/ for more information on how to get your API key.")
   abstract val key: Property<String>
 
   @get:Optional
   @get:Input
-  @get:Option(option = "graphVariant", description = "The variant of the Apollo graph used to download the schema.")
+  @get:Option(option = "graphVariant", description = "[Apollo Studio users only] The variant of the Apollo graph used to download the schema.")
   abstract val graphVariant: Property<String>
 
   @get:Optional
   @get:Input
-  @get:Option(option = "registryUrl", description = "The registry url of the registry instance used to download the schema. Defaults to \"https://graphql.api.apollographql.com/api/graphql\"")
+  @get:Option(option = "registryUrl", description = "[Apollo Studio users only] The registry url of the registry instance used to download the schema. Defaults to \"https://graphql.api.apollographql.com/api/graphql\"")
   abstract val registryUrl: Property<String>
 
   @get:Input
-  @get:Option(option = "schema", description = "path where the schema will be downloaded, relative to the current working directory")
+  @get:Option(option = "schema", description = "path where the schema will be downloaded, relative to the root project directory")
   abstract val schema: Property<String>
 
   @get:Internal
