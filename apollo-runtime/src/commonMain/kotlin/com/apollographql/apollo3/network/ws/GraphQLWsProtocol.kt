@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.network.ws
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_2_3
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
@@ -14,7 +16,7 @@ import kotlinx.coroutines.withTimeout
  * It can carry queries in addition to subscriptions over the websocket
  */
 class GraphQLWsProtocol(
-    private val connectionPayload: Map<String, Any?>? = null,
+    private val connectionPayload: suspend () -> Map<String, Any?>? = { null },
     private val pingPayload: Map<String, Any?>? = null,
     private val pongPayload: Map<String, Any?>? = null,
     private val connectionAcknowledgeTimeoutMs: Long,
@@ -22,16 +24,42 @@ class GraphQLWsProtocol(
     private val frameType: WsFrameType,
     webSocketConnection: WebSocketConnection,
     listener: Listener,
-    private val scope: CoroutineScope
+    private val scope: CoroutineScope,
 ) : WsProtocol(webSocketConnection, listener) {
+
+  @Deprecated("Use the constructor with connectionPayload as a lambda instead",
+      ReplaceWith("Factory({ connectionPayload }, pingIntervalMillis, pingPayload, pongPayload, connectionAcknowledgeTimeoutMs)"))
+  @ApolloDeprecatedSince(v3_2_3)
+  constructor(
+      connectionPayload: Map<String, Any?>? = null,
+      pingPayload: Map<String, Any?>? = null,
+      pongPayload: Map<String, Any?>? = null,
+      connectionAcknowledgeTimeoutMs: Long,
+      pingIntervalMillis: Long,
+      frameType: WsFrameType,
+      webSocketConnection: WebSocketConnection,
+      listener: Listener,
+      scope: CoroutineScope,
+  ) : this(
+      connectionPayload = { connectionPayload },
+      pingPayload = pingPayload,
+      pongPayload = pongPayload,
+      connectionAcknowledgeTimeoutMs = connectionAcknowledgeTimeoutMs,
+      pingIntervalMillis = pingIntervalMillis,
+      frameType = frameType,
+      webSocketConnection = webSocketConnection,
+      listener = listener,
+      scope = scope,
+  )
 
   override suspend fun connectionInit() {
     val message = mutableMapOf<String, Any?>(
         "type" to "connection_init",
     )
 
-    if (connectionPayload != null) {
-      message.put("payload", connectionPayload)
+    val payload = connectionPayload()
+    if (payload != null) {
+      message.put("payload", payload)
     }
 
     sendMessageMap(message, frameType)
@@ -76,7 +104,7 @@ class GraphQLWsProtocol(
           map["payload"] = pingPayload
         }
 
-        while(true) {
+        while (true) {
           delay(pingIntervalMillis)
           sendMessageMap(map, frameType)
         }
@@ -117,13 +145,33 @@ class GraphQLWsProtocol(
    * @param frameType the type of the websocket frames to use. Default value: [WsFrameType.Text]
    */
   class Factory(
-      private val connectionPayload: Map<String, Any?>? = null,
+      private val connectionPayload: suspend () -> Map<String, Any?>? = { null },
       private val pingIntervalMillis: Long = -1,
       private val pingPayload: Map<String, Any?>? = null,
       private val pongPayload: Map<String, Any?>? = null,
       private val connectionAcknowledgeTimeoutMs: Long = 10_000,
-      private val frameType: WsFrameType = WsFrameType.Text
+      private val frameType: WsFrameType = WsFrameType.Text,
   ) : WsProtocol.Factory {
+
+    @Deprecated("Use the constructor with connectionPayload as a lambda instead",
+        ReplaceWith("Factory({ connectionPayload }, pingIntervalMillis, pingPayload, pongPayload, connectionAcknowledgeTimeoutMs)"))
+    @ApolloDeprecatedSince(v3_2_3)
+    constructor(
+        connectionPayload: Map<String, Any?>?,
+        pingIntervalMillis: Long = -1,
+        pingPayload: Map<String, Any?>? = null,
+        pongPayload: Map<String, Any?>? = null,
+        connectionAcknowledgeTimeoutMs: Long = 10_000,
+        frameType: WsFrameType = WsFrameType.Text,
+    ) : this(
+        connectionPayload = { connectionPayload },
+        pingIntervalMillis = pingIntervalMillis,
+        pingPayload = pingPayload,
+        pongPayload = pongPayload,
+        connectionAcknowledgeTimeoutMs = connectionAcknowledgeTimeoutMs,
+        frameType = frameType,
+    )
+
     override val name: String
       get() = "graphql-transport-ws"
 
