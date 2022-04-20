@@ -13,7 +13,6 @@ import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.internal.BackgroundDispatcher
 import com.apollographql.apollo3.internal.transformWhile
 import com.apollographql.apollo3.network.NetworkTransport
-import com.apollographql.apollo3.network.ws.internal.Close
 import com.apollographql.apollo3.network.ws.internal.Command
 import com.apollographql.apollo3.network.ws.internal.Dispose
 import com.apollographql.apollo3.network.ws.internal.Event
@@ -165,12 +164,6 @@ private constructor(
             return
           }
 
-          if (message is Close) {
-            messages.trySend(NetworkError(message.reason))
-            closeProtocol()
-            continue
-          }
-
           if (protocol == null) {
             if (message !is StartOperation<*>) {
               // A stop was received, but we don't have a connection. Ignore it
@@ -304,7 +297,7 @@ private constructor(
    * propagated to any Flows waiting for responses.
    */
   fun closeConnection(reason: Throwable) {
-    messages.trySend(Close(reason))
+    messages.trySend(NetworkError(reason))
   }
 
   class Builder {
