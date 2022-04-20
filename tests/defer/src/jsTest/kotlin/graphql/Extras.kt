@@ -15,6 +15,12 @@ fun GraphQLObjectTypeConfig(
     fields: dynamic,
 ) = dynamicObject<GraphQLObjectTypeConfig> { this.name = name; this.fields = fields }
 
+fun GraphQLObjectType(
+    name: String,
+    fields: dynamic,
+) = GraphQLObjectType(GraphQLObjectTypeConfig(name, fields))
+
+
 fun GraphQLField(type: GraphQLType, args: (() -> dynamic)? = null, resolve: ((dynamic, dynamic) -> dynamic)? = null): dynamic {
   val field = dynamicObject {
     this.type = type
