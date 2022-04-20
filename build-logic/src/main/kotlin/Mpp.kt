@@ -44,6 +44,9 @@ fun KotlinMultiplatformExtension.configureAppleTargets(vararg presetNames: Strin
   val appleMain = sourceSets.create("appleMain")
   val appleTest = sourceSets.create("appleTest")
 
+  appleMain.dependsOn(sourceSets.getByName("commonMain"))
+  appleTest.dependsOn(sourceSets.getByName("commonTest"))
+
   presetNames.forEach { presetName ->
     targetFromPreset(
         presets.getByName(presetName),
