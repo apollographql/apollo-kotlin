@@ -1,3 +1,5 @@
+@file:OptIn(ApolloExperimental::class, ApolloInternal::class)
+
 package test
 
 import checkTestFixture
@@ -23,7 +25,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-@OptIn(ApolloExperimental::class, ApolloInternal::class)
 class FileUploadTest {
   private val upload0: Upload = DefaultUpload.Builder()
       .content("content_file0")
@@ -149,55 +150,56 @@ class FileUploadTest {
     assertOperationsPart(parts[0], "expectedOperationsPartBodyNested.json")
   }
 
-  private class Part(
-      val contentDisposition: String?,
-      val contentType: String?,
-      val bytes: ByteArray,
+}
+
+internal class Part(
+    val contentDisposition: String?,
+    val contentType: String?,
+    val bytes: ByteArray,
+)
+
+internal fun MockRequest.parts(): List<Part> {
+  val regex = Regex("multipart/form-data;.*boundary=(.*)")
+  val match = regex.matchEntire(headers["Content-Type"]!!)
+  assertTrue(match != null)
+
+  val boundary = match.groupValues[1]
+  assertTrue(boundary.isNotBlank())
+
+  val reader = MultipartReader(Buffer().apply { write(body) }, boundary)
+  val parts = mutableListOf<Part>()
+  while (true) {
+    parts += reader.nextPart()?.let {
+      Part(
+          contentDisposition = it.headers.valueOf("Content-Disposition"),
+          contentType = it.headers.valueOf("Content-Type"),
+          bytes = it.body.readByteArray())
+    } ?: break
+  }
+  return parts
+}
+
+internal fun assertOperationsPart(part: Part, fixtureName: String) {
+  assertEquals(part.contentDisposition, "form-data; name=\"operations\"")
+  assertEquals(part.contentType, "application/json")
+  checkTestFixture(part.bytes.decodeToString(), fixtureName)
+}
+
+internal fun assertMapPart(part: Part, fixtureName: String) {
+  assertEquals(part.contentDisposition, "form-data; name=\"map\"")
+  assertEquals(part.contentType, "application/json")
+  checkTestFixture(part.bytes.decodeToString(), fixtureName)
+}
+
+internal fun assertFileContentPart(
+    part: Part,
+    expectedName: String,
+    expectedFileName: String,
+    expectedContentType: String,
+) {
+  assertEquals(
+      part.contentDisposition,
+      "form-data; name=\"$expectedName\"; filename=\"$expectedFileName\""
   )
-
-  private fun MockRequest.parts(): List<Part> {
-    val regex = Regex("multipart/form-data;.*boundary=(.*)")
-    val match = regex.matchEntire(headers["Content-Type"]!!)
-    assertTrue(match != null)
-
-    val boundary = match.groupValues[1]
-    assertTrue(boundary.isNotBlank())
-
-    val reader = MultipartReader(Buffer().apply { write(body) }, boundary)
-    val parts = mutableListOf<Part>()
-    while (true) {
-      parts += reader.nextPart()?.let {
-        Part(
-            contentDisposition = it.headers.valueOf("Content-Disposition"),
-            contentType = it.headers.valueOf("Content-Type"),
-            bytes = it.body.readByteArray())
-      } ?: break
-    }
-    return parts
-  }
-
-  private fun assertOperationsPart(part: Part, fixtureName: String) {
-    assertEquals(part.contentDisposition, "form-data; name=\"operations\"")
-    assertEquals(part.contentType, "application/json")
-    checkTestFixture(part.bytes.decodeToString(), fixtureName)
-  }
-
-  private fun assertMapPart(part: Part, fixtureName: String) {
-    assertEquals(part.contentDisposition, "form-data; name=\"map\"")
-    assertEquals(part.contentType, "application/json")
-    checkTestFixture(part.bytes.decodeToString(), fixtureName)
-  }
-
-  private fun assertFileContentPart(
-      part: Part,
-      expectedName: String,
-      expectedFileName: String,
-      expectedContentType: String,
-  ) {
-    assertEquals(
-        part.contentDisposition,
-        "form-data; name=\"$expectedName\"; filename=\"$expectedFileName\""
-    )
-    assertEquals(part.contentType, expectedContentType)
-  }
+  assertEquals(part.contentType, expectedContentType)
 }
