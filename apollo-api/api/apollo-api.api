@@ -1,3 +1,6 @@
+public final class com/apollographql/apollo3/api/-AdapterContext {
+}
+
 public abstract interface class com/apollographql/apollo3/api/Adapter {
 	public abstract fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Ljava/lang/Object;
 	public abstract fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/Object;)V
@@ -15,9 +18,6 @@ public final class com/apollographql/apollo3/api/AdapterContext$Builder {
 	public final fun build ()Lcom/apollographql/apollo3/api/AdapterContext;
 	public final fun mergedDeferredFragmentIds (Ljava/util/Set;)Lcom/apollographql/apollo3/api/AdapterContext$Builder;
 	public final fun variables (Lcom/apollographql/apollo3/api/Executable$Variables;)Lcom/apollographql/apollo3/api/AdapterContext$Builder;
-}
-
-public final class com/apollographql/apollo3/api/AdapterContextKt {
 }
 
 public final class com/apollographql/apollo3/api/Adapters {

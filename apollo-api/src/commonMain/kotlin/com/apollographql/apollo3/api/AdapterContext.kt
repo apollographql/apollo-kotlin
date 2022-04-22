@@ -1,6 +1,9 @@
+@file:JvmName("-AdapterContext")
+
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.annotations.ApolloInternal
+import kotlin.jvm.JvmName
 
 class AdapterContext private constructor(
     private val variables: Executable.Variables?,
