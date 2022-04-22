@@ -1,21 +1,24 @@
 package com.apollographql.apollo3.api.http
 
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.http.internal.urlEncode
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.json.internal.FileUploadAwareJsonWriter
 import com.apollographql.apollo3.api.json.buildJsonByteString
 import com.apollographql.apollo3.api.json.buildJsonMap
 import com.apollographql.apollo3.api.json.buildJsonString
+import com.apollographql.apollo3.api.json.internal.FileUploadAwareJsonWriter
 import com.apollographql.apollo3.api.json.writeAny
 import com.apollographql.apollo3.api.json.writeObject
 import com.benasher44.uuid.uuid4
+import okio.Buffer
 import okio.BufferedSink
 import okio.ByteString
+import okio.Sink
+import okio.blackholeSink
+import okio.buffer
 
 /**
  * An [HttpRequestComposer] that handles:
@@ -84,7 +87,6 @@ class DefaultHttpRequestComposer(
         query: String?,
     ): Map<String, Upload> {
       val uploads: Map<String, Upload>
-      @OptIn(ApolloInternal::class)
       writer.writeObject {
         name("operationName")
         value(operation.name())
@@ -131,7 +133,6 @@ class DefaultHttpRequestComposer(
 
       queryParams.put("operationName", operation.name())
 
-      @OptIn(ApolloInternal::class)
       val variables = buildJsonString {
         val uploadAwareWriter = FileUploadAwareJsonWriter(this)
         uploadAwareWriter.writeObject {
@@ -149,7 +150,6 @@ class DefaultHttpRequestComposer(
       }
 
       if (autoPersistQueries) {
-        @OptIn(ApolloInternal::class)
         val extensions = buildJsonString {
           writeObject {
             name("persistedQuery")
@@ -192,7 +192,6 @@ class DefaultHttpRequestComposer(
     ): HttpBody {
       val uploads: Map<String, Upload>
 
-      @OptIn(ApolloInternal::class)
       val operationByteString = buildJsonByteString(indent = null) {
         uploads = composePostParams(
             this,
@@ -218,47 +217,58 @@ class DefaultHttpRequestComposer(
 
           override val contentType = "multipart/form-data; boundary=$boundary"
 
-          // XXX: support non-chunked multipart
-          override val contentLength = -1L
+          override val contentLength by lazy {
+            val countingSink = CountingSink(blackholeSink())
+            val bufferedCountingSink = countingSink.buffer()
+            bufferedCountingSink.writeBoundaries(writeUploadContents = false)
+            bufferedCountingSink.flush()
+            val result = countingSink.bytesWritten + uploads.values.sumOf { it.contentLength }
+            result
+          }
 
           override fun writeTo(bufferedSink: BufferedSink) {
-            bufferedSink.writeUtf8("--$boundary\r\n")
-            bufferedSink.writeUtf8("Content-Disposition: form-data; name=\"operations\"\r\n")
-            bufferedSink.writeUtf8("Content-Type: application/json\r\n")
-            bufferedSink.writeUtf8("Content-Length: ${operationByteString.size}\r\n")
-            bufferedSink.writeUtf8("\r\n")
-            bufferedSink.write(operationByteString)
+            bufferedSink.writeBoundaries(writeUploadContents = true)
+          }
+
+          private fun BufferedSink.writeBoundaries(writeUploadContents: Boolean) {
+            writeUtf8("--$boundary\r\n")
+            writeUtf8("Content-Disposition: form-data; name=\"operations\"\r\n")
+            writeUtf8("Content-Type: application/json\r\n")
+            writeUtf8("Content-Length: ${operationByteString.size}\r\n")
+            writeUtf8("\r\n")
+            write(operationByteString)
 
             val uploadsMap = buildUploadMap(uploads)
-            bufferedSink.writeUtf8("\r\n--$boundary\r\n")
-            bufferedSink.writeUtf8("Content-Disposition: form-data; name=\"map\"\r\n")
-            bufferedSink.writeUtf8("Content-Type: application/json\r\n")
-            bufferedSink.writeUtf8("Content-Length: ${uploadsMap.size}\r\n")
-            bufferedSink.writeUtf8("\r\n")
-            bufferedSink.write(uploadsMap)
+            writeUtf8("\r\n--$boundary\r\n")
+            writeUtf8("Content-Disposition: form-data; name=\"map\"\r\n")
+            writeUtf8("Content-Type: application/json\r\n")
+            writeUtf8("Content-Length: ${uploadsMap.size}\r\n")
+            writeUtf8("\r\n")
+            write(uploadsMap)
 
             uploads.values.forEachIndexed { index, upload ->
-              bufferedSink.writeUtf8("\r\n--$boundary\r\n")
-              bufferedSink.writeUtf8("Content-Disposition: form-data; name=\"$index\"")
+              writeUtf8("\r\n--$boundary\r\n")
+              writeUtf8("Content-Disposition: form-data; name=\"$index\"")
               if (upload.fileName != null) {
-                bufferedSink.writeUtf8("; filename=\"${upload.fileName}\"")
+                writeUtf8("; filename=\"${upload.fileName}\"")
               }
-              bufferedSink.writeUtf8("\r\n")
-              bufferedSink.writeUtf8("Content-Type: ${upload.contentType}\r\n")
+              writeUtf8("\r\n")
+              writeUtf8("Content-Type: ${upload.contentType}\r\n")
               val contentLength = upload.contentLength
               if (contentLength != -1L) {
-                bufferedSink.writeUtf8("Content-Length: $contentLength\r\n")
+                writeUtf8("Content-Length: $contentLength\r\n")
               }
-              bufferedSink.writeUtf8("\r\n")
-              upload.writeTo(bufferedSink)
+              writeUtf8("\r\n")
+              if (writeUploadContents) {
+                upload.writeTo(this)
+              }
             }
-            bufferedSink.writeUtf8("\r\n--$boundary--\r\n")
+            writeUtf8("\r\n--$boundary--\r\n")
           }
         }
       }
     }
 
-    @OptIn(ApolloInternal::class)
     private fun buildUploadMap(uploads: Map<String, Upload>) = buildJsonByteString(indent = null) {
       this.writeAny(
           uploads.entries.mapIndexed { index, entry ->
@@ -274,7 +284,6 @@ class DefaultHttpRequestComposer(
         autoPersistQueries: Boolean,
         sendDocument: Boolean,
     ): ByteString {
-      @OptIn(ApolloInternal::class)
       return buildJsonByteString {
         val query = if (sendDocument) operation.document() else null
         composePostParams(this, operation, customScalarAdapters, autoPersistQueries, query)
@@ -291,10 +300,21 @@ class DefaultHttpRequestComposer(
       val customScalarAdapters = apolloRequest.executionContext[CustomScalarAdapters] ?: error("Cannot find a ResponseAdapterCache")
 
       val query = if (sendDocument) operation.document() else null
-      @OptIn(ApolloInternal::class)
       return buildJsonMap {
         composePostParams(this, operation, customScalarAdapters, sendApqExtensions, query)
       } as Map<String, Any?>
     }
+  }
+}
+
+private class CountingSink(
+    private val delegate: Sink,
+) : Sink by delegate {
+  var bytesWritten = 0L
+    private set
+
+  override fun write(source: Buffer, byteCount: Long) {
+    delegate.write(source, byteCount)
+    bytesWritten += byteCount
   }
 }
