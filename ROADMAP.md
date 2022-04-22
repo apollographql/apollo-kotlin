@@ -4,33 +4,31 @@ This document is meant to give the community some idea of where we're going with
 
 Please open issues or comment/upvote the existing ones for items you'd like to see added here. Feedback is very welcome! We'd love to learn more about how you're using Apollo Kotlin and what you'd like to see in the future.
 
-This document was last updated on December 15th, 2021.
+This document was last updated on April 22nd, 2022.
 
-## `main` branch
+### Community Feedback & bug bashing
 
-Apollo Kotlin 3 is the latest version of Apollo Kotlin. It's 100% written in Kotlin and brings [a ton of new APIs and features](https://github.com/apollographql/apollo-kotlin/releases/tag/v3.0.0). 
-
-The next things to get worked on are:
-
-### 3.0 Feedbacks
-
-As Apollo Kotlin 3 is relatively young, there will be use cases and issues that are not addressed yet. Our priority will be to make sure the feedbacks are addressed and any bug fixed rapidly. 
+We want to make sure the library fits your use cases and welcome all kind of feedback. Our priority will be to make sure the feedback are addressed and any bug fixed rapidly. 
 
 ### Cache improvements
 
-The declarative cache makes working with the cache and defining unique object ids easier. We also want to include helpers to handle with common cases like pagination, garbage collection and eviction.
+The declarative cache makes working with the cache and defining unique object ids easier. We also want to include helpers to handle with common cases like pagination, garbage collection and eviction. Follow [#2331](https://github.com/apollographql/apollo-kotlin/issues/2331) for a high level overview. The current focus is on cache control and expiration. You can read more in [the cache control design document](https://github.com/apollographql/apollo-kotlin/pull/4009).
 
-### Test server
+### Keep up to date with the spec
 
-Apollo Kotlin 3 introduces [test builders](https://www.apollographql.com/docs/kotlin/testing/test-builders/) as a new type-safe way to build test data. We can go a step further and build an all-in-one solution that includes a GraphQL aware server.
+The GraphQL spec continues to evolve and we want to keep track of new proposals like [`@defer`](https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md) or [Client Control Nullability](https://github.com/graphql/graphql-spec/issues/867)
 
-### Make Apollo Kotlin even more multiplatform
+### Test APIs
 
-Apollo Kotlin 3 is multiplatform first with runtime and cache support for the JVM, iOS, macOS and JS. We can do more to make the library even more easy to use:
+Apollo Kotlin 3 introduces [test builders](https://www.apollographql.com/docs/kotlin/testing/test-builders/) as a new type-safe way to build test data. While this is working, it generates a lot of code, making it hard to include in main source sets. This can be problematic in some cases like Jetpack Compose `@Preview` for an example. We are investigating generating schema-based test builders for simpler and more lightweight APIs.
 
-- HMPP support
-- Trying out and adopting the new memory model
-- More targets like linux/mingw/etc..
+### Hierarchical Multi Platform Projects (HMPP)
+
+Add support for [HMPP](https://kotlinlang.org/docs/multiplatform-share-on-platforms.html)
+
+### New Kotlin native memory model
+
+As the new [memory model](https://blog.jetbrains.com/kotlin/2021/08/try-the-new-kotlin-native-memory-manager-development-preview/) is becoming the default, adapt Apollo Kotlin to use it.
 
 ## `release-2.x` branch
 
