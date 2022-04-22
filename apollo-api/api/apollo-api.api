@@ -17,6 +17,9 @@ public final class com/apollographql/apollo3/api/AdapterContext$Builder {
 	public final fun variables (Lcom/apollographql/apollo3/api/Executable$Variables;)Lcom/apollographql/apollo3/api/AdapterContext$Builder;
 }
 
+public final class com/apollographql/apollo3/api/AdapterContextKt {
+}
+
 public final class com/apollographql/apollo3/api/Adapters {
 	public static final field AnyAdapter Lcom/apollographql/apollo3/api/Adapter;
 	public static final field BooleanAdapter Lcom/apollographql/apollo3/api/Adapter;
