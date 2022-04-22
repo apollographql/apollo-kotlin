@@ -13,17 +13,6 @@ kotlin {
     withJava()
   }
 
-  js {
-    nodejs {
-      testTask {
-        useMocha {
-          // Override default timeout (needed for subscriptions tests)
-          timeout = "120s"
-        }
-      }
-    }
-  }
-
   sourceSets {
     val commonMain by getting {
       dependencies {
