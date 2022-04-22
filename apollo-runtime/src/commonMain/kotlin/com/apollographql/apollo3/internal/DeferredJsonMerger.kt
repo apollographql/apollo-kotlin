@@ -107,6 +107,12 @@ class DeferredJsonMerger {
     }
     return node
   }
+
+  fun reset() {
+    _merged.clear()
+    _mergedFragmentIds.clear()
+    hasNext = true
+  }
 }
 
 internal fun Map<String, Any?>.isDeferred(): Boolean {

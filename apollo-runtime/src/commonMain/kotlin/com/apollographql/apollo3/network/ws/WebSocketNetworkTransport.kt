@@ -246,7 +246,7 @@ private constructor(
   override fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
   ): Flow<ApolloResponse<D>> {
-    val deferredJsonMergers = mutableMapOf<String, DeferredJsonMerger>()
+    val deferredJsonMerger = DeferredJsonMerger()
 
     return events.onSubscription {
       messages.send(StartOperation(request))
@@ -279,22 +279,20 @@ private constructor(
           val responsePayload = response.payload
           val requestCustomScalarAdapters = request.executionContext[CustomScalarAdapters]!!
           val (payload, customScalarAdapters) = if (responsePayload.isDeferred()) {
-            val responseId = response.id ?: ""
-            val deferredJsonMerger = deferredJsonMergers.getOrPut(responseId) { DeferredJsonMerger() }
-            deferredJsonMerger.merge(responsePayload)
-            if (responsePayload["hasNext"] == false) {
-              // Last deferred payload: discard the deferredJsonMerger
-              deferredJsonMergers.remove(responseId)
-            }
-            deferredJsonMerger.merged to requestCustomScalarAdapters.withDeferredFragmentIds(deferredJsonMerger.mergedFragmentIds)
+            deferredJsonMerger.merge(responsePayload) to requestCustomScalarAdapters.withDeferredFragmentIds(deferredJsonMerger.mergedFragmentIds)
           } else {
             responsePayload to requestCustomScalarAdapters
           }
-          request.operation
+          val apolloResponse: ApolloResponse<D> = request.operation
               .parseJsonResponse(payload.jsonReader(), customScalarAdapters)
               .newBuilder()
               .requestUuid(request.requestUuid)
               .build()
+          if (!deferredJsonMerger.hasNext) {
+            // Last deferred payload: reset the deferredJsonMerger for potential subsequent responses
+            deferredJsonMerger.reset()
+          }
+          apolloResponse
         }
         is OperationError -> throw ApolloNetworkException("Operation error ${request.operation.name()}: ${response.payload}")
         is NetworkError -> throw ApolloNetworkException("Network error while executing ${request.operation.name()}", response.cause)
