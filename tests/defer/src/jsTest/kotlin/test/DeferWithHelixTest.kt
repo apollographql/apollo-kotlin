@@ -1,6 +1,7 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.network.ws.GraphQLWsProtocol
 import com.apollographql.apollo3.testing.runTest
 import defer.WithFragmentSpreadsQuery
 import defer.WithInlineFragmentsQuery
@@ -30,7 +31,11 @@ class DeferWithHelixTest {
 
   private suspend fun setUp() {
     helixServer = HelixServer(schema)
-    apolloClient = ApolloClient.Builder().serverUrl(helixServer.url()).build()
+    apolloClient = ApolloClient.Builder()
+        .serverUrl(helixServer.url())
+        .webSocketServerUrl(helixServer.webSocketUrl())
+        .wsProtocol(GraphQLWsProtocol.Factory())
+        .build()
   }
 
   private suspend fun tearDown() {
@@ -87,7 +92,28 @@ class DeferWithHelixTest {
                     }
                 )
               }
-
+          ),
+          subscription = GraphQLObjectType(
+              name = "Subscription",
+              fields = dynamicObject {
+                count = GraphQLField(
+                    type = GraphQLNonNull(GraphQLObjectType(
+                        name = "Counter",
+                        fields = dynamicObject {
+                          value = GraphQLField(GraphQLNonNull(GraphQLInt))
+                          valueTimesTwo = GraphQLField(GraphQLNonNull(GraphQLInt))
+                        }
+                    )),
+                    args = dynamicObject {
+                      to = dynamicObject {
+                        type = GraphQLNonNull(GraphQLInt)
+                      }
+                    },
+                    subscribe = { _: dynamic, args: dynamic ->
+                      // TODO How to return an "Async Iterable" here?
+                    }
+                )
+              }
           ),
           directives = arrayOf(GraphQLDeferDirective, GraphQLStreamDirective)
       )

@@ -32,6 +32,9 @@ kotlin {
     val jsTest by getting {
       dependencies {
         implementation(npm("graphql-helix", "1.12.0"))
+        implementation(npm("express", "4.17.3"))
+        implementation(npm("ws", "8.2.2"))
+        implementation(npm("graphql-ws", "5.5.0"))
         // Depend on a more recent 'canary' version of graphql-js (version graphql-helix depends on by default is older).
         // This corresponds to this PR: https://github.com/graphql/graphql-js/pull/2839/
         implementation(npm("graphql", "canary-pr-2839"))

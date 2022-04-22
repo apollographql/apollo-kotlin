@@ -3,19 +3,11 @@
 
 package helix
 
-import graphql.GraphQLSchema
 import kotlin.js.Promise
 
-external interface Request {
-  var body: dynamic
-  var headers: dynamic
-  var method: String
-  var query: dynamic
-}
+external fun shouldRenderGraphiQL(request: dynamic): Boolean
 
-external fun shouldRenderGraphiQL(request: Request): Boolean
-
-external fun renderGraphiQL(): String
+external fun renderGraphiQL(options: dynamic): String
 
 external interface GraphQLParams {
   val operationName: String?
@@ -23,18 +15,13 @@ external interface GraphQLParams {
   val variables: dynamic
 }
 
-external fun getGraphQLParameters(request: Request): GraphQLParams
+external fun getGraphQLParameters(request: dynamic): GraphQLParams
 
-external interface ProcessRequestOptions {
-  var operationName: String?
-  var query: String?
-  var variables: dynamic
-  var request: Request
-  var schema: GraphQLSchema
+external interface ProcessRequestResult {
+  val type: String
 }
 
-external interface ProcessRequestResult
+external fun processRequest(options: dynamic): Promise<ProcessRequestResult>
 
-external fun processRequest(options: ProcessRequestOptions): Promise<ProcessRequestResult>
-
-external fun sendResult(result: ProcessRequestResult, rawResponse: http.ServerResponse): Promise<Unit>
+external fun sendResponseResult(result: dynamic, rawResponse: dynamic)
+external fun sendMultipartResponseResult(result: dynamic, rawResponse: dynamic)

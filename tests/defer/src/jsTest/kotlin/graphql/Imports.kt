@@ -7,11 +7,12 @@ external class GraphQLSchema(config: GraphQLSchemaConfig)
 
 external interface GraphQLSchemaConfig {
     var query: GraphQLObjectType
-// Unused for now
+    var subscription: GraphQLObjectType?
+
+    // Unused for now
 //    var mutation: GraphQLObjectType?
-//    var subscription: GraphQLObjectType?
 //    var types: Array<GraphQLNamedType>?
-var directives: Array<GraphQLDirective>?
+    var directives: Array<GraphQLDirective>?
 }
 
 external interface GraphQLType
@@ -39,3 +40,5 @@ external object GraphQLStreamDirective : GraphQLDirective
 
 external val specifiedDirectives: Array<GraphQLDirective>
 
+external val execute: dynamic
+external val subscribe: dynamic
