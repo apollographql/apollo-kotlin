@@ -2,9 +2,9 @@
 title: Gradle plugin configuration
 ---
 
-Apollo Kotlin's default configuration works for the majority of use cases. If you're getting started, see the [getting started guide](../) for an overview of the default configuration.
+Apollo Kotlin's default configuration works for the majority of use cases. If you're getting started, see the [getting started guide](../) for an overview of the default Gradle configuration.
 
-This article describes configuration options for advanced use cases.
+This article describes configuration options for advanced use cases when using Gradle.
 
 ## Using multiple GraphQL APIs
 
@@ -53,9 +53,9 @@ apollo {
 
 By default, Apollo Kotlin adds generated source:
 
-* to the `main` sourceSet for JVM projects
-* to `commonMain` for multiplatform projects
-* to all non-test variants for Android projects
+- to the `main` sourceSet for JVM projects
+- to `commonMain` for multiplatform projects
+- to all non-test variants for Android projects
 
 You can customize this behavior with the `outputDirConnection` property. For example, to wire a service to the test source set of a Kotlin
 JVM project:
@@ -96,6 +96,7 @@ apollo {
   }
 }
 ```
+
 This will create a task named `download<ServiceName>ApolloSchemaFromIntrospection` (`downloadServiceApolloSchemaFromIntrospection` by default).
 
 If you register your schema with [Apollo Studio](https://www.apollographql.com/docs/studio/), use the `registry` block instead:
@@ -104,7 +105,7 @@ If you register your schema with [Apollo Studio](https://www.apollographql.com/d
 apollo {
   service("starwars") {
     packageName.set("com.starwars")
- 
+
     // This will create a downloadStarwarsApolloSchemaFromRegistry task
     registry {
       key.set(System.getenv("APOLLO_KEY"))
@@ -115,4 +116,5 @@ apollo {
   }
 }
 ```
+
 This will create a task named `download<ServiceName>ApolloSchemaFromRegistry` (`downloadServiceApolloSchemaFromRegistry` by default).
