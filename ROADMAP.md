@@ -1,14 +1,17 @@
-# Roadmap
+# 🔮 Apollo Kotlin Roadmap
 
-This document is meant to give the community some idea of where we're going with Apollo Kotlin in the short and longer term.
+**Last updated: April 2022**
 
-Please open issues or comment/upvote the existing ones for items you'd like to see added here. Feedback is very welcome! We'd love to learn more about how you're using Apollo Kotlin and what you'd like to see in the future.
+For up to date release notes, refer to the project [Change Log](CHANGELOG.mdCHANGELOG.md).
 
-This document was last updated on April 22nd, 2022.
+> **Please note:** This is an approximation of **larger effort** work planned for the next 6 - 12 months. It does not cover all new functionality that will be added, and nothing here is set in stone. Also note that each of these releases, and several patch releases in-between, will include bug fixes (based on issue triaging) and community submitted PR's.
 
-### Community Feedback & bug bashing
+## ✋ Community feedback & prioritization
 
-We want to make sure the library fits your use cases and welcome all kind of feedback. Our priority will be to make sure the feedback are addressed and any bug fixed rapidly. 
+- Please report feature requests or bugs as a new [issue](https://github.com/apollographql/apollo-kotlin/issues/new/choose).
+- If you already see an issue that interests you please add a 👍 or a comment so we can measure community interest.
+
+---
 
 ### Cache improvements
 
@@ -30,9 +33,6 @@ Add support for [HMPP](https://kotlinlang.org/docs/multiplatform-share-on-platfo
 
 As the new [memory model](https://blog.jetbrains.com/kotlin/2021/08/try-the-new-kotlin-native-memory-manager-development-preview/) is becoming the default, adapt Apollo Kotlin to use it.
 
-## `release-2.x` branch
+### `release-2.x` branch
 
 `release-2.x` is the Apollo Android `2.x` branch. Major security issues or fixes will get new releases.
-
-
-
