@@ -1,6 +1,7 @@
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
+import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 
 fun Project.configureMppDefaults(withJs: Boolean = true, withLinux: Boolean = true) {
   val kotlinExtension = extensions.findByName("kotlin") as? KotlinMultiplatformExtension
@@ -40,11 +41,25 @@ fun Project.configureMppDefaults(withJs: Boolean = true, withLinux: Boolean = tr
   }
 }
 
+fun Project.configureOkioVersion() {
+  configurations.configureEach { configuration ->
+    configuration.resolutionStrategy.eachDependency { details ->
+      if (details.requested.group == "com.squareup.okio") {
+        println("resolving okio ${getKotlinPluginVersion()}")
+        details.useVersion(when (getKotlinPluginVersion()) {
+          "1.6.10" -> "3.0.0"
+          else -> "3.1.1"
+        })
+      }
+    }
+  }
+}
+
 fun KotlinMultiplatformExtension.configureAppleTargets(vararg presetNames: String) {
   if (System.getProperty("idea.sync.active") != null) {
     // Early return. Inside intelliJ, only configure one target
     // Try to guess the dev machine to make sure the tests are running smoothly
-    if (System.getProperty("os.arch") == "aarch64") {
+    if (false && System.getProperty("os.arch") == "aarch64") {
       macosArm64("apple")
     } else {
       macosX64("apple")

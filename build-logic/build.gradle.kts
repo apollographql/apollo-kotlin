@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
+
 plugins {
   kotlin("jvm")
 }
@@ -32,7 +34,15 @@ dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.benManesVersions"))
   implementation(groovy.util.Eval.x(project, "x.dep.vespene"))
   implementation(groovy.util.Eval.x(project, "x.dep.gr8"))
-  implementation(groovy.util.Eval.x(project, "x.dep.kspGradlePlugin"))
+
+  // We want the KSP plugin to use the version from the classpath and not force a newer version
+  // of the Gradle plugin
+  val kspPlugin = when (getKotlinPluginVersion()) {
+    "1.6.10" -> groovy.util.Eval.x(project, "x.dep.kspGradlePlugin_1_6_10")
+    "1.6.21" -> groovy.util.Eval.x(project, "x.dep.kspGradlePlugin_1_6_21")
+    else -> error("Update KSP to work with Kotlin ${getKotlinPluginVersion()} (see https://github.com/google/ksp/releases)")
+  }
+  implementation(kspPlugin)
   implementation(groovy.util.Eval.x(project, "x.dep.dokka"))
   implementation(groovy.util.Eval.x(project, "x.dep.binaryCompatibilityValidator"))
   // XXX: This is only needed for tests. We could have different build logic for different

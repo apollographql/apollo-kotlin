@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
+
 buildscript {
   project.apply {
     from(rootProject.file("gradle/dependencies.gradle"))
@@ -46,6 +48,7 @@ subprojects {
   }
 
   configureJavaAndKotlinCompilers()
+  configureOkioVersion()
 
   afterEvaluate {
     tasks.withType<AbstractTestTask> {
