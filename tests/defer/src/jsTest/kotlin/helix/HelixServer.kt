@@ -1,86 +1,103 @@
 package helix
 
-import Buffer
-import NodeJS.get
+import express.express
 import graphql.GraphQLSchema
-import http.createServer
-import net.AddressInfo
-import url.URL
-import util.OutgoingHttpHeaders
-import util.objectFromEntries
+import graphql.execute
+import graphql.subscribe
+import graphqlws.useServer.useServer
+import util.dynamicObject
+import ws.Server
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class HelixServer
-(
+class HelixServer(
     private val schema: GraphQLSchema,
-    port: Long? = null,
+    private val port: Int = 4000,
 ) {
+  private var server: dynamic = null
+  private var wsServer: dynamic = null
   private var url: String? = null
+  private var webSocketUrl: String? = null
 
-  // Based on https://github.com/contra/graphql-helix/blob/main/examples/http/server.ts
-  private val server = createServer { req, res ->
-    val url = URL(req.url, "http://${req.headers["Host"]}")
+  // Based on https://github.com/contra/graphql-helix/blob/main/examples/graphql-ws/server.ts
+  init {
+    val app = express()
 
-    if (url.pathname != "/graphql") {
-      res.writeHead(404)
-      res.end("Not found")
-      return@createServer
-    }
-
-    val payload = StringBuilder()
-
-    req.on("data") { chunk ->
-      when (chunk) {
-        is String -> payload.append(chunk)
-        is Buffer -> payload.append(chunk.toString("utf8"))
+    app.use(express.json())
+    app.use("/graphql") { req: dynamic, res: dynamic ->
+      val request = dynamicObject {
+        body = req.body
+        headers = req.headers
+        method = req.method
+        query = req.query
       }
-    }
-
-    req.on("end") { _ ->
-      val request = Request(
-          body = JSON.parse<Any>(payload.toString().ifBlank { "{}" }),
-          headers = req.headers,
-          method = req.method,
-          query = objectFromEntries(url.searchParams),
-      )
 
       if (shouldRenderGraphiQL(request)) {
-        res.writeHead(200, OutgoingHttpHeaders("content-type" to "text/html"))
-        res.end(renderGraphiQL())
-      } else {
-        val graphQLParams = getGraphQLParameters(request)
-        processRequest(
-            ProcessRequestOptions(
-                operationName = graphQLParams.operationName,
-                query = graphQLParams.query,
-                variables = graphQLParams.variables,
-                request = request,
-                schema = schema,
-            )
-        ).then { result ->
-          sendResult(result, res)
+        res.send(
+            renderGraphiQL(dynamicObject {
+              subscriptionsEndpoint = "ws://localhost:4000/graphql"
+            })
+        )
+        return@use null
+      }
+
+      val graphQLParams = getGraphQLParameters(request)
+      processRequest(
+          dynamicObject {
+            operationName = graphQLParams.operationName
+            query = graphQLParams.query
+            variables = graphQLParams.variables
+            this.request = request
+            this.schema = schema
+          }
+      ).then { result ->
+        if (result.type === "RESPONSE") {
+          sendResponseResult(result, res)
+        } else if (result.type === "MULTIPART_RESPONSE") {
+          sendMultipartResponseResult(result, res)
+        } else {
+          // Should use ws: protocol, not http:
+          res.status(422)
         }
       }
     }
-  }.apply {
-    if (port != null) {
-      listen(port)
-    } else {
-      listen()
+
+    server = app.listen(port) {
+      wsServer = Server(dynamicObject {
+        this.server = server
+        path = "/graphql"
+      })
+
+      useServer(dynamicObject {
+        this.schema = schema
+        this.execute = execute
+        this.subscribe = subscribe
+      }, wsServer)
     }
   }
 
   suspend fun url() = url ?: suspendCoroutine { cont ->
-    url = "http://localhost:${server.address().unsafeCast<AddressInfo>().port}/graphql"
+    url = "http://localhost:$port/graphql"
+    webSocketUrl = "ws://localhost:$port/graphql"
     server.on("listening") { _ ->
       cont.resume(url!!)
-    }
+    }.unsafeCast<Unit>()
+  }
+
+  suspend fun webSocketUrl() = webSocketUrl ?: suspendCoroutine { cont ->
+    url = "http://localhost:$port/graphql"
+    webSocketUrl = "ws://localhost:$port/graphql"
+    server.on("listening") { _ ->
+      cont.resume(webSocketUrl!!)
+    }.unsafeCast<Unit>()
   }
 
   suspend fun stop() = suspendCoroutine<Unit> { cont ->
+    wsServer.clients.forEach { client ->
+      client.close()
+    }
     server.close {
       cont.resume(Unit)
-    }
+    }.unsafeCast<Unit>()
   }
 }

@@ -1,10 +1,14 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.network.ws.GraphQLWsProtocol
 import com.apollographql.apollo3.testing.runTest
 import defer.WithFragmentSpreadsQuery
+import defer.WithFragmentSpreadsSubscription
 import defer.WithInlineFragmentsQuery
+import defer.WithInlineFragmentsSubscription
 import defer.fragment.ComputerFields
+import defer.fragment.CounterFields
 import defer.fragment.ScreenFields
 import graphql.GraphQLBoolean
 import graphql.GraphQLDeferDirective
@@ -21,6 +25,7 @@ import graphql.GraphQLString
 import helix.HelixServer
 import kotlinx.coroutines.flow.toList
 import util.dynamicObject
+import util.jsAsyncIterator
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -30,7 +35,11 @@ class DeferWithHelixTest {
 
   private suspend fun setUp() {
     helixServer = HelixServer(schema)
-    apolloClient = ApolloClient.Builder().serverUrl(helixServer.url()).build()
+    apolloClient = ApolloClient.Builder()
+        .serverUrl(helixServer.url())
+        .webSocketServerUrl(helixServer.webSocketUrl())
+        .wsProtocol(GraphQLWsProtocol.Factory())
+        .build()
   }
 
   private suspend fun tearDown() {
@@ -87,14 +96,50 @@ class DeferWithHelixTest {
                     }
                 )
               }
+          ),
+          subscription = GraphQLObjectType(
+              name = "Subscription",
+              fields = dynamicObject {
+                count = GraphQLField(
+                    type = GraphQLNonNull(GraphQLObjectType(
+                        name = "Counter",
+                        fields = dynamicObject {
+                          value = GraphQLField(GraphQLNonNull(GraphQLInt))
+                          valueTimesTwo = GraphQLField(GraphQLNonNull(GraphQLInt))
+                        }
+                    )),
+                    args = dynamicObject {
+                      to = dynamicObject {
+                        type = GraphQLNonNull(GraphQLInt)
+                      }
+                    },
 
+                    subscribe = { _: dynamic, args: dynamic ->
+                      val to = args.to as Int
+                      var countValue = 0
+
+                      jsAsyncIterator(
+                          next = {
+                            countValue++
+                            dynamicObject {
+                              count = dynamicObject {
+                                this.value = countValue
+                                valueTimesTwo = countValue * 2
+                              }
+                            }
+                          },
+                          hasNext = { countValue < to }
+                      )
+                    }
+                )
+              }
           ),
           directives = arrayOf(GraphQLDeferDirective, GraphQLStreamDirective)
       )
   )
 
   @Test
-  fun deferWithFragmentSpreads() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun queryWithFragmentSpreads() = runTest(before = { setUp() }, after = { tearDown() }) {
     val expectedDataList = listOf(
         WithFragmentSpreadsQuery.Data(
             listOf(
@@ -143,7 +188,7 @@ class DeferWithHelixTest {
   }
 
   @Test
-  fun deferWithInlineFragments() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun queryWithInlineFragments() = runTest(before = { setUp() }, after = { tearDown() }) {
     val expectedDataList = listOf(
         WithInlineFragmentsQuery.Data(
             listOf(
@@ -187,6 +232,48 @@ class DeferWithHelixTest {
         ),
     )
     val actualDataList = apolloClient.query(WithInlineFragmentsQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    assertEquals(expectedDataList, actualDataList)
+  }
+
+  @Test
+  fun subscriptionWithInlineFragment() = runTest(before = { setUp() }, after = { tearDown() }) {
+    val expectedDataList = listOf(
+        // Emission 0, deferred payload 0
+        WithInlineFragmentsSubscription.Data(WithInlineFragmentsSubscription.Count("Counter", 1, null)),
+        // Emission 0, deferred payload 1
+        WithInlineFragmentsSubscription.Data(WithInlineFragmentsSubscription.Count("Counter", 1, WithInlineFragmentsSubscription.OnCounter(2))),
+        // Emission 1, deferred payload 0
+        WithInlineFragmentsSubscription.Data(WithInlineFragmentsSubscription.Count("Counter", 2, null)),
+        // Emission 1, deferred payload 1
+        WithInlineFragmentsSubscription.Data(WithInlineFragmentsSubscription.Count("Counter", 2, WithInlineFragmentsSubscription.OnCounter(4))),
+        // Emission 2, deferred payload 0
+        WithInlineFragmentsSubscription.Data(WithInlineFragmentsSubscription.Count("Counter", 3, null)),
+        // Emission 2, deferred payload 1
+        WithInlineFragmentsSubscription.Data(WithInlineFragmentsSubscription.Count("Counter", 3, WithInlineFragmentsSubscription.OnCounter(6))),
+    )
+
+    val actualDataList = apolloClient.subscription(WithInlineFragmentsSubscription()).toFlow().toList().map { it.dataAssertNoErrors }
+    assertEquals(expectedDataList, actualDataList)
+  }
+
+  @Test
+  fun subscriptionWithFragmentSpreads() = runTest(before = { setUp() }, after = { tearDown() }) {
+    val expectedDataList = listOf(
+        // Emission 0, deferred payload 0
+        WithFragmentSpreadsSubscription.Data(WithFragmentSpreadsSubscription.Count("Counter", 1, null)),
+        // Emission 0, deferred payload 1
+        WithFragmentSpreadsSubscription.Data(WithFragmentSpreadsSubscription.Count("Counter", 1, CounterFields(2))),
+        // Emission 1, deferred payload 0
+        WithFragmentSpreadsSubscription.Data(WithFragmentSpreadsSubscription.Count("Counter", 2, null)),
+        // Emission 1, deferred payload 1
+        WithFragmentSpreadsSubscription.Data(WithFragmentSpreadsSubscription.Count("Counter", 2, CounterFields(4))),
+        // Emission 2, deferred payload 0
+        WithFragmentSpreadsSubscription.Data(WithFragmentSpreadsSubscription.Count("Counter", 3, null)),
+        // Emission 2, deferred payload 1
+        WithFragmentSpreadsSubscription.Data(WithFragmentSpreadsSubscription.Count("Counter", 3, CounterFields(6))),
+    )
+
+    val actualDataList = apolloClient.subscription(WithFragmentSpreadsSubscription()).toFlow().toList().map { it.dataAssertNoErrors }
     assertEquals(expectedDataList, actualDataList)
   }
 }

@@ -211,7 +211,7 @@ abstract class DefaultApolloExtension(
 
   private fun registerService(service: DefaultService) {
     check(services.find { it.name == service.name } == null) {
-      "There is already a service named $name, please use another name"
+      "There is already a service named ${service.name}, please use another name"
     }
     services.add(service)
 
