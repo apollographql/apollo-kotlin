@@ -5,7 +5,6 @@ import graphql.GraphQLSchema
 import graphql.execute
 import graphql.subscribe
 import graphqlws.useServer.useServer
-import net.AddressInfo
 import util.dynamicObject
 import ws.Server
 import kotlin.coroutines.resume
@@ -13,9 +12,10 @@ import kotlin.coroutines.suspendCoroutine
 
 class HelixServer(
     private val schema: GraphQLSchema,
-    port: Int = 4000,
+    private val port: Int = 4000,
 ) {
   private var server: dynamic = null
+  private var wsServer: dynamic = null
   private var url: String? = null
   private var webSocketUrl: String? = null
 
@@ -63,7 +63,7 @@ class HelixServer(
     }
 
     server = app.listen(port) {
-      val wsServer = Server(dynamicObject {
+      wsServer = Server(dynamicObject {
         this.server = server
         path = "/graphql"
       })
@@ -77,20 +77,25 @@ class HelixServer(
   }
 
   suspend fun url() = url ?: suspendCoroutine { cont ->
-    url = "http://localhost:${server.address().unsafeCast<AddressInfo>().port}/graphql"
+    url = "http://localhost:$port/graphql"
+    webSocketUrl = "ws://localhost:$port/graphql"
     server.on("listening") { _ ->
       cont.resume(url!!)
     }.unsafeCast<Unit>()
   }
 
   suspend fun webSocketUrl() = webSocketUrl ?: suspendCoroutine { cont ->
-    webSocketUrl = "ws://localhost:${server.address().unsafeCast<AddressInfo>().port}/graphql"
+    url = "http://localhost:$port/graphql"
+    webSocketUrl = "ws://localhost:$port/graphql"
     server.on("listening") { _ ->
       cont.resume(webSocketUrl!!)
     }.unsafeCast<Unit>()
   }
 
   suspend fun stop() = suspendCoroutine<Unit> { cont ->
+    wsServer.clients.forEach { client ->
+      client.close()
+    }
     server.close {
       cont.resume(Unit)
     }.unsafeCast<Unit>()
