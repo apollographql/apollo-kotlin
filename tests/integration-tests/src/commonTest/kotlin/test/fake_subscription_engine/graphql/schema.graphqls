@@ -1,0 +1,7 @@
+type Query {
+  unused: String
+}
+
+type Subscription {
+  random: Int!
+}
