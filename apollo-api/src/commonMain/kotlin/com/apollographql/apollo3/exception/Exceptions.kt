@@ -103,6 +103,9 @@ class HttpCacheMissException(message: String, cause: Exception? = null) : Apollo
  * both the cache and the network. In that case, [ApolloCompositeException] is thrown, and you
  * can access the underlying cache and network exceptions in [suppressedExceptions].
  *
+ * [suppressedExceptions] uses [Throwable.suppressedExceptions] for convenience, but you can
+ * safely cast any [suppressedExceptions] to an [ApolloException].
+ *
  * ```
  * try {
  *     val response = apolloClient.query(sampleQuery).fetchPolicy(CacheFirst).execute()
@@ -110,7 +113,7 @@ class HttpCacheMissException(message: String, cause: Exception? = null) : Apollo
  *   when (e) {
  *     is ApolloCompositeException -> {
  *       e.suppressedExceptions.forEach { suppressed ->
- *         handleException(suppressed)
+ *         handleException(suppressed as ApolloException)
  *       }
  *     }
  *     else -> handleException(e)
