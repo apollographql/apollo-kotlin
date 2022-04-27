@@ -121,7 +121,10 @@ abstract class WsProtocol(
   }
 
   /**
+   * receive a new WebMessage message as a [Map<String, Any?>]
    *
+   * Messages that aren't Json objects are ignored and [receiveMessageMap] will suspend until
+   * the next message.
    */
   protected suspend fun receiveMessageMap(): Map<String, Any?> {
     while (true) {
