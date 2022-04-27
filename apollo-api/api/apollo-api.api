@@ -1,3 +1,6 @@
+public final class com/apollographql/apollo3/api/-AdapterContext {
+}
+
 public abstract interface class com/apollographql/apollo3/api/Adapter {
 	public abstract fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Ljava/lang/Object;
 	public abstract fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/Object;)V

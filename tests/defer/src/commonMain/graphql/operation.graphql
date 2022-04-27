@@ -42,3 +42,23 @@ mutation WithFragmentSpreadsMutation {
     ...ComputerFields @defer(label: "c")
   }
 }
+
+subscription WithInlineFragmentsSubscription {
+  count(to: 3) {
+    value
+    ... on Counter @defer {
+      valueTimesTwo
+    }
+  }
+}
+
+subscription WithFragmentSpreadsSubscription {
+  count(to: 3) {
+    value
+    ...CounterFields @defer(label: "d")
+  }
+}
+
+fragment CounterFields on Counter{
+  valueTimesTwo
+}

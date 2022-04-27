@@ -2,6 +2,7 @@ package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_1
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -9,8 +10,11 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
+import com.apollographql.apollo3.api.withDeferredFragmentIds
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.internal.BackgroundDispatcher
+import com.apollographql.apollo3.internal.DeferredJsonMerger
+import com.apollographql.apollo3.internal.isDeferred
 import com.apollographql.apollo3.internal.transformWhile
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.ws.internal.Command
@@ -238,9 +242,12 @@ private constructor(
     }
   }
 
+  @OptIn(ApolloInternal::class)
   override fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
   ): Flow<ApolloResponse<D>> {
+    val deferredJsonMerger = DeferredJsonMerger()
+
     return events.onSubscription {
       messages.send(StartOperation(request))
     }.filter {
@@ -266,18 +273,32 @@ private constructor(
           true
         }
       }
-    }.map {
-      when (it) {
-        is OperationResponse -> request.operation
-            .parseJsonResponse(it.payload.jsonReader(), request.executionContext[CustomScalarAdapters]!!)
-            .newBuilder()
-            .requestUuid(request.requestUuid)
-            .build()
-        is OperationError -> throw ApolloNetworkException("Operation error ${request.operation.name()}: ${it.payload}")
-        is NetworkError -> throw ApolloNetworkException("Network error while executing ${request.operation.name()}", it.cause)
+    }.map { response ->
+      when (response) {
+        is OperationResponse -> {
+          val responsePayload = response.payload
+          val requestCustomScalarAdapters = request.executionContext[CustomScalarAdapters]!!
+          val (payload, customScalarAdapters) = if (responsePayload.isDeferred()) {
+            deferredJsonMerger.merge(responsePayload) to requestCustomScalarAdapters.withDeferredFragmentIds(deferredJsonMerger.mergedFragmentIds)
+          } else {
+            responsePayload to requestCustomScalarAdapters
+          }
+          val apolloResponse: ApolloResponse<D> = request.operation
+              .parseJsonResponse(payload.jsonReader(), customScalarAdapters)
+              .newBuilder()
+              .requestUuid(request.requestUuid)
+              .build()
+          if (!deferredJsonMerger.hasNext) {
+            // Last deferred payload: reset the deferredJsonMerger for potential subsequent responses
+            deferredJsonMerger.reset()
+          }
+          apolloResponse
+        }
+        is OperationError -> throw ApolloNetworkException("Operation error ${request.operation.name()}: ${response.payload}")
+        is NetworkError -> throw ApolloNetworkException("Network error while executing ${request.operation.name()}", response.cause)
 
         // Cannot happen as these events are filtered out upstream
-        is OperationComplete, is GeneralError -> error("Unexpected event $it")
+        is OperationComplete, is GeneralError -> error("Unexpected event $response")
       }
     }.onCompletion {
       messages.send(StopOperation(request))

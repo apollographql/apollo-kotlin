@@ -30,20 +30,24 @@ class DeferredJsonMerger {
 
   fun merge(payload: BufferedSource): Map<String, Any?> {
     val payloadMap = jsonToMap(payload)
+    return merge(payloadMap)
+  }
+
+  fun merge(payload: Map<String, Any?>): Map<String, Any?> {
     if (merged.isEmpty()) {
       // Initial payload, no merging needed
-      _merged += payloadMap
+      _merged += payload
       return merged
     }
 
-    mergeData(payloadMap)
-    if (payloadMap.containsKey("errors")) {
-      _merged["errors"] = payloadMap["errors"]
+    mergeData(payload)
+    if (payload.containsKey("errors")) {
+      _merged["errors"] = payload["errors"]
     } else {
       _merged.remove("errors")
     }
-    if (payloadMap.containsKey("extensions")) {
-      _merged["extensions"] = payloadMap["extensions"]
+    if (payload.containsKey("extensions")) {
+      _merged["extensions"] = payload["extensions"]
     } else {
       _merged.remove("extensions")
     }
@@ -103,4 +107,14 @@ class DeferredJsonMerger {
     }
     return node
   }
+
+  fun reset() {
+    _merged.clear()
+    _mergedFragmentIds.clear()
+    hasNext = true
+  }
+}
+
+internal fun Map<String, Any?>.isDeferred(): Boolean {
+  return keys.contains("hasNext")
 }
