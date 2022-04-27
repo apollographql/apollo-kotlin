@@ -82,21 +82,28 @@ abstract class WsProtocol(
    */
   abstract fun <D : Operation.Data> stopOperation(request: ApolloRequest<D>)
 
-  @OptIn(ApolloInternal::class)
   protected fun Map<String, Any?>.toByteString() = buildJsonByteString {
     writeAny(this@toByteString)
   }
 
-  @OptIn(ApolloInternal::class)
   protected fun Map<String, Any?>.toUtf8() = buildJsonString {
     writeAny(this@toUtf8)
   }
 
+  /**
+   * Parses a WebSocket message containing Json to a Map<String, Any?>
+   *
+   * @return the map representing the Json or [null] if the message is not a Json object
+   */
   @Suppress("UNCHECKED_CAST")
-  protected fun String.toMessageMap() = AnyAdapter.fromJson(
-      BufferedSourceJsonReader(Buffer().writeUtf8(this)),
-      CustomScalarAdapters.Empty
-  ) as Map<String, Any?>
+  protected fun String.toMessageMap(): Map<String, Any?>? = try {
+    AnyAdapter.fromJson(
+        BufferedSourceJsonReader(Buffer().writeUtf8(this)),
+        CustomScalarAdapters.Empty
+    ) as? Map<String, Any?>
+  } catch (e: Exception) {
+    null
+  }
 
   protected fun sendMessageMapBinary(messageMap: Map<String, Any?>) {
     webSocketConnection.send(messageMap.toByteString())
@@ -113,7 +120,17 @@ abstract class WsProtocol(
     }
   }
 
-  protected suspend fun receiveMessageMap() = webSocketConnection.receive().toMessageMap()
+  /**
+   *
+   */
+  protected suspend fun receiveMessageMap(): Map<String, Any?> {
+    while (true) {
+      val map = webSocketConnection.receive().toMessageMap()
+      if (map != null) {
+        return map
+      }
+    }
+  }
 
   /**
    * Read the WebSocket
