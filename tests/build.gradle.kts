@@ -12,7 +12,6 @@ buildscript {
   dependencies {
     classpath("com.apollographql.apollo3:apollo-gradle-plugin")
     classpath("com.apollographql.apollo3:build-logic")
-    classpath(groovy.util.Eval.x(project, "x.dep.kotlin.allOpen"))
   }
 }
 
@@ -40,7 +39,6 @@ subprojects {
             name.startsWith("compile")
             && name.endsWith("KotlinMetadata")
         ) {
-          println("disabling ${this@subprojects}:$name")
           enabled = false
         }
       }

@@ -41,6 +41,17 @@ fun Project.configureMppDefaults(withJs: Boolean = true, withLinux: Boolean = tr
 }
 
 fun KotlinMultiplatformExtension.configureAppleTargets(vararg presetNames: String) {
+  if (System.getProperty("idea.sync.active") != null) {
+    // Early return. Inside intelliJ, only configure one target
+    // Try to guess the dev machine to make sure the tests are running smoothly
+    if (System.getProperty("os.arch") == "aarch64") {
+      macosArm64("apple")
+    } else {
+      macosX64("apple")
+    }
+
+    return
+  }
   val appleMain = sourceSets.create("appleMain")
   val appleTest = sourceSets.create("appleTest")
 

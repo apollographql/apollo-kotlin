@@ -26,7 +26,7 @@ dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.android.plugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.gradleJapiCmpPlugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.gradleMetalavaPlugin"))
-  implementation(groovy.util.Eval.x(project, "x.dep.kotlinPlugin"))
+  implementation(groovy.util.Eval.x(project, "x.dep.kotlinPluginWithoutVersion"))
   implementation(groovy.util.Eval.x(project, "x.dep.sqldelight.plugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.gradlePublishPlugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.benManesVersions"))
@@ -35,6 +35,9 @@ dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.kspGradlePlugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.dokka"))
   implementation(groovy.util.Eval.x(project, "x.dep.binaryCompatibilityValidator"))
+  // XXX: This is only needed for tests. We could have different build logic for different
+  // builds but this seems just overkill for now
+  implementation(groovy.util.Eval.x(project, "x.dep.kotlin.allOpen"))
 }
 
 // This shuts down a warning in Kotlin 1.5.30:
