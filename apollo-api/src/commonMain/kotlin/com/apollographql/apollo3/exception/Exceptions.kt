@@ -113,7 +113,7 @@ class HttpCacheMissException(message: String, cause: Exception? = null) : Apollo
  *         handleException(suppressed)
  *       }
  *     }
- *     else -> handleException(suppressed)
+ *     else -> handleException(e)
  *   }
  * }
  *
