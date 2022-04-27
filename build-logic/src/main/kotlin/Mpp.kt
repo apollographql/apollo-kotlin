@@ -41,17 +41,22 @@ fun Project.configureMppDefaults(withJs: Boolean = true, withLinux: Boolean = tr
   }
 }
 
-fun Project.configureOkioVersion() {
-  configurations.configureEach { configuration ->
-    configuration.resolutionStrategy.eachDependency { details ->
-      if (details.requested.group == "com.squareup.okio") {
-        details.useVersion(when (getKotlinPluginVersion()) {
-          "1.6.10" -> "3.0.0"
-          else -> "3.1.0"
-        })
-      }
-    }
+fun Project.okio():String {
+  val okioVersion = when (getKotlinPluginVersion()) {
+    "1.6.10" -> "3.0.0"
+    else -> "3.1.0"
   }
+
+  return "${groovy.util.Eval.x(project, "x.dep.okio")}:$okioVersion"
+}
+
+fun Project.okioNodeJs():String {
+  val okioVersion = when (getKotlinPluginVersion()) {
+    "1.6.10" -> "3.0.0"
+    else -> "3.1.0"
+  }
+
+  return "${groovy.util.Eval.x(project, "x.dep.okioNodeJs")}:$okioVersion"
 }
 
 fun KotlinMultiplatformExtension.configureAppleTargets(vararg presetNames: String) {

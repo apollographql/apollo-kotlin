@@ -8,7 +8,7 @@ plugins {
 dependencies {
   antlr(groovy.util.Eval.x(project, "x.dep.antlr.antlr"))
   implementation(groovy.util.Eval.x(project, "x.dep.antlr.runtime"))
-  api(groovy.util.Eval.x(project, "x.dep.okio"))
+  api(okio())
   api(projects.apolloAnnotations)
 
   testImplementation(kotlin("test-junit"))

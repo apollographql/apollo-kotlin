@@ -48,7 +48,6 @@ subprojects {
   }
 
   configureJavaAndKotlinCompilers()
-  configureOkioVersion()
 
   afterEvaluate {
     tasks.withType<AbstractTestTask> {

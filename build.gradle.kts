@@ -28,7 +28,6 @@ subprojects {
   }
 
   configureJavaAndKotlinCompilers()
-  configureOkioVersion()
 
   tasks.withType<Test> {
     systemProperty("updateTestFixtures", System.getProperty("updateTestFixtures"))
