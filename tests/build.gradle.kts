@@ -98,3 +98,8 @@ plugins.withType(org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin::class.j
     lockFileDirectory = rootDir.resolve("../kotlin-js-store")
   }
 }
+
+plugins.withType(org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin::class.java) {
+  // graphql-js canarty requires node >= 16.10
+  extensions.findByType(org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension::class.java)?.nodeVersion = "16.10.0"
+}
