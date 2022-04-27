@@ -47,7 +47,7 @@ fun Project.configureOkioVersion() {
       if (details.requested.group == "com.squareup.okio") {
         details.useVersion(when (getKotlinPluginVersion()) {
           "1.6.10" -> "3.0.0"
-          else -> "3.1.1"
+          else -> "3.1.0"
         })
       }
     }
