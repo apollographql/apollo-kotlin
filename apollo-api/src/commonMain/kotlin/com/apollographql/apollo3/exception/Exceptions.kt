@@ -104,8 +104,8 @@ class HttpCacheMissException(message: String, cause: Exception? = null) : Apollo
  * can access the underlying cache and network exceptions in [suppressedExceptions].
  *
  * ```
- * val response = try {
- *   apolloClient.query(sampleQuery).fetchPolicy(CacheFirst).execute()
+ * try {
+ *     val response = apolloClient.query(sampleQuery).fetchPolicy(CacheFirst).execute()
  * } catch (e: ApolloException) {
  *   when (e) {
  *     is ApolloCompositeException -> {
