@@ -1,0 +1,75 @@
+---
+title: Authenticate your operations
+---
+
+> Authentication is not included in the GraphQL specification. This page aims at giving some guidance for the most common scenarios but doesn't pretend to be exhaustive.
+
+## Authenticating your HTTP requests with OkHttp
+
+[OkHttp Interceptors](https://square.github.io/okhttp/features/interceptors/) are an easy way to add an `"Authorization"` header to your HTTP requests.
+
+OkHttp Interceptors have been around for a long time and work well but only work on Android and the JVM.
+
+## Authenticating your HTTP requests with Apollo HttpInterceptor
+
+In order to authenticate your HTTP requests in a multi-platform way, you can use Apollo [HttpInterceptor](./interceptors-http).
+
+HttpInterceptor is multiplatform and uses an API very similar to OkHttp:
+
+```kotlin
+class AuthorizationInterceptor() : HttpInterceptor {
+  private val mutex = Mutex()
+
+  override suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse {
+    var token = mutex.withLock {
+      // get current token
+    }
+
+    val response = chain.proceed(request.newBuilder().addHeader("Authorization", "Bearer $token").build())
+
+    return if (response.statusCode == 401) {
+      token = mutex.withLock {
+        // get new token
+      }
+      chain.proceed(request.newBuilder().addHeader("Authorization", "Bearer $token").build())
+    } else {
+      response
+    }
+  }
+}
+```
+
+## Authenticating your WebSockets
+
+Authenticating WebSockets is typically handled with a specific connection payload:
+
+```kotlin
+val apolloClient = ApolloClient.Builder()
+    .httpServerUrl("http://localhost:8080/graphql")
+    .webSocketServerUrl("http://localhost:8080/subscriptions")
+    .wsProtocol(
+        SubscriptionWsProtocol.Factory(
+            connectionPayload = {
+              mapOf("authorization" to token)  // highlight-line
+            }
+        )
+    )
+    .build()
+
+```
+
+Alternatively, you can also send headers in the initial WebSocket handshake request:
+
+```kotlin
+val apolloClient = ApolloClient.Builder()
+    .httpServerUrl("http://localhost:8080/graphql")
+    .subscriptionNetworkTransport(
+        WebSocketNetworkTransport.Builder()
+            .serverUrl("http://localhost:8080/subscriptions")
+            .addHeader("Authorization", authorization) // highlight-line
+             .build()
+    )
+    .build()
+```
+
+

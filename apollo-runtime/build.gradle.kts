@@ -16,6 +16,13 @@ kotlin {
       }
     }
 
+    val commonTest by getting {
+      dependencies {
+        implementation(projects.apolloMockserver)
+        implementation(projects.apolloTestingSupport)
+      }
+    }
+
     val jvmMain by getting {
       dependencies {
         api(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
