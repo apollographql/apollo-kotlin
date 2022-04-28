@@ -1,7 +1,11 @@
+import org.gradle.api.DefaultTask
 import org.gradle.api.Project
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.options.Option
+import org.gradle.api.tasks.testing.AbstractTestTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 
 fun Project.configureMppDefaults(withJs: Boolean = true, withLinux: Boolean = true) {
   val kotlinExtension = extensions.findByName("kotlin") as? KotlinMultiplatformExtension
@@ -41,7 +45,7 @@ fun Project.configureMppDefaults(withJs: Boolean = true, withLinux: Boolean = tr
   }
 }
 
-fun Project.okio():String {
+fun Project.okio(): String {
   val okioVersion = when (getKotlinPluginVersion()) {
     "1.6.10" -> "3.0.0"
     else -> "3.1.0"
@@ -50,7 +54,7 @@ fun Project.okio():String {
   return "${groovy.util.Eval.x(project, "x.dep.okio")}:$okioVersion"
 }
 
-fun Project.okioNodeJs():String {
+fun Project.okioNodeJs(): String {
   val okioVersion = when (getKotlinPluginVersion()) {
     "1.6.10" -> "3.0.0"
     else -> "3.1.0"
