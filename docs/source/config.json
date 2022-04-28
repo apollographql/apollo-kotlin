@@ -46,7 +46,8 @@
     "Networking": {
       "HTTP interceptors": "/advanced/interceptors-http",
       "Custom HTTP clients": "/advanced/http-engine",
-      "Using the models without apollo-runtime": "/advanced/no-runtime"
+      "Using the models without apollo-runtime": "/advanced/no-runtime",
+      "Auhtentication": "/advanced/authentication"
     },
     "Testing": {
       "Overview": "/testing/overview",
