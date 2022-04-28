@@ -23,7 +23,10 @@ class DeferTest {
 
   private suspend fun setUp() {
     mockServer = MockServer()
-    apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).build()
+    apolloClient = ApolloClient.Builder()
+        .httpEngine(getStreamingHttpEngine())
+        .serverUrl(mockServer.url())
+        .build()
   }
 
   private suspend fun tearDown() {
