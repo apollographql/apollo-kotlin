@@ -29,7 +29,7 @@ kotlin {
       dependencies {
         implementation(groovy.util.Eval.x(project, "x.dep.kotlin.nodejs"))
         implementation(kotlin("test-js"))
-        api(groovy.util.Eval.x(project, "x.dep.okioNodeJs"))
+        api(okioNodeJs())
       }
     }
     val jsTest by getting {

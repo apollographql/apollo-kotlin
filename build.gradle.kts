@@ -1,5 +1,6 @@
 import JapiCmp.configureJapiCmp
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 
 buildscript {
   repositories {
@@ -18,7 +19,6 @@ buildscript {
 apply(plugin = "com.github.ben-manes.versions")
 apply(plugin = "org.jetbrains.dokka")
 apply(plugin = "org.jetbrains.kotlinx.binary-compatibility-validator")
-
 
 version = property("VERSION_NAME")!!
 

@@ -9,7 +9,7 @@ kotlin {
     val commonMain by getting {
       dependencies {
         api(projects.apolloAnnotations)
-        api(groovy.util.Eval.x(project, "x.dep.okio"))
+        api(okio())
         implementation(groovy.util.Eval.x(project, "x.dep.atomicfu").toString()) {
           because("We need locks for native (we don't use the gradle plugin rewrite)")
         }

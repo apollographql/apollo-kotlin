@@ -1,6 +1,7 @@
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
+import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 fun Project.configureJavaAndKotlinCompilers() {
@@ -10,13 +11,14 @@ fun Project.configureJavaAndKotlinCompilers() {
     // For Kotlin JVM projects
     tasks.withType(KotlinCompile::class.java) {
       it.kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs +
-            "-Xopt-in=kotlin.RequiresOptIn" +
-            // This is a workaround for https://youtrack.jetbrains.com/issue/KT-47000 (fixed in Koltin 1.6.20)
-            // Since we don't use @JvmDefault anywhere, the option has no effect, but suppresses the bogus compiler error
-            // See also https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-default/
-            // See also https://blog.jetbrains.com/kotlin/2020/07/kotlin-1-4-m3-generating-default-methods-in-interfaces/
-            "-Xjvm-default=compatibility"
+        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
+        if (getKotlinPluginVersion() == "1.6.10") {
+          // This is a workaround for https://youtrack.jetbrains.com/issue/KT-47000 (fixed in Kotlin 1.6.20)
+          // Since we don't use @JvmDefault anywhere, the option has no effect, but suppresses the bogus compiler error
+          // See also https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-default/
+          // See also https://blog.jetbrains.com/kotlin/2020/07/kotlin-1-4-m3-generating-default-methods-in-interfaces/
+          freeCompilerArgs = freeCompilerArgs + "-Xjvm-default=compatibility"
+        }
         apiVersion = "1.5"
         languageVersion = "1.5"
       }

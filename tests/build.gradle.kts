@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
+
 buildscript {
   project.apply {
     from(rootProject.file("gradle/dependencies.gradle"))
@@ -12,8 +14,11 @@ buildscript {
   dependencies {
     classpath("com.apollographql.apollo3:apollo-gradle-plugin")
     classpath("com.apollographql.apollo3:build-logic")
-    classpath(groovy.util.Eval.x(project, "x.dep.kotlin.allOpen"))
   }
+}
+
+repositories {
+  mavenCentral()
 }
 
 subprojects {
@@ -24,6 +29,20 @@ subprojects {
       content {
         // https://github.com/Kotlin/kotlinx-nodejs/issues/16
         includeModule("org.jetbrains.kotlinx", "kotlinx-nodejs")
+      }
+    }
+  }
+
+  // Workaround for https://youtrack.jetbrains.com/issue/KT-51970
+  afterEvaluate {
+    afterEvaluate {
+      tasks.configureEach {
+        if (
+            name.startsWith("compile")
+            && name.endsWith("KotlinMetadata")
+        ) {
+          enabled = false
+        }
       }
     }
   }
@@ -78,4 +97,9 @@ plugins.withType(org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin::class.j
   configure<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension> {
     lockFileDirectory = rootDir.resolve("../kotlin-js-store")
   }
+}
+
+plugins.withType(org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin::class.java) {
+  // graphql-js canarty requires node >= 16.10
+  extensions.findByType(org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension::class.java)?.nodeVersion = "16.10.0"
 }

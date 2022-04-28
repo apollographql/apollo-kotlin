@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
+
 plugins {
   kotlin("jvm")
 }
@@ -26,15 +28,26 @@ dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.android.plugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.gradleJapiCmpPlugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.gradleMetalavaPlugin"))
-  implementation(groovy.util.Eval.x(project, "x.dep.kotlinPlugin"))
+  implementation(groovy.util.Eval.x(project, "x.dep.kotlinPluginWithoutVersion"))
   implementation(groovy.util.Eval.x(project, "x.dep.sqldelight.plugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.gradlePublishPlugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.benManesVersions"))
   implementation(groovy.util.Eval.x(project, "x.dep.vespene"))
   implementation(groovy.util.Eval.x(project, "x.dep.gr8"))
-  implementation(groovy.util.Eval.x(project, "x.dep.kspGradlePlugin"))
+
+  // We want the KSP plugin to use the version from the classpath and not force a newer version
+  // of the Gradle plugin
+  val kspPlugin = when (getKotlinPluginVersion()) {
+    "1.6.10" -> groovy.util.Eval.x(project, "x.dep.kspGradlePlugin_1_6_10")
+    "1.6.21" -> groovy.util.Eval.x(project, "x.dep.kspGradlePlugin_1_6_21")
+    else -> error("Update KSP to work with Kotlin ${getKotlinPluginVersion()} (see https://github.com/google/ksp/releases)")
+  }
+  implementation(kspPlugin)
   implementation(groovy.util.Eval.x(project, "x.dep.dokka"))
   implementation(groovy.util.Eval.x(project, "x.dep.binaryCompatibilityValidator"))
+  // XXX: This is only needed for tests. We could have different build logic for different
+  // builds but this seems just overkill for now
+  implementation(groovy.util.Eval.x(project, "x.dep.kotlin.allOpen"))
 }
 
 // This shuts down a warning in Kotlin 1.5.30:

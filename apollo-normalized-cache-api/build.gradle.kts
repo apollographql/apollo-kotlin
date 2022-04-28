@@ -10,7 +10,7 @@ kotlin {
       dependencies {
         api(projects.apolloApi)
         api(projects.apolloMppUtils)
-        implementation(groovy.util.Eval.x(project, "x.dep.okio"))
+        implementation(okio())
         api(groovy.util.Eval.x(project, "x.dep.uuid"))
       }
     }

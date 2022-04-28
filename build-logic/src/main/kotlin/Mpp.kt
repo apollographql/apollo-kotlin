@@ -1,9 +1,9 @@
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
+import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 
 fun Project.configureMppDefaults(withJs: Boolean = true, withLinux: Boolean = true) {
-  // See https://kotlinlang.org/docs/mpp-dsl-reference.html#targets
-
   val kotlinExtension = extensions.findByName("kotlin") as? KotlinMultiplatformExtension
   check(kotlinExtension != null) {
     "No multiplatform extension found"
@@ -20,66 +20,71 @@ fun Project.configureMppDefaults(withJs: Boolean = true, withLinux: Boolean = tr
       }
     }
 
-    if (System.getProperty("idea.sync.active") == null) {
-      val appleMain = sourceSets.create("appleMain")
-      val appleTest = sourceSets.create("appleTest")
-
-      macosX64().apply {
-        compilations.getByName("main").source(appleMain)
-        compilations.getByName("test").source(appleTest)
-      }
-      macosArm64().apply {
-        compilations.getByName("main").source(appleMain)
-        compilations.getByName("test").source(appleTest)
-      }
-
-      iosArm64().apply {
-        compilations.getByName("main").source(appleMain)
-        compilations.getByName("test").source(appleTest)
-      }
-      iosX64().apply {
-        compilations.getByName("main").source(appleMain)
-        compilations.getByName("test").source(appleTest)
-      }
-      iosSimulatorArm64().apply {
-        compilations.getByName("main").source(appleMain)
-        compilations.getByName("test").source(appleTest)
-      }
-
-      watchosArm64().apply {
-        compilations.getByName("main").source(appleMain)
-        compilations.getByName("test").source(appleTest)
-      }
-      watchosSimulatorArm64().apply {
-        compilations.getByName("main").source(appleMain)
-        compilations.getByName("test").source(appleTest)
-      }
-
-      tvosArm64().apply {
-        compilations.getByName("main").source(appleMain)
-        compilations.getByName("test").source(appleTest)
-      }
-      tvosX64().apply {
-        compilations.getByName("main").source(appleMain)
-        compilations.getByName("test").source(appleTest)
-      }
-      tvosSimulatorArm64().apply {
-        compilations.getByName("main").source(appleMain)
-        compilations.getByName("test").source(appleTest)
-      }
-    } else {
-      // We are in intelliJ
-      // Make intelliJ believe we have a single target with all the code in "apple" sourceSets
-      macosX64("apple")
-    }
-
     if (withLinux) {
       linuxX64("linux")
     }
 
-    addTestDependencies(withJs)
+    configureAppleTargets(
+        "macosX64",
+        "macosArm64",
+        "iosArm64",
+        "iosX64",
+        "iosSimulatorArm64",
+        "watchosArm64",
+        "watchosSimulatorArm64",
+        "tvosArm64",
+        "tvosX64",
+        "tvosSimulatorArm64",
+    )
 
-    registerAppleTasks()
+    addTestDependencies(withJs)
+  }
+}
+
+fun Project.okio():String {
+  val okioVersion = when (getKotlinPluginVersion()) {
+    "1.6.10" -> "3.0.0"
+    else -> "3.1.0"
+  }
+
+  return "${groovy.util.Eval.x(project, "x.dep.okio")}:$okioVersion"
+}
+
+fun Project.okioNodeJs():String {
+  val okioVersion = when (getKotlinPluginVersion()) {
+    "1.6.10" -> "3.0.0"
+    else -> "3.1.0"
+  }
+
+  return "${groovy.util.Eval.x(project, "x.dep.okioNodeJs")}:$okioVersion"
+}
+
+fun KotlinMultiplatformExtension.configureAppleTargets(vararg presetNames: String) {
+  if (System.getProperty("idea.sync.active") != null) {
+    // Early return. Inside intelliJ, only configure one target
+    // Try to guess the dev machine to make sure the tests are running smoothly
+    if (System.getProperty("os.arch") == "aarch64") {
+      macosArm64("apple")
+    } else {
+      macosX64("apple")
+    }
+
+    return
+  }
+  val appleMain = sourceSets.create("appleMain")
+  val appleTest = sourceSets.create("appleTest")
+
+  appleMain.dependsOn(sourceSets.getByName("commonMain"))
+  appleTest.dependsOn(sourceSets.getByName("commonTest"))
+
+  presetNames.forEach { presetName ->
+    targetFromPreset(
+        presets.getByName(presetName),
+        presetName,
+    )
+
+    sourceSets.getByName("${presetName}Main").dependsOn(appleMain)
+    sourceSets.getByName("${presetName}Test").dependsOn(appleTest)
   }
 }
 
@@ -110,45 +115,12 @@ fun Project.configureMppTestsDefaults(withJs: Boolean = true) {
       }
     }
 
-    if (System.getProperty("idea.sync.active") == null) {
-
-      val appleMain = sourceSets.create("appleMain")
-      val appleTest = sourceSets.create("appleTest")
-
-      macosX64().apply {
-        compilations.getByName("main").source(appleMain)
-        compilations.getByName("test").source(appleTest)
-      }
-      macosArm64().apply {
-        compilations.getByName("main").source(appleMain)
-        compilations.getByName("test").source(appleTest)
-      }
-    } else {
-      // We are in intelliJ
-      // Make intelliJ believe we have a single target with all the code in "apple" sourceSets
-      macosX64("apple")
-    }
+    configureAppleTargets("macosX64", "macosArm64")
 
     addTestDependencies(withJs)
-
-    registerAppleTasks()
   }
 }
 
-private fun Project.registerAppleTasks() {
-  if (System.getProperty("idea.sync.active") == null) {
-    /**
-     * Evil tasks to fool IntelliJ into running the appropriate tests when clicking the green triangle in the gutter
-     * IntelliJ "sees" apple during sync but the actual tasks are macosX64
-     */
-    tasks.register("cleanAppleTest") {
-      it.dependsOn("cleanMacosX64Test", "cleanMacosArm64Test")
-    }
-    tasks.register("appleTest") {
-      it.dependsOn("macosX64Test", "macosArm64Test")
-    }
-  }
-}
 
 fun KotlinMultiplatformExtension.addTestDependencies(withJs: Boolean) {
   sourceSets.getByName("commonTest") {

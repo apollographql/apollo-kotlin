@@ -4,7 +4,7 @@ plugins {
 }
 
 kotlin {
-  ios()
+  configureAppleTargets("iosArm64", "iosX64")
   sourceSets {
     val commonMain by getting {
       dependencies {
