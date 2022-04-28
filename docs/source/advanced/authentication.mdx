@@ -67,7 +67,7 @@ val apolloClient = ApolloClient.Builder()
         WebSocketNetworkTransport.Builder()
             .serverUrl("http://localhost:8080/subscriptions")
             .addHeader("Authorization", authorization) // highlight-line
-             .build()
+            .build()
     )
     .build()
 ```
