@@ -1,11 +1,7 @@
-import org.gradle.api.DefaultTask
 import org.gradle.api.Project
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.options.Option
-import org.gradle.api.tasks.testing.AbstractTestTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
-import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 fun Project.configureMppDefaults(withJs: Boolean = true, withLinux: Boolean = true) {
   val kotlinExtension = extensions.findByName("kotlin") as? KotlinMultiplatformExtension
@@ -42,6 +38,8 @@ fun Project.configureMppDefaults(withJs: Boolean = true, withLinux: Boolean = tr
     )
 
     addTestDependencies(withJs)
+
+    enableNewMemoryManager()
   }
 }
 
@@ -122,6 +120,8 @@ fun Project.configureMppTestsDefaults(withJs: Boolean = true) {
     configureAppleTargets("macosX64", "macosArm64")
 
     addTestDependencies(withJs)
+
+    enableNewMemoryManager()
   }
 }
 
@@ -143,6 +143,15 @@ fun KotlinMultiplatformExtension.addTestDependencies(withJs: Boolean) {
   sourceSets.getByName("jvmTest") {
     it.dependencies {
       implementation(kotlin("test-junit"))
+    }
+  }
+}
+
+// See https://github.com/JetBrains/kotlin/blob/master/kotlin-native/NEW_MM.md
+private fun KotlinMultiplatformExtension.enableNewMemoryManager() {
+  targets.withType(KotlinNativeTarget::class.java) { target ->
+    target.binaries.all { binary ->
+      binary.binaryOptions["memoryModel"] = "experimental"
     }
   }
 }
