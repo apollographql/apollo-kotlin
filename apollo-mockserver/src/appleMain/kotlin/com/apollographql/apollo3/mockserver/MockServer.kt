@@ -24,7 +24,6 @@ import platform.posix.pthread_join
 import platform.posix.pthread_tVar
 import platform.posix.sockaddr_in
 import platform.posix.socket
-import kotlin.native.concurrent.freeze
 
 /**
  * @param acceptDelayMillis: an artificial delay introduced before each `accept()`
@@ -73,7 +72,7 @@ actual class MockServer(
 
     socket = Socket(socketFd, acceptDelayMillis, mockServerHandler)
 
-    val stableRef = StableRef.create(socket!!.freeze())
+    val stableRef = StableRef.create(socket!!)
 
     pthread_create(pthreadT.ptr, null, staticCFunction { arg ->
       initRuntimeIfNeeded()

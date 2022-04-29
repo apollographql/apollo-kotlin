@@ -5,8 +5,8 @@ import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.mpp.assertMainThreadOnNative
 import com.apollographql.apollo3.internal.suspendAndResumeOnMain
+import com.apollographql.apollo3.mpp.assertMainThreadOnNative
 import com.apollographql.apollo3.network.toNSData
 import okio.Buffer
 import okio.toByteString
@@ -25,7 +25,6 @@ import platform.Foundation.dataTaskWithRequest
 import platform.Foundation.setHTTPBody
 import platform.Foundation.setHTTPMethod
 import platform.Foundation.setValue
-import kotlin.native.concurrent.freeze
 
 typealias UrlSessionDataTaskCompletionHandler = (NSData?, NSURLResponse?, NSError?) -> Unit
 
@@ -43,8 +42,6 @@ actual class DefaultHttpEngine constructor(
   @Suppress("UNCHECKED_CAST")
   override suspend fun execute(request: HttpRequest) = suspendAndResumeOnMain<HttpResponse> { mainContinuation, invokeOnCancellation ->
     assertMainThreadOnNative()
-
-    request.freeze()
 
     val delegate = { httpData: NSData?, nsUrlResponse: NSURLResponse?, error: NSError? ->
       initRuntimeIfNeeded()
@@ -85,11 +82,10 @@ actual class DefaultHttpEngine constructor(
       setCachePolicy(NSURLRequestReloadIgnoringCacheData)
     }
 
-    val task = dataTaskFactory.dataTask(nsMutableURLRequest.freeze(), delegate)
+    val task = dataTaskFactory.dataTask(nsMutableURLRequest, delegate)
     invokeOnCancellation {
       task.cancel()
     }
-    delegate.freeze()
     task.resume()
   }
 
@@ -107,7 +103,7 @@ private fun buildHttpResponse(
     return Result.failure(
         ApolloNetworkException(
             message = "Failed to execute GraphQL http network request",
-            platformCause = error.freeze()
+            platformCause = error
         )
     )
   }

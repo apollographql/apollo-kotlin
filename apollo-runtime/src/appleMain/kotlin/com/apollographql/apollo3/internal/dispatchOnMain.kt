@@ -8,7 +8,6 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.Foundation.NSThread
 import platform.darwin.dispatch_async
 import platform.darwin.dispatch_get_main_queue
-import kotlin.native.concurrent.freeze
 
 /**
  * Suspends the current coroutine and calls [block] with a [MainContinuation] that will always dispatch on the main thread
@@ -45,13 +44,12 @@ class MainContinuation<R>(continuation: CancellableContinuation<R>) {
     if (NSThread.isMainThread()) {
       resumeInternal(result)
     } else {
-      freeze()
       dispatch_async(
           queue = dispatch_get_main_queue(),
           block = {
             initRuntimeIfNeeded()
             resumeInternal(result)
-          }.freeze()
+          }
       )
     }
   }

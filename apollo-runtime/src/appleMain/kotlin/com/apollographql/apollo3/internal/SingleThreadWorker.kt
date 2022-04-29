@@ -10,7 +10,6 @@ import kotlinx.cinterop.value
 import platform.posix.pthread_create
 import platform.posix.pthread_join
 import platform.posix.pthread_tVar
-import kotlin.native.concurrent.freeze
 
 private class Callback<S>(val run: ((S) -> Unit))
 
@@ -20,7 +19,7 @@ class SingleThreadWorker<S : Any>(private val producer: () -> S, private val fin
   private val pthread = nativeHeap.alloc<pthread_tVar>()
 
   init {
-    val stableRef = StableRef.create(this.freeze())
+    val stableRef = StableRef.create(this)
 
     pthread_create(pthread.ptr, null, staticCFunction { arg ->
       initRuntimeIfNeeded()
@@ -50,7 +49,6 @@ class SingleThreadWorker<S : Any>(private val producer: () -> S, private val fin
   }
 
   suspend fun <R> execute(block: (S) -> R) = suspendAndResumeOnMain<R> { mainContinuation, _ ->
-    block.freeze()
     val callback = Callback<S> { s ->
       val result: Result<R> = kotlin.runCatching {
         block(s)

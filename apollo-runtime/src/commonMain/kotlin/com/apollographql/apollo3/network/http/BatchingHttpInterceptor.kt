@@ -2,7 +2,6 @@ package com.apollographql.apollo3.network.http
 
 import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ExecutionOptions
@@ -19,8 +18,6 @@ import com.apollographql.apollo3.api.json.writeArray
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.internal.BackgroundDispatcher
-import com.apollographql.apollo3.mpp.ensureNeverFrozen
-import com.apollographql.apollo3.mpp.freeze
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -77,7 +74,6 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
   private var interceptorChain: HttpInterceptorChain? = null
 
   init {
-    ensureNeverFrozen(this)
     job = scope.launch {
       while (true) {
         delay(batchIntervalMillis)
@@ -150,7 +146,6 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
 
       override fun writeTo(bufferedSink: BufferedSink) {
         val writer = BufferedSinkJsonWriter(bufferedSink)
-        @OptIn(ApolloInternal::class)
         writer.writeArray {
           this as BufferedSinkJsonWriter
           allBodies.forEach { body ->
@@ -169,8 +164,6 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
         .body(body)
         .headers(commonHeaders)
         .build()
-
-    freeze(request)
 
     var exception: ApolloException? = null
     val result = try {
@@ -203,7 +196,6 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
         if (it == null) {
           throw ApolloException("batched query response contains a null item")
         }
-        @OptIn(ApolloInternal::class)
         (buildJsonByteString {
           AnyAdapter.toJson(this, CustomScalarAdapters.Empty, it)
         })

@@ -14,7 +14,6 @@ import platform.posix.pthread_mutex_init
 import platform.posix.pthread_mutex_lock
 import platform.posix.pthread_mutex_t
 import platform.posix.pthread_mutex_unlock
-import kotlin.native.concurrent.freeze
 
 class ConcurrentQueue<T> {
   private val queue = NSMutableArray()
@@ -28,7 +27,7 @@ class ConcurrentQueue<T> {
 
   fun addLast(callback: T) {
     pthread_mutex_lock(mutex.ptr)
-    queue.addObject(callback.freeze())
+    queue.addObject(callback)
     pthread_cond_broadcast(cond.ptr)
     pthread_mutex_unlock(mutex.ptr)
   }

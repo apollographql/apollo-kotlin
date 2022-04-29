@@ -44,7 +44,7 @@ class MainTest {
   fun startingAQueryFromNonMainThreadAsserts() = runTest {
     val server = MockServer()
     server.enqueue(json)
-    val client = ApolloClient.Builder().serverUrl(server.url()).build().freeze()
+    val client = ApolloClient.Builder().serverUrl(server.url()).build()
     withContext(Dispatchers.Default) {
       assertFailsWith(IllegalStateException::class) {
         client.query(GetRandomQuery()).execute()

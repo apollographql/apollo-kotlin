@@ -36,7 +36,6 @@ import platform.Foundation.setValue
 import platform.darwin.NSObject
 import platform.darwin.dispatch_async_f
 import platform.darwin.dispatch_get_main_queue
-import kotlin.native.concurrent.freeze
 
 interface WebSocketConnectionListener {
   fun onOpen(webSocket: NSURLSessionWebSocketTask)
@@ -142,7 +141,7 @@ private class WebSocketConnectionImpl(
       val completionHandler = { error: NSError? ->
         error?.dispatchOnMain(webSocketConnectionPtr)
         Unit
-      }.freeze()
+      }
       webSocket.sendMessage(message, completionHandler)
     }
   }
@@ -155,7 +154,7 @@ private class WebSocketConnectionImpl(
       val completionHandler = { error: NSError? ->
         error?.dispatchOnMain(webSocketConnectionPtr)
         Unit
-      }.freeze()
+      }
       webSocket.sendMessage(message, completionHandler)
     }
   }
@@ -184,7 +183,7 @@ private fun NSError.dispatchOnMain(webSocketConnectionPtr: COpaquePointer) {
   } else {
     dispatch_async_f(
         queue = dispatch_get_main_queue(),
-        context = StableRef.create(freeze() to webSocketConnectionPtr).asCPointer(),
+        context = StableRef.create(this to webSocketConnectionPtr).asCPointer(),
         work = staticCFunction { ptr ->
           val errorAndWebSocketConnectionRef = ptr!!.asStableRef<Pair<NSError, COpaquePointer>>()
 
@@ -218,7 +217,7 @@ private fun NSURLSessionWebSocketMessage.dispatchOnMainAndRequestNext(webSocketC
   } else {
     dispatch_async_f(
         queue = dispatch_get_main_queue(),
-        context = StableRef.create(freeze() to webSocketConnectionPtr).asCPointer(),
+        context = StableRef.create(this to webSocketConnectionPtr).asCPointer(),
         work = staticCFunction { ptr ->
           val messageAndWebSocketConnectionRef = ptr!!.asStableRef<Pair<NSURLSessionWebSocketMessage, COpaquePointer>>()
 

@@ -9,7 +9,6 @@ import platform.darwin.dispatch_async_f
 import platform.darwin.dispatch_get_main_queue
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
-import kotlin.native.concurrent.freeze
 
 /**
  * A trick to support coroutines without relying on `coroutines-mt` It makes the assumption
@@ -22,7 +21,7 @@ internal fun <R> Result<R>.dispatchOnMain(continuationPtr: COpaquePointer) {
   if (NSThread.isMainThread()) {
     dispatch(continuationPtr)
   } else {
-    val continuationWithResultRef = StableRef.create((continuationPtr to this).freeze())
+    val continuationWithResultRef = StableRef.create((continuationPtr to this))
 
     dispatch_async_f(
         queue = dispatch_get_main_queue(),
