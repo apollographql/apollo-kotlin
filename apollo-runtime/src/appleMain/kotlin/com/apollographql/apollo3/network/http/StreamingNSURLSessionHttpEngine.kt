@@ -8,7 +8,6 @@ import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.internal.suspendAndResumeOnMain
 import com.apollographql.apollo3.mpp.assertMainThreadOnNative
-import com.apollographql.apollo3.mpp.currentThreadId
 import com.apollographql.apollo3.network.toNSData
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.nativeHeap
@@ -276,8 +275,6 @@ private class Pipe {
 
   val sink: Sink = object : Sink {
     override fun write(source: Buffer, byteCount: Long) {
-      println("write ${currentThreadId()}\n============\n${source.peek().readUtf8()}\n")
-
       pthread_mutex_lock(mutex.ptr)
       buffer.write(source, byteCount)
       pthread_cond_broadcast(cond.ptr)
@@ -297,12 +294,9 @@ private class Pipe {
 
   val source: Source = object : Source {
     override fun read(sink: Buffer, byteCount: Long): Long {
-      println("read ${currentThreadId()}")
       pthread_mutex_lock(mutex.ptr)
       while (buffer.size == 0L && !isSinkClosed) {
-        println("blocked ${currentThreadId()}")
         pthread_cond_wait(cond.ptr, mutex.ptr)
-        println("unblocked ${currentThreadId()}")
       }
       val readCount = buffer.read(sink, byteCount)
       pthread_mutex_unlock(mutex.ptr)
