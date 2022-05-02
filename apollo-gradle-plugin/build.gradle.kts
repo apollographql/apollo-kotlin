@@ -20,6 +20,12 @@ dependencies {
   add("gr8Classpath", "org.conscrypt:conscrypt-openjdk-uber:2.5.2")
 
   add("shade", projects.apolloGradlePluginExternal)
+
+  testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.assertj"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.okHttp.tls"))
 }
 
 if (true) {
@@ -86,4 +92,17 @@ configure<PublishingExtension> {
       }
     }
   }
+}
+
+tasks.withType<Test> {
+  dependsOn(":apollo-annotations:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-api:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-ast:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-normalized-cache-api:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-mpp-utils:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-compiler:publishAllPublicationsToPluginTestRepository")
+  dependsOn("publishAllPublicationsToPluginTestRepository")
+
+  inputs.dir("src/test/files")
+  inputs.dir("testProjects")
 }

@@ -18,8 +18,8 @@ buildscript {
     maven {
       url = uri("../../../build/localMaven")
     }
-    google()
     mavenCentral()
+    google()
   }
   dependencies {
     // ADD BUILDSCRIPT DEPENDENCIES HERE
@@ -45,8 +45,8 @@ repositories {
   maven {
     url = uri("../../../build/localMaven")
   }
-  google() // for aapt2
   mavenCentral()
+  google() // for aapt2
 }
 
 dependencies {
