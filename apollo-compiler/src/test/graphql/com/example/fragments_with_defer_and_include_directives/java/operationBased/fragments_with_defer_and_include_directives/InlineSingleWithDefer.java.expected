@@ -19,7 +19,7 @@ import java.lang.Override;
 import java.lang.String;
 
 public class InlineSingleWithDefer implements Query<InlineSingleWithDefer.Data> {
-  public static final String OPERATION_ID = "70222802c9192f810f19a54d31e039ce0fc3b8baac231841f0a0e8b4200c312b";
+  public static final String OPERATION_ID = "da1ea6b7b54f4bc6e0754b9bbe45a002500fef00de7f3605a4efd02133c20def";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -28,13 +28,13 @@ public class InlineSingleWithDefer implements Query<InlineSingleWithDefer.Data> 
    * query InlineSingleWithDefer {
    *   hero {
    *     __typename
-   *     ... on Droid @defer {
+   *     ... on Droid @experimental_defer {
    *       name
    *     }
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query InlineSingleWithDefer { hero { __typename ... on Droid @defer { name } } }";
+  public static final String OPERATION_DOCUMENT = "query InlineSingleWithDefer { hero { __typename ... on Droid @experimental_defer { name } } }";
 
   public static final String OPERATION_NAME = "InlineSingleWithDefer";
 

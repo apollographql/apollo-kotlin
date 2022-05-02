@@ -220,7 +220,7 @@ internal class ExecutableValidationScope(
 
     directives.forEach {
       validateDirective(it, this)
-      if (it.name == "defer" && !path.startsWith('-')) it.validateDeferDirective(selectionSetParent, path)
+      if (it.name == "experimental_defer" && !path.startsWith('-')) it.validateDeferDirective(selectionSetParent, path)
     }
   }
 
@@ -255,7 +255,7 @@ internal class ExecutableValidationScope(
 
     directives.forEach {
       validateDirective(it, this)
-      if (it.name == "defer" && !path.startsWith('-')) it.validateDeferDirective(selectionSetParent, path)
+      if (it.name == "experimental_defer" && !path.startsWith('-')) it.validateDeferDirective(selectionSetParent, path)
     }
   }
 

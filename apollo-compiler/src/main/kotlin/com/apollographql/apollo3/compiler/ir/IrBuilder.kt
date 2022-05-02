@@ -650,7 +650,7 @@ internal fun List<GQLDirective>.toBooleanExpression(): BooleanExpression<BTerm> 
 }
 
 internal fun GQLDirective.toDeferBooleanExpression(): BooleanExpression<BTerm>? {
-  if (name != "defer") return null
+  if (name != "experimental_defer") return null
   val ifArgumentValue = arguments?.arguments?.firstOrNull { it.name == "if" }?.value ?: GQLBooleanValue(value = true)
 
   val labelArgumentValue = arguments?.arguments?.firstOrNull { it.name == "label" }?.value
