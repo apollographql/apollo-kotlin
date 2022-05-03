@@ -1,5 +1,5 @@
 query GetAnimalQuery {
-  ... on Query @defer {
+  ... on Query @experimental_defer {
     animal {
       id
     }
@@ -7,7 +7,7 @@ query GetAnimalQuery {
 }
 
 subscription GetAnimalSubscription {
-  ... on Subscription @defer {
+  ... on Subscription @experimental_defer {
     animal {
       id
     }
@@ -15,7 +15,7 @@ subscription GetAnimalSubscription {
 }
 
 mutation CreateAnimalMutation {
-  ... on Mutation @defer {
+  ... on Mutation @experimental_defer {
     createSession
   }
 }

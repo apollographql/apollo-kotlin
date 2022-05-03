@@ -1,7 +1,7 @@
 query WithFragmentSpreadsQuery {
   computers {
     id
-    ...ComputerFields @defer
+    ...ComputerFields @experimental_defer
   }
 }
 
@@ -10,7 +10,7 @@ fragment ComputerFields on Computer {
   year
   screen {
     resolution
-    ...ScreenFields @defer(label: "a")
+    ...ScreenFields @experimental_defer(label: "a")
   }
 }
 
@@ -22,12 +22,12 @@ fragment ScreenFields on Screen {
 query WithInlineFragmentsQuery {
   computers {
     id
-    ... on Computer @defer {
+    ... on Computer @experimental_defer {
       cpu
       year
       screen {
         resolution
-        ... on Screen @defer(label: "b") {
+        ... on Screen @experimental_defer(label: "b") {
           isColor
         }
       }
@@ -39,14 +39,14 @@ query WithInlineFragmentsQuery {
 mutation WithFragmentSpreadsMutation {
   computers {
     id
-    ...ComputerFields @defer(label: "c")
+    ...ComputerFields @experimental_defer(label: "c")
   }
 }
 
 subscription WithInlineFragmentsSubscription {
   count(to: 3) {
     value
-    ... on Counter @defer {
+    ... on Counter @experimental_defer {
       valueTimesTwo
     }
   }
@@ -55,7 +55,7 @@ subscription WithInlineFragmentsSubscription {
 subscription WithFragmentSpreadsSubscription {
   count(to: 3) {
     value
-    ...CounterFields @defer(label: "d")
+    ...CounterFields @experimental_defer(label: "d")
   }
 }
 

@@ -66,7 +66,7 @@ public class SpreadSingleWithDefer() : Query<SpreadSingleWithDefer.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "fad1c3622a6f35d5fa4ad7b5e4a8d50525c350d4688837022f0f7a6f0aed2ba0"
+        "d7b739ea7224dce16c1992e5df95207a06f4f92b8231db42098755afac7a6439"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -75,7 +75,7 @@ public class SpreadSingleWithDefer() : Query<SpreadSingleWithDefer.Data> {
      * query SpreadSingleWithDefer {
      *   hero {
      *     __typename
-     *     ...DroidDetails @defer
+     *     ...DroidDetails @experimental_defer
      *   }
      * }
      *
@@ -84,7 +84,7 @@ public class SpreadSingleWithDefer() : Query<SpreadSingleWithDefer.Data> {
      * }
      */
     public const val OPERATION_DOCUMENT: String =
-        "query SpreadSingleWithDefer { hero { __typename ...DroidDetails @defer } }  fragment DroidDetails on Droid { name }"
+        "query SpreadSingleWithDefer { hero { __typename ...DroidDetails @experimental_defer } }  fragment DroidDetails on Droid { name }"
 
     public const val OPERATION_NAME: String = "SpreadSingleWithDefer"
   }
