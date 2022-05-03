@@ -38,8 +38,6 @@ fun Project.configureMppDefaults(withJs: Boolean = true, withLinux: Boolean = tr
     )
 
     addTestDependencies(withJs)
-
-    enableNewMemoryManager()
   }
 }
 
