@@ -122,6 +122,8 @@ class StreamingNSURLSessionHttpEngine(
 
       override fun onData(data: NSData) {
         httpDataSink.write(data.toByteString())
+        // Typically here we'll receive a chunk for each incremental payload. Flushing here makes them available to the reader
+        // as soon as they're available.
         httpDataSink.flush()
       }
 
