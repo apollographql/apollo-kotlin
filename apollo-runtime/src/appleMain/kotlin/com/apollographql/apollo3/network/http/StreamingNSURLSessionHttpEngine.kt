@@ -256,7 +256,7 @@ private class StreamingDataDelegate : NSObject(), NSURLSessionDataDelegateProtoc
  * A source and a sink that are attached. The sink's output is the source's input.
  * A [Buffer] is used internally to store the data.
  * A `pthread` `mutex` and `cond` are used to block the source's reading until there is data to read, or the sink is closed. These are
- * released when the **source** is closed.
+ * released when both the sink and the source are closed.
  *
  * Inspired by okio's Pipe which is JVM only.
  */
@@ -267,6 +267,7 @@ private class Pipe {
   private val cond = nativeHeap.alloc<pthread_cond_t>()
 
   private var isSinkClosed = false
+  private var isSourceClosed = false
 
   init {
     pthread_mutex_init(mutex.ptr, null)
@@ -286,6 +287,8 @@ private class Pipe {
       isSinkClosed = true
       pthread_cond_broadcast(cond.ptr)
       pthread_mutex_unlock(mutex.ptr)
+
+      disposeIfClosed()
     }
 
     override fun flush() {}
@@ -304,10 +307,17 @@ private class Pipe {
     }
 
     override fun close() {
-      pthread_mutex_destroy(mutex.ptr)
-      pthread_cond_destroy(cond.ptr)
+      isSourceClosed = true
+      disposeIfClosed()
     }
 
     override fun timeout() = Timeout.NONE
+  }
+
+  private fun disposeIfClosed() {
+    if (isSourceClosed && isSinkClosed) {
+      pthread_mutex_destroy(mutex.ptr)
+      pthread_cond_destroy(cond.ptr)
+    }
   }
 }
