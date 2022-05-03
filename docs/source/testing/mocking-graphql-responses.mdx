@@ -38,7 +38,7 @@ val testData = GetHeroQuery.Data {
     name = "R2D2"
   }
 }
-apolloClient.testNetworkTransport.enqueueTestResponse(testQuery, testData)
+apolloClient.enqueueTestResponse(testQuery, testData)
 
 val actual = apolloClient.query(testQuery).execute().data!!
 assertEquals(testData.hero.name, actual.hero.name)
