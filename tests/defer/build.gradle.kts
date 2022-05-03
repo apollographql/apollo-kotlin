@@ -40,6 +40,12 @@ kotlin {
         implementation(npm("graphql", "canary-pr-2839"))
       }
     }
+
+    val jvmTest by getting {
+      dependencies {
+        implementation("com.apollographql.apollo3:apollo-http-cache")
+      }
+    }
   }
 }
 
