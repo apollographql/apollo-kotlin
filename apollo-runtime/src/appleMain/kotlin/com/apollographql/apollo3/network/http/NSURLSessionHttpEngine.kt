@@ -5,8 +5,8 @@ import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.mpp.assertMainThreadOnNative
 import com.apollographql.apollo3.internal.suspendAndResumeOnMain
+import com.apollographql.apollo3.mpp.assertMainThreadOnNative
 import com.apollographql.apollo3.network.toNSData
 import okio.Buffer
 import okio.toByteString
