@@ -9,7 +9,8 @@ This release brings WebSocket related improvements, support for HMPP, and a some
 
 ## ✨️ [new] `WebSocketNetworkTransport.closeConnection` (#4049)
 
-This new method can be used in conjunction with [`reopenWhen`](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/com.apollographql.apollo3/-apollo-client/-builder/web-socket-reopen-when.html)  to force a reconnection to the server. This could be useful for instance when needing to pass new auth tokens in the headers.
+This new method can be used in conjunction with [`reopenWhen`](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/com.apollographql.apollo3/-apollo-client/-builder/web-socket-reopen-when.html)  to force a reconnection to the server. This could be useful for instance when needing to pass new auth tokens in the headers. If you were using `subscriptionManager.reconnect()` in 2.x, `closeConnection` is a simple way to achieve the same behaviour.
+
 
 ## ✨️ [new] `GraphQLWsProtocol.connectionPayload` is now a lambda (#4043)
 
@@ -17,7 +18,7 @@ With `GraphQLWsProtocol`, if you need to pass parameters to the connection paylo
 
 ## ✨️ [new] Hierarchical MultiPlatform Project (HMPP) (#4033)
 
-When using Apollo Kotlin on a multiplatform project, this release is compatible with the [hierarchical project structure](https://kotlinlang.org/docs/multiplatform-hierarchy.html), which makes it easier to share common code among several targets. This should also resolve [an issue](https://github.com/apollographql/apollo-kotlin/issues/4019) when using the library on a project using Kotlin 1.6.20+.
+When using Apollo Kotlin on a multiplatform project, this release is compatible with the [hierarchical project structure](https://kotlinlang.org/docs/multiplatform-hierarchy.html), which makes it easier to share common code among several targets. Using HMPP in your project also fixes some issues when compiling Kotlin metadata. See https://github.com/apollographql/apollo-kotlin/issues/4019 and https://youtrack.jetbrains.com/issue/KT-51970/ for more details.
 
 ## ✨️ [new] Add insecure option to download schema (#4021)
 
