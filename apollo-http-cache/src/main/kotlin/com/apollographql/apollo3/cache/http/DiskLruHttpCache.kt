@@ -6,10 +6,10 @@ import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.cache.http.internal.DiskLruCache
 import com.squareup.moshi.Moshi
 import okio.Buffer
-import okio.BufferedSource
 import okio.FileSystem
 import okio.Sink
 import okio.Source
+import okio.Timeout
 import okio.buffer
 import java.io.File
 import java.io.IOException
@@ -73,7 +73,7 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
       val bodySink = editor.newSink(ENTRY_BODY)
       return HttpResponse.Builder(response.statusCode).apply {
         headers(response.headers)
-        response.body?.let { body(WriteToCacheSource(it, bodySink, editor).buffer()) }
+        response.body?.let { body(ProxySource(it, bodySink, editor).buffer()) }
       }.build()
     } catch (e: Exception) {
       editor.abort()
@@ -105,20 +105,20 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
   }
 
   /**
-   * A [BufferedSource] that writes to the given cache sink as it is read.
+   * A [Source] that writes to the given cache sink as it is read.
    */
-  private class WriteToCacheSource(
-      private val originalBody: Source,
-      private val cacheSink: Sink,
+  private class ProxySource(
+      private val originalSource: Source,
+      private val sink: Sink,
       private val cacheEditor: DiskLruCache.Editor,
-  ) : Source by originalBody {
+  ) : Source {
 
+    private val buffer = Buffer()
     private var hasClosedAndCommitted: Boolean = false
 
     override fun read(sink: Buffer, byteCount: Long): Long {
-      val buffer = Buffer()
       val read = try {
-        originalBody.read(buffer, byteCount)
+        originalSource.read(buffer, byteCount)
       } catch (e: Exception) {
         cacheEditor.abort()
         throw e
@@ -129,23 +129,25 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
         closeAndCommitCache()
         return -1L
       }
-      buffer.peek().readAll(cacheSink)
+      buffer.peek().readAll(this.sink)
       sink.writeAll(buffer)
       return read
     }
 
     override fun close() {
       closeAndCommitCache()
-      originalBody.close()
+      originalSource.close()
     }
 
     private fun closeAndCommitCache() {
       if (!hasClosedAndCommitted) {
-        cacheSink.close()
+        sink.close()
         cacheEditor.commit()
         hasClosedAndCommitted = true
       }
     }
+
+    override fun timeout(): Timeout = originalSource.timeout()
   }
 
 
