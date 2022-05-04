@@ -110,7 +110,7 @@ class CachingHttpInterceptor(
     if (response.statusCode in 200..299 && !doNotStore) {
       // Note: this write may fail if the same cacheKey is being stored by another thread.
       // This is OK though: the other thread will be the one that stores it in the cache (see issue #3664).
-      return lruHttpCache.writeIncremental(
+      return lruHttpCache.write(
           response.newBuilder()
               .addHeaders(
                   listOf(
