@@ -2,14 +2,20 @@ package test
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.cache.http.HttpFetchPolicy
 import com.apollographql.apollo3.cache.http.httpCache
+import com.apollographql.apollo3.cache.http.httpFetchPolicy
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueueMultipart
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.testing.runTest
 import defer.WithFragmentSpreadsQuery
+import defer.fragment.ComputerFields
+import defer.fragment.ScreenFields
+import kotlinx.coroutines.flow.last
 import org.junit.Test
 import java.io.File
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 @OptIn(ApolloExperimental::class)
@@ -50,5 +56,20 @@ class DeferJvmTest {
       assertTrue(currentTimeMillis() - lastEmitTime >= delay / 1.1)
       lastEmitTime = currentTimeMillis()
     }
+
+    // Also check that caching worked
+    val actual = apolloClient.query(WithFragmentSpreadsQuery()).httpFetchPolicy(HttpFetchPolicy.CacheOnly).toFlow().last().dataAssertNoErrors
+    val expected = WithFragmentSpreadsQuery.Data(
+        listOf(
+            WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
+                ComputerFields.Screen("Screen", "640x480",
+                    ScreenFields(false)))),
+            WithFragmentSpreadsQuery.Computer("Computer", "Computer2", ComputerFields("486", 1996,
+                ComputerFields.Screen("Screen", "800x600",
+                    ScreenFields(true)))),
+        )
+    )
+
+    assertEquals(expected, actual)
   }
 }
