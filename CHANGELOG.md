@@ -44,10 +44,10 @@ Many thanks to @CureleaAndrei and @kdk96 for contributing to this release! 🙏
 
 ## ⚙️ Deprecations
 
-- `BearerTokenInterceptor` was provided as an example but is too simple for most use cases, and was therefore deprecated
+- `BearerTokenInterceptor` was provided as an example but is too simple for most use cases, and has therefore been deprecated
   in this release. [This page](https://www.apollographql.com/docs/kotlin/advanced/authentication) provides more details
   about authentication.
-- The previous ways of passing parameters to the connection payload with `GraphQLWsProtocol` were deprecated (see above).
+- The previous ways of passing parameters to the connection payload with `GraphQLWsProtocol` has been deprecated (see above).
 
 # Version 3.2.2
 
