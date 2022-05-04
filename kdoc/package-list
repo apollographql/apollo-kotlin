@@ -53,7 +53,7 @@ com.apollographql.apollo3.compiler.codegen.kotlin.selections
 com.apollographql.apollo3.compiler.introspection
 com.apollographql.apollo3.compiler.ir
 com.apollographql.apollo3.compiler.operationoutput
-module:apollo-gradle-plugin
+module:apollo-gradle-plugin-external
 com.apollographql.apollo3.gradle.api
 com.apollographql.apollo3.gradle.internal
 module:apollo-http-cache
