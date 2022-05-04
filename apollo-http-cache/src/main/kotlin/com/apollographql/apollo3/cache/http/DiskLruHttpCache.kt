@@ -120,7 +120,7 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
       val read = try {
         originalSource.read(buffer, byteCount)
       } catch (e: Exception) {
-        cacheEditor.abort()
+        abortEdit()
         throw e
       }
 
@@ -129,8 +129,17 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
         closeAndCommitCache()
         return -1L
       }
-      buffer.peek().readAll(this.sink)
-      sink.writeAll(buffer)
+      try {
+        buffer.peek().readAll(this.sink)
+      } catch (e: Exception) {
+        abortEdit()
+      }
+      try {
+        sink.writeAll(buffer)
+      } catch (e: Exception) {
+        abortEdit()
+        throw e
+      }
       return read
     }
 
@@ -141,9 +150,22 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
 
     private fun closeAndCommitCache() {
       if (!hasClosedAndCommitted) {
-        sink.close()
-        cacheEditor.commit()
-        hasClosedAndCommitted = true
+        try {
+          sink.close()
+          cacheEditor.commit()
+        } catch (e: Exception) {
+          // Silently ignore cache write errors
+        } finally {
+          hasClosedAndCommitted = true
+        }
+      }
+    }
+
+    private fun abortEdit() {
+      try {
+        cacheEditor.abort()
+      } catch (e: Exception) {
+        // Silently ignore cache write errors
       }
     }
 
