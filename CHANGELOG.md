@@ -1,5 +1,54 @@
 Change Log
 ==========
+
+# Version 3.3.0
+
+_2022-05-04_
+
+This release brings WebSocket related improvements, support for HMPP, and a some performance improvements and bug fixes!
+
+## ✨️ [new] `WebSocketNetworkTransport.closeConnection` (#4049)
+
+This new method can be used in conjunction with [`reopenWhen`](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/com.apollographql.apollo3/-apollo-client/-builder/web-socket-reopen-when.html)  to force a reconnection to the server. This could be useful for instance when needing to pass new auth tokens in the headers.
+
+## ✨️ [new] `GraphQLWsProtocol.connectionPayload` is now a lambda (#4043)
+
+With `GraphQLWsProtocol`, if you need to pass parameters to the connection payload, previously you would pass them as a static map to the builder. With this change you can now pass a lambda providing them as needed. This facilitates passing fresh auth tokens when connecting.
+
+## ✨️ [new] Hierarchical MultiPlatform Project (HMPP) (#4033)
+
+When using Apollo Kotlin on a multiplatform project, this release is compatible with the [hierarchical project structure](https://kotlinlang.org/docs/multiplatform-hierarchy.html), which makes it easier to share common code among several targets. This should also resolve [an issue](https://github.com/apollographql/apollo-kotlin/issues/4019) when using the library on a project using Kotlin 1.6.20+.
+
+## ✨️ [new] Add insecure option to download schema (#4021)
+
+You can now use the `--insecure` flag when downloading a schema with [`downloadApolloSchema`](https://www.apollographql.com/docs/kotlin/advanced/plugin-configuration/#downloading-a-schema), to bypass the certificate check, which can be useful if a server is configured with a self-signed certificate for instance.
+
+## 👷‍ All changes
+
+- Add WebSocketNetworkTransport.closeConnection (#4049)
+- Made connectionPayload as suspend function in GraphQLWsProtocol (#4043)
+- ⚡ Ignore unknown websocket messages (#4066)
+- Kotlin 1.6.21 & HMPP (#4033)
+- Provide a Content-Length when using Upload (#4056)
+- ☁️ add HttpRequest.newBuilder(url, method) (#4038)
+- Escape enum constants (#4035)
+- Fix the Moshi adapter used for OperationOutput. Moshi cannot get the type parameters from the typealias
+  automagically (#4022)
+- Add insecure option to download schema (#4021)
+- Try to reduce allocations in MapJsonReader (#3935)
+- 🔒 Deprecate BearerTokenInterceptor and provide tests and docs instead (#4068)
+
+## ❤️ External contributors
+
+Many thanks to @CureleaAndrei and @kdk96 for contributing to this release! 🙏
+
+## ⚙️ Deprecations
+
+- `BearerTokenInterceptor` was provided as an example but is too simple for most use cases, and was therefore deprecated
+  in this release. [This page](https://www.apollographql.com/docs/kotlin/advanced/authentication) provides more details
+  about authentication.
+- The previous ways of passing parameters to the connection payload with `GraphQLWsProtocol` were deprecated (see above).
+
 # Version 3.2.2
 
 _2022-04-11_
