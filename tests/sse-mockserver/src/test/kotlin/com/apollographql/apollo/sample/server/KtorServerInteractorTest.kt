@@ -11,6 +11,11 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
+/**
+ * This test verifies that a ktor server can be started and tests can make REST requests to it.
+ *
+ * It is the basis of all E2E tests on gradle modules that depend on :sse-mockserver, such as :sse.
+ */
 class KtorServerInteractorTest {
 
   private var job: Job? = null

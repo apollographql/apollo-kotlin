@@ -1,5 +1,4 @@
 plugins {
-//  id("com.apollographql.apollo3")
   id("org.jetbrains.kotlin.multiplatform")
 }
 
