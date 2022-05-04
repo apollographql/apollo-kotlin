@@ -26,7 +26,7 @@ allprojects {
       // Some projects are in submodules, use the rootDir
       url = uri(File(project.rootDir, "$apolloDepth/build/localMaven").absolutePath)
     }
-    google()
     mavenCentral()
+    google()
   }
 }

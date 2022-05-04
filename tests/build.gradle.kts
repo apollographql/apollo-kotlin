@@ -23,8 +23,8 @@ repositories {
 
 subprojects {
   repositories {
-    google()
     mavenCentral()
+    google()
     jcenter {
       content {
         // https://github.com/Kotlin/kotlinx-nodejs/issues/16

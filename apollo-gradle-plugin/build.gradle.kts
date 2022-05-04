@@ -5,18 +5,12 @@ plugins {
   id("com.gradleup.gr8")
 }
 
-
 // Configuration for extra jar to pass to R8 to give it more context about what can be relocated
 configurations.create("gr8Classpath")
 // Configuration dependencies that will be shadowed
 val shadeConfiguration = configurations.create("shade")
 
 dependencies {
-  compileOnly(groovy.util.Eval.x(project, "x.dep.minGradleApi"))
-  //compileOnly(groovy.util.Eval.x(project, "x.dep.gradleApi"))
-  compileOnly(groovy.util.Eval.x(project, "x.dep.kotlinPluginMin"))
-  compileOnly(groovy.util.Eval.x(project, "x.dep.android.minPlugin"))
-
   /**
    * OkHttp has some bytecode that checks for Conscrypt at runtime (https://github.com/square/okhttp/blob/71427d373bfd449f80178792fe231f60e4c972db/okhttp/src/main/kotlin/okhttp3/internal/platform/ConscryptPlatform.kt#L59)
    * Put this in the classpath so that R8 knows it can relocate DisabledHostnameVerifier as the superclass is not package-private
@@ -25,14 +19,7 @@ dependencies {
    */
   add("gr8Classpath", "org.conscrypt:conscrypt-openjdk-uber:2.5.2")
 
-  add("shade", "org.jetbrains.kotlin:kotlin-stdlib")
-  add("shade", projects.apolloCompiler)
-  add("shade", projects.apolloAst)
-
-  add("shade", groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
-  add("shade", groovy.util.Eval.x(project, "x.dep.moshi.moshi").toString()) {
-    because("Needed for manual Json construction in `SchemaDownloader`")
-  }
+  add("shade", projects.apolloGradlePluginExternal)
 
   testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
@@ -71,19 +58,6 @@ if (true) {
   }
 }
 
-tasks.withType<Test> {
-  dependsOn(":apollo-annotations:publishAllPublicationsToPluginTestRepository")
-  dependsOn(":apollo-api:publishAllPublicationsToPluginTestRepository")
-  dependsOn(":apollo-ast:publishAllPublicationsToPluginTestRepository")
-  dependsOn(":apollo-normalized-cache-api:publishAllPublicationsToPluginTestRepository")
-  dependsOn(":apollo-mpp-utils:publishAllPublicationsToPluginTestRepository")
-  dependsOn(":apollo-compiler:publishAllPublicationsToPluginTestRepository")
-  dependsOn("publishAllPublicationsToPluginTestRepository")
-
-  inputs.dir("src/test/files")
-  inputs.dir("testProjects")
-}
-
 pluginBundle {
   website = "https://github.com/apollographql/apollo-android"
   vcsUrl = "https://github.com/apollographql/apollo-android"
@@ -118,4 +92,17 @@ configure<PublishingExtension> {
       }
     }
   }
+}
+
+tasks.withType<Test> {
+  dependsOn(":apollo-annotations:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-api:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-ast:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-normalized-cache-api:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-mpp-utils:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-compiler:publishAllPublicationsToPluginTestRepository")
+  dependsOn("publishAllPublicationsToPluginTestRepository")
+
+  inputs.dir("src/test/files")
+  inputs.dir("testProjects")
 }

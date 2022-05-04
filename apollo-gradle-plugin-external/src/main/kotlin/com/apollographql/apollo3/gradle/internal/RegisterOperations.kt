@@ -251,7 +251,7 @@ object RegisterOperations {
     return minimized
   }
 
-  internal fun String.safelistingHash(): String {
+  fun String.safelistingHash(): String {
     return OperationIdGenerator.Sha256.apply(normalize(), "")
   }
 

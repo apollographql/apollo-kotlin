@@ -2,8 +2,8 @@ buildscript {
   apply(from = "../gradle/dependencies.gradle")
 
   repositories {
-    google()
     mavenCentral()
+    google()
     mavenLocal()
     maven {
       url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
@@ -26,8 +26,8 @@ apply(plugin = "androidx.benchmark")
 apply(plugin = "com.google.devtools.ksp")
 
 repositories {
-  google()
   mavenCentral()
+  google()
   mavenLocal()
   maven {
     url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
