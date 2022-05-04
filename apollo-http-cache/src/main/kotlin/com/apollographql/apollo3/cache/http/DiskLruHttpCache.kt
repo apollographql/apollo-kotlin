@@ -49,44 +49,11 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
   }
 
   /**
-   * This is not actually called by the current version of the Interceptor, but is kept for backward binary compatibility.
-   */
-  @Deprecated("Kept for backward binary compatibility")
-  override fun write(response: HttpResponse, cacheKey: String) {
-    val editor = cacheLock.read {
-      cache.edit(cacheKey)
-    } ?: return
-
-    try {
-      editor.newSink(ENTRY_HEADERS).buffer().use {
-        val map = mapOf(
-            "statusCode" to response.statusCode.toString(),
-            "headers" to response.headers.map { httpHeader ->
-              // Moshi doesn't serialize Pairs by default (https://github.com/square/moshi/issues/508) so
-              // we use a Map with a single entry
-              mapOf(httpHeader.name to httpHeader.value)
-            },
-        )
-        adapter.toJson(it, map)
-      }
-      editor.newSink(ENTRY_BODY).buffer().use {
-        val responseBody = response.body
-        if (responseBody != null) {
-          it.writeAll(responseBody.peek())
-        }
-      }
-      editor.commit()
-    } catch (e: Exception) {
-      editor.abort()
-    }
-  }
-
-  /**
    * Store the [response] with the given [cacheKey] into the cache.
    * A new [HttpResponse] is returned whose body, when read, will write the contents to the cache.
    * The response's body is not consumed nor closed.
    */
-  override fun writeIncremental(response: HttpResponse, cacheKey: String): HttpResponse {
+  override fun write(response: HttpResponse, cacheKey: String): HttpResponse {
     val editor = cacheLock.read {
       cache.edit(cacheKey)
     } ?: return response
