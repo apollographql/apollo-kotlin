@@ -1,8 +1,7 @@
 package com.apollographql.apollo.sample.server
 
-import au.com.woolworths.sample.graphqlsse.server.KtorServerInteractor
-import au.com.woolworths.sample.graphqlsse.server.KtorServerInteractor.Companion.PATH_HELLO_WORLD
-import au.com.woolworths.sample.graphqlsse.server.KtorServerInteractor.Companion.PAYLOAD_HELLO_WORLD
+import com.apollographql.apollo.sample.server.KtorServerInteractor.Companion.PATH_HELLO_WORLD
+import com.apollographql.apollo.sample.server.KtorServerInteractor.Companion.PAYLOAD_HELLO_WORLD
 import kotlinx.coroutines.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
