@@ -5,18 +5,24 @@ import com.squareup.sqldelight.db.SqlDriver
 import com.squareup.sqldelight.drivers.native.NativeSqliteDriver
 
 actual class SqlNormalizedCacheFactory internal actual constructor(
-    driver: SqlDriver
+    driver: SqlDriver,
+    withAge: Boolean,
 ) : NormalizedCacheFactory() {
 
-  constructor() : this("apollo.db")
+  constructor(name: String, withAge: Boolean) : this(NativeSqliteDriver(getSchema(withAge), name), withAge)
 
-  constructor(name: String) : this(NativeSqliteDriver(ApolloDatabase.Schema, name))
+  constructor(name: String) : this(name, false)
 
-  private val apolloDatabase = ApolloDatabase(driver)
+  constructor() : this("apollo.db", false)
+
+  private val driver = driver
+  private val withAge = withAge
 
   override fun create(): SqlNormalizedCache {
     return SqlNormalizedCache(
-        cacheQueries = apolloDatabase.cacheQueries,
+        recordDatabase = createRecordDatabase(driver, withAge)
     )
   }
 }
+
+actual fun createSqlNormalizedCacheFactory(name: String, withAge: Boolean): SqlNormalizedCacheFactory = SqlNormalizedCacheFactory(name, withAge)

@@ -4,8 +4,12 @@ package com.apollographql.apollo3.exception
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_1_1
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_3_1
+import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.http.HttpHeader
 import okio.BufferedSource
+import kotlin.jvm.JvmOverloads
 
 /**
  * The base class for all exceptions
@@ -81,14 +85,36 @@ class ApolloParseException(message: String? = null, cause: Throwable? = null) : 
  * An object/field was missing in the cache
  * If [fieldName] is null, it means a reference to an object could not be resolved
  */
-class CacheMissException(val key: String, val fieldName: String? = null) : ApolloException(message = message(key, fieldName)) {
+
+class CacheMissException @ApolloInternal constructor(
+    val key: String,
+    val fieldName: String? = null,
+    age: Long? = null,
+) : ApolloException(message = message(key, fieldName, age)) {
+
+  @ApolloExperimental
+  val age: Long? = age
+
+  @ApolloInternal
+  constructor(key: String, fieldName: String?): this(key, fieldName, null)
+
   companion object {
-    fun message(key: String?, fieldName: String?): String {
+    internal fun message(key: String?, fieldName: String?, age: Long? = null): String {
       return if (fieldName == null) {
         "Object '$key' not found"
       } else {
-        "Object '$key' has no field named '$fieldName'"
+        if (age != null) {
+          "Field '$fieldName' on object '$key' has expired (age=$age)"
+        } else {
+          "Object '$key' has no field named '$fieldName'"
+        }
       }
+    }
+
+    @ApolloDeprecatedSince(v3_3_1)
+    @Deprecated("Use CacheMissException.message instead")
+    fun message(key: String?, fieldName: String?): String {
+      return message(key, fieldName, null)
     }
   }
 }

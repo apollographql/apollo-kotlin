@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.cache.normalized.api
 
+<<<<<<< HEAD
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -7,39 +8,20 @@ import com.apollographql.apollo3.api.json.readAny
 import okio.Buffer
 import okio.ByteString.Companion.encodeUtf8
 import okio.use
+=======
+import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo3.cache.normalized.api.internal.JsonRecordSerializer
+>>>>>>> 868b3e84e (💧 first drop for a SQLite backend that stores when each field was last updated)
 
-/**
- * An adapter used to serialize and deserialize Record fields. Record object types will be serialized to [CacheKey].
- */
+@OptIn(ApolloInternal::class)
+@Deprecated("Use JsonRecordSerializer instead")
 object RecordFieldJsonAdapter {
-
-  fun toJson(fields: Map<String, Any?>): String {
-    val buffer = Buffer()
-    BufferedSinkJsonWriter(buffer).use { jsonWriter ->
-      jsonWriter.beginObject()
-      for ((key, value) in fields) {
-        jsonWriter.name(key).writeJsonValue(value)
-      }
-      jsonWriter.endObject()
-    }
-    return buffer.readUtf8()
+  @Deprecated("Use JsonRecordSerializer instead", ReplaceWith("JsonRecordSerializer.deserialize(json)"))
+  fun fromJson(jsonFieldSource: String): Map<String, Any?> {
+    return JsonRecordSerializer.deserialize("", jsonFieldSource).fields
   }
 
-  private fun Any?.deserializeCacheKeys(): Any? {
-    return when (this) {
-      is String -> if (CacheKey.canDeserialize(this)) {
-        CacheKey.deserialize(this)
-      } else {
-        this
-      }
-      is Map<*, *> -> mapValues {
-        it.value.deserializeCacheKeys()
-      }
-      is List<*> -> map { it.deserializeCacheKeys() }
-      else -> this
-    }
-  }
-
+<<<<<<< HEAD
   @Suppress("UNCHECKED_CAST")
   fun fromJson(jsonFieldSource: String): Map<String, Any?>? {
     val buffer = Buffer().write(jsonFieldSource.encodeUtf8())
@@ -72,5 +54,10 @@ object RecordFieldJsonAdapter {
       }
       else -> error("Unsupported record value type: '$value'")
     }
+=======
+  @Deprecated("Use JsonRecordSerializer instead", ReplaceWith("JsonRecordSerializer.serialize(fields)"))
+  fun toJson(fields: Map<String, Any?>): String {
+    return JsonRecordSerializer.serialize(Record("", fields))
+>>>>>>> 868b3e84e (💧 first drop for a SQLite backend that stores when each field was last updated)
   }
 }

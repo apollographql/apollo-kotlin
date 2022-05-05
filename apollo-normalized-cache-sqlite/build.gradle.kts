@@ -5,9 +5,15 @@ apply(plugin = "org.jetbrains.kotlin.multiplatform")
 apply(plugin = "com.squareup.sqldelight")
 
 configure<com.squareup.sqldelight.gradle.SqlDelightExtension> {
-  database("ApolloDatabase") {
-    packageName = "com.apollographql.apollo3.cache.normalized.sql"
-    schemaOutputDirectory = file("src/main/sqldelight/schemas")
+  database("JsonDatabase") {
+    packageName = "com.apollographql.apollo3.cache.internal.json"
+    schemaOutputDirectory = file("sqldelight/json/schema")
+    sourceFolders = listOf("sqldelight/json/")
+  }
+  database("BlobDatabase") {
+    packageName = "com.apollographql.apollo3.cache.internal.blob"
+    schemaOutputDirectory = file("sqldelight/blob/schema")
+    sourceFolders = listOf("sqldelight/blob/")
   }
 }
 
@@ -26,6 +32,7 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
       dependencies {
         api(projects.apolloApi)
         api(projects.apolloNormalizedCacheApi)
+        api(projects.apolloNormalizedCache)
       }
     }
 

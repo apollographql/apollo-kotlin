@@ -2,6 +2,8 @@ package com.apollographql.apollo3.cache.normalized.api
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version
+import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.annotations.ApolloInternal
 
 /**
  * A collection of cache headers that Apollo's implementations of [NormalizedCache] respect.
@@ -16,6 +18,12 @@ object ApolloCacheHeaders {
    * Records from this request should be evicted after being read.
    */
   const val EVICT_AFTER_READ = "evict-after-read"
+
+  /**
+   * The Records will be stored with this date.
+   */
+  @ApolloExperimental
+  const val DATE = "apollo-date"
 
   /**
    * To configure whether to store partial responses, please use the storePartialResponses() extension instead.

@@ -1,14 +1,16 @@
 package com.apollographql.apollo3.cache.normalized
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.Record
-import com.apollographql.apollo3.cache.normalized.api.RecordFieldJsonAdapter
+import com.apollographql.apollo3.cache.normalized.api.internal.JsonRecordSerializer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class RecordFieldJsonAdapterTest {
+@OptIn(ApolloInternal::class)
+class JsonRecordSerializerTest {
 
   @Test
   fun testFieldsAdapterSerializationDeserialization() {
@@ -39,8 +41,8 @@ class RecordFieldJsonAdapterTest {
         )
     )
 
-    val json = RecordFieldJsonAdapter.toJson(record.fields)
-    val deserializedMap = requireNotNull(RecordFieldJsonAdapter.fromJson(json))
+    val json = JsonRecordSerializer.serialize(record)
+    val deserializedMap = requireNotNull(JsonRecordSerializer.deserialize(record.key, json))
 
     assertEquals(actual = deserializedMap["double"], expected = expectedDouble)
     assertEquals(actual = deserializedMap["string"], expected = expectedStringValue)

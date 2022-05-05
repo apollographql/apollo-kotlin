@@ -5,5 +5,5 @@ package com.apollographql.apollo3.annotations
     message = "This API is for internal use only in Apollo"
 )
 @Retention(AnnotationRetention.BINARY)
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY, AnnotationTarget.CONSTRUCTOR)
 annotation class ApolloInternal
