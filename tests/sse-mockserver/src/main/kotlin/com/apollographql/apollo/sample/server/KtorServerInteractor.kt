@@ -1,26 +1,37 @@
 package com.apollographql.apollo.sample.server
 
-import io.ktor.application.call
-import io.ktor.response.respondText
-import io.ktor.routing.get
+import com.apollographql.apollo.sample.server.routing.HelloWorldRouter
+import com.apollographql.apollo.sample.server.routing.RoutingChain
+import com.apollographql.apollo.sample.server.routing.SseSideChannelRouter
+import io.ktor.application.install
+import io.ktor.features.ContentNegotiation
 import io.ktor.routing.routing
+import io.ktor.serialization.json
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import kotlinx.serialization.json.Json
 
 open class KtorServerInteractor(private val port: Int = 8080) {
-
-  companion object {
-    const val PAYLOAD_HELLO_WORLD = "Hello, world!"
-    const val PATH_HELLO_WORLD = "HelloWorld"
-  }
 
   fun invoke() {
 
     embeddedServer(Netty, port = port, watchPaths = listOf("classes")) {
+
+      install(ContentNegotiation) {
+        json(Json {
+          prettyPrint = true
+          isLenient = true
+        })
+
+      }
+
       routing {
-        get("/$PATH_HELLO_WORLD") {
-          call.respondText(PAYLOAD_HELLO_WORLD)
-        }
+        listOf(
+            HelloWorldRouter(),
+            SseSideChannelRouter(),
+        )
+            .let { RoutingChain(it) }
+            .routing(this)
       }
     }.start(wait = true)
   }
