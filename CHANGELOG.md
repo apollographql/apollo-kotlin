@@ -20,6 +20,8 @@ With `GraphQLWsProtocol`, if you need to pass parameters to the connection paylo
 
 When using Apollo Kotlin on a multiplatform project, this release is compatible with the [hierarchical project structure](https://kotlinlang.org/docs/multiplatform-hierarchy.html), which makes it easier to share common code among several targets. Using HMPP in your project also fixes some issues when compiling Kotlin metadata. See https://github.com/apollographql/apollo-kotlin/issues/4019 and https://youtrack.jetbrains.com/issue/KT-51970/ for more details.
 
+Note: if your project doesn’t yet use Kotlin 1.6.20+ (which automatically enables HMPP) we recommend you update to it, otherwise you may hit [this issue](https://youtrack.jetbrains.com/issue/KT-51970).
+
 ## ✨️ [new] Add insecure option to download schema (#4021)
 
 You can now use the `--insecure` flag when downloading a schema with [`downloadApolloSchema`](https://www.apollographql.com/docs/kotlin/advanced/plugin-configuration/#downloading-a-schema), to bypass the certificate check, which can be useful if a server is configured with a self-signed certificate for instance.
