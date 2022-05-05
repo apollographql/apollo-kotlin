@@ -1,10 +1,12 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.cache.normalized.ApolloStore
+import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
@@ -15,6 +17,7 @@ import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.internal.OptimisticCache
 import com.apollographql.apollo3.cache.normalized.api.normalize
 import com.apollographql.apollo3.cache.normalized.api.readDataFromCache
+import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -101,7 +104,6 @@ internal class DefaultApolloStore(
     // Capture a local reference so as not to freeze "this"
     val cacheResolver = cacheResolver
 
-
     return cacheHolder.readAccess { cache ->
       operation.readDataFromCache(
           customScalarAdapters = customScalarAdapters,
@@ -174,7 +176,7 @@ internal class DefaultApolloStore(
           rootKey = cacheKey.key
       ).values
 
-      cache.merge(records, cacheHeaders)
+      cache.merge(records, cacheHeaders.withDate())
     }
 
     if (publish) {
@@ -202,13 +204,18 @@ internal class DefaultApolloStore(
           cacheKeyGenerator = objectIdGenerator
       )
 
-      records to cache.merge(records.values.toList(), cacheHeaders)
+      records to cache.merge(records.values.toList(), cacheHeaders.withDate())
     }
     if (publish) {
       publish(changedKeys)
     }
 
     return records.values.toSet() to changedKeys
+  }
+
+  @OptIn(ApolloExperimental::class)
+  private fun CacheHeaders.withDate(): CacheHeaders {
+    return newBuilder().addHeader(ApolloCacheHeaders.DATE, (currentTimeMillis()/1000).toString()).build()
   }
 
   override suspend fun <D : Operation.Data> writeOptimisticUpdates(

@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.cache.normalized.api.internal
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
@@ -101,6 +102,7 @@ internal class CacheBatchReader(
             // This happens the very first time we read the cache
             record = Record(pendingReference.key, emptyMap())
           } else {
+            @OptIn(ApolloInternal::class)
             throw CacheMissException(pendingReference.key)
           }
         }

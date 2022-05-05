@@ -3,6 +3,7 @@ package com.apollographql.apollo3.mpp
 import platform.Foundation.NSDate
 import platform.Foundation.NSDateFormatter
 import platform.Foundation.NSThread
+import platform.Foundation.timeIntervalSince1970
 import platform.posix.pthread_self
 import kotlin.native.concurrent.ensureNeverFrozen
 import kotlin.native.concurrent.freeze
@@ -10,7 +11,7 @@ import kotlin.native.concurrent.isFrozen
 import kotlin.system.getTimeMillis
 
 actual fun currentTimeMillis(): Long {
-  return getTimeMillis()
+  return (NSDate().timeIntervalSince1970 * 1000).toLong()
 }
 
 private val nsDateFormatter by lazy { NSDateFormatter().apply { dateFormat = "HH:mm:ss.SSS" } }

@@ -1,4 +1,5 @@
 public final class com/apollographql/apollo3/cache/normalized/api/ApolloCacheHeaders {
+	public static final field DATE Ljava/lang/String;
 	public static final field DO_NOT_STORE Ljava/lang/String;
 	public static final field EVICT_AFTER_READ Ljava/lang/String;
 	public static final field INSTANCE Lcom/apollographql/apollo3/cache/normalized/api/ApolloCacheHeaders;
@@ -12,6 +13,7 @@ public final class com/apollographql/apollo3/cache/normalized/api/CacheHeaders {
 	public final fun hasHeader (Ljava/lang/String;)Z
 	public final fun headerValue (Ljava/lang/String;)Ljava/lang/String;
 	public final fun plus (Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;)Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;
+	public final fun newBuilder ()Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders$Builder;
 	public final fun toBuilder ()Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders$Builder;
 }
 
@@ -165,6 +167,7 @@ public final class com/apollographql/apollo3/cache/normalized/api/Record : java/
 	public final fun getFields ()Ljava/util/Map;
 	public final fun getKey ()Ljava/lang/String;
 	public fun getKeys ()Ljava/util/Set;
+	public final fun getLastUpdated ()Ljava/util/Map;
 	public final fun getMutationId ()Ljava/util/UUID;
 	public fun getSize ()I
 	public final fun getSizeInBytes ()I
@@ -187,6 +190,7 @@ public final class com/apollographql/apollo3/cache/normalized/api/Record : java/
 	public fun replace (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
 	public fun replace (Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)Z
 	public fun replaceAll (Ljava/util/function/BiFunction;)V
+	public final fun setLastUpdated (Ljava/util/Map;)V
 	public final fun size ()I
 	public final fun values ()Ljava/util/Collection;
 }

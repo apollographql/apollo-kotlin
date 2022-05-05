@@ -28,7 +28,10 @@ class CacheHeaders internal constructor(private val headerMap: Map<String, Strin
   /**
    * @return A [CacheHeaders.Builder] with a copy of this [CacheHeaders] values.
    */
-  fun toBuilder(): Builder = builder().addHeaders(headerMap)
+  @Deprecated("Use newBuilder() instead", ReplaceWith("newBuilder()"))
+  fun toBuilder(): Builder = newBuilder()
+
+  fun newBuilder(): Builder = builder().addHeaders(headerMap)
 
   fun headerValue(header: String): String? = headerMap[header]
 

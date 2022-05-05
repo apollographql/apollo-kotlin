@@ -4,7 +4,12 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
+import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.Record
+import com.apollographql.apollo3.cache.internal.json.JsonDatabase
+import com.apollographql.apollo3.cache.internal.json.JsonQueries
+import com.apollographql.apollo3.cache.internal.json.RecordForKey
+import com.apollographql.apollo3.cache.normalized.sql.internal.JsonRecordDatabase
 import com.apollographql.apollo3.exception.apolloExceptionHandler
 import com.squareup.sqldelight.Query
 import kotlin.test.BeforeTest
@@ -16,7 +21,7 @@ import kotlin.test.assertTrue
 
 class SqlNormalizedCacheTest {
 
-  private val cache: SqlNormalizedCache = SqlNormalizedCacheFactory(createDriver()).create()
+  private val cache: NormalizedCache = SqlNormalizedCacheFactory(createDriver()).create()
 
   @BeforeTest
   fun setUp() {
@@ -211,7 +216,7 @@ class SqlNormalizedCacheTest {
   @OptIn(ApolloExperimental::class)
   @Test
   fun exceptionCallsExceptionHandler() {
-    val badCache = SqlNormalizedCache(BadCacheQueries())
+    val badCache = SqlNormalizedCache(JsonRecordDatabase(BadCacheQueries()))
     var throwable: Throwable? = null
     apolloExceptionHandler = {
       throwable = it
@@ -236,7 +241,7 @@ class SqlNormalizedCacheTest {
     assertEquals("bad cache", throwable!!.cause!!.message)
   }
 
-  private class BadCacheQueries(goodCacheQueries: CacheQueries = ApolloDatabase(createDriver()).cacheQueries) : CacheQueries by goodCacheQueries {
+  private class BadCacheQueries(goodCacheQueries: JsonQueries = JsonDatabase(createDriver()).jsonQueries) : JsonQueries by goodCacheQueries {
     override fun recordForKey(key: String): Query<RecordForKey> {
       throw Exception("bad cache")
     }
