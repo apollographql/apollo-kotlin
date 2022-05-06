@@ -53,6 +53,8 @@ object ApolloCompiler {
     outputDir.mkdirs()
     debugDir?.deleteRecursively()
     debugDir?.mkdirs()
+    testDir.deleteRecursively()
+    testDir.mkdirs()
 
     /**
      * Step 1: parse the documents
