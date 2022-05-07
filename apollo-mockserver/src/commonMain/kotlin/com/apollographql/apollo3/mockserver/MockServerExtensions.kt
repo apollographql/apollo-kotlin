@@ -47,25 +47,46 @@ fun createMultipartMixedChunkedResponse(
     responseDelayMillis: Long = 0,
     chunksDelayMillis: Long = 0,
     boundary: String = "-",
+    waitForMoreChunks: Boolean = false,
 ): MockResponse {
   return MockResponse(
       statusCode = statusCode,
       delayMillis = responseDelayMillis,
       headers = headers + mapOf("Content-Type" to """multipart/mixed; boundary="$boundary""""),
-      chunks = parts.mapIndexed { index, part ->
-        val startBoundary = if (index == 0) "--$boundary\r\n" else ""
-        val contentLengthHeader = "Content-Length: ${part.length}"
-        val contentTypeHeader = "Content-Type: $partsContentType"
-        val endBoundary = if (index == parts.lastIndex) "--$boundary--" else "--$boundary"
-        MockChunk(
-            body = startBoundary +
-                "$contentLengthHeader\r\n" +
-                "$contentTypeHeader\r\n" +
-                "\r\n" +
-                "$part\r\n" +
-                "$endBoundary\r\n",
+      chunks = parts.mapIndexed { index, content ->
+        createMultipartMixedChunk(
+            content = content,
+            contentType = partsContentType,
+            boundary = boundary,
+            isFirst = index == 0,
+            isLast = index == parts.lastIndex,
             delayMillis = chunksDelayMillis
         )
-      }
+      },
+      waitForMoreChunks = waitForMoreChunks,
+  )
+}
+
+@ApolloExperimental
+fun createMultipartMixedChunk(
+    content: String,
+    contentType: String = "application/json; charset=utf-8",
+    boundary: String = "-",
+    isFirst: Boolean = false,
+    isLast: Boolean = false,
+    delayMillis: Long = 0,
+): MockChunk {
+  val startBoundary = if (isFirst) "--$boundary\r\n" else ""
+  val contentLengthHeader = "Content-Length: ${content.length}"
+  val contentTypeHeader = "Content-Type: $contentType"
+  val endBoundary = if (isLast) "--$boundary--" else "--$boundary"
+  return MockChunk(
+      body = startBoundary +
+          "$contentLengthHeader\r\n" +
+          "$contentTypeHeader\r\n" +
+          "\r\n" +
+          "$content\r\n" +
+          "$endBoundary\r\n",
+      delayMillis = delayMillis
   )
 }

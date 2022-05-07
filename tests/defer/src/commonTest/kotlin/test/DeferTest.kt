@@ -5,6 +5,7 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.createMultipartMixedChunkedResponse
 import com.apollographql.apollo3.mockserver.enqueueMultipart
 import com.apollographql.apollo3.mpp.Platform
 import com.apollographql.apollo3.mpp.currentTimeMillis
@@ -15,8 +16,9 @@ import defer.WithFragmentSpreadsQuery
 import defer.WithInlineFragmentsQuery
 import defer.fragment.ComputerFields
 import defer.fragment.ScreenFields
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -253,6 +255,16 @@ class DeferTest {
       // TODO For now chunked is not supported on JS - remove this check when it is
       return@runTest
     }
+    val response = createMultipartMixedChunkedResponse(emptyList(), waitForMoreChunks = true)
+    mockServer.enqueue(response)
+
+    val channel = Channel<Unit>()
+    val job = launch {
+      apolloClient.query(WithFragmentSpreadsQuery()).toFlow().collect {
+        channel.send(Unit)
+      }
+    }
+
     val jsonList = listOf(
         """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"hasNext":true}""",
         """{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0],"hasNext":true}""",
@@ -260,20 +272,18 @@ class DeferTest {
         """{"data":{"isColor":false},"path":["computers",0,"screen"],"hasNext":true,"label":"a"}""",
         """{"data":{"isColor":true},"path":["computers",1,"screen"],"hasNext":false,"label":"a"}""",
     )
-
-    val delay = 200L
-    mockServer.enqueueMultipart(jsonList, chunksDelayMillis = delay)
-
-    val actualDelays = mutableListOf<Long>()
-    var lastEmitTime = currentTimeMillis()
-    apolloClient.query(WithFragmentSpreadsQuery()).toFlow().collect {
-      actualDelays += currentTimeMillis() - lastEmitTime
-      lastEmitTime = currentTimeMillis()
+    val delayMillis = 200L
+    for ((index, json) in jsonList.withIndex()) {
+      response.enqueueChunk(
+          content = json,
+          isFirst = index == 0,
+          isLast = index == jsonList.lastIndex,
+          delayMillis = delayMillis
+      )
+      val timeBeforeReceive = currentTimeMillis()
+      channel.receive()
+      assertTrue(currentTimeMillis() - timeBeforeReceive >= delayMillis)
     }
-    // Last 2 emissions can arrive together, so ignore last element
-    for (d in actualDelays.dropLast(1)) {
-      // Allow a 10% margin for inaccuracies
-      assertTrue(d >= delay / 1.1)
-    }
+    job.cancel()
   }
 }

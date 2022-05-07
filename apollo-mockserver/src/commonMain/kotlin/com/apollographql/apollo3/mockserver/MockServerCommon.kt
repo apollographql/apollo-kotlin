@@ -1,5 +1,9 @@
 package com.apollographql.apollo3.mockserver
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.delay
 import okio.Buffer
 import okio.BufferedSink
@@ -25,9 +29,10 @@ class MockRequest(
     val body: ByteString = ByteString.EMPTY,
 )
 
+@OptIn(ExperimentalCoroutinesApi::class)
 suspend fun writeResponse(sink: BufferedSink, mockResponse: MockResponse, version: String) {
   sink.writeUtf8("$version ${mockResponse.statusCode}\r\n")
-  val isChunked = mockResponse.chunks.isNotEmpty()
+  val isChunked = !mockResponse.chunks.isEmpty
 
   val headers = mockResponse.headers +
       if (isChunked) {
@@ -68,10 +73,18 @@ suspend fun writeResponse(sink: BufferedSink, mockResponse: MockResponse, versio
 class MockResponse(
     val statusCode: Int = 200,
     val body: ByteString = ByteString.EMPTY,
-    val chunks: List<MockChunk> = emptyList(),
+    chunks: List<MockChunk> = emptyList(),
     val headers: Map<String, String> = emptyMap(),
     val delayMillis: Long = 0,
+    private val waitForMoreChunks: Boolean = false,
 ) {
+  var chunks: Channel<MockChunk> = Channel<MockChunk>(UNLIMITED).apply {
+    for (chunk in chunks) {
+      trySend(chunk)
+    }
+    if (!waitForMoreChunks) close()
+  }
+
   @JvmOverloads
   constructor(
       body: String,
@@ -79,7 +92,41 @@ class MockResponse(
       statusCode: Int = 200,
       headers: Map<String, String> = emptyMap(),
       delayMillis: Long = 0,
-  ) : this(statusCode, body.encodeUtf8(), chunks, headers, delayMillis)
+      waitForMoreChunks: Boolean = false,
+  ) : this(
+      statusCode = statusCode,
+      body = body.encodeUtf8(),
+      chunks = chunks,
+      headers = headers,
+      delayMillis = delayMillis,
+      waitForMoreChunks = waitForMoreChunks
+  )
+
+  @ApolloExperimental
+  fun enqueueChunk(chunk: MockChunk, isLast: Boolean = false) {
+    chunks.trySend(chunk)
+    if (isLast) chunks.close()
+  }
+
+  @ApolloExperimental
+  fun enqueueChunk(
+      content: String,
+      contentType: String = "application/json; charset=utf-8",
+      boundary: String = "-",
+      isFirst: Boolean = false,
+      isLast: Boolean = false,
+      delayMillis: Long = 0,
+  ) = enqueueChunk(
+      chunk = createMultipartMixedChunk(
+          content = content,
+          contentType = contentType,
+          boundary = boundary,
+          isFirst = isFirst,
+          isLast = isLast,
+          delayMillis = delayMillis,
+      ),
+      isLast = isLast,
+  )
 }
 
 class MockChunk(
