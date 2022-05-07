@@ -10,6 +10,9 @@ configurations.create("gr8Classpath")
 // Configuration dependencies that will be shadowed
 val shadeConfiguration = configurations.create("shade")
 
+// Set to false to skip relocation and save some building time during development
+val relocateJar = true
+
 dependencies {
   /**
    * OkHttp has some bytecode that checks for Conscrypt at runtime (https://github.com/square/okhttp/blob/71427d373bfd449f80178792fe231f60e4c972db/okhttp/src/main/kotlin/okhttp3/internal/platform/ConscryptPlatform.kt#L59)
@@ -28,7 +31,7 @@ dependencies {
   testImplementation(groovy.util.Eval.x(project, "x.dep.okHttp.tls"))
 }
 
-if (true) {
+if (relocateJar) {
   gr8 {
     val shadowedJar = create("shadow") {
       proguardFile("rules.pro")
@@ -91,7 +94,7 @@ configure<PublishingExtension> {
         }
       }
     }
-    if (name == "pluginMaven") {
+    if (relocateJar && name == "pluginMaven") {
       this as MavenPublication
       artifact(file("build/gr8/shadow/mapping.txt")) {
         classifier = "mapping"
