@@ -13,7 +13,8 @@ private val JAVA_RESERVED_WORDS = arrayOf(
 
 // Reference:
 // https://kotlinlang.org/docs/enum-classes.html#working-with-enum-constants:~:text=properties%20for%20obtaining%20its%20name%20and%20position
-private val KOTLIN_RESERVED_ENUM_VALUE_NAMES = arrayOf("name", "ordinal")
+// header is added to this list because of https://youtrack.jetbrains.com/issue/KT-52315
+private val KOTLIN_RESERVED_ENUM_VALUE_NAMES = arrayOf("name", "ordinal", "header")
 
 fun String.escapeJavaReservedWord() = if (this in JAVA_RESERVED_WORDS) "${this}_" else this
 
