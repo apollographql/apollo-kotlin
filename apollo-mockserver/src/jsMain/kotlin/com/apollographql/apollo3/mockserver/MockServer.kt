@@ -2,6 +2,12 @@ package com.apollographql.apollo3.mockserver
 
 import Buffer
 import http.ServerResponse
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import net.AddressInfo
 import okio.ByteString.Companion.toByteString
 import setTimeout
@@ -15,6 +21,7 @@ actual class MockServer actual constructor(override val mockServerHandler: MockS
 
   private var url: String? = null
 
+  @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
   private val server = http.createServer { req, res ->
     val requestBody = StringBuilder()
     req.on("data") { chunk ->
@@ -45,8 +52,9 @@ actual class MockServer actual constructor(override val mockServerHandler: MockS
         mockResponse.headers.forEach {
           res.setHeader(it.key, it.value)
         }
-        if (mockResponse.chunks.isNotEmpty()) {
-          sendChunksWithDelays(res, mockResponse.chunks)
+        if (!mockResponse.chunks.isEmpty) {
+          res.setHeader("Transfer-Encoding", "chunked")
+          GlobalScope.launch { sendChunksWithDelays(res, mockResponse.chunks) }
         } else {
           res.end(mockResponse.body.utf8())
         }
@@ -54,18 +62,13 @@ actual class MockServer actual constructor(override val mockServerHandler: MockS
     }
   }.listen()
 
-  private fun sendChunksWithDelays(res: ServerResponse, chunks: List<MockChunk>) {
-    val promises = mutableListOf<Promise<Unit>>()
-    var delayMillis = 0L
+  private suspend fun sendChunksWithDelays(res: ServerResponse, chunks: Channel<MockChunk>) {
     for (chunk in chunks) {
-      delayMillis += chunk.delayMillis
-      promises += schedule(delayMillis) {
-        res.write(chunk.body.utf8())
-      }
+      delay(chunk.delayMillis)
+      res.write(chunk.body.utf8())
     }
-    Promise.all(promises.toTypedArray()).then {
-      res.end()
-    }
+
+    res.end()
   }
 
   private fun schedule(delayMillis: Long, block: () -> Unit) = Promise<Unit> { resolve, _ ->
