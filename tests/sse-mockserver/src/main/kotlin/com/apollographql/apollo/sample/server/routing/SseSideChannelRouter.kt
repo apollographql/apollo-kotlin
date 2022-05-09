@@ -38,6 +38,7 @@ class SseSideChannelRouter : Router() {
 
 
         } catch (t: Throwable) {
+          // TODO handle error as part of MOBPLAT-1547
           t.printStackTrace()
         }
       }
