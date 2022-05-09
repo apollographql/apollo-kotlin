@@ -15,6 +15,7 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.network.http.HttpInfo
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.onEach
 import java.io.File
 
 enum class HttpFetchPolicy {
@@ -54,26 +55,35 @@ fun ApolloClient.Builder.httpCache(
     directory: File,
     maxSize: Long,
 ): ApolloClient.Builder {
+  val cachingHttpInterceptor = CachingHttpInterceptor(
+      directory = directory,
+      maxSize = maxSize,
+  )
 
   return addHttpInterceptor(
-      CachingHttpInterceptor(
-          directory = directory,
-          maxSize = maxSize,
-      )
+      cachingHttpInterceptor
   ).addInterceptor(object : ApolloInterceptor {
     override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-      return chain.proceed(request.newBuilder()
-          .addHttpHeader(
-              CachingHttpInterceptor.CACHE_OPERATION_TYPE_HEADER,
-              when (request.operation) {
-                is Query<*> -> "query"
-                is Mutation<*> -> "mutation"
-                is Subscription<*> -> "subscription"
-                else -> error("Unknown operation type")
-              }
-          )
-          .build()
-      )
+      return chain.proceed(
+          request.newBuilder()
+              .addHttpHeader(
+                  CachingHttpInterceptor.CACHE_OPERATION_TYPE_HEADER,
+                  when (request.operation) {
+                    is Query<*> -> "query"
+                    is Mutation<*> -> "mutation"
+                    is Subscription<*> -> "subscription"
+                    else -> error("Unknown operation type")
+                  }
+              )
+              .build()
+      ).onEach {
+        if (it.hasErrors()) {
+          val cacheKey = it.executionContext[HttpInfo]?.headers?.first { it.name == CachingHttpInterceptor.CACHE_KEY_HEADER }?.value
+          if (cacheKey != null) {
+            cachingHttpInterceptor.cache.remove(cacheKey)
+          }
+        }
+      }
     }
 
   })
