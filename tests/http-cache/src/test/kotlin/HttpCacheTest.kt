@@ -1,10 +1,10 @@
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.cache.http.HttpFetchPolicy
 import com.apollographql.apollo3.cache.http.httpCache
 import com.apollographql.apollo3.cache.http.httpExpireTimeout
 import com.apollographql.apollo3.cache.http.httpFetchPolicy
 import com.apollographql.apollo3.cache.http.isFromHttpCache
+import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.exception.HttpCacheMissException
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
@@ -194,5 +194,34 @@ class HttpCacheTest {
       mockServer.takeRequest()
     }
   }
-}
 
+  @Test
+  fun incompleteJsonIsNotCached() = runTest(before = { before() }, after = { tearDown() }) {
+    mockServer.enqueue("""{"data":""")
+    assertFailsWith<ApolloParseException> {
+      apolloClient.query(GetRandomQuery()).execute()
+    }
+    // Should not have been cached
+    assertFailsWith<HttpCacheMissException> {
+      apolloClient.query(GetRandomQuery()).httpFetchPolicy(HttpFetchPolicy.CacheOnly).execute()
+    }
+  }
+
+  @Test
+  fun responseWithGraphQLErrorIsNotCached() = runTest(before = { before() }, after = { tearDown() }) {
+    mockServer.enqueue("""
+        {
+          "data": {
+            "random": 42
+          },
+          "errors": [ { "message": "GraphQL error" } ]
+        }
+      """)
+    apolloClient.query(GetRandomQuery()).execute()
+    // Should not have been cached
+    assertFailsWith<HttpCacheMissException> {
+      apolloClient.query(GetRandomQuery()).httpFetchPolicy(HttpFetchPolicy.CacheOnly).execute()
+    }
+  }
+
+}

@@ -21,6 +21,7 @@ import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
+@Suppress("BlockingMethodInNonBlockingContext")
 class CachingHttpInterceptorTest {
   private lateinit var mockServer: MockServer
   private lateinit var interceptor: CachingHttpInterceptor
@@ -47,6 +48,9 @@ class CachingHttpInterceptorTest {
 
       var response = interceptor.intercept(request, chain)
       assertEquals("success", response.body?.readUtf8())
+
+      // Cache is committed when the body is closed
+      response.body?.use { it.readByteArray() }
 
       // 2nd request should hit the cache
       response = interceptor.intercept(
@@ -99,6 +103,8 @@ class CachingHttpInterceptorTest {
       // Warm the cache
       var response = interceptor.intercept(request, chain)
       assertEquals("success", response.body?.readUtf8())
+      // Cache is committed when the body is closed
+      response.body?.close()
 
       // 2nd request should hit the cache
       response = interceptor.intercept(
@@ -108,6 +114,8 @@ class CachingHttpInterceptorTest {
           chain
       )
       assertEquals("success", response.body?.readUtf8())
+      // Cache is committed when the body is closed
+      response.body?.close()
 
       delay(1000)
       // 3rd request with a 500ms timeout should miss

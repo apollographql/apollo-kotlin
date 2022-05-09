@@ -10,7 +10,6 @@ import okio.FileSystem
 import okio.Sink
 import okio.Source
 import okio.Timeout
-import okio.blackholeSink
 import okio.buffer
 import java.io.File
 import java.io.IOException
@@ -127,6 +126,7 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
 
       if (read == -1L) {
         // We're at EOF
+        abortEdit()
         return -1L
       }
       try {
@@ -147,12 +147,7 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
       if (!hasClosedAndCommitted) {
         try {
           sink.close()
-          if (originalSource.read(Buffer(), 1) == -1L) {
-            // The caller has read everything
-            cacheEditor.commit()
-          } else {
-            cacheEditor.abort()
-          }
+          cacheEditor.commitUnlessAborted()
         } catch (e: Exception) {
           // Silently ignore cache write errors
         } finally {

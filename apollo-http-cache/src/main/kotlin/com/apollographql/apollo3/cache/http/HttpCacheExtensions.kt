@@ -10,6 +10,7 @@ import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.api.http.valueOf
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.network.http.HttpInfo
@@ -76,9 +77,10 @@ fun ApolloClient.Builder.httpCache(
                   }
               )
               .build()
-      ).onEach {
-        if (it.hasErrors()) {
-          val cacheKey = it.executionContext[HttpInfo]?.headers?.first { it.name == CachingHttpInterceptor.CACHE_KEY_HEADER }?.value
+      ).onEach { response ->
+        // Revert caching of responses with errors
+        if (response.hasErrors()) {
+          val cacheKey = response.executionContext[HttpInfo]?.headers?.valueOf(CachingHttpInterceptor.CACHE_KEY_HEADER)
           if (cacheKey != null) {
             cachingHttpInterceptor.cache.remove(cacheKey)
           }
