@@ -3,7 +3,6 @@ package com.apollographql.apollo3.mockserver
 import Buffer
 import http.ServerResponse
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -21,7 +20,7 @@ actual class MockServer actual constructor(override val mockServerHandler: MockS
 
   private var url: String? = null
 
-  @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
+  @OptIn(DelicateCoroutinesApi::class)
   private val server = http.createServer { req, res ->
     val requestBody = StringBuilder()
     req.on("data") { chunk ->
@@ -52,9 +51,9 @@ actual class MockServer actual constructor(override val mockServerHandler: MockS
         mockResponse.headers.forEach {
           res.setHeader(it.key, it.value)
         }
-        if (!mockResponse.chunks.isEmpty) {
+        if (mockResponse.chunks.isNotEmpty()) {
           res.setHeader("Transfer-Encoding", "chunked")
-          GlobalScope.launch { sendChunksWithDelays(res, mockResponse.chunks) }
+          GlobalScope.launch { sendChunksWithDelays(res, mockResponse.chunkChannel) }
         } else {
           res.end(mockResponse.body.utf8())
         }
