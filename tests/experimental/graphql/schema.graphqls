@@ -1,0 +1,12 @@
+type Query {
+  newField(input: SomeInput! @experimental): Direction! @experimental
+}
+
+input SomeInput {
+  newInputField: Int! @experimental
+}
+
+enum Direction {
+  NORTH @experimental,
+  SOUTH
+}

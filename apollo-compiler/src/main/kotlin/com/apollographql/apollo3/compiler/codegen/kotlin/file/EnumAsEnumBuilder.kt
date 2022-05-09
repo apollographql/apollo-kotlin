@@ -8,6 +8,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddExperimental
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -103,6 +104,7 @@ class EnumAsEnumBuilder(
   private fun IrEnum.Value.enumConstTypeSpec(): TypeSpec {
     return TypeSpec.anonymousClassBuilder()
         .maybeAddDeprecation(deprecationReason)
+        .maybeAddExperimental(context.resolver, experimentalReason)
         .maybeAddDescription(description)
         .addSuperclassConstructorParameter("%S", name)
         .build()

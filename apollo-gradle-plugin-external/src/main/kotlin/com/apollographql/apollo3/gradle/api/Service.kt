@@ -512,6 +512,18 @@ interface Service {
   val sealedClassesForEnumsMatching: ListProperty<String>
 
   /**
+   * The annotation to use for experimental fields/inputFields/enumValues
+   *
+   * You can pass the special value "none" to disable adding an annotation.
+   * If you're using a custom annotation, it must be able to target:
+   * - AnnotationTarget.PROPERTY
+   * - AnnotationTarget.CLASS
+   *
+   * Default: "com.apollographql.apollo3.annotations.ApolloExperimental"
+   */
+  val experimentalAnnotation: Property<String>
+
+  /**
    * A shorthand method that configures defaults that match Apollo Android 2.x codegen
    *
    * In practice, it does the following:

@@ -1,0 +1,3 @@
+query GetNewField($input: SomeInput!) {
+  newField(input: $input)
+}

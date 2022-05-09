@@ -51,7 +51,11 @@ fun TypeSpec.Builder.makeDataClassFromProperties(properties: List<PropertySpec>)
   primaryConstructor(FunSpec.constructorBuilder()
       .apply {
         properties.forEach {
-          addParameter(it.name, it.type)
+          addParameter(
+              ParameterSpec.builder(it.name, it.type)
+                  .addAnnotations(it.annotations)
+                  .build()
+          )
         }
       }
       .build())

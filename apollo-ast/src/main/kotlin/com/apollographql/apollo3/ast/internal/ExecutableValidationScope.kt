@@ -34,6 +34,7 @@ import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.VariableUsage
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.findDeprecationReason
+import com.apollographql.apollo3.ast.findExperimentalReason
 import com.apollographql.apollo3.ast.leafType
 import com.apollographql.apollo3.ast.pretty
 import com.apollographql.apollo3.ast.responseName

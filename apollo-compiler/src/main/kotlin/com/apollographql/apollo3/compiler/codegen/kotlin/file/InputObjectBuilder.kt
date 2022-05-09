@@ -5,6 +5,9 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClass
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddExperimental
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toParameterSpec
 import com.apollographql.apollo3.compiler.ir.IrInputObject
@@ -35,7 +38,7 @@ class InputObjectBuilder(
   private fun IrInputObject.typeSpec() =
       TypeSpec
           .classBuilder(simpleName)
-          .applyIf(description?.isNotBlank()== true)  { addKdoc("%L\n", description!!) }
+          .maybeAddDescription(description)
           .makeDataClass(fields.map {
             it.toNamedType().toParameterSpec(context)
           })

@@ -26,7 +26,12 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 
 
-class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?, private val scalarMapping: Map<String, ScalarInfo>) {
+class KotlinResolver(
+    entries: List<ResolverEntry>,
+    val next: KotlinResolver?,
+    private val scalarMapping: Map<String, ScalarInfo>,
+    private val experimentalAnnotation: String?
+) {
   fun resolve(key: ResolverKey): ClassName? = classNames[key] ?: next?.resolve(key)
 
   private var classNames = entries.associateBy(
@@ -72,7 +77,7 @@ class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?, pr
 
   private fun resolveIrScalarType(type: IrScalarType): ClassName {
     // Try mapping first, then built-ins, then fallback to Any
-    return resolveScalarTaget(type.name) ?: when (type.name) {
+    return resolveScalarTarget(type.name) ?: when (type.name) {
       "String" -> KotlinSymbols.String
       "Float" -> KotlinSymbols.Double
       "Int" -> KotlinSymbols.Int
@@ -82,8 +87,8 @@ class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?, pr
     }
   }
 
-  fun resolveScalarTaget(name: String): ClassName? {
-    return scalarMapping.get(name)?.targetName?.let {
+  private fun resolveScalarTarget(name: String): ClassName? {
+    return scalarMapping[name]?.targetName?.let {
       ClassName.bestGuess(it)
     }
   }
@@ -98,7 +103,7 @@ class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?, pr
         type is IrScalarType && type.name == "String" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableStringAdapter)
         type is IrScalarType && type.name == "Int" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableIntAdapter)
         type is IrScalarType && type.name == "Float" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableDoubleAdapter)
-        type is IrScalarType && resolveScalarTaget(type.name) == null -> {
+        type is IrScalarType && resolveScalarTarget(type.name) == null -> {
           CodeBlock.of("%M", KotlinSymbols.NullableAnyAdapter)
         }
         else -> {
@@ -161,7 +166,7 @@ class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?, pr
         CodeBlock.of(adapterInitializer.expression)
       }
       is RuntimeAdapterInitializer -> {
-        val target = resolveScalarTaget(type.name)
+        val target = resolveScalarTarget(type.name)
         CodeBlock.of(
             "$customScalarAdapters.responseAdapterFor<%T>(%L)",
             target,
@@ -176,7 +181,7 @@ class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?, pr
           "Int" -> CodeBlock.of("%M", KotlinSymbols.IntAdapter)
           "Float" -> CodeBlock.of("%M", KotlinSymbols.DoubleAdapter)
           else -> {
-            val target = resolveScalarTaget(type.name)
+            val target = resolveScalarTarget(type.name)
             if (target == null) {
               CodeBlock.of("%M", KotlinSymbols.AnyAdapter)
             } else {
@@ -237,4 +242,10 @@ class KotlinResolver(entries: List<ResolverEntry>, val next: KotlinResolver?, pr
 
   fun registerTestBuilder(path: String, className: ClassName) = register(ResolverKeyKind.TestBuilder, path, className)
   fun resolveTestBuilder(path: String) = resolveAndAssert(ResolverKeyKind.TestBuilder, path)
+  fun resolveExperimentalAnnotation(): ClassName? {
+    if (experimentalAnnotation == "none") {
+      return null
+    }
+    return experimentalAnnotation?.let { ClassName.bestGuess(it) }
+  }
 }

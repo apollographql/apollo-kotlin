@@ -8,7 +8,9 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.deprecatedAnnotation
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddExperimental
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -75,8 +77,9 @@ class EnumAsSealedBuilder(
 
   private fun IrEnum.Value.toObjectTypeSpec(superClass: TypeName): TypeSpec {
     return TypeSpec.objectBuilder(layout.enumAsSealedClassValueName(name))
-        .applyIf(description?.isNotBlank() == true) { addKdoc("%L\n", description!!) }
-        .applyIf(deprecationReason != null) { addAnnotation(deprecatedAnnotation(deprecationReason!!)) }
+        .maybeAddDeprecation(deprecationReason)
+        .maybeAddDescription(description)
+        .maybeAddExperimental(context.resolver, experimentalReason)
         .superclass(superClass)
         .addSuperclassConstructorParameter("rawValue·=·%S", name)
         .build()
