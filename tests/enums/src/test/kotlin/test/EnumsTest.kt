@@ -1,6 +1,7 @@
 package test
 
 import enums.type.Direction
+import enums.type.Foo
 import enums.type.Gravity
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -22,6 +23,11 @@ class EnumsTest {
     assertEquals(Gravity.UNKNOWN__("newGravity"), Gravity.safeValueOf("newGravity"))
     assertEquals(Gravity.name, Gravity.safeValueOf("name"))
     assertEquals(Gravity.ordinal, Gravity.safeValueOf("ordinal"))
+  }
+
+  @Test
+  fun headerAndImpl() {
+    assertEquals(Foo.header.rawValue, "header")
   }
 
   @Test
