@@ -126,7 +126,6 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
 
       if (read == -1L) {
         // We're at EOF
-        abortEdit()
         return -1L
       }
       try {
