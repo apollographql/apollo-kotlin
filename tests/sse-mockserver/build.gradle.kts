@@ -1,16 +1,18 @@
 plugins {
   application
   kotlin("jvm")
+  kotlin("plugin.serialization") version "1.5.20"
 }
 
 dependencies {
-  
+
   ///////////////////////////
   // implementation
 
   // ktor
   implementation(groovy.util.Eval.x(project, "x.dep.ktor.serverCore"))
   implementation(groovy.util.Eval.x(project, "x.dep.ktor.serverNetty"))
+  implementation(groovy.util.Eval.x(project, "x.dep.ktor.serialization"))
   implementation(groovy.util.Eval.x(project, "x.dep.logback"))
 
   ////////////////////////////
