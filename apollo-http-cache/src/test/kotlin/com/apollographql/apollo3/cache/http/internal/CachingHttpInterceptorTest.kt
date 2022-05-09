@@ -38,7 +38,8 @@ class CachingHttpInterceptorTest {
 
   @Test
   fun successResponsesAreCached() {
-    mockServer.enqueue(MockResponse(statusCode = 200, body = "success"))
+    val body = "success"
+    mockServer.enqueue(MockResponse(statusCode = 200, body = body))
 
     runBlocking {
       val request = HttpRequest.Builder(
@@ -47,10 +48,10 @@ class CachingHttpInterceptorTest {
       ).build()
 
       var response = interceptor.intercept(request, chain)
-      assertEquals("success", response.body?.readUtf8())
+      assertEquals(body, response.body?.readUtf8(body.length.toLong()))
 
       // Cache is committed when the body is closed
-      response.body?.use { it.readByteArray() }
+      response.body?.close()
 
       // 2nd request should hit the cache
       response = interceptor.intercept(
@@ -59,7 +60,7 @@ class CachingHttpInterceptorTest {
               .build(),
           chain
       )
-      assertEquals("success", response.body?.readUtf8())
+      assertEquals(body, response.body?.readUtf8())
       assertEquals("true", response.headers.valueOf(CachingHttpInterceptor.FROM_CACHE))
     }
   }
@@ -92,8 +93,9 @@ class CachingHttpInterceptorTest {
 
   @Test
   fun timeoutWorks() {
-    mockServer.enqueue(MockResponse(statusCode = 200, body = "success"))
-
+    val body = "success"
+    val bodyLength = body.length.toLong()
+    mockServer.enqueue(MockResponse(statusCode = 200, body = body))
     runBlocking {
       val request = HttpRequest.Builder(
           method = HttpMethod.Get,
@@ -102,7 +104,7 @@ class CachingHttpInterceptorTest {
 
       // Warm the cache
       var response = interceptor.intercept(request, chain)
-      assertEquals("success", response.body?.readUtf8())
+      assertEquals(body, response.body?.readUtf8(bodyLength))
       // Cache is committed when the body is closed
       response.body?.close()
 
@@ -113,7 +115,7 @@ class CachingHttpInterceptorTest {
               .build(),
           chain
       )
-      assertEquals("success", response.body?.readUtf8())
+      assertEquals(body, response.body?.readUtf8(bodyLength))
       // Cache is committed when the body is closed
       response.body?.close()
 
