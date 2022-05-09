@@ -10,14 +10,17 @@ private val JAVA_RESERVED_WORDS = arrayOf(
     "transient", "try", "true", "void", "volatile", "while"
 )
 
-
-// Reference:
-// https://kotlinlang.org/docs/enum-classes.html#working-with-enum-constants:~:text=properties%20for%20obtaining%20its%20name%20and%20position
-private val KOTLIN_RESERVED_ENUM_VALUE_NAMES = arrayOf("name", "ordinal")
-
 fun String.escapeJavaReservedWord() = if (this in JAVA_RESERVED_WORDS) "${this}_" else this
 
 // Does nothing. KotlinPoet will add the backticks
 fun String.escapeKotlinReservedWord() = this
 
-fun String.escapeKotlinReservedEnumValueNames() = if (this in KOTLIN_RESERVED_ENUM_VALUE_NAMES) "${this}_" else this
+fun String.escapeKotlinReservedEnumValueNames() : String {
+  return when {
+    // https://kotlinlang.org/docs/enum-classes.html#working-with-enum-constants:~:text=properties%20for%20obtaining%20its%20name%20and%20position
+    "(?:name|ordinal)_*".toRegex().matches(this) -> "${this}_"
+    // "header" and "impl" are added to this list because of https://youtrack.jetbrains.com/issue/KT-52315
+    this in arrayOf("header", "impl") -> "`${this}`"
+    else -> this
+  }
+}
