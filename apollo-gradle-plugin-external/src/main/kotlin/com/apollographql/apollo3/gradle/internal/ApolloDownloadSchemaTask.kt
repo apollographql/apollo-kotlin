@@ -24,11 +24,10 @@ import java.io.File
  *
  * This task can either be configured from the command line or from the gradle scripts
  */
-@OptIn(ApolloExperimental::class)
 abstract class ApolloDownloadSchemaTask : DefaultTask() {
   @get:Optional
   @get:Input
-  @get:Option(option = "endpoint", description = "url of the GraphQL endpoint")
+  @get:Option(option = "endpoint", description = "url of the GraphQL endpoint for introspection.")
   abstract val endpoint: Property<String>
 
   @get:Optional
@@ -65,7 +64,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
 
   @get:Optional
   @get:Input
-  @get:Option(option = "insecure", description = "flag to disable endpoint TLS certificate verification")
+  @get:Option(option = "insecure", description = "if set to true, certificates will not be checked during introspection")
   abstract val insecure: Property<Boolean>
 
   init {
@@ -79,66 +78,20 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
 
   @TaskAction
   fun taskAction() {
-
-    val endpointUrl = endpoint.orNull
-
     // Schema file is relative to the root project. It is not possible in a consistent way to have it relative to the current
     // working directory where the gradle command was started
-    val schema = File(projectRootDir).resolve(schema.get())
-    val headers = header.toMap()
+    val schemaFile = File(projectRootDir).resolve(schema.get())
 
-    var introspectionSchema: IntrospectionSchema? = null
-    var gqlSchema: GQLDocument? = null
-
-    val key = key.orNull
-    var graph = graph.orNull
-    val graphVariant = graphVariant.orNull
-
-    if (graph == null && key != null && key.startsWith("service:")) {
-      // Fallback to reading the graph from the key
-      // This will not work with user keys
-      graph = key.split(":")[1]
-    }
-
-    val insecure = insecure.getOrElse(false)
-    when {
-      endpointUrl != null -> {
-        introspectionSchema = SchemaDownloader.downloadIntrospection(
-            endpoint = endpointUrl,
-            headers = headers,
-            insecure = insecure,
-        ).toIntrospectionSchema()
-      }
-      graph != null -> {
-        check(key != null) {
-          "Apollo: please define --key to download graph $graph"
-        }
-        gqlSchema = SchemaDownloader.downloadRegistry(
-            graph = graph,
-            key = key,
-            variant = graphVariant ?: "current",
-            endpoint = registryUrl.getOrElse("https://graphql.api.apollographql.com/api/graphql"),
-            insecure = insecure,
-        ).let { Buffer().writeUtf8(it) }.parseAsGQLDocument().valueAssertNoErrors()
-      }
-      else -> {
-        throw IllegalArgumentException("Apollo: either --endpoint or --graph is required")
-      }
-    }
-
-    schema.parentFile?.mkdirs()
-
-    if (schema.extension.lowercase() == "json") {
-      if (introspectionSchema == null) {
-        introspectionSchema = gqlSchema!!.validateAsSchema().valueAssertNoErrors().toIntrospectionSchema()
-      }
-      schema.writeText(introspectionSchema.toJson(indent = "  "))
-    } else {
-      if (gqlSchema == null) {
-        gqlSchema = introspectionSchema!!.toGQLDocument()
-      }
-      schema.writeText(gqlSchema.toUtf8(indent = "  "))
-    }
+    SchemaDownloader.download(
+        endpoint = endpoint.orNull,
+        graph = graph.orNull,
+        graphVariant = graphVariant.getOrElse("current"),
+        key = key.orNull,
+        registryUrl = registryUrl.getOrElse("https://graphql.api.apollographql.com/api/graphql"),
+        schema = schemaFile,
+        insecure = insecure.getOrElse(false),
+        headers = header.toMap(),
+    )
   }
 
   private fun List<String>.toMap(): Map<String, String> {
