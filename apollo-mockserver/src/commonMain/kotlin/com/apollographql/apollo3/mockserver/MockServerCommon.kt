@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.mockserver
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.delay
@@ -29,10 +28,9 @@ class MockRequest(
     val body: ByteString = ByteString.EMPTY,
 )
 
-@OptIn(ExperimentalCoroutinesApi::class)
 suspend fun writeResponse(sink: BufferedSink, mockResponse: MockResponse, version: String) {
   sink.writeUtf8("$version ${mockResponse.statusCode}\r\n")
-  val isChunked = !mockResponse.chunks.isEmpty
+  val isChunked = mockResponse.chunks.isNotEmpty()
 
   val headers = mockResponse.headers +
       if (isChunked) {
@@ -54,7 +52,7 @@ suspend fun writeResponse(sink: BufferedSink, mockResponse: MockResponse, versio
     // - chunk-size (in hexadecimal) + CRLF
     // - chunk-data + CRLF
     // Ended with a chunk-size of 0 + CRLF + CRLF
-    for (chunk in mockResponse.chunks) {
+    for (chunk in mockResponse.chunkChannel) {
       delay(chunk.delayMillis)
       sink.writeHexadecimalUnsignedLong(chunk.body.size.toLong())
       sink.writeUtf8("\r\n")
@@ -78,7 +76,10 @@ class MockResponse(
     val delayMillis: Long = 0,
     private val waitForMoreChunks: Boolean = false,
 ) {
-  var chunks: Channel<MockChunk> = Channel<MockChunk>(UNLIMITED).apply {
+  var chunks: List<MockChunk> = chunks
+    private set
+
+  internal val chunkChannel: Channel<MockChunk> = Channel<MockChunk>(UNLIMITED).apply {
     for (chunk in chunks) {
       trySend(chunk)
     }
@@ -104,8 +105,9 @@ class MockResponse(
 
   @ApolloExperimental
   fun enqueueChunk(chunk: MockChunk, isLast: Boolean = false) {
-    chunks.trySend(chunk)
-    if (isLast) chunks.close()
+    chunks = chunks + chunk
+    chunkChannel.trySend(chunk)
+    if (isLast) chunkChannel.close()
   }
 
   @ApolloExperimental
