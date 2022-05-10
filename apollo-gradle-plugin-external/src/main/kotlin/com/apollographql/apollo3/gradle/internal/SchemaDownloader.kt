@@ -70,6 +70,7 @@ object SchemaDownloader {
             key = key,
             variant = graphVariant,
             endpoint = registryUrl,
+            headers = headers,
             insecure = insecure,
         ).let { Buffer().writeUtf8(it) }.parseAsGQLDocument().valueAssertNoErrors()
       }
@@ -112,6 +113,7 @@ object SchemaDownloader {
       graph: String,
       variant: String,
       endpoint: String = "https://graphql.api.apollographql.com/api/graphql",
+      headers: Map<String, String>,
       insecure: Boolean,
   ): String {
     val query = """
@@ -129,7 +131,7 @@ object SchemaDownloader {
   """.trimIndent()
     val variables = mapOf("graphID" to graph, "variant" to variant)
 
-    val response = SchemaHelper.executeQuery(query, variables, endpoint, mapOf("x-api-key" to key), insecure)
+    val response = SchemaHelper.executeQuery(query, variables, endpoint, headers + mapOf("x-api-key" to key), insecure)
 
     val responseString = response.body.use { it?.string() }
 

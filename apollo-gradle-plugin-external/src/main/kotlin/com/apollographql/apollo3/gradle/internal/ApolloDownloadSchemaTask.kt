@@ -59,7 +59,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
 
   @get:Optional
   @get:Input
-  @set:Option(option = "header", description = "headers in the form 'Name: Value'")
+  @set:Option(option = "header", description = "HTTP headers in the form 'Name: Value'")
   var header = emptyList<String>() // cannot be abstract for @Option to work
 
   @get:Optional
