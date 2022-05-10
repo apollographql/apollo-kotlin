@@ -33,6 +33,7 @@ import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
 import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.ValidationDetails
 import com.apollographql.apollo3.ast.VariableUsage
+import com.apollographql.apollo3.ast.findDeprecationReason
 import com.apollographql.apollo3.ast.isVariableUsageAllowed
 import com.apollographql.apollo3.ast.parseAsGQLSelections
 import com.apollographql.apollo3.ast.pretty
@@ -210,7 +211,7 @@ internal fun ValidationScope.extraValidateTypePolicyDirective(directive: GQLDire
   (directive.arguments!!.arguments.first().value as GQLStringValue).value.buffer().parseAsGQLSelections().valueAssertNoErrors().forEach {
     if (it !is GQLField) {
       registerIssue("Fragments are not supported in @$TYPE_POLICY directives", it.sourceLocation)
-    } else if (it.selectionSet != null){
+    } else if (it.selectionSet != null) {
       registerIssue("Composite fields are not supported in @$TYPE_POLICY directives", it.sourceLocation)
     }
   }
@@ -227,6 +228,9 @@ private fun ValidationScope.validateArgument(
   if (schemaArgument == null) {
     registerIssue(message = "Unknown argument `$name` on $debug", sourceLocation = sourceLocation)
     return@with
+  }
+  if (schemaArgument.directives.findDeprecationReason() != null) {
+    issues.add(Issue.DeprecatedUsage(message = "Use of deprecated argument `$name`", sourceLocation = sourceLocation))
   }
 
   // 5.6.2 Input Object Field Names
@@ -270,7 +274,7 @@ internal fun ValidationScope.validateArguments(
 
 internal fun ValidationScope.validateVariable(
     operation: GQLOperationDefinition?,
-    variableUsage: VariableUsage
+    variableUsage: VariableUsage,
 ) {
   if (operation == null) {
     // if operation is null, it means we're currently validating a fragment outside the context of an operation
