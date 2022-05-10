@@ -21,6 +21,7 @@ import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
+@Suppress("BlockingMethodInNonBlockingContext")
 class CachingHttpInterceptorTest {
   private lateinit var mockServer: MockServer
   private lateinit var interceptor: CachingHttpInterceptor
@@ -37,16 +38,22 @@ class CachingHttpInterceptorTest {
 
   @Test
   fun successResponsesAreCached() {
-    mockServer.enqueue(MockResponse(statusCode = 200, body = "success"))
+    val body = "success"
+    mockServer.enqueue(MockResponse(statusCode = 200, body = body))
 
     runBlocking {
       val request = HttpRequest.Builder(
           method = HttpMethod.Get,
           url = mockServer.url(),
-      ).build()
+      )
+          .withCacheKey()
+          .build()
 
       var response = interceptor.intercept(request, chain)
-      assertEquals("success", response.body?.readUtf8())
+      assertEquals(body, response.body?.readUtf8())
+
+      // Cache is committed when the body is closed
+      response.body?.close()
 
       // 2nd request should hit the cache
       response = interceptor.intercept(
@@ -55,7 +62,7 @@ class CachingHttpInterceptorTest {
               .build(),
           chain
       )
-      assertEquals("success", response.body?.readUtf8())
+      assertEquals(body, response.body?.readUtf8())
       assertEquals("true", response.headers.valueOf(CachingHttpInterceptor.FROM_CACHE))
     }
   }
@@ -68,7 +75,9 @@ class CachingHttpInterceptorTest {
       val request = HttpRequest.Builder(
           method = HttpMethod.Get,
           url = mockServer.url(),
-      ).build()
+      )
+          .withCacheKey()
+          .build()
 
       // Warm the cache
       val response = interceptor.intercept(request, chain)
@@ -88,17 +97,21 @@ class CachingHttpInterceptorTest {
 
   @Test
   fun timeoutWorks() {
-    mockServer.enqueue(MockResponse(statusCode = 200, body = "success"))
-
+    val body = "success"
+    mockServer.enqueue(MockResponse(statusCode = 200, body = body))
     runBlocking {
       val request = HttpRequest.Builder(
           method = HttpMethod.Get,
           url = mockServer.url(),
-      ).build()
+      )
+          .withCacheKey()
+          .build()
 
       // Warm the cache
       var response = interceptor.intercept(request, chain)
-      assertEquals("success", response.body?.readUtf8())
+      assertEquals(body, response.body?.readUtf8())
+      // Cache is committed when the body is closed
+      response.body?.close()
 
       // 2nd request should hit the cache
       response = interceptor.intercept(
@@ -107,7 +120,9 @@ class CachingHttpInterceptorTest {
               .build(),
           chain
       )
-      assertEquals("success", response.body?.readUtf8())
+      assertEquals(body, response.body?.readUtf8())
+      // Cache is committed when the body is closed
+      response.body?.close()
 
       delay(1000)
       // 3rd request with a 500ms timeout should miss
@@ -136,7 +151,9 @@ class CachingHttpInterceptorTest {
           val request = HttpRequest.Builder(
               method = HttpMethod.Get,
               url = mockServer.url(),
-          ).build()
+          )
+              .withCacheKey()
+              .build()
 
           val response = interceptor.intercept(request, chain)
           assertEquals("success", response.body?.readUtf8())
@@ -145,6 +162,11 @@ class CachingHttpInterceptorTest {
       jobs.forEach { it.join() }
     }
   }
+}
+
+private fun HttpRequest.Builder.withCacheKey(): HttpRequest.Builder {
+  val cacheKey = CachingHttpInterceptor.cacheKey(build())
+  return addHeader(CachingHttpInterceptor.CACHE_KEY_HEADER, cacheKey)
 }
 
 private class TestHttpInterceptorChain : HttpInterceptorChain {

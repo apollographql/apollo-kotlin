@@ -31,8 +31,7 @@ class CachingHttpInterceptor(
 
   override suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse {
     val policy = request.headers.valueOf(CACHE_FETCH_POLICY_HEADER) ?: defaultPolicy(request)
-    val cacheKey = cacheKey(request)
-
+    val cacheKey = request.headers.valueOf(CACHE_KEY_HEADER)!!
     when (policy) {
       CACHE_FIRST -> {
         val cacheException: ApolloException
