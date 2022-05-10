@@ -2,6 +2,9 @@ package com.apollographql.apollo.sample.server.sse
 
 import com.apollographql.apollo3.network.sse.SseTransportMessage
 
+/**
+ * Proces
+ */
 class SseSideChannelInteractor(
     private val messageType: SseTransportMessage.MessageType = SseTransportMessage.MessageType(),
     private val sseTransportMessageFactory: SseServerTransportMessageFactory = SseServerTransportMessageFactory(),

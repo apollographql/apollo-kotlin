@@ -9,7 +9,7 @@ class HelloWorldRouter : Router() {
 
   companion object {
     const val PAYLOAD_HELLO_WORLD = "Hello, world!"
-      const val PATH_HELLO_WORLD = "HelloWorld"
+    const val PATH_HELLO_WORLD = "HelloWorld"
   }
 
   override fun routing(routing: Routing) {

@@ -1,6 +1,5 @@
 plugins {
   kotlin("multiplatform")
-
 }
 
 configureMppDefaults(withLinux = false)
