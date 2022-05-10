@@ -27,7 +27,7 @@ object SchemaDownloader {
    * Defaults to "https://graphql.api.apollographql.com/api/graphql"
    * @param schema the file where to store the schema. If the file extension is ".json" it will be stored in introspection format.
    * Else it will use SDL. Prefer SDL if you can as it is more compact and carries more information.
-   * @param insecure if set to true, certificates will not be checked during introspection.
+   * @param insecure if set to true, TLS/SSL certificates will not be checked when downloading.
    * @param headers extra HTTP headers to send during introspection.
    */
   @OptIn(ApolloExperimental::class)
