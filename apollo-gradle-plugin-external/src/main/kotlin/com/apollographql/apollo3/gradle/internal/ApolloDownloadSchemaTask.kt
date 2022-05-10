@@ -64,7 +64,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
 
   @get:Optional
   @get:Input
-  @get:Option(option = "insecure", description = "if set to true, certificates will not be checked during introspection")
+  @get:Option(option = "insecure", description = "if set to true, TLS/SSL certificates will not be checked when downloading")
   abstract val insecure: Property<Boolean>
 
   init {
