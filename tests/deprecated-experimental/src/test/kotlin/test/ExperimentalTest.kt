@@ -1,5 +1,6 @@
 package test
 
+import com.apollographql.apollo3.api.Optional
 import none.GetNewFieldQuery as GetNewFieldQueryNone
 import default.GetNewFieldQuery as GetNewFieldQueryDefault
 import custom.GetNewFieldQuery as GetNewFieldQueryCustom
@@ -18,12 +19,50 @@ class ExperimentalTest {
   @Test
   fun kotlinEnums() {
 
-    SomeInputNone(newInputField = 9).newInputField
-    SomeInputDefault(newInputField = 9).newInputField
-    SomeInputCustom(newInputField = 9).newInputField
+    SomeInputNone(
+        newInputField = Optional.Present(9),
+        oldInputField = Optional.Present(0),
+    ).apply {
+      oldInputField
+      newInputField
+    }
 
-    GetNewFieldQueryNone.Data(newField = DirectionNone.NORTH).newField
-    GetNewFieldQueryDefault.Data(newField = DirectionDefault.NORTH).newField
-    GetNewFieldQueryCustom.Data(newField = DirectionCustom.NORTH).newField
+    SomeInputDefault(
+        newInputField = Optional.Present(9),
+        oldInputField = Optional.Present(0),
+    ).apply {
+      oldInputField
+      newInputField
+    }
+
+    SomeInputCustom(
+        newInputField = Optional.Present(9),
+        oldInputField = Optional.Present(0),
+    ).apply {
+      oldInputField
+      newInputField
+    }
+
+    GetNewFieldQueryNone.Data(
+        newField = DirectionNone.NORTH,
+        oldField = DirectionNone.SOUTH
+    ).apply {
+      oldField
+      newField
+    }
+    GetNewFieldQueryDefault.Data(
+        newField = DirectionDefault.NORTH,
+        oldField = DirectionDefault.SOUTH
+    ).apply {
+      oldField
+      newField
+    }
+    GetNewFieldQueryCustom.Data(
+        newField = DirectionCustom.NORTH,
+        oldField = DirectionCustom.SOUTH
+    ).apply {
+      oldField
+      newField
+    }
   }
 }

@@ -1,12 +1,14 @@
 type Query {
   newField(input: SomeInput! @experimental): Direction! @experimental
+  oldField(input: SomeInput! @deprecated): Direction! @deprecated
 }
 
 input SomeInput {
-  newInputField: Int! @experimental
+  newInputField: Int @experimental
+  oldInputField: Int @deprecated(reason: "fields come and go, you better let go")
 }
 
 enum Direction {
   NORTH @experimental,
-  SOUTH
+  SOUTH @deprecated
 }
