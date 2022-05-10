@@ -270,8 +270,7 @@ class DeferTest {
       lastEmitTime = currentTimeMillis()
     }
     for (d in actualDelays) {
-      // Allow a 10% margin for inaccuracies
-      assertTrue(d >= delay / 1.1)
+      assertTrue(d > 0)
     }
   }
 }
