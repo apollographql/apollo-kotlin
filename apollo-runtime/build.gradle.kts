@@ -1,5 +1,6 @@
 plugins {
   kotlin("multiplatform")
+
 }
 
 configureMppDefaults(withLinux = false)
@@ -13,6 +14,7 @@ kotlin {
         api(okio())
         api(groovy.util.Eval.x(project, "x.dep.uuid"))
         api(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
+        implementation(groovy.util.Eval.x(project, "x.dep.kotlinxserializationjson"))
       }
     }
 

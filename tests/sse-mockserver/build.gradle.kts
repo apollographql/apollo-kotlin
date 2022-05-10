@@ -8,6 +8,7 @@ dependencies {
 
   ///////////////////////////
   // implementation
+  implementation("com.apollographql.apollo3:apollo-runtime")
 
   // ktor
   implementation(groovy.util.Eval.x(project, "x.dep.ktor.serverCore"))

@@ -1,9 +1,18 @@
 package com.apollographql.apollo.sample.server.sse
 
-import com.apollographql.apollo.sample.server.routing.SseTransportMessage
+import com.apollographql.apollo3.network.sse.SseTransportMessage
 
-class SseSideChannelInteractor {
+class SseSideChannelInteractor(
+    private val messageType: SseTransportMessage.MessageType = SseTransportMessage.MessageType(),
+    private val sseTransportMessageFactory: SseServerTransportMessageFactory = SseServerTransportMessageFactory(),
+) {
   fun processRequest(request: SseTransportMessage.ClientRequest): SseTransportMessage.ClientResponse {
-    return SseTransportMessage.ClientResponse(type = "hello")
+
+    return when (request.type) {
+      messageType.initRequest -> sseTransportMessageFactory.setMessageToAck()
+      else -> throw RuntimeException("Apollo: cannot process message with type='${request.type}' ")
+    }
+        .build()
+
   }
 }

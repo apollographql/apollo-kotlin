@@ -1,27 +1,12 @@
 plugins {
-  id("org.jetbrains.kotlin.multiplatform")
+  id("org.jetbrains.kotlin.jvm")
+
 }
 
-configureMppTestsDefaults()
+dependencies {
+  implementation("com.apollographql.apollo3:apollo-runtime")
 
-kotlin {
-  sourceSets {
-    val commonMain by getting {
-      dependencies {
-        implementation("com.apollographql.apollo3:apollo-runtime")
-      }
-    }
+  testImplementation(projects.sseMockserver)
+  testImplementation(groovy.util.Eval.x(project, "x.dep.kotlinJunit"))
 
-    val commonTest by getting {
-      dependencies {
-        implementation("com.apollographql.apollo3:apollo-testing-support")
-      }
-    }
-
-    val jvmTest by getting {
-      dependencies {
-        implementation(projects.sampleServer)
-      }
-    }
-  }
 }
