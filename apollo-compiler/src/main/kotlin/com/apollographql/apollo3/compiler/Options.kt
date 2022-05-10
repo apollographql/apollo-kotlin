@@ -295,7 +295,7 @@ class Options(
     const val defaultModuleName = "apollographql"
     const val defaultCodegenModels = MODELS_OPERATION_BASED
     const val defaultAddTypename = ADD_TYPENAME_IF_FRAGMENTS
-    const val defaultExperimentalAnnotation = "com.apollographql.apollo3.annotations.ApolloExperimental"
+    const val defaultExperimentalAnnotation = "com.apollographql.apollo3.annotations.Experimental"
     const val defaultFlattenModels = true
     val defaultTargetLanguage = TargetLanguage.KOTLIN_1_5
     const val defaultGenerateSchema = false

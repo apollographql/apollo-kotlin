@@ -519,7 +519,7 @@ interface Service {
    * - AnnotationTarget.PROPERTY
    * - AnnotationTarget.CLASS
    *
-   * Default: "com.apollographql.apollo3.annotations.ApolloExperimental"
+   * Default: "com.apollographql.apollo3.annotations.Experimental"
    */
   val experimentalAnnotation: Property<String>
 
