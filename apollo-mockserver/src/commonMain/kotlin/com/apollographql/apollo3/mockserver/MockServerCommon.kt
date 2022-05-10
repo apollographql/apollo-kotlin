@@ -1,8 +1,5 @@
 package com.apollographql.apollo3.mockserver
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.delay
 import okio.Buffer
 import okio.BufferedSink
@@ -52,7 +49,7 @@ suspend fun writeResponse(sink: BufferedSink, mockResponse: MockResponse, versio
     // - chunk-size (in hexadecimal) + CRLF
     // - chunk-data + CRLF
     // Ended with a chunk-size of 0 + CRLF + CRLF
-    for (chunk in mockResponse.chunkChannel) {
+    for (chunk in mockResponse.chunks) {
       delay(chunk.delayMillis)
       sink.writeHexadecimalUnsignedLong(chunk.body.size.toLong())
       sink.writeUtf8("\r\n")
@@ -71,21 +68,10 @@ suspend fun writeResponse(sink: BufferedSink, mockResponse: MockResponse, versio
 class MockResponse(
     val statusCode: Int = 200,
     val body: ByteString = ByteString.EMPTY,
-    chunks: List<MockChunk> = emptyList(),
+    val chunks: List<MockChunk> = emptyList(),
     val headers: Map<String, String> = emptyMap(),
     val delayMillis: Long = 0,
-    private val waitForMoreChunks: Boolean = false,
 ) {
-  var chunks: List<MockChunk> = chunks
-    private set
-
-  internal val chunkChannel: Channel<MockChunk> = Channel<MockChunk>(UNLIMITED).apply {
-    for (chunk in chunks) {
-      trySend(chunk)
-    }
-    if (!waitForMoreChunks) close()
-  }
-
   @JvmOverloads
   constructor(
       body: String,
@@ -93,42 +79,7 @@ class MockResponse(
       statusCode: Int = 200,
       headers: Map<String, String> = emptyMap(),
       delayMillis: Long = 0,
-      waitForMoreChunks: Boolean = false,
-  ) : this(
-      statusCode = statusCode,
-      body = body.encodeUtf8(),
-      chunks = chunks,
-      headers = headers,
-      delayMillis = delayMillis,
-      waitForMoreChunks = waitForMoreChunks
-  )
-
-  @ApolloExperimental
-  fun enqueueChunk(chunk: MockChunk, isLast: Boolean = false) {
-    chunks = chunks + chunk
-    chunkChannel.trySend(chunk)
-    if (isLast) chunkChannel.close()
-  }
-
-  @ApolloExperimental
-  fun enqueueChunk(
-      content: String,
-      contentType: String = "application/json; charset=utf-8",
-      boundary: String = "-",
-      isFirst: Boolean = false,
-      isLast: Boolean = false,
-      delayMillis: Long = 0,
-  ) = enqueueChunk(
-      chunk = createMultipartMixedChunk(
-          content = content,
-          contentType = contentType,
-          boundary = boundary,
-          isFirst = isFirst,
-          isLast = isLast,
-          delayMillis = delayMillis,
-      ),
-      isLast = isLast,
-  )
+  ) : this(statusCode, body.encodeUtf8(), chunks, headers, delayMillis)
 }
 
 class MockChunk(

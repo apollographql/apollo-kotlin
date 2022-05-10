@@ -6,15 +6,13 @@ import com.apollographql.apollo3.cache.http.HttpFetchPolicy
 import com.apollographql.apollo3.cache.http.httpCache
 import com.apollographql.apollo3.cache.http.httpFetchPolicy
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.createMultipartMixedChunkedResponse
+import com.apollographql.apollo3.mockserver.enqueueMultipart
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.testing.runTest
 import defer.WithFragmentSpreadsQuery
 import defer.fragment.ComputerFields
 import defer.fragment.ScreenFields
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.last
-import kotlinx.coroutines.launch
 import org.junit.Test
 import java.io.File
 import kotlin.test.assertEquals
@@ -41,16 +39,6 @@ class DeferJvmTest {
 
   @Test
   fun payloadsAreReceivedIncrementallyWithHttpCache() = runTest(before = { setUp() }, after = { tearDown() }) {
-    val response = createMultipartMixedChunkedResponse(emptyList(), waitForMoreChunks = true)
-    mockServer.enqueue(response)
-
-    val channel = Channel<Unit>()
-    val job = launch {
-      apolloClient.query(WithFragmentSpreadsQuery()).toFlow().collect {
-        channel.send(Unit)
-      }
-    }
-
     val jsonList = listOf(
         """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"},{"__typename":"Computer","id":"Computer2"}]},"hasNext":true}""",
         """{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0],"hasNext":true}""",
@@ -58,19 +46,16 @@ class DeferJvmTest {
         """{"data":{"isColor":false},"path":["computers",0,"screen"],"hasNext":true,"label":"a"}""",
         """{"data":{"isColor":true},"path":["computers",1,"screen"],"hasNext":false,"label":"a"}""",
     )
-    val delayMillis = 200L
-    for ((index, json) in jsonList.withIndex()) {
-      response.enqueueChunk(
-          content = json,
-          isFirst = index == 0,
-          isLast = index == jsonList.lastIndex,
-          delayMillis = delayMillis
-      )
-      val timeBeforeReceive = currentTimeMillis()
-      channel.receive()
-      assertTrue(currentTimeMillis() - timeBeforeReceive >= delayMillis)
+
+    val delay = 200L
+    mockServer.enqueueMultipart(jsonList, chunksDelayMillis = delay)
+
+    var lastEmitTime = currentTimeMillis()
+    apolloClient.query(WithFragmentSpreadsQuery()).toFlow().collect {
+      // Allow a 10% margin for inaccuracies
+      assertTrue(currentTimeMillis() - lastEmitTime >= delay / 1.1)
+      lastEmitTime = currentTimeMillis()
     }
-    job.cancel()
 
     // Also check that caching worked
     val actual = apolloClient.query(WithFragmentSpreadsQuery()).httpFetchPolicy(HttpFetchPolicy.CacheOnly).toFlow().last().dataAssertNoErrors
