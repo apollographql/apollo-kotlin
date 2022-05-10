@@ -19,3 +19,6 @@ public abstract interface annotation class com/apollographql/apollo3/annotations
 public abstract interface annotation class com/apollographql/apollo3/annotations/ApolloInternal : java/lang/annotation/Annotation {
 }
 
+public abstract interface annotation class com/apollographql/apollo3/annotations/Experimental : java/lang/annotation/Annotation {
+}
+

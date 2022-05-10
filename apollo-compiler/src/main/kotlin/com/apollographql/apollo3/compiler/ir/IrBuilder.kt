@@ -43,6 +43,7 @@ import com.apollographql.apollo3.ast.coerceInExecutableContextOrThrow
 import com.apollographql.apollo3.ast.coerceInSchemaContextOrThrow
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.findDeprecationReason
+import com.apollographql.apollo3.ast.findExperimentalReason
 import com.apollographql.apollo3.ast.findNonnull
 import com.apollographql.apollo3.ast.inferVariables
 import com.apollographql.apollo3.ast.isApollo
@@ -183,6 +184,7 @@ internal class IrBuilder(
         implements = implementsInterfaces,
         keyFields = schema.keyFields(name),
         description = description,
+        // XXX: this is not spec-compliant. Directive cannot be on object definitions
         deprecationReason = directives.findDeprecationReason()
     )
   }
@@ -196,6 +198,7 @@ internal class IrBuilder(
         implements = implementsInterfaces,
         keyFields = schema.keyFields(name),
         description = description,
+        // XXX: this is not spec-compliant. Directive cannot be on interfaces
         deprecationReason = directives.findDeprecationReason()
     )
   }
@@ -208,6 +211,7 @@ internal class IrBuilder(
         name = name,
         members = memberTypes.map { it.name },
         description = description,
+        // XXX: this is not spec-compliant. Directive cannot be on union definitions
         deprecationReason = directives.findDeprecationReason()
     )
   }
@@ -217,6 +221,7 @@ internal class IrBuilder(
         name = name,
         kotlinName = scalarMapping[name]?.targetName,
         description = description,
+        // XXX: this is not spec-compliant. Directive cannot be on scalar definitions
         deprecationReason = directives.findDeprecationReason()
     )
   }
@@ -225,6 +230,7 @@ internal class IrBuilder(
     return IrInputObject(
         name = name,
         description = description,
+        // XXX: this is not spec-compliant. Directive cannot be on inpout objects definitions
         deprecationReason = directives.findDeprecationReason(),
         fields = inputFields.map { it.toIrInputField() }
     )
@@ -248,6 +254,7 @@ internal class IrBuilder(
         name = name,
         description = description,
         deprecationReason = directives.findDeprecationReason(),
+        experimentalReason = directives.findExperimentalReason(),
         type = irType,
         defaultValue = coercedDefaultValue?.toIrValue(),
     )
@@ -265,7 +272,8 @@ internal class IrBuilder(
     return IrEnum.Value(
         name = name,
         description = description,
-        deprecationReason = directives.findDeprecationReason()
+        deprecationReason = directives.findDeprecationReason(),
+        experimentalReason = directives.findExperimentalReason(),
     )
   }
 
@@ -462,6 +470,7 @@ internal class IrBuilder(
       val description: String?,
       val type: GQLType,
       val deprecationReason: String?,
+      val experimentalReason: String?,
       val forceNonNull: Boolean,
       val forceOptional: Boolean,
 
@@ -494,6 +503,7 @@ internal class IrBuilder(
           type = fieldDefinition.type,
           description = fieldDefinition.description,
           deprecationReason = fieldDefinition.directives.findDeprecationReason(),
+          experimentalReason = fieldDefinition.directives.findExperimentalReason(),
           forceNonNull = forceNonNull,
           forceOptional = gqlField.directives.optionalValue() == true,
           parentType = fieldWithParent.parentType,
@@ -547,12 +557,20 @@ internal class IrBuilder(
           "Deprecated in: '${parents.joinToString(", ")}'"
         }
       }
-
+      val experimentalReason = fieldsWithSameResponseName.associateBy { it.experimentalReason }.values.let { experimentalCanditates ->
+        if (experimentalCanditates.size == 1) {
+          experimentalCanditates.single().experimentalReason
+        } else {
+          val parents = experimentalCanditates.filter { it.experimentalReason != null }.map { it.parentType }
+          "Experimental in: '${parents.joinToString(", ")}'"
+        }
+      }
 
       val info = IrFieldInfo(
           responseName = first.alias ?: first.name,
           description = description,
           deprecationReason = deprecationReason,
+          experimentalReason = experimentalReason,
           type = irType,
           gqlType = first.type,
       )

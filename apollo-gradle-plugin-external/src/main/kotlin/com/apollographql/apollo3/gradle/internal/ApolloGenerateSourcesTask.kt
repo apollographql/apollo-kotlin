@@ -16,6 +16,7 @@ import com.apollographql.apollo3.compiler.Options.Companion.defaultAddJvmOverloa
 import com.apollographql.apollo3.compiler.Options.Companion.defaultAddTypename
 import com.apollographql.apollo3.compiler.Options.Companion.defaultAlwaysGenerateTypesMatching
 import com.apollographql.apollo3.compiler.Options.Companion.defaultCodegenModels
+import com.apollographql.apollo3.compiler.Options.Companion.defaultExperimentalAnnotation
 import com.apollographql.apollo3.compiler.Options.Companion.defaultFailOnWarnings
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateAsInternal
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateFilterNotNull
@@ -203,6 +204,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Optional
   abstract val addJvmOverloads: Property<Boolean>
 
+  @get:Input
+  @get:Optional
+  abstract val experimentalAnnotation: Property<String>
+
   @TaskAction
   fun taskAction() {
     val metadata = metadataFiles.files.toList().map { ApolloMetadata.readFrom(it) }
@@ -301,6 +306,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         sealedClassesForEnumsMatching = sealedClassesForEnumsMatching.getOrElse(defaultSealedClassesForEnumsMatching),
         generateOptionalOperationVariables = generateOptionalOperationVariables.getOrElse(defaultGenerateOptionalOperationVariables),
         addJvmOverloads = addJvmOverloads.getOrElse(defaultAddJvmOverloads),
+        experimentalAnnotation = experimentalAnnotation.getOrElse(defaultExperimentalAnnotation),
     )
 
     val outputCompilerMetadata = ApolloCompiler.write(options)

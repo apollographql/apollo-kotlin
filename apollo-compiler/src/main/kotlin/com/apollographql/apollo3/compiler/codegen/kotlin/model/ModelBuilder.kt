@@ -8,6 +8,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.from
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClassFromProperties
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddExperimental
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
 import com.apollographql.apollo3.compiler.ir.IrAccessor
 import com.apollographql.apollo3.compiler.ir.IrFragmentAccessor
@@ -59,6 +60,7 @@ class ModelBuilder(
           .applyIf(it.override) { addModifiers(KModifier.OVERRIDE) }
           .maybeAddDescription(it.info.description)
           .maybeAddDeprecation(it.info.deprecationReason)
+          .maybeAddExperimental(context.resolver, it.info.experimentalReason)
           .build()
     }
 

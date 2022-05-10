@@ -20,6 +20,7 @@ import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.VariableUsage
+import com.apollographql.apollo3.ast.findDeprecationReason
 import com.apollographql.apollo3.ast.isDeprecated
 import com.apollographql.apollo3.ast.pretty
 import com.apollographql.apollo3.ast.toUtf8
@@ -110,14 +111,23 @@ private fun ValidationScope.validateAndCoerceInputObject(value: GQLValue, expect
     return value
   }
 
-  // 3.10 All required input fields must have a value
   expectedTypeDefinition.inputFields.forEach { inputValueDefinition ->
+    // 3.10 All required input fields must have a value
     if (inputValueDefinition.type is GQLNonNullType
         && inputValueDefinition.defaultValue == null
         && value.fields.firstOrNull { it.name == inputValueDefinition.name } == null
     ) {
-      registerIssue(message = "No value passed for required inputField ${inputValueDefinition.name}", sourceLocation = value.sourceLocation)
+      registerIssue(message = "No value passed for required inputField `${inputValueDefinition.name}`", sourceLocation = value.sourceLocation)
     }
+    if (inputValueDefinition.directives.findDeprecationReason() != null) {
+      issues.add(
+          Issue.DeprecatedUsage(
+              message = "Use of deprecated input field `${inputValueDefinition.name}`",
+              sourceLocation = value.sourceLocation
+          )
+      )
+    }
+
   }
 
   return GQLObjectValue(fields = value.fields.mapNotNull { field ->

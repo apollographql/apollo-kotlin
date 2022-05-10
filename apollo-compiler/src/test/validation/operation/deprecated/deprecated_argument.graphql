@@ -1,0 +1,4 @@
+query TestQuery($arg: String) {
+    field(arg: $arg)
+    otherField(input: { oldInputField: "" })
+}

@@ -15,6 +15,21 @@ fun List<GQLDirective>.findDeprecationReason() = firstOrNull { it.name == "depre
           ?: "No longer supported"
     }
 
+fun List<GQLDirective>.findExperimentalReason() = firstOrNull { it.name == "experimental" }
+    ?.let {
+      it.arguments
+          ?.arguments
+          ?.firstOrNull { it.name == "reason" }
+          ?.value
+          ?.let { value ->
+            if (value !is GQLStringValue) {
+              throw ConversionException("reason must be a string", it.sourceLocation)
+            }
+            value.value
+          }
+          ?: "Experimental"
+    }
+
 /**
  * @return `true` or `false` based on the `if` argument if the `optional` directive is present, `null` otherwise
  */

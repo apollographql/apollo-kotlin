@@ -15,6 +15,7 @@ class NamedType(
     val graphQlName: String,
     val description: String?,
     val deprecationReason: String?,
+    val experimentalReason: String?,
     val type: IrType,
 )
 
@@ -26,7 +27,9 @@ internal fun NamedType.toParameterSpec(context: KotlinContext): ParameterSpec {
           name = context.layout.propertyName(graphQlName),
           type = context.resolver.resolveIrType(type)
       )
-      .applyIf(description?.isNotBlank() == true) { addKdoc("%L\n", description!!) }
+      .maybeAddDescription(description)
+      .maybeAddDeprecation(deprecationReason)
+      .maybeAddExperimental(context.resolver, experimentalReason)
       .applyIf(type.isOptional()) { defaultValue("%T", KotlinSymbols.Absent) }
       .build()
 }
@@ -37,6 +40,7 @@ fun IrInputField.toNamedType() = NamedType(
     type = type,
     description = description,
     deprecationReason = deprecationReason,
+    experimentalReason = experimentalReason
 )
 
 fun IrVariable.toNamedType() = NamedType(
@@ -44,6 +48,7 @@ fun IrVariable.toNamedType() = NamedType(
     type = type,
     description = null,
     deprecationReason = null,
+    experimentalReason = null
 )
 
 

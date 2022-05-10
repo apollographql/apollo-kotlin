@@ -1,0 +1,10 @@
+type Query {
+    field(arg: String @deprecated): String
+    otherField(input: SomeInput): String
+}
+
+input SomeInput {
+    oldInputField: String @deprecated
+}
+
+
