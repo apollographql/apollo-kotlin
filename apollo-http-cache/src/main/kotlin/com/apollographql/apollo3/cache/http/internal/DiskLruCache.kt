@@ -862,17 +862,6 @@ internal class DiskLruCache(
         }
       }
     }
-
-    fun commitUnlessAborted() {
-      synchronized(this@DiskLruCache) {
-        if (!done && entry.currentEditor == this) {
-          try {
-            completeEdit(this, true)
-          } catch (ignored: IOException) {
-          }
-        }
-      }
-    }
   }
 
   inner class Entry internal constructor(val key: String) {

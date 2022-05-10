@@ -106,6 +106,10 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
 
   /**
    * A [Source] that writes to the given cache sink as it is read.
+   *
+   * It commits all successful reads, even if they do not read until EOF. This is so that we can cache Json with extra trailing whitespace.
+   * If an error happens when reading the original source or writing to the cache sink, the edit is aborted.
+   * The commit or abort is done on [close].
    */
   private class ProxySource(
       private val originalSource: Source,
@@ -115,12 +119,13 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
 
     private val buffer = Buffer()
     private var hasClosedAndCommitted: Boolean = false
+    private var hasReadError: Boolean = false
 
     override fun read(sink: Buffer, byteCount: Long): Long {
       val read = try {
         originalSource.read(buffer, byteCount)
       } catch (e: Exception) {
-        abortEdit()
+        hasReadError = true
         throw e
       }
 
@@ -131,12 +136,12 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
       try {
         buffer.peek().readAll(this.sink)
       } catch (e: Exception) {
-        abortEdit()
+        hasReadError = true
       }
       try {
         sink.writeAll(buffer)
       } catch (e: Exception) {
-        abortEdit()
+        hasReadError = true
         throw e
       }
       return read
@@ -146,21 +151,17 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
       if (!hasClosedAndCommitted) {
         try {
           sink.close()
-          cacheEditor.commitUnlessAborted()
+          if (hasReadError) {
+            cacheEditor.abort()
+          } else {
+            cacheEditor.commit()
+          }
         } catch (e: Exception) {
           // Silently ignore cache write errors
         } finally {
           hasClosedAndCommitted = true
         }
         originalSource.close()
-      }
-    }
-
-    private fun abortEdit() {
-      try {
-        cacheEditor.abort()
-      } catch (e: Exception) {
-        // Silently ignore cache write errors
       }
     }
 
