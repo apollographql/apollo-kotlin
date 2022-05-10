@@ -15,7 +15,7 @@ import java.io.File
 
 object SchemaDownloader {
   /**
-   * Main entry point for downloading a schema either from introspection or from the Studio registry
+   * Main entry point for downloading a schema either from introspection or from the Apollo Studio registry
    *
    * One of [endpoint] (for introspection) or [key] (for registry) is required.
    *
