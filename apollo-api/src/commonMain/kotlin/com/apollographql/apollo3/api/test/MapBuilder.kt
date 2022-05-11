@@ -4,9 +4,13 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.CompiledType
 import kotlin.reflect.KProperty
 
+@DslMarker
+annotation class ApolloTestBuilderMarker
+
 /**
  * Base class for test builders that define a DSL to build type safe operation data
  */
+@ApolloTestBuilderMarker
 @ApolloExperimental
 abstract class MapBuilder {
   /**

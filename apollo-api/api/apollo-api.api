@@ -1051,6 +1051,9 @@ public final class com/apollographql/apollo3/api/json/MapJsonWriter : com/apollo
 	public fun value (Z)Lcom/apollographql/apollo3/api/json/MapJsonWriter;
 }
 
+public abstract interface annotation class com/apollographql/apollo3/api/test/ApolloTestBuilderMarker : java/lang/annotation/Annotation {
+}
+
 public final class com/apollographql/apollo3/api/test/TestResolverKt {
 }
 
