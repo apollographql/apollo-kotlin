@@ -61,6 +61,18 @@ class MockResponse(
       headers = headers + mapOf("Content-Length" to body.length.toString()),
       delayMillis = delayMillis,
   )
+
+  constructor(
+      body: ByteString,
+      statusCode: Int = 200,
+      headers: Map<String, String> = emptyMap(),
+      delayMillis: Long = 0,
+  ) : this(
+      statusCode = statusCode,
+      body = flowOf(body),
+      headers = headers + mapOf("Content-Length" to body.size.toString()),
+      delayMillis = delayMillis,
+  )
 }
 
 interface MockServerHandler {
