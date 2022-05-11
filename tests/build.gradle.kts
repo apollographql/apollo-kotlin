@@ -92,13 +92,6 @@ tasks.register("ciBuild") {
   dependsOn("ciBuildJava9")
 }
 
-
-plugins.withType(org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin::class.java) {
-  configure<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension> {
-    lockFileDirectory = rootDir.resolve("../kotlin-js-store")
-  }
-}
-
 plugins.withType(org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin::class.java) {
   // graphql-js canarty requires node >= 16.10
   extensions.findByType(org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension::class.java)?.nodeVersion = "16.10.0"
