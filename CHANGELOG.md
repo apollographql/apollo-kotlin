@@ -5,7 +5,15 @@ Change Log
 
 _2022-05-04_
 
-This release brings WebSocket related improvements, support for HMPP, and a some performance improvements and bug fixes!
+This is the first release with [HMPP](https://kotlinlang.org/docs/multiplatform-hierarchy.html) support. If you're using multiplatform, updating to Kotlin 1.6.21 is strongly encouraged. 
+
+This release also brings WebSocket related improvements and other fixes!
+
+## ✨️ [new] Hierarchical MultiPlatform Project (HMPP) (#4033)
+
+When using Apollo Kotlin on a multiplatform project, this release is compatible with the [hierarchical project structure](https://kotlinlang.org/docs/multiplatform-hierarchy.html), which makes it easier to share common code among several targets. Using HMPP in your project also fixes some issues when compiling Kotlin metadata. See https://github.com/apollographql/apollo-kotlin/issues/4019 and https://youtrack.jetbrains.com/issue/KT-51970/ for more details.
+
+**✋ Note**: If you're using multiplatform, we strongly encourage updating to Kotlin 1.6.21. If that is not an option, you might have issues resolving dependencies. More infos in [this issue](https://github.com/apollographql/apollo-kotlin/issues/4095#issuecomment-1123571706).
 
 ## ✨️ [new] `WebSocketNetworkTransport.closeConnection` (#4049)
 
@@ -15,12 +23,6 @@ This new method can be used in conjunction with [`reopenWhen`](https://apollogra
 ## ✨️ [new] `GraphQLWsProtocol.connectionPayload` is now a lambda (#4043)
 
 With `GraphQLWsProtocol`, if you need to pass parameters to the connection payload, previously you would pass them as a static map to the builder. With this change you can now pass a lambda providing them as needed. This facilitates passing fresh auth tokens when connecting.
-
-## ✨️ [new] Hierarchical MultiPlatform Project (HMPP) (#4033)
-
-When using Apollo Kotlin on a multiplatform project, this release is compatible with the [hierarchical project structure](https://kotlinlang.org/docs/multiplatform-hierarchy.html), which makes it easier to share common code among several targets. Using HMPP in your project also fixes some issues when compiling Kotlin metadata. See https://github.com/apollographql/apollo-kotlin/issues/4019 and https://youtrack.jetbrains.com/issue/KT-51970/ for more details.
-
-Note: if your project doesn’t yet use Kotlin 1.6.20+ (which automatically enables HMPP) we recommend you update to it, otherwise you may hit [this issue](https://youtrack.jetbrains.com/issue/KT-51970).
 
 ## ✨️ [new] Add insecure option to download schema (#4021)
 
