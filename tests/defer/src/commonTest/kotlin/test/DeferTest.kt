@@ -15,7 +15,6 @@ import defer.WithFragmentSpreadsQuery
 import defer.WithInlineFragmentsQuery
 import defer.fragment.ComputerFields
 import defer.fragment.ScreenFields
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.toList
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -270,10 +269,8 @@ class DeferTest {
       actualDelays += currentTimeMillis() - lastEmitTime
       lastEmitTime = currentTimeMillis()
     }
-    // Last 2 emissions can arrive together, so ignore last element
-    for (d in actualDelays.dropLast(1)) {
-      // Allow a 10% margin for inaccuracies
-      assertTrue(d >= delay / 1.1)
+    for (d in actualDelays) {
+      assertTrue(d > 0)
     }
   }
 }

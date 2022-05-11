@@ -8,9 +8,10 @@ interface ApolloHttpCache {
 
   /**
    * Store the [response] with the given [cacheKey] into the cache.
-   * Note: the response's body is not consumed nor closed.
+   * The response's body is not consumed nor closed.
+   * @return a new [HttpResponse] whose body, when read, will write the contents to the cache.
    */
-  fun write(response: HttpResponse, cacheKey: String)
+  fun write(response: HttpResponse, cacheKey: String): HttpResponse
 
   @Throws(IOException::class)
   fun clearAll()

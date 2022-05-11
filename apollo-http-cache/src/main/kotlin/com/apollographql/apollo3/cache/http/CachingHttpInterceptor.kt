@@ -31,8 +31,7 @@ class CachingHttpInterceptor(
 
   override suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse {
     val policy = request.headers.valueOf(CACHE_FETCH_POLICY_HEADER) ?: defaultPolicy(request)
-    val cacheKey = cacheKey(request)
-
+    val cacheKey = request.headers.valueOf(CACHE_KEY_HEADER)!!
     when (policy) {
       CACHE_FIRST -> {
         val cacheException: ApolloException
@@ -110,7 +109,7 @@ class CachingHttpInterceptor(
     if (response.statusCode in 200..299 && !doNotStore) {
       // Note: this write may fail if the same cacheKey is being stored by another thread.
       // This is OK though: the other thread will be the one that stores it in the cache (see issue #3664).
-      lruHttpCache.write(
+      return lruHttpCache.write(
           response.newBuilder()
               .addHeaders(
                   listOf(

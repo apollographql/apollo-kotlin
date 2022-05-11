@@ -10,11 +10,17 @@ import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.api.http.HttpRequest
+import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.network.http.HttpInfo
+import com.apollographql.apollo3.network.http.HttpInterceptor
+import com.apollographql.apollo3.network.http.HttpInterceptorChain
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.onEach
 import java.io.File
 
 enum class HttpFetchPolicy {
@@ -54,28 +60,43 @@ fun ApolloClient.Builder.httpCache(
     directory: File,
     maxSize: Long,
 ): ApolloClient.Builder {
-
-  return addHttpInterceptor(
-      CachingHttpInterceptor(
-          directory = directory,
-          maxSize = maxSize,
-      )
+  val cachingHttpInterceptor = CachingHttpInterceptor(
+      directory = directory,
+      maxSize = maxSize,
+  )
+  var cacheKey: String? = null
+  return addHttpInterceptor(object : HttpInterceptor {
+    override suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse {
+      cacheKey = CachingHttpInterceptor.cacheKey(request)
+      return chain.proceed(request.newBuilder().addHeader(CachingHttpInterceptor.CACHE_KEY_HEADER, cacheKey!!).build())
+    }
+  }).addHttpInterceptor(
+      cachingHttpInterceptor
   ).addInterceptor(object : ApolloInterceptor {
     override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-      return chain.proceed(request.newBuilder()
-          .addHttpHeader(
-              CachingHttpInterceptor.CACHE_OPERATION_TYPE_HEADER,
-              when (request.operation) {
-                is Query<*> -> "query"
-                is Mutation<*> -> "mutation"
-                is Subscription<*> -> "subscription"
-                else -> error("Unknown operation type")
-              }
-          )
-          .build()
-      )
+      return chain.proceed(
+          request.newBuilder()
+              .addHttpHeader(
+                  CachingHttpInterceptor.CACHE_OPERATION_TYPE_HEADER,
+                  when (request.operation) {
+                    is Query<*> -> "query"
+                    is Mutation<*> -> "mutation"
+                    is Subscription<*> -> "subscription"
+                    else -> error("Unknown operation type")
+                  }
+              )
+              .build()
+      ).catch { throwable ->
+        // Revert caching of responses with errors
+        cacheKey?.let { cachingHttpInterceptor.cache.remove(it) }
+        throw throwable
+      }.onEach { response ->
+        // Revert caching of responses with errors
+        if (response.hasErrors()) {
+          cacheKey?.let { cachingHttpInterceptor.cache.remove(it) }
+        }
+      }
     }
-
   })
 }
 

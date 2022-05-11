@@ -2,7 +2,7 @@ public abstract interface class com/apollographql/apollo3/cache/http/ApolloHttpC
 	public abstract fun clearAll ()V
 	public abstract fun read (Ljava/lang/String;)Lcom/apollographql/apollo3/api/http/HttpResponse;
 	public abstract fun remove (Ljava/lang/String;)V
-	public abstract fun write (Lcom/apollographql/apollo3/api/http/HttpResponse;Ljava/lang/String;)V
+	public abstract fun write (Lcom/apollographql/apollo3/api/http/HttpResponse;Ljava/lang/String;)Lcom/apollographql/apollo3/api/http/HttpResponse;
 }
 
 public final class com/apollographql/apollo3/cache/http/CachingHttpInterceptor : com/apollographql/apollo3/network/http/HttpInterceptor {
@@ -39,7 +39,7 @@ public final class com/apollographql/apollo3/cache/http/DiskLruHttpCache : com/a
 	public final fun delete ()V
 	public fun read (Ljava/lang/String;)Lcom/apollographql/apollo3/api/http/HttpResponse;
 	public fun remove (Ljava/lang/String;)V
-	public fun write (Lcom/apollographql/apollo3/api/http/HttpResponse;Ljava/lang/String;)V
+	public fun write (Lcom/apollographql/apollo3/api/http/HttpResponse;Ljava/lang/String;)Lcom/apollographql/apollo3/api/http/HttpResponse;
 }
 
 public final class com/apollographql/apollo3/cache/http/DiskLruHttpCache$Companion {
