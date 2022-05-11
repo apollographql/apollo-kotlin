@@ -9,7 +9,6 @@ import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.MockServerHandler
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.testing.runTest
-import okio.ByteString.Companion.encodeUtf8
 import kotlin.test.Test
 
 @OptIn(ApolloExperimental::class)
@@ -22,18 +21,16 @@ class CustomHandlerTest {
 
   @Test
   fun customHandler() = runTest(after = { tearDown() }) {
-    val body0 = "Hello, World! 000"
-    val mockResponse0 = MockResponse(
-        body = body0,
-        statusCode = 404,
-        headers = mapOf("Content-Type" to "text/plain"),
-    )
-    val body1 = "Hello, World! 001"
-    val mockResponse1 = MockResponse(
-        body = body1,
-        statusCode = 200,
-        headers = mapOf("X-Test" to "true"),
-    )
+    val mockResponse0 = MockResponse.Builder()
+        .body("Hello, World! 000")
+        .statusCode(404)
+        .addHeader("Content-Type", "text/plain")
+        .build()
+    val mockResponse1 = MockResponse.Builder()
+        .body("Hello, World! 001")
+        .statusCode(200)
+        .addHeader("X-Test", "true")
+        .build()
 
     val mockServerHandler = object : MockServerHandler {
       override fun handle(request: MockRequest): MockResponse {
@@ -50,13 +47,13 @@ class CustomHandlerTest {
     val engine = DefaultHttpEngine()
 
     var httpResponse = engine.execute(HttpRequest.Builder(HttpMethod.Get, mockServer.url() + "1").build())
-    assertMockResponse(mockResponse = mockResponse1, body = body1.encodeUtf8(), httpResponse = httpResponse)
+    assertMockResponse(mockResponse1, httpResponse)
 
     httpResponse = engine.execute(HttpRequest.Builder(HttpMethod.Get, mockServer.url() + "0").build())
-    assertMockResponse(mockResponse = mockResponse0, body = body0.encodeUtf8(), httpResponse = httpResponse)
+    assertMockResponse(mockResponse0, httpResponse)
 
     httpResponse = engine.execute(HttpRequest.Builder(HttpMethod.Get, mockServer.url() + "1").build())
-    assertMockResponse(mockResponse = mockResponse1, body = body1.encodeUtf8(), httpResponse = httpResponse)
+    assertMockResponse(mockResponse1, httpResponse)
   }
 
 }

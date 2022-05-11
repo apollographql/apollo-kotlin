@@ -26,34 +26,32 @@ class EnqueueTest {
 
   @Test
   fun enqueue() = runTest(before = { setUp() }, after = { tearDown() }) {
-    val body0 = "Hello, World! 000"
-    val body1 = "Hello, World! 001"
-    val body2 = "First chunk\nSecond chunk"
-    val mockResponses = mapOf(
-        MockResponse(
-            body = body0,
-            statusCode = 404,
-            headers = mapOf("Content-Type" to "text/plain"),
-        ) to body0,
-        MockResponse(
-            body = body1,
-            statusCode = 200,
-            headers = mapOf("X-Test" to "true"),
-        ) to body1,
-        MockResponse(
-            body = flowOf("First chunk\n".encodeUtf8(), "Second chunk".encodeUtf8()).asChunked(),
-            statusCode = 200,
-            headers = mapOf("X-Test" to "false", "Transfer-Encoding" to "chunked"),
-        ) to body2,
+    val mockResponses = listOf(
+        MockResponse.Builder()
+            .body("Hello, World! 000")
+            .statusCode(404)
+            .addHeader("Content-Type", "text/plain")
+            .build(),
+        MockResponse.Builder()
+            .body("Hello, World! 001")
+            .statusCode(200)
+            .addHeader("X-Test", "true")
+            .build(),
+        MockResponse.Builder()
+            .body(flowOf("First chunk\n".encodeUtf8(), "Second chunk".encodeUtf8()).asChunked())
+            .statusCode(200)
+            .addHeader("X-Test", "false")
+            .addHeader("Transfer-Encoding", "chunked")
+            .build(),
     )
     for (mockResponse in mockResponses) {
-      mockServer.enqueue(mockResponse.key)
+      mockServer.enqueue(mockResponse)
     }
 
     val engine = DefaultHttpEngine()
     for (mockResponse in mockResponses) {
       val httpResponse = engine.execute(HttpRequest.Builder(HttpMethod.Get, mockServer.url()).build())
-      assertMockResponse(mockResponse = mockResponse.key, body = mockResponse.value.encodeUtf8(), httpResponse = httpResponse)
+      assertMockResponse(mockResponse, httpResponse)
     }
   }
 }

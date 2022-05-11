@@ -15,7 +15,6 @@ import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
-import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.receiveOrTimeout
@@ -23,7 +22,6 @@ import com.apollographql.apollo3.testing.runTest
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import testFixtureToUtf8
@@ -54,7 +52,7 @@ class WatcherErrorHandlingTest {
     val jobs = mutableListOf<Job>()
 
     jobs += launch {
-      mockServer.enqueue(MockResponse(500))
+      mockServer.enqueue(statusCode = 500)
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheFirst)
           .watch()
@@ -73,7 +71,7 @@ class WatcherErrorHandlingTest {
     }
 
     jobs += launch {
-      mockServer.enqueue(MockResponse(500))
+      mockServer.enqueue(statusCode = 500)
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkFirst)
           .watch()
@@ -83,7 +81,7 @@ class WatcherErrorHandlingTest {
     }
 
     jobs += launch {
-      mockServer.enqueue(MockResponse(500))
+      mockServer.enqueue(statusCode = 500)
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkOnly)
           .watch()
@@ -93,7 +91,7 @@ class WatcherErrorHandlingTest {
     }
 
     jobs += launch {
-      mockServer.enqueue(MockResponse(500))
+      mockServer.enqueue(statusCode = 500)
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheAndNetwork)
           .watch()
@@ -129,7 +127,7 @@ class WatcherErrorHandlingTest {
     // Due to .refetchPolicy(FetchPolicy.NetworkOnly), a subsequent call will be executed in watch()
     // we enqueue an error so a network exception is thrown, and ignored by default
     mockServer.enqueue(testFixtureToUtf8("EpisodeHeroNameResponseNameChange.json"))
-    mockServer.enqueue(MockResponse(500))
+    mockServer.enqueue(statusCode = 500)
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
     channel.assertEmpty()
@@ -138,7 +136,7 @@ class WatcherErrorHandlingTest {
 
   @Test
   fun fetchThrows() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue(MockResponse(500))
+    mockServer.enqueue(statusCode = 500)
     assertFailsWith(ApolloCompositeException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheFirst)
@@ -153,7 +151,7 @@ class WatcherErrorHandlingTest {
           .first()
     }
 
-    mockServer.enqueue(MockResponse(500))
+    mockServer.enqueue(statusCode = 500)
     assertFailsWith(ApolloCompositeException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkFirst)
@@ -161,7 +159,7 @@ class WatcherErrorHandlingTest {
           .first()
     }
 
-    mockServer.enqueue(MockResponse(500))
+    mockServer.enqueue(statusCode = 500)
     assertFailsWith(ApolloHttpException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.NetworkOnly)
@@ -169,7 +167,7 @@ class WatcherErrorHandlingTest {
           .first()
     }
 
-    mockServer.enqueue(MockResponse(500))
+    mockServer.enqueue(statusCode = 500)
     assertFailsWith(ApolloCompositeException::class) {
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheAndNetwork)
@@ -204,7 +202,7 @@ class WatcherErrorHandlingTest {
     // Due to .refetchPolicy(FetchPolicy.NetworkOnly), a subsequent call will be executed in watch()
     // we enqueue an error so a network exception is thrown, and surfaced due to refetchThrows = true
     mockServer.enqueue(testFixtureToUtf8("EpisodeHeroNameResponseNameChange.json"))
-    mockServer.enqueue(MockResponse(500))
+    mockServer.enqueue(statusCode = 500)
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
     channel.assertEmpty()

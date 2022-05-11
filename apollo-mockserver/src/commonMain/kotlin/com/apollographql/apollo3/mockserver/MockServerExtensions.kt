@@ -15,12 +15,12 @@ import okio.ByteString.Companion.encodeUtf8
 import kotlin.jvm.JvmName
 
 @ApolloExperimental
-fun MockServer.enqueue(string: String, delayMs: Long = 0) {
-  enqueue(MockResponse(
-      statusCode = 200,
-      body = string,
-      delayMillis = delayMs
-  ))
+fun MockServer.enqueue(string: String = "", delayMs: Long = 0, statusCode: Int = 200) {
+  enqueue(MockResponse.Builder()
+      .statusCode(statusCode)
+      .body(string)
+      .delayMillis(delayMs)
+      .build())
 }
 
 @ApolloExperimental
@@ -120,18 +120,22 @@ class ChunkedResponse(
 ) {
   private val chunkChannel = Channel<ByteString>(Channel.UNLIMITED)
 
-  val response = MockResponse(
-      statusCode = statusCode,
-      headers = headers + mapOf(
-          "Content-Type" to """multipart/mixed; boundary="$boundary"""",
-          "Transfer-Encoding" to "chunked",
-      ),
-      delayMillis = responseDelayMillis,
-      body = chunkChannel.receiveAsFlow().map {
-        delay(chunksDelayMillis)
-        it
-      }.asChunked()
-  )
+  val response = MockResponse.Builder()
+      .statusCode(statusCode)
+      .body(
+          chunkChannel.receiveAsFlow().map {
+            delay(chunksDelayMillis)
+            it
+          }.asChunked()
+      )
+      .headers(
+          headers + mapOf(
+              "Content-Type" to """multipart/mixed; boundary="$boundary"""",
+              "Transfer-Encoding" to "chunked",
+          )
+      )
+      .delayMillis(responseDelayMillis)
+      .build()
 
   fun send(
       content: String,

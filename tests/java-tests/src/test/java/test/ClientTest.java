@@ -66,13 +66,13 @@ public class ClientTest {
 
   @Test
   public void simple() {
-    mockServer.enqueue(new MockResponse("{\"data\": {\"random\": 42}}"));
+    mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"random\": 42}}").build());
     ApolloResponse<GetRandomQuery.Data> queryResponse = Rx2Apollo.single(
         apolloClient.query(new GetRandomQuery())
     ).blockingGet();
     Truth.assertThat(queryResponse.dataAssertNoErrors().random).isEqualTo(42);
 
-    mockServer.enqueue(new MockResponse("{\"data\": {\"createAnimal\": {\"__typename\": \"Cat\", \"species\": \"cat\", \"habitat\": {\"temperature\": 10.5}}}}"));
+    mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"createAnimal\": {\"__typename\": \"Cat\", \"species\": \"cat\", \"habitat\": {\"temperature\": 10.5}}}}").build());
     ApolloResponse<CreateCatMutation.Data> mutationResponse = Rx2Apollo.single(
         apolloClient.mutation(new CreateCatMutation())
     ).blockingGet();

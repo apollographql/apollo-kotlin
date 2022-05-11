@@ -16,11 +16,11 @@ import kotlin.test.assertEquals
 class WriteResponseTest {
   @Test
   fun writeResponse() = runTest {
-    val mockResponse = MockResponse(
-        statusCode = 404,
-        body = "I will not buy this record, it is scratched.",
-        headers = mapOf("X-Custom-Header" to "Custom-Value")
-    )
+    val mockResponse = MockResponse.Builder()
+        .statusCode(404)
+        .addHeader("X-Custom-Header", "Custom-Value")
+        .body("I will not buy this record, it is scratched.")
+        .build()
 
     val buffer = Buffer()
     writeResponse(buffer, mockResponse, "1.1")
@@ -37,11 +37,11 @@ class WriteResponseTest {
 
   @Test
   fun writeChunkedResponse() = runTest {
-    val mockResponse = MockResponse(
-        statusCode = 404,
-        body = flowOf("I will not buy this record, ".encodeUtf8(), "it is scratched.".encodeUtf8()).asChunked(),
-        headers = mapOf("X-Custom-Header" to "Custom-Value", "Transfer-Encoding" to "chunked")
-    )
+    val mockResponse = MockResponse.Builder()
+        .statusCode(404)
+        .headers(mapOf("X-Custom-Header" to "Custom-Value", "Transfer-Encoding" to "chunked"))
+        .body(flowOf("I will not buy this record, ".encodeUtf8(), "it is scratched.".encodeUtf8()).asChunked())
+        .build()
 
     val buffer = Buffer()
     writeResponse(buffer, mockResponse, "1.1")

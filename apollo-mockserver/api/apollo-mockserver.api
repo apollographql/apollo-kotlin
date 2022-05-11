@@ -1,7 +1,7 @@
 public final class com/apollographql/apollo3/mockserver/-MockServers {
 	public static synthetic fun createMultipartMixedChunkedResponse$default (Ljava/util/List;ILjava/lang/String;Ljava/util/Map;JJLjava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/mockserver/MockResponse;
 	public static synthetic fun createMultipartMixedPart$default (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZZILjava/lang/Object;)Ljava/lang/String;
-	public static synthetic fun enqueue$default (Lcom/apollographql/apollo3/mockserver/MockServer;Ljava/lang/String;JILjava/lang/Object;)V
+	public static synthetic fun enqueue$default (Lcom/apollographql/apollo3/mockserver/MockServer;Ljava/lang/String;JIILjava/lang/Object;)V
 	public static synthetic fun enqueueMultipart$default (Lcom/apollographql/apollo3/mockserver/MockServer;Ljava/util/List;ILjava/lang/String;Ljava/util/Map;JJLjava/lang/String;ILjava/lang/Object;)V
 }
 
@@ -30,6 +30,18 @@ public final class com/apollographql/apollo3/mockserver/MockResponse {
 	public final fun getDelayMillis ()J
 	public final fun getHeaders ()Ljava/util/Map;
 	public final fun getStatusCode ()I
+}
+
+public final class com/apollographql/apollo3/mockserver/MockResponse$Builder {
+	public fun <init> ()V
+	public final fun addHeader (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/mockserver/MockResponse$Builder;
+	public final fun body (Ljava/lang/String;)Lcom/apollographql/apollo3/mockserver/MockResponse$Builder;
+	public final fun body (Lkotlinx/coroutines/flow/Flow;)Lcom/apollographql/apollo3/mockserver/MockResponse$Builder;
+	public final fun body (Lokio/ByteString;)Lcom/apollographql/apollo3/mockserver/MockResponse$Builder;
+	public final fun build ()Lcom/apollographql/apollo3/mockserver/MockResponse;
+	public final fun delayMillis (J)Lcom/apollographql/apollo3/mockserver/MockResponse$Builder;
+	public final fun headers (Ljava/util/Map;)Lcom/apollographql/apollo3/mockserver/MockResponse$Builder;
+	public final fun statusCode (I)Lcom/apollographql/apollo3/mockserver/MockResponse$Builder;
 }
 
 public final class com/apollographql/apollo3/mockserver/MockServer : com/apollographql/apollo3/mockserver/MockServerInterface {

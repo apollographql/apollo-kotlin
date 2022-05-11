@@ -1,17 +1,30 @@
 package com.apollographql.apollo3.mockserver.test
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.mockserver.MockResponse
-import okio.ByteString
+import com.apollographql.apollo3.mockserver.readChunked
+import kotlinx.coroutines.flow.toList
+import okio.Buffer
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-fun assertMockResponse(
+@OptIn(ApolloInternal::class)
+suspend fun assertMockResponse(
     mockResponse: MockResponse,
-    body: ByteString,
     httpResponse: HttpResponse,
 ) {
-  assertEquals(body, httpResponse.body!!.readByteString())
+  val mockResponseBody = mockResponse.body.toList().fold(Buffer()) { buffer, byteString ->
+    buffer.write(byteString)
+  }.let {
+    if (mockResponse.headers["Transfer-Encoding"] == "chunked") {
+      Buffer().apply { it.readChunked(this) }
+    } else {
+      it
+    }
+  }.readByteString()
+
+  assertEquals(mockResponseBody, httpResponse.body!!.readByteString())
   assertEquals(mockResponse.statusCode, httpResponse.statusCode)
   // JS MockServer serves headers in lowercase, so convert before comparing
   // Also, remove 'Transfer-Encoding' header before comparison since it is changed by the Apple client

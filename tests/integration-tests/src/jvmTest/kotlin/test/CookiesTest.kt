@@ -51,10 +51,7 @@ class CookiesTest {
       HeroNameQuery().adapter().toJson(this, CustomScalarAdapters.Empty, HeroNameQuery.Data(hero = HeroNameQuery.Hero(name = "Luke")))
     }
 
-    mockServer.enqueue(MockResponse(
-        body = json,
-        headers = mapOf("Set-Cookie" to "yummy_cookie=choco")
-    ))
+    mockServer.enqueue(MockResponse.Builder().body(json).addHeader("Set-Cookie", "yummy_cookie=choco").build())
 
     // first query should set the cookie
     apolloClient.query(HeroNameQuery()).execute()

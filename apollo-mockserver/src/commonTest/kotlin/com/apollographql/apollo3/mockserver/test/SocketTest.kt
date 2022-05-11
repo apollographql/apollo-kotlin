@@ -3,8 +3,8 @@ package com.apollographql.apollo3.mockserver.test
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
-import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.testing.runTest
 import kotlin.random.Random
@@ -22,7 +22,7 @@ class SocketTest {
       builder.append(Random.nextInt())
     }
 
-    mockServer.enqueue(MockResponse(body = builder.toString()))
+    mockServer.enqueue(builder.toString())
     val str = builder.toString()
     val engine = DefaultHttpEngine()
     val response = engine.execute(HttpRequest.Builder(HttpMethod.Get, mockServer.url()).build())

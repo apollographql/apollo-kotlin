@@ -1,6 +1,7 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Operation
@@ -9,20 +10,19 @@ import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpRequestComposer
 import com.apollographql.apollo3.api.json.buildJsonByteString
-import com.apollographql.apollo3.api.json.writeObject
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.json.readAny
+import com.apollographql.apollo3.api.json.writeObject
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
-import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.testing.runTest
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ApolloInternal::class)
-class WithExtensionsHttpRequestComposer(private val serverUrl: String): HttpRequestComposer {
+class WithExtensionsHttpRequestComposer(private val serverUrl: String) : HttpRequestComposer {
   override fun <D : Operation.Data> compose(apolloRequest: ApolloRequest<D>): HttpRequest {
 
     return HttpRequest.Builder(HttpMethod.Post, serverUrl)
@@ -45,7 +45,7 @@ class WithExtensionsHttpRequestComposer(private val serverUrl: String): HttpRequ
   }
 }
 
-@OptIn(ApolloInternal::class)
+@OptIn(ApolloInternal::class, ApolloExperimental::class)
 class BodyExtensionsTest {
   @Test
   fun bodyExtensions() = runTest {
@@ -60,13 +60,15 @@ class BodyExtensionsTest {
         )
         .build()
 
-    mockServer.enqueue(MockResponse(statusCode = 500))
+    mockServer.enqueue(statusCode = 500)
     kotlin.runCatching {
       apolloClient.query(HeroNameQuery())
           .execute()
     }
 
     val request = mockServer.takeRequest()
+
+    @Suppress("UNCHECKED_CAST")
     val asMap = Buffer().write(request.body).jsonReader().readAny() as Map<String, Any>
     assertEquals(asMap["extensions"], "extension value")
 

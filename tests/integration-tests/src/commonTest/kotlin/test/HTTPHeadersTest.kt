@@ -57,14 +57,11 @@ class HTTPHeadersTest {
     }
 
     mockServer.enqueue(
-        MockResponse(
-            statusCode = 200,
-            body = json,
-            headers = mapOf(
-                "Header1" to "Value1",
-                "Header2" to "Value2"
-            )
-        )
+        MockResponse.Builder()
+            .body(json)
+            .addHeader("Header1", "Value1")
+            .addHeader("Header2", "Value2")
+            .build()
     )
 
     val response = apolloClient.query(query).execute()
