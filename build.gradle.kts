@@ -207,7 +207,6 @@ configure<kotlinx.validation.ApiValidationExtension> {
           "apollo-compiler",
           "apollo-ast",
           "apollo-testing-support",
-          "apollo-mockserver"
       )
   )
   nonPublicMarkers.addAll(
